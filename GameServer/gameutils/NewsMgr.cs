@@ -52,7 +52,7 @@ namespace DOL.GS
 
 			if (ServerProperties.Properties.RECORD_NEWS)
 			{
-				DBNews news = new DBNews();
+				DbNews news = new DbNews();
 				news.Type = (byte)type;
 				news.Realm = (byte)realm;
 				news.Text = message;
@@ -70,11 +70,11 @@ namespace DOL.GS
 				int index = 0;
 				string realm = "";
 				//we can see all captures
-				IList<DBNews> newsList;
+				IList<DbNews> newsList;
 				if (type > 0)
-					newsList = DOLDB<DBNews>.SelectObjects(DB.Column("Type").IsEqualTo(type).And(DB.Column("Realm").IsEqualTo(0).Or(DB.Column("Realm").IsEqualTo(realm))));
+					newsList = DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(type).And(DB.Column("Realm").IsEqualTo(0).Or(DB.Column("Realm").IsEqualTo(realm))));
 				else
-					newsList = DOLDB<DBNews>.SelectObjects(DB.Column("Type").IsEqualTo(type));
+					newsList = DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(type));
 
 				newsList = newsList.OrderByDescending(it => it.CreationDate).Take(5).ToArray();
 				int n = newsList.Count;
@@ -82,7 +82,7 @@ namespace DOL.GS
 				while (n > 0)
 				{
 					n--;
-					DBNews news = newsList[n];
+					DbNews news = newsList[n];
 					client.Out.SendMessage(string.Format("N,{0},{1},{2},\"{3}\"", news.Type, index++, RetElapsedTime(news.CreationDate), news.Text), eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
 				}
 			}

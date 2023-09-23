@@ -26,7 +26,7 @@ namespace DOL.GS
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItems weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -101,7 +101,7 @@ namespace DOL.GS
 			{
 				if (m_ShredclawPoison == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 2;
@@ -136,7 +136,7 @@ namespace DOL.GS
 			{
 				if (m_ShredclawBleed == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 2;

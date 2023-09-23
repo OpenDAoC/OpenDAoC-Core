@@ -20,7 +20,7 @@ namespace DOL.GS
 		/// <param name="template"></param>
 		public GameNPCInventory(GameNpcInventoryTemplate template)
 		{
-			foreach (InventoryItem item in template.AllItems)
+			foreach (DbInventoryItems item in template.AllItems)
 			{
 				AddItem((eInventorySlot)item.SlotPosition, GameInventoryItem.Create(item));
 			}

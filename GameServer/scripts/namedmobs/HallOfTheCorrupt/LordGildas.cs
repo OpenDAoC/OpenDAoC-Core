@@ -96,7 +96,7 @@ namespace DOL.GS
                 }
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }

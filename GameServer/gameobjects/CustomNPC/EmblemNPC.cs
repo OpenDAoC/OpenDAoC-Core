@@ -53,7 +53,7 @@ namespace DOL.GS
 			return true;
 		}
 
-		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItems item)
 		{
 			GamePlayer t = source as GamePlayer;
 			if (t == null || item == null)
@@ -118,7 +118,7 @@ namespace DOL.GS
 			if (response != 0x01)
 				return; //declined
 
-			InventoryItem item = (InventoryItem) itemWeak.Target;
+			DbInventoryItems item = (DbInventoryItems) itemWeak.Target;
 
 			if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
 				|| item.OwnerID == null || item.OwnerID != player.InternalID)
@@ -135,7 +135,7 @@ namespace DOL.GS
 			}
 
 			item.Emblem = player.Guild.Emblem;
-			player.Out.SendInventoryItemsUpdate(new InventoryItem[] {item});
+			player.Out.SendInventoryItemsUpdate(new DbInventoryItems[] {item});
 			if (item.SlotPosition < (int) eInventorySlot.FirstBackpack)
 				player.UpdateEquipmentAppearance();
 			SayTo(player, eChatLoc.CL_ChatWindow, "I have put an emblem on your item.");

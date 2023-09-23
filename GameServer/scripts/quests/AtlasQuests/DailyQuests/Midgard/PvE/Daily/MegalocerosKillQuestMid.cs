@@ -44,7 +44,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 		}
 
-		public MegalocerosKillQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public MegalocerosKillQuestMid(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

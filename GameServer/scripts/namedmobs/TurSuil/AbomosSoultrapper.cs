@@ -78,7 +78,7 @@ namespace DOL.GS
 				}
 			}
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItems weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -131,7 +131,7 @@ namespace DOL.GS
 			{
 				if (m_LifedrainProc == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
@@ -225,7 +225,7 @@ namespace DOL.GS
 		public AbomosAdd() : base()
 		{
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItems weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}

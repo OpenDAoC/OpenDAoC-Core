@@ -58,50 +58,50 @@ namespace DOL.GS.Quests.Midgard
 		private static Ydenia Ydenia = null; // Mob to kill
 		private static GameNPC Elizabeth = null; // reward NPC
 
-		private static ItemTemplate tome_enchantments = null;
-		private static ItemTemplate sealed_pouch = null;
-		private static ItemTemplate WarriorEpicBoots = null;
-		private static ItemTemplate WarriorEpicHelm = null;
-		private static ItemTemplate WarriorEpicGloves = null;
-		private static ItemTemplate WarriorEpicLegs = null;
-		private static ItemTemplate WarriorEpicArms = null;
-		private static ItemTemplate WarriorEpicVest = null;
-		private static ItemTemplate BerserkerEpicBoots = null;
-		private static ItemTemplate BerserkerEpicHelm = null;
-		private static ItemTemplate BerserkerEpicGloves = null;
-		private static ItemTemplate BerserkerEpicLegs = null;
-		private static ItemTemplate BerserkerEpicArms = null;
-		private static ItemTemplate BerserkerEpicVest = null;
-		private static ItemTemplate ThaneEpicBoots = null;
-		private static ItemTemplate ThaneEpicHelm = null;
-		private static ItemTemplate ThaneEpicGloves = null;
-		private static ItemTemplate ThaneEpicLegs = null;
-		private static ItemTemplate ThaneEpicArms = null;
-		private static ItemTemplate ThaneEpicVest = null;
-		private static ItemTemplate SkaldEpicBoots = null;
-		private static ItemTemplate SkaldEpicHelm = null;
-		private static ItemTemplate SkaldEpicGloves = null;
-		private static ItemTemplate SkaldEpicVest = null;
-		private static ItemTemplate SkaldEpicLegs = null;
-		private static ItemTemplate SkaldEpicArms = null;
-		private static ItemTemplate SavageEpicBoots = null;
-		private static ItemTemplate SavageEpicHelm = null;
-		private static ItemTemplate SavageEpicGloves = null;
-		private static ItemTemplate SavageEpicVest = null;
-		private static ItemTemplate SavageEpicLegs = null;
-		private static ItemTemplate SavageEpicArms = null;
-		private static ItemTemplate ValkyrieEpicBoots = null;
-		private static ItemTemplate ValkyrieEpicHelm = null;
-		private static ItemTemplate ValkyrieEpicGloves = null;
-		private static ItemTemplate ValkyrieEpicVest = null;
-		private static ItemTemplate ValkyrieEpicLegs = null;
-		private static ItemTemplate ValkyrieEpicArms = null;
-        private static ItemTemplate MaulerMidEpicBoots = null;
-        private static ItemTemplate MaulerMidEpicHelm = null;
-        private static ItemTemplate MaulerMidEpicGloves = null;
-        private static ItemTemplate MaulerMidEpicVest = null;
-        private static ItemTemplate MaulerMidEpicLegs = null;
-        private static ItemTemplate MaulerMidEpicArms = null; 
+		private static DbItemTemplates tome_enchantments = null;
+		private static DbItemTemplates sealed_pouch = null;
+		private static DbItemTemplates WarriorEpicBoots = null;
+		private static DbItemTemplates WarriorEpicHelm = null;
+		private static DbItemTemplates WarriorEpicGloves = null;
+		private static DbItemTemplates WarriorEpicLegs = null;
+		private static DbItemTemplates WarriorEpicArms = null;
+		private static DbItemTemplates WarriorEpicVest = null;
+		private static DbItemTemplates BerserkerEpicBoots = null;
+		private static DbItemTemplates BerserkerEpicHelm = null;
+		private static DbItemTemplates BerserkerEpicGloves = null;
+		private static DbItemTemplates BerserkerEpicLegs = null;
+		private static DbItemTemplates BerserkerEpicArms = null;
+		private static DbItemTemplates BerserkerEpicVest = null;
+		private static DbItemTemplates ThaneEpicBoots = null;
+		private static DbItemTemplates ThaneEpicHelm = null;
+		private static DbItemTemplates ThaneEpicGloves = null;
+		private static DbItemTemplates ThaneEpicLegs = null;
+		private static DbItemTemplates ThaneEpicArms = null;
+		private static DbItemTemplates ThaneEpicVest = null;
+		private static DbItemTemplates SkaldEpicBoots = null;
+		private static DbItemTemplates SkaldEpicHelm = null;
+		private static DbItemTemplates SkaldEpicGloves = null;
+		private static DbItemTemplates SkaldEpicVest = null;
+		private static DbItemTemplates SkaldEpicLegs = null;
+		private static DbItemTemplates SkaldEpicArms = null;
+		private static DbItemTemplates SavageEpicBoots = null;
+		private static DbItemTemplates SavageEpicHelm = null;
+		private static DbItemTemplates SavageEpicGloves = null;
+		private static DbItemTemplates SavageEpicVest = null;
+		private static DbItemTemplates SavageEpicLegs = null;
+		private static DbItemTemplates SavageEpicArms = null;
+		private static DbItemTemplates ValkyrieEpicBoots = null;
+		private static DbItemTemplates ValkyrieEpicHelm = null;
+		private static DbItemTemplates ValkyrieEpicGloves = null;
+		private static DbItemTemplates ValkyrieEpicVest = null;
+		private static DbItemTemplates ValkyrieEpicLegs = null;
+		private static DbItemTemplates ValkyrieEpicArms = null;
+        private static DbItemTemplates MaulerMidEpicBoots = null;
+        private static DbItemTemplates MaulerMidEpicHelm = null;
+        private static DbItemTemplates MaulerMidEpicGloves = null;
+        private static DbItemTemplates MaulerMidEpicVest = null;
+        private static DbItemTemplates MaulerMidEpicLegs = null;
+        private static DbItemTemplates MaulerMidEpicArms = null; 
 
 
 		// Constructors
@@ -117,7 +117,7 @@ namespace DOL.GS.Quests.Midgard
 		{
 		}
 
-		public Viking_50(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public Viking_50(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -239,12 +239,12 @@ namespace DOL.GS.Quests.Midgard
 
 			#region defineItems
 
-			tome_enchantments = GameServer.Database.FindObjectByKey<ItemTemplate>("tome_enchantments");
+			tome_enchantments = GameServer.Database.FindObjectByKey<DbItemTemplates>("tome_enchantments");
 			if (tome_enchantments == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Tome of Enchantments , creating it ...");
-				tome_enchantments = new ItemTemplate();
+				tome_enchantments = new DbItemTemplates();
 				tome_enchantments.Id_nb = "tome_enchantments";
 				tome_enchantments.Name = "Tome of Enchantments";
 				tome_enchantments.Level = 8;
@@ -266,12 +266,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 
-			sealed_pouch = GameServer.Database.FindObjectByKey<ItemTemplate>("sealed_pouch");
+			sealed_pouch = GameServer.Database.FindObjectByKey<DbItemTemplates>("sealed_pouch");
 			if (sealed_pouch == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Sealed Pouch , creating it ...");
-				sealed_pouch = new ItemTemplate();
+				sealed_pouch = new DbItemTemplates();
 				sealed_pouch.Id_nb = "sealed_pouch";
 				sealed_pouch.Name = "Sealed Pouch";
 				sealed_pouch.Level = 8;
@@ -292,12 +292,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 
-			WarriorEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("WarriorEpicBoots");
+			WarriorEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("WarriorEpicBoots");
 			if (WarriorEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warrior Epic Boots , creating it ...");
-				WarriorEpicBoots = new ItemTemplate();
+				WarriorEpicBoots = new DbItemTemplates();
 				WarriorEpicBoots.Id_nb = "WarriorEpicBoots";
 				WarriorEpicBoots.Name = "Tyr's Might Boots";
 				WarriorEpicBoots.Level = 50;
@@ -335,12 +335,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 //end item
-			WarriorEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("WarriorEpicHelm");
+			WarriorEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("WarriorEpicHelm");
 			if (WarriorEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warrior Epic Helm , creating it ...");
-				WarriorEpicHelm = new ItemTemplate();
+				WarriorEpicHelm = new DbItemTemplates();
 				WarriorEpicHelm.Id_nb = "WarriorEpicHelm";
 				WarriorEpicHelm.Name = "Tyr's Might Coif";
 				WarriorEpicHelm.Level = 50;
@@ -378,12 +378,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 //end item
-			WarriorEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("WarriorEpicGloves");
+			WarriorEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("WarriorEpicGloves");
 			if (WarriorEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warrior Epic Gloves , creating it ...");
-				WarriorEpicGloves = new ItemTemplate();
+				WarriorEpicGloves = new DbItemTemplates();
 				WarriorEpicGloves.Id_nb = "WarriorEpicGloves";
 				WarriorEpicGloves.Name = "Tyr's Might Gloves";
 				WarriorEpicGloves.Level = 50;
@@ -421,12 +421,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 
-			WarriorEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("WarriorEpicVest");
+			WarriorEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("WarriorEpicVest");
 			if (WarriorEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warrior Epic Vest , creating it ...");
-				WarriorEpicVest = new ItemTemplate();
+				WarriorEpicVest = new DbItemTemplates();
 				WarriorEpicVest.Id_nb = "WarriorEpicVest";
 				WarriorEpicVest.Name = "Tyr's Might Hauberk";
 				WarriorEpicVest.Level = 50;
@@ -464,12 +464,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 
-			WarriorEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("WarriorEpicLegs");
+			WarriorEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("WarriorEpicLegs");
 			if (WarriorEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warrior Epic Legs , creating it ...");
-				WarriorEpicLegs = new ItemTemplate();
+				WarriorEpicLegs = new DbItemTemplates();
 				WarriorEpicLegs.Id_nb = "WarriorEpicLegs";
 				WarriorEpicLegs.Name = "Tyr's Might Legs";
 				WarriorEpicLegs.Level = 50;
@@ -507,12 +507,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 
-			WarriorEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("WarriorEpicArms");
+			WarriorEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("WarriorEpicArms");
 			if (WarriorEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warrior Epic Arms , creating it ...");
-				WarriorEpicArms = new ItemTemplate();
+				WarriorEpicArms = new DbItemTemplates();
 				WarriorEpicArms.Id_nb = "WarriorEpicArms";
 				WarriorEpicArms.Name = "Tyr's Might Sleeves";
 				WarriorEpicArms.Level = 50;
@@ -549,12 +549,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 
 			}
-			BerserkerEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("BerserkerEpicBoots");
+			BerserkerEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("BerserkerEpicBoots");
 			if (BerserkerEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Berserker Epic Boots , creating it ...");
-				BerserkerEpicBoots = new ItemTemplate();
+				BerserkerEpicBoots = new DbItemTemplates();
 				BerserkerEpicBoots.Id_nb = "BerserkerEpicBoots";
 				BerserkerEpicBoots.Name = "Courage Bound Boots";
 				BerserkerEpicBoots.Level = 50;
@@ -592,12 +592,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 //end item
-			BerserkerEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("BerserkerEpicHelm");
+			BerserkerEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("BerserkerEpicHelm");
 			if (BerserkerEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Berserker Epic Helm , creating it ...");
-				BerserkerEpicHelm = new ItemTemplate();
+				BerserkerEpicHelm = new DbItemTemplates();
 				BerserkerEpicHelm.Id_nb = "BerserkerEpicHelm";
 				BerserkerEpicHelm.Name = "Courage Bound Helm";
 				BerserkerEpicHelm.Level = 50;
@@ -634,12 +634,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 //end item
-			BerserkerEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("BerserkerEpicGloves");
+			BerserkerEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("BerserkerEpicGloves");
 			if (BerserkerEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Berserker Epic Gloves , creating it ...");
-				BerserkerEpicGloves = new ItemTemplate();
+				BerserkerEpicGloves = new DbItemTemplates();
 				BerserkerEpicGloves.Id_nb = "BerserkerEpicGloves";
 				BerserkerEpicGloves.Name = "Courage Bound Gloves";
 				BerserkerEpicGloves.Level = 50;
@@ -676,12 +676,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 
-			BerserkerEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("BerserkerEpicVest");
+			BerserkerEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("BerserkerEpicVest");
 			if (BerserkerEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Berserker Epic Vest , creating it ...");
-				BerserkerEpicVest = new ItemTemplate();
+				BerserkerEpicVest = new DbItemTemplates();
 				BerserkerEpicVest.Id_nb = "BerserkerEpicVest";
 				BerserkerEpicVest.Name = "Courage Bound Jerkin";
 				BerserkerEpicVest.Level = 50;
@@ -718,12 +718,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 
-			BerserkerEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("BerserkerEpicLegs");
+			BerserkerEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("BerserkerEpicLegs");
 			if (BerserkerEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Berserker Epic Legs , creating it ...");
-				BerserkerEpicLegs = new ItemTemplate();
+				BerserkerEpicLegs = new DbItemTemplates();
 				BerserkerEpicLegs.Id_nb = "BerserkerEpicLegs";
 				BerserkerEpicLegs.Name = "Courage Bound Leggings";
 				BerserkerEpicLegs.Level = 50;
@@ -760,12 +760,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 
-			BerserkerEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("BerserkerEpicArms");
+			BerserkerEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("BerserkerEpicArms");
 			if (BerserkerEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Berserker Epic Arms , creating it ...");
-				BerserkerEpicArms = new ItemTemplate();
+				BerserkerEpicArms = new DbItemTemplates();
 				BerserkerEpicArms.Id_nb = "BerserkerEpicArms";
 				BerserkerEpicArms.Name = "Courage Bound Sleeves";
 				BerserkerEpicArms.Level = 50;
@@ -802,12 +802,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 
 			}
-			ThaneEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("ThaneEpicBoots");
+			ThaneEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("ThaneEpicBoots");
 			if (ThaneEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Thane Epic Boots , creating it ...");
-				ThaneEpicBoots = new ItemTemplate();
+				ThaneEpicBoots = new DbItemTemplates();
 				ThaneEpicBoots.Id_nb = "ThaneEpicBoots";
 				ThaneEpicBoots.Name = "Storm Touched Boots";
 				ThaneEpicBoots.Level = 50;
@@ -845,12 +845,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 //end item
-			ThaneEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("ThaneEpicHelm");
+			ThaneEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("ThaneEpicHelm");
 			if (ThaneEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Thane Epic Helm , creating it ...");
-				ThaneEpicHelm = new ItemTemplate();
+				ThaneEpicHelm = new DbItemTemplates();
 				ThaneEpicHelm.Id_nb = "ThaneEpicHelm";
 				ThaneEpicHelm.Name = "Storm Touched Coif";
 				ThaneEpicHelm.Level = 50;
@@ -889,12 +889,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 //end item
-			ThaneEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("ThaneEpicGloves");
+			ThaneEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("ThaneEpicGloves");
 			if (ThaneEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Thane Epic Gloves , creating it ...");
-				ThaneEpicGloves = new ItemTemplate();
+				ThaneEpicGloves = new DbItemTemplates();
 				ThaneEpicGloves.Id_nb = "ThaneEpicGloves";
 				ThaneEpicGloves.Name = "Storm Touched Gloves";
 				ThaneEpicGloves.Level = 50;
@@ -932,12 +932,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 
-			ThaneEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("ThaneEpicVest");
+			ThaneEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("ThaneEpicVest");
 			if (ThaneEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Thane Epic Vest , creating it ...");
-				ThaneEpicVest = new ItemTemplate();
+				ThaneEpicVest = new DbItemTemplates();
 				ThaneEpicVest.Id_nb = "ThaneEpicVest";
 				ThaneEpicVest.Name = "Storm Touched Hauberk";
 				ThaneEpicVest.Level = 50;
@@ -975,12 +975,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 
-			ThaneEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("ThaneEpicLegs");
+			ThaneEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("ThaneEpicLegs");
 			if (ThaneEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Thane Epic Legs , creating it ...");
-				ThaneEpicLegs = new ItemTemplate();
+				ThaneEpicLegs = new DbItemTemplates();
 				ThaneEpicLegs.Id_nb = "ThaneEpicLegs";
 				ThaneEpicLegs.Name = "Storm Touched Legs";
 				ThaneEpicLegs.Level = 50;
@@ -1017,12 +1017,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 
-			ThaneEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("ThaneEpicArms");
+			ThaneEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("ThaneEpicArms");
 			if (ThaneEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Thane Epic Arms , creating it ...");
-				ThaneEpicArms = new ItemTemplate();
+				ThaneEpicArms = new DbItemTemplates();
 				ThaneEpicArms.Id_nb = "ThaneEpicArms";
 				ThaneEpicArms.Name = "Storm Touched Sleeves";
 				ThaneEpicArms.Level = 50;
@@ -1059,12 +1059,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 			//Valhalla Touched Boots
-			SkaldEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("SkaldEpicBoots");
+			SkaldEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("SkaldEpicBoots");
 			if (SkaldEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Skalds Epic Boots , creating it ...");
-				SkaldEpicBoots = new ItemTemplate();
+				SkaldEpicBoots = new DbItemTemplates();
 				SkaldEpicBoots.Id_nb = "SkaldEpicBoots";
 				SkaldEpicBoots.Name = "Battlesung Boots";
 				SkaldEpicBoots.Level = 50;
@@ -1102,12 +1102,12 @@ namespace DOL.GS.Quests.Midgard
 			}
 //end item
 			//Valhalla Touched Coif 
-			SkaldEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("SkaldEpicHelm");
+			SkaldEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("SkaldEpicHelm");
 			if (SkaldEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Skalds Epic Helm , creating it ...");
-				SkaldEpicHelm = new ItemTemplate();
+				SkaldEpicHelm = new DbItemTemplates();
 				SkaldEpicHelm.Id_nb = "SkaldEpicHelm";
 				SkaldEpicHelm.Name = "Battlesung Coif";
 				SkaldEpicHelm.Level = 50;
@@ -1142,12 +1142,12 @@ namespace DOL.GS.Quests.Midgard
 			}
 //end item
 			//Valhalla Touched Gloves 
-			SkaldEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("SkaldEpicGloves");
+			SkaldEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("SkaldEpicGloves");
 			if (SkaldEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Skalds Epic Gloves , creating it ...");
-				SkaldEpicGloves = new ItemTemplate();
+				SkaldEpicGloves = new DbItemTemplates();
 				SkaldEpicGloves.Id_nb = "SkaldEpicGloves";
 				SkaldEpicGloves.Name = "Battlesung Gloves";
 				SkaldEpicGloves.Level = 50;
@@ -1185,12 +1185,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Valhalla Touched Hauberk 
-			SkaldEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("SkaldEpicVest");
+			SkaldEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("SkaldEpicVest");
 			if (SkaldEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Skalds Epic Vest , creating it ...");
-				SkaldEpicVest = new ItemTemplate();
+				SkaldEpicVest = new DbItemTemplates();
 				SkaldEpicVest.Id_nb = "SkaldEpicVest";
 				SkaldEpicVest.Name = "Battlesung Hauberk";
 				SkaldEpicVest.Level = 50;
@@ -1227,12 +1227,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 			//Valhalla Touched Legs 
-			SkaldEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("SkaldEpicLegs");
+			SkaldEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("SkaldEpicLegs");
 			if (SkaldEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Skalds Epic Legs , creating it ...");
-				SkaldEpicLegs = new ItemTemplate();
+				SkaldEpicLegs = new DbItemTemplates();
 				SkaldEpicLegs.Id_nb = "SkaldEpicLegs";
 				SkaldEpicLegs.Name = "Battlesung Legs";
 				SkaldEpicLegs.Level = 50;
@@ -1269,12 +1269,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 			//Valhalla Touched Sleeves 
-			SkaldEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("SkaldEpicArms");
+			SkaldEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("SkaldEpicArms");
 			if (SkaldEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Skald Epic Arms , creating it ...");
-				SkaldEpicArms = new ItemTemplate();
+				SkaldEpicArms = new DbItemTemplates();
 				SkaldEpicArms.Id_nb = "SkaldEpicArms";
 				SkaldEpicArms.Name = "Battlesung Sleeves";
 				SkaldEpicArms.Level = 50;
@@ -1311,12 +1311,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 			//Subterranean Boots 
-			SavageEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("SavageEpicBoots");
+			SavageEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("SavageEpicBoots");
 			if (SavageEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Savage Epic Boots , creating it ...");
-				SavageEpicBoots = new ItemTemplate();
+				SavageEpicBoots = new DbItemTemplates();
 				SavageEpicBoots.Id_nb = "SavageEpicBoots";
 				SavageEpicBoots.Name = "Kelgor's Battle Boots";
 				SavageEpicBoots.Level = 50;
@@ -1353,12 +1353,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 			//Subterranean Coif 
-			SavageEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("SavageEpicHelm");
+			SavageEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("SavageEpicHelm");
 			if (SavageEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Savage Epic Helm , creating it ...");
-				SavageEpicHelm = new ItemTemplate();
+				SavageEpicHelm = new DbItemTemplates();
 				SavageEpicHelm.Id_nb = "SavageEpicHelm";
 				SavageEpicHelm.Name = "Kelgor's Battle Helm";
 				SavageEpicHelm.Level = 50;
@@ -1395,12 +1395,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 			//Subterranean Gloves 
-			SavageEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("SavageEpicGloves");
+			SavageEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("SavageEpicGloves");
 			if (SavageEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Savage Epic Gloves , creating it ...");
-				SavageEpicGloves = new ItemTemplate();
+				SavageEpicGloves = new DbItemTemplates();
 				SavageEpicGloves.Id_nb = "SavageEpicGloves";
 				SavageEpicGloves.Name = "Kelgor's Battle Gauntlets";
 				SavageEpicGloves.Level = 50;
@@ -1437,12 +1437,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 			//Subterranean Hauberk 
-			SavageEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("SavageEpicVest");
+			SavageEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("SavageEpicVest");
 			if (SavageEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Savage Epic Vest , creating it ...");
-				SavageEpicVest = new ItemTemplate();
+				SavageEpicVest = new DbItemTemplates();
 				SavageEpicVest.Id_nb = "SavageEpicVest";
 				SavageEpicVest.Name = "Kelgor's Battle Vest";
 				SavageEpicVest.Level = 50;
@@ -1479,12 +1479,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 			//Subterranean Legs 
-			SavageEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("SavageEpicLegs");
+			SavageEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("SavageEpicLegs");
 			if (SavageEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Savage Epic Legs , creating it ...");
-				SavageEpicLegs = new ItemTemplate();
+				SavageEpicLegs = new DbItemTemplates();
 				SavageEpicLegs.Id_nb = "SavageEpicLegs";
 				SavageEpicLegs.Name = "Kelgor's Battle Leggings";
 				SavageEpicLegs.Level = 50;
@@ -1521,12 +1521,12 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 			//Subterranean Sleeves 
-			SavageEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("SavageEpicArms");
+			SavageEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("SavageEpicArms");
 			if (SavageEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Savage Epic Arms , creating it ...");
-				SavageEpicArms = new ItemTemplate();
+				SavageEpicArms = new DbItemTemplates();
 				SavageEpicArms.Id_nb = "SavageEpicArms";
 				SavageEpicArms.Name = "Kelgor's Battle Sleeves";
 				SavageEpicArms.Level = 50;
@@ -1564,12 +1564,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			#region Valkyrie
-			ValkyrieEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("ValkyrieEpicBoots");
+			ValkyrieEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("ValkyrieEpicBoots");
 			if (ValkyrieEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Valkyrie Epic Boots , creating it ...");
-				ValkyrieEpicBoots = new ItemTemplate();
+				ValkyrieEpicBoots = new DbItemTemplates();
 				ValkyrieEpicBoots.Id_nb = "ValkyrieEpicBoots";
 				ValkyrieEpicBoots.Name = "Battle Maiden's Boots";
 				ValkyrieEpicBoots.Level = 50;
@@ -1614,12 +1614,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//end item
-			ValkyrieEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("ValkyrieEpicHelm");
+			ValkyrieEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("ValkyrieEpicHelm");
 			if (ValkyrieEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Valkyrie Epic Helm , creating it ...");
-				ValkyrieEpicHelm = new ItemTemplate();
+				ValkyrieEpicHelm = new DbItemTemplates();
 				ValkyrieEpicHelm.Id_nb = "ValkyrieEpicHelm";
 				ValkyrieEpicHelm.Name = "Battle Maiden's Coif";
 				ValkyrieEpicHelm.Level = 50;
@@ -1664,12 +1664,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//end item
-			ValkyrieEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("ValkyrieEpicGloves");
+			ValkyrieEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("ValkyrieEpicGloves");
 			if (ValkyrieEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Valkyrie Epic Gloves , creating it ...");
-				ValkyrieEpicGloves = new ItemTemplate();
+				ValkyrieEpicGloves = new DbItemTemplates();
 				ValkyrieEpicGloves.Id_nb = "ValkyrieEpicGloves";
 				ValkyrieEpicGloves.Name = "Battle Maiden's Gloves";
 				ValkyrieEpicGloves.Level = 50;
@@ -1714,12 +1714,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 
-			ValkyrieEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("ValkyrieEpicVest");
+			ValkyrieEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("ValkyrieEpicVest");
 			if (ValkyrieEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Valkyrie Epic Vest , creating it ...");
-				ValkyrieEpicVest = new ItemTemplate();
+				ValkyrieEpicVest = new DbItemTemplates();
 				ValkyrieEpicVest.Id_nb = "ValkyrieEpicVest";
 				ValkyrieEpicVest.Name = "Battle Maiden's Hauberk";
 				ValkyrieEpicVest.Level = 50;
@@ -1764,12 +1764,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 
-			ValkyrieEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("ValkyrieEpicLegs");
+			ValkyrieEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("ValkyrieEpicLegs");
 			if (ValkyrieEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Valkyrie Epic Legs , creating it ...");
-				ValkyrieEpicLegs = new ItemTemplate();
+				ValkyrieEpicLegs = new DbItemTemplates();
 				ValkyrieEpicLegs.Id_nb = "ValkyrieEpicLegs";
 				ValkyrieEpicLegs.Name = "Battle Maiden's Legs";
 				ValkyrieEpicLegs.Level = 50;
@@ -1814,12 +1814,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 
-			ValkyrieEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("ValkyrieEpicArms");
+			ValkyrieEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("ValkyrieEpicArms");
 			if (ValkyrieEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Valkyrie Epic Arms , creating it ...");
-				ValkyrieEpicArms = new ItemTemplate();
+				ValkyrieEpicArms = new DbItemTemplates();
 				ValkyrieEpicArms.Id_nb = "ValkyrieEpicArms";
 				ValkyrieEpicArms.Name = "Battle Maiden's Sleeves";
 				ValkyrieEpicArms.Level = 50;
@@ -1867,12 +1867,12 @@ namespace DOL.GS.Quests.Midgard
 
             // Graveen: we assume items are existing in the DB
             // TODO: insert here creation of items if they do not exists
-            MaulerMidEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerMidEpicBoots");
-            MaulerMidEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerMidEpicHelm");
-            MaulerMidEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerMidEpicGloves");
-            MaulerMidEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerMidEpicVest");
-            MaulerMidEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerMidEpicLegs");
-            MaulerMidEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerMidEpicArms");
+            MaulerMidEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerMidEpicBoots");
+            MaulerMidEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerMidEpicHelm");
+            MaulerMidEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerMidEpicGloves");
+            MaulerMidEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerMidEpicVest");
+            MaulerMidEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerMidEpicLegs");
+            MaulerMidEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerMidEpicArms");
 
 //Item Descriptions End
 

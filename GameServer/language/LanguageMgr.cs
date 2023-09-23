@@ -46,7 +46,7 @@ namespace DOL.Language
             if (Util.IsEmpty(language))
                 language = DefaultLanguage;
 
-            LanguageDataObject result = GetLanguageDataObject(language, translationId, LanguageDataObject.eTranslationIdentifier.eSystem);
+            LanguageDataObject result = GetLanguageDataObject(language, translationId, ETranslationIdentifier.eSystem);
 
             if (result == null)
             {
@@ -55,8 +55,8 @@ namespace DOL.Language
             }
             else
             {
-                if (!Util.IsEmpty(((DBLanguageSystem) result).Text))
-                    translation = ((DBLanguageSystem) result).Text;
+                if (!Util.IsEmpty(((DbLanguageSystems) result).Text))
+                    translation = ((DbLanguageSystems) result).Text;
                 else
                 {
                     translation = GetTranslationErrorText(language, translationId);
@@ -141,7 +141,7 @@ namespace DOL.Language
         /// <summary>
         /// Returns the translations collection. MODIFY AT YOUR OWN RISK!!!
         /// </summary>
-        public static Dictionary<string, Dictionary<LanguageDataObject.eTranslationIdentifier, Dictionary<string, LanguageDataObject>>> Translations { get; private set; }
+        public static Dictionary<string, Dictionary<ETranslationIdentifier, Dictionary<string, LanguageDataObject>>> Translations { get; private set; }
         #endregion Properties
 
         #region Initialization
@@ -205,14 +205,14 @@ namespace DOL.Language
                 int newEntries = 0;
                 int updatedEntries = 0;
 
-                IList<DBLanguageSystem> dbos = GameServer.Database.SelectAllObjects<DBLanguageSystem>();
+                IList<DbLanguageSystems> dbos = GameServer.Database.SelectAllObjects<DbLanguageSystems>();
 
                 if (GS.ServerProperties.Properties.UPDATE_EXISTING_DB_SYSTEM_SENTENCES_FROM_FILES)
                 {
                     foreach (string[] sentence in fileSentences)
                     {
                         bool found = false;
-                        foreach (DBLanguageSystem dbo in dbos)
+                        foreach (DbLanguageSystems dbo in dbos)
                         {
                             if (dbo.TranslationId != sentence[ID])
                                 continue;
@@ -238,7 +238,7 @@ namespace DOL.Language
 
                         if (!found)
                         {
-                            DBLanguageSystem dbo = new()
+                            DbLanguageSystems dbo = new()
                             {
                                 TranslationId = sentence[ID],
                                 Text = sentence[TEXT],
@@ -259,7 +259,7 @@ namespace DOL.Language
                     foreach (string[] sentence in fileSentences)
                     {
                         bool found = false;
-                        foreach (DBLanguageSystem lngObj in dbos)
+                        foreach (DbLanguageSystems lngObj in dbos)
                         {
                             if (lngObj.TranslationId != sentence[ID])
                                 continue;
@@ -273,7 +273,7 @@ namespace DOL.Language
 
                         if (!found)
                         {
-                            DBLanguageSystem dbo = new()
+                            DbLanguageSystems dbo = new()
                             {
                                 TranslationId = sentence[ID],
                                 Text = sentence[TEXT],
@@ -296,7 +296,7 @@ namespace DOL.Language
                 // If a user adds new rows into the database without also adding those
                 // data into the language files, the above foreach loop just adds the
                 // sentences which have been added in the language files.
-                foreach (DBLanguageSystem dbo in dbos)
+                foreach (DbLanguageSystems dbo in dbos)
                     RegisterLanguageDataObject(dbo);
 
                 if (newEntries > 0)
@@ -315,7 +315,7 @@ namespace DOL.Language
             {
                 foreach (string[] sentence in fileSentences)
                 {
-                    DBLanguageSystem obj = new()
+                    DbLanguageSystems obj = new()
                     {
                         TranslationId = sentence[ID],
                         Text = sentence[TEXT],
@@ -333,10 +333,10 @@ namespace DOL.Language
                 log.Info("[Language-Manager] Loading object translations...");
 
             List<LanguageDataObject> lngObjs = new();
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageArea>());
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageGameObject>());
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageNPC>());
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageZone>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageAreas>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageGameObjects>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageGameNpcs>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageZones>());
 
             foreach (LanguageDataObject lngObj in lngObjs)
                 RegisterLanguageDataObject(lngObj);
@@ -409,7 +409,7 @@ namespace DOL.Language
         #endregion Initialization
 
         #region GetLanguageDataObject
-        public static LanguageDataObject GetLanguageDataObject(string language, string translationId, LanguageDataObject.eTranslationIdentifier translationIdentifier)
+        public static LanguageDataObject GetLanguageDataObject(string language, string translationId, ETranslationIdentifier translationIdentifier)
         {
             if (Util.IsEmpty(translationId))
                 return null;

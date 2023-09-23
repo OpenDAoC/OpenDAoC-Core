@@ -37,7 +37,7 @@ namespace DOL.GS.DailyQuest
 		{
 		}
 
-		public HardcoreKillNPCInFrontiersHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public HardcoreKillNPCInFrontiersHib(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

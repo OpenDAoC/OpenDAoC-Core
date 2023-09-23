@@ -18,11 +18,11 @@ namespace DOL.GS.Spells
 		public SummonWoodSpellHandler(GameLiving caster, Spell spell, SpellLine line)
 			: base(caster, spell, line)
 		{
-			ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>("mysticwood_wooden_boards");
+			DbItemTemplates template = GameServer.Database.FindObjectByKey<DbItemTemplates>("mysticwood_wooden_boards");
 			if (template != null)
 			{
                 items.Add(GameInventoryItem.Create(template));
-                foreach (InventoryItem item in items)
+                foreach (DbInventoryItems item in items)
                 {
                     if (item.IsStackable)
                     {
@@ -60,7 +60,7 @@ namespace DOL.GS.Spells
 			font.Owner = (GamePlayer)caster;
 
 			// Construct the font spell
-			dbs = new DBSpell();
+			dbs = new DbSpells();
 			dbs.Name = spell.Name;
 			dbs.Icon = 7312;
 			dbs.ClientEffect = 7312;
@@ -133,7 +133,7 @@ namespace DOL.GS.Spells
 			mine.Owner = (GamePlayer)caster;
 
 			// Construct the mine spell
-			dbs = new DBSpell();
+			dbs = new DbSpells();
 			dbs.Name = spell.Name;
 			dbs.Icon = 7313;
 			dbs.ClientEffect = 7313;
@@ -184,7 +184,7 @@ namespace DOL.GS.Spells
 			font.Owner = (GamePlayer)caster;
 
 			// Construct the mine spell
-			dbs = new DBSpell();
+			dbs = new DbSpells();
 			dbs.Name = spell.Name;
 			dbs.Icon = 7237;
 			dbs.ClientEffect = 7237;
@@ -250,11 +250,11 @@ namespace DOL.GS.Spells
 					ammo = "mystic_ammo_cold";
 					break;
 			}
-			ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(ammo);
+			DbItemTemplates template = GameServer.Database.FindObjectByKey<DbItemTemplates>(ammo);
 			if (template != null)
 			{
                 items.Add(GameInventoryItem.Create(template));
-                foreach (InventoryItem item in items)
+                foreach (DbInventoryItems item in items)
                 {
                     if (item.IsStackable)
                     {
@@ -414,7 +414,7 @@ namespace DOL.GS.Spells
 			mine.Owner = (GamePlayer)caster;
 
 			// Construct the mine spell
-			dbs = new DBSpell();
+			dbs = new DbSpells();
 			dbs.Name = spell.Name;
 			dbs.Icon = 7255;
 			dbs.ClientEffect = 7255;

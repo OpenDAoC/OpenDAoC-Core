@@ -36,7 +36,7 @@ namespace DOL.GS
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public SelfCraftWindow(GamePlayer owner, InventoryItem item)
+		public SelfCraftWindow(GamePlayer owner, DbInventoryItems item)
 		{
 			if (owner == null)
 				throw new ArgumentNullException("owner");
@@ -187,7 +187,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="itemForTrade">InventoryItem to add</param>
 		/// <returns>true if added</returns>
-		public bool AddItemToTrade(InventoryItem itemForTrade)
+		public bool AddItemToTrade(DbInventoryItems itemForTrade)
 		{
 			lock(Sync)
 			{
@@ -220,7 +220,7 @@ namespace DOL.GS
 		/// Removes an item from the tradewindow
 		/// </summary>
 		/// <param name="itemToRemove"></param>
-		public void RemoveItemToTrade(InventoryItem itemToRemove)
+		public void RemoveItemToTrade(DbInventoryItems itemToRemove)
 		{
 			if (itemToRemove == null)
 				return;
@@ -247,7 +247,7 @@ namespace DOL.GS
 						log.Error("Changes count is less than 0, forgot to add m_changesCount++?\n\n" + Environment.StackTrace);
 				}
 
-				InventoryItem itemToCombine = (InventoryItem)PartnerTradeItems[0];
+				DbInventoryItems itemToCombine = (DbInventoryItems)PartnerTradeItems[0];
                 // --------------------------------------------------------------
                 // Luhz Crafting Update:
                 // Players may now have any, and all, "primary" crafting skills.
@@ -255,7 +255,7 @@ namespace DOL.GS
                 AbstractCraftingSkill skill = null;
                 lock (m_owner.TradeWindow.Sync)
                 {
-                    foreach (InventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
+                    foreach (DbInventoryItems i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
                         if (i.Object_Type == (int)eObjectType.AlchemyTincture)
                         {
@@ -309,7 +309,7 @@ namespace DOL.GS
                 AbstractCraftingSkill skill = null;
                 lock (m_owner.TradeWindow.Sync)
                 {
-                    foreach (InventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
+                    foreach (DbInventoryItems i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
                         if (i.Object_Type == (int)eObjectType.AlchemyTincture)
                         {

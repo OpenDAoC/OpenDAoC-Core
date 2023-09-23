@@ -59,8 +59,8 @@ namespace DOL.GS.PacketHandler
 				}
 				else
 				{
-					Dictionary<int, DOLCharacters> charsBySlot = new Dictionary<int, DOLCharacters>();
-					foreach (DOLCharacters c in m_gameClient.Account.Characters)
+					Dictionary<int, DbCoreCharacters> charsBySlot = new Dictionary<int, DbCoreCharacters>();
+					foreach (DbCoreCharacters c in m_gameClient.Account.Characters)
 					{
 						try
 						{
@@ -71,20 +71,20 @@ namespace DOL.GS.PacketHandler
 							log.Error("SendCharacterOverview - Duplicate char in slot? Slot: " + c.AccountSlot + ", Account: " + c.AccountName, ex);
 						}
 					}
-					var itemsByOwnerID = new Dictionary<string, Dictionary<eInventorySlot, InventoryItem>>();
+					var itemsByOwnerID = new Dictionary<string, Dictionary<eInventorySlot, DbInventoryItems>>();
 
 					if (charsBySlot.Any())
 					{
 						var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.MinEquipable)
 							.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.MaxEquipable));
-						var allItems = DOLDB<InventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
+						var allItems = DOLDB<DbInventoryItems>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
 
-						foreach (InventoryItem item in allItems)
+						foreach (DbInventoryItems item in allItems)
 						{
 							try
 							{
 								if (!itemsByOwnerID.ContainsKey(item.OwnerID))
-									itemsByOwnerID.Add(item.OwnerID, new Dictionary<eInventorySlot, InventoryItem>());
+									itemsByOwnerID.Add(item.OwnerID, new Dictionary<eInventorySlot, DbInventoryItems>());
 
 								itemsByOwnerID[item.OwnerID].Add((eInventorySlot)item.SlotPosition, item);
 							}
@@ -97,23 +97,23 @@ namespace DOL.GS.PacketHandler
 
 					for (int i = firstSlot; i < (firstSlot + 10); i++)
 					{
-						DOLCharacters c = null;
+						DbCoreCharacters c = null;
 						if (!charsBySlot.TryGetValue(i, out c))
 						{
 							pak.Fill(0x0, 188);
 						}
 						else
 						{
-							Dictionary<eInventorySlot, InventoryItem> charItems = null;
+							Dictionary<eInventorySlot, DbInventoryItems> charItems = null;
 
 							if (!itemsByOwnerID.TryGetValue(c.ObjectId, out charItems))
-								charItems = new Dictionary<eInventorySlot, InventoryItem>();
+								charItems = new Dictionary<eInventorySlot, DbInventoryItems>();
 
 							byte extensionTorso = 0;
 							byte extensionGloves = 0;
 							byte extensionBoots = 0;
 
-							InventoryItem item = null;
+							DbInventoryItems item = null;
 
 							if (charItems.TryGetValue(eInventorySlot.TorsoArmor, out item))
 								extensionTorso = item.Extension;
@@ -175,28 +175,28 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)c.Empathy);
 							pak.WriteByte((byte)c.Charisma);
 
-							InventoryItem rightHandWeapon = null;
+							DbInventoryItems rightHandWeapon = null;
 							charItems.TryGetValue(eInventorySlot.RightHandWeapon, out rightHandWeapon);
-							InventoryItem leftHandWeapon = null;
+							DbInventoryItems leftHandWeapon = null;
 							charItems.TryGetValue(eInventorySlot.LeftHandWeapon, out leftHandWeapon);
-							InventoryItem twoHandWeapon = null;
+							DbInventoryItems twoHandWeapon = null;
 							charItems.TryGetValue(eInventorySlot.TwoHandWeapon, out twoHandWeapon);
-							InventoryItem distanceWeapon = null;
+							DbInventoryItems distanceWeapon = null;
 							charItems.TryGetValue(eInventorySlot.DistanceWeapon, out distanceWeapon);
 
-							InventoryItem helmet = null;
+							DbInventoryItems helmet = null;
 							charItems.TryGetValue(eInventorySlot.HeadArmor, out helmet);
-							InventoryItem gloves = null;
+							DbInventoryItems gloves = null;
 							charItems.TryGetValue(eInventorySlot.HandsArmor, out gloves);
-							InventoryItem boots = null;
+							DbInventoryItems boots = null;
 							charItems.TryGetValue(eInventorySlot.FeetArmor, out boots);
-							InventoryItem torso = null;
+							DbInventoryItems torso = null;
 							charItems.TryGetValue(eInventorySlot.TorsoArmor, out torso);
-							InventoryItem cloak = null;
+							DbInventoryItems cloak = null;
 							charItems.TryGetValue(eInventorySlot.Cloak, out cloak);
-							InventoryItem legs = null;
+							DbInventoryItems legs = null;
 							charItems.TryGetValue(eInventorySlot.LegsArmor, out legs);
-							InventoryItem arms = null;
+							DbInventoryItems arms = null;
 							charItems.TryGetValue(eInventorySlot.ArmsArmor, out arms);
 
 							pak.WriteShortLowEndian((ushort)(helmet != null ? helmet.Model : 0));

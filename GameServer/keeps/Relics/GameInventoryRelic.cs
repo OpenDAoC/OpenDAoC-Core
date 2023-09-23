@@ -40,17 +40,17 @@ namespace DOL.GS
 		{
 		}
 
-		public GameInventoryRelic(ItemTemplate template)
+		public GameInventoryRelic(DbItemTemplates template)
 			: base(template)
 		{
 		}
 
-		public GameInventoryRelic(ItemUnique template)
+		public GameInventoryRelic(DbItemUniques template)
 			: base(template)
 		{
 		}
 
-		public GameInventoryRelic(InventoryItem item)
+		public GameInventoryRelic(DbInventoryItems item)
 			: base(item)
 		{
 			OwnerID = item.OwnerID;

@@ -159,7 +159,7 @@ namespace DOL.GS
 				return true;
 			}
 
-			public override void LoadFromDatabase(DBArea area)
+			public override void LoadFromDatabase(DbAreas area)
 			{
 				m_dbArea = area;
                 m_translationId = area.TranslationId;
@@ -315,7 +315,7 @@ namespace DOL.GS
 				return IsContaining(p.X, p.Y, p.Z, checkZ);
 			}
 
-			public override void LoadFromDatabase(DBArea area)
+			public override void LoadFromDatabase(DbAreas area)
 			{
                 m_translationId = area.TranslationId;
 				m_Description = area.Description;
@@ -479,7 +479,7 @@ namespace DOL.GS
                 return inside;
             }
 
-            public override void LoadFromDatabase(DBArea area)
+            public override void LoadFromDatabase(DbAreas area)
             {
                 m_translationId = area.TranslationId;
                 m_Description = area.Description;
@@ -492,7 +492,7 @@ namespace DOL.GS
 
 		public class BindArea : Circle
 		{
-			protected BindPoint m_dbBindPoint;
+			protected DbBindPoints m_dbBindPoint;
 
 			public BindArea()
 				: base()
@@ -500,23 +500,23 @@ namespace DOL.GS
 				m_displayMessage = false;
 			}
 
-			public BindArea(string desc, BindPoint dbBindPoint)
+			public BindArea(string desc, DbBindPoints dbBindPoint)
 				: base(desc, dbBindPoint.X, dbBindPoint.Y, dbBindPoint.Z, dbBindPoint.Radius)
 			{
 				m_dbBindPoint = dbBindPoint;
 				m_displayMessage = false;
 			}
 
-			public BindPoint BindPoint
+			public DbBindPoints BindPoint
 			{
 				get { return m_dbBindPoint; }
 			}
 
-			public override void LoadFromDatabase(DBArea area)
+			public override void LoadFromDatabase(DbAreas area)
 			{
 				base.LoadFromDatabase(area);
 
-				m_dbBindPoint = new BindPoint();
+				m_dbBindPoint = new DbBindPoints();
 				m_dbBindPoint.Radius = (ushort)area.Radius;
 				m_dbBindPoint.X = area.X;
 				m_dbBindPoint.Y = area.Y;

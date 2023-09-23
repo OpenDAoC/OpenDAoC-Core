@@ -700,10 +700,10 @@ namespace DOL.GS.PacketHandler
 		void SendGroupWindowUpdate();
 		void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living);
 		void SendGroupMembersUpdate(bool updateIcons, bool updateMap);
-		void SendInventoryItemsUpdate(ICollection<InventoryItem> itemsToUpdate);
+		void SendInventoryItemsUpdate(ICollection<DbInventoryItems> itemsToUpdate);
 		void SendInventorySlotsUpdate(ICollection<int> slots);
-		void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<InventoryItem> itemsToUpdate);
-		void SendInventoryItemsUpdate(IDictionary<int, InventoryItem> updateItems, eInventoryWindowType windowType);
+		void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItems> itemsToUpdate);
+		void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItems> updateItems, eInventoryWindowType windowType);
 		void SendDoorState(Region region, GameDoorBase door);
 		void SendMerchantWindow(MerchantTradeItems itemlist, eMerchantWindowType windowType);
 		void SendTradeWindow();
@@ -787,7 +787,7 @@ namespace DOL.GS.PacketHandler
 		void SendHousePayRentDialog(string title);
 		void SendToggleHousePoints(House house);
 		void SendRentReminder(House house);
-		void SendMarketExplorerWindow(IList<InventoryItem> items, byte page, byte maxpage);
+		void SendMarketExplorerWindow(IList<DbInventoryItems> items, byte page, byte maxpage);
 		void SendMarketExplorerWindow();
 		void SendConsignmentMerchantMoney(long money);
 		void SendHouseUsersPermissions(House house);

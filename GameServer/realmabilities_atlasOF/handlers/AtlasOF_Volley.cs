@@ -233,6 +233,6 @@ namespace DOL.GS.RealmAbilities
             list.Add("Range: Minimum 66% of player range.");
         }
 
-        public AtlasOF_Volley(DBAbility ability, int level) : base(ability, level) { }
+        public AtlasOF_Volley(DbAbilities ability, int level) : base(ability, level) { }
     }
 }

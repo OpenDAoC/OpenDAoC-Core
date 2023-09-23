@@ -45,7 +45,7 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 		}
 
-		public ThidKeepCaptureAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public ThidKeepCaptureAlb(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

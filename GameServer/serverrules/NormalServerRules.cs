@@ -228,7 +228,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player"></param>
 		/// <param name="point"></param>
 		/// <returns></returns>
-		public override bool IsAllowedToBind(GamePlayer player, BindPoint point)
+		public override bool IsAllowedToBind(GamePlayer player, DbBindPoints point)
 		{
 			if (point.Realm == 0) return true;
 			return player.Realm == (eRealm)point.Realm;
@@ -240,7 +240,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public override bool IsAllowedToCraft(GamePlayer player, ItemTemplate item)
+		public override bool IsAllowedToCraft(GamePlayer player, DbItemTemplates item)
 		{
 			return player.Realm == (eRealm)item.Realm || (item.Realm == 0 && ServerProperties.Properties.ALLOW_CRAFT_NOREALM_ITEMS);
 		}

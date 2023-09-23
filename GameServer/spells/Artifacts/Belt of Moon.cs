@@ -29,8 +29,8 @@ namespace DOL.GS.Spells
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private ItemTemplate m_MoonMace;
-        private ItemTemplate m_MoonStaff;
+		private DbItemTemplates m_MoonMace;
+        private DbItemTemplates m_MoonStaff;
     
         public BeltOfMoon(GameLiving caster, Spell spell, SpellLine line)
 			: base(caster, spell, line)
@@ -39,30 +39,30 @@ namespace DOL.GS.Spells
             {
                 if (caster.Realm == eRealm.Albion)
                 {
-                    m_MoonMace = GameServer.Database.FindObjectByKey<ItemTemplate>("Moon_Mace") ?? Mace;
+                    m_MoonMace = GameServer.Database.FindObjectByKey<DbItemTemplates>("Moon_Mace") ?? Mace;
                     items.Add(GameInventoryItem.Create(m_MoonMace));
 
-                    m_MoonStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Moon_Staff") ?? Staff;
+                    m_MoonStaff = GameServer.Database.FindObjectByKey<DbItemTemplates>("Moon_Staff") ?? Staff;
                     items.Add(GameInventoryItem.Create(m_MoonStaff));
                     return;
                 }
 
                 if (caster.Realm == eRealm.Midgard)
                 {
-                    m_MoonMace = GameServer.Database.FindObjectByKey<ItemTemplate>("Moon_MaceM") ?? MaceM;
+                    m_MoonMace = GameServer.Database.FindObjectByKey<DbItemTemplates>("Moon_MaceM") ?? MaceM;
                     items.Add(GameInventoryItem.Create(m_MoonMace));
 
-                    m_MoonStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Moon_Staff") ?? Staff;
+                    m_MoonStaff = GameServer.Database.FindObjectByKey<DbItemTemplates>("Moon_Staff") ?? Staff;
                     items.Add(GameInventoryItem.Create(m_MoonStaff));
                     return;
                 }
 
                 if (caster.Realm == eRealm.Hibernia)
                 {
-                    m_MoonMace = GameServer.Database.FindObjectByKey<ItemTemplate>("Moon_MaceH") ?? MaceH;
+                    m_MoonMace = GameServer.Database.FindObjectByKey<DbItemTemplates>("Moon_MaceH") ?? MaceH;
                     items.Add(GameInventoryItem.Create(m_MoonMace));
 
-                    m_MoonStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Moon_Staff") ?? Staff;
+                    m_MoonStaff = GameServer.Database.FindObjectByKey<DbItemTemplates>("Moon_Staff") ?? Staff;
                     items.Add(GameInventoryItem.Create(m_MoonStaff));
                     return;
                 }
@@ -76,15 +76,15 @@ namespace DOL.GS.Spells
         }
 
         #region Moon Mace
-        private ItemTemplate Mace
+        private DbItemTemplates Mace
 		{
 			get
 			{
-				m_MoonMace = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Moon_Mace");
+				m_MoonMace = (DbItemTemplates)GameServer.Database.FindObjectByKey<DbItemTemplates>("Moon_Mace");
 				if (m_MoonMace == null)
 				{
 					if (log.IsWarnEnabled) log.Warn("Could not find Moon_Mace, loading it ...");
-					m_MoonMace = new ItemTemplate();
+					m_MoonMace = new DbItemTemplates();
                     m_MoonMace.Id_nb = "Moon_Mace";
                     m_MoonMace.Name = "Moon Mace";
 					m_MoonMace.Level = 50;
@@ -124,15 +124,15 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		private ItemTemplate MaceM
+		private DbItemTemplates MaceM
 		{
             get
             {
-                m_MoonMace = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Moon_Mace");
+                m_MoonMace = (DbItemTemplates)GameServer.Database.FindObjectByKey<DbItemTemplates>("Moon_Mace");
                 if (m_MoonMace == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Moon_Mace, loading it ...");
-                    m_MoonMace = new ItemTemplate();
+                    m_MoonMace = new DbItemTemplates();
                     m_MoonMace.Id_nb = "Moon_Mace";
                     m_MoonMace.Name = "Moon Warhammer";
                     m_MoonMace.Level = 50;
@@ -172,15 +172,15 @@ namespace DOL.GS.Spells
             }
 		}
 
-		private ItemTemplate MaceH
+		private DbItemTemplates MaceH
 		{
             get
             {
-                m_MoonMace = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Moon_Mace");
+                m_MoonMace = (DbItemTemplates)GameServer.Database.FindObjectByKey<DbItemTemplates>("Moon_Mace");
                 if (m_MoonMace == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Moon_Mace, loading it ...");
-                    m_MoonMace = new ItemTemplate();
+                    m_MoonMace = new DbItemTemplates();
                     m_MoonMace.Id_nb = "Moon_Mace";
                     m_MoonMace.Name = "Moon Hammer";
                     m_MoonMace.Level = 50;
@@ -222,15 +222,15 @@ namespace DOL.GS.Spells
         #endregion End of Moon Mace
 
         #region Moon Staff
-        private ItemTemplate Staff
+        private DbItemTemplates Staff
         {
             get
             {
-                m_MoonStaff = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Moon_Staff");
+                m_MoonStaff = (DbItemTemplates)GameServer.Database.FindObjectByKey<DbItemTemplates>("Moon_Staff");
                 if (m_MoonStaff == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Moon_Staff, loading it ...");
-                    m_MoonStaff = new ItemTemplate();
+                    m_MoonStaff = new DbItemTemplates();
                     m_MoonStaff.Id_nb = "Moon_Staff";
                     m_MoonStaff.Name = "Moon Staff";
                     m_MoonStaff.Level = 50;
@@ -290,7 +290,7 @@ namespace DOL.GS.Spells
 			lock (player.Inventory)
 			{
                 var items = player.Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
-				foreach (InventoryItem invItem in items)
+				foreach (DbInventoryItems invItem in items)
 				{
                     if (player.CurrentRegion.IsNightTime)
                     {
@@ -325,7 +325,7 @@ namespace DOL.GS.Spells
 			lock (player.Inventory)
 			{
                 var items = player.Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
-				foreach (InventoryItem invItem in items)
+				foreach (DbInventoryItems invItem in items)
 				{
                     if (invItem.Id_nb.Equals("Moon_Mace"))
 						player.Inventory.RemoveItem(invItem);

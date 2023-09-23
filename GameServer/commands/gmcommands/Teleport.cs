@@ -112,7 +112,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            Teleport teleport = new Teleport();
+            DbTeleports teleport = new DbTeleports();
             teleport.TeleportID = teleportID;
             teleport.Realm = (int)realm;
             teleport.RegionID = player.CurrentRegion.ID;

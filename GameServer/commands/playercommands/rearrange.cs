@@ -228,7 +228,7 @@ namespace DOL.GS.Commands
                 }
             }
 
-            foreach (DOLCharacters character in client.Account.Characters)
+            foreach (DbCoreCharacters character in client.Account.Characters)
             {
                 if (slots.ContainsKey(character.AccountSlot))
                     slots[character.AccountSlot] = character.Name;
@@ -252,10 +252,10 @@ namespace DOL.GS.Commands
         #region SetSlot
         private void SetSlot(GameClient client, int sourceSlot, int targetSlot)
         {
-            DOLCharacters source = null;
-            DOLCharacters target = null;
+            DbCoreCharacters source = null;
+            DbCoreCharacters target = null;
 
-            foreach (DOLCharacters character in client.Account.Characters)
+            foreach (DbCoreCharacters character in client.Account.Characters)
             {
                 if (source == null)
                 {
@@ -281,14 +281,14 @@ namespace DOL.GS.Commands
 
             // It's important that we create a backup of each character before we start. If an error
             // occurs and / or the server crashes, we always have an character backup.
-            DOLCharactersBackup sourceBackup = new DOLCharactersBackup(source);
+            DbCoreCharacterBackups sourceBackup = new DbCoreCharacterBackups(source);
             sourceBackup.DOLCharacters_ID += "-Rearranged"; // Easier for admins to find it.
             GameServer.Database.AddObject(sourceBackup);
 
-            DOLCharactersBackup targetBackup = null;
+            DbCoreCharacterBackups targetBackup = null;
             if (target != null)
             {
-                targetBackup = new DOLCharactersBackup(target);
+                targetBackup = new DbCoreCharacterBackups(target);
                 targetBackup.DOLCharacters_ID += "-Rearranged"; // Easier for admins to find it.
                 GameServer.Database.AddObject(targetBackup);
             }

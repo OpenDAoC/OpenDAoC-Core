@@ -26,14 +26,14 @@ namespace DOL.GS.Quests.Albion
         private static GameNPC _lynett = null;
         private static GameNPC _don = null;
 
-        private static ItemTemplate _wolfPeltCloak = null;
-        private static ItemTemplate _wolfFur = null;
-        private static ItemTemplate _wolfHeadToken = null;
+        private static DbItemTemplates _wolfPeltCloak = null;
+        private static DbItemTemplates _wolfFur = null;
+        private static DbItemTemplates _wolfHeadToken = null;
 
         public WolfPeltCloak() : base() { }
         public WolfPeltCloak(GamePlayer questingPlayer) : this(questingPlayer, 1) { }
         public WolfPeltCloak(GamePlayer questingPlayer, int step) : base(questingPlayer, step) { }
-        public WolfPeltCloak(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest) { }
+        public WolfPeltCloak(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest) { }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -74,20 +74,20 @@ namespace DOL.GS.Quests.Albion
                 _don = gameNpcQuery[0];
             }
 
-            _wolfPeltCloak = GameServer.Database.FindObjectByKey<ItemTemplate>(wolfPeltCloak);
+            _wolfPeltCloak = GameServer.Database.FindObjectByKey<DbItemTemplates>(wolfPeltCloak);
             if (_wolfPeltCloak == null)
             {
                 _logReasonQuestCantBeImplemented(wolfPeltCloak);
                 return;
             }
-            _wolfFur = GameServer.Database.FindObjectByKey<ItemTemplate>(wolfFur);
+            _wolfFur = GameServer.Database.FindObjectByKey<DbItemTemplates>(wolfFur);
             if (_wolfFur == null)
             {
                 _logReasonQuestCantBeImplemented(wolfFur);
                 return;
             }
 
-            _wolfHeadToken = GameServer.Database.FindObjectByKey<ItemTemplate>(wolfHeadToken);
+            _wolfHeadToken = GameServer.Database.FindObjectByKey<DbItemTemplates>(wolfHeadToken);
             if (_wolfHeadToken == null)
             {
                 _logReasonQuestCantBeImplemented(wolfHeadToken);

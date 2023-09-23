@@ -50,7 +50,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 		{
 		}
 
-		public FrontiersMonthlyQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public FrontiersMonthlyQuestAlb(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

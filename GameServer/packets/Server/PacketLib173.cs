@@ -281,8 +281,8 @@ namespace DOL.GS.PacketHandler
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview)))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
-				IList<InventoryItem> items;
-				DOLCharacters[] characters = m_gameClient.Account.Characters;
+				IList<DbInventoryItems> items;
+				DbCoreCharacters[] characters = m_gameClient.Account.Characters;
 				if (characters == null)
 				{
 					pak.Fill(0x0, 1840);
@@ -296,11 +296,11 @@ namespace DOL.GS.PacketHandler
 							if (characters[j].AccountSlot == i)
 							{
 								pak.FillString(characters[j].Name, 24);
-								items = DOLDB<InventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
+								items = DOLDB<DbInventoryItems>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
 								byte ExtensionTorso = 0;
 								byte ExtensionGloves = 0;
 								byte ExtensionBoots = 0;
-								foreach (InventoryItem item in items)
+								foreach (DbInventoryItems item in items)
 								{
 									switch (item.SlotPosition)
 									{
@@ -372,7 +372,7 @@ namespace DOL.GS.PacketHandler
 								for (int k = 0x15; k < 0x1D; k++)
 								{
 									found = 0;
-									foreach (InventoryItem item in items)
+									foreach (DbInventoryItems item in items)
 									{
 										if (item.SlotPosition == k && found == 0)
 										{
@@ -394,7 +394,7 @@ namespace DOL.GS.PacketHandler
 										l = k;
 
 									found = 0;
-									foreach (InventoryItem item in items)
+									foreach (DbInventoryItems item in items)
 									{
 										if (item.SlotPosition == l && found == 0)
 										{
@@ -412,7 +412,7 @@ namespace DOL.GS.PacketHandler
 								for (int k = 0x0A; k < 0x0E; k++)
 								{
 									found = 0;
-									foreach (InventoryItem item in items)
+									foreach (DbInventoryItems item in items)
 									{
 										if (item.SlotPosition == k && found == 0)
 										{
@@ -437,7 +437,7 @@ namespace DOL.GS.PacketHandler
 								{
 									byte righthand = 0xFF;
 									byte lefthand = 0xFF;
-									foreach (InventoryItem item in items)
+									foreach (DbInventoryItems item in items)
 									{
 										if (item.SlotPosition == (int)eInventorySlot.RightHandWeapon)
 											righthand = 0x00;
@@ -683,12 +683,12 @@ namespace DOL.GS.PacketHandler
 	            LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, siegeWeapon);
 	            if (translation != null)
 	            {
-	                if (!Util.IsEmpty(((DBLanguageNPC)translation).Name))
-	                    name = ((DBLanguageNPC)translation).Name;
+	                if (!Util.IsEmpty(((DbLanguageGameNpcs)translation).Name))
+	                    name = ((DbLanguageGameNpcs)translation).Name;
 	            }
 
 	            pak.WritePascalString(name + " (" + siegeWeapon.CurrentState.ToString() + ")");
-				foreach (InventoryItem item in siegeWeapon.Ammo)
+				foreach (DbInventoryItems item in siegeWeapon.Ammo)
 				{
 					pak.WriteByte((byte)item.SlotPosition);
 					if (item == null)

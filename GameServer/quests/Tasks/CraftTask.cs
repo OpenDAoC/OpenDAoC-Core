@@ -50,7 +50,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="taskPlayer">The player doing the task</param>
 		/// <param name="dbTask">The database object</param>
-		public CraftTask(GamePlayer taskPlayer, DBTask dbTask)
+		public CraftTask(GamePlayer taskPlayer, DbTasks dbTask)
 			: base(taskPlayer, dbTask)
 		{
 		}
@@ -135,7 +135,7 @@ namespace DOL.GS.Quests
 			{
 				GiveItemEventArgs gArgs = (GiveItemEventArgs)args;
 				GameLiving target = gArgs.Target as GameLiving;
-				InventoryItem item = gArgs.Item;
+				DbInventoryItems item = gArgs.Item;
 
 				if (player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
 				{
@@ -151,17 +151,17 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="player">Level of Generated Item</param>
 		/// <returns>A Generated NPC Item</returns>
-		public static ItemTemplate GenerateNPCItem(GamePlayer player)
+		public static DbItemTemplates GenerateNPCItem(GamePlayer player)
 		{
 			int mediumCraftingLevel = player.GetCraftingSkillValue(player.CraftingPrimarySkill) + 20;
 			int lowLevel = mediumCraftingLevel - 20;
 			int highLevel = mediumCraftingLevel + 20;
 
-			var craftitem = DOLDB<DBCraftedItem>.SelectObjects(DB.Column("CraftingSkillType").IsEqualTo((int)player.CraftingPrimarySkill)
+			var craftitem = DOLDB<DbCraftedItems>.SelectObjects(DB.Column("CraftingSkillType").IsEqualTo((int)player.CraftingPrimarySkill)
 				.And(DB.Column("CraftingLevel").IsGreatherThan(lowLevel).And(DB.Column("CraftingLevel").IsLessThan(highLevel))));
 			int craftrnd = Util.Random(craftitem.Count);
 
-			ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(craftitem[craftrnd].Id_nb);
+			DbItemTemplates template = GameServer.Database.FindObjectByKey<DbItemTemplates>(craftitem[craftrnd].Id_nb);
 			return template;
 		}
 
@@ -182,7 +182,7 @@ namespace DOL.GS.Quests
 				return false;
 			}
 
-			ItemTemplate taskItem = GenerateNPCItem(player);
+			DbItemTemplates taskItem = GenerateNPCItem(player);
 
 			if (taskItem == null)
 			{

@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 
     public class AtlasOF_Vanish : TimedRealmAbility
     {
-        public AtlasOF_Vanish(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_Vanish(DbAbilities dba, int level) : base(dba, level) { }
         
         int m_duration = 30000; // 30s
 
@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
         
         private SpellHandler CreateSpell(GameLiving owner)
         {
-            DBSpell tmpSpell = new DBSpell();
+            DbSpells tmpSpell = new DbSpells();
             tmpSpell.Name = "Vanish";
             tmpSpell.Icon = 4280;
             tmpSpell.ClientEffect = 3019;

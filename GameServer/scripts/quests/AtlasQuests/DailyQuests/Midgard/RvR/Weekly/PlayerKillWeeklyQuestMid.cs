@@ -46,7 +46,7 @@ namespace DOL.GS.WeeklyQuests.Midgard
 		{
 		}
 
-		public PlayerKillWeeklyQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public PlayerKillWeeklyQuestMid(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

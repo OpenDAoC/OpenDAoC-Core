@@ -245,7 +245,7 @@ namespace DOL.GS.Commands
 					{
 						mob.RemoveFromWorld();
 
-						Mob mobs = GameServer.Database.FindObjectByKey<Mob>(mob.InternalID);
+						DbMobs mobs = GameServer.Database.FindObjectByKey<DbMobs>(mob.InternalID);
 						if (mobs != null)
 						{
 							mob.LoadFromDatabase(mobs);
@@ -266,7 +266,7 @@ namespace DOL.GS.Commands
 						{
 							mob.RemoveFromWorld();
 
-							Mob mobs = GameServer.Database.FindObjectByKey<Mob>(mob.InternalID);
+							DbMobs mobs = GameServer.Database.FindObjectByKey<DbMobs>(mob.InternalID);
 							if (mobs != null)
 							{
 								mob.LoadFromDatabase(mobs);
@@ -282,7 +282,7 @@ namespace DOL.GS.Commands
 						{
 							mob.RemoveFromWorld();
 
-							Mob mobs = GameServer.Database.FindObjectByKey<Mob>(mob.InternalID);
+							DbMobs mobs = GameServer.Database.FindObjectByKey<DbMobs>(mob.InternalID);
 							if (mobs != null)
 							{
 								mob.LoadFromDatabase(mobs);
@@ -298,7 +298,7 @@ namespace DOL.GS.Commands
 						{
 							mob.RemoveFromWorld();
 
-							WorldObject mobs = GameServer.Database.FindObjectByKey<WorldObject>(mob.InternalID);
+							DbWorldObjects mobs = GameServer.Database.FindObjectByKey<DbWorldObjects>(mob.InternalID);
 							if (mobs != null)
 							{
 								mob.LoadFromDatabase(mobs);
@@ -329,7 +329,7 @@ namespace DOL.GS.Commands
 					{
 						staticItem.RemoveFromWorld();
 
-						WorldObject obj = GameServer.Database.FindObjectByKey<WorldObject>(staticItem.InternalID);
+						DbWorldObjects obj = GameServer.Database.FindObjectByKey<DbWorldObjects>(staticItem.InternalID);
 						if (obj != null)
 						{
 							staticItem.LoadFromDatabase(obj);
@@ -349,7 +349,7 @@ namespace DOL.GS.Commands
 						{
 							staticItem.RemoveFromWorld();
 
-							WorldObject obj = GameServer.Database.FindObjectByKey<WorldObject>(staticItem.InternalID);
+							DbWorldObjects obj = GameServer.Database.FindObjectByKey<DbWorldObjects>(staticItem.InternalID);
 							if (obj != null)
 							{
 								staticItem.LoadFromDatabase(obj);
@@ -364,7 +364,7 @@ namespace DOL.GS.Commands
 						{
 							staticItem.RemoveFromWorld();
 
-							WorldObject obj = GameServer.Database.FindObjectByKey<WorldObject>(staticItem.InternalID);
+							DbWorldObjects obj = GameServer.Database.FindObjectByKey<DbWorldObjects>(staticItem.InternalID);
 							if (obj != null)
 							{
 								staticItem.LoadFromDatabase(obj);
@@ -379,7 +379,7 @@ namespace DOL.GS.Commands
 						{
 							staticItem.RemoveFromWorld();
 
-							WorldObject obj = GameServer.Database.FindObjectByKey<WorldObject>(staticItem.InternalID);
+							DbWorldObjects obj = GameServer.Database.FindObjectByKey<DbWorldObjects>(staticItem.InternalID);
 							if (obj != null)
 							{
 								staticItem.LoadFromDatabase(obj);

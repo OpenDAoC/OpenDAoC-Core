@@ -54,8 +54,8 @@ namespace DOL.Tests.Integration.Server
 		testRegionData.DivingEnabled = false;
 		testRegionData.HousingEnabled = false;
 		testRegionData.Expansion = (int)eClientExpansion.None;
-		testRegionData.Mobs = new DOL.Database.Mob[]{
-			new DOL.Database.Mob() {},
+		testRegionData.Mobs = new DOL.Database.DbMobs[]{
+			new DOL.Database.DbMobs() {},
 		};
 
 		var testZoneData = new ZoneData(){

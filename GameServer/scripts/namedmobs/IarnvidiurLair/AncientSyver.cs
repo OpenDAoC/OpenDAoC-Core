@@ -50,7 +50,7 @@ namespace DOL.GS
 			}
 			base.OnAttackEnemy(ad);
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItems weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -96,7 +96,7 @@ namespace DOL.GS
 			{
 				if (m_SyverDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 2;
@@ -218,7 +218,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Syver_Str_Debuff == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 30;
@@ -247,7 +247,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_SyverDisease == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
@@ -281,7 +281,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Syver_Haste_Buff == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 35;

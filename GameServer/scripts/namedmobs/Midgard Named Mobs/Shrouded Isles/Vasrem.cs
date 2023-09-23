@@ -26,7 +26,7 @@ namespace DOL.GS
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItems weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -156,7 +156,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Vasrem_Lifetap == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 4;
 					spell.RecastDelay = 0;
@@ -184,7 +184,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_VasremSCDebuff == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 60;
@@ -213,7 +213,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_VasremDebuffDQ == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 60;

@@ -29,12 +29,12 @@ namespace DOL.GS.Scripts
             
             TurnTo(player, 500);
 
-            DOLCharacters[] chars = GameServer.Database.SelectObjects<DOLCharacters>(DB.Column("RealmPoints").IsGreatherThan(0).And(DB.Column("RealmPoints").IsLessThan(70000000))).OrderByDescending(x => x.RealmPoints).Take(25).ToArray();
+            DbCoreCharacters[] chars = GameServer.Database.SelectObjects<DbCoreCharacters>(DB.Column("RealmPoints").IsGreatherThan(0).And(DB.Column("RealmPoints").IsLessThan(70000000))).OrderByDescending(x => x.RealmPoints).Take(25).ToArray();
             List<string> list = new List<string>();
             
             list.Add("Top 25 Highest Realm Points:\n\n");
             int count = 1;
-            foreach (DOLCharacters chr in chars)
+            foreach (DbCoreCharacters chr in chars)
             {
                 var realm = "";
                 

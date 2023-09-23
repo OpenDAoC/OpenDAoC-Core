@@ -216,7 +216,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_FireGroundDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = Util.Random(10,15);
@@ -296,7 +296,7 @@ namespace DOL.GS
 				default: return 25;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItems weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 70;
 		}

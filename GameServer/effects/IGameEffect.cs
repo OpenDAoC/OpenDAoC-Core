@@ -63,6 +63,6 @@ namespace DOL.GS.Effects
 		/// Get the save effect
 		/// </summary>
 		/// <returns></returns>
-		PlayerXEffect getSavedEffect();
+		DbPlayerXEffect getSavedEffect();
 	}
 }

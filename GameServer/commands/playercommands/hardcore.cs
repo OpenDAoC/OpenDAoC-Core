@@ -46,7 +46,7 @@ namespace DOL.GS.GameEvents
             
             if (player.DeathCount > 0 && player.HCFlag)
             {
-                DOLCharacters cha = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
+                DbCoreCharacters cha = DOLDB<DbCoreCharacters>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
                 if (cha != null)
                 {
                     Log.Warn("[HARDCORE] player " + player.Name + " has " + player.DeathCount + " deaths and has been removed from the database.");
@@ -183,11 +183,11 @@ namespace DOL.GS.Commands
         {
             IList<string> output = new List<string>();
             IList<HCCharacter> hcCharacters = new List<HCCharacter>();
-            IList<DOLCharacters> characters = GameServer.Database.SelectObjects<DOLCharacters>(DB.Column("HCFlag").IsEqualTo(1)).OrderByDescending(x => x.Level).Take(50).ToList();
+            IList<DbCoreCharacters> characters = GameServer.Database.SelectObjects<DbCoreCharacters>(DB.Column("HCFlag").IsEqualTo(1)).OrderByDescending(x => x.Level).Take(50).ToList();
             
             output.Add("Top 50 Hardcore characters:\n");
             
-            foreach (DOLCharacters c in characters)
+            foreach (DbCoreCharacters c in characters)
             {
                 if (c == null)
                     continue;
@@ -196,7 +196,7 @@ namespace DOL.GS.Commands
                 bool isSolo = false;
                 
                 const string customKey = "grouped_char";
-                var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(c.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                var hasGrouped = DOLDB<DbCoreCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(c.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
                 if (hasGrouped == null || c.NoHelp)
                 {
@@ -274,7 +274,7 @@ namespace DOL.GS.PlayerTitles
         public override bool IsSuitable(GamePlayer player)
         {
             const string customKey2 = "solo_to_50";
-            var solo_to_50 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
+            var solo_to_50 = DOLDB<DbCoreCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
             
             return (player.HCFlag || player.HCCompleted) && (player.NoHelp || solo_to_50 != null);
         }

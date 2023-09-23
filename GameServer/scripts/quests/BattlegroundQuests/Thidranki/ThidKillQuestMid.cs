@@ -45,7 +45,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 		}
 
-		public ThidKillQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public ThidKillQuestMid(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

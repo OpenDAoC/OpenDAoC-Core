@@ -36,9 +36,9 @@ namespace DOL.GS
 		/// 1:n Mapping between Moblevel and LootTemplate
 		/// </summary>
 
-		protected static ItemTemplate[][] m_itemTemplatesAlb = new ItemTemplate[LEVEL_SIZE + 1][];
-		protected static ItemTemplate[][] m_itemTemplatesMid = new ItemTemplate[LEVEL_SIZE + 1][];
-		protected static ItemTemplate[][] m_itemTemplatesHib = new ItemTemplate[LEVEL_SIZE + 1][];
+		protected static DbItemTemplates[][] m_itemTemplatesAlb = new DbItemTemplates[LEVEL_SIZE + 1][];
+		protected static DbItemTemplates[][] m_itemTemplatesMid = new DbItemTemplates[LEVEL_SIZE + 1][];
+		protected static DbItemTemplates[][] m_itemTemplatesHib = new DbItemTemplates[LEVEL_SIZE + 1][];
 
 		protected const int LEVEL_RANGE = 5; // 
 		protected const int LEVEL_SIZE = 10; // 10*LEVEL_RANGE = up to level 50
@@ -52,7 +52,7 @@ namespace DOL.GS
 
 		static void PreloadItemTemplates()
 		{
-			IList<ItemTemplate> itemTemplates = null;
+			IList<DbItemTemplates> itemTemplates = null;
 
 			for (int i = 0; i <= LEVEL_SIZE; i++)
 			{
@@ -61,7 +61,7 @@ namespace DOL.GS
 					var filterLevel = DB.Column("Level").IsGreaterOrEqualTo(i * LEVEL_RANGE).And(DB.Column("Level").IsLessOrEqualTo((i + 1) * LEVEL_RANGE));
 					var filterByFlags = DB.Column("IsPickable").IsEqualTo(1).And(DB.Column("IsDropable").IsEqualTo(1)).And(DB.Column("CanDropAsLoot").IsEqualTo(1));
 					var filterBySlot = DB.Column("Item_Type").IsGreaterOrEqualTo((int)eInventorySlot.MinEquipable).And(DB.Column("Item_Type").IsLessOrEqualTo((int)eInventorySlot.MaxEquipable));
-					itemTemplates = DOLDB<ItemTemplate>.SelectObjects(filterLevel.And(filterByFlags).And(filterBySlot));
+					itemTemplates = DOLDB<DbItemTemplates>.SelectObjects(filterLevel.And(filterByFlags).And(filterBySlot));
 				}
 				catch (Exception e)
 				{
@@ -70,11 +70,11 @@ namespace DOL.GS
 					return;
 				}
 
-				List<ItemTemplate> templatesAlb = new List<ItemTemplate>();
-				List<ItemTemplate> templatesHib = new List<ItemTemplate>();
-				List<ItemTemplate> templatesMid = new List<ItemTemplate>();
+				List<DbItemTemplates> templatesAlb = new List<DbItemTemplates>();
+				List<DbItemTemplates> templatesHib = new List<DbItemTemplates>();
+				List<DbItemTemplates> templatesMid = new List<DbItemTemplates>();
 
-				foreach (ItemTemplate itemTemplate in itemTemplates)
+				foreach (DbItemTemplates itemTemplate in itemTemplates)
 				{
 					switch (itemTemplate.Realm)
 					{
@@ -107,7 +107,7 @@ namespace DOL.GS
 
 			if (Util.Chance(10))
 			{
-				ItemTemplate[] itemTemplates = null;
+				DbItemTemplates[] itemTemplates = null;
 
 				eRealm realm = mob.CurrentZone.Realm;
 
@@ -138,7 +138,7 @@ namespace DOL.GS
 
 				if (itemTemplates != null && itemTemplates.Length > 0)
 				{
-					ItemTemplate itemTemplate = itemTemplates[Util.Random(itemTemplates.Length - 1)];
+					DbItemTemplates itemTemplate = itemTemplates[Util.Random(itemTemplates.Length - 1)];
 					loot.AddFixed(itemTemplate,1);
 				}
 			}

@@ -175,7 +175,7 @@ namespace DOL.GS
 		/// <summary>
 		/// This variable holds the accountdata
 		/// </summary>
-		protected Account m_account;
+		protected DbAccounts m_account;
 
 		/// <summary>
 		/// This variable holds the active charindex
@@ -344,14 +344,14 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the account being used by this client
 		/// </summary>
-		public Account Account
+		public DbAccounts Account
 		{
 			get { return m_account; }
 			set
 			{
 				m_account = value;
 				// Load Custom Params
-				this.InitFromCollection<AccountXCustomParam>(value.CustomParams, param => param.KeyName, param => param.Value);
+				this.InitFromCollection<DbAccountXCustomParam>(value.CustomParams, param => param.KeyName, param => param.Value);
 				GameEventMgr.Notify(GameClientEvent.AccountLoaded, this);
 			}
 		}
@@ -485,7 +485,7 @@ namespace DOL.GS
 			get { return m_customParams; }
 			set
 			{
-				Account.CustomParams = value.SelectMany(kv => kv.Value.Select(val => new AccountXCustomParam(Account.Name, kv.Key, val))).ToArray();
+				Account.CustomParams = value.SelectMany(kv => kv.Value.Select(val => new DbAccountXCustomParam(Account.Name, kv.Key, val))).ToArray();
 				m_customParams = value;
 			}
 		}
@@ -616,7 +616,7 @@ namespace DOL.GS
 		{
 			LoadPlayer(accountindex, Properties.PLAYER_CLASS);
 		} 
-		public void LoadPlayer(DOLCharacters dolChar)
+		public void LoadPlayer(DbCoreCharacters dolChar)
 		{
 			LoadPlayer(dolChar, Properties.PLAYER_CLASS);
 		}
@@ -625,7 +625,7 @@ namespace DOL.GS
 		{
 			// refreshing Account to load any changes from the DB
 			GameServer.Database.FillObjectRelations(m_account);
-			DOLCharacters dolChar = m_account.Characters[accountindex];
+			DbCoreCharacters dolChar = m_account.Characters[accountindex];
 			LoadPlayer(dolChar, playerClass);
 		}
 
@@ -634,7 +634,7 @@ namespace DOL.GS
 		/// Loads a player from the DB
 		/// </summary>
 		/// <param name="accountindex">Index of the character within the account</param>
-		public void LoadPlayer(DOLCharacters dolChar, string playerClass)
+		public void LoadPlayer(DbCoreCharacters dolChar, string playerClass)
 		{
 			m_activeCharIndex = 0;
 			foreach (var ch in Account.Characters)
@@ -701,7 +701,7 @@ namespace DOL.GS
 						//Time playing
 						var connectedtime = DateTime.Now.Subtract(m_account.LastLogin).TotalMinutes;
 						//Lets get our player from DB.
-						var getp = GameServer.Database.FindObjectByKey<DOLCharacters>(m_player.InternalID);
+						var getp = GameServer.Database.FindObjectByKey<DbCoreCharacters>(m_player.InternalID);
 						//Let get saved poistion from DB.
 						int[] oldloc = { getp.Xpos, getp.Ypos, getp.Zpos, getp.Direction, getp.Region };
 						//Lets get current player Gloc.

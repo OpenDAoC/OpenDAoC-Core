@@ -43,7 +43,7 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 		}
 
-		public KillNPCInFrontiersAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public KillNPCInFrontiersAlb(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

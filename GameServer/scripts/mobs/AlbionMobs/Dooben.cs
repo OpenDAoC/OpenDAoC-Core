@@ -48,7 +48,7 @@ namespace DOL.GS
 			{
 				if (m_DoobenDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Power = 0;

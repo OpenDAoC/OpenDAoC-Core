@@ -34,7 +34,7 @@ namespace DOL.GS
 		{
 			get { return 100000; }
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItems weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}

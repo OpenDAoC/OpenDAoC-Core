@@ -115,7 +115,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_StormDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 3;

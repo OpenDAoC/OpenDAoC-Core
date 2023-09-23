@@ -22,7 +22,7 @@ namespace DOL.GS
         private static readonly ushort SUBZONE_SHIFT = (ushort)Math.Round(Math.Log(SUBZONE_SIZE) / Math.Log(2)); // To get log in base 2.
         private static readonly ushort SUBZONE_ARRAY_Y_SHIFT = (ushort)Math.Round(Math.Log(SUBZONE_NBR_ON_ZONE_SIDE) / Math.Log(2));
 
-        public virtual LanguageDataObject.eTranslationIdentifier TranslationIdentifier => LanguageDataObject.eTranslationIdentifier.eZone;
+        public virtual ETranslationIdentifier TranslationIdentifier => ETranslationIdentifier.eZone;
         public string TranslationId { get => ID.ToString(); set { } }
         public eRealm Realm { get; private set; }
         public Region ZoneRegion { get; set; }

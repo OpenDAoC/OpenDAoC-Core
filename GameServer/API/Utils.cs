@@ -140,7 +140,7 @@ public class Utils
         {
             topRP = new List<Player.PlayerInfo>();
 
-            var topRpPlayers = DOLDB<DOLCharacters>.SelectObjects(DB.Column("RealmPoints").IsLessThan(7000000)).OrderByDescending(x => x.RealmPoints).Take(10).ToDictionary(x => x.Name, x => x.RealmPoints);
+            var topRpPlayers = DOLDB<DbCoreCharacters>.SelectObjects(DB.Column("RealmPoints").IsLessThan(7000000)).OrderByDescending(x => x.RealmPoints).Take(10).ToDictionary(x => x.Name, x => x.RealmPoints);
             
             foreach (var player in topRpPlayers)
             {

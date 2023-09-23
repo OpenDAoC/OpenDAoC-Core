@@ -74,12 +74,12 @@ namespace DOL.GS.Spells
 
 		public virtual void OnDamageAbsorbed(AttackData ad, int DamageAmount) { }
 		
-		public override PlayerXEffect GetSavedEffect(GameSpellEffect e)
+		public override DbPlayerXEffect GetSavedEffect(GameSpellEffect e)
 		{
 			if (Spell.Pulse != 0 || Spell.Concentration != 0 || e.RemainingTime < 1)
 				return null;
 
-			PlayerXEffect eff = new PlayerXEffect();
+			DbPlayerXEffect eff = new DbPlayerXEffect();
 			eff.Var1 = Spell.ID;
 			eff.Duration = e.RemainingTime;
 			eff.IsHandler = true;

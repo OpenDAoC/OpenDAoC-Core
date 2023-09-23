@@ -208,7 +208,7 @@ namespace DOL.AI.Brain
             {
                 if (m_RedLady_DD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = Util.Random(25, 35);
@@ -320,7 +320,7 @@ namespace DOL.GS
             {
                 if (m_Innocent_Disease == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 0;

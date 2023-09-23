@@ -33,7 +33,7 @@ namespace DOL.GS.Scripts
 
         public override int MaxHealth => 100000;
         
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -267,7 +267,7 @@ namespace DOL.AI.Brain
             {
                 if (m_mezSpell == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.ClientEffect = 1681;

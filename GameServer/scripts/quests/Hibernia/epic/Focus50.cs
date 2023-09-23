@@ -55,37 +55,37 @@ namespace DOL.GS.Quests.Hibernia
 		private static GameNPC Ainrebh = null; // Start NPC
 		private static GreenMaw GreenMaw = null; // Mob to kill
 
-		private static ItemTemplate GreenMaw_key = null; //ball of flame
-		private static ItemTemplate RangerEpicBoots = null; //Mist Shrouded Boots 
-		private static ItemTemplate RangerEpicHelm = null; //Mist Shrouded Coif 
-		private static ItemTemplate RangerEpicGloves = null; //Mist Shrouded Gloves 
-		private static ItemTemplate RangerEpicVest = null; //Mist Shrouded Hauberk 
-		private static ItemTemplate RangerEpicLegs = null; //Mist Shrouded Legs 
-		private static ItemTemplate RangerEpicArms = null; //Mist Shrouded Sleeves 
-		private static ItemTemplate HeroEpicBoots = null; //Shadow Shrouded Boots 
-		private static ItemTemplate HeroEpicHelm = null; //Shadow Shrouded Coif 
-		private static ItemTemplate HeroEpicGloves = null; //Shadow Shrouded Gloves 
-		private static ItemTemplate HeroEpicVest = null; //Shadow Shrouded Hauberk 
-		private static ItemTemplate HeroEpicLegs = null; //Shadow Shrouded Legs 
-		private static ItemTemplate HeroEpicArms = null; //Shadow Shrouded Sleeves 
-		private static ItemTemplate EldritchEpicBoots = null; //Valhalla Touched Boots 
-		private static ItemTemplate EldritchEpicHelm = null; //Valhalla Touched Coif 
-		private static ItemTemplate EldritchEpicGloves = null; //Valhalla Touched Gloves 
-		private static ItemTemplate EldritchEpicVest = null; //Valhalla Touched Hauberk 
-		private static ItemTemplate EldritchEpicLegs = null; //Valhalla Touched Legs 
-		private static ItemTemplate EldritchEpicArms = null; //Valhalla Touched Sleeves 
-		private static ItemTemplate WardenEpicBoots = null; //Subterranean Boots 
-		private static ItemTemplate WardenEpicHelm = null; //Subterranean Coif 
-		private static ItemTemplate WardenEpicGloves = null; //Subterranean Gloves 
-		private static ItemTemplate WardenEpicVest = null; //Subterranean Hauberk 
-		private static ItemTemplate WardenEpicLegs = null; //Subterranean Legs 
-		private static ItemTemplate WardenEpicArms = null; //Subterranean Sleeves    
-        private static ItemTemplate MaulerHibEpicBoots = null;
-        private static ItemTemplate MaulerHibEpicHelm = null;
-        private static ItemTemplate MaulerHibEpicGloves = null;
-        private static ItemTemplate MaulerHibEpicVest = null;
-        private static ItemTemplate MaulerHibEpicLegs = null;
-        private static ItemTemplate MaulerHibEpicArms = null;      
+		private static DbItemTemplates GreenMaw_key = null; //ball of flame
+		private static DbItemTemplates RangerEpicBoots = null; //Mist Shrouded Boots 
+		private static DbItemTemplates RangerEpicHelm = null; //Mist Shrouded Coif 
+		private static DbItemTemplates RangerEpicGloves = null; //Mist Shrouded Gloves 
+		private static DbItemTemplates RangerEpicVest = null; //Mist Shrouded Hauberk 
+		private static DbItemTemplates RangerEpicLegs = null; //Mist Shrouded Legs 
+		private static DbItemTemplates RangerEpicArms = null; //Mist Shrouded Sleeves 
+		private static DbItemTemplates HeroEpicBoots = null; //Shadow Shrouded Boots 
+		private static DbItemTemplates HeroEpicHelm = null; //Shadow Shrouded Coif 
+		private static DbItemTemplates HeroEpicGloves = null; //Shadow Shrouded Gloves 
+		private static DbItemTemplates HeroEpicVest = null; //Shadow Shrouded Hauberk 
+		private static DbItemTemplates HeroEpicLegs = null; //Shadow Shrouded Legs 
+		private static DbItemTemplates HeroEpicArms = null; //Shadow Shrouded Sleeves 
+		private static DbItemTemplates EldritchEpicBoots = null; //Valhalla Touched Boots 
+		private static DbItemTemplates EldritchEpicHelm = null; //Valhalla Touched Coif 
+		private static DbItemTemplates EldritchEpicGloves = null; //Valhalla Touched Gloves 
+		private static DbItemTemplates EldritchEpicVest = null; //Valhalla Touched Hauberk 
+		private static DbItemTemplates EldritchEpicLegs = null; //Valhalla Touched Legs 
+		private static DbItemTemplates EldritchEpicArms = null; //Valhalla Touched Sleeves 
+		private static DbItemTemplates WardenEpicBoots = null; //Subterranean Boots 
+		private static DbItemTemplates WardenEpicHelm = null; //Subterranean Coif 
+		private static DbItemTemplates WardenEpicGloves = null; //Subterranean Gloves 
+		private static DbItemTemplates WardenEpicVest = null; //Subterranean Hauberk 
+		private static DbItemTemplates WardenEpicLegs = null; //Subterranean Legs 
+		private static DbItemTemplates WardenEpicArms = null; //Subterranean Sleeves    
+        private static DbItemTemplates MaulerHibEpicBoots = null;
+        private static DbItemTemplates MaulerHibEpicHelm = null;
+        private static DbItemTemplates MaulerHibEpicGloves = null;
+        private static DbItemTemplates MaulerHibEpicVest = null;
+        private static DbItemTemplates MaulerHibEpicLegs = null;
+        private static DbItemTemplates MaulerHibEpicArms = null;      
 
 		// Constructors
 		public Focus_50() : base()
@@ -100,7 +100,7 @@ namespace DOL.GS.Quests.Hibernia
 		{
 		}
 
-		public Focus_50(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public Focus_50(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -185,12 +185,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			#region Item Declarations
 
-			GreenMaw_key = GameServer.Database.FindObjectByKey<ItemTemplate>("GreenMaw_key");
+			GreenMaw_key = GameServer.Database.FindObjectByKey<DbItemTemplates>("GreenMaw_key");
 			if (GreenMaw_key == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find GreenMaw's Key , creating it ...");
-				GreenMaw_key = new ItemTemplate();
+				GreenMaw_key = new DbItemTemplates();
 				GreenMaw_key.Id_nb = "GreenMaw_key";
 				GreenMaw_key.Name = "GreenMaw's Key";
 				GreenMaw_key.Level = 8;
@@ -212,12 +212,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 // end item			
-			RangerEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("RangerEpicBoots");
+			RangerEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("RangerEpicBoots");
 			if (RangerEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Rangers Epic Boots , creating it ...");
-				RangerEpicBoots = new ItemTemplate();
+				RangerEpicBoots = new DbItemTemplates();
 				RangerEpicBoots.Id_nb = "RangerEpicBoots";
 				RangerEpicBoots.Name = "Mist Shrouded Boots";
 				RangerEpicBoots.Level = 50;
@@ -256,12 +256,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Mist Shrouded Coif 
-			RangerEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("RangerEpicHelm");
+			RangerEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("RangerEpicHelm");
 			if (RangerEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Rangers Epic Helm , creating it ...");
-				RangerEpicHelm = new ItemTemplate();
+				RangerEpicHelm = new DbItemTemplates();
 				RangerEpicHelm.Id_nb = "RangerEpicHelm";
 				RangerEpicHelm.Name = "Mist Shrouded Helm";
 				RangerEpicHelm.Level = 50;
@@ -300,12 +300,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Mist Shrouded Gloves 
-			RangerEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("RangerEpicGloves");
+			RangerEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("RangerEpicGloves");
 			if (RangerEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Rangers Epic Gloves , creating it ...");
-				RangerEpicGloves = new ItemTemplate();
+				RangerEpicGloves = new DbItemTemplates();
 				RangerEpicGloves.Id_nb = "RangerEpicGloves";
 				RangerEpicGloves.Name = "Mist Shrouded Gloves ";
 				RangerEpicGloves.Level = 50;
@@ -343,12 +343,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Mist Shrouded Hauberk 
-			RangerEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("RangerEpicVest");
+			RangerEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("RangerEpicVest");
 			if (RangerEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Rangers Epic Vest , creating it ...");
-				RangerEpicVest = new ItemTemplate();
+				RangerEpicVest = new DbItemTemplates();
 				RangerEpicVest.Id_nb = "RangerEpicVest";
 				RangerEpicVest.Name = "Mist Shrouded Hauberk";
 				RangerEpicVest.Level = 50;
@@ -386,12 +386,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Mist Shrouded Legs 
-			RangerEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("RangerEpicLegs");
+			RangerEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("RangerEpicLegs");
 			if (RangerEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Rangers Epic Legs , creating it ...");
-				RangerEpicLegs = new ItemTemplate();
+				RangerEpicLegs = new DbItemTemplates();
 				RangerEpicLegs.Id_nb = "RangerEpicLegs";
 				RangerEpicLegs.Name = "Mist Shrouded Leggings";
 				RangerEpicLegs.Level = 50;
@@ -430,12 +430,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Mist Shrouded Sleeves 
-			RangerEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("RangerEpicArms");
+			RangerEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("RangerEpicArms");
 			if (RangerEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Ranger Epic Arms , creating it ...");
-				RangerEpicArms = new ItemTemplate();
+				RangerEpicArms = new DbItemTemplates();
 				RangerEpicArms.Id_nb = "RangerEpicArms";
 				RangerEpicArms.Name = "Mist Shrouded Sleeves";
 				RangerEpicArms.Level = 50;
@@ -473,12 +473,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 //Hero Epic Sleeves End
-			HeroEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("HeroEpicBoots");
+			HeroEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("HeroEpicBoots");
 			if (HeroEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Heros Epic Boots , creating it ...");
-				HeroEpicBoots = new ItemTemplate();
+				HeroEpicBoots = new DbItemTemplates();
 				HeroEpicBoots.Id_nb = "HeroEpicBoots";
 				HeroEpicBoots.Name = "Misted Boots";
 				HeroEpicBoots.Level = 50;
@@ -517,12 +517,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Misted Coif 
-			HeroEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("HeroEpicHelm");
+			HeroEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("HeroEpicHelm");
 			if (HeroEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Heros Epic Helm , creating it ...");
-				HeroEpicHelm = new ItemTemplate();
+				HeroEpicHelm = new DbItemTemplates();
 				HeroEpicHelm.Id_nb = "HeroEpicHelm";
 				HeroEpicHelm.Name = "Misted Coif";
 				HeroEpicHelm.Level = 50;
@@ -561,12 +561,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Misted Gloves 
-			HeroEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("HeroEpicGloves");
+			HeroEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("HeroEpicGloves");
 			if (HeroEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Heros Epic Gloves , creating it ...");
-				HeroEpicGloves = new ItemTemplate();
+				HeroEpicGloves = new DbItemTemplates();
 				HeroEpicGloves.Id_nb = "HeroEpicGloves";
 				HeroEpicGloves.Name = "Misted Gloves ";
 				HeroEpicGloves.Level = 50;
@@ -604,12 +604,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Misted Hauberk 
-			HeroEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("HeroEpicVest");
+			HeroEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("HeroEpicVest");
 			if (HeroEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Heros Epic Vest , creating it ...");
-				HeroEpicVest = new ItemTemplate();
+				HeroEpicVest = new DbItemTemplates();
 				HeroEpicVest.Id_nb = "HeroEpicVest";
 				HeroEpicVest.Name = "Misted Hauberk";
 				HeroEpicVest.Level = 50;
@@ -644,12 +644,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Misted Legs 
-			HeroEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("HeroEpicLegs");
+			HeroEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("HeroEpicLegs");
 			if (HeroEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Heros Epic Legs , creating it ...");
-				HeroEpicLegs = new ItemTemplate();
+				HeroEpicLegs = new DbItemTemplates();
 				HeroEpicLegs.Id_nb = "HeroEpicLegs";
 				HeroEpicLegs.Name = "Misted Leggings";
 				HeroEpicLegs.Level = 50;
@@ -687,12 +687,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Misted Sleeves 
-			HeroEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("HeroEpicArms");
+			HeroEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("HeroEpicArms");
 			if (HeroEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Hero Epic Arms , creating it ...");
-				HeroEpicArms = new ItemTemplate();
+				HeroEpicArms = new DbItemTemplates();
 				HeroEpicArms.Id_nb = "HeroEpicArms";
 				HeroEpicArms.Name = "Misted Sleeves";
 				HeroEpicArms.Level = 50;
@@ -729,12 +729,12 @@ namespace DOL.GS.Quests.Hibernia
 				}
 
 			}
-			WardenEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("WardenEpicBoots");
+			WardenEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("WardenEpicBoots");
 			if (WardenEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warden Epic Boots , creating it ...");
-				WardenEpicBoots = new ItemTemplate();
+				WardenEpicBoots = new DbItemTemplates();
 				WardenEpicBoots.Id_nb = "WardenEpicBoots";
 				WardenEpicBoots.Name = "Mystical Boots";
 				WardenEpicBoots.Level = 50;
@@ -773,12 +773,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Mystical Coif 
-			WardenEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("WardenEpicHelm");
+			WardenEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("WardenEpicHelm");
 			if (WardenEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warden Epic Helm , creating it ...");
-				WardenEpicHelm = new ItemTemplate();
+				WardenEpicHelm = new DbItemTemplates();
 				WardenEpicHelm.Id_nb = "WardenEpicHelm";
 				WardenEpicHelm.Name = "Mystical Coif";
 				WardenEpicHelm.Level = 50;
@@ -817,12 +817,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Mystical Gloves 
-			WardenEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("WardenEpicGloves");
+			WardenEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("WardenEpicGloves");
 			if (WardenEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warden Epic Gloves , creating it ...");
-				WardenEpicGloves = new ItemTemplate();
+				WardenEpicGloves = new DbItemTemplates();
 				WardenEpicGloves.Id_nb = "WardenEpicGloves";
 				WardenEpicGloves.Name = "Mystical Gloves ";
 				WardenEpicGloves.Level = 50;
@@ -861,12 +861,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Mystical Hauberk 
-			WardenEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("WardenEpicVest");
+			WardenEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("WardenEpicVest");
 			if (WardenEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warden Epic Vest , creating it ...");
-				WardenEpicVest = new ItemTemplate();
+				WardenEpicVest = new DbItemTemplates();
 				WardenEpicVest.Id_nb = "WardenEpicVest";
 				WardenEpicVest.Name = "Mystical Hauberk";
 				WardenEpicVest.Level = 50;
@@ -904,12 +904,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Mystical Legs 
-			WardenEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("WardenEpicLegs");
+			WardenEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("WardenEpicLegs");
 			if (WardenEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warden Epic Legs , creating it ...");
-				WardenEpicLegs = new ItemTemplate();
+				WardenEpicLegs = new DbItemTemplates();
 				WardenEpicLegs.Id_nb = "WardenEpicLegs";
 				WardenEpicLegs.Name = "Mystical Legs";
 				WardenEpicLegs.Level = 50;
@@ -947,12 +947,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Mystical Sleeves 
-			WardenEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("WardenEpicArms");
+			WardenEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("WardenEpicArms");
 			if (WardenEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Warden Epic Arms , creating it ...");
-				WardenEpicArms = new ItemTemplate();
+				WardenEpicArms = new DbItemTemplates();
 				WardenEpicArms.Id_nb = "WardenEpicArms";
 				WardenEpicArms.Name = "Mystical Sleeves";
 				WardenEpicArms.Level = 50;
@@ -989,12 +989,12 @@ namespace DOL.GS.Quests.Hibernia
 				}
 
 			}
-			EldritchEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("EldritchEpicBoots");
+			EldritchEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("EldritchEpicBoots");
 			if (EldritchEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Eldritch Epic Boots , creating it ...");
-				EldritchEpicBoots = new ItemTemplate();
+				EldritchEpicBoots = new DbItemTemplates();
 				EldritchEpicBoots.Id_nb = "EldritchEpicBoots";
 				EldritchEpicBoots.Name = "Mistwoven Boots";
 				EldritchEpicBoots.Level = 50;
@@ -1033,12 +1033,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Mist Woven Coif 
-			EldritchEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("EldritchEpicHelm");
+			EldritchEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("EldritchEpicHelm");
 			if (EldritchEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Eldritch Epic Helm , creating it ...");
-				EldritchEpicHelm = new ItemTemplate();
+				EldritchEpicHelm = new DbItemTemplates();
 				EldritchEpicHelm.Id_nb = "EldritchEpicHelm";
 				EldritchEpicHelm.Name = "Mistwoven Cap";
 				EldritchEpicHelm.Level = 50;
@@ -1077,12 +1077,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Mist Woven Gloves 
-			EldritchEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("EldritchEpicGloves");
+			EldritchEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("EldritchEpicGloves");
 			if (EldritchEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Eldritch Epic Gloves , creating it ...");
-				EldritchEpicGloves = new ItemTemplate();
+				EldritchEpicGloves = new DbItemTemplates();
 				EldritchEpicGloves.Id_nb = "EldritchEpicGloves";
 				EldritchEpicGloves.Name = "Mistwoven Gloves ";
 				EldritchEpicGloves.Level = 50;
@@ -1120,12 +1120,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Mist Woven Hauberk 
-			EldritchEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("EldritchEpicVest");
+			EldritchEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("EldritchEpicVest");
 			if (EldritchEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Eldritch Epic Vest , creating it ...");
-				EldritchEpicVest = new ItemTemplate();
+				EldritchEpicVest = new DbItemTemplates();
 				EldritchEpicVest.Id_nb = "EldritchEpicVest";
 				EldritchEpicVest.Name = "Mistwoven Vest";
 				EldritchEpicVest.Level = 50;
@@ -1160,12 +1160,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Mist Woven Legs 
-			EldritchEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("EldritchEpicLegs");
+			EldritchEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("EldritchEpicLegs");
 			if (EldritchEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Eldritch Epic Legs , creating it ...");
-				EldritchEpicLegs = new ItemTemplate();
+				EldritchEpicLegs = new DbItemTemplates();
 				EldritchEpicLegs.Id_nb = "EldritchEpicLegs";
 				EldritchEpicLegs.Name = "Mistwoven Pants";
 				EldritchEpicLegs.Level = 50;
@@ -1203,12 +1203,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Mist Woven Sleeves 
-			EldritchEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("EldritchEpicArms");
+			EldritchEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("EldritchEpicArms");
 			if (EldritchEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Eldritch Epic Arms , creating it ...");
-				EldritchEpicArms = new ItemTemplate();
+				EldritchEpicArms = new DbItemTemplates();
 				EldritchEpicArms.Id_nb = "EldritchEpicArms";
 				EldritchEpicArms.Name = "Mistwoven Sleeves";
 				EldritchEpicArms.Level = 50;
@@ -1250,12 +1250,12 @@ namespace DOL.GS.Quests.Hibernia
 
             // Graveen: we assume items are existing in the DB
             // TODO: insert here creation of items if they do not exists
-            MaulerHibEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerHibEpicBoots");
-            MaulerHibEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerHibEpicHelm");
-            MaulerHibEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerHibEpicGloves");
-            MaulerHibEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerHibEpicVest");
-            MaulerHibEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerHibEpicLegs");
-            MaulerHibEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerHibEpicArms");
+            MaulerHibEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerHibEpicBoots");
+            MaulerHibEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerHibEpicHelm");
+            MaulerHibEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerHibEpicGloves");
+            MaulerHibEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerHibEpicVest");
+            MaulerHibEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerHibEpicLegs");
+            MaulerHibEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("MaulerHibEpicArms");
 
 //Item Descriptions End
 

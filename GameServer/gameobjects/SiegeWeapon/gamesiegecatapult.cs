@@ -272,7 +272,7 @@ namespace DOL.GS
 		}
 
 		
-		public override bool ReceiveItem(GameLiving source, DOL.Database.InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DOL.Database.DbInventoryItems item)
 		{
 			//todo check if bullet
 			return base.ReceiveItem(source, item);

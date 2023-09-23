@@ -50,8 +50,8 @@ namespace DOL.GS
             if (base.Interact(player))
             {
                 TurnTo(player, 500);
-                InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
-                InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
+                DbInventoryItems item = player.TempProperties.GetProperty<DbInventoryItems>(TempProperty);
+                DbInventoryItems displayItem = player.TempProperties.GetProperty<DbInventoryItems>(DisplayedItem);
 
                 if (item == null)
                 {
@@ -65,7 +65,7 @@ namespace DOL.GS
                 }
 
                 if (displayItem != null)
-                    DisplayReskinPreviewTo(player, (InventoryItem)displayItem.Clone());
+                    DisplayReskinPreviewTo(player, (DbInventoryItems)displayItem.Clone());
 
                 return true;
             }
@@ -73,7 +73,7 @@ namespace DOL.GS
             return false;
         }
 
-        public override bool ReceiveItem(GameLiving source, InventoryItem item)
+        public override bool ReceiveItem(GameLiving source, DbInventoryItems item)
         {
             if (source == null || item == null || item.Id_nb == _currencyID) return false;
             if (source is GamePlayer p)
@@ -86,7 +86,7 @@ namespace DOL.GS
 
                 SendReply(p, "When you are finished browsing, let me know and I will [confirm effect]."
                 );
-                var tmp = (InventoryItem) item.Clone();
+                var tmp = (DbInventoryItems) item.Clone();
                 p.TempProperties.SetProperty(TempProperty, item);
                 p.TempProperties.SetProperty(DisplayedItem, tmp);
             }
@@ -101,7 +101,7 @@ namespace DOL.GS
             if (!(source is GamePlayer)) return false;
 
             GamePlayer player = source as GamePlayer;
-            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
+            DbInventoryItems item = player.TempProperties.GetProperty<DbInventoryItems>(EFFECTNPC_ITEM_WEAK);
             
             int cachedEffectID = player.TempProperties.GetProperty<int>(TempEffectId);
             int cachedColorID = player.TempProperties.GetProperty<int>(TempColorId);
@@ -976,7 +976,7 @@ namespace DOL.GS
         #region setcolor
         public void SetColor(GamePlayer player, int color, int price)
         {
-            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
+            DbInventoryItems item = player.TempProperties.GetProperty<DbInventoryItems>(EFFECTNPC_ITEM_WEAK);
 
             player.TempProperties.RemoveProperty(EFFECTNPC_ITEM_WEAK);
 
@@ -1007,7 +1007,7 @@ namespace DOL.GS
             castplayer.Enqueue(player);
 
             player.Inventory.RemoveItem(item);
-            ItemUnique unique = new ItemUnique(item.Template);
+            DbItemUniques unique = new DbItemUniques(item.Template);
             unique.Color = color;
             unique.ObjectId = "Unique" + System.Guid.NewGuid().ToString();
             unique.Id_nb = "Unique" + System.Guid.NewGuid().ToString();
@@ -1017,18 +1017,18 @@ namespace DOL.GS
             }
             if (GameServer.Database.ExecuteNonQuery("SELECT Id_nb FROM itemunique WHERE Id_nb = 'unique.Id_nb'"))
             {
-                unique.Id_nb = IDGenerator.GenerateID();
+                unique.Id_nb = IdGenerator.GenerateID();
             }
             GameServer.Database.AddObject(unique);
 
-            InventoryItem newInventoryItem = GameInventoryItem.Create<ItemUnique>(unique);
+            DbInventoryItems newInventoryItem = GameInventoryItem.Create<DbItemUniques>(unique);
             if(item.IsCrafted)
                 newInventoryItem.IsCrafted = true;
             if(item.Creator != "")
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
-            player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
+            player.Out.SendInventoryItemsUpdate(new DbInventoryItems[] { newInventoryItem });
             //player.RealmPoints -= price;
             //player.RespecRealm();
             //SetRealmLevel(player, (int)player.RealmPoints);
@@ -1051,8 +1051,8 @@ namespace DOL.GS
 
         private void PreviewEffect(GamePlayer player, int effect)
         {
-            InventoryItem item = (InventoryItem)player.TempProperties.GetProperty<InventoryItem>(TempProperty).Clone();
-            InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
+            DbInventoryItems item = (DbInventoryItems)player.TempProperties.GetProperty<DbInventoryItems>(TempProperty).Clone();
+            DbInventoryItems displayItem = player.TempProperties.GetProperty<DbInventoryItems>(DisplayedItem);
             item.Effect = effect;
             player.TempProperties.SetProperty(TempEffectId, effect);
             DisplayReskinPreviewTo(player, item);
@@ -1062,8 +1062,8 @@ namespace DOL.GS
         
         private void PreviewColor(GamePlayer player, int color)
         {
-            InventoryItem item = (InventoryItem)player.TempProperties.GetProperty<InventoryItem>(TempProperty).Clone();
-            InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
+            DbInventoryItems item = (DbInventoryItems)player.TempProperties.GetProperty<DbInventoryItems>(TempProperty).Clone();
+            DbInventoryItems displayItem = player.TempProperties.GetProperty<DbInventoryItems>(DisplayedItem);
             item.Color = color;
             player.TempProperties.SetProperty(TempColorId, color);
             DisplayReskinPreviewTo(player, item);
@@ -1077,7 +1077,7 @@ namespace DOL.GS
             if (player == null)
                 return;
 
-            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(EFFECTNPC_ITEM_WEAK);
+            DbInventoryItems item = player.TempProperties.GetProperty<DbInventoryItems>(EFFECTNPC_ITEM_WEAK);
             player.TempProperties.RemoveProperty(EFFECTNPC_ITEM_WEAK);
 
             if (item == null)
@@ -1110,9 +1110,9 @@ namespace DOL.GS
 
 
             player.Inventory.RemoveItem(item);
-            ItemUnique unique = new ItemUnique(item.Template);
+            DbItemUniques unique = new DbItemUniques(item.Template);
             unique.Effect = effect;
-            unique.Id_nb = IDGenerator.GenerateID();
+            unique.Id_nb = IdGenerator.GenerateID();
             unique.ObjectId = "Unique" + System.Guid.NewGuid().ToString();
             if (GameServer.Database.ExecuteNonQuery("SELECT ItemUnique_ID FROM itemunique WHERE ItemUnique_ID = 'unique.ObjectId'"))
             {
@@ -1120,18 +1120,18 @@ namespace DOL.GS
             }
             if (GameServer.Database.ExecuteNonQuery("SELECT Id_nb FROM itemunique WHERE Id_nb = 'unique.Id_nb'"))
             {
-                unique.Id_nb = IDGenerator.GenerateID();
+                unique.Id_nb = IdGenerator.GenerateID();
             }
             GameServer.Database.AddObject(unique);
 
-            InventoryItem newInventoryItem = GameInventoryItem.Create<ItemUnique>(unique);
+            DbInventoryItems newInventoryItem = GameInventoryItem.Create<DbItemUniques>(unique);
             if(item.IsCrafted)
                 newInventoryItem.IsCrafted = true;
             if(item.Creator != "")
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
-            player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
+            player.Out.SendInventoryItemsUpdate(new DbInventoryItems[] { newInventoryItem });
             //player.RealmPoints -= price;
             //player.RespecRealm();
             //SetRealmLevel(player, (int)player.RealmPoints);
@@ -1161,7 +1161,7 @@ namespace DOL.GS
             return 0;
         }
         
-        private void DisplayReskinPreviewTo(GamePlayer player, InventoryItem item)
+        private void DisplayReskinPreviewTo(GamePlayer player, DbInventoryItems item)
         {
             GameNPC display = CreateDisplayNPC(player, item);
             display.AddToWorld();
@@ -1194,7 +1194,7 @@ namespace DOL.GS
             // animationThread.Start();
         }
         
-        private GameNPC CreateDisplayNPC(GamePlayer player, InventoryItem item)
+        private GameNPC CreateDisplayNPC(GamePlayer player, DbInventoryItems item)
         {
             var mob = new DisplayModel(player, item);
 

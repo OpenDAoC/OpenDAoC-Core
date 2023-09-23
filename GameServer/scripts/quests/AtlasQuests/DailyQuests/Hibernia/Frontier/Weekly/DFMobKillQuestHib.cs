@@ -39,7 +39,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 		{
 		}
 
-		public DFMobKillQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DFMobKillQuestHib(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

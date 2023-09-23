@@ -67,7 +67,7 @@ namespace DOL.GS.GameEvents
 			if (chArgs == null)
 				return;
 			
-			DOLCharacters ch = chArgs.Character;
+			DbCoreCharacters ch = chArgs.Character;
 			
 			// Add all Crafting skills at level 1
 			var collectionAllCraftingSkills = new List<string>();

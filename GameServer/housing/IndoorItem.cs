@@ -31,7 +31,7 @@ namespace DOL.GS.Housing
 		public IndoorItem()
 		{}
 
-		public IndoorItem(DBHouseIndoorItem dbitem)
+		public IndoorItem(DbHouseIndoorItems dbitem)
 		{
 			Model = dbitem.Model;
 			Color = dbitem.Color;
@@ -42,7 +42,7 @@ namespace DOL.GS.Housing
 			Emblem = dbitem.Emblem;
 			Position = dbitem.Position;
 			PlacementMode = dbitem.Placemode;
-			BaseItem = GameServer.Database.FindObjectByKey<ItemTemplate>(dbitem.BaseItemID);
+			BaseItem = GameServer.Database.FindObjectByKey<DbItemTemplates>(dbitem.BaseItemID);
 			DatabaseItem = dbitem;
 		}
 
@@ -64,13 +64,13 @@ namespace DOL.GS.Housing
 
 		public int PlacementMode { get; set; }
 
-		public ItemTemplate BaseItem { get; set; }
+		public DbItemTemplates BaseItem { get; set; }
 
-		public DBHouseIndoorItem DatabaseItem { get; set; }
+		public DbHouseIndoorItems DatabaseItem { get; set; }
 
-		public DBHouseIndoorItem CreateDBIndoorItem(int houseNumber)
+		public DbHouseIndoorItems CreateDBIndoorItem(int houseNumber)
 		{
-			var dbitem = new DBHouseIndoorItem
+			var dbitem = new DbHouseIndoorItems
 			             	{
 			             		HouseNumber = houseNumber,
 			             		Model = Model,

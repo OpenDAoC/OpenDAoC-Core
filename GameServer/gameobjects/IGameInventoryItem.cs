@@ -95,7 +95,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="targetItem"></param>
 		/// <returns>true if combine is handled here</returns>
-		bool Combine(GamePlayer player, InventoryItem targetItem);
+		bool Combine(GamePlayer player, DbInventoryItems targetItem);
 		/// <summary>
 		/// Player is delving this item
 		/// </summary>

@@ -89,7 +89,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
+                        DbAppeals appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
                         if (appeal != null)
                         {
                             if (appeal.Status != "Being Helped")
@@ -140,7 +140,7 @@ namespace DOL.GS.Commands
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.PlayerNotFound", targetName));
                             return;
                         }
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
+                        DbAppeals appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
                         if (appeal != null)
                         {
                             //Let's view it.
@@ -185,7 +185,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
+                        DbAppeals appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
                         if (appeal != null)
                         {
                             if (appeal.Status == "Being Helped")
@@ -214,7 +214,7 @@ namespace DOL.GS.Commands
                         int high = 0;
                         int crit = 0;
                         string caption;
-                        IList<DBAppeal> appeallist;
+                        IList<DbAppeals> appeallist;
                         List<string> msg = new List<string>();
 
                         if (args[1] == "listall")
@@ -234,7 +234,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        foreach (DBAppeal a in appeallist)
+                        foreach (DbAppeals a in appeallist)
                         {
                             switch (a.Severity)
                             {
@@ -259,7 +259,7 @@ namespace DOL.GS.Commands
                         if (crit > 0)
                         {
                             msg.Add("Critical priority appeals:\n");
-                            foreach (DBAppeal a in appeallist)
+                            foreach (DbAppeals a in appeallist)
                             {
                                 if (a.Severity == (int)AppealMgr.eSeverity.Critical)
                                 {
@@ -270,7 +270,7 @@ namespace DOL.GS.Commands
                         if (high > 0)
                         {
                             msg.Add("High priority appeals:\n");
-                            foreach (DBAppeal a in appeallist)
+                            foreach (DbAppeals a in appeallist)
                             {
                                 if (a.Severity == (int)AppealMgr.eSeverity.High)
                                 {
@@ -281,7 +281,7 @@ namespace DOL.GS.Commands
                         if (med > 0)
                         {
                             msg.Add("Medium priority Appeals:\n");
-                            foreach (DBAppeal a in appeallist)
+                            foreach (DbAppeals a in appeallist)
                             {
                                 if (a.Severity == (int)AppealMgr.eSeverity.Medium)
                                 {
@@ -292,7 +292,7 @@ namespace DOL.GS.Commands
                         if (low > 0)
                         {
                             msg.Add("Low priority appeals:\n");
-                            foreach (DBAppeal a in appeallist)
+                            foreach (DbAppeals a in appeallist)
                             {
                                 if (a.Severity == (int)AppealMgr.eSeverity.Low)
                                 {
@@ -334,7 +334,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
+                        DbAppeals appeal = AppealMgr.GetAppealByPlayerName(targetClient.Player.Name);
                         if (appeal == null)
                         {
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.DoesntHaveAppeal"));
@@ -355,7 +355,7 @@ namespace DOL.GS.Commands
                             return;
                         }
                         string targetName = args[2];
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetName);
+                        DbAppeals appeal = AppealMgr.GetAppealByPlayerName(targetName);
                         if (appeal == null)
                         {
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.CantFindAppeal"));

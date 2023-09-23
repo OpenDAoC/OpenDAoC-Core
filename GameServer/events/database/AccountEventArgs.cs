@@ -29,14 +29,14 @@ namespace DOL.Events
 		/// <summary>
 		/// Holds the target account for this event
 		/// </summary>
-		private Account m_account;
+		private DbAccounts m_account;
 		
 		/// <summary>
 		/// Constructs a new event argument class for the
 		/// account events 
 		/// </summary>
 		/// <param name="account"></param>
-		public AccountEventArgs(Account account)
+		public AccountEventArgs(DbAccounts account)
 		{
 			m_account = account;
 		}
@@ -44,7 +44,7 @@ namespace DOL.Events
 		/// <summary>
 		/// Gets the target account for this event
 		/// </summary>
-		public Account Account
+		public DbAccounts Account
 		{
 			get
 			{

@@ -13,9 +13,9 @@ namespace DOL.GS
 
         static DailyQuestService()
         {
-            IList<TaskRefreshIntervals> loadQuestsProp = GameServer.Database.SelectAllObjects<TaskRefreshIntervals>();
+            IList<DbTaskRefreshIntervals> loadQuestsProp = GameServer.Database.SelectAllObjects<DbTaskRefreshIntervals>();
 
-            foreach (TaskRefreshIntervals interval in loadQuestsProp)
+            foreach (DbTaskRefreshIntervals interval in loadQuestsProp)
             {
                 if (interval.RolloverInterval.Equals(DAILY_INTERVAL_KEY))
                     lastDailyRollover = interval.LastRollover;
@@ -31,7 +31,7 @@ namespace DOL.GS
             if (lastDailyRollover.Date.DayOfYear < DateTime.Now.Date.DayOfYear || lastDailyRollover.Year < DateTime.Now.Year)
             {
                 lastDailyRollover = DateTime.Now;
-                TaskRefreshIntervals loadQuestsProp = GameServer.Database.SelectObject<TaskRefreshIntervals>(DB.Column("RolloverInterval").IsEqualTo(DAILY_INTERVAL_KEY));
+                DbTaskRefreshIntervals loadQuestsProp = GameServer.Database.SelectObject<DbTaskRefreshIntervals>(DB.Column("RolloverInterval").IsEqualTo(DAILY_INTERVAL_KEY));
 
                 // Update the one we've got, or make a new one.
                 if (loadQuestsProp != null)
@@ -41,7 +41,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    TaskRefreshIntervals newTime = new();
+                    DbTaskRefreshIntervals newTime = new();
                     newTime.LastRollover = DateTime.Now;
                     newTime.RolloverInterval = DAILY_INTERVAL_KEY;
                     GameServer.Database.AddObject(newTime);
@@ -59,9 +59,9 @@ namespace DOL.GS
                     client.Player?.RemoveFinishedQuests(x => x is Quests.DailyQuest);
                 }
 
-                IList<DBQuest> existingDailyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%DailyQuest%"));
+                IList<DbQuests> existingDailyQuests = GameServer.Database.SelectObjects<DbQuests>(DB.Column("Name").IsLike("%DailyQuest%"));
 
-                foreach (DBQuest existingDailyQuest in existingDailyQuests)
+                foreach (DbQuests existingDailyQuest in existingDailyQuests)
                 {
                     if (existingDailyQuest.Step <= -1)
                         GameServer.Database.DeleteObject(existingDailyQuest);

@@ -68,7 +68,7 @@ namespace DOL.GS
         {
             base.LoadFromDatabase(obj);
 
-            DBDoor dbDoor = obj as DBDoor;
+            DbDoors dbDoor = obj as DbDoors;
 
             if (dbDoor == null)
                 return;
@@ -104,13 +104,13 @@ namespace DOL.GS
 
         public override void SaveIntoDatabase()
         {
-            DBDoor obj = null;
+            DbDoors obj = null;
 
             if (InternalID != null)
-                obj = GameServer.Database.FindObjectByKey<DBDoor>(InternalID);
+                obj = GameServer.Database.FindObjectByKey<DbDoors>(InternalID);
 
             if (obj == null)
-                obj = new DBDoor();
+                obj = new DbDoors();
 
             obj.Name = Name;
             obj.InternalID = DoorID;

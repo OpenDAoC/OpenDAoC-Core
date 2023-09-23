@@ -27,7 +27,7 @@ namespace DOL.GS
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItems weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -111,7 +111,7 @@ namespace DOL.GS
 			{
 				if (m_VortanosSCDebuff == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 60;
@@ -140,7 +140,7 @@ namespace DOL.GS
 			{
 				if (m_VortanosDebuffDQ == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 60;
@@ -345,7 +345,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Vortanos_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 3.5;
 					spell.RecastDelay = 10;
@@ -375,7 +375,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Vortanos_Dot == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;
@@ -427,7 +427,7 @@ namespace DOL.GS
 				default: return 10;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItems weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}

@@ -58,8 +58,8 @@ namespace DOL.GS.Keeps
 			set { m_component = value; }
 		}
 
-		private DBKeepPosition m_position;
-		public DBKeepPosition Position
+		private DbKeepPositions m_position;
+		public DbKeepPositions Position
 		{
 			get { return m_position; }
 			set { m_position = value; }
@@ -674,7 +674,7 @@ namespace DOL.GS.Keeps
 			base.DeleteFromDatabase();
 		}
 
-		public void LoadFromPosition(DBKeepPosition pos, GameKeepComponent component)
+		public void LoadFromPosition(DbKeepPositions pos, GameKeepComponent component)
 		{
 			m_templateID = pos.TemplateID;
 			m_component = component;
@@ -688,7 +688,7 @@ namespace DOL.GS.Keeps
 		/// Move a guard to a position
 		/// </summary>
 		/// <param name="position">The new position for the guard</param>
-		public void MoveToPosition(DBKeepPosition position)
+		public void MoveToPosition(DbKeepPositions position)
 		{
 			PositionMgr.LoadGuardPosition(position, this);
 			if (!InCombat)
@@ -736,11 +736,11 @@ namespace DOL.GS.Keeps
 			int emblem = 0;
 			if (guild != null)
 				emblem = guild.Emblem;
-			InventoryItem lefthand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItems lefthand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 			if (lefthand != null)
 				lefthand.Emblem = emblem;
 
-			InventoryItem cloak = Inventory.GetItem(eInventorySlot.Cloak);
+			DbInventoryItems cloak = Inventory.GetItem(eInventorySlot.Cloak);
 			if (cloak != null)
 			{
 				cloak.Emblem = emblem;
@@ -881,7 +881,7 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		public override void AutoSetStats(Mob dbMob = null)
+		public override void AutoSetStats(DbMobs dbMob = null)
 		{
 			Strength = (short) (Properties.GUARD_AUTOSET_STR_BASE + Level * Properties.GUARD_AUTOSET_STR_MULTIPLIER);
 			Constitution = (short) (Properties.GUARD_AUTOSET_CON_BASE + Level * Properties.GUARD_AUTOSET_CON_MULTIPLIER);
@@ -1003,11 +1003,11 @@ namespace DOL.GS.Keeps
 		private static Spell m_midLordHealSpell;
 		private static Spell m_hibLordHealSpell;
 
-		private static DBSpell BaseHealSpell
+		private static DbSpells BaseHealSpell
         {
 			get
             {
-				DBSpell spell = new DBSpell();
+				DbSpells spell = new DbSpells();
 				spell.AllowAdd = false;
 				spell.CastTime = 2;
 				spell.Name = "Guard Heal";
@@ -1017,11 +1017,11 @@ namespace DOL.GS.Keeps
 			}
         }
 
-		private static DBSpell LordBaseHealSpell
+		private static DbSpells LordBaseHealSpell
 		{
 			get
 			{
-				DBSpell spell = BaseHealSpell;
+				DbSpells spell = BaseHealSpell;
 				spell.CastTime = 2;
 				spell.Target = "Self";
 				spell.Value = 225;
@@ -1031,11 +1031,11 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		private static DBSpell GuardBaseHealSpell
+		private static DbSpells GuardBaseHealSpell
 		{
 			get
 			{
-				DBSpell spell = BaseHealSpell;
+				DbSpells spell = BaseHealSpell;
 				spell.CastTime = 2;
 				spell.Value = 200;
 				spell.Target = "Realm";
@@ -1049,7 +1049,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_albLordHealSpell == null)
 				{
-					DBSpell spell = LordBaseHealSpell;
+					DbSpells spell = LordBaseHealSpell;
 					spell.ClientEffect = 1340;
 					spell.SpellID = 90001;
 					m_albLordHealSpell = new Spell(spell, 50);
@@ -1064,7 +1064,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_midLordHealSpell == null)
 				{
-					DBSpell spell = LordBaseHealSpell;
+					DbSpells spell = LordBaseHealSpell;
 					spell.ClientEffect = 3011;
 					spell.SpellID = 90002;
 					m_midLordHealSpell = new Spell(spell, 50);
@@ -1079,7 +1079,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_hibLordHealSpell == null)
 				{
-					DBSpell spell = LordBaseHealSpell;
+					DbSpells spell = LordBaseHealSpell;
 					spell.ClientEffect = 3030;
 					spell.SpellID = 90003;
 					m_hibLordHealSpell = new Spell(spell, 50);
@@ -1098,7 +1098,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_albGuardHealSmallSpell == null)
 				{
-					DBSpell spell = GuardBaseHealSpell;
+					DbSpells spell = GuardBaseHealSpell;
 					spell.ClientEffect = 1340;
 					spell.SpellID = 90004;
 					m_albGuardHealSmallSpell = new Spell(spell, 50);
@@ -1113,7 +1113,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_midGuardHealSmallSpell == null)
 				{
-					DBSpell spell = GuardBaseHealSpell;
+					DbSpells spell = GuardBaseHealSpell;
 					spell.ClientEffect = 3011;
 					spell.SpellID = 90005;
 					m_midGuardHealSmallSpell = new Spell(spell, 50);
@@ -1128,7 +1128,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_hibGuardHealSmallSpell == null)
 				{
-					DBSpell spell = GuardBaseHealSpell;
+					DbSpells spell = GuardBaseHealSpell;
 					spell.ClientEffect = 3030;
 					spell.SpellID = 90006;
 					m_hibGuardHealSmallSpell = new Spell(spell, 50);

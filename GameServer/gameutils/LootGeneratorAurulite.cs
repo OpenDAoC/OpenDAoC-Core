@@ -32,7 +32,7 @@ namespace DOL.GS
 	public class LootGeneratorAurulite : LootGeneratorBase
 	{
 		
-		public static ItemTemplate m_aurulite = GameServer.Database.FindObjectByKey<ItemTemplate>("aurulite");
+		public static DbItemTemplates m_aurulite = GameServer.Database.FindObjectByKey<DbItemTemplates>("aurulite");
 		
 		/// <summary>
         /// Generate loot for given mob
@@ -45,7 +45,7 @@ namespace DOL.GS
 			LootList loot = base.GenerateLoot(mob, killer);
 			
 			// ItemTemplate aurulite = new ItemTemplate(m_aurulite);  Creating a new ItemTemplate throws an exception later
-			ItemTemplate aurulite = GameServer.Database.FindObjectByKey<ItemTemplate>(m_aurulite.Id_nb);
+			DbItemTemplates aurulite = GameServer.Database.FindObjectByKey<DbItemTemplates>(m_aurulite.Id_nb);
 			
 			
 			try

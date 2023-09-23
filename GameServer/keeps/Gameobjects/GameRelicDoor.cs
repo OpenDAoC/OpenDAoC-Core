@@ -225,7 +225,7 @@ namespace DOL.GS.Keeps
 		/// <param name="obj"></param>
 		public override void LoadFromDatabase(DataObject obj)
 		{
-			DBDoor door = obj as DBDoor;
+			DbDoors door = obj as DbDoors;
 			if (door == null)
 				return;
 			base.LoadFromDatabase(obj);

@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
 
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public AtlasOF_FirstAid(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_FirstAid(DbAbilities dba, int level) : base(dba, level) { }
 
 		public override int MaxLevel { get { return 3; } }
         public override int CostForUpgrade(int currentLevel) { return AtlasRAHelpers.GetCommonUpgradeCostFor3LevelsRA(currentLevel); }

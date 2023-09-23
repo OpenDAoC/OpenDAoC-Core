@@ -88,7 +88,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_SpriggitDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.Power = 0;
@@ -116,7 +116,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_SpriggitRoot == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.Power = 0;

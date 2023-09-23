@@ -81,7 +81,7 @@ namespace DOL.GS
         /// based on!
         /// (renamed and private, cause if derive is needed overwrite PlayerCharacter)
         /// </summary>
-        protected DOLCharacters m_dbCharacter;
+        protected DbCoreCharacters m_dbCharacter;
 
         /// <summary>
         /// The guild id this character belong to
@@ -255,7 +255,7 @@ namespace DOL.GS
         /// <summary>
         /// The character the player is based on
         /// </summary>
-        internal DOLCharacters DBCharacter
+        internal DbCoreCharacters DBCharacter
         {
             get { return m_dbCharacter; }
         }
@@ -1056,7 +1056,7 @@ namespace DOL.GS
             }
 
             // Check for battleground caps.
-            Battleground bg = GameServer.KeepManager.GetBattleground(CurrentRegionID);
+            DbBattlegrounds bg = GameServer.KeepManager.GetBattleground(CurrentRegionID);
             if (bg != null)
             {
                 if (Level > bg.MaxLevel || RealmLevel >= bg.MaxRealmLevel)
@@ -1486,7 +1486,7 @@ namespace DOL.GS
         /// <param name="forced">if true, will release even if not dead</param>
         public virtual void Release(eReleaseType releaseCommand, bool forced)
         {
-            DOLCharacters character = DBCharacter;
+            DbCoreCharacters character = DBCharacter;
             if (character == null) return;
 
             // check if valid housebind
@@ -1497,7 +1497,7 @@ namespace DOL.GS
             }
 
             //battlegrounds caps
-            Battleground bg = GameServer.KeepManager.GetBattleground(CurrentRegionID);
+            DbBattlegrounds bg = GameServer.KeepManager.GetBattleground(CurrentRegionID);
             if (bg != null && releaseCommand == eReleaseType.RvR)
             {
                 if (Level > bg.MaxLevel)
@@ -2371,7 +2371,7 @@ namespace DOL.GS
             int oldstat = GetBaseStat(stat);
             base.ChangeBaseStat(stat, val);
             int newstat = GetBaseStat(stat);
-            DOLCharacters character = DBCharacter; // to call it only once, if in future there will be some special code to get the character
+            DbCoreCharacters character = DBCharacter; // to call it only once, if in future there will be some special code to get the character
             // Graveen: always positive and not null. This allows /player stats to substract values safely
             if (newstat < 1) newstat = 1;
             if (character != null && oldstat != newstat)
@@ -5125,10 +5125,10 @@ namespace DOL.GS
             //check for cached loyalty days, and grab value if needed
             if (numCurrentLoyalDays == 0)
             {
-                AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+                DbAccountXRealmLoyalty realmLoyalty = DOLDB<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
                 if (realmLoyalty == null)
                 {
-                    AccountXRealmLoyalty newLoyalty = new AccountXRealmLoyalty();
+                    DbAccountXRealmLoyalty newLoyalty = new DbAccountXRealmLoyalty();
                     newLoyalty.AccountId = this.Client.Account.ObjectId;
                     newLoyalty.Realm = (int)this.Realm;
                     newLoyalty.LoyalDays = 1;
@@ -5151,7 +5151,7 @@ namespace DOL.GS
 
             if (loyaltyCheck < DateTime.Now.AddDays(-1))
             {
-                List<AccountXRealmLoyalty> rloyal = new List<AccountXRealmLoyalty>(DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
+                List<DbAccountXRealmLoyalty> rloyal = new List<DbAccountXRealmLoyalty>(DOLDB<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
                 bool realmFound = false;
                 foreach (var rl in rloyal)
                 {
@@ -5184,7 +5184,7 @@ namespace DOL.GS
 
                 if (realmFound == false)
                 {
-                    AccountXRealmLoyalty newLoyalty = new AccountXRealmLoyalty();
+                    DbAccountXRealmLoyalty newLoyalty = new DbAccountXRealmLoyalty();
                     newLoyalty.AccountId = this.Client.Account.ObjectId;
                     newLoyalty.Realm = (int)this.Realm;
                     newLoyalty.LoyalDays = 1;
@@ -5465,7 +5465,7 @@ namespace DOL.GS
                 if (Client.Account.PrivLevel == 1)
                 {
                     TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
-                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    DbTimeXLevel MaxLevelTime = new DbTimeXLevel();
                     MaxLevelTime.Character_ID = this.ObjectId;
                     MaxLevelTime.Character_Name = this.Name;
                     MaxLevelTime.Character_Realm = realm;
@@ -5487,7 +5487,7 @@ namespace DOL.GS
                 if (Client.Account.PrivLevel == 1)
                 {
                     TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
-                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    DbTimeXLevel MaxLevelTime = new DbTimeXLevel();
                     MaxLevelTime.Character_ID = this.ObjectId;
                     MaxLevelTime.Character_Name = this.Name;
                     MaxLevelTime.Character_Realm = realm;
@@ -5520,7 +5520,7 @@ namespace DOL.GS
                 if (Client.Account.PrivLevel == 1)
                 {
                     TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
-                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    DbTimeXLevel MaxLevelTime = new DbTimeXLevel();
                     MaxLevelTime.Character_ID = this.ObjectId;
                     MaxLevelTime.Character_Name = this.Name;
                     MaxLevelTime.Character_Realm = realm;
@@ -5542,7 +5542,7 @@ namespace DOL.GS
                 if (Client.Account.PrivLevel == 1)
                 {
                     TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
-                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    DbTimeXLevel MaxLevelTime = new DbTimeXLevel();
                     MaxLevelTime.Character_ID = this.ObjectId;
                     MaxLevelTime.Character_Name = this.Name;
                     MaxLevelTime.Character_Realm = realm;
@@ -5574,7 +5574,7 @@ namespace DOL.GS
                 if (Client.Account.PrivLevel == 1)
                 {
                     TimeSpan playedTime = TimeSpan.FromSeconds(this.PlayedTime);
-                    DBTimeXLevel MaxLevelTime = new DBTimeXLevel();
+                    DbTimeXLevel MaxLevelTime = new DbTimeXLevel();
                     MaxLevelTime.Character_ID = this.ObjectId;
                     MaxLevelTime.Character_Name = this.Name;
                     MaxLevelTime.Character_Realm = realm;
@@ -5855,7 +5855,7 @@ namespace DOL.GS
 
         public void RaiseRealmLoyaltyFloor(int amount)
         {
-            AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+            DbAccountXRealmLoyalty realmLoyalty = DOLDB<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
             if (realmLoyalty != null)
             {
@@ -5864,7 +5864,7 @@ namespace DOL.GS
             }
             else
             {
-                AccountXRealmLoyalty newLoyalty = new AccountXRealmLoyalty();
+                DbAccountXRealmLoyalty newLoyalty = new DbAccountXRealmLoyalty();
                 newLoyalty.AccountId = this.Client.Account.ObjectId;
                 newLoyalty.Realm = (int)this.Realm;
                 newLoyalty.MinimumLoyalDays = amount;
@@ -6021,12 +6021,12 @@ namespace DOL.GS
                 }
             }
 
-            InventoryItem[] oldActiveSlots = new InventoryItem[4];
-            InventoryItem[] newActiveSlots = new InventoryItem[4];
-            InventoryItem rightHandSlot = Inventory.GetItem(eInventorySlot.RightHandWeapon);
-            InventoryItem leftHandSlot = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-            InventoryItem twoHandSlot = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-            InventoryItem distanceSlot = Inventory.GetItem(eInventorySlot.DistanceWeapon);
+            DbInventoryItems[] oldActiveSlots = new DbInventoryItems[4];
+            DbInventoryItems[] newActiveSlots = new DbInventoryItems[4];
+            DbInventoryItems rightHandSlot = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+            DbInventoryItems leftHandSlot = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItems twoHandSlot = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+            DbInventoryItems distanceSlot = Inventory.GetItem(eInventorySlot.DistanceWeapon);
 
             // save old active weapons
             // simple active slot logic:
@@ -6247,7 +6247,7 @@ namespace DOL.GS
                     // decrease condition of hitted armor piece
                     if (ad.ArmorHitLocation != eArmorSlot.NOTSET)
                     {
-                        InventoryItem item = Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
+                        DbInventoryItems item = Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
 
                         if (item != null)
                         {
@@ -6263,7 +6263,7 @@ namespace DOL.GS
                 }
                 case eAttackResult.Blocked:
                 {
-                    InventoryItem reactiveItem = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                    DbInventoryItems reactiveItem = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                     if (reactiveItem != null && reactiveItem.Object_Type == (int)eObjectType.Shield)
                     {
                         TryReactiveEffect(reactiveItem, ad.Attacker);
@@ -6311,7 +6311,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="reactiveItem"></param>
         /// <param name="target"></param>
-        protected virtual void TryReactiveEffect(InventoryItem reactiveItem, GameLiving target)
+        protected virtual void TryReactiveEffect(DbInventoryItems reactiveItem, GameLiving target)
         {
             if (reactiveItem != null)
             {
@@ -6415,7 +6415,7 @@ namespace DOL.GS
             {
                 int eaf = 0;
                 int abs = 0;
-                foreach (InventoryItem item in Inventory.VisibleItems)
+                foreach (DbInventoryItems item in Inventory.VisibleItems)
                 {
                     double factor = 0;
                     switch (item.Item_Type)
@@ -6549,7 +6549,7 @@ namespace DOL.GS
         /// <summary>
         /// determines current weaponspeclevel
         /// </summary>
-        public override int WeaponSpecLevel(InventoryItem weapon)
+        public override int WeaponSpecLevel(DbInventoryItems weapon)
         {
             if (weapon == null)
                 return 0;
@@ -6563,7 +6563,7 @@ namespace DOL.GS
             return GameServer.ServerRules.GetObjectSpecLevel(this, (eObjectType)weapon.Object_Type);
         }
 
-        public virtual String GetWeaponSpec(InventoryItem weapon)
+        public virtual String GetWeaponSpec(DbInventoryItems weapon)
         {
             if (weapon == null)
                 return null;
@@ -6582,7 +6582,7 @@ namespace DOL.GS
         /// <summary>
         /// determines current weaponspeclevel
         /// </summary>
-        public int WeaponBaseSpecLevel(InventoryItem weapon)
+        public int WeaponBaseSpecLevel(DbInventoryItems weapon)
         {
             if (weapon == null)
                 return 0;
@@ -6601,7 +6601,7 @@ namespace DOL.GS
         /// <summary>
         /// Gets the weaponskill of weapon
         /// </summary>
-        public override double GetWeaponSkill(InventoryItem weapon)
+        public override double GetWeaponSkill(DbInventoryItems weapon)
         {
             if (weapon == null)
                 return 0;
@@ -6616,7 +6616,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="weapon"></param>
         /// <returns></returns>
-        public override int GetWeaponStat(InventoryItem weapon)
+        public override int GetWeaponStat(DbInventoryItems weapon)
         {
             if (weapon != null)
             {
@@ -6654,7 +6654,7 @@ namespace DOL.GS
         public override double GetArmorAF(eArmorSlot slot)
         {
             if (slot == eArmorSlot.NOTSET) return 0;
-            InventoryItem item = Inventory.GetItem((eInventorySlot)slot);
+            DbInventoryItems item = Inventory.GetItem((eInventorySlot)slot);
             if (item == null) return 0;
             double eaf = item.DPS_AF + BaseBuffBonusCategory[(int)eProperty.ArmorFactor]; // base AF buff
 
@@ -6691,7 +6691,7 @@ namespace DOL.GS
             if (slot == eArmorSlot.NOTSET)
                 return 0;
 
-            InventoryItem item = Inventory.GetItem((eInventorySlot)slot);
+            DbInventoryItems item = Inventory.GetItem((eInventorySlot)slot);
 
             if (item == null)
                 return 0;
@@ -6720,7 +6720,7 @@ namespace DOL.GS
         /// Used to display weapon damage in stats, 16.5dps = 1650
         /// </summary>
         /// <param name="weapon">the weapon used for attack</param>
-        public override double WeaponDamage(InventoryItem weapon)
+        public override double WeaponDamage(DbInventoryItems weapon)
         {
             if (weapon == null)
                 return 0;
@@ -6728,7 +6728,7 @@ namespace DOL.GS
             return ApplyWeaponQualityAndConditionToDamage(weapon, WeaponDamageWithoutQualityAndCondition(weapon));
         }
 
-        public double WeaponDamageWithoutQualityAndCondition(InventoryItem weapon)
+        public double WeaponDamageWithoutQualityAndCondition(DbInventoryItems weapon)
         {
             if (weapon == null)
                 return 0;
@@ -6749,7 +6749,7 @@ namespace DOL.GS
             return Dps * 0.1;
         }
 
-        public double ApplyWeaponQualityAndConditionToDamage(InventoryItem weapon, double damage)
+        public double ApplyWeaponQualityAndConditionToDamage(DbInventoryItems weapon, double damage)
         {
             return damage * weapon.Quality * 0.01 * weapon.Condition / weapon.MaxCondition;
         }
@@ -7140,7 +7140,7 @@ namespace DOL.GS
 
             if (HCFlag)
             {
-                DOLCharacters cha = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(Name));
+                DbCoreCharacters cha = DOLDB<DbCoreCharacters>.SelectObject(DB.Column("Name").IsEqualTo(Name));
                 if (cha == null) return;
                 Client.Out.SendPlayerQuit(true);
                 GameServer.Database.DeleteObject(cha);
@@ -7491,7 +7491,7 @@ namespace DOL.GS
         /// <param name="source">the source of the item</param>
         /// <param name="item">the item</param>
         /// <returns>true to accept, false to deny the item</returns>
-        public virtual bool ReceiveTradeItem(GamePlayer source, InventoryItem item)
+        public virtual bool ReceiveTradeItem(GamePlayer source, DbInventoryItems item)
         {
             if (source == null || item == null || source == this)
                 return false;
@@ -7730,12 +7730,12 @@ namespace DOL.GS
         }
         #endregion
 
-        private InventoryItem m_useItem;
+        private DbInventoryItems m_useItem;
 
         /// <summary>
         /// The item the player is trying to use.
         /// </summary>
-        public InventoryItem UseItem
+        public DbInventoryItems UseItem
         {
             get { return m_useItem; }
             set { m_useItem = value; }
@@ -7762,7 +7762,7 @@ namespace DOL.GS
 
             lock (Inventory)
             {
-                InventoryItem useItem = Inventory.GetItem((eInventorySlot) slot);
+                DbInventoryItems useItem = Inventory.GetItem((eInventorySlot) slot);
                 UseItem = useItem;
 
                 if (useItem == null)
@@ -7969,8 +7969,8 @@ namespace DOL.GS
                     {
                         if (useItem.Object_Type == (int) eObjectType.Poison)
                         {
-                            InventoryItem mainHand = ActiveWeapon;
-                            InventoryItem leftHand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                            DbInventoryItems mainHand = ActiveWeapon;
+                            DbInventoryItems leftHand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 
                             if (mainHand != null && mainHand.PoisonSpellID == 0)
                                 ApplyPoison(useItem, mainHand);
@@ -8139,7 +8139,7 @@ namespace DOL.GS
         /// Player is using a saddle bag to open up slots on a mount
         /// </summary>
         /// <param name="useItem"></param>
-        protected virtual void UseSaddleBag(InventoryItem useItem)
+        protected virtual void UseSaddleBag(DbInventoryItems useItem)
         {
             eHorseSaddleBag bag = eHorseSaddleBag.None;
 
@@ -8280,7 +8280,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="useItem"></param>
         /// <param name="type">1 == use1, 2 == use2</param>
-        protected virtual void UseItemCharge(InventoryItem useItem, int type)
+        protected virtual void UseItemCharge(DbInventoryItems useItem, int type)
         {
             int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MaxLevel, useItem.Level);
 
@@ -8384,7 +8384,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="item"></param>
         /// <param name="type"></param>
-        protected virtual bool UseMagicalItem(InventoryItem item, int type)
+        protected virtual bool UseMagicalItem(DbInventoryItems item, int type)
         {
             if (item == null)
                 return false;
@@ -8480,7 +8480,7 @@ namespace DOL.GS
         /// <param name="poisonPotion"></param>
         /// <param name="toItem"></param>
         /// <returns>true if applied</returns>
-        public bool ApplyPoison(InventoryItem poisonPotion, InventoryItem toItem)
+        public bool ApplyPoison(DbInventoryItems poisonPotion, DbInventoryItems toItem)
         {
             if (poisonPotion == null || toItem == null) return false;
             int envenomSpec = GetModifiedSpecLevel(Specs.Envenom);
@@ -9045,7 +9045,7 @@ namespace DOL.GS
 
             RefreshItemBonuses();
 
-            var playerDeck = DOLDB<DOLCharactersXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
+            var playerDeck = DOLDB<DbCoreCharactersXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
             if (playerDeck != null)
             {
                 this.RandomNumberDeck.LoadDeckFromJSON((playerDeck.Deck));
@@ -9314,7 +9314,7 @@ namespace DOL.GS
                 //now ban him
                 if (ServerProperties.Properties.BAN_HACKERS)
                 {
-                    DBBannedAccount b = new DBBannedAccount();
+                    DbBans b = new DbBans();
                     b.Author = "SERVER";
                     b.Ip = Client.TcpEndpointAddress;
                     b.Account = Client.Account.Name;
@@ -9341,7 +9341,7 @@ namespace DOL.GS
         #region Group/Friendlist/guild
 
         private Guild m_guild;
-        private DBRank m_guildRank;
+        private DbGuildRanks m_guildRank;
 
         /// <summary>
         /// Gets or sets the player's guild
@@ -9377,7 +9377,7 @@ namespace DOL.GS
         /// <summary>
         /// Gets or sets the player's guild rank
         /// </summary>
-        public DBRank GuildRank
+        public DbGuildRanks GuildRank
         {
             get { return m_guildRank; }
             set
@@ -10310,7 +10310,7 @@ namespace DOL.GS
         protected virtual void OnItemEquipped(DOLEvent e, object sender, EventArgs arguments)
         {
             if (arguments is ItemEquippedArgs == false) return;
-            InventoryItem item = ((ItemEquippedArgs)arguments).Item;
+            DbInventoryItems item = ((ItemEquippedArgs)arguments).Item;
             if (item == null) return;
 
             if (item is IGameInventoryItem)
@@ -10526,7 +10526,7 @@ namespace DOL.GS
         protected virtual void OnItemUnequipped(DOLEvent e, object sender, EventArgs arguments)
         {
             if (arguments is ItemUnequippedArgs == false) return;
-            InventoryItem item = ((ItemUnequippedArgs)arguments).Item;
+            DbInventoryItems item = ((ItemUnequippedArgs)arguments).Item;
             int prevSlot = (int)((ItemUnequippedArgs)arguments).PreviousSlotPosition;
             if (item == null) return;
 
@@ -10705,7 +10705,7 @@ namespace DOL.GS
             }
 
             //log.Debug("VisibleActiveWeaponSlots= " + VisibleActiveWeaponSlots);
-            foreach (InventoryItem item in Inventory.EquippedItems)
+            foreach (DbInventoryItems item in Inventory.EquippedItems)
             {
                 if (item == null)
                     continue;
@@ -10847,7 +10847,7 @@ namespace DOL.GS
         /// <param name="source"></param>
         /// <param name="item"></param>
         /// <returns>true if player took the item</returns>
-        public override bool ReceiveItem(GameLiving source, InventoryItem item)
+        public override bool ReceiveItem(GameLiving source, DbInventoryItems item)
         {
             //if (item == null) return false;
             GamePlayer sourcePlayer = source as GamePlayer;
@@ -10925,7 +10925,7 @@ namespace DOL.GS
             {
                 lock (Inventory)
                 {
-                    InventoryItem item = Inventory.GetItem(slot_pos);
+                    DbInventoryItems item = Inventory.GetItem(slot_pos);
                     if (!item.IsDropable)
                     {
                         Out.SendMessage(item.GetName(0, true) + " can not be dropped!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -10953,7 +10953,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="item">the item to create on the ground</param>
         /// <returns>the GameInventoryItem on the ground</returns>
-        public virtual WorldInventoryItem CreateItemOnTheGround(InventoryItem item)
+        public virtual WorldInventoryItem CreateItemOnTheGround(DbInventoryItems item)
         {
             WorldInventoryItem gameItem = null;
 
@@ -11214,7 +11214,7 @@ namespace DOL.GS
                 GameHouseVault houseVault = floorObject as GameHouseVault;
                 if (houseVault.Detach(this))
                 {
-                    ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(houseVault.TemplateID);
+                    DbItemTemplates template = GameServer.Database.FindObjectByKey<DbItemTemplates>(houseVault.TemplateID);
                     Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(template));
                     InventoryLogging.LogInventoryAction("(HOUSE;" + floorObject.CurrentHouse.HouseNumber + ")", this, eInventoryActionType.Other, template);
                 }
@@ -11393,7 +11393,7 @@ namespace DOL.GS
         /// </summary>
         protected virtual void LoadSkillsFromCharacter()
         {
-            DOLCharacters character = DBCharacter; // if its derived and filled with some code
+            DbCoreCharacters character = DBCharacter; // if its derived and filled with some code
             if (character == null) return; // no character => exit
 
             #region load class spec
@@ -11649,12 +11649,12 @@ namespace DOL.GS
         public override void LoadFromDatabase(DataObject obj)
         {
             base.LoadFromDatabase(obj);
-            if (!(obj is DOLCharacters))
+            if (!(obj is DbCoreCharacters))
                 return;
-            m_dbCharacter = (DOLCharacters)obj;
+            m_dbCharacter = (DbCoreCharacters)obj;
 
             LoyaltyManager.CachePlayer(this);
-            List<AccountXRealmLoyalty> realmLoyaltyList = DOLDB<AccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<AccountXRealmLoyalty>;
+            List<DbAccountXRealmLoyalty> realmLoyaltyList = DOLDB<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<DbAccountXRealmLoyalty>;
             DateTime lastRealmLoyaltyUpdateTime = DateTime.UnixEpoch;
             int loyaltyDays = 0;
 
@@ -11675,7 +11675,7 @@ namespace DOL.GS
             this.TempProperties.SetProperty(REALM_LOYALTY_KEY, lastRealmLoyaltyUpdateTime);
             this.TempProperties.SetProperty(CURRENT_LOYALTY_KEY, loyaltyDays);
 
-            AccountXMoney MoneyForRealm = DOLDB<AccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+            DbAccountXMoney MoneyForRealm = DOLDB<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
             if (MoneyForRealm == null)
             {
@@ -11685,11 +11685,11 @@ namespace DOL.GS
                 int realmSilver = 0;
                 int realmCopper = 0;
 
-                AccountXMoney newMoney = new AccountXMoney();
+                DbAccountXMoney newMoney = new DbAccountXMoney();
                 newMoney.AccountId = this.Client.Account.ObjectId;
                 newMoney.Realm = (int)this.Realm;
 
-                foreach (DOLCharacters character in this.Client.Account.Characters) // cycling through their toons
+                foreach (DbCoreCharacters character in this.Client.Account.Characters) // cycling through their toons
                 {
                     if ((eRealm)character.Realm == this.Realm) // account money is realm bound
                     {
@@ -11755,7 +11755,7 @@ namespace DOL.GS
 
             if (m_guild != null)
             {
-                foreach (DBRank rank in m_guild.Ranks)
+                foreach (DbGuildRanks rank in m_guild.Ranks)
                 {
                     if (rank == null) continue;
                     if (rank.RankLevel == DBCharacter.GuildRank)
@@ -11847,7 +11847,7 @@ namespace DOL.GS
             LoadQuests();
 
             // Load Task object of player ...
-            var tasks = DOLDB<DBTask>.SelectObjects(DB.Column("Character_ID").IsEqualTo(InternalID));
+            var tasks = DOLDB<DbTasks>.SelectObjects(DB.Column("Character_ID").IsEqualTo(InternalID));
             if (tasks.Count == 1)
             {
                 m_task = AbstractTask.LoadFromDatabase(this, tasks[0]);
@@ -11859,10 +11859,10 @@ namespace DOL.GS
             }
 
             // Load ML steps of player ...
-            var mlsteps = DOLDB<DBCharacterXMasterLevel>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+            var mlsteps = DOLDB<DbCharacterXMasterLevel>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
             if (mlsteps.Count > 0)
             {
-                foreach (DBCharacterXMasterLevel mlstep in mlsteps)
+                foreach (DbCharacterXMasterLevel mlstep in mlsteps)
                     m_mlSteps.Add(mlstep);
             }
 
@@ -11906,7 +11906,7 @@ namespace DOL.GS
         {
             try
             {
-                var existingDeck = DOLDB<DOLCharactersXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
+                var existingDeck = DOLDB<DbCoreCharactersXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
                 if (existingDeck != null)
                 {
                     existingDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
@@ -11914,17 +11914,17 @@ namespace DOL.GS
                 }
                 else
                 {
-                    DOLCharactersXDeck playerDeck = new DOLCharactersXDeck();
+                    DbCoreCharactersXDeck playerDeck = new DbCoreCharactersXDeck();
                     playerDeck.DOLCharactersObjectId = this.ObjectId;
                     playerDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
                     GameServer.Database.AddObject(playerDeck);
                 }
 
-                AccountXRealmLoyalty realmLoyalty = DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+                DbAccountXRealmLoyalty realmLoyalty = DOLDB<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
                 if (realmLoyalty == null)
                 {
-                    realmLoyalty = new AccountXRealmLoyalty();
+                    realmLoyalty = new DbAccountXRealmLoyalty();
                     realmLoyalty.AccountId = this.Client.Account.ObjectId;
                     realmLoyalty.Realm = (int)this.Realm;
                     realmLoyalty.LoyalDays = 1;
@@ -11937,11 +11937,11 @@ namespace DOL.GS
                     GameServer.Database.SaveObject(realmLoyalty);
                 }
 
-                AccountXMoney MoneyForRealm = DOLDB<AccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+                DbAccountXMoney MoneyForRealm = DOLDB<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
                 if (MoneyForRealm == null)
                 {
-                    AccountXMoney newMoney = new AccountXMoney();
+                    DbAccountXMoney newMoney = new DbAccountXMoney();
                     newMoney.AccountId = this.Client.Account.ObjectId;
                     newMoney.Realm = (int)this.Realm;
                     newMoney.Copper = DBCharacter.Copper;
@@ -11996,9 +11996,9 @@ namespace DOL.GS
                 GameServer.Database.SaveObject(DBCharacter);
                 Inventory.SaveIntoDatabase(InternalID);
 
-                DOLCharacters cachedCharacter = null;
+                DbCoreCharacters cachedCharacter = null;
 
-                foreach (DOLCharacters accountChar in Client.Account.Characters)
+                foreach (DbCoreCharacters accountChar in Client.Account.Characters)
                 {
                     if (accountChar.ObjectId == InternalID)
                     {
@@ -12035,7 +12035,7 @@ namespace DOL.GS
                 }
 
                 if (m_mlSteps != null)
-                    GameServer.Database.SaveObject(m_mlSteps.OfType<DBCharacterXMasterLevel>());
+                    GameServer.Database.SaveObject(m_mlSteps.OfType<DbCharacterXMasterLevel>());
 
                 if (log.IsInfoEnabled)
                     log.InfoFormat("{0} saved!", DBCharacter.Name);
@@ -12623,10 +12623,10 @@ namespace DOL.GS
             _questListFinished.Clear();
 
             // Scripted quests
-            var quests = DOLDB<DBQuest>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+            var quests = DOLDB<DbQuests>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
             int activeQuestCount = 0;
 
-            foreach (DBQuest dbquest in quests)
+            foreach (DbQuests dbquest in quests)
             {
                 AbstractQuest quest = AbstractQuest.LoadFromDatabase(this, dbquest);
 
@@ -12661,11 +12661,11 @@ namespace DOL.GS
             }
 
             // Data driven quests for this player
-            var dataQuests = DOLDB<CharacterXDataQuest>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+            var dataQuests = DOLDB<DbCharacterXDataQuest>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
 
-            foreach (CharacterXDataQuest quest in dataQuests)
+            foreach (DbCharacterXDataQuest quest in dataQuests)
             {
-                DBDataQuest dbDataQuest = GameServer.Database.FindObjectByKey<DBDataQuest>(quest.DataQuestID);
+                DbDataQuest dbDataQuest = GameServer.Database.FindObjectByKey<DbDataQuest>(quest.DataQuestID);
                 if (dbDataQuest != null && dbDataQuest.StartType != (byte)DataQuest.eStartType.Collection)
                 {
                     DataQuest dataQuest = new DataQuest(this, dbDataQuest, quest);
@@ -13175,11 +13175,11 @@ namespace DOL.GS
             if (DBCharacter == null)
                 return;
 
-            AccountXCrafting CraftingForRealm = DOLDB<AccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+            DbAccountXCrafting CraftingForRealm = DOLDB<DbAccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
             if (CraftingForRealm == null)
             {
-                AccountXCrafting newCrafting = new AccountXCrafting();
+                DbAccountXCrafting newCrafting = new DbAccountXCrafting();
                 newCrafting.AccountId = this.AccountName;
                 newCrafting.Realm = (int)this.Realm;
                 newCrafting.CraftingPrimarySkill = 15;
@@ -13298,12 +13298,12 @@ namespace DOL.GS
         /// <summary>
         /// This function is called each time a player try to salvage a item
         /// </summary>
-        public virtual void SalvageItem(InventoryItem item)
+        public virtual void SalvageItem(DbInventoryItems item)
         {
             Salvage.BeginWork(this, item);
         }
 
-        public virtual void SalvageItemList(IList<InventoryItem> itemList)
+        public virtual void SalvageItemList(IList<DbInventoryItems> itemList)
         {
             Salvage.BeginWorkList(this, itemList);
         }
@@ -13311,7 +13311,7 @@ namespace DOL.GS
         /// <summary>
         /// This function is called each time a player try to repair a item
         /// </summary>
-        public virtual void RepairItem(InventoryItem item)
+        public virtual void RepairItem(DbInventoryItems item)
         {
             Repair.BeginWork(this, item);
         }
@@ -13391,7 +13391,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="item">The item to spell craft</param>
         /// <returns>true if trade has started</returns>
-        public bool OpenSelfCraft(InventoryItem item)
+        public bool OpenSelfCraft(DbInventoryItems item)
         {
             if (item == null) return false;
 
@@ -13971,11 +13971,11 @@ namespace DOL.GS
         public void Achieve(string achievementName, int count = 1)
         {
             //DOL.Database.Achievement
-            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+            DbAchievements achievement = DOLDB<DbAchievements>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
 
             if (achievement == null)
             {
-                achievement = new Achievement();
+                achievement = new DbAchievements();
                 achievement.AccountId = this.Client.Account.ObjectId;
                 achievement.AchievementName = achievementName;
                 achievement.Realm = (int) this.Realm;
@@ -13991,11 +13991,11 @@ namespace DOL.GS
         public void SetAchievementTo(string achievementName, int value)
         {
             //DOL.Database.Achievement
-            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+            DbAchievements achievement = DOLDB<DbAchievements>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
 
             if (achievement == null)
             {
-                achievement = new Achievement();
+                achievement = new DbAchievements();
                 achievement.AccountId = this.Client.Account.ObjectId;
                 achievement.AchievementName = achievementName;
                 achievement.Realm = (int) this.Realm;
@@ -14010,7 +14010,7 @@ namespace DOL.GS
 
         public int GetAchievementProgress(string achievementName)
         {
-            Achievement achievement = DOLDB<Achievement>.SelectObject(DB.Column("AccountID")
+            DbAchievements achievement = DOLDB<DbAchievements>.SelectObject(DB.Column("AccountID")
                 .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
 
             if (achievement == null)
@@ -14348,7 +14348,7 @@ namespace DOL.GS
                 set
                 {
                     m_id = value;
-                    InventoryItem item = m_player.Inventory.GetItem(eInventorySlot.Horse);
+                    DbInventoryItems item = m_player.Inventory.GetItem(eInventorySlot.Horse);
                     if (item != null)
                         m_level = item.Level;
                     else
@@ -14361,7 +14361,7 @@ namespace DOL.GS
             {
                 get
                 {
-                    InventoryItem barding = m_player.Inventory.GetItem(eInventorySlot.HorseBarding);
+                    DbInventoryItems barding = m_player.Inventory.GetItem(eInventorySlot.HorseBarding);
                     if (barding != null)
                         return (byte)barding.DPS_AF;
                     return m_bardingId;
@@ -14377,7 +14377,7 @@ namespace DOL.GS
             {
                 get
                 {
-                    InventoryItem barding = m_player.Inventory.GetItem(eInventorySlot.HorseBarding);
+                    DbInventoryItems barding = m_player.Inventory.GetItem(eInventorySlot.HorseBarding);
                     if (barding != null)
                         return (ushort)barding.Color;
                     return m_bardingColor;
@@ -14393,7 +14393,7 @@ namespace DOL.GS
             {
                 get
                 {
-                    InventoryItem armor = m_player.Inventory.GetItem(eInventorySlot.HorseArmor);
+                    DbInventoryItems armor = m_player.Inventory.GetItem(eInventorySlot.HorseArmor);
                     if (armor != null)
                         return (byte)armor.DPS_AF;
                     return m_saddleId;
@@ -14409,7 +14409,7 @@ namespace DOL.GS
             {
                 get
                 {
-                    InventoryItem armor = m_player.Inventory.GetItem(eInventorySlot.HorseArmor);
+                    DbInventoryItems armor = m_player.Inventory.GetItem(eInventorySlot.HorseArmor);
                     if (armor != null)
                         return (byte)armor.Color;
                     return m_saddleColor;
@@ -14437,7 +14437,7 @@ namespace DOL.GS
                 set
                 {
                     m_name = value;
-                    InventoryItem item = m_player.Inventory.GetItem(eInventorySlot.Horse);
+                    DbInventoryItems item = m_player.Inventory.GetItem(eInventorySlot.Horse);
                     if (item != null)
                         item.Creator = Name;
                     m_player.Out.SendSetControlledHorse(m_player);
@@ -14911,7 +14911,7 @@ namespace DOL.GS
             if (MLLevel >= mlLevel) return true;
 
             // Check current registered steps
-            foreach (DBCharacterXMasterLevel mlStep in m_mlSteps)
+            foreach (DbCharacterXMasterLevel mlStep in m_mlSteps)
             {
                 // Found so return value
                 if (mlStep.MLLevel == mlLevel && mlStep.MLStep == step)
@@ -14933,7 +14933,7 @@ namespace DOL.GS
             // Check current registered steps in case of previous GM rollback command
             if (m_mlSteps != null)
             {
-                foreach (DBCharacterXMasterLevel mlStep in m_mlSteps)
+                foreach (DbCharacterXMasterLevel mlStep in m_mlSteps)
                 {
                     if (mlStep.MLLevel == mlLevel && mlStep.MLStep == step)
                     {
@@ -14946,7 +14946,7 @@ namespace DOL.GS
             if (setFinished)
             {
                 // Register new step
-                DBCharacterXMasterLevel newStep = new DBCharacterXMasterLevel();
+                DbCharacterXMasterLevel newStep = new DbCharacterXMasterLevel();
                 newStep.Character_ID = QuestPlayerID;
                 newStep.MLLevel = mlLevel;
                 newStep.MLStep = step;
@@ -15058,7 +15058,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="client">The GameClient for this player</param>
         /// <param name="dbChar">The character for this player</param>
-        public GamePlayer(GameClient client, DOLCharacters dbChar) : base()
+        public GamePlayer(GameClient client, DbCoreCharacters dbChar) : base()
         {
             IsJumping = false;
             m_steed = new WeakRef(null);
@@ -15122,14 +15122,14 @@ namespace DOL.GS
             {
                 (item as IGameInventoryItem).Delve(delveInfo, this);
             }
-            else if (item is InventoryItem)
+            else if (item is DbInventoryItems)
             {
-                GameInventoryItem tempItem = GameInventoryItem.Create(item as InventoryItem);
+                GameInventoryItem tempItem = GameInventoryItem.Create(item as DbInventoryItems);
                 tempItem.Delve(delveInfo, this);
             }
-            else if (item is ItemTemplate)
+            else if (item is DbItemTemplates)
             {
-                GameInventoryItem tempItem = GameInventoryItem.Create(item as ItemTemplate);
+                GameInventoryItem tempItem = GameInventoryItem.Create(item as DbItemTemplates);
                 tempItem.Delve(delveInfo, this);
             }
             else
@@ -15208,7 +15208,7 @@ namespace DOL.GS
         public virtual double GetBlockChance()
         {
             double blockChance = 0;
-            InventoryItem lefthand = null;
+            DbInventoryItems lefthand = null;
             if (HasAbility(Abilities.Shield))
             {
                 lefthand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);

@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
 	/// Vanish realm ability
 	/// </summary>
 	public class VanishAbility : TimedRealmAbility
-	{		public VanishAbility(DBAbility dba, int level) : base(dba, level) { }
+	{		public VanishAbility(DbAbilities dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

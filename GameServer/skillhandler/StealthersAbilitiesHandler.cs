@@ -60,7 +60,7 @@ namespace DOL.GS
 			{
 				if (Blood_Rage == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = true;
 					spell.CastTime = 0;
 					spell.Uninterruptible = true;
@@ -90,7 +90,7 @@ namespace DOL.GS
 			{
 				if (Heightened_Awareness == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = true;
 					spell.CastTime = 0;
 					spell.Uninterruptible = true;
@@ -120,7 +120,7 @@ namespace DOL.GS
 			{
 				if (Subtle_Kills == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = true;
 					spell.CastTime = 0;
 					spell.Uninterruptible = true;

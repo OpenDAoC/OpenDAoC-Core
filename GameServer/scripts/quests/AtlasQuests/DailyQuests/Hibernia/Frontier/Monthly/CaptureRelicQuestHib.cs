@@ -45,7 +45,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 		{
 		}
 
-		public CaptureRelicQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public CaptureRelicQuestHib(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

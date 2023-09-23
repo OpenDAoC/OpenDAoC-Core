@@ -23,7 +23,7 @@ namespace DOL.GS.Scripts
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
         }
 
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -227,7 +227,7 @@ namespace DOL.AI.Brain
             {
                 if (m_OzurDisease == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 60;

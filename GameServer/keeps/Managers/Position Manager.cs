@@ -37,13 +37,13 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="guard">The guard object</param>
 		/// <returns>The position object</returns>
-		public static DBKeepPosition GetUsablePosition(GameKeepGuard guard)
+		public static DbKeepPositions GetUsablePosition(GameKeepGuard guard)
 		{
 			var filterClassType = DB.Column("ClassType").IsNotEqualTo("DOL.GS.Keeps.Banner");
 			var filterTemplateID = DB.Column("TemplateID").IsEqualTo(guard.TemplateID);
 			var filterComponentSkin = DB.Column("ComponentSkin").IsEqualTo(guard.Component.Skin);
 			var filterHeight = DB.Column("Height").IsLessOrEqualTo(guard.Component.Height);
-			return DOLDB<DBKeepPosition>.SelectObjects(filterClassType.And(filterTemplateID).And(filterComponentSkin).And(filterHeight))
+			return DOLDB<DbKeepPositions>.SelectObjects(filterClassType.And(filterTemplateID).And(filterComponentSkin).And(filterHeight))
 				.OrderByDescending(it => it.Height).FirstOrDefault();
 		}
 
@@ -52,13 +52,13 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="b">The banner object</param>
 		/// <returns>The position object</returns>
-		public static DBKeepPosition GetUsablePosition(GameKeepBanner b)
+		public static DbKeepPositions GetUsablePosition(GameKeepBanner b)
 		{
 			var filterClassType = DB.Column("ClassType").IsNotEqualTo("DOL.GS.Keeps.Banner");
 			var filterTemplateID = DB.Column("TemplateID").IsEqualTo(b.TemplateID);
 			var filterComponentSkin = DB.Column("ComponentSkin").IsEqualTo(b.Component.Skin);
 			var filterHeight = DB.Column("Height").IsLessOrEqualTo(b.Component.Height);
-			return DOLDB<DBKeepPosition>.SelectObjects(filterClassType.And(filterTemplateID).And(filterComponentSkin).And(filterHeight))
+			return DOLDB<DbKeepPositions>.SelectObjects(filterClassType.And(filterTemplateID).And(filterComponentSkin).And(filterHeight))
 				.OrderByDescending(it => it.Height).FirstOrDefault();
 		}
 
@@ -67,16 +67,16 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="guard">The guard object</param>
 		/// <returns>The position object</returns>
-		public static DBKeepPosition GetPosition(GameKeepGuard guard)
+		public static DbKeepPositions GetPosition(GameKeepGuard guard)
 		{
 			var filterTemplateID = DB.Column("TemplateID").IsEqualTo(guard.TemplateID);
 			var filterComponentSkin = DB.Column("ComponentSkin").IsEqualTo(guard.Component.Skin);
 			var filterHeight = DB.Column("Height").IsLessOrEqualTo(guard.Component.Height);
-			return DOLDB<DBKeepPosition>.SelectObject(filterTemplateID.And(filterComponentSkin).And(filterHeight));
+			return DOLDB<DbKeepPositions>.SelectObject(filterTemplateID.And(filterComponentSkin).And(filterHeight));
 		}
 
 
-		public static void LoadGuardPosition(DBKeepPosition pos, GameKeepGuard guard)
+		public static void LoadGuardPosition(DbKeepPositions pos, GameKeepGuard guard)
 		{
 			LoadKeepItemPosition(pos, guard);
 
@@ -86,7 +86,7 @@ namespace DOL.GS.Keeps
 			guard.SpawnHeading = guard.Heading;
 		}
 
-		public static void LoadKeepItemPosition(DBKeepPosition pos, IKeepItem item)
+		public static void LoadKeepItemPosition(DbKeepPositions pos, IKeepItem item)
 		{
 			item.CurrentRegionID = item.Component.CurrentRegionID;
 			int x, y;
@@ -208,9 +208,9 @@ namespace DOL.GS.Keeps
 		/// <param name="guardID"></param>
 		/// <param name="component"></param>
 		/// <returns></returns>
-		public static DBKeepPosition CreatePosition(Type type, int height, GamePlayer player, string guardID, GameKeepComponent component)
+		public static DbKeepPositions CreatePosition(Type type, int height, GamePlayer player, string guardID, GameKeepComponent component)
 		{
-			DBKeepPosition pos = CreatePosition(guardID, component, player);
+			DbKeepPositions pos = CreatePosition(guardID, component, player);
 			pos.Height = height;
 			pos.ClassType = type.ToString();
 			GameServer.Database.AddObject(pos);
@@ -224,9 +224,9 @@ namespace DOL.GS.Keeps
 		/// <param name="component">The component object</param>
 		/// <param name="player">The player object</param>
 		/// <returns>The position object</returns>
-		public static DBKeepPosition CreatePatrolPosition(string guardID, GameKeepComponent component, GamePlayer player, AbstractGameKeep.eKeepType keepType)
+		public static DbKeepPositions CreatePatrolPosition(string guardID, GameKeepComponent component, GamePlayer player, AbstractGameKeep.eKeepType keepType)
 		{
-			DBKeepPosition pos = CreatePosition(guardID, component, player);
+			DbKeepPositions pos = CreatePosition(guardID, component, player);
 			pos.Height = 0;
 			pos.ClassType = "DOL.GS.Keeps.Patrol";
 			pos.KeepType = (int)keepType;
@@ -241,9 +241,9 @@ namespace DOL.GS.Keeps
 		/// <param name="component">The component object</param>
 		/// <param name="player">The creating player object</param>
 		/// <returns>The position object</returns>
-		public static DBKeepPosition CreatePosition(string templateID, GameKeepComponent component, GamePlayer player)
+		public static DbKeepPositions CreatePosition(string templateID, GameKeepComponent component, GamePlayer player)
 		{
-			DBKeepPosition pos = new DBKeepPosition();
+			DbKeepPositions pos = new DbKeepPositions();
 			pos.ComponentSkin = component.Skin;
 			pos.ComponentRotation = component.ComponentHeading;
 			pos.TemplateID = templateID;
@@ -259,16 +259,16 @@ namespace DOL.GS.Keeps
 			return pos;
 		}
 
-		public static void AddPosition(DBKeepPosition position)
+		public static void AddPosition(DbKeepPositions position)
 		{
 			foreach (AbstractGameKeep keep in GameServer.KeepManager.GetAllKeeps())
 			{
 				foreach (GameKeepComponent component in keep.KeepComponents)
 				{
-					DBKeepPosition[] list = component.Positions[position.TemplateID] as DBKeepPosition[];
+					DbKeepPositions[] list = component.Positions[position.TemplateID] as DbKeepPositions[];
 					if (list == null)
 					{
-						list = new DBKeepPosition[4];
+						list = new DbKeepPositions[4];
 						component.Positions[position.TemplateID] = list;
 					}
 					//list.SetValue(position, position.Height);
@@ -277,16 +277,16 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		public static void RemovePosition(DBKeepPosition position)
+		public static void RemovePosition(DbKeepPositions position)
 		{
 			foreach (AbstractGameKeep keep in GameServer.KeepManager.GetAllKeeps())
 			{
 				foreach (GameKeepComponent component in keep.KeepComponents)
 				{
-					DBKeepPosition[] list = component.Positions[position.TemplateID] as DBKeepPosition[];
+					DbKeepPositions[] list = component.Positions[position.TemplateID] as DbKeepPositions[];
 					if (list == null)
 					{
-						list = new DBKeepPosition[4];
+						list = new DbKeepPositions[4];
 						component.Positions[position.TemplateID] = list;
 					}
 					//list.SetValue(position, position.Height);
@@ -320,20 +320,20 @@ namespace DOL.GS.Keeps
 		{
 			SortedList sorted = new SortedList();
 			pathID.Replace('\'', '/'); // we must replace the ', found no other way yet
-			var dbpath = DOLDB<DBPath>.SelectObject(DB.Column("PathID").IsEqualTo(pathID));
-			IList<DBPathPoint> pathpoints = null;
-			ePathType pathType = ePathType.Once;
+			var dbpath = DOLDB<DbPaths>.SelectObject(DB.Column("PathID").IsEqualTo(pathID));
+			IList<DbPathPoints> pathpoints = null;
+			EPathType pathType = EPathType.Once;
 
 			if (dbpath != null)
 			{
-				pathType = (ePathType)dbpath.PathType;
+				pathType = (EPathType)dbpath.PathType;
 			}
 			if (pathpoints == null)
 			{
-				pathpoints = DOLDB<DBPathPoint>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID));
+				pathpoints = DOLDB<DbPathPoints>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID));
 			}
 
-			foreach (DBPathPoint point in pathpoints)
+			foreach (DbPathPoints point in pathpoints)
 			{
 				sorted.Add(point.Step, point);
 			}
@@ -341,7 +341,7 @@ namespace DOL.GS.Keeps
 			PathPoint first = null;
 			for (int i = 0; i < sorted.Count; i++)
 			{
-				DBPathPoint pp = (DBPathPoint)sorted.GetByIndex(i);
+				DbPathPoints pp = (DbPathPoints)sorted.GetByIndex(i);
 				PathPoint p = new PathPoint(pp.X, pp.Y, pp.Z, (short) pp.MaxSpeed, pathType);
 
 				int x, y;
@@ -378,18 +378,18 @@ namespace DOL.GS.Keeps
 				return;
 
 			pathID.Replace('\'', '/'); // we must replace the ', found no other way yet
-			GameServer.Database.DeleteObject(DOLDB<DBPath>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID)));
+			GameServer.Database.DeleteObject(DOLDB<DbPaths>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID)));
 			PathPoint root = MovementMgr.FindFirstPathPoint(path);
 
 			//Set the current pathpoint to the rootpoint!
 			path = root;
-			DBPath dbp = new DBPath(pathID, ePathType.Loop);
+			DbPaths dbp = new DbPaths(pathID, EPathType.Loop);
 			GameServer.Database.AddObject(dbp);
 
 			int i = 1;
 			do
 			{
-				DBPathPoint dbpp = new DBPathPoint(path.X, path.Y, path.Z, path.MaxSpeed);
+				DbPathPoints dbpp = new DbPathPoints(path.X, path.Y, path.Z, path.MaxSpeed);
 				int x, y;
 				SaveXY(component, dbpp.X, dbpp.Y, out x, out y);
 				dbpp.X = x;
@@ -432,7 +432,7 @@ namespace DOL.GS.Keeps
 				player.Out.SendMessage("Cannot create door as component is null!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			DBKeepPosition pos = new DBKeepPosition();
+			DbKeepPositions pos = new DbKeepPositions();
 			pos.ClassType = "DOL.GS.Keeps.GameKeepDoor";
 			pos.TemplateType = doorIndex;
 			pos.ComponentSkin = component.Skin;

@@ -86,7 +86,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="pak"></param>
 		/// <param name="item"></param>
-		protected override void WriteItemData(GSTCPPacketOut pak, InventoryItem item)
+		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItems item)
 		{
 			if (item == null)
 			{
@@ -105,7 +105,7 @@ namespace DOL.GS.PacketHandler
 		/// <param name="pak"></param>
 		/// <param name="template"></param>
 		/// <param name="count"></param>
-		protected override void WriteTemplateData(GSTCPPacketOut pak, ItemTemplate template, int count)
+		protected override void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplates template, int count)
 		{
 			if (template == null)
 			{

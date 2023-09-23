@@ -513,7 +513,7 @@ namespace DOL.GS.SpamMob
         {
             if (dot == null)
             {
-                DBSpell spell = new DBSpell();
+                DbSpells spell = new DbSpells();
                 spell.AllowAdd = false;
                 spell.CastTime = 3;
                 spell.Concentration = 0;
@@ -538,7 +538,7 @@ namespace DOL.GS.SpamMob
 
             if (af == null)
             {
-                DBSpell spell = new DBSpell();
+                DbSpells spell = new DbSpells();
                 spell.AllowAdd = false;
                 spell.CastTime = 3;
                 spell.Concentration = 0;
@@ -561,7 +561,7 @@ namespace DOL.GS.SpamMob
 
             if (str == null)
             {
-                DBSpell spell = new DBSpell();
+                DbSpells spell = new DbSpells();
                 spell.AllowAdd = false;
                 spell.CastTime = 3;
                 spell.Concentration = 0;
@@ -583,7 +583,7 @@ namespace DOL.GS.SpamMob
 
             if (con == null)
             {
-                DBSpell spell = new DBSpell();
+                DbSpells spell = new DbSpells();
                 spell.AllowAdd = false;
                 spell.CastTime = 3;
                 spell.Concentration = 0;
@@ -605,7 +605,7 @@ namespace DOL.GS.SpamMob
 
             if (dex == null)
             {
-                DBSpell spell = new DBSpell();
+                DbSpells spell = new DbSpells();
                 spell.AllowAdd = false;
                 spell.CastTime = 3;
                 spell.Concentration = 0;

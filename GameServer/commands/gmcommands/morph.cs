@@ -59,7 +59,7 @@ namespace DOL.GS.Commands
 					duration = 10;
 			}
 
-			DBSpell dbSpell = new DBSpell();
+			DbSpells dbSpell = new DbSpells();
 			dbSpell.Name = "GM Morph";
 			dbSpell.Description = "Target has been shapechanged.";
 			dbSpell.ClientEffect = 8000;

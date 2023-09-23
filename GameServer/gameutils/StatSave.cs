@@ -64,7 +64,7 @@ namespace DOL.GS.GameEvents
 
                 double serverCpuUsage = _programCpuUsagePercent.GetNextValue();
 
-                ServerStats newStat = new()
+                DbServerStats newStat = new()
                 {
                     CPU = (float) (serverCpuUsage >= 0 ? serverCpuUsage : 0),
                     Clients = WorldMgr.GetAllPlayingClientsCount(),

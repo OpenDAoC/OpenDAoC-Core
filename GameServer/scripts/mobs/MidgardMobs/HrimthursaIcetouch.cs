@@ -139,7 +139,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_IcetouchHeal == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 4;
 					spell.Power = 0;
@@ -167,7 +167,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_IcetouchMezz == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.Power = 0;
@@ -201,7 +201,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_IcetouchRoot == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Power = 0;

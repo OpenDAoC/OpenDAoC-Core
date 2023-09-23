@@ -6,6 +6,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Xml;
 
+namespace DOL;
+
 public class UpnpNat
 {
 	public class PortForwarding

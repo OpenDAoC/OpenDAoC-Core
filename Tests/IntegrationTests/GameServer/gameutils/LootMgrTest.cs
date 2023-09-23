@@ -44,8 +44,8 @@ namespace DOL.Tests.Integration.Server
 			for (int i=0;i< 15; i++) 
 			{
 				Console.WriteLine("Loot "+i);
-				ItemTemplate[] loot = LootMgr.GetLoot(mob, null);
-				foreach (ItemTemplate item in loot)
+				DbItemTemplates[] loot = LootMgr.GetLoot(mob, null);
+				foreach (DbItemTemplates item in loot)
 				{
 					Console.WriteLine(mob.Name+" drops "+item.Name);
 				}	

@@ -45,7 +45,7 @@ namespace DOL.GS
 			return player.InternalID;
 		}
 
-		public virtual Dictionary<int, InventoryItem> GetClientInventory(GamePlayer player)
+		public virtual Dictionary<int, DbInventoryItems> GetClientInventory(GamePlayer player)
 		{
 			return null; // we don't have any inventory
 		}
@@ -53,7 +53,7 @@ namespace DOL.GS
 		/// <summary>
 		/// List of items in this objects inventory
 		/// </summary>
-		public virtual IList<InventoryItem> DBItems(GamePlayer player = null)
+		public virtual IList<DbInventoryItems> DBItems(GamePlayer player = null)
 		{
 			return MarketCache.Items;
 		}
@@ -122,17 +122,17 @@ namespace DOL.GS
 			//if (marketSearch.FindItemsInList(DBItems(), searchData).Where(
 			//	item => item.OwnerLot != 0 && GetRealmOfLot(item.OwnerLot) == player.Realm) is List<InventoryItem> items)
 			//	{
-			if (marketSearch.FindItemsInList(DBItems(), searchData) is List<InventoryItem> items)
+			if (marketSearch.FindItemsInList(DBItems(), searchData) is List<DbInventoryItems> items)
 			{
 				
 				int maxPerPage = 20;
 				byte maxPages = (byte)(Math.Ceiling((double)items.Count / (double)maxPerPage) - 1);
 				int first = (searchData.page) * maxPerPage;
 				int last = first + maxPerPage;
-				List<InventoryItem> list = new List<InventoryItem>();
+				List<DbInventoryItems> list = new List<DbInventoryItems>();
 				int index = 0;
 				
-				foreach (InventoryItem item in items)
+				foreach (DbInventoryItems item in items)
 				{
 					if (index >= first && index <= last)
                     {
@@ -225,7 +225,7 @@ namespace DOL.GS
 				toClientSlot <= (ushort)eInventorySlot.LastBackpack &&
 				player.ActiveInventoryObject == this)
 			{
-				var list = player.TempProperties.GetProperty<List<InventoryItem>>(EXPLORER_ITEM_LIST, null);
+				var list = player.TempProperties.GetProperty<List<DbInventoryItems>>(EXPLORER_ITEM_LIST, null);
 				if (list == null)
 				{
 					return false;
@@ -233,7 +233,7 @@ namespace DOL.GS
 
 				int itemSlot = fromClientSlot - (int)eInventorySlot.MarketExplorerFirst;
 
-				InventoryItem item = list[itemSlot];
+				DbInventoryItems item = list[itemSlot];
 
 				BuyItem(item, player);
 				return true;
@@ -245,7 +245,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Add an item to this object
 		/// </summary>
-		public virtual bool OnAddItem(GamePlayer player, InventoryItem item)
+		public virtual bool OnAddItem(GamePlayer player, DbInventoryItems item)
 		{
 			return false;
 		}
@@ -261,12 +261,12 @@ namespace DOL.GS
 		/// <summary>
 		/// Remove an item from this object
 		/// </summary>
-		public virtual bool OnRemoveItem(GamePlayer player, InventoryItem item)
+		public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItems item)
 		{
 			return false;
 		}
 
-		public virtual void BuyItem(InventoryItem item, GamePlayer player)
+		public virtual void BuyItem(DbInventoryItems item, GamePlayer player)
         {
 			GameConsignmentMerchant cm = HouseMgr.GetConsignmentByHouseNumber((int)item.OwnerLot);
 

@@ -44,7 +44,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 		}
 
-		public OctonidKillQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public OctonidKillQuestHib(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

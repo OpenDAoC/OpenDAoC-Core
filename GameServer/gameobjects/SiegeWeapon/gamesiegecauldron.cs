@@ -73,7 +73,7 @@ namespace DOL.GS
 			{
 				if (m_OilSpell == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 2;
 					spell.ClientEffect = 2209; //2209? 5909? 7086? 7091?

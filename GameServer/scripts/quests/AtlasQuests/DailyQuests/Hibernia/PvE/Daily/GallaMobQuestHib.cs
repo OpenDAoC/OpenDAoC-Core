@@ -45,7 +45,7 @@ namespace DOL.GS.DailyQuest.Hibernia
         {
         }
 
-        public GallaMobQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+        public GallaMobQuestHib(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
         {
         }
 

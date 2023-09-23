@@ -39,7 +39,7 @@ namespace DOL.GS
             return 0.20;
         }
         
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -230,7 +230,7 @@ namespace DOL.GS
             {
                 if (m_fireDDSpell == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.ClientEffect = 310;

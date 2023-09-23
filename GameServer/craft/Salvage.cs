@@ -63,9 +63,9 @@ namespace DOL.GS
 		/// <param name="item"></param>
 		/// <param name="player"></param>
 		/// <returns></returns>
-		public static int BeginWork(GamePlayer player, InventoryItem item)
+		public static int BeginWork(GamePlayer player, DbInventoryItems item)
 		{
-            SalvageYield salvageYield = null;
+            DbSalvageYields salvageYield = null;
 
 			if (!IsAllowedToBeginWork(player, item))
 			{
@@ -95,12 +95,12 @@ namespace DOL.GS
 				// salvageYield = new SalvageYield();
 				whereClause = DB.Column("ID").IsEqualTo(item.SalvageYieldID);
 				
-				salvageYield = DOLDB<SalvageYield>.SelectObject(whereClause);
-				ItemTemplate material = null;
+				salvageYield = DOLDB<DbSalvageYields>.SelectObject(whereClause);
+				DbItemTemplates material = null;
    
 				if (salvageYield != null && string.IsNullOrEmpty(salvageYield.MaterialId_nb) == false)
 				{
-					material = GameServer.Database.FindObjectByKey<ItemTemplate>(salvageYield.MaterialId_nb);
+					material = GameServer.Database.FindObjectByKey<DbItemTemplates>(salvageYield.MaterialId_nb);
    
 					if (material == null)
 					{
@@ -135,7 +135,7 @@ namespace DOL.GS
 					log.ErrorFormat("Salvage Error for item: {0}:  MaterialId_nb is null", salvageYield.ID);
 					return 0;
 				}
-				material = GameServer.Database.FindObjectByKey<ItemTemplate>(salvageYield.MaterialId_nb);
+				material = GameServer.Database.FindObjectByKey<DbItemTemplates>(salvageYield.MaterialId_nb);
 				if (material == null)
 				{
 					player.Out.SendMessage("Can't find material (" + salvageYield.MaterialId_nb + ") needed to salvage this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -151,7 +151,7 @@ namespace DOL.GS
 			{
 				var sCalc = new SalvageCalculator();
 				var ReturnSalvage = sCalc.GetSalvage(player, item);
-				salvageYield = new SalvageYield();
+				salvageYield = new DbSalvageYields();
 				salvageYield.Count = ReturnSalvage.Count;
 				salvageYield.MaterialId_nb = (string) ReturnSalvage.ID;
 			}
@@ -200,7 +200,7 @@ namespace DOL.GS
 			return 1;
 		}
 		
-		 public static int GetYieldPenalty(GamePlayer player, InventoryItem item, int SalvageCount)
+		 public static int GetYieldPenalty(GamePlayer player, DbInventoryItems item, int SalvageCount)
         {
             int Multiplier = 0;
             int ReturnCount = SalvageCount;
@@ -246,7 +246,7 @@ namespace DOL.GS
             return ReturnCount;
         }
 		
-		public static int BeginWorkList(GamePlayer player, IList<InventoryItem> itemList)
+		public static int BeginWorkList(GamePlayer player, IList<DbInventoryItems> itemList)
 		{
 			player.TempProperties.SetProperty(SALVAGE_QUEUE,itemList);
 			player.CraftTimer?.Stop();
@@ -269,7 +269,7 @@ namespace DOL.GS
 			siegeWeapon.ReleaseControl();
 			siegeWeapon.RemoveFromWorld();
 			bool error = false;
-			var recipe = DOLDB<DBCraftedItem>.SelectObject(DB.Column("Id_nb").IsEqualTo(siegeWeapon.ItemId));
+			var recipe = DOLDB<DbCraftedItems>.SelectObject(DB.Column("Id_nb").IsEqualTo(siegeWeapon.ItemId));
 
 			if (recipe == null)
             {
@@ -278,7 +278,7 @@ namespace DOL.GS
 				return 1;
             }
 
-			var rawMaterials = DOLDB<DBCraftedXItem>.SelectObjects(DB.Column("CraftedItemId_nb").IsEqualTo(recipe.Id_nb));
+			var rawMaterials = DOLDB<DbCraftedXItem>.SelectObjects(DB.Column("CraftedItemId_nb").IsEqualTo(recipe.Id_nb));
 
 			if (rawMaterials == null || rawMaterials.Count == 0)
             {
@@ -292,11 +292,11 @@ namespace DOL.GS
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return 0;
             }
-			InventoryItem item;
-			ItemTemplate template;
-			foreach (DBCraftedXItem material in rawMaterials)
+			DbInventoryItems item;
+			DbItemTemplates template;
+			foreach (DbCraftedXItem material in rawMaterials)
 			{
-				template = GameServer.Database.FindObjectByKey<ItemTemplate>(material.IngredientId_nb);
+				template = GameServer.Database.FindObjectByKey<DbItemTemplates>(material.IngredientId_nb);
 
 				if (template == null)
 				{
@@ -329,9 +329,9 @@ namespace DOL.GS
 		protected static int Proceed(ECSGameTimer timer)
 		{
 			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
-			InventoryItem itemToSalvage = timer.Properties.GetProperty<InventoryItem>(SALVAGED_ITEM, null);
-			SalvageYield yield = timer.Properties.GetProperty<SalvageYield>(SALVAGE_YIELD, null);
-			IList<InventoryItem> itemList = player.TempProperties.GetProperty<IList<InventoryItem>>(SALVAGE_QUEUE, null);
+			DbInventoryItems itemToSalvage = timer.Properties.GetProperty<DbInventoryItems>(SALVAGED_ITEM, null);
+			DbSalvageYields yield = timer.Properties.GetProperty<DbSalvageYields>(SALVAGE_YIELD, null);
+			IList<DbInventoryItems> itemList = player.TempProperties.GetProperty<IList<DbInventoryItems>>(SALVAGE_QUEUE, null);
 			int materialCount = yield.Count;
 
 			if (player == null || itemToSalvage == null || yield == null || materialCount == 0)
@@ -341,11 +341,11 @@ namespace DOL.GS
 				return 0;
 			}
 
-			ItemTemplate rawMaterial = null;
+			DbItemTemplates rawMaterial = null;
 
 			if (string.IsNullOrEmpty(yield.MaterialId_nb) == false)
 			{
-				rawMaterial = GameServer.Database.FindObjectByKey<ItemTemplate>(yield.MaterialId_nb);
+				rawMaterial = GameServer.Database.FindObjectByKey<DbItemTemplates>(yield.MaterialId_nb);
 			}
 
 			if (rawMaterial == null)
@@ -370,7 +370,7 @@ namespace DOL.GS
 			lock(player.Inventory)
 			{
 				int count = materialCount;
-				foreach (InventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				foreach (DbInventoryItems item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 				{
 					if (item == null) continue;
 					if (item.Id_nb != rawMaterial.Id_nb) continue;
@@ -398,7 +398,7 @@ namespace DOL.GS
 				
 			}
 
-			InventoryItem newItem;
+			DbInventoryItems newItem;
 
 			player.Inventory.BeginChanges();
 			Dictionary<int, int>.Enumerator enumerator = changedSlots.GetEnumerator();
@@ -446,7 +446,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public static bool IsAllowedToBeginWork(GamePlayer player, InventoryItem item, bool mute = false)
+		public static bool IsAllowedToBeginWork(GamePlayer player, DbInventoryItems item, bool mute = false)
 		{
 			if (player.InCombat && !player.IsSitting)
 			{
@@ -509,7 +509,7 @@ namespace DOL.GS
 			return true;
 		}
 		
-		public static bool IsAllowedToBeginWorkSilent(GamePlayer player, InventoryItem item)
+		public static bool IsAllowedToBeginWorkSilent(GamePlayer player, DbInventoryItems item)
 		{
 			if (player.InCombat)
 			{
@@ -565,7 +565,7 @@ namespace DOL.GS
         /// <summary>
         /// Calculate the count per Object_Type
         /// </summary>
-        public static int GetCountForSalvage(InventoryItem item, ItemTemplate rawMaterial)
+        public static int GetCountForSalvage(DbInventoryItems item, DbItemTemplates rawMaterial)
         {
             long maxCount = 0;
 
@@ -749,7 +749,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Return the material yield for this salvage.
 		/// </summary>
-		public static int GetMaterialYield(GamePlayer player, InventoryItem item, SalvageYield salvageYield, ItemTemplate rawMaterial)
+		public static int GetMaterialYield(GamePlayer player, DbInventoryItems item, DbSalvageYields salvageYield, DbItemTemplates rawMaterial)
 		{
             int maxCount;
 

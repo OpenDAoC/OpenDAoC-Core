@@ -27,10 +27,10 @@ namespace DOL.Events
 	/// </summary>
 	public class ItemDroppedEventArgs : EventArgs
 	{
-		private InventoryItem m_sourceItem;
+		private DbInventoryItems m_sourceItem;
 		private WorldInventoryItem m_groundItem;
 
-		public ItemDroppedEventArgs(InventoryItem sourceItem, WorldInventoryItem groundItem)
+		public ItemDroppedEventArgs(DbInventoryItems sourceItem, WorldInventoryItem groundItem)
 		{
 			m_sourceItem = sourceItem;
 			m_groundItem = groundItem;
@@ -39,7 +39,7 @@ namespace DOL.Events
 		/// <summary>
 		/// Gets the source item
 		/// </summary>
-		public InventoryItem SourceItem
+		public DbInventoryItems SourceItem
 		{
 			get { return m_sourceItem; }
 		}

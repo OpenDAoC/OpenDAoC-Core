@@ -44,7 +44,7 @@ namespace DOL.GS.Keeps
 			get { return m_keepList; }
 		}
 
-		protected List<Battleground> m_battlegrounds = new List<Battleground>();
+		protected List<DbBattlegrounds> m_battlegrounds = new List<DbBattlegrounds>();
 
 		public const int DEFAULT_FRONTIERS_REGION = 163; // New Frontiers
 
@@ -97,8 +97,8 @@ namespace DOL.GS.Keeps
 			{
 				m_keepList.Clear();
 
-				var keeps = GameServer.Database.SelectAllObjects<DBKeep>();
-				foreach (DBKeep datakeep in keeps)
+				var keeps = GameServer.Database.SelectAllObjects<DbKeeps>();
+				foreach (DbKeeps datakeep in keeps)
 				{
 					Region keepRegion = WorldMgr.GetRegion(datakeep.Region);
 					if (keepRegion == null)
@@ -146,12 +146,12 @@ namespace DOL.GS.Keeps
 					log.ErrorFormat("ServerProperty USE_NEW_KEEPS is actually set to 2 but it is no longer used. Loading as if he were 0 but please set to 0 or 1 !");
 				    
 				// var keepcomponents = default(IList<DBKeepComponent>); Why was this done this way rather than being strictly typed?
-				IList<DBKeepComponent> keepcomponents = null;
+				IList<DbKeepComponents> keepcomponents = null;
 
 				if (ServerProperties.Properties.USE_NEW_KEEPS == 0 || ServerProperties.Properties.USE_NEW_KEEPS == 2)
-					keepcomponents = DOLDB<DBKeepComponent>.SelectObjects(DB.Column("Skin").IsLessThan(20));
+					keepcomponents = DOLDB<DbKeepComponents>.SelectObjects(DB.Column("Skin").IsLessThan(20));
 				else if (ServerProperties.Properties.USE_NEW_KEEPS == 1)
-					keepcomponents = DOLDB<DBKeepComponent>.SelectObjects(DB.Column("Skin").IsGreatherThan(20));
+					keepcomponents = DOLDB<DbKeepComponents>.SelectObjects(DB.Column("Skin").IsGreatherThan(20));
 
 				if (keepcomponents != null)
 				{
@@ -160,7 +160,7 @@ namespace DOL.GS.Keeps
 					.AsParallel()
 					.ForAll(components =>
 					{
-						foreach (DBKeepComponent component in components)
+						foreach (DbKeepComponents component in components)
 						{
 							AbstractGameKeep keep = GetKeepByID(component.KeepID);
 							if (keep == null)
@@ -218,15 +218,15 @@ namespace DOL.GS.Keeps
 			if (!ServerProperties.Properties.LOAD_KEEPS || !ServerProperties.Properties.LOAD_HOOKPOINTS)
 				return;
 
-			Dictionary<string, List<DBKeepHookPoint>> hookPointList = new Dictionary<string, List<DBKeepHookPoint>>();
+			Dictionary<string, List<DbKeepHookPoints>> hookPointList = new Dictionary<string, List<DbKeepHookPoints>>();
 
-			var dbkeepHookPoints = GameServer.Database.SelectAllObjects<DBKeepHookPoint>();
-			foreach (DBKeepHookPoint dbhookPoint in dbkeepHookPoints)
+			var dbkeepHookPoints = GameServer.Database.SelectAllObjects<DbKeepHookPoints>();
+			foreach (DbKeepHookPoints dbhookPoint in dbkeepHookPoints)
 			{
-				List<DBKeepHookPoint> currentArray;
+				List<DbKeepHookPoints> currentArray;
 				string key = dbhookPoint.KeepComponentSkinID + "H:" + dbhookPoint.Height;
 				if (!hookPointList.ContainsKey(key))
-					hookPointList.Add(key, currentArray = new List<DBKeepHookPoint>());
+					hookPointList.Add(key, currentArray = new List<DbKeepHookPoints>());
 				else
 					currentArray = hookPointList[key];
 				currentArray.Add(dbhookPoint);
@@ -238,10 +238,10 @@ namespace DOL.GS.Keeps
 					string key = component.Skin + "H:" + component.Height;
 					if ((hookPointList.ContainsKey(key)))
 					{
-						List<DBKeepHookPoint> HPlist = hookPointList[key];
+						List<DbKeepHookPoints> HPlist = hookPointList[key];
 						if ((HPlist != null) && (HPlist.Count != 0))
 						{
-							foreach (DBKeepHookPoint dbhookPoint in hookPointList[key])
+							foreach (DbKeepHookPoints dbhookPoint in hookPointList[key])
 							{
 								GameKeepHookPoint myhookPoint = new GameKeepHookPoint(dbhookPoint, component);
 								component.HookPoints.Add(dbhookPoint.HookPointID, myhookPoint);
@@ -262,7 +262,7 @@ namespace DOL.GS.Keeps
 			log.Info("Loading HookPoint items");
 
 			//fill existing hookpoints with objects
-			IList<DBKeepHookPointItem> items = GameServer.Database.SelectAllObjects<DBKeepHookPointItem>();
+			IList<DbKeepHookPointItems> items = GameServer.Database.SelectAllObjects<DbKeepHookPointItems>();
 			foreach (AbstractGameKeep keep in m_keepList.Values)
 			{
 				foreach (var component in keep.KeepComponents)
@@ -363,7 +363,7 @@ namespace DOL.GS.Keeps
 			{
 				// find keeps in the battlegrounds that arent portal keeps
 				if (m_frontierRegionsList.Contains(keep.Region) == false && keep.IsPortalKeep == false) continue;
-				Battleground bg = GetBattleground(keep.Region);
+				DbBattlegrounds bg = GetBattleground(keep.Region);
 				if (bg == null) continue;
 				if (player.Level >= bg.MinLevel &&
 					player.Level <= bg.MaxLevel &&
@@ -826,12 +826,12 @@ namespace DOL.GS.Keeps
 
 		protected virtual void LoadBattlegroundCaps()
 		{
-			m_battlegrounds.AddRange(GameServer.Database.SelectAllObjects<Battleground>());
+			m_battlegrounds.AddRange(GameServer.Database.SelectAllObjects<DbBattlegrounds>());
 		}
 
-		public virtual Battleground GetBattleground(ushort region)
+		public virtual DbBattlegrounds GetBattleground(ushort region)
 		{
-			foreach (Battleground bg in m_battlegrounds)
+			foreach (DbBattlegrounds bg in m_battlegrounds)
 			{
 				if (bg.RegionID == region)
 					return bg;
@@ -851,7 +851,7 @@ namespace DOL.GS.Keeps
 
 			if (location != "")
 			{
-				Teleport t = DOLDB<Teleport>.SelectObject(DB.Column("TeleportID").IsEqualTo(location));
+				DbTeleports t = DOLDB<DbTeleports>.SelectObject(DB.Column("TeleportID").IsEqualTo(location));
 				if (t != null)
 					player.MoveTo((ushort)t.RegionID, t.X, t.Y, t.Z, (ushort)t.Heading);
 			}

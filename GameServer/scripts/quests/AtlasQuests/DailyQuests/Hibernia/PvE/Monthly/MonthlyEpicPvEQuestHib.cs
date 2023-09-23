@@ -49,7 +49,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 		{
 		}
 
-		public MonthlyEpicPvEQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public MonthlyEpicPvEQuestHib(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

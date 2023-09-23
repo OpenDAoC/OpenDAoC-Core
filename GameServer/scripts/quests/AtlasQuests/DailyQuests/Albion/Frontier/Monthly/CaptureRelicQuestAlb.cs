@@ -45,7 +45,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 		{
 		}
 
-		public CaptureRelicQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public CaptureRelicQuestAlb(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

@@ -97,7 +97,7 @@ namespace DOL.GS.Commands
                         if (player == null)
                             player = client.Player;
 
-                        var character = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(args[2]));
+                        var character = DOLDB<DbCoreCharacters>.SelectObject(DB.Column("Name").IsEqualTo(args[2]));
 
                         if (character != null)
                         {
@@ -2167,7 +2167,7 @@ namespace DOL.GS.Commands
                         {
                             string characterNames = string.Empty;
 
-                            foreach (DOLCharacters acctChar in targetClient.Account.Characters)
+                            foreach (DbCoreCharacters acctChar in targetClient.Account.Characters)
                             {
                                 if (acctChar != null)
                                     characterNames += acctChar.Name + " " + acctChar.LastName + "\n";
@@ -2311,7 +2311,7 @@ namespace DOL.GS.Commands
 				limitShown = true;
 				text.Add("  ----- Wearing:");
 
-				foreach (InventoryItem item in player.Inventory.EquippedItems)
+				foreach (DbInventoryItems item in player.Inventory.EquippedItems)
 				{
 					text.Add("     [" + GlobalConstants.SlotToName(item.Item_Type) + "] " + item.Name + " (" + item.Id_nb + ")");
 				}
@@ -2322,7 +2322,7 @@ namespace DOL.GS.Commands
 			{
 				limitShown = true;
 				text.Add("  ----- Backpack:");
-				foreach (InventoryItem item in player.Inventory.AllItems)
+				foreach (DbInventoryItems item in player.Inventory.AllItems)
 				{
 					if (item.SlotPosition >= (int)eInventorySlot.FirstBackpack &&
 						item.SlotPosition <= (int)eInventorySlot.LastBackpack)
@@ -2336,7 +2336,7 @@ namespace DOL.GS.Commands
 			{
 				limitShown = true;
 				text.Add("  ----- Vault:");
-				foreach (InventoryItem item in player.Inventory.AllItems)
+				foreach (DbInventoryItems item in player.Inventory.AllItems)
 				{
 					if (item.SlotPosition >= (int)eInventorySlot.FirstVault && item.SlotPosition <= (int)eInventorySlot.LastVault)
 					{
@@ -2349,7 +2349,7 @@ namespace DOL.GS.Commands
 			{
 				limitShown = true;
 				text.Add("  ----- Housing:");
-				foreach (InventoryItem item in player.Inventory.AllItems)
+				foreach (DbInventoryItems item in player.Inventory.AllItems)
 				{
 					if (item.SlotPosition >= (int)eInventorySlot.HouseVault_First &&
 						item.SlotPosition <= (int)eInventorySlot.HouseVault_Last)
@@ -2363,7 +2363,7 @@ namespace DOL.GS.Commands
 			{
 				limitShown = true;
 				text.Add("  ----- GameConsignmentMerchant:");
-				foreach (InventoryItem item in player.Inventory.AllItems)
+				foreach (DbInventoryItems item in player.Inventory.AllItems)
 				{
 					if (item.SlotPosition >= (int)eInventorySlot.Consignment_First &&
 						item.SlotPosition <= (int)eInventorySlot.Consignment_Last)

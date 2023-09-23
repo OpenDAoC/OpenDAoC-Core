@@ -50,7 +50,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 		{
 		}
 
-		public EpicRvRMobsWeeklyQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public EpicRvRMobsWeeklyQuestAlb(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

@@ -15,7 +15,7 @@ namespace DOL.GS.RealmAbilities
 
         public const int DURATION = 30 * 1000;
 
-        public BlissfulIgnoranceAbility(DBAbility dba, int level) : base(dba, level) { }
+        public BlissfulIgnoranceAbility(DbAbilities dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action
@@ -58,7 +58,7 @@ namespace DOL.GS.RealmAbilities
                     Spell spell = obj as Spell;
                     try
 					{
-						DBSpell db = new DBSpell();
+						DbSpells db = new DbSpells();
                         db.ClientEffect = spell.ClientEffect;
 						db.Icon = spell.Icon;
 						db.Name = spell.Name;

@@ -36,24 +36,24 @@ namespace DOL.GS.Movement
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static Dictionary<string, DBPath> m_pathCache = new Dictionary<string, DBPath>();
-		private static Dictionary<string, SortedList<int, DBPathPoint>> m_pathpointCache = new Dictionary<string, SortedList<int, DBPathPoint>>();
+		private static Dictionary<string, DbPaths> m_pathCache = new Dictionary<string, DbPaths>();
+		private static Dictionary<string, SortedList<int, DbPathPoints>> m_pathpointCache = new Dictionary<string, SortedList<int, DbPathPoints>>();
 		private static object LockObject = new object();
 		/// <summary>
 		/// Cache all the paths and pathpoints
 		/// </summary>
 		private static void FillPathCache()
 		{
-			IList<DBPath> allPaths = GameServer.Database.SelectAllObjects<DBPath>();
-			foreach (DBPath path in allPaths)
+			IList<DbPaths> allPaths = GameServer.Database.SelectAllObjects<DbPaths>();
+			foreach (DbPaths path in allPaths)
 			{
 				m_pathCache.Add(path.PathID, path);
 			}
 
 			int duplicateCount = 0;
 
-			IList<DBPathPoint> allPathPoints = GameServer.Database.SelectAllObjects<DBPathPoint>();
-			foreach (DBPathPoint pathPoint in allPathPoints)
+			IList<DbPathPoints> allPathPoints = GameServer.Database.SelectAllObjects<DbPathPoints>();
+			foreach (DbPathPoints pathPoint in allPathPoints)
 			{
 				if (m_pathpointCache.ContainsKey(pathPoint.PathID))
 				{
@@ -68,7 +68,7 @@ namespace DOL.GS.Movement
 				}
 				else
 				{
-					SortedList<int, DBPathPoint> pList = new SortedList<int, DBPathPoint>();
+					SortedList<int, DbPathPoints> pList = new SortedList<int, DbPathPoints>();
 					pList.Add(pathPoint.Step, pathPoint);
 					m_pathpointCache.Add(pathPoint.PathID, pList);
 				}
@@ -82,7 +82,7 @@ namespace DOL.GS.Movement
 		{
 			log.DebugFormat("Updating path {0} in path cache.", pathID);
 
-			var dbpath = DOLDB<DBPath>.SelectObject(DB.Column("PathID").IsEqualTo(pathID));
+			var dbpath = DOLDB<DbPaths>.SelectObject(DB.Column("PathID").IsEqualTo(pathID));
 			if (dbpath != null)
 			{
 				if (m_pathCache.ContainsKey(pathID))
@@ -95,8 +95,8 @@ namespace DOL.GS.Movement
 				}
 			}
 
-			var pathPoints = DOLDB<DBPathPoint>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID));
-			SortedList<int, DBPathPoint> pList = new SortedList<int, DBPathPoint>();
+			var pathPoints = DOLDB<DbPathPoints>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID));
+			SortedList<int, DbPathPoints> pList = new SortedList<int, DbPathPoints>();
 			if (m_pathpointCache.ContainsKey(pathID))
 			{
 				m_pathpointCache[pathID] = pList;
@@ -106,7 +106,7 @@ namespace DOL.GS.Movement
 				m_pathpointCache.Add(pathID, pList);
 			}
 
-			foreach (DBPathPoint pathPoint in pathPoints)
+			foreach (DbPathPoints pathPoint in pathPoints)
 			{
 				m_pathpointCache[pathPoint.PathID].Add(pathPoint.Step, pathPoint);
 			}
@@ -126,7 +126,7 @@ namespace DOL.GS.Movement
 					FillPathCache();
 				}
 	
-				DBPath dbpath = null;
+				DbPaths dbpath = null;
 	
 				if (m_pathCache.ContainsKey(pathID))
 				{
@@ -135,14 +135,14 @@ namespace DOL.GS.Movement
 	
 				// even if path entry not found see if pathpoints exist and try to use it
 	
-	            ePathType pathType = ePathType.Once;
+	            EPathType pathType = EPathType.Once;
 	
 	            if (dbpath != null)
 	            {
-	                pathType = (ePathType)dbpath.PathType;
+	                pathType = (EPathType)dbpath.PathType;
 	            }
 	
-				SortedList<int, DBPathPoint> pathPoints = null;
+				SortedList<int, DbPathPoints> pathPoints = null;
 	
 				if (m_pathpointCache.ContainsKey(pathID))
 				{
@@ -150,13 +150,13 @@ namespace DOL.GS.Movement
 				}
 				else
 				{
-					pathPoints = new SortedList<int, DBPathPoint>();
+					pathPoints = new SortedList<int, DbPathPoints>();
 				}
 	
 	            PathPoint prev = null;
 	            PathPoint first = null;
 	
-				foreach (DBPathPoint pp in pathPoints.Values)
+				foreach (DbPathPoints pp in pathPoints.Values)
 				{
 					PathPoint p = new PathPoint(pp.X, pp.Y, pp.Z, (short) pp.MaxSpeed, pathType);
 					p.WaitTime = pp.WaitTime;
@@ -191,13 +191,13 @@ namespace DOL.GS.Movement
 
 			// First delete any path with this pathID from the database
 
-			var dbpath = DOLDB<DBPath>.SelectObject(DB.Column("PathID").IsEqualTo(pathID));
+			var dbpath = DOLDB<DbPaths>.SelectObject(DB.Column("PathID").IsEqualTo(pathID));
 			if (dbpath != null)
 			{
 				GameServer.Database.DeleteObject(dbpath);
 			}
 
-			GameServer.Database.DeleteObject(DOLDB<DBPathPoint>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID)));
+			GameServer.Database.DeleteObject(DOLDB<DbPathPoints>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID)));
 
 			// Now add this path and iterate through the PathPoint linked list to add all the path points
 
@@ -205,13 +205,13 @@ namespace DOL.GS.Movement
 
             //Set the current pathpoint to the rootpoint!
             path = root;
-            dbpath = new DBPath(pathID, root.Type);
+            dbpath = new DbPaths(pathID, root.Type);
             GameServer.Database.AddObject(dbpath);
 
             int i = 1;
             do
             {
-                DBPathPoint dbpp = new DBPathPoint(path.X, path.Y, path.Z, path.MaxSpeed);
+                DbPathPoints dbpp = new DbPathPoints(path.X, path.Y, path.Z, path.MaxSpeed);
                 dbpp.Step = i++;
                 dbpp.PathID = pathID;
                 dbpp.WaitTime = path.WaitTime;

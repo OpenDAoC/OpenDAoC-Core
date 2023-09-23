@@ -9,7 +9,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class DashingDefenseAbility : TimedRealmAbility
     {
-        public DashingDefenseAbility(DBAbility dba, int level) : base(dba, level) { }
+        public DashingDefenseAbility(DbAbilities dba, int level) : base(dba, level) { }
 
         public const string Dashing = "Dashing";
 

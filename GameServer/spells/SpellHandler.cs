@@ -99,7 +99,7 @@ namespace DOL.GS.Spells
 			get { return true; }
 		}
 		
-		protected InventoryItem m_spellItem = null;
+		protected DbInventoryItems m_spellItem = null;
 
 		/// <summary>
 		/// Ability that casts a spell
@@ -281,7 +281,7 @@ namespace DOL.GS.Spells
 		/// <returns>true if right instrument</returns>
 		protected bool CheckInstrument()
 		{
-			InventoryItem instrument = Caster.ActiveWeapon;
+			DbInventoryItems instrument = Caster.ActiveWeapon;
 
 			// From patch 1.97:  Flutes, Lutes, and Drums will now be able to play any song type, and will no longer be limited to specific songs.
 			if (instrument == null || instrument.Object_Type != (int)eObjectType.Instrument ) // || (instrument.DPS_AF != 4 && instrument.DPS_AF != m_spell.InstrumentRequirement))
@@ -1501,7 +1501,7 @@ namespace DOL.GS.Spells
 		public virtual void FinishSpellCast(GameLiving target)
 		{
 			GamePlayer playerCaster = Caster as GamePlayer;
-			InventoryItem playerWeapon = null;
+			DbInventoryItems playerWeapon = null;
 
 			if (playerCaster != null)
 			{
@@ -2140,7 +2140,7 @@ namespace DOL.GS.Spells
 		/// Tries to start a spell attached to an item (/use with at least 1 charge)
 		/// Override this to do a CheckBeginCast if needed, otherwise spell will always cast and item will be used.
 		/// </summary>
-		public virtual bool StartSpell(GameLiving target, InventoryItem item)
+		public virtual bool StartSpell(GameLiving target, DbInventoryItems item)
 		{
 			m_spellItem = item;
 			return StartSpell(target);
@@ -2278,7 +2278,7 @@ namespace DOL.GS.Spells
 			duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
 			if (Spell.InstrumentRequirement != 0)
 			{
-				InventoryItem instrument = Caster.ActiveWeapon;
+				DbInventoryItems instrument = Caster.ActiveWeapon;
 				if (instrument != null)
 				{
 					duration *= 1.0 + Math.Min(1.0, instrument.Level / (double)Caster.Level); // up to 200% duration for songs
@@ -3581,7 +3581,7 @@ namespace DOL.GS.Spells
 		#endregion
 
 		#region saved effects
-		public virtual PlayerXEffect GetSavedEffect(GameSpellEffect effect)
+		public virtual DbPlayerXEffect GetSavedEffect(GameSpellEffect effect)
 		{
 			return null;
 		}

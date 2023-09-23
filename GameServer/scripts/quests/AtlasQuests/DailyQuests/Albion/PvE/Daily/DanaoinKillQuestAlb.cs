@@ -44,7 +44,7 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 		}
 
-		public DanaoinKillQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DanaoinKillQuestAlb(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

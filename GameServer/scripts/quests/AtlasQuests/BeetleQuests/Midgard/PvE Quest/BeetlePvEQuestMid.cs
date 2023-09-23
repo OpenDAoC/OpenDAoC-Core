@@ -39,8 +39,8 @@ namespace DOL.GS.AtlasQuest.Midgard
 		private static String LEGION_NAME = "Legion";
 		private static String GRAND_SUMMONER_NAME = "Grand Summoner Govannon";
 		
-		private static ItemTemplate beetle_egg = null;
-		private static ItemTemplate beetle_bone = null;
+		private static DbItemTemplates beetle_egg = null;
+		private static DbItemTemplates beetle_bone = null;
 		
 		// Constructors
 		public BeetlePvEQuestMid() : base()
@@ -55,7 +55,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 		{
 		}
 
-		public BeetlePvEQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public BeetlePvEQuestMid(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -120,12 +120,12 @@ namespace DOL.GS.AtlasQuest.Midgard
 			#endregion
 
 			#region defineItems
-			beetle_egg = GameServer.Database.FindObjectByKey<ItemTemplate>("beetle_egg");
+			beetle_egg = GameServer.Database.FindObjectByKey<DbItemTemplates>("beetle_egg");
 			if (beetle_egg == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Beetle Egg, creating it ...");
-				beetle_egg = new ItemTemplate();
+				beetle_egg = new DbItemTemplates();
 				beetle_egg.Id_nb = "beetle_egg";
 				beetle_egg.Name = "Beetle Egg";
 				beetle_egg.Level = 50;
@@ -159,12 +159,12 @@ namespace DOL.GS.AtlasQuest.Midgard
 					GameServer.Database.AddObject(beetle_egg);
 			}
 			
-			beetle_bone = GameServer.Database.FindObjectByKey<ItemTemplate>("beetle_bone");
+			beetle_bone = GameServer.Database.FindObjectByKey<DbItemTemplates>("beetle_bone");
 			if (beetle_bone == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Beetle Bone, creating it ...");
-				beetle_bone = new ItemTemplate();
+				beetle_bone = new DbItemTemplates();
 				beetle_bone.Id_nb = "beetle_bone";
 				beetle_bone.Name = "Beetle Bone";
 				beetle_bone.Level = 50;

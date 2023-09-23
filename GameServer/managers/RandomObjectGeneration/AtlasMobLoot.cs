@@ -149,7 +149,7 @@ namespace DOL.GS {
 
                     chance += 10; //solo drop bonus
                     
-                    ItemTemplate item = null;
+                    DbItemTemplates item = null;
 
                     if (mob.Level < 5)
                     {
@@ -202,9 +202,9 @@ namespace DOL.GS {
         }
 
 
-        private ItemTemplate GenerateItemTemplate(GamePlayer player, eCharacterClass classForLoot, byte lootLevel, int killedcon)
+        private DbItemTemplates GenerateItemTemplate(GamePlayer player, eCharacterClass classForLoot, byte lootLevel, int killedcon)
         {
-            ItemTemplate item = null;
+            DbItemTemplates item = null;
                 
                 
             GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, lootLevel, player.CurrentZone?.IsOF ?? false);

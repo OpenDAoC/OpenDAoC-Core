@@ -467,7 +467,7 @@ namespace DOL.GS.Spells
     public class FontSpellHandler : DoTSpellHandler
     {
         protected GameFont font;
-        protected DBSpell dbs;
+        protected DbSpells dbs;
         protected Spell s;
         protected SpellLine sl;
         protected ISpellHandler heal;
@@ -539,7 +539,7 @@ namespace DOL.GS.Spells
         protected GameMine mine;
         protected ISpellHandler trap;
         protected GameSpellEffect m_effect;
-        protected DBSpell dbs;
+        protected DbSpells dbs;
         protected Spell s;
         protected SpellLine sl;
         protected bool Unstealth = true;
@@ -602,7 +602,7 @@ namespace DOL.GS.Spells
     public class StormSpellHandler : SpellHandler
     {
         protected GameStorm storm;
-        protected DBSpell dbs;
+        protected DbSpells dbs;
         protected Spell s;
         protected SpellLine sl;
         protected ISpellHandler tempest;
@@ -662,7 +662,7 @@ namespace DOL.GS.Spells
     #region SummonItemBase
     public class SummonItemSpellHandler : MasterlevelHandling
     {
-        protected IList<InventoryItem> items;
+        protected IList<DbInventoryItems> items;
 
         /// <summary>
         /// Execute create item spell
@@ -690,7 +690,7 @@ namespace DOL.GS.Spells
             {
                 GamePlayer targetPlayer = target as GamePlayer;
 
-                foreach (InventoryItem item in items)
+                foreach (DbInventoryItems item in items)
                 {
                     if (targetPlayer.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
                     {
@@ -706,7 +706,7 @@ namespace DOL.GS.Spells
         public SummonItemSpellHandler(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line)
         {
-            items = new List<InventoryItem>();
+            items = new List<DbInventoryItems>();
         }
     }
     #endregion

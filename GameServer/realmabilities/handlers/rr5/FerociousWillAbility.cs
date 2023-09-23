@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class FerociousWillAbility : RR5RealmAbility
 	{
-		public FerociousWillAbility(DBAbility dba, int level) : base(dba, level) { }
+		public FerociousWillAbility(DbAbilities dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

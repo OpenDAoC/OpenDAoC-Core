@@ -39,7 +39,7 @@ namespace DOL.GS
 		{
 			get { return 30000; }
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItems weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -137,7 +137,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_FireDS == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 60;
@@ -306,7 +306,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Sphere_pbaoe == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 4;

@@ -45,7 +45,7 @@ namespace DOL.GS.DailyQuest.Midgard
         {
         }
 
-        public TuscarianMobQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+        public TuscarianMobQuestMid(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
         {
         }
 

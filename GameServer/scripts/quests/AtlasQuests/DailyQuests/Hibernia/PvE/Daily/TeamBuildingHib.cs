@@ -50,7 +50,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 		}
 
-		public TeamBuildingHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public TeamBuildingHib(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

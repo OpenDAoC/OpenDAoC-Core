@@ -40,8 +40,8 @@ namespace DOL.GS.Quests.Hibernia
         private static GameNPC Karl = null; // Speak with Karl
         private static GameNPC MobEffect = null; // Speak with Karl
 
-        private static ItemTemplate theresas_doll = null;
-        private static ItemTemplate magical_theresas_doll = null;
+        private static DbItemTemplates theresas_doll = null;
+        private static DbItemTemplates magical_theresas_doll = null;
         // Constructors
         public PowerOfNature() : base()
         {
@@ -55,7 +55,7 @@ namespace DOL.GS.Quests.Hibernia
         {
         }
 
-        public PowerOfNature(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+        public PowerOfNature(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
         {
         }
 
@@ -139,12 +139,12 @@ namespace DOL.GS.Quests.Hibernia
 
             #region defineItems
 
-            theresas_doll = GameServer.Database.FindObjectByKey<ItemTemplate>("theresas_doll");
+            theresas_doll = GameServer.Database.FindObjectByKey<DbItemTemplates>("theresas_doll");
             if (theresas_doll == null)
             {
                 if (log.IsWarnEnabled)
                     log.Warn("Could not find Theresa's doll, creating it ...");
-                theresas_doll = new ItemTemplate();
+                theresas_doll = new DbItemTemplates();
                 theresas_doll.Id_nb = "theresas_doll";
                 theresas_doll.Name = "Theresa's doll";
                 theresas_doll.Level = 5;
@@ -166,12 +166,12 @@ namespace DOL.GS.Quests.Hibernia
                     GameServer.Database.AddObject(theresas_doll);
             }
 
-            magical_theresas_doll = GameServer.Database.FindObjectByKey<ItemTemplate>("magical_theresas_doll");
+            magical_theresas_doll = GameServer.Database.FindObjectByKey<DbItemTemplates>("magical_theresas_doll");
             if (magical_theresas_doll == null)
             {
                 if (log.IsWarnEnabled)
                     log.Warn("Could not find Magical Theresa's doll, creating it ...");
-                magical_theresas_doll = new ItemTemplate();
+                magical_theresas_doll = new DbItemTemplates();
                 magical_theresas_doll.Id_nb = "magical_theresas_doll";
                 magical_theresas_doll.Name = "Theresa's magical doll";
                 magical_theresas_doll.Level = 50;
@@ -573,7 +573,7 @@ namespace DOL.GS.Quests.Hibernia
             {
                 if (m_effect == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.Icon = 5005;

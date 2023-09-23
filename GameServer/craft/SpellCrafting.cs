@@ -124,11 +124,11 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="item"></param>
-		public override bool IsAllowedToCombine(GamePlayer player, InventoryItem item)
+		public override bool IsAllowedToCombine(GamePlayer player, DbInventoryItems item)
 		{
 			if (!base.IsAllowedToCombine(player, item)) return false;
 
-			if (((InventoryItem)player.TradeWindow.TradeItems[0]).Model == 525) // first ingredient to combine is Dust => echantement
+			if (((DbInventoryItems)player.TradeWindow.TradeItems[0]).Model == 525) // first ingredient to combine is Dust => echantement
 			{
 				if (item.Level < 15)
 				{
@@ -141,7 +141,7 @@ namespace DOL.GS
 
 				lock (player.TradeWindow.Sync)
 				{
-					foreach (InventoryItem materialToCombine in player.TradeWindow.TradeItems)
+					foreach (DbInventoryItems materialToCombine in player.TradeWindow.TradeItems)
 					{
 						if (materialToCombine.Model != 525)
 						{
@@ -180,7 +180,7 @@ namespace DOL.GS
 				{
 					for (int i = 0; i < player.TradeWindow.ItemsCount; i++)
 					{
-						InventoryItem currentItem = (InventoryItem)player.TradeWindow.TradeItems[i];
+						DbInventoryItems currentItem = (DbInventoryItems)player.TradeWindow.TradeItems[i];
 
 						if (currentItem.Object_Type != (int)eObjectType.SpellcraftGem)
 						{
@@ -231,23 +231,23 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		protected override void ApplyMagicalEffect(GamePlayer player, InventoryItem item)
+		protected override void ApplyMagicalEffect(GamePlayer player, DbInventoryItems item)
 		{
 			if (item == null || player.TradeWindow.TradeItems[0] == null) return; // be sure at least one item in each side
 
-			if (((InventoryItem)player.TradeWindow.TradeItems[0]).Model == 525) // Echant item
+			if (((DbInventoryItems)player.TradeWindow.TradeItems[0]).Model == 525) // Echant item
 			{
 				ApplyMagicalDusts(player, item);
 			}
-			else if (((InventoryItem)player.TradeWindow.TradeItems[0]).Object_Type == (int)eObjectType.SpellcraftGem) // Spellcraft item
+			else if (((DbInventoryItems)player.TradeWindow.TradeItems[0]).Object_Type == (int)eObjectType.SpellcraftGem) // Spellcraft item
 			{
 				ApplySpellcraftGems(player, item);
 			}
 
-			if (item.Template is ItemUnique)
+			if (item.Template is DbItemUniques)
 			{
 				GameServer.Database.SaveObject(item);
-				GameServer.Database.SaveObject(item.Template as ItemUnique);
+				GameServer.Database.SaveObject(item.Template as DbItemUniques);
 			}
 			else
 			{
@@ -262,7 +262,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		private void ApplyMagicalDusts(GamePlayer player, InventoryItem item)
+		private void ApplyMagicalDusts(GamePlayer player, DbInventoryItems item)
 		{
 			int spellCrafterLevel = player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting);
 
@@ -281,7 +281,7 @@ namespace DOL.GS
 			int bonusMod = item.Bonus;
 			lock (player.TradeWindow.Sync)
 			{
-				foreach (InventoryItem gemme in player.TradeWindow.TradeItems)
+				foreach (DbInventoryItems gemme in player.TradeWindow.TradeItems)
 				{
 					switch (gemme.Name)
 					{
@@ -327,7 +327,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		private void ApplySpellcraftGems(GamePlayer player, InventoryItem item)
+		private void ApplySpellcraftGems(GamePlayer player, DbInventoryItems item)
 		{
 			int maxBonusLevel = GetItemMaxImbuePoints(item);
 			int bonusLevel = GetTotalImbuePoints(player, item);
@@ -344,7 +344,7 @@ namespace DOL.GS
 				lock (player.TradeWindow.Sync)
 				{
 					player.Inventory.BeginChanges();
-					foreach (InventoryItem gem in (ArrayList)player.TradeWindow.TradeItems.Clone())
+					foreach (DbInventoryItems gem in (ArrayList)player.TradeWindow.TradeItems.Clone())
 					{
 						if (item.Bonus1Type == 0)
 						{
@@ -387,7 +387,7 @@ namespace DOL.GS
 					player.Inventory.BeginChanges();
                     // Luhz Crafting Update:
                     // The base item is no longer lost when spellcrafting explodes - only gems are destroyed.
-                    foreach (InventoryItem gem in (ArrayList)player.TradeWindow.TradeItems.Clone())
+                    foreach (DbInventoryItems gem in (ArrayList)player.TradeWindow.TradeItems.Clone())
                     {
                         if (gem.Object_Type == (int)eObjectType.SpellcraftGem)
 						{
@@ -433,9 +433,9 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="item"></param>
-		public virtual void ShowSpellCraftingInfos(GamePlayer player, InventoryItem item)
+		public virtual void ShowSpellCraftingInfos(GamePlayer player, DbInventoryItems item)
 		{
-			if (((InventoryItem)player.TradeWindow.TradeItems[0]).Model == 525) return; // check if applying dust
+			if (((DbInventoryItems)player.TradeWindow.TradeItems[0]).Model == 525) return; // check if applying dust
 
 			ArrayList spellcraftInfos = new ArrayList(10);
 
@@ -465,7 +465,7 @@ namespace DOL.GS
 			{
 				for (int i = 0; i < player.TradeWindow.ItemsCount; i++)
 				{
-					InventoryItem currentGem = (InventoryItem)player.TradeWindow.TradeItems[i];
+					DbInventoryItems currentGem = (DbInventoryItems)player.TradeWindow.TradeItems[i];
 					spellcraftInfos.Add("\t" + currentGem.Name + " - " + SkillBase.GetPropertyName((eProperty)currentGem.Bonus1Type) + ": (" + GetGemImbuePoints(currentGem.Bonus1Type, currentGem.Bonus1) + ") " + currentGem.Bonus1 + " " + ((currentGem.Bonus1Type >= (int)eProperty.Resist_First && currentGem.Bonus1Type <= (int)eProperty.Resist_Last) ? "%" : "pts"));
 				}
 			}
@@ -506,7 +506,7 @@ namespace DOL.GS
 		/// <param name="maxBonusLevel"></param>
 		/// <param name="bonusLevel"></param>
 		/// <returns></returns>
-		protected int CalculateChanceToOverchargeItem(GamePlayer player, InventoryItem item, int maxBonusLevel, int bonusLevel)
+		protected int CalculateChanceToOverchargeItem(GamePlayer player, DbInventoryItems item, int maxBonusLevel, int bonusLevel)
 		{
             // Luhz Crafting Update:
             // Overcharge success rate is now dependent only on item quality, points overcharged, and spellcrafter skill.
@@ -542,7 +542,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		protected int GetItemMaxImbuePoints(InventoryItem item)
+		protected int GetItemMaxImbuePoints(DbInventoryItems item)
 		{
 			//if (item.Level > 51) return 32;
 			if (item.Level < 1) return 0;
@@ -573,7 +573,7 @@ namespace DOL.GS
 		/// <param name="player">player spellcrafting</param>
 		/// <param name="item">item to calculate imbues for</param>
 		/// <returns></returns>
-		protected int GetTotalImbuePoints(GamePlayer player, InventoryItem item)
+		protected int GetTotalImbuePoints(GamePlayer player, DbInventoryItems item)
 		{
 			int totalGemBonus = 0;
 			int biggerGemCharge = 0;
@@ -603,7 +603,7 @@ namespace DOL.GS
 			{
 				for (int i = 0; i < player.TradeWindow.TradeItems.Count; i++)
 				{
-					InventoryItem currentGem = (InventoryItem)player.TradeWindow.TradeItems[i];
+					DbInventoryItems currentGem = (DbInventoryItems)player.TradeWindow.TradeItems[i];
 					int currentGemCharge = GetGemImbuePoints(currentGem.Bonus1Type, currentGem.Bonus1);
 					if (currentGemCharge > biggerGemCharge) biggerGemCharge = currentGemCharge;
 
@@ -660,14 +660,14 @@ namespace DOL.GS
 		/// <param name="maxBonusLevel"></param>
 		/// <param name="bonusLevel"></param>
 		/// <returns></returns>
-		protected int CalculateChanceToPreserveItem(GamePlayer player, InventoryItem item, int maxBonusLevel, int bonusLevel)
+		protected int CalculateChanceToPreserveItem(GamePlayer player, DbInventoryItems item, int maxBonusLevel, int bonusLevel)
 		{
 			int baseChance = 0;
 
 			double gemModifier = 0;
 			lock (player.TradeWindow.Sync)
 			{
-				foreach (InventoryItem gem in player.TradeWindow.TradeItems)
+				foreach (DbInventoryItems gem in player.TradeWindow.TradeItems)
 					gemModifier += (gem.Quality - 92) * 1.8;
 			}
 

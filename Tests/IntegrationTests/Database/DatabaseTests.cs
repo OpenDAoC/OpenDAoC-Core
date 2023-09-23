@@ -34,7 +34,7 @@ namespace DOL.Tests.Integration.Database
 			Database = DatabaseSetUp.Database;
 		}
 		
-		protected SQLObjectDatabase Database { get; set; }
+		protected SqlObjectDatabase Database { get; set; }
 		
 		[Test]
 		public void TestTable()
@@ -1097,7 +1097,7 @@ namespace DOL.Tests.Integration.Database
 			Assert.IsNull(selectInserted.Entries, "Relations Test With Precache should return null for Entries stored without relation.");
 			
 			// Try Fill with null Local Value
-			var reAddEntries = Database.AddObject(Enumerable.Range(0, 5).Select(i => new TestTableRelationsEntriesPrecached { ForeignTestField = IDGenerator.GenerateID(), TestField = string.Format("Test Table NOT Related Entry with Precache #{0}", i) }));
+			var reAddEntries = Database.AddObject(Enumerable.Range(0, 5).Select(i => new TestTableRelationsEntriesPrecached { ForeignTestField = IdGenerator.GenerateID(), TestField = string.Format("Test Table NOT Related Entry with Precache #{0}", i) }));
 			
 			Assert.IsTrue(reAddEntries, "Relations Test With Precache Relation Entries could not be inserted for testing...");
 			

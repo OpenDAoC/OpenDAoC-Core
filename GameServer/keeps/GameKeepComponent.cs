@@ -161,7 +161,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Procs don't normally fire on game keep components
 		/// </summary>
-		public override bool AllowWeaponMagicalEffect(AttackData ad, InventoryItem weapon, Spell weaponSpell)
+		public override bool AllowWeaponMagicalEffect(AttackData ad, DbInventoryItems weapon, Spell weaponSpell)
 		{
 			if (weapon.Flags == 10) //Bruiser or any other item needs Itemtemplate "Flags" set to 10 to proc on keep components
 				return true;
@@ -197,7 +197,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// load component from db object
 		/// </summary>
-		public virtual void LoadFromDatabase(DBKeepComponent component, AbstractGameKeep keep)
+		public virtual void LoadFromDatabase(DbKeepComponents component, AbstractGameKeep keep)
 		{
 			Region myregion = WorldMgr.GetRegion((ushort)keep.Region);
 			if (myregion == null)
@@ -245,7 +245,7 @@ namespace DOL.GS.Keeps
 				region = (CurrentRegion as BaseInstance).Skin;
 			}
 
-			Battleground bg = GameServer.KeepManager.GetBattleground(region);
+			DbBattlegrounds bg = GameServer.KeepManager.GetBattleground(region);
 
 			this.Positions.Clear();
 
@@ -259,14 +259,14 @@ namespace DOL.GS.Keeps
 				// Battlegrounds, ignore all but GameKeepDoor
 				whereClause = whereClause.And(DB.Column("ClassType").IsEqualTo("DOL.GS.Keeps.GameKeepDoor"));
 			}
-			var DBPositions = DOLDB<DBKeepPosition>.SelectObjects(whereClause);
+			var DBPositions = DOLDB<DbKeepPositions>.SelectObjects(whereClause);
 
-			foreach (DBKeepPosition position in DBPositions)
+			foreach (DbKeepPositions position in DBPositions)
 			{
-				DBKeepPosition[] list = this.Positions[position.TemplateID] as DBKeepPosition[];
+				DbKeepPositions[] list = this.Positions[position.TemplateID] as DbKeepPositions[];
 				if (list == null)
 				{
-					list = new DBKeepPosition[4];
+					list = new DbKeepPositions[4];
 					this.Positions[position.TemplateID] = list;
 				}
 
@@ -279,11 +279,11 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public virtual void FillPositions()
 		{
-			foreach (DBKeepPosition[] positionGroup in Positions.Values)
+			foreach (DbKeepPositions[] positionGroup in Positions.Values)
 			{
 				for (int i = this.Height; i >= 0; i--)
 				{
-					if (positionGroup[i] is DBKeepPosition position)
+					if (positionGroup[i] is DbKeepPositions position)
 					{
 						bool create = false;
 						string sKey = position.TemplateID + ID;
@@ -433,13 +433,13 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public override void SaveIntoDatabase()
 		{
-			DBKeepComponent obj = null;
+			DbKeepComponents obj = null;
 			bool New = false;
 			if (InternalID != null)
-				obj = GameServer.Database.FindObjectByKey<DBKeepComponent>(InternalID);
+				obj = GameServer.Database.FindObjectByKey<DbKeepComponents>(InternalID);
 			if (obj == null)
 			{
-				obj = new DBKeepComponent();
+				obj = new DbKeepComponents();
 				New = true;
 			}
 			obj.KeepID = Keep.KeepID;
@@ -582,9 +582,9 @@ namespace DOL.GS.Keeps
 		public virtual void Remove()
 		{
 			Delete();
-			DBKeepComponent obj = null;
+			DbKeepComponents obj = null;
 			if (this.InternalID != null)
-				obj = GameServer.Database.FindObjectByKey<DBKeepComponent>(this.InternalID);
+				obj = GameServer.Database.FindObjectByKey<DbKeepComponents>(this.InternalID);
 			if (obj != null)
 				GameServer.Database.DeleteObject(obj);
 

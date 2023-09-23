@@ -49,7 +49,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		{
 		}
 
-		public MonthlyEpicPvEQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public MonthlyEpicPvEQuestMid(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

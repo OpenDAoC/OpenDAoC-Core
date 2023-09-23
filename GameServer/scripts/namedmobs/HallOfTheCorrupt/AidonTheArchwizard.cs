@@ -65,7 +65,7 @@ namespace DOL.GS
                 }
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
@@ -383,7 +383,7 @@ namespace DOL.AI.Brain
             {
                 if (m_AidonBoss_DD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 10;
@@ -413,7 +413,7 @@ namespace DOL.AI.Brain
             {
                 if (m_FireDS == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 60;
@@ -445,7 +445,7 @@ namespace DOL.GS
         public AidonCopyFire() : base()
         {
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
@@ -543,7 +543,7 @@ namespace DOL.AI.Brain
             {
                 if (m_Aidon_DD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 0;
@@ -578,7 +578,7 @@ namespace DOL.GS
         public AidonCopyIce() : base()
         {
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
@@ -676,7 +676,7 @@ namespace DOL.AI.Brain
             {
                 if (m_Aidon_DD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 0;
@@ -711,7 +711,7 @@ namespace DOL.GS
         public AidonCopyAir() : base()
         {
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
@@ -809,7 +809,7 @@ namespace DOL.AI.Brain
             {
                 if (m_Aidon_DD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 0;
@@ -842,7 +842,7 @@ namespace DOL.GS
         public AidonCopyEarth() : base()
         {
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
@@ -939,7 +939,7 @@ namespace DOL.AI.Brain
             {
                 if (m_Aidon_DD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 0;

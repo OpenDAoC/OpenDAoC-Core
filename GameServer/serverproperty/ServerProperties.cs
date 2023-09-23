@@ -2914,12 +2914,12 @@ namespace DOL.GS.ServerProperties
 		/// Returns the ServerPropertyAttribute, the Static Field with current Value, and the according DataObject
 		/// Create a default dataObject if value wasn't found in Database
 		/// </summary>
-		public static IDictionary<string, Tuple<ServerPropertyAttribute, FieldInfo, ServerProperty>> AllDomainProperties
+		public static IDictionary<string, Tuple<ServerPropertyAttribute, FieldInfo, DbServerProperties>> AllDomainProperties
 		{
 			get
 			{
-				var result = new Dictionary<string, Tuple<ServerPropertyAttribute, FieldInfo, ServerProperty>>();
-				var allProperties = GameServer.Database.SelectAllObjects<ServerProperty>();
+				var result = new Dictionary<string, Tuple<ServerPropertyAttribute, FieldInfo, DbServerProperties>>();
+				var allProperties = GameServer.Database.SelectAllObjects<DbServerProperties>();
 				
 				foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
 				{
@@ -2938,12 +2938,12 @@ namespace DOL.GS.ServerProperties
 							
 							ServerPropertyAttribute att = (ServerPropertyAttribute)attribs[0];
 							
-							ServerProperty serverProp = allProperties.Where(p => p.Key.Equals(att.Key, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+							DbServerProperties serverProp = allProperties.Where(p => p.Key.Equals(att.Key, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 							
 							if (serverProp == null)
 							{
 								// Init DB Object
-								serverProp = new ServerProperty();
+								serverProp = new DbServerProperties();
 								serverProp.Category = att.Category;
 								serverProp.Key = att.Key;
 								serverProp.Description = att.Description;
@@ -2960,7 +2960,7 @@ namespace DOL.GS.ServerProperties
 								serverProp.Value = serverProp.DefaultValue;
 							}
 							
-							result[att.Key] = new Tuple<ServerPropertyAttribute, FieldInfo, ServerProperty>(att, field, serverProp);
+							result[att.Key] = new Tuple<ServerPropertyAttribute, FieldInfo, DbServerProperties>(att, field, serverProp);
 						}
 					}
 				}
@@ -2976,7 +2976,7 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		/// <param name="attrib">The attribute</param>
 		/// <returns>The real property value</returns>
-		public static void Load(ServerPropertyAttribute attrib, FieldInfo field, ServerProperty prop)
+		public static void Load(ServerPropertyAttribute attrib, FieldInfo field, DbServerProperties prop)
 		{
 			string key = attrib.Key;
 			

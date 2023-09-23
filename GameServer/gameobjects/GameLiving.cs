@@ -403,7 +403,7 @@ namespace DOL.GS
         /// Gets the current attackspeed of this living in milliseconds
         /// </summary>
         /// <returns>effective speed of the attack. average if more than one weapon.</returns>
-        public virtual int AttackSpeed(InventoryItem mainWeapon, InventoryItem leftWeapon = null)
+        public virtual int AttackSpeed(DbInventoryItems mainWeapon, DbInventoryItems leftWeapon = null)
         {
 			return attackComponent.AttackSpeed(mainWeapon, leftWeapon);
         }
@@ -504,7 +504,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="weapon"></param>
         /// <returns></returns>
-        public virtual int GetWeaponStat(InventoryItem weapon)
+        public virtual int GetWeaponStat(DbInventoryItems weapon)
 		{
 			return GetModified(eProperty.Strength);
 		}
@@ -559,18 +559,18 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the weaponskill of weapon
 		/// </summary>
-		public virtual double GetWeaponSkill(InventoryItem weapon)
+		public virtual double GetWeaponSkill(DbInventoryItems weapon)
 		{
 			// Needs to be overridden.
 			return 0;
 		}
 
-		private (InventoryItem item, long time) m_cachedActiveWeapon;
+		private (DbInventoryItems item, long time) m_cachedActiveWeapon;
 
         /// <summary>
         /// Returns the currently active weapon, null=natural
         /// </summary>
-        public virtual InventoryItem ActiveWeapon
+        public virtual DbInventoryItems ActiveWeapon
         {
             get
             {
@@ -658,7 +658,7 @@ namespace DOL.GS
 		/// <summary>
 		/// determines the spec level for current AttackWeapon
 		/// </summary>
-		public virtual int WeaponSpecLevel(InventoryItem weapon)
+		public virtual int WeaponSpecLevel(DbInventoryItems weapon)
 		{
 			if (weapon == null) return 0;
 
@@ -669,7 +669,7 @@ namespace DOL.GS
 		/// Gets the weapondamage of currently used weapon
 		/// </summary>
 		/// <param name="weapon">the weapon used for attack</param>
-		public virtual double WeaponDamage(InventoryItem weapon)
+		public virtual double WeaponDamage(DbInventoryItems weapon)
 		{
 			return 0;
 		}
@@ -1263,7 +1263,7 @@ namespace DOL.GS
 		/// <param name="ad"></param>
 		/// <param name="weapon"></param>
 		/// <returns></returns>
-		public virtual bool AllowWeaponMagicalEffect(AttackData ad, InventoryItem weapon, Spell weaponSpell)
+		public virtual bool AllowWeaponMagicalEffect(AttackData ad, DbInventoryItems weapon, Spell weaponSpell)
 		{
 			if (weapon.Flags == 10) //Itemtemplates with "Flags" set to 10 will not proc on living (ex. Bruiser)
 				return false;
@@ -1275,7 +1275,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="ad"></param>
 		/// <param name="weapon"></param>
-		public virtual void CheckWeaponMagicalEffect(AttackData ad, InventoryItem weapon)
+		public virtual void CheckWeaponMagicalEffect(AttackData ad, DbInventoryItems weapon)
 		{
 			if (weapon == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
 				return;
@@ -1347,7 +1347,7 @@ namespace DOL.GS
 		/// Will assume spell is in GlobalSpellsLines.Item_Effects even if it's not and use the weapons LevelRequirement
 		/// Item_Effects must be used here because various spell handlers recognize this line to alter variance and other spell parameters
 		/// </summary>
-		protected virtual void StartWeaponMagicalEffect(InventoryItem weapon, AttackData ad, SpellLine spellLine, int spellID, bool ignoreLevel)
+		protected virtual void StartWeaponMagicalEffect(DbInventoryItems weapon, AttackData ad, SpellLine spellLine, int spellID, bool ignoreLevel)
 		{
 			if (weapon == null)
 				return;
@@ -1625,7 +1625,7 @@ namespace DOL.GS
 			//your friend is most likely using a player crafted shield. The quality of the player crafted item will make a significant difference  try it and see.
 
 			double blockChance = 0;
-			InventoryItem leftHand = Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItems leftHand = Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
 			if (leftHand != null && leftHand.Object_Type != (int) eObjectType.Shield)
 				leftHand = null;
@@ -1711,7 +1711,7 @@ namespace DOL.GS
 			return blockChance;
 		}
 
-		public double GetAttackerDefensePenetration(GameLiving living, InventoryItem weapon)
+		public double GetAttackerDefensePenetration(GameLiving living, DbInventoryItems weapon)
 		{
 			double totalReduction = 0.0;
 
@@ -2646,10 +2646,10 @@ namespace DOL.GS
             rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
             rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
-			InventoryItem rightHandSlot = Inventory.GetItem(eInventorySlot.RightHandWeapon);
-			InventoryItem leftHandSlot = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-			InventoryItem twoHandSlot = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-			InventoryItem distanceSlot = Inventory.GetItem(eInventorySlot.DistanceWeapon);
+			DbInventoryItems rightHandSlot = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+			DbInventoryItems leftHandSlot = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItems twoHandSlot = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+			DbInventoryItems distanceSlot = Inventory.GetItem(eInventorySlot.DistanceWeapon);
 
 			// simple active slot logic:
 			// 0=right hand, 1=left hand, 2=two-hand, 3=range, F=none
@@ -4047,7 +4047,7 @@ namespace DOL.GS
 		/// <param name="source">Source from where to get the item</param>
 		/// <param name="item">Item to get</param>
 		/// <returns>true if the item was successfully received</returns>
-		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItems item)
 		{
 			if (source == null || item == null) return false;
 
@@ -4336,7 +4336,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns>true if living has ability to use item</returns>
-		public virtual bool HasAbilityToUseItem(ItemTemplate item)
+		public virtual bool HasAbilityToUseItem(DbItemTemplates item)
 		{
 			return GameServer.ServerRules.CheckAbilityToUseItem(this, item);
 		}

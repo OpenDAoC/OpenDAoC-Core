@@ -102,7 +102,7 @@ namespace DOL.GS
 		/// 'TeleportID' field from the table) does not have to be unique across realms.  Duplicate
 		/// 'TeleportID' fields are permitted so long as the 'Realm' field is different for each.
 		/// </summary>
-		private static Dictionary<eRealm, Dictionary<string, Teleport>> m_teleportLocations;
+		private static Dictionary<eRealm, Dictionary<string, DbTeleports>> m_teleportLocations;
 		private static object m_syncTeleport = new object();
 
 		// this is used to hold the player ids with timestamp of ld, that ld near an enemy keep structure, to allow grace period relog
@@ -124,7 +124,7 @@ namespace DOL.GS
 		/// </param>
 		/// <param name="teleportKey">Composite key into teleport dictionary.</param>
 		/// <returns></returns>
-		public static Teleport GetTeleportLocation(eRealm realm, String teleportKey)
+		public static DbTeleports GetTeleportLocation(eRealm realm, String teleportKey)
 		{
 			lock (m_syncTeleport)
 			{
@@ -141,14 +141,14 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="teleport"></param>
 		/// <returns></returns>
-		public static bool AddTeleportLocation(Teleport teleport)
+		public static bool AddTeleportLocation(DbTeleports teleport)
 		{
 			eRealm realm = (eRealm)teleport.Realm;
 			String teleportKey = String.Format("{0}:{1}", teleport.Type, teleport.TeleportID);
 
 			lock (m_syncTeleport)
 			{
-				Dictionary<String, Teleport> teleports = null;
+				Dictionary<String, DbTeleports> teleports = null;
 				if (m_teleportLocations.ContainsKey(realm))
 				{
 					if (m_teleportLocations[realm].ContainsKey(teleportKey))
@@ -159,7 +159,7 @@ namespace DOL.GS
 
 				if (teleports == null)
 				{
-					teleports = new Dictionary<String, Teleport>();
+					teleports = new Dictionary<String, DbTeleports>();
 					m_teleportLocations.Add(realm, teleports);
 				}
 
@@ -320,27 +320,27 @@ namespace DOL.GS
 
 			log.Debug("loading mobs from DB...");
 
-			var mobList = new List<Mob>();
+			var mobList = new List<DbMobs>();
 			if (ServerProperties.Properties.DEBUG_LOAD_REGIONS != string.Empty)
 			{
 				foreach (string loadRegion in Util.SplitCSV(ServerProperties.Properties.DEBUG_LOAD_REGIONS, true))
 				{
-					mobList.AddRange(DOLDB<Mob>.SelectObjects(DB.Column("Region").IsEqualTo(loadRegion)));
+					mobList.AddRange(DOLDB<DbMobs>.SelectObjects(DB.Column("Region").IsEqualTo(loadRegion)));
 				}
 			}
 			else
 			{
-				mobList.AddRange(GameServer.Database.SelectAllObjects<Mob>());
+				mobList.AddRange(GameServer.Database.SelectAllObjects<DbMobs>());
 			}
 
-			var mobsByRegionId = new Dictionary<ushort, List<Mob>>(512);
-			foreach (Mob mob in mobList)
+			var mobsByRegionId = new Dictionary<ushort, List<DbMobs>>(512);
+			foreach (DbMobs mob in mobList)
 			{
-				List<Mob> list;
+				List<DbMobs> list;
 
 				if (!mobsByRegionId.TryGetValue(mob.Region, out list))
 				{
-					list = new List<Mob>(1024);
+					list = new List<DbMobs>(1024);
 					mobsByRegionId.Add(mob.Region, list);
 				}
 
@@ -350,7 +350,7 @@ namespace DOL.GS
 			bool hasFrontierRegion = false;
 
 			var regions = new List<RegionData>(512);
-			foreach (DBRegions dbRegion in GameServer.Database.SelectAllObjects<DBRegions>())
+			foreach (DbRegions dbRegion in GameServer.Database.SelectAllObjects<DbRegions>())
 			{
 				var data = new RegionData();
 
@@ -368,10 +368,10 @@ namespace DOL.GS
 
 				hasFrontierRegion |= data.IsFrontier;
 
-				List<Mob> mobs;
+				List<DbMobs> mobs;
 
 				if (!mobsByRegionId.TryGetValue(data.Id, out mobs))
-					data.Mobs = new Mob[0];
+					data.Mobs = new DbMobs[0];
 				else
 					data.Mobs = mobs.ToArray();
 
@@ -410,7 +410,7 @@ namespace DOL.GS
 				}
 			}
 
-			foreach (Zones dbZone in GameServer.Database.SelectAllObjects<Zones>())
+			foreach (DbZones dbZone in GameServer.Database.SelectAllObjects<DbZones>())
 			{
 				ZoneData zoneData = new ZoneData();
 				zoneData.Height = (byte)dbZone.Height;
@@ -446,17 +446,17 @@ namespace DOL.GS
 		/// </summary>
 		public static string LoadTeleports()
 		{
-			var objs = GameServer.Database.SelectAllObjects<Teleport>();
-			m_teleportLocations = new Dictionary<eRealm, Dictionary<string, Teleport>>();
+			var objs = GameServer.Database.SelectAllObjects<DbTeleports>();
+			m_teleportLocations = new Dictionary<eRealm, Dictionary<string, DbTeleports>>();
 			int[] numTeleports = new int[3];
-			foreach (Teleport teleport in objs)
+			foreach (DbTeleports teleport in objs)
 			{
-				Dictionary<string, Teleport> teleportList;
+				Dictionary<string, DbTeleports> teleportList;
 				if (m_teleportLocations.ContainsKey((eRealm)teleport.Realm))
 					teleportList = m_teleportLocations[(eRealm)teleport.Realm];
 				else
 				{
-					teleportList = new Dictionary<string, Teleport>();
+					teleportList = new Dictionary<string, DbTeleports>();
 					m_teleportLocations.Add((eRealm)teleport.Realm, teleportList);
 				}
 				String teleportKey = String.Format("{0}:{1}", teleport.Type, teleport.TeleportID);

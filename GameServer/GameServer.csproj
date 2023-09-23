@@ -41,7 +41,7 @@
     <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.0" />
     <ProjectReference Include="..\CoreBase\CoreBase.csproj" Name="DOLBase" />
-    <ProjectReference Include="..\DOLDatabase\DOLDatabase.csproj" Name="DOLDatabase" />
+    <ProjectReference Include="..\CoreDatabase\CoreDatabase.csproj" Name="DOLDatabase" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include=".\config\*" />

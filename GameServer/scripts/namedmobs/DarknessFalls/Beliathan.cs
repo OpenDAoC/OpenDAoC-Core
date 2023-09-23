@@ -155,11 +155,11 @@ namespace DOL.GS
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
-        public override int AttackSpeed(InventoryItem mainWeapon, InventoryItem leftWeapon = null)
+        public override int AttackSpeed(DbInventoryItems mainWeapon, DbInventoryItems leftWeapon = null)
         {
             return base.AttackSpeed(mainWeapon, leftWeapon) * 2;
         }

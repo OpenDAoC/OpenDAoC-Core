@@ -262,8 +262,8 @@ namespace DOL.GS.Keeps
 			set { m_component = value; }
 		}
 
-		protected DBKeepPosition m_position;
-		public DBKeepPosition Position
+		protected DbKeepPositions m_position;
+		public DbKeepPositions Position
 		{
 			get { return m_position; }
 			set { m_position = value; }
@@ -279,7 +279,7 @@ namespace DOL.GS.Keeps
 		/// <param name="ad"></param>
 		/// <param name="weapon"></param>
 		/// <returns></returns>
-		public override bool AllowWeaponMagicalEffect(AttackData ad, InventoryItem weapon, Spell weaponSpell)
+		public override bool AllowWeaponMagicalEffect(AttackData ad, DbInventoryItems weapon, Spell weaponSpell)
 		{
 			if (weapon.Flags == 10) //Bruiser or any other item needs Itemtemplate "Flags" set to 10 to proc on keep components
 				return true;
@@ -649,7 +649,7 @@ namespace DOL.GS.Keeps
 			if (InternalID == null)
 				return;
 
-			DBDoor dbDoor = GameServer.Database.FindObjectByKey<DBDoor>(InternalID);
+			DbDoors dbDoor = GameServer.Database.FindObjectByKey<DbDoors>(InternalID);
 
 			if (dbDoor == null)
 				return;
@@ -665,7 +665,7 @@ namespace DOL.GS.Keeps
 		/// <param name="obj"></param>
 		public override void LoadFromDatabase(DataObject obj)
 		{
-			DBDoor dbDoor = obj as DBDoor;
+			DbDoors dbDoor = obj as DbDoors;
 			if (dbDoor == null)
 				return;
 
@@ -713,7 +713,7 @@ namespace DOL.GS.Keeps
 			DoorMgr.RegisterDoor(this);
 		}
 
-		public virtual void LoadFromPosition(DBKeepPosition pos, GameKeepComponent component)
+		public virtual void LoadFromPosition(DbKeepPositions pos, GameKeepComponent component)
 		{
 			m_templateID = pos.TemplateID;
 			m_component = component;
@@ -740,7 +740,7 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		public void MoveToPosition(DBKeepPosition position) { }
+		public void MoveToPosition(DbKeepPositions position) { }
 
 		public int GenerateDoorID()
 		{

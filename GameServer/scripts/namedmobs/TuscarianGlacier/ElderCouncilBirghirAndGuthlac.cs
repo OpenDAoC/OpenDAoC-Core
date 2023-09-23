@@ -23,7 +23,7 @@ namespace DOL.GS
                 default: return 70;// dmg reduction for rest resists
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -268,7 +268,7 @@ namespace DOL.AI.Brain
             {
                 if (m_Icelord_SC_Debuff == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 30;
@@ -298,7 +298,7 @@ namespace DOL.AI.Brain
             {
                 if (m_Icelord_Haste_Debuff == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 30;
@@ -327,7 +327,7 @@ namespace DOL.AI.Brain
             {
                 if (m_Icelord_Bolt == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 2;
                     spell.RecastDelay = 0;
@@ -356,7 +356,7 @@ namespace DOL.AI.Brain
             {
                 if (m_Icelord_dd == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 0;
@@ -400,7 +400,7 @@ namespace DOL.GS
                 default: return 70;// dmg reduction for rest resists
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -717,7 +717,7 @@ namespace DOL.AI.Brain
             {
                 if (m_DebuffDQ == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 0;
@@ -747,7 +747,7 @@ namespace DOL.AI.Brain
             {
                 if (m_GuthlacRoot == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 0;
@@ -776,7 +776,7 @@ namespace DOL.AI.Brain
             {
                 if (m_Icelord_dd == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = Util.Random(8,15);
@@ -915,7 +915,7 @@ namespace DOL.GS
             {
                 if (m_GuthlacIceSpike_aoe == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 20;

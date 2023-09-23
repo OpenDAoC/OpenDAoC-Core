@@ -87,7 +87,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player"></param>
 		/// <param name="source"></param>
 		/// <param name="destination"></param>
-		public override void OnPlayerTeleport(GamePlayer player, GameLocation source, Teleport destination)
+		public override void OnPlayerTeleport(GamePlayer player, GameLocation source, DbTeleports destination)
 		{
 			// Since region change already starts an immunity timer we only want to do this if a player
 			// is teleporting within the same region

@@ -27,7 +27,7 @@ namespace DOL.GS.Commands
 				}
 			
 				const string customKey = "grouped_char";
-				var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
+				var hasGrouped = DOLDB<DbCoreCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
 					.IsEqualTo(client.Player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 			
 				DateTime d1 = new DateTime(2022, 1, 4);
@@ -105,11 +105,11 @@ namespace DOL.GS.Commands
 					player.Out.SendMessage("You have chickened out. You can now run back to your ...friends.",
 						eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					const string customKey = "grouped_char";
-					var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
+					var hasGrouped = DOLDB<DbCoreCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
 						.IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 					if (hasGrouped == null)
 					{
-						DOLCharactersXCustomParam groupedChar = new DOLCharactersXCustomParam();
+						DbCoreCharactersXCustomParam groupedChar = new DbCoreCharactersXCustomParam();
 						groupedChar.DOLCharactersObjectId = player.ObjectId;
 						groupedChar.KeyName = customKey;
 						groupedChar.Value = "1";
@@ -177,12 +177,12 @@ namespace DOL.GS.Commands
 				{
 					IList<string> output = new List<string>();
 					IList<SoloCharacter> soloCharacters = new List<SoloCharacter>();
-					IList<DOLCharacters> characters = GameServer.Database.SelectObjects<DOLCharacters>(DB.Column("NoHelp").IsEqualTo(1))
+					IList<DbCoreCharacters> characters = GameServer.Database.SelectObjects<DbCoreCharacters>(DB.Column("NoHelp").IsEqualTo(1))
 						.OrderByDescending(x => x.Level).Take(50).ToList();
 
 					output.Add("Top 50 Solo characters:\n");
 
-					foreach (DOLCharacters c in characters)
+					foreach (DbCoreCharacters c in characters)
 					{
 						if (c == null)
 							continue;
@@ -234,7 +234,7 @@ namespace DOL.GS.PlayerTitles
 		public override bool IsSuitable(GamePlayer player)
 		{
 			const string customKey2 = "solo_to_50";
-			var solo_to_50 = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
+			var solo_to_50 = DOLDB<DbCoreCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
 				.IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
 
 			return player.NoHelp || solo_to_50 != null;

@@ -38,7 +38,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			DBRelic relic = new DBRelic();
+			DbRelics relic = new DbRelics();
 
 			relic.Heading = client.Player.Heading;
 			relic.OriginalRealm = int.Parse(args[2]);

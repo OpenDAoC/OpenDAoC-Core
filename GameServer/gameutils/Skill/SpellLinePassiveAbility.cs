@@ -75,7 +75,7 @@ namespace DOL.GS
 			base.Deactivate(living, sendUpdates);
 		}
 		
-		public SpellLinePassiveAbility(DBAbility dba, int level)
+		public SpellLinePassiveAbility(DbAbilities dba, int level)
 			: base(dba, level)
 		{
 		}

@@ -25,7 +25,7 @@ namespace DOL.GS.Scripts
             // 85% ABS is cap.
             return 0.20;
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * 30 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -141,7 +141,7 @@ namespace DOL.AI.Brain
             {
                 if (m_BaneOfHope_Aoe_Dot == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 4;
                     spell.RecastDelay = 0;

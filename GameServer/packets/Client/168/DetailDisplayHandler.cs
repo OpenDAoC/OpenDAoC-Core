@@ -52,8 +52,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			ChatUtil.SendDebugMessage(client, $"Delve objectType={objectType}, objectID={objectId}, extraID={extraId}");
 
-			ItemTemplate item = null;
-			InventoryItem invItem = null;
+			DbItemTemplates item = null;
+			DbInventoryItems invItem = null;
 
 			var snapSkills = client.Player.GetAllUsableSkills();
 			var snapLists = client.Player.GetAllUsableListSpells();
@@ -83,10 +83,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 						}
 						else if (objectType == 10)
 						{
-							List<InventoryItem> list = client.Player.TempProperties.GetProperty<List<InventoryItem>>(MarketExplorer.EXPLORER_ITEM_LIST, null);
+							List<DbInventoryItems> list = client.Player.TempProperties.GetProperty<List<DbInventoryItems>>(MarketExplorer.EXPLORER_ITEM_LIST, null);
 							if (list == null)
 							{
-								list = client.Player.TempProperties.GetProperty<List<InventoryItem>>("TempSearchKey", null);
+								list = client.Player.TempProperties.GetProperty<List<DbInventoryItems>>("TempSearchKey", null);
 								if (list == null)
 									return;
 							}
@@ -363,7 +363,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								if (!(q is RewardQuest))
 									return; // this is not new quest
 
-								List<ItemTemplate> rewards = null;
+								List<DbItemTemplates> rewards = null;
 								if (index < 8)
 									rewards = (q as RewardQuest).Rewards.BasicItems;
 								else
@@ -380,7 +380,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								DataQuest dq = null;
 
-								foreach (DBDataQuest d in GameObject.DataQuestCache)
+								foreach (DbDataQuest d in GameObject.DataQuestCache)
 								{
 									if (d.ID == questID - DataQuest.DATAQUEST_CLIENTOFFSET)
 									{
@@ -391,7 +391,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								if (dq != null && dq.StartType == DataQuest.eStartType.RewardQuest)
 								{
-									List<ItemTemplate> rewards = null;
+									List<DbItemTemplates> rewards = null;
 									if (index < 8)
 										rewards = dq.FinalRewards;
 									else
@@ -492,7 +492,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 							DataQuest dq = null;
 							questID = (ushort)(objectId >> 4);
-							foreach (DBDataQuest d in GameObject.DataQuestCache)
+							foreach (DbDataQuest d in GameObject.DataQuestCache)
 							{
 								if (d.ID == questID)
 								{
@@ -503,7 +503,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 							if (dq != null && dq.StartType == DataQuest.eStartType.RewardQuest)
 							{
-								List<ItemTemplate> rewards = null;
+								List<DbItemTemplates> rewards = null;
 								if (index < 8)
 									rewards = dq.FinalRewards;
 								else
@@ -593,7 +593,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							return;
 
 						if (playerTradeWindow.PartnerTradeItems != null && objectId < playerTradeWindow.PartnerItemsCount)
-							invItem = (InventoryItem)playerTradeWindow.PartnerTradeItems[objectId];
+							invItem = (DbInventoryItems)playerTradeWindow.PartnerTradeItems[objectId];
 
 						if (invItem == null)
 							return;
@@ -1050,12 +1050,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 		}
 
-        public void WriteTechnicalInfo(IList<string> output, GameClient client, InventoryItem item)
+        public void WriteTechnicalInfo(IList<string> output, GameClient client, DbInventoryItems item)
 		{
             WriteTechnicalInfo(output, client, item, item.Durability, item.Condition);
 		}
 
-		public void WriteTechnicalInfo(IList<string> output, GameClient client, InventoryItem item, int dur, int con)
+		public void WriteTechnicalInfo(IList<string> output, GameClient client, DbInventoryItems item, int dur, int con)
 		{
 			output.Add(" ");
 			output.Add("--- Item Technical Information ---");
@@ -1125,7 +1125,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			output.Add("        PackageID: " + item.PackageID);
 		}
 
-		protected string GetShortItemInfo(InventoryItem item, GameClient client)
+		protected string GetShortItemInfo(DbInventoryItems item, GameClient client)
 		{
 			// TODO: correct info format if anyone is interested...
 			/*
@@ -1202,7 +1202,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// Effective Damage:
 		/// - X.X DPS
 		/// </summary>
-		public void WriteClassicWeaponInfos(IList<string> output, InventoryItem item, GameClient client)
+		public void WriteClassicWeaponInfos(IList<string> output, DbInventoryItems item, GameClient client)
 		{
 			double itemDPS = item.DPS_AF / 10.0;
 			double clampedDPS = Math.Min(itemDPS, 1.2 + 0.3 * client.Player.Level);
@@ -1243,11 +1243,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 		}
 
-		public void WriteUsableClasses(IList<string> output, InventoryItem item, GameClient client)
+		public void WriteUsableClasses(IList<string> output, DbInventoryItems item, GameClient client)
 		{
 			WriteUsableClasses(output, item.Template, client);
 		}
-		public void WriteUsableClasses(IList<string> output, ItemTemplate item, GameClient client)
+		public void WriteUsableClasses(IList<string> output, DbItemTemplates item, GameClient client)
 		{
 			if (Util.IsEmpty(item.AllowedClasses, true))
 				return;
@@ -1269,11 +1269,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// - X.X Clamped DPS
 		/// - XX Shield Speed
 		/// </summary>
-		public void WriteClassicShieldInfos(IList<string> output, InventoryItem item, GameClient client)
+		public void WriteClassicShieldInfos(IList<string> output, DbInventoryItems item, GameClient client)
 		{
 			WriteClassicShieldInfos(output, item.Template, client);
 		}
-		public void WriteClassicShieldInfos(IList<string> output, ItemTemplate item, GameClient client)
+		public void WriteClassicShieldInfos(IList<string> output, DbItemTemplates item, GameClient client)
 		{
 			double itemDPS = item.DPS_AF / 10.0;
 			double clampedDPS = Math.Min(itemDPS, 1.2 + 0.3 * client.Player.Level);
@@ -1314,7 +1314,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// Effective Armor:
 		/// - X.X Factor
 		/// </summary>
-		public void WriteClassicArmorInfos(IList<string> output, InventoryItem item, GameClient client)
+		public void WriteClassicArmorInfos(IList<string> output, DbInventoryItems item, GameClient client)
 		{
 			output.Add(" ");
 			output.Add(" ");
@@ -1360,12 +1360,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		}
 
-		public void WriteMagicalBonuses(IList<string> output, ItemTemplate item, GameClient client, bool shortInfo)
+		public void WriteMagicalBonuses(IList<string> output, DbItemTemplates item, GameClient client, bool shortInfo)
 		{
 			WriteMagicalBonuses(output, GameInventoryItem.Create(item), client, shortInfo);
 		}
 
-		public void WriteMagicalBonuses(IList<string> output, InventoryItem item, GameClient client, bool shortInfo)
+		public void WriteMagicalBonuses(IList<string> output, DbInventoryItems item, GameClient client, bool shortInfo)
 		{
 			int oldCount = output.Count;
 
@@ -1767,12 +1767,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 		}
 
-		protected void WriteHorseInfo(IList<string> list, InventoryItem item, GameClient client, string horseName)
+		protected void WriteHorseInfo(IList<string> list, DbInventoryItems item, GameClient client, string horseName)
 		{
 			WriteHorseInfo(list, item.Template, client, horseName);
 		}
 		
-		protected void WriteHorseInfo(IList<string> list, ItemTemplate item, GameClient client, string horseName)
+		protected void WriteHorseInfo(IList<string> list, DbItemTemplates item, GameClient client, string horseName)
 		{
 			list.Add(" ");
 			list.Add(" ");
@@ -1804,12 +1804,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteHorseInfo.Food"));
 		}
 
-		protected void WritePoisonInfo(IList<string> list, ItemTemplate item, GameClient client)
+		protected void WritePoisonInfo(IList<string> list, DbItemTemplates item, GameClient client)
 		{
 			WritePoisonInfo(list, GameInventoryItem.Create(item), client);
 		}
 
-		protected void WritePoisonInfo(IList<string> list, InventoryItem item, GameClient client)
+		protected void WritePoisonInfo(IList<string> list, DbInventoryItems item, GameClient client)
 		{
 			if (item.PoisonSpellID != 0)
 			{
@@ -1853,12 +1853,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <param name="list"></param>
 		/// <param name="item"></param>
 		/// <param name="client"></param>
-		private static void WritePotionInfo(IList<string> list, ItemTemplate item, GameClient client)
+		private static void WritePotionInfo(IList<string> list, DbItemTemplates item, GameClient client)
 		{
 			WritePotionInfo(list, GameInventoryItem.Create(item), client);
 		}
 
-		private static void WritePotionInfo(IList<string> list, InventoryItem item, GameClient client)
+		private static void WritePotionInfo(IList<string> list, DbInventoryItems item, GameClient client)
 		{
 			if (item.SpellID != 0)
 			{

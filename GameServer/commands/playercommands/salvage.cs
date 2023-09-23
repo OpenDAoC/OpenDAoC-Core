@@ -113,7 +113,7 @@ namespace DOL.GS.Commands
 					}
 				}
 
-				IList<InventoryItem> items = new List<InventoryItem>();
+				IList<DbInventoryItems> items = new List<DbInventoryItems>();
 				firstItem += (uint)eInventorySlot.FirstBackpack - 1;
 				lastItem += (uint)eInventorySlot.FirstBackpack - 1;
 
@@ -139,7 +139,7 @@ namespace DOL.GS.Commands
 
 				for (uint i = firstItem; i <= lastItem; i++)
 				{
-					InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)i);
+					DbInventoryItems item = client.Player.Inventory.GetItem((eInventorySlot)i);
 
 					if (item == null)
 						continue;

@@ -46,7 +46,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 		{
 		}
 
-		public DragonWeeklyQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DragonWeeklyQuestHib(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

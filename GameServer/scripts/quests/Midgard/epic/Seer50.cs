@@ -60,20 +60,20 @@ namespace DOL.GS.Quests.Midgard
 		private static Loken Loken = null; // Mob to kill
 		private static GameNPC Miri = null; // Trainer for reward
 
-		private static ItemTemplate ball_of_flame = null; //ball of flame
-		private static ItemTemplate sealed_pouch = null; //sealed pouch
-		private static ItemTemplate HealerEpicBoots = null; //Valhalla Touched Boots 
-		private static ItemTemplate HealerEpicHelm = null; //Valhalla Touched Coif 
-		private static ItemTemplate HealerEpicGloves = null; //Valhalla Touched Gloves 
-		private static ItemTemplate HealerEpicVest = null; //Valhalla Touched Hauberk 
-		private static ItemTemplate HealerEpicLegs = null; //Valhalla Touched Legs 
-		private static ItemTemplate HealerEpicArms = null; //Valhalla Touched Sleeves 
-		private static ItemTemplate ShamanEpicBoots = null; //Subterranean Boots 
-		private static ItemTemplate ShamanEpicHelm = null; //Subterranean Coif 
-		private static ItemTemplate ShamanEpicGloves = null; //Subterranean Gloves 
-		private static ItemTemplate ShamanEpicVest = null; //Subterranean Hauberk 
-		private static ItemTemplate ShamanEpicLegs = null; //Subterranean Legs 
-		private static ItemTemplate ShamanEpicArms = null; //Subterranean Sleeves         
+		private static DbItemTemplates ball_of_flame = null; //ball of flame
+		private static DbItemTemplates sealed_pouch = null; //sealed pouch
+		private static DbItemTemplates HealerEpicBoots = null; //Valhalla Touched Boots 
+		private static DbItemTemplates HealerEpicHelm = null; //Valhalla Touched Coif 
+		private static DbItemTemplates HealerEpicGloves = null; //Valhalla Touched Gloves 
+		private static DbItemTemplates HealerEpicVest = null; //Valhalla Touched Hauberk 
+		private static DbItemTemplates HealerEpicLegs = null; //Valhalla Touched Legs 
+		private static DbItemTemplates HealerEpicArms = null; //Valhalla Touched Sleeves 
+		private static DbItemTemplates ShamanEpicBoots = null; //Subterranean Boots 
+		private static DbItemTemplates ShamanEpicHelm = null; //Subterranean Coif 
+		private static DbItemTemplates ShamanEpicGloves = null; //Subterranean Gloves 
+		private static DbItemTemplates ShamanEpicVest = null; //Subterranean Hauberk 
+		private static DbItemTemplates ShamanEpicLegs = null; //Subterranean Legs 
+		private static DbItemTemplates ShamanEpicArms = null; //Subterranean Sleeves         
 
 		// Constructors
 		public Seer_50() : base()
@@ -88,7 +88,7 @@ namespace DOL.GS.Quests.Midgard
 		{
 		}
 
-		public Seer_50(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public Seer_50(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -207,12 +207,12 @@ namespace DOL.GS.Quests.Midgard
 
 			#region defineItems
 
-			ball_of_flame = GameServer.Database.FindObjectByKey<ItemTemplate>("ball_of_flame");
+			ball_of_flame = GameServer.Database.FindObjectByKey<DbItemTemplates>("ball_of_flame");
 			if (ball_of_flame == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find ball_of_flame , creating it ...");
-				ball_of_flame = new ItemTemplate();
+				ball_of_flame = new DbItemTemplates();
 				ball_of_flame.Id_nb = "ball_of_flame";
 				ball_of_flame.Name = "Ball of Flame";
 				ball_of_flame.Level = 8;
@@ -234,12 +234,12 @@ namespace DOL.GS.Quests.Midgard
 			}
 
 // end item
-			sealed_pouch = GameServer.Database.FindObjectByKey<ItemTemplate>("sealed_pouch");
+			sealed_pouch = GameServer.Database.FindObjectByKey<DbItemTemplates>("sealed_pouch");
 			if (sealed_pouch == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Sealed Pouch , creating it ...");
-				sealed_pouch = new ItemTemplate();
+				sealed_pouch = new DbItemTemplates();
 				sealed_pouch.Id_nb = "sealed_pouch";
 				sealed_pouch.Name = "Sealed Pouch";
 				sealed_pouch.Level = 8;
@@ -262,12 +262,12 @@ namespace DOL.GS.Quests.Midgard
 // end item
 
 			//Valhalla Touched Boots
-			HealerEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("HealerEpicBoots");
+			HealerEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("HealerEpicBoots");
 			if (HealerEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Healers Epic Boots , creating it ...");
-				HealerEpicBoots = new ItemTemplate();
+				HealerEpicBoots = new DbItemTemplates();
 				HealerEpicBoots.Id_nb = "HealerEpicBoots";
 				HealerEpicBoots.Name = "Valhalla Touched Boots";
 				HealerEpicBoots.Level = 50;
@@ -305,12 +305,12 @@ namespace DOL.GS.Quests.Midgard
 			}
 //end item
 			//Valhalla Touched Coif 
-			HealerEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("HealerEpicHelm");
+			HealerEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("HealerEpicHelm");
 			if (HealerEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Healers Epic Helm , creating it ...");
-				HealerEpicHelm = new ItemTemplate();
+				HealerEpicHelm = new DbItemTemplates();
 				HealerEpicHelm.Id_nb = "HealerEpicHelm";
 				HealerEpicHelm.Name = "Valhalla Touched Coif";
 				HealerEpicHelm.Level = 50;
@@ -349,12 +349,12 @@ namespace DOL.GS.Quests.Midgard
 			}
 //end item
 			//Valhalla Touched Gloves 
-			HealerEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("HealerEpicGloves");
+			HealerEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("HealerEpicGloves");
 			if (HealerEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Healers Epic Gloves , creating it ...");
-				HealerEpicGloves = new ItemTemplate();
+				HealerEpicGloves = new DbItemTemplates();
 				HealerEpicGloves.Id_nb = "HealerEpicGloves";
 				HealerEpicGloves.Name = "Valhalla Touched Gloves ";
 				HealerEpicGloves.Level = 50;
@@ -392,12 +392,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Valhalla Touched Hauberk 
-			HealerEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("HealerEpicVest");
+			HealerEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("HealerEpicVest");
 			if (HealerEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Healers Epic Vest , creating it ...");
-				HealerEpicVest = new ItemTemplate();
+				HealerEpicVest = new DbItemTemplates();
 				HealerEpicVest.Id_nb = "HealerEpicVest";
 				HealerEpicVest.Name = "Valhalla Touched Haukberk";
 				HealerEpicVest.Level = 50;
@@ -435,12 +435,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Valhalla Touched Legs 
-			HealerEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("HealerEpicLegs");
+			HealerEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("HealerEpicLegs");
 			if (HealerEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Healers Epic Legs , creating it ...");
-				HealerEpicLegs = new ItemTemplate();
+				HealerEpicLegs = new DbItemTemplates();
 				HealerEpicLegs.Id_nb = "HealerEpicLegs";
 				HealerEpicLegs.Name = "Valhalla Touched Legs";
 				HealerEpicLegs.Level = 50;
@@ -478,12 +478,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Valhalla Touched Sleeves 
-			HealerEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("HealerEpicArms");
+			HealerEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("HealerEpicArms");
 			if (HealerEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Healer Epic Arms , creating it ...");
-				HealerEpicArms = new ItemTemplate();
+				HealerEpicArms = new DbItemTemplates();
 				HealerEpicArms.Id_nb = "HealerEpicArms";
 				HealerEpicArms.Name = "Valhalla Touched Sleeves";
 				HealerEpicArms.Level = 50;
@@ -521,12 +521,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Subterranean Boots 
-			ShamanEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("ShamanEpicBoots");
+			ShamanEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("ShamanEpicBoots");
 			if (ShamanEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shaman Epic Boots , creating it ...");
-				ShamanEpicBoots = new ItemTemplate();
+				ShamanEpicBoots = new DbItemTemplates();
 				ShamanEpicBoots.Id_nb = "ShamanEpicBoots";
 				ShamanEpicBoots.Name = "Subterranean Boots";
 				ShamanEpicBoots.Level = 50;
@@ -561,12 +561,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Subterranean Coif 
-			ShamanEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("ShamanEpicHelm");
+			ShamanEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("ShamanEpicHelm");
 			if (ShamanEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shaman Epic Helm , creating it ...");
-				ShamanEpicHelm = new ItemTemplate();
+				ShamanEpicHelm = new DbItemTemplates();
 				ShamanEpicHelm.Id_nb = "ShamanEpicHelm";
 				ShamanEpicHelm.Name = "Subterranean Coif";
 				ShamanEpicHelm.Level = 50;
@@ -604,12 +604,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Subterranean Gloves 
-			ShamanEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("ShamanEpicGloves");
+			ShamanEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("ShamanEpicGloves");
 			if (ShamanEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shaman Epic Gloves , creating it ...");
-				ShamanEpicGloves = new ItemTemplate();
+				ShamanEpicGloves = new DbItemTemplates();
 				ShamanEpicGloves.Id_nb = "ShamanEpicGloves";
 				ShamanEpicGloves.Name = "Subterranean Gloves";
 				ShamanEpicGloves.Level = 50;
@@ -647,12 +647,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Subterranean Hauberk 
-			ShamanEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("ShamanEpicVest");
+			ShamanEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("ShamanEpicVest");
 			if (ShamanEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shaman Epic Vest , creating it ...");
-				ShamanEpicVest = new ItemTemplate();
+				ShamanEpicVest = new DbItemTemplates();
 				ShamanEpicVest.Id_nb = "ShamanEpicVest";
 				ShamanEpicVest.Name = "Subterranean Hauberk";
 				ShamanEpicVest.Level = 50;
@@ -690,12 +690,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Subterranean Legs 
-			ShamanEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("ShamanEpicLegs");
+			ShamanEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("ShamanEpicLegs");
 			if (ShamanEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shaman Epic Legs , creating it ...");
-				ShamanEpicLegs = new ItemTemplate();
+				ShamanEpicLegs = new DbItemTemplates();
 				ShamanEpicLegs.Id_nb = "ShamanEpicLegs";
 				ShamanEpicLegs.Name = "Subterranean Legs";
 				ShamanEpicLegs.Level = 50;
@@ -733,12 +733,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Subterranean Sleeves 
-			ShamanEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("ShamanEpicArms");
+			ShamanEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("ShamanEpicArms");
 			if (ShamanEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shaman Epic Arms , creating it ...");
-				ShamanEpicArms = new ItemTemplate();
+				ShamanEpicArms = new DbItemTemplates();
 				ShamanEpicArms.Id_nb = "ShamanEpicArms";
 				ShamanEpicArms.Name = "Subterranean Sleeves";
 				ShamanEpicArms.Level = 50;

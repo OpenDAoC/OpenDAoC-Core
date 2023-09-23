@@ -122,7 +122,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_VagdushDisease == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 2;
 					spell.RecastDelay = 0;
@@ -154,7 +154,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_VagdushDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpells spell = new DbSpells();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;

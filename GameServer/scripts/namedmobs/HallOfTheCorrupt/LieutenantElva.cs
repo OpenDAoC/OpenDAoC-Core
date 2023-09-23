@@ -107,7 +107,7 @@ namespace DOL.GS
                 }
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItems weapon)
         {
             return base.AttackDamage(weapon) * Strength / 150;
         }
@@ -235,7 +235,7 @@ namespace DOL.GS
             {
                 if (m_Poison == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpells spell = new DbSpells();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 2;

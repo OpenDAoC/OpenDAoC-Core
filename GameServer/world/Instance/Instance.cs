@@ -66,7 +66,7 @@ namespace DOL.GS
 		/// <param name="instanceName"></param>
 		public virtual void LoadFromDatabase(string instanceName)
 		{
-			var objects = DOLDB<DBInstanceXElement>.SelectObjects(DB.Column("InstanceID").IsEqualTo(instanceName));
+			var objects = DOLDB<DbInstanceXElement>.SelectObjects(DB.Column("InstanceID").IsEqualTo(instanceName));
 
 			if (objects.Count == 0)
 				return;
@@ -75,7 +75,7 @@ namespace DOL.GS
 
 			//Now we have a list of DBElements, lets create the various entries
 			//associated with them and populate the instance.
-			foreach (DBInstanceXElement entry in objects)
+			foreach (DbInstanceXElement entry in objects)
 			{
 				if (entry == null)
 					continue; //an odd error, but experience knows best.

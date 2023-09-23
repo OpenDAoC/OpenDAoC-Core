@@ -99,7 +99,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				return;
 			}
 
-			var door = DOLDB<DBDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(doorID));
+			var door = DOLDB<DbDoors>.SelectObject(DB.Column("InternalID").IsEqualTo(doorID));
 			if (door != null)
 			{
 				if (doorType == 7 || doorType == 9)
@@ -181,7 +181,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 			else
 			{
-				var door = new DBDoor();
+				var door = new DbDoors();
 				door.ObjectId = null;
 				door.InternalID = m_handlerDoorID;
 				door.Name = "door";

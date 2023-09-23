@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 
     public class AtlasOF_TrueSight : TimedRealmAbility
     {
-        public AtlasOF_TrueSight(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_TrueSight(DbAbilities dba, int level) : base(dba, level) { }
         
         int m_duration = 60000; // 60s
 
@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
         
         private SpellHandler CreateSpell(GameLiving owner)
         {
-            DBSpell tmpSpell = new DBSpell();
+            DbSpells tmpSpell = new DbSpells();
             tmpSpell.Name = "True Sight";
             tmpSpell.Icon = 4279;
             tmpSpell.ClientEffect = 7014;

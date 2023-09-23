@@ -37,7 +37,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// New item data packet for 1.119
 		/// </summary>
-		protected override void WriteItemData(GSTCPPacketOut pak, InventoryItem item)
+		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItems item)
 		{
 			if (item == null)
 			{

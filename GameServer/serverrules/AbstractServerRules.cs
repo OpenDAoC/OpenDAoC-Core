@@ -56,8 +56,8 @@ namespace DOL.GS.ServerRules
 				return false;
 
 			// Ban account
-			IList<DBBannedAccount> objs;
-			objs = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(username)));
+			IList<DbBans> objs;
+			objs = DOLDB<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(username)));
 			if (objs.Count > 0)
 			{
 				client.IsConnected = false;
@@ -68,7 +68,7 @@ namespace DOL.GS.ServerRules
 
 			// Ban IP Address or range (example: 5.5.5.%)
 			string accip = client.TcpEndpointAddress;
-			objs = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("I").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Ip").IsLike(accip)));
+			objs = DOLDB<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("I").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Ip").IsLike(accip)));
 			if (objs.Count > 0)
 			{
 				client.IsConnected = false;
@@ -132,7 +132,7 @@ namespace DOL.GS.ServerRules
 			}
 			 */
 
-			Account account = GameServer.Database.FindObjectByKey<Account>(username);
+			DbAccounts account = GameServer.Database.FindObjectByKey<DbAccounts>(username);
 
 			if (Properties.MAX_PLAYERS > 0 && string.IsNullOrEmpty(Properties.QUEUE_API_URI))
 			{
@@ -256,7 +256,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player"></param>
 		/// <param name="source"></param>
 		/// <param name="destination"></param>
-		public virtual void OnPlayerTeleport(GamePlayer player, GameLocation source, Teleport destination)
+		public virtual void OnPlayerTeleport(GamePlayer player, GameLocation source, DbTeleports destination)
 		{
 			// override this in order to do something, like set immunity, when a player teleports
 		}
@@ -307,7 +307,7 @@ namespace DOL.GS.ServerRules
 			return true;
 		}
 
-		public virtual bool CountsTowardsSlashLevel(DOLCharacters player)
+		public virtual bool CountsTowardsSlashLevel(DbCoreCharacters player)
 		{
 			return true;
 		}
@@ -538,7 +538,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player"></param>
 		/// <param name="point"></param>
 		/// <returns></returns>
-		public virtual bool IsAllowedToBind(GamePlayer player, BindPoint point)
+		public virtual bool IsAllowedToBind(GamePlayer player, DbBindPoints point)
 		{
 			return true;
 		}
@@ -549,7 +549,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public virtual bool IsAllowedToCraft(GamePlayer player, ItemTemplate item)
+		public virtual bool IsAllowedToCraft(GamePlayer player, DbItemTemplates item)
 		{
 			return true;
 		}
@@ -690,7 +690,7 @@ namespace DOL.GS.ServerRules
 		}
 
 		// Can a character use this item?
-		public virtual bool CheckAbilityToUseItem(GameLiving living, ItemTemplate item)
+		public virtual bool CheckAbilityToUseItem(GameLiving living, DbItemTemplates item)
 		{
 			if (living == null || item == null)
 				return false;
@@ -1899,7 +1899,7 @@ namespace DOL.GS.ServerRules
 				{
 					GamePlayer killerPlayer = living as GamePlayer;
 					//only gain rps in a battleground if you are under the cap
-					Battleground bg = GameServer.KeepManager.GetBattleground(killerPlayer.CurrentRegionID);
+					DbBattlegrounds bg = GameServer.KeepManager.GetBattleground(killerPlayer.CurrentRegionID);
 					if (bg == null || (killerPlayer.RealmLevel < bg.MaxRealmLevel))
 					{
 						realmPoints = (int)(realmPoints * (1.0 + 2.0 * (killedPlayer.RealmLevel - killerPlayer.RealmLevel) / 900.0));
@@ -2176,7 +2176,7 @@ namespace DOL.GS.ServerRules
 					foreach (KeyValuePair<GamePlayer, int> pair in playerKillers)
 					{
 
-						DOL.Database.PvPKillsLog killLog = new DOL.Database.PvPKillsLog();
+						DOL.Database.DbPvpKillsLog killLog = new DOL.Database.DbPvpKillsLog();
 						killLog.KilledIP = killedPlayer.Client.TcpEndpointAddress;
 						killLog.KilledName = killedPlayer.Name;
 						killLog.KilledRealm = GlobalConstants.RealmToName(killedPlayer.Realm);
@@ -2775,7 +2775,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="heading"></param>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		public virtual GameNPC PlaceHousingNPC(DOL.GS.Housing.House house, ItemTemplate item, IPoint3D location, ushort heading)
+		public virtual GameNPC PlaceHousingNPC(DOL.GS.Housing.House house, DbItemTemplates item, IPoint3D location, ushort heading)
 		{
 			NpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(item.Bonus);
 
@@ -2866,7 +2866,7 @@ namespace DOL.GS.ServerRules
 		}
 
 
-		public virtual GameStaticItem PlaceHousingInteriorItem(DOL.GS.Housing.House house, ItemTemplate item, IPoint3D location, ushort heading)
+		public virtual GameStaticItem PlaceHousingInteriorItem(DOL.GS.Housing.House house, DbItemTemplates item, IPoint3D location, ushort heading)
 		{
 			GameStaticItem hookpointObject = new GameStaticItem();
 			hookpointObject.CurrentHouse = house;

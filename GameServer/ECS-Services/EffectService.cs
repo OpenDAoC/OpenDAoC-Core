@@ -789,14 +789,14 @@ namespace DOL.GS
             if (player == null || player.DBCharacter == null || GameServer.Database == null)
                 return;
 
-            IList<PlayerXEffect> effs = DOLDB<PlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
+            IList<DbPlayerXEffect> effs = DOLDB<DbPlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
             if (effs == null)
                 return;
 
-            foreach (PlayerXEffect eff in effs)
+            foreach (DbPlayerXEffect eff in effs)
                 GameServer.Database.DeleteObject(eff);
 
-            foreach (PlayerXEffect eff in effs.GroupBy(e => e.Var1).Select(e => e.First()))
+            foreach (DbPlayerXEffect eff in effs.GroupBy(e => e.Var1).Select(e => e.First()))
             {
                 if (eff.SpellLine == GlobalSpellsLines.Reserved_Spells)
                     continue;
@@ -838,7 +838,7 @@ namespace DOL.GS
             if (player == null || player.effectListComponent.GetAllEffects().Count == 0)
                 return;
 
-            IList<PlayerXEffect> effs = DOLDB<PlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
+            IList<DbPlayerXEffect> effs = DOLDB<DbPlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
             if (effs != null)
                 GameServer.Database.DeleteObject(effs);
 
@@ -855,7 +855,7 @@ namespace DOL.GS
                                 continue;
                         }
 
-                        PlayerXEffect effx = eff.getSavedEffect();
+                        DbPlayerXEffect effx = eff.getSavedEffect();
 
                         if (effx == null)
                             continue;

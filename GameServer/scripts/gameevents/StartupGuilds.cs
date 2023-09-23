@@ -105,8 +105,8 @@ namespace DOL.GS.GameEvents
 			if (chArgs == null)
 				return;
 			
-			DOLCharacters ch = chArgs.Character;
-			Account account = chArgs.GameClient.Account;
+			DbCoreCharacters ch = chArgs.Character;
+			DbAccounts account = chArgs.GameClient.Account;
 			
 
 			var guildname = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName((eRealm)ch.Realm)));

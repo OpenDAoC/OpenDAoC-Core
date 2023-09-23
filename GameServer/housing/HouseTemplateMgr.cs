@@ -60,7 +60,7 @@ namespace DOL.GS.Housing
             CheckNPCTemplates();
         }
 
-        public static long GetLotPrice(DBHouse house)
+        public static long GetLotPrice(DbHouses house)
         {
             TimeSpan diff = (DateTime.Now - house.CreationTime);
 
@@ -320,7 +320,7 @@ namespace DOL.GS.Housing
 
         private static void CheckMerchantItems(string merchantid, ICollection<string> itemids)
         {
-            var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(merchantid));
+            var merchantitems = DOLDB<DbMerchantItems>.SelectObjects(DB.Column("ItemListID").IsEqualTo(merchantid));
 
             int slot = 0;
             foreach (string itemid in itemids)
@@ -331,7 +331,7 @@ namespace DOL.GS.Housing
                     continue;
                 }
 
-                var newitem = new MerchantItem
+                var newitem = new DbMerchantItems
                 {
                     ItemListID = merchantid,
                     ItemTemplateID = itemid,
@@ -347,13 +347,13 @@ namespace DOL.GS.Housing
         private static void CheckItemTemplate(string name, string id, int model, int objtype, int copper, int dps, int spd,
                                               int bonus, int weight, int realm)
         {
-            var templateitem = GameServer.Database.FindObjectByKey<ItemTemplate>(id);
+            var templateitem = GameServer.Database.FindObjectByKey<DbItemTemplates>(id);
             if (templateitem != null)
             {
                 return;
             }
 
-            templateitem = new ItemTemplate
+            templateitem = new DbItemTemplates
             {
                 Name = name,
                 Model = model,
@@ -423,7 +423,7 @@ namespace DOL.GS.Housing
                 return;
             }
 
-            DBNpcTemplate dbTemplate = new DBNpcTemplate
+            DbNpcTemplates dbTemplate = new DbNpcTemplates
             {
                 Name = name,
                 TemplateId = templateID,

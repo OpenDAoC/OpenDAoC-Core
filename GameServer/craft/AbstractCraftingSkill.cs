@@ -152,7 +152,7 @@ namespace DOL.GS
 			//player.CraftTimer.Start(craftingTime * 1000);
 		}
 
-		protected virtual void StopCraftingCurrentItem(GamePlayer player, ItemTemplate itemToCraft)
+		protected virtual void StopCraftingCurrentItem(GamePlayer player, DbItemTemplates itemToCraft)
 		{
 			//player.CraftTimer.Stop();
 			player.craftComponent.StopCraft();
@@ -224,7 +224,7 @@ namespace DOL.GS
 
 			foreach (var ingredient in recipe.Ingredients)
 			{
-				ItemTemplate material = ingredient.Material;
+				DbItemTemplates material = ingredient.Material;
 
 				switch (material.Model)
 				{
@@ -282,14 +282,14 @@ namespace DOL.GS
 			{
 				foreach (var ingredient in recipe.Ingredients)
 				{
-					ItemTemplate material = ingredient.Material;
+					DbItemTemplates material = ingredient.Material;
 
 					totalPrice += material.Price * ingredient.Count;
 
 					bool result = false;
 					int count = ingredient.Count;
 
-					foreach (InventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+					foreach (DbInventoryItems item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 					{
 						if (item != null && item.Name == material.Name)
 						{
@@ -339,7 +339,7 @@ namespace DOL.GS
 		{
 			foreach (var ingredient in recipe.Ingredients)
 			{
-				ItemTemplate template = ingredient.Material;
+				DbItemTemplates template = ingredient.Material;
 
 				switch (template.Model)
 				{
@@ -396,12 +396,12 @@ namespace DOL.GS
 			{
 				foreach (var ingredient in recipe.Ingredients)
 				{
-					ItemTemplate template = ingredient.Material;
+					DbItemTemplates template = ingredient.Material;
 
 					bool result = false;
 					int count = ingredient.Count;
 
-					foreach (InventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+					foreach (DbInventoryItems item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 					{
 						if (item != null && item.Name == template.Name)
 						{
@@ -437,7 +437,7 @@ namespace DOL.GS
 			while (enumerator.MoveNext())
 			{
 				KeyValuePair<int, int?> de = enumerator.Current;
-				InventoryItem item = player.Inventory.GetItem((eInventorySlot)de.Key);
+				DbInventoryItems item = player.Inventory.GetItem((eInventorySlot)de.Key);
 				if (item != null)
 				{
 					if (!de.Value.HasValue)
@@ -465,7 +465,7 @@ namespace DOL.GS
 			lock (player.Inventory)
 			{
 				int count = product.PackSize < 1 ? 1 : product.PackSize;
-				foreach (InventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				foreach (DbInventoryItems item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 				{
 					if (item == null)
 						continue;
@@ -505,7 +505,7 @@ namespace DOL.GS
 				}
 			}
 			
-			InventoryItem newItem = null;
+			DbInventoryItems newItem = null;
 
 			player.Inventory.BeginChanges();
 
@@ -531,7 +531,7 @@ namespace DOL.GS
 				}
 				else
 				{
-					ItemUnique unique = new ItemUnique(product);
+					DbItemUniques unique = new DbItemUniques(product);
 					GameServer.Database.AddObject(unique);
 					newItem = GameInventoryItem.Create(unique);
 					newItem.Quality = GetQuality(player, recipe.Level);

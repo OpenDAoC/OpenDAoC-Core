@@ -59,32 +59,32 @@ namespace DOL.GS.Quests.Hibernia
 		private static GameNPC Brigit = null; // Start NPC        
 		private static GhostOfCaithor Caithor = null; // Mob to kill
 
-		private static ItemTemplate Moonstone = null; //ball of flame
+		private static DbItemTemplates Moonstone = null; //ball of flame
 
-		private static ItemTemplate ChampionEpicBoots = null; //Mist Shrouded Boots 
-		private static ItemTemplate ChampionEpicHelm = null; //Mist Shrouded Coif 
-		private static ItemTemplate ChampionEpicGloves = null; //Mist Shrouded Gloves 
-		private static ItemTemplate ChampionEpicVest = null; //Mist Shrouded Hauberk 
-		private static ItemTemplate ChampionEpicLegs = null; //Mist Shrouded Legs 
-		private static ItemTemplate ChampionEpicArms = null; //Mist Shrouded Sleeves 
-		private static ItemTemplate BardEpicBoots = null; //Shadow Shrouded Boots 
-		private static ItemTemplate BardEpicHelm = null; //Shadow Shrouded Coif 
-		private static ItemTemplate BardEpicGloves = null; //Shadow Shrouded Gloves 
-		private static ItemTemplate BardEpicVest = null; //Shadow Shrouded Hauberk 
-		private static ItemTemplate BardEpicLegs = null; //Shadow Shrouded Legs 
-		private static ItemTemplate BardEpicArms = null; //Shadow Shrouded Sleeves 
-		private static ItemTemplate EnchanterEpicBoots = null; //Valhalla Touched Boots 
-		private static ItemTemplate EnchanterEpicHelm = null; //Valhalla Touched Coif 
-		private static ItemTemplate EnchanterEpicGloves = null; //Valhalla Touched Gloves 
-		private static ItemTemplate EnchanterEpicVest = null; //Valhalla Touched Hauberk 
-		private static ItemTemplate EnchanterEpicLegs = null; //Valhalla Touched Legs 
-		private static ItemTemplate EnchanterEpicArms = null; //Valhalla Touched Sleeves 
-		private static ItemTemplate NightshadeEpicBoots = null; //Subterranean Boots 
-		private static ItemTemplate NightshadeEpicHelm = null; //Subterranean Coif 
-		private static ItemTemplate NightshadeEpicGloves = null; //Subterranean Gloves 
-		private static ItemTemplate NightshadeEpicVest = null; //Subterranean Hauberk 
-		private static ItemTemplate NightshadeEpicLegs = null; //Subterranean Legs 
-		private static ItemTemplate NightshadeEpicArms = null; //Subterranean Sleeves         
+		private static DbItemTemplates ChampionEpicBoots = null; //Mist Shrouded Boots 
+		private static DbItemTemplates ChampionEpicHelm = null; //Mist Shrouded Coif 
+		private static DbItemTemplates ChampionEpicGloves = null; //Mist Shrouded Gloves 
+		private static DbItemTemplates ChampionEpicVest = null; //Mist Shrouded Hauberk 
+		private static DbItemTemplates ChampionEpicLegs = null; //Mist Shrouded Legs 
+		private static DbItemTemplates ChampionEpicArms = null; //Mist Shrouded Sleeves 
+		private static DbItemTemplates BardEpicBoots = null; //Shadow Shrouded Boots 
+		private static DbItemTemplates BardEpicHelm = null; //Shadow Shrouded Coif 
+		private static DbItemTemplates BardEpicGloves = null; //Shadow Shrouded Gloves 
+		private static DbItemTemplates BardEpicVest = null; //Shadow Shrouded Hauberk 
+		private static DbItemTemplates BardEpicLegs = null; //Shadow Shrouded Legs 
+		private static DbItemTemplates BardEpicArms = null; //Shadow Shrouded Sleeves 
+		private static DbItemTemplates EnchanterEpicBoots = null; //Valhalla Touched Boots 
+		private static DbItemTemplates EnchanterEpicHelm = null; //Valhalla Touched Coif 
+		private static DbItemTemplates EnchanterEpicGloves = null; //Valhalla Touched Gloves 
+		private static DbItemTemplates EnchanterEpicVest = null; //Valhalla Touched Hauberk 
+		private static DbItemTemplates EnchanterEpicLegs = null; //Valhalla Touched Legs 
+		private static DbItemTemplates EnchanterEpicArms = null; //Valhalla Touched Sleeves 
+		private static DbItemTemplates NightshadeEpicBoots = null; //Subterranean Boots 
+		private static DbItemTemplates NightshadeEpicHelm = null; //Subterranean Coif 
+		private static DbItemTemplates NightshadeEpicGloves = null; //Subterranean Gloves 
+		private static DbItemTemplates NightshadeEpicVest = null; //Subterranean Hauberk 
+		private static DbItemTemplates NightshadeEpicLegs = null; //Subterranean Legs 
+		private static DbItemTemplates NightshadeEpicArms = null; //Subterranean Sleeves         
 
 		// Constructors
 		public Essence_50() : base()
@@ -99,7 +99,7 @@ namespace DOL.GS.Quests.Hibernia
 		{
 		}
 
-		public Essence_50(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public Essence_50(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -186,12 +186,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			#region Item Declarations
 
-			Moonstone = GameServer.Database.FindObjectByKey<ItemTemplate>("Moonstone");
+			Moonstone = GameServer.Database.FindObjectByKey<DbItemTemplates>("Moonstone");
 			if (Moonstone == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Moonstone , creating it ...");
-				Moonstone = new ItemTemplate();
+				Moonstone = new DbItemTemplates();
 				Moonstone.Id_nb = "Moonstone";
 				Moonstone.Name = "Moonstone";
 				Moonstone.Level = 8;
@@ -213,12 +213,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 // end item			
-			BardEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("BardEpicBoots");
+			BardEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("BardEpicBoots");
 			if (BardEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Bards Epic Boots , creating it ...");
-				BardEpicBoots = new ItemTemplate();
+				BardEpicBoots = new DbItemTemplates();
 				BardEpicBoots.Id_nb = "BardEpicBoots";
 				BardEpicBoots.Name = "Moonsung Boots";
 				BardEpicBoots.Level = 50;
@@ -257,12 +257,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Moonsung Coif 
-			BardEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("BardEpicHelm");
+			BardEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("BardEpicHelm");
 			if (BardEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Bards Epic Helm , creating it ...");
-				BardEpicHelm = new ItemTemplate();
+				BardEpicHelm = new DbItemTemplates();
 				BardEpicHelm.Id_nb = "BardEpicHelm";
 				BardEpicHelm.Name = "Moonsung Coif";
 				BardEpicHelm.Level = 50;
@@ -302,12 +302,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Moonsung Gloves 
-			BardEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("BardEpicGloves");
+			BardEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("BardEpicGloves");
 			if (BardEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Bards Epic Gloves , creating it ...");
-				BardEpicGloves = new ItemTemplate();
+				BardEpicGloves = new DbItemTemplates();
 				BardEpicGloves.Id_nb = "BardEpicGloves";
 				BardEpicGloves.Name = "Moonsung Gloves ";
 				BardEpicGloves.Level = 50;
@@ -345,12 +345,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonsung Hauberk 
-			BardEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("BardEpicVest");
+			BardEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("BardEpicVest");
 			if (BardEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Bards Epic Vest , creating it ...");
-				BardEpicVest = new ItemTemplate();
+				BardEpicVest = new DbItemTemplates();
 				BardEpicVest.Id_nb = "BardEpicVest";
 				BardEpicVest.Name = "Moonsung Hauberk";
 				BardEpicVest.Level = 50;
@@ -388,12 +388,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonsung Legs 
-			BardEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("BardEpicLegs");
+			BardEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("BardEpicLegs");
 			if (BardEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Bards Epic Legs , creating it ...");
-				BardEpicLegs = new ItemTemplate();
+				BardEpicLegs = new DbItemTemplates();
 				BardEpicLegs.Id_nb = "BardEpicLegs";
 				BardEpicLegs.Name = "Moonsung Legs";
 				BardEpicLegs.Level = 50;
@@ -431,12 +431,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonsung Sleeves 
-			BardEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("BardEpicArms");
+			BardEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("BardEpicArms");
 			if (BardEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Bard Epic Arms , creating it ...");
-				BardEpicArms = new ItemTemplate();
+				BardEpicArms = new DbItemTemplates();
 				BardEpicArms.Id_nb = "BardEpicArms";
 				BardEpicArms.Name = "Moonsung Sleeves";
 				BardEpicArms.Level = 50;
@@ -474,12 +474,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 //Champion Epic Sleeves End
-			ChampionEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("ChampionEpicBoots");
+			ChampionEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("ChampionEpicBoots");
 			if (ChampionEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Champions Epic Boots , creating it ...");
-				ChampionEpicBoots = new ItemTemplate();
+				ChampionEpicBoots = new DbItemTemplates();
 				ChampionEpicBoots.Id_nb = "ChampionEpicBoots";
 				ChampionEpicBoots.Name = "Moonglow Boots";
 				ChampionEpicBoots.Level = 50;
@@ -518,12 +518,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Moonglow Coif 
-			ChampionEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("ChampionEpicHelm");
+			ChampionEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("ChampionEpicHelm");
 			if (ChampionEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Champions Epic Helm , creating it ...");
-				ChampionEpicHelm = new ItemTemplate();
+				ChampionEpicHelm = new DbItemTemplates();
 				ChampionEpicHelm.Id_nb = "ChampionEpicHelm";
 				ChampionEpicHelm.Name = "Moonglow Coif";
 				ChampionEpicHelm.Level = 50;
@@ -562,12 +562,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Moonglow Gloves 
-			ChampionEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("ChampionEpicGloves");
+			ChampionEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("ChampionEpicGloves");
 			if (ChampionEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Champions Epic Gloves , creating it ...");
-				ChampionEpicGloves = new ItemTemplate();
+				ChampionEpicGloves = new DbItemTemplates();
 				ChampionEpicGloves.Id_nb = "ChampionEpicGloves";
 				ChampionEpicGloves.Name = "Moonglow Gloves ";
 				ChampionEpicGloves.Level = 50;
@@ -605,12 +605,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonglow Hauberk 
-			ChampionEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("ChampionEpicVest");
+			ChampionEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("ChampionEpicVest");
 			if (ChampionEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Champions Epic Vest , creating it ...");
-				ChampionEpicVest = new ItemTemplate();
+				ChampionEpicVest = new DbItemTemplates();
 				ChampionEpicVest.Id_nb = "ChampionEpicVest";
 				ChampionEpicVest.Name = "Moonglow Brestplate";
 				ChampionEpicVest.Level = 50;
@@ -648,12 +648,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonglow Legs 
-			ChampionEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("ChampionEpicLegs");
+			ChampionEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("ChampionEpicLegs");
 			if (ChampionEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Champions Epic Legs , creating it ...");
-				ChampionEpicLegs = new ItemTemplate();
+				ChampionEpicLegs = new DbItemTemplates();
 				ChampionEpicLegs.Id_nb = "ChampionEpicLegs";
 				ChampionEpicLegs.Name = "Moonglow Legs";
 				ChampionEpicLegs.Level = 50;
@@ -691,12 +691,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonglow Sleeves 
-			ChampionEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("ChampionEpicArms");
+			ChampionEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("ChampionEpicArms");
 			if (ChampionEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Champion Epic Arms , creating it ...");
-				ChampionEpicArms = new ItemTemplate();
+				ChampionEpicArms = new DbItemTemplates();
 				ChampionEpicArms.Id_nb = "ChampionEpicArms";
 				ChampionEpicArms.Name = "Moonglow Sleeves";
 				ChampionEpicArms.Level = 50;
@@ -733,12 +733,12 @@ namespace DOL.GS.Quests.Hibernia
 				}
 
 			}
-			NightshadeEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("NightshadeEpicBoots");
+			NightshadeEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("NightshadeEpicBoots");
 			if (NightshadeEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Nightshade Epic Boots , creating it ...");
-				NightshadeEpicBoots = new ItemTemplate();
+				NightshadeEpicBoots = new DbItemTemplates();
 				NightshadeEpicBoots.Id_nb = "NightshadeEpicBoots";
 				NightshadeEpicBoots.Name = "Moonlit Boots";
 				NightshadeEpicBoots.Level = 50;
@@ -777,12 +777,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Moonlit Coif 
-			NightshadeEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("NightshadeEpicHelm");
+			NightshadeEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("NightshadeEpicHelm");
 			if (NightshadeEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Nightshade Epic Helm , creating it ...");
-				NightshadeEpicHelm = new ItemTemplate();
+				NightshadeEpicHelm = new DbItemTemplates();
 				NightshadeEpicHelm.Id_nb = "NightshadeEpicHelm";
 				NightshadeEpicHelm.Name = "Moonlit Helm";
 				NightshadeEpicHelm.Level = 50;
@@ -821,12 +821,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Moonlit Gloves 
-			NightshadeEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("NightshadeEpicGloves");
+			NightshadeEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("NightshadeEpicGloves");
 			if (NightshadeEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Nightshade Epic Gloves , creating it ...");
-				NightshadeEpicGloves = new ItemTemplate();
+				NightshadeEpicGloves = new DbItemTemplates();
 				NightshadeEpicGloves.Id_nb = "NightshadeEpicGloves";
 				NightshadeEpicGloves.Name = "Moonlit Gloves ";
 				NightshadeEpicGloves.Level = 50;
@@ -864,12 +864,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonlit Hauberk 
-			NightshadeEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("NightshadeEpicVest");
+			NightshadeEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("NightshadeEpicVest");
 			if (NightshadeEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Nightshade Epic Vest , creating it ...");
-				NightshadeEpicVest = new ItemTemplate();
+				NightshadeEpicVest = new DbItemTemplates();
 				NightshadeEpicVest.Id_nb = "NightshadeEpicVest";
 				NightshadeEpicVest.Name = "Moonlit Leather Jerking";
 				NightshadeEpicVest.Level = 50;
@@ -904,12 +904,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonlit Legs 
-			NightshadeEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("NightshadeEpicLegs");
+			NightshadeEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("NightshadeEpicLegs");
 			if (NightshadeEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Nightshade Epic Legs , creating it ...");
-				NightshadeEpicLegs = new ItemTemplate();
+				NightshadeEpicLegs = new DbItemTemplates();
 				NightshadeEpicLegs.Id_nb = "NightshadeEpicLegs";
 				NightshadeEpicLegs.Name = "Moonlit Leggings";
 				NightshadeEpicLegs.Level = 50;
@@ -947,12 +947,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonlit Sleeves 
-			NightshadeEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("NightshadeEpicArms");
+			NightshadeEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("NightshadeEpicArms");
 			if (NightshadeEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Nightshade Epic Arms , creating it ...");
-				NightshadeEpicArms = new ItemTemplate();
+				NightshadeEpicArms = new DbItemTemplates();
 				NightshadeEpicArms.Id_nb = "NightshadeEpicArms";
 				NightshadeEpicArms.Name = "Moonlit Sleeves";
 				NightshadeEpicArms.Level = 50;
@@ -989,12 +989,12 @@ namespace DOL.GS.Quests.Hibernia
 				}
 
 			}
-			EnchanterEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("EnchanterEpicBoots");
+			EnchanterEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplates>("EnchanterEpicBoots");
 			if (EnchanterEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Enchanter Epic Boots , creating it ...");
-				EnchanterEpicBoots = new ItemTemplate();
+				EnchanterEpicBoots = new DbItemTemplates();
 				EnchanterEpicBoots.Id_nb = "EnchanterEpicBoots";
 				EnchanterEpicBoots.Name = "Moonspun Boots";
 				EnchanterEpicBoots.Level = 50;
@@ -1033,12 +1033,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Moonspun Coif 
-			EnchanterEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("EnchanterEpicHelm");
+			EnchanterEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplates>("EnchanterEpicHelm");
 			if (EnchanterEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Enchanter Epic Helm , creating it ...");
-				EnchanterEpicHelm = new ItemTemplate();
+				EnchanterEpicHelm = new DbItemTemplates();
 				EnchanterEpicHelm.Id_nb = "EnchanterEpicHelm";
 				EnchanterEpicHelm.Name = "Moonspun Cap";
 				EnchanterEpicHelm.Level = 50;
@@ -1077,12 +1077,12 @@ namespace DOL.GS.Quests.Hibernia
 			}
 //end item
 			//Moonspun Gloves 
-			EnchanterEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("EnchanterEpicGloves");
+			EnchanterEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplates>("EnchanterEpicGloves");
 			if (EnchanterEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Enchanter Epic Gloves , creating it ...");
-				EnchanterEpicGloves = new ItemTemplate();
+				EnchanterEpicGloves = new DbItemTemplates();
 				EnchanterEpicGloves.Id_nb = "EnchanterEpicGloves";
 				EnchanterEpicGloves.Name = "Moonspun Gloves ";
 				EnchanterEpicGloves.Level = 50;
@@ -1120,12 +1120,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonspun Hauberk 
-			EnchanterEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("EnchanterEpicVest");
+			EnchanterEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplates>("EnchanterEpicVest");
 			if (EnchanterEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Enchanter Epic Vest , creating it ...");
-				EnchanterEpicVest = new ItemTemplate();
+				EnchanterEpicVest = new DbItemTemplates();
 				EnchanterEpicVest.Id_nb = "EnchanterEpicVest";
 				EnchanterEpicVest.Name = "Moonspun Vest";
 				EnchanterEpicVest.Level = 50;
@@ -1160,12 +1160,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonspun Legs 
-			EnchanterEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("EnchanterEpicLegs");
+			EnchanterEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplates>("EnchanterEpicLegs");
 			if (EnchanterEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Enchanter Epic Legs , creating it ...");
-				EnchanterEpicLegs = new ItemTemplate();
+				EnchanterEpicLegs = new DbItemTemplates();
 				EnchanterEpicLegs.Id_nb = "EnchanterEpicLegs";
 				EnchanterEpicLegs.Name = "Moonspun Pants";
 				EnchanterEpicLegs.Level = 50;
@@ -1203,12 +1203,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Moonspun Sleeves 
-			EnchanterEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("EnchanterEpicArms");
+			EnchanterEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplates>("EnchanterEpicArms");
 			if (EnchanterEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Enchanter Epic Arms , creating it ...");
-				EnchanterEpicArms = new ItemTemplate();
+				EnchanterEpicArms = new DbItemTemplates();
 				EnchanterEpicArms.Id_nb = "EnchanterEpicArms";
 				EnchanterEpicArms.Name = "Moonspun Sleeves";
 				EnchanterEpicArms.Level = 50;

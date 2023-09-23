@@ -118,7 +118,7 @@ namespace DOL.GS
 		/// <summary>
 		/// This holds the DB instance of the guild
 		/// </summary>
-		protected DBGuild m_DBguild;
+		protected DbGuilds m_DBguild;
 
 		/// <summary>
 		/// the runtime ID of the guild
@@ -154,7 +154,7 @@ namespace DOL.GS
 			}
 		}
 
-		public DBRank[] Ranks
+		public DbGuildRanks[] Ranks
 		{
 			get
 			{
@@ -309,7 +309,7 @@ namespace DOL.GS
 		/// Creates an empty Guild. Don't use this, use
 		/// GuildMgr.CreateGuild() to create a guild
 		/// </summary>
-		public Guild(DBGuild dbGuild)
+		public Guild(DbGuilds dbGuild)
 		{
 			this.m_DBguild = dbGuild;
 			bannerStatus = "None";
@@ -623,7 +623,7 @@ namespace DOL.GS
 		/// <param name="addPlayer"></param>
 		/// <param name="rank"></param>
 		/// <returns></returns>
-		public bool AddPlayer(GamePlayer addPlayer, DBRank rank)
+		public bool AddPlayer(GamePlayer addPlayer, DbGuildRanks rank)
 		{
 			if (addPlayer == null || addPlayer.Guild != null)
 				return false;
@@ -825,11 +825,11 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="index">the index of rank</param>
 		/// <returns>the dbrank</returns>
-		public DBRank GetRankByID(int index)
+		public DbGuildRanks GetRankByID(int index)
 		{
 			try
 			{
-				foreach (DBRank rank in this.Ranks)
+				foreach (DbGuildRanks rank in this.Ranks)
 				{
 					if (rank.RankLevel == index)
 						return rank;

@@ -413,8 +413,8 @@ namespace DOL.Tests
 		{
 			if (SendGroupMembersUpdateMethod != null) SendGroupMembersUpdateMethod(this, updateIcons, true);
 		}
-		public Action<TestPacketLib, ICollection<InventoryItem>> SendInventoryItemsUpdateMethod { get; set; }
-		public void SendInventoryItemsUpdate(ICollection<InventoryItem> itemsToUpdate)
+		public Action<TestPacketLib, ICollection<DbInventoryItems>> SendInventoryItemsUpdateMethod { get; set; }
+		public void SendInventoryItemsUpdate(ICollection<DbInventoryItems> itemsToUpdate)
 		{
 			if (SendInventoryItemsUpdateMethod != null) SendInventoryItemsUpdateMethod(this, itemsToUpdate);
 		}
@@ -423,13 +423,13 @@ namespace DOL.Tests
 		{
 			if (SendInventorySlotsUpdateMethod != null) SendInventorySlotsUpdateMethod(this, slots);
 		}
-		public Action<TestPacketLib, eInventoryWindowType, ICollection<InventoryItem>> SendInventoryItemsUpdateWindowMethod { get; set; }
-		public void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<InventoryItem> itemsToUpdate)
+		public Action<TestPacketLib, eInventoryWindowType, ICollection<DbInventoryItems>> SendInventoryItemsUpdateWindowMethod { get; set; }
+		public void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItems> itemsToUpdate)
 		{
 			if (SendInventoryItemsUpdateWindowMethod != null) SendInventoryItemsUpdateWindowMethod(this, windowType, itemsToUpdate);
 		}
-		public Action<TestPacketLib, IDictionary<int, InventoryItem>, eInventoryWindowType> SendInventoryItemsUpdateDictMethod { get; set; }
-		public void SendInventoryItemsUpdate(IDictionary<int, InventoryItem> updateItems, eInventoryWindowType windowType)
+		public Action<TestPacketLib, IDictionary<int, DbInventoryItems>, eInventoryWindowType> SendInventoryItemsUpdateDictMethod { get; set; }
+		public void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItems> updateItems, eInventoryWindowType windowType)
 		{
 			if (SendInventoryItemsUpdateDictMethod != null) SendInventoryItemsUpdateDictMethod(this, updateItems, windowType);
 		}
@@ -833,8 +833,8 @@ namespace DOL.Tests
 		{
 			if (SendRentReminderMethod != null) SendRentReminderMethod(this, house);
 		}
-		public Action<TestPacketLib, IList<InventoryItem>, byte, byte> SendMarketExplorerWindowMethod { get; set; }
-		public void SendMarketExplorerWindow(IList<InventoryItem> items, byte page, byte maxpage)
+		public Action<TestPacketLib, IList<DbInventoryItems>, byte, byte> SendMarketExplorerWindowMethod { get; set; }
+		public void SendMarketExplorerWindow(IList<DbInventoryItems> items, byte page, byte maxpage)
 		{
 			if (SendMarketExplorerWindowMethod != null) SendMarketExplorerWindowMethod(this, items, page, maxpage);
 		}

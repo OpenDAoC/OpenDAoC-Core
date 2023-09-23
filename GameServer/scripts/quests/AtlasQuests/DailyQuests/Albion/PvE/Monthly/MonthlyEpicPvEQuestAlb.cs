@@ -49,7 +49,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 		{
 		}
 
-		public MonthlyEpicPvEQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public MonthlyEpicPvEQuestAlb(GamePlayer questingPlayer, DbQuests dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

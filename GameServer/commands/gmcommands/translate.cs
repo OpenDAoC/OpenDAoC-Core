@@ -65,17 +65,17 @@ namespace DOL.GS.Commands
                                 return;
                             }
 
-                            LanguageDataObject translation = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], LanguageDataObject.eTranslationIdentifier.eSystem);
+                            LanguageDataObject translation = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], ETranslationIdentifier.eSystem);
                             if (translation != null)
                             {
                                 DisplayMessage(client, "[Language-Manager] This translation id is already in use by the given language! ( Language <" + args[2].ToUpper() + "> - TranslationId <" + args[3] + "> )");
                                 return;
                             }
 
-                            translation = new DBLanguageSystem();
-                            ((DBLanguageSystem)translation).TranslationId = args[3];
-                            ((DBLanguageSystem)translation).Text = args[4];
-                            ((DBLanguageSystem)translation).Language = args[2];
+                            translation = new DbLanguageSystems();
+                            ((DbLanguageSystems)translation).TranslationId = args[3];
+                            ((DbLanguageSystems)translation).Text = args[4];
+                            ((DbLanguageSystems)translation).Language = args[2];
 
                             GameServer.Database.AddObject(translation);
                             LanguageMgr.RegisterLanguageDataObject(translation);
@@ -116,15 +116,15 @@ namespace DOL.GS.Commands
                                 DisplayMessage(client, "[Language-Manager] Can't add language object, there is already another one!");
                             else
                             {
-                                lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], LanguageDataObject.eTranslationIdentifier.eSystem);
+                                lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], ETranslationIdentifier.eSystem);
 
                                 if (lngObj != null)
                                     DisplayMessage(client, "[Language-Manager] The combination of the given TranslationId <" + args[3] + "> and Language <" + args[2].ToUpper() + "> is already in use!");
                                 else
                                 {
-                                    lngObj = new DBLanguageSystem();
-                                    ((DBLanguageSystem)lngObj).TranslationId = args[3];
-                                    ((DBLanguageSystem)lngObj).Language = args[2];
+                                    lngObj = new DbLanguageSystems();
+                                    ((DbLanguageSystems)lngObj).TranslationId = args[3];
+                                    ((DbLanguageSystems)lngObj).Language = args[2];
 
                                     client.Player.TempProperties.SetProperty(LANGUAGEMGR_MEM_LNG_OBJ, lngObj);
                                     DisplayMessage(client, "[Language-Manager] Language object successfully added to your temporary properties! ( Language <" + args[2].ToUpper() + "> TranslationId <" + args[3] + "> )");
@@ -169,9 +169,9 @@ namespace DOL.GS.Commands
                             else
                             {
                                 if (args.Length > 3)
-                                    ((DBLanguageSystem)lngObj).Text = string.Join(" ", args, 2, args.Length - 2);
+                                    ((DbLanguageSystems)lngObj).Text = string.Join(" ", args, 2, args.Length - 2);
                                 else
-                                    ((DBLanguageSystem)lngObj).Text = args[2];
+                                    ((DbLanguageSystems)lngObj).Text = args[2];
 
                                 if (!LanguageMgr.RegisterLanguageDataObject(lngObj))
                                     DisplayMessage(client, "[Language-Manager] Can't register language object in LanguageMgr, there is already another one!");
@@ -209,13 +209,13 @@ namespace DOL.GS.Commands
                             DisplayMessage(client, "[Language-Manager] Usage: '/translate refresh [Language] [TranslationId] [Text]'");
                         else
                         {
-                            LanguageDataObject lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], LanguageDataObject.eTranslationIdentifier.eSystem);
+                            LanguageDataObject lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], ETranslationIdentifier.eSystem);
 
                             if (lngObj == null)
                                 DisplayMessage(client, "[Language-Manager] Can't find TranslationId <" + args[3] + "> (Language <" + args[2].ToUpper() + "> !");
                             else
                             {
-                                ((DBLanguageSystem)lngObj).Text = args[3];
+                                ((DbLanguageSystems)lngObj).Text = args[3];
                                 GameServer.Database.SaveObject(lngObj);
                                 DisplayMessage(client, "[Language-Manager] TranslationId <" + args[3] + "> (Language: " + args[2].ToUpper() + " ) successfully updated in database!");
                             }
@@ -236,12 +236,12 @@ namespace DOL.GS.Commands
 
                             if (lngObj != null)
                             {
-                                DisplayMessage(client, "[Language-Manager] You already have selected a language object! ( Language <" + ((DBLanguageSystem)lngObj).Language +
-                                                       "> - TranslationId <" + ((DBLanguageSystem)lngObj).TranslationId + "> )");
+                                DisplayMessage(client, "[Language-Manager] You already have selected a language object! ( Language <" + ((DbLanguageSystems)lngObj).Language +
+                                                       "> - TranslationId <" + ((DbLanguageSystems)lngObj).TranslationId + "> )");
                             }
                             else
                             {
-                                lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], LanguageDataObject.eTranslationIdentifier.eSystem);
+                                lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], ETranslationIdentifier.eSystem);
 
                                 if (lngObj == null)
                                 {
@@ -273,8 +273,8 @@ namespace DOL.GS.Commands
                         {
                             client.Player.TempProperties.RemoveProperty(LANGUAGEMGR_SEL_LNG_OBJ);
                             DisplayMessage(client, "[Language-Manager] Language object successfully removed from your temporary properties." +
-                                                   "( Language <" + ((DBLanguageSystem)lngObj).Language +
-                                                   "> - TranslationId <" + ((DBLanguageSystem)lngObj).TranslationId + "> )");
+                                                   "( Language <" + ((DbLanguageSystems)lngObj).Language +
+                                                   "> - TranslationId <" + ((DbLanguageSystems)lngObj).TranslationId + "> )");
                         }
 
                         return;
@@ -295,16 +295,16 @@ namespace DOL.GS.Commands
                             else
                             {
                                 if (args.Length > 3)
-                                    ((DBLanguageSystem)lngObj).Text = string.Join(" ", args, 2, args.Length - 2);
+                                    ((DbLanguageSystems)lngObj).Text = string.Join(" ", args, 2, args.Length - 2);
                                 else
-                                    ((DBLanguageSystem)lngObj).Text = args[2];
+                                    ((DbLanguageSystems)lngObj).Text = args[2];
 
                                 GameServer.Database.SaveObject(lngObj);
                                 client.Player.TempProperties.RemoveProperty(LANGUAGEMGR_SEL_LNG_OBJ);
                                 DisplayMessage(client, "[Language-Manager] Language object successfully changed and saved in database." +
-                                                       "( Language <" + ((DBLanguageSystem)lngObj).Language +
-                                                       "> - TranslationId <" + ((DBLanguageSystem)lngObj).TranslationId +
-                                                       "> - Text <" + ((DBLanguageSystem)lngObj).Text + "> )");
+                                                       "( Language <" + ((DbLanguageSystems)lngObj).Language +
+                                                       "> - TranslationId <" + ((DbLanguageSystems)lngObj).TranslationId +
+                                                       "> - Text <" + ((DbLanguageSystems)lngObj).Text + "> )");
                             }
                         }
 
@@ -321,7 +321,7 @@ namespace DOL.GS.Commands
                             DisplayMessage(client, "[Language-Manager] No language object selected!");
                         else
                             DisplayMessage(client, "[Language-Manager] Language object info: Language <" + lngObj.Language + "> - TranslationId <" + lngObj.TranslationId +
-                                                   "> - Text <" + ((DBLanguageSystem)lngObj).Text + ">");
+                                                   "> - Text <" + ((DbLanguageSystems)lngObj).Text + ">");
                         return;
                     }
                 #endregion selectshow
@@ -333,13 +333,13 @@ namespace DOL.GS.Commands
                             DisplayMessage(client, "[Language-Manager] Usage: '/translate show [Language] [TranslationId]'");
                         else
                         {
-                            LanguageDataObject lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], LanguageDataObject.eTranslationIdentifier.eSystem);
+                            LanguageDataObject lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], ETranslationIdentifier.eSystem);
 
                             if (lngObj == null)
                                 DisplayMessage(client, "[Language-Manager] Can't find language object. ( Language <" + args[2].ToUpper() +
                                                        "> - TranslationId <" + args[3] + "> )");
                             else
-                                DisplayMessage(client, "[Language-Manager] " + ((DBLanguageSystem)lngObj).Text);
+                                DisplayMessage(client, "[Language-Manager] " + ((DbLanguageSystems)lngObj).Text);
                         }
 
                         return;
@@ -366,12 +366,12 @@ namespace DOL.GS.Commands
 
                                 foreach (string language in LanguageMgr.Translations.Keys)
                                 {
-                                    if (!LanguageMgr.Translations[language].ContainsKey(LanguageDataObject.eTranslationIdentifier.eSystem))
+                                    if (!LanguageMgr.Translations[language].ContainsKey(ETranslationIdentifier.eSystem))
                                         continue;
 
                                     data.Add("======== Language <" + language + "> ========\n\n");
 
-                                    foreach (LanguageDataObject lngObj in LanguageMgr.Translations[language][LanguageDataObject.eTranslationIdentifier.eSystem])
+                                    foreach (LanguageDataObject lngObj in LanguageMgr.Translations[language][ETranslationIdentifier.eSystem])
                                     {
                                         data.Add("TranslationId: " + lngObj.TranslationId + "\nText: " + ((DBLanguageSystem)lngObj).Text + "\n\n");
 
@@ -443,13 +443,13 @@ namespace DOL.GS.Commands
                                     DisplayMessage(client, "aaa");
                                 else
                                 {
-                                    if (!LanguageMgr.Translations[args[2].ToUpper()].ContainsKey(LanguageDataObject.eTranslationIdentifier.eSystem))
+                                    if (!LanguageMgr.Translations[args[2].ToUpper()].ContainsKey(ETranslationIdentifier.eSystem))
                                         DisplayMessage(client, "aaa");
                                     else
                                     {
                                         IList<string> data = new List<string>();
 
-                                        foreach (LanguageDataObject lngObj in LanguageMgr.Translations[args[2].ToUpper()][LanguageDataObject.eTranslationIdentifier.eSystem])
+                                        foreach (LanguageDataObject lngObj in LanguageMgr.Translations[args[2].ToUpper()][ETranslationIdentifier.eSystem])
                                             data.Add("TranslationId: " + lngObj.TranslationId + "\nText: " + ((DBLanguageSystem)lngObj).Text + "\n\n");
 
                                         client.Out.SendCustomTextWindow("[Language-Manager] Language translations <" + args[2].ToUpper() + ">", data);
