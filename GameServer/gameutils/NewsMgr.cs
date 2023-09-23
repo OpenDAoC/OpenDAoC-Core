@@ -1,54 +1,52 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Linq;
 using System.Collections.Generic;
-
+using System.Linq;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public enum eNewsType : byte
-	{ 
-		RvRGlobal = 0,
-		RvRLocal = 1,
-		PvE = 2,
-	}
+    public enum eNewsType : byte
+    {
+        RvRGlobal = 0,
+        RvRLocal = 1,
+        PvE = 2,
+    }
 
-	public class NewsMgr
-	{
-		public static void CreateNews(string message, eRealm realm, eNewsType type, bool sendMessage)
-		{
-			if (sendMessage)
-			{
-				foreach (GameClient client in WorldMgr.GetAllClients())
-				{
-					if (client.Player == null)
-						continue;
-					if ((client.Account.PrivLevel != 1 || realm == eRealm.None) || client.Player.Realm == realm)
-					{
-						client.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					}
-				}
-			}
+    public class NewsMgr
+    {
+        public static void CreateNews(string message, eRealm realm, eNewsType type, bool sendMessage)
+        {
+            if (sendMessage)
+            {
+                foreach (GamePlayer player in ClientService.GetPlayersOfRealm(realm))
+                    player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            }
+
+            if (ServerProperties.Properties.RECORD_NEWS)
+            {
+                DBNews news = new()
+                {
+                    Type = (byte) type,
+                    Realm = (byte) realm,
+                    Text = message
+                };
+                GameServer.Database.AddObject(news);
+                GameEventMgr.Notify(DatabaseEvent.NewsCreated, new NewsEventArgs(news));
+            }
+        }
+
+        public static void DisplayNews(GameClient client)
+        {
+            // N,chanel(0/1/2),index(0-4),string time,\"news\"
+
+            for (int type = 0; type <= 2; type++)
+            {
+                int index = 0;
+                string realm = "";
+                //we can see all captures
+                IList<DBNews> newsList;
 
 			if (ServerProperties.Properties.RECORD_NEWS)
 			{
@@ -61,9 +59,8 @@ namespace DOL.GS
 			}
 		}
 
-		public static void DisplayNews(GameClient client)
-		{
-			// N,chanel(0/1/2),index(0-4),string time,\"news\"
+                newsList = newsList.OrderByDescending(it => it.CreationDate).Take(5).ToArray();
+                int n = newsList.Count;
 
 			for (int type = 0; type <= 2; type++)
 			{
@@ -76,8 +73,10 @@ namespace DOL.GS
 				else
 					newsList = DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(type));
 
-				newsList = newsList.OrderByDescending(it => it.CreationDate).Take(5).ToArray();
-				int n = newsList.Count;
+        private static string RetElapsedTime(DateTime dt)
+        {
+            TimeSpan playerEnterGame = DateTime.Now.Subtract(dt);
+            string newsTime;
 
 				while (n > 0)
 				{
@@ -88,19 +87,8 @@ namespace DOL.GS
 			}
 		}
 
-		private static string RetElapsedTime(DateTime dt)
-		{
-			TimeSpan playerEnterGame = DateTime.Now.Subtract(dt);
-			string newsTime;
-			if (playerEnterGame.Days > 0)
-				newsTime = playerEnterGame.Days.ToString() + " day" + ((playerEnterGame.Days > 1) ? "s" : "");
-			else if (playerEnterGame.Hours > 0)
-				newsTime = playerEnterGame.Hours.ToString() + " hour" + ((playerEnterGame.Hours > 1) ? "s" : "");
-			else if (playerEnterGame.Minutes > 0)
-				newsTime = playerEnterGame.Minutes.ToString() + " minute" + ((playerEnterGame.Minutes > 1) ? "s" : "");
-			else
-				newsTime = playerEnterGame.Seconds.ToString() + " second" + ((playerEnterGame.Seconds > 1) ? "s" : "");
-			return newsTime;
-		}
-	}
+
+            return newsTime;
+        }
+    }
 }

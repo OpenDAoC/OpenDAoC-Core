@@ -1,8 +1,4 @@
-// Kick by Akira (akira@dataloggin.com)
-//
-//
 using System;
-using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -33,32 +29,31 @@ namespace DOL.GS.Commands
 				{
 					try
 					{
-						var account = args[2];
-						clientc = WorldMgr.GetClientByAccountName(account, false);
+						clientc = ClientService.GetClientFromAccountName(args[2]);
 					}
 					catch
 					{
 						DisplayMessage(client, "Invalid account name");
 					}
 				}
-			} else
-			if (args[1].StartsWith("#"))
+			}
+			else if (args[1].StartsWith("#"))
 			{
 				try
 				{
-					var sessionID = Convert.ToUInt32(args[1].Substring(1));
-					clientc = WorldMgr.GetClientFromID(sessionID);
+					int sessionID = Convert.ToInt32(args[1][1..]);
+					clientc = ClientService.GetClientFromId(sessionID);
 				}
 				catch
 				{
 					DisplayMessage(client, "Invalid client ID");
 				}
-			} else
-			
-			{
-				clientc = WorldMgr.GetClientByPlayerName(args[1], false, false);
 			}
-			
+			else
+			{
+				clientc = ClientService.GetPlayerByExactName(args[1])?.Client;
+			}
+
 			if (clientc == null)
 			{
 				DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Kick.NoPlayerOnLine"));

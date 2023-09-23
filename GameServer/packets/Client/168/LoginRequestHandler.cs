@@ -1,24 +1,5 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -26,7 +7,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.ServerProperties;
 using log4net;
@@ -76,7 +56,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		private static DateTime m_lastAccountCreateTime;
 		private readonly Dictionary<string, LockCount> m_locks = new Dictionary<string, LockCount>();
-
 		private static HttpClient _httpClient = new HttpClient();
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
@@ -190,12 +169,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			// check server status
 			if (GameServer.Instance.ServerStatus == EGameServerStatus.GSS_Closed)
-            {
-                client.IsConnected = false;
+			{
 				client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
 				Log.Info(ipAddress + " disconnected because game is closed!");
-				GameServer.Instance.Disconnect(client);
-
+				client.IsConnected = false;
 				return;
 			}
 
@@ -206,8 +183,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					if (Log.IsInfoEnabled)
 						Log.Info(ipAddress + " disconnected because IsAllowedToConnect returned false!");
-
-					GameServer.Instance.Disconnect(client);
 
 					return;
 				}
@@ -238,63 +213,60 @@ namespace DOL.GS.PacketHandler.Client.v168
 						Log.Info(string.Format("({0})User {1} logging on! ({2} type:{3} add:{4})", ipAddress, userName, client.Version,
 											   (client.ClientType), client.ClientAddons.ToString("G")));
 					// check client already connected
-					GameClient findclient = WorldMgr.GetClientByAccountName(userName, true);
-					if (findclient != null)
+
+					GameClient otherClient = ClientService.GetClientFromAccountName(userName);
+
+					if (otherClient != null)
 					{
-						client.IsConnected = false;
-						                            
-						if (findclient.ClientState == GameClient.eClientState.Connecting)
+						if (otherClient.ClientState == GameClient.eClientState.Connecting)
 						{
-							if (Log.IsInfoEnabled) Log.Info("User is already connecting, ignored.");
+							if (Log.IsInfoEnabled)
+								Log.Info("User is already connecting, ignored.");
 
 							client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIn);
-
+							client.IsConnected = false;
 							return;
 						} // in login
 
-						if (findclient.ClientState == GameClient.eClientState.Linkdead)
+						if (otherClient.ClientState == GameClient.eClientState.Linkdead)
 						{
-							if (Log.IsInfoEnabled) Log.Info("User is still being logged out from linkdeath!");
+							if (Log.IsInfoEnabled)
+								Log.Info("User is still being logged out from linkdeath!");
 
 							client.Out.SendLoginDenied(eLoginError.AccountIsInLogoutProcedure);
+							client.IsConnected = false;
 						}
 						else
 						{
-							if (Log.IsInfoEnabled) Log.Info("User already logged in!");
+							if (Log.IsInfoEnabled)
+								Log.Info("User already logged in!");
 
 							client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIn);
+							client.IsConnected = false;
 						}
-
-						GameServer.Instance.Disconnect(client);
 
 						return;
 					}
-					
+
 					Regex goodName = new Regex("^[a-zA-Z0-9]*$");
 					if (!goodName.IsMatch(userName) || string.IsNullOrWhiteSpace(userName))
 					{
 						if (Log.IsInfoEnabled)
 							Log.Info("Invalid symbols in account name \"" + userName + "\" found!");
 
-						client.IsConnected = false;
 						if (client != null && client.Out != null)
-						{
 							client.Out.SendLoginDenied(eLoginError.AccountInvalid);
-						}
 						else
-						{
 							Log.Warn("Client or Client.Out null on invalid name failure.  Disconnecting.");
-						}
 
-						GameServer.Instance.Disconnect(client);
-
+						client.IsConnected = false;
 						return;
 					}
 					else
 					{
 						playerAccount = GameServer.Database.FindObjectByKey<DbAccounts>(userName);
 
-						client.PingTime = DateTime.Now.Ticks;
+						client.PingTime = GameLoop.GetCurrentTime();
 
 						if (playerAccount == null)
 						{
@@ -304,10 +276,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								// autocreate account
 								if (string.IsNullOrEmpty(password))
-                                {
-                                    client.IsConnected = false;
+								{
 									client.Out.SendLoginDenied(eLoginError.AccountInvalid);
-									GameServer.Instance.Disconnect(client);
+									client.IsConnected = false;
 
 									if (Log.IsInfoEnabled)
 										Log.Info("Account creation failed, no password set for Account: " + userName);
@@ -325,11 +296,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 									if (ts.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION_SAMEIP && totalacc > 1)
 									{
 										Log.Warn("Account creation: too many from same IP within set minutes - " + userName + " : " + ipAddress);
-
-                                        client.IsConnected = false;
 										client.Out.SendLoginDenied(eLoginError.PersonalAccountIsOutOfTime);
-										GameServer.Instance.Disconnect(client);
-
+										client.IsConnected = false;
 										return;
 									}
 
@@ -338,11 +306,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 								if (totalacc >= Properties.TOTAL_ACCOUNTS_ALLOWED_SAMEIP)
 								{
 									Log.Warn("Account creation: too many accounts created from same ip - " + userName + " : " + ipAddress);
-
-                                    client.IsConnected = false;
 									client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
-									GameServer.Instance.Disconnect(client);
-
+									client.IsConnected = false;
 									return;
 								}
 
@@ -353,11 +318,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 									if (ts.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION)
 									{
 										Log.Warn("Account creation: time between account creation too small - " + userName + " : " + ipAddress);
-
-                                        client.IsConnected = false;
 										client.Out.SendLoginDenied(eLoginError.PersonalAccountIsOutOfTime);
-										GameServer.Instance.Disconnect(client);
-
+										client.IsConnected = false;
 										return;
 									}
 								}
@@ -388,10 +350,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 								if (Log.IsInfoEnabled)
 									Log.Info("No such account found and autocreation deactivated!");
 
-                                client.IsConnected = false;
 								client.Out.SendLoginDenied(eLoginError.AccountNotFound);
-								GameServer.Instance.Disconnect(client);
-
+								client.IsConnected = false;
 								return;
 							}
 						}
@@ -408,14 +368,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 								if (Log.IsInfoEnabled)
 									Log.Info("(" + client.TcpEndpoint + ") Wrong password!");
 
-                                client.IsConnected = false;
 								client.Out.SendLoginDenied(eLoginError.WrongPassword);
+								client.IsConnected = false;
 
 								// Log failure
 								AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountFailedLogin, "", userName);
-
-								GameServer.Instance.Disconnect(client);
-
 								return;
 							}
 
@@ -439,10 +396,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 									if (Log.IsInfoEnabled)
 										Log.Info("No such account found in queue service whitelist!");
 
-									client.IsConnected = false;
 									client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
-									GameServer.Instance.Disconnect(client);
-
+									client.IsConnected = false;
 									return;
 								}
 							}
@@ -462,16 +417,15 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					//Save the account table
 					client.Account = playerAccount;
-
+					
 					// create session ID here to disable double login bug
-					if (WorldMgr.CreateSessionID(client) < 0)
+					if (ClientService.ClientCount > GameServer.Instance.Configuration.MaxClientCount)
 					{
-						if (Log.IsInfoEnabled) Log.InfoFormat("Too many clients connected, denied login to " + playerAccount.Name);
+						if (Log.IsInfoEnabled)
+							Log.InfoFormat("Too many clients connected, denied login to " + playerAccount.Name);
 
-                        client.IsConnected = false;
 						client.Out.SendLoginDenied(eLoginError.TooManyPlayersLoggedIn);
-						client.Disconnect();
-
+						client.IsConnected = false;
 						return;
 					}
 
@@ -498,11 +452,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 			catch (DatabaseException e)
 			{
-				if (Log.IsErrorEnabled) Log.Error("LoginRequestHandler", e);
+				if (Log.IsErrorEnabled)
+					Log.Error("LoginRequestHandler", e);
 
-                client.IsConnected = false;
 				client.Out.SendLoginDenied(eLoginError.CannotAccessUserAccount);
-				GameServer.Instance.Disconnect(client);
+				client.IsConnected = false;
 			}
 			catch (Exception e)
 			{
@@ -510,10 +464,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 					Log.Error("LoginRequestHandler", e);
 
 				client.Out.SendLoginDenied(eLoginError.CannotAccessUserAccount);
-				GameServer.Instance.Disconnect(client);
+				client.IsConnected = false;
 			}
 			finally
 			{
+				client.PacketProcessor?.ProcessTcpQueue();
+
+				if (client.IsConnected == false)
+				{
+					client.Disconnect();
+					ClientService.OnClientDisconnect(client);
+				}
+
 				ExitLock(userName);
 			}
 		}

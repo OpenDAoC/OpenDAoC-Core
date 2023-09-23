@@ -1,31 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-
+using System.Reflection;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-
 using log4net;
 
 namespace DOL.GS.Keeps
@@ -834,10 +812,10 @@ namespace DOL.GS.Keeps
 			foreach (GameKeepComponent comp in this.KeepComponents)
 			{
 				comp.UpdateLevel();
-				foreach (GameClient cln in WorldMgr.GetClientsOfRegion(this.CurrentRegion.ID))
-				{
-					cln.Out.SendKeepComponentDetailUpdate(comp);
-				}
+
+				foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
+					player.Out.SendKeepComponentDetailUpdate(comp);
+
 				comp.FillPositions();
 			}
 
@@ -1099,16 +1077,14 @@ namespace DOL.GS.Keeps
 						hp.Object.Die(null);
 				}
 			}
+
 			//change realm
-			foreach (GameClient client in WorldMgr.GetClientsOfRegion(this.CurrentRegion.ID))
-			{
-				client.Out.SendKeepComponentUpdate(this, false);
-			}
+			foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
+				player.Out.SendKeepComponentUpdate(this, false);
+
 			//we reset all doors
 			foreach(GameKeepDoor door in Doors.Values)
-			{
 				door.Reset(realm);
-			}
 
 			//we make sure all players are not in the air
 			ResetPlayersOfKeep();
@@ -1226,18 +1202,11 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		protected void SendRemoveKeep()
 		{
-			foreach (GameClient client in WorldMgr.GetClientsOfRegion(this.CurrentRegion.ID))
+			foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
 			{
-				if (client.Player == null || client.ClientState != GameClient.eClientState.Playing || client.Player.ObjectState != GameObject.eObjectState.Active)
-					continue;
-				
-				GamePlayer player = client.Player;
-				
-				// Remove Keep
-				foreach(GameKeepComponent comp in this.KeepComponents)
-				{
-					player.Out.SendKeepComponentRemove(comp);
-				}
+				foreach(GameKeepComponent keepComponent in KeepComponents)
+					player.Out.SendKeepComponentRemove(keepComponent);
+
 				player.Out.SendKeepRemove(this);
 			}
 		}
@@ -1247,20 +1216,12 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		protected void SendKeepInfo()
 		{
-			foreach (GameClient client in WorldMgr.GetClientsOfRegion(this.CurrentRegion.ID))
+			foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
 			{
-				
-				if (client.Player == null || client.ClientState != GameClient.eClientState.Playing || client.Player.ObjectState != GameObject.eObjectState.Active)
-					continue;
-				
-				GamePlayer player = client.Player;
-				
-				// Add Keep
 				player.Out.SendKeepInfo(this);
-				foreach(GameKeepComponent comp in this.KeepComponents)
-				{
-					player.Out.SendKeepComponentInfo(comp);
-				}
+
+				foreach(GameKeepComponent keepComponent in KeepComponents)
+					player.Out.SendKeepComponentInfo(keepComponent);
 			}
 		}
 	}

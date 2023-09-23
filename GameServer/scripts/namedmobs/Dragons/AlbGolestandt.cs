@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS;
 using DOL.Events;
-using DOL.GS.ServerProperties;
+using DOL.GS;
 using DOL.GS.PacketHandler;
-using System.Collections.Generic;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -257,29 +257,24 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
+
 		public override void EnemyKilled(GameLiving enemy)
 		{
-			if (enemy != null && enemy is GamePlayer)
+			if (enemy is GamePlayer player)
 			{
-				GamePlayer player = (GamePlayer)enemy;
-				foreach(GameClient client in WorldMgr.GetClientsOfZone(CurrentZone.ID))
-                {
-					if (client == null) break;
-					if (client.Player == null) continue;
-					if (client.IsPlaying)
-                    {
-						client.Out.SendMessage(Name + " roars in triumph as another " + player.CharacterClass.Name + " falls before his might.", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
-					}
-				}				
+				foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfZone(CurrentZone))
+					otherPlayer.Out.SendMessage($"{Name} roars in triumph as another {player.CharacterClass.Name} falls before his might.", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
 			}
+
 			base.EnemyKilled(enemy);
 		}
+
 		public override bool IsVisibleToPlayers => true;//this make dragon think all the time, no matter if player is around or not
 	}
 }
 namespace DOL.AI.Brain
 {
-	public class AlbGolestandtBrain : StandardMobBrain
+    public class AlbGolestandtBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public AlbGolestandtBrain()
@@ -423,27 +418,24 @@ namespace DOL.AI.Brain
 				{
 					if (Body.attackComponent.AttackState && Body.IsCasting)//make sure it stop all actions
 						Body.attackComponent.StopAttack();
+
 					ClearAggroList();
 				}
+
 				IsRestless = true;//start roam
 				_lastRoamIndex = 0;
 				LockEndRoute = false;
-				foreach (GameClient client in WorldMgr.GetClientsOfZone(Body.CurrentZone.ID))//from current zone
+
+				foreach (GamePlayer player in ClientService.GetPlayersOfZone(Body.CurrentZone))
 				{
-					if (client == null) break;
-					if (client.Player == null) continue;
-					if (client.IsPlaying)
-					{
-						client.Out.SendSoundEffect(2467, 0, 0, 0, 0, 0);//play sound effect for every player in boss currentregion
-						client.Out.SendMessage("A voice explodes across the land. You hear a roar in the distance, 'I will grind your bones and shred your flesh.'"
-							, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-					}
+					player.Out.SendSoundEffect(2467, 0, 0, 0, 0, 0);//play sound effect for every player in boss currentregion
+					player.Out.SendMessage("A voice explodes across the land. You hear a roar in the distance, 'I will grind your bones and shred your flesh!'", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 				}
+
 				Body.Flags = GameNPC.eFlags.FLYING;//make dragon fly mode
 				ResetChecks = false;//reset it so can reset bools at end of path
 				LockIsRestless = true;
 			}
-			
 
 			if (IsRestless)
 				DragonFlyingPath();//make dragon follow the path

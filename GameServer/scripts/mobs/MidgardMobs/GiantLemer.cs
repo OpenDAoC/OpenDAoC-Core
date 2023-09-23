@@ -1,7 +1,6 @@
 ﻿using DOL.AI.Brain;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using System;
 
 namespace DOL.GS
 {
@@ -39,6 +38,7 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
 	public class GiantLemerBrain : StandardMobBrain
@@ -56,13 +56,13 @@ namespace DOL.AI.Brain
 		bool changed;
 		bool spawnRats = false;
 		private bool RemoveAdds = false;
-		public void BroadcastMessage(String message)
+
+		public void BroadcastMessage(string message)
 		{
-			foreach (GameClient player in WorldMgr.GetClientsOfZone(Body.CurrentZone.ID))
-			{
+			foreach (GamePlayer player in ClientService.GetPlayersOfZone(Body.CurrentZone))
 				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-			}
 		}
+
 		public override void Think()
 		{
 			if (Body.CurrentRegion.IsNightTime == false)

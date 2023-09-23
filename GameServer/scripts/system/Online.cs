@@ -1,29 +1,5 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- * created by Blues, based on works of Sumy and Vanatic
- * 
- */
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using DOL.GS.PacketHandler;
-using DOL.Language;
 
 namespace DOL.GS.Commands
 {
@@ -83,8 +59,8 @@ namespace DOL.GS.Commands
 
         public IList<string> GetOnlineInfo(bool bGM)
         {
-            IList<string> output = new List<string>();
-            IList<GameClient> clients = WorldMgr.GetAllClients();
+            List<string> output = new();
+            List<GameClient> clients = ClientService.GetClients();
 
             int gms = 0, connecting = 0, charscreen = 0, enterworld = 0,
                 playing = 0, linkdeath = 0, disconnecting = 0, frontiers = 0;
@@ -147,10 +123,6 @@ namespace DOL.GS.Commands
             // Number of Alb, Mid and Hib tanks:
             foreach (GameClient c in clients)
             {
-                if (c == null)
-                    continue;
-
-
                 #region count GMs, and different client states
                 if (c.ClientState == GameClient.eClientState.Connecting)
                     ++connecting;
@@ -390,34 +362,22 @@ namespace DOL.GS.Commands
 
                     zone = WorldMgr.GetZone(zoneIDs[r]);
 
-                    cls = WorldMgr.GetClientsOfRegion(zone.ZoneRegion.ID);
-                    foreach (GameClient cir in cls)
+                    foreach (GamePlayer player in ClientService.GetPlayersOfZone(zone))
                     {
-                        if (!cir.IsPlaying
-                            || cir.Account == null
-                            || cir.Player == null
-                            || cir.Player.ObjectState != GameObject.eObjectState.Active)
+                        if (player.Client.Account.PrivLevel >= (uint)ePrivLevel.GM)
                             continue;
 
-                        if (cir.Account.PrivLevel >= (uint)ePrivLevel.GM)
-                            continue;
-
-                        if (cir.Player.CurrentZone.Description != zone.Description)
-                            continue;
-                        
-                        if (cir.Player.Realm == eRealm.Albion)
+                        if (player.Realm == eRealm.Albion)
                             albsinregion++;
-                        else if (cir.Player.Realm == eRealm.Midgard)
+                        else if (player.Realm == eRealm.Midgard)
                             midsinregion++;
-                        else if (cir.Player.Realm == eRealm.Hibernia)
+                        else if (player.Realm == eRealm.Hibernia)
                             hibsinregion++;
 
                         totalinregion++;
                     }
 
-
                     output.Add(string.Format("\nPlayers in {0}: {1} \n Albs: {2} | Mids: {3} | Hibs: {4}", zone.Description, totalinregion, albsinregion, midsinregion, hibsinregion));
-
                 }
             }
 

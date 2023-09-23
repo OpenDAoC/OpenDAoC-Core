@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.Database;
 using DOL.GS.Keeps;
@@ -1977,13 +1958,12 @@ namespace DOL.GS.Commands
 
 						log.Debug("Keep creation: check of components complete");
 
-						foreach (GameClient c in WorldMgr.GetClientsOfRegion(client.Player.CurrentRegionID))
+						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
-							c.Out.SendKeepInfo(keep);
+							otherPlayer.Out.SendKeepInfo(keep);
+
 							foreach (GameKeepComponent keepComponent in keep.KeepComponents)
-							{
-								c.Out.SendKeepComponentInfo(keepComponent);
-							}
+								otherPlayer.Out.SendKeepComponentInfo(keepComponent);
 						}
 
 						log.Debug("Keep creation: complete, saving");
@@ -2053,18 +2033,20 @@ namespace DOL.GS.Commands
 						k.Load(keep);
 						new GameKeepComponent().LoadFromDatabase(towerComponent);
 						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Keep.TowerCreate.CreatedSaved"));
+
 						//send the creation packets
-						foreach (GameClient c in WorldMgr.GetClientsOfRegion(client.Player.CurrentRegionID))
+						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
-							c.Out.SendKeepInfo(k);
-							c.Out.SendKeepComponentUpdate(k, false);
+							otherPlayer.Out.SendKeepInfo(k);
+							otherPlayer.Out.SendKeepComponentUpdate(k, false);
 
 							foreach (GameKeepComponent keepComponent in k.KeepComponents)
 							{
-								c.Out.SendKeepComponentInfo(keepComponent);
-								c.Out.SendKeepComponentDetailUpdate(keepComponent);
+								otherPlayer.Out.SendKeepComponentInfo(keepComponent);
+								otherPlayer.Out.SendKeepComponentDetailUpdate(keepComponent);
 							}
 						}
+
 						break;
 					}
 					#endregion TowerCreate
@@ -2178,13 +2160,12 @@ namespace DOL.GS.Commands
 						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Keep.FastCreate.KeepCreated"));
 
 						//send the creation packets
-						foreach (GameClient c in WorldMgr.GetClientsOfRegion(client.Player.CurrentRegionID))
+						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
-							c.Out.SendKeepInfo(k);
+							otherPlayer.Out.SendKeepInfo(k);
+
 							foreach (GameKeepComponent keepComponent in k.KeepComponents)
-							{
-								c.Out.SendKeepComponentInfo(keepComponent);
-							}
+								otherPlayer.Out.SendKeepComponentInfo(keepComponent);
 						}
 
                         GameServer.KeepManager.RegisterKeep(k.KeepID, k);
@@ -2561,19 +2542,19 @@ namespace DOL.GS.Commands
 							}
 						}
 
-						foreach (GameClient c in WorldMgr.GetClientsOfRegion(client.Player.CurrentRegionID))
+						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
-							c.Out.SendKeepRemove(myKeep);
-							c.Out.SendKeepInfo(myKeep);
+							otherPlayer.Out.SendKeepRemove(myKeep);
+							otherPlayer.Out.SendKeepInfo(myKeep);
+
 							foreach (GameKeepComponent keepComponent in myKeep.KeepComponents)
 							{
-								c.Out.SendKeepComponentInfo(keepComponent);
-								c.Out.SendKeepComponentDetailUpdate(keepComponent);
+								otherPlayer.Out.SendKeepComponentInfo(keepComponent);
+								otherPlayer.Out.SendKeepComponentDetailUpdate(keepComponent);
 							}
 						}
 
 						DisplayMessage(client, "Keep moved.  Don't forget to '/keep save' your changes.");
-
 						break;
 					}
 				#endregion Move

@@ -1,32 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.Reflection;
-using System.Text;
 using System.Threading;
-
-using DOL.Events;
 using DOL.Database;
-using DOL.GS.Spells;
-using DOL.GS.Effects;
+using DOL.Events;
 using log4net;
 
 namespace DOL.GS
@@ -56,8 +34,8 @@ namespace DOL.GS
         /// Holds the Value which is removed from the XP per tick
         /// </summary>
         public const double XP_LOSS_PER_TICK = 10;
-		
-		[ScriptLoadedEvent]
+        
+        [ScriptLoadedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
             if (ServerProperties.Properties.ENABLE_MINOTAUR_RELICS)
@@ -67,7 +45,7 @@ namespace DOL.GS
 
                 Init();
             }
-		}
+        }
 
         /// <summary>
         /// Inits the Minotaurrelics
@@ -123,7 +101,8 @@ namespace DOL.GS
         private static void MapUpdate(object nullValue)
         {
             Dictionary<ushort, IList<MinotaurRelic>> relics = new Dictionary<ushort, IList<MinotaurRelic>>();
-            foreach (MinotaurRelic relic in MinotaurRelicManager.GetAllRelics())
+
+            foreach (MinotaurRelic relic in GetAllRelics())
             {
                 if (!relics.ContainsKey(relic.CurrentRegionID))
                 {
@@ -131,20 +110,20 @@ namespace DOL.GS
                 }
                 relics[relic.CurrentRegionID].Add(relic);
             }
-            foreach (GameClient clt in WorldMgr.GetAllPlayingClients())
-            {
-                if (clt == null || clt.Player == null)
-                    continue;
 
-                if(relics.ContainsKey(clt.Player.CurrentRegionID))
+            foreach (GamePlayer player in ClientService.GetPlayers(Predicate, relics))
+            {
+                foreach (MinotaurRelic relic in relics[player.CurrentRegionID])
                 {
-                    foreach(MinotaurRelic relic in relics[clt.Player.CurrentRegionID])
-                    {
-                        clt.Player.Out.SendMinotaurRelicMapUpdate((byte)relic.RelicID, relic.CurrentRegionID, relic.X, relic.Y, relic.Z);
-                    }
+                    player.Out.SendMinotaurRelicMapUpdate((byte)relic.RelicID, relic.CurrentRegionID, relic.X, relic.Y, relic.Z);
                 }
             }
-        } 
+
+            static bool Predicate(GamePlayer player, Dictionary<ushort, IList<MinotaurRelic>> relics)
+            {
+                return relics.ContainsKey(player.CurrentRegionID);
+            }
+        }
 
         #region Helpers
         /// <summary>

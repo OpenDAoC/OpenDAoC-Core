@@ -877,7 +877,7 @@ namespace DOL.GS
         {
             // Other clients will forget about us if we don't keep sending them packets
             // Doesn't work well with dead characters
-            if (IsAlive)
+            if (IsAlive && ObjectState == eObjectState.Active)
             {
                 foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
@@ -895,9 +895,11 @@ namespace DOL.GS
                 if (!IsAlive)
                 {
                     Release(m_releaseType, true);
+
                     if (log.IsInfoEnabled)
                         log.InfoFormat("Linkdead player {0}({1}) was auto-released from death!", Name, Client.Account.Name);
                 }
+
                 CraftingProgressMgr.FlushAndSaveInstance(this);
                 SaveIntoDatabase();
             }
@@ -6940,22 +6942,12 @@ namespace DOL.GS
                 ((GamePlayer)killer).Out.SendMessage(playerMessage, messageType, eChatLoc.CL_SystemWindow);
             }
 
-            ArrayList players = new ArrayList();
+            List<GamePlayer> players;
+
             if (messageDistance == 0)
-            {
-                foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
-                {
-                    players.Add(client.Player);
-                }
-            }
+                players = ClientService.GetPlayersOfRegion(CurrentRegion);
             else
-            {
-                foreach (GamePlayer player in GetPlayersInRadius(messageDistance))
-                {
-                    if (player == null) continue;
-                    players.Add(player);
-                }
-            }
+                players = GetPlayersInRadius(messageDistance);
 
             foreach (GamePlayer player in players)
             {

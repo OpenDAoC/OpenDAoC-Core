@@ -125,12 +125,10 @@ namespace DOL.AI.Brain
             Add.AddToWorld();
         }
 
-        public void BroadcastMessage(String message)
+        public void BroadcastMessage(string message)
         {
-            foreach (GameClient client in WorldMgr.GetClientsOfRegion(Body.CurrentRegionID))
-            {
-                client.Player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-            }
+            foreach (GamePlayer player in ClientService.GetPlayersOfRegion(Body.CurrentRegion))
+                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
         }
     }
 }

@@ -1,53 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-/* <--- SendMessage Standardization --->
-*  All messages now use translation IDs to both
-*  centralize their location and standardize the method
-*  of message calls used throughout this project. All messages affected
-*  are in English. Other languages are not yet supported.
-* 
-*  To  find a message at its source location, either use
-*  the message body contained in the comment above the return
-*  (e.g., // Message: "This is a message.") or the
-*  translation ID (e.g., "AdminCommands.Account.Description").
-* 
-*  To perform message changes, take note of your server settings.
-*  If the `serverproperty` table setting `use_dblanguage`
-*  is set to `True`, you must make your changes from the
-*  `languagesystem` DB table.
-* 
-*  If the `serverproperty` table setting
-*  `update_existing_db_system_sentences_from_files` is set to `True`,
-*  perform changes to messages from this file at "GameServer >
-*  language > EN > OtherSentences.txt" and "Commands > AdminCommands.txt".
-*
-*  OPTIONAL: After changing a message, paste the new content
-*  into the comment above the affected message return(s). This is
-*  done for ease of reference. */
-
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
-using System.Collections.Generic;
 using DOL.Language;
 using JNogueira.Discord.Webhook.Client;
 
@@ -134,25 +90,15 @@ namespace DOL.GS.Commands
 				DateTime date;
 				date = DateTime.Now;
 				date = date.AddSeconds(m_counter);
-				var dateformat = date.ToString("HH:mm \"GMT\" zzz");
+				string msg = $"Automated server restart in {m_counter / 60} mins! (Restart at {date:HH:mm \"GMT\" zzz})";
 
-				foreach (GameClient m_client in WorldMgr.GetAllPlayingClients())
-				{
-					m_client.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, "Automated server restart / backup triggered. Restart in " + m_counter / 60 + " mins! (Restart at " + date.ToString("HH:mm \"GMT\" zzz") + ")");
-					//m_client.Out.SendMessage("Automated server restart / backup triggered. Restart in " + m_counter / 60 + " mins! (Restart on " + date.ToString("HH:mm \"GMT\" zzz") + ")", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-				}
+				foreach (GamePlayer player in ClientService.GetPlayers())
+					player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, msg);
 
-				string msg = "Automated server restart in " + m_counter / 60 + " mins! (Restart at " + date.ToString("HH:mm \"GMT\" zzz") + ")";
 				log.Warn(msg);
-
-				// You have an IRC Bot
-				//if (ServerIRC.IRCBot != null) ServerIRC.IRCBot.SendMessage(ServerIRC.CHANNEL, msg);
 			}
 			else
-			{
-				log.Info("Uptime = " + uptime.TotalHours.ToString("N1") + ", restart uptime = " + Properties.HOURS_UPTIME_BETWEEN_SHUTDOWN.ToString() +
-				         " | Current hour = " + DateTime.Now.Hour.ToString() + ", restart hour = " + AUTOMATEDSHUTDOWN_HOURTOSHUTDOWN.ToString() );
-			}
+				log.Info($"Uptime = {uptime.TotalHours:N1}, restart uptime = {Properties.HOURS_UPTIME_BETWEEN_SHUTDOWN} | current hour = {DateTime.Now.Hour}, restart hour = {AUTOMATEDSHUTDOWN_HOURTOSHUTDOWN}");
 		}
 		
 		public static void CountDown(int seconds)
@@ -291,12 +237,12 @@ namespace DOL.GS.Commands
 
 				if (translationID != "")
 				{
-					foreach (GameClient client in WorldMgr.GetAllPlayingClients())
+					foreach (GamePlayer player in ClientService.GetPlayers())
 					{
 						if (args2 == -1)
-							ChatUtil.SendServerMessage(client, translationID, args1);
+							ChatUtil.SendServerMessage(player.Client, translationID, args1);
 						else
-							ChatUtil.SendServerMessage(client, translationID, args1, args2);
+							ChatUtil.SendServerMessage(player.Client, translationID, args1, args2);
 					}
 				}
 
@@ -304,10 +250,10 @@ namespace DOL.GS.Commands
 				{
 					GameServer.Instance.Close();
 
-					foreach (GameClient client in WorldMgr.GetAllPlayingClients())
+					foreach (GamePlayer player in ClientService.GetPlayers())
 					{
 						// Message: "The server is now closed to all incoming connections! The server will shut down in {0} seconds!"
-						ChatUtil.SendDebugMessage(client, "AdminCommands.Account.Msg.ServerClosed", secs);
+						ChatUtil.SendDebugMessage(player.Client, "AdminCommands.Account.Msg.ServerClosed", secs);
 					}
 				}
 				
@@ -470,12 +416,12 @@ namespace DOL.GS.Commands
 
 				if (translationID != "")
 				{
-					foreach (GameClient client in WorldMgr.GetAllPlayingClients())
+					foreach (GamePlayer player in ClientService.GetPlayers())
 					{
 						if (args2 == -1)
-							ChatUtil.SendServerMessage(client, translationID, args1);
+							ChatUtil.SendServerMessage(player.Client, translationID, args1);
 						else
-							ChatUtil.SendServerMessage(client, translationID, args1, args2);
+							ChatUtil.SendServerMessage(player.Client, translationID, args1, args2);
 					}
 				}
 
@@ -483,10 +429,10 @@ namespace DOL.GS.Commands
 				{
 					GameServer.Instance.Close();
 
-					foreach (GameClient client in WorldMgr.GetAllPlayingClients())
+					foreach (GamePlayer player in ClientService.GetPlayers())
 					{
 						// Message: "The server is now closed to all incoming connections! The server will shut down in {0} seconds!"
-						ChatUtil.SendDebugMessage(client, "AdminCommands.Account.Msg.ServerClosed", secs);
+						ChatUtil.SendDebugMessage(player.Client, "AdminCommands.Account.Msg.ServerClosed", secs);
 					}
 				}
 				
@@ -589,12 +535,12 @@ namespace DOL.GS.Commands
 						ChatUtil.SendDebugMessage(client, "AdminCommands.Shutdown.Msg.YouCancel", null);
 						
 						// Send message to all players letting them know the shutdown isn't occurring
-						foreach (GameClient playingClient in WorldMgr.GetAllPlayingClients())
+						foreach (GamePlayer player in ClientService.GetPlayers())
 						{
 							// Message: "{0} stopped the server shutdown!"
-							ChatUtil.SendDebugMessage(playingClient, "AdminCommands.Shutdown.Msg.StaffCancel", user.Name);
+							ChatUtil.SendDebugMessage(player.Client, "AdminCommands.Shutdown.Msg.StaffCancel", user.Name);
 							// Message: "The server restart has been canceled! Please stand by for additional information."
-							ChatUtil.SendServerMessage(playingClient, "AdminCommands.Shutdown.Msg.ShutdownEnd", null);
+							ChatUtil.SendServerMessage(player.Client, "AdminCommands.Shutdown.Msg.ShutdownEnd", null);
 						}
 
 						// If server status is closed (< 2 min to shutdown)
@@ -765,13 +711,11 @@ namespace DOL.GS.Commands
 
 			date = DateTime.Now;
 			date = date.AddSeconds(m_counter);
-			
-			// Message: "A full server reboot will occur in {0} minutes!"
-			string msg = "AdminCommands.Shutdown.Msg.CountdownMins";
+
 			bool popup = (m_counter / 60) < 60;
 			long counter = m_counter / 60;
 			
-			foreach (GameClient m_client in WorldMgr.GetAllPlayingClients())
+			foreach (GamePlayer player in ClientService.GetPlayers())
 			{
 				if (popup)
 				{
@@ -789,11 +733,11 @@ namespace DOL.GS.Commands
 					shutdown.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Shutdown.Msg.PlanLogout"));
 				
 					// Send the above messages in a dialog
-					m_client.Out.SendCustomTextWindow("Server Reboot Scheduled", shutdown);
+					player.Out.SendCustomTextWindow("Server Reboot Scheduled", shutdown);
 				}
 
 				// Message: "ATTENTION: A server shutdown will take place in {0} minutes! The shutdown is scheduled at {1}."
-				ChatUtil.SendServerMessage(m_client, "AdminCommands.Shutdown.Msg.AttentionShutdown", m_counter / 60, date.ToString("HH:mm \"GMT\" zzz"));
+				ChatUtil.SendServerMessage(player.Client, "AdminCommands.Shutdown.Msg.AttentionShutdown", m_counter / 60, date.ToString("HH:mm \"GMT\" zzz"));
 			}
 
 			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
@@ -818,8 +762,6 @@ namespace DOL.GS.Commands
 
 				discordClient.SendToDiscord(message);
 			}
-
-			log.Warn(msg);
 
 			m_currentCallbackTime = 0;
 			m_timer?.Dispose();

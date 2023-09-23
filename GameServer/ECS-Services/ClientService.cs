@@ -2,7 +2,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
+using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
 using ECS.Debug;
@@ -14,66 +16,424 @@ namespace DOL.GS
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(ClientService);
+        private const int PING_TIMEOUT = 60000;
+        private const int HARD_TIMEOUT = 600000;
+
+        private static List<GameClient> _clients = new();
+        private static SimpleDisposableLock _lock = new();
+        private static int _lastValidIndex;
+        private static int _clientCount;
+
+        public static int ClientCount => _clientCount; // `_clients` contains null objects.
 
         public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<GameClient> list = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out int lastValidIndex);
-
-            Parallel.For(0, lastValidIndex + 1, i =>
+            using (_lock.GetWrite())
             {
-                GameClient client = list[i];
+                _clients = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out _lastValidIndex);
+            }
+
+            Parallel.For(0, _lastValidIndex + 1, i =>
+            {
+                GameClient client = _clients[i]; // Read lock unneeded.
 
                 if (client?.EntityManagerId.IsSet != true)
                     return;
 
-                GamePlayer player = client.Player;
-
-                if (player != null &&
-                    player.Client.ClientState == GameClient.eClientState.Playing &&
-                    player.ObjectState == GameObject.eObjectState.Active)
+                switch (client.ClientState)
                 {
-                    try
+                    case GameClient.eClientState.Disconnected:
                     {
-                        if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoop.GameLoopTime)
-                        {
-                            long startTick = GameLoop.GetCurrentTime();
-                            UpdateWorld(player);
-                            long stopTick = GameLoop.GetCurrentTime();
+                        OnClientDisconnect(client);
+                        client.PacketProcessor?.OnDisconnect();
+                        return;
+                    }
+                    case GameClient.eClientState.NotConnected:
+                    case GameClient.eClientState.Linkdead:
+                        return;
+                    case GameClient.eClientState.CharScreen:
+                    {
+                        CheckPingTimeout(client);
+                        break;
+                    }
+                    case GameClient.eClientState.Playing:
+                    {
+                        CheckPingTimeout(client);
+                        GamePlayer player = client.Player;
 
-                            if (stopTick - startTick > 25)
-                                log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                        if (player?.ObjectState == GameObject.eObjectState.Active)
+                        {
+                            try
+                            {
+                                if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                                {
+                                    long startTick = GameLoop.GetCurrentTime();
+                                    UpdateWorld(player);
+                                    long stopTick = GameLoop.GetCurrentTime();
+
+                                    if (stopTick - startTick > 25)
+                                        log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                                }
+
+                                player.movementComponent.Tick(GameLoop.GameLoopTime);
+                            }
+                            catch (Exception e)
+                            {
+                                ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, player);
+                            }
                         }
 
-                        player.movementComponent.Tick(GameLoop.GameLoopTime);
+                        break;
                     }
-                    catch (Exception e)
+                    default:
                     {
-                        ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, player);
+                        CheckHardTimeout(client);
+                        break;
                     }
                 }
 
-                if (client.IsConnected)
+                try
                 {
-                    try
-                    {
-                        long startTick = GameLoop.GetCurrentTime();
-                        client.PacketProcessor?.ProcessTcpQueue();
-                        long stopTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoop.GetCurrentTime();
+                    client.PacketProcessor.ProcessTcpQueue();
+                    long stopTick = GameLoop.GetCurrentTime();
 
-                        if (stopTick - startTick > 25)
-                            log.Warn($"Long {SERVICE_NAME}.{nameof(client.PacketProcessor.ProcessTcpQueue)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
-                    }
-                    catch (Exception e)
-                    {
-                        ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, player);
-                    }
+                    if (stopTick - startTick > 25)
+                        log.Warn($"Long {SERVICE_NAME}.{nameof(client.PacketProcessor.ProcessTcpQueue)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+                }
+                catch (Exception e)
+                {
+                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, client.Player);
                 }
             });
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
+
+        public static void OnClientConnect(GameClient client)
+        {
+            EntityManager.Add(client);
+            Interlocked.Increment(ref _clientCount);
+        }
+
+        public static void OnClientDisconnect(GameClient client)
+        {
+            Interlocked.Decrement(ref _clientCount);
+            EntityManager.Remove(client);
+        }
+
+        public static GamePlayer GetPlayer<T>(CheckPlayerAction<T> action)
+        {
+            return GetPlayer(action, default);
+        }
+
+        public static GamePlayer GetPlayer<T>(CheckPlayerAction<T> action, T actionArgument)
+        {
+            using (_lock.GetRead())
+            {
+                foreach (GameClient client in _clients)
+                {
+                    if (client == null || !client.IsPlaying)
+                        continue;
+
+                    GamePlayer player = client.Player;
+
+                    if (action?.Invoke(player, actionArgument) != false)
+                        return player;
+                }
+            }
+
+            return null;
+        }
+
+        public static List<GamePlayer> GetPlayers()
+        {
+            return GetPlayers<object>(null, null);
+        }
+
+        public static List<GamePlayer> GetPlayers<T>(CheckPlayerAction<T> action)
+        {
+            return GetPlayers(action, default);
+        }
+
+        public static List<GamePlayer> GetPlayers<T>(CheckPlayerAction<T> action, T actionArgument)
+        {
+            List<GamePlayer> players = new();
+
+            using (_lock.GetRead())
+            {
+                foreach (GameClient client in _clients)
+                {
+                    if (client == null || !client.IsPlaying)
+                        continue;
+
+                    GamePlayer player = client.Player;
+
+                    if (action?.Invoke(player, actionArgument) != false)
+                        players.Add(player);
+                }
+            }
+
+            return players;
+        }
+
+        public static GameClient GetClient<T>(CheckClientAction<T> action)
+        {
+            return GetClient(action, default);
+        }
+
+        public static GameClient GetClient<T>(CheckClientAction<T> action, T actionArgument)
+        {
+            using (_lock.GetRead())
+            {
+                foreach (GameClient client in _clients)
+                {
+                    if (client?.Account == null)
+                        continue;
+
+                    if (action?.Invoke(client, actionArgument) != false)
+                        return client;
+                }
+            }
+
+            return null;
+        }
+
+        public static List<GameClient> GetClients()
+        {
+            return GetClients<object>(null, null);
+        }
+
+        public static List<GameClient> GetClients<T>(CheckClientAction<T> action)
+        {
+            return GetClients(action, default);
+        }
+
+        public static List<GameClient> GetClients<T>(CheckClientAction<T> action, T actionArgument)
+        {
+            List<GameClient> players = new();
+
+            using (_lock.GetRead())
+            {
+                foreach (GameClient client in _clients)
+                {
+                    if (client?.Account == null)
+                        continue;
+
+                    if (action?.Invoke(client, actionArgument) != false)
+                        players.Add(client);
+                }
+            }
+
+            return players;
+        }
+
+        public static GamePlayer GetPlayerByExactName(string playerName)
+        {
+            return GetPlayer(Predicate, playerName);
+
+            static bool Predicate(GamePlayer player, string playerName)
+            {
+                if (!player.Client.IsPlaying || player.ObjectState != GameObject.eObjectState.Active)
+                    return false;
+
+                if (player.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                return false;
+            }
+        }
+
+        public static GamePlayer GetPlayerByPartialName(string playerName, out PlayerGuessResult result)
+        {
+            List<GamePlayer> partialMatches = new();
+            GamePlayer targetPlayer = GetPlayer(Predicate, (playerName, partialMatches));
+
+            if (targetPlayer != null)
+                result = PlayerGuessResult.FOUND_EXACT;
+            else if (partialMatches.Count < 1)
+                result = PlayerGuessResult.NOT_FOUND;
+            else if (partialMatches.Count > 1)
+                result = PlayerGuessResult.FOUND_MULTIPLE;
+            else
+            {
+                result = PlayerGuessResult.FOUND_PARTIAL;
+                targetPlayer = partialMatches[0];
+            }
+
+            return targetPlayer;
+
+            static bool Predicate(GamePlayer player, (string playerName, List<GamePlayer> partialList) args)
+            {
+                if (!player.Client.IsPlaying || player.ObjectState != GameObject.eObjectState.Active)
+                    return false;
+
+                if (player.Name.Equals(args.playerName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                if (player.Name.StartsWith(args.playerName, StringComparison.OrdinalIgnoreCase))
+                    args.partialList.Add(player);
+
+                return false;
+            }
+        }
+
+        public static List<GamePlayer> GetNonGmPlayers()
+        {
+            return GetPlayers<object>(Predicate, default);
+
+            static bool Predicate(GamePlayer player, object unused)
+            {
+                return player.Client.Account.PrivLevel == (uint) ePrivLevel.Player;
+            }
+        }
+
+        public static List<GamePlayer> GetGmPlayers()
+        {
+            return GetPlayers<object>(Predicate, default);
+
+            static bool Predicate(GamePlayer player, object unused)
+            {
+                return player.Client.Account.PrivLevel > (uint) ePrivLevel.Player;
+            }
+        }
+
+        public static List<GamePlayer> GetPlayersOfRealm(eRealm realm)
+        {
+            return GetPlayersOfRealm<object>((realm, default, default));
+        }
+
+        public static List<GamePlayer> GetPlayersOfRealm<T>(eRealm realm, CheckPlayerAction<T> action)
+        {
+            return GetPlayersOfRealm((realm, action, default));
+        }
+
+        public static List<GamePlayer> GetPlayersOfRealm<T>((eRealm, CheckPlayerAction<T>, T) args)
+        {
+            return GetPlayers(Predicate, args);
+
+            static bool Predicate(GamePlayer player, (eRealm realm, CheckPlayerAction<T> action, T actionArgument) args)
+            {
+                return player.Realm == args.realm && args.action?.Invoke(player, args.actionArgument) != false;
+            }
+        }
+
+        public static List<GamePlayer> GetPlayersOfRegion(Region region)
+        {
+            return GetPlayersOfRegion<object>((region, default, default));
+        }
+
+        public static List<GamePlayer> GetPlayersOfRegion<T>(Region region, CheckPlayerAction<T> action)
+        {
+            return GetPlayersOfRegion((region, action, default));
+        }
+
+        public static List<GamePlayer> GetPlayersOfRegion<T>((Region, CheckPlayerAction<T>, T) args)
+        {
+            return GetPlayers(Predicate, args);
+
+            static bool Predicate(GamePlayer player, (Region region, CheckPlayerAction<T> action, T actionArgument) args)
+            {
+                return player.CurrentRegion == args.region && args.action?.Invoke(player, args.actionArgument) != false;
+            }
+        }
+
+        public static List<GamePlayer> GetPlayersOfRegionAndRealm(Region region, eRealm realm)
+        {
+            return GetPlayersOfRegion((region, Predicate, realm));
+
+            static bool Predicate(GamePlayer player, eRealm realm)
+            {
+                return player.Realm == realm;
+            }
+        }
+
+        public static List<GamePlayer> GetPlayersOfZone(Zone zone)
+        {
+            return GetPlayers(Predicate, zone);
+
+            static bool Predicate(GamePlayer player, Zone zone)
+            {
+                return player.CurrentZone == zone;
+            }
+        }
+
+        // Advice, Broadcast, LFG, Trade.
+        public static List<GamePlayer> GetPlayersForRealmWideChatMessage(GamePlayer sender)
+        {
+            return GetPlayers(Predicate, sender);
+
+            static bool Predicate(GamePlayer player, GamePlayer sender)
+            {
+                return GameServer.ServerRules.IsAllowedToUnderstand(sender, player) && !player.IsIgnoring(sender);
+            }
+        }
+
+        public static GameClient GetClientFromId(int id)
+        {
+            // Since we want to avoid locks, `_clients` may change, so we can't check for count first.
+            // This should be fine unless for some reason a client keeps sending wrong IDs.
+            try
+            {
+                using (_lock.GetRead())
+                return _clients[id - 1];
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static GameClient GetClientFromAccount(Account account)
+        {
+            return GetClient(Predicate, account);
+
+            static bool Predicate(GameClient client, Account account)
+            {
+                return client.Account != null && client.Account == account;
+            }
+        }
+
+        public static GameClient GetClientFromAccountName(string accountName)
+        {
+            return GetClient(Predicate, accountName);
+
+            static bool Predicate(GameClient client, string accountName)
+            {
+                return client.Account != null && client.Account.Name.Equals(accountName);
+            }
+        }
+
+        public static GameClient GetClientWithSameIp(GameClient otherClient)
+        {
+            return GetClient(Predicate, otherClient);
+
+            static bool Predicate(GameClient client, GameClient otherClient)
+            {
+                return client.Account != null && client.Account.PrivLevel <= (uint) ePrivLevel.Player && client.TcpEndpointAddress.Equals(otherClient.TcpEndpointAddress) && client != otherClient;
+            }
+        }
+
+        public static int SavePlayers()
+        {
+            int savedCount = 0;
+
+            using (_lock.GetRead())
+            {
+                Parallel.ForEach(_clients, client =>
+                {
+                    if (client == null)
+                        return;
+
+                    client.SavePlayer();
+                    savedCount++;
+                });
+            }
+
+            return savedCount;
         }
 
         private static void AddNpcToPlayerCache(GamePlayer player, GameNPC npc)
@@ -149,6 +509,28 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in gameObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 CreateObjectForPlayer(player, gameObject);
+        }
+
+        private static void CheckPingTimeout(GameClient client)
+        {
+            if (client.PingTime + PING_TIMEOUT < GameLoop.GetCurrentTime())
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Ping timeout for client {client}");
+
+                GameServer.Instance.Disconnect(client);
+            }
+        }
+
+        private static void CheckHardTimeout(GameClient client)
+        {
+            if (client.PingTime + HARD_TIMEOUT < GameLoop.GetCurrentTime())
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Hard timeout for client {client}");
+
+                GameServer.Instance.Disconnect(client);
+            }
         }
 
         private static void UpdateWorld(GamePlayer player)
@@ -295,6 +677,18 @@ namespace DOL.GS
 
                 AddHouseToPlayerCache(player, house);
             }
+        }
+
+        // Arguments are used to allow the use of more performant static delegates (avoids closures completely).
+        public delegate bool CheckPlayerAction<T>(GamePlayer player, T argument);
+        public delegate bool CheckClientAction<T>(GameClient client, T argument);
+
+        public enum PlayerGuessResult
+        {
+            NOT_FOUND,
+            FOUND_EXACT,
+            FOUND_PARTIAL,
+            FOUND_MULTIPLE
         }
 
         public class CachedNpcValues

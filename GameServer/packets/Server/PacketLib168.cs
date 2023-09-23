@@ -90,6 +90,7 @@ namespace DOL.GS.PacketHandler
 				#endif
 
 				SendTCP(pak);
+				m_gameClient.PacketProcessor.ProcessTcpQueue();
 			}
 		}
 

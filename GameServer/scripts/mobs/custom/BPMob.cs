@@ -1,31 +1,4 @@
-﻿//Written by Sirru
-/*
- * 
- * Edited by BluRaven 5-22-07
- * Added a check for Realm Rank, which boots the player if they are over
- * RR7 when the mob dies.  Added a check for how many players are online,
- * if you want to boot the player out of the farm zone if there are a
- * certain number of players online.  Also added a base ammount based on
- * the mobs level, plus there is a 5% chance for a jackpot which will
- * reward either 2x or 3x the ammount to the player.  Also added screen
- * center messages.  Also added a division of the reward based on the
- * number of players in the group.  Also added a check for if the player
- * is actually in the farm zone before it gives the reward (you must change
- * the farm zone region number to match yours, currently it's set to Darkness Falls.
- * -Blu
- * 5-22-07
- * 
- * 
- */
-
-using System;
-using System.IO;
-using System.Collections;
-using System.Reflection;
-using DOL.Language;
-using DOL.GS;
-using DOL.GS.ServerProperties;
-using DOL.GS.PacketHandler;
+﻿using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
@@ -73,24 +46,12 @@ public class BPMob : GameNPC
             rewardbp = (basebp + bonus);
         }
 
-        int playersonline = 0;
-        foreach (GameClient playerclient in WorldMgr.GetAllPlayingClients())
+        int playersonline = ClientService.GetNonGmPlayers().Count;
+
+        if (player != null && IsWorthReward)
         {
-
-            if (playerclient.Account.PrivLevel == 1)
-            {
-                ++playersonline;
-            }
-
-        }
-
-        if(player is GamePlayer && IsWorthReward)
-
-        {
-
             if (player.Group != null)
             {
-
                 if (player.Group.MemberCount  == 1) { rewardbp = (rewardbp); }
                 if (player.Group.MemberCount  == 2) { rewardbp = (rewardbp / 2); }
                 if (player.Group.MemberCount  == 3) { rewardbp = (rewardbp / 3); }

@@ -83,7 +83,7 @@ namespace DOL.GS
             private SortedSet<int> _invalidIndexes = new();
             private Stack<T> _entitiesToAdd  = new();
             private Stack<T> _entitiesToRemove = new();
-            private object _invalidIndexesLock = new();
+            private object _updateLock = new();
             private object _entitiesToAddLock = new();
             private object _entitiesToRemoveLock = new();
             private int _lastValidIndex = -1;
@@ -110,7 +110,7 @@ namespace DOL.GS
                 int index;
                 entity = null;
 
-                lock (_invalidIndexesLock)
+                lock (_updateLock)
                 {
                     if (_invalidIndexes.Count == 0)
                         return false;
@@ -139,7 +139,7 @@ namespace DOL.GS
 
             public int Update()
             {
-                lock (_invalidIndexesLock)
+                lock (_updateLock)
                 {
                     lock (_entitiesToRemoveLock)
                     {

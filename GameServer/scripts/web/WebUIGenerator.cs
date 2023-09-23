@@ -1,29 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS;
 using log4net;
 
 namespace DOL.GS.Scripts
@@ -176,12 +156,17 @@ namespace DOL.GS.Scripts
 
 			int gm = 0;
 			int admin = 0;
-			foreach (GameClient client in WorldMgr.GetAllClients()) {
-				if (client.Account.PrivLevel == (int)ePrivLevel.GM) gm++;
-				if (client.Account.PrivLevel == (int)ePrivLevel.Admin) admin++;
+
+			foreach (GamePlayer player in ClientService.GetPlayers())
+			{
+				if (player.Client.Account.PrivLevel == (int) ePrivLevel.GM)
+					gm++;
+
+				if (player.Client.Account.PrivLevel == (int) ePrivLevel.Admin)
+					admin++;
 			}
 
-			m_js.AppendFormat("var numClientsConnected = {0}", GameServer.Instance.ClientCount);
+			m_js.AppendFormat("var numClientsConnected = {0}", ClientService.ClientCount);
 			m_js.Append(nl.NewLine);
 
 			m_js.AppendFormat("var numGMsConnected = {0}", gm);
@@ -339,17 +324,15 @@ namespace DOL.GS.Scripts
 			m_js.Append(nl.NewLine);
 			m_js.Append(nl.NewLine);
 
-			foreach (GameClient client in WorldMgr.GetAllPlayingClients())
+			foreach (GamePlayer player in ClientService.GetPlayers())
 			{
-				GamePlayer plr = client.Player;
-
 				m_js.Append("document.write(\"<tr>\")");
 				m_js.Append(nl.NewLine);
 
 				//name column
 				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", plr.Name);
+				m_js.AppendFormat("document.write(\"{0}\")", player.Name);
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
@@ -358,7 +341,7 @@ namespace DOL.GS.Scripts
 				//last name column
 				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", plr.LastName);
+				m_js.AppendFormat("document.write(\"{0}\")", player.LastName);
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
@@ -367,7 +350,7 @@ namespace DOL.GS.Scripts
 				//Class
 				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", plr.CharacterClass.Name);
+				m_js.AppendFormat("document.write(\"{0}\")", player.CharacterClass.Name);
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
@@ -376,7 +359,7 @@ namespace DOL.GS.Scripts
 				//Race
 				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", plr.RaceName);
+				m_js.AppendFormat("document.write(\"{0}\")", player.RaceName);
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
@@ -385,7 +368,7 @@ namespace DOL.GS.Scripts
 				//Guild
 				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", plr.GuildName);
+				m_js.AppendFormat("document.write(\"{0}\")", player.GuildName);
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
@@ -394,7 +377,7 @@ namespace DOL.GS.Scripts
 				//Level
 				m_js.Append("document.write(\"<td align=\\\"center\\\" bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", plr.Level);
+				m_js.AppendFormat("document.write(\"{0}\")", player.Level);
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
@@ -403,7 +386,7 @@ namespace DOL.GS.Scripts
 				//Alive
 				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", plr.IsAlive ? "yes" : "no");
+				m_js.AppendFormat("document.write(\"{0}\")", player.IsAlive ? "yes" : "no");
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
@@ -412,7 +395,7 @@ namespace DOL.GS.Scripts
 				//Realm
 				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", ((eRealm) plr.Realm).ToString());
+				m_js.AppendFormat("document.write(\"{0}\")", player.Realm.ToString());
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
@@ -421,7 +404,7 @@ namespace DOL.GS.Scripts
 				//Current Region
 				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", plr.CurrentRegion.Description);
+				m_js.AppendFormat("document.write(\"{0}\")", player.CurrentRegion.Description);
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
@@ -430,7 +413,7 @@ namespace DOL.GS.Scripts
 				//X
 				m_js.Append("document.write(\"<td align=\\\"center\\\" bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", plr.X);
+				m_js.AppendFormat("document.write(\"{0}\")", player.X);
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
@@ -439,7 +422,7 @@ namespace DOL.GS.Scripts
 				//Y
 				m_js.Append("document.write(\"<td align=\\\"center\\\" bgcolor=\\\"#333333\\\">\")");
 				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", plr.Y);
+				m_js.AppendFormat("document.write(\"{0}\")", player.Y);
 				m_js.Append(nl.NewLine);
 				m_js.Append("document.write(\"</td>\")");
 				m_js.Append(nl.NewLine);
