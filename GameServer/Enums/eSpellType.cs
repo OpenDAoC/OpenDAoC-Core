@@ -375,6 +375,7 @@ namespace DOL.GS
         ZoSummon = 369,
         Null = 370,
         HealFlask = 371,
-        DeadFlask = 372
+        DeadFlask = 372,
+        AtlantisTabletMorph = 373
     }
 }

@@ -596,6 +596,7 @@ namespace DOL.GS
                 
                 //Artifacts
                 case eSpellType.AlvarusMorph:
+                case eSpellType.AtlantisTabletMorph:
                     return eEffect.Morph;
 
                 // Pets.

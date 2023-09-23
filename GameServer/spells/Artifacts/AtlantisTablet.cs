@@ -6,12 +6,11 @@ using DOL.GS.Effects;
 namespace DOL.GS.Spells
 {
     [SpellHandlerAttribute("AtlantisTabletMorph")]
-    public class AtlantisTabletMorph : OffensiveProcSpellHandler
-    {   	
-        public override void OnEffectStart(GameSpellEffect effect)
+    public class AtlantisTabletMorph : SpellHandler
+    {
+        public override void ApplyEffectOnTarget(GameLiving target)
         {
-            base.OnEffectStart(effect);
-            if (effect.Owner is not GamePlayer player) return;
+            if (target is not GamePlayer player) return;
             if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Morph))
             {
                 player.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.eChatType.CT_SpellResisted, DOL.GS.PacketHandler.eChatLoc.CL_ChatWindow);
