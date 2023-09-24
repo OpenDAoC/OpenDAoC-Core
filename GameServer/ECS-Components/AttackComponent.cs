@@ -1941,8 +1941,10 @@ namespace DOL.GS
 
             if (guardChance < 0.01)
                 guardChance = 0.01;
+            else if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+                guardChance = Properties.BLOCK_CAP;
 
-            // Possibly intended to be applied in RvR only
+            // Possibly intended to be applied in RvR only.
             if (shieldSize == 1 && guardChance > 0.8)
                 guardChance = 0.8;
             else if (shieldSize == 2 && guardChance > 0.9)
