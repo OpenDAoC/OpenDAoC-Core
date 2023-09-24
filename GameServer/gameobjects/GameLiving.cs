@@ -1637,7 +1637,7 @@ namespace DOL.GS
 				if (player != null)
 				{
 					if (player.HasAbility(Abilities.Shield) && leftHand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND))
-						blockChance = GetModified(eProperty.BlockChance) * leftHand.Quality * 0.01 * leftHand.Condition / leftHand.MaxCondition;
+						blockChance = GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
 				}
 				else
 					blockChance = GetModified(eProperty.BlockChance);
@@ -1666,14 +1666,15 @@ namespace DOL.GS
 					blockChance = 0.01;
 				else if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer)
 					blockChance = Properties.BLOCK_CAP;
-				
+
+				// Possibly intended to be applied in RvR only
 				if (shieldSize == 1 && blockChance > 0.8)
 					blockChance = 0.8;
 				else if (shieldSize == 2 && blockChance > 0.9)
 					blockChance = 0.9;
 				else if (shieldSize == 3 && blockChance > 0.99)
 					blockChance = 0.99;
-				
+
 				if (IsEngaging)
 				{
 					EngageECSGameEffect engage = (EngageECSGameEffect) EffectListService.GetEffectOnTarget(this, eEffect.Engage);
@@ -1694,10 +1695,10 @@ namespace DOL.GS
 						}
 					}
 				}
-			}
 
-			if (ad.AttackType == eAttackType.MeleeDualWield)
-				blockChance = Math.Max(blockChance * 0.5, 0);
+				if (ad.AttackType == eAttackType.MeleeDualWield)
+					blockChance *= 0.5;
+			}
 
 			// Infiltrator RR5.
 			if (player != null)

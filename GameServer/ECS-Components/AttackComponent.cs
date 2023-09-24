@@ -1916,10 +1916,11 @@ namespace DOL.GS
             double guardChance;
 
             if (guard.GuardSource is GameNPC)
-                guardChance = guard.GuardSource.GetModified(eProperty.BlockChance) * 0.001;
+                guardChance = guard.GuardSource.GetModified(eProperty.BlockChance);
             else
-                guardChance = guard.GuardSource.GetModified(eProperty.BlockChance) * 0.001 * (leftHand.Quality * 0.01);
+                guardChance = guard.GuardSource.GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
 
+            guardChance *= 0.001;
             guardChance += guardLevel * 5 * 0.01; // 5% additional chance to guard with each Guard level.
             guardChance += attackerConLevel * 0.05;
             int shieldSize = 1;
@@ -1935,11 +1936,14 @@ namespace DOL.GS
             if (m_attackers.Count > shieldSize)
                 guardChance *= shieldSize / (double) m_attackers.Count;
 
+            // Reduce chance by attacker's defense penetration.
+            guardChance *= 1 - ad.Attacker.GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100;
+
             if (guardChance < 0.01)
                 guardChance = 0.01;
-            //else if (ad.Attacker is GamePlayer && guardchance > 0.6)
-            // guardchance = 0.6;
-            else if (shieldSize == 1 && guardChance > 0.8)
+
+            // Possibly intended to be applied in RvR only
+            if (shieldSize == 1 && guardChance > 0.8)
                 guardChance = 0.8;
             else if (shieldSize == 2 && guardChance > 0.9)
                 guardChance = 0.9;
@@ -1947,7 +1951,7 @@ namespace DOL.GS
                 guardChance = 0.99;
 
             if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
-                guardChance /= 2;
+                guardChance *= 0.5;
 
             double guardRoll;
 
