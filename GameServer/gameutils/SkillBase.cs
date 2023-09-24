@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -544,7 +525,7 @@ namespace DOL.GS
 						str.AppendFormat("{0} - ", spec.KeyName);
 
 						Specialization gameSpec = null;
-						if (Util.IsEmpty(spec.Implementation, true) == false)
+						if (!string.IsNullOrEmpty(spec.Implementation))
 						{
 							gameSpec = GetNewSpecializationInstance(spec.KeyName, spec.Implementation, spec.Name, spec.Icon, spec.SpecializationID);
 						}
@@ -2262,7 +2243,7 @@ namespace DOL.GS
 				m_syncLockUpdates.ExitReadLock();
 			}
 
-			if (!Util.IsEmpty(ability, true))
+			if (!string.IsNullOrEmpty(ability))
 				return GetAbility(ability, 1);
 
 			return GetAbility(string.Format("INTERNALID:{0}", internalID), 1);
@@ -2296,7 +2277,7 @@ namespace DOL.GS
 				m_syncLockUpdates.ExitReadLock();
 			}
 
-			if (!Util.IsEmpty(ability, true))
+			if (!string.IsNullOrEmpty(ability))
 				return GetAbility(ability, 1);
 
 			return GetAbility(string.Format("DBID:{0}", databaseID), 1);
@@ -2628,7 +2609,7 @@ namespace DOL.GS
 				m_syncLockUpdates.ExitReadLock();
 			}
 
-			if (!Util.IsEmpty(spec, true))
+			if (!string.IsNullOrEmpty(spec))
 				return GetSpecialization(spec, false);
 
 			return GetSpecialization(string.Format("INTERNALID:{0}", internalID), true);
@@ -3109,7 +3090,7 @@ namespace DOL.GS
 			// try instanciating ability
 			Ability ab = null;
 
-			if (Util.IsEmpty(dba.Implementation, true) == false)
+			if (!string.IsNullOrEmpty(dba.Implementation))
 			{
 				// Try instanciating Ability
 				foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())

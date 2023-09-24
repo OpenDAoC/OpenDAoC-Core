@@ -1294,7 +1294,7 @@ namespace DOL.GS
 			if (template.ReplaceMobValues)
 			{
 				byte choosenLevel = 1;
-				if (!Util.IsEmpty(template.Level))
+				if (!string.IsNullOrEmpty(template.Level))
 				{
 					var split = Util.SplitCSV(template.Level, true);
 					byte.TryParse(split[Util.Random(0, split.Count - 1)], out choosenLevel);
@@ -1347,7 +1347,7 @@ namespace DOL.GS
 			}
 
 			byte choosenSize = 50;
-			if (!Util.IsEmpty(template.Size))
+			if (!string.IsNullOrEmpty(template.Size))
 			{
 				var split = Util.SplitCSV(template.Size, true);
 				byte.TryParse(split[Util.Random(0, split.Count - 1)], out choosenSize);
@@ -1366,7 +1366,7 @@ namespace DOL.GS
 
 			#region Inventory
 			//Ok lets start loading the npc equipment - only if there is a value!
-			if (!Util.IsEmpty(template.Inventory))
+			if (!string.IsNullOrEmpty(template.Inventory))
 			{
 				bool equipHasItems = false;
 				GameNpcInventoryTemplate equip = new GameNpcInventoryTemplate();

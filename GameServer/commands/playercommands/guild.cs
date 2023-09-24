@@ -631,13 +631,13 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.InfoCEmail", client.Player.Guild.Email), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
 								string motd = client.Player.Guild.Motd;
-								if (!Util.IsEmpty(motd) && client.Player.GuildRank.GcHear)
+								if (!string.IsNullOrEmpty(motd) && client.Player.GuildRank.GcHear)
 								{
 									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.InfoMotd", motd), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 								}
 
 								string omotd = client.Player.Guild.Omotd;
-								if (!Util.IsEmpty(omotd) && client.Player.GuildRank.OcHear)
+								if (!string.IsNullOrEmpty(omotd) && client.Player.GuildRank.OcHear)
 								{
 									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.InfoOMotd", omotd), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 								}
@@ -645,7 +645,7 @@ namespace DOL.GS.Commands
 								if (client.Player.Guild.alliance != null)
 								{
 									string amotd = client.Player.Guild.alliance.Dballiance.Motd;
-									if (!Util.IsEmpty(amotd) && client.Player.GuildRank.AcHear)
+									if (!string.IsNullOrEmpty(amotd) && client.Player.GuildRank.AcHear)
 									{
 										client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.InfoaMotd", amotd), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 									}

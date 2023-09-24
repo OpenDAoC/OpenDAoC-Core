@@ -1249,7 +1249,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		}
 		public void WriteUsableClasses(IList<string> output, ItemTemplate item, GameClient client)
 		{
-			if (Util.IsEmpty(item.AllowedClasses, true))
+			if (string.IsNullOrEmpty(item.AllowedClasses))
 				return;
 
 			output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteUsableClasses.UsableBy"));

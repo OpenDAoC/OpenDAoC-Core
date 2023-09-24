@@ -181,10 +181,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                 var translation = LanguageMgr.GetTranslation(client, newZone) as DBLanguageZone;
                 if (translation != null)
                 {
-                    if (!Util.IsEmpty(translation.Description))
+                    if (!string.IsNullOrEmpty(translation.Description))
                         description = translation.Description;
 
-                    if (!Util.IsEmpty(translation.ScreenDescription))
+                    if (!string.IsNullOrEmpty(translation.ScreenDescription))
                         screenDescription = translation.ScreenDescription;
                 }
 
@@ -895,10 +895,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 				var translation = LanguageMgr.GetTranslation(client, newZone) as DBLanguageZone;
 				if (translation != null)
 				{
-					if (!Util.IsEmpty(translation.Description))
+					if (!string.IsNullOrEmpty(translation.Description))
 						description = translation.Description;
 
-					if (!Util.IsEmpty(translation.ScreenDescription))
+					if (!string.IsNullOrEmpty(translation.ScreenDescription))
 						screenDescription = translation.ScreenDescription;
 				}
 

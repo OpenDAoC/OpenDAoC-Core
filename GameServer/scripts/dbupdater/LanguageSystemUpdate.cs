@@ -1,24 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 using DOL.Database;
 using DOL.Database.Attributes;
 using log4net;
@@ -110,7 +90,7 @@ namespace DOL.GS.DatabaseUpdate
 
                     foreach (language obj in objs)
                     {
-                        if (Util.IsEmpty(obj.TranslationID))
+                        if (string.IsNullOrEmpty(obj.TranslationID))
                             continue;
 
                         // This kind of row will later be readded by the LanguageMgr
@@ -120,7 +100,7 @@ namespace DOL.GS.DatabaseUpdate
 
                         DBLanguageSystem lngObj = null;
 
-                        if (!Util.IsEmpty(obj.EN))
+                        if (!string.IsNullOrEmpty(obj.EN))
                         {
                             if (!ListContainsObjectData(lngObjs, "EN", obj.TranslationID)) // Ignore duplicates
                             {
@@ -133,7 +113,7 @@ namespace DOL.GS.DatabaseUpdate
                             }
                         }
 
-                        if (!Util.IsEmpty(obj.DE))
+                        if (!string.IsNullOrEmpty(obj.DE))
                         {
                             if (!ListContainsObjectData(lngObjs, "DE", obj.TranslationID)) // Ignore duplicates
                             {
@@ -146,7 +126,7 @@ namespace DOL.GS.DatabaseUpdate
                             }
                         }
 
-                        if (!Util.IsEmpty(obj.FR))
+                        if (!string.IsNullOrEmpty(obj.FR))
                         {
                             if (!ListContainsObjectData(lngObjs, "FR", obj.TranslationID)) // Ignore duplicates
                             {
@@ -159,7 +139,7 @@ namespace DOL.GS.DatabaseUpdate
                             }
                         }
 
-                        if (!Util.IsEmpty(obj.IT))
+                        if (!string.IsNullOrEmpty(obj.IT))
                         {
                             if (!ListContainsObjectData(lngObjs, "IT", obj.TranslationID)) // Ignore duplicates
                             {

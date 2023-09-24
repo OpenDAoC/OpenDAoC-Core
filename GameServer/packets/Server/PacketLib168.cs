@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -924,12 +905,12 @@ namespace DOL.GS.PacketHandler
                     {
                         if (obj is WorldInventoryItem)
                         {
-                            //if (!Util.IsEmpty(((DBLanguageItem)translation).Name))
+                            //if (!string.IsNullOrEmpty(((DBLanguageItem)translation).Name))
                             //    name = ((DBLanguageItem)translation).Name;
                         }
                         else
                         {
-                            if (!Util.IsEmpty(((DBLanguageGameObject)translation).Name))
+                            if (!string.IsNullOrEmpty(((DBLanguageGameObject)translation).Name))
                                 name = ((DBLanguageGameObject)translation).Name;
                         }
                     }
@@ -1054,10 +1035,10 @@ namespace DOL.GS.PacketHandler
                 LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, npc);
                 if (translation != null)
                 {
-                    if(!Util.IsEmpty(((DBLanguageNPC)translation).Name))
+                    if(!string.IsNullOrEmpty(((DBLanguageNPC)translation).Name))
                         name = ((DBLanguageNPC)translation).Name;
 
-                    if (!Util.IsEmpty(((DBLanguageNPC)translation).GuildName))
+                    if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).GuildName))
                         guildName = ((DBLanguageNPC)translation).GuildName;
                 }
 
@@ -2261,7 +2242,7 @@ namespace DOL.GS.PacketHandler
 							else
 							{
 								// find this line Specialization index !
-								if (skillrelated is SpellLine && !Util.IsEmpty(((SpellLine)skillrelated).Spec))
+								if (skillrelated is SpellLine && !string.IsNullOrEmpty(((SpellLine)skillrelated).Spec))
 								{
 									spin = usableSkills.FindIndex(sk => (sk.Item1 is Specialization) && ((Specialization)sk.Item1).KeyName == ((SpellLine)skillrelated).Spec);
 
@@ -3455,7 +3436,7 @@ namespace DOL.GS.PacketHandler
 				LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, obj);
 				if (translation != null)
 				{
-					if (!Util.IsEmpty(((DBLanguageNPC)translation).Name))
+					if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).Name))
 						name = ((DBLanguageNPC)translation).Name;
 				}
 
@@ -3486,7 +3467,7 @@ namespace DOL.GS.PacketHandler
                 LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, siegeWeapon);
                 if (translation != null)
                 {
-                    if (!Util.IsEmpty(((DBLanguageNPC)translation).Name))
+                    if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).Name))
                         name = ((DBLanguageNPC)translation).Name;
                 }
 

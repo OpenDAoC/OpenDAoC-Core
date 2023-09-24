@@ -110,9 +110,7 @@ namespace DOL.AI.Brain
                 !Body.attackComponent.AttackState &&
                 !Body.InCombat &&
                 !Body.IsMovingOnPath &&
-                Body.PathID != null &&
-                Body.PathID != "" &&
-                Body.PathID != "NULL";
+                !string.IsNullOrEmpty(Body.PathID);
         }
 
         /// <summary>
