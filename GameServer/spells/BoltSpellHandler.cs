@@ -97,7 +97,7 @@ namespace DOL.GS.Spells
                 // 200 unit range restriction added in 1.84.
                 // Kept for OpenDAoC to make bolts a little friendlier.
                 // Each attacker removes 20% chance to hit.
-                foreach (GameLiving attacker in target.attackComponent.Attackers)
+                foreach (GameLiving attacker in target.attackComponent.Attackers.Keys)
                 {
                     if (attacker != Caster && target.GetDistanceTo(attacker) <= 200)
                     {

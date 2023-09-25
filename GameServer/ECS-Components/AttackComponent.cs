@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,60 +23,52 @@ namespace DOL.GS
 {
     public class AttackComponent : IManagedEntity
     {
+        private static int CHECK_ATTACKERS_INTERVAL = 1000;
+
         public GameLiving owner;
         public WeaponAction weaponAction;
         public AttackAction attackAction;
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.AttackComponent, false);
 
         /// <summary>
-        /// The objects currently attacking this living
-        /// To be more exact, the objects that are in combat
-        /// and have this living as target.
-        /// </summary>
-        protected List<GameObject> m_attackers = new();
-
-        /// <summary>
         /// Returns the list of attackers
         /// </summary>
-        public List<GameObject> Attackers => m_attackers;
+        public ConcurrentDictionary<GameLiving, long> Attackers { get; private set; } = new();
 
-        /// <summary>
-        /// Adds an attacker to the attackerlist
-        /// </summary>
-        /// <param name="attacker">the attacker to add</param>
-        public void AddAttacker(GameObject attacker)
+        private ECSGameTimer _attackersCheckTimer;
+        private object _attackersCheckTimerLock = new();
+
+        public void AddAttacker(GameLiving target)
         {
-            lock (Attackers)
+            if (target == owner)
+                return;
+
+            lock (_attackersCheckTimerLock)
             {
-                if (attacker == owner)
-                    return;
-
-                if (m_attackers.Contains(attacker))
-                    return;
-
-                m_attackers.Add(attacker);
+                if (!_attackersCheckTimer.IsAlive)
+                {
+                   _attackersCheckTimer.Interval = CHECK_ATTACKERS_INTERVAL;
+                   _attackersCheckTimer.Start();
+                }
             }
+
+            long until = GameLoop.GameLoopTime + 5000; // Use interrupt duration instead?
+            Attackers.AddOrUpdate(target, until, (key, oldValue) => until);
+        }
+
+        private int CheckAttackers(ECSGameTimer timer)
+        {
+            foreach (var pair in Attackers)
+            {
+                if (pair.Value < GameLoop.GameLoopTime)
+                    Attackers.TryRemove(pair);
+            }
+
+            return Attackers.IsEmpty ? 0 : CHECK_ATTACKERS_INTERVAL;
         }
 
         /// <summary>
-        /// Removes an attacker from the list
-        /// </summary>
-        /// <param name="attacker">the attacker to remove</param>
-        public void RemoveAttacker(GameObject attacker)
-        {
-            //			log.Warn(Name + ": RemoveAttacker "+attacker.Name);
-            //			log.Error(Environment.StackTrace);
-            lock (Attackers)
-            {
-                m_attackers.Remove(attacker);
-
-                //if (m_attackers.Count() == 0)
-                //    EntityManager.RemoveComponent(typeof(AttackComponent), owner);
-            }
-        }
-
-        /// <summary>
-        /// The target that was passed when 'StartAttackReqest' was called and the request accepted.
+        /// The target that was passed when 'StartAttackRequest' was called and the request accepted.
         /// </summary>
         private GameObject m_startAttackTarget;
 
@@ -93,6 +86,7 @@ namespace DOL.GS
         public AttackComponent(GameLiving owner)
         {
             this.owner = owner;
+            _attackersCheckTimer = new(owner, CheckAttackers);
         }
 
         public void Tick(long time)
@@ -1223,9 +1217,6 @@ namespace DOL.GS
                 return ad;
             }
 
-            // Add ourself to the target's attackers list. Should be done before any enemy reaction for accurate calculation.
-            ad.Target.attackComponent.AddAttacker(owner);
-
             // Calculate our attack result and attack damage.
             ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(action, ad, weapon);
 
@@ -1851,7 +1842,7 @@ namespace DOL.GS
 
         public virtual bool CheckBlock(AttackData ad, double attackerConLevel)
         {
-            double blockChance = owner.TryBlock(ad, attackerConLevel, m_attackers.Count);
+            double blockChance = owner.TryBlock(ad, attackerConLevel, Attackers.Count);
             ad.BlockChance = blockChance;
             double blockRoll;
 
@@ -1933,8 +1924,8 @@ namespace DOL.GS
                     guardChance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
             }
 
-            if (m_attackers.Count > shieldSize)
-                guardChance *= shieldSize / (double) m_attackers.Count;
+            if (Attackers.Count > shieldSize)
+                guardChance *= shieldSize / (double) Attackers.Count;
 
             // Reduce chance by attacker's defense penetration.
             guardChance *= 1 - ad.Attacker.GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100;
@@ -2018,8 +2009,8 @@ namespace DOL.GS
                 if (leftHand != null)
                     shieldSize = leftHand.Type_Damage;
 
-                if (m_attackers.Count > shieldSize)
-                    guardchance *= shieldSize / (double) m_attackers.Count;
+                if (Attackers.Count > shieldSize)
+                    guardchance *= shieldSize / (double) Attackers.Count;
 
                 if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
                     guardchance /= 2;
@@ -2036,8 +2027,8 @@ namespace DOL.GS
                     else if (parrychance < 0.01)
                         parrychance = 0.01;
 
-                    if (m_attackers.Count > 1)
-                        parrychance /= m_attackers.Count / 2;
+                    if (Attackers.Count > 1)
+                        parrychance /= Attackers.Count / 2;
                 }
 
                 if (Util.ChanceDouble(guardchance))
@@ -2067,8 +2058,8 @@ namespace DOL.GS
                     else if (parrychance < 0.01)
                         parrychance = 0.01;
 
-                    if (m_attackers.Count > 1)
-                        parrychance /= m_attackers.Count / 2;
+                    if (Attackers.Count > 1)
+                        parrychance /= Attackers.Count / 2;
                 }
 
                 if (Util.ChanceDouble(parrychance))
@@ -2208,7 +2199,7 @@ namespace DOL.GS
                 if (lastAttackData != null && lastAttackData.AttackResult != eAttackResult.HitStyle)
                     lastAttackData = null;
 
-                double evadeChance = owner.TryEvade(ad, lastAttackData, attackerConLevel, m_attackers.Count);
+                double evadeChance = owner.TryEvade(ad, lastAttackData, attackerConLevel, Attackers.Count);
                 ad.EvadeChance = evadeChance;
                 double evadeRoll;
 
@@ -2231,7 +2222,7 @@ namespace DOL.GS
 
                 if (ad.IsMeleeAttack)
                 {
-                    double parryChance = owner.TryParry(ad, lastAttackData, attackerConLevel, m_attackers.Count);
+                    double parryChance = owner.TryParry(ad, lastAttackData, attackerConLevel, Attackers.Count);
                     ad.ParryChance = parryChance;
                     double parryRoll;
 

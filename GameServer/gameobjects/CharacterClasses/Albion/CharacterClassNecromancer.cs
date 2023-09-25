@@ -1,30 +1,7 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Collections.Generic;
-
-using DOL.GS;
-using DOL.GS.Spells;
-using DOL.GS.PacketHandler;
-using DOL.Events;
-using DOL.GS.Effects;
 using DOL.AI.Brain;
+using DOL.Events;
+using DOL.GS.PacketHandler;
 using DOL.GS.PlayerClass;
 
 namespace DOL.GS
@@ -147,23 +124,17 @@ namespace DOL.GS
 				if (Player.ControlledBrain != null && Player.ControlledBrain.Body != null)
 				{
 					GameNPC pet = Player.ControlledBrain.Body;
-					List<GameObject> attackerList;
-					lock (Player.attackComponent.Attackers)
-						attackerList = new List<GameObject>(Player.attackComponent.Attackers);
 
-					foreach (GameObject obj in attackerList)
+					foreach (GameObject attacker in Player.attackComponent.Attackers.Keys)
 					{
-						if (obj is GameNPC)
+						if (attacker is GameNPC npcAttacker)
 						{
-							GameNPC npc = (GameNPC) obj;
-							if (npc.TargetObject == Player && npc.attackComponent.AttackState)
+							if (npcAttacker.TargetObject == Player && npcAttacker.attackComponent.AttackState)
 							{
-								IOldAggressiveBrain brain = npc.Brain as IOldAggressiveBrain;
-								if (brain != null)
+								if (npcAttacker.Brain is IOldAggressiveBrain npcAttackerBrain)
 								{
-									npc.attackComponent.AddAttacker(pet);
-									npc.StopAttack();
-									brain.AddToAggroList(pet, (int) (brain.GetAggroAmountForLiving(Player) + 1));
+									npcAttacker.StopAttack();
+									npcAttackerBrain.AddToAggroList(pet, (int) (npcAttackerBrain.GetAggroAmountForLiving(Player) + 1));
 								}
 							}
 						}

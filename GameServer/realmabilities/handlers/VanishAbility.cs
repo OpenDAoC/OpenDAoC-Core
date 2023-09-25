@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
 using DOL.GS.Spells;
-using System.Collections.Generic;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -68,26 +65,23 @@ namespace DOL.GS.RealmAbilities
 				}
 			}
 
-			var attackers = new List<GameObject>();
-			lock (living.attackComponent.Attackers)
-				attackers.AddRange(living.attackComponent.Attackers);
-			foreach (GameLiving attacker in attackers)
+			foreach (GameObject attacker in living.attackComponent.Attackers.Keys)
 			{
-				if (attacker.TargetObject == living)
+				if (attacker is not GameLiving livingAttacker)
+					continue;
+
+				if (livingAttacker.TargetObject == living)
 				{
-					attacker.TargetObject = null;
-					if (attacker is GamePlayer)
+					livingAttacker.TargetObject = null;
+
+					if (attacker is GamePlayer attackerPlayer)
+						attackerPlayer.Out.SendChangeTarget(null);
+					else if (attacker is GameNPC npcAttacker)
 					{
-						((GamePlayer)attacker).Out.SendChangeTarget(attacker.TargetObject);
-					}
-					if (attacker is GameNPC)
-					{
-						GameNPC npc = (GameNPC)attacker;
-						if (npc.Brain is IOldAggressiveBrain)
-						{
-							((IOldAggressiveBrain)npc.Brain).RemoveFromAggroList(living);
-						}
-						attacker.attackComponent.StopAttack();
+						if (npcAttacker.Brain is IOldAggressiveBrain npcAttackerBrain)
+							npcAttackerBrain.RemoveFromAggroList(living);
+
+						npcAttacker.attackComponent.StopAttack();
 					}
 				}
 			}

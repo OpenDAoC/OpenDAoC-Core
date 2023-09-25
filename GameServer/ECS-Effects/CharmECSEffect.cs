@@ -109,17 +109,14 @@ namespace DOL.GS
                 }
 
                 // remove NPC with new brain from all attackers aggro list
-                lock (charmMob.attackComponent.Attackers)
+                foreach (GameLiving attacker in charmMob.attackComponent.Attackers.Keys)
                 {
-                    foreach (GameObject attacker in charmMob.attackComponent.Attackers)
+                    if (attacker is GameNPC npcAttacker && npcAttacker.Brain is IOldAggressiveBrain aggressiveBrain)
                     {
-                        if (attacker is GameNPC npcAttacker && npcAttacker.Brain is IOldAggressiveBrain aggressiveBrain)
-                        {
-                            aggressiveBrain.RemoveFromAggroList(charmMob);
-                            aggressiveBrain.AddToAggroList(casterPlayer, casterPlayer.Level * 10);
-                            npcAttacker.StartAttack(casterPlayer);
-                            npcAttacker.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-                        }
+                        aggressiveBrain.RemoveFromAggroList(charmMob);
+                        aggressiveBrain.AddToAggroList(casterPlayer, casterPlayer.Level * 10);
+                        npcAttacker.StartAttack(casterPlayer);
+                        npcAttacker.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
                     }
                 }
 
