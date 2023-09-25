@@ -7,7 +7,6 @@ namespace DOL.Database
 {
 	[DataTable(TableName = "ItemTemplate", PreCache = true)]
 	public class DbItemTemplate : DataObject
-		
 	{
 		/// <summary>
 		/// Dirty flag is normally not working for itemtemplate

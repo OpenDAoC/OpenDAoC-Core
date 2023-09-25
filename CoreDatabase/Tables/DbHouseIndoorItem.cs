@@ -1,172 +1,169 @@
 using DOL.Database.Attributes;
 
-namespace DOL
+namespace DOL.Database
 {
-	namespace Database
+	[DataTable(TableName="DBIndoorItem")]
+	public class DbHouseIndoorItem : DataObject
 	{
-		[DataTable(TableName="DBIndoorItem")]
-		public class DbHouseIndoorItem : DataObject
+		//important data
+		private int m_housenumber;
+		private int m_model;
+		private int m_position;
+		private int m_placemode;
+		private int m_xpos;
+		private int m_ypos;
+		private string m_baseitemid;
+		//"can-be-null" data (well, i dont know if size can be 0)
+		private int m_color;
+		private int m_emblem;
+		private int m_rotation;
+		private int m_size;
+
+		public DbHouseIndoorItem()
 		{
-			//important data
-			private int m_housenumber;
-			private int m_model;
-			private int m_position;
-			private int m_placemode;
-			private int m_xpos;
-			private int m_ypos;
-			private string m_baseitemid;
-			//"can-be-null" data (well, i dont know if size can be 0)
-			private int m_color;
-			private int m_emblem;
-			private int m_rotation;
-			private int m_size;
+		}
 
-			public DbHouseIndoorItem()
+		[DataElement(AllowDbNull=false, Index=true)]
+		public int HouseNumber
+		{
+			get
 			{
+				return m_housenumber;
 			}
-
-			[DataElement(AllowDbNull=false, Index=true)]
-			public int HouseNumber
+			set
 			{
-				get
-				{
-					return m_housenumber;
-				}
-				set
-				{
-					Dirty = true;
-					m_housenumber = value;
-				}
+				Dirty = true;
+				m_housenumber = value;
 			}
-			[DataElement(AllowDbNull=false)]
-			public int Model
+		}
+		[DataElement(AllowDbNull=false)]
+		public int Model
+		{
+			get
 			{
-				get
-				{
-					return m_model;
-				}
-				set
-				{
-					Dirty = true;
-					m_model = value;
-				}
+				return m_model;
 			}
-			[DataElement(AllowDbNull=false)]
-			public int Position
+			set
 			{
-				get
-				{
-					return m_position;
-				}
-				set
-				{
-					Dirty = true;
-					m_position = value;
-				}
+				Dirty = true;
+				m_model = value;
 			}
-			[DataElement(AllowDbNull=false)]
-			public int Placemode
+		}
+		[DataElement(AllowDbNull=false)]
+		public int Position
+		{
+			get
 			{
-				get
-				{
-					return m_placemode;
-				}
-				set
-				{
-					Dirty = true;
-					m_placemode = value;
-				}
+				return m_position;
 			}
-			[DataElement(AllowDbNull=false)]
-			public int X
+			set
 			{
-				get
-				{
-					return m_xpos;
-				}
-				set
-				{
-					Dirty = true;
-					m_xpos = value;
-				}
+				Dirty = true;
+				m_position = value;
 			}
-			[DataElement(AllowDbNull=false)]
-			public int Y
+		}
+		[DataElement(AllowDbNull=false)]
+		public int Placemode
+		{
+			get
 			{
-				get
-				{
-					return m_ypos;
-				}
-				set
-				{
-					Dirty = true;
-					m_ypos = value;
-				}
+				return m_placemode;
 			}
-			[DataElement(AllowDbNull=false)]
-			public string BaseItemID
+			set
 			{
-				get
-				{
-					return m_baseitemid;
-				}
-				set
-				{
-					Dirty = true;
-					m_baseitemid = value;
-				}
+				Dirty = true;
+				m_placemode = value;
 			}
-			[DataElement(AllowDbNull= false)]
-			public int Color
+		}
+		[DataElement(AllowDbNull=false)]
+		public int X
+		{
+			get
 			{
-				get
-				{
-					return m_color;
-				}
-				set
-				{
-					Dirty = true;
-					m_color = value;
-				}
+				return m_xpos;
 			}
-			[DataElement(AllowDbNull = false)]
-			public int Emblem
+			set
 			{
-				get
-				{
-					return m_emblem;
-				}
-				set
-				{
-					Dirty = true;
-					m_emblem = value;
-				}
+				Dirty = true;
+				m_xpos = value;
 			}
-			[DataElement(AllowDbNull= false)]
-			public int Rotation
+		}
+		[DataElement(AllowDbNull=false)]
+		public int Y
+		{
+			get
 			{
-				get
-				{
-					return m_rotation;
-				}
-				set
-				{
-					Dirty = true;
-					m_rotation = value;
-				}
+				return m_ypos;
 			}
-			[DataElement(AllowDbNull= false)]
-			public int Size
+			set
 			{
-				get
-				{
-					return m_size;
-				}
-				set
-				{
-					Dirty = true;
-					m_size = value;
-				}
+				Dirty = true;
+				m_ypos = value;
+			}
+		}
+		[DataElement(AllowDbNull=false)]
+		public string BaseItemID
+		{
+			get
+			{
+				return m_baseitemid;
+			}
+			set
+			{
+				Dirty = true;
+				m_baseitemid = value;
+			}
+		}
+		[DataElement(AllowDbNull= false)]
+		public int Color
+		{
+			get
+			{
+				return m_color;
+			}
+			set
+			{
+				Dirty = true;
+				m_color = value;
+			}
+		}
+		[DataElement(AllowDbNull = false)]
+		public int Emblem
+		{
+			get
+			{
+				return m_emblem;
+			}
+			set
+			{
+				Dirty = true;
+				m_emblem = value;
+			}
+		}
+		[DataElement(AllowDbNull= false)]
+		public int Rotation
+		{
+			get
+			{
+				return m_rotation;
+			}
+			set
+			{
+				Dirty = true;
+				m_rotation = value;
+			}
+		}
+		[DataElement(AllowDbNull= false)]
+		public int Size
+		{
+			get
+			{
+				return m_size;
+			}
+			set
+			{
+				Dirty = true;
+				m_size = value;
 			}
 		}
 	}

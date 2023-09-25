@@ -1,3 +1,5 @@
+using DOL.Database;
+
 namespace DOL.GS
 {
 	public class TheurgistPet : GameSummonedPet

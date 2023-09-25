@@ -18,6 +18,7 @@
  */
 
 using DOL.AI.Brain;
+using DOL.Database;
 
 namespace DOL.GS
 {

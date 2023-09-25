@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-
 using DOL.Database.Attributes;
 
 namespace DOL.Database

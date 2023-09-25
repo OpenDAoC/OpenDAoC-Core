@@ -1,56 +1,53 @@
 using DOL.Database.Attributes;
 
-namespace DOL
+namespace DOL.Database
 {
-	namespace Database
+	/// <summary>
+	/// List of characters and the one time drops they have received.
+	/// </summary>
+	[DataTable(TableName="CharacterXOneTimeDrop")]
+	public class DbCharacterXOneTimeDrop : DataObject
 	{
-		/// <summary>
-		/// List of characters and the one time drops they have received.
-		/// </summary>
-		[DataTable(TableName="CharacterXOneTimeDrop")]
-		public class DbCharacterXOneTimeDrop : DataObject
+		private string m_characterID;
+		private string m_itemTemplateID;
+
+		public DbCharacterXOneTimeDrop()
 		{
-			private string m_characterID;
-			private string m_itemTemplateID;
+			m_itemTemplateID = string.Empty;
+			m_characterID = string.Empty;
+		}
 
-			public DbCharacterXOneTimeDrop()
+		/// <summary>
+		/// The DOLCharacters_ID of the player who gets the drop
+		/// </summary>
+		[DataElement(AllowDbNull = false, Varchar = 100, Index = true)]
+		public string CharacterID
+		{
+			get
 			{
-				m_itemTemplateID = string.Empty;
-				m_characterID = string.Empty;
+				return m_characterID;
 			}
-
-			/// <summary>
-			/// The DOLCharacters_ID of the player who gets the drop
-			/// </summary>
-			[DataElement(AllowDbNull = false, Varchar = 100, Index = true)]
-			public string CharacterID
+			set
 			{
-				get
-				{
-					return m_characterID;
-				}
-				set
-				{
-					Dirty = true;
-					m_characterID = value;
-				}
+				Dirty = true;
+				m_characterID = value;
 			}
+		}
 
-			/// <summary>
-			/// The item id_nb that was dropped
-			/// </summary>
-			[DataElement(AllowDbNull = false, Varchar = 100, Index = true)]
-			public string ItemTemplateID
+		/// <summary>
+		/// The item id_nb that was dropped
+		/// </summary>
+		[DataElement(AllowDbNull = false, Varchar = 100, Index = true)]
+		public string ItemTemplateID
+		{
+			get
 			{
-				get
-				{
-					return m_itemTemplateID;
-				}
-				set
-				{
-					Dirty = true;
-					m_itemTemplateID = value;
-				}
+				return m_itemTemplateID;
+			}
+			set
+			{
+				Dirty = true;
+				m_itemTemplateID = value;
 			}
 		}
 	}

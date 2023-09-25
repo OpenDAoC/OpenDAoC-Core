@@ -1,112 +1,109 @@
 using DOL.Database.Attributes;
 
-namespace DOL
+namespace DOL.Database
 {
-	namespace Database
+	/// <summary>
+	/// Crafted item table
+	/// </summary>
+	[DataTable(TableName="CraftedItem")]
+	public class DbCraftedItem : DataObject
 	{
+		private string m_craftedItemID;
+		private int m_craftinglevel;
+		private string m_id_nb;
+		private int m_craftingSkillType;
+		private bool m_makeTemplated;
+
 		/// <summary>
-		/// Crafted item table
+		/// Create an crafted item
 		/// </summary>
-		[DataTable(TableName="CraftedItem")]
-		public class DbCraftedItem : DataObject
+		public DbCraftedItem()
 		{
-			private string m_craftedItemID;
-			private int m_craftinglevel;
-			private string m_id_nb;
-			private int m_craftingSkillType;
-			private bool m_makeTemplated;
+			AllowAdd=false;
+		}
 
-			/// <summary>
-			/// Create an crafted item
-			/// </summary>
-			public DbCraftedItem()
+		/// <summary>
+		/// Crafting id of item to craft
+		/// </summary>
+		[PrimaryKey]
+		public string CraftedItemID
+		{
+			get
 			{
-				AllowAdd=false;
+				return m_craftedItemID;
 			}
+			set
+			{
+				Dirty = true;
+				m_craftedItemID = value;
+			}
+		}
 
-			/// <summary>
-			/// Crafting id of item to craft
-			/// </summary>
-			[PrimaryKey]
-			public string CraftedItemID
+		/// <summary>
+		/// Index of item to craft
+		/// </summary>
+		[DataElement(AllowDbNull=false, Index=true)]
+		public string Id_nb
+		{
+			get
 			{
-				get
-				{
-					return m_craftedItemID;
-				}
-				set
-				{
-					Dirty = true;
-					m_craftedItemID = value;
-				}
+				return m_id_nb;
 			}
+			set
+			{
+				Dirty = true;
+				m_id_nb = value;
+			}
+		}
 
-			/// <summary>
-			/// Index of item to craft
-			/// </summary>
-			[DataElement(AllowDbNull=false, Index=true)]
-			public string Id_nb
+		/// <summary>
+		/// Crafting level of this item
+		/// </summary>
+		[DataElement(AllowDbNull=false,Unique=false)]
+		public int CraftingLevel
+		{
+			get
 			{
-				get
-				{
-					return m_id_nb;
-				}
-				set
-				{
-					Dirty = true;
-					m_id_nb = value;
-				}
+				return m_craftinglevel;
 			}
-
-			/// <summary>
-			/// Crafting level of this item
-			/// </summary>
-			[DataElement(AllowDbNull=false,Unique=false)]
-			public int CraftingLevel
+			set
 			{
-				get
-				{
-					return m_craftinglevel;
-				}
-				set
-				{
-					Dirty = true;
-					m_craftinglevel = value;
-				}
+				Dirty = true;
+				m_craftinglevel = value;
 			}
+		}
 			
-			/// <summary>
-			/// Crafting skill needed to craft this item
-			/// </summary>
-			[DataElement(AllowDbNull=false)]
-			public int CraftingSkillType
+		/// <summary>
+		/// Crafting skill needed to craft this item
+		/// </summary>
+		[DataElement(AllowDbNull=false)]
+		public int CraftingSkillType
+		{
+			get
 			{
-				get
-				{
-					return m_craftingSkillType;
-				}
-				set
-				{
-					Dirty = true;
-					m_craftingSkillType = value;
-				}
+				return m_craftingSkillType;
 			}
-
-			/// <summary>
-			/// Do we create a templated item or do we create an ItemUnique?
-			/// </summary>
-			[DataElement(AllowDbNull = false)]
-			public bool MakeTemplated
+			set
 			{
-				get
-				{
-					return m_makeTemplated;
-				}
-				set
-				{
-					Dirty = true;
-					m_makeTemplated = value;
-				}
+				Dirty = true;
+				m_craftingSkillType = value;
+			}
+		}
+
+		/// <summary>
+		/// Do we create a templated item or do we create an ItemUnique?
+		/// </summary>
+		[DataElement(AllowDbNull = false)]
+		public bool MakeTemplated
+		{
+			get
+			{
+				return m_makeTemplated;
+			}
+			set
+			{
+				Dirty = true;
+				m_makeTemplated = value;
 			}
 		}
 	}

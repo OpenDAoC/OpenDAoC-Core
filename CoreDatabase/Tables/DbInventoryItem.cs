@@ -1,7 +1,7 @@
 using System;
+using System.Reflection;
 using DOL.Database.Attributes;
 using log4net;
-using System.Reflection;
 
 namespace DOL.Database
 {

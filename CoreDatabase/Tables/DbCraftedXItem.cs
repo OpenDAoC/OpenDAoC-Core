@@ -1,76 +1,73 @@
 using DOL.Database.Attributes;
 
-namespace DOL
+namespace DOL.Database
 {
-	namespace Database
+	/// <summary>
+	/// raw materials for craft item
+	/// </summary>
+	[DataTable(TableName="CraftedXItem")]
+	public class DbCraftedXItem : DataObject
 	{
+		private string m_ingredientId_nb;
+		private int m_count;
+		private string m_craftedItemId_nb;
+
 		/// <summary>
-		/// raw materials for craft item
+		/// create a raw material
 		/// </summary>
-		[DataTable(TableName="CraftedXItem")]
-		public class DbCraftedXItem : DataObject
+		public DbCraftedXItem()
 		{
-			private string m_ingredientId_nb;
-			private int m_count;
-			private string m_craftedItemId_nb;
+			AllowAdd=false;
+		}
 
-			/// <summary>
-			/// create a raw material
-			/// </summary>
-			public DbCraftedXItem()
+		/// <summary>
+		/// the index
+		/// </summary>
+		[DataElement(AllowDbNull=false, Index=true)]
+		public string CraftedItemId_nb
+		{
+			get
 			{
-				AllowAdd=false;
+				return m_craftedItemId_nb;
 			}
-
-			/// <summary>
-			/// the index
-			/// </summary>
-			[DataElement(AllowDbNull=false, Index=true)]
-			public string CraftedItemId_nb
+			set
 			{
-				get
-				{
-					return m_craftedItemId_nb;
-				}
-				set
-				{
-					Dirty = true;
-					m_craftedItemId_nb = value;
-				}
+				Dirty = true;
+				m_craftedItemId_nb = value;
 			}
+		}
 
-			/// <summary>
-			/// the raw material used to craft
-			/// </summary>
-			[DataElement(AllowDbNull=false)]
-			public string IngredientId_nb
+		/// <summary>
+		/// the raw material used to craft
+		/// </summary>
+		[DataElement(AllowDbNull=false)]
+		public string IngredientId_nb
+		{
+			get
 			{
-				get
-				{
-					return m_ingredientId_nb;
-				}
-				set
-				{
-					Dirty = true;
-					m_ingredientId_nb = value;
-				}
+				return m_ingredientId_nb;
 			}
-
-			/// <summary>
-			/// The count of the raw material to use
-			/// </summary>
-			[DataElement(AllowDbNull=false)]
-			public int Count
+			set
 			{
-				get
-				{
-					return m_count;
-				}
-				set
-				{
-					Dirty = true;
-					m_count = value;
-				}
+				Dirty = true;
+				m_ingredientId_nb = value;
+			}
+		}
+
+		/// <summary>
+		/// The count of the raw material to use
+		/// </summary>
+		[DataElement(AllowDbNull=false)]
+		public int Count
+		{
+			get
+			{
+				return m_count;
+			}
+			set
+			{
+				Dirty = true;
+				m_count = value;
 			}
 		}
 	}

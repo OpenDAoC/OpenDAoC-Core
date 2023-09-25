@@ -1,76 +1,73 @@
 using DOL.Database.Attributes;
 
-namespace DOL
+namespace DOL.Database
 {
-	namespace Database
+	[DataTable(TableName="MerchantItem")]
+	public class DbMerchantItem : DataObject
 	{
-		[DataTable(TableName="MerchantItem")]
-		public class DbMerchantItem : DataObject
+		private string		m_item_list_ID;
+		private string		m_id_nb;
+		private int			m_page_number;
+		private int			m_slot_pos;
+
+
+		public DbMerchantItem()
 		{
-			private string		m_item_list_ID;
-			private string		m_id_nb;
-			private int			m_page_number;
-			private int			m_slot_pos;
+		}
 
-
-			public DbMerchantItem()
+		[DataElement(AllowDbNull=false, Index=true)]
+		public string ItemListID
+		{
+			get
 			{
+				return m_item_list_ID;
 			}
-
-			[DataElement(AllowDbNull=false, Index=true)]
-			public string ItemListID
+			set
 			{
-				get
-				{
-					return m_item_list_ID;
-				}
-				set
-				{
-					Dirty = true;
-					m_item_list_ID = value;
-				}
+				Dirty = true;
+				m_item_list_ID = value;
 			}
+		}
 
-			[DataElement(AllowDbNull=false)]
-			public string ItemTemplateID
+		[DataElement(AllowDbNull=false)]
+		public string ItemTemplateID
+		{
+			get
 			{
-				get
-				{
-					return m_id_nb;
-				}
-				set
-				{
-					Dirty = true;
-					m_id_nb = value;
-				}
+				return m_id_nb;
 			}
-
-			[DataElement(AllowDbNull=false, Index=true)]
-			public int PageNumber
+			set
 			{
-				get
-				{
-					return m_page_number;
-				}
-				set
-				{
-					Dirty = true;
-					m_page_number = value;
-				}
+				Dirty = true;
+				m_id_nb = value;
 			}
+		}
 
-			[DataElement(AllowDbNull=false, Index=true)]
-			public int SlotPosition
+		[DataElement(AllowDbNull=false, Index=true)]
+		public int PageNumber
+		{
+			get
 			{
-				get
-				{
-					return m_slot_pos;
-				}
-				set
-				{
-					Dirty = true;
-					m_slot_pos = value;
-				}
+				return m_page_number;
+			}
+			set
+			{
+				Dirty = true;
+				m_page_number = value;
+			}
+		}
+
+		[DataElement(AllowDbNull=false, Index=true)]
+		public int SlotPosition
+		{
+			get
+			{
+				return m_slot_pos;
+			}
+			set
+			{
+				Dirty = true;
+				m_slot_pos = value;
 			}
 		}
 	}
