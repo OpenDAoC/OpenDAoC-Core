@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -202,32 +183,24 @@ namespace DOL.GS.Spells
 
 				//Lifeflight add this should make it so players who have been ressurected don't take damage for 5 seconds
 				RezDmgImmunityEffect rezImmune = new RezDmgImmunityEffect();
-                rezImmune.Start(player);
+				rezImmune.Start(player);
 
-				IList<GameObject> attackers;
-				lock (player.attackComponent.Attackers) { attackers = new List<GameObject>(player.attackComponent.Attackers); }
-
-				foreach (GameObject attacker in attackers)
+				foreach (GameObject attacker in player.attackComponent.Attackers.Keys)
 				{
 					if (attacker is GameLiving && attacker != living.TargetObject)
-						attacker.Notify(
-							GameLivingEvent.EnemyHealed,
-							attacker,
-							new EnemyHealedEventArgs(living, m_caster, eHealthChangeType.Spell, living.Health));
+						attacker.Notify(GameLivingEvent.EnemyHealed, attacker, new EnemyHealedEventArgs(living, m_caster, eHealthChangeType.Spell, living.Health));
 				}
 
-				GamePlayer casterPlayer = Caster as GamePlayer;
-				if (casterPlayer != null)
+				if (Caster is GamePlayer playerCaster)
 				{
 					long rezRps = player.LastDeathRealmPoints * (Spell.ResurrectHealth + 50) / 1000;
+
 					if (rezRps > 0)
-					{
-						casterPlayer.GainRealmPoints(rezRps);
-					}
+						playerCaster.GainRealmPoints(rezRps);
 					else
 					{
-						casterPlayer.Out.SendMessage("The player you resurrected was not worth realm points on death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-						casterPlayer.Out.SendMessage("You thus get no realm points for the resurrect.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						playerCaster.Out.SendMessage("The player you resurrected was not worth realm points on death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						playerCaster.Out.SendMessage("You thus get no realm points for the resurrect.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					}
 				}
 			}

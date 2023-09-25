@@ -7145,23 +7145,16 @@ namespace DOL.GS
             {
                 foreach (GamePlayer player in Group.GetPlayersInTheGroup())
                 {
-                    if (player == this) continue;
-                    if (enemy.attackComponent.Attackers.Contains(player)) continue;
-                    if (this.IsWithinRadius(player, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-                    {
+                    if (player == this)
+                        continue;
+
+                    if (enemy.attackComponent.Attackers.ContainsKey(player))
+                        continue;
+
+                    if (IsWithinRadius(player, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                         Notify(GameLivingEvent.EnemyKilled, player, new EnemyKilledEventArgs(enemy));
-                    }
-
-                    if (player.attackComponent.Attackers.Contains(enemy))
-                        player.attackComponent.RemoveAttacker(enemy);
-
-                    if (player.ControlledBrain != null && player.ControlledBrain.Body.attackComponent.Attackers.Contains(enemy))
-                        player.ControlledBrain.Body.attackComponent.RemoveAttacker(enemy);
                 }
             }
-
-            if (ControlledBrain != null && ControlledBrain.Body.attackComponent.Attackers.Contains(enemy))
-                ControlledBrain.Body.attackComponent.RemoveAttacker(enemy);
 
             if (CurrentZone.IsRvR)
             {

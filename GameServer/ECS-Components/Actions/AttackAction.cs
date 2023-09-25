@@ -103,21 +103,11 @@ namespace DOL.GS
 
         protected virtual bool CheckAttackState()
         {
-            if (_owner.ObjectState != eObjectState.Active)
-            {
-                _attackComponent.attackAction?.CleanUp();
-                return false;
-            }
+            _lastAttackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
 
-            _attackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
-
-            if (!_attackComponent.AttackState)
+            if (!_attackComponent.AttackState || _owner.ObjectState != eObjectState.Active)
             {
                 _owner.TempProperties.RemoveProperty(LAST_ATTACK_DATA);
-
-                if (_attackData?.Target != null)
-                    _attackData.Target.attackComponent.RemoveAttacker(_owner);
-
                 _attackComponent.attackAction.CleanUp();
                 return false;
             }
@@ -140,16 +130,16 @@ namespace DOL.GS
         {
             bool clearOldStyles = false;
 
-            if (_attackData != null)
+            if (_lastAttackData != null)
             {
-                switch (_attackData.AttackResult)
+                switch (_lastAttackData.AttackResult)
                 {
                     case eAttackResult.Fumbled:
                     {
                         // Skip this attack if the last one fumbled.
                         _styleComponent.NextCombatStyle = null;
                         _styleComponent.NextCombatBackupStyle = null;
-                        _attackData.AttackResult = eAttackResult.Missed;
+                        _lastAttackData.AttackResult = eAttackResult.Missed;
                         _interval = _attackComponent.AttackSpeed(_weapon) * 2;
                         return false;
                     }
@@ -301,7 +291,7 @@ namespace DOL.GS
         {
             _attackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _leftWeapon, _effectiveness, _interruptDuration, _combatStyle);
             _attackComponent.weaponAction.Execute();
-            _attackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
+            _lastAttackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
         }
 
         protected virtual void PerformRangedAttack()
@@ -322,14 +312,14 @@ namespace DOL.GS
             else
                 _attackComponent.weaponAction.Execute();
 
-            _attackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
+            _lastAttackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
         }
 
         protected virtual bool FinalizeMeleeAttack()
         {
             // Melee weapons tick every TICK_INTERVAL_FOR_NON_ATTACK if they didn't attack.
-            if (_attackData != null &&
-                _attackData.AttackResult is not eAttackResult.Missed
+            if (_lastAttackData != null &&
+                _lastAttackData.AttackResult is not eAttackResult.Missed
                 and not eAttackResult.HitUnstyled
                 and not eAttackResult.HitStyle
                 and not eAttackResult.Evaded

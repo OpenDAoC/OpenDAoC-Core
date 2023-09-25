@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 
@@ -351,7 +350,7 @@ namespace DOL.GS.Spells
 
             var attackers = target.attackComponent.Attackers;
 
-            foreach (var gain in attackers.ToList())
+            foreach (var gain in attackers.Keys)
             {
                 if (gain is GameNPC npc)
                 {
@@ -373,8 +372,6 @@ namespace DOL.GS.Spells
                     npc.AddXPGainer(Caster, ad.Damage);
                 }
             }
-            
-            
 
             return true;
         }

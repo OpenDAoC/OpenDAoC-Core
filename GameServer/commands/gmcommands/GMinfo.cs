@@ -299,12 +299,12 @@ namespace DOL.GS.Commands
 						}
 					}
 
-					if (target.attackComponent.Attackers != null && target.attackComponent.Attackers.Count > 0)
+					if (target.attackComponent.Attackers != null && !target.attackComponent.Attackers.IsEmpty)
 					{
 						info.Add("");
 						info.Add("Attacker List:");
 
-						foreach (GameLiving attacker in target.attackComponent.Attackers)
+						foreach (GameObject attacker in target.attackComponent.Attackers.Keys)
 							info.Add(attacker.Name);
 					}
 
@@ -316,7 +316,7 @@ namespace DOL.GS.Commands
 						foreach (IGameEffect effect in target.EffectList)
 							info.Add(effect.Name + " remaining " + effect.RemainingTime);
 					}
-										
+
 					info.Add("");
 					info.Add(" + Loot:");
 

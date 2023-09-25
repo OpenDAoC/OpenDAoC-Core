@@ -60,7 +60,7 @@ namespace DOL.GS
         public long StartTick { get; set; }
         public long NextTick => StartTick + Interval;
         public bool IsAlive { get; set; }
-        public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
+        public int TimeUntilElapsed => (int) (StartTick + Interval - AuxGameLoop.GameLoopTime);
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.AuxTimer, false);
         private PropertyCollection _properties;
 

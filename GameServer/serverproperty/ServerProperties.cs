@@ -993,7 +993,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// The highest possible Block Rate against an Enemy (Hard Cap)
 		/// </summary>
-		[ServerProperty("rates", "block_cap", "Block Rate Cap Modifier - Edit this to change the highest possible block rate against an enemy (Hard Cap) in game e.g .60 = 60%", 0.60)]
+		[ServerProperty("rates", "block_cap", "Block Rate Cap Modifier - Edit this to change the highest possible block rate against an enemy (Hard Cap) in game e.g .60 = 60%", 1.00)]
 		public static double BLOCK_CAP;
 
 		///<summary>

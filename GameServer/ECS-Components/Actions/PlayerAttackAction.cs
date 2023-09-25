@@ -15,17 +15,15 @@ namespace DOL.GS
 
         public override bool CheckInterruptTimer()
         {
-            if (_playerOwner.attackComponent.Attackers.Count <= 0)
+            if (_playerOwner.attackComponent.Attackers.IsEmpty)
                 return false;
-
-            GameObject attacker = _playerOwner.attackComponent.Attackers.Last();
 
             // Don't interrupt aiming if we haven't received an interrupt timer.
             if (!_playerOwner.IsBeingInterrupted)
                 return false;
 
             _playerOwner.attackComponent.StopAttack();
-            OnAimInterrupt(attacker);
+            OnAimInterrupt(_playerOwner.LastInterrupter);
             return true;
         }
 

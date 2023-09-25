@@ -119,7 +119,6 @@ namespace DOL.GS
         {
             StartTick = GameLoop.GameLoopTime;
             Interval = interval;
-            IsAlive = true;
 
             if (EntityManager.Add(this))
                 IsAlive = true;
