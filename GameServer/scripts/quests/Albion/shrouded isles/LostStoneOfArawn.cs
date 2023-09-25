@@ -29,9 +29,9 @@ public class LostStoneofArawn : BaseQuest
 
     private static AbstractArea demonArea;
 
-    private static ItemTemplate ancient_copper_necklace;
-    private static ItemTemplate scroll_wearyall_loststone;
-    private static ItemTemplate lost_stone_of_arawn;
+    private static DbItemTemplate ancient_copper_necklace;
+    private static DbItemTemplate scroll_wearyall_loststone;
+    private static DbItemTemplate lost_stone_of_arawn;
 
     // Constructors
     public LostStoneofArawn()
@@ -46,7 +46,7 @@ public class LostStoneofArawn : BaseQuest
     {
     }
 
-    public LostStoneofArawn(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+    public LostStoneofArawn(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
     {
     }
 
@@ -194,15 +194,15 @@ public class LostStoneofArawn : BaseQuest
 
         #region defineItems
 
-        ancient_copper_necklace = GameServer.Database.FindObjectByKey<ItemTemplate>("ancient_copper_necklace");
+        ancient_copper_necklace = GameServer.Database.FindObjectByKey<DbItemTemplate>("ancient_copper_necklace");
 
 
-        scroll_wearyall_loststone = GameServer.Database.FindObjectByKey<ItemTemplate>("scroll_wearyall_loststone");
+        scroll_wearyall_loststone = GameServer.Database.FindObjectByKey<DbItemTemplate>("scroll_wearyall_loststone");
         if (scroll_wearyall_loststone == null)
         {
             if (log.IsWarnEnabled)
                 log.Warn("Could not find Victory Speech for Albion, creating it ...");
-            scroll_wearyall_loststone = new ItemTemplate();
+            scroll_wearyall_loststone = new DbItemTemplate();
             scroll_wearyall_loststone.Id_nb = "scroll_wearyall_loststone";
             scroll_wearyall_loststone.Name = "Victory Speech for Albion";
             scroll_wearyall_loststone.Level = 5;
@@ -224,12 +224,12 @@ public class LostStoneofArawn : BaseQuest
             if (SAVE_INTO_DATABASE) GameServer.Database.AddObject(scroll_wearyall_loststone);
         }
 
-        lost_stone_of_arawn = GameServer.Database.FindObjectByKey<ItemTemplate>("lost_stone_of_arawn");
+        lost_stone_of_arawn = GameServer.Database.FindObjectByKey<DbItemTemplate>("lost_stone_of_arawn");
         if (lost_stone_of_arawn == null)
         {
             if (log.IsWarnEnabled)
                 log.Warn("Could not find Lost Stone of Arawn, creating it ...");
-            lost_stone_of_arawn = new ItemTemplate();
+            lost_stone_of_arawn = new DbItemTemplate();
             lost_stone_of_arawn.Id_nb = "lost_stone_of_arawn";
             lost_stone_of_arawn.Name = "Lost Stone of Arawn";
             lost_stone_of_arawn.Level = 55;

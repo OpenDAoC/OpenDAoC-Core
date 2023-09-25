@@ -17,7 +17,7 @@ namespace DOL.GS.RealmAbilities
 			eProperty.StunDurationReduction,
 			eProperty.SpeedDecreaseDurationReduction,
 		};
-		public DeterminationAbility(DBAbility dba, int level) : base(dba, level, properties) { }
+		public DeterminationAbility(DbAbility dba, int level) : base(dba, level, properties) { }
 
 		public override int MaxLevel
 			{

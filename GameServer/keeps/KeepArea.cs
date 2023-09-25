@@ -57,7 +57,7 @@ namespace DOL.GS.Keeps
 				}
 				else
 				{
-					m_dbArea = new DBArea();
+					m_dbArea = new DbArea();
 					m_dbArea.CanBroadcast = this.CanBroadcast;
 					m_dbArea.ClassType = this.GetType().ToString();
 					m_dbArea.Description = this.Description;
@@ -73,7 +73,7 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		public override void LoadFromDatabase(DBArea area)
+		public override void LoadFromDatabase(DbArea area)
 		{
 			base.LoadFromDatabase(area);
 			GameServer.KeepManager.Log.Debug("KeepArea " + area.Description + " LoadFromDatabase called");

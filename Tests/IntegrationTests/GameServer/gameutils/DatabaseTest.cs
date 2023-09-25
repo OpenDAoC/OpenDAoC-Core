@@ -36,10 +36,10 @@ namespace DOL.Tests.Integration.Server
 		{
 			Console.WriteLine("TestSelect();");
 
-			var obs = GameServer.Database.SelectAllObjects<ItemTemplate>();
+			var obs = GameServer.Database.SelectAllObjects<DbItemTemplate>();
 			Console.WriteLine("ItemTemplates Type="+obs.GetType());
 
-			var items = GameServer.Database.SelectAllObjects<MerchantItem>();
+			var items = GameServer.Database.SelectAllObjects<DbMerchantItem>();
 			Console.WriteLine("MerchantItems Type="+items.GetType());
 			
 		}			

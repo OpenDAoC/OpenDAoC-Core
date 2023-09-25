@@ -24,7 +24,7 @@ namespace DOL.GS.Styles
 		/// <param name="style">The style to execute</param>
 		/// <param name="weapon">The weapon used to execute the style</param>
 		/// <returns>true if the player can execute the style right now, false if not</returns>
-		public static bool CanUseStyle(AttackData lastAttackData, GameLiving living, Style style, InventoryItem weapon)
+		public static bool CanUseStyle(AttackData lastAttackData, GameLiving living, Style style, DbInventoryItem weapon)
 		{
 			// First thing in processors, lock the objects you modify.
 			// This way it makes sure the objects are not modified by several different threads at the same time!
@@ -175,7 +175,7 @@ namespace DOL.GS.Styles
 					return;
 				}
 
-				InventoryItem weapon = (style.WeaponTypeRequirement == (int) eObjectType.Shield) ? player.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : player.ActiveWeapon;
+				DbInventoryItem weapon = (style.WeaponTypeRequirement == (int) eObjectType.Shield) ? player.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : player.ActiveWeapon;
 
 				if (!CheckWeaponType(style, player, weapon))
 				{
@@ -301,7 +301,7 @@ namespace DOL.GS.Styles
 			}
 		}
 
-		public static bool ExecuteStyle(GameLiving living, GameLiving target, Style style, InventoryItem weapon, double unstyledDamage, double unstyledDamageCap, eArmorSlot armorHitLocation, IList<ISpellHandler> styleEffects, out int styleDamage, out int animationId)
+		public static bool ExecuteStyle(GameLiving living, GameLiving target, Style style, DbInventoryItem weapon, double unstyledDamage, double unstyledDamageCap, eArmorSlot armorHitLocation, IList<ISpellHandler> styleEffects, out int styleDamage, out int animationId)
 		{
 			styleDamage = 0;
 			animationId = 0;
@@ -380,7 +380,7 @@ namespace DOL.GS.Styles
 
 						// Styles with a static growth don't use unstyled damage, so armor has to be taken into account here.
 						// TODO: Check if ignoring AF is indeed intended.
-						InventoryItem armor = target.Inventory?.GetItem((eInventorySlot) armorHitLocation);
+						DbInventoryItem armor = target.Inventory?.GetItem((eInventorySlot) armorHitLocation);
 						styleDamage = (int) (styleDamage * (1.0 - Math.Min(0.85, target.GetArmorAbsorb(armorHitLocation))));
 					}
 					else
@@ -522,7 +522,7 @@ namespace DOL.GS.Styles
 		/// <param name="living">The living wanting to execute the style</param>
 		/// <param name="weapon">The weapon used to execute the style</param>
 		/// <returns>true if correct weapon active</returns>
-		protected static bool CheckWeaponType(Style style, GameLiving living, InventoryItem weapon)
+		protected static bool CheckWeaponType(Style style, GameLiving living, DbInventoryItem weapon)
 		{
 			if (living is GameNPC)
 				return true;
@@ -534,8 +534,8 @@ namespace DOL.GS.Styles
 				case Style.SpecialWeaponType.DualWield:
 					// both weapons are needed to use style,
 					// shield is not a weapon here
-					InventoryItem rightHand = player.ActiveWeapon;
-					InventoryItem leftHand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+					DbInventoryItem rightHand = player.ActiveWeapon;
+					DbInventoryItem leftHand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 
 					if (rightHand == null || leftHand == null || (rightHand.Item_Type != Slot.RIGHTHAND && rightHand.Item_Type != Slot.LEFTHAND))
 						return false;

@@ -151,7 +151,7 @@ namespace DOL.GS.Keeps
                     {
                         if (this.Component != null)
                         {
-                            Database.KeepCaptureLog keeplog = new Database.KeepCaptureLog();
+                            Database.DbKeepCaptureLog keeplog = new Database.DbKeepCaptureLog();
                             keeplog.KeepName = Component.Keep.Name;
 
                             if (Component.Keep is GameKeep)
@@ -360,7 +360,7 @@ namespace DOL.GS.Keeps
 
         protected override KeepGuardBrain GetBrain() => new LordBrain();
 
-        public override void AutoSetStats(Mob dbMob = null)
+        public override void AutoSetStats(DbMob dbMob = null)
         {
             Strength = (short) (Properties.LORD_AUTOSET_STR_BASE + Level * Properties.LORD_AUTOSET_STR_MULTIPLIER);
             Constitution = (short) (Properties.LORD_AUTOSET_CON_BASE + Level * Properties.LORD_AUTOSET_CON_MULTIPLIER);

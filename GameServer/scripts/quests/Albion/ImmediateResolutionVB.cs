@@ -31,7 +31,7 @@ namespace DOL.GS.Quests.Albion
         protected const int _xDelta = 75;
         protected const int _yDelta = 20;
 
-        private static ItemTemplate waxSealedNote = null;
+        private static DbItemTemplate waxSealedNote = null;
 
         private static GameNPC _masterTor = null;
         private static GameNPC _stewardWillie = null;
@@ -44,7 +44,7 @@ namespace DOL.GS.Quests.Albion
         public ImmediateResolutionVB() : base() { }
         public ImmediateResolutionVB(GamePlayer questingPlayer) : this(questingPlayer, 1) { }
         public ImmediateResolutionVB(GamePlayer questingPlayer, int step) : base(questingPlayer, step) { }
-        public ImmediateResolutionVB(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest) { }
+        public ImmediateResolutionVB(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest) { }
 
 
         public override void Notify(DOLEvent e, object sender, EventArgs args)
@@ -164,12 +164,12 @@ namespace DOL.GS.Quests.Albion
             }
             _loadGuards();
 
-            waxSealedNote = GameServer.Database.FindObjectByKey<ItemTemplate>(waxSealedNoteInDb);
+            waxSealedNote = GameServer.Database.FindObjectByKey<DbItemTemplate>(waxSealedNoteInDb);
             if (waxSealedNote == null)
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Could not find {waxSealedNoteName}, creating it ...");
-                waxSealedNote = new ItemTemplate();
+                waxSealedNote = new DbItemTemplate();
                 waxSealedNote.Object_Type = 0;
                 waxSealedNote.Id_nb = waxSealedNoteInDb;
                 waxSealedNote.Name = waxSealedNoteName;

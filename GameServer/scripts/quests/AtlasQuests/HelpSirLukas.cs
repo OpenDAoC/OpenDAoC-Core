@@ -37,14 +37,14 @@ namespace DOL.GS.Quests.Albion
 		private static GameNPC Lukas = null; // Step 4 NPC
 		private static GameMerchant EllynWeyland = null; // Step 1, speak and get questitem
 
-		private static ItemTemplate funeral_speech_scroll = null;
-		private static ItemTemplate FlitzitinaBow = null;
+		private static DbItemTemplate funeral_speech_scroll = null;
+		private static DbItemTemplate FlitzitinaBow = null;
 
-		private static WorldObject FlitzitinasGrave = null;
+		private static DbWorldObject FlitzitinasGrave = null;
 
-		private static IList<WorldObject> GetItems()
+		private static IList<DbWorldObject> GetItems()
 		{
-			return GameServer.Database.SelectObjects<WorldObject>(DB.Column("Name").IsEqualTo("Flitzitina's Grave"));
+			return GameServer.Database.SelectObjects<DbWorldObject>(DB.Column("Name").IsEqualTo("Flitzitina's Grave"));
 		}
 
 		// Constructors
@@ -60,7 +60,7 @@ namespace DOL.GS.Quests.Albion
 		{
 		}
 
-		public HelpSirLukas(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public HelpSirLukas(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -185,12 +185,12 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineItems
 
-				funeral_speech_scroll = GameServer.Database.FindObjectByKey<ItemTemplate>("funeral_speech_flitzitina");
+				funeral_speech_scroll = GameServer.Database.FindObjectByKey<DbItemTemplate>("funeral_speech_flitzitina");
 			if (funeral_speech_scroll == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Funeral Speech for Flitzitina, creating it ...");
-				funeral_speech_scroll = new ItemTemplate();
+				funeral_speech_scroll = new DbItemTemplate();
 				funeral_speech_scroll.Id_nb = "funeral_speech_flitzitina";
 				funeral_speech_scroll.Name = "Funeral Speech for Flitzitina";
 				funeral_speech_scroll.Level = 5;
@@ -215,12 +215,12 @@ namespace DOL.GS.Quests.Albion
 
 			}
 
-			FlitzitinaBow = GameServer.Database.FindObjectByKey<ItemTemplate>("FlitzitinaBow");
+			FlitzitinaBow = GameServer.Database.FindObjectByKey<DbItemTemplate>("FlitzitinaBow");
 			if (FlitzitinaBow == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Flitzitina Bow , creating it ...");
-				FlitzitinaBow = new ItemTemplate();
+				FlitzitinaBow = new DbItemTemplate();
 				FlitzitinaBow.Id_nb = "FlitzitinaBow";
 				FlitzitinaBow.Name = "Flitzitina\'s Bow";
 				FlitzitinaBow.Level = 50;
@@ -256,7 +256,7 @@ namespace DOL.GS.Quests.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Flitzitinas Grave, creating it ...");
-				var FlitzitinasGrave = new WorldObject();
+				var FlitzitinasGrave = new DbWorldObject();
 				FlitzitinasGrave.Name = "Flitzitina\'s Grave";
 				FlitzitinasGrave.X = 505153;
 				FlitzitinasGrave.Y = 496310;

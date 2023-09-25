@@ -59,20 +59,20 @@ namespace DOL.GS.Quests.Midgard
 		private static Oona Oona = null; // Mob to kill
 		private static GameNPC MorlinCaan = null; // Trainer for reward
 
-		private static ItemTemplate oona_head = null; //ball of flame
-		private static ItemTemplate sealed_pouch = null; //sealed pouch
-		private static ItemTemplate HunterEpicBoots = null; //Call of the Hunt Boots 
-		private static ItemTemplate HunterEpicHelm = null; //Call of the Hunt Coif 
-		private static ItemTemplate HunterEpicGloves = null; //Call of the Hunt Gloves 
-		private static ItemTemplate HunterEpicVest = null; //Call of the Hunt Hauberk 
-		private static ItemTemplate HunterEpicLegs = null; //Call of the Hunt Legs 
-		private static ItemTemplate HunterEpicArms = null; //Call of the Hunt Sleeves 
-		private static ItemTemplate ShadowbladeEpicBoots = null; //Shadow Shrouded Boots 
-		private static ItemTemplate ShadowbladeEpicHelm = null; //Shadow Shrouded Coif 
-		private static ItemTemplate ShadowbladeEpicGloves = null; //Shadow Shrouded Gloves 
-		private static ItemTemplate ShadowbladeEpicVest = null; //Shadow Shrouded Hauberk 
-		private static ItemTemplate ShadowbladeEpicLegs = null; //Shadow Shrouded Legs 
-		private static ItemTemplate ShadowbladeEpicArms = null; //Shadow Shrouded Sleeves         
+		private static DbItemTemplate oona_head = null; //ball of flame
+		private static DbItemTemplate sealed_pouch = null; //sealed pouch
+		private static DbItemTemplate HunterEpicBoots = null; //Call of the Hunt Boots 
+		private static DbItemTemplate HunterEpicHelm = null; //Call of the Hunt Coif 
+		private static DbItemTemplate HunterEpicGloves = null; //Call of the Hunt Gloves 
+		private static DbItemTemplate HunterEpicVest = null; //Call of the Hunt Hauberk 
+		private static DbItemTemplate HunterEpicLegs = null; //Call of the Hunt Legs 
+		private static DbItemTemplate HunterEpicArms = null; //Call of the Hunt Sleeves 
+		private static DbItemTemplate ShadowbladeEpicBoots = null; //Shadow Shrouded Boots 
+		private static DbItemTemplate ShadowbladeEpicHelm = null; //Shadow Shrouded Coif 
+		private static DbItemTemplate ShadowbladeEpicGloves = null; //Shadow Shrouded Gloves 
+		private static DbItemTemplate ShadowbladeEpicVest = null; //Shadow Shrouded Hauberk 
+		private static DbItemTemplate ShadowbladeEpicLegs = null; //Shadow Shrouded Legs 
+		private static DbItemTemplate ShadowbladeEpicArms = null; //Shadow Shrouded Sleeves         
 
 		// Constructors
 		public Rogue_50() : base()
@@ -87,7 +87,7 @@ namespace DOL.GS.Quests.Midgard
 		{
 		}
 
-		public Rogue_50(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public Rogue_50(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -207,12 +207,12 @@ namespace DOL.GS.Quests.Midgard
 
 			#region defineItems
 
-			oona_head = GameServer.Database.FindObjectByKey<ItemTemplate>("oona_head");
+			oona_head = GameServer.Database.FindObjectByKey<DbItemTemplate>("oona_head");
 			if (oona_head == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Oona's Head , creating it ...");
-				oona_head = new ItemTemplate();
+				oona_head = new DbItemTemplate();
 				oona_head.Id_nb = "oona_head";
 				oona_head.Name = "Oona's Head";
 				oona_head.Level = 8;
@@ -234,12 +234,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 
-			sealed_pouch = GameServer.Database.FindObjectByKey<ItemTemplate>("sealed_pouch");
+			sealed_pouch = GameServer.Database.FindObjectByKey<DbItemTemplate>("sealed_pouch");
 			if (sealed_pouch == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Sealed Pouch , creating it ...");
-				sealed_pouch = new ItemTemplate();
+				sealed_pouch = new DbItemTemplate();
 				sealed_pouch.Id_nb = "sealed_pouch";
 				sealed_pouch.Name = "Sealed Pouch";
 				sealed_pouch.Level = 8;
@@ -262,12 +262,12 @@ namespace DOL.GS.Quests.Midgard
 			}
 // end item
 
-			HunterEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("HunterEpicBoots");
+			HunterEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicBoots");
 			if (HunterEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Hunters Epic Boots , creating it ...");
-				HunterEpicBoots = new ItemTemplate();
+				HunterEpicBoots = new DbItemTemplate();
 				HunterEpicBoots.Id_nb = "HunterEpicBoots";
 				HunterEpicBoots.Name = "Call of the Hunt Boots";
 				HunterEpicBoots.Level = 50;
@@ -303,12 +303,12 @@ namespace DOL.GS.Quests.Midgard
 			}
 //end item
 			//Call of the Hunt Coif 
-			HunterEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("HunterEpicHelm");
+			HunterEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicHelm");
 			if (HunterEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Hunters Epic Helm , creating it ...");
-				HunterEpicHelm = new ItemTemplate();
+				HunterEpicHelm = new DbItemTemplate();
 				HunterEpicHelm.Id_nb = "HunterEpicHelm";
 				HunterEpicHelm.Name = "Call of the Hunt Coif";
 				HunterEpicHelm.Level = 50;
@@ -347,12 +347,12 @@ namespace DOL.GS.Quests.Midgard
 			}
 //end item
 			//Call of the Hunt Gloves 
-			HunterEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("HunterEpicGloves");
+			HunterEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicGloves");
 			if (HunterEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Hunters Epic Gloves , creating it ...");
-				HunterEpicGloves = new ItemTemplate();
+				HunterEpicGloves = new DbItemTemplate();
 				HunterEpicGloves.Id_nb = "HunterEpicGloves";
 				HunterEpicGloves.Name = "Call of the Hunt Gloves ";
 				HunterEpicGloves.Level = 50;
@@ -387,12 +387,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Call of the Hunt Hauberk 
-			HunterEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("HunterEpicVest");
+			HunterEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicVest");
 			if (HunterEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Hunters Epic Vest , creating it ...");
-				HunterEpicVest = new ItemTemplate();
+				HunterEpicVest = new DbItemTemplate();
 				HunterEpicVest.Id_nb = "HunterEpicVest";
 				HunterEpicVest.Name = "Call of the Hunt Jerkin";
 				HunterEpicVest.Level = 50;
@@ -430,12 +430,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Call of the Hunt Legs 
-			HunterEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("HunterEpicLegs");
+			HunterEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicLegs");
 			if (HunterEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Hunters Epic Legs , creating it ...");
-				HunterEpicLegs = new ItemTemplate();
+				HunterEpicLegs = new DbItemTemplate();
 				HunterEpicLegs.Id_nb = "HunterEpicLegs";
 				HunterEpicLegs.Name = "Call of the Hunt Legs";
 				HunterEpicLegs.Level = 50;
@@ -473,12 +473,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Call of the Hunt Sleeves 
-			HunterEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("HunterEpicArms");
+			HunterEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicArms");
 			if (HunterEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Hunter Epic Arms , creating it ...");
-				HunterEpicArms = new ItemTemplate();
+				HunterEpicArms = new DbItemTemplate();
 				HunterEpicArms.Id_nb = "HunterEpicArms";
 				HunterEpicArms.Name = "Call of the Hunt Sleeves";
 				HunterEpicArms.Level = 50;
@@ -516,12 +516,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Shadow Shrouded Boots 
-			ShadowbladeEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("ShadowbladeEpicBoots");
+			ShadowbladeEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicBoots");
 			if (ShadowbladeEpicBoots == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shadowblade Epic Boots , creating it ...");
-				ShadowbladeEpicBoots = new ItemTemplate();
+				ShadowbladeEpicBoots = new DbItemTemplate();
 				ShadowbladeEpicBoots.Id_nb = "ShadowbladeEpicBoots";
 				ShadowbladeEpicBoots.Name = "Shadow Shrouded Boots";
 				ShadowbladeEpicBoots.Level = 50;
@@ -559,12 +559,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Shadow Shrouded Coif 
-			ShadowbladeEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("ShadowbladeEpicHelm");
+			ShadowbladeEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicHelm");
 			if (ShadowbladeEpicHelm == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shadowblade Epic Helm , creating it ...");
-				ShadowbladeEpicHelm = new ItemTemplate();
+				ShadowbladeEpicHelm = new DbItemTemplate();
 				ShadowbladeEpicHelm.Id_nb = "ShadowbladeEpicHelm";
 				ShadowbladeEpicHelm.Name = "Shadow Shrouded Coif";
 				ShadowbladeEpicHelm.Level = 50;
@@ -602,12 +602,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Shadow Shrouded Gloves 
-			ShadowbladeEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("ShadowbladeEpicGloves");
+			ShadowbladeEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicGloves");
 			if (ShadowbladeEpicGloves == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shadowblade Epic Gloves , creating it ...");
-				ShadowbladeEpicGloves = new ItemTemplate();
+				ShadowbladeEpicGloves = new DbItemTemplate();
 				ShadowbladeEpicGloves.Id_nb = "ShadowbladeEpicGloves";
 				ShadowbladeEpicGloves.Name = "Shadow Shrouded Gloves";
 				ShadowbladeEpicGloves.Level = 50;
@@ -646,12 +646,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Shadow Shrouded Hauberk 
-			ShadowbladeEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("ShadowbladeEpicVest");
+			ShadowbladeEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicVest");
 			if (ShadowbladeEpicVest == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shadowblade Epic Vest , creating it ...");
-				ShadowbladeEpicVest = new ItemTemplate();
+				ShadowbladeEpicVest = new DbItemTemplate();
 				ShadowbladeEpicVest.Id_nb = "ShadowbladeEpicVest";
 				ShadowbladeEpicVest.Name = "Shadow Shrouded Jerkin";
 				ShadowbladeEpicVest.Level = 50;
@@ -689,12 +689,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Shadow Shrouded Legs 
-			ShadowbladeEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("ShadowbladeEpicLegs");
+			ShadowbladeEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicLegs");
 			if (ShadowbladeEpicLegs == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shadowblade Epic Legs , creating it ...");
-				ShadowbladeEpicLegs = new ItemTemplate();
+				ShadowbladeEpicLegs = new DbItemTemplate();
 				ShadowbladeEpicLegs.Id_nb = "ShadowbladeEpicLegs";
 				ShadowbladeEpicLegs.Name = "Shadow Shrouded Legs";
 				ShadowbladeEpicLegs.Level = 50;
@@ -732,12 +732,12 @@ namespace DOL.GS.Quests.Midgard
 
 			}
 			//Shadow Shrouded Sleeves 
-			ShadowbladeEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("ShadowbladeEpicArms");
+			ShadowbladeEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicArms");
 			if (ShadowbladeEpicArms == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Shadowblade Epic Arms , creating it ...");
-				ShadowbladeEpicArms = new ItemTemplate();
+				ShadowbladeEpicArms = new DbItemTemplate();
 				ShadowbladeEpicArms.Id_nb = "ShadowbladeEpicArms";
 				ShadowbladeEpicArms.Name = "Shadow Shrouded Sleeves";
 				ShadowbladeEpicArms.Level = 50;

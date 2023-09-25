@@ -90,6 +90,6 @@ namespace DOL.GS.GameEvents
 		/// The ItemTemplate for this record
 		/// </summary>
 		[Relation(LocalField = "TemplateID", RemoteField = "Id_nb", AutoLoad = true, AutoDelete = false)]
-		public ItemTemplate Template;
+		public DbItemTemplate Template;
 	}
 }

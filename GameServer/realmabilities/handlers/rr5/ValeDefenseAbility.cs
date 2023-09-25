@@ -17,7 +17,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class ValeDefenseAbility : RR5RealmAbility
 	{
-		public ValeDefenseAbility(DBAbility dba, int level) : base(dba, level) { }
+		public ValeDefenseAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

@@ -114,17 +114,17 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)quest.Rewards.MoneyPercent);
 				pak.WriteByte((byte)quest.Rewards.ExperiencePercent(player));
 				pak.WriteByte((byte)quest.Rewards.BasicItems.Count);
-				foreach (ItemTemplate reward in quest.Rewards.BasicItems)
+				foreach (DbItemTemplate reward in quest.Rewards.BasicItems)
 					WriteTemplateData(pak, reward, 1);
 				pak.WriteByte((byte)quest.Rewards.ChoiceOf);
 				pak.WriteByte((byte)quest.Rewards.OptionalItems.Count);
-				foreach (ItemTemplate reward in quest.Rewards.OptionalItems)
+				foreach (DbItemTemplate reward in quest.Rewards.OptionalItems)
 					WriteTemplateData(pak, reward, 1);
 				SendTCP(pak);
 			}
 		}
 
-		protected virtual void WriteTemplateData(GSTCPPacketOut pak, ItemTemplate template, int count)
+		protected virtual void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)
 		{
 			if (template == null)
 			{

@@ -40,7 +40,7 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-            foreach (InventoryItem item in effect.Owner.Inventory.EquippedItems)
+            foreach (DbInventoryItem item in effect.Owner.Inventory.EquippedItems)
             {
                 if (item.Object_Type >= (int)eObjectType._FirstArmor && item.Object_Type <= (int)eObjectType._LastArmor)
                 {

@@ -54,7 +54,7 @@ namespace DOL.Tests.Integration
 			{
 				GameServerConfiguration config = new GameServerConfiguration();
 				config.RootDirectory = FakeRoot.FullName;
-				config.DBType = ConnectionType.DATABASE_SQLITE;
+				config.DBType = EConnectionType.DATABASE_SQLITE;
 				config.DBConnectionString = string.Format("Data Source={0};Version=3;Pooling=False;Cache Size=1073741824;Journal Mode=Off;Synchronous=Off;Foreign Keys=True;Default Timeout=60",
 												 Path.Combine(config.RootDirectory, "dol-tests-only.sqlite3.db"));
 				config.Port = 0; // Auto Choosing Listen Port
@@ -80,7 +80,7 @@ namespace DOL.Tests.Integration
 					m_database = ObjectDatabase.GetObjectDatabase(Configuration.DBType, Configuration.DBConnectionString);
 
 					//Load only default assembly
-					var assembly = Assembly.Load("DOLDatabase");
+					var assembly = Assembly.Load("CoreDatabase");
 					// Walk through each type in the assembly
 					assembly.GetTypes().AsParallel().ForAll(type =>
 					{
@@ -96,9 +96,9 @@ namespace DOL.Tests.Integration
 						}
 					});
 
-					ServerProperty loadQuestsProp = m_database.SelectObject<ServerProperty>(DB.Column("Key").IsEqualTo("load_quests"));
+					DbServerProperty loadQuestsProp = m_database.SelectObject<DbServerProperty>(DB.Column("Key").IsEqualTo("load_quests"));
 					if(loadQuestsProp == null) {
-						loadQuestsProp = new ServerProperty() {
+						loadQuestsProp = new DbServerProperty() {
 							Description = "Temporary workaround, prevents failure in ArtifactScholar region load.",
 							Key = "load_quests",
 							DefaultValue = "True",

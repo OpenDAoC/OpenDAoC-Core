@@ -250,7 +250,7 @@ namespace DOL.GS
 			{
 				if (m_HydraDisease == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = Util.Random(25, 35);
@@ -284,7 +284,7 @@ namespace DOL.GS
 			{
 				if (m_Hydra_Haste_Debuff == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 60;
@@ -683,7 +683,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Hydra_Dot == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
@@ -714,7 +714,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Hydra_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
@@ -743,7 +743,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Hydra_DD2 == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 3;
@@ -772,7 +772,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Hydra_PBAOE == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
@@ -801,7 +801,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Hydra_Stun == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
@@ -1018,7 +1018,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Head2_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = Util.Random(5,8);
@@ -1235,7 +1235,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Head3_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = Util.Random(5,8);
@@ -1452,7 +1452,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Head4_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = Util.Random(5, 8);
@@ -1668,7 +1668,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Head5_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = Util.Random(5, 8);

@@ -108,7 +108,7 @@ namespace DOL.GS
             return true;
         }
 
-        public override bool ReceiveItem(GameLiving source, InventoryItem item)
+        public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
         {
             if (source is GamePlayer player && item != null)
             {

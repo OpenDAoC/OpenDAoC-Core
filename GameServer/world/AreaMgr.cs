@@ -17,8 +17,8 @@ namespace DOL.GS
 			try
 			{
 				Assembly gasm = Assembly.GetExecutingAssembly();
-				var DBAreas = GameServer.Database.SelectAllObjects<DBArea>();
-				foreach (DBArea thisArea in DBAreas)
+				var DBAreas = GameServer.Database.SelectAllObjects<DbArea>();
+				foreach (DbArea thisArea in DBAreas)
 				{
 					AbstractArea area = (AbstractArea)gasm.CreateInstance(thisArea.ClassType, false);
 					if (area == null)

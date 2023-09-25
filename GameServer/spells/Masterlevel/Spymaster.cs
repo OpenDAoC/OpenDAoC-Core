@@ -179,7 +179,7 @@ namespace DOL.GS.Spells
             mine.Owner = (GamePlayer)caster;
 
             // Construct the mine spell
-            dbs = new DBSpell();
+            dbs = new DbSpell();
             dbs.Name = spell.Name;
             dbs.Icon = 7220;
             dbs.ClientEffect = 7220;
@@ -229,7 +229,7 @@ namespace DOL.GS.Spells
             mine.Owner = (GamePlayer)caster;
 
             // Construct the mine spell
-            dbs = new DBSpell();
+            dbs = new DbSpell();
             dbs.Name = spell.Name;
             dbs.Icon = 7281;
             dbs.ClientEffect = 7281;
@@ -361,7 +361,7 @@ namespace DOL.GS.Spells
             mine.Owner = (GamePlayer)caster;
 
             // Construct the mine spell
-            dbs = new DBSpell();
+            dbs = new DbSpell();
             dbs.Name = spell.Name;
             dbs.Icon = 7301;
             dbs.ClientEffect = 7301;
@@ -394,11 +394,11 @@ namespace DOL.GS.Spells
         public EssenceFlareSpellHandler(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line)
         {
-            ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>("Meschgift");
+            DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>("Meschgift");
             if (template != null)
             {
                 items.Add(GameInventoryItem.Create(template));
-                foreach (InventoryItem item in items)
+                foreach (DbInventoryItem item in items)
                 {
                     if (item.IsStackable)
                     {

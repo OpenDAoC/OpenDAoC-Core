@@ -112,11 +112,11 @@ namespace DOLGameServerConsole
 		public void SendGroupWindowUpdate() { }
 		public void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living) { }
 		public void SendGroupMembersUpdate(bool updateIcons, bool updateMap) { }
-		public void SendInventoryItemsUpdate(ICollection<InventoryItem> itemsToUpdate) { }
+		public void SendInventoryItemsUpdate(ICollection<DbInventoryItem> itemsToUpdate) { }
 		public void SendInventorySlotsUpdate(ICollection<int> slots) { }
-		public void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<InventoryItem> itemsToUpdate) { }
-		public void SendInventoryItemsUpdate(IDictionary<int, InventoryItem> updateItems, eInventoryWindowType windowType) { }
-		public void SendInventoryItemsPartialUpdate(IDictionary<int, InventoryItem> items, eInventoryWindowType windowType) { }
+		public void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate) { }
+		public void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, eInventoryWindowType windowType) { }
+		public void SendInventoryItemsPartialUpdate(IDictionary<int, DbInventoryItem> items, eInventoryWindowType windowType) { }
 		public void SendDoorState(Region region, GameDoorBase door) { }
 		public void SendMerchantWindow(MerchantTradeItems itemlist, eMerchantWindowType windowType) { }
 		public void SendTradeWindow() { }
@@ -218,7 +218,7 @@ namespace DOLGameServerConsole
 		public void SendVampireEffect(GameLiving living, bool show) { }
 		public void SendXFireInfo(byte flag) { }
 		public void SendMarketExplorerWindow() { }
-		public void SendMarketExplorerWindow(IList<InventoryItem> items, byte page, byte maxpage) { }
+		public void SendMarketExplorerWindow(IList<DbInventoryItem> items, byte page, byte maxpage) { }
 		public void SendConsignmentMerchantMoney(long money) { }
         public void SendMinotaurRelicMapRemove(byte id) { }
         public void SendMinotaurRelicMapUpdate(byte id, ushort region, int x, int y, int z) { }

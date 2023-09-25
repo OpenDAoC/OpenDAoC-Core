@@ -32,7 +32,7 @@ namespace DOL.GS
         #region Account Util
         public static void BanAccount(this GameClient client, string reason)
         {
-			DBBannedAccount b = new DBBannedAccount();
+			DbBans b = new DbBans();
 			b.Author = "SERVER";
 			b.Ip = client.TcpEndpointAddress;
 			b.Account = client.Account.Name;

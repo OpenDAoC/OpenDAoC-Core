@@ -165,7 +165,7 @@ namespace DOL.GS.Spells
 				if (target is GamePlayer && !target.IsStunned && !target.IsMezzed && !target.IsSitting && m_handler.Spell.LifeDrainReturn != (int)Archery.eShotType.Critical)
 				{
 					GamePlayer player = (GamePlayer)target;
-					InventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+					DbInventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 					if (lefthand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND))
 					{
 						if (target.IsObjectInFront(caster, 180) && lefthand.Object_Type == (int)eObjectType.Shield)
@@ -229,7 +229,7 @@ namespace DOL.GS.Spells
 					if (target is GamePlayer)
 						ad.ArmorHitLocation = ((GamePlayer)target).CalculateArmorHitLocation(ad);
 
-					InventoryItem armor = null;
+					DbInventoryItem armor = null;
 					if (target.Inventory != null)
 						armor = target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
 

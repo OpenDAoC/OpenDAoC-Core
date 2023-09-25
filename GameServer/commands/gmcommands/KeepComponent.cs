@@ -116,10 +116,10 @@ namespace DOL.GS.Commands
 						x = (component.X-myKeep.X)/148 = a*cos(t) - b*sin(t)
 						y = (component.Y-myKeep.Y)/148 = a*sin(t) + b*cos(t)
 						a = sqrt((x+b*sin(t))^2 + (y-b*cos(t))^2)
-						a = sqrt(x²+y²+b² +2*x*b*sin(t)-2*y*b*cos(t))
+						a = sqrt(xï¿½+yï¿½+bï¿½ +2*x*b*sin(t)-2*y*b*cos(t))
 						b = sqrt((x-a*cos(t))^2 + (y-a*sin(t))^2)
-						b = sqrt(x²+y²+a²-2*x*a*cos(t)-2*y*a*sin(t))
-						0 = 2x²+2y²-2*x*a*cos(t)-2*y*a*sin(t)+2*x*sqrt(x²+y²+a²-2*x*a*cos(t)-2*y*a*sin(t))*sin(t)-2*y*sqrt(x²+y²+a²-2*x*a*cos(t)-2*y*a*sin(t))*cos(t)
+						b = sqrt(xï¿½+yï¿½+aï¿½-2*x*a*cos(t)-2*y*a*sin(t))
+						0 = 2xï¿½+2yï¿½-2*x*a*cos(t)-2*y*a*sin(t)+2*x*sqrt(xï¿½+yï¿½+aï¿½-2*x*a*cos(t)-2*y*a*sin(t))*sin(t)-2*y*sqrt(xï¿½+yï¿½+aï¿½-2*x*a*cos(t)-2*y*a*sin(t))*cos(t)
 						pfff
 						so must find an other way to find it....
 						*/
@@ -282,7 +282,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        var dbcomponent = DOLDB<DBKeepComponent>.SelectObject(DB.Column("KeepID").IsEqualTo(component.Keep.KeepID).And(DB.Column("ID").IsEqualTo(component.ID)));
+                        var dbcomponent = DOLDB<DbKeepComponent>.SelectObject(DB.Column("KeepID").IsEqualTo(component.Keep.KeepID).And(DB.Column("ID").IsEqualTo(component.ID)));
                         component.ComponentX = dbcomponent.X;
                         component.ComponentY = dbcomponent.Y;
                         component.ComponentHeading = dbcomponent.Heading;

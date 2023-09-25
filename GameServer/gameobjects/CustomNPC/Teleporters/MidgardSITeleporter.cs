@@ -98,7 +98,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="destination"></param>
-		protected override void OnDestinationPicked(GamePlayer player, Teleport destination)
+		protected override void OnDestinationPicked(GamePlayer player, DbTeleport destination)
 		{
 			// Not porting to where we already are.
 
@@ -132,7 +132,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="destination"></param>
-		protected override void OnTeleport(GamePlayer player, Teleport destination)
+		protected override void OnTeleport(GamePlayer player, DbTeleport destination)
 		{
 			OnTeleportSpell(player, destination);
 		}

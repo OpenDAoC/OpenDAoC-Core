@@ -23,12 +23,12 @@ public class Player
         {
         }
 
-        public PlayerInfo(DOLCharacters player)
+        public PlayerInfo(DbCoreCharacter player)
         {
             if (player == null)
                 return;
 
-            var DBRace = DOLDB<Race>.SelectObject(DB.Column("ID").IsEqualTo(player.Race));
+            var DBRace = DOLDB<DbRace>.SelectObject(DB.Column("ID").IsEqualTo(player.Race));
 
             Name = player.Name;
             Lastname = player.LastName;
@@ -84,14 +84,14 @@ public class Player
         {
         }
     
-        public PlayerSpec(DOLCharacters player)
+        public PlayerSpec(DbCoreCharacter player)
         {
             if (player == null)
                 return;
             var specs = new Dictionary<string,int>();
             var realmAbilities = new Dictionary<string,int>();
             
-            var DBRace = DOLDB<Race>.SelectObject(DB.Column("ID").IsEqualTo(player.Race));
+            var DBRace = DOLDB<DbRace>.SelectObject(DB.Column("ID").IsEqualTo(player.Race));
 
             player.SerializedSpecs.Split(';').ToList().ForEach(x =>
             {
@@ -137,15 +137,15 @@ public class Player
         {
         }
         
-        public PlayerTradeSkills(DOLCharacters player)
+        public PlayerTradeSkills(DbCoreCharacter player)
         {
             if (player == null)
                 return;
             var skills = new Dictionary<string,int>();
             
-            var tradeskills = DOLDB<AccountXCrafting>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.AccountName));
+            var tradeskills = DOLDB<DbAccountXCrafting>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.AccountName));
 
-            AccountXCrafting realmts = null;
+            DbAccountXCrafting realmts = null;
 
             foreach (var ts in tradeskills)
             {
@@ -185,7 +185,7 @@ public class Player
 
     public static bool GetDiscord(string accountName)
     {
-        var account = DOLDB<Account>.SelectObject(DB.Column("Name").IsEqualTo(accountName));
+        var account = DOLDB<DbAccount>.SelectObject(DB.Column("Name").IsEqualTo(accountName));
         Console.WriteLine(account.DiscordID);
         return account.DiscordID is not (null or "");
     }
@@ -207,7 +207,7 @@ public class Player
         var _playerInfoCacheKey = "api_player_info_" + playerName;
 
         if (_cache.TryGetValue(_playerInfoCacheKey, out PlayerInfo playerInfo)) return playerInfo;
-        var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
+        var player = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
 
         if (player == null)
             return null;
@@ -225,7 +225,7 @@ public class Player
 
         if (_cache.TryGetValue(_playerSpecsCacheKey, out List<PlayerSpec> specs)) return specs;
         
-        var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
+        var player = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
 
         if (player == null)
             return null;
@@ -246,7 +246,7 @@ public class Player
 
         if (_cache.TryGetValue(_playerTradesCacheKey, out PlayerTradeSkills tradeskills)) return tradeskills;
 
-        var player = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
+        var player = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
 
         tradeskills = new PlayerTradeSkills(player);
         
@@ -262,7 +262,7 @@ public class Player
         if (_cache.TryGetValue(_allPlayersCacheKey, out List<PlayerInfo> allPlayers)) return allPlayers;
         var dayLimit = DateTime.Now.Subtract(TimeSpan.FromDays(31));
             
-        var players = GameServer.Database.SelectObjects<DOLCharacters>(DB.Column("LastPlayed").IsGreatherThan(dayLimit));
+        var players = GameServer.Database.SelectObjects<DbCoreCharacter>(DB.Column("LastPlayed").IsGreatherThan(dayLimit));
 
         allPlayers = new List<PlayerInfo>(players.Count);
 
@@ -289,7 +289,7 @@ public class Player
         var guildId = guild.GuildID;
         
         allPlayers = new List<PlayerInfo>();
-        var players = DOLDB<DOLCharacters>.SelectObjects(DB.Column("GuildID").IsEqualTo(guildId));
+        var players = DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("GuildID").IsEqualTo(guildId));
 
         foreach (var player in players)
         {

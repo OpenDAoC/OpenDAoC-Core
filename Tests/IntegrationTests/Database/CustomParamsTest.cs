@@ -32,7 +32,7 @@ namespace DOL.Tests.Integration.Database
 			Database = DatabaseSetUp.Database;
 		}
 		
-		protected SQLObjectDatabase Database { get; set; }
+		protected SqlObjectDatabase Database { get; set; }
 		
 		[Test]
 		public void TableParamSaveLoadTest()

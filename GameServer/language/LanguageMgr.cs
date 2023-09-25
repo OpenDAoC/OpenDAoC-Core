@@ -36,8 +36,8 @@ namespace DOL.Language
             }
             else
             {
-                if (!string.IsNullOrEmpty(((DBLanguageSystem) result).Text))
-                    translation = ((DBLanguageSystem) result).Text;
+                if (!string.IsNullOrEmpty(((DbLanguageSystem) result).Text))
+                    translation = ((DbLanguageSystem) result).Text;
                 else
                 {
                     translation = GetTranslationErrorText(language, translationId);
@@ -186,14 +186,14 @@ namespace DOL.Language
                 int newEntries = 0;
                 int updatedEntries = 0;
 
-                IList<DBLanguageSystem> dbos = GameServer.Database.SelectAllObjects<DBLanguageSystem>();
+                IList<DbLanguageSystem> dbos = GameServer.Database.SelectAllObjects<DbLanguageSystem>();
 
                 if (GS.ServerProperties.Properties.UPDATE_EXISTING_DB_SYSTEM_SENTENCES_FROM_FILES)
                 {
                     foreach (string[] sentence in fileSentences)
                     {
                         bool found = false;
-                        foreach (DBLanguageSystem dbo in dbos)
+                        foreach (DbLanguageSystem dbo in dbos)
                         {
                             if (dbo.TranslationId != sentence[ID])
                                 continue;
@@ -219,7 +219,7 @@ namespace DOL.Language
 
                         if (!found)
                         {
-                            DBLanguageSystem dbo = new()
+                            DbLanguageSystem dbo = new()
                             {
                                 TranslationId = sentence[ID],
                                 Text = sentence[TEXT],
@@ -240,7 +240,7 @@ namespace DOL.Language
                     foreach (string[] sentence in fileSentences)
                     {
                         bool found = false;
-                        foreach (DBLanguageSystem lngObj in dbos)
+                        foreach (DbLanguageSystem lngObj in dbos)
                         {
                             if (lngObj.TranslationId != sentence[ID])
                                 continue;
@@ -254,7 +254,7 @@ namespace DOL.Language
 
                         if (!found)
                         {
-                            DBLanguageSystem dbo = new()
+                            DbLanguageSystem dbo = new()
                             {
                                 TranslationId = sentence[ID],
                                 Text = sentence[TEXT],
@@ -277,7 +277,7 @@ namespace DOL.Language
                 // If a user adds new rows into the database without also adding those
                 // data into the language files, the above foreach loop just adds the
                 // sentences which have been added in the language files.
-                foreach (DBLanguageSystem dbo in dbos)
+                foreach (DbLanguageSystem dbo in dbos)
                     RegisterLanguageDataObject(dbo);
 
                 if (newEntries > 0)
@@ -296,7 +296,7 @@ namespace DOL.Language
             {
                 foreach (string[] sentence in fileSentences)
                 {
-                    DBLanguageSystem obj = new()
+                    DbLanguageSystem obj = new()
                     {
                         TranslationId = sentence[ID],
                         Text = sentence[TEXT],
@@ -314,10 +314,10 @@ namespace DOL.Language
                 log.Info("[Language-Manager] Loading object translations...");
 
             List<LanguageDataObject> lngObjs = new();
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageArea>());
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageGameObject>());
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageNPC>());
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DBLanguageZone>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageArea>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageGameObject>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageGameNpc>());
+            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageZone>());
 
             foreach (LanguageDataObject lngObj in lngObjs)
                 RegisterLanguageDataObject(lngObj);

@@ -48,7 +48,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				for (int i = 0; i < 10; i++)
 				{
 					int slotPosition = packet.ReadByte();
-					InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slotPosition);
+					DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slotPosition);
 					if (item != null 
 						&& ((item.IsDropable && item.IsTradable) || (client.Player.CanTradeAnyItem 
 						|| trade is SelfCraftWindow

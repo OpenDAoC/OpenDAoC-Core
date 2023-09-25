@@ -37,37 +37,37 @@ namespace DOL.GS.Quests.Albion
 		private static GameNPC Lidmann = null; // Start NPC
 		private static CailleachUragaig Uragaig = null; // Mob to kill
 
-		private static ItemTemplate sealed_pouch = null; //sealed pouch
-		private static ItemTemplate ScoutEpicBoots = null; //Brigandine of Vigilant Defense  Boots 
-		private static ItemTemplate ScoutEpicHelm = null; //Brigandine of Vigilant Defense  Coif 
-		private static ItemTemplate ScoutEpicGloves = null; //Brigandine of Vigilant Defense  Gloves 
-		private static ItemTemplate ScoutEpicVest = null; //Brigandine of Vigilant Defense  Hauberk 
-		private static ItemTemplate ScoutEpicLegs = null; //Brigandine of Vigilant Defense  Legs 
-		private static ItemTemplate ScoutEpicArms = null; //Brigandine of Vigilant Defense  Sleeves 
-		private static ItemTemplate ArmsmanEpicBoots = null; //Shadow Shrouded Boots 
-		private static ItemTemplate ArmsmanEpicHelm = null; //Shadow Shrouded Coif 
-		private static ItemTemplate ArmsmanEpicGloves = null; //Shadow Shrouded Gloves 
-		private static ItemTemplate ArmsmanEpicVest = null; //Shadow Shrouded Hauberk 
-		private static ItemTemplate ArmsmanEpicLegs = null; //Shadow Shrouded Legs 
-		private static ItemTemplate ArmsmanEpicArms = null; //Shadow Shrouded Sleeves 
-		private static ItemTemplate TheurgistEpicBoots = null; //Valhalla Touched Boots 
-		private static ItemTemplate TheurgistEpicHelm = null; //Valhalla Touched Coif 
-		private static ItemTemplate TheurgistEpicGloves = null; //Valhalla Touched Gloves 
-		private static ItemTemplate TheurgistEpicVest = null; //Valhalla Touched Hauberk 
-		private static ItemTemplate TheurgistEpicLegs = null; //Valhalla Touched Legs 
-		private static ItemTemplate TheurgistEpicArms = null; //Valhalla Touched Sleeves 
-		private static ItemTemplate FriarEpicBoots = null; //Subterranean Boots 
-		private static ItemTemplate FriarEpicHelm = null; //Subterranean Coif 
-		private static ItemTemplate FriarEpicGloves = null; //Subterranean Gloves 
-		private static ItemTemplate FriarEpicVest = null; //Subterranean Hauberk 
-		private static ItemTemplate FriarEpicLegs = null; //Subterranean Legs
-		private static ItemTemplate FriarEpicArms = null; //Subterranean Sleeves
-		private static ItemTemplate MaulerAlbEpicBoots = null;
-		private static ItemTemplate MaulerAlbEpicHelm = null;
-		private static ItemTemplate MaulerAlbEpicGloves = null;
-		private static ItemTemplate MaulerAlbEpicVest = null;
-		private static ItemTemplate MaulerAlbEpicLegs = null;
-		private static ItemTemplate MaulerAlbEpicArms = null;
+		private static DbItemTemplate sealed_pouch = null; //sealed pouch
+		private static DbItemTemplate ScoutEpicBoots = null; //Brigandine of Vigilant Defense  Boots 
+		private static DbItemTemplate ScoutEpicHelm = null; //Brigandine of Vigilant Defense  Coif 
+		private static DbItemTemplate ScoutEpicGloves = null; //Brigandine of Vigilant Defense  Gloves 
+		private static DbItemTemplate ScoutEpicVest = null; //Brigandine of Vigilant Defense  Hauberk 
+		private static DbItemTemplate ScoutEpicLegs = null; //Brigandine of Vigilant Defense  Legs 
+		private static DbItemTemplate ScoutEpicArms = null; //Brigandine of Vigilant Defense  Sleeves 
+		private static DbItemTemplate ArmsmanEpicBoots = null; //Shadow Shrouded Boots 
+		private static DbItemTemplate ArmsmanEpicHelm = null; //Shadow Shrouded Coif 
+		private static DbItemTemplate ArmsmanEpicGloves = null; //Shadow Shrouded Gloves 
+		private static DbItemTemplate ArmsmanEpicVest = null; //Shadow Shrouded Hauberk 
+		private static DbItemTemplate ArmsmanEpicLegs = null; //Shadow Shrouded Legs 
+		private static DbItemTemplate ArmsmanEpicArms = null; //Shadow Shrouded Sleeves 
+		private static DbItemTemplate TheurgistEpicBoots = null; //Valhalla Touched Boots 
+		private static DbItemTemplate TheurgistEpicHelm = null; //Valhalla Touched Coif 
+		private static DbItemTemplate TheurgistEpicGloves = null; //Valhalla Touched Gloves 
+		private static DbItemTemplate TheurgistEpicVest = null; //Valhalla Touched Hauberk 
+		private static DbItemTemplate TheurgistEpicLegs = null; //Valhalla Touched Legs 
+		private static DbItemTemplate TheurgistEpicArms = null; //Valhalla Touched Sleeves 
+		private static DbItemTemplate FriarEpicBoots = null; //Subterranean Boots 
+		private static DbItemTemplate FriarEpicHelm = null; //Subterranean Coif 
+		private static DbItemTemplate FriarEpicGloves = null; //Subterranean Gloves 
+		private static DbItemTemplate FriarEpicVest = null; //Subterranean Hauberk 
+		private static DbItemTemplate FriarEpicLegs = null; //Subterranean Legs
+		private static DbItemTemplate FriarEpicArms = null; //Subterranean Sleeves
+		private static DbItemTemplate MaulerAlbEpicBoots = null;
+		private static DbItemTemplate MaulerAlbEpicHelm = null;
+		private static DbItemTemplate MaulerAlbEpicGloves = null;
+		private static DbItemTemplate MaulerAlbEpicVest = null;
+		private static DbItemTemplate MaulerAlbEpicLegs = null;
+		private static DbItemTemplate MaulerAlbEpicArms = null;
 
 		// Constructors
 		public Defenders_50() : base()
@@ -82,7 +82,7 @@ namespace DOL.GS.Quests.Albion
 		{
 		}
 
-		public Defenders_50(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public Defenders_50(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -172,12 +172,12 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineItems
 
-			sealed_pouch = GameServer.Database.FindObjectByKey<ItemTemplate>("sealed_pouch");
+			sealed_pouch = GameServer.Database.FindObjectByKey<DbItemTemplate>("sealed_pouch");
 			if (sealed_pouch == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Sealed Pouch , creating it ...");
-				sealed_pouch = new ItemTemplate();
+				sealed_pouch = new DbItemTemplate();
 				sealed_pouch.Id_nb = "sealed_pouch";
 				sealed_pouch.Name = "Sealed Pouch";
 				sealed_pouch.Level = 8;
@@ -199,11 +199,11 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			// end item
-			ItemTemplate i = null;
-			ScoutEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("ScoutEpicBoots");
+			DbItemTemplate i = null;
+			ScoutEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("ScoutEpicBoots");
 			if (ScoutEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ScoutEpicBoots";
 				i.Name = "Brigandine Boots of Vigilant Defense";
 				i.Level = 50;
@@ -242,10 +242,10 @@ namespace DOL.GS.Quests.Albion
 			}
 			//end item
 			//Brigandine of Vigilant Defense  Coif
-			ScoutEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("ScoutEpicHelm");
+			ScoutEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("ScoutEpicHelm");
 			if (ScoutEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ScoutEpicHelm";
 				i.Name = "Brigandine Coif of Vigilant Defense";
 				i.Level = 50;
@@ -285,10 +285,10 @@ namespace DOL.GS.Quests.Albion
 			}
 			//end item
 			//Brigandine of Vigilant Defense  Gloves
-			ScoutEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("ScoutEpicGloves");
+			ScoutEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("ScoutEpicGloves");
 			if (ScoutEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ScoutEpicGloves";
 				i.Name = "Brigandine Gloves of Vigilant Defense";
 				i.Level = 50;
@@ -328,10 +328,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//Brigandine of Vigilant Defense  Hauberk
-			ScoutEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("ScoutEpicVest");
+			ScoutEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("ScoutEpicVest");
 			if (ScoutEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ScoutEpicVest";
 				i.Name = "Brigandine Jerkin of Vigilant Defense";
 				i.Level = 50;
@@ -370,10 +370,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//Brigandine of Vigilant Defense  Legs
-			ScoutEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("ScoutEpicLegs");
+			ScoutEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("ScoutEpicLegs");
 			if (ScoutEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ScoutEpicLegs";
 				i.Name = "Brigandine Legs of Vigilant Defense";
 				i.Level = 50;
@@ -411,10 +411,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//Brigandine of Vigilant Defense  Sleeves
-			ScoutEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("ScoutEpicArms");
+			ScoutEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("ScoutEpicArms");
 			if (ScoutEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ScoutEpicArms";
 				i.Name = "Brigandine Sleeves of Vigilant Defense";
 				i.Level = 50;
@@ -455,10 +455,10 @@ namespace DOL.GS.Quests.Albion
 			//Scout Epic Sleeves End
 
 			//Armsman Epic Boots Start
-			ArmsmanEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("ArmsmanEpicBoots");
+			ArmsmanEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("ArmsmanEpicBoots");
 			if (ArmsmanEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ArmsmanEpicBoots";
 				i.Name = "Sabaton of the Stalwart Arm";
 				i.Level = 50;
@@ -496,10 +496,10 @@ namespace DOL.GS.Quests.Albion
 			}
 			//end item
 			//of the Stalwart Arm Coif
-			ArmsmanEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("ArmsmanEpicHelm");
+			ArmsmanEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("ArmsmanEpicHelm");
 			if (ArmsmanEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ArmsmanEpicHelm";
 				i.Name = "Coif of the Stalwart Arm";
 				i.Level = 50;
@@ -539,10 +539,10 @@ namespace DOL.GS.Quests.Albion
 			}
 			//end item
 			//of the Stalwart Arm Gloves
-			ArmsmanEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("ArmsmanEpicGloves");
+			ArmsmanEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("ArmsmanEpicGloves");
 			if (ArmsmanEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ArmsmanEpicGloves";
 				i.Name = "Gloves of the Stalwart Arm";
 				i.Level = 50;
@@ -581,10 +581,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//of the Stalwart Arm Hauberk
-			ArmsmanEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("ArmsmanEpicVest");
+			ArmsmanEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("ArmsmanEpicVest");
 			if (ArmsmanEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ArmsmanEpicVest";
 				i.Name = "Jerkin of the Stalwart Arm";
 				i.Level = 50;
@@ -626,10 +626,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//of the Stalwart Arm Legs
-			ArmsmanEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("ArmsmanEpicLegs");
+			ArmsmanEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("ArmsmanEpicLegs");
 			if (ArmsmanEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ArmsmanEpicLegs";
 				i.Name = "Legs of the Stalwart Arm";
 				i.Level = 50;
@@ -668,10 +668,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//of the Stalwart Arm Sleeves
-			ArmsmanEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("ArmsmanEpicArms");
+			ArmsmanEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("ArmsmanEpicArms");
 			if (ArmsmanEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ArmsmanEpicArms";
 				i.Name = "Sleeves of the Stalwart Arm";
 				i.Level = 50;
@@ -709,10 +709,10 @@ namespace DOL.GS.Quests.Albion
 				ArmsmanEpicArms = i;
 
 			}
-			FriarEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("FriarEpicBoots");
+			FriarEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("FriarEpicBoots");
 			if (FriarEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "FriarEpicBoots";
 				i.Name = "Prayer-bound Boots";
 				i.Level = 50;
@@ -752,10 +752,10 @@ namespace DOL.GS.Quests.Albion
 			}
 			//end item
 			//Prayer-bound Coif
-			FriarEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("FriarEpicHelm");
+			FriarEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("FriarEpicHelm");
 			if (FriarEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "FriarEpicHelm";
 				i.Name = "Prayer-bound Coif";
 				i.Level = 50;
@@ -795,10 +795,10 @@ namespace DOL.GS.Quests.Albion
 			}
 			//end item
 			//Prayer-bound Gloves
-			FriarEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("FriarEpicGloves");
+			FriarEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("FriarEpicGloves");
 			if (FriarEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "FriarEpicGloves";
 				i.Name = "Prayer-bound Gloves";
 				i.Level = 50;
@@ -837,10 +837,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//Prayer-bound Hauberk
-			FriarEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("FriarEpicVest");
+			FriarEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("FriarEpicVest");
 			if (FriarEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "FriarEpicVest";
 				i.Name = "Prayer-bound Jerkin";
 				i.Level = 50;
@@ -880,10 +880,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//Prayer-bound Legs
-			FriarEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("FriarEpicLegs");
+			FriarEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("FriarEpicLegs");
 			if (FriarEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "FriarEpicLegs";
 				i.Name = "Prayer-bound Legs";
 				i.Level = 50;
@@ -922,10 +922,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//Prayer-bound Sleeves
-			FriarEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("FriarEpicArms");
+			FriarEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("FriarEpicArms");
 			if (FriarEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "FriarEpicArms";
 				i.Name = "Prayer-bound Sleeves";
 				i.Level = 50;
@@ -963,10 +963,10 @@ namespace DOL.GS.Quests.Albion
 				FriarEpicArms = i;
 
 			}
-			TheurgistEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("TheurgistEpicBoots");
+			TheurgistEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("TheurgistEpicBoots");
 			if (TheurgistEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "TheurgistEpicBoots";
 				i.Name = "Boots of Shielding Power";
 				i.Level = 50;
@@ -1006,10 +1006,10 @@ namespace DOL.GS.Quests.Albion
 			}
 			//end item
 			//of Shielding Power Coif
-			TheurgistEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("TheurgistEpicHelm");
+			TheurgistEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("TheurgistEpicHelm");
 			if (TheurgistEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "TheurgistEpicHelm";
 				i.Name = "Coif of Shielding Power";
 				i.Level = 50;
@@ -1049,10 +1049,10 @@ namespace DOL.GS.Quests.Albion
 			}
 			//end item
 			//of Shielding Power Gloves
-			TheurgistEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("TheurgistEpicGloves");
+			TheurgistEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("TheurgistEpicGloves");
 			if (TheurgistEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "TheurgistEpicGloves";
 				i.Name = "Gloves of Shielding Power";
 				i.Level = 50;
@@ -1091,10 +1091,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//of Shielding Power Hauberk
-			TheurgistEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("TheurgistEpicVest");
+			TheurgistEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("TheurgistEpicVest");
 			if (TheurgistEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "TheurgistEpicVest";
 				i.Name = "Jerkin of Shielding Power";
 				i.Level = 50;
@@ -1131,10 +1131,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//of Shielding Power Legs
-			TheurgistEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("TheurgistEpicLegs");
+			TheurgistEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("TheurgistEpicLegs");
 			if (TheurgistEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "TheurgistEpicLegs";
 				i.Name = "Legs of Shielding Power";
 				i.Level = 50;
@@ -1173,10 +1173,10 @@ namespace DOL.GS.Quests.Albion
 
 			}
 			//of Shielding Power Sleeves
-			TheurgistEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("TheurgistEpicArms");
+			TheurgistEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("TheurgistEpicArms");
 			if (TheurgistEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "TheurgistEpicArms";
 				i.Name = "Sleeves of Shielding Power";
 				i.Level = 50;
@@ -1211,12 +1211,12 @@ namespace DOL.GS.Quests.Albion
 
 			}
 
-			MaulerAlbEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerAlbEpicBoots");
-			MaulerAlbEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerAlbEpicHelm");
-			MaulerAlbEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerAlbEpicGloves");
-			MaulerAlbEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerAlbEpicVest");
-			MaulerAlbEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerAlbEpicLegs");
-			MaulerAlbEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("MaulerAlbEpicArms");
+			MaulerAlbEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("MaulerAlbEpicBoots");
+			MaulerAlbEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("MaulerAlbEpicHelm");
+			MaulerAlbEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("MaulerAlbEpicGloves");
+			MaulerAlbEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("MaulerAlbEpicVest");
+			MaulerAlbEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("MaulerAlbEpicLegs");
+			MaulerAlbEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("MaulerAlbEpicArms");
 			//Item Descriptions End
 
 			#endregion

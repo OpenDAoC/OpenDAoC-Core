@@ -70,7 +70,7 @@ namespace DOL.GS.GameEvents
 			if (chArgs == null)
 				return;
 			
-			DOLCharacters ch = chArgs.Character;
+			DbCoreCharacter ch = chArgs.Character;
 			
 			try
 			{
@@ -122,7 +122,7 @@ namespace DOL.GS.GameEvents
 			if (chArgs == null)
 				return;
 			
-			DOLCharacters ch = chArgs.Character;
+			DbCoreCharacter ch = chArgs.Character;
 			
 			// check if location looks ok.
 			if (ch.Xpos == 0 && ch.Ypos == 0 && ch.Zpos == 0)
@@ -142,7 +142,7 @@ namespace DOL.GS.GameEvents
 			}
 		}
 		
-		public static IList<StartupLocation> GetAllStartupLocationForCharacter(DOLCharacters ch, GameClient.eClientVersion cli)
+		public static IList<StartupLocation> GetAllStartupLocationForCharacter(DbCoreCharacter ch, GameClient.eClientVersion cli)
 		{
 			return m_cachedLocations.Where(sl => sl.MinVersion <= (int)cli)
 				.Where(sl => sl.ClassID == 0 || sl.ClassID == ch.Class)
@@ -171,7 +171,7 @@ namespace DOL.GS.GameEvents
 		/// Binds character to current location
 		/// </summary>
 		/// <param name="ch"></param>
-		public static void BindCharacter(DOLCharacters ch)
+		public static void BindCharacter(DbCoreCharacter ch)
 		{
 			ch.BindRegion = ch.Region;
 			ch.BindHeading = ch.Direction;

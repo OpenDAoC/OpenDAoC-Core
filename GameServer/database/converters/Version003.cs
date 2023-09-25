@@ -41,16 +41,16 @@ namespace DOL.GS.DatabaseConverters
 		{
 			log.Info("Database Version 3 Convert Started");
 
-			if (GameServer.Instance.Configuration.DBType == DOL.Database.Connection.ConnectionType.DATABASE_XML)
+			if (GameServer.Instance.Configuration.DBType == DOL.Database.Connection.EConnectionType.DATABASE_XML)
 			{
 				log.Info("You have an XML database loaded, this converter will only work with MySQL, skipping");
 				return;
 			}
 
-			var templates = DOLDB<ItemTemplate>.SelectObjects(DB.Column("SpellID").IsEqualTo(0));
+			var templates = DOLDB<DbItemTemplate>.SelectObjects(DB.Column("SpellID").IsEqualTo(0));
 
 			int count = 0;
-			foreach (ItemTemplate template in templates)
+			foreach (DbItemTemplate template in templates)
 			{
 				SpellLine poisonLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mundane_Poisons);
 				if (poisonLine != null)
@@ -79,11 +79,11 @@ namespace DOL.GS.DatabaseConverters
 
 			log.Info("Converted " + count + " templates");
 
-			var items = DOLDB<InventoryItem>.SelectObjects(DB.Column("SpellID").IsEqualTo(0));
+			var items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("SpellID").IsEqualTo(0));
 			count = 0;
-			foreach (InventoryItem item in items)
+			foreach (DbInventoryItem item in items)
 			{
-				foreach (ItemTemplate template in templates)
+				foreach (DbItemTemplate template in templates)
 				{
 					SpellLine poisonLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mundane_Poisons);
 					if (poisonLine != null)

@@ -6,7 +6,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class SoldiersBarricadeAbility : TimedRealmAbility
 	{
-		public SoldiersBarricadeAbility(DBAbility dba, int level) : base(dba, level) { }
+		public SoldiersBarricadeAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// [Atlas - Takii] Remove the "BoF/SB don't stack" rule from NF by giving them unique names.
         //public const string BofBaSb = "RA_DAMAGE_DECREASE";

@@ -51,7 +51,7 @@ namespace DOL.GS
 			}
 		}
 
-		private List<Teleport> m_destinations = new List<Teleport>();
+		private List<DbTeleport> m_destinations = new List<DbTeleport>();
 
 		/// <summary>
 		/// Display the teleport indicator around this teleporters feet
@@ -99,7 +99,7 @@ namespace DOL.GS
 			}
 
 			int numDestinations = 0;
-			foreach (Teleport destination in m_destinations)
+			foreach (DbTeleport destination in m_destinations)
 			{
 				player.Out.SendMessage(String.Format("[{0}]", destination.TeleportID), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 				numDestinations++;
@@ -121,7 +121,7 @@ namespace DOL.GS
 			if (m_destinations.Count > 0 || GuildName == null || GuildName.Length == 0)
 				return;
 
-			m_destinations.AddRange(DOLDB<Teleport>.SelectObjects(DB.Column("Type").IsEqualTo(GuildName)));
+			m_destinations.AddRange(DOLDB<DbTeleport>.SelectObjects(DB.Column("Type").IsEqualTo(GuildName)));
 		}
 
 		public override bool WhisperReceive(GameLiving source, string text)
@@ -143,9 +143,9 @@ namespace DOL.GS
 			if (GameServer.ServerRules.IsSameRealm(this, player, true) == false && player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
 				return false;
 
-			Teleport destination = null;
+			DbTeleport destination = null;
 
-			foreach (Teleport t in m_destinations)
+			foreach (DbTeleport t in m_destinations)
 			{
 				if (t.TeleportID == text)
 				{
@@ -168,7 +168,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="destination"></param>
-		protected override void OnDestinationPicked(GamePlayer player, Teleport destination)
+		protected override void OnDestinationPicked(GamePlayer player, DbTeleport destination)
 		{
 			SayTo(player, "Have a safe journey!");
 			base.OnDestinationPicked(player, destination);
@@ -179,7 +179,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="destination"></param>
-		protected override void OnTeleport(GamePlayer player, Teleport destination)
+		protected override void OnTeleport(GamePlayer player, DbTeleport destination)
 		{
 			OnTeleportSpell(player, destination);
 		}

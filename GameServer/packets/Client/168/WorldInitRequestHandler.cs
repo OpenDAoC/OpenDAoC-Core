@@ -101,7 +101,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     lock (player.Inventory)
                     {
                         Guild playerGuild = player.Guild;
-                        foreach (InventoryItem myitem in player.Inventory.AllItems)
+                        foreach (DbInventoryItem myitem in player.Inventory.AllItems)
                         {
                             if (myitem != null && myitem.Emblem != 0)
                             {

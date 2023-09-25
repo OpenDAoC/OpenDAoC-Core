@@ -34,7 +34,7 @@ namespace DOL.GS.Behaviour.Requirements
 	/// additional parameters. To fire a QuestAction ALL requirements must be fulfilled.         
 	/// </summary>
     [RequirementAttribute(RequirementType=eRequirementType.EquippedItem)]
-	public class EquippedItemRequirement : AbstractRequirement<ItemTemplate,Unused>
+	public class EquippedItemRequirement : AbstractRequirement<DbItemTemplate,Unused>
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -55,7 +55,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// </summary>
 		/// <param name="defaultNPC">Parent defaultNPC of this Requirement</param>		
 		/// <param name="n">First Requirement Variable, meaning depends on RequirementType</param>				
-        public EquippedItemRequirement(GameNPC defaultNPC, ItemTemplate n )
+        public EquippedItemRequirement(GameNPC defaultNPC, DbItemTemplate n )
             : this(defaultNPC,  (object)n, (object)null, eComparator.None)
 		{   			
 		}

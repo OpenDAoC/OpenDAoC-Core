@@ -35,7 +35,7 @@ namespace DOL.GS
 				default: return 40;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -291,7 +291,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Aros_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3.5;
 					spell.RecastDelay = 0;
@@ -319,7 +319,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Aros_Bomb == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 5;
 					spell.RecastDelay = Util.Random(35,45);
@@ -348,7 +348,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Aros_Debuff == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = Util.Random(15,25);
@@ -476,7 +476,7 @@ namespace DOL.GS
 			{
 				if (m_SpiritChampion_stun == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 2;

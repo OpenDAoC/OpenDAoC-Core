@@ -37,7 +37,7 @@ namespace DOL.GS.GameEvents
 		/// <param name="targetPoint">The jump destination</param>
 		/// <param name="player">The jumping player</param>
 		/// <returns>True if allowed</returns>
-		public bool IsAllowedToJump(ZonePoint targetPoint, GamePlayer player)
+		public bool IsAllowedToJump(DbZonePoint targetPoint, GamePlayer player)
 		{
 			StartupLocation loc = StartupLocations.GetNonTutorialLocation(player);
 

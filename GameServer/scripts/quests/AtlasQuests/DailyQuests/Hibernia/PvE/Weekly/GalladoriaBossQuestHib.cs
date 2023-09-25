@@ -45,7 +45,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
         {
         }
 
-        public GalladoriaBossQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+        public GalladoriaBossQuestHib(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
         {
         }
 

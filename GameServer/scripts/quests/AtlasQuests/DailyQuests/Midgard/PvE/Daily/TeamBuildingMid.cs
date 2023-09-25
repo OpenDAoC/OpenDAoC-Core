@@ -50,7 +50,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 		}
 
-		public TeamBuildingMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public TeamBuildingMid(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

@@ -45,7 +45,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
         {
         }
 
-        public TuscarianBossQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+        public TuscarianBossQuestMid(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
         {
         }
 

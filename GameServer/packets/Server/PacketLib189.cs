@@ -48,7 +48,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
 			{
-				ICollection<InventoryItem> items = null;
+				ICollection<DbInventoryItem> items = null;
 				if (living.Inventory != null)
 					items = living.Inventory.VisibleItems;
 
@@ -61,7 +61,7 @@ namespace DOL.GS.PacketHandler
 				if (items != null)
 				{
 					pak.WriteByte((byte)items.Count);
-					foreach (InventoryItem item in items)
+					foreach (DbInventoryItem item in items)
 					{
 						ushort model = (ushort)(item.Model & 0x1FFF);
 						int slot = item.SlotPosition;
@@ -106,13 +106,13 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="updateItems"></param>
 		/// <param name="windowType"></param>
-		public override void SendInventoryItemsUpdate(IDictionary<int, InventoryItem> updateItems, eInventoryWindowType windowType)
+		public override void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, eInventoryWindowType windowType)
 		{
 			if (m_gameClient.Player == null)
 				return;
 
 			if (updateItems == null)
-				updateItems = new Dictionary<int, InventoryItem>();
+				updateItems = new Dictionary<int, DbInventoryItem>();
 
 			if (updateItems.Count <= ServerProperties.Properties.MAX_ITEMS_PER_PACKET)
 			{
@@ -120,7 +120,7 @@ namespace DOL.GS.PacketHandler
 				return;
 			}
 
-			var items = new Dictionary<int, InventoryItem>(ServerProperties.Properties.MAX_ITEMS_PER_PACKET);
+			var items = new Dictionary<int, DbInventoryItem>(ServerProperties.Properties.MAX_ITEMS_PER_PACKET);
 
 			foreach (var item in updateItems)
 			{
@@ -145,7 +145,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="items"></param>
 		/// <param name="windowType"></param>
-		protected override void SendInventoryItemsPartialUpdate(IDictionary<int, InventoryItem> items, eInventoryWindowType windowType)
+		protected override void SendInventoryItemsPartialUpdate(IDictionary<int, DbInventoryItem> items, eInventoryWindowType windowType)
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.InventoryUpdate)))
 			{
@@ -223,7 +223,7 @@ namespace DOL.GS.PacketHandler
 
 		protected static int MAX_NAME_LENGTH = 55;
 
-		protected virtual void WriteItemData(GSTCPPacketOut pak, InventoryItem item)
+		protected virtual void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{

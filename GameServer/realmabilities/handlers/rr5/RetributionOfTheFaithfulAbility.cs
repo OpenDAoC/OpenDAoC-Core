@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class RetributionOfTheFaithfulAbility : RR5RealmAbility
 	{
-		public RetributionOfTheFaithfulAbility(DBAbility dba, int level) : base(dba, level) { }
+		public RetributionOfTheFaithfulAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

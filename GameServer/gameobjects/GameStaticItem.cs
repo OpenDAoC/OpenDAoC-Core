@@ -188,7 +188,7 @@ namespace DOL.GS
 
 		public override void LoadFromDatabase(DataObject obj)
 		{
-			WorldObject item = obj as WorldObject;
+			DbWorldObject item = obj as DbWorldObject;
 			base.LoadFromDatabase(obj);
 			
 			m_loadedFromScript = false;
@@ -253,16 +253,16 @@ namespace DOL.GS
 		/// </summary>
 		public override void SaveIntoDatabase()
 		{
-			WorldObject obj = null;
+			DbWorldObject obj = null;
 			if (InternalID != null)
 			{
-				obj = (WorldObject)GameServer.Database.FindObjectByKey<WorldObject>(InternalID);
+				obj = (DbWorldObject)GameServer.Database.FindObjectByKey<DbWorldObject>(InternalID);
 			}
 			if (obj == null)
 			{
 				if (LoadedFromScript == false)
 				{
-					obj = new WorldObject();
+					obj = new DbWorldObject();
 				}
 				else
 				{
@@ -308,7 +308,7 @@ namespace DOL.GS
 		{
 			if(InternalID != null)
 			{
-				WorldObject obj = (WorldObject) GameServer.Database.FindObjectByKey<WorldObject>(InternalID);
+				DbWorldObject obj = (DbWorldObject) GameServer.Database.FindObjectByKey<DbWorldObject>(InternalID);
 				if(obj != null)
 				  GameServer.Database.DeleteObject(obj);
 			}

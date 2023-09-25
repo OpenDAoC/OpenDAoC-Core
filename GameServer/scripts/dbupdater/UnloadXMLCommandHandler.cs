@@ -89,7 +89,7 @@ namespace DOL.GS.DatabaseUpdate
 				break;
 				default:
 					var finddir = directory;
-					var findType = types.FirstOrDefault(t => t.Name.Equals(argTable, StringComparison.OrdinalIgnoreCase) || AttributesUtils.GetTableName(t).Equals(argTable, StringComparison.OrdinalIgnoreCase));
+					var findType = types.FirstOrDefault(t => t.Name.Equals(argTable, StringComparison.OrdinalIgnoreCase) || AttributeUtil.GetTableName(t).Equals(argTable, StringComparison.OrdinalIgnoreCase));
 					if (findType == null)
 					{
 						DisplaySyntax(client);

@@ -27,7 +27,7 @@ using DOL.Database;
 namespace DOL.GS.Behaviour.Actions
 {
     [ActionAttribute(ActionType = eActionType.ReplaceItem)]
-    public class ReplaceItemAction : AbstractAction<ItemTemplate,ItemTemplate>
+    public class ReplaceItemAction : AbstractAction<DbItemTemplate,DbItemTemplate>
     {               
 
         public ReplaceItemAction(GameNPC defaultNPC,  Object p, Object q)
@@ -36,7 +36,7 @@ namespace DOL.GS.Behaviour.Actions
         }
 
 
-        public ReplaceItemAction(GameNPC defaultNPC,  ItemTemplate oldItemTemplate, ItemTemplate newItemTemplate)
+        public ReplaceItemAction(GameNPC defaultNPC,  DbItemTemplate oldItemTemplate, DbItemTemplate newItemTemplate)
             : this(defaultNPC, (object) oldItemTemplate,(object) newItemTemplate) { }
         
 
@@ -45,14 +45,14 @@ namespace DOL.GS.Behaviour.Actions
         {
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
 
-            ItemTemplate oldItem = P;
-            ItemTemplate newItem = Q;
+            DbItemTemplate oldItem = P;
+            DbItemTemplate newItem = Q;
 
             //TODO: what about stacked items???
             if (player.Inventory.RemoveTemplate(oldItem.Id_nb, 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
             {
                 InventoryLogging.LogInventoryAction(player, NPC, eInventoryActionType.Quest, oldItem, 1);
-				InventoryItem inventoryItem = GameInventoryItem.Create(newItem);
+				DbInventoryItem inventoryItem = GameInventoryItem.Create(newItem);
                 if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, inventoryItem))
                     InventoryLogging.LogInventoryAction(NPC, player, eInventoryActionType.Quest, newItem, 1);
             }

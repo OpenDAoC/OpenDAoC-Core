@@ -112,8 +112,8 @@ namespace DOL.GS.PacketHandler
 				}
 				else
 				{
-					Dictionary<int, DOLCharacters> charsBySlot = new Dictionary<int, DOLCharacters>();
-					foreach (DOLCharacters c in m_gameClient.Account.Characters)
+					Dictionary<int, DbCoreCharacter> charsBySlot = new Dictionary<int, DbCoreCharacter>();
+					foreach (DbCoreCharacter c in m_gameClient.Account.Characters)
 					{
 						try
 						{
@@ -124,21 +124,21 @@ namespace DOL.GS.PacketHandler
 							log.Error("SendCharacterOverview - Duplicate char in slot? Slot: " + c.AccountSlot + ", Account: " + c.AccountName, ex);
 						}
 					}
-					var itemsByOwnerID = new Dictionary<string, Dictionary<eInventorySlot, InventoryItem>>();
+					var itemsByOwnerID = new Dictionary<string, Dictionary<eInventorySlot, DbInventoryItem>>();
 
 					if (charsBySlot.Any())
 					{
 						var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.MinEquipable)
 							.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.MaxEquipable));
-						var allItems = DOLDB<InventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
+						var allItems = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
 
-						foreach (InventoryItem item in allItems)
+						foreach (DbInventoryItem item in allItems)
 						{
 							try
 							{
 								if (!itemsByOwnerID.ContainsKey(item.OwnerID))
 								{
-									itemsByOwnerID.Add(item.OwnerID, new Dictionary<eInventorySlot, InventoryItem>());
+									itemsByOwnerID.Add(item.OwnerID, new Dictionary<eInventorySlot, DbInventoryItem>());
 								}
 
 								itemsByOwnerID[item.OwnerID].Add((eInventorySlot)item.SlotPosition, item);
@@ -152,16 +152,16 @@ namespace DOL.GS.PacketHandler
 
 					for (int i = firstSlot; i < (firstSlot + 10); i++)
 					{
-						if (!charsBySlot.TryGetValue(i, out DOLCharacters c))
+						if (!charsBySlot.TryGetValue(i, out DbCoreCharacter c))
 						{
 							pak.WriteByte(0);
 						}
 						else
 						{
 
-							if (!itemsByOwnerID.TryGetValue(c.ObjectId, out Dictionary<eInventorySlot, InventoryItem> charItems))
+							if (!itemsByOwnerID.TryGetValue(c.ObjectId, out Dictionary<eInventorySlot, DbInventoryItem> charItems))
 							{
-								charItems = new Dictionary<eInventorySlot, InventoryItem>();
+								charItems = new Dictionary<eInventorySlot, DbInventoryItem>();
 							}
 
 							byte extensionTorso = 0;
@@ -169,7 +169,7 @@ namespace DOL.GS.PacketHandler
 							byte extensionBoots = 0;
 
 
-							if (charItems.TryGetValue(eInventorySlot.TorsoArmor, out InventoryItem item))
+							if (charItems.TryGetValue(eInventorySlot.TorsoArmor, out DbInventoryItem item))
 							{
 								extensionTorso = item.Extension;
 							}
@@ -235,17 +235,17 @@ namespace DOL.GS.PacketHandler
 								pak.WriteByte((byte)(region.Expansion + 1)); //0x04-Cata zone, 0x05 - DR zone
 							}
 
-							charItems.TryGetValue(eInventorySlot.RightHandWeapon, out InventoryItem rightHandWeapon);
-							charItems.TryGetValue(eInventorySlot.LeftHandWeapon, out InventoryItem leftHandWeapon);
-							charItems.TryGetValue(eInventorySlot.TwoHandWeapon, out InventoryItem twoHandWeapon);
-							charItems.TryGetValue(eInventorySlot.DistanceWeapon, out InventoryItem distanceWeapon);
-							charItems.TryGetValue(eInventorySlot.HeadArmor, out InventoryItem helmet);
-							charItems.TryGetValue(eInventorySlot.HandsArmor, out InventoryItem gloves);
-							charItems.TryGetValue(eInventorySlot.FeetArmor, out InventoryItem boots);
-							charItems.TryGetValue(eInventorySlot.TorsoArmor, out InventoryItem torso);
-							charItems.TryGetValue(eInventorySlot.Cloak, out InventoryItem cloak);
-							charItems.TryGetValue(eInventorySlot.LegsArmor, out InventoryItem legs);
-							charItems.TryGetValue(eInventorySlot.ArmsArmor, out InventoryItem arms);
+							charItems.TryGetValue(eInventorySlot.RightHandWeapon, out DbInventoryItem rightHandWeapon);
+							charItems.TryGetValue(eInventorySlot.LeftHandWeapon, out DbInventoryItem leftHandWeapon);
+							charItems.TryGetValue(eInventorySlot.TwoHandWeapon, out DbInventoryItem twoHandWeapon);
+							charItems.TryGetValue(eInventorySlot.DistanceWeapon, out DbInventoryItem distanceWeapon);
+							charItems.TryGetValue(eInventorySlot.HeadArmor, out DbInventoryItem helmet);
+							charItems.TryGetValue(eInventorySlot.HandsArmor, out DbInventoryItem gloves);
+							charItems.TryGetValue(eInventorySlot.FeetArmor, out DbInventoryItem boots);
+							charItems.TryGetValue(eInventorySlot.TorsoArmor, out DbInventoryItem torso);
+							charItems.TryGetValue(eInventorySlot.Cloak, out DbInventoryItem cloak);
+							charItems.TryGetValue(eInventorySlot.LegsArmor, out DbInventoryItem legs);
+							charItems.TryGetValue(eInventorySlot.ArmsArmor, out DbInventoryItem arms);
 
 							pak.WriteShortLowEndian((ushort)(helmet != null ? helmet.Model : 0));
 							pak.WriteShortLowEndian((ushort)(gloves != null ? gloves.Model : 0));
@@ -519,7 +519,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// 1125d+ Market Explorer
 		/// </summary>
-		public override void SendMarketExplorerWindow(IList<InventoryItem> items, byte page, byte maxpage)
+		public override void SendMarketExplorerWindow(IList<DbInventoryItem> items, byte page, byte maxpage)
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.MarketExplorerWindow)))
 			{
@@ -527,7 +527,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(page);
 				pak.WriteByte(maxpage);
 				pak.WriteByte(0);
-				foreach (InventoryItem item in items)
+				foreach (DbInventoryItem item in items)
 				{
 					pak.WriteByte((byte)items.IndexOf(item));
 					pak.WriteByte((byte)item.Level);
@@ -664,7 +664,7 @@ namespace DOL.GS.PacketHandler
 								continue;
 							}
 
-							var item = (ItemTemplate)itemsInPage[(int)i];
+							var item = (DbItemTemplate)itemsInPage[(int)i];
 							if (item != null)
 							{
 								pak.WriteByte((byte)i); //Item index on page
@@ -740,7 +740,7 @@ namespace DOL.GS.PacketHandler
 								if (log.IsErrorEnabled)
 								{
 									log.Error("Merchant item template '" +
-											  ((MerchantItem)itemsInPage[page * MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS + i]).ItemTemplateID +
+											  ((DbMerchantItem)itemsInPage[page * MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS + i]).ItemTemplateID +
 											  "' not found, abort!!!");
 								}
 

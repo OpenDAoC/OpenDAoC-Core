@@ -12,7 +12,7 @@ namespace DOL.GS.Keeps
     public class GateKeeperIn : GameKeepGuard
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private List<DBKeepDoorTeleport> m_destinationsIn = new List<DBKeepDoorTeleport>();
+        private List<DbKeepDoorTeleport> m_destinationsIn = new List<DbKeepDoorTeleport>();
         private const string type = "GateKeeperIn";
 
         public override eFlags Flags
@@ -38,7 +38,7 @@ namespace DOL.GS.Keeps
             if (this.m_destinationsIn.Count > 0)
                 return;
 
-            this.m_destinationsIn.AddRange(GameServer.Database.SelectObjects<DBKeepDoorTeleport>(DB.Column("Text").IsEqualTo("sortir").And(DB.Column("TeleportType").IsEqualTo(type))));
+            this.m_destinationsIn.AddRange(GameServer.Database.SelectObjects<DbKeepDoorTeleport>(DB.Column("Text").IsEqualTo("sortir").And(DB.Column("TeleportType").IsEqualTo(type))));
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace DOL.GS.Keeps
         /// </summary>
         /// <param name="player"></param>
         /// <param name="destination"></param>
-        protected virtual void OnTeleportSpell(GamePlayer player, DBKeepDoorTeleport destination, bool delayed)
+        protected virtual void OnTeleportSpell(GamePlayer player, DbKeepDoorTeleport destination, bool delayed)
         {
             if (destination == null)
                 return;
@@ -166,11 +166,11 @@ namespace DOL.GS.Keeps
 
         protected virtual bool GetTeleportLocation(GamePlayer player, string text)
         {
-            DBKeepDoorTeleport port = null;
+            DbKeepDoorTeleport port = null;
             if (text.ToLower().Contains("leave") || text.ToLower().Contains("sortir") || text == "interact")
             {
 
-                foreach (DBKeepDoorTeleport t in m_destinationsIn)
+                foreach (DbKeepDoorTeleport t in m_destinationsIn)
                 {
                     if (t == null) break;
                     if (t.KeepID == Component.Keep.KeepID)
@@ -204,7 +204,7 @@ namespace DOL.GS.Keeps
     public class GateKeeperOut : GameKeepGuard
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private List<DBKeepDoorTeleport> m_destinationsOut = new List<DBKeepDoorTeleport>();
+        private List<DbKeepDoorTeleport> m_destinationsOut = new List<DbKeepDoorTeleport>();
         private const string type = "GateKeeperOut";
 
         public override eFlags Flags
@@ -230,7 +230,7 @@ namespace DOL.GS.Keeps
             if (this.m_destinationsOut.Count > 0)
                 return;
 
-            this.m_destinationsOut.AddRange(GameServer.Database.SelectObjects<DBKeepDoorTeleport>(DB.Column("Text").IsEqualTo("entrer").And(DB.Column("TeleportType").IsEqualTo(type))));
+            this.m_destinationsOut.AddRange(GameServer.Database.SelectObjects<DbKeepDoorTeleport>(DB.Column("Text").IsEqualTo("entrer").And(DB.Column("TeleportType").IsEqualTo(type))));
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace DOL.GS.Keeps
         /// </summary>
         /// <param name="player"></param>
         /// <param name="destination"></param>
-        protected virtual void OnTeleportSpell(GamePlayer player, DBKeepDoorTeleport destination, bool delayed)
+        protected virtual void OnTeleportSpell(GamePlayer player, DbKeepDoorTeleport destination, bool delayed)
         {
             if (destination == null)
                 return;
@@ -361,10 +361,10 @@ namespace DOL.GS.Keeps
 
         protected virtual bool GetTeleportLocation(GamePlayer player, string text)
         {
-            DBKeepDoorTeleport port = null;
+            DbKeepDoorTeleport port = null;
             if (text.ToLower().Contains("entrer") || text.ToLower().Contains("enter") || text == "interact")
             {
-                foreach (DBKeepDoorTeleport t in this.m_destinationsOut)
+                foreach (DbKeepDoorTeleport t in this.m_destinationsOut)
                 {
                     if (t == null) break;
                     if (t.KeepID == Component.Keep.KeepID)

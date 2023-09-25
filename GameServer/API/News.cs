@@ -25,7 +25,7 @@ public class News
         {
         }
 
-        public NewsInfo(DBNews news)
+        public NewsInfo(DbNews news)
         {
             if (news == null) return;
             Date = news.CreationDate.ToString("dd-MM-yyyy hh:mm tt");
@@ -48,7 +48,7 @@ public class News
 
         if (cache == null)
         {
-            ICollection<DBNews> newsList = DOLDB<DBNews>.SelectAllObjects().OrderByDescending(a => a.CreationDate)
+            ICollection<DbNews> newsList = DOLDB<DbNews>.SelectAllObjects().OrderByDescending(a => a.CreationDate)
                 .Take(_numNews).ToList();
 
             foreach (var news in newsList) allNews.Add(new NewsInfo(news));
@@ -70,7 +70,7 @@ public class News
 
         if (cache == null)
         {
-            ICollection<DBNews> newsList = DOLDB<DBNews>.SelectObjects(DB.Column("Realm").IsEqualTo(realm))
+            ICollection<DbNews> newsList = DOLDB<DbNews>.SelectObjects(DB.Column("Realm").IsEqualTo(realm))
                 .OrderByDescending(a => a.CreationDate).Take(_numNews).ToList();
 
             foreach (var news in newsList) allNews.Add(new NewsInfo(news));
@@ -92,7 +92,7 @@ public class News
 
         if (cache == null)
         {
-            ICollection<DBNews> newsList = DOLDB<DBNews>.SelectObjects(DB.Column("Type").IsEqualTo(type))
+            ICollection<DbNews> newsList = DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(type))
                 .OrderByDescending(a => a.CreationDate).Take(_numNews).ToList();
 
             foreach (var news in newsList) allNews.Add(new NewsInfo(news));

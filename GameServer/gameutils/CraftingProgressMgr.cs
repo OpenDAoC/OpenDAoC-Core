@@ -65,7 +65,7 @@ namespace DOL.GS {
         /// </summary>
         /// <param name="change"></param>
         private static void _saveInstance(GamePlayer player, Dictionary<eCraftingSkill, int> change) {
-            AccountXCrafting craftingForRealm = DOLDB<AccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(player.AccountName)
+            DbAccountXCrafting craftingForRealm = DOLDB<DbAccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(player.AccountName)
                 .And(DB.Column("Realm").IsEqualTo(player.Realm)));
             craftingForRealm.CraftingPrimarySkill = (byte)player.CraftingPrimarySkill;
             string cs = string.Empty;

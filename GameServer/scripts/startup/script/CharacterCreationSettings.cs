@@ -94,7 +94,7 @@ namespace DOL.GS.GameEvents
 			if (chArgs == null)
 				return;
 			
-			DOLCharacters ch = chArgs.Character;
+			DbCoreCharacter ch = chArgs.Character;
 
 			// Property BPS
 			if (STARTING_BPS > 0)

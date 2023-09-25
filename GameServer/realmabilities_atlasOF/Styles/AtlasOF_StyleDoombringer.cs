@@ -5,11 +5,11 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_StyleDoombringer : StyleRealmAbility
     {
-        public AtlasOF_StyleDoombringer(DBAbility ability, int level) : base(ability, level) { }
+        public AtlasOF_StyleDoombringer(DbAbility ability, int level) : base(ability, level) { }
 
         protected override Style CreateStyle()
         {
-            DBStyle tmpStyle = new()
+            DbStyle tmpStyle = new()
             {
                 Name = "Doombringer",
                 GrowthRate = 1.4,

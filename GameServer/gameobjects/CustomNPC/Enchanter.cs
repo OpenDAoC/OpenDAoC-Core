@@ -96,7 +96,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="source">The entity giving the item to the NPC (e.g., 'GamePlayer player').</param>
 		/// /// <param name="item">The specific item being given to the NPC.</param>
-		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
 		{
 			GamePlayer player = source as GamePlayer;
 			if (player == null || item == null)
@@ -150,7 +150,7 @@ namespace DOL.GS
 			WeakReference itemWeak = player.TempProperties.GetProperty<WeakReference>(ENCHANT_ITEM_WEAK, new WeakRef(null));
 			player.TempProperties.RemoveProperty(ENCHANT_ITEM_WEAK);
 
-			InventoryItem item = (InventoryItem) itemWeak.Target;
+			DbInventoryItem item = (DbInventoryItem) itemWeak.Target;
 
 			if (item == null) return;
 
@@ -190,7 +190,7 @@ namespace DOL.GS
 
 			// bright
             item.Name = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Enchanter.ItemLevel.Bright") + " " + item.Name;
-            player.Out.SendInventoryItemsUpdate(new InventoryItem[] { item });
+            player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
             GameServer.Database.SaveObject(item);
             // Message: You give {0} {1}.
             ChatUtil.SendSayMessage(player, "GameNPC.Enchanter.Response.YouGive",
@@ -209,7 +209,7 @@ namespace DOL.GS
 		}
 		#endregion Repair Responses
 
-		public long CalculEnchantPrice(InventoryItem item)
+		public long CalculEnchantPrice(DbInventoryItem item)
 		{
 			return (item.Price/5);
 		}

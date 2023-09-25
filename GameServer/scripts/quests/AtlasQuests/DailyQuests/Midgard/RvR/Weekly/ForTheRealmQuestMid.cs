@@ -46,7 +46,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 		{
 		}
 
-		public ForTheRealmQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public ForTheRealmQuestMid(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

@@ -103,7 +103,7 @@ namespace DOL.GS.Commands
                     {
                         if (client.Player.TargetObject is GameMerchant merchant)
                         {
-                            var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID")
+                            var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                                 .IsEqualTo(merchant.TradeItems.ItemsListID));
                             
                             IList<Ingredient> recipeIngredients;
@@ -118,7 +118,7 @@ namespace DOL.GS.Commands
                                 foreach (var items in merchantitems)
                                 {
                                     var item =
-                                        GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
+                                        GameServer.Database.FindObjectByKey<DbItemTemplate>(items.ItemTemplateID);
                                     if (item.Id_nb == "beetle_carapace") continue;
                                     if (item != ingredient.Material) continue;
                                     merchant.OnPlayerBuy(client.Player, items.SlotPosition, items.PageNumber,
@@ -130,7 +130,7 @@ namespace DOL.GS.Commands
                         }
                         else if (client.Player.TargetObject is GameGuardMerchant guardMerchant)
                         {
-                            var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID")
+                            var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                                 .IsEqualTo(guardMerchant.TradeItems.ItemsListID));
                             
                             IList<Ingredient> recipeIngredients;
@@ -145,7 +145,7 @@ namespace DOL.GS.Commands
                                 foreach (var items in merchantitems)
                                 {
                                     var item =
-                                        GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
+                                        GameServer.Database.FindObjectByKey<DbItemTemplate>(items.ItemTemplateID);
                                     if (item.Id_nb == "beetle_carapace") continue;
                                     if (item != ingredient.Material) continue;
                                     guardMerchant.OnPlayerBuy(client.Player, items.SlotPosition, items.PageNumber,
@@ -157,7 +157,7 @@ namespace DOL.GS.Commands
                         }
                         else if (client.Player.TargetObject is GuardCurrencyMerchant guardCurrencyMerchant)
                         {
-                            var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID")
+                            var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                                 .IsEqualTo(guardCurrencyMerchant.TradeItems.ItemsListID));
                             
                             IList<Ingredient> recipeIngredients;
@@ -172,7 +172,7 @@ namespace DOL.GS.Commands
                                 foreach (var items in merchantitems)
                                 {
                                     var item =
-                                        GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
+                                        GameServer.Database.FindObjectByKey<DbItemTemplate>(items.ItemTemplateID);
                                     if (item.Id_nb == "beetle_carapace") continue;
                                     if (item != ingredient.Material) continue;
                                     guardCurrencyMerchant.OnPlayerBuy(client.Player, items.SlotPosition, items.PageNumber,
@@ -219,7 +219,7 @@ namespace DOL.GS.Commands
                     {
                         if (client.Player.TargetObject is GameMerchant merchant)
                         {
-                            var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID")
+                            var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                                 .IsEqualTo(merchant.TradeItems.ItemsListID));
 
                             IList<Ingredient> recipeIngredients;
@@ -229,7 +229,7 @@ namespace DOL.GS.Commands
                                 recipeIngredients = recipe.Ingredients;
                             }
                             
-                            var playerItems = new List<InventoryItem>(); 
+                            var playerItems = new List<DbInventoryItem>(); 
                                     
                             lock (client.Player.Inventory)
                             {
@@ -247,7 +247,7 @@ namespace DOL.GS.Commands
                                 foreach (var items in merchantitems)
                                 {
                                     var item =
-                                        GameServer.Database.FindObjectByKey<ItemTemplate>(items.ItemTemplateID);
+                                        GameServer.Database.FindObjectByKey<DbItemTemplate>(items.ItemTemplateID);
                                     if (item.Id_nb == "beetle_carapace") continue;
                                     if (item != ingredient.Material) continue;
                                     int playerAmount = 0;

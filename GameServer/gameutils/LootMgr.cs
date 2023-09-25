@@ -58,10 +58,10 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Loading LootGenerators...");
 
-			IList<LootGenerator> m_lootGenerators;
+			IList<DbLootGenerator> m_lootGenerators;
 			try
 			{
-				m_lootGenerators = GameServer.Database.SelectAllObjects<LootGenerator>();
+				m_lootGenerators = GameServer.Database.SelectAllObjects<DbLootGenerator>();
 			}
 			catch (Exception e)
 			{
@@ -72,7 +72,7 @@ namespace DOL.GS
 
 			if (m_lootGenerators != null) // did we find any loot generators
 			{
-				foreach (LootGenerator dbGenerator in m_lootGenerators)
+				foreach (DbLootGenerator dbGenerator in m_lootGenerators)
 				{
 					ILootGenerator generator = GetGeneratorInCache(dbGenerator);
 					if (generator == null)
@@ -128,7 +128,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="dbGenerator"></param>
 		/// <param name="generator"></param>
-		private static void PutGeneratorInCache(LootGenerator dbGenerator, ILootGenerator generator)
+		private static void PutGeneratorInCache(DbLootGenerator dbGenerator, ILootGenerator generator)
 		{
 			m_ClassGenerators[dbGenerator.LootGeneratorClass + dbGenerator.ExclusivePriority] = generator;
 		}
@@ -138,7 +138,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="dbGenerator"></param>
 		/// <returns></returns>
-		private static ILootGenerator GetGeneratorInCache(LootGenerator dbGenerator)
+		private static ILootGenerator GetGeneratorInCache(DbLootGenerator dbGenerator)
 		{
 			if (m_ClassGenerators[dbGenerator.LootGeneratorClass + dbGenerator.ExclusivePriority] != null)
 			{
@@ -410,7 +410,7 @@ namespace DOL.GS
 		/// <param name="mob"></param>
 		/// <param name="killer"></param>
 		/// <returns></returns>
-		public static ItemTemplate[] GetLoot(GameNPC mob, GameObject killer)
+		public static DbItemTemplate[] GetLoot(GameNPC mob, GameObject killer)
 		{
 			LootList lootList = null;
 			IList generators = GetLootGenerators(mob);
@@ -432,7 +432,7 @@ namespace DOL.GS
 			if (lootList != null)
 				return lootList.GetLoot();
 			else
-				return new ItemTemplate[0];
+				return new DbItemTemplate[0];
 		}
 
 		/// <summary>

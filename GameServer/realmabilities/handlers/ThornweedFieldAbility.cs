@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class ThornweedFieldAbility : TimedRealmAbility
 	{
-		public ThornweedFieldAbility(DBAbility dba, int level) : base(dba, level) { }
+		public ThornweedFieldAbility(DbAbility dba, int level) : base(dba, level) { }
 		private int m_dmgValue;
 		private uint m_duration;
 		private GamePlayer m_player;

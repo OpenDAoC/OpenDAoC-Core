@@ -58,7 +58,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				whereClause = whereClause.And(realmFilter);
 			}
 
-			ZonePoint zonePoint = DOLDB<ZonePoint>.SelectObject(whereClause);
+			DbZonePoint zonePoint = DOLDB<DbZonePoint>.SelectObject(whereClause);
 
 			if (zonePoint == null)
 			{
@@ -101,7 +101,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (client.Player.CurrentRegion.OnZonePoint(client.Player, zonePoint) == false)
 				return;
 
-			Battleground bg = GameServer.KeepManager.GetBattleground(zonePoint.TargetRegion);
+			DbBattleground bg = GameServer.KeepManager.GetBattleground(zonePoint.TargetRegion);
 
 			if (bg != null && client.Player.Level < bg.MinLevel && client.Player.Level > bg.MaxLevel && client.Player.RealmLevel >= bg.MaxRealmLevel)
 				return;
@@ -160,7 +160,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// The target zone point
 			/// </summary>
-			protected readonly ZonePoint m_zonePoint;
+			protected readonly DbZonePoint m_zonePoint;
 
 			/// <summary>
 			/// Constructs a new RegionChangeRequestHandler
@@ -168,7 +168,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <param name="actionSource">The action source</param>
 			/// <param name="zonePoint">The target zone point</param>
 			/// <param name="checker">The jump point checker instance</param>
-			public RegionChangeRequestHandler(GamePlayer actionSource, ZonePoint zonePoint, IJumpPointHandler checkHandler) : base(actionSource)
+			public RegionChangeRequestHandler(GamePlayer actionSource, DbZonePoint zonePoint, IJumpPointHandler checkHandler) : base(actionSource)
 			{
 				m_zonePoint = zonePoint ?? throw new ArgumentNullException(nameof(zonePoint));
 				m_checkHandler = checkHandler;

@@ -24,7 +24,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 using DOL.Database;
-using DOL.Database.Transaction;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Events;
@@ -37,16 +36,16 @@ namespace DOL.GS
 	{
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static Dictionary<string, InventoryItem> m_itemCache = null;
+		private static Dictionary<string, DbInventoryItem> m_itemCache = null;
 
 		private static object CacheLock = new object();
 
 		/// <summary>
 		/// Return a List of all items in the cache
 		/// </summary>
-		public static List<InventoryItem> Items
+		public static List<DbInventoryItem> Items
 		{
-			get { return new List<InventoryItem>(m_itemCache.Values); }
+			get { return new List<DbInventoryItem>(m_itemCache.Values); }
 		}
 
 
@@ -58,12 +57,12 @@ namespace DOL.GS
 			log.Info("Building Market Cache ....");
 			try
 			{
-				m_itemCache = new Dictionary<string, InventoryItem>();
+				m_itemCache = new Dictionary<string, DbInventoryItem>();
 
 				var filterBySlot = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.Consignment_First).And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.Consignment_Last));
-				var list = DOLDB<InventoryItem>.SelectObjects(filterBySlot.And(DB.Column("OwnerLot").IsGreatherThan(0)));
+				var list = DOLDB<DbInventoryItem>.SelectObjects(filterBySlot.And(DB.Column("OwnerLot").IsGreatherThan(0)));
 
-				foreach (InventoryItem item in list)
+				foreach (DbInventoryItem item in list)
 				{
 					GameInventoryItem playerItem = GameInventoryItem.Create(item);
 					m_itemCache.Add(item.ObjectId, playerItem);
@@ -84,7 +83,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public static bool AddItem(InventoryItem item)
+		public static bool AddItem(DbInventoryItem item)
 		{
 			bool added = false;
 
@@ -112,7 +111,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public static bool RemoveItem(InventoryItem item)
+		public static bool RemoveItem(DbInventoryItem item)
 		{
 			bool removed = false;
 

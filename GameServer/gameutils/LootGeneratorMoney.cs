@@ -45,7 +45,7 @@ namespace DOL.GS
 			long moneyCount = minLoot + Util.Random(minLoot >> 1);
 			moneyCount = (long)((double)moneyCount * ServerProperties.Properties.MONEY_DROP);
 
-			ItemTemplate money = new ItemTemplate();
+			DbItemTemplate money = new DbItemTemplate();
 			money.Model = 488;
 			money.Name = "bag of coins";
 			money.Level = 0;

@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class RagingPowerAbility : TimedRealmAbility
 	{
-		public RagingPowerAbility(DBAbility dba, int level) : base(dba, level) { }
+		public RagingPowerAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

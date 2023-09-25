@@ -5,7 +5,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_BattleYell : TimedRealmAbility, ISpellCastingAbilityHandler
     {
-        public AtlasOF_BattleYell(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_BattleYell(DbAbility dba, int level) : base(dba, level) { }
 
         // ISpellCastingAbilityHandler
         public Spell Spell { get { return m_spell; } }
@@ -16,7 +16,7 @@ namespace DOL.GS.RealmAbilities
         private const int m_radius = 500; //
         private const eDamageType m_damageType = eDamageType.Natural;
 
-        private DBSpell m_dbspell;
+        private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
         private int m_tauntValue = 0;
@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 
         private void CreateSpell(GamePlayer caster)
         {
-            m_dbspell = new DBSpell();
+            m_dbspell = new DbSpell();
             m_dbspell.Name = "Battle Yell";
             m_dbspell.Icon = 4231;
             m_dbspell.ClientEffect = 7276;

@@ -227,14 +227,14 @@ namespace DOL.GS.Commands
 						case "equipinfo": equipinfo(client, targetMob, args); break;
 						case "equiptemplate": equiptemplate(client, targetMob, args); break;
 						case "visibleslot": visibleslot(client, targetMob, args); break;
-						case "dropcount": dropcount<MobXLootTemplate>(client, targetMob, args); break;
-						case "dropcount2": dropcount<MobDropTemplate>(client, targetMob, args); break;
-						case "addloot": addloot<MobXLootTemplate, LootTemplate>(client, targetMob, args); break;
-						case "addloot2": addloot<MobDropTemplate, DropTemplateXItemTemplate>(client, targetMob, args); break;
+						case "dropcount": dropcount<DbMobXLootTemplate>(client, targetMob, args); break;
+						case "dropcount2": dropcount<DbMobDropTemplate>(client, targetMob, args); break;
+						case "addloot": addloot<DbMobXLootTemplate, DbLootTemplate>(client, targetMob, args); break;
+						case "addloot2": addloot<DbMobDropTemplate, DbDropTemplateXItemTemplate>(client, targetMob, args); break;
 						case "addotd": addotd(client, targetMob, args); break;
 						case "viewloot": viewloot(client, targetMob, args); break;
-						case "removeloot": removeloot<LootTemplate>(client, targetMob, args); break;
-						case "removeloot2": removeloot<DropTemplateXItemTemplate>(client, targetMob, args); break;
+						case "removeloot": removeloot<DbLootTemplate>(client, targetMob, args); break;
+						case "removeloot2": removeloot<DbDropTemplateXItemTemplate>(client, targetMob, args); break;
 						case "removeotd": removeotd(client, targetMob, args); break;
 						case "refreshloot": refreshloot(client, targetMob, args); break;
 						case "copy": copy(client, targetMob, args); break;
@@ -943,7 +943,7 @@ namespace DOL.GS.Commands
 			{
 				string raceName = string.Join(" ", args, 2, args.Length - 2);
 
-				var npcRace = DOLDB<Race>.SelectObject(DB.Column("Name").IsEqualTo(raceName));
+				var npcRace = DOLDB<DbRace>.SelectObject(DB.Column("Name").IsEqualTo(raceName));
 
 				if (npcRace == null)
 				{
@@ -1066,15 +1066,15 @@ namespace DOL.GS.Commands
 
 			if (args.Length > 2 && args[2] == "true")
 			{
-				var mobs = DOLDB<Mob>.SelectObject(DB.Column("Name").IsEqualTo(mobName));
+				var mobs = DOLDB<DbMob>.SelectObject(DB.Column("Name").IsEqualTo(mobName));
 
 				if (mobs == null)
 				{
-					var deleteLoots = DOLDB<MobXLootTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mobName));
+					var deleteLoots = DOLDB<DbMobXLootTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mobName));
 
 					GameServer.Database.DeleteObject(deleteLoots);
 
-					var deleteLootTempl = DOLDB<LootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(mobName));
+					var deleteLootTempl = DOLDB<DbLootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(mobName));
 					
 					GameServer.Database.DeleteObject(deleteLootTempl);
 
@@ -1695,7 +1695,7 @@ namespace DOL.GS.Commands
 			client.Out.SendMessage("-------------------------------", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 			client.Out.SendMessage("", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 
-			foreach (InventoryItem item in targetMob.Inventory.AllItems)
+			foreach (DbInventoryItem item in targetMob.Inventory.AllItems)
 			{
 				client.Out.SendMessage("Slot Description : [" + GlobalConstants.SlotToName(item.SlotPosition) + "]", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 				client.Out.SendMessage("------------", eChatType.CT_System, eChatLoc.CL_PopupWindow);
@@ -1896,7 +1896,7 @@ namespace DOL.GS.Commands
 						{
 							bool replace = (args.Length > 4 && args[4].ToLower() == "replace");
 
-							var existingTemplates = DOLDB<NPCEquipment>.SelectObjects(DB.Column("TemplateID").IsEqualTo(args[3]));
+							var existingTemplates = DOLDB<DbNpcEquipment>.SelectObjects(DB.Column("TemplateID").IsEqualTo(args[3]));
 
 							if (existingTemplates.Count > 0)
 							{
@@ -1980,7 +1980,7 @@ namespace DOL.GS.Commands
 			}
 		}
 
-		private void dropcount<T>(GameClient client, GameNPC targetMob, string[] args) where T : MobXLootTemplate
+		private void dropcount<T>(GameClient client, GameNPC targetMob, string[] args) where T : DbMobXLootTemplate
 		{
 			var mxlt = DOLDB<T>.SelectObject(DB.Column("MobName").IsEqualTo(targetMob.Name).And(DB.Column("LootTemplateName").IsEqualTo(targetMob.Name)));
 
@@ -2016,8 +2016,8 @@ namespace DOL.GS.Commands
 		}
 
 		private void addloot<MobXLootType, LootTemplateType>(GameClient client, GameNPC targetMob, string[] args)
-			where MobXLootType : MobXLootTemplate
-			where LootTemplateType : LootTemplate
+			where MobXLootType : DbMobXLootTemplate
+			where LootTemplateType : DbLootTemplate
 		{
 			try
 			{
@@ -2034,7 +2034,7 @@ namespace DOL.GS.Commands
 				if (numDrops < 1)
 					numDrops = 1;
 
-				ItemTemplate item = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplateID);
+				DbItemTemplate item = GameServer.Database.FindObjectByKey<DbItemTemplate>(lootTemplateID);
 				if (item == null)
 				{
 					DisplayMessage(client,
@@ -2057,7 +2057,7 @@ namespace DOL.GS.Commands
 				}
 				else
 				{
-					ItemTemplate itemtemplate = GameServer.Database.FindObjectByKey<ItemTemplate>(lootTemplateID);
+					DbItemTemplate itemtemplate = GameServer.Database.FindObjectByKey<DbItemTemplate>(lootTemplateID);
 					if (itemtemplate == null)
 					{
 						DisplayMessage(client, "ItemTemplate " + lootTemplateID + " not found!");
@@ -2114,14 +2114,14 @@ namespace DOL.GS.Commands
 				string itemTemplateID = args[2];
 				int minlevel = Convert.ToInt32(args[3]);
 
-				ItemTemplate item = GameServer.Database.FindObjectByKey<ItemTemplate>(itemTemplateID);
+				DbItemTemplate item = GameServer.Database.FindObjectByKey<DbItemTemplate>(itemTemplateID);
 				if (item == null)
 				{
 					DisplayMessage(client, "You cannot add the " + itemTemplateID + " to the " + targetMob.Name + " because the item does not exist.");
 					return;
 				}
 
-				var otd = DOLDB<LootOTD>.SelectObject(DB.Column("MobName").IsEqualTo(mobName).And(DB.Column("ItemTemplateID").IsEqualTo(itemTemplateID)));
+				var otd = DOLDB<DbLootOtd>.SelectObject(DB.Column("MobName").IsEqualTo(mobName).And(DB.Column("ItemTemplateID").IsEqualTo(itemTemplateID)));
 
 				if (otd != null)
 				{
@@ -2129,14 +2129,14 @@ namespace DOL.GS.Commands
 				}
 				else
 				{
-					ItemTemplate itemtemplate = GameServer.Database.FindObjectByKey<ItemTemplate>(itemTemplateID);
+					DbItemTemplate itemtemplate = GameServer.Database.FindObjectByKey<DbItemTemplate>(itemTemplateID);
 					if (itemtemplate == null)
 					{
 						DisplayMessage(client, "ItemTemplate " + itemTemplateID + " not found!");
 						return;
 					}
 
-					LootOTD loot = new LootOTD();
+					DbLootOtd loot = new DbLootOtd();
 					loot.MobName = mobName;
 					loot.ItemTemplateID = itemtemplate.Id_nb;
 					loot.MinLevel = minlevel;
@@ -2167,9 +2167,9 @@ namespace DOL.GS.Commands
 					return;
 				}
 
-				ItemTemplate[] templates = LootMgr.GetLoot(targetMob, client.Player);
+				DbItemTemplate[] templates = LootMgr.GetLoot(targetMob, client.Player);
 				DisplayMessage(client, "[ " + targetMob.Name + "'s Loot Table ]\n\n");
-				foreach (ItemTemplate temp in templates)
+				foreach (DbItemTemplate temp in templates)
 				{
 					string message = string.Format("Name: {0}, Id_nb: {1}", temp.Name, temp.Id_nb);
 					DisplayMessage(client, message);
@@ -2180,16 +2180,16 @@ namespace DOL.GS.Commands
 				var text = new List<string>();
 				text.Add("");
 
-				IList<LootOTD> otds = DOLDB<LootOTD>.SelectObjects(DB.Column("MobName").IsEqualTo(targetMob.Name));
+				IList<DbLootOtd> otds = DOLDB<DbLootOtd>.SelectObjects(DB.Column("MobName").IsEqualTo(targetMob.Name));
 
 				if (otds != null && otds.Count > 0)
 				{
 					text.Add("One time drops:");
 					text.Add("");
 
-					foreach (LootOTD otd in otds)
+					foreach (DbLootOtd otd in otds)
 					{
-						ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(otd.ItemTemplateID);
+						DbItemTemplate drop = GameServer.Database.FindObjectByKey<DbItemTemplate>(otd.ItemTemplateID);
 
 						if (drop != null)
 						{
@@ -2207,20 +2207,20 @@ namespace DOL.GS.Commands
 				text.Add("");
 				text.Add("LootGeneratorTemplate:");
 				text.Add("");
-				DisplayLoots<MobXLootTemplate, LootTemplate>(text, targetMob);
+				DisplayLoots<DbMobXLootTemplate, DbLootTemplate>(text, targetMob);
 
 				text.Add("");
 				text.Add("LootGeneratorMobTemplate:");
 				text.Add("");
-				DisplayLoots<MobDropTemplate, DropTemplateXItemTemplate>(text, targetMob);
+				DisplayLoots<DbMobDropTemplate, DbDropTemplateXItemTemplate>(text, targetMob);
 
 				client.Out.SendCustomTextWindow(targetMob.Name + "'s Loot Table", text);
 			}
 		}
 
 		private static void DisplayLoots<MobDropTemplateType, LootTemplateType>(List<string> text, GameNPC mob)
-			where MobDropTemplateType : MobXLootTemplate
-			where LootTemplateType : LootTemplate
+			where MobDropTemplateType : DbMobXLootTemplate
+			where LootTemplateType : DbLootTemplate
 		{
 			bool didDefault = false;
 			bool fromNPCT = false;
@@ -2243,7 +2243,7 @@ namespace DOL.GS.Commands
 					text.Add("+ Mob's template [from " + (fromNPCT?mob.NPCTemplate.TemplateId.ToString():mobName) + "]: "+ mobXtemplate.LootTemplateName + " (DropCount: " + mobXtemplate.DropCount + ")");
 				text.AddRange(
 					from loot in template
-					let drop = GameServer.Database.FindObjectByKey<ItemTemplate>(loot.ItemTemplateID)
+					let drop = GameServer.Database.FindObjectByKey<DbItemTemplate>(loot.ItemTemplateID)
 					select "- " + (drop == null ? "(Template Not Found)" : drop.Name) +
 					" (" + loot.ItemTemplateID + ") Count: " + loot.Count + " Chance: " + loot.Chance
 				);
@@ -2255,7 +2255,7 @@ namespace DOL.GS.Commands
 					text.Add("+ Default: ");
 				text.AddRange(
 					from loot in template
-					let drop = GameServer.Database.FindObjectByKey<ItemTemplate>(loot.ItemTemplateID)
+					let drop = GameServer.Database.FindObjectByKey<DbItemTemplate>(loot.ItemTemplateID)
 					select "- " + (drop == null ? "(Template Not Found)" : drop.Name) +
 					" (" + loot.ItemTemplateID + ") Count: " + loot.Count + " Chance: " + loot.Chance
 				);
@@ -2263,7 +2263,7 @@ namespace DOL.GS.Commands
 		}
 
 		private void removeloot<LootTemplateType>(GameClient client, GameNPC targetMob, string[] args)
-			where LootTemplateType : LootTemplate
+			where LootTemplateType : DbLootTemplate
 		{
 			string lootTemplateID = args[2];
 			string name = targetMob.Name;
@@ -2314,7 +2314,7 @@ namespace DOL.GS.Commands
 			string itemTemplateID = args[2];
 			string name = targetMob.Name;
 
-			IList<LootOTD> template = DOLDB<LootOTD>.SelectObjects(DB.Column("MobName").IsEqualTo(name).And(DB.Column("ItemTemplateID").IsEqualTo(itemTemplateID)));
+			IList<DbLootOtd> template = DOLDB<DbLootOtd>.SelectObjects(DB.Column("MobName").IsEqualTo(name).And(DB.Column("ItemTemplateID").IsEqualTo(itemTemplateID)));
 
 			if (template != null)
 			{
@@ -2484,7 +2484,7 @@ namespace DOL.GS.Commands
 			{
 				string mobName = string.Join(" ", args, 2, args.Length - 2);
 
-				var dbMob = DOLDB<Mob>.SelectObject(DB.Column("Name").IsEqualTo(mobName));
+				var dbMob = DOLDB<DbMob>.SelectObject(DB.Column("Name").IsEqualTo(mobName));
 
 				if (dbMob != null)
 				{
@@ -3002,7 +3002,7 @@ namespace DOL.GS.Commands
 						if (n.LoadedFromScript == false)
 						{
 							n.RemoveFromWorld();
-							n.LoadFromDatabase(GameServer.Database.FindObjectByKey<Mob>(n.InternalID));
+							n.LoadFromDatabase(GameServer.Database.FindObjectByKey<DbMob>(n.InternalID));
 							n.AddToWorld();
 							client.Player.Out.SendMessage(n.Name + " reloaded!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						}
@@ -3015,7 +3015,7 @@ namespace DOL.GS.Commands
 				if (targetMob.LoadedFromScript == false)
 				{
 					targetMob.RemoveFromWorld();
-					targetMob.LoadFromDatabase(GameServer.Database.FindObjectByKey<Mob>(targetMob.InternalID));
+					targetMob.LoadFromDatabase(GameServer.Database.FindObjectByKey<DbMob>(targetMob.InternalID));
 					targetMob.AddToWorld();
 					client.Player.Out.SendMessage(targetMob.Name + " reloaded!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
@@ -3036,7 +3036,7 @@ namespace DOL.GS.Commands
 		{
 			if (args.Length > 2)
 			{
-				Mob mob = GameServer.Database.FindObjectByKey<Mob>(args[2]);
+				DbMob mob = GameServer.Database.FindObjectByKey<DbMob>(args[2]);
 				if (mob != null)
 				{
 					Log.DebugFormat("Mob_ID {0} loaded from database.", args[2]);
@@ -3071,7 +3071,7 @@ namespace DOL.GS.Commands
 				maxreturn = 10;
 			}
 
-			var mobs = DOLDB<Mob>.SelectObjects(DB.Column("Name").IsLike($"%{args[2]}%")).OrderByDescending(m => m.Level).Take(maxreturn).ToArray();
+			var mobs = DOLDB<DbMob>.SelectObjects(DB.Column("Name").IsLike($"%{args[2]}%")).OrderByDescending(m => m.Level).Take(maxreturn).ToArray();
 			if (mobs != null && mobs.Length > 0)
 			{
 				string mnames = "Found : \n";
@@ -3248,7 +3248,7 @@ namespace DOL.GS.Commands
 				if (text.Contains("{c}")) // For eAmbientTrigger.interact, send System message in Chat window
 					voice = "c";
 				text = text.Replace("{b}", string.Empty).Replace("{y}", string.Empty).Replace("{s}", string.Empty).Replace("{c}", string.Empty);
-				GameServer.Database.AddObject(new MobXAmbientBehaviour(targetMob.Name, trig.ToString(), emote, text, chance, voice) {Dirty = true, AllowAdd = true});
+				GameServer.Database.AddObject(new DbMobXAmbientBehavior(targetMob.Name, trig.ToString(), emote, text, chance, voice) {Dirty = true, AllowAdd = true});
 				client.Out.SendMessage(" Trigger added to mobs with name " + targetMob.Name + " when they " + type + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
@@ -3266,7 +3266,7 @@ namespace DOL.GS.Commands
 				DisplaySyntax(client);
 				return;
 			}
-			var triggers = client.Player.TempProperties.GetProperty<IList<MobXAmbientBehaviour>>("mob_triggers", null);
+			var triggers = client.Player.TempProperties.GetProperty<IList<DbMobXAmbientBehavior>>("mob_triggers", null);
 			if (triggers == null)
 			{
 				ChatUtil.SendSystemMessage(client, "You must use '/mob trigger info' before using this command !");

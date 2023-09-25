@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class AtlasOF_FuryOfTheGods : AngerOfTheGodsAbility
 	{
-		public AtlasOF_FuryOfTheGods(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_FuryOfTheGods(DbAbility dba, int level) : base(dba, level) { }
 
         protected override string SpellName { get { return "Fury of the Gods"; } }
         public override int MaxLevel { get { return 1; } }

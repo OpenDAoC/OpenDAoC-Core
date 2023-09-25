@@ -49,7 +49,7 @@ namespace DOL.Tests.Unit.Gameserver
 
         private Spell NewSpellWithValue(int value)
         {
-            var dbSpell = new DBSpell();
+            var dbSpell = new DbSpell();
             dbSpell.Value = value;
             dbSpell.Target = "Realm";
             dbSpell.Duration = 10;

@@ -119,7 +119,7 @@ namespace DOL.GS
                 return null;
 
             AttackData lastAttackData = _owner.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
-            InventoryItem weapon = NextCombatStyle.WeaponTypeRequirement == (int) eObjectType.Shield ? _owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : _owner.ActiveWeapon;
+            DbInventoryItem weapon = NextCombatStyle.WeaponTypeRequirement == (int) eObjectType.Shield ? _owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : _owner.ActiveWeapon;
             
             //if they've cached a style and then respecced to no longer have access, remove it
             if (AutomaticBackupStyle != null && _owner is GamePlayer player && player.WeaponBaseSpecLevel(weapon) < AutomaticBackupStyle.SpecLevelRequirement)

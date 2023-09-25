@@ -241,7 +241,7 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)(updatedSlot - (int)eInventorySlot.Consignment_First + (int)eInventorySlot.HousingInventory_First));
 						else
 							pak.WriteByte((byte)(updatedSlot));
-						InventoryItem item = null;
+						DbInventoryItem item = null;
 						item = m_gameClient.Player.Inventory.GetItem((eInventorySlot)updatedSlot);
 
 						if (item == null)
@@ -344,7 +344,7 @@ namespace DOL.GS.PacketHandler
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
 			{
 
-				ICollection<InventoryItem> items = null;
+				ICollection<DbInventoryItem> items = null;
 				if (living.Inventory != null)
 					items = living.Inventory.VisibleItems;
 
@@ -355,7 +355,7 @@ namespace DOL.GS.PacketHandler
 				if (items != null)
 				{
 					pak.WriteByte((byte)items.Count);
-					foreach (InventoryItem item in items)
+					foreach (DbInventoryItem item in items)
 					{
 						pak.WriteByte((byte)item.SlotPosition);
 
@@ -403,7 +403,7 @@ namespace DOL.GS.PacketHandler
 			{
 				lock (m_gameClient.Player.TradeWindow.Sync)
 				{
-					foreach (InventoryItem item in m_gameClient.Player.TradeWindow.TradeItems)
+					foreach (DbInventoryItem item in m_gameClient.Player.TradeWindow.TradeItems)
 					{
 						pak.WriteByte((byte)item.SlotPosition);
 					}
@@ -438,7 +438,7 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte((byte)(m_gameClient.Player.TradeWindow.Combine ? 0x01 : 0x00));
 					if (items != null)
 					{
-						foreach (InventoryItem item in items)
+						foreach (DbInventoryItem item in items)
 						{
 							pak.WriteByte((byte)item.SlotPosition);
 							pak.WriteByte((byte)item.Level);

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DOL.Database;
 using DOL.GS.Appeal;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -70,7 +71,7 @@ namespace DOL.GS.Commands
                                 break;
                         }
 
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetPlayer.Name);
+                        DbAppeal appeal = AppealMgr.GetAppealByPlayerName(targetPlayer.Name);
 
                         if (appeal != null)
                         {
@@ -124,7 +125,7 @@ namespace DOL.GS.Commands
                                 break;
                         }
 
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(playerTarget.Name);
+                        DbAppeal appeal = AppealMgr.GetAppealByPlayerName(playerTarget.Name);
 
                         if (appeal != null)
                         {
@@ -174,7 +175,7 @@ namespace DOL.GS.Commands
                                 break;
                         }
 
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(playerTarget.Name);
+                        DbAppeal appeal = AppealMgr.GetAppealByPlayerName(playerTarget.Name);
 
                         if (appeal != null)
                         {
@@ -205,7 +206,7 @@ namespace DOL.GS.Commands
                         int high = 0;
                         int crit = 0;
                         string caption;
-                        IList<DBAppeal> appeallist;
+                        IList<DbAppeal> appeallist;
                         List<string> msg = new List<string>();
 
                         if (args[1] == "listall")
@@ -225,7 +226,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        foreach (DBAppeal a in appeallist)
+                        foreach (DbAppeal a in appeallist)
                         {
                             switch (a.Severity)
                             {
@@ -250,7 +251,7 @@ namespace DOL.GS.Commands
                         if (crit > 0)
                         {
                             msg.Add("Critical priority appeals:\n");
-                            foreach (DBAppeal a in appeallist)
+                            foreach (DbAppeal a in appeallist)
                             {
                                 if (a.Severity == (int)AppealMgr.eSeverity.Critical)
                                 {
@@ -261,7 +262,7 @@ namespace DOL.GS.Commands
                         if (high > 0)
                         {
                             msg.Add("High priority appeals:\n");
-                            foreach (DBAppeal a in appeallist)
+                            foreach (DbAppeal a in appeallist)
                             {
                                 if (a.Severity == (int)AppealMgr.eSeverity.High)
                                 {
@@ -272,7 +273,7 @@ namespace DOL.GS.Commands
                         if (med > 0)
                         {
                             msg.Add("Medium priority Appeals:\n");
-                            foreach (DBAppeal a in appeallist)
+                            foreach (DbAppeal a in appeallist)
                             {
                                 if (a.Severity == (int)AppealMgr.eSeverity.Medium)
                                 {
@@ -283,7 +284,7 @@ namespace DOL.GS.Commands
                         if (low > 0)
                         {
                             msg.Add("Low priority appeals:\n");
-                            foreach (DBAppeal a in appeallist)
+                            foreach (DbAppeal a in appeallist)
                             {
                                 if (a.Severity == (int)AppealMgr.eSeverity.Low)
                                 {
@@ -325,7 +326,7 @@ namespace DOL.GS.Commands
                                 break;
                         }
 
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(player.Name);
+                        DbAppeal appeal = AppealMgr.GetAppealByPlayerName(player.Name);
 
                         if (appeal == null)
                         {
@@ -348,7 +349,7 @@ namespace DOL.GS.Commands
                             return;
                         }
                         string targetName = args[2];
-                        DBAppeal appeal = AppealMgr.GetAppealByPlayerName(targetName);
+                        DbAppeal appeal = AppealMgr.GetAppealByPlayerName(targetName);
                         if (appeal == null)
                         {
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.CantFindAppeal"));

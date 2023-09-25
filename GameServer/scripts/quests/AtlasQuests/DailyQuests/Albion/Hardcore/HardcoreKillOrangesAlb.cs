@@ -38,7 +38,7 @@ namespace DOL.GS.DailyQuest
 		{
 		}
 
-		public HardcoreKillOrangesAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public HardcoreKillOrangesAlb(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

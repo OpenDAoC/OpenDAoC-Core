@@ -33,7 +33,7 @@ namespace DOL.GS.Commands
 					client.Player.Out.SendMessage($"This command will be available after {endSoftLaunch} UTC+1", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
 				}
-				var alreadyUsed = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(client.Account.Name).And(DB.Column("KeyName").IsEqualTo(SoftLaunchLevelKey)));
+				var alreadyUsed = DOLDB<DbAccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(client.Account.Name).And(DB.Column("KeyName").IsEqualTo(SoftLaunchLevelKey)));
 				
 				if (alreadyUsed != null)
 				{
@@ -92,7 +92,7 @@ namespace DOL.GS.Commands
 						return;
 					}
 					
-					var alreadyUsed = DOLDB<AccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(client.Account.Name).And(DB.Column("KeyName").IsEqualTo(SoftLaunchLevelGearKey)));
+					var alreadyUsed = DOLDB<DbAccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(client.Account.Name).And(DB.Column("KeyName").IsEqualTo(SoftLaunchLevelGearKey)));
 					
 					if (alreadyUsed != null)
 					{
@@ -100,7 +100,7 @@ namespace DOL.GS.Commands
 						return;
 					}
 
-					var slashlevelgear = new AccountXCustomParam();
+					var slashlevelgear = new DbAccountXCustomParam();
 					slashlevelgear.Name = client.Account.Name;
 					slashlevelgear.KeyName = SoftLaunchLevelGearKey;
 					slashlevelgear.Value = "1";
@@ -140,7 +140,7 @@ namespace DOL.GS.Commands
 
 				player.SaveIntoDatabase();
 				
-				var slashlevel = new AccountXCustomParam();
+				var slashlevel = new DbAccountXCustomParam();
 				slashlevel.Name = player.Client.Account.Name;
 				slashlevel.KeyName = SoftLaunchLevelKey;
 				slashlevel.Value = "1";

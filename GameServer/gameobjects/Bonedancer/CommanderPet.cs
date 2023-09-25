@@ -148,7 +148,7 @@ namespace DOL.GS
 			// Get weapon templates, creating them if necessary.
 			for (int i = (int)eWeaponType.MIN; i <= (int)eWeaponType.MAX; i++)
 			{
-				ItemTemplate itemTemp = GameServer.Database.FindObjectByKey<ItemTemplate>(WEAPON_KEYS[i]);
+				DbItemTemplate itemTemp = GameServer.Database.FindObjectByKey<DbItemTemplate>(WEAPON_KEYS[i]);
 
 				if (itemTemp == null)
 				{
@@ -482,12 +482,12 @@ namespace DOL.GS
 			"BD_Pet_Staff"
 		};
 
-		private static readonly List<ItemTemplate> WEAPON_TEMPLATES = new List<ItemTemplate>((int)eWeaponType.MAX);
+		private static readonly List<DbItemTemplate> WEAPON_TEMPLATES = new List<DbItemTemplate>((int)eWeaponType.MAX);
 
 		/// <summary>
 		/// Get the item template for a BD pet
 		/// </summary>
-		public static ItemTemplate GetWeaponTemplate(eWeaponType type)
+		public static DbItemTemplate GetWeaponTemplate(eWeaponType type)
 		{
 			if (type < eWeaponType.MIN || type > eWeaponType.MAX)
 				return null;
@@ -500,9 +500,9 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="weaponType">Weapon key from GetWeaponKey()</param>
 		/// <returns>New weapon item template, null if template could not be created</returns>
-		public static ItemTemplate CreateBdPetWeapon(eWeaponType weaponType)
+		public static DbItemTemplate CreateBdPetWeapon(eWeaponType weaponType)
 		{
-			ItemTemplate temp = new ItemTemplate();
+			DbItemTemplate temp = new DbItemTemplate();
 
 			string weaponName;
 
@@ -692,12 +692,12 @@ namespace DOL.GS
 		/// <param name="checkCanUse">Make sure the commander can use this weapon type?</param>
 		public void CommanderSwitchWeapon(eWeaponType weaponType, bool checkCanUse = true)
 		{
-			ItemTemplate itemTemp = GetWeaponTemplate(weaponType);
+			DbItemTemplate itemTemp = GetWeaponTemplate(weaponType);
 
 			if (itemTemp == null || (checkCanUse && !CanUseWeaponSlot((eActiveWeaponSlot)itemTemp.Hand)))
 				return;
 
-			InventoryItem weapon;
+			DbInventoryItem weapon;
 
 			weapon = GameInventoryItem.Create(itemTemp);
 			if (weapon != null)

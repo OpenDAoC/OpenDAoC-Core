@@ -190,8 +190,8 @@ namespace DOL.GS.Commands
 						info.Add(" + DamageTableScalingFactor: " + target.ScalingFactor);
 					if(target.GetModified(eProperty.MeleeDamage) > 0) 
 						info.Add(" + MeleeDamage bonus %: " + target.GetModified(eProperty.MeleeDamage));
-					if (target.GetWeaponSkill(new InventoryItem()) > 0)
-						info.Add(" + Calculated Weaponskill: " + target.GetWeaponSkill(new InventoryItem()));
+					if (target.GetWeaponSkill(new DbInventoryItem()) > 0)
+						info.Add(" + Calculated Weaponskill: " + target.GetWeaponSkill(new DbInventoryItem()));
 
 
 					if (target.Abilities != null && target.Abilities.Count > 0)
@@ -320,10 +320,10 @@ namespace DOL.GS.Commands
 					info.Add("");
 					info.Add(" + Loot:");
 
-					var template = DOLDB<LootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(target.Name));
-					foreach (LootTemplate loot in template)
+					var template = DOLDB<DbLootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(target.Name));
+					foreach (DbLootTemplate loot in template)
 					{
-						ItemTemplate drop = GameServer.Database.FindObjectByKey<ItemTemplate>(loot.ItemTemplateID);
+						DbItemTemplate drop = GameServer.Database.FindObjectByKey<DbItemTemplate>(loot.ItemTemplateID);
 
 						string message = "";
 						if (drop == null)
@@ -478,7 +478,7 @@ namespace DOL.GS.Commands
 					info.Add(" ");
 
 					info.Add("  ----- Wearing:");
-					foreach (InventoryItem item in target.Inventory.EquippedItems)
+					foreach (DbInventoryItem item in target.Inventory.EquippedItems)
 						info.Add(" [" + GlobalConstants.SlotToName(item.Item_Type) + "] " + item.Name);
 					info.Add(" ");
 				}
@@ -672,7 +672,7 @@ namespace DOL.GS.Commands
 					else if (GameServer.KeepManager.GetBattleground(target.CurrentRegionID) != null)
 					{
 						info.Add(" + Keep Manager : " + GameServer.KeepManager.GetType().FullName);
-						Battleground bg = GameServer.KeepManager.GetBattleground(client.Player.CurrentRegionID);
+						DbBattleground bg = GameServer.KeepManager.GetBattleground(client.Player.CurrentRegionID);
 						info.Add(" + Battleground (" + bg.MinLevel + " to " + bg.MaxLevel + ", max RL: " + bg.MaxRealmLevel + ")");
 					}
 					else
@@ -789,7 +789,7 @@ namespace DOL.GS.Commands
 					else if (GameServer.KeepManager.GetBattleground(client.Player.CurrentRegionID) != null)
 					{
 						info.Add(" Keep Manager: " + GameServer.KeepManager.GetType().FullName);
-						Battleground bg = GameServer.KeepManager.GetBattleground(client.Player.CurrentRegionID);
+						DbBattleground bg = GameServer.KeepManager.GetBattleground(client.Player.CurrentRegionID);
 						info.Add(" Battleground (" + bg.MinLevel + " to " + bg.MaxLevel + ", max RL: " + bg.MaxRealmLevel + ")");
 					}
 					else

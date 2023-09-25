@@ -12,7 +12,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class AtlasOF_EmptyMind : TheEmptyMindAbility
 	{
-        public AtlasOF_EmptyMind(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_EmptyMind(DbAbility dba, int level) : base(dba, level) { }
 
         public override int MaxLevel { get { return 3; } }
         public override int GetReUseDelay(int level) { return 1800; } // 30 mins

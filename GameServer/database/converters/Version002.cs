@@ -42,8 +42,8 @@ namespace DOL.GS.DatabaseConverters
 			log.Info("Database Version 2 Convert Started");
 
 			log.Info("Converting Styles");
-			var styles = GameServer.Database.SelectAllObjects<DBStyle>();
-			foreach (DBStyle style in styles)
+			var styles = GameServer.Database.SelectAllObjects<DbStyle>();
+			foreach (DbStyle style in styles)
 			{
 				style.Icon = style.ID;
 
@@ -52,8 +52,8 @@ namespace DOL.GS.DatabaseConverters
 			log.Info(styles.Count + " Styles Processed");
 
 			log.Info("Converting Mobs");
-			var mobs = DOLDB<Mob>.SelectObjects(DB.Column("Realm").IsEqualTo(6));
-			foreach (Mob mob in mobs)
+			var mobs = DOLDB<DbMob>.SelectObjects(DB.Column("Realm").IsEqualTo(6));
+			foreach (DbMob mob in mobs)
 			{
 				if ((mob.Flags & (uint)GameNPC.eFlags.PEACE) == 0)
 				{

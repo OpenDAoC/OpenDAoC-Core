@@ -12,7 +12,7 @@ namespace DOL.GS.Quests
 
         public AtlasQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step) { }
 
-        public AtlasQuest(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest) { }
+        public AtlasQuest(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest) { }
 
         public override bool CheckQuestQualification(GamePlayer player)
         {

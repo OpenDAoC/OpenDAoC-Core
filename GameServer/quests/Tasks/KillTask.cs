@@ -58,7 +58,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="taskPlayer">The player doing the task</param>
 		/// <param name="dbTask">The database object</param>
-		public KillTask(GamePlayer taskPlayer, DBTask dbTask) : base(taskPlayer, dbTask)
+		public KillTask(GamePlayer taskPlayer, DbTask dbTask) : base(taskPlayer, dbTask)
 		{
 		}
 
@@ -230,7 +230,7 @@ namespace DOL.GS.Quests
 						if (Owners.Count > 0)
 						{
 							ArrayList dropMessages = new ArrayList();
-							InventoryItem itemdrop = GenerateItem(ItemName, 1, ObjectModels[ItemIndex]);
+							DbInventoryItem itemdrop = GenerateItem(ItemName, 1, ObjectModels[ItemIndex]);
 							WorldInventoryItem droppeditem = new WorldInventoryItem(itemdrop);
 							for (int a = 0; a < Owners.Count; a++)
 							{
@@ -275,7 +275,7 @@ namespace DOL.GS.Quests
 			{
 				GiveItemEventArgs gArgs = (GiveItemEventArgs)args;
 				GameLiving target = gArgs.Target as GameLiving;
-				InventoryItem item = gArgs.Item;
+				DbInventoryItem item = gArgs.Item;
 
 				if (player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
 				{

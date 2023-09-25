@@ -33,19 +33,19 @@ namespace DOL.GS
 
         private Ingredient[] ingredients;
 
-        public ItemTemplate Product { get; }
+        public DbItemTemplate Product { get; }
         public eCraftingSkill RequiredCraftingSkill { get; }
         public int Level { get; }
         public List<Ingredient> Ingredients => new List<Ingredient>(ingredients);
         public bool IsForUniqueProduct { get; private set; } = false;
 
-        public Recipe(ItemTemplate product, List<Ingredient> ingredients)
+        public Recipe(DbItemTemplate product, List<Ingredient> ingredients)
         {
             this.ingredients = ingredients.ToArray();
             Product = product;
         }
 
-        public Recipe(ItemTemplate product, List<Ingredient> ingredients, eCraftingSkill requiredSkill, int level, bool makeTemplated)
+        public Recipe(DbItemTemplate product, List<Ingredient> ingredients, eCraftingSkill requiredSkill, int level, bool makeTemplated)
             : this(product, ingredients)
         {
             RequiredCraftingSkill = requiredSkill;
@@ -101,7 +101,7 @@ namespace DOL.GS
                         log.Warn("Craft Price Correction: " + product.Id_nb + " rawmaterials price= " + totalPrice + " Current Price= " + currentPrice + ". Corrected price to= " + pricetoset);
                     else
                         log.Warn("Craft Price Correction Not SAVED: " + product.Id_nb + " rawmaterials price= " + totalPrice + " Current Price= " + currentPrice + ". Corrected price to= " + pricetoset);
-                    GameServer.Database.UpdateInCache<ItemTemplate>(product.Id_nb);
+                    GameServer.Database.UpdateInCache<DbItemTemplate>(product.Id_nb);
                     product.Dirty = false;
                     product.AllowUpdate = false;
                 }
@@ -112,9 +112,9 @@ namespace DOL.GS
     public class Ingredient
     {
         public int Count { get; }
-        public ItemTemplate Material { get; }
+        public DbItemTemplate Material { get; }
 
-        public Ingredient(int count, ItemTemplate ingredient)
+        public Ingredient(int count, DbItemTemplate ingredient)
         {
             Count = count;
             Material = ingredient;
@@ -166,7 +166,7 @@ namespace DOL.GS
 
             string craftingDebug = "";
             
-            var dbRecipe = GameServer.Database.FindObjectByKey<DBCraftedItem>(recipeDatabaseID.ToString());
+            var dbRecipe = GameServer.Database.FindObjectByKey<DbCraftedItem>(recipeDatabaseID.ToString());
             if (dbRecipe == null)
             {
                 craftingDebug = "[CRAFTING] No DBCraftedItem with ID " + recipeDatabaseID + " exists.";
@@ -177,7 +177,7 @@ namespace DOL.GS
                 
             
 
-            ItemTemplate product = GameServer.Database.FindObjectByKey<ItemTemplate>(dbRecipe.Id_nb);
+            DbItemTemplate product = GameServer.Database.FindObjectByKey<DbItemTemplate>(dbRecipe.Id_nb);
             if (product == null)
             {
                 craftingDebug = "[CRAFTING] ItemTemplate " + dbRecipe.Id_nb + " for Recipe with ID " + dbRecipe.CraftedItemID + " does not exist.";
@@ -186,7 +186,7 @@ namespace DOL.GS
                 //throw new ArgumentException(craftingDebug);
             }
 
-            var rawMaterials = DOLDB<DBCraftedXItem>.SelectObjects(DB.Column("CraftedItemId_nb").IsEqualTo(dbRecipe.Id_nb));
+            var rawMaterials = DOLDB<DbCraftedXItem>.SelectObjects(DB.Column("CraftedItemId_nb").IsEqualTo(dbRecipe.Id_nb));
             if (rawMaterials.Count == 0)
             {
                 craftingDebug = "[CRAFTING] Recipe with ID " + dbRecipe.CraftedItemID + " has no ingredients.";
@@ -198,9 +198,9 @@ namespace DOL.GS
             bool isRecipeValid = true;
 
             var ingredients = new List<Ingredient>();
-            foreach (DBCraftedXItem material in rawMaterials)
+            foreach (DbCraftedXItem material in rawMaterials)
             {
-                ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(material.IngredientId_nb);
+                DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(material.IngredientId_nb);
 
                 if (template == null)
                 {

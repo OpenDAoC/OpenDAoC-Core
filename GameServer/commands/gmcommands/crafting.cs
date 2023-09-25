@@ -68,7 +68,7 @@ namespace DOL.GS.Commands
 				{
 					List<string> list = new List<string>();
 					int salvageID = Convert.ToInt32(args[2]);
-					SalvageYield salvage = GameServer.Database.FindObjectByKey<SalvageYield>(salvageID);
+					DbSalvageYield salvage = GameServer.Database.FindObjectByKey<DbSalvageYield>(salvageID);
 
 					if (salvage == null)
 					{
@@ -76,7 +76,7 @@ namespace DOL.GS.Commands
 						return;
 					}
 
-					ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(salvage.MaterialId_nb);
+					DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(salvage.MaterialId_nb);
 					string materialName = "Not Found!";
 
 					if (template != null)
@@ -99,7 +99,7 @@ namespace DOL.GS.Commands
 				if (args[1].ToLower() == "adjustprices")
 				{
 					var recipeIDs = new List<ushort>();
-					var DBrecipes = GameServer.Database.SelectAllObjects<DBCraftedItem>();
+					var DBrecipes = GameServer.Database.SelectAllObjects<DbCraftedItem>();
 					foreach (var dbrecipe in DBrecipes)
 					{
 						recipeIDs.Add(Convert.ToUInt16(dbrecipe.CraftedItemID));
@@ -129,7 +129,7 @@ namespace DOL.GS.Commands
 						if (args.Length > 6)
 							package = args[6];
 
-						ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(material);
+						DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(material);
 
 						if (template == null)
 						{
@@ -137,7 +137,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						SalvageYield salvage = GameServer.Database.FindObjectByKey<SalvageYield>(salvageID);
+						DbSalvageYield salvage = GameServer.Database.FindObjectByKey<DbSalvageYield>(salvageID);
 
 						if (args[1].ToLower() == "salvageadd")
 						{
@@ -147,7 +147,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 
-							salvage = new SalvageYield();
+							salvage = new DbSalvageYield();
 							if (salvageID > 0)
 								salvage.ID = salvageID;
 
@@ -175,7 +175,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 
-							if (salvage.PackageID == SalvageYield.LEGACY_SALVAGE_ID)
+							if (salvage.PackageID == DbSalvageYield.LEGACY_SALVAGE_ID)
 							{
 								DisplayMessage(client, "This SalvageYield ID is used for legacy salvage support and can not be updated.");
 								return;

@@ -4,7 +4,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_VolcanicPillar : TimedRealmAbility, ISpellCastingAbilityHandler
     {
-        public AtlasOF_VolcanicPillar(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_VolcanicPillar(DbAbility dba, int level) : base(dba, level) { }
 
         // ISpellCastingAbilityHandler
         public Spell Spell { get { return m_spell; } }
@@ -15,7 +15,7 @@ namespace DOL.GS.RealmAbilities
         private const int m_range = 1875; // bolt range
         private const int m_radius = 500; // post-1.62 nerf value (was 700)
 
-        private DBSpell m_dbspell;
+        private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
 
@@ -25,7 +25,7 @@ namespace DOL.GS.RealmAbilities
 
         private void CreateSpell(GamePlayer caster)
         {
-            m_dbspell = new DBSpell();
+            m_dbspell = new DbSpell();
             m_dbspell.Name = "Volcanic Pillar";
             m_dbspell.Icon = 4253;
             m_dbspell.ClientEffect = 7025;

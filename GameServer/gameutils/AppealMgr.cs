@@ -72,7 +72,7 @@ namespace DOL.GS.Appeal
 		public static void NotifyStaff()
 		{
 			//here we keep the staff up to date on the status of the appeal queue, if there are open Appeals.
-			IList<DBAppeal> Appeals = GetAllAppeals();
+			IList<DbAppeal> Appeals = GetAllAppeals();
 
 			if (Appeals.Count == 0)
 				return;
@@ -81,7 +81,7 @@ namespace DOL.GS.Appeal
 			int med = 0;
 			int high = 0;
 			int crit = 0;
-			foreach (DBAppeal a in Appeals)
+			foreach (DbAppeal a in Appeals)
 			{
 				if (a == null) { return; }
 				if (a.Severity < 1) { return; }
@@ -167,15 +167,15 @@ namespace DOL.GS.Appeal
 			return;
 		}
 
-		public static DBAppeal GetAppealByPlayerName(string name)
+		public static DbAppeal GetAppealByPlayerName(string name)
 		{
-			DBAppeal appeal = DOLDB<DBAppeal>.SelectObject(DB.Column("Name").IsEqualTo(name));
+			DbAppeal appeal = DOLDB<DbAppeal>.SelectObject(DB.Column("Name").IsEqualTo(name));
 			return appeal;
 		}
 
-		public static DBAppeal GetAppealByAccountName(string name)
+		public static DbAppeal GetAppealByAccountName(string name)
 		{
-			DBAppeal appeal = DOLDB<DBAppeal>.SelectObject(DB.Column("Account").IsEqualTo(name));
+			DbAppeal appeal = DOLDB<DbAppeal>.SelectObject(DB.Column("Account").IsEqualTo(name));
 			return appeal;
 		}
 
@@ -183,13 +183,13 @@ namespace DOL.GS.Appeal
 		/// Gets a combined list of Appeals for every player that is online.
 		/// </summary>
 		/// <returns></returns>
-		public static IList<DBAppeal> GetAllAppeals()
+		public static IList<DbAppeal> GetAllAppeals()
 		{
-			List<DBAppeal> result = new();
+			List<DbAppeal> result = new();
 
 			foreach (GamePlayer player in ClientService.GetPlayers())
 			{
-				DBAppeal ap = GetAppealByPlayerName(player.Name);
+				DbAppeal ap = GetAppealByPlayerName(player.Name);
 
 				if (ap != null)
 					result.Add(ap);
@@ -203,9 +203,9 @@ namespace DOL.GS.Appeal
 		/// Gets a combined list of Appeals including player Appeals who are offline.
 		/// </summary>
 		/// <returns></returns>
-		public static IList<DBAppeal> GetAllAppealsOffline()
+		public static IList<DbAppeal> GetAllAppealsOffline()
 		{
-			return GameServer.Database.SelectAllObjects<DBAppeal>();
+			return GameServer.Database.SelectAllObjects<DbAppeal>();
 		}
 		/// <summary>
 		/// Creates a New Appeal
@@ -229,7 +229,7 @@ namespace DOL.GS.Appeal
 			}
 			string eText = GameServer.Database.Escape(Text); //prevent SQL injection
 			string TimeStamp = DateTime.Now.ToLongTimeString() + " " + DateTime.Now.ToLongDateString();
-			DBAppeal appeal = new DBAppeal(Player.Name, Player.Client.Account.Name, Severity, Status, TimeStamp, eText);
+			DbAppeal appeal = new DbAppeal(Player.Name, Player.Client.Account.Name, Severity, Status, TimeStamp, eText);
 			GameServer.Database.AddObject(appeal);
 			Player.TempProperties.SetProperty("HasPendingAppeal", true);
 			Player.Out.SendMessage("[Appeals]: " + LanguageMgr.GetTranslation(Player.Client.Account.Language, "Scripts.Players.Appeal.AppealSubmitted"), eChatType.CT_Important, eChatLoc.CL_ChatWindow);
@@ -245,7 +245,7 @@ namespace DOL.GS.Appeal
 		/// <param name="name"></param>The name of the staff member making this change.
 		/// <param name="appeal"></param>The appeal to change the status of.
 		/// <param name="status">the new status (Open, Being Helped)</param>
-		public static void ChangeStatus(string staffname, GamePlayer target, DBAppeal appeal, string status)
+		public static void ChangeStatus(string staffname, GamePlayer target, DbAppeal appeal, string status)
 		{
 			appeal.Status = status;
 			appeal.Dirty = true;
@@ -261,7 +261,7 @@ namespace DOL.GS.Appeal
 		/// <param name="name"></param>The name of the staff member making this change.
 		/// <param name="appeal"></param>The appeal to remove.
 		/// <param name="Player"></param>The Player whose appeal we are closing.
-		public static void CloseAppeal(string staffname, GamePlayer Player, DBAppeal appeal)
+		public static void CloseAppeal(string staffname, GamePlayer Player, DbAppeal appeal)
 		{
 			MessageToAllStaff("[Appeals]: " + "Staffmember " + staffname + " has just closed " + Player.Name + "'s appeal.");
 			Player.Out.SendMessage("[Appeals]: " + LanguageMgr.GetTranslation(Player.Client.Account.Language, "Scripts.Players.Appeal.StaffClosedYourAppeal", staffname), eChatType.CT_Important, eChatLoc.CL_ChatWindow);
@@ -275,14 +275,14 @@ namespace DOL.GS.Appeal
 		/// </summary>
 		/// <param name="name"></param>The name of the staff member making this change.
 		/// <param name="appeal"></param>The appeal to remove.
-		public static void CloseAppeal(string staffname, DBAppeal appeal)
+		public static void CloseAppeal(string staffname, DbAppeal appeal)
 		{
 			MessageToAllStaff("[Appeals]: " + "Staffmember " + staffname + " has just closed " + appeal.Name + "'s (offline) appeal.");
 			GameServer.Database.DeleteObject(appeal);
 			return;
 		}
 
-		public static void CancelAppeal(GamePlayer Player, DBAppeal appeal)
+		public static void CancelAppeal(GamePlayer Player, DbAppeal appeal)
 		{
 			MessageToAllStaff("[Appeals]: " + Player.Name + " has canceled their appeal.");
 			Player.Out.SendMessage("[Appeals]: " + LanguageMgr.GetTranslation(Player.Client.Account.Language, "Scripts.Players.Appeal.CanceledYourAppeal"), eChatType.CT_Important, eChatLoc.CL_ChatWindow);
@@ -305,7 +305,7 @@ namespace DOL.GS.Appeal
 
 				StaffList.Add(player);
 				
-				IList<DBAppeal> Appeals = GetAllAppeals();
+				IList<DbAppeal> Appeals = GetAllAppeals();
 				if (Appeals.Count > 0)
 				{
 					player.Out.SendMessage("[Appeals]: " + "There are " + Appeals.Count + " appeals in the queue!  Use /gmappeal to work the appeals queue.", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
@@ -313,7 +313,7 @@ namespace DOL.GS.Appeal
 			}
 
 			//Check if there is an existing appeal belonging to this player.
-			DBAppeal appeal = GetAppealByAccountName(player.Client.Account.Name);
+			DbAppeal appeal = GetAppealByAccountName(player.Client.Account.Name);
 
 			if (appeal == null)
 			{

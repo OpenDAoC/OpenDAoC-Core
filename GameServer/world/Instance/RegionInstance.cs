@@ -103,14 +103,14 @@ namespace DOL.GS
 		/// Load from Database override to clone objects from original Region.
 		/// Loads Objects, Mobs, Areas from Database using "SkinID"
 		/// </summary>
-		public override void LoadFromDatabase(Mob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
+		public override void LoadFromDatabase(DbMob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
         {
             if (!LoadObjects)
                 return;
 
             Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
-            var staticObjs = DOLDB<WorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(Skin));
-            var areaObjs = DOLDB<DBArea>.SelectObjects(DB.Column("Region").IsEqualTo(Skin));            
+            var staticObjs = DOLDB<DbWorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(Skin));
+            var areaObjs = DOLDB<DbArea>.SelectObjects(DB.Column("Region").IsEqualTo(Skin));            
             
             int count = mobObjs.Length + staticObjs.Count;
             if (count > 0) PreAllocateRegionSpace(count + 100);
@@ -123,7 +123,7 @@ namespace DOL.GS
 
             if (mobObjs.Length > 0)
             {
-                foreach (Mob mob in mobObjs)
+                foreach (DbMob mob in mobObjs)
                 {
                     GameNPC myMob = null;
                     string error = string.Empty;
@@ -161,11 +161,11 @@ namespace DOL.GS
   
                     if (myMob == null)
                     {
-                    	if(template != null && template.ClassType != null && template.ClassType.Length > 0 && template.ClassType != Mob.DEFAULT_NPC_CLASSTYPE && template.ReplaceMobValues)
+                    	if(template != null && template.ClassType != null && template.ClassType.Length > 0 && template.ClassType != DbMob.DEFAULT_NPC_CLASSTYPE && template.ReplaceMobValues)
                     	{
                 			classtype = template.ClassType;
                     	}
-                        else if (mob.ClassType != null && mob.ClassType.Length > 0 && mob.ClassType != Mob.DEFAULT_NPC_CLASSTYPE)
+                        else if (mob.ClassType != null && mob.ClassType.Length > 0 && mob.ClassType != DbMob.DEFAULT_NPC_CLASSTYPE)
                         {
                             classtype = mob.ClassType;
                         }
@@ -212,7 +212,7 @@ namespace DOL.GS
                     {
                         try
                         {
-                        	Mob clone = (Mob)mob.Clone();
+                        	DbMob clone = (DbMob)mob.Clone();
                         	clone.AllowAdd = false;
                         	clone.AllowDelete = false;
                         	clone.Region = this.ID;
@@ -242,9 +242,9 @@ namespace DOL.GS
 
             if (staticObjs.Count > 0)
             {
-                foreach (WorldObject item in staticObjs)
+                foreach (DbWorldObject item in staticObjs)
                 {
-                	WorldObject itemclone = (WorldObject)item.Clone();
+                	DbWorldObject itemclone = (DbWorldObject)item.Clone();
                 	itemclone.AllowAdd = false;
                 	itemclone.AllowDelete = false;
                 	itemclone.Region = this.ID;
@@ -278,14 +278,14 @@ namespace DOL.GS
 
             int areaCnt = 0;
             // Add missing area
-            foreach(DBArea area in areaObjs) 
+            foreach(DbArea area in areaObjs) 
             {
             	// Don't bind in instance.
             	if(area.ClassType.Equals("DOL.GS.Area+BindArea"))
             		continue;
             	
             	// clone DB object.
-            	DBArea newDBArea = ((DBArea)area.Clone());
+            	DbArea newDBArea = ((DbArea)area.Clone());
             	newDBArea.AllowAdd = false;
             	newDBArea.Region = this.ID;
             	// Instantiate Area with cloned DB object and add to region

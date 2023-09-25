@@ -50,7 +50,7 @@ namespace DOL.GS.Commands
 				}
 				skin = Convert.ToInt32(args[1]);
 				id = Convert.ToInt32(args[2]);
-				DBKeepHookPoint dbkeephp = new DBKeepHookPoint();
+				DbKeepHookPoint dbkeephp = new DbKeepHookPoint();
 				dbkeephp.HookPointID = id;
 				dbkeephp.KeepComponentSkinID = skin;
 				dbkeephp.X = client.Player.X - comp.X;

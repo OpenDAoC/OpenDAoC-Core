@@ -14,10 +14,10 @@ namespace DOL.GS.Effects
     {
         private class WeaponActionData
         {
-            public InventoryItem AttackWeapon { get; private set; }
+            public DbInventoryItem AttackWeapon { get; private set; }
             public int InterruptDuration { get; private set; }
 
-            public WeaponActionData(InventoryItem attackWeapon, int interruptDuration)
+            public WeaponActionData(DbInventoryItem attackWeapon, int interruptDuration)
             {
                 AttackWeapon = attackWeapon;
                 InterruptDuration = interruptDuration;

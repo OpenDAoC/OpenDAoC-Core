@@ -42,7 +42,7 @@ namespace DOL.GS
 				int minLoot = ServerProperties.Properties.SMALLCHEST_MULTIPLIER * (lvl * lvl); 
 				long moneyCount = minLoot + Util.Random(minLoot >> 1);
 				moneyCount = (long)((double)moneyCount * ServerProperties.Properties.MONEY_DROP);
-				ItemTemplate money = new ItemTemplate();
+				DbItemTemplate money = new DbItemTemplate();
 				money.Model = 488;
 				money.Name = "small chest";
 				money.Level = 0;
@@ -56,7 +56,7 @@ namespace DOL.GS
 				int minLoot = ServerProperties.Properties.LARGECHEST_MULTIPLIER * (lvl * lvl); 
 				long moneyCount = minLoot + Util.Random(minLoot >> 1);
 				moneyCount = (long)((double)moneyCount * ServerProperties.Properties.MONEY_DROP);
-				ItemTemplate money = new ItemTemplate();
+				DbItemTemplate money = new DbItemTemplate();
 				money.Model = 488;
 				money.Name = "large chest";
 				money.Level = 0;

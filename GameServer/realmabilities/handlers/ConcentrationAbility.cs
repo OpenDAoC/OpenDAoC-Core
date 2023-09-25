@@ -13,7 +13,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class ConcentrationAbility : TimedRealmAbility
 	{
-		public ConcentrationAbility(DBAbility dba, int level) : base(dba, level) { }
+		public ConcentrationAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action

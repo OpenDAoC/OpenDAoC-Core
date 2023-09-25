@@ -47,7 +47,7 @@ namespace DOL.GS
 				}
 			}
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -240,7 +240,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_OonaDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.Power = 0;
@@ -270,7 +270,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_OonaBolt == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = Util.Random(15, 20);

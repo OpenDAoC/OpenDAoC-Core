@@ -33,7 +33,7 @@ namespace DOL.GS
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static ItemTemplate m_dragonscales = GameServer.Database.FindObjectByKey<ItemTemplate>("dragonscales");
+		private static DbItemTemplate m_dragonscales = GameServer.Database.FindObjectByKey<DbItemTemplate>("dragonscales");
 		/// <summary>
         	/// Generate loot for given mob
 		/// </summary>

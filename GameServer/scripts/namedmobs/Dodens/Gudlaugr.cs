@@ -40,7 +40,7 @@ namespace DOL.GS.Scripts
 			return true;
 		}
 
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -186,7 +186,7 @@ namespace DOL.GS.Scripts
 				{
 					if (m_Snare == null)
 					{
-						DBSpell spell = new DBSpell();
+						DbSpell spell = new DbSpell();
 						spell.AllowAdd = false;
 						spell.CastTime = 0;
 						spell.Uninterruptible = true;
@@ -224,7 +224,7 @@ namespace DOL.GS.Scripts
 				{
 					if (m_Bleed == null)
 					{
-						DBSpell spell = new DBSpell();
+						DbSpell spell = new DbSpell();
 						spell.AllowAdd = false;
 						spell.CastTime = 0;
 						spell.Uninterruptible = true;

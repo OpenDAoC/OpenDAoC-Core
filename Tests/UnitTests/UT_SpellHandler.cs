@@ -490,7 +490,7 @@ namespace DOL.Tests.Unit.Gameserver
             public int fakePulse = 0;
             public int fakeRange = 0;
 
-            public FakeSpell() : base(new DBSpell(), 0) { }
+            public FakeSpell() : base(new DbSpell(), 0) { }
 
             public override int Pulse => fakePulse;
             public override eSpellType SpellType => fakeSpellType;

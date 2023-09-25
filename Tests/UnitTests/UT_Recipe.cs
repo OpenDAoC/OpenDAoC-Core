@@ -36,7 +36,7 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void GetIngredientCosts_OneIngredientWithPrice2_2()
         {
-            var item = new ItemTemplate();
+            var item = new DbItemTemplate();
             item.Price = 2;
             var ingredient = new Ingredient(1, item);
             var recipe = new Recipe(null, new List<Ingredient>() { ingredient});
@@ -50,7 +50,7 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void GetIngredientCosts_OneIngredientWithPrice2AndOneWithPrice4_6()
         {
-            var item = new ItemTemplate() { Price = 2 };
+            var item = new DbItemTemplate() { Price = 2 };
             var ingredient1 = new Ingredient(1, item);
             var ingredient2 = new Ingredient(2, item);
             var recipe = new Recipe(null, new List<Ingredient>() { ingredient1, ingredient2 });
@@ -64,7 +64,7 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void SetRecommendedProductPriceInDB_ProductWithPrice2AndNoIngredients_ProductPriceIs2()
         {
-            var product = new ItemTemplate() { Price = 2 };
+            var product = new DbItemTemplate() { Price = 2 };
             var ingredients = new List<Ingredient>() { };
             var recipe = new Recipe(product, ingredients);
 
@@ -78,9 +78,9 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void SetRecommendedProductPriceInDB_ProductWithPrice2AndIngredientCostIs100_ProductPriceIs190()
         {
-            var product = new ItemTemplate() { Price = 2 };
+            var product = new DbItemTemplate() { Price = 2 };
             var count = 1;
-            var material = new ItemTemplate() { Price = 100 };
+            var material = new DbItemTemplate() { Price = 100 };
             var ingredients = new List<Ingredient>() { new Ingredient(count, material) };
             var recipe = new Recipe(product, ingredients);
             GS.ServerProperties.Properties.CRAFTING_SELLBACK_PERCENT = 95;
@@ -99,7 +99,7 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void Cost_CountIsOneItemPriceIsOne_One()
         {
-            var item = new ItemTemplate() { Price = 1 };
+            var item = new DbItemTemplate() { Price = 1 };
             var ingredient = new Ingredient(1, item);
 
             var actual = ingredient.Cost;
@@ -111,7 +111,7 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void Cost_2ItemsWithPriceOne_2()
         {
-            var item = new ItemTemplate() { Price = 1 };
+            var item = new DbItemTemplate() { Price = 1 };
             var ingredient = new Ingredient(2, item);
 
             var actual = ingredient.Cost;

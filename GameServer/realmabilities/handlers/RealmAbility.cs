@@ -31,7 +31,7 @@ namespace DOL.GS.RealmAbilities
 	public class RealmAbility : Ability
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		public RealmAbility(DBAbility ability, int level) : base(ability, level) { }
+		public RealmAbility(DbAbility ability, int level) : base(ability, level) { }
 
 		public virtual int CostForUpgrade(int currentLevel)
 		{
@@ -99,7 +99,7 @@ namespace DOL.GS.RealmAbilities
 	public class TimedRealmAbility : RealmAbility
 	{
 
-		public TimedRealmAbility(DBAbility ability, int level) : base(ability, level) { }
+		public TimedRealmAbility(DbAbility ability, int level) : base(ability, level) { }
 
 		public override int CostForUpgrade(int level)
 		{
@@ -374,7 +374,7 @@ namespace DOL.GS.RealmAbilities
 	{
 		public Style StyleToUse;
 
-		public StyleRealmAbility(DBAbility ability, int level) : base(ability, level)
+		public StyleRealmAbility(DbAbility ability, int level) : base(ability, level)
 		{
 			StyleToUse = CreateStyle();
 		}
@@ -413,7 +413,7 @@ namespace DOL.GS.RealmAbilities
 
 	public class L5RealmAbility : RealmAbility
 	{
-		public L5RealmAbility(DBAbility ability, int level) : base(ability, level) { }
+		public L5RealmAbility(DbAbility ability, int level) : base(ability, level) { }
 
 		public override int CostForUpgrade(int level)
 		{
@@ -477,7 +477,7 @@ namespace DOL.GS.RealmAbilities
 
 	public class RR5RealmAbility : TimedRealmAbility
 	{
-		public RR5RealmAbility(DBAbility ability, int level) : base(ability, level) { }
+		public RR5RealmAbility(DbAbility ability, int level) : base(ability, level) { }
 
 		public override int MaxLevel
 		{

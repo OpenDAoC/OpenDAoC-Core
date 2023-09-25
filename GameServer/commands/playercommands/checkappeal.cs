@@ -18,6 +18,7 @@
  */
 
 using System.Collections.Generic;
+using DOL.Database;
 using DOL.GS.Appeal;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -73,7 +74,7 @@ namespace DOL.GS.Commands
 							AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.DoNotHaveAppeal"));
 							return;
 						}
-						DBAppeal appeal = AppealMgr.GetAppealByPlayerName(client.Player.Name);
+						DbAppeal appeal = AppealMgr.GetAppealByPlayerName(client.Player.Name);
 						if (appeal != null)
 						{
 							if (appeal.Status == "Being Helped")
@@ -108,7 +109,7 @@ namespace DOL.GS.Commands
 							AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NoAppealToView"));
 							return;
 						}
-						DBAppeal appeal = AppealMgr.GetAppealByPlayerName(client.Player.Name);
+						DbAppeal appeal = AppealMgr.GetAppealByPlayerName(client.Player.Name);
 						if (appeal != null)
 						{
 							//Let's view it.

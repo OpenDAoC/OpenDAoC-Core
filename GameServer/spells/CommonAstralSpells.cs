@@ -195,7 +195,7 @@ namespace DOL.GS.Spells
         // Creates the trap(spell)
         private ISpellHandler MakeTrap()
         {
-            DBSpell dbs = new DBSpell();
+            DbSpell dbs = new DbSpell();
             dbs.Name = "irritatin wisp";
             dbs.Icon = 4107;
             dbs.ClientEffect = 5435;

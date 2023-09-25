@@ -29,20 +29,20 @@ namespace DOL.GS.Spells
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private ItemTemplate m_SunSlash;
-        private ItemTemplate m_SunThrust;
-        private ItemTemplate m_SunTwoHanded;
-        private ItemTemplate m_SunCrush;
-        private ItemTemplate m_SunFlexScytheClaw;
-        private ItemTemplate m_SunAxe;
-        private ItemTemplate m_SunLeftAxe;
-        private ItemTemplate m_Sun2HAxe;
-        private ItemTemplate m_Sun2HCrush;
-        private ItemTemplate m_SunBow;
-        private ItemTemplate m_SunStaff;
-        private ItemTemplate m_SunPolearmSpear;
-        private ItemTemplate m_SunMFist;
-        private ItemTemplate m_SunMStaff;
+        private DbItemTemplate m_SunSlash;
+        private DbItemTemplate m_SunThrust;
+        private DbItemTemplate m_SunTwoHanded;
+        private DbItemTemplate m_SunCrush;
+        private DbItemTemplate m_SunFlexScytheClaw;
+        private DbItemTemplate m_SunAxe;
+        private DbItemTemplate m_SunLeftAxe;
+        private DbItemTemplate m_Sun2HAxe;
+        private DbItemTemplate m_Sun2HCrush;
+        private DbItemTemplate m_SunBow;
+        private DbItemTemplate m_SunStaff;
+        private DbItemTemplate m_SunPolearmSpear;
+        private DbItemTemplate m_SunMFist;
+        private DbItemTemplate m_SunMStaff;
 
         public BeltOfSun(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line)
@@ -58,127 +58,127 @@ namespace DOL.GS.Spells
             #region Alb
             if (player.CharacterClass.ID == (int)eCharacterClass.Armsman)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? Crush;
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? Slash;
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? Slash;
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunThrust = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? Thrust;
+                m_SunThrust = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? Thrust;
                 items.Add(GameInventoryItem.Create(m_SunThrust));
 
-                m_SunTwoHanded = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded") ?? TwoHanded;
+                m_SunTwoHanded = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded") ?? TwoHanded;
                 items.Add(GameInventoryItem.Create(m_SunTwoHanded));
 
-                m_SunPolearmSpear = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Polearm") ?? Polearm;
+                m_SunPolearmSpear = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Polearm") ?? Polearm;
                 items.Add(GameInventoryItem.Create(m_SunPolearmSpear));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Friar)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? Crush;
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Staff") ?? Staff;
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Staff") ?? Staff;
                 items.Add(GameInventoryItem.Create(m_SunStaff));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Heretic)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? Crush;
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunFlexScytheClaw = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Flex") ?? Flex;
+                m_SunFlexScytheClaw = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Flex") ?? Flex;
                 items.Add(GameInventoryItem.Create(m_SunFlexScytheClaw));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Infiltrator)
             {
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? Slash;
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? Slash;
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunThrust = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? Thrust;
+                m_SunThrust = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? Thrust;
                 items.Add(GameInventoryItem.Create(m_SunThrust));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Mercenary)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? Crush;
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? Slash;
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? Slash;
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunThrust = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? Thrust;
+                m_SunThrust = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? Thrust;
                 items.Add(GameInventoryItem.Create(m_SunThrust));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Minstrel)
             {
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? Slash;
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? Slash;
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunThrust = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? Thrust;
+                m_SunThrust = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? Thrust;
                 items.Add(GameInventoryItem.Create(m_SunThrust));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Paladin)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? Crush;
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? Slash;
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? Slash;
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunThrust = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? Thrust;
+                m_SunThrust = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? Thrust;
                 items.Add(GameInventoryItem.Create(m_SunThrust));
 
-                m_SunTwoHanded = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded") ?? TwoHanded;
+                m_SunTwoHanded = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded") ?? TwoHanded;
                 items.Add(GameInventoryItem.Create(m_SunTwoHanded));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Reaver)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? Crush;
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? Slash;
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? Slash;
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunThrust = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? Thrust;
+                m_SunThrust = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? Thrust;
                 items.Add(GameInventoryItem.Create(m_SunThrust));
 
-                m_SunFlexScytheClaw = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Flex") ?? Flex;
+                m_SunFlexScytheClaw = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Flex") ?? Flex;
                 items.Add(GameInventoryItem.Create(m_SunFlexScytheClaw));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Scout)
             {
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? Slash;
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? Slash;
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunThrust = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? Thrust;
+                m_SunThrust = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? Thrust;
                 items.Add(GameInventoryItem.Create(m_SunThrust));
 
-                m_SunBow = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Bow") ?? Bow;
+                m_SunBow = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Bow") ?? Bow;
                 items.Add(GameInventoryItem.Create(m_SunBow));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.MaulerAlb)
             {
-                m_SunMFist = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_MFist") ?? MFist;
+                m_SunMFist = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MFist") ?? MFist;
                 items.Add(GameInventoryItem.Create(m_SunMFist));
 
-                m_SunMStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_MStaff") ?? MStaff;
+                m_SunMStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MStaff") ?? MStaff;
                 items.Add(GameInventoryItem.Create(m_SunMStaff));
                 return;
             }
@@ -187,127 +187,127 @@ namespace DOL.GS.Spells
             #region Mid
             if (player.CharacterClass.ID == (int)eCharacterClass.Berserker)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? CrushM; //
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushM; //
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashM; //
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Axe") ?? Axe; //
+                m_SunAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Axe") ?? Axe; //
                 items.Add(GameInventoryItem.Create(m_SunAxe));
 
-                m_SunTwoHanded = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
+                m_SunTwoHanded = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
                 items.Add(GameInventoryItem.Create(m_SunTwoHanded));
 
-                m_Sun2HCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HCrush") ?? THCrushM;
+                m_Sun2HCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HCrush") ?? THCrushM;
                 items.Add(GameInventoryItem.Create(m_Sun2HCrush));
 
-                m_Sun2HAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HAxe") ?? THAxe;
+                m_Sun2HAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HAxe") ?? THAxe;
                 items.Add(GameInventoryItem.Create(m_Sun2HAxe));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Hunter)
             {
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashM; //
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunPolearmSpear = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Trust") ?? SpearM; // Spear
+                m_SunPolearmSpear = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Trust") ?? SpearM; // Spear
                 items.Add(GameInventoryItem.Create(m_SunPolearmSpear));
 
-                m_SunBow = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Bow") ?? BowM; //
+                m_SunBow = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Bow") ?? BowM; //
                 items.Add(GameInventoryItem.Create(m_SunBow));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Savage)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? CrushM; //
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushM; //
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashM; //
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Axe") ?? Axe; //
+                m_SunAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Axe") ?? Axe; //
                 items.Add(GameInventoryItem.Create(m_SunAxe));
 
-                m_SunThrust = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Claw") ?? Claw; //
+                m_SunThrust = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Claw") ?? Claw; //
                 items.Add(GameInventoryItem.Create(m_SunThrust));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Shadowblade)
             {
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashM; //
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Axe") ?? Axe; //
+                m_SunAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Axe") ?? Axe; //
                 items.Add(GameInventoryItem.Create(m_SunAxe));
 
-                m_SunLeftAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_LeftAxe") ?? LeftAxe; //
+                m_SunLeftAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_LeftAxe") ?? LeftAxe; //
                 items.Add(GameInventoryItem.Create(m_SunLeftAxe));
 
-                m_SunTwoHanded = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
+                m_SunTwoHanded = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
                 items.Add(GameInventoryItem.Create(m_SunTwoHanded));
 
-                m_Sun2HAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HAxe") ?? THAxe;
+                m_Sun2HAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HAxe") ?? THAxe;
                 items.Add(GameInventoryItem.Create(m_Sun2HAxe));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Skald)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? CrushM; //
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushM; //
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashM; //
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Axe") ?? Axe; //
+                m_SunAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Axe") ?? Axe; //
                 items.Add(GameInventoryItem.Create(m_SunAxe));
 
-                m_SunTwoHanded = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
+                m_SunTwoHanded = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
                 items.Add(GameInventoryItem.Create(m_SunTwoHanded));
 
-                m_Sun2HCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HCrush") ?? THCrushM;
+                m_Sun2HCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HCrush") ?? THCrushM;
                 items.Add(GameInventoryItem.Create(m_Sun2HCrush));
 
-                m_Sun2HAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HAxe") ?? THAxe;
+                m_Sun2HAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HAxe") ?? THAxe;
                 items.Add(GameInventoryItem.Create(m_Sun2HAxe));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Thane)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? CrushM; //
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushM; //
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashM; //
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Axe") ?? Axe; //
+                m_SunAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Axe") ?? Axe; //
                 items.Add(GameInventoryItem.Create(m_SunAxe));
 
-                m_SunTwoHanded = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
+                m_SunTwoHanded = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
                 items.Add(GameInventoryItem.Create(m_SunTwoHanded));
 
-                m_Sun2HCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HCrush") ?? THCrushM;
+                m_Sun2HCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HCrush") ?? THCrushM;
                 items.Add(GameInventoryItem.Create(m_Sun2HCrush));
 
-                m_Sun2HAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HAxe") ?? THAxe;
+                m_Sun2HAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HAxe") ?? THAxe;
                 items.Add(GameInventoryItem.Create(m_Sun2HAxe));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Thane)
             {
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashM; //
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunTwoHanded = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
+                m_SunTwoHanded = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
                 items.Add(GameInventoryItem.Create(m_SunTwoHanded));
 
-                m_SunPolearmSpear = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Trust") ?? SpearM; // Spear
+                m_SunPolearmSpear = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Trust") ?? SpearM; // Spear
                 items.Add(GameInventoryItem.Create(m_SunPolearmSpear));
                 return;
             }
@@ -315,32 +315,32 @@ namespace DOL.GS.Spells
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Warrior)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? CrushM; //
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushM; //
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunSlash = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashM; //
+                m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Axe") ?? Axe; //
+                m_SunAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Axe") ?? Axe; //
                 items.Add(GameInventoryItem.Create(m_SunAxe));
 
-                m_SunTwoHanded = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
+                m_SunTwoHanded = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded") ?? TwoHandedM; // 2handed Sword
                 items.Add(GameInventoryItem.Create(m_SunTwoHanded));
 
-                m_Sun2HCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HCrush") ?? THCrushM;
+                m_Sun2HCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HCrush") ?? THCrushM;
                 items.Add(GameInventoryItem.Create(m_Sun2HCrush));
 
-                m_Sun2HAxe = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HAxe") ?? THAxe;
+                m_Sun2HAxe = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HAxe") ?? THAxe;
                 items.Add(GameInventoryItem.Create(m_Sun2HAxe));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.MaulerMid)
             {
-                m_SunMFist = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_MFist") ?? MFist;
+                m_SunMFist = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MFist") ?? MFist;
                 items.Add(GameInventoryItem.Create(m_SunMFist));
 
-                m_SunMStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_MStaff") ?? MStaff;
+                m_SunMStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MStaff") ?? MStaff;
                 items.Add(GameInventoryItem.Create(m_SunMStaff));
                 return;
             }
@@ -350,115 +350,115 @@ namespace DOL.GS.Spells
             #region Hib
             if (player.CharacterClass.ID == (int)eCharacterClass.Bard)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashH; // Blades
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashH; // Blades
                 items.Add(GameInventoryItem.Create(m_SunSlash));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Blademaster)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashH; // Blades
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashH; // Blades
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
                 items.Add(GameInventoryItem.Create(m_SunThrust));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Champion)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashH; // Blades
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashH; // Blades
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
                 items.Add(GameInventoryItem.Create(m_SunThrust));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? TwoHandedH; // LargeWeapon
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? TwoHandedH; // LargeWeapon
                 items.Add(GameInventoryItem.Create(m_SunTwoHanded));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Hero)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashH; // Blades
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashH; // Blades
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
                 items.Add(GameInventoryItem.Create(m_SunThrust));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? TwoHandedH; // LargeWeapon
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? TwoHandedH; // LargeWeapon
                 items.Add(GameInventoryItem.Create(m_SunTwoHanded));
 
-                m_SunPolearmSpear = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Spear") ?? SpearH; // Spear
+                m_SunPolearmSpear = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Spear") ?? SpearH; // Spear
                 items.Add(GameInventoryItem.Create(m_SunPolearmSpear));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Nightshade)
             {
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashH; // Blades
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashH; // Blades
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
                 items.Add(GameInventoryItem.Create(m_SunThrust));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Ranger)
             {
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashH; // Blades
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashH; // Blades
                 items.Add(GameInventoryItem.Create(m_SunSlash));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
                 items.Add(GameInventoryItem.Create(m_SunThrust));
 
-                m_SunBow = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Bow") ?? BowH; //
+                m_SunBow = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Bow") ?? BowH; //
                 items.Add(GameInventoryItem.Create(m_SunBow));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Valewalker)
             {
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_FlexScythe") ?? Scythe;
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_FlexScythe") ?? Scythe;
                 items.Add(GameInventoryItem.Create(m_SunFlexScytheClaw));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Valewalker)
             {
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
                 items.Add(GameInventoryItem.Create(m_SunThrust));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.Warden)
             {
-                m_SunCrush = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
+                m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
                 items.Add(GameInventoryItem.Create(m_SunCrush));
 
-                m_SunStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash") ?? SlashH; // Blades
+                m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashH; // Blades
                 items.Add(GameInventoryItem.Create(m_SunSlash));
                 return;
             }
 
             if (player.CharacterClass.ID == (int)eCharacterClass.MaulerHib)
             {
-                m_SunMFist = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_MFist") ?? MFist;
+                m_SunMFist = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MFist") ?? MFist;
                 items.Add(GameInventoryItem.Create(m_SunMFist));
 
-                m_SunMStaff = GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_MStaff") ?? MStaff;
+                m_SunMStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MStaff") ?? MStaff;
                 items.Add(GameInventoryItem.Create(m_SunMStaff));
                 return;
             }
@@ -472,15 +472,15 @@ namespace DOL.GS.Spells
             #endregion Hib
 
         #region Sun Albion Weapons
-        private ItemTemplate Crush
+        private DbItemTemplate Crush
         {
             get
             {
-                m_SunCrush = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush");
+                m_SunCrush = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush");
                 if (m_SunCrush == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Crush, loading it ...");
-                    m_SunCrush = new ItemTemplate();
+                    m_SunCrush = new DbItemTemplate();
                     m_SunCrush.Id_nb = "Sun_Crush";
                     m_SunCrush.Name = "Sun Mace";
                     m_SunCrush.Level = 50;
@@ -519,15 +519,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate Slash
+        private DbItemTemplate Slash
         {
             get
             {
-                m_SunSlash = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash");
+                m_SunSlash = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash");
                 if (m_SunSlash == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Slash, loading it ...");
-                    m_SunSlash = new ItemTemplate();
+                    m_SunSlash = new DbItemTemplate();
                     m_SunSlash.Id_nb = "Sun_Slash";
                     m_SunSlash.Name = "Sun Sword";
                     m_SunSlash.Level = 50;
@@ -566,15 +566,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate Thrust
+        private DbItemTemplate Thrust
         {
             get
             {
-                m_SunThrust = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust");
+                m_SunThrust = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust");
                 if (m_SunThrust == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Thrust, loading it ...");
-                    m_SunThrust = new ItemTemplate();
+                    m_SunThrust = new DbItemTemplate();
                     m_SunThrust.Id_nb = "Sun_Thrust";
                     m_SunThrust.Name = "Sun Sword";
                     m_SunThrust.Level = 50;
@@ -613,15 +613,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate Flex
+        private DbItemTemplate Flex
         {
             get
             {
-                m_SunFlexScytheClaw = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Flex");
+                m_SunFlexScytheClaw = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Flex");
                 if (m_SunFlexScytheClaw == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Flex, loading it ...");
-                    m_SunFlexScytheClaw = new ItemTemplate();
+                    m_SunFlexScytheClaw = new DbItemTemplate();
                     m_SunFlexScytheClaw.Id_nb = "Sun_Flex";
                     m_SunFlexScytheClaw.Name = "Sun Spiked Flail";
                     m_SunFlexScytheClaw.Level = 50;
@@ -660,15 +660,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate Polearm
+        private DbItemTemplate Polearm
         {
             get
             {
-                m_SunPolearmSpear = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Polearm");
+                m_SunPolearmSpear = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Polearm");
                 if (m_SunPolearmSpear == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Polearm, loading it ...");
-                    m_SunPolearmSpear = new ItemTemplate();
+                    m_SunPolearmSpear = new DbItemTemplate();
                     m_SunPolearmSpear.Id_nb = "Sun_Polearm";
                     m_SunPolearmSpear.Name = "Sun Glaive";
                     m_SunPolearmSpear.Level = 50;
@@ -707,15 +707,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate TwoHanded
+        private DbItemTemplate TwoHanded
         {
             get
             {
-                m_SunTwoHanded = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded");
+                m_SunTwoHanded = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded");
                 if (m_SunTwoHanded == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_TwoHanded, loading it ...");
-                    m_SunTwoHanded = new ItemTemplate();
+                    m_SunTwoHanded = new DbItemTemplate();
                     m_SunTwoHanded.Id_nb = "Sun_TwoHanded";
                     m_SunTwoHanded.Name = "Sun Twohanded Sword";
                     m_SunTwoHanded.Level = 50;
@@ -754,15 +754,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate Bow
+        private DbItemTemplate Bow
         {
             get
             {
-                m_SunBow = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Bow");
+                m_SunBow = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Bow");
                 if (m_SunBow == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Bow, loading it ...");
-                    m_SunBow = new ItemTemplate();
+                    m_SunBow = new DbItemTemplate();
                     m_SunBow.Id_nb = "Sun_Bow";
                     m_SunBow.Name = "Sun Bow";
                     m_SunBow.Level = 50;
@@ -801,15 +801,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate Staff
+        private DbItemTemplate Staff
         {
             get
             {
-                m_SunStaff = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Staff");
+                m_SunStaff = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Staff");
                 if (m_SunStaff == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Staff, loading it ...");
-                    m_SunStaff = new ItemTemplate();
+                    m_SunStaff = new DbItemTemplate();
                     m_SunStaff.Id_nb = "Sun_Staff";
                     m_SunStaff.Name = "Sun QuarterStaff";
                     m_SunStaff.Level = 50;
@@ -848,15 +848,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate MStaff
+        private DbItemTemplate MStaff
         {
             get
             {
-                m_SunMStaff = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_MStaff");
+                m_SunMStaff = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MStaff");
                 if (m_SunMStaff == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_MStaff, loading it ...");
-                    m_SunMStaff = new ItemTemplate();
+                    m_SunMStaff = new DbItemTemplate();
                     m_SunMStaff.Id_nb = "Sun_MStaff";
                     m_SunMStaff.Name = "Sun Maulers QuarterStaff";
                     m_SunMStaff.Level = 50;
@@ -895,15 +895,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate MFist
+        private DbItemTemplate MFist
         {
             get
             {
-                m_SunMFist = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_MFist");
+                m_SunMFist = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MFist");
                 if (m_SunMFist == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_MFist, loading it ...");
-                    m_SunMFist = new ItemTemplate();
+                    m_SunMFist = new DbItemTemplate();
                     m_SunMFist.Id_nb = "Sun_MFist";
                     m_SunMFist.Name = "Sun MFist";
                     m_SunMFist.Level = 50;
@@ -944,15 +944,15 @@ namespace DOL.GS.Spells
         #endregion Alb Weapons
 
         #region Sun Midgard Weapons
-        private ItemTemplate CrushM
+        private DbItemTemplate CrushM
         {
             get
             {
-                m_SunCrush = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush");
+                m_SunCrush = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush");
                 if (m_SunCrush == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Crush, loading it ...");
-                    m_SunCrush = new ItemTemplate();
+                    m_SunCrush = new DbItemTemplate();
                     m_SunCrush.Id_nb = "Sun_Crush";
                     m_SunCrush.Name = "Sun Warhammer";
                     m_SunCrush.Level = 50;
@@ -991,15 +991,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate SlashM
+        private DbItemTemplate SlashM
         {
             get
             {
-                m_SunSlash = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash");
+                m_SunSlash = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash");
                 if (m_SunSlash == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Slash, loading it ...");
-                    m_SunSlash = new ItemTemplate();
+                    m_SunSlash = new DbItemTemplate();
                     m_SunSlash.Id_nb = "Sun_Slash";
                     m_SunSlash.Name = "Sun Sword";
                     m_SunSlash.Level = 50;
@@ -1038,15 +1038,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate Axe
+        private DbItemTemplate Axe
         {
             get
             {
-                m_SunAxe = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Axe");
+                m_SunAxe = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Axe");
                 if (m_SunAxe == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Axe, loading it ...");
-                    m_SunAxe = new ItemTemplate();
+                    m_SunAxe = new DbItemTemplate();
                     m_SunAxe.Id_nb = "Sun_Axe";
                     m_SunAxe.Name = "Sun Axe";
                     m_SunAxe.Level = 50;
@@ -1085,15 +1085,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate LeftAxe
+        private DbItemTemplate LeftAxe
         {
             get
             {
-                m_SunLeftAxe = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_LeftAxe");
+                m_SunLeftAxe = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_LeftAxe");
                 if (m_SunLeftAxe == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_LeftAxe, loading it ...");
-                    m_SunLeftAxe = new ItemTemplate();
+                    m_SunLeftAxe = new DbItemTemplate();
                     m_SunLeftAxe.Id_nb = "Sun_LeftAxe";
                     m_SunLeftAxe.Name = "Sun LeftAxe";
                     m_SunLeftAxe.Level = 50;
@@ -1132,15 +1132,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate Claw
+        private DbItemTemplate Claw
         {
             get
             {
-                m_SunFlexScytheClaw = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Claw");
+                m_SunFlexScytheClaw = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Claw");
                 if (m_SunFlexScytheClaw == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Claw, loading it ...");
-                    m_SunFlexScytheClaw = new ItemTemplate();
+                    m_SunFlexScytheClaw = new DbItemTemplate();
                     m_SunFlexScytheClaw.Id_nb = "Sun_Claw";
                     m_SunFlexScytheClaw.Name = "Sun Claw";
                     m_SunFlexScytheClaw.Level = 50;
@@ -1179,15 +1179,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate SpearM
+        private DbItemTemplate SpearM
         {
             get
             {
-                m_SunPolearmSpear = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Spear");
+                m_SunPolearmSpear = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Spear");
                 if (m_SunPolearmSpear == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Spear, loading it ...");
-                    m_SunPolearmSpear = new ItemTemplate();
+                    m_SunPolearmSpear = new DbItemTemplate();
                     m_SunPolearmSpear.Id_nb = "Sun_Spear";
                     m_SunPolearmSpear.Name = "Sun Spear";
                     m_SunPolearmSpear.Level = 50;
@@ -1226,15 +1226,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate TwoHandedM
+        private DbItemTemplate TwoHandedM
         {
             get
             {
-                m_SunTwoHanded = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded");
+                m_SunTwoHanded = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded");
                 if (m_SunTwoHanded == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_TwoHanded, loading it ...");
-                    m_SunTwoHanded = new ItemTemplate();
+                    m_SunTwoHanded = new DbItemTemplate();
                     m_SunTwoHanded.Id_nb = "Sun_TwoHanded";
                     m_SunTwoHanded.Name = "Sun Greater Sword";
                     m_SunTwoHanded.Level = 50;
@@ -1273,15 +1273,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate BowM
+        private DbItemTemplate BowM
         {
             get
             {
-                m_SunBow = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Bow");
+                m_SunBow = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Bow");
                 if (m_SunBow == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Bow, loading it ...");
-                    m_SunBow = new ItemTemplate();
+                    m_SunBow = new DbItemTemplate();
                     m_SunBow.Id_nb = "Sun_Bow";
                     m_SunBow.Name = "Sun Bow";
                     m_SunBow.Level = 50;
@@ -1320,15 +1320,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate THCrushM
+        private DbItemTemplate THCrushM
         {
             get
             {
-                m_Sun2HCrush = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HCrush");
+                m_Sun2HCrush = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HCrush");
                 if (m_Sun2HCrush == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_2HCrush, loading it ...");
-                    m_Sun2HCrush = new ItemTemplate();
+                    m_Sun2HCrush = new DbItemTemplate();
                     m_Sun2HCrush.Id_nb = "Sun_2HCrush";
                     m_Sun2HCrush.Name = "Sun Greater Warhammer";
                     m_Sun2HCrush.Level = 50;
@@ -1367,15 +1367,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate THAxe
+        private DbItemTemplate THAxe
         {
             get
             {
-                m_Sun2HAxe = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_2HAxe");
+                m_Sun2HAxe = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_2HAxe");
                 if (m_Sun2HAxe == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_2HAxe, loading it ...");
-                    m_Sun2HAxe = new ItemTemplate();
+                    m_Sun2HAxe = new DbItemTemplate();
                     m_Sun2HAxe.Id_nb = "Sun_2HAxe";
                     m_Sun2HAxe.Name = "Sun Greater Axe";
                     m_Sun2HAxe.Level = 50;
@@ -1417,15 +1417,15 @@ namespace DOL.GS.Spells
         #endregion Mid Weapons
 
         #region Sun Hibernia Weapons
-        private ItemTemplate CrushH
+        private DbItemTemplate CrushH
         {
             get
             {
-                m_SunCrush = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Crush");
+                m_SunCrush = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush");
                 if (m_SunCrush == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Crush, loading it ...");
-                    m_SunCrush = new ItemTemplate();
+                    m_SunCrush = new DbItemTemplate();
                     m_SunCrush.Id_nb = "Sun_Crush";
                     m_SunCrush.Name = "Sun Hammer";
                     m_SunCrush.Level = 50;
@@ -1464,15 +1464,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate SlashH
+        private DbItemTemplate SlashH
         {
             get
             {
-                m_SunSlash = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Slash");
+                m_SunSlash = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash");
                 if (m_SunSlash == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Slash, loading it ...");
-                    m_SunSlash = new ItemTemplate();
+                    m_SunSlash = new DbItemTemplate();
                     m_SunSlash.Id_nb = "Sun_Slash";
                     m_SunSlash.Name = "Sun Blade";
                     m_SunSlash.Level = 50;
@@ -1511,15 +1511,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate ThrustH
+        private DbItemTemplate ThrustH
         {
             get
             {
-                m_SunThrust = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Thrust");
+                m_SunThrust = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust");
                 if (m_SunThrust == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Thrust, loading it ...");
-                    m_SunThrust = new ItemTemplate();
+                    m_SunThrust = new DbItemTemplate();
                     m_SunThrust.Id_nb = "Sun_Thrust";
                     m_SunThrust.Name = "Sun Sword";
                     m_SunThrust.Level = 50;
@@ -1559,15 +1559,15 @@ namespace DOL.GS.Spells
         }
 
 
-        private ItemTemplate Scythe
+        private DbItemTemplate Scythe
         {
             get
             {
-                m_SunFlexScytheClaw = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Scythe");
+                m_SunFlexScytheClaw = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Scythe");
                 if (m_SunFlexScytheClaw == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Scythe, loading it ...");
-                    m_SunFlexScytheClaw = new ItemTemplate();
+                    m_SunFlexScytheClaw = new DbItemTemplate();
                     m_SunFlexScytheClaw.Id_nb = "Sun_Scythe";
                     m_SunFlexScytheClaw.Name = "Sun Scythe";
                     m_SunFlexScytheClaw.Level = 50;
@@ -1606,15 +1606,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate SpearH
+        private DbItemTemplate SpearH
         {
             get
             {
-                m_SunPolearmSpear = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Spear");
+                m_SunPolearmSpear = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Spear");
                 if (m_SunPolearmSpear == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Spear, loading it ...");
-                    m_SunPolearmSpear = new ItemTemplate();
+                    m_SunPolearmSpear = new DbItemTemplate();
                     m_SunPolearmSpear.Id_nb = "Sun_Spear";
                     m_SunPolearmSpear.Name = "Sun Spear";
                     m_SunPolearmSpear.Level = 50;
@@ -1653,15 +1653,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate TwoHandedH
+        private DbItemTemplate TwoHandedH
         {
             get
             {
-                m_SunTwoHanded = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_TwoHanded");
+                m_SunTwoHanded = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_TwoHanded");
                 if (m_SunTwoHanded == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_TwoHanded, loading it ...");
-                    m_SunTwoHanded = new ItemTemplate();
+                    m_SunTwoHanded = new DbItemTemplate();
                     m_SunTwoHanded.Id_nb = "Sun_TwoHanded";
                     m_SunTwoHanded.Name = "Sun Large Weapon";
                     m_SunTwoHanded.Level = 50;
@@ -1700,15 +1700,15 @@ namespace DOL.GS.Spells
             }
         }
 
-        private ItemTemplate BowH
+        private DbItemTemplate BowH
         {
             get
             {
-                m_SunBow = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Sun_Bow");
+                m_SunBow = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Bow");
                 if (m_SunBow == null)
                 {
                     if (log.IsWarnEnabled) log.Warn("Could not find Sun_Bow, loading it ...");
-                    m_SunBow = new ItemTemplate();
+                    m_SunBow = new DbItemTemplate();
                     m_SunBow.Id_nb = "Sun_Bow";
                     m_SunBow.Name = "Sun Bow";
                     m_SunBow.Level = 50;
@@ -1768,7 +1768,7 @@ namespace DOL.GS.Spells
             lock (player.Inventory)
             {
                 var items = player.Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
-                foreach (InventoryItem invItem in items)
+                foreach (DbInventoryItem invItem in items)
                 {
                     if (player.CurrentRegion.IsNightTime)
                     {
@@ -1843,7 +1843,7 @@ namespace DOL.GS.Spells
             lock (player.Inventory)
             {
                 var items = player.Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
-                foreach (InventoryItem invItem in items)
+                foreach (DbInventoryItem invItem in items)
                 {
 
                     if (invItem.Id_nb.Equals("Sun_Crush"))

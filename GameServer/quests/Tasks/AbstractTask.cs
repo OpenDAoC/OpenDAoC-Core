@@ -74,7 +74,7 @@ namespace DOL.GS.Quests
         /// The quest database object, storing the information for the player
         /// and the quest. Eg. QuestStep etc.
         /// </summary>
-        private DBTask m_dbTask = null;
+        private DbTask m_dbTask = null;
 
         /// <summary>
         /// Constructs a new Quest
@@ -84,7 +84,7 @@ namespace DOL.GS.Quests
         {
             m_taskPlayer = taskPlayer;
 
-            DBTask dbTask = null;
+            DbTask dbTask = null;
 
             // Check if player already has a task
             // if yes reuse dbtask object to keep TasksDone from old dbtask object.
@@ -95,7 +95,7 @@ namespace DOL.GS.Quests
             else // if player has no active task, load dbtask an use tasksdone
             {
                 // Load Task object of player ...
-                var tasks = GameServer.Database.FindObjectByKey<DBTask>(taskPlayer.QuestPlayerID);
+                var tasks = GameServer.Database.FindObjectByKey<DbTask>(taskPlayer.QuestPlayerID);
                 if (tasks != null)
                     dbTask = tasks;
             }
@@ -103,7 +103,7 @@ namespace DOL.GS.Quests
             // this should happen only if player never did a task and has no entry in DBTask.
             if (dbTask == null)
             {
-                dbTask = new DBTask();
+                dbTask = new DbTask();
                 dbTask.Character_ID = taskPlayer.QuestPlayerID;
             }
 
@@ -120,7 +120,7 @@ namespace DOL.GS.Quests
         /// </summary>
         /// <param name="taskPlayer">The player doing the quest</param>
         /// <param name="dbTask">The database object</param>
-        public AbstractTask(GamePlayer taskPlayer, DBTask dbTask)
+        public AbstractTask(GamePlayer taskPlayer, DbTask dbTask)
         {
             m_taskPlayer = taskPlayer;
             m_dbTask = dbTask;
@@ -195,7 +195,7 @@ namespace DOL.GS.Quests
         /// <param name="targetPlayer">Player to assign the loaded quest</param>
         /// <param name="dbTask">Quest to load</param>
         /// <returns>The created quest</returns>
-        public static AbstractTask LoadFromDatabase(GamePlayer targetPlayer, DBTask dbTask)
+        public static AbstractTask LoadFromDatabase(GamePlayer targetPlayer, DbTask dbTask)
         {
             // if we have a active task load it, else the taksdone will be updated on creation of first task instance in AbstractTask(GamePlayer) constructor
             if (!string.IsNullOrEmpty(dbTask.TaskType))
@@ -243,7 +243,7 @@ namespace DOL.GS.Quests
         {
             if (!m_dbTask.IsPersisted) return;
 
-            DBTask dbTask = (DBTask) GameServer.Database.FindObjectByKey<DBTask>(m_dbTask.ObjectId);
+            DbTask dbTask = (DbTask) GameServer.Database.FindObjectByKey<DbTask>(m_dbTask.ObjectId);
             if (dbTask != null)
                 GameServer.Database.DeleteObject(dbTask);
         }
@@ -385,7 +385,7 @@ namespace DOL.GS.Quests
             if (RewardItems != null && RewardItems.Count > 0)
             {
                 m_taskPlayer.Inventory.BeginChanges();
-                foreach (InventoryItem item in RewardItems)
+                foreach (DbInventoryItem item in RewardItems)
                 {
                     if (m_taskPlayer.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
                         InventoryLogging.LogInventoryAction("(TASK;" + m_dbTask.TaskType + ")", m_taskPlayer,
@@ -417,7 +417,7 @@ namespace DOL.GS.Quests
             {
                 lock (m_taskPlayer.Inventory)
                 {
-                    InventoryItem item = m_taskPlayer.Inventory.GetFirstItemByID(ItemName, eInventorySlot.Min_Inv,
+                    DbInventoryItem item = m_taskPlayer.Inventory.GetFirstItemByID(ItemName, eInventorySlot.Min_Inv,
                         eInventorySlot.Max_Inv);
                     if (item != null)
                     {
@@ -482,9 +482,9 @@ namespace DOL.GS.Quests
         /// <param name="ItemLevel">Level to give to the object</param>
         /// <param name="Model">Model for the object</param>
         /// <returns>InventoryItem of given Name and Level</returns>
-        public static InventoryItem GenerateItem(string ItemName, int ItemLevel, int Model)
+        public static DbInventoryItem GenerateItem(string ItemName, int ItemLevel, int Model)
         {
-            ItemUnique TaskItems = new ItemUnique();
+            DbItemUnique TaskItems = new DbItemUnique();
             TaskItems.Name = ItemName;
             TaskItems.Level = ItemLevel;
             TaskItems.DPS_AF = 0;
@@ -504,7 +504,7 @@ namespace DOL.GS.Quests
             TaskItems.MaxCondition = 90;
             TaskItems.MaxDurability = 1000;
             GameServer.Database.AddObject(TaskItems);
-            InventoryItem InvTaskItems = GameInventoryItem.Create(TaskItems);
+            DbInventoryItem InvTaskItems = GameInventoryItem.Create(TaskItems);
             return InvTaskItems;
         }
 

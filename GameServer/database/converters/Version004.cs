@@ -41,16 +41,16 @@ namespace DOL.GS.DatabaseConverters
 		{
 			log.Info("Database Version 4 Convert Started");
 
-			if (GameServer.Instance.Configuration.DBType == DOL.Database.Connection.ConnectionType.DATABASE_XML)
+			if (GameServer.Instance.Configuration.DBType == DOL.Database.Connection.EConnectionType.DATABASE_XML)
 			{
 				log.Info("You have an XML database loaded, this converter will only work with MySQL, skipping");
 				return;
 			}
 
-			var mobs = DOLDB<Mob>.SelectObjects(DB.Column("ClassType").IsEqualTo("DOL.GS.GameMob"));
+			var mobs = DOLDB<DbMob>.SelectObjects(DB.Column("ClassType").IsEqualTo("DOL.GS.GameMob"));
 
 			int count = 0;
-			foreach (Mob mob in mobs)
+			foreach (DbMob mob in mobs)
 			{
 				mob.ClassType = "DOL.GS.GameNPC";
 				GameServer.Database.SaveObject(mob);

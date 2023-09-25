@@ -32,7 +32,7 @@ namespace DOL.GS.RealmAbilities
         public const int DURATION = 60 * 1000;
         private const int SpellRadius = 1500;
 
-        public GiftOfPerizorAbility(DBAbility dba, int level) : base(dba, level) { }
+        public GiftOfPerizorAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action

@@ -4,7 +4,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_CorporealDisintegration : TimedRealmAbility, ISpellCastingAbilityHandler
     {
-        public AtlasOF_CorporealDisintegration(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_CorporealDisintegration(DbAbility dba, int level) : base(dba, level) { }
 
         // ISpellCastingAbilityHandler
         public Spell Spell { get { return m_spell; } }
@@ -15,7 +15,7 @@ namespace DOL.GS.RealmAbilities
         private const int m_range = 1500; // bolt range
         private const int m_radius = 350; // post-1.62 nerf value (was 700)
 
-        private DBSpell m_dbspell;
+        private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
 
@@ -25,7 +25,7 @@ namespace DOL.GS.RealmAbilities
 
         private void CreateSpell(GamePlayer caster)
         {
-            m_dbspell = new DBSpell();
+            m_dbspell = new DbSpell();
             m_dbspell.Name = "Corporeal Disintegration";
             m_dbspell.Icon = 7147;
             m_dbspell.ClientEffect = 612;

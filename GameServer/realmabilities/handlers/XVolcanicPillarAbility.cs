@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class XVolcanicPillarAbility : TimedRealmAbility
 	{
-		public XVolcanicPillarAbility(DBAbility dba, int level) : base(dba, level) { }
+		public XVolcanicPillarAbility(DbAbility dba, int level) : base(dba, level) { }
 		private int m_dmgValue = 0;
 		private GamePlayer m_caster = null;
 

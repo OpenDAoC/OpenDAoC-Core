@@ -11,7 +11,7 @@ namespace DOL.GS
 	/// </summary>
 	public abstract class AbstractArea : IArea, ITranslatableObject
 	{
-		protected DBArea m_dbArea = null;
+		protected DbArea m_dbArea = null;
 		protected bool m_canBroadcast = false;
 		/// <summary>
 		/// Variable holding whether or not players can broadcast in this area
@@ -189,7 +189,7 @@ namespace DOL.GS
                 string description = Description;
                 string screenDescription = description;
 
-                var translation = LanguageMgr.GetTranslation(player, this) as DBLanguageArea;
+                var translation = LanguageMgr.GetTranslation(player, this) as DbLanguageArea;
                 if (translation != null)
                 {
                     if (!string.IsNullOrEmpty(translation.Description))
@@ -213,6 +213,6 @@ namespace DOL.GS
 			player.Notify(AreaEvent.PlayerEnter, this, new AreaEventArgs(this, player));
 		}
 
-		public abstract void LoadFromDatabase(DBArea area);
+		public abstract void LoadFromDatabase(DbArea area);
 	}
 }

@@ -57,7 +57,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="taskPlayer">The player doing the task</param>
 		/// <param name="dbTask">The database object</param>
-		public MoneyTask(GamePlayer taskPlayer, DBTask dbTask) : base(taskPlayer, dbTask)
+		public MoneyTask(GamePlayer taskPlayer, DbTask dbTask) : base(taskPlayer, dbTask)
 		{			
 		}
 
@@ -138,7 +138,7 @@ namespace DOL.GS.Quests
 			{
 				GiveItemEventArgs gArgs = (GiveItemEventArgs)args;				
 				GameLiving target = gArgs.Target as GameLiving;
-				InventoryItem item = gArgs.Item;
+				DbInventoryItem item = gArgs.Item;
 
 				if(player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
 				{
@@ -155,7 +155,7 @@ namespace DOL.GS.Quests
 		/// <param name="Name">Base Nameof the NPC</param>
 		/// <param name="Level">Level of Generated Item</param>
 		/// <returns>A Generated NPC Item</returns>
-		public static InventoryItem GenerateNPCItem(string Name, int Level)
+		public static DbInventoryItem GenerateNPCItem(string Name, int Level)
 		{			
 			int Id = Util.Random(0, TaskObjects.Length-1);
 			int format = Util.Random(0, StrFormat.Length-1);
@@ -182,7 +182,7 @@ namespace DOL.GS.Quests
 			}
 			else
 			{
-				InventoryItem TaskItems = GenerateNPCItem(NPC.Name, player.Level);
+				DbInventoryItem TaskItems = GenerateNPCItem(NPC.Name, player.Level);
 				
 				player.Task = new MoneyTask(player);
 				player.Task.TimeOut = DateTime.Now.AddHours(2);

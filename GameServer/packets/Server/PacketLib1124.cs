@@ -55,7 +55,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
 			{
-				ICollection<InventoryItem> items = null;
+				ICollection<DbInventoryItem> items = null;
 				if (living.Inventory != null)
 					items = living.Inventory.VisibleItems;
 
@@ -68,7 +68,7 @@ namespace DOL.GS.PacketHandler
 				if (items != null)
 				{
 					pak.WriteByte((byte)items.Count);
-					foreach (InventoryItem item in items)
+					foreach (DbInventoryItem item in items)
 					{
 						ushort model = (ushort)(item.Model & 0x1FFF);
 						int slot = item.SlotPosition;
@@ -225,11 +225,11 @@ namespace DOL.GS.PacketHandler
 					LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, npc);
 					if (translation != null)
 					{
-						if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).Name))
-							name = ((DBLanguageNPC)translation).Name;
+						if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
+							name = ((DbLanguageGameNpc)translation).Name;
 
-						if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).GuildName))
-							guildName = ((DBLanguageNPC)translation).GuildName;
+						if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).GuildName))
+							guildName = ((DbLanguageGameNpc)translation).GuildName;
 					}
 
 					if (name.Length + add.Length + 2 > 47) // clients crash with too long names
@@ -691,12 +691,12 @@ namespace DOL.GS.PacketHandler
 				LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, siegeWeapon);
 				if (translation != null)
 				{
-					if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).Name))
-						name = ((DBLanguageNPC)translation).Name;
+					if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
+						name = ((DbLanguageGameNpc)translation).Name;
 				}
 
 				//pak.WritePascalString(name + " (" + siegeWeapon.CurrentState.ToString() + ")");
-				foreach (InventoryItem item in siegeWeapon.Ammo)
+				foreach (DbInventoryItem item in siegeWeapon.Ammo)
 				{
 					if (item == null)
 					{
@@ -844,7 +844,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void WriteItemData(GSTCPPacketOut pak, InventoryItem item)
+		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{
@@ -1012,7 +1012,7 @@ namespace DOL.GS.PacketHandler
 			pak.WritePascalString(name);
 		}
 
-		protected override void WriteTemplateData(GSTCPPacketOut pak, ItemTemplate template, int count)
+		protected override void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)
 		{
 			if (template == null)
 			{

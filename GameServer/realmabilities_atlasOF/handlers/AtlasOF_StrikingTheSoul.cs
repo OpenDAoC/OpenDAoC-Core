@@ -6,7 +6,7 @@ namespace DOL.GS.RealmAbilities
 
     public class AtlasOF_StrikingTheSoul : TimedRealmAbility
     {
-		public AtlasOF_StrikingTheSoul(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_StrikingTheSoul(DbAbility dba, int level) : base(dba, level) { }
 		
 		int m_duration = 60000; // 60s
 

@@ -128,11 +128,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Inventory for this vault.
 		/// </summary>
-		public virtual Dictionary<int, InventoryItem> GetClientInventory(GamePlayer player)
+		public virtual Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player)
 		{
-			var inventory = new Dictionary<int, InventoryItem>();
+			var inventory = new Dictionary<int, DbInventoryItem>();
 			int slotOffset = -FirstDBSlot + (int)(eInventorySlot.HousingInventory_First);
-			foreach (InventoryItem item in DBItems(player))
+			foreach (DbInventoryItem item in DBItems(player))
 			{
 				if (item != null)
 				{
@@ -180,10 +180,10 @@ namespace DOL.GS
 		/// <summary>
 		/// List of items in the vault.
 		/// </summary>
-		public IList<InventoryItem> DBItems(GamePlayer player = null)
+		public IList<DbInventoryItem> DBItems(GamePlayer player = null)
 		{
 			var filterBySlot = DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDBSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDBSlot));
-			return DOLDB<InventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(filterBySlot));
+			return DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(filterBySlot));
 		}
 
 		/// <summary>
@@ -253,8 +253,8 @@ namespace DOL.GS
 				return false;
 			}
 
-			InventoryItem itemInFromSlot = player.Inventory.GetItem((eInventorySlot)fromSlot);
-			InventoryItem itemInToSlot = player.Inventory.GetItem((eInventorySlot)toSlot);
+			DbInventoryItem itemInFromSlot = player.Inventory.GetItem((eInventorySlot)fromSlot);
+			DbInventoryItem itemInToSlot = player.Inventory.GetItem((eInventorySlot)toSlot);
 
 			// Check for a swap to get around not allowing non-tradables in a housing vault - Tolakram
 			if (fromHousing && itemInToSlot != null && itemInToSlot.IsTradable == false && !(this is AccountVault))
@@ -301,7 +301,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Add an item to this object
 		/// </summary>
-		public virtual bool OnAddItem(GamePlayer player, InventoryItem item)
+		public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item)
 		{
 			return false;
 		}
@@ -309,7 +309,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Remove an item from this object
 		/// </summary>
-		public virtual bool OnRemoveItem(GamePlayer player, InventoryItem item)
+		public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItem item)
 		{
 			return false;
 		}
@@ -329,7 +329,7 @@ namespace DOL.GS
 		/// players that are too far away will be considered inactive.
 		/// </summary>
 		/// <param name="updateItems"></param>
-		protected virtual void NotifyObservers(GamePlayer player, IDictionary<int, InventoryItem> updateItems)
+		protected virtual void NotifyObservers(GamePlayer player, IDictionary<int, DbInventoryItem> updateItems)
 		{
 			player.Client.Out.SendInventoryItemsUpdate(updateItems, eInventoryWindowType.Update);
 		}

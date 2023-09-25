@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class MasteryofConcentrationAbility : TimedRealmAbility
 	{
-        public MasteryofConcentrationAbility(DBAbility dba, int level) : base(dba, level) { }
+        public MasteryofConcentrationAbility(DbAbility dba, int level) : base(dba, level) { }
 		public const Int32 Duration = 30 * 1000;
 
 		public override void Execute(GameLiving living)

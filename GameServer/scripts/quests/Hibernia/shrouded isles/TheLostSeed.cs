@@ -44,8 +44,8 @@ namespace DOL.GS.Quests.Hibernia
 		
 		private static AbstractArea treantArea;
 
-		private static ItemTemplate paidrean_necklace;
-		private static ItemTemplate glowing_red_jewel;
+		private static DbItemTemplate paidrean_necklace;
+		private static DbItemTemplate glowing_red_jewel;
 		// Constructors
 		public TheLostSeed() : base()
 		{
@@ -59,7 +59,7 @@ namespace DOL.GS.Quests.Hibernia
 		{
 		}
 
-		public TheLostSeed(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public TheLostSeed(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -207,14 +207,14 @@ namespace DOL.GS.Quests.Hibernia
 			#endregion
 
 			#region defineItems
-			paidrean_necklace = GameServer.Database.FindObjectByKey<ItemTemplate>("Paidrean Necklace");
+			paidrean_necklace = GameServer.Database.FindObjectByKey<DbItemTemplate>("Paidrean Necklace");
 
-	        glowing_red_jewel = GameServer.Database.FindObjectByKey<ItemTemplate>("glowing_red_jewel");
+	        glowing_red_jewel = GameServer.Database.FindObjectByKey<DbItemTemplate>("glowing_red_jewel");
 	        if (glowing_red_jewel == null)
 	        {
 		        if (log.IsWarnEnabled)
 			        log.Warn("Could not find Glowing Red Jewel, creating it ...");
-		        glowing_red_jewel = new ItemTemplate();
+		        glowing_red_jewel = new DbItemTemplate();
 		        glowing_red_jewel.Id_nb = "glowing_red_jewel";
 		        glowing_red_jewel.Name = "Glowing Red Jewel";
 		        glowing_red_jewel.Level = 55;

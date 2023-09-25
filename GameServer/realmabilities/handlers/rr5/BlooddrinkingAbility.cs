@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
         public const double HEALPERCENT = 20; // 20% heal
         public const int EFFECT = 1567;
 
-        public BloodDrinkingAbility(DBAbility dba, int level) : base(dba, level) { }
+        public BloodDrinkingAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action

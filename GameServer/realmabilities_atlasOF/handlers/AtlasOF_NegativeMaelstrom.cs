@@ -6,7 +6,7 @@ namespace DOL.GS.RealmAbilities
 
     public class AtlasOF_NegativeMaelstrom : NegativeMaelstromAbility
     {
-        public AtlasOF_NegativeMaelstrom(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_NegativeMaelstrom(DbAbility dba, int level) : base(dba, level) { }
 
         public override int MaxLevel { get { return 1; } }
         public override int CostForUpgrade(int level) { return 14; }

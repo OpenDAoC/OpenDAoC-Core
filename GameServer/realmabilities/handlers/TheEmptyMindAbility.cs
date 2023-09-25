@@ -13,7 +13,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class TheEmptyMindAbility : TimedRealmAbility
 	{
-		public TheEmptyMindAbility(DBAbility dba, int level) : base(dba, level) { }
+		public TheEmptyMindAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		public override void Execute(GameLiving living)
 		{
@@ -76,7 +76,7 @@ namespace DOL.GS.RealmAbilities
         
         private SpellHandler CreateSpell(GameLiving caster)
         {
-	        DBSpell dbspell = new DBSpell();
+	        DbSpell dbspell = new DbSpell();
 	        dbspell.Name = "The Empty Mind";
 	        dbspell.Icon = 7122;
 	        dbspell.ClientEffect = 7122;

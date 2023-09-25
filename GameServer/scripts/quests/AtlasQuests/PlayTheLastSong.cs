@@ -37,11 +37,11 @@ namespace DOL.GS.Quests.Midgard
 		private static GameNPC VikingDextz = null; // Start NPC
 		private static GameNPC Freeya = null; // Finish NPC
 		
-		private static WorldObject FreeyasGrave = null; // Object
+		private static DbWorldObject FreeyasGrave = null; // Object
 
-		private static IList<WorldObject> GetItems()
+		private static IList<DbWorldObject> GetItems()
 		{
-			return GameServer.Database.SelectObjects<WorldObject>(DB.Column("Name").IsEqualTo("Freeya's Grave"));
+			return GameServer.Database.SelectObjects<DbWorldObject>(DB.Column("Name").IsEqualTo("Freeya's Grave"));
 		}
 
 		// Constructors
@@ -57,7 +57,7 @@ namespace DOL.GS.Quests.Midgard
 		{
 		}
 
-		public PlayTheLastSong(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public PlayTheLastSong(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -180,7 +180,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Freeyas Grave, creating it ...");
-				var FreeyasGrave = new WorldObject();
+				var FreeyasGrave = new DbWorldObject();
 				FreeyasGrave.Name = "Freeya\'s Grave";
 				FreeyasGrave.X = 763740;
 				FreeyasGrave.Y = 646102;
@@ -501,7 +501,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (m_HealthRegen == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Icon = 3618;
@@ -557,7 +557,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (m_SpeedSong == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Icon = 3612;
@@ -613,7 +613,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (m_DamageAdd == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Icon = 3607;
@@ -666,7 +666,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (m_Resistance == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Icon = 3656;

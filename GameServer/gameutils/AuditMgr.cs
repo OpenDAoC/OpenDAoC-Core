@@ -45,12 +45,12 @@ namespace DOL.GS
 		private const int EventsPerInsertLimit = 1000; // 1000 events max per insert query
 		private const int PushUpdatesInterval = 5*1000; // 5 seconds (time in milliseconds)
 		private static readonly Timer PushTimer;
-		private static List<AuditEntry> _queuedAuditEntries;
+		private static List<DbAuditEntry> _queuedAuditEntries;
 		private static SpinWaitLock _updateLock;
 
 		static AuditMgr()
 		{
-			_queuedAuditEntries = new List<AuditEntry>();
+			_queuedAuditEntries = new List<DbAuditEntry>();
 
 			PushTimer = new Timer(PushUpdatesInterval);
 			PushTimer.Elapsed += OnPushTimerElapsed;
@@ -71,7 +71,7 @@ namespace DOL.GS
 			// push out the updates.
 			// todo: do these as a batch operation to speed it up/make it more efficient
 
-			List<AuditEntry> oldQueue;
+			List<DbAuditEntry> oldQueue;
 
 			// swap out the queue
 			_updateLock.Enter();
@@ -82,7 +82,7 @@ namespace DOL.GS
 				oldQueue = _queuedAuditEntries;
 
 				// swap in a new queue
-				_queuedAuditEntries = new List<AuditEntry>();
+				_queuedAuditEntries = new List<DbAuditEntry>();
 			}
 			finally
 			{
@@ -98,7 +98,7 @@ namespace DOL.GS
 			StringBuilder queryBuilder = GetEntryQueryBuilder();
 			int currentQueryCount = 0;
 
-			foreach (AuditEntry entry in oldQueue)
+			foreach (DbAuditEntry entry in oldQueue)
 			{
 				// we limit the number of items per insert query.
 				if (currentQueryCount > EventsPerInsertLimit)
@@ -152,7 +152,7 @@ namespace DOL.GS
 			queryBuilder.Append("INSERT INTO ");
 
 			// get proper table name
-			string tableName = AttributesUtils.GetTableOrViewName(typeof (AuditEntry));
+			string tableName = AttributeUtil.GetTableOrViewName(typeof (DbAuditEntry));
 
 			if (string.IsNullOrEmpty(tableName))
 			{
@@ -173,7 +173,7 @@ namespace DOL.GS
                 return;
 
 			// create the transaction
-			var transactionHistory = new AuditEntry
+			var transactionHistory = new DbAuditEntry
 			                         	{
 			                         		AuditTime = DateTime.Now,
 			                         		AuditType = type,
@@ -206,7 +206,7 @@ namespace DOL.GS
                 return;
 
 			// create the transaction
-			var transactionHistory = new AuditEntry
+			var transactionHistory = new DbAuditEntry
 			                         	{
 			                         		AuditTime = DateTime.Now,
 			                         		AuditType = type,

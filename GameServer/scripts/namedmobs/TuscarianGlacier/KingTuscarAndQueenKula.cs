@@ -107,7 +107,7 @@ namespace DOL.GS
             }
         }
         #endregion
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -232,7 +232,7 @@ namespace DOL.GS
             {
                 if (m_Cold_DD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 2;
@@ -473,7 +473,7 @@ namespace DOL.AI.Brain
             {
                 if (m_mezSpell == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 5;
@@ -503,7 +503,7 @@ namespace DOL.AI.Brain
             {
                 if (m_RootSpell == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 5;
@@ -613,7 +613,7 @@ namespace DOL.GS
             }
         }
         #endregion
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -750,7 +750,7 @@ namespace DOL.GS
             {
                 if (m_Hammers_aoe == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 3;
@@ -780,7 +780,7 @@ namespace DOL.GS
             {
                 if (m_Thunder_aoe == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 2;
@@ -810,7 +810,7 @@ namespace DOL.GS
             {
                 if (m_Hammers_aoe2 == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 5;
@@ -840,7 +840,7 @@ namespace DOL.GS
             {
                 if (m_Thunder_aoe2 == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 5;
@@ -870,7 +870,7 @@ namespace DOL.GS
             {
                 if (m_Bleed == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 2;

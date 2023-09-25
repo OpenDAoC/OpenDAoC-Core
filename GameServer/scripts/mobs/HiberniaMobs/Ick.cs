@@ -124,7 +124,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_IckDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Power = 0;

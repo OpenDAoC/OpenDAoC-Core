@@ -26,7 +26,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class CalmingNotesAbility : RR5RealmAbility
     {
-        public CalmingNotesAbility(DBAbility dba, int level) : base(dba, level) { }
+        public CalmingNotesAbility(DbAbility dba, int level) : base(dba, level) { }
  
         public override void Execute(GameLiving living)
         {

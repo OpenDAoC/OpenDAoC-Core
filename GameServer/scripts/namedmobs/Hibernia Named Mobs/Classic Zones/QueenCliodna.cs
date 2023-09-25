@@ -26,7 +26,7 @@ namespace DOL.GS
 				default: return 40;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -170,7 +170,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_CliodnaDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;
@@ -198,7 +198,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Cliodna_stun == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;

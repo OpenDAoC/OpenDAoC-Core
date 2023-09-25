@@ -46,7 +46,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 		{
 		}
 
-		public DragonWeeklyQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DragonWeeklyQuestAlb(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

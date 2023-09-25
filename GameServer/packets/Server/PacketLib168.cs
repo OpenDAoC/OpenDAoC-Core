@@ -179,7 +179,7 @@ namespace DOL.GS.PacketHandler
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview)))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
-				DOLCharacters[] characters = m_gameClient.Account.Characters;
+				DbCoreCharacter[] characters = m_gameClient.Account.Characters;
 				if (characters == null)
 				{
 					pak.Fill(0x0, 1848);
@@ -231,14 +231,14 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte) characters[j].Empathy);
 							pak.WriteByte((byte) characters[j].Charisma);
 
-							var items = DOLDB<InventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId)
+							var items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId)
 								.And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10).And(DB.Column("SlotPosition").IsLessOrEqualTo(29))));
 							int found = 0;
 							//16 bytes: armor model
 							for (int k = 0x15; k < 0x1D; k++)
 							{
 								found = 0;
-								foreach (InventoryItem item in items)
+								foreach (DbInventoryItem item in items)
 								{
 									if (item.SlotPosition == k && found == 0)
 									{
@@ -260,7 +260,7 @@ namespace DOL.GS.PacketHandler
 									l = k;
 
 								found = 0;
-								foreach (InventoryItem item in items)
+								foreach (DbInventoryItem item in items)
 								{
 									if (item.SlotPosition == l && found == 0)
 									{
@@ -278,7 +278,7 @@ namespace DOL.GS.PacketHandler
 							for (int k = 0x0A; k < 0x0E; k++)
 							{
 								found = 0;
-								foreach (InventoryItem item in items)
+								foreach (DbInventoryItem item in items)
 								{
 									if (item.SlotPosition == k && found == 0)
 									{
@@ -303,7 +303,7 @@ namespace DOL.GS.PacketHandler
 							{
 								byte righthand = 0xFF;
 								byte lefthand = 0xFF;
-								foreach (InventoryItem item in items)
+								foreach (DbInventoryItem item in items)
 								{
 									if (item.SlotPosition == (int) eInventorySlot.RightHandWeapon)
 										righthand = 0x00;
@@ -910,8 +910,8 @@ namespace DOL.GS.PacketHandler
                         }
                         else
                         {
-                            if (!string.IsNullOrEmpty(((DBLanguageGameObject)translation).Name))
-                                name = ((DBLanguageGameObject)translation).Name;
+                            if (!string.IsNullOrEmpty(((DbLanguageGameObject)translation).Name))
+                                name = ((DbLanguageGameObject)translation).Name;
                         }
                     }
                 }
@@ -1035,11 +1035,11 @@ namespace DOL.GS.PacketHandler
                 LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, npc);
                 if (translation != null)
                 {
-                    if(!string.IsNullOrEmpty(((DBLanguageNPC)translation).Name))
-                        name = ((DBLanguageNPC)translation).Name;
+                    if(!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
+                        name = ((DbLanguageGameNpc)translation).Name;
 
-                    if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).GuildName))
-                        guildName = ((DBLanguageNPC)translation).GuildName;
+                    if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).GuildName))
+                        guildName = ((DbLanguageGameNpc)translation).GuildName;
                 }
 
                 if (name.Length + add.Length + 2 > 47) // clients crash with too long names
@@ -1075,7 +1075,7 @@ namespace DOL.GS.PacketHandler
 				{
 					var items = living.Inventory.VisibleItems;
 					pak.WriteByte((byte) items.Count);
-					foreach (InventoryItem item in items)
+					foreach (DbInventoryItem item in items)
 					{
 						pak.WriteByte((byte) item.SlotPosition);
 						var model = (ushort) (item.Model & 0x1FFF);
@@ -1700,20 +1700,20 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendInventoryItemsUpdate(IDictionary<int, InventoryItem> updateItems, eInventoryWindowType windowType)
+		public virtual void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, eInventoryWindowType windowType)
 		{
 		}
 
-		protected virtual void SendInventoryItemsPartialUpdate(IDictionary<int, InventoryItem> items, eInventoryWindowType windowType)
+		protected virtual void SendInventoryItemsPartialUpdate(IDictionary<int, DbInventoryItem> items, eInventoryWindowType windowType)
 		{
 		}
 
-		public virtual void SendInventoryItemsUpdate(ICollection<InventoryItem> itemsToUpdate)
+		public virtual void SendInventoryItemsUpdate(ICollection<DbInventoryItem> itemsToUpdate)
 		{
 			SendInventoryItemsUpdate(eInventoryWindowType.Update, itemsToUpdate);
 		}
 
-		public virtual void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<InventoryItem> itemsToUpdate)
+		public virtual void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate)
 		{
 			if (m_gameClient.Player == null)
 				return;
@@ -1726,7 +1726,7 @@ namespace DOL.GS.PacketHandler
 			// clients crash if too long packet is sent
 			// so we send big updates in parts
 			var slotsToUpdate = new List<int>(Math.Min(ServerProperties.Properties.MAX_ITEMS_PER_PACKET, itemsToUpdate.Count));
-			foreach (InventoryItem item in itemsToUpdate)
+			foreach (DbInventoryItem item in itemsToUpdate)
 			{
 				if (item == null)
 					continue;
@@ -1790,7 +1790,7 @@ namespace DOL.GS.PacketHandler
 							if (!itemsInPage.Contains((int)i))
 								continue;
 
-							var item = (ItemTemplate) itemsInPage[(int)i];
+							var item = (DbItemTemplate) itemsInPage[(int)i];
 							if (item != null)
 							{
 								pak.WriteByte((byte) i); //Item index on page
@@ -1856,7 +1856,7 @@ namespace DOL.GS.PacketHandler
 							{
 								if (log.IsErrorEnabled)
 									log.Error("Merchant item template '" +
-									          ((MerchantItem) itemsInPage[page*MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS + i]).ItemTemplateID +
+									          ((DbMerchantItem) itemsInPage[page*MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS + i]).ItemTemplateID +
 									          "' not found, abort!!!");
 								return;
 							}
@@ -1886,7 +1886,7 @@ namespace DOL.GS.PacketHandler
 			{
 				lock (m_gameClient.Player.TradeWindow.Sync)
 				{
-					foreach (InventoryItem item in m_gameClient.Player.TradeWindow.TradeItems)
+					foreach (DbInventoryItem item in m_gameClient.Player.TradeWindow.TradeItems)
 					{
 						pak.WriteByte((byte) item.SlotPosition);
 					}
@@ -1921,7 +1921,7 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte((byte) (m_gameClient.Player.TradeWindow.Combine ? 0x01 : 0x00));
 					if (items != null)
 					{
-						foreach (InventoryItem item in items)
+						foreach (DbInventoryItem item in items)
 						{
 							pak.WriteByte((byte) item.SlotPosition);
 							pak.WriteByte((byte) item.Level);
@@ -3436,8 +3436,8 @@ namespace DOL.GS.PacketHandler
 				LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, obj);
 				if (translation != null)
 				{
-					if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).Name))
-						name = ((DBLanguageNPC)translation).Name;
+					if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
+						name = ((DbLanguageGameNpc)translation).Name;
 				}
 
 				pak.WritePascalString(name);/*pak.WritePascalString(obj.Name);*/
@@ -3467,12 +3467,12 @@ namespace DOL.GS.PacketHandler
                 LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, siegeWeapon);
                 if (translation != null)
                 {
-                    if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).Name))
-                        name = ((DBLanguageNPC)translation).Name;
+                    if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
+                        name = ((DbLanguageGameNpc)translation).Name;
                 }
 
                 pak.WritePascalString(name + " (" + siegeWeapon.CurrentState + ")");
-				foreach (InventoryItem item in siegeWeapon.Ammo)
+				foreach (DbInventoryItem item in siegeWeapon.Ammo)
 				{
 					pak.WriteByte((byte) item.SlotPosition);
 					pak.WriteByte((byte) item.Level);
@@ -3657,7 +3657,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendMarketExplorerWindow(IList<InventoryItem> items, byte page, byte maxpage)
+		public virtual void SendMarketExplorerWindow(IList<DbInventoryItem> items, byte page, byte maxpage)
 		{
 			if (m_gameClient == null || m_gameClient.Player == null)
 				return;
@@ -3668,7 +3668,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(page);
 				pak.WriteByte(maxpage);
 				pak.WriteByte(0);
-				foreach (InventoryItem item in items)
+				foreach (DbInventoryItem item in items)
 				{
 					if (item.Realm != (int)m_gameClient.Player.Realm) continue;
 					pak.WriteByte((byte)items.IndexOf(item));
@@ -4046,7 +4046,7 @@ namespace DOL.GS.PacketHandler
 								(byte) (updatedSlot - (int) eInventorySlot.Consignment_First + (int) eInventorySlot.HousingInventory_First));
 						else
 							pak.WriteByte((byte) (updatedSlot));
-						InventoryItem item = m_gameClient.Player.Inventory.GetItem((eInventorySlot) updatedSlot);
+						DbInventoryItem item = m_gameClient.Player.Inventory.GetItem((eInventorySlot) updatedSlot);
 
 						if (item == null)
 						{
@@ -4124,7 +4124,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendInventoryItemsPartialUpdate(List<InventoryItem> items, eInventoryWindowType windowType)
+		public virtual void SendInventoryItemsPartialUpdate(List<DbInventoryItem> items, eInventoryWindowType windowType)
 		{
 		}
 

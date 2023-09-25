@@ -8,14 +8,14 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_RuneOfDecimation : TimedRealmAbility
     {
-        public AtlasOF_RuneOfDecimation(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_RuneOfDecimation(DbAbility dba, int level) : base(dba, level) { }
 
         public const int m_duration = 480000; // 8 minutes
         public override int MaxLevel { get { return 1; } }
         public override int GetReUseDelay(int level) { return 900; } // 15 mins
         public override int CostForUpgrade(int level) { return 14; }
 
-        private DBSpell m_dbspell;
+        private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
         private GamePlayer m_player;

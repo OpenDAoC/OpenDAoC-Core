@@ -24,7 +24,7 @@ namespace DOL.GS
     public class GameBoat : GameMovingObject
     {
         private byte m_boatType = 0;
-        protected DBBoat m_dbBoat;
+        protected DbPlayerBoat m_dbBoat;
         private string m_boatID;
         private string m_boatOwner;
         private string m_boatName;
@@ -51,7 +51,7 @@ namespace DOL.GS
         /// <summary>
         /// Gets or sets the boats db
         /// </summary>
-        public DBBoat DBBoat
+        public DbPlayerBoat DBBoat
         {
             get => m_dbBoat;
             set => m_dbBoat = value;
@@ -161,10 +161,10 @@ namespace DOL.GS
 
         public override void LoadFromDatabase(DataObject obj)
         {
-            if (obj is not Database.DBBoat)
+            if (obj is not Database.DbPlayerBoat)
                 return;
 
-            m_dbBoat = (DBBoat) obj;
+            m_dbBoat = (DbPlayerBoat) obj;
             m_boatID = m_dbBoat.ObjectId;
             m_boatName = m_dbBoat.BoatName;
             m_boatMaxSpeedBase = m_dbBoat.BoatMaxSpeedBase;

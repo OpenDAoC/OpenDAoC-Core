@@ -35,7 +35,7 @@ namespace DOL.GS.RealmAbilities
 		public const int MISSHITBONUS = 10; // 10% misshit bonus
 		public const int EFFECT = 1565;
 
-		public ShadowShroudAbility(DBAbility dba, int level) : base(dba, level) { }
+		public ShadowShroudAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action
@@ -64,7 +64,7 @@ namespace DOL.GS.RealmAbilities
 
 		public override void AddEffectsInfo(IList<string> list)
 		{
-			list.Add("Reduce all incoming damage by 10% and increase the Nightshade’s chance to be missed by 10% for 30 seconds");
+			list.Add("Reduce all incoming damage by 10% and increase the Nightshadeï¿½s chance to be missed by 10% for 30 seconds");
 			list.Add("");
 			list.Add("Target: Self");
 			list.Add("Duration: 30 sec");

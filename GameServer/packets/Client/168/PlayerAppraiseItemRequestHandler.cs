@@ -65,7 +65,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (player.TargetObject == null)
 					return 0;
 
-				InventoryItem item = player.Inventory.GetItem((eInventorySlot) m_slot);
+				DbInventoryItem item = player.Inventory.GetItem((eInventorySlot) m_slot);
 
 				if (player.TargetObject is GameMerchant merchant)
 					merchant.OnPlayerAppraise(player, item, false);

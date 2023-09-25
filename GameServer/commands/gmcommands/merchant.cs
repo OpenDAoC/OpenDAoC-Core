@@ -146,10 +146,10 @@ namespace DOL.GS.Commands
 					{
 						string currentID = targetMerchant.TradeItems.ItemsListID;
 
-						var itemList = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(currentID));
-						foreach (MerchantItem merchantItem in itemList)
+						var itemList = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(currentID));
+						foreach (DbMerchantItem merchantItem in itemList)
 						{
-							MerchantItem item = new MerchantItem();
+							DbMerchantItem item = new DbMerchantItem();
 							item.ItemListID = GameServer.Database.Escape(args[2]);
 							item.ItemTemplateID = merchantItem.ItemTemplateID;
 							item.PageNumber = merchantItem.PageNumber;
@@ -248,7 +248,7 @@ namespace DOL.GS.Commands
 												return;
 											}
 
-											ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(templateID);
+											DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(templateID);
 											if (template == null)
 											{
 												DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Merchant.Articles.Add.ItemTemplateNoFound", templateID));
@@ -267,10 +267,10 @@ namespace DOL.GS.Commands
 												return;
 											}
 
-											var item = DOLDB<MerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo(slot)));
+											var item = DOLDB<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo(slot)));
 											if (item == null)
 											{
-												item = new MerchantItem();
+												item = new DbMerchantItem();
 												item.ItemListID = targetMerchant.TradeItems.ItemsListID;
 												item.ItemTemplateID = templateID;
 												item.SlotPosition = (int)slot;
@@ -326,7 +326,7 @@ namespace DOL.GS.Commands
 												return;
 											}
 
-											MerchantItem item = DOLDB<MerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo(slot)));
+											DbMerchantItem item = DOLDB<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo(slot)));
 											if (item == null)
 											{
 												DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Merchant.Articles.Remove.SlotInPageIsAEmpty", slot, page));
@@ -363,7 +363,7 @@ namespace DOL.GS.Commands
 											}
 											DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Merchant.Articles.Delete.DeletingListTemp"));
 
-											var merchantitems = DOLDB<MerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID));
+											var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID));
 											if (merchantitems.Count > 0)
 											{
 												GameServer.Database.DeleteObject(merchantitems);

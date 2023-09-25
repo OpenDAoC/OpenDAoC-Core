@@ -13,12 +13,12 @@ namespace DOL.GS.RealmAbilities.Statics
 		protected override string GetStaticName() { return "Volley"; }
 		protected override ushort GetStaticModel() { return 2909; }//2909
 		protected override ushort GetStaticEffect() { return 0; }
-		private DBSpell dbs;
+		private DbSpell dbs;
 		private Spell s;
 		private SpellLine sl;
 		public VolleyBase(int damage,eDamageType dmgType)
 		{
-			dbs = new DBSpell();
+			dbs = new DbSpell();
 			dbs.Name = GetStaticName();
 			dbs.Icon = GetStaticEffect();
 			dbs.ClientEffect = GetStaticEffect();

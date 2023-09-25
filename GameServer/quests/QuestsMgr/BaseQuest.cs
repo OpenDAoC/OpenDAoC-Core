@@ -117,7 +117,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="questingPlayer">The player doing the quest</param>
 		/// <param name="dbQuest">The database object</param>
-		public BaseQuest(GamePlayer questingPlayer, DBQuest dbQuest)
+		public BaseQuest(GamePlayer questingPlayer, DbQuest dbQuest)
 			: base(questingPlayer, dbQuest)
 		{
 		}
@@ -293,7 +293,7 @@ namespace DOL.GS.Quests
 		{
 			public string objectName;
 			public int numRequired;
-			public ItemTemplate itemResult;
+			public DbItemTemplate itemResult;
 			public string interactText;
 		}
 
@@ -308,7 +308,7 @@ namespace DOL.GS.Quests
 		/// <param name="numRequired">How many times to interact before this step is complete</param>
 		/// <param name="itemResult">What item is given to the player when interacting</param>
 		/// <param name="interactText">Text presented to player when interacting with the object</param>
-		protected void AddInteractStep(int step, string objectName, int numRequired, ItemTemplate itemResult, string interactText)
+		protected void AddInteractStep(int step, string objectName, int numRequired, DbItemTemplate itemResult, string interactText)
 		{
 			try
 			{

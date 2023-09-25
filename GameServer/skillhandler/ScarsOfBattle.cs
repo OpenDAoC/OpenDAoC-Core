@@ -24,7 +24,7 @@ namespace DOL.GS.SkillHandler
 	[SkillHandlerAttribute(Abilities.ScarsOfBattle)]
 	public class ScarsOfBattle : StatChangingAbility
 	{
-		public ScarsOfBattle(DBAbility dba, int level)
+		public ScarsOfBattle(DbAbility dba, int level)
 			: base(dba, 1, eProperty.MaxHealth)
 		{
 		}

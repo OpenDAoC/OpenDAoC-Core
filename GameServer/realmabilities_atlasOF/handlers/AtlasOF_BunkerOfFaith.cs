@@ -9,7 +9,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class AtlasOF_BunkerOfFaith : BarrierOfFortitudeAbility
 	{
-		public AtlasOF_BunkerOfFaith(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_BunkerOfFaith(DbAbility dba, int level) : base(dba, level) { }
 
         public override int MaxLevel { get { return 1; } }
         public override int CostForUpgrade(int level) { return 10; }

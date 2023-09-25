@@ -12,7 +12,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_WhipOfEncouragement : TimedRealmAbility
     {
-        public AtlasOF_WhipOfEncouragement(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_WhipOfEncouragement(DbAbility dba, int level) : base(dba, level) { }
 
         public const int duration = 60000; // 60 seconds
         public override int MaxLevel { get { return 1; } }
@@ -22,7 +22,7 @@ namespace DOL.GS.RealmAbilities
             return 6;
         }
         
-        private DBSpell m_dbspell;
+        private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
         private double m_damage = 0;
@@ -38,7 +38,7 @@ namespace DOL.GS.RealmAbilities
         
         public virtual void CreateSpell()
         {
-            m_dbspell = new DBSpell();
+            m_dbspell = new DbSpell();
             m_dbspell.Name = "Whip Of Encouragement";
             m_dbspell.Icon = 4245;
             m_dbspell.ClientEffect = 3050;

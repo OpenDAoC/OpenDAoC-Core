@@ -17,7 +17,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class SonicBarrierAbility : RR5RealmAbility
 	{
-		public SonicBarrierAbility(DBAbility dba, int level) : base(dba, level) { }
+		public SonicBarrierAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

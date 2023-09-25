@@ -51,7 +51,7 @@ namespace DOL.GS.PacketHandler
 			{
 				lock (m_gameClient.Player.TradeWindow.Sync)
 				{
-					foreach (InventoryItem item in m_gameClient.Player.TradeWindow.TradeItems)
+					foreach (DbInventoryItem item in m_gameClient.Player.TradeWindow.TradeItems)
 					{
 						pak.WriteByte((byte)item.SlotPosition);
 					}
@@ -86,7 +86,7 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte((byte)(m_gameClient.Player.TradeWindow.Combine ? 0x01 : 0x00));
 					if (items != null)
 					{
-						foreach (InventoryItem item in items)
+						foreach (DbInventoryItem item in items)
 						{
 							pak.WriteByte((byte)item.SlotPosition);
 							WriteItemData(pak, item);
@@ -106,7 +106,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="pak"></param>
 		/// <param name="item"></param>
-		protected override void WriteItemData(GSTCPPacketOut pak, InventoryItem item)
+		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{
@@ -278,7 +278,7 @@ namespace DOL.GS.PacketHandler
 			pak.WritePascalString(name);
 		}
 
-		protected override void WriteTemplateData(GSTCPPacketOut pak, ItemTemplate template, int count)
+		protected override void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)
 		{
 			if (template == null)
 			{

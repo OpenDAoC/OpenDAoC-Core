@@ -39,49 +39,49 @@ namespace DOL.GS.Quests.Hibernia
 		//private static GameNPC Lauralaye = null; //Reward NPC
 		private static Cailean Cailean = null; // Mob to kill
 
-		private static ItemTemplate Horn = null; //ball of flame        
-		private static ItemTemplate BlademasterEpicBoots = null; //Mist Shrouded Boots 
-		private static ItemTemplate BlademasterEpicHelm = null; //Mist Shrouded Coif 
-		private static ItemTemplate BlademasterEpicGloves = null; //Mist Shrouded Gloves 
-		private static ItemTemplate BlademasterEpicVest = null; //Mist Shrouded Hauberk 
-		private static ItemTemplate BlademasterEpicLegs = null; //Mist Shrouded Legs 
-		private static ItemTemplate BlademasterEpicArms = null; //Mist Shrouded Sleeves 
-		private static ItemTemplate DruidEpicBoots = null; //Shadow Shrouded Boots 
-		private static ItemTemplate DruidEpicHelm = null; //Shadow Shrouded Coif 
-		private static ItemTemplate DruidEpicGloves = null; //Shadow Shrouded Gloves 
-		private static ItemTemplate DruidEpicVest = null; //Shadow Shrouded Hauberk 
-		private static ItemTemplate DruidEpicLegs = null; //Shadow Shrouded Legs 
-		private static ItemTemplate DruidEpicArms = null; //Shadow Shrouded Sleeves 
-		private static ItemTemplate MentalistEpicBoots = null; //Valhalla Touched Boots 
-		private static ItemTemplate MentalistEpicHelm = null; //Valhalla Touched Coif 
-		private static ItemTemplate MentalistEpicGloves = null; //Valhalla Touched Gloves 
-		private static ItemTemplate MentalistEpicVest = null; //Valhalla Touched Hauberk 
-		private static ItemTemplate MentalistEpicLegs = null; //Valhalla Touched Legs 
-		private static ItemTemplate MentalistEpicArms = null; //Valhalla Touched Sleeves 
-		private static ItemTemplate AnimistEpicBoots = null; //Subterranean Boots 
-		private static ItemTemplate AnimistEpicHelm = null; //Subterranean Coif 
-		private static ItemTemplate AnimistEpicGloves = null; //Subterranean Gloves 
-		private static ItemTemplate AnimistEpicVest = null; //Subterranean Hauberk 
-		private static ItemTemplate AnimistEpicLegs = null; //Subterranean Legs 
-		private static ItemTemplate AnimistEpicArms = null; //Subterranean Sleeves 
-		private static ItemTemplate ValewalkerEpicBoots = null; //Subterranean Boots 
-		private static ItemTemplate ValewalkerEpicHelm = null; //Subterranean Coif 
-		private static ItemTemplate ValewalkerEpicGloves = null; //Subterranean Gloves 
-		private static ItemTemplate ValewalkerEpicVest = null; //Subterranean Hauberk 
-		private static ItemTemplate ValewalkerEpicLegs = null; //Subterranean Legs 
-		private static ItemTemplate ValewalkerEpicArms = null; //Subterranean Sleeves  
-		private static ItemTemplate VampiirEpicBoots = null;
-		private static ItemTemplate VampiirEpicHelm = null;
-		private static ItemTemplate VampiirEpicGloves = null;
-		private static ItemTemplate VampiirEpicVest = null;
-		private static ItemTemplate VampiirEpicLegs = null;
-		private static ItemTemplate VampiirEpicArms = null;
-		private static ItemTemplate BainsheeEpicBoots = null;
-		private static ItemTemplate BainsheeEpicHelm = null;
-		private static ItemTemplate BainsheeEpicGloves = null;
-		private static ItemTemplate BainsheeEpicVest = null;
-		private static ItemTemplate BainsheeEpicLegs = null;
-		private static ItemTemplate BainsheeEpicArms = null;
+		private static DbItemTemplate Horn = null; //ball of flame        
+		private static DbItemTemplate BlademasterEpicBoots = null; //Mist Shrouded Boots 
+		private static DbItemTemplate BlademasterEpicHelm = null; //Mist Shrouded Coif 
+		private static DbItemTemplate BlademasterEpicGloves = null; //Mist Shrouded Gloves 
+		private static DbItemTemplate BlademasterEpicVest = null; //Mist Shrouded Hauberk 
+		private static DbItemTemplate BlademasterEpicLegs = null; //Mist Shrouded Legs 
+		private static DbItemTemplate BlademasterEpicArms = null; //Mist Shrouded Sleeves 
+		private static DbItemTemplate DruidEpicBoots = null; //Shadow Shrouded Boots 
+		private static DbItemTemplate DruidEpicHelm = null; //Shadow Shrouded Coif 
+		private static DbItemTemplate DruidEpicGloves = null; //Shadow Shrouded Gloves 
+		private static DbItemTemplate DruidEpicVest = null; //Shadow Shrouded Hauberk 
+		private static DbItemTemplate DruidEpicLegs = null; //Shadow Shrouded Legs 
+		private static DbItemTemplate DruidEpicArms = null; //Shadow Shrouded Sleeves 
+		private static DbItemTemplate MentalistEpicBoots = null; //Valhalla Touched Boots 
+		private static DbItemTemplate MentalistEpicHelm = null; //Valhalla Touched Coif 
+		private static DbItemTemplate MentalistEpicGloves = null; //Valhalla Touched Gloves 
+		private static DbItemTemplate MentalistEpicVest = null; //Valhalla Touched Hauberk 
+		private static DbItemTemplate MentalistEpicLegs = null; //Valhalla Touched Legs 
+		private static DbItemTemplate MentalistEpicArms = null; //Valhalla Touched Sleeves 
+		private static DbItemTemplate AnimistEpicBoots = null; //Subterranean Boots 
+		private static DbItemTemplate AnimistEpicHelm = null; //Subterranean Coif 
+		private static DbItemTemplate AnimistEpicGloves = null; //Subterranean Gloves 
+		private static DbItemTemplate AnimistEpicVest = null; //Subterranean Hauberk 
+		private static DbItemTemplate AnimistEpicLegs = null; //Subterranean Legs 
+		private static DbItemTemplate AnimistEpicArms = null; //Subterranean Sleeves 
+		private static DbItemTemplate ValewalkerEpicBoots = null; //Subterranean Boots 
+		private static DbItemTemplate ValewalkerEpicHelm = null; //Subterranean Coif 
+		private static DbItemTemplate ValewalkerEpicGloves = null; //Subterranean Gloves 
+		private static DbItemTemplate ValewalkerEpicVest = null; //Subterranean Hauberk 
+		private static DbItemTemplate ValewalkerEpicLegs = null; //Subterranean Legs 
+		private static DbItemTemplate ValewalkerEpicArms = null; //Subterranean Sleeves  
+		private static DbItemTemplate VampiirEpicBoots = null;
+		private static DbItemTemplate VampiirEpicHelm = null;
+		private static DbItemTemplate VampiirEpicGloves = null;
+		private static DbItemTemplate VampiirEpicVest = null;
+		private static DbItemTemplate VampiirEpicLegs = null;
+		private static DbItemTemplate VampiirEpicArms = null;
+		private static DbItemTemplate BainsheeEpicBoots = null;
+		private static DbItemTemplate BainsheeEpicHelm = null;
+		private static DbItemTemplate BainsheeEpicGloves = null;
+		private static DbItemTemplate BainsheeEpicVest = null;
+		private static DbItemTemplate BainsheeEpicLegs = null;
+		private static DbItemTemplate BainsheeEpicArms = null;
 
 		// Constructors
 		public Harmony_50()
@@ -99,7 +99,7 @@ namespace DOL.GS.Quests.Hibernia
 		{
 		}
 
-		public Harmony_50(GamePlayer questingPlayer, DBQuest dbQuest)
+		public Harmony_50(GamePlayer questingPlayer, DbQuest dbQuest)
 			: base(questingPlayer, dbQuest)
 		{
 		}
@@ -186,12 +186,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			#region Item Declarations
 
-			Horn = GameServer.Database.FindObjectByKey<ItemTemplate>("Horn");
+			Horn = GameServer.Database.FindObjectByKey<DbItemTemplate>("Horn");
 			if (Horn == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Horn , creating it ...");
-				Horn = new ItemTemplate();
+				Horn = new DbItemTemplate();
 				Horn.Id_nb = "Horn";
 				Horn.Name = "Horn";
 				Horn.Level = 8;
@@ -213,12 +213,12 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			// end item
-			ItemTemplate i = null;
+			DbItemTemplate i = null;
 
-			DruidEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("DruidEpicBoots");
+			DruidEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("DruidEpicBoots");
 			if (DruidEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "DruidEpicBoots";
 				i.Name = "Sidhe Scale Boots";
 				i.Level = 50;
@@ -257,10 +257,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Sidhe Scale Coif
-			DruidEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("DruidEpicHelm");
+			DruidEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("DruidEpicHelm");
 			if (DruidEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "DruidEpicHelm";
 				i.Name = "Sidhe Scale Coif";
 				i.Level = 50;
@@ -298,10 +298,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Sidhe Scale Gloves
-			DruidEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("DruidEpicGloves");
+			DruidEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("DruidEpicGloves");
 			if (DruidEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "DruidEpicGloves";
 				i.Name = "Sidhe Scale Gloves ";
 				i.Level = 50;
@@ -338,10 +338,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Sidhe Scale Hauberk
-			DruidEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("DruidEpicVest");
+			DruidEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("DruidEpicVest");
 			if (DruidEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "DruidEpicVest";
 				i.Name = "Sidhe Scale Breastplate";
 				i.Level = 50;
@@ -378,10 +378,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Sidhe Scale Legs
-			DruidEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("DruidEpicLegs");
+			DruidEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("DruidEpicLegs");
 			if (DruidEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "DruidEpicLegs";
 				i.Name = "Sidhe Scale Leggings";
 				i.Level = 50;
@@ -419,10 +419,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Sidhe Scale Sleeves
-			DruidEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("DruidEpicArms");
+			DruidEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("DruidEpicArms");
 			if (DruidEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "DruidEpicArms";
 				i.Name = "Sidhe Scale Sleeves";
 				i.Level = 50;
@@ -460,10 +460,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Blademaster Epic Sleeves End
-			BlademasterEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("BlademasterEpicBoots");
+			BlademasterEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("BlademasterEpicBoots");
 			if (BlademasterEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BlademasterEpicBoots";
 				i.Name = "Sidhe Studded Boots";
 				i.Level = 50;
@@ -501,10 +501,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Sidhe Studded Coif
-			BlademasterEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("BlademasterEpicHelm");
+			BlademasterEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("BlademasterEpicHelm");
 			if (BlademasterEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BlademasterEpicHelm";
 				i.Name = "Sidhe Studded Helm";
 				i.Level = 50;
@@ -543,10 +543,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Sidhe Studded Gloves
-			BlademasterEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("BlademasterEpicGloves");
+			BlademasterEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("BlademasterEpicGloves");
 			if (BlademasterEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BlademasterEpicGloves";
 				i.Name = "Sidhe Studded Gloves ";
 				i.Level = 50;
@@ -584,10 +584,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Sidhe Studded Hauberk
-			BlademasterEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("BlademasterEpicVest");
+			BlademasterEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("BlademasterEpicVest");
 			if (BlademasterEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BlademasterEpicVest";
 				i.Name = "Sidhe Studded Hauberk";
 				i.Level = 50;
@@ -625,10 +625,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Sidhe Studded Legs
-			BlademasterEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("BlademasterEpicLegs");
+			BlademasterEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("BlademasterEpicLegs");
 			if (BlademasterEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BlademasterEpicLegs";
 				i.Name = "Sidhe Studded Leggings";
 				i.Level = 50;
@@ -666,10 +666,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Sidhe Studded Sleeves
-			BlademasterEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("BlademasterEpicArms");
+			BlademasterEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("BlademasterEpicArms");
 			if (BlademasterEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BlademasterEpicArms";
 				i.Name = "Sidhe Studded Sleeves";
 				i.Level = 50;
@@ -706,10 +706,10 @@ namespace DOL.GS.Quests.Hibernia
 				BlademasterEpicArms = i;
 
 			}
-			AnimistEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("AnimistEpicBoots");
+			AnimistEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("AnimistEpicBoots");
 			if (AnimistEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "AnimistEpicBoots";
 				i.Name = "Brightly Woven Boots";
 				i.Level = 50;
@@ -747,10 +747,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Brightly Woven Coif
-			AnimistEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("AnimistEpicHelm");
+			AnimistEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("AnimistEpicHelm");
 			if (AnimistEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "AnimistEpicHelm";
 				i.Name = "Brightly Woven Cap";
 				i.Level = 50;
@@ -789,10 +789,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Brightly Woven Gloves
-			AnimistEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("AnimistEpicGloves");
+			AnimistEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("AnimistEpicGloves");
 			if (AnimistEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "AnimistEpicGloves";
 				i.Name = "Brightly Woven Gloves ";
 				i.Level = 50;
@@ -829,10 +829,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Brightly Woven Hauberk
-			AnimistEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("AnimistEpicVest");
+			AnimistEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("AnimistEpicVest");
 			if (AnimistEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "AnimistEpicVest";
 				i.Name = "Brightly Woven Robe";
 				i.Level = 50;
@@ -869,10 +869,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Brightly Woven Legs
-			AnimistEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("AnimistEpicLegs");
+			AnimistEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("AnimistEpicLegs");
 			if (AnimistEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "AnimistEpicLegs";
 				i.Name = "Brightly Woven Pants";
 				i.Level = 50;
@@ -909,10 +909,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Brightly Woven Sleeves
-			AnimistEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("AnimistEpicArms");
+			AnimistEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("AnimistEpicArms");
 			if (AnimistEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "AnimistEpicArms";
 				i.Name = "Brightly Woven Sleeves";
 				i.Level = 50;
@@ -948,10 +948,10 @@ namespace DOL.GS.Quests.Hibernia
 				AnimistEpicArms = i;
 
 			}
-			MentalistEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("MentalistEpicBoots");
+			MentalistEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("MentalistEpicBoots");
 			if (MentalistEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "MentalistEpicBoots";
 				i.Name = "Sidhe Woven Boots";
 				i.Level = 50;
@@ -989,10 +989,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Sidhe Woven Coif
-			MentalistEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("MentalistEpicHelm");
+			MentalistEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("MentalistEpicHelm");
 			if (MentalistEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "MentalistEpicHelm";
 				i.Name = "Sidhe Woven Cap";
 				i.Level = 50;
@@ -1030,10 +1030,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Sidhe Woven Gloves
-			MentalistEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("MentalistEpicGloves");
+			MentalistEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("MentalistEpicGloves");
 			if (MentalistEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "MentalistEpicGloves";
 				i.Name = "Sidhe Woven Gloves ";
 				i.Level = 50;
@@ -1070,10 +1070,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Sidhe Woven Hauberk
-			MentalistEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("MentalistEpicVest");
+			MentalistEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("MentalistEpicVest");
 			if (MentalistEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "MentalistEpicVest";
 				i.Name = "Sidhe Woven Vest";
 				i.Level = 50;
@@ -1110,10 +1110,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Sidhe Woven Legs
-			MentalistEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("MentalistEpicLegs");
+			MentalistEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("MentalistEpicLegs");
 			if (MentalistEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "MentalistEpicLegs";
 				i.Name = "Sidhe Woven Pants";
 				i.Level = 50;
@@ -1150,10 +1150,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Sidhe Woven Sleeves
-			MentalistEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("MentalistEpicArms");
+			MentalistEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("MentalistEpicArms");
 			if (MentalistEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "MentalistEpicArms";
 				i.Name = "Sidhe Woven Sleeves";
 				i.Level = 50;
@@ -1189,10 +1189,10 @@ namespace DOL.GS.Quests.Hibernia
 				MentalistEpicArms = i;
 
 			}
-			ValewalkerEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("ValewalkerEpicBoots");
+			ValewalkerEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("ValewalkerEpicBoots");
 			if (ValewalkerEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ValewalkerEpicBoots";
 				i.Name = "Boots of the Misty Glade";
 				i.Level = 50;
@@ -1230,10 +1230,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Misty Glade Coif
-			ValewalkerEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("ValewalkerEpicHelm");
+			ValewalkerEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("ValewalkerEpicHelm");
 			if (ValewalkerEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ValewalkerEpicHelm";
 				i.Name = "Cap of the Misty Glade";
 				i.Level = 50;
@@ -1271,10 +1271,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Misty Glade Gloves
-			ValewalkerEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("ValewalkerEpicGloves");
+			ValewalkerEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("ValewalkerEpicGloves");
 			if (ValewalkerEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ValewalkerEpicGloves";
 				i.Name = "Gloves of the Misty Glades";
 				i.Level = 50;
@@ -1311,10 +1311,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Misty Glade Hauberk
-			ValewalkerEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("ValewalkerEpicVest");
+			ValewalkerEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("ValewalkerEpicVest");
 			if (ValewalkerEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ValewalkerEpicVest";
 				i.Name = "Robe of the Misty Glade";
 				i.Level = 50;
@@ -1351,10 +1351,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Misty Glade Legs
-			ValewalkerEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("ValewalkerEpicLegs");
+			ValewalkerEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("ValewalkerEpicLegs");
 			if (ValewalkerEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ValewalkerEpicLegs";
 				i.Name = "Pants of the Misty Glade";
 				i.Level = 50;
@@ -1391,10 +1391,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Misty Glade Sleeves
-			ValewalkerEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("ValewalkerEpicArms");
+			ValewalkerEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("ValewalkerEpicArms");
 			if (ValewalkerEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "ValewalkerEpicArms";
 				i.Name = "Sleeves of the Misty Glade";
 				i.Level = 50;
@@ -1432,10 +1432,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 
 			#region Vampiir
-			VampiirEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("VampiirEpicBoots");
+			VampiirEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("VampiirEpicBoots");
 			if (VampiirEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "VampiirEpicBoots";
 				i.Name = "Archfiend Etched Boots";
 				i.Level = 50;
@@ -1480,10 +1480,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Misty Glade Coif
-			VampiirEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("VampiirEpicHelm");
+			VampiirEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("VampiirEpicHelm");
 			if (VampiirEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "VampiirEpicHelm";
 				i.Name = "Archfiend Etched Helm";
 				i.Level = 50;
@@ -1528,10 +1528,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Misty Glade Gloves
-			VampiirEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("VampiirEpicGloves");
+			VampiirEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("VampiirEpicGloves");
 			if (VampiirEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "VampiirEpicGloves";
 				i.Name = "Archfiend Etched Gloves";
 				i.Level = 50;
@@ -1575,10 +1575,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Misty Glade Hauberk
-			VampiirEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("VampiirEpicVest");
+			VampiirEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("VampiirEpicVest");
 			if (VampiirEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "VampiirEpicVest";
 				i.Name = "Archfiend Etched Vest";
 				i.Level = 50;
@@ -1622,10 +1622,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Misty Glade Legs
-			VampiirEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("VampiirEpicLegs");
+			VampiirEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("VampiirEpicLegs");
 			if (VampiirEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "VampiirEpicLegs";
 				i.Name = "Archfiend Etched Leggings";
 				i.Level = 50;
@@ -1669,10 +1669,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Misty Glade Sleeves
-			VampiirEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("VampiirEpicArms");
+			VampiirEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("VampiirEpicArms");
 			if (VampiirEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "VampiirEpicArms";
 				i.Name = "Archfiend Etched Sleeves";
 				i.Level = 50;
@@ -1717,10 +1717,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			#endregion
 			#region Bainshee
-			BainsheeEpicBoots = GameServer.Database.FindObjectByKey<ItemTemplate>("BainsheeEpicBoots");
+			BainsheeEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("BainsheeEpicBoots");
 			if (BainsheeEpicBoots == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BainsheeEpicBoots";
 				i.Name = "Boots of the Keening Spirit";
 				i.Level = 50;
@@ -1774,10 +1774,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Misty Glade Coif
-			BainsheeEpicHelm = GameServer.Database.FindObjectByKey<ItemTemplate>("BainsheeEpicHelm");
+			BainsheeEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("BainsheeEpicHelm");
 			if (BainsheeEpicHelm == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BainsheeEpicHelm";
 				i.Name = "Wreath of the Keening Spirit";
 				i.Level = 50;
@@ -1830,10 +1830,10 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			//end item
 			//Misty Glade Gloves
-			BainsheeEpicGloves = GameServer.Database.FindObjectByKey<ItemTemplate>("BainsheeEpicGloves");
+			BainsheeEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("BainsheeEpicGloves");
 			if (BainsheeEpicGloves == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BainsheeEpicGloves";
 				i.Name = "Gloves of the Keening Spirit";
 				i.Level = 50;
@@ -1886,10 +1886,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Keening Spirit Hauberk
-			BainsheeEpicVest = GameServer.Database.FindObjectByKey<ItemTemplate>("BainsheeEpicVest");
+			BainsheeEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("BainsheeEpicVest");
 			if (BainsheeEpicVest == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BainsheeEpicVest";
 				i.Name = "Robe of the Keening Spirit";
 				i.Level = 50;
@@ -1941,10 +1941,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Keening Spirit Legs
-			BainsheeEpicLegs = GameServer.Database.FindObjectByKey<ItemTemplate>("BainsheeEpicLegs");
+			BainsheeEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("BainsheeEpicLegs");
 			if (BainsheeEpicLegs == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BainsheeEpicLegs";
 				i.Name = "Pants of the Keening Spirit";
 				i.Level = 50;
@@ -1996,10 +1996,10 @@ namespace DOL.GS.Quests.Hibernia
 
 			}
 			//Keening Spirit Sleeves
-			BainsheeEpicArms = GameServer.Database.FindObjectByKey<ItemTemplate>("BainsheeEpicArms");
+			BainsheeEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("BainsheeEpicArms");
 			if (BainsheeEpicArms == null)
 			{
-				i = new ItemTemplate();
+				i = new DbItemTemplate();
 				i.Id_nb = "BainsheeEpicArms";
 				i.Name = "Sleeves of the Keening Spirit";
 				i.Level = 50;

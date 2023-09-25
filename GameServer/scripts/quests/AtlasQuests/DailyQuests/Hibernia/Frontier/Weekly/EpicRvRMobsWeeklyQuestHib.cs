@@ -50,7 +50,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 		{
 		}
 
-		public EpicRvRMobsWeeklyQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public EpicRvRMobsWeeklyQuestHib(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

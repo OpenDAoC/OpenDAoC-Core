@@ -53,7 +53,7 @@ namespace DOL.GS
 		/// <param name="item"></param>
 		/// <param name="player"></param>
 		/// <returns></returns>
-		public static int BeginWork(GamePlayer player, InventoryItem item)
+		public static int BeginWork(GamePlayer player, DbInventoryItem item)
 		{
 			if (!IsAllowedToBeginWork(player, item, 50))
 			{
@@ -93,7 +93,7 @@ namespace DOL.GS
 		{
 			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
 			GamePlayer tradePartner = timer.Properties.GetProperty<GamePlayer>(PLAYER_PARTNER, null);
-			InventoryItem item = timer.Properties.GetProperty<InventoryItem>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, null);
+			DbInventoryItem item = timer.Properties.GetProperty<DbInventoryItem>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, null);
 
 			if (player == null || item == null)
 			{
@@ -144,7 +144,7 @@ namespace DOL.GS
 		/// <param name="item"></param>
 		/// <param name="percentNeeded">min 50 max 100</param>
 		/// <returns></returns>
-		public static bool IsAllowedToBeginWork(GamePlayer player, InventoryItem item, int percentNeeded)
+		public static bool IsAllowedToBeginWork(GamePlayer player, DbInventoryItem item, int percentNeeded)
 		{
 			if (item.IsNotLosingDur)
 			{
@@ -193,7 +193,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Calculate crafting time
 		/// </summary>
-		protected static int GetRepairTime(GamePlayer player, InventoryItem item)
+		protected static int GetRepairTime(GamePlayer player, DbInventoryItem item)
 		{
 			return Math.Max(1, item.Level / 2); // wrong but don't know the correct formula
 		}
@@ -201,7 +201,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Calculate the chance of sucess
 		/// </summary>
-		protected static int CalculateSuccessChances(GamePlayer player, InventoryItem item)
+		protected static int CalculateSuccessChances(GamePlayer player, DbInventoryItem item)
 		{
 			eCraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
 			if (skill == eCraftingSkill.NoCrafting) return 0;

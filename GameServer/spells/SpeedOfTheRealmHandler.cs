@@ -44,9 +44,9 @@ namespace DOL.GS.Spells
 			return Spell.Duration;
 		}
 
-        public override PlayerXEffect GetSavedEffect(GameSpellEffect e)
+        public override DbPlayerXEffect GetSavedEffect(GameSpellEffect e)
         {
-            PlayerXEffect eff = new PlayerXEffect();
+            DbPlayerXEffect eff = new DbPlayerXEffect();
             eff.Var1 = Spell.ID;
             eff.Duration = e.RemainingTime;
             eff.IsHandler = true;

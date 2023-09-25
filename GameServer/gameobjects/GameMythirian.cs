@@ -34,17 +34,17 @@ namespace DOL.GS
 
 		private GameMythirian() { }
 
-		public GameMythirian(ItemTemplate template)
+		public GameMythirian(DbItemTemplate template)
 			: base(template)
 		{
 		}
 
-		public GameMythirian(ItemUnique template)
+		public GameMythirian(DbItemUnique template)
 			: base(template)
 		{
 		}
 
-		public GameMythirian(InventoryItem item)
+		public GameMythirian(DbInventoryItem item)
 			: base(item)
 		{
 		}

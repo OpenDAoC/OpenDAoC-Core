@@ -55,7 +55,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="subSelection"></param>
-		protected override void OnSubSelectionPicked(GamePlayer player, Teleport subSelection)
+		protected override void OnSubSelectionPicked(GamePlayer player, DbTeleport subSelection)
 		{
 			switch (subSelection.TeleportID.ToLower())
 			{
@@ -95,7 +95,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="destination"></param>
-		protected override void OnDestinationPicked(GamePlayer player, Teleport destination)
+		protected override void OnDestinationPicked(GamePlayer player, DbTeleport destination)
 		{
 			
 			Region region = WorldMgr.GetRegion((ushort) destination.RegionID);

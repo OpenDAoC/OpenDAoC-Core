@@ -81,12 +81,12 @@ namespace DOL.GS.DatabaseUpdate
         {
             log.Info("Updating the LanguageSystem table (this can take a few minutes)...");
 
-            if (GameServer.Database.GetObjectCount<DBLanguageSystem>() < 1 && ServerProperties.Properties.USE_DBLANGUAGE)
+            if (GameServer.Database.GetObjectCount<DbLanguageSystem>() < 1 && ServerProperties.Properties.USE_DBLANGUAGE)
             {
                 var objs = GameServer.Database.SelectAllObjects<language>();
                 if (objs.Count > 0)
                 {
-                    List<DBLanguageSystem> lngObjs = new List<DBLanguageSystem>();
+                    List<DbLanguageSystem> lngObjs = new List<DbLanguageSystem>();
 
                     foreach (language obj in objs)
                     {
@@ -98,13 +98,13 @@ namespace DOL.GS.DatabaseUpdate
                         if (obj.TranslationID.Contains("System.LanguagesName."))
                             continue;
 
-                        DBLanguageSystem lngObj = null;
+                        DbLanguageSystem lngObj = null;
 
                         if (!string.IsNullOrEmpty(obj.EN))
                         {
                             if (!ListContainsObjectData(lngObjs, "EN", obj.TranslationID)) // Ignore duplicates
                             {
-                                lngObj = new DBLanguageSystem();
+                                lngObj = new DbLanguageSystem();
                                 lngObj.TranslationId = obj.TranslationID;
                                 lngObj.Language = "EN";
                                 lngObj.Text = obj.EN;
@@ -117,7 +117,7 @@ namespace DOL.GS.DatabaseUpdate
                         {
                             if (!ListContainsObjectData(lngObjs, "DE", obj.TranslationID)) // Ignore duplicates
                             {
-                                lngObj = new DBLanguageSystem();
+                                lngObj = new DbLanguageSystem();
                                 lngObj.TranslationId = obj.TranslationID;
                                 lngObj.Language = "DE";
                                 lngObj.Text = obj.DE;
@@ -130,7 +130,7 @@ namespace DOL.GS.DatabaseUpdate
                         {
                             if (!ListContainsObjectData(lngObjs, "FR", obj.TranslationID)) // Ignore duplicates
                             {
-                                lngObj = new DBLanguageSystem();
+                                lngObj = new DbLanguageSystem();
                                 lngObj.TranslationId = obj.TranslationID;
                                 lngObj.Language = "FR";
                                 lngObj.Text = obj.FR;
@@ -143,7 +143,7 @@ namespace DOL.GS.DatabaseUpdate
                         {
                             if (!ListContainsObjectData(lngObjs, "IT", obj.TranslationID)) // Ignore duplicates
                             {
-                                lngObj = new DBLanguageSystem();
+                                lngObj = new DbLanguageSystem();
                                 lngObj.TranslationId = obj.TranslationID;
                                 lngObj.Language = "IT";
                                 lngObj.Text = obj.IT;
@@ -155,7 +155,7 @@ namespace DOL.GS.DatabaseUpdate
                         // CU will be ignored!
                     }
 
-                    foreach (DBLanguageSystem lngObj in lngObjs)
+                    foreach (DbLanguageSystem lngObj in lngObjs)
                     {
                         GameServer.Database.AddObject(lngObj);
 
@@ -167,11 +167,11 @@ namespace DOL.GS.DatabaseUpdate
             }
         }
 
-        private bool ListContainsObjectData(List<DBLanguageSystem> list, string language, string translationId)
+        private bool ListContainsObjectData(List<DbLanguageSystem> list, string language, string translationId)
         {
             bool contains = false;
 
-            foreach (DBLanguageSystem lngObj in list)
+            foreach (DbLanguageSystem lngObj in list)
             {
                 if (lngObj.TranslationId != translationId)
                     continue;

@@ -79,8 +79,8 @@ namespace DOL.GS
 				// if relics are on the ground during init we will return them to their owners
 				List<GameRelic> lostRelics = new List<GameRelic>();
 
-				var relics = GameServer.Database.SelectAllObjects<DBRelic>();
-				foreach (DBRelic datarelic in relics)
+				var relics = GameServer.Database.SelectAllObjects<DbRelic>();
+				foreach (DbRelic datarelic in relics)
 				{
 					if (datarelic.relicType < 0 || datarelic.relicType > 1
 						|| datarelic.OriginalRealm < 1 || datarelic.OriginalRealm > 3)

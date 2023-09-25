@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_ReflexAttack : TimedRealmAbility
     {
-        public AtlasOF_ReflexAttack(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_ReflexAttack(DbAbility dba, int level) : base(dba, level) { }
 
         public const int duration = 30000; // 30 seconds
         public override int MaxLevel { get { return 1; } }

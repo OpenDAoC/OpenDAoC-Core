@@ -24,10 +24,10 @@ namespace DOL.GS
         public eRangedAttackState RangedAttackState { get; set; }
         public eRangedAttackType RangedAttackType { get; set; }
         public eActiveQuiverSlot ActiveQuiverSlot { get; set; }
-        public InventoryItem Ammo { get; private set; }
+        public DbInventoryItem Ammo { get; private set; }
         public bool IsAmmoCompatible { get; private set; }
 
-        private InventoryItem GetAmmoFromInventory(eObjectType ammoType)
+        private DbInventoryItem GetAmmoFromInventory(eObjectType ammoType)
         {
             switch (ActiveQuiverSlot)
             {
@@ -46,7 +46,7 @@ namespace DOL.GS
             return null;
         }
 
-        public InventoryItem UpdateAmmo(InventoryItem weapon)
+        public DbInventoryItem UpdateAmmo(DbInventoryItem weapon)
         {
             Ammo = null;
             IsAmmoCompatible = true;

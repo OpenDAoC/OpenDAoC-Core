@@ -90,7 +90,7 @@ namespace DOL.GS
 				case "zombie servant":
 					EffectList.Add(new MezzRootImmunityEffect());
 					LoadEquipmentTemplate("barehand_weapon");
-					InventoryItem item;
+					DbInventoryItem item;
 					if (Inventory != null && (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
 						item.ProcSpellID = (int)Procs.Stun;
 					break;
@@ -183,7 +183,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Set stats according to necro pet server properties.
 		/// </summary>
-		public override void AutoSetStats(Mob dbMob = null)
+		public override void AutoSetStats(DbMob dbMob = null)
 		{
 			int levelMinusOne = Level - 1;
 
@@ -447,7 +447,7 @@ namespace DOL.GS
 				}
 				case "disease":
 				{
-					InventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
+					DbInventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
 
 					if (item != null)
 					{
@@ -465,7 +465,7 @@ namespace DOL.GS
 				}
 				case "poison":
 				{
-					InventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
+					DbInventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
 
 					if (item != null)
 					{
@@ -531,7 +531,7 @@ namespace DOL.GS
 			if (inventoryTemplate.LoadFromDatabase(templateID))
 			{
 				Inventory = new GameNPCInventory(inventoryTemplate);
-				InventoryItem item;
+				DbInventoryItem item;
 
 				if ((item = Inventory.GetItem(eInventorySlot.TwoHandWeapon)) != null)
 				{

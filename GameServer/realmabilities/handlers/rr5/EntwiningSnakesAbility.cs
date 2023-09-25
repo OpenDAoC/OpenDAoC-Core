@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class EntwiningSnakesAbility : RR5RealmAbility
 	{
-		public EntwiningSnakesAbility(DBAbility dba, int level) : base(dba, level) { }
+		public EntwiningSnakesAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

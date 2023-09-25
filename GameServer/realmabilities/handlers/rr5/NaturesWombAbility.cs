@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class NaturesWombAbility : RR5RealmAbility
 	{
-		public NaturesWombAbility(DBAbility dba, int level) : base(dba, level) { }
+		public NaturesWombAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

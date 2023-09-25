@@ -39,11 +39,11 @@ namespace DOL.GS
 		{
 			get { return 30000; }
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override int AttackSpeed(InventoryItem mainWeapon, InventoryItem leftWeapon = null)
+		public override int AttackSpeed(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon = null)
 		{
 			return base.AttackSpeed(mainWeapon, leftWeapon) * 2;
 		}
@@ -138,7 +138,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Mahattava_Dot == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;
@@ -173,7 +173,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Mahattava_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = Util.Random(10,15);

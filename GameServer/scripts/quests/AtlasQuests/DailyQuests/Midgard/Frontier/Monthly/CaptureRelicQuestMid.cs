@@ -45,7 +45,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		{
 		}
 
-		public CaptureRelicQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public CaptureRelicQuestMid(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

@@ -60,7 +60,7 @@ namespace DOL.GS.Scripts
             {
                 case "DE":
                     {
-                        var translation = (DBLanguageNPC)LanguageMgr.GetTranslation(player.Client.Account.Language, this);
+                        var translation = (DbLanguageGameNpc)LanguageMgr.GetTranslation(player.Client.Account.Language, this);
 
                         if (translation != null)
                         {
@@ -104,7 +104,7 @@ namespace DOL.GS.Scripts
         /// <param name="source"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        public override bool ReceiveItem(GameLiving source, InventoryItem item)
+        public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
         {
             if (source == null || item == null) return false;
 
