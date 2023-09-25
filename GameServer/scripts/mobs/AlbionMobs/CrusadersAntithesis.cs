@@ -42,7 +42,7 @@ namespace DOL.GS
 			{
 				if (m_CrusaderDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Power = 0;

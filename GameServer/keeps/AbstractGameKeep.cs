@@ -157,7 +157,7 @@ namespace DOL.GS.Keeps
 
 		public Dictionary<string, GameKeepDoor> Doors { get; set; } = new Dictionary<string, GameKeepDoor>();
 
-		public DBKeep DBKeep { get; set; }
+		public DbKeep DBKeep { get; set; }
 
 		public Dictionary<string, GameKeepGuard> Guards { get; } = new Dictionary<string, GameKeepGuard>();
 
@@ -438,7 +438,7 @@ namespace DOL.GS.Keeps
 		/// load keep from Db object and load keep component and object of keep
 		/// </summary>
 		/// <param name="keep"></param>
-		public virtual void Load(DBKeep keep)
+		public virtual void Load(DbKeep keep)
 		{
 			CurrentRegion = WorldMgr.GetRegion((ushort)keep.Region);
 			InitialiseTimers();
@@ -524,7 +524,7 @@ namespace DOL.GS.Keeps
 		/// <param name="keep"></param>
 		public virtual void LoadFromDatabase(DataObject keep)
 		{
-			DBKeep = keep as DBKeep;
+			DBKeep = keep as DbKeep;
 			InternalID = keep.ObjectId;
 			m_difficultyLevel[0] = DBKeep.AlbionDifficultyLevel;
 			m_difficultyLevel[1] = DBKeep.MidgardDifficultyLevel;
@@ -1161,7 +1161,7 @@ namespace DOL.GS.Keeps
 				return;
 
 			//predict Z
-			DBKeepHookPoint hp = DOLDB<DBKeepHookPoint>.SelectObject(DB.Column("HookPointID").IsEqualTo(97).And(DB.Column("Height").IsEqualTo(Height)));
+			DbKeepHookPoint hp = DOLDB<DbKeepHookPoint>.SelectObject(DB.Column("HookPointID").IsEqualTo(97).And(DB.Column("Height").IsEqualTo(Height)));
 			if (hp == null)
 				return;
 			int z = component.Z + hp.Z;

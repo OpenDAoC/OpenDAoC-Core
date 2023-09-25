@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class FanatacismAbility :  RR5RealmAbility
 	{
-		public FanatacismAbility(DBAbility dba, int level) : base(dba, level) { }
+		public FanatacismAbility(DbAbility dba, int level) : base(dba, level) { }
  
 		int RANGE = 2000;
         public const int DURATION = 45 * 1000;

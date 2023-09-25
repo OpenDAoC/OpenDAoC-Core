@@ -29,7 +29,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		{
 			packet.Skip(4);
 			int slot = packet.ReadShort();
-			InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+			DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
 			if (item != null)
 			{
 				if (item.IsIndestructible)

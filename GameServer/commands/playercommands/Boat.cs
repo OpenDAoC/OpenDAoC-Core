@@ -59,7 +59,7 @@ namespace DOL.GS.Commands
 								if (GameBoat.PlayerHasItem(client.Player, "scout_boat"))
 								{
 									GameBoat playerBoat = new GameBoat();
-									InventoryItem item = client.Player.Inventory.GetFirstItemByID("scout_boat", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+									DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("scout_boat", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
 									playerBoat.BoatID = System.Guid.NewGuid().ToString();
 									playerBoat.Name = client.Player.Name + "'s scout boat";
 									playerBoat.X = client.Player.X;
@@ -91,7 +91,7 @@ namespace DOL.GS.Commands
 								else if (GameBoat.PlayerHasItem(client.Player, "warship"))
 								{
 									GameBoat playerBoat = new GameBoat();
-									InventoryItem item = client.Player.Inventory.GetFirstItemByID("warship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+									DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("warship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
 									playerBoat.BoatID = System.Guid.NewGuid().ToString();
 									playerBoat.Name = client.Player.Name + "'s warship";
 									playerBoat.X = client.Player.X;
@@ -123,7 +123,7 @@ namespace DOL.GS.Commands
 								else if (GameBoat.PlayerHasItem(client.Player, "galleon"))
 								{
 									GameBoat playerBoat = new GameBoat();
-									InventoryItem item = client.Player.Inventory.GetFirstItemByID("galleon", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+									DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("galleon", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
 									playerBoat.BoatID = System.Guid.NewGuid().ToString();
 									playerBoat.Name = client.Player.Name + "'s galleon";
 									playerBoat.X = client.Player.X;
@@ -155,7 +155,7 @@ namespace DOL.GS.Commands
 								else if (GameBoat.PlayerHasItem(client.Player, "skiff"))
 								{
 									GameBoat playerBoat = new GameBoat();
-									InventoryItem item = client.Player.Inventory.GetFirstItemByID("skiff", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+									DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("skiff", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
 									playerBoat.BoatID = System.Guid.NewGuid().ToString();
 									playerBoat.Name = client.Player.Name + "'s skiff";
 									playerBoat.X = client.Player.X;
@@ -187,7 +187,7 @@ namespace DOL.GS.Commands
 								else if (GameBoat.PlayerHasItem(client.Player, "Viking_Longship"))
 								{
 									GameBoat playerBoat = new GameBoat();
-									InventoryItem item = client.Player.Inventory.GetFirstItemByID("Viking_Longship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+									DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("Viking_Longship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
 									playerBoat.BoatID = System.Guid.NewGuid().ToString();
 									playerBoat.Name = client.Player.Name + "'s Viking longship";
 									playerBoat.X = client.Player.X;
@@ -219,7 +219,7 @@ namespace DOL.GS.Commands
 								else if (GameBoat.PlayerHasItem(client.Player, "ps_longship"))
 								{
 									GameBoat playerBoat = new GameBoat();
-									InventoryItem item = client.Player.Inventory.GetFirstItemByID("ps_longship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+									DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("ps_longship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
 									playerBoat.BoatID = System.Guid.NewGuid().ToString();
 									playerBoat.Name = client.Player.Name + "'s Longship";
 									playerBoat.X = client.Player.X;
@@ -251,7 +251,7 @@ namespace DOL.GS.Commands
 								else if (GameBoat.PlayerHasItem(client.Player, "stygian_ship"))
 								{
 									GameBoat playerBoat = new GameBoat();
-									InventoryItem item = client.Player.Inventory.GetFirstItemByID("stygian_ship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+									DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("stygian_ship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
 									playerBoat.BoatID = System.Guid.NewGuid().ToString();
 									playerBoat.Name = client.Player.Name + "'s Stygian ship";
 									playerBoat.X = client.Player.X;
@@ -283,7 +283,7 @@ namespace DOL.GS.Commands
 								else if (GameBoat.PlayerHasItem(client.Player, "atlantean_ship"))
 								{
 									GameBoat playerBoat = new GameBoat();
-									InventoryItem item = client.Player.Inventory.GetFirstItemByID("atlantean_ship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+									DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("atlantean_ship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
 									playerBoat.BoatID = System.Guid.NewGuid().ToString();
 									playerBoat.Name = client.Player.Name + "'s Atlantean ship";
 									playerBoat.X = client.Player.X;
@@ -315,7 +315,7 @@ namespace DOL.GS.Commands
 								else if (GameBoat.PlayerHasItem(client.Player, "British_Cog"))
 								{
 									GameBoat playerBoat = new GameBoat();
-									InventoryItem item = client.Player.Inventory.GetFirstItemByID("British_Cog", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+									DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("British_Cog", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
 									playerBoat.BoatID = System.Guid.NewGuid().ToString();
 									playerBoat.Name = client.Player.Name + "'s British Cog";
 									playerBoat.X = client.Player.X;

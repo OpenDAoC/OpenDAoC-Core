@@ -82,7 +82,7 @@ namespace DOL.GS.Commands
 							}
 						}
 						//Log.Info("max :" + max);
-						DBFaction dbfaction = new DBFaction();
+						DbFaction dbfaction = new DbFaction();
 						dbfaction.BaseAggroLevel = baseAggro;
 						dbfaction.Name = name;
 						dbfaction.ID = (max + 1);
@@ -146,7 +146,7 @@ namespace DOL.GS.Commands
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						DBLinkedFaction dblinkedfaction = new DBLinkedFaction();
+						DbFactionLinks dblinkedfaction = new DbFactionLinks();
 						dblinkedfaction.FactionID = myfaction.Id;
 						dblinkedfaction.LinkedFactionID = linkedfaction.Id;
 						dblinkedfaction.IsFriend = true;
@@ -184,7 +184,7 @@ namespace DOL.GS.Commands
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						DBLinkedFaction dblinkedfaction = new DBLinkedFaction();
+						DbFactionLinks dblinkedfaction = new DbFactionLinks();
 						dblinkedfaction.FactionID = myfaction.Id;
 						dblinkedfaction.LinkedFactionID = linkedfaction.Id;
 						dblinkedfaction.IsFriend = false;

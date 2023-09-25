@@ -36,7 +36,7 @@ namespace DOL.GS.ServerRules
         /// <param name="targetPoint">The jump destination</param>
         /// <param name="player">The jumping player</param>
         /// <returns>True if allowed</returns>
-        public bool IsAllowedToJump(ZonePoint targetPoint, GamePlayer player)
+        public bool IsAllowedToJump(DbZonePoint targetPoint, GamePlayer player)
         {
             if (player.CurrentRegion is BaseInstance == false)
                 return true;

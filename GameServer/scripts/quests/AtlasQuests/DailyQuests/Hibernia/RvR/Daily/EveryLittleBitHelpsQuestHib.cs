@@ -47,7 +47,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 		}
 
-		public EveryLittleBitHelpsQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public EveryLittleBitHelpsQuestHib(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

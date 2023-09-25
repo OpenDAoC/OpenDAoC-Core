@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class IchorOfTheDeepAbility : TimedRealmAbility
 	{
-		public IchorOfTheDeepAbility(DBAbility dba, int level) : base(dba, level) { }
+		public IchorOfTheDeepAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		private ECSGameTimer m_expireTimerID;
 		private ECSGameTimer m_rootExpire;

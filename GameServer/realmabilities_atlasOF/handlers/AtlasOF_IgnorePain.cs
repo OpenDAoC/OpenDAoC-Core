@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class AtlasOF_IgnorePain : TimedRealmAbility
 	{
-		public AtlasOF_IgnorePain(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_IgnorePain(DbAbility dba, int level) : base(dba, level) { }
 
 		public override int MaxLevel { get { return 1; } }
 
@@ -64,7 +64,7 @@ namespace DOL.GS.RealmAbilities
 	
 	public class AtlasOF_IgnorePainTank : AtlasOF_IgnorePain
 	{
-		public AtlasOF_IgnorePainTank(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_IgnorePainTank(DbAbility dba, int level) : base(dba, level) { }
 		public override int CostForUpgrade(int level)
 		{
 			return 8;

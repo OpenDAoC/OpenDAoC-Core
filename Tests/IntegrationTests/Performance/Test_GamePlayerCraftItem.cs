@@ -35,9 +35,9 @@ namespace DOL.Tests.Integration.Performance
         public void SetupFakeServer()
         {
             var sqliteDB = Create.TemporarySQLiteDB();
-            sqliteDB.RegisterDataObject(typeof(DBCraftedItem));
-            sqliteDB.RegisterDataObject(typeof(DBCraftedXItem));
-            sqliteDB.RegisterDataObject(typeof(ItemTemplate));
+            sqliteDB.RegisterDataObject(typeof(DbCraftedItem));
+            sqliteDB.RegisterDataObject(typeof(DbCraftedXItem));
+            sqliteDB.RegisterDataObject(typeof(DbItemTemplate));
 
             var fakeServer = new FakeServer();
             fakeServer.SetDatabase(sqliteDB);
@@ -62,43 +62,43 @@ namespace DOL.Tests.Integration.Performance
             Assert.Warn($"{repetitions} executions of GamePlayer.CraftItem took {duration} ms.");
         }
 
-        private static DBCraftedItem AddOneCompleteRecipeToDatabase()
+        private static DbCraftedItem AddOneCompleteRecipeToDatabase()
         {
-            var itemToCraft = new ItemTemplate();
+            var itemToCraft = new DbItemTemplate();
             itemToCraft.Id_nb = "item_to_craft";
             itemToCraft.Name = "Item To Craft";
             itemToCraft.AllowedClasses = "";
             itemToCraft.CanUseEvery = 0;
             AddDatabaseEntry(itemToCraft);
 
-            var craftedItem = new DBCraftedItem();
+            var craftedItem = new DbCraftedItem();
             craftedItem.CraftedItemID = itemToCraftID.ToString();
             craftedItem.Id_nb = itemToCraft.Id_nb;
             craftedItem.CraftingLevel = 1;
             craftedItem.CraftingSkillType = 1;
             AddDatabaseEntry(craftedItem);
 
-            var ingredient1 = new DBCraftedXItem();
+            var ingredient1 = new DbCraftedXItem();
             ingredient1.Count = 1;
             ingredient1.ObjectId = "id1";
             ingredient1.CraftedItemId_nb = craftedItem.Id_nb;
             ingredient1.IngredientId_nb = "item1_id";
             AddDatabaseEntry(ingredient1);
-            var ingredient2 = new DBCraftedXItem();
+            var ingredient2 = new DbCraftedXItem();
             ingredient2.Count = 2;
             ingredient2.ObjectId = "id2";
             ingredient2.CraftedItemId_nb = craftedItem.Id_nb;
             ingredient2.IngredientId_nb = "item2_id";
             AddDatabaseEntry(ingredient2);
 
-            var ingredientItem1 = new ItemTemplate();
+            var ingredientItem1 = new DbItemTemplate();
             ingredientItem1.Id_nb = ingredient1.IngredientId_nb;
             ingredientItem1.Name = "First Ingredient Name";
             ingredientItem1.AllowedClasses = "";
             ingredientItem1.Price = 10000;
             ingredientItem1.CanUseEvery = 0;
             AddDatabaseEntry(ingredientItem1);
-            var ingredientItem2 = new ItemTemplate();
+            var ingredientItem2 = new DbItemTemplate();
             ingredientItem2.Id_nb = ingredient2.IngredientId_nb;
             ingredientItem2.Name = "Second Ingredient Name";
             ingredientItem2.AllowedClasses = "";

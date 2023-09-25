@@ -36,7 +36,7 @@ namespace DOL.GS
 		/// <summary>
 		///
 		/// </summary>
-		protected static Dictionary<string, List<LootOTD>> m_mobOTDList = new Dictionary<string,List<LootOTD>>();
+		protected static Dictionary<string, List<DbLootOtd>> m_mobOTDList = new Dictionary<string,List<DbLootOtd>>();
 
 		public LootGeneratorOneTimeDrop()
 		{
@@ -53,11 +53,11 @@ namespace DOL.GS
 			lock (m_mobOTDList)
 			{
 				m_mobOTDList.Clear();
-				IList<LootOTD> lootOTDs;
+				IList<DbLootOtd> lootOTDs;
 
 				try
 				{
-					lootOTDs = GameServer.Database.SelectAllObjects<LootOTD>();
+					lootOTDs = GameServer.Database.SelectAllObjects<DbLootOtd>();
 				}
 				catch (Exception e)
 				{
@@ -73,9 +73,9 @@ namespace DOL.GS
 				{
 					int count = 0;
 
-					foreach (LootOTD l in lootOTDs)
+					foreach (DbLootOtd l in lootOTDs)
 					{
-						IList<Mob> mobs = DOLDB<Mob>.SelectObjects(DB.Column("Name").IsEqualTo(l.MobName));
+						IList<DbMob> mobs = DOLDB<DbMob>.SelectObjects(DB.Column("Name").IsEqualTo(l.MobName));
 
 						if (mobs == null || mobs.Count == 0)
 						{
@@ -83,7 +83,7 @@ namespace DOL.GS
 							continue;
 						}
 
-						ItemTemplate item = GameServer.Database.FindObjectByKey<ItemTemplate>(l.ItemTemplateID);
+						DbItemTemplate item = GameServer.Database.FindObjectByKey<DbItemTemplate>(l.ItemTemplateID);
 
 						if (item == null)
 						{
@@ -93,7 +93,7 @@ namespace DOL.GS
 
 						if (m_mobOTDList.ContainsKey(l.MobName.ToLower()))
 						{
-							List<LootOTD> drops = m_mobOTDList[l.MobName.ToLower()];
+							List<DbLootOtd> drops = m_mobOTDList[l.MobName.ToLower()];
 
 							if (drops.Contains(l) == false)
 							{
@@ -107,7 +107,7 @@ namespace DOL.GS
 						}
 						else
 						{
-							List<LootOTD> drops = new List<LootOTD>();
+							List<DbLootOtd> drops = new List<DbLootOtd>();
 							drops.Add(l);
 							m_mobOTDList.Add(l.MobName.ToLower(), drops);
 							count++;
@@ -132,7 +132,7 @@ namespace DOL.GS
 			if (mob == null)
 				return;
 
-			IList<LootOTD> otds = DOLDB<LootOTD>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name));
+			IList<DbLootOtd> otds = DOLDB<DbLootOtd>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name));
 
 			lock (m_mobOTDList)
 			{
@@ -146,9 +146,9 @@ namespace DOL.GS
 			{
 				lock (m_mobOTDList)
 				{
-					List<LootOTD> newList = new List<LootOTD>();
+					List<DbLootOtd> newList = new List<DbLootOtd>();
 
-					foreach (LootOTD otd in otds)
+					foreach (DbLootOtd otd in otds)
 					{
 						newList.Add(otd);
 					}
@@ -162,7 +162,7 @@ namespace DOL.GS
 		public override LootList GenerateLoot(GameNPC mob, GameObject killer)
 		{
 			LootList loot = base.GenerateLoot(mob, killer);
-			List<LootOTD> lootOTDs = null;
+			List<DbLootOtd> lootOTDs = null;
 
 			try
 			{
@@ -194,21 +194,21 @@ namespace DOL.GS
 
 							if (player != null)
 							{
-								foreach (LootOTD drop in lootOTDs)
+								foreach (DbLootOtd drop in lootOTDs)
 								{
 									if (drop.MinLevel <= player.Level)
 									{
-										var hasDrop = DOLDB<CharacterXOneTimeDrop>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.QuestPlayerID).And(DB.Column("ItemTemplateID").IsEqualTo(drop.ItemTemplateID)));
+										var hasDrop = DOLDB<DbCharacterXOneTimeDrop>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.QuestPlayerID).And(DB.Column("ItemTemplateID").IsEqualTo(drop.ItemTemplateID)));
 
 										if (hasDrop == null)
 										{
-											ItemTemplate item = GameServer.Database.FindObjectByKey<ItemTemplate>(drop.ItemTemplateID);
+											DbItemTemplate item = GameServer.Database.FindObjectByKey<DbItemTemplate>(drop.ItemTemplateID);
 
 											if (item != null)
 											{
 												if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(item)))
 												{
-													CharacterXOneTimeDrop charXDrop = new CharacterXOneTimeDrop();
+													DbCharacterXOneTimeDrop charXDrop = new DbCharacterXOneTimeDrop();
 													charXDrop.CharacterID = player.QuestPlayerID;
 													charXDrop.ItemTemplateID = drop.ItemTemplateID;
 													GameServer.Database.AddObject(charXDrop);

@@ -6,7 +6,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_Concentration : ConcentrationAbility
 	{
-		public AtlasOF_Concentration(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_Concentration(DbAbility dba, int level) : base(dba, level) { }
 
         public override int MaxLevel { get { return 1; } }
         public override int GetReUseDelay(int level) { return 900; } // 15 min

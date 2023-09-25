@@ -219,11 +219,11 @@ namespace DOL.GS
 
 			//use this to track completely solo characters
 			const string customKey = "grouped_char";
-			var hasGrouped = DOLDB<DOLCharactersXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+			var hasGrouped = DOLDB<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
 			if (hasGrouped == null)
 			{
-				DOLCharactersXCustomParam groupedChar = new DOLCharactersXCustomParam();
+				DbCoreCharacterXCustomParam groupedChar = new DbCoreCharacterXCustomParam();
 				groupedChar.DOLCharactersObjectId = player.ObjectId;
 				groupedChar.KeyName = customKey;
 				groupedChar.Value = "1";

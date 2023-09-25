@@ -26,7 +26,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_WildPowerAbility : WildPowerAbility
     {
-        public AtlasOF_WildPowerAbility(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_WildPowerAbility(DbAbility dba, int level) : base(dba, level) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 2; }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
@@ -37,7 +37,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_WildHealingAbility : WildHealingAbility
     {
-        public AtlasOF_WildHealingAbility(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_WildHealingAbility(DbAbility dba, int level) : base(dba, level) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 2; }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
@@ -48,7 +48,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
          public class AtlasOF_WildArcanaAbility : RAPropertyEnhancer
          {
-             public AtlasOF_WildArcanaAbility(DBAbility dba, int level) : base(dba, level, eProperty.CriticalDotHitChance) { }
+             public AtlasOF_WildArcanaAbility(DbAbility dba, int level) : base(dba, level, eProperty.CriticalDotHitChance) { }
              public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 2; }
              public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
              public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
@@ -59,7 +59,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_WildMinionAbility : RAPropertyEnhancer
     {
-        public AtlasOF_WildMinionAbility(DBAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
+        public AtlasOF_WildMinionAbility(DbAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 2; }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
@@ -70,7 +70,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_FalconsEye : RAPropertyEnhancer // We don't want to piggyback on the NF FalconsEye because it increases spell crit chance and not archery for some reason...
     {
-        public AtlasOF_FalconsEye(DBAbility dba, int level) : base(dba, level, eProperty.CriticalArcheryHitChance) { }
+        public AtlasOF_FalconsEye(DbAbility dba, int level) : base(dba, level, eProperty.CriticalArcheryHitChance) { }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugDexLevel(player) >= 2; }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }

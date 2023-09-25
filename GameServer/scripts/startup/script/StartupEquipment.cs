@@ -51,7 +51,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Table Cache
 		/// </summary>
-		private static readonly Dictionary<eCharacterClass, List<ItemTemplate>> m_cachedClassEquipment = new Dictionary<eCharacterClass, List<ItemTemplate>>();
+		private static readonly Dictionary<eCharacterClass, List<DbItemTemplate>> m_cachedClassEquipment = new Dictionary<eCharacterClass, List<DbItemTemplate>>();
 		
 		/// <summary>
 		/// Register Character Creation Events
@@ -88,7 +88,7 @@ namespace DOL.GS.GameEvents
 							{
 								eCharacterClass gameClass = (eCharacterClass)cId;
 								if (!m_cachedClassEquipment.ContainsKey(gameClass))
-									m_cachedClassEquipment.Add(gameClass, new List<ItemTemplate>());
+									m_cachedClassEquipment.Add(gameClass, new List<DbItemTemplate>());
 								
 								m_cachedClassEquipment[gameClass].Add(equipclass.Template);
 							}
@@ -138,7 +138,7 @@ namespace DOL.GS.GameEvents
 			if (chArgs == null)
 				return;
 			
-			DOLCharacters ch = chArgs.Character;
+			DbCoreCharacter ch = chArgs.Character;
 			
 			try
 			{
@@ -150,7 +150,7 @@ namespace DOL.GS.GameEvents
 					foreach (var item in m_cachedClassEquipment.Where(k => k.Key == 0 || k.Key == (eCharacterClass)ch.Class).SelectMany(kv => kv.Value).OrderBy(it => it.Item_Type))
 					{
 						// create Inventory item and set to owner.
-						InventoryItem inventoryItem = GameInventoryItem.Create(item);
+						DbInventoryItem inventoryItem = GameInventoryItem.Create(item);
 						inventoryItem.OwnerID = ch.ObjectId;
 						inventoryItem.Realm = ch.Realm;
 						

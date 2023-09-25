@@ -44,7 +44,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		{
 		}
 
-		public KillNPCInFrontiersHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public KillNPCInFrontiersHib(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

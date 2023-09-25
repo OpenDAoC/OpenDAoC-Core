@@ -7,7 +7,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class MasteryOfPain : RAPropertyEnhancer
 	{
-		public MasteryOfPain(DBAbility dba, int level)
+		public MasteryOfPain(DbAbility dba, int level)
 			: base(dba, level, new eProperty[] { eProperty.CriticalMeleeHitChance })
 		{
 		}
@@ -53,7 +53,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class MasteryOfParrying : RAPropertyEnhancer
 	{
-		public MasteryOfParrying(DBAbility dba, int level)
+		public MasteryOfParrying(DbAbility dba, int level)
 			: base(dba, level, eProperty.ParryChance)
 		{
 		}
@@ -99,7 +99,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class MasteryOfBlocking : RAPropertyEnhancer
 	{
-		public MasteryOfBlocking(DBAbility dba, int level)
+		public MasteryOfBlocking(DbAbility dba, int level)
 			: base(dba, level, eProperty.BlockChance)
 		{
 		}

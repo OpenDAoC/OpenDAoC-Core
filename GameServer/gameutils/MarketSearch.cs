@@ -25,7 +25,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 using DOL.Database;
-using DOL.Database.Transaction;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Events;
@@ -526,9 +525,9 @@ namespace DOL.GS
 			m_searchPlayer = player;
 		}
 
-		public virtual List<InventoryItem> FindItemsInList(IList<InventoryItem> inventoryItems, SearchData search)
+		public virtual List<DbInventoryItem> FindItemsInList(IList<DbInventoryItem> inventoryItems, SearchData search)
 		{
-			List<InventoryItem> items = new List<InventoryItem>();
+			List<DbInventoryItem> items = new List<DbInventoryItem>();
 
 			int count = 0;
 			m_searchHasError = false;
@@ -538,7 +537,7 @@ namespace DOL.GS
 				log.DebugFormat("MarketSearch: [{0}:{1}] SEARCHING MARKET: {2}", m_searchPlayer.Name, m_searchPlayer.Client.Account.Name, search);
 			}
 
-			foreach (InventoryItem item in inventoryItems)
+			foreach (DbInventoryItem item in inventoryItems)
 			{
 				
 				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
@@ -683,7 +682,7 @@ namespace DOL.GS
 			return items;
 		}
 
-		protected virtual bool CheckSlot(InventoryItem item, int slot)
+		protected virtual bool CheckSlot(DbInventoryItem item, int slot)
 		{
 		
 			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
@@ -751,7 +750,7 @@ namespace DOL.GS
 			return true;
 		}
 
-		protected virtual bool CheckForHP(InventoryItem item, int hp)
+		protected virtual bool CheckForHP(DbInventoryItem item, int hp)
 		{
 			if (hp > 0)
 			{
@@ -772,7 +771,7 @@ namespace DOL.GS
 			return false;
 		}
 
-		protected virtual bool CheckForPower(InventoryItem item, int power)
+		protected virtual bool CheckForPower(DbInventoryItem item, int power)
 		{
 			if (power > 0)
 			{
@@ -793,7 +792,7 @@ namespace DOL.GS
 			return false;
 		}
 
-		protected virtual bool CheckForArmorType(InventoryItem item, int type)
+		protected virtual bool CheckForArmorType(DbInventoryItem item, int type)
 		{
 			switch (type)
 			{
@@ -834,7 +833,7 @@ namespace DOL.GS
 			}
 		}
 
-		protected virtual bool CheckForResist(InventoryItem item, int resist)
+		protected virtual bool CheckForResist(DbInventoryItem item, int resist)
 		{
 			switch (resist)
 			{
@@ -860,7 +859,7 @@ namespace DOL.GS
 		}
 
 
-		protected virtual bool CheckForSkill(InventoryItem item, int skill)
+		protected virtual bool CheckForSkill(DbInventoryItem item, int skill)
 		{
 			if (skill > 0)
 			{
@@ -1059,7 +1058,7 @@ namespace DOL.GS
 		}
 
 
-		protected virtual bool CheckForBonus(InventoryItem item, int bonus)
+		protected virtual bool CheckForBonus(DbInventoryItem item, int bonus)
 		{
 			if (bonus > 0)
 			{
@@ -1153,7 +1152,7 @@ namespace DOL.GS
 			return false;
 		}
 
-		protected virtual bool CheckForDamageType(InventoryItem item, int damageType)
+		protected virtual bool CheckForDamageType(DbInventoryItem item, int damageType)
 		{
 			if (GlobalConstants.IsWeapon(item.Object_Type))
 			{
@@ -1174,7 +1173,7 @@ namespace DOL.GS
 		}
 
 
-		protected virtual bool CheckForProperty(InventoryItem item, int property)
+		protected virtual bool CheckForProperty(DbInventoryItem item, int property)
 		{
 			if (property > 0)
 			{

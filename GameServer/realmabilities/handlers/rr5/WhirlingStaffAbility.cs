@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class WhirlingStaffAbility : RR5RealmAbility
 	{
-		public WhirlingStaffAbility(DBAbility dba, int level) : base(dba, level) { }
+		public WhirlingStaffAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

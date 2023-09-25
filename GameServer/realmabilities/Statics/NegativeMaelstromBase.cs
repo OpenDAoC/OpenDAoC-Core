@@ -13,14 +13,14 @@ namespace DOL.GS.RealmAbilities.Statics
 		protected override string GetStaticName() {return "Negative Maelstrom";}
 		protected override ushort GetStaticModel() => 3738;
 		protected override ushort GetStaticEffect() {return 7027;}
-		private DBSpell dbs;
+		private DbSpell dbs;
 		private Spell   s;
 		private SpellLine sl;
 		int damage;		
 		public NegativeMaelstromBase(int damage) 
         {
 			this.damage = damage;
-			dbs = new DBSpell();
+			dbs = new DbSpell();
 			dbs.Name = GetStaticName();
 			dbs.Icon = GetStaticEffect();
 			dbs.ClientEffect = GetStaticEffect();

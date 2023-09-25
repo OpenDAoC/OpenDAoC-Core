@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
         public const double BONUS = 0.15; // 15% bonus
         public const int EFFECT = 1564;
 
-        public OverwhelmAbility(DBAbility dba, int level) : base(dba, level) { }
+        public OverwhelmAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action
@@ -63,7 +63,7 @@ namespace DOL.GS.RealmAbilities
 
         public override void AddEffectsInfo(IList<string> list)
         {
-            list.Add("a 15% increased chance to bypass their target’s block, parry, and evade defenses.");
+            list.Add("a 15% increased chance to bypass their targetï¿½s block, parry, and evade defenses.");
             list.Add("");
             list.Add("Target: Self");
             list.Add("Duration: 30 sec");

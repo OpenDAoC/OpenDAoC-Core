@@ -220,7 +220,7 @@ namespace DOL.GS
 					return;	
 				}
 
-				InventoryItem itemToRepair = (InventoryItem) m_partnerWindow.TradeItems[0];
+				DbInventoryItem itemToRepair = (DbInventoryItem) m_partnerWindow.TradeItems[0];
 				if(itemToRepair == null)
 				{
 					m_partnerWindow.m_repair = false;
@@ -274,7 +274,7 @@ namespace DOL.GS
 					return;
 				}
 
-				InventoryItem itemToCombine = (InventoryItem) m_partnerWindow.TradeItems[0];
+				DbInventoryItem itemToCombine = (DbInventoryItem) m_partnerWindow.TradeItems[0];
 				if(itemToCombine == null)
 				{
 					m_partnerWindow.m_combine = false;
@@ -288,7 +288,7 @@ namespace DOL.GS
                 AbstractCraftingSkill skill = null;
                 lock (m_owner.TradeWindow.Sync)
                 {
-                    foreach (InventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
+                    foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
                         if (i.Object_Type == (int)eObjectType.AlchemyTincture)
                         {
@@ -344,7 +344,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="itemForTrade">InventoryItem to add</param>
 		/// <returns>true if added</returns>
-		public bool AddItemToTrade(InventoryItem itemForTrade)
+		public bool AddItemToTrade(DbInventoryItem itemForTrade)
 		{
 			lock(Sync)
 			{
@@ -384,7 +384,7 @@ namespace DOL.GS
 		/// Removes an item from the tradewindow
 		/// </summary>
 		/// <param name="itemToRemove"></param>
-		public void RemoveItemToTrade(InventoryItem itemToRemove)
+		public void RemoveItemToTrade(DbInventoryItem itemToRemove)
 		{
 			if (itemToRemove == null)
 				return;
@@ -491,7 +491,7 @@ namespace DOL.GS
                     AbstractCraftingSkill skill = null;
                     lock (crafter.TradeWindow.Sync)
                     {
-                        foreach (InventoryItem i in (ArrayList)crafter.TradeWindow.TradeItems.Clone())
+                        foreach (DbInventoryItem i in (ArrayList)crafter.TradeWindow.TradeItems.Clone())
                         {
                             if (i.Object_Type == (int)eObjectType.AlchemyTincture)
                             {
@@ -520,7 +520,7 @@ namespace DOL.GS
 				else if(m_repair == true)
 				{
 					GamePlayer crafter = (m_recipiant == true ? m_owner : partner);
-					InventoryItem itemToRepair = (InventoryItem)(m_recipiant == true ? m_partnerWindow.TradeItems[0] : TradeItems[0]);
+					DbInventoryItem itemToRepair = (DbInventoryItem)(m_recipiant == true ? m_partnerWindow.TradeItems[0] : TradeItems[0]);
 					if(itemToRepair != null)
 					{
 						crafter.RepairItem(itemToRepair);
@@ -574,7 +574,7 @@ namespace DOL.GS
 
 					// remove all items first to make sure there is enough space
 					// if inventory is full but removed items count >= received count
-                    foreach (InventoryItem item in ownerTradeItems)
+                    foreach (DbInventoryItem item in ownerTradeItems)
                     {
                         lock (m_owner.Inventory)
                         {
@@ -590,7 +590,7 @@ namespace DOL.GS
 							}
                         }
                     }
-                    foreach (InventoryItem item in partnerTradeItems)
+                    foreach (DbInventoryItem item in partnerTradeItems)
                     {
                         lock (partner.Inventory)
                         {
@@ -607,7 +607,7 @@ namespace DOL.GS
                         }
                     }
 
-					foreach(InventoryItem item in ownerTradeItems)
+					foreach(DbInventoryItem item in ownerTradeItems)
 					{
 						if (m_owner.Guild != partner.Guild)
 						{
@@ -616,7 +616,7 @@ namespace DOL.GS
 
 						bool tradeSuccess = false;
 
-						InventoryItem itemtoadd = item;
+						DbInventoryItem itemtoadd = item;
 
 						// If PLayer is not Infiltrator (9), Shadowblade (23), Nightshade (49), remove Envenom bonus before add the item in the inventory
 						if (item.PoisonSpellID > 0 && !(partner.CharacterClass.ID == 9 || partner.CharacterClass.ID == 23 || partner.CharacterClass.ID == 49))
@@ -650,7 +650,7 @@ namespace DOL.GS
 						}
 					}
 
-					foreach(InventoryItem item in partnerTradeItems)
+					foreach(DbInventoryItem item in partnerTradeItems)
 					{
 						if (m_owner.Guild != partner.Guild)
 						{
@@ -659,7 +659,7 @@ namespace DOL.GS
 
 						bool tradeSuccess = false;
 
-						InventoryItem itemtoadd = item;
+						DbInventoryItem itemtoadd = item;
 
 						// If PLayer is not Infiltrator (9), Shadowblade (23), Nightshade (49), remove Envenom bonus before add the item in the inventory
 						if (item.PoisonSpellID > 0 && !(m_owner.CharacterClass.ID == 9 || m_owner.CharacterClass.ID == 23 || m_owner.CharacterClass.ID == 49))

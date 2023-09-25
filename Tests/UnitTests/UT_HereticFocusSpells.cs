@@ -104,7 +104,7 @@ namespace DOL.Tests.Unit.Gameserver
 
         private Spell NewHereticFocusDamageSpell(double initialDamage, int growthPercent, int growthCapPercent)
         {
-            var dbspell = new DBSpell();
+            var dbspell = new DbSpell();
             dbspell.LifeDrainReturn = growthPercent;
             dbspell.AmnesiaChance = growthCapPercent;
             dbspell.Target = "Enemy";

@@ -178,7 +178,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 string description = newZone.Description;
                 string screenDescription = description;
 
-                var translation = LanguageMgr.GetTranslation(client, newZone) as DBLanguageZone;
+                var translation = LanguageMgr.GetTranslation(client, newZone) as DbLanguageZone;
                 if (translation != null)
                 {
                     if (!string.IsNullOrEmpty(translation.Description))
@@ -287,7 +287,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							if (ServerProperties.Properties.BAN_HACKERS && false) // banning disabled until this technique is proven accurate
 							{
-								DBBannedAccount b = new DBBannedAccount();
+								DbBans b = new DbBans();
 								b.Author = "SERVER";
 								b.Ip = client.TcpEndpointAddress;
 								b.Account = client.Account.Name;
@@ -456,7 +456,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								if (ServerProperties.Properties.BAN_HACKERS)
 								{
-									DBBannedAccount b = new DBBannedAccount();
+									DbBans b = new DbBans();
 									b.Author = "SERVER";
 									b.Ip = client.TcpEndpointAddress;
 									b.Account = client.Account.Name;
@@ -528,7 +528,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					if (ServerProperties.Properties.BAN_HACKERS)
 					{
-						DBBannedAccount b = new DBBannedAccount();
+						DbBans b = new DbBans();
 						b.Author = "SERVER";
 						b.Ip = client.TcpEndpointAddress;
 						b.Account = client.Account.Name;
@@ -892,7 +892,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				string description = newZone.Description;
 				string screenDescription = description;
 
-				var translation = LanguageMgr.GetTranslation(client, newZone) as DBLanguageZone;
+				var translation = LanguageMgr.GetTranslation(client, newZone) as DbLanguageZone;
 				if (translation != null)
 				{
 					if (!string.IsNullOrEmpty(translation.Description))
@@ -995,7 +995,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							if (ServerProperties.Properties.BAN_HACKERS && false) // banning disabled until this technique is proven accurate
 							{
-								DBBannedAccount b = new DBBannedAccount();
+								DbBans b = new DbBans();
 								b.Author = "SERVER";
 								b.Ip = client.TcpEndpointAddress;
 								b.Account = client.Account.Name;
@@ -1134,7 +1134,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					if (ServerProperties.Properties.BAN_HACKERS)
 					{
-						DBBannedAccount b = new DBBannedAccount();
+						DbBans b = new DbBans();
 						b.Author = "SERVER";
 						b.Ip = client.TcpEndpointAddress;
 						b.Account = client.Account.Name;

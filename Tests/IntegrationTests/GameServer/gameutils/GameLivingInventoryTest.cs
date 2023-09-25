@@ -40,7 +40,7 @@ namespace DOL.Tests.Integration.Server
 		{
 			GameLivingInventory gameLivingInventory = new TestInventory();
 
-			ItemTemplate template = new ItemTemplate();
+			DbItemTemplate template = new DbItemTemplate();
 			Random rand = new Random();
 			template.Id_nb = "blankItem" + rand.Next().ToString();
 			template.Name = "a blank item";
@@ -66,7 +66,7 @@ namespace DOL.Tests.Integration.Server
 		
 		public void PrintInventory(GameLivingInventory gameLivingInventory)
 		{
-			foreach(InventoryItem myitem in gameLivingInventory.AllItems)
+			foreach(DbInventoryItem myitem in gameLivingInventory.AllItems)
 			{
 				Console.WriteLine("item ["+ myitem.SlotPosition +"] : " + myitem.Name + "(" +myitem.Count +")");
 			}

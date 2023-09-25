@@ -34,7 +34,7 @@ namespace DOL.Tests.Integration.Database
 			Database = DatabaseSetUp.Database;
 		}
 		
-		protected SQLObjectDatabase Database { get; set; }
+		protected SqlObjectDatabase Database { get; set; }
 		
 		#region Test Add
 		/// <summary>
@@ -713,7 +713,7 @@ namespace DOL.Tests.Integration.Database
 		{
 			Database.RegisterDataObject(typeof(TestTablePrimaryKey));
 			
-			var obj = new TestTablePrimaryKey { PrimaryKey = DOL.Database.UniqueID.IDGenerator.GenerateID(), TestField = "Test For Single Find Object By Primary Key" };
+			var obj = new TestTablePrimaryKey { PrimaryKey = DOL.Database.UniqueID.IdGenerator.GenerateID(), TestField = "Test For Single Find Object By Primary Key" };
 			
 			var inserted = Database.AddObject(obj);
 			
@@ -740,7 +740,7 @@ namespace DOL.Tests.Integration.Database
 		{
 			Database.RegisterDataObject(typeof(TestTablePrimaryKey));
 			
-			var objs = Enumerable.Range(0, 10).Select(i => new TestTablePrimaryKey { PrimaryKey = DOL.Database.UniqueID.IDGenerator.GenerateID(),
+			var objs = Enumerable.Range(0, 10).Select(i => new TestTablePrimaryKey { PrimaryKey = DOL.Database.UniqueID.IdGenerator.GenerateID(),
 			                                          	TestField = string.Format("Test For Multiple Find Objects By Key #{0}", i) }).ToArray();
 			
 			var inserted = Database.AddObject(objs);

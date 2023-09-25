@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_PurgeAbility : PurgeAbility
     {
-        public AtlasOF_PurgeAbility(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_PurgeAbility(DbAbility dba, int level) : base(dba, level) { }
 
         public override void Execute(GameLiving living)
         {
@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_PurgeAbilityReduced : AtlasOF_PurgeAbility
     {
-        public AtlasOF_PurgeAbilityReduced(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_PurgeAbilityReduced(DbAbility dba, int level) : base(dba, level) { }
         public override int CostForUpgrade(int level) { return 4; }
     }
 
@@ -43,7 +43,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_GroupPurge : AtlasOF_PurgeAbility
     {
-        public AtlasOF_GroupPurge(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_GroupPurge(DbAbility dba, int level) : base(dba, level) { }
 
         public override int MaxLevel { get { return 1; } }
         public override int GetReUseDelay(int level) { return 1800; } // 30 min

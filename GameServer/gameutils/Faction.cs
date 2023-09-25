@@ -51,7 +51,7 @@ namespace DOL.GS
             EnemyFactions.Remove(faction);
         }
 
-        public void LoadFromDatabase(DBFaction dbFaction)
+        public void LoadFromDatabase(DbFaction dbFaction)
         {
             Name = dbFaction.Name;
             Id = dbFaction.ID;
@@ -71,11 +71,11 @@ namespace DOL.GS
 
         private void SaveFactionAggroToPlayer(GamePlayer player)
         {
-            DBFactionAggroLevel dbFactionAggroLevel = DOLDB<DBFactionAggroLevel>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.ObjectId).And(DB.Column("FactionID").IsEqualTo(Id)));
+            DbFactionAggroLevel dbFactionAggroLevel = DOLDB<DbFactionAggroLevel>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.ObjectId).And(DB.Column("FactionID").IsEqualTo(Id)));
 
             if (dbFactionAggroLevel == null)
             {
-                dbFactionAggroLevel = new DBFactionAggroLevel
+                dbFactionAggroLevel = new DbFactionAggroLevel
                 {
                     AggroLevel = AggroToPlayers[player.ObjectId],
                     CharacterID = player.ObjectId,

@@ -58,17 +58,17 @@ namespace DOL.GS.Commands
 			}
 
 			string message = string.Join(" ", args, 1, args.Length - 1);
-			BugReport report = new BugReport();
+			DbBugReport report = new DbBugReport();
 
 			if (ServerProperties.Properties.MAX_BUGREPORT_QUEUE > 0)
 			{
 				//Andraste
-				var reports = GameServer.Database.SelectAllObjects<BugReport>();
+				var reports = GameServer.Database.SelectAllObjects<DbBugReport>();
 				bool found = false; int i = 0;
 				for (i = 0; i < ServerProperties.Properties.MAX_BUGREPORT_QUEUE; i++)
 				{
 					found = false;
-					foreach (BugReport rep in reports) if (rep.ID == i) found = true;
+					foreach (DbBugReport rep in reports) if (rep.ID == i) found = true;
 					if (!found) break;
 				}
 				if (found)
@@ -82,7 +82,7 @@ namespace DOL.GS.Commands
 			else
 			{
 				// This depends on bugs never being deleted from the report table!
-				report.ID = GameServer.Database.GetObjectCount<BugReport>() + 1;
+				report.ID = GameServer.Database.GetObjectCount<DbBugReport>() + 1;
 			}
 			
 			report.Message = message;

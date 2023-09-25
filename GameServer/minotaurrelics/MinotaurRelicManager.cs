@@ -62,8 +62,8 @@ namespace DOL.GS
 
             try
             {
-                var relics = GameServer.Database.SelectAllObjects<DBMinotaurRelic>();
-                foreach (DBMinotaurRelic dbrelic in relics)
+                var relics = GameServer.Database.SelectAllObjects<DbMinotaurRelic>();
+                foreach (DbMinotaurRelic dbrelic in relics)
                 {
                     if (WorldMgr.GetRegion((ushort)dbrelic.SpawnRegion) == null)
                     {

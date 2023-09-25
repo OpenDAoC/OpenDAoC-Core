@@ -32,7 +32,7 @@ namespace DOL.GS.RealmAbilities
         public const int DURATION = 30 * 1000;
         public const int SECOND_DURATION = 15 * 1000;
 
-        public SoldiersCitadelAbility(DBAbility dba, int level) : base(dba, level) { }
+        public SoldiersCitadelAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action

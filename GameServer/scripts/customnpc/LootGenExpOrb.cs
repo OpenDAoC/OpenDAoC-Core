@@ -31,7 +31,7 @@ namespace DOL.GS
     {
 
         private static string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
-        private static ItemTemplate m_token_many = GameServer.Database.FindObjectByKey<ItemTemplate>(_currencyID);
+        private static DbItemTemplate m_token_many = GameServer.Database.FindObjectByKey<DbItemTemplate>(_currencyID);
 
         /// <summary>
         /// Generate loot for given mob

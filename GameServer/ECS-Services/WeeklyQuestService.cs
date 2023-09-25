@@ -13,9 +13,9 @@ namespace DOL.GS
 
         static WeeklyQuestService()
         {
-            IList<TaskRefreshIntervals> loadQuestsProp = GameServer.Database.SelectAllObjects<TaskRefreshIntervals>();
+            IList<DbTaskRefreshInterval> loadQuestsProp = GameServer.Database.SelectAllObjects<DbTaskRefreshInterval>();
 
-            foreach (TaskRefreshIntervals interval in loadQuestsProp)
+            foreach (DbTaskRefreshInterval interval in loadQuestsProp)
             {
                 if (interval.RolloverInterval.Equals(WEEKLY_INTERVAL_KEY))
                     lastWeeklyRollover = interval.LastRollover;
@@ -32,7 +32,7 @@ namespace DOL.GS
             if (lastWeeklyRollover.Date.DayOfYear + 7 < DateTime.Now.Date.DayOfYear || lastWeeklyRollover.Year < DateTime.Now.Year)
             {
                 lastWeeklyRollover = DateTime.Now;
-                TaskRefreshIntervals loadQuestsProp = GameServer.Database.SelectObject<TaskRefreshIntervals>(DB.Column("RolloverInterval").IsEqualTo(WEEKLY_INTERVAL_KEY));
+                DbTaskRefreshInterval loadQuestsProp = GameServer.Database.SelectObject<DbTaskRefreshInterval>(DB.Column("RolloverInterval").IsEqualTo(WEEKLY_INTERVAL_KEY));
 
                 // Update the one we've got, or make a new one.
                 if (loadQuestsProp != null)
@@ -42,7 +42,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    TaskRefreshIntervals newTime = new TaskRefreshIntervals();
+                    DbTaskRefreshInterval newTime = new DbTaskRefreshInterval();
                     newTime.LastRollover = DateTime.Now;
                     newTime.RolloverInterval = WEEKLY_INTERVAL_KEY;
                     GameServer.Database.AddObject(newTime);
@@ -60,9 +60,9 @@ namespace DOL.GS
                     client.Player?.RemoveFinishedQuests(x => x is Quests.WeeklyQuest);
                 }
 
-                IList<DBQuest> existingWeeklyQuests = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Name").IsLike("%WeeklyQuest%"));
+                IList<DbQuest> existingWeeklyQuests = GameServer.Database.SelectObjects<DbQuest>(DB.Column("Name").IsLike("%WeeklyQuest%"));
 
-                foreach (DBQuest existingWeeklyQuest in existingWeeklyQuests)
+                foreach (DbQuest existingWeeklyQuest in existingWeeklyQuests)
                 {
                     if (existingWeeklyQuest.Step <= -1)
                         GameServer.Database.DeleteObject(existingWeeklyQuest);

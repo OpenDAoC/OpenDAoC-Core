@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class SoulQuenchAbility : RR5RealmAbility
 	{
-		public SoulQuenchAbility(DBAbility dba, int level) : base(dba, level) { }
+		public SoulQuenchAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

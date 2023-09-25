@@ -198,7 +198,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			try
 			{
-				Account playerAccount;
+				DbAccount playerAccount;
 				// Make sure that client won't quit
 				lock (client)
 				{
@@ -264,7 +264,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					else
 					{
-						playerAccount = GameServer.Database.FindObjectByKey<Account>(userName);
+						playerAccount = GameServer.Database.FindObjectByKey<DbAccount>(userName);
 
 						client.PingTime = GameLoop.GetCurrentTime();
 
@@ -288,9 +288,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								// check for account bombing
 								TimeSpan ts;
-								var allAccByIp = DOLDB<Account>.SelectObjects(DB.Column("LastLoginIP").IsEqualTo(ipAddress));
+								var allAccByIp = DOLDB<DbAccount>.SelectObjects(DB.Column("LastLoginIP").IsEqualTo(ipAddress));
 								int totalacc = 0;
-								foreach (Account ac in allAccByIp)
+								foreach (DbAccount ac in allAccByIp)
 								{
 									ts = DateTime.Now - ac.CreationDate;
 									if (ts.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION_SAMEIP && totalacc > 1)
@@ -326,7 +326,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								m_lastAccountCreateTime = DateTime.Now;
 
-								playerAccount = new Account();
+								playerAccount = new DbAccount();
 								playerAccount.Name = userName;
 								playerAccount.Password = CryptPassword(password);
 								playerAccount.Realm = 0;

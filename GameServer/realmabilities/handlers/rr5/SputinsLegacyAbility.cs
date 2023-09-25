@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class SputinsLegacyAbility : RR5RealmAbility
 	{
-		public SputinsLegacyAbility(DBAbility dba, int level) : base(dba, level) { }
+		public SputinsLegacyAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

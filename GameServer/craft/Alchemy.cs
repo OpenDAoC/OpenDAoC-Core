@@ -65,12 +65,12 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="item"></param>
-		public override bool IsAllowedToCombine(GamePlayer player, InventoryItem item)
+		public override bool IsAllowedToCombine(GamePlayer player, DbInventoryItem item)
 		{
 			if (!base.IsAllowedToCombine(player, item)) 
                 return false;
 			
-			if (((InventoryItem)player.TradeWindow.TradeItems[0]).Object_Type != 
+			if (((DbInventoryItem)player.TradeWindow.TradeItems[0]).Object_Type != 
                 (int)eObjectType.AlchemyTincture)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, 
@@ -111,9 +111,9 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		protected override void ApplyMagicalEffect(GamePlayer player, InventoryItem item)
+		protected override void ApplyMagicalEffect(GamePlayer player, DbInventoryItem item)
 		{
-			InventoryItem tincture = (InventoryItem)player.TradeWindow.TradeItems[0];
+			DbInventoryItem tincture = (DbInventoryItem)player.TradeWindow.TradeItems[0];
 
             // One item each side of the trade window.
 
@@ -139,10 +139,10 @@ namespace DOL.GS
 			player.Inventory.RemoveCountFromStack(tincture, 1);
 			InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, tincture.Template);
 
-			if (item.Template is ItemUnique)
+			if (item.Template is DbItemUnique)
 			{
 				GameServer.Database.SaveObject(item);
-				GameServer.Database.SaveObject(item.Template as ItemUnique);
+				GameServer.Database.SaveObject(item.Template as DbItemUnique);
 			}
 			else
 			{
@@ -158,7 +158,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public int GetItemMaxCharges(InventoryItem item)
+		public int GetItemMaxCharges(DbInventoryItem item)
 		{
 			if(item.Quality < 94)
 			{

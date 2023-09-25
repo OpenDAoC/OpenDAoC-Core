@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class AllureOfDeathAbility : RR5RealmAbility
 	{
-		public AllureOfDeathAbility(DBAbility dba, int level) : base(dba, level) { }
+		public AllureOfDeathAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

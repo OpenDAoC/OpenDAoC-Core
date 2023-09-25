@@ -45,7 +45,7 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 		}
 
-		public TeamBuildingAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public TeamBuildingAlb(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

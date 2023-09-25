@@ -709,7 +709,7 @@ namespace DOL.GS
 			return eRealm.None;
 		}
 
-		public static eRealm[] GetItemTemplateRealm(ItemTemplate item)
+		public static eRealm[] GetItemTemplateRealm(DbItemTemplate item)
 		{
 			switch ((eObjectType)item.Object_Type)
 			{

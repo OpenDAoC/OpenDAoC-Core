@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class XSecondWindAbility : TimedRealmAbility
 	{
-		public XSecondWindAbility(DBAbility dba, int level) : base(dba, level) { }
+		public XSecondWindAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

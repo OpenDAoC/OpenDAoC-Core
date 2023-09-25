@@ -14,8 +14,8 @@ namespace DOL.GS
 
         protected AttackComponent _attackComponent;
         protected AttackData _lastAttackData;
-        protected InventoryItem _weapon;
-        protected InventoryItem _leftWeapon;
+        protected DbInventoryItem _weapon;
+        protected DbInventoryItem _leftWeapon;
         protected Style _combatStyle;
         protected StyleComponent _styleComponent;
         protected GameObject _target;

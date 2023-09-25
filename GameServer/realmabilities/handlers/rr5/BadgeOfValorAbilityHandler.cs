@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class BadgeOfValorAbilityHandler : RR5RealmAbility
     {
-		public BadgeOfValorAbilityHandler(DBAbility dba, int level) : base(dba, level) { }
+		public BadgeOfValorAbilityHandler(DbAbility dba, int level) : base(dba, level) { }
 
         int m_reuseTimer = 900;
 

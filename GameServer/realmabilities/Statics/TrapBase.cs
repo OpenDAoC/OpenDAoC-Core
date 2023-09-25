@@ -13,7 +13,7 @@ namespace DOL.GS.RealmAbilities.Statics
 		protected override string GetStaticName() {return "Rune Of Decimation";}
 		protected override ushort GetStaticModel() {return 1;}
 		protected override ushort GetStaticEffect() {return 7027;}
-		private DBSpell dbs;
+		private DbSpell dbs;
 		private Spell   s;
 		private SpellLine sl;
 		int damage;		

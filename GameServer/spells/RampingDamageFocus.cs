@@ -179,7 +179,7 @@ namespace DOL.GS.Spells
 
 		private ISpellHandler CreateSnare()
 		{
-			DBSpell dbSpell = new DBSpell();
+			DbSpell dbSpell = new DbSpell();
 			dbSpell.ClientEffect = Spell.ClientEffect;
 			dbSpell.Icon = Spell.Icon;
 			dbSpell.Type = eSpellType.SpeedDecrease.ToString();

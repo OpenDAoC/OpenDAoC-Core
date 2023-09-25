@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 
     public class AtlasOF_BatteryOfLife : TimedRealmAbility
     {
-        public AtlasOF_BatteryOfLife(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_BatteryOfLife(DbAbility dba, int level) : base(dba, level) { }
         
         int m_duration = 0; // 30s
 
@@ -31,7 +31,7 @@ namespace DOL.GS.RealmAbilities
         
         private SpellHandler CreateSpell(GameLiving owner)
         {
-            DBSpell tmpSpell = new DBSpell();
+            DbSpell tmpSpell = new DbSpell();
             tmpSpell.Name = "Battery Of Life";
             tmpSpell.Icon = 4274;
             tmpSpell.ClientEffect = 7009;

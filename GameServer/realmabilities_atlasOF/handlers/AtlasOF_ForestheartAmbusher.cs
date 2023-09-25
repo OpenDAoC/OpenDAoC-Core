@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_ForestheartAmbusher : TimedRealmAbility
     {
-        public AtlasOF_ForestheartAmbusher(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_ForestheartAmbusher(DbAbility dba, int level) : base(dba, level) { }
 
         public const int duration = 180000; // 180 seconds - 3 minutes
 

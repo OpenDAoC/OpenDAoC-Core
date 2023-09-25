@@ -33,7 +33,7 @@ namespace DOL.GS.Behaviour.Triggers
     /// Additional there are two variables to add the needed parameters for the triggertype (Item to give for GiveItem, NPC to interact for Interact, etc...). To fire a QuestAction at least one of the added triggers must be fulfilled. 
     /// </summary>
     [TriggerAttribute(TriggerType=eTriggerType.ItemUsed,DefaultValueI=eDefaultValueConstants.NPC)]
-    public class ItemUsedTrigger : AbstractTrigger<Unused,ItemTemplate>
+    public class ItemUsedTrigger : AbstractTrigger<Unused,DbItemTemplate>
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -54,7 +54,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="defaultNPC"></param>
         /// <param name="notifyHandler"></param>
         /// <param name="i"></param>
-        public ItemUsedTrigger(GameNPC defaultNPC, DOLEventHandler notifyHandler, ItemTemplate i)
+        public ItemUsedTrigger(GameNPC defaultNPC, DOLEventHandler notifyHandler, DbItemTemplate i)
             : this(defaultNPC,notifyHandler, (object)null,(object) i)
         { }
 
@@ -74,7 +74,7 @@ namespace DOL.GS.Behaviour.Triggers
             if (e == GamePlayerEvent.UseSlot)
             {
                 UseSlotEventArgs uArgs = (UseSlotEventArgs)args;
-                InventoryItem item = player.Inventory.GetItem((eInventorySlot)uArgs.Slot) as InventoryItem;
+                DbInventoryItem item = player.Inventory.GetItem((eInventorySlot)uArgs.Slot) as DbInventoryItem;
 				if (item != null && I != null)
 					result = I.Name == item.Name;
             }

@@ -6,7 +6,7 @@ namespace DOL.GS.RealmAbilities
 
     public class AtlasOF_SoldiersBarricade : SoldiersBarricadeAbility
     {
-        public AtlasOF_SoldiersBarricade(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_SoldiersBarricade(DbAbility dba, int level) : base(dba, level) { }
 
         public override int MaxLevel { get { return 1; } }
         public override int CostForUpgrade(int level) { return 10; }

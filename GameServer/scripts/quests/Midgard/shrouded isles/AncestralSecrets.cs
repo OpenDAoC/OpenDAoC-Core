@@ -44,9 +44,9 @@ namespace DOL.GS.Quests.Hibernia
 		
 		private static AbstractArea keeperArea;
 
-		private static ItemTemplate beaded_resisting_stone;
-		private static ItemTemplate stone_pendant;
-		private static ItemTemplate quest_pendant;
+		private static DbItemTemplate beaded_resisting_stone;
+		private static DbItemTemplate stone_pendant;
+		private static DbItemTemplate quest_pendant;
 		
 		// Constructors
 		public AncestralSecrets() : base()
@@ -61,7 +61,7 @@ namespace DOL.GS.Quests.Hibernia
 		{
 		}
 
-		public AncestralSecrets(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public AncestralSecrets(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -208,14 +208,14 @@ namespace DOL.GS.Quests.Hibernia
 			#endregion
 
 			#region defineItems
-			beaded_resisting_stone = GameServer.Database.FindObjectByKey<ItemTemplate>("Beaded Resisting Stones");
+			beaded_resisting_stone = GameServer.Database.FindObjectByKey<DbItemTemplate>("Beaded Resisting Stones");
 
-			quest_pendant = GameServer.Database.FindObjectByKey<ItemTemplate>("quest_pendant");
+			quest_pendant = GameServer.Database.FindObjectByKey<DbItemTemplate>("quest_pendant");
 	        if (quest_pendant == null)
 	        {
 		        if (log.IsWarnEnabled)
 			        log.Warn("Could not find Lightly Decorated Pendant, creating it ...");
-		        quest_pendant = new ItemTemplate();
+		        quest_pendant = new DbItemTemplate();
 		        quest_pendant.Id_nb = "quest_pendant";
 		        quest_pendant.Name = "Lightly Decorated Pendant";
 		        quest_pendant.Level = 50;
@@ -236,12 +236,12 @@ namespace DOL.GS.Quests.Hibernia
 		        if (SAVE_INTO_DATABASE) GameServer.Database.AddObject(quest_pendant);
 	        }
 	        
-	        stone_pendant = GameServer.Database.FindObjectByKey<ItemTemplate>("stone_pendant");
+	        stone_pendant = GameServer.Database.FindObjectByKey<DbItemTemplate>("stone_pendant");
 	        if (stone_pendant == null)
 	        {
 		        if (log.IsWarnEnabled)
 			        log.Warn("Could not find Stone Pendant, creating it ...");
-		        stone_pendant = new ItemTemplate();
+		        stone_pendant = new DbItemTemplate();
 		        stone_pendant.Id_nb = "stone_pendant";
 		        stone_pendant.Name = "Stone Pendant";
 		        stone_pendant.Level = 50;

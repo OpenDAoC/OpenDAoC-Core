@@ -5,11 +5,11 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_StyleTundra : StyleRealmAbility
     {
-        public AtlasOF_StyleTundra(DBAbility ability, int level) : base(ability, level) { }
+        public AtlasOF_StyleTundra(DbAbility ability, int level) : base(ability, level) { }
 
         protected override Style CreateStyle()
         {
-            DBStyle tmpStyle = new()
+            DbStyle tmpStyle = new()
             {
                 Name = "Tundra",
                 GrowthRate = 1.34,

@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class RestorativeMindAbility : RR5RealmAbility
 	{
-		public RestorativeMindAbility(DBAbility dba, int level) : base(dba, level) { }
+		public RestorativeMindAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

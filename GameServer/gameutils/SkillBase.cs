@@ -46,7 +46,7 @@ namespace DOL.GS
 		protected static readonly Dictionary<string, List<Tuple<string, byte, int, int>>> m_specsAbilities = new();
 
 		// Ability Cache Dict KeyName => DBAbility Object (to instanciate)
-		protected static readonly Dictionary<string, DBAbility> m_abilityIndex = new();
+		protected static readonly Dictionary<string, DbAbility> m_abilityIndex = new();
 
 		// class id => realm abilitykey list
 		protected static readonly Dictionary<int, IList<string>> m_classRealmAbilities = new();
@@ -121,7 +121,7 @@ namespace DOL.GS
 				if (log.IsInfoEnabled)
 					log.Info("Loading spells...");
 
-				IList<DBSpell> spelldb = GameServer.Database.SelectAllObjects<DBSpell>();
+				IList<DbSpell> spelldb = GameServer.Database.SelectAllObjects<DbSpell>();
 
 				if (spelldb != null)
 				{
@@ -130,7 +130,7 @@ namespace DOL.GS
 					m_spellIndex.Clear();
 					m_spellToolTipIndex.Clear();
 
-					foreach (DBSpell spell in spelldb)
+					foreach (DbSpell spell in spelldb)
 					{
 						try
 						{
@@ -170,14 +170,14 @@ namespace DOL.GS
 					log.Info("Loading Spell Lines...");
 
 				// load all spell lines
-				IList<DBSpellLine> dbo = GameServer.Database.SelectAllObjects<DBSpellLine>();
+				IList<DbSpellLine> dbo = GameServer.Database.SelectAllObjects<DbSpellLine>();
 
 				if (dbo != null)
 				{
 					// clean cache
 					m_spellLineIndex.Clear();
 
-					foreach(DBSpellLine line in dbo)
+					foreach(DbSpellLine line in dbo)
 					{
 						try
 						{
@@ -200,7 +200,7 @@ namespace DOL.GS
 				if (log.IsInfoEnabled)
 					log.Info("Loading Spell Lines X Spells Relation...");
 
-				IList<DBLineXSpell> dbox = GameServer.Database.SelectAllObjects<DBLineXSpell>();
+				IList<DbLineXSpell> dbox = GameServer.Database.SelectAllObjects<DbLineXSpell>();
 
 				int count = 0;
 
@@ -209,7 +209,7 @@ namespace DOL.GS
 					// Clean cache
 					m_lineSpells.Clear();
 
-					foreach (DBLineXSpell lxs in dbox)
+					foreach (DbLineXSpell lxs in dbox)
 					{
 						try
 						{
@@ -262,14 +262,14 @@ namespace DOL.GS
 				if (log.IsInfoEnabled)
 					log.Info("Reloading DB spells...");
 
-				IList<DBSpell> spelldb = GameServer.Database.SelectAllObjects<DBSpell>();
+				IList<DbSpell> spelldb = GameServer.Database.SelectAllObjects<DbSpell>();
 
 				if (spelldb != null)
 				{
 
 					int count = 0;
 
-					foreach (DBSpell spell in spelldb)
+					foreach (DbSpell spell in spelldb)
 					{
 						if (m_spellIndex.ContainsKey(spell.SpellID) == false)
 						{
@@ -326,7 +326,7 @@ namespace DOL.GS
 				foreach (string lineName in m_spellLineIndex.Keys)
 				{
 					// Get SpellLine X Spell relation
-					var spells = DOLDB<DBLineXSpell>.SelectObjects(DB.Column("LineName").IsEqualTo(lineName));
+					var spells = DOLDB<DbLineXSpell>.SelectObjects(DB.Column("LineName").IsEqualTo(lineName));
 
 					// Load them if any records.
 					if (spells != null)
@@ -334,7 +334,7 @@ namespace DOL.GS
 						if (!m_lineSpells.ContainsKey(lineName))
 							m_lineSpells.Add(lineName, new List<Spell>());
 
-						foreach (DBLineXSpell lxs in spells)
+						foreach (DbLineXSpell lxs in spells)
 						{
 							try
 							{
@@ -397,14 +397,14 @@ namespace DOL.GS
 				if (log.IsInfoEnabled)
 					log.Info("Loading Abilities...");
 
-				IList<DBAbility> abilities = GameServer.Database.SelectAllObjects<DBAbility>();
+				IList<DbAbility> abilities = GameServer.Database.SelectAllObjects<DbAbility>();
 
 				if (abilities != null)
 				{
 					// Clean Cache
 					m_abilityIndex.Clear();
 
-					foreach (DBAbility dba in abilities)
+					foreach (DbAbility dba in abilities)
 					{
 						try
 						{
@@ -451,18 +451,18 @@ namespace DOL.GS
 				if (log.IsInfoEnabled)
 					log.Info("Loading class to realm ability associations...");
 
-				IList<ClassXRealmAbility> classxra = GameServer.Database.SelectAllObjects<ClassXRealmAbility>();
+				IList<DbClassXRealmAbility> classxra = GameServer.Database.SelectAllObjects<DbClassXRealmAbility>();
 
 				if (classxra != null)
 				{
-					foreach (ClassXRealmAbility cxra in classxra)
+					foreach (DbClassXRealmAbility cxra in classxra)
 					{
 						if (!m_classRealmAbilities.ContainsKey(cxra.CharClass))
 							m_classRealmAbilities.Add(cxra.CharClass, new List<string>());
 
 						try
 						{
-							DBAbility dba = m_abilityIndex[cxra.AbilityKey];
+							DbAbility dba = m_abilityIndex[cxra.AbilityKey];
 
 							if (!m_classRealmAbilities[cxra.CharClass].Contains(dba.KeyName))
 								m_classRealmAbilities[cxra.CharClass].Add(dba.KeyName);
@@ -498,7 +498,7 @@ namespace DOL.GS
 			m_syncLockUpdates.EnterWriteLock();
 			try
 			{
-				IList<DBSpecialization> specs = GameServer.Database.SelectAllObjects<DBSpecialization>();
+				IList<DbSpecialization> specs = GameServer.Database.SelectAllObjects<DbSpecialization>();
 
 				int count = 0;
 
@@ -519,7 +519,7 @@ namespace DOL.GS
 					// Clear Style ID Cache (Utils...)
 					m_styleIndex.Clear();
 
-					foreach (DBSpecialization spec in specs)
+					foreach (DbSpecialization spec in specs)
 					{
 						StringBuilder str = new("Specialization ");
 						str.AppendFormat("{0} - ", spec.KeyName);
@@ -549,7 +549,7 @@ namespace DOL.GS
 							if (!m_specsAbilities.ContainsKey(spec.KeyName))
 								m_specsAbilities.Add(spec.KeyName, new List<Tuple<string, byte, int, int>>());
 
-							foreach (DBSpecXAbility specx in spec.AbilityConstraints)
+							foreach (DbSpecXAbility specx in spec.AbilityConstraints)
 							{
 
 								try
@@ -574,7 +574,7 @@ namespace DOL.GS
 						count = 0;
 						if (spec.SpellLines != null)
 						{
-							foreach (DBSpellLine line in spec.SpellLines)
+							foreach (DbSpellLine line in spec.SpellLines)
 							{
 								if (!m_specsSpellLines.ContainsKey(spec.KeyName))
 									m_specsSpellLines.Add(spec.KeyName, new List<Tuple<SpellLine, int>>());
@@ -598,7 +598,7 @@ namespace DOL.GS
 						count = 0;
 						if (spec.Styles != null)
 						{
-							foreach (DBStyle specStyle in spec.Styles)
+							foreach (DbStyle specStyle in spec.Styles)
 							{
 								// Update Style Career
 								if (!m_specsStyles.ContainsKey(spec.KeyName))
@@ -633,7 +633,7 @@ namespace DOL.GS
 								// Load Procs.
 								if (specStyle.AttachedProcs != null)
 								{
-									foreach (DBStyleXSpell styleProc in specStyle.AttachedProcs)
+									foreach (DbStyleXSpell styleProc in specStyle.AttachedProcs)
 									{
 										if (m_spellIndex.TryGetValue(styleProc.SpellID, out Spell spell))
 											newStyle.Procs.Add((spell, styleProc.ClassID, styleProc.Chance));
@@ -694,7 +694,7 @@ namespace DOL.GS
 					log.Info("Loading Class Specialization's Career...");
 
 				//Retrieve from DB
-				IList<ClassXSpecialization> dbo = GameServer.Database.SelectAllObjects<ClassXSpecialization>();
+				IList<DbClassXSpecialization> dbo = GameServer.Database.SelectAllObjects<DbClassXSpecialization>();
 				Dictionary<int, StringBuilder> summary = new();
 
 				if (dbo != null)
@@ -702,7 +702,7 @@ namespace DOL.GS
 					// clear
 					m_specsByClass.Clear();
 
-					foreach (ClassXSpecialization career in dbo)
+					foreach (DbClassXSpecialization career in dbo)
 					{
 						if (!m_specsByClass.ContainsKey(career.ClassID))
 						{
@@ -1377,11 +1377,11 @@ namespace DOL.GS
 			try
 			{
 				// http://camelot.allakhazam.com/Start_Stats.html
-				IList<Race> races;
+				IList<DbRace> races;
 
 				try
 				{
-					races = GameServer.Database.SelectAllObjects<Race>();
+					races = GameServer.Database.SelectAllObjects<DbRace>();
 				}
 				catch
 				{
@@ -1394,7 +1394,7 @@ namespace DOL.GS
 
 					m_raceResists.Clear();
 
-					foreach (Race race in races)
+					foreach (DbRace race in races)
 					{
 						m_raceResists.Add(race.ID, new int[10]);
 						m_raceResists[race.ID][0] = race.ResistBody;
@@ -1914,7 +1914,7 @@ namespace DOL.GS
 		/// <param name="armor"></param>
 		/// <param name="damageType"></param>
 		/// <returns>resist value</returns>
-		public static int GetArmorResist(InventoryItem armor, eDamageType damageType)
+		public static int GetArmorResist(DbInventoryItem armor, eDamageType damageType)
 		{
 			if (armor == null)
 				return 0;
@@ -2103,7 +2103,7 @@ namespace DOL.GS
 		/// After adding all styles call SortStyles to sort the list by level
 		/// </summary>
 		/// <param name="style"></param>
-		public static void AddScriptedStyle(Specialization spec, DBStyle style)
+		public static void AddScriptedStyle(Specialization spec, DbStyle style)
 		{
 			m_syncLockUpdates.EnterWriteLock();
 
@@ -2127,7 +2127,7 @@ namespace DOL.GS
 
 				if (style.AttachedProcs != null)
 				{
-					foreach (DBStyleXSpell styleProc in style.AttachedProcs)
+					foreach (DbStyleXSpell styleProc in style.AttachedProcs)
 					{
 						if (m_spellIndex.TryGetValue(styleProc.SpellID, out Spell spell))
 							st.Procs.Add((spell, styleProc.ClassID, styleProc.Chance));
@@ -2187,7 +2187,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static List<RealmAbility> GetClassRealmAbilities(int classID)
 		{
-			List<DBAbility> ras = new();
+			List<DbAbility> ras = new();
 			m_syncLockUpdates.EnterReadLock();
 			try
 			{
@@ -2292,7 +2292,7 @@ namespace DOL.GS
 		public static Ability GetAbility(string keyname, int level)
 		{
 			m_syncLockUpdates.EnterReadLock();
-			DBAbility dbab = null;
+			DbAbility dbab = null;
 			try
 			{
 				if (m_abilityIndex.ContainsKey(keyname))
@@ -2355,7 +2355,7 @@ namespace DOL.GS
 			m_syncLockUpdates.EnterWriteLock();
 			try
 			{
-				var dbSpell = DOLDB<DBSpell>.SelectObject(DB.Column("SpellID").IsEqualTo(spellID));
+				var dbSpell = DOLDB<DbSpell>.SelectObject(DB.Column("SpellID").IsEqualTo(spellID));
 
 				if (dbSpell != null)
 				{
@@ -3062,7 +3062,7 @@ namespace DOL.GS
 		private static Ability GetNewAbilityInstance(string keyname, int level)
 		{
 			Ability ab = null;
-			DBAbility dba = null;
+			DbAbility dba = null;
 			m_syncLockUpdates.EnterReadLock();
 			try
 			{
@@ -3085,7 +3085,7 @@ namespace DOL.GS
 			return ab;
 		}
 
-		private static Ability GetNewAbilityInstance(DBAbility dba)
+		private static Ability GetNewAbilityInstance(DbAbility dba)
 		{
 			// try instanciating ability
 			Ability ab = null;

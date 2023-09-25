@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class XIgnorePainAbility : TimedRealmAbility
 	{
-		public XIgnorePainAbility(DBAbility dba, int level) : base(dba, level) { }
+		public XIgnorePainAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

@@ -332,7 +332,7 @@ namespace DOL.GS
                 default: return 70;// dmg reduction for rest resists
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -523,7 +523,7 @@ namespace DOL.GS
             {
                 if (m_OlcasgeanDD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 1;
@@ -832,7 +832,7 @@ namespace DOL.AI.Brain
             {
                 if (m_OlcasgeanDD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 4;
                     spell.RecastDelay = 1;
@@ -877,7 +877,7 @@ namespace DOL.GS
                 default: return 70;// dmg reduction for rest resists
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -1048,7 +1048,7 @@ namespace DOL.GS
             {
                 if (m_OlcasgeanDD2 == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 1;
@@ -1512,7 +1512,7 @@ namespace DOL.AI.Brain
             {
                 if (m_AirDD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 2;
@@ -1540,7 +1540,7 @@ namespace DOL.AI.Brain
             {
                 if (m_mezSpell == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 10;
@@ -1596,7 +1596,7 @@ namespace DOL.GS
             ++OIBrain.DeadPrimalsCount;
             base.Die(killer);
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -1877,7 +1877,7 @@ namespace DOL.AI.Brain
             {
                 if (m_WaterEffect == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 5;
@@ -1938,7 +1938,7 @@ namespace DOL.GS
             ++OIBrain.DeadPrimalsCount;
             base.Die(killer);
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -2120,7 +2120,7 @@ namespace DOL.AI.Brain
             {
                 if (m_FireDS == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 60;
@@ -2256,7 +2256,7 @@ namespace DOL.GS
             {
                 if (m_FireGroundDD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 2;
@@ -2340,7 +2340,7 @@ namespace DOL.GS
             }
             base.Die(killer);
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -2476,7 +2476,7 @@ namespace DOL.AI.Brain
             {
                 if (m_EarthRoot == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = Util.Random(15, 25);
@@ -2690,7 +2690,7 @@ namespace DOL.AI.Brain
             {
                 if (m_EarthmenderHeal == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 0;
@@ -2901,7 +2901,7 @@ namespace DOL.AI.Brain
             {
                 if (m_EarthmenderHeal == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 0;
@@ -3109,7 +3109,7 @@ namespace DOL.AI.Brain
             {
                 if (m_EarthmenderHeal == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 0;
@@ -3317,7 +3317,7 @@ namespace DOL.AI.Brain
             {
                 if (m_EarthmenderHeal == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.RecastDelay = 0;
@@ -3389,7 +3389,7 @@ namespace DOL.GS
         {
             base.Die(null); // null to not gain experience
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 250 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -3447,7 +3447,7 @@ namespace DOL.AI.Brain
             {
                 if (m_VortexDD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 3;

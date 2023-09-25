@@ -1,37 +1,17 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
 using DOL.Database;
-using DOL.Database.Connection;
 
 namespace DOLConfig
 {
 	public partial class DolConfig : Form
 	{
-		IList<ServerProperty> sp = new List<ServerProperty>();
-		IList<ServerPropertyCategory> sc = new List<ServerPropertyCategory>();
-		Dictionary<string, ServerProperty> modifyed_sp = new Dictionary<string, ServerProperty>();
+		IList<DbServerProperty> sp = new List<DbServerProperty>();
+		IList<DbServerPropertyCategory> sc = new List<DbServerPropertyCategory>();
+		Dictionary<string, DbServerProperty> modifyed_sp = new Dictionary<string, DbServerProperty>();
 		IObjectDatabase db = null;
 		string bu_save_text = null;
 		string bu_reset_text = null;
@@ -39,7 +19,7 @@ namespace DOLConfig
 		bool sp_tab_selected = false;
 		const char Cte_sep=':';
 		TreeNode selected_node = null;
-		ServerProperty selected_sp = new ServerProperty();
+		DbServerProperty selected_sp = new DbServerProperty();
 		
 		private void LoadServerProperties()
 		{
@@ -50,10 +30,10 @@ namespace DOLConfig
 			try
 			{
 				db = ObjectDatabase.GetObjectDatabase(currentConfig.DBType, currentConfig.DBConnectionString);
-                db.RegisterDataObject(typeof(ServerProperty));
-                db.RegisterDataObject(typeof(ServerPropertyCategory));
-				sp = db.SelectAllObjects<ServerProperty>().ToList();
-				sc = db.SelectAllObjects<ServerPropertyCategory>().ToList();
+                db.RegisterDataObject(typeof(DbServerProperty));
+                db.RegisterDataObject(typeof(DbServerPropertyCategory));
+				sp = db.SelectAllObjects<DbServerProperty>().ToList();
+				sc = db.SelectAllObjects<DbServerPropertyCategory>().ToList();
 			}
 			catch
 			{
@@ -82,7 +62,7 @@ namespace DOLConfig
 		}
 		
 		/// <summary>
-		/// convert serverproperty / serverproperty_category table to tree view
+		/// convert DbServerProperty / serverproperty_category table to tree view
 		/// </summary>
 		/// <param name="category"></param>
 		/// <param name="tn"></param>
@@ -101,7 +81,7 @@ namespace DOLConfig
 			}
 			
 			// serverproperty
-			List<ServerProperty> resultSet;
+			List<DbServerProperty> resultSet;
 			if (string.IsNullOrEmpty(category))
 			{
 				resultSet = (from i in sp
@@ -149,7 +129,7 @@ namespace DOLConfig
 		private void SelectProperty(string spkey)
 		{
 			// find the SP
-			selected_sp = (ServerProperty)(from i in sp where i.Key == spkey.Split(Cte_sep)[0] select i).Single().Clone();
+			selected_sp = (DbServerProperty)(from i in sp where i.Key == spkey.Split(Cte_sep)[0] select i).Single().Clone();
 			
 			// combobox or textbox ?
 			cb_spCurrentValue.Text = "False";
@@ -180,7 +160,7 @@ namespace DOLConfig
 		private void SaveSP()
 		{
 			foreach (var current in modifyed_sp)
-				db.SaveObject((ServerProperty)current.Value);
+				db.SaveObject(current.Value);
 			
 			sp_saved = true;
 			LoadServerProperties();
@@ -196,7 +176,7 @@ namespace DOLConfig
 		/// </summary>
 		/// <param name="this_sp"></param>
 		/// <returns></returns>
-		bool IsText(ServerProperty this_sp)
+		bool IsText(DbServerProperty this_sp)
 		{
 			if (this_sp.DefaultValue.Trim().ToLower() == "true" || this_sp.DefaultValue.Trim().ToLower() == "false") return false;
 			return true;
@@ -313,7 +293,7 @@ namespace DOLConfig
 			else
 			{
 				tv_spShow.Nodes.Clear();
-				List<ServerProperty> resultSet;
+				List<DbServerProperty> resultSet;
 				resultSet = (from i in sp
 				             where i.Key.Contains(tbSearch.Text)
 				             select i).ToList();

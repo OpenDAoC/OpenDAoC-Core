@@ -133,7 +133,7 @@ namespace DOL.AI.Brain
             {
                 if (m_FallingIceDD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 10;

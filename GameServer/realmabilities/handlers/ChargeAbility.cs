@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	{
 		public const int DURATION = 15000;
 
-		public ChargeAbility(DBAbility dba, int level) : base(dba, level) { }
+		public ChargeAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		// no charge when snared
 		public override bool CheckPreconditions(GameLiving living, long bitmask)

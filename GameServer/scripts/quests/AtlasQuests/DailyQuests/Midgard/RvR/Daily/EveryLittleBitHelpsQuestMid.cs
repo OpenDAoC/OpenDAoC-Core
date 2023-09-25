@@ -47,7 +47,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 		}
 
-		public EveryLittleBitHelpsQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public EveryLittleBitHelpsQuestMid(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

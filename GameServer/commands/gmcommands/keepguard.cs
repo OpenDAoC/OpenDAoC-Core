@@ -237,13 +237,13 @@ namespace DOL.GS.Commands
 							if (args.Length > 4)
 								int.TryParse(args[4], out height);
 
-							DBKeepPosition pos = PositionMgr.CreatePosition(guard.GetType(), height, client.Player, Guid.NewGuid().ToString(), component);
+							DbKeepPosition pos = PositionMgr.CreatePosition(guard.GetType(), height, client.Player, Guid.NewGuid().ToString(), component);
 							//PositionMgr.AddPosition(pos);
 							//PositionMgr.FillPositions();
-							DBKeepPosition[] list = component.Positions[pos.TemplateID] as DBKeepPosition[];
+							DbKeepPosition[] list = component.Positions[pos.TemplateID] as DbKeepPosition[];
 							if (list == null)
 							{
-								list = new DBKeepPosition[4];
+								list = new DbKeepPosition[4];
 								component.Positions[pos.TemplateID] = list;
 							}
 								
@@ -277,7 +277,7 @@ namespace DOL.GS.Commands
 							guard.AddToWorld();
 
 							if (guard.Component != null && guard.Component.Keep != null)
-								guard.Component.Keep.Guards.Add(DOL.Database.UniqueID.IDGenerator.GenerateID(), guard);
+								guard.Component.Keep.Guards.Add(DOL.Database.UniqueID.IdGenerator.GenerateID(), guard);
 						}
 
 						PositionMgr.FillPositions();
@@ -316,7 +316,7 @@ namespace DOL.GS.Commands
 										return;
 									}
 
-									DBKeepPosition pos = PositionMgr.CreatePosition(guard.GetType(), height, client.Player, guard.TemplateID, guard.Component);
+									DbKeepPosition pos = PositionMgr.CreatePosition(guard.GetType(), height, client.Player, guard.TemplateID, guard.Component);
 									PositionMgr.AddPosition(pos);
 									PositionMgr.FillPositions();
 
@@ -334,7 +334,7 @@ namespace DOL.GS.Commands
 									}
 
 									GameKeepGuard guard = client.Player.TargetObject as GameKeepGuard;
-									DBKeepPosition pos = guard.Position;
+									DbKeepPosition pos = guard.Position;
 									if (pos != null)
 									{
 										PositionMgr.RemovePosition(pos);
@@ -382,7 +382,7 @@ namespace DOL.GS.Commands
 								{
 									RemoveAllTempPathObjects(client);
 
-									PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, short.MaxValue, ePathType.Once);
+									PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, short.MaxValue, EPathType.Once);
 									client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, startpoint);
 									client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, startpoint);
 									client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.CreationStarted"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -449,7 +449,7 @@ namespace DOL.GS.Commands
 										return;
 									}
 
-									path.Type = ePathType.Loop;
+									path.Type = EPathType.Loop;
 									PositionMgr.SavePatrolPath(guard.TemplateID, path, guard.Component);
 									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.Saved"));
 									RemoveAllTempPathObjects(client);

@@ -35,7 +35,7 @@ namespace DOL.GS
 	public class LootGeneratorAtlanteanGlass : LootGeneratorBase
 	{
 		
-		private static ItemTemplate m_atlanteanglass = GameServer.Database.FindObjectByKey<ItemTemplate>("atlanteanglass");
+		private static DbItemTemplate m_atlanteanglass = GameServer.Database.FindObjectByKey<DbItemTemplate>("atlanteanglass");
 		
 		/// <summary>
         /// Generate loot for given mob
@@ -55,7 +55,7 @@ namespace DOL.GS
 				if (player == null)
 					return loot;			
 			
-				ItemTemplate atlanteanGlass = GameServer.Database.FindObjectByKey<ItemTemplate>(m_atlanteanglass.Id_nb);
+				DbItemTemplate atlanteanGlass = GameServer.Database.FindObjectByKey<DbItemTemplate>(m_atlanteanglass.Id_nb);
 				// ItemTemplate atlanteanGlass = new ItemTemplate(m_atlanteanglass);  Creating a new ItemTemplate throws an exception later
 
 				int killedcon = (int)player.GetConLevel(mob)+3;

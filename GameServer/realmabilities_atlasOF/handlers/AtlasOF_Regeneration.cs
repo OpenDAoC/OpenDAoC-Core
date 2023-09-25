@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
     public class AtlasOF_Regeneration : RAPropertyEnhancer
     {
 
-        public AtlasOF_Regeneration(DBAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
+        public AtlasOF_Regeneration(DbAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
 
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
 

@@ -60,7 +60,7 @@ namespace DOL.GS.Commands
             {
                 if (MMerchantSpell == null)
                 {
-                    var spell = new DBSpell {CastTime = 0, ClientEffect = 0, Duration = 15};
+                    var spell = new DbSpell {CastTime = 0, ClientEffect = 0, Duration = 15};
                     spell.Description = "Summons a merchant to your location for " + spell.Duration + " seconds.";
                     spell.Name = "Merchant Spell";
                     spell.Type = "SummonMerchant";

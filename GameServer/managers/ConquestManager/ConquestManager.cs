@@ -10,7 +10,7 @@ namespace DOL.GS;
 
 public class ConquestManager
 {
-    private List<DBKeep> DBKeeps;
+    private List<DbKeep> DBKeeps;
     private List<AbstractGameKeep> _albionKeeps;
     private List<AbstractGameKeep> _hiberniaKeeps;
     private List<AbstractGameKeep> _midgardKeeps;

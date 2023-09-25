@@ -252,7 +252,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Boss_Bolt == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 2;
 					spell.RecastDelay = 0;
@@ -280,7 +280,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Boss_PBAOE == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = Util.Random(4,8);

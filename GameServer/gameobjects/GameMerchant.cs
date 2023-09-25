@@ -120,7 +120,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			ItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -175,7 +175,7 @@ namespace DOL.GS
 			//Get the template
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			ItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -240,7 +240,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			ItemTemplate template = TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -290,7 +290,7 @@ namespace DOL.GS
 		/// <param name="player">Player making the sale</param>
 		/// <param name="item">The InventoryItem to be sold</param>
 		/// <returns>true if selling is allowed, false if it should be prevented</returns>
-		public virtual void OnPlayerSell(GamePlayer player, InventoryItem item)
+		public virtual void OnPlayerSell(GamePlayer player, DbInventoryItem item)
 		{
 			if(item==null || player==null) return;
 			if (!item.IsDropable)
@@ -332,7 +332,7 @@ namespace DOL.GS
 		/// <param name="item">The item to be appraised</param>
 		/// <param name="silent"></param>
 		/// <returns>The price this merchant will pay for the offered items</returns>
-		public virtual long OnPlayerAppraise(GamePlayer player, InventoryItem item, bool silent)
+		public virtual long OnPlayerAppraise(GamePlayer player, DbInventoryItem item, bool silent)
 		{
 			if (item == null)
 				return 0;
@@ -389,8 +389,8 @@ namespace DOL.GS
 		public override void LoadFromDatabase(DataObject merchantobject)
 		{
 			base.LoadFromDatabase(merchantobject);
-			if (!(merchantobject is Mob)) return;
-			Mob merchant = (Mob)merchantobject;
+			if (!(merchantobject is DbMob)) return;
+			DbMob merchant = (DbMob)merchantobject;
 			if (merchant.ItemsListTemplateID != null && merchant.ItemsListTemplateID.Length > 0)
 				m_tradeItems = new MerchantTradeItems(merchant.ItemsListTemplateID);
 		}
@@ -400,11 +400,11 @@ namespace DOL.GS
 		/// </summary>
 		public override void SaveIntoDatabase()
 		{
-			Mob merchant = null;
+			DbMob merchant = null;
 			if (InternalID != null)
-				merchant = GameServer.Database.FindObjectByKey<Mob>(InternalID);
+				merchant = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
 			if (merchant == null)
-				merchant = new Mob();
+				merchant = new DbMob();
 
 			merchant.Name = Name;
 			merchant.Guild = GuildName;
@@ -460,7 +460,7 @@ namespace DOL.GS
 		{
 			if (InternalID != null)
 			{
-				Mob merchant = GameServer.Database.FindObjectByKey<Mob>(InternalID);
+				DbMob merchant = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
 				if (merchant != null)
 					GameServer.Database.DeleteObject(merchant);
 			}
@@ -507,7 +507,7 @@ namespace DOL.GS
 		/// <param name="source"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
 		{
 			if (source is GamePlayer player && item != null && m_currencyValues != null
 				&& m_currencyValues.TryGetValue(item.Id_nb, out int value) && value > 0)
@@ -538,7 +538,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			ItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -602,7 +602,7 @@ namespace DOL.GS
 	public abstract class GameItemCurrencyMerchant : GameMerchant
 	{
 		public virtual string MoneyKey { get { return null; } }
-		protected ItemTemplate m_itemTemplate = null;
+		protected DbItemTemplate m_itemTemplate = null;
 		protected WorldInventoryItem m_moneyItem = null;
 		protected static readonly Dictionary<String, int> m_currencyValues = null;
 
@@ -635,7 +635,7 @@ namespace DOL.GS
 		{
 			if (MoneyKey != null)
 			{
-				m_itemTemplate = GameServer.Database.FindObjectByKey<ItemTemplate>(MoneyKey);
+				m_itemTemplate = GameServer.Database.FindObjectByKey<DbItemTemplate>(MoneyKey);
 
 				if (m_itemTemplate != null)
 					m_moneyItem = WorldInventoryItem.CreateFromTemplate(m_itemTemplate);
@@ -706,7 +706,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			ItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -743,7 +743,7 @@ namespace DOL.GS
 				var items = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 				int removed = 0;
 
-				foreach (InventoryItem item in items)
+				foreach (DbInventoryItem item in items)
 				{
 					if (item.Id_nb != m_moneyItem.Item.Id_nb)
 						continue;
@@ -766,7 +766,7 @@ namespace DOL.GS
 		/// <param name="source"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
 		{
 			
 			GamePlayer t = source as GamePlayer;
@@ -862,7 +862,7 @@ namespace DOL.GS
 			int pagenumber = itemSlot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = itemSlot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			ItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -930,7 +930,7 @@ namespace DOL.GS
 				var items = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 				int removed = 0;
 
-				foreach (InventoryItem item in items)
+				foreach (DbInventoryItem item in items)
 				{
 					if (item.Id_nb != m_moneyItem.Item.Id_nb)
 						continue;
@@ -961,7 +961,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			ItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -1029,7 +1029,7 @@ namespace DOL.GS
 				var items = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 				int removed = 0;
 
-				foreach (InventoryItem item in items)
+				foreach (DbInventoryItem item in items)
 				{
 					if (item.Id_nb != m_moneyItem.Item.Id_nb)
 						continue;

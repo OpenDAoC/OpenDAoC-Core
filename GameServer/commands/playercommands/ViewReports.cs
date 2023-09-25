@@ -54,7 +54,7 @@ namespace DOL.GS.Commands
 							}
 
 							int repor = int.Parse(args[2]);
-							BugReport report = GameServer.Database.FindObjectByKey<BugReport>(repor);
+							DbBugReport report = GameServer.Database.FindObjectByKey<DbBugReport>(repor);
 							if (report == null)
 							{
 								client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.InvalidReport"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -78,7 +78,7 @@ namespace DOL.GS.Commands
 								break;
 							}
 							int repor = int.Parse(args[2]);
-							BugReport report = GameServer.Database.FindObjectByKey<BugReport>(repor);
+							DbBugReport report = GameServer.Database.FindObjectByKey<DbBugReport>(repor);
 							if (report == null)
 							{
 								client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.InvalidReport"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -88,8 +88,8 @@ namespace DOL.GS.Commands
 							int count = 1;
 							GameServer.Database.DeleteObject(report);
 							// Get all Database'd Bug Reports since we have deleted one
-							var bugReports = GameServer.Database.SelectAllObjects<BugReport>();
-							foreach (BugReport curReport in bugReports)
+							var bugReports = GameServer.Database.SelectAllObjects<DbBugReport>();
+							foreach (DbBugReport curReport in bugReports)
 							{
 								// Create new DB for bugreports without the one we deleted
 								curReport.ID = count;
@@ -113,14 +113,14 @@ namespace DOL.GS.Commands
 				e = new Exception();
 				// Display bug reports to player
 				string Reports = "---------- BUG REPORTS ------------\n";
-				var dbo = GameServer.Database.SelectAllObjects<BugReport>();
+				var dbo = GameServer.Database.SelectAllObjects<DbBugReport>();
 				if (dbo.Count < 1)
 				{
 					Reports += "  - No Reports On File -\n";
 					return;
 				}
 
-				foreach (BugReport repo in dbo)
+				foreach (DbBugReport repo in dbo)
 				{
 					Reports += repo.ID + ")";
 					if (client.Account.PrivLevel > 2)

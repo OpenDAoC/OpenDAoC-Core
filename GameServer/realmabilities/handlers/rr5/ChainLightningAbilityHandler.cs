@@ -31,7 +31,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class ChainLightningAbility : RR5RealmAbility
     {
-        public ChainLightningAbility(DBAbility dba, int level) : base(dba, level) { }
+        public ChainLightningAbility(DbAbility dba, int level) : base(dba, level) { }
 
         private double modifier;
         private int damage;

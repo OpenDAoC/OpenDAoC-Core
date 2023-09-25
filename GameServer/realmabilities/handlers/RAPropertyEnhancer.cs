@@ -18,13 +18,13 @@ namespace DOL.GS.RealmAbilities
 		// property to modify
 		eProperty[] m_property;
 
-		public RAPropertyEnhancer(DBAbility dba, int level, eProperty[] property)
+		public RAPropertyEnhancer(DbAbility dba, int level, eProperty[] property)
 			: base(dba, level)
 		{
 			m_property = property;
 		}
 
-		public RAPropertyEnhancer(DBAbility dba, int level, eProperty property)
+		public RAPropertyEnhancer(DbAbility dba, int level, eProperty property)
 			: base(dba, level)
 		{
 			m_property = new eProperty[] { property };
@@ -128,12 +128,12 @@ namespace DOL.GS.RealmAbilities
 
 	public abstract class L3RAPropertyEnhancer : RAPropertyEnhancer
 	{
-		public L3RAPropertyEnhancer(DBAbility dba, int level, eProperty property)
+		public L3RAPropertyEnhancer(DbAbility dba, int level, eProperty property)
 			: base(dba, level, property)
 		{
 		}
 
-		public L3RAPropertyEnhancer(DBAbility dba, int level, eProperty[] properties)
+		public L3RAPropertyEnhancer(DbAbility dba, int level, eProperty[] properties)
 			: base(dba, level, properties)
 		{ 
 		}

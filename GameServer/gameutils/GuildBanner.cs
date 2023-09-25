@@ -228,8 +228,8 @@ namespace DOL.GS
             gameItem.AddToWorld();
         }
 
-        protected ItemTemplate m_guildBannerTemplate;
-        public ItemTemplate GuildBannerTemplate
+        protected DbItemTemplate m_guildBannerTemplate;
+        public DbItemTemplate GuildBannerTemplate
         {
             get
             {
@@ -237,7 +237,7 @@ namespace DOL.GS
                 {
 					string guildIDNB = "GuildBanner_" + m_player.Guild.GuildID;
 
-					m_guildBannerTemplate = new ItemTemplate();
+					m_guildBannerTemplate = new DbItemTemplate();
 					m_guildBannerTemplate.CanDropAsLoot = false;
 					m_guildBannerTemplate.Id_nb = guildIDNB;
 					m_guildBannerTemplate.IsDropable = false;

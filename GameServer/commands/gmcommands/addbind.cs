@@ -45,7 +45,7 @@ namespace DOL.GS.Commands
 					return;
 				}
 			}
-			BindPoint bp = new BindPoint();
+			DbBindPoint bp = new DbBindPoint();
 			bp.X = client.Player.X;
 			bp.Y = client.Player.Y;
 			bp.Z = client.Player.Z;

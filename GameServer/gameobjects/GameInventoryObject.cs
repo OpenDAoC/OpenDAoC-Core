@@ -34,12 +34,12 @@ namespace DOL.GS
 		int FirstDBSlot { get; }
 		int LastDBSlot { get; }
 		string GetOwner(GamePlayer player);
-		IList<InventoryItem> DBItems(GamePlayer player = null);
-		Dictionary<int, InventoryItem> GetClientInventory(GamePlayer player);
+		IList<DbInventoryItem> DBItems(GamePlayer player = null);
+		Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player);
 		bool CanHandleMove(GamePlayer player, ushort fromClientSlot, ushort toClientSlot);
 		bool MoveItem(GamePlayer player, ushort fromClientSlot, ushort toClientSlot);
-		bool OnAddItem(GamePlayer player, InventoryItem item);
-		bool OnRemoveItem(GamePlayer player, InventoryItem item);
+		bool OnAddItem(GamePlayer player, DbInventoryItem item);
+		bool OnRemoveItem(GamePlayer player, DbInventoryItem item);
 		bool SetSellPrice(GamePlayer player, ushort clientSlot, uint sellPrice);
 		bool SearchInventory(GamePlayer player, MarketSearch.SearchData searchData);
 		void AddObserver(GamePlayer player);
@@ -74,11 +74,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the items of this object, mapped to the client inventory slots
 		/// </summary>
-		public static Dictionary<int, InventoryItem> GetClientItems(this IGameInventoryObject thisObject, GamePlayer player)
+		public static Dictionary<int, DbInventoryItem> GetClientItems(this IGameInventoryObject thisObject, GamePlayer player)
 		{
-			var inventory = new Dictionary<int, InventoryItem>();
+			var inventory = new Dictionary<int, DbInventoryItem>();
 			int slotOffset = thisObject.FirstClientSlot - thisObject.FirstDBSlot;
-			foreach (InventoryItem item in thisObject.DBItems(player))
+			foreach (DbInventoryItem item in thisObject.DBItems(player))
 			{
 				if (item != null)
 				{
@@ -96,7 +96,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Move an item from the inventory object to a player's backpack (uses client slots)
 		/// </summary>
-		public static IDictionary<int, InventoryItem> MoveItemFromObject(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
+		public static IDictionary<int, DbInventoryItem> MoveItemFromObject(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
 		{
 			// We will only allow moving to the backpack.
 
@@ -105,7 +105,7 @@ namespace DOL.GS
 
 			lock (thisObject.LockObject())
 			{
-				Dictionary<int, InventoryItem> inventory = thisObject.GetClientInventory(player);
+				Dictionary<int, DbInventoryItem> inventory = thisObject.GetClientInventory(player);
 
 				if (inventory.ContainsKey((int)fromClientSlot) == false)
 				{
@@ -113,8 +113,8 @@ namespace DOL.GS
 					return null;
 				}
 
-				InventoryItem fromItem = inventory[(int)fromClientSlot];
-				InventoryItem toItem = player.Inventory.GetItem(toClientSlot);
+				DbInventoryItem fromItem = inventory[(int)fromClientSlot];
+				DbInventoryItem toItem = player.Inventory.GetItem(toClientSlot);
 
 				// if there is an item in the players target inventory slot then move it to the object
 				if (toItem != null)
@@ -130,11 +130,11 @@ namespace DOL.GS
 
 				// Create the GameInventoryItem from this InventoryItem.  This simply wraps the InventoryItem, 
 				// which is still updated when this item is moved around
-				InventoryItem objectItem = GameInventoryItem.Create(fromItem);
+				DbInventoryItem objectItem = GameInventoryItem.Create(fromItem);
 
 				player.Inventory.AddTradeItem(toClientSlot, objectItem);
 
-				var updateItems = new Dictionary<int, InventoryItem>(1);
+				var updateItems = new Dictionary<int, DbInventoryItem>(1);
 				updateItems.Add((int)fromClientSlot, toItem);
 
 				return updateItems;
@@ -144,28 +144,28 @@ namespace DOL.GS
 		/// <summary>
 		/// Move an item from a player's backpack to this inventory object (uses client slots)
 		/// </summary>
-		public static IDictionary<int, InventoryItem> MoveItemToObject(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
+		public static IDictionary<int, DbInventoryItem> MoveItemToObject(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
 		{
 			// We will only allow moving from the backpack.
 
 			if (fromClientSlot < eInventorySlot.FirstBackpack || fromClientSlot > eInventorySlot.LastBackpack)
 				return null;
 
-			InventoryItem fromItem = player.Inventory.GetItem(fromClientSlot);
+			DbInventoryItem fromItem = player.Inventory.GetItem(fromClientSlot);
 
 			if (fromItem == null)
 				return null;
 
 			lock (thisObject.LockObject())
 			{
-				Dictionary<int, InventoryItem> inventory = thisObject.GetClientInventory(player);
+				Dictionary<int, DbInventoryItem> inventory = thisObject.GetClientInventory(player);
 
 				player.Inventory.RemoveTradeItem(fromItem);
 
 				// if there is an item in the objects target slot then move it to the players inventory
 				if (inventory.ContainsKey((int)toClientSlot))
 				{
-					InventoryItem toItem = inventory[(int)toClientSlot];
+					DbInventoryItem toItem = inventory[(int)toClientSlot];
 					thisObject.OnRemoveItem(player, toItem);
 					player.Inventory.AddTradeItem(fromClientSlot, toItem);
 				}
@@ -175,7 +175,7 @@ namespace DOL.GS
 				thisObject.OnAddItem(player, fromItem);
 				GameServer.Database.SaveObject(fromItem);
 
-				var updateItems = new Dictionary<int, InventoryItem>(1);
+				var updateItems = new Dictionary<int, DbInventoryItem>(1);
 				updateItems.Add((int)toClientSlot, fromItem);
 
 				// for objects that support doing something when added (setting a price, for example)
@@ -188,17 +188,17 @@ namespace DOL.GS
 		/// <summary>
 		/// Move an item around inside this object (uses client slots)
 		/// </summary>
-		public static IDictionary<int, InventoryItem> MoveItemInsideObject(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromSlot, eInventorySlot toSlot)
+		public static IDictionary<int, DbInventoryItem> MoveItemInsideObject(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromSlot, eInventorySlot toSlot)
 		{
 			lock (thisObject.LockObject())
 			{
-				IDictionary<int, InventoryItem> inventory = thisObject.GetClientInventory(player);
+				IDictionary<int, DbInventoryItem> inventory = thisObject.GetClientInventory(player);
 
 				if (!inventory.ContainsKey((int)fromSlot))
 					return null;
 
-				var updateItems = new Dictionary<int, InventoryItem>(2);
-				InventoryItem fromItem = null, toItem = null;
+				var updateItems = new Dictionary<int, DbInventoryItem>(2);
+				DbInventoryItem fromItem = null, toItem = null;
 
 				fromItem = inventory[(int)fromSlot];
 

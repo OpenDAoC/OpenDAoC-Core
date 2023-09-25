@@ -45,7 +45,7 @@ namespace DOL.GS.WeeklyQuest.Albion
         {
         }
 
-        public SidiBossQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+        public SidiBossQuestAlb(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
         {
         }
 

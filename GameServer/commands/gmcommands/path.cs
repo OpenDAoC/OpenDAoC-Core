@@ -103,7 +103,7 @@ namespace DOL.GS.Commands
 			//Remove old temp objects
 			RemoveAllPathPointObjects(client);
 
-			PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, 1000, ePathType.Once);
+			PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, 1000, EPathType.Once);
 			client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, startpoint);
 			client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, startpoint);
 			client.Player.Out.SendMessage("Path creation started! You can add new pathpoints via /path add now!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -253,7 +253,7 @@ namespace DOL.GS.Commands
 				DisplayMessage(client, "Usage: /path type <pathtype>");
 				DisplayMessage(client, "Current path type is '{0}'", path.Type.ToString());
 				DisplayMessage(client, "Possible pathtype values are:");
-				DisplayMessage(client, String.Join(", ", Enum.GetNames(typeof(ePathType))));
+				DisplayMessage(client, String.Join(", ", Enum.GetNames(typeof(EPathType))));
 				return;
 			}
 			if (path == null)
@@ -262,17 +262,17 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			ePathType pathType = ePathType.Once;
+			EPathType pathType = EPathType.Once;
 			try
 			{
-				pathType = (ePathType)Enum.Parse(typeof(ePathType), args[2], true);
+				pathType = (EPathType)Enum.Parse(typeof(EPathType), args[2], true);
 			}
 			catch
 			{
 				DisplayMessage(client, "Usage: /path type <pathtype>");
 				DisplayMessage(client, "Current path type is '{0}'", path.Type.ToString());
 				DisplayMessage(client, "PathType must be one of the following:");
-				DisplayMessage(client, String.Join(", ", Enum.GetNames(typeof(ePathType))));
+				DisplayMessage(client, String.Join(", ", Enum.GetNames(typeof(EPathType))));
 				return;
 			}
 
@@ -374,7 +374,7 @@ namespace DOL.GS.Commands
 			string pathname = "";
 			if (merchant.TradeItems != null)
 			{
-				foreach (ItemTemplate template in merchant.TradeItems.GetAllItems().Values)
+				foreach (DbItemTemplate template in merchant.TradeItems.GetAllItems().Values)
 				{
 					if (template != null && template.Name.ToLower() == ticket.ToLower())
 					{

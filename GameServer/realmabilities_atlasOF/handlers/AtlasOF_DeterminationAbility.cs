@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class AtlasOF_DeterminationAbility : DeterminationAbility
 	{
-		public AtlasOF_DeterminationAbility(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_DeterminationAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		public override int MaxLevel { get { return 5; } }
 		public override int CostForUpgrade(int level)
@@ -36,7 +36,7 @@ namespace DOL.GS.RealmAbilities
 	}
 	public class AtlasOF_DeterminationHybridAbility : AtlasOF_DeterminationAbility
 	{
-		public AtlasOF_DeterminationHybridAbility(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_DeterminationHybridAbility(DbAbility dba, int level) : base(dba, level) { }
 		public override int MaxLevel { get { return 3; } }
 	}
 }

@@ -300,7 +300,7 @@ namespace DOL.GS.Commands
 		{
 			int amount = 0;
 
-			foreach (InventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
 				foreach (string name in woodNames)
 				{

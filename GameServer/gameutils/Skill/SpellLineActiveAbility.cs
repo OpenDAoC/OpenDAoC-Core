@@ -46,7 +46,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="dba"></param>
 		/// <param name="level"></param>
-		public SpellLineActiveAbility(DBAbility dba, int level)
+		public SpellLineActiveAbility(DbAbility dba, int level)
 			: base(dba, level)
 		{
 		}

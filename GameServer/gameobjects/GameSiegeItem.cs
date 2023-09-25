@@ -39,17 +39,17 @@ namespace DOL.GS
 
                 private GameSiegeItem() { }
 
-                public GameSiegeItem(ItemTemplate template)
+                public GameSiegeItem(DbItemTemplate template)
                         : base(template)
                 {
                 }
 
-                public GameSiegeItem(ItemUnique template)
+                public GameSiegeItem(DbItemUnique template)
                         : base(template)
                 {
                 }
 
-                public GameSiegeItem(InventoryItem item)
+                public GameSiegeItem(DbInventoryItem item)
                         : base(item)
                 {
                 }

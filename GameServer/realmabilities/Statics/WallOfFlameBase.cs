@@ -13,12 +13,12 @@ namespace DOL.GS.RealmAbilities.Statics
 		protected override string GetStaticName() { return "Wall Of Flame"; }
 		protected override ushort GetStaticModel() { return 2651; }
 		protected override ushort GetStaticEffect() { return 7050; }
-		private DBSpell dbs;
+		private DbSpell dbs;
 		private Spell s;
 		private SpellLine sl;
 		public WallOfFlameBase(int damage)
 		{
-			dbs = new DBSpell();
+			dbs = new DbSpell();
 			dbs.Name = GetStaticName();
 			dbs.Icon = GetStaticEffect();
 			dbs.ClientEffect = GetStaticEffect();

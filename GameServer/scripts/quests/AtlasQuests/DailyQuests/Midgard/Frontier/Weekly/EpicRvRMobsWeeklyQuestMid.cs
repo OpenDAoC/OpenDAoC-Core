@@ -50,7 +50,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 		{
 		}
 
-		public EpicRvRMobsWeeklyQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public EpicRvRMobsWeeklyQuestMid(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

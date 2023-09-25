@@ -27,7 +27,7 @@ namespace DOL.GS.RealmAbilities
 
     public class FungalUnionAbility : RR5RealmAbility
     {
-        public FungalUnionAbility(DBAbility dba, int level) : base(dba, level) { }
+        public FungalUnionAbility(DbAbility dba, int level) : base(dba, level) { }
 
 
         public override void Execute(GameLiving living)

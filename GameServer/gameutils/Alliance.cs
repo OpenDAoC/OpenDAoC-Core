@@ -29,7 +29,7 @@ namespace DOL.GS
 	public class Alliance
 	{
 		protected ArrayList m_guilds;
-		protected DBAlliance m_dballiance;
+		protected DbGuildAlliance m_dballiance;
 		public Alliance()
 		{
 			m_dballiance = null;
@@ -46,7 +46,7 @@ namespace DOL.GS
 				m_guilds = value;
 			}
 		}
-		public DBAlliance Dballiance
+		public DbGuildAlliance Dballiance
 		{
 			get
 			{
@@ -171,10 +171,10 @@ namespace DOL.GS
 		/// <param name="obj"></param>
 		public void LoadFromDatabase(DataObject obj)
 		{
-			if (!(obj is DBAlliance))
+			if (!(obj is DbGuildAlliance))
 				return;
 
-			m_dballiance = (DBAlliance)obj;
+			m_dballiance = (DbGuildAlliance)obj;
 		}
 
 		/// <summary>

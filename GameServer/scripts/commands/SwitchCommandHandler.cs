@@ -66,7 +66,7 @@ namespace DOL.GS.Commands
         {
             if (player.Inventory.GetItem(FromSlot) != null)
             {
-                InventoryItem item = player.Inventory.GetItem(FromSlot);
+                DbInventoryItem item = player.Inventory.GetItem(FromSlot);
 
                 if (!GlobalConstants.IsWeapon(item.Object_Type) && item.Object_Type != (int)eObjectType.Instrument)
                 {

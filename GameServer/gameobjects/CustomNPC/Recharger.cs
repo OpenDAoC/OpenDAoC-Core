@@ -59,7 +59,7 @@ public class Recharger : GameNPC
 
     #region Receive item
 
-    public override bool ReceiveItem(GameLiving source, InventoryItem item)
+    public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
     {
         if (source is not GamePlayer player || item == null)
             return false;
@@ -124,7 +124,7 @@ public class Recharger : GameNPC
         var itemWeak = player.TempProperties.GetProperty<WeakReference>(RECHARGE_ITEM_WEAK, new WeakRef(null));
         player.TempProperties.RemoveProperty(RECHARGE_ITEM_WEAK);
 
-        var item = (InventoryItem) itemWeak.Target;
+        var item = (DbInventoryItem) itemWeak.Target;
 
         if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
                          || item.OwnerID == null || item.OwnerID != player.InternalID)
@@ -243,7 +243,7 @@ public class Recharger : GameNPC
                 "Scripts.Recharger.RechargerDialogResponse.FullyCharged"));
     }
 
-    private void Recharge(InventoryItem item)
+    private void Recharge(DbInventoryItem item)
     {
         
         if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
@@ -252,7 +252,7 @@ public class Recharger : GameNPC
         item.Charges = item.MaxCharges;
         item.Charges1 = item.MaxCharges1;
     }
-    private long CalculateCost(InventoryItem item)
+    private long CalculateCost(DbInventoryItem item)
     {
         long NeededMoney = 0;
         if (item.Charges < item.MaxCharges)
@@ -271,7 +271,7 @@ public class Recharger : GameNPC
         return NeededMoney;
     }
 
-    private bool CanBeRecharged(InventoryItem item)
+    private bool CanBeRecharged(DbInventoryItem item)
     {
         if (item.Count != 1)
         {

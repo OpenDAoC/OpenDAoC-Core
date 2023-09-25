@@ -137,29 +137,29 @@ namespace DOL.GS
 		bool            LoadFromDatabase(string inventoryID);
 		bool            SaveIntoDatabase(string inventoryID);
 
-		bool			AddItem(eInventorySlot slot, InventoryItem item);
+		bool			AddItem(eInventorySlot slot, DbInventoryItem item);
 						/// <summary>
 						/// Add an item to Inventory and save.  This assumes item is already in the database and is being transferred.
 						/// </summary>
 						/// <param name="slot"></param>
 						/// <param name="item"></param>
 						/// <returns></returns>
-		bool			AddTradeItem(eInventorySlot slot, InventoryItem item);
-		bool			AddCountToStack(InventoryItem item, int count);
-		bool			AddTemplate(InventoryItem template, int count, eInventorySlot minSlot, eInventorySlot maxSlot);
-		bool            RemoveItem(InventoryItem item);
+		bool			AddTradeItem(eInventorySlot slot, DbInventoryItem item);
+		bool			AddCountToStack(DbInventoryItem item, int count);
+		bool			AddTemplate(DbInventoryItem template, int count, eInventorySlot minSlot, eInventorySlot maxSlot);
+		bool            RemoveItem(DbInventoryItem item);
 						/// <summary>
 						/// Remove an item from Inventory and update owner and position but do not remove from the database.
 						/// This is use for transferring items.
 						/// </summary>
 						/// <param name="item"></param>
 						/// <returns></returns>
-		bool            RemoveTradeItem(InventoryItem item);
-		bool			RemoveCountFromStack(InventoryItem item, int count);
+		bool            RemoveTradeItem(DbInventoryItem item);
+		bool			RemoveCountFromStack(DbInventoryItem item, int count);
 		bool			RemoveTemplate(string templateID, int count, eInventorySlot minSlot, eInventorySlot maxSlot);
 		bool            MoveItem(eInventorySlot fromSlot, eInventorySlot toSlot, int itemCount);
-		InventoryItem   GetItem(eInventorySlot slot);
-		ICollection<InventoryItem> GetItemRange(eInventorySlot minSlot, eInventorySlot maxSlot);
+		DbInventoryItem   GetItem(eInventorySlot slot);
+		ICollection<DbInventoryItem> GetItemRange(eInventorySlot minSlot, eInventorySlot maxSlot);
 
 		void            BeginChanges();
 		void            CommitChanges();
@@ -174,13 +174,13 @@ namespace DOL.GS
 		eInventorySlot	FindFirstFullSlot(eInventorySlot first, eInventorySlot last);
 		eInventorySlot	FindLastFullSlot(eInventorySlot first, eInventorySlot last);
 
-		InventoryItem	GetFirstItemByID(string uniqueID, eInventorySlot minSlot, eInventorySlot maxSlot);
-		InventoryItem	GetFirstItemByObjectType(int objectType, eInventorySlot minSlot, eInventorySlot maxSlot);
-		InventoryItem   GetFirstItemByName(string name ,eInventorySlot minSlot, eInventorySlot maxSlot);
+		DbInventoryItem	GetFirstItemByID(string uniqueID, eInventorySlot minSlot, eInventorySlot maxSlot);
+		DbInventoryItem	GetFirstItemByObjectType(int objectType, eInventorySlot minSlot, eInventorySlot maxSlot);
+		DbInventoryItem   GetFirstItemByName(string name ,eInventorySlot minSlot, eInventorySlot maxSlot);
 
-		ICollection<InventoryItem> VisibleItems		{ get; }
-		ICollection<InventoryItem> EquippedItems	{ get; }
-		ICollection<InventoryItem> AllItems			{ get; }
+		ICollection<DbInventoryItem> VisibleItems		{ get; }
+		ICollection<DbInventoryItem> EquippedItems	{ get; }
+		ICollection<DbInventoryItem> AllItems			{ get; }
 
 		int InventoryWeight { get; }
 	}

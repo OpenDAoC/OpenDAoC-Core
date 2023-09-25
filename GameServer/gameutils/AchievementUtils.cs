@@ -95,7 +95,7 @@ public class AchievementUtils
         List<string> temp = new List<string>();
         temp.Clear();
 
-        var achievements = DOLDB<Achievement>.SelectObjects(DB.Column("AccountID")
+        var achievements = DOLDB<DbAchievement>.SelectObjects(DB.Column("AccountID")
             .IsEqualTo(player.Client.Account.ObjectId));
 
         if (achievements == null) return temp;
@@ -106,9 +106,9 @@ public class AchievementUtils
         realmDict.Add(2, "Midgard");
         realmDict.Add(3, "Hibernia");
 
-        List<Achievement> HibAchievements = new List<Achievement>();
-        List<Achievement> MidAchievements= new List<Achievement>();
-        List<Achievement> AlbAchievements = new List<Achievement>();
+        List<DbAchievement> HibAchievements = new List<DbAchievement>();
+        List<DbAchievement> MidAchievements= new List<DbAchievement>();
+        List<DbAchievement> AlbAchievements = new List<DbAchievement>();
         
         foreach (var achievement in achievements)
         {
@@ -162,14 +162,14 @@ public class AchievementUtils
         return temp;
     }
     
-    public static List<Achievement> GetAchievementInfoForPlayerPerRealm(GamePlayer player, int realm)
+    public static List<DbAchievement> GetAchievementInfoForPlayerPerRealm(GamePlayer player, int realm)
     {
-        var achievements = DOLDB<Achievement>.SelectObjects(DB.Column("AccountID")
+        var achievements = DOLDB<DbAchievement>.SelectObjects(DB.Column("AccountID")
             .IsEqualTo(player.Client.Account.ObjectId));
 
         if (achievements == null) return null;
         
-        var RealmAchievements = new List<Achievement>();
+        var RealmAchievements = new List<DbAchievement>();
         
         foreach (var achievement in achievements)
         {
@@ -182,7 +182,7 @@ public class AchievementUtils
 
     public static bool CheckPlayerCredit(string mob, GamePlayer player, int realm)
     {
-        var achievements = DOLDB<Achievement>.SelectObjects(DB.Column("AccountID")
+        var achievements = DOLDB<DbAchievement>.SelectObjects(DB.Column("AccountID")
             .IsEqualTo(player.Client.Account.ObjectId));
         var hasCredit = false;
         
@@ -204,7 +204,7 @@ public class AchievementUtils
     
     public static bool CheckAccountCredit(string mob, GamePlayer player)
     {
-        var achievements = DOLDB<Achievement>.SelectObjects(DB.Column("AccountID")
+        var achievements = DOLDB<DbAchievement>.SelectObjects(DB.Column("AccountID")
             .IsEqualTo(player.Client.Account.ObjectId));
         var hasCredit = false;
         

@@ -39,14 +39,14 @@ namespace DOL.GS
 		/// <summary>
 		/// Items in fixed drop list will ALWAYS drop for mob loot
 		/// </summary>
-		private readonly List<ItemTemplate> m_fixedItemDrops;
+		private readonly List<DbItemTemplate> m_fixedItemDrops;
 
 		public LootList() : this(1) { }
 
 		public LootList(int dropCount)
 		{
 			DropCount = dropCount;
-			m_fixedItemDrops = new List<ItemTemplate>(2);
+			m_fixedItemDrops = new List<DbItemTemplate>(2);
 			m_randomItemDrops = new List<LootEntry>(15);
 		}
 
@@ -54,13 +54,13 @@ namespace DOL.GS
 		/// Adds dropCount pieces of this item to the list of fixed drops.
 		/// </summary>
 		/// <param name="loot"></param>
-		public void AddFixed(ItemTemplate loot, int dropCount)
+		public void AddFixed(DbItemTemplate loot, int dropCount)
 		{
 			for (int drop = 0; drop < dropCount; drop++)
 				m_fixedItemDrops.Add(loot);
 		}
 
-		public void AddRandom(int chance, ItemTemplate loot, int count = 1)
+		public void AddRandom(int chance, DbItemTemplate loot, int count = 1)
 		{
 			LootEntry entry = new LootEntry(chance, loot, count);
 			m_randomItemDrops.Add(entry);
@@ -90,9 +90,9 @@ namespace DOL.GS
 		/// Returns a list of ItemTemplates chosen from Random and Fixed loot.
 		/// </summary>
 		/// <returns></returns>
-		public ItemTemplate[] GetLoot()
+		public DbItemTemplate[] GetLoot()
 		{
-			List<ItemTemplate> loot = new List<ItemTemplate>(m_fixedItemDrops.Count + DropCount);
+			List<DbItemTemplate> loot = new List<DbItemTemplate>(m_fixedItemDrops.Count + DropCount);
 			loot.AddRange(m_fixedItemDrops);
 
 			if (DropCount > 0)
@@ -161,10 +161,10 @@ namespace DOL.GS
 	internal class LootEntry
 	{
 		public readonly int Chance;
-		public readonly ItemTemplate ItemTemplate;
+		public readonly DbItemTemplate ItemTemplate;
 		public int Count;
 
-		public LootEntry(int chance, ItemTemplate item, int count)
+		public LootEntry(int chance, DbItemTemplate item, int count)
 		{
 			Chance = chance;
 			ItemTemplate = item;

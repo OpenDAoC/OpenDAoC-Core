@@ -5,7 +5,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class XWildMinionAbility : RAPropertyEnhancer
 	{
-		public XWildMinionAbility(DBAbility dba, int level)
+		public XWildMinionAbility(DbAbility dba, int level)
 			: base(dba, level, eProperty.Undefined)
 		{
 		}

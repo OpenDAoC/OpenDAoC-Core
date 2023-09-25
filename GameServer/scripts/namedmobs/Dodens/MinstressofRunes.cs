@@ -215,7 +215,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_NearsightMistressSpell == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.Uninterruptible = true;
 					spell.CastTime = 2;
@@ -252,7 +252,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_AoESpell == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.Uninterruptible = true;
 					spell.CastTime = 3;

@@ -175,25 +175,25 @@ namespace DOL.GS.Scripts
 			m_js.AppendFormat("var numAdminsConnected = {0}", admin);
 			m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numAccts = {0}", GameServer.Database.GetObjectCount<Account>());
+			m_js.AppendFormat("var numAccts = {0}", GameServer.Database.GetObjectCount<DbAccount>());
 			m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numMobs = {0}", GameServer.Database.GetObjectCount<Mob>());
+			m_js.AppendFormat("var numMobs = {0}", GameServer.Database.GetObjectCount<DbMob>());
 			m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numInvItems = {0}", GameServer.Database.GetObjectCount<InventoryItem>());
+			m_js.AppendFormat("var numInvItems = {0}", GameServer.Database.GetObjectCount<DbInventoryItem>());
 			m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numPlrChars = {0}", GameServer.Database.GetObjectCount<DOLCharacters>());
+			m_js.AppendFormat("var numPlrChars = {0}", GameServer.Database.GetObjectCount<DbCoreCharacter>());
 			m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numMerchantItems = {0}", GameServer.Database.GetObjectCount<MerchantItem>());
+			m_js.AppendFormat("var numMerchantItems = {0}", GameServer.Database.GetObjectCount<DbMerchantItem>());
 			m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numItemTemplates = {0}", GameServer.Database.GetObjectCount<ItemTemplate>());
+			m_js.AppendFormat("var numItemTemplates = {0}", GameServer.Database.GetObjectCount<DbItemTemplate>());
 			m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numWorldObjects = {0}", GameServer.Database.GetObjectCount<WorldObject>());
+			m_js.AppendFormat("var numWorldObjects = {0}", GameServer.Database.GetObjectCount<DbWorldObject>());
 			m_js.Append(nl.NewLine);
 
 			m_js.AppendFormat("var srvrType = \"{0}\"", GameServer.Instance.Configuration.ServerType.ToString());

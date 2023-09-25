@@ -387,11 +387,11 @@ namespace DOL.GS
             }
         }
 
-        public static GameClient GetClientFromAccount(Account account)
+        public static GameClient GetClientFromAccount(DbAccount account)
         {
             return GetClient(Predicate, account);
 
-            static bool Predicate(GameClient client, Account account)
+            static bool Predicate(GameClient client, DbAccount account)
             {
                 return client.Account != null && client.Account == account;
             }

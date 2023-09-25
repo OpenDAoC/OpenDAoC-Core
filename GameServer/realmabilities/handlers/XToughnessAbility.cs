@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class XToughnessAbility : RAPropertyEnhancer
 	{
-		public XToughnessAbility(DBAbility dba, int level) : base(dba, level, eProperty.MaxHealth) { }
+		public XToughnessAbility(DbAbility dba, int level) : base(dba, level, eProperty.MaxHealth) { }
 
 		public override int GetAmountForLevel(int level)
 		{

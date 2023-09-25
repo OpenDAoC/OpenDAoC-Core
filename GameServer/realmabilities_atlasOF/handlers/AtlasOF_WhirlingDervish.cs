@@ -12,7 +12,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_WhirlingDervish : TimedRealmAbility
     {
-        public AtlasOF_WhirlingDervish(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_WhirlingDervish(DbAbility dba, int level) : base(dba, level) { }
 
         public const int duration = 60000; // 60 seconds
         public override int MaxLevel { get { return 3; } }
@@ -20,7 +20,7 @@ namespace DOL.GS.RealmAbilities
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugDexLevel(player) >= 3; }
         public override int CostForUpgrade(int currentLevel) { return AtlasRAHelpers.GetCommonUpgradeCostFor3LevelsRA(currentLevel); }
         
-        private DBSpell m_dbspell;
+        private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
         private double m_damage = 0;

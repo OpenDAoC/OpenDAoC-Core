@@ -13,12 +13,12 @@ namespace DOL.GS.RealmAbilities.Statics
 		protected override string GetStaticName() {return "Thornwood Field";}
 		protected override ushort GetStaticModel() {return 2653;}
 		protected override ushort GetStaticEffect() {return 7028;}
-		private DBSpell dbs;
+		private DbSpell dbs;
 		private Spell   s;
 		private SpellLine sl;
 		public ThornweedFieldBase (int damage) 
         {
-			dbs = new DBSpell();
+			dbs = new DbSpell();
 			dbs.Name = GetStaticName();
 			dbs.Icon = GetStaticEffect();
 			dbs.ClientEffect = GetStaticEffect();

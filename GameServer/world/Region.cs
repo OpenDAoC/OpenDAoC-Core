@@ -312,7 +312,7 @@ namespace DOL.GS
         /// <param name="player"></param>
         /// <param name="zonePoint"></param>
         /// <returns>false to halt processing of this request</returns>
-        public virtual bool OnZonePoint(GamePlayer player, ZonePoint zonePoint)
+        public virtual bool OnZonePoint(GamePlayer player, DbZonePoint zonePoint)
         {
             return true;
         }
@@ -722,14 +722,14 @@ namespace DOL.GS
         /// <param name="merchantCount"></param>
         /// <param name="itemCount"></param>
         /// <param name="bindCount"></param>
-        public virtual void LoadFromDatabase(Mob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
+        public virtual void LoadFromDatabase(DbMob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
         {
             if (!LoadObjects)
                 return;
 
             Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
-            var staticObjs = DOLDB<WorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
-            var bindPoints = DOLDB<BindPoint>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
+            var staticObjs = DOLDB<DbWorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
+            var bindPoints = DOLDB<DbBindPoint>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
             int count = mobObjs.Length + staticObjs.Count;
             if (count > 0) PreAllocateRegionSpace(count + 100);
             int myItemCount = staticObjs.Count;
@@ -740,7 +740,7 @@ namespace DOL.GS
 
             if (mobObjs.Length > 0)
             {
-                foreach (Mob mob in mobObjs)
+                foreach (DbMob mob in mobObjs)
                 {
                     GameNPC myMob = null;
                     string error = string.Empty;
@@ -778,11 +778,11 @@ namespace DOL.GS
   
                     if (myMob == null)
                     {
-                    	if(template != null && template.ClassType != null && template.ClassType.Length > 0 && template.ClassType != Mob.DEFAULT_NPC_CLASSTYPE && template.ReplaceMobValues)
+                    	if(template != null && template.ClassType != null && template.ClassType.Length > 0 && template.ClassType != DbMob.DEFAULT_NPC_CLASSTYPE && template.ReplaceMobValues)
                     	{
                 			classtype = template.ClassType;
                     	}
-                        else if (mob.ClassType != null && mob.ClassType.Length > 0 && mob.ClassType != Mob.DEFAULT_NPC_CLASSTYPE)
+                        else if (mob.ClassType != null && mob.ClassType.Length > 0 && mob.ClassType != DbMob.DEFAULT_NPC_CLASSTYPE)
                         {
                             classtype = mob.ClassType;
                         }
@@ -854,7 +854,7 @@ namespace DOL.GS
 
             if (staticObjs.Count > 0)
             {
-                foreach (WorldObject item in staticObjs)
+                foreach (DbWorldObject item in staticObjs)
                 {
                     GameStaticItem myItem;
                     if (!string.IsNullOrEmpty(item.ClassType))
@@ -886,7 +886,7 @@ namespace DOL.GS
                 }
             }
 
-            foreach (BindPoint point in bindPoints)
+            foreach (DbBindPoint point in bindPoints)
             {
                 AddArea(new Area.BindArea("bind point", point));
             }

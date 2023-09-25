@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
 		public eArmorSlot Slot { get { return m_slot; } }
 		private int old_item_af = 0;
 		private int old_item_abs = 0;
-		private InventoryItem item = null;
+		private DbInventoryItem item = null;
 		protected GamePlayer player=null;
 
 		public override void FinishSpellCast(GameLiving target)
@@ -65,7 +65,7 @@ namespace DOL.GS.Spells
 				if(item.DPS_AF<0) item.DPS_AF=0;
 				if(item.SPD_ABS<0) item.SPD_ABS=0;
 			
-				player.Client.Out.SendInventoryItemsUpdate(new InventoryItem[] { item });
+				player.Client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
 				player.Out.SendCharStatsUpdate();
 				player.UpdatePlayerStatus();
 				player.Out.SendUpdatePlayer();
@@ -103,7 +103,7 @@ namespace DOL.GS.Spells
 			item.DPS_AF=old_item_af;
 			item.SPD_ABS=old_item_abs;
 			
-			player.Client.Out.SendInventoryItemsUpdate(new InventoryItem[] { item });
+			player.Client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
 			player.Out.SendCharStatsUpdate();
 			player.UpdatePlayerStatus();
 			player.Out.SendUpdatePlayer();

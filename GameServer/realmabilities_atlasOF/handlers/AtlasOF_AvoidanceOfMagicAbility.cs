@@ -9,7 +9,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class AtlasOF_AvoidanceOfMagicAbility : AvoidanceOfMagicAbility
 	{
-		public AtlasOF_AvoidanceOfMagicAbility(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_AvoidanceOfMagicAbility(DbAbility dba, int level) : base(dba, level) { }
 		public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
 		public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
 	}

@@ -47,7 +47,7 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 		}
 
-		public EveryLittleBitHelpsQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public EveryLittleBitHelpsQuestAlb(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

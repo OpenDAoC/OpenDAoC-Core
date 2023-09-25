@@ -32,17 +32,17 @@ namespace DOL.Tests.Integration.Database.MySQL
 			Database = MySQLDBSetUp.Database;
 		}
 		
-		protected override SQLObjectDatabase GetDatabaseV2 { get { return (SQLObjectDatabase)ObjectDatabase.GetObjectDatabase(ConnectionType.DATABASE_MYSQL, MySQLDBSetUp.ConnectionString); } }
+		protected override SqlObjectDatabase GetDatabaseV2 { get { return (SqlObjectDatabase)ObjectDatabase.GetObjectDatabase(EConnectionType.DATABASE_MYSQL, MySQLDBSetUp.ConnectionString); } }
 	
 		[Test]
 		public void TestTableWithBrokenPrimaryKey()
 		{
 			// Destroy previous table
-			Database.ExecuteNonQuery(string.Format("DROP TABLE IF EXISTS `{0}`", AttributesUtils.GetTableName(typeof(TestTableWithBrokenPrimaryV1))));
+			Database.ExecuteNonQuery(string.Format("DROP TABLE IF EXISTS `{0}`", AttributeUtil.GetTableName(typeof(TestTableWithBrokenPrimaryV1))));
 			// Create Table
 			Database.RegisterDataObject(typeof(TestTableWithBrokenPrimaryV1));
 			// Break Primary Key
-			Database.ExecuteNonQuery(string.Format("ALTER TABLE `{0}` DROP PRIMARY KEY", AttributesUtils.GetTableName(typeof(TestTableWithBrokenPrimaryV1))));
+			Database.ExecuteNonQuery(string.Format("ALTER TABLE `{0}` DROP PRIMARY KEY", AttributeUtil.GetTableName(typeof(TestTableWithBrokenPrimaryV1))));
 			
 			// Get a new Database Object to Trigger Migration
 			var DatabaseV2 = GetDatabaseV2;

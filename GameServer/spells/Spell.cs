@@ -340,12 +340,12 @@ namespace DOL.GS
 				.ToString();
 		}
 
-        public Spell(DBSpell dbspell, int requiredLevel)
+        public Spell(DbSpell dbspell, int requiredLevel)
             : this(dbspell, requiredLevel, false)
         {
         }
 
-        public Spell(DBSpell dbspell, int requiredLevel, bool minotaur)
+        public Spell(DbSpell dbspell, int requiredLevel, bool minotaur)
 			: base(dbspell.Name, dbspell.SpellID, (ushort)dbspell.Icon, requiredLevel, dbspell.TooltipId)
 		{
 			m_description = dbspell.Description;

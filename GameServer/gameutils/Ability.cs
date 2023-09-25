@@ -57,17 +57,17 @@ namespace DOL.GS
 		protected GameLiving m_activeLiving = null;
 
 
-		public Ability(DBAbility dba)
+		public Ability(DbAbility dba)
 			: this(dba, 0)
 		{
 		}
 
-		public Ability(DBAbility dba, int level)
+		public Ability(DbAbility dba, int level)
 			: this(dba.KeyName, dba.Name, dba.Description, dba.AbilityID, (ushort)dba.IconID, level, dba.InternalID)
 		{
 		}
 
-		public Ability(DBAbility dba, int level, string spec, int speclevel)
+		public Ability(DbAbility dba, int level, string spec, int speclevel)
 			: this(dba.KeyName, dba.Name, dba.Description, dba.AbilityID, (ushort)dba.IconID, level, spec, speclevel, dba.InternalID)
 		{
 		}

@@ -162,7 +162,7 @@ namespace DOL.GS
 				return BaseDamage;
 		}
 
-		public override bool ReceiveItem(GameLiving source, DOL.Database.InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DOL.Database.DbInventoryItem item)
 		{
 			//todo check if bullet
 			return base.ReceiveItem(source, item);

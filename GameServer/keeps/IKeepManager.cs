@@ -79,7 +79,7 @@ namespace DOL.GS.Keeps
 		int GetRealmKeepBonusLevel(eRealm realm);
 		int GetRealmTowerBonusLevel(eRealm realm);
 		void UpdateBaseLevels();
-		Battleground GetBattleground(ushort region);
+		DbBattleground GetBattleground(ushort region);
 		void ExitBattleground(GamePlayer player);
 		AbstractGameKeep GetKeepByShortName(string keepname);
 	}

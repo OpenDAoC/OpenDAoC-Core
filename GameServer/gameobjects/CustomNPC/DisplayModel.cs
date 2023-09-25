@@ -9,7 +9,7 @@ namespace DOL.GS {
         private GamePlayer m_displayedPlayer;
         
         
-        public DisplayModel(GamePlayer player, InventoryItem item)
+        public DisplayModel(GamePlayer player, DbInventoryItem item)
         {
             m_displayedPlayer = player;
             //player model contains 5 bits of extra data that causes issues if used

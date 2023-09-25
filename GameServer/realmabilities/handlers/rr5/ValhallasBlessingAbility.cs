@@ -39,7 +39,7 @@ namespace DOL.GS.RealmAbilities
         public const int DURATION = 30 * 1000;
         private const int SpellRadius = 1500;
 
-        public ValhallasBlessingAbility(DBAbility dba, int level) : base(dba, level) { }
+        public ValhallasBlessingAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action

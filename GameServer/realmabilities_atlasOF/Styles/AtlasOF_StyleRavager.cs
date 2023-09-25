@@ -5,11 +5,11 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_StyleRavager : StyleRealmAbility
     {
-        public AtlasOF_StyleRavager(DBAbility ability, int level) : base(ability, level) { }
+        public AtlasOF_StyleRavager(DbAbility ability, int level) : base(ability, level) { }
 
         protected override Style CreateStyle()
         {
-            DBStyle tmpStyle = new()
+            DbStyle tmpStyle = new()
             {
                 Name = "Ravager",
                 GrowthRate = 1.4,

@@ -90,7 +90,7 @@ namespace DOL.GS
 			{
                 case "DE":
                     {
-                        var translation = (DBLanguageNPC)LanguageMgr.GetTranslation(player.Client.Account.Language, this);
+                        var translation = (DbLanguageGameNpc)LanguageMgr.GetTranslation(player.Client.Account.Language, this);
 
                         if (translation != null)
                         {
@@ -246,7 +246,7 @@ namespace DOL.GS
 			// drop any equiped-non usable item, in inventory or on the ground if full
 			lock (player.Inventory)
 			{
-				foreach (InventoryItem item in player.Inventory.EquippedItems)
+				foreach (DbInventoryItem item in player.Inventory.EquippedItems)
 				{
 					if (!player.HasAbilityToUseItem(item.Template))
 						if (player.Inventory.IsSlotsFree(item.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == true)
@@ -269,7 +269,7 @@ namespace DOL.GS
 		/// <param name="source"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
 		{
 			if (source == null || item == null) return false;
 
@@ -346,7 +346,7 @@ namespace DOL.GS
 		/// <param name="messageToPlayer">the message for the player</param>
 		/// <param name="gifts">Array of inventory items as promotion gifts</param>
 		/// <returns>true if successfull</returns>
-		public bool PromotePlayer(GamePlayer player, int classid, string messageToPlayer, InventoryItem[] gifts)
+		public bool PromotePlayer(GamePlayer player, int classid, string messageToPlayer, DbInventoryItem[] gifts)
 		{
 			if (player == null)
 				return false;
@@ -396,7 +396,7 @@ namespace DOL.GS
 		/// <returns>true if succesful</returns>
 		public virtual bool addGift(String template, GamePlayer player)
 		{
-			ItemTemplate temp = GameServer.Database.FindObjectByKey<ItemTemplate>(template);
+			DbItemTemplate temp = GameServer.Database.FindObjectByKey<DbItemTemplate>(template);
 			if (temp != null)
 			{
 				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(temp), 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))

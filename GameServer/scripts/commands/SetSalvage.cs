@@ -17,7 +17,7 @@ namespace DOL.GS.Commands
          
             int slot = (int)eInventorySlot.LastBackpack;
 
-            InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+            DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
 
             if (item == null)
             {
@@ -28,7 +28,7 @@ namespace DOL.GS.Commands
             string idnb = item.Id_nb;
 
 
-            if (idnb == string.Empty && (item.AllowAdd == false || item.Id_nb == InventoryItem.BLANK_ITEM))
+            if (idnb == string.Empty && (item.AllowAdd == false || item.Id_nb == DbInventoryItem.BLANK_ITEM))
             {
                 DisplayMessage(client, "This item can' be configured.");
                 return;
@@ -39,10 +39,10 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            (item.Template as ItemTemplate).AllowUpdate = true;
-            (item.Template as ItemTemplate).Dirty = true;
+            (item.Template as DbItemTemplate).AllowUpdate = true;
+            (item.Template as DbItemTemplate).Dirty = true;
 
-            ItemTemplate temp = GameServer.Database.FindObjectByKey<ItemTemplate>(idnb);
+            DbItemTemplate temp = GameServer.Database.FindObjectByKey<DbItemTemplate>(idnb);
             
             if (temp == null)
             {
@@ -61,8 +61,8 @@ namespace DOL.GS.Commands
             item.Price = ReturnSalvage.MSRP;
             
             GameServer.Database.SaveObject(item.Template);
-            GameServer.Database.UpdateInCache<ItemTemplate>(item.Template.Id_nb);
-            client.Out.SendInventoryItemsUpdate(new InventoryItem[] { item });
+            GameServer.Database.UpdateInCache<DbItemTemplate>(item.Template.Id_nb);
+            client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
 
             DisplayMessage(client, $"{item.Name} price changed from {oldprice} to {item.Price}!");
         }

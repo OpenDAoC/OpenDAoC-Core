@@ -150,7 +150,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Override because mobs shouldn't respawn in Adventure wings.
 		/// </summary>
-		public override void LoadFromDatabase(Mob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
+		public override void LoadFromDatabase(DbMob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
 		{
 			base.LoadFromDatabase(mobObjs, ref mobCount, ref merchantCount, ref itemCount, ref bindCount);
 			

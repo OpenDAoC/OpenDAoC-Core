@@ -47,7 +47,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 		{
 		}
 
-		public ForTheRealmQuestHib(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public ForTheRealmQuestHib(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

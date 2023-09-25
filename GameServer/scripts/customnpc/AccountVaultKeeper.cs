@@ -44,7 +44,7 @@ namespace DOL.GS
             message += "You can browse the [first] or [second] page of your Account Vault.";
             player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 
-            ItemTemplate vaultItem = GetDummyVaultItem(player);
+            DbItemTemplate vaultItem = GetDummyVaultItem(player);
             AccountVault vault = new AccountVault(player, this, player.Client.Account.Name + "_" + player.Realm.ToString(), 0, vaultItem);
             player.ActiveInventoryObject = vault;
             player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), eInventoryWindowType.HouseVault);
@@ -77,9 +77,9 @@ namespace DOL.GS
             return true;
         }
 
-        private static ItemTemplate GetDummyVaultItem(GamePlayer player)
+        private static DbItemTemplate GetDummyVaultItem(GamePlayer player)
         {
-            ItemTemplate vaultItem = new ItemTemplate();
+            DbItemTemplate vaultItem = new DbItemTemplate();
             vaultItem.Object_Type = (int)eObjectType.HouseVault;
             vaultItem.Name = "Vault";
             vaultItem.ObjectId = player.Client.Account.Name + "_" + player.Realm.ToString();
@@ -123,7 +123,7 @@ namespace DOL.GS
         /// <param name="vaultOwner">ID of vault owner (can be anything unique, if it's the account name then all toons on account can access the items)</param>
         /// <param name="vaultNumber">Valid vault IDs are 0-3</param>
         /// <param name="dummyTemplate">An ItemTemplate to satisfy the base class's constructor</param>
-        public AccountVault(GamePlayer player, GameNPC vaultNPC, string vaultOwner, int vaultNumber, ItemTemplate dummyTemplate)
+        public AccountVault(GamePlayer player, GameNPC vaultNPC, string vaultOwner, int vaultNumber, DbItemTemplate dummyTemplate)
             : base(dummyTemplate, vaultNumber)
         {
             m_player = player;
@@ -131,7 +131,7 @@ namespace DOL.GS
             m_vaultOwner = vaultOwner;
             m_vaultNumber = vaultNumber;
 
-            DBHouse dbh = new DBHouse();
+            DbHouse dbh = new DbHouse();
             dbh.AllowAdd = false;
             dbh.GuildHouse = false;
             dbh.HouseNumber = player.ObjectID;
@@ -168,12 +168,12 @@ namespace DOL.GS
             return true;
         }
 
-        public override Dictionary<int, InventoryItem> GetClientInventory(GamePlayer player)
+        public override Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player)
         {
 
-            var items = new Dictionary<int, InventoryItem>();
+            var items = new Dictionary<int, DbInventoryItem>();
             int slotOffset = -FirstDBSlot + (int)(eInventorySlot.HousingInventory_First);
-            foreach (InventoryItem item in DBItems(player))
+            foreach (DbInventoryItem item in DBItems(player))
             {
                 if (item != null)
                 {
@@ -256,7 +256,7 @@ namespace DOL.GS
 
             if (toAccountVault)
             {
-                InventoryItem item = player.Inventory.GetItem((eInventorySlot)toSlot);
+                DbInventoryItem item = player.Inventory.GetItem((eInventorySlot)toSlot);
                 if (item != null)
                 {
                     if (gameVault.CanRemoveItems(player) == false)
@@ -278,8 +278,8 @@ namespace DOL.GS
                 return false;
             }
 
-            InventoryItem itemInFromSlot = player.Inventory.GetItem((eInventorySlot)fromSlot);
-            InventoryItem itemInToSlot = player.Inventory.GetItem((eInventorySlot)toSlot);
+            DbInventoryItem itemInFromSlot = player.Inventory.GetItem((eInventorySlot)fromSlot);
+            DbInventoryItem itemInToSlot = player.Inventory.GetItem((eInventorySlot)toSlot);
 
             // Check for a swap to get around not allowing non-tradables in a housing vault - Tolakram
             if (fromAccountVault && itemInToSlot != null && itemInToSlot.IsTradable == false)
@@ -373,9 +373,9 @@ namespace DOL.GS
         /// <summary>
         /// List of items in the vault.
         /// </summary>
-        private new IList<InventoryItem> DBItems(GamePlayer player = null)
+        private new IList<DbInventoryItem> DBItems(GamePlayer player = null)
         {
-            return GameServer.Database.SelectObjects<InventoryItem>(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDBSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDBSlot))));
+            return GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDBSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDBSlot))));
         }
 
         public override int FirstDBSlot

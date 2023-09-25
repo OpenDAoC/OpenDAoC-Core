@@ -27,7 +27,7 @@ namespace DOL.GS.Housing
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private DBHouse m_dbitem;
+		private DbHouse m_dbitem;
 
 		public GameLotMarker()
 			: base()
@@ -35,7 +35,7 @@ namespace DOL.GS.Housing
 			SaveInDB = false;
 		}
 
-		public DBHouse DatabaseItem
+		public DbHouse DatabaseItem
 		{
 			get { return m_dbitem; }
 			set { m_dbitem = value; }
@@ -126,7 +126,7 @@ namespace DOL.GS.Housing
 			}
 		}
 
-		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
 		{
 			if (source == null || item == null) 
 				return false;
@@ -225,7 +225,7 @@ namespace DOL.GS.Housing
 			return true;
 		}
 
-		public virtual bool OnPlayerSell(GamePlayer player, InventoryItem item)
+		public virtual bool OnPlayerSell(GamePlayer player, DbInventoryItem item)
 		{
 			if (!item.IsDropable)
 			{
@@ -236,7 +236,7 @@ namespace DOL.GS.Housing
 			return true;
 		}
 
-		public long OnPlayerAppraise(GamePlayer player, InventoryItem item, bool silent)
+		public long OnPlayerAppraise(GamePlayer player, DbInventoryItem item, bool silent)
 		{
 			if (item == null)
 				return 0;
@@ -250,7 +250,7 @@ namespace DOL.GS.Housing
 			// do nothing !!!
 		}
 
-		public static void SpawnLotMarker(DBHouse house)
+		public static void SpawnLotMarker(DbHouse house)
 		{
 			var obj = new GameLotMarker
 			          	{

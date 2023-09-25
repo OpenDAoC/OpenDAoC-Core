@@ -31,7 +31,7 @@ namespace DOL.GS.RealmAbilities
     {
         public const int DURATION = 60 * 1000;
 
-        public CallOfDarknessAbility(DBAbility dba, int level) : base(dba, level) { }
+        public CallOfDarknessAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action
