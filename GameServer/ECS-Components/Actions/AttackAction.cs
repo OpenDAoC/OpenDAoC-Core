@@ -13,7 +13,7 @@ namespace DOL.GS
         protected const int TICK_INTERVAL_FOR_NON_ATTACK = 100;
 
         protected AttackComponent _attackComponent;
-        protected AttackData _attackData;
+        protected AttackData _lastAttackData;
         protected DbInventoryItem _weapon;
         protected DbInventoryItem _leftWeapon;
         protected Style _combatStyle;
