@@ -37,5 +37,5 @@ cat << EOF > /app/config/serverconfig.xml
 EOF
 
 # Start the AtlasCore application
-cd /app && exec dotnet DOLServer.dll
+cd /app && exec dotnet CoreServer.dll
 
