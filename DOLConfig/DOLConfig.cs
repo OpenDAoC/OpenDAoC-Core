@@ -1,31 +1,11 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Data;
-using System.Windows.Forms;
 using System.Text.RegularExpressions;
-
-using MySql.Data.MySqlClient;
+using System.Windows.Forms;
 using DOL.Database.Connection;
 using DOL.GS;
-
+using MySql.Data.MySqlClient;
 
 namespace DOLConfig
 {
@@ -227,15 +207,15 @@ namespace DOLConfig
 
 			switch (currentConfig.DBType)
 			{
-				case ConnectionType.DATABASE_XML:
+				case EConnectionType.DATABASE_XML:
 					this.database_type_selectbox.SelectedItem = "XML";
 					this.xml_path_textbox.Text = currentConfig.DBConnectionString;
 					break;
-				case ConnectionType.DATABASE_SQLITE:
+				case EConnectionType.DATABASE_SQLITE:
 					this.database_type_selectbox.SelectedItem = "SQLite";
 					this.xml_path_textbox.Text = currentConfig.DBConnectionString;
 					break;
-				case ConnectionType.DATABASE_MYSQL:
+				case EConnectionType.DATABASE_MYSQL:
 				default:
 					this.database_type_selectbox.SelectedItem = "MySQL";
 					MySqlConnectionStringBuilder sb = new MySqlConnectionStringBuilder(currentConfig.DBConnectionString);
@@ -404,7 +384,7 @@ namespace DOLConfig
 			switch (this.database_type_selectbox.SelectedItem.ToString().ToLower())
 			{
 				case "xml":
-					currentConfig.DBType = ConnectionType.DATABASE_XML;
+					currentConfig.DBType = EConnectionType.DATABASE_XML;
 					if(xml_path_textbox.Text.Length == 0) {
 						addWrongValueErrorHandler(this.xml_path_textbox, "The value of \"Directory\" in \"XML Database settings\" is not set.");
 						return;
@@ -412,11 +392,11 @@ namespace DOLConfig
 					currentConfig.DBConnectionString = xml_path_textbox.Text;
 					break;
 				case "sqlite":
-					currentConfig.DBType = ConnectionType.DATABASE_SQLITE;
+					currentConfig.DBType = EConnectionType.DATABASE_SQLITE;
 					currentConfig.DBConnectionString = xml_path_textbox.Text;
 					break;
 				case "mysql":
-					currentConfig.DBType = ConnectionType.DATABASE_MYSQL;
+					currentConfig.DBType = EConnectionType.DATABASE_MYSQL;
 
 					//Mysql connection string builder
 					MySqlConnectionStringBuilder sb = new MySqlConnectionStringBuilder();
