@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class AtlasOF_AmelioratingMelodies : AmelioratingMelodiesAbility
 	{
-		public AtlasOF_AmelioratingMelodies(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_AmelioratingMelodies(DbAbility dba, int level) : base(dba, level) { }
 
         public override int MaxLevel { get { return 1; } }
         public override int CostForUpgrade(int level) { return 14; }

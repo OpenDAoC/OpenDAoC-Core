@@ -12,7 +12,7 @@ namespace DOL.GS.Quests
 
         public WeeklyQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step) { }
 
-        public WeeklyQuest(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest) { }
+        public WeeklyQuest(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest) { }
 
         public override bool CheckQuestQualification(GamePlayer player)
         {

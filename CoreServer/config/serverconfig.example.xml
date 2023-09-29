@@ -9,8 +9,8 @@
         <UdpPort>10400</UdpPort>
         <EnableUPnP>True</EnableUPnP>
         <DetectRegionIP>True</DetectRegionIP>
-        <ServerName>Dawn Of Light</ServerName>
-        <ServerNameShort>DOLSERVER</ServerNameShort>
+        <ServerName>OpenDAoC</ServerName>
+        <ServerNameShort>CoreServer</ServerNameShort>
         <LogConfigFile>./config/logconfig.xml</LogConfigFile>
         <ScriptCompilationTarget>./lib/GameServerScripts.dll</ScriptCompilationTarget>
         <ScriptAssemblies> </ScriptAssemblies>

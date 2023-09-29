@@ -206,7 +206,7 @@ namespace DOL.GS
 		/// Auto set stats based on DB entry, npcTemplate, and level.
 		/// </summary>
 		/// <param name="dbMob">Mob DB entry to load stats from, retrieved from DB if null</param>
-		public virtual void AutoSetStats(Mob dbMob = null)
+		public virtual void AutoSetStats(DbMob dbMob = null)
 		{
 			// Don't set stats for mobs until their level is set
 			if (Level < 1)
@@ -227,11 +227,11 @@ namespace DOL.GS
 			}
 			else
 			{
-				Mob mob = dbMob;
+				DbMob mob = dbMob;
 
 				if (mob == null && !string.IsNullOrEmpty(InternalID))
 					// This should only happen when a GM command changes level on a mob with no npcTemplate,
-					mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
+					mob = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
 
 				if (mob != null)
 				{
@@ -1001,8 +1001,8 @@ namespace DOL.GS
 						SwitchWeapon(eActiveWeaponSlot.Distance);
 					else
 					{
-						InventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-						InventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+						DbInventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+						DbInventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
 
 						if (twohand != null && onehand != null)
 							//Let's add some random chance
@@ -1032,13 +1032,13 @@ namespace DOL.GS
 		/// <param name="obj">template to load from</param>
 		public override void LoadFromDatabase(DataObject obj)
 		{
-			if (obj is not Mob)
+			if (obj is not DbMob)
 				return;
 
 			base.LoadFromDatabase(obj);
 
 			m_loadedFromScript = false;
-			Mob dbMob = (Mob)obj;
+			DbMob dbMob = (DbMob)obj;
 			NPCTemplate = NpcTemplateMgr.GetTemplate(dbMob.NPCTemplateID);
 			TranslationId = dbMob.TranslationId;
 			Name = dbMob.Name;
@@ -1162,7 +1162,7 @@ namespace DOL.GS
 
 			if (InternalID != null)
 			{
-				Mob mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
+				DbMob mob = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
 				if (mob != null)
 					GameServer.Database.DeleteObject(mob);
 			}
@@ -1184,15 +1184,15 @@ namespace DOL.GS
 			if (Brain is IControlledBrain)
 				return;
 
-			Mob mob = null;
+			DbMob mob = null;
 
 			if (InternalID != null)
-				mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
+				mob = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
 
 			if (mob == null)
 			{
 				if (LoadedFromScript == false)
-					mob = new Mob();
+					mob = new DbMob();
 				else
 					return;
 			}
@@ -1442,8 +1442,8 @@ namespace DOL.GS
 						this.SwitchWeapon(eActiveWeaponSlot.Distance);
 					else
 					{
-						InventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-						InventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+						DbInventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+						DbInventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
 
 						if (twohand != null && onehand != null)
 							//Let's add some random chance
@@ -2504,7 +2504,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The ambient texts
 		/// </summary>
-		public IList<MobXAmbientBehaviour> ambientTexts;
+		public IList<DbMobXAmbientBehavior> ambientTexts;
 
 		/// <summary>
 		/// This function is called from the ObjectInteractRequestHandler
@@ -2606,7 +2606,7 @@ namespace DOL.GS
 			return true;
 		}
 
-		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
 		{
 			if (this.DataQuestList.Count > 0)
 			{
@@ -2698,7 +2698,7 @@ namespace DOL.GS
 		private int scalingFactor = Properties.GAMENPC_SCALING;
 		private int orbsReward = 0;
 		
-		public override double GetWeaponSkill(InventoryItem weapon)
+		public override double GetWeaponSkill(DbInventoryItem weapon)
 		{
 			double weaponSkill = (Level + 1) * (ScalingFactor / 7.5) * (1 + 0.01 * GetWeaponStat(weapon) / 2);
 			return Math.Max(0, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
@@ -2717,7 +2717,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="weapon">the weapon used for attack</param>
 		/// <returns></returns>
-		public virtual double AttackDamage(InventoryItem weapon)
+		public virtual double AttackDamage(DbInventoryItem weapon)
 		{
 			return attackComponent.AttackDamage(weapon, out _);
 		}
@@ -3013,8 +3013,8 @@ namespace DOL.GS
 			StopFollowing();
 			attackComponent.StopAttack();
 
-			InventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-			InventoryItem righthand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+			DbInventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+			DbInventoryItem righthand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
 
 			if (twohand != null && righthand == null)
 				SwitchWeapon(eActiveWeaponSlot.TwoHanded);
@@ -3264,7 +3264,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The chance for a critical hit
 		/// </summary>
-		public int AttackCriticalChance(InventoryItem weapon)
+		public int AttackCriticalChance(DbInventoryItem weapon)
 		{
 			if (m_activeWeaponSlot == eActiveWeaponSlot.Distance)
 			{
@@ -3310,9 +3310,9 @@ namespace DOL.GS
 			
 			if (XPGainerList.Keys.Count == 0) return;
 
-			ItemTemplate[] lootTemplates = LootMgr.GetLoot(this, killer);
+			DbItemTemplate[] lootTemplates = LootMgr.GetLoot(this, killer);
 
-			foreach (ItemTemplate lootTemplate in lootTemplates)
+			foreach (DbItemTemplate lootTemplate in lootTemplates)
 			{
 				if (lootTemplate == null) continue;
 				GameStaticItem loot = null;
@@ -3374,12 +3374,12 @@ namespace DOL.GS
 				}
 				else
 				{
-					InventoryItem invitem;
+					DbInventoryItem invitem;
 
-					if (lootTemplate is ItemUnique)
+					if (lootTemplate is DbItemUnique)
 					{
 						GameServer.Database.AddObject(lootTemplate);
-						invitem = GameInventoryItem.Create(lootTemplate as ItemUnique);
+						invitem = GameInventoryItem.Create(lootTemplate as DbItemUnique);
 					}
 					else
 						invitem = GameInventoryItem.Create(lootTemplate);
@@ -4165,7 +4165,7 @@ namespace DOL.GS
 		{
 			if (IsSilent || ambientTexts == null || ambientTexts.Count == 0) return;
 			if (trigger == eAmbientTrigger.interact && living == null) return; // Do not trigger interact messages with a corpse
-			List<MobXAmbientBehaviour> mxa = (from i in ambientTexts where i.Trigger == trigger.ToString() select i).ToList();
+			List<DbMobXAmbientBehavior> mxa = (from i in ambientTexts where i.Trigger == trigger.ToString() select i).ToList();
 			if (mxa.Count == 0) return;
 
 			// grab random sentence

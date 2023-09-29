@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_Juggernaut : TimedRealmAbility
     {
-        public AtlasOF_Juggernaut(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_Juggernaut(DbAbility dba, int level) : base(dba, level) { }
 
         public const int duration = 240000; // 240 seconds - 4 minutes
 

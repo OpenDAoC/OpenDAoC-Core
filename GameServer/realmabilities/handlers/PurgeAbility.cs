@@ -13,7 +13,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class PurgeAbility : TimedRealmAbility
     {
-        public PurgeAbility(DBAbility dba, int level) : base(dba, level) { }
+        public PurgeAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace DOL.GS {
     public static class AtlasROGManager {
 
-        private static ItemTemplate beadTemplate = null;
+        private static DbItemTemplate beadTemplate = null;
         
         private static string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
 
@@ -64,7 +64,7 @@ namespace DOL.GS {
                 }
                 
                 GameServer.Database.AddObject(item);
-                InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+                DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
@@ -85,7 +85,7 @@ namespace DOL.GS {
                 item.IsTradable = true;
 
                 GameServer.Database.AddObject(item);
-                InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+                DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
@@ -112,7 +112,7 @@ namespace DOL.GS {
                 item.IsTradable = true;
 
                 GameServer.Database.AddObject(item);
-                InventoryItem invitem = GameInventoryItem.Create<ItemUnique>(item);
+                DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
                 player.Out.SendMessage(
@@ -173,7 +173,7 @@ namespace DOL.GS {
             {
                 var player = living as GamePlayer;
                 
-                var orbs = GameServer.Database.FindObjectByKey<ItemTemplate>(_currencyID);
+                var orbs = GameServer.Database.FindObjectByKey<DbItemTemplate>(_currencyID);
                 
                 if (orbs == null)
                 {
@@ -181,7 +181,7 @@ namespace DOL.GS {
                     return;
                 }
 
-                InventoryItem item = GameInventoryItem.Create(orbs);
+                DbInventoryItem item = GameInventoryItem.Create(orbs);
 
                 double numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player) != null ? LoyaltyManager.GetPlayerRealmLoyalty(player).Days : 0;
 
@@ -226,15 +226,15 @@ namespace DOL.GS {
             {
                 var player = living as GamePlayer;
 
-                ItemTemplate token = null;
+                DbItemTemplate token = null;
                 if(living.Level > 19 && living.Level < 25) //level bracket 20-24
-                    token = GameServer.Database.FindObjectByKey<ItemTemplate>("L20RewardToken");
+                    token = GameServer.Database.FindObjectByKey<DbItemTemplate>("L20RewardToken");
                 if(living.Level > 33 && living.Level < 40) //level bracket 34-39
-                    token = GameServer.Database.FindObjectByKey<ItemTemplate>("L35RewardToken");
+                    token = GameServer.Database.FindObjectByKey<DbItemTemplate>("L35RewardToken");
 
                 if (token == null) return;
 
-                InventoryItem item = GameInventoryItem.Create(token);
+                DbInventoryItem item = GameInventoryItem.Create(token);
                 item.OwnerID = player.InternalID;
 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
@@ -258,9 +258,9 @@ namespace DOL.GS {
             {
                 var player = living as GamePlayer;
 
-                var itemTP = GameServer.Database.FindObjectByKey<ItemTemplate>("beetle_carapace");
+                var itemTP = GameServer.Database.FindObjectByKey<DbItemTemplate>("beetle_carapace");
 
-                InventoryItem item = GameInventoryItem.Create(itemTP);
+                DbInventoryItem item = GameInventoryItem.Create(itemTP);
                 
                 item.OwnerID = player.InternalID;
 
@@ -296,12 +296,12 @@ namespace DOL.GS {
             
         }
 
-        public static ItemUnique GenerateBeadOfRegeneration()
+        public static DbItemUnique GenerateBeadOfRegeneration()
         {
             if(beadTemplate == null)
-                beadTemplate = GameServer.Database.FindObjectByKey<ItemTemplate>("Bead_Of_Regeneration");
+                beadTemplate = GameServer.Database.FindObjectByKey<DbItemTemplate>("Bead_Of_Regeneration");
             
-            ItemUnique item = new ItemUnique(beadTemplate);
+            DbItemUnique item = new DbItemUnique(beadTemplate);
             
             return item;
         }

@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
             storm.Movable = true;
 
             // Construct the storm spell
-            dbs = new DBSpell();
+            dbs = new DbSpell();
             dbs.Name = spell.Name;
             dbs.Icon = 7210;
             dbs.ClientEffect = 7210;
@@ -181,7 +181,7 @@ namespace DOL.GS.Spells
 
 
             // Construct the storm spell
-            dbs = new DBSpell();
+            dbs = new DbSpell();
             dbs.Name = spell.Name;
             dbs.Icon = 7273;
             dbs.ClientEffect = 7273;
@@ -263,7 +263,7 @@ namespace DOL.GS.Spells
             storm.Movable = true;
 
             // Construct the storm spell
-            dbs = new DBSpell();
+            dbs = new DbSpell();
             dbs.Name = spell.Name;
             dbs.Icon = 7258;
             dbs.ClientEffect = 7258;
@@ -346,7 +346,7 @@ namespace DOL.GS.Spells
             storm.Movable = true;
 
             // Construct the storm spell
-            dbs = new DBSpell();
+            dbs = new DbSpell();
             dbs.Name = spell.Name;
             dbs.Icon = 7303;
             dbs.ClientEffect = 7303;
@@ -500,7 +500,7 @@ namespace DOL.GS.Spells
             storm.Movable = true;
 
             // Construct the storm spell
-            dbs = new DBSpell();
+            dbs = new DbSpell();
             dbs.Name = spell.Name;
             dbs.Icon = 7223;
             dbs.ClientEffect = 7223;
@@ -583,7 +583,7 @@ namespace DOL.GS.Spells
             storm.Movable = true;
 
             // Construct the storm spell
-            dbs = new DBSpell();
+            dbs = new DbSpell();
             dbs.Name = spell.Name;
             dbs.Icon = 7305;
             dbs.ClientEffect = 7305;
@@ -677,7 +677,7 @@ namespace DOL.GS.Spells
             storm.Movable = true;
 
             // Construct the storm spell
-            dbs = new DBSpell();
+            dbs = new DbSpell();
             dbs.Name = spell.Name;
             dbs.Icon = 7216;
             dbs.ClientEffect = 7216;

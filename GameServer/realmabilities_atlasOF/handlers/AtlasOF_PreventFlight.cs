@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class AtlasOF_PreventFlight : RealmAbility
 	{
-		public AtlasOF_PreventFlight(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_PreventFlight(DbAbility dba, int level) : base(dba, level) { }
 
 		public override int MaxLevel { get { return 1; } }
 

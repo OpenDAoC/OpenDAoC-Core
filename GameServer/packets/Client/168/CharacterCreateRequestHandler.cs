@@ -418,8 +418,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
         private bool CreateCharacter(CreationCharacterData pdata, GameClient client, int accountSlot)
         {
-            Account account = client.Account;
-            var ch = new DOLCharacters
+            DbAccount account = client.Account;
+            var ch = new DbCoreCharacter
             {
                 AccountName = account.Name,
                 Name = pdata.CharName
@@ -579,7 +579,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <param name="client">client</param>
         /// <param name="character">db character</param>
         /// <returns>True if character need refreshment false if no refresh needed.</returns>
-        private bool CheckCharacterForUpdates(CreationCharacterData pdata, GameClient client, DOLCharacters character)
+        private bool CheckCharacterForUpdates(CreationCharacterData pdata, GameClient client, DbCoreCharacter character)
         {
             int newModel = character.CurrentModel;
 
@@ -730,7 +730,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         }
 
         // 1125 support
-        private bool CheckCharacterForUpdates1125(CreationCharacterData pdata, GameClient client, DOLCharacters character, int type)
+        private bool CheckCharacterForUpdates1125(CreationCharacterData pdata, GameClient client, DbCoreCharacter character, int type)
         {
             int newModel = character.CurrentModel;
 
@@ -911,11 +911,11 @@ namespace DOL.GS.PacketHandler.Client.v168
                 }
             }            
 
-            DOLCharacters[] allChars = client.Account.Characters;
+            DbCoreCharacter[] allChars = client.Account.Characters;
 
             if (allChars != null)
             {
-                foreach (DOLCharacters character in allChars.ToArray())
+                foreach (DbCoreCharacter character in allChars.ToArray())
                 {
                     if (character.AccountSlot == charSlot && client.ClientState == GameClient.eClientState.CharScreen)
                     {
@@ -933,7 +933,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						if (Properties.BACKUP_DELETED_CHARACTERS)
 						{
-							var backupCharacter = new DOLCharactersBackup(character);
+							var backupCharacter = new DbCoreCharacterBackup(character);
 							Util.ForEach(backupCharacter.CustomParams, param => GameServer.Database.AddObject(param));
 							GameServer.Database.AddObject(backupCharacter);
 
@@ -947,7 +947,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                             // delete associated data
                             try
                             {
-                                var objs = GameServer.Database.SelectObjects<InventoryItem>(DB.Column("OwnerID").IsEqualTo(character.ObjectId));
+                                var objs = GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(character.ObjectId));
                                 GameServer.Database.DeleteObject(objs);
                             }
                             catch (Exception e)
@@ -961,7 +961,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                             // delete quests
                             try
                             {
-                                var objs = GameServer.Database.SelectObjects<DBQuest>(DB.Column("Character_ID").IsEqualTo(character.ObjectId));
+                                var objs = GameServer.Database.SelectObjects<DbQuest>(DB.Column("Character_ID").IsEqualTo(character.ObjectId));
                                 GameServer.Database.DeleteObject(objs);
                             }
                             catch (Exception e)
@@ -975,7 +975,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                             // delete ML steps
                             try
                             {
-                                var objs = GameServer.Database.SelectObjects<DBCharacterXMasterLevel>(DB.Column("Character_ID").IsEqualTo(character.ObjectId));
+                                var objs = GameServer.Database.SelectObjects<DbCharacterXMasterLevel>(DB.Column("Character_ID").IsEqualTo(character.ObjectId));
                                 GameServer.Database.DeleteObject(objs);
                             }
                             catch (Exception e)
@@ -1025,7 +1025,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <param name="stats"></param>
         /// <param name="points"></param>
         /// <returns></returns>
-        public static bool IsCustomPointsDistributionValid(DOLCharacters character, IDictionary<eStat, int> stats, out int points)
+        public static bool IsCustomPointsDistributionValid(DbCoreCharacter character, IDictionary<eStat, int> stats, out int points)
         {
             ICharacterClass charClass = ScriptMgr.FindCharacterClass(character.Class);
 
@@ -1088,7 +1088,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// </summary>
         /// <param name="ch">The character to check</param>
         /// <returns>True if valid</returns>
-        public static bool IsCharacterValid(DOLCharacters ch)
+        public static bool IsCharacterValid(DbCoreCharacter ch)
         {
             bool valid = true;
             try

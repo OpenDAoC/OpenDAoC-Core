@@ -29,7 +29,7 @@ using DOL.Language;
 namespace DOL.GS.Behaviour.Actions
 {
     [ActionAttribute(ActionType = eActionType.DropItem)]
-    public class DropItemAction : AbstractAction<ItemTemplate,Unused>
+    public class DropItemAction : AbstractAction<DbItemTemplate,Unused>
     {               
 
         public DropItemAction(GameNPC defaultNPC,  Object p, Object q)
@@ -38,7 +38,7 @@ namespace DOL.GS.Behaviour.Actions
         }
 
 
-        public DropItemAction(GameNPC defaultNPC, ItemTemplate itemTemplate)
+        public DropItemAction(GameNPC defaultNPC, DbItemTemplate itemTemplate)
             : this(defaultNPC, (object) itemTemplate,(object) null) { }
         
 
@@ -46,7 +46,7 @@ namespace DOL.GS.Behaviour.Actions
         public override void Perform(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
-			InventoryItem inventoryItem = GameInventoryItem.Create(P as ItemTemplate);
+			DbInventoryItem inventoryItem = GameInventoryItem.Create(P as DbItemTemplate);
 
             player.CreateItemOnTheGround(inventoryItem);
             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.DropItemAction.DropsFrontYou", inventoryItem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);

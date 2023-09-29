@@ -708,11 +708,11 @@ namespace DOL.GS.Effects
 		public int[] RestoreVars = new int[] { };
 		public bool RestoredEffect = false;
 
-		public PlayerXEffect getSavedEffect()
+		public DbPlayerXEffect getSavedEffect()
 		{
 			if (this.RestoredEffect && this.RemainingTime > 5000)
 			{
-				PlayerXEffect eff = new PlayerXEffect();
+				DbPlayerXEffect eff = new DbPlayerXEffect();
 				eff.Duration = this.RemainingTime;
 				eff.IsHandler = true;
 				eff.Var1 = this.RestoreVars[0];
@@ -726,7 +726,7 @@ namespace DOL.GS.Effects
 			}
 			if (m_handler != null)
 			{
-				PlayerXEffect eff = m_handler.GetSavedEffect(this);
+				DbPlayerXEffect eff = m_handler.GetSavedEffect(this);
 				return eff;
 			}
 			return null;

@@ -6,7 +6,7 @@ namespace DOL.GS.RealmAbilities
 
     public class AtlasOF_ThornweedField : ThornweedFieldAbility
     {
-        public AtlasOF_ThornweedField(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_ThornweedField(DbAbility dba, int level) : base(dba, level) { }
 
         public override int MaxLevel { get { return 1; } }
         public override int CostForUpgrade(int level) { return 14; }

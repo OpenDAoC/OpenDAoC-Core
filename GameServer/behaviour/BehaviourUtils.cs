@@ -78,13 +78,13 @@ namespace DOL.GS.Behaviour
             {
                 result = QuestMgr.ResolveLiving(obj);
             }
-            else if (destinationType == typeof(ItemTemplate))
+            else if (destinationType == typeof(DbItemTemplate))
             {
-                if (obj is ItemTemplate)
+                if (obj is DbItemTemplate)
                     result = obj;
                 else
                 {
-                    result = GameServer.Database.FindObjectByKey<ItemTemplate>(Convert.ToString(obj));
+                    result = GameServer.Database.FindObjectByKey<DbItemTemplate>(Convert.ToString(obj));
                 }
             }
             else if (destinationType == typeof(CustomDialogResponse))

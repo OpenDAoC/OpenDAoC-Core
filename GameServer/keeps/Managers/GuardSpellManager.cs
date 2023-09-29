@@ -176,7 +176,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_albLordHealSpell == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 2;
 					spell.ClientEffect = 1340;
@@ -202,7 +202,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_midLordHealSpell == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 2;
 					spell.ClientEffect = 3011;
@@ -228,7 +228,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_hibLordHealSpell == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 2;
 					spell.ClientEffect = 3030;
@@ -258,7 +258,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_albGuardHealSmallSpell == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.ClientEffect = 1340;
@@ -283,7 +283,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_midGuardHealSmallSpell == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.ClientEffect = 3011;
@@ -308,7 +308,7 @@ namespace DOL.GS.Keeps
 			{
 				if (m_hibGuardHealSmallSpell == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.ClientEffect = 3030;
@@ -337,7 +337,7 @@ namespace DOL.GS.Keeps
             {
                 if (m_albGuardBoltSpellPortalKeep == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 2;
                     spell.DamageType = (int)eDamageType.Heat;
@@ -365,7 +365,7 @@ namespace DOL.GS.Keeps
             {
                 if (m_midGuardBoltSpellPortalKeep == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 2;
                     spell.DamageType = (int)eDamageType.Matter;
@@ -393,7 +393,7 @@ namespace DOL.GS.Keeps
             {
                 if (m_hibGuardBoltSpellPortalKeep == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 2;
                     spell.DamageType = (int)eDamageType.Cold;
@@ -425,7 +425,7 @@ namespace DOL.GS.Keeps
             {
                 if (m_albGuardNukeSpell == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.DamageType = 13;
@@ -452,7 +452,7 @@ namespace DOL.GS.Keeps
             {
                 if (m_midGuardNukeSpell == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.DamageType = 12;
@@ -479,7 +479,7 @@ namespace DOL.GS.Keeps
             {
                 if (m_hibGuardNukeSpell == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.DamageType = 11;

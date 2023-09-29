@@ -69,7 +69,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="questingPlayer">The player doing the quest</param>
 		/// <param name="dbQuest">The database object</param>
-		public RewardQuest(GamePlayer questingPlayer, DBQuest dbQuest) 
+		public RewardQuest(GamePlayer questingPlayer, DbQuest dbQuest) 
 			: base(questingPlayer, dbQuest)
 		{
 			m_rewards = new QuestRewards(this);
@@ -83,7 +83,7 @@ namespace DOL.GS.Quests
 		/// <param name="type"></param>
 		/// <param name="targetNumber"></param>
 		/// <param name="questItem"></param>
-		protected QuestGoal AddGoal(string description, QuestGoal.GoalType type, int targetNumber, ItemTemplate questItem)
+		protected QuestGoal AddGoal(string description, QuestGoal.GoalType type, int targetNumber, DbItemTemplate questItem)
 		{
 			QuestGoal goal = new QuestGoal("none", this, description, type, m_goals.Count + 1, targetNumber, questItem);
 			m_goals.Add(goal);
@@ -99,7 +99,7 @@ namespace DOL.GS.Quests
 		/// <param name="targetNumber"></param>
 		/// <param name="questItem"></param>
 		/// <returns></returns>
-		protected QuestGoal AddGoal(string id, string description, QuestGoal.GoalType type, int targetNumber, ItemTemplate questItem)
+		protected QuestGoal AddGoal(string id, string description, QuestGoal.GoalType type, int targetNumber, DbItemTemplate questItem)
 		{
 			QuestGoal goal = new QuestGoal(id, this, description, type, m_goals.Count + 1, targetNumber, questItem);
 			m_goals.Add(goal);
@@ -244,12 +244,12 @@ namespace DOL.GS.Quests
 				if (Rewards.GiveRealmPoints > 0)
 					QuestPlayer.GainRealmPoints(Rewards.GiveRealmPoints);
 
-				foreach (ItemTemplate basicReward in Rewards.BasicItems)
+				foreach (DbItemTemplate basicReward in Rewards.BasicItems)
 				{
 					GiveItem(QuestPlayer, basicReward);
 				}
 
-				foreach (ItemTemplate optionalReward in Rewards.ChosenItems)
+				foreach (DbItemTemplate optionalReward in Rewards.ChosenItems)
 				{
 					GiveItem(QuestPlayer, optionalReward);
 				}
@@ -276,7 +276,7 @@ namespace DOL.GS.Quests
 			private int m_zoneID1 = 0, m_xOffset1 = 0, m_yOffset1 = 0;
 			private int m_zoneID2 = 0, m_xOffset2 = 0, m_yOffset2 = 0;
 			private GoalType m_goalType;
-			private ItemTemplate m_questItem = null;
+			private DbItemTemplate m_questItem = null;
 
 			public enum GoalType { KillTask = 3, ScoutMission = 5 };	// These are just a hunch for now.
 
@@ -289,7 +289,7 @@ namespace DOL.GS.Quests
 			/// <param name="type"></param>
 			/// <param name="index"></param>
 			/// <param name="target"></param>
-			public QuestGoal(string id, RewardQuest quest, string description, GoalType type, int index, int target, ItemTemplate questItem)
+			public QuestGoal(string id, RewardQuest quest, string description, GoalType type, int index, int target, DbItemTemplate questItem)
 			{
 				m_id = id;
 				m_quest = quest;
@@ -337,7 +337,7 @@ namespace DOL.GS.Quests
 			/// <summary>
 			/// The quest item required for this goal.
 			/// </summary>
-			public ItemTemplate QuestItem
+			public DbItemTemplate QuestItem
 			{
 				get { return (Current > 0) ? m_questItem : null; }
 				set { m_questItem = value; }
@@ -477,9 +477,9 @@ namespace DOL.GS.Quests
 			private RewardQuest m_quest;
 			private int m_moneyPercent;
 			private long m_experience;
-			private List<ItemTemplate> m_basicItems, m_optionalItems;
+			private List<DbItemTemplate> m_basicItems, m_optionalItems;
 			private int m_choiceOf;
-			private List<ItemTemplate> m_chosenItems;
+			private List<DbItemTemplate> m_chosenItems;
 			private int m_bountypoints;
 			private int	m_realmpoints;
 			private int	m_gold;
@@ -489,10 +489,10 @@ namespace DOL.GS.Quests
 				m_quest = quest;
 				m_moneyPercent = 0;
 				m_experience = 0;
-				m_basicItems = new List<ItemTemplate>();
-				m_optionalItems = new List<ItemTemplate>();
+				m_basicItems = new List<DbItemTemplate>();
+				m_optionalItems = new List<DbItemTemplate>();
 				m_choiceOf = 0;
-				m_chosenItems = new List<ItemTemplate>();
+				m_chosenItems = new List<DbItemTemplate>();
 				m_bountypoints = 0;
 				m_realmpoints = 0;
 				m_gold = 0;
@@ -579,7 +579,7 @@ namespace DOL.GS.Quests
 			/// Add a basic reward (up to a maximum of 8).
 			/// </summary>
 			/// <param name="reward"></param>
-			public void AddBasicItem(ItemTemplate reward)
+			public void AddBasicItem(DbItemTemplate reward)
 			{
 				if (m_basicItems.Count < 8)
 					m_basicItems.Add(reward);
@@ -589,7 +589,7 @@ namespace DOL.GS.Quests
 			/// Add an optional reward (up to a maximum of 8).
 			/// </summary>
 			/// <param name="reward"></param>
-			public void AddOptionalItem(ItemTemplate reward)
+			public void AddOptionalItem(DbItemTemplate reward)
 			{
 				if (m_optionalItems.Count < 8)
 					m_optionalItems.Add(reward);
@@ -670,7 +670,7 @@ namespace DOL.GS.Quests
 			/// <summary>
 			/// List of basic item rewards.
 			/// </summary>
-			public List<ItemTemplate> BasicItems
+			public List<DbItemTemplate> BasicItems
 			{
 				get { return m_basicItems; }
 			}
@@ -678,7 +678,7 @@ namespace DOL.GS.Quests
 			/// <summary>
 			/// List of optional item rewards.
 			/// </summary>
-			public List<ItemTemplate> OptionalItems
+			public List<DbItemTemplate> OptionalItems
 			{
 				get { return m_optionalItems; }
 			}
@@ -686,7 +686,7 @@ namespace DOL.GS.Quests
 			/// <summary>
 			/// List of optional rewards the player actually picked.
 			/// </summary>
-			public List<ItemTemplate> ChosenItems
+			public List<DbItemTemplate> ChosenItems
 			{
 				get { return m_chosenItems; }
 			}

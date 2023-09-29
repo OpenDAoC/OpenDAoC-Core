@@ -83,7 +83,7 @@ namespace DOL.GS.RealmAbilities
 			DisableSkill(player);
 		}
 
-		public AtlasOF_Longshot(DBAbility ability, int level) : base(ability, level)
+		public AtlasOF_Longshot(DbAbility ability, int level) : base(ability, level)
 		{
 		}
 	}

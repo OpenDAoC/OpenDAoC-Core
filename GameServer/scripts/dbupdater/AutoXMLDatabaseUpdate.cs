@@ -212,7 +212,7 @@ namespace DOL.GS.DatabaseUpdate
 					var tableHandler = new DataTableHandler(xmlType);
 					
 					// Find unique Fields
-					var uniqueMember = DatabaseUtils.GetUniqueMembers(xmlType);
+					var uniqueMember = DatabaseUtil.GetUniqueMembers(xmlType);
 					
 					// Get all object "Method" Through Reflection
 					var classMethod = GameServer.Database.GetType().GetMethod("SelectAllObjects", Type.EmptyTypes);

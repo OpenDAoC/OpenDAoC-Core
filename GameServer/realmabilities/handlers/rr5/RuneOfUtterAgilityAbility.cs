@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class RuneOfUtterAgilityAbility : RR5RealmAbility
 	{
-		public RuneOfUtterAgilityAbility(DBAbility dba, int level) : base(dba, level) { }
+		public RuneOfUtterAgilityAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

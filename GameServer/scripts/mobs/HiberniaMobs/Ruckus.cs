@@ -85,7 +85,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_RuckusDA == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.Power = 0;
@@ -114,7 +114,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Ruckus_stun == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 2;

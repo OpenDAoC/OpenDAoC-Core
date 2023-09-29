@@ -120,13 +120,13 @@ namespace DOL.GS.PacketHandler
 				pak.WriteInt((uint)quest.MoneyReward());
 				pak.WriteByte((byte)quest.ExperiencePercent(player));
 				pak.WriteByte((byte)quest.FinalRewards.Count);
-				foreach (ItemTemplate reward in quest.FinalRewards)
+				foreach (DbItemTemplate reward in quest.FinalRewards)
 				{
 					WriteItemData(pak, GameInventoryItem.Create(reward));
 				}
 				pak.WriteByte(quest.NumOptionalRewardsChoice);
 				pak.WriteByte((byte)quest.OptionalRewards.Count);
-				foreach (ItemTemplate reward in quest.OptionalRewards)
+				foreach (DbItemTemplate reward in quest.OptionalRewards)
 				{
 					WriteItemData(pak, GameInventoryItem.Create(reward));
 				}
@@ -194,13 +194,13 @@ namespace DOL.GS.PacketHandler
 				pak.WriteInt((uint)(quest.Rewards.Money)); // unknown, new in 1.94
 				pak.WriteByte((byte)quest.Rewards.ExperiencePercent(player));
 				pak.WriteByte((byte)quest.Rewards.BasicItems.Count);
-				foreach (ItemTemplate reward in quest.Rewards.BasicItems)
+				foreach (DbItemTemplate reward in quest.Rewards.BasicItems)
 				{
 					WriteItemData(pak, GameInventoryItem.Create(reward));
 				}
 				pak.WriteByte((byte)quest.Rewards.ChoiceOf);
 				pak.WriteByte((byte)quest.Rewards.OptionalItems.Count);
-				foreach (ItemTemplate reward in quest.Rewards.OptionalItems)
+				foreach (DbItemTemplate reward in quest.Rewards.OptionalItems)
 				{
 					WriteItemData(pak, GameInventoryItem.Create(reward));
 				}

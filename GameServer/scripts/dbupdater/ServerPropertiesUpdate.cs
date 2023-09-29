@@ -46,11 +46,11 @@ namespace DOL.GS.DatabaseUpdate
         {
             log.Info("Updating the ServerProperty table...");
 
-            var properties = GameServer.Database.SelectAllObjects<ServerProperty>();
+            var properties = GameServer.Database.SelectAllObjects<DbServerProperty>();
 
             bool aclkFound = false;
             bool unlsFound = false;
-            foreach (ServerProperty property in properties)
+            foreach (DbServerProperty property in properties)
             {
                 if (property.Key != "allowed_custom_language_keys" && property.Key != "use_new_language_system")
                     continue;

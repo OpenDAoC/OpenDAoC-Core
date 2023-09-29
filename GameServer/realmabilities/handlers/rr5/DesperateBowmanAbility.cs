@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class DesperateBowmanAbility : RR5RealmAbility
 	{
-		public DesperateBowmanAbility(DBAbility dba, int level) : base(dba, level) { }
+		public DesperateBowmanAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

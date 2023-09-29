@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
         int m_duration = 20000;
         int m_value = 100;
 
-        public AdrenalineRushAbility(DBAbility dba, int level) : base(dba, level) { }
+        public AdrenalineRushAbility(DbAbility dba, int level) : base(dba, level) { }
 
         public override void Execute(GameLiving living)
         {

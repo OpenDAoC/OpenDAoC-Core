@@ -128,7 +128,7 @@ namespace DOL.GS.Styles
         /// <summary>
         /// The database style object, used to retrieve information for this object
         /// </summary>
-        protected DBStyle baseStyle = null;
+        protected DbStyle baseStyle = null;
 
         public int ClassID => baseStyle.ClassId;
 
@@ -229,7 +229,7 @@ namespace DOL.GS.Styles
         /// Constructs a new Style object based on a database Style object
         /// </summary>
         /// <param name="style">The database style object this object is based on</param>
-        public Style(DBStyle style, StyleExecutedCallback callback) : base(style.Name, style.ID, (ushort)style.Icon, style.SpecLevelRequirement, style.StyleID)
+        public Style(DbStyle style, StyleExecutedCallback callback) : base(style.Name, style.ID, (ushort)style.Icon, style.SpecLevelRequirement, style.StyleID)
         {
             baseStyle = style;
             OnStyleExecuted = callback;

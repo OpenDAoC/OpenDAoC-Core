@@ -23,7 +23,7 @@ namespace DOL.GS.RealmAbilities
 		private int effectiveness;
 		private ushort region;
 
-		public DecimationTrapAbility(DBAbility dba, int level) : base(dba, level) { }
+		public DecimationTrapAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

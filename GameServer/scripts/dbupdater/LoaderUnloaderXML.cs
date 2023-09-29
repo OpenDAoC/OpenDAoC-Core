@@ -60,7 +60,7 @@ namespace DOL.GS.DatabaseUpdate
 							continue;
 						
 						// Don't Keep Views...
-						if (type.GetCustomAttributes<DataTable>(false).Any() && AttributesUtils.GetViewName(type) == null)
+						if (type.GetCustomAttributes<DataTable>(false).Any() && AttributeUtil.GetViewName(type) == null)
 							result.Add(type);
 					}
 				}
@@ -147,7 +147,7 @@ namespace DOL.GS.DatabaseUpdate
 				var attrib = t.GetCustomAttributes<DataTable>(false);
 				if (attrib.Any())
 				{
-					var tableName = AttributesUtils.GetTableName(t);
+					var tableName = AttributeUtil.GetTableName(t);
 					
 					var path = string.Format("{0}{1}{2}.xml", directory, Path.DirectorySeparatorChar, tableName);
 	       			
@@ -159,7 +159,7 @@ namespace DOL.GS.DatabaseUpdate
 					try
 					{
 						// Try Sorting them !
-						var remarkables = DatabaseUtils.GetRemarkableMembers(t, true);
+						var remarkables = DatabaseUtil.GetRemarkableMembers(t, true);
 						
 						if (remarkables.Length > 0)
 						{

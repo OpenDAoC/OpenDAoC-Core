@@ -29,14 +29,14 @@ namespace DOL.Events
 		/// <summary>
 		/// Holds the target news for this event
 		/// </summary>
-		private DBNews m_news;
+		private DbNews m_news;
 		
 		/// <summary>
 		/// Constructs a new event argument class for the
 		/// news events 
 		/// </summary>
 		/// <param name="account"></param>
-		public NewsEventArgs(DBNews news)
+		public NewsEventArgs(DbNews news)
 		{
 			m_news = news;
 		}
@@ -44,7 +44,7 @@ namespace DOL.Events
 		/// <summary>
 		/// Gets the target news for this event
 		/// </summary>
-		public DBNews News
+		public DbNews News
 		{
 			get
 			{

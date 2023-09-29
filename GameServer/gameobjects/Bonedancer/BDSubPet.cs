@@ -54,11 +54,11 @@ namespace DOL.GS
                 if (m_PetSpecLine == null && Brain is IControlledBrain brain && brain.GetPlayerOwner() is GamePlayer player)
                 {
                     // Get the spell that summoned this pet
-                    DBSpell dbSummoningSpell = DOLDB<DBSpell>.SelectObject(DB.Column("LifeDrainReturn").IsEqualTo(NPCTemplate.TemplateId));
+                    DbSpell dbSummoningSpell = DOLDB<DbSpell>.SelectObject(DB.Column("LifeDrainReturn").IsEqualTo(NPCTemplate.TemplateId));
                     if (dbSummoningSpell != null)
                     {
                         // Figure out which spell line the summoning spell is from
-                        DBLineXSpell dbLineSpell = DOLDB<DBLineXSpell>.SelectObject(DB.Column("SpellID").IsEqualTo(dbSummoningSpell.SpellID));
+                        DbLineXSpell dbLineSpell = DOLDB<DbLineXSpell>.SelectObject(DB.Column("SpellID").IsEqualTo(dbSummoningSpell.SpellID));
                         if (dbLineSpell != null)
                         {
                             // Now figure out what the spec name is
@@ -85,12 +85,12 @@ namespace DOL.GS
         /// </summary>
         public void MinionGetWeapon(CommanderPet.eWeaponType weaponType)
         {
-            ItemTemplate itemTemp = CommanderPet.GetWeaponTemplate(weaponType);
+            DbItemTemplate itemTemp = CommanderPet.GetWeaponTemplate(weaponType);
 
             if (itemTemp == null)
                 return;
 
-            InventoryItem weapon;
+            DbInventoryItem weapon;
 
             weapon = GameInventoryItem.Create(itemTemp);
             if (weapon != null)

@@ -27,7 +27,7 @@ namespace DOL.GS
 		private int m_animationId;
 		private int m_weaponSpeed;
 		private bool m_isOffHand;
-		private InventoryItem m_weapon;
+		private DbInventoryItem m_weapon;
 		private bool m_isSpellResisted = false;
 		private bool m_causesCombat = true;
 		private double m_missRate = 0;
@@ -211,7 +211,7 @@ namespace DOL.GS
 			set { m_isOffHand = value; }
 		}
 
-		public InventoryItem Weapon
+		public DbInventoryItem Weapon
 		{
 			get { return m_weapon; }
 			set { m_weapon = value; }

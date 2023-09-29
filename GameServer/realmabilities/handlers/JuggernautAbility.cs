@@ -12,7 +12,7 @@ namespace DOL.GS.RealmAbilities
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public JuggernautAbility(DBAbility dba, int level) : base(dba, level) { }
+		public JuggernautAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		int m_range = 1500;
 		int m_duration = 60;

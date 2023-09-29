@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class MysticCrystalLoreAbility : TimedRealmAbility
 	{
-		public MysticCrystalLoreAbility(DBAbility dba, int level) : base(dba, level) { }
+		public MysticCrystalLoreAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

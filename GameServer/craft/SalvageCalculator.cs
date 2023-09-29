@@ -157,7 +157,7 @@ namespace DOL.GS.SalvageCalc
 
     public class SalvageCalculator
     {
-        public SalvageReturn GetSalvage(GamePlayer Player, InventoryItem Item)
+        public SalvageReturn GetSalvage(GamePlayer Player, DbInventoryItem Item)
         {
             SalvageReturn Yield = new SalvageReturn();
 

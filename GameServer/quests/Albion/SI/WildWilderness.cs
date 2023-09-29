@@ -18,7 +18,7 @@ namespace DOL.GS.Quests.Hibernia
         protected const string QUEST_FINISH_NAME = "Resalg";
         private static GameNPC _miach = null;
         private static GameNPC _resalg = null;
-        private static ItemTemplate _lungerTail = null;
+        private static DbItemTemplate _lungerTail = null;
 
         public override string Name
         {
@@ -44,7 +44,7 @@ namespace DOL.GS.Quests.Hibernia
         public WildWilderness() : base() { }
         public WildWilderness(GamePlayer questingPlayer) : base(questingPlayer) { }
         public WildWilderness(GamePlayer questingPlayer, int step) : base(questingPlayer, step) { }
-        public WildWilderness(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest) { }
+        public WildWilderness(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest) { }
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -120,10 +120,10 @@ namespace DOL.GS.Quests.Hibernia
             #endregion
 
             #region initialize Quest Item
-            _lungerTail = GameServer.Database.FindObjectByKey<ItemTemplate>("lunger_tail");
+            _lungerTail = GameServer.Database.FindObjectByKey<DbItemTemplate>("lunger_tail");
             if (_lungerTail == null)
             {
-                _lungerTail = new ItemTemplate();
+                _lungerTail = new DbItemTemplate();
                 _lungerTail.Name = "Lunger Tail";
                 if (log.IsWarnEnabled)
                 {

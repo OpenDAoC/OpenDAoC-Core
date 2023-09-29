@@ -17,7 +17,7 @@ namespace DOL.GS
 		#region constructor
 		public MinotaurRelic() : base() { m_saveInDB = true; }
 
-		public MinotaurRelic(DBMinotaurRelic obj)
+		public MinotaurRelic(DbMinotaurRelic obj)
 			: this()
 		{
 			LoadFromDatabase(obj);
@@ -25,7 +25,7 @@ namespace DOL.GS
 		#endregion
 
 		#region Declarations
-		DBMinotaurRelic m_dbRelic;
+		DbMinotaurRelic m_dbRelic;
 		Timer timer = null;
 		public AuxECSGameTimer respawntimer = null;
 		protected int m_spawny;
@@ -152,7 +152,7 @@ namespace DOL.GS
 		public override void LoadFromDatabase(DataObject obj)
 		{
 			InternalID = obj.ObjectId;
-			m_dbRelic = obj as DBMinotaurRelic;
+			m_dbRelic = obj as DbMinotaurRelic;
 			RelicID = m_dbRelic.RelicID;
 
 			Heading = (ushort)m_dbRelic.SpawnHeading;

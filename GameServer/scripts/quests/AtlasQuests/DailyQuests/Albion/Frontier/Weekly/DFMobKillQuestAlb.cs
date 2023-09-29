@@ -44,7 +44,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 		{
 		}
 
-		public DFMobKillQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public DFMobKillQuestAlb(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

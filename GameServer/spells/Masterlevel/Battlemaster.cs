@@ -200,7 +200,7 @@ namespace DOL.GS.Spells
                 if (sender is GamePlayer)
                 {
                     GamePlayer player = (GamePlayer)sender;
-                    InventoryItem leftWeapon = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                    DbInventoryItem leftWeapon = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                     // if we can use left weapon, we have currently a weapon in left hand and we still have endurance,
                     // we can assume that we are using the two weapons.
                     if (player.attackComponent.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield)
@@ -278,7 +278,7 @@ namespace DOL.GS.Spells
             {
                 if (Disarm_Weapon == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.Uninterruptible = true;
@@ -312,7 +312,7 @@ namespace DOL.GS.Spells
                 return false;
             }
 
-			InventoryItem weapon = null;
+			DbInventoryItem weapon = null;
 
             //assign the weapon the player is using, it can be a twohanded or a standard slot weapon
 			if (player.ActiveWeaponSlot.ToString() == "TwoHanded") 
@@ -358,7 +358,7 @@ namespace DOL.GS.Spells
         
         public override void DamageTarget(AttackData ad, bool showEffectAnimation)
         {
-            InventoryItem weapon = null;
+            DbInventoryItem weapon = null;
             weapon = ad.Weapon;
 
             if (showEffectAnimation && ad.Target != null)
@@ -385,7 +385,7 @@ namespace DOL.GS.Spells
                         resultByte = 2;
                         if (ad.Target != null && ad.Target.Inventory != null)
                         {
-                            InventoryItem lefthand = ad.Target.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                            DbInventoryItem lefthand = ad.Target.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                             if (lefthand != null && lefthand.Object_Type == (int)eObjectType.Shield)
                             {
                                 defendersWeapon = lefthand.Model;
@@ -433,7 +433,7 @@ namespace DOL.GS.Spells
         public override void SendDamageMessages(AttackData ad)
         {
 			GameObject target = ad.Target;
-			InventoryItem weapon = ad.Weapon;
+			DbInventoryItem weapon = ad.Weapon;
             GamePlayer player = Caster as GamePlayer;
 
 			switch (ad.AttackResult)
@@ -536,7 +536,7 @@ namespace DOL.GS.Spells
             if (player == null)
                 return null;
 
-            InventoryItem weapon = null;
+            DbInventoryItem weapon = null;
 
             if (player.ActiveWeaponSlot.ToString() == "TwoHanded")
                 weapon = player.Inventory.GetItem((eInventorySlot)12);
@@ -580,7 +580,7 @@ namespace DOL.GS.Spells
                 if (target is GamePlayer)
                     ad.ArmorHitLocation = ((GamePlayer)target).CalculateArmorHitLocation(ad);
 
-                InventoryItem armor = null;
+                DbInventoryItem armor = null;
                 if (target.Inventory != null)
                     armor = target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
 

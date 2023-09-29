@@ -38,7 +38,7 @@ namespace DOL.GS.GameEvents
 			NpcTemplate zp;
 			try{
 				model = (ushort)ServerProperties.Properties.ZONEPOINT_NPCTEMPLATE;
-				zp = new NpcTemplate(DOLDB<DBNpcTemplate>.SelectObjects(DB.Column("TemplateId").IsEqualTo(model)).FirstOrDefault());
+				zp = new NpcTemplate(DOLDB<DbNpcTemplate>.SelectObjects(DB.Column("TemplateId").IsEqualTo(model)).FirstOrDefault());
 				if (model <= 0 || zp == null) throw new ArgumentNullException();
 			}
 			catch {
@@ -46,8 +46,8 @@ namespace DOL.GS.GameEvents
 			}
 			
 			// processing all the ZP
-			IList<ZonePoint> zonePoints = GameServer.Database.SelectAllObjects<ZonePoint>();
-			foreach (ZonePoint z in zonePoints)
+			IList<DbZonePoint> zonePoints = GameServer.Database.SelectAllObjects<DbZonePoint>();
+			foreach (DbZonePoint z in zonePoints)
 			{
 				if (z.SourceRegion == 0) continue;
 				

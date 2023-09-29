@@ -473,7 +473,7 @@ namespace DOL.GS
                     {
                         if (obj is GameNPC)
                         {
-                            var translation = (DBLanguageNPC)LanguageMgr.GetTranslation(lang, obj);
+                            var translation = (DbLanguageGameNpc)LanguageMgr.GetTranslation(lang, obj);
                             if (translation != null) return translation.Name;
                         }
 
@@ -823,7 +823,7 @@ namespace DOL.GS
 		/// <summary>
 		/// A cache of every DBDataQuest object
 		/// </summary>
-		protected static ILookup<ushort, DBDataQuest> m_dataQuestCache = null;
+		protected static ILookup<ushort, DbDataQuest> m_dataQuestCache = null;
 
 		/// <summary>
 		/// List of DataQuests available for this object
@@ -845,14 +845,14 @@ namespace DOL.GS
 				m_dataQuestCache = null;
 			}
 
-			m_dataQuestCache = GameServer.Database.SelectAllObjects<DBDataQuest>()
+			m_dataQuestCache = GameServer.Database.SelectAllObjects<DbDataQuest>()
 				.ToLookup(k => k.StartRegionID);
 		}
 
 		/// <summary>
 		/// Get a preloaded list of all data quests
 		/// </summary>
-		public static IList<DBDataQuest> DataQuestCache
+		public static IList<DbDataQuest> DataQuestCache
 		{
 			get { return m_dataQuestCache.SelectMany(k => k).ToList(); }
 		}
@@ -871,7 +871,7 @@ namespace DOL.GS
 			
 			try
 			{
-				foreach (DBDataQuest quest in m_dataQuestCache[CurrentRegionID])
+				foreach (DbDataQuest quest in m_dataQuestCache[CurrentRegionID])
 				{
 					if (quest.StartName == Name)
 					{
@@ -892,7 +892,7 @@ namespace DOL.GS
 
 			try
 			{
-				foreach (DBDataQuest quest in m_dataQuestCache[0])
+				foreach (DbDataQuest quest in m_dataQuestCache[0])
 				{
 					if (quest.StartName == Name)
 					{
@@ -1164,7 +1164,7 @@ namespace DOL.GS
 		/// <param name="source">Source from where to get the item</param>
 		/// <param name="item">Item to get</param>
 		/// <returns>true if the item was successfully received</returns>
-		public virtual bool ReceiveItem(GameLiving source, InventoryItem item)
+		public virtual bool ReceiveItem(GameLiving source, DbInventoryItem item)
 		{
 			foreach (DataQuest quest in DataQuestList)
 			{
@@ -1188,7 +1188,7 @@ namespace DOL.GS
 		/// <returns>true if the item was successfully received</returns>
 		public virtual bool ReceiveItem(GameLiving source, string templateID)
 		{
-			ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(templateID);
+			DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(templateID);
 			if (template == null)
 			{
 				if (log.IsErrorEnabled)
@@ -1292,7 +1292,7 @@ namespace DOL.GS
 		}
 		public static bool PlayerHasItem(GamePlayer player, string str)
 		{
-			InventoryItem item = player.Inventory.GetFirstItemByID(str, eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+			DbInventoryItem item = player.Inventory.GetFirstItemByID(str, eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
 			if (item != null)
 				return true;
 			return false;

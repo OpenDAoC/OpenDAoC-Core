@@ -42,9 +42,9 @@ namespace DOL.GS.DatabaseConverters
 			log.Info("Database Version 5 Convert Started");
 			log.Info("This fixes some errors with the area classtypes");
 
-			var objs = GameServer.Database.SelectAllObjects<DBArea>();
+			var objs = GameServer.Database.SelectAllObjects<DbArea>();
 			int count = 0;
-			foreach (DBArea area in objs)
+			foreach (DbArea area in objs)
 			{
 				string orig = area.ClassType;
 				if (area.ClassType == "DOL.GS.Area.Circle")

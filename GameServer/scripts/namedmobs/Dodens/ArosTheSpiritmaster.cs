@@ -61,7 +61,7 @@ namespace DOL.GS.Scripts
             {
                 if (m_Debuff == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.Uninterruptible = true;
@@ -100,7 +100,7 @@ namespace DOL.GS.Scripts
             {
                 if (m_Summon == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 1;
                     spell.Uninterruptible = true;
@@ -132,7 +132,7 @@ namespace DOL.GS.Scripts
             {
                 if (m_BombSpell == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 3;
                     spell.ClientEffect = 2797;
@@ -164,7 +164,7 @@ namespace DOL.GS.Scripts
             {
                 if (m_BigBombSpell == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 6;
                     spell.ClientEffect = 2797;

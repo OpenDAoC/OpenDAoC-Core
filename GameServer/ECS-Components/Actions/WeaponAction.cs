@@ -15,8 +15,8 @@ namespace DOL.GS
     {
         protected readonly GameLiving m_owner;
         protected readonly GameObject m_target;
-        protected readonly InventoryItem m_attackWeapon;
-        protected readonly InventoryItem m_leftWeapon;
+        protected readonly DbInventoryItem m_attackWeapon;
+        protected readonly DbInventoryItem m_leftWeapon;
         protected readonly double m_effectiveness;
         protected readonly int m_interruptDuration;
         protected readonly Style m_combatStyle;
@@ -28,7 +28,7 @@ namespace DOL.GS
         public bool AttackFinished { get; set; }
         public eActiveWeaponSlot ActiveWeaponSlot { get; private set; }
 
-        public WeaponAction(GameLiving owner, GameObject target, InventoryItem attackWeapon, InventoryItem leftWeapon, double effectiveness, int interruptDuration, Style combatStyle)
+        public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interruptDuration, Style combatStyle)
         {
             m_owner = owner;
             m_target = target;
@@ -40,7 +40,7 @@ namespace DOL.GS
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
         }
 
-        public WeaponAction(GameLiving owner, GameObject target, InventoryItem attackWeapon, double effectiveness, int interruptDuration, eRangedAttackType rangedAttackType)
+        public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, double effectiveness, int interruptDuration, eRangedAttackType rangedAttackType)
         {
             m_owner = owner;
             m_target = target;
@@ -63,8 +63,8 @@ namespace DOL.GS
             int leftHandSwingCount = 0;
             AttackData mainHandAD = null;
             AttackData leftHandAD = null;
-            InventoryItem mainWeapon = m_attackWeapon;
-            InventoryItem leftWeapon = m_leftWeapon;
+            DbInventoryItem mainWeapon = m_attackWeapon;
+            DbInventoryItem leftWeapon = m_leftWeapon;
             double leftHandEffectiveness = m_effectiveness;
             double mainHandEffectiveness = m_effectiveness;
 
@@ -405,7 +405,7 @@ namespace DOL.GS
             }
         }
 
-        public virtual void ShowAttackAnimation(AttackData ad, InventoryItem weapon)
+        public virtual void ShowAttackAnimation(AttackData ad, DbInventoryItem weapon)
         {
             bool showAnimation = false;
 
@@ -463,7 +463,7 @@ namespace DOL.GS
 
                         if (defender.Inventory != null)
                         {
-                            InventoryItem lefthand = defender.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                            DbInventoryItem lefthand = defender.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 
                             if (lefthand != null && lefthand.Object_Type == (int) eObjectType.Shield)
                                 defendersWeapon = lefthand.Model;

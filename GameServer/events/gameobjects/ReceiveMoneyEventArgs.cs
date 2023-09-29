@@ -28,7 +28,7 @@ namespace DOL.Events
 	public class ReceiveItemEventArgs : SourceEventArgs
 	{
 		private GameObject target;
-		private InventoryItem item;
+		private DbInventoryItem item;
 
 		/// <summary>
 		/// Constructs new ReceiveItemEventArgs
@@ -36,7 +36,7 @@ namespace DOL.Events
 		/// <param name="source">the source of the item</param>
 		/// <param name="target">the target of the item</param>
 		/// <param name="item">the item to transfer</param>
-		public ReceiveItemEventArgs(GameLiving source, GameObject target, InventoryItem item)
+		public ReceiveItemEventArgs(GameLiving source, GameObject target, DbInventoryItem item)
 			: base(source)
 		{
 			this.target = target;
@@ -54,7 +54,7 @@ namespace DOL.Events
 		/// <summary>
 		/// Gets the item to transfer
 		/// </summary>
-		public InventoryItem Item
+		public DbInventoryItem Item
 		{
 			get { return item; }
 		}

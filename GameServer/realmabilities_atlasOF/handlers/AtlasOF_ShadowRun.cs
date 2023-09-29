@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 
     public class AtlasOF_ShadowRun : TimedRealmAbility
     {
-        public AtlasOF_ShadowRun(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_ShadowRun(DbAbility dba, int level) : base(dba, level) { }
         
         int m_duration = 30000; // 30s
 
@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
         
         private SpellHandler CreateSpell(GameLiving owner)
         {
-            DBSpell tmpSpell = new DBSpell();
+            DbSpell tmpSpell = new DbSpell();
             tmpSpell.Name = "Shadow Run";
             tmpSpell.Icon = 4278;
             tmpSpell.ClientEffect = 7014;

@@ -45,8 +45,8 @@ namespace DOL.GS
 		/// </summary>
 		public static bool Init()
 		{
-			var dbdoors = GameServer.Database.SelectAllObjects<DBDoor>();
-			foreach (DBDoor door in dbdoors)
+			var dbdoors = GameServer.Database.SelectAllObjects<DbDoor>();
+			foreach (DbDoor door in dbdoors)
 			{
 				if (!LoadDoor(door))
 				{
@@ -82,7 +82,7 @@ namespace DOL.GS
 			}
 		}
 
-		public static bool LoadDoor(DBDoor door)
+		public static bool LoadDoor(DbDoor door)
 		{
 			GameDoorBase mydoor = null;
 			ushort zone = (ushort)(door.InternalID / 1000000);

@@ -12,7 +12,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_ArmorOfFaith : TimedRealmAbility
     {
-        public AtlasOF_ArmorOfFaith(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_ArmorOfFaith(DbAbility dba, int level) : base(dba, level) { }
 
         public const int duration = 60000; // 60 seconds
         public override int MaxLevel { get { return 3; } }
@@ -26,7 +26,7 @@ namespace DOL.GS.RealmAbilities
             list.Add("Casting time: instant");
         }
         
-        private DBSpell m_dbspell;
+        private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
         private double m_value = 0;
@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
 
         public virtual void CreateSpell()
         {
-            m_dbspell = new DBSpell();
+            m_dbspell = new DbSpell();
             m_dbspell.Name = "Armor Of Faith";
             m_dbspell.Icon = 7118;
             m_dbspell.ClientEffect = 7118;

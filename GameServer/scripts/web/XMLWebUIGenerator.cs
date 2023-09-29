@@ -245,7 +245,7 @@ namespace DOL.GS.Scripts
 		{
 			try
 			{
-				var db = ObjectDatabase.GetObjectDatabase(ConnectionType.DATABASE_XML, "."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"generated");
+				var db = ObjectDatabase.GetObjectDatabase(EConnectionType.DATABASE_XML, "."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"generated");
 
 				//Obsolete with GSS Table Registering in SVN : 3337
 				//db.RegisterDataObject(typeof (ServerInfo));
@@ -257,13 +257,13 @@ namespace DOL.GS.Scripts
 				si.Time = DateTime.Now.ToString();
 				si.ServerName = GameServer.Instance.Configuration.ServerName;
 				si.NumClients = ClientService.ClientCount;
-				si.NumAccounts = GameServer.Database.GetObjectCount<Account>();
-				si.NumMobs = GameServer.Database.GetObjectCount<Mob>();
-				si.NumInventoryItems = GameServer.Database.GetObjectCount<InventoryItem>();
-				si.NumPlayerChars = GameServer.Database.GetObjectCount<DOLCharacters>();
-				si.NumMerchantItems = GameServer.Database.GetObjectCount<MerchantItem>();
-				si.NumItemTemplates = GameServer.Database.GetObjectCount<ItemTemplate>();
-				si.NumWorldObjects = GameServer.Database.GetObjectCount<WorldObject>();
+				si.NumAccounts = GameServer.Database.GetObjectCount<DbAccount>();
+				si.NumMobs = GameServer.Database.GetObjectCount<DbMob>();
+				si.NumInventoryItems = GameServer.Database.GetObjectCount<DbInventoryItem>();
+				si.NumPlayerChars = GameServer.Database.GetObjectCount<DbCoreCharacter>();
+				si.NumMerchantItems = GameServer.Database.GetObjectCount<DbMerchantItem>();
+				si.NumItemTemplates = GameServer.Database.GetObjectCount<DbItemTemplate>();
+				si.NumWorldObjects = GameServer.Database.GetObjectCount<DbWorldObject>();
 				si.ServerType = GameServer.Instance.Configuration.ServerType.ToString();
 				si.ServerStatus = GameServer.Instance.ServerStatus.ToString();
 				si.AAC = GameServer.Instance.Configuration.AutoAccountCreation ? "enabled" : "disabled";

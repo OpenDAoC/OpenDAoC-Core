@@ -1,3 +1,5 @@
+using DOL.Database;
+
 namespace DOL.GS
 {
 	public class TheurgistPet : GameSummonedPet
@@ -11,7 +13,7 @@ namespace DOL.GS
 			// Not each summoned pet will fire ambient sentences.
 			if (ambientTexts.Count > 0)
 			{
-				foreach (MobXAmbientBehaviour ambientText in ambientTexts)
+				foreach (DbMobXAmbientBehavior ambientText in ambientTexts)
 					ambientText.Chance /= 10;
 			}
 		}

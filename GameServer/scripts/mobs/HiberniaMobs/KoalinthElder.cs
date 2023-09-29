@@ -63,7 +63,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_KoalinthElder_HasteDebuff == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 7;

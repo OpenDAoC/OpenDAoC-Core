@@ -311,7 +311,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Set stats according to PET_AUTOSET values, then scale them according to the npcTemplate
 		/// </summary>
-		public override void AutoSetStats(Mob dbMob = null)
+		public override void AutoSetStats(DbMob dbMob = null)
 		{
 			Strength = Properties.PET_AUTOSET_STR_BASE;
 			Constitution = Properties.PET_AUTOSET_CON_BASE;

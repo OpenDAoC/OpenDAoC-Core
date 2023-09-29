@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class AtlasOF_SpeedOfSound : TimedRealmAbility
 	{
-		public AtlasOF_SpeedOfSound(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_SpeedOfSound(DbAbility dba, int level) : base(dba, level) { }
 
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

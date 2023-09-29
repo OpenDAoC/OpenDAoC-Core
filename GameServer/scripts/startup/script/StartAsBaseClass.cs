@@ -78,7 +78,7 @@ namespace DOL.GS.GameEvents
 			if (chArgs == null)
 				return;
 			
-			DOLCharacters ch = chArgs.Character;
+			DbCoreCharacter ch = chArgs.Character;
 
 			// Revert to Base Class.
 			var chClass = ScriptMgr.FindCharacterBaseClass(ch.Class);

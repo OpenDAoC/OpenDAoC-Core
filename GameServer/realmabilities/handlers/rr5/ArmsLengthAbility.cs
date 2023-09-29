@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class ArmsLengthAbility : RR5RealmAbility
 	{
-		public ArmsLengthAbility(DBAbility dba, int level) : base(dba, level) { }
+		public ArmsLengthAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

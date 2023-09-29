@@ -19,7 +19,7 @@ namespace DOL.GS.RealmAbilities
 		/// <summary>
 		/// Constructs the Ameliorating Melodies handler
 		/// </summary>
-		public AmelioratingMelodiesAbility(DBAbility dba, int level) : base(dba, level) { }
+		public AmelioratingMelodiesAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

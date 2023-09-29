@@ -45,7 +45,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 		}
 
-		public CaleKeepCaptureMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public CaleKeepCaptureMid(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

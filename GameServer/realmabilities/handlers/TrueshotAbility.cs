@@ -9,7 +9,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class TrueshotAbility : TimedRealmAbility
 	{
-		public TrueshotAbility(DBAbility dba, int level) : base(dba, level) { }
+		public TrueshotAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

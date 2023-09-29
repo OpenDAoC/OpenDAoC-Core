@@ -52,7 +52,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						DBArea area = new DBArea();
+						DbArea area = new DbArea();
 						area.Description = args[2];
 
 						switch (args[3].ToLower())

@@ -85,7 +85,7 @@ namespace DOL.GS
 		/// Constructs a new NpcTemplate
 		/// </summary>
 		/// <param name="data">The source npc template data</param>
-		public NpcTemplate(DBNpcTemplate data)
+		public NpcTemplate(DbNpcTemplate data)
 		{
 			if (data == null)
 				throw new ArgumentNullException("data");
@@ -309,10 +309,10 @@ namespace DOL.GS
 
 		protected int GetNextFreeTemplateId()
 		{
-			var objs = GameServer.Database.SelectAllObjects<DBNpcTemplate>();
+			var objs = GameServer.Database.SelectAllObjects<DbNpcTemplate>();
 			int free_id = 1;
 			int doubleidcheck = 0;
-			foreach (DBNpcTemplate dbtemplate in objs.OrderBy(x => x.TemplateId))
+			foreach (DbNpcTemplate dbtemplate in objs.OrderBy(x => x.TemplateId))
 			{
 				if (dbtemplate.TemplateId == free_id)
 				{
@@ -671,12 +671,12 @@ namespace DOL.GS
 
 		public virtual void SaveIntoDatabase()
 		{
-			DBNpcTemplate tmp = GameServer.Database.FindObjectByKey<DBNpcTemplate>(TemplateId);
+			DbNpcTemplate tmp = GameServer.Database.FindObjectByKey<DbNpcTemplate>(TemplateId);
 			bool add = false;
 
 			if (tmp == null)
 			{
-				tmp = new DBNpcTemplate();
+				tmp = new DbNpcTemplate();
 				add = true;
 			}
 

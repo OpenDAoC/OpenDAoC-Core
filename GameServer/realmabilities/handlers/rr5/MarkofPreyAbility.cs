@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class MarkOfPreyAbility : RR5RealmAbility
 	{
-		public MarkOfPreyAbility(DBAbility dba, int level) : base(dba, level) { }
+		public MarkOfPreyAbility(DbAbility dba, int level) : base(dba, level) { }
 
         int RANGE = 1000;
         public const int DURATION = 30 * 1000;

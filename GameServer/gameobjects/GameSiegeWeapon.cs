@@ -643,7 +643,7 @@ namespace DOL.GS
 		}
 		#endregion
 		#region override function
-		public override bool ReceiveItem(GameLiving source, DOL.Database.InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DOL.Database.DbInventoryItem item)
 		{
 			//todo check if bullet
 			return base.ReceiveItem(source, item);
@@ -672,8 +672,8 @@ namespace DOL.GS
 		public override void LoadFromDatabase(DataObject obj)
 		{
 			base.LoadFromDatabase(obj);
-			if (!(obj is ItemTemplate)) return;
-			ItemTemplate item = (ItemTemplate)obj;
+			if (!(obj is DbItemTemplate)) return;
+			DbItemTemplate item = (DbItemTemplate)obj;
             this.TranslationId = item.TranslationId;
 			this.Name = item.Name;
             this.ExamineArticle = item.ExamineArticle;

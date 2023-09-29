@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
     public class AtlasOF_LongWindAbility : RAPropertyEnhancer
     {
 
-        public AtlasOF_LongWindAbility(DBAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
+        public AtlasOF_LongWindAbility(DbAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
 
         protected override string ValueUnit { get { return "%"; } }
 

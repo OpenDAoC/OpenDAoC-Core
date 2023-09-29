@@ -86,7 +86,7 @@ namespace DOL.GS.Commands
         [ScriptLoadedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
-            IList<ItemTemplate> temp; 
+            IList<DbItemTemplate> temp; 
             int[] ot = { 32, 33, 34, 35, 38, 36 };
             int x;
 
@@ -97,31 +97,31 @@ namespace DOL.GS.Commands
                 {
                     x = 0;
                    // temp = GameServer.Database.SelectObjects<ItemTemplate>("Object_Type = " + ot[a] + " AND Item_Type = " + slots[b]);
-                   temp = GameServer.Database.SelectObjects<ItemTemplate>(DB.Column("Object_Type").IsEqualTo(ot[a]).And(DB.Column("Item_Type").IsEqualTo(slots[b])));
+                   temp = GameServer.Database.SelectObjects<DbItemTemplate>(DB.Column("Object_Type").IsEqualTo(ot[a]).And(DB.Column("Item_Type").IsEqualTo(slots[b])));
                   	armor[a][b] = new ushort[temp.Count];
                     foreach (DataObject item in temp)
                     {
-                        armor[a][b][x++] = (ushort)(item as ItemTemplate).Model;
+                        armor[a][b][x++] = (ushort)(item as DbItemTemplate).Model;
                     }
                 }
             }
 
             x = 0;
-            temp = GameServer.Database.SelectObjects<ItemTemplate>(DB.Column("Item_Type").IsEqualTo(slots[6]));
+            temp = GameServer.Database.SelectObjects<DbItemTemplate>(DB.Column("Item_Type").IsEqualTo(slots[6]));
             cloak = new ushort[temp.Count];
             foreach (DataObject item in temp)
             {
-                cloak[x++] = (ushort)(item as ItemTemplate).Model;
+                cloak[x++] = (ushort)(item as DbItemTemplate).Model;
             }
 
             for (int a = 0; a < 11; a++)
             {
                 x = 0;
-                temp = GameServer.Database.SelectObjects<ItemTemplate>(DB.Column("Item_Type").IsEqualTo(slots[a]));
+                temp = GameServer.Database.SelectObjects<DbItemTemplate>(DB.Column("Item_Type").IsEqualTo(slots[a]));
                 equip[a] = new ushort[temp.Count];
                 foreach (DataObject item in temp)
                 {
-                    equip[a][x++] = (ushort)(item as ItemTemplate).Model;
+                    equip[a][x++] = (ushort)(item as DbItemTemplate).Model;
                 }
             }
         }
@@ -624,12 +624,12 @@ namespace DOL.GS.Commands
                 Clear(npc);
                 template = new GameNpcInventoryTemplate();
 
-                ItemTemplate tgeneric0 = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate> (ClasseEpic + "EpicHelm");
-                ItemTemplate tgeneric1 = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate> (ClasseEpic + "EpicGloves");
-                ItemTemplate tgeneric2 = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate> (ClasseEpic + "EpicArms");
-                ItemTemplate tgeneric3 = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate> (ClasseEpic + "EpicVest");
-                ItemTemplate tgeneric4 = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate> (ClasseEpic + "EpicLegs");
-                ItemTemplate tgeneric5 = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate> (ClasseEpic + "EpicBoots");
+                DbItemTemplate tgeneric0 = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate> (ClasseEpic + "EpicHelm");
+                DbItemTemplate tgeneric1 = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate> (ClasseEpic + "EpicGloves");
+                DbItemTemplate tgeneric2 = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate> (ClasseEpic + "EpicArms");
+                DbItemTemplate tgeneric3 = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate> (ClasseEpic + "EpicVest");
+                DbItemTemplate tgeneric4 = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate> (ClasseEpic + "EpicLegs");
+                DbItemTemplate tgeneric5 = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate> (ClasseEpic + "EpicBoots");
 
                 if (args.Length > 3)
                 {

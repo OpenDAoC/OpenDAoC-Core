@@ -32,7 +32,7 @@ namespace DOL.GS.RealmAbilities
         public const int DURATION = 6 * 1000;
         public const int SpellRadius = 500;
 
-        public MinionRescueAbility(DBAbility dba, int level) : base(dba, level) { }
+        public MinionRescueAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action

@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class WallOfFlameAbility : RR5RealmAbility
 	{
-		public WallOfFlameAbility(DBAbility dba, int level) : base(dba, level) { }
+		public WallOfFlameAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		private int dmgValue = 400; // 400 Dmg
 		private uint duration = 15; // 15 Sec duration

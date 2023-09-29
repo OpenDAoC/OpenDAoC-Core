@@ -72,7 +72,7 @@ namespace DOL.GS.Spells
             if (player != null)
 			{
                 //Check for Mythirian of Ektaktos on effect expiration to prevent unneccessary removal of Water Breathing Effect
-                InventoryItem item = player.Inventory.GetItem((eInventorySlot)37);
+                DbInventoryItem item = player.Inventory.GetItem((eInventorySlot)37);
                 if (item == null || !item.Name.ToLower().Contains("ektaktos"))
                 {
                     player.CanBreathUnderWater = false;

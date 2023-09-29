@@ -305,7 +305,7 @@ namespace DOL.GS
 			{
 				if (m_Barrel_aoe == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;

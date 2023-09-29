@@ -4,7 +4,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_RainOfFire : AtlasOF_RainOfBase
     {
-        public AtlasOF_RainOfFire(DBAbility ability, int level) : base(ability, level) { }
+        public AtlasOF_RainOfFire(DbAbility ability, int level) : base(ability, level) { }
 
         public override void Execute(GameLiving living)
         {

@@ -33,7 +33,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class AtlasOF_MasteryofConcentration : TimedRealmAbility
 	{
-		public AtlasOF_MasteryofConcentration(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_MasteryofConcentration(DbAbility dba, int level) : base(dba, level) { }
 		public const Int32 Duration = 15000; // 15s in ms
 
 		public override int MaxLevel { get { return 1; } }

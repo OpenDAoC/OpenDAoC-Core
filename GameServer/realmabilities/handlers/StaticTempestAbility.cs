@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class StaticTempestAbility : TimedRealmAbility
 	{
-        public StaticTempestAbility(DBAbility dba, int level) : base(dba, level) { }
+        public StaticTempestAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		private int m_stunDuration;
 		private uint m_duration;

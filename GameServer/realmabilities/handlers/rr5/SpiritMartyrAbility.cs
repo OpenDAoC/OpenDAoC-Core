@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class SpiritMartyrAbility : RR5RealmAbility
     {
-		public SpiritMartyrAbility(DBAbility dba, int level) : base(dba, level) { }
+		public SpiritMartyrAbility(DbAbility dba, int level) : base(dba, level) { }
 
         const int m_healRange = 2000;
         double m_healthpool = 3200;

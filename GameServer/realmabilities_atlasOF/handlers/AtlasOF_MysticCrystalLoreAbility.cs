@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class AtlasOF_MysticCrystalLoreAbility : MysticCrystalLoreAbility
 	{
-		public AtlasOF_MysticCrystalLoreAbility(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_MysticCrystalLoreAbility(DbAbility dba, int level) : base(dba, level) { }
 
         public override int CostForUpgrade(int currentLevel) { return AtlasRAHelpers.GetCommonUpgradeCostFor3LevelsRA(currentLevel); }
         

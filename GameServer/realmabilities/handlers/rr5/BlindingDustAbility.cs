@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class BlindingDustAbility : RR5RealmAbility
 	{
-		public BlindingDustAbility(DBAbility dba, int level) : base(dba, level) { }
+		public BlindingDustAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

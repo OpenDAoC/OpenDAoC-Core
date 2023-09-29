@@ -14,10 +14,10 @@
 /desktop.ini
 /_patches
 /.sonar
-/DOLBase/.sonar
+/CoreBase/.sonar
 /DOLConfig/.sonar
-/DOLDatabase/.sonar
-/DOLServer/.sonar
+/CoreDatabase/.sonar
+/CoreServer/.sonar
 /GameServer/.sonar
 /sonar-project.properties
 /sonar-runner.bat

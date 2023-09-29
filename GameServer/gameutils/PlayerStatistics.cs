@@ -66,7 +66,7 @@ namespace DOL.GS
             if (player.CurrentRegion.Time < TIME_TO_CHANGE && HAS_BEEN_RUN)
                 return;
 
-            DOLCharacters[] chars = DOLDB<DOLCharacters>.SelectObjects(DB.Column("RealmPoints").IsGreatherThan(213881)).OrderByDescending(dc => dc.RealmPoints).Take(100).ToArray();
+            DbCoreCharacter[] chars = DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("RealmPoints").IsGreatherThan(213881)).OrderByDescending(dc => dc.RealmPoints).Take(100).ToArray();
 
             // assuming we can get at least 20 players
             if (TOP_LIST.Count > 0)
@@ -74,11 +74,11 @@ namespace DOL.GS
 
             int count = 1;
 
-            foreach (DOLCharacters chr in chars)
+            foreach (DbCoreCharacter chr in chars)
             {
                 if (chr.IgnoreStatistics == false)
                 {
-                    Account account = GameServer.Database.FindObjectByKey<Account>(chr.AccountName);
+                    DbAccount account = GameServer.Database.FindObjectByKey<DbAccount>(chr.AccountName);
 
                     if (account != null && account.PrivLevel == 1)
                     {

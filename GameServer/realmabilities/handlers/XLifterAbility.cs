@@ -6,7 +6,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class XLifterAbility : RAPropertyEnhancer
 	{
-		public XLifterAbility(DBAbility dba, int level)
+		public XLifterAbility(DbAbility dba, int level)
 			: base(dba, level, eProperty.Undefined)
 		{
 		}

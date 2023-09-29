@@ -23,7 +23,7 @@ namespace DOL.GS
                 default: return 70;// dmg reduction for rest resists
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -180,7 +180,7 @@ public class GiantSporiteClusterBrain : StandardMobBrain
         {
             if (m_GSCAoe == null)
             {
-                DBSpell spell = new DBSpell();
+                DbSpell spell = new DbSpell();
                 spell.AllowAdd = false;
                 spell.CastTime = 0;
                 spell.RecastDelay = 25;
@@ -222,7 +222,7 @@ namespace DOL.GS
                 default: return 70;// dmg reduction for rest resists
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }

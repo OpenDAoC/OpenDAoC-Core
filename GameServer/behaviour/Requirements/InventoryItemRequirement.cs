@@ -34,7 +34,7 @@ namespace DOL.GS.Behaviour.Requirements
 	/// additional parameters. To fire a QuestAction ALL requirements must be fulfilled.         
 	/// </summary>
     [RequirementAttribute(RequirementType=eRequirementType.InventoryItem, DefaultValueV = 1)]
-	public class InventoryItemRequirement : AbstractRequirement<ItemTemplate,int>
+	public class InventoryItemRequirement : AbstractRequirement<DbItemTemplate,int>
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -57,7 +57,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="n">First Requirement Variable, meaning depends on RequirementType</param>
 		/// <param name="v">Second Requirement Variable, meaning depends on RequirementType</param>
 		/// <param name="comp">Comparator used if some values are veeing compared</param>
-        public InventoryItemRequirement(GameNPC defaultNPC, ItemTemplate n, int v, eComparator comp)
+        public InventoryItemRequirement(GameNPC defaultNPC, DbItemTemplate n, int v, eComparator comp)
             : this(defaultNPC,  (object)n, (object)v, comp)
 		{   			
 		}
@@ -75,7 +75,7 @@ namespace DOL.GS.Behaviour.Requirements
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
 	        					    
 		    int count =0;
-		    foreach (InventoryItem invItem in player.Inventory.AllItems)
+		    foreach (DbInventoryItem invItem in player.Inventory.AllItems)
 		    {
 			    if (invItem.Name == N.Name)
 			    {

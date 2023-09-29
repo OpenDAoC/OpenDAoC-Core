@@ -146,7 +146,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public override bool IsAllowedToCraft(GamePlayer player, ItemTemplate item)
+		public override bool IsAllowedToCraft(GamePlayer player, DbItemTemplate item)
 		{
 			return player.Realm == (eRealm)item.Realm || (item.Realm == 0 && ServerProperties.Properties.ALLOW_CRAFT_NOREALM_ITEMS);
 		}

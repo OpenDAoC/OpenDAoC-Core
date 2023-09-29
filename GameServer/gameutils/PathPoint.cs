@@ -29,15 +29,15 @@ namespace DOL.GS.Movement
 		protected short m_maxspeed;
 		protected PathPoint m_next = null;
 		protected PathPoint m_prev = null;
-		protected ePathType m_type;
+		protected EPathType m_type;
 		protected bool m_flag;
 		protected int m_waitTime = 0;
 
 		public PathPoint(PathPoint pp) : this(pp, pp.MaxSpeed,pp.Type) {}
 
-		public PathPoint(Point3D p, short maxspeed, ePathType type) : this(p.X,  p.Y,  p.Z, maxspeed, type) {}
+		public PathPoint(Point3D p, short maxspeed, EPathType type) : this(p.X,  p.Y,  p.Z, maxspeed, type) {}
 
-		public PathPoint(int x, int y, int z, short maxspeed, ePathType type) : base(x, y, z)
+		public PathPoint(int x, int y, int z, short maxspeed, EPathType type) : base(x, y, z)
 		{
 			m_maxspeed = maxspeed;
 			m_type = type;
@@ -84,7 +84,7 @@ namespace DOL.GS.Movement
 		/// <summary>
 		/// path type
 		/// </summary>
-		public ePathType Type
+		public EPathType Type
 		{
 			get { return m_type; }
 			set { m_type = value; }

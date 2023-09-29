@@ -38,7 +38,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
 			string charName = packet.ReadString(30);
-			DOLCharacters[] chars = client.Account.Characters;
+			DbCoreCharacter[] chars = client.Account.Characters;
 
 			var foundChar = chars?.FirstOrDefault(ch => ch.Name.Equals(charName, StringComparison.OrdinalIgnoreCase));
 			if (foundChar != null)

@@ -4,7 +4,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_Bladedance : TimedRealmAbility, ISpellCastingAbilityHandler
     {
-        public AtlasOF_Bladedance(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_Bladedance(DbAbility dba, int level) : base(dba, level) { }
 
         // ISpellCastingAbilityHandler
         public Spell Spell { get { return m_spell; } }
@@ -16,7 +16,7 @@ namespace DOL.GS.RealmAbilities
         private const int m_radius = 350;
         private const eDamageType m_damageType = eDamageType.Slash;
 
-        private DBSpell m_dbspell;
+        private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
 
@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 
         private void CreateSpell(GamePlayer caster)
         {
-            m_dbspell = new DBSpell();
+            m_dbspell = new DbSpell();
             m_dbspell.Name = "Bladedance";
             m_dbspell.Icon = 4230;
             m_dbspell.ClientEffect = 2797;

@@ -44,8 +44,8 @@ namespace DOL.GS
             if (base.Interact(player))
             {
                 TurnTo(player, 500);
-                InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
-                InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
+                DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(TempProperty);
+                DbInventoryItem displayItem = player.TempProperties.GetProperty<DbInventoryItem>(DisplayedItem);
                 
                 if (item == null)
                 {
@@ -59,7 +59,7 @@ namespace DOL.GS
                 }
                 
                 if(displayItem != null)
-                    DisplayReskinPreviewTo(player, (InventoryItem)displayItem.Clone());
+                    DisplayReskinPreviewTo(player, (DbInventoryItem)displayItem.Clone());
 
                 return true;
             }
@@ -97,8 +97,8 @@ namespace DOL.GS
 
             GamePlayer player = source as GamePlayer;
             TurnTo(player.X, player.Y);
-            InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
-            InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
+            DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(TempProperty);
+            DbInventoryItem displayItem = player.TempProperties.GetProperty<DbInventoryItem>(DisplayedItem);
             int cachedModelID = player.TempProperties.GetProperty<int>(TempModelID);
             int cachedModelPrice = player.TempProperties.GetProperty<int>(TempModelPrice);
 
@@ -6021,7 +6021,7 @@ namespace DOL.GS
             //Console.WriteLine($"price {price} model {modelIDToAssign}");
             if (price == armorpads)
             {
-                InventoryItem tmpItem = (InventoryItem) displayItem.Clone();
+                DbInventoryItem tmpItem = (DbInventoryItem) displayItem.Clone();
                 byte tmp = tmpItem.Extension;
                 tmpItem.Extension = (byte)modelIDToAssign;
                 DisplayReskinPreviewTo(player, tmpItem);
@@ -6029,7 +6029,7 @@ namespace DOL.GS
             }
             else
             {
-                InventoryItem tmpItem = (InventoryItem) displayItem.Clone();
+                DbInventoryItem tmpItem = (DbInventoryItem) displayItem.Clone();
                 int tmp = tmpItem.Model;
                 tmpItem.Model = modelIDToAssign;
                 DisplayReskinPreviewTo(player, tmpItem);
@@ -6048,7 +6048,7 @@ namespace DOL.GS
         }
 
 
-        public override bool ReceiveItem(GameLiving source, InventoryItem item)
+        public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
         {
             GamePlayer t = source as GamePlayer;
             if (t == null || item == null|| item.Id_nb == _currencyID) return false;
@@ -6474,7 +6474,7 @@ namespace DOL.GS
 
             SendReply(t, "When you are finished browsing, let me know and I will [confirm model]."
                          );
-            var tmp = (InventoryItem) item.Clone();
+            var tmp = (DbInventoryItem) item.Clone();
             t.TempProperties.SetProperty(TempProperty, item);
             t.TempProperties.SetProperty(DisplayedItem, tmp);
             
@@ -6727,8 +6727,8 @@ namespace DOL.GS
                                   "I have changed your item's model, you can now use it. \n\n" +
                                   "I look forward to doing business with you in the future.");
 
-                InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
-                InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
+                DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(TempProperty);
+                DbInventoryItem displayItem = player.TempProperties.GetProperty<DbInventoryItem>(DisplayedItem);
                 
                 if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
                     return false;
@@ -6739,15 +6739,15 @@ namespace DOL.GS
                 
                 //Console.WriteLine($"item model: {item.Model} assignment {number}");
                 player.Inventory.RemoveItem(item);
-                ItemUnique unique = new ItemUnique(item.Template);
+                DbItemUnique unique = new DbItemUnique(item.Template);
                 unique.Model = number;
                 item.IsTradable = false;
                 item.IsDropable = false;
                 GameServer.Database.AddObject(unique);
                 //Console.WriteLine($"unique model: {unique.Model} assignment {number}");
-                InventoryItem newInventoryItem = GameInventoryItem.Create(unique as ItemTemplate);
+                DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
-                player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
+                player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
                 // player.RemoveBountyPoints(300);
                 //player.RealmPoints -= price;
                 //player.RespecRealm();
@@ -6776,8 +6776,8 @@ namespace DOL.GS
                     return;
                 }
 
-                InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(TempProperty);
-                InventoryItem displayItem = player.TempProperties.GetProperty<InventoryItem>(DisplayedItem);
+                DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(TempProperty);
+                DbInventoryItem displayItem = player.TempProperties.GetProperty<DbInventoryItem>(DisplayedItem);
                 
                 if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
                     return;
@@ -6794,12 +6794,12 @@ namespace DOL.GS
 
 
                 player.Inventory.RemoveItem(item);
-                ItemUnique unique = new ItemUnique(item.Template);
+                DbItemUnique unique = new DbItemUnique(item.Template);
                 unique.Extension = number;
                 GameServer.Database.AddObject(unique);
-                InventoryItem newInventoryItem = GameInventoryItem.Create(unique as ItemTemplate);
+                DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
-                player.Out.SendInventoryItemsUpdate(new InventoryItem[] { newInventoryItem });
+                player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
                 // player.RemoveBountyPoints(300);
                 //player.RealmPoints -= price;
                 //player.RespecRealm();
@@ -6819,7 +6819,7 @@ namespace DOL.GS
                               "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
         }
         
-        private GameNPC CreateDisplayNPC(GamePlayer player, InventoryItem item)
+        private GameNPC CreateDisplayNPC(GamePlayer player, DbInventoryItem item)
         {
             var mob = new DisplayModel(player, item); 
                 
@@ -6847,7 +6847,7 @@ namespace DOL.GS
 
         }
         
-        private void DisplayReskinPreviewTo(GamePlayer player, InventoryItem item)
+        private void DisplayReskinPreviewTo(GamePlayer player, DbInventoryItem item)
         {
             GameNPC display = CreateDisplayNPC(player, item);
             display.AddToWorld();
@@ -6865,7 +6865,7 @@ namespace DOL.GS
             ClientService.UpdateObjectForPlayer(player, display);
         }
 
-        private void LoopAnimation(GamePlayer player, InventoryItem item, GameNPC display,AttackData ad)
+        private void LoopAnimation(GamePlayer player, DbInventoryItem item, GameNPC display,AttackData ad)
         {
             var _lastAnimation = 0l;
             while (GameLoop.GameLoopTime < display.SpawnTick )

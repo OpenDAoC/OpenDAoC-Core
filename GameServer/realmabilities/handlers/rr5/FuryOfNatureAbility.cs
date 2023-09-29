@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class FuryOfNatureAbility : RR5RealmAbility
 	{
-		public FuryOfNatureAbility(DBAbility dba, int level) : base(dba, level) { }
+		public FuryOfNatureAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

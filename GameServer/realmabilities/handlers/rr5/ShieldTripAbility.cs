@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class ShieldTripAbility : RR5RealmAbility
 	{
-		public ShieldTripAbility(DBAbility dba, int level) : base(dba, level) { }
+		public ShieldTripAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action
@@ -19,7 +19,7 @@ namespace DOL.GS.RealmAbilities
 		public override void Execute(GameLiving living)
 		{
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-			InventoryItem shield = living.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItem shield = living.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 			if (shield == null)
 				return;
 			if (shield.Object_Type != (int)eObjectType.Shield)

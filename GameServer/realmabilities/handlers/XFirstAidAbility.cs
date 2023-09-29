@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class XFirstAidAbility : TimedRealmAbility
 	{
-		public XFirstAidAbility(DBAbility dba, int level) : base(dba, level) { }
+		public XFirstAidAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

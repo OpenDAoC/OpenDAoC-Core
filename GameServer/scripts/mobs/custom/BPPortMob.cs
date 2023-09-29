@@ -36,7 +36,7 @@ namespace DOL.GS.Scripts
             }
         }
 
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * 2.5;
         }

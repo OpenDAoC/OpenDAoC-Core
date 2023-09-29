@@ -59,7 +59,7 @@ namespace DOL.GS.Spells
 			duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
 			if (Spell.InstrumentRequirement != 0)
 			{
-				InventoryItem instrument = Caster.ActiveWeapon;
+				DbInventoryItem instrument = Caster.ActiveWeapon;
 				if (instrument != null)
 				{
 					duration *= 1.0 + Math.Min(1.0, instrument.Level / (double)Caster.Level); // up to 200% duration for songs

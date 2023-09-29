@@ -66,7 +66,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			InventoryItem itemToCombine = (InventoryItem)player.TradeWindow.PartnerTradeItems[0];
+			DbInventoryItem itemToCombine = (DbInventoryItem)player.TradeWindow.PartnerTradeItems[0];
 			if(!IsAllowedToCombine(player, itemToCombine)) return false;
 
 			ApplyMagicalEffect(player, itemToCombine);
@@ -84,7 +84,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public virtual bool IsAllowedToCombine(GamePlayer player, InventoryItem item)
+		public virtual bool IsAllowedToCombine(GamePlayer player, DbInventoryItem item)
 		{
 			if(item == null) return false;
 			
@@ -101,7 +101,7 @@ namespace DOL.GS
 			}
 
 
-            InventoryItem itemToCombine = (InventoryItem)player.TradeWindow.TradeItems[0];
+            DbInventoryItem itemToCombine = (DbInventoryItem)player.TradeWindow.TradeItems[0];
 
             if (itemToCombine.Object_Type == (int)eObjectType.AlchemyTincture)
             {
@@ -159,7 +159,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="item"></param>
-		protected abstract void ApplyMagicalEffect(GamePlayer player, InventoryItem item);
+		protected abstract void ApplyMagicalEffect(GamePlayer player, DbInventoryItem item);
 		
 		#endregion
 

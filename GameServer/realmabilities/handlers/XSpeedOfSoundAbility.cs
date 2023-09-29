@@ -7,7 +7,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class XSpeedOfSoundAbility : TimedRealmAbility
 	{
-		public XSpeedOfSoundAbility(DBAbility dba, int level) : base(dba, level) { }
+		public XSpeedOfSoundAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		int m_range = 2000;
 		int m_duration = 1;

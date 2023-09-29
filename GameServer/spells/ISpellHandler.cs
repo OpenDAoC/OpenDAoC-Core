@@ -22,7 +22,7 @@ namespace DOL.GS.Spells
 		/// Starts the spell, without displaying cast message etc.
 		/// Should be used with spells attached to items (procs, /use, etc)
 		/// </summary>
-		bool StartSpell(GameLiving target, InventoryItem item);
+		bool StartSpell(GameLiving target, DbInventoryItem item);
 
 		/// <summary>
 		/// Whenever the current casting sequence is to be interrupted
@@ -211,7 +211,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		byte DelveInfoDepth { get; set; }
 
-		PlayerXEffect GetSavedEffect(GameSpellEffect e);
+		DbPlayerXEffect GetSavedEffect(GameSpellEffect e);
 		void OnEffectRestored(GameSpellEffect effect, int[] RestoreVars);
 		int OnRestoredEffectExpires(GameSpellEffect effect, int[] RestoreVars, bool noMessages);
 		bool CheckBeginCast(GameLiving selectedTarget);

@@ -58,7 +58,7 @@ namespace DOL.GS.PacketHandler
 						else
 							pak.WriteByte((byte)(updatedSlot));
 
-						InventoryItem item = null;
+						DbInventoryItem item = null;
 						item = m_gameClient.Player.Inventory.GetItem((eInventorySlot)updatedSlot);
 
 						if (item == null)

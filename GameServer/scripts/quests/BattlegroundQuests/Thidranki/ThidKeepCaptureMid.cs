@@ -45,7 +45,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		{
 		}
 
-		public ThidKeepCaptureMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public ThidKeepCaptureMid(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 		

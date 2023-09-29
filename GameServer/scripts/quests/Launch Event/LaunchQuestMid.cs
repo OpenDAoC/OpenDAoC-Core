@@ -48,7 +48,7 @@ namespace DOL.GS
 		{
 		}
 
-		public LaunchQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public LaunchQuestMid(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 
@@ -430,7 +430,7 @@ namespace DOL.GS
 			KeepsTaken = 0;
 			RelicsTaken = 0;
 			RealmPointsEarned = 0;
-			AccountXCustomParam eventParam = new AccountXCustomParam();
+			DbAccountXCustomParam eventParam = new DbAccountXCustomParam();
 			eventParam.Name = m_questPlayer.AccountName;
 			eventParam.KeyName = PlayersKilledKey;
 			int realmInt = (int)m_questPlayer.Realm;

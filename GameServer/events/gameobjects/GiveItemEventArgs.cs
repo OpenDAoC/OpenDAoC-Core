@@ -30,7 +30,7 @@ namespace DOL.Events
 
 		private GamePlayer source;
 		private GameObject target;
-		private InventoryItem item;
+		private DbInventoryItem item;
 
 		/// <summary>
 		/// Constructs a new SayReceiveEventArgs
@@ -38,7 +38,7 @@ namespace DOL.Events
 		/// <param name="source">the source that is saying something</param>
 		/// <param name="target">the target that listened to the say</param>
 		/// <param name="item">the item being given</param>
-		public GiveItemEventArgs(GamePlayer source, GameObject target, InventoryItem item)
+		public GiveItemEventArgs(GamePlayer source, GameObject target, DbInventoryItem item)
 		{
 			this.source = source;
 			this.target = target;
@@ -64,7 +64,7 @@ namespace DOL.Events
 		/// <summary>
 		/// Gets the item being moved
 		/// </summary>
-		public InventoryItem Item
+		public DbInventoryItem Item
 		{
 			get { return item; }
 		}

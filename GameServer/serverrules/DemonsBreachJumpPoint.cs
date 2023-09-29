@@ -28,7 +28,7 @@ namespace DOL.GS.ServerRules
 {
 	public class NergalsBreachJumpPoint : IJumpPointHandler
 	{
-		public bool IsAllowedToJump(ZonePoint targetPoint, GamePlayer player)
+		public bool IsAllowedToJump(DbZonePoint targetPoint, GamePlayer player)
 		{
 			if(player.Client.Account.PrivLevel > 1)
             {
@@ -46,7 +46,7 @@ namespace DOL.GS.ServerRules
 
 	public class BalbansBreachJumpPoint : IJumpPointHandler
 	{
-		public bool IsAllowedToJump(ZonePoint targetPoint, GamePlayer player)
+		public bool IsAllowedToJump(DbZonePoint targetPoint, GamePlayer player)
 		{
             if (player.Client.Account.PrivLevel > 1)
             {

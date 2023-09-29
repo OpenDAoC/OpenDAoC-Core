@@ -23,7 +23,7 @@ namespace DOL.GS
                 default: return 70;// dmg reduction for rest resists
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -109,7 +109,7 @@ namespace DOL.GS
             {
                 if (m_TorstDD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = Util.Random(25, 45);
@@ -384,7 +384,7 @@ namespace DOL.AI.Brain
             {
                 if (m_TorstRoot == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = 30;
@@ -436,7 +436,7 @@ namespace DOL.GS
             return;
         }
 
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -705,7 +705,7 @@ namespace DOL.GS
                 default: return 15;// dmg reduction for rest resists
             }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
@@ -865,7 +865,7 @@ namespace DOL.AI.Brain
             {
                 if (m_ColdGroundDD == null)
                 {
-                    DBSpell spell = new DBSpell();
+                    DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 0;
                     spell.RecastDelay = Util.Random(5,12);

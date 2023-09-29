@@ -31,24 +31,24 @@ namespace DOL.GS.Spells
     {
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private ItemTemplate _artefJavelin;
+		private DbItemTemplate _artefJavelin;
 
         public GoldenSpearJavelin(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line)
         {
-            _artefJavelin = GameServer.Database.FindObjectByKey<ItemTemplate>("Artef_Javelin") ?? Javelin;
+            _artefJavelin = GameServer.Database.FindObjectByKey<DbItemTemplate>("Artef_Javelin") ?? Javelin;
             items.Add (GameInventoryItem.Create(_artefJavelin));
         }
 
-        private ItemTemplate Javelin
+        private DbItemTemplate Javelin
         {
             get
             {
-                _artefJavelin = (ItemTemplate) GameServer.Database.FindObjectByKey<ItemTemplate>("Artef_Javelin");
+                _artefJavelin = (DbItemTemplate) GameServer.Database.FindObjectByKey<DbItemTemplate>("Artef_Javelin");
                 if(_artefJavelin == null)
                 {
                     if(log.IsWarnEnabled) log.Warn("Could not find Artef_Javelin, loading it ...");
-                    _artefJavelin = new ItemTemplate();
+                    _artefJavelin = new DbItemTemplate();
                     _artefJavelin.Id_nb = "Artef_Javelin";
                     _artefJavelin.Name = "Golden Javelin";
                     _artefJavelin.Level = 50;
@@ -85,7 +85,7 @@ namespace DOL.GS.Spells
             lock(player.Inventory)
             {
                 var items = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                foreach(InventoryItem invItem in items)
+                foreach(DbInventoryItem invItem in items)
                 {
                     if(invItem.Id_nb.Equals("Artef_Javelin"))
                     {

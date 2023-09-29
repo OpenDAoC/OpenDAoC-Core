@@ -13,12 +13,12 @@ namespace DOL.GS.RealmAbilities.Statics
 		protected override string GetStaticName() {return "Static Tempest";}
 		protected override ushort GetStaticModel() {return 2654;}
 		protected override ushort GetStaticEffect() {return 7032;}
-		private DBSpell dbs;
+		private DbSpell dbs;
 		private Spell   s;
 		private SpellLine sl;
 		public StaticTempestBase (int stunDuration) 
         {
-			dbs = new DBSpell();
+			dbs = new DbSpell();
 			dbs.Name = GetStaticName();
 			dbs.Icon = GetStaticEffect();
 			dbs.ClientEffect = GetStaticEffect();

@@ -23,7 +23,7 @@ namespace DOL.GS.Commands
 			
 			if (args[1] == "add")
 			{
-				var zp = new ZonePoint();
+				var zp = new DbZonePoint();
 				zp.Id = Convert.ToUInt16(args[2]);
 				zp.Realm = Convert.ToUInt16(Convert.ToUInt16(args[3]));
 				zp.TargetX = client.Player.X;

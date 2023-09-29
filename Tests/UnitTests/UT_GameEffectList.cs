@@ -235,7 +235,7 @@ namespace DOL.Tests.Unit.Gameserver
             public ushort InternalID { get => throw new System.NotImplementedException(); set { } }
             public IList<string> DelveInfo => throw new System.NotImplementedException();
             public void Cancel(bool playerCanceled) { receivedCancel = true; }
-            public PlayerXEffect getSavedEffect() { throw new System.NotImplementedException(); }
+            public DbPlayerXEffect getSavedEffect() { throw new System.NotImplementedException(); }
         }
     }
 }

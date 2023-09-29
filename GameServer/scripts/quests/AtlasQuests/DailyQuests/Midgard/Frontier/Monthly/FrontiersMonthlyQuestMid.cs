@@ -49,7 +49,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		{
 		}
 
-		public FrontiersMonthlyQuestMid(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public FrontiersMonthlyQuestMid(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

@@ -97,7 +97,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_RylieDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.Power = 0;
@@ -125,7 +125,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Rylie_stun == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 2;
 					spell.RecastDelay = 0;

@@ -7,7 +7,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class NegativeMaelstromAbility : TimedRealmAbility
 	{
-        public NegativeMaelstromAbility(DBAbility dba, int level) : base(dba, level) { }
+        public NegativeMaelstromAbility(DbAbility dba, int level) : base(dba, level) { }
 		private int dmgValue;
 		private uint duration;
 		private GamePlayer player;

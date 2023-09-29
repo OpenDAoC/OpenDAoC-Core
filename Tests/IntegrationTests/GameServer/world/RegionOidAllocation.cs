@@ -44,7 +44,7 @@ namespace DOL.Tests.Integration.Server
 			data.Id = 5555;
 			data.Name = "reg data1";
 			data.Description = "reg test1";
-			data.Mobs = new Mob[0];
+			data.Mobs = new DbMob[0];
 			m_reg = WorldMgr.RegisterRegion(data);
 			//WorldMgr.RegisterZone(5555, 5555, "test zone1", 0, 0, 16, 16);
 			m_reg.StartRegionMgr();

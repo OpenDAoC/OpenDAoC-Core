@@ -107,7 +107,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Return the crafting skill which created the item
 		/// </summary>
-		public static eCraftingSkill GetCraftingSkill(InventoryItem item)
+		public static eCraftingSkill GetCraftingSkill(DbInventoryItem item)
 		{
 			if (!item.IsCrafted)
 				return eCraftingSkill.NoCrafting;
@@ -178,7 +178,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Return the crafting skill needed to work on the item
 		/// </summary>
-		public static eCraftingSkill GetSecondaryCraftingSkillToWorkOnItem(InventoryItem item)
+		public static eCraftingSkill GetSecondaryCraftingSkillToWorkOnItem(DbInventoryItem item)
 		{
 			switch (item.Object_Type)
 			{
@@ -236,7 +236,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Return the approximative craft level of the item
 		/// </summary>
-		public static int GetItemCraftLevel(InventoryItem item)
+		public static int GetItemCraftLevel(DbInventoryItem item)
 		{
 			switch (item.Object_Type)
 			{

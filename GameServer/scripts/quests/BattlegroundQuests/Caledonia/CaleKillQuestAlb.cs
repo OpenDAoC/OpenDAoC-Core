@@ -46,7 +46,7 @@ namespace DOL.GS.DailyQuest.Albion
 		{
 		}
 
-		public CaleKillQuestAlb(GamePlayer questingPlayer, DBQuest dbQuest) : base(questingPlayer, dbQuest)
+		public CaleKillQuestAlb(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
 		{
 		}
 

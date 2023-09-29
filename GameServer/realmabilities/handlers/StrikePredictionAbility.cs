@@ -9,7 +9,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class StrikePredictionAbility : TimedRealmAbility
     {
-        public StrikePredictionAbility(DBAbility dba, int level) : base(dba, level) { }
+        public StrikePredictionAbility(DbAbility dba, int level) : base(dba, level) { }
         int m_range = 2000;
         int m_duration = 30;
         int m_value = 0;

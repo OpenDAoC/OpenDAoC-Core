@@ -6,11 +6,11 @@ namespace DOL.GS.Scripts
 {
     public class BrotherDon : GameNPC
     {
-        private static ItemTemplate _wolfPeltCloak = null;
+        private static DbItemTemplate _wolfPeltCloak = null;
         protected const string wolfPeltCloak = "wolf_pelt_cloak";
         public BrotherDon()
         {
-            _wolfPeltCloak = GameServer.Database.FindObjectByKey<ItemTemplate>(wolfPeltCloak);
+            _wolfPeltCloak = GameServer.Database.FindObjectByKey<DbItemTemplate>(wolfPeltCloak);
         }
 
         public override void Notify(DOLEvent e, object sender, EventArgs args)
@@ -26,7 +26,7 @@ namespace DOL.GS.Scripts
 
                 if (gArgs.Target.Name == this.Name && gArgs.Item.Id_nb == _wolfPeltCloak.Id_nb)
                 {
-                    InventoryItem item = player.Inventory.GetFirstItemByID(wolfPeltCloak, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                    DbInventoryItem item = player.Inventory.GetFirstItemByID(wolfPeltCloak, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
                     if(item != null)
                     {
                         SayTo(player, "Thank you! Your service to the church will been noted!");

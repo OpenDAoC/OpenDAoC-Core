@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
     {
         public const int DURATION = 4500;
 
-        public BoilingCauldronAbility(DBAbility dba, int level) : base(dba, level) { }
+        public BoilingCauldronAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action

@@ -4,14 +4,14 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_PerfectRecovery : TimedRealmAbility, ISpellCastingAbilityHandler
     {
-        public AtlasOF_PerfectRecovery(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_PerfectRecovery(DbAbility dba, int level) : base(dba, level) { }
 
         // ISpellCastingAbilityHandler
         public Spell Spell { get { return m_spell; } }
         public SpellLine SpellLine { get { return m_spellline; } }
         public Ability Ability { get { return this; } }
 
-        private DBSpell m_dbspell;
+        private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
 
@@ -24,7 +24,7 @@ namespace DOL.GS.RealmAbilities
 
         private void CreateRezSpell(GamePlayer caster)
         {
-            m_dbspell = new DBSpell();
+            m_dbspell = new DbSpell();
             m_dbspell.Name = "Perfect Recovery Rez";
             m_dbspell.Icon = 0;
             m_dbspell.ClientEffect = 7019;

@@ -34,7 +34,7 @@ namespace DOL.GS
 		public override void OnPlayerEnter(GamePlayer player)
 		{
 			base.OnPlayerEnter(player);
-			Teleport destination =  WorldMgr.GetTeleportLocation(player.Realm, String.Format("{0}:{1}", this.GetType(), this.Description));
+			DbTeleport destination =  WorldMgr.GetTeleportLocation(player.Realm, String.Format("{0}:{1}", this.GetType(), this.Description));
 			
 			if (destination != null)
 				OnTeleport(player, destination);
@@ -47,7 +47,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="destination"></param>
-		protected void OnTeleport(GamePlayer player, Teleport destination)
+		protected void OnTeleport(GamePlayer player, DbTeleport destination)
 		{
 			if (player.InCombat == false && GameRelic.IsPlayerCarryingRelic(player) == false)
 			{

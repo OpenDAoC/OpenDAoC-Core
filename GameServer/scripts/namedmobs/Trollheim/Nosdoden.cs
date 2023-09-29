@@ -132,7 +132,7 @@ namespace DOL.GS
 		{
 			get { return 100000; }
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -206,50 +206,50 @@ namespace DOL.GS
                     GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();					
 					if (player.Inventory.GetItem(eInventorySlot.TorsoArmor) != null)
 					{
-						InventoryItem torso = player.Inventory.GetItem(eInventorySlot.TorsoArmor);
+						DbInventoryItem torso = player.Inventory.GetItem(eInventorySlot.TorsoArmor);
 						if(torso != null)
 							template.AddNPCEquipment(eInventorySlot.TorsoArmor, torso.Model, torso.Color,0,torso.Extension);//modelID,color,effect,extension
 					}
 					if (player.Inventory.GetItem(eInventorySlot.ArmsArmor) != null)
 					{
-						InventoryItem arms = player.Inventory.GetItem(eInventorySlot.ArmsArmor);
+						DbInventoryItem arms = player.Inventory.GetItem(eInventorySlot.ArmsArmor);
 						if(arms != null)
 							template.AddNPCEquipment(eInventorySlot.ArmsArmor, arms.Model, arms.Color);
 					}
 					if (player.Inventory.GetItem(eInventorySlot.LegsArmor) != null)
 					{
-						InventoryItem legs = player.Inventory.GetItem(eInventorySlot.LegsArmor);
+						DbInventoryItem legs = player.Inventory.GetItem(eInventorySlot.LegsArmor);
 						if(legs != null)
 							template.AddNPCEquipment(eInventorySlot.LegsArmor, legs.Model, legs.Color);
 					}
 					if (player.Inventory.GetItem(eInventorySlot.HeadArmor) != null)
 					{
-						InventoryItem head = player.Inventory.GetItem(eInventorySlot.HeadArmor);
+						DbInventoryItem head = player.Inventory.GetItem(eInventorySlot.HeadArmor);
 						if(head != null)
 							template.AddNPCEquipment(eInventorySlot.HeadArmor, head.Model, head.Color);
 					}
 					if (player.Inventory.GetItem(eInventorySlot.HandsArmor) != null)
 					{
-						InventoryItem hands = player.Inventory.GetItem(eInventorySlot.HandsArmor);
+						DbInventoryItem hands = player.Inventory.GetItem(eInventorySlot.HandsArmor);
 						if(hands != null)
 							template.AddNPCEquipment(eInventorySlot.HandsArmor, hands.Model, hands.Color,0,hands.Extension);
 					}
 					if (player.Inventory.GetItem(eInventorySlot.FeetArmor) != null)
 					{
-						InventoryItem feet = player.Inventory.GetItem(eInventorySlot.FeetArmor);
+						DbInventoryItem feet = player.Inventory.GetItem(eInventorySlot.FeetArmor);
 						if(feet != null)
 							template.AddNPCEquipment(eInventorySlot.FeetArmor, feet.Model, feet.Color,0,feet.Extension);
 					}
 					if (player.Inventory.GetItem(eInventorySlot.Cloak) != null)
 					{
-						InventoryItem cloak = player.Inventory.GetItem(eInventorySlot.Cloak);
+						DbInventoryItem cloak = player.Inventory.GetItem(eInventorySlot.Cloak);
 						if(cloak != null)
 							template.AddNPCEquipment(eInventorySlot.Cloak, cloak.Model, cloak.Color,0,0,cloak.Emblem);
 					}
 					if (player.Inventory.GetItem(eInventorySlot.RightHandWeapon) != null)
 					{
-						InventoryItem righthand = player.Inventory.GetItem(eInventorySlot.RightHandWeapon);
-						InventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+						DbInventoryItem righthand = player.Inventory.GetItem(eInventorySlot.RightHandWeapon);
+						DbInventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 						if (righthand != null && lefthand != null)
 						{
 							template.AddNPCEquipment(eInventorySlot.RightHandWeapon, righthand.Model, righthand.Color, righthand.Effect);
@@ -289,14 +289,14 @@ namespace DOL.GS
 					}
                     if (player.Inventory.GetItem(eInventorySlot.LeftHandWeapon) != null)
 					{
-						InventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+						DbInventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 						if(lefthand != null)
 							template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, lefthand.Model, lefthand.Color, lefthand.Effect);
 					}
 					if (player.Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null)
                     {
-						InventoryItem twohand = player.Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-						InventoryItem righthand = player.Inventory.GetItem(eInventorySlot.RightHandWeapon);
+						DbInventoryItem twohand = player.Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+						DbInventoryItem righthand = player.Inventory.GetItem(eInventorySlot.RightHandWeapon);
 						if (twohand != null)
 						{
 							template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, twohand.Model, twohand.Color, twohand.Effect);
@@ -320,17 +320,17 @@ namespace DOL.GS
                     }
                     if (player.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
 					{
-						InventoryItem distance = player.Inventory.GetItem(eInventorySlot.DistanceWeapon);
+						DbInventoryItem distance = player.Inventory.GetItem(eInventorySlot.DistanceWeapon);
 						if(distance != null)
 							template.AddNPCEquipment(eInventorySlot.DistanceWeapon, distance.Model, distance.Color, distance.Effect);
 					}						
 					add.Inventory = template.CloseTemplate();
                     #endregion
                     #region Set mob visible slot
-                    InventoryItem mob_twohand = template.GetItem(eInventorySlot.TwoHandWeapon);
-					InventoryItem mob_righthand = template.GetItem(eInventorySlot.RightHandWeapon);
-					InventoryItem mob_lefthand = template.GetItem(eInventorySlot.LeftHandWeapon);
-					InventoryItem mob_distance = template.GetItem(eInventorySlot.LeftHandWeapon);
+                    DbInventoryItem mob_twohand = template.GetItem(eInventorySlot.TwoHandWeapon);
+					DbInventoryItem mob_righthand = template.GetItem(eInventorySlot.RightHandWeapon);
+					DbInventoryItem mob_lefthand = template.GetItem(eInventorySlot.LeftHandWeapon);
+					DbInventoryItem mob_distance = template.GetItem(eInventorySlot.LeftHandWeapon);
 					if (mob_lefthand != null && mob_righthand != null)
 					{
 						if ((mob_righthand.Object_Type == (int)eObjectType.Axe && mob_righthand.Item_Type == Slot.RIGHTHAND) /*axe*/
@@ -703,7 +703,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_NosdodenDot == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
@@ -740,7 +740,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_NosdodenDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
@@ -1822,7 +1822,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_InstantThaneDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 20;
@@ -1848,7 +1848,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_InstantThaneDD_pbaoe == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 20;
@@ -1875,7 +1875,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_InstantThaneDD_casting == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;
@@ -1903,7 +1903,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_InstantSkaldDD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 15;
@@ -1929,7 +1929,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_InstantSkaldDD2 == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 15;
@@ -1955,7 +1955,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Skald_DA == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 8;
@@ -1986,7 +1986,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Savage_dps_Buff == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 30;
@@ -2056,7 +2056,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Rune_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;
@@ -2084,7 +2084,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Rune_Bolt == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 20;
@@ -2114,7 +2114,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Spirit_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;
@@ -2142,7 +2142,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Spirit_Mezz == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 30;
@@ -2200,7 +2200,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Bone_DD2 == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;
@@ -2231,7 +2231,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Bone_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 4;
@@ -2288,7 +2288,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Healer_Heal == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;
@@ -2315,7 +2315,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Healer_Mezz == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 20;
@@ -2345,7 +2345,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Healer_Amnesia == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;					
 					spell.CastTime = 2;
 					spell.RecastDelay = 0;
@@ -2376,7 +2376,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Shamy_Bolt == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 20;
@@ -2404,7 +2404,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Shamy_DD == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;
@@ -2432,7 +2432,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Shamy_InstaAoeDisease == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 30;
@@ -2466,7 +2466,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Shamy_AoeDot == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 15;
@@ -2513,7 +2513,7 @@ namespace DOL.GS
 				default: return 20; // dmg reduction for rest resists
 			}
 		}
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -2673,7 +2673,7 @@ namespace DOL.GS
 			{
 				if (m_SB_Lifebane == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 0;
@@ -2792,7 +2792,7 @@ namespace DOL.GS
 			{
 				if (m_SpiritChampion_stun == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 2;
@@ -3136,7 +3136,7 @@ namespace DOL.AI.Brain
 			{
 				if (m_Pet_Heal == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 3;
 					spell.RecastDelay = 0;

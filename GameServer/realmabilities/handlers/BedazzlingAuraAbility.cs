@@ -7,7 +7,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class BedazzlingAuraAbility : TimedRealmAbility
 	{
-		public BedazzlingAuraAbility(DBAbility dba, int level) : base(dba, level) { }
+		public BedazzlingAuraAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		public const string BofBaSb = "RA_DAMAGE_DECREASE";
 

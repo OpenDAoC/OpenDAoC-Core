@@ -32,11 +32,11 @@ namespace DOL.Tests.Integration.Keeps
         public void SetupFakeServer()
         {
             var sqliteDB = Create.TemporarySQLiteDB();
-            sqliteDB.RegisterDataObject(typeof(DBKeepComponent));
-            sqliteDB.RegisterDataObject(typeof(DBKeepPosition));
-            sqliteDB.RegisterDataObject(typeof(DBKeep));
-            sqliteDB.RegisterDataObject(typeof(NPCEquipment));
-            sqliteDB.RegisterDataObject(typeof(Battleground));
+            sqliteDB.RegisterDataObject(typeof(DbKeepComponent));
+            sqliteDB.RegisterDataObject(typeof(DbKeepPosition));
+            sqliteDB.RegisterDataObject(typeof(DbKeep));
+            sqliteDB.RegisterDataObject(typeof(DbNpcEquipment));
+            sqliteDB.RegisterDataObject(typeof(DbBattleground));
 
             var fakeServer = new FakeServer();
             fakeServer.SetDatabase(sqliteDB);
@@ -96,11 +96,11 @@ namespace DOL.Tests.Integration.Keeps
         }
 
         private string GuardFighter => "DOL.GS.Keeps.GuardFighter";
-        private DBKeepPosition GuardPositionAtKeepWallTemplate
+        private DbKeepPosition GuardPositionAtKeepWallTemplate
         {
             get
             {
-                var keepPosition = new DBKeepPosition();
+                var keepPosition = new DbKeepPosition();
                 keepPosition.ComponentRotation = 0;
                 keepPosition.ComponentSkin = 1;
                 keepPosition.Height = 0;
@@ -111,7 +111,7 @@ namespace DOL.Tests.Integration.Keeps
 
         private GameKeepComponent CreateKeepWall()
         {
-            var dbKeep = new DBKeep();
+            var dbKeep = new DbKeep();
             var keep = new GameKeep();
             keep.DBKeep = dbKeep;
             var keepComponent = new GameKeepComponent();
@@ -119,7 +119,7 @@ namespace DOL.Tests.Integration.Keeps
             keepComponent.ComponentHeading = GuardPositionAtKeepWallTemplate.ComponentRotation;
             return keepComponent;
         }
-        private GameKeep CreateKeep() => new GameKeep() { DBKeep = new DBKeep() };
+        private GameKeep CreateKeep() => new GameKeep() { DBKeep = new DbKeep() };
 
 
         private static void AddDatabaseEntry(DataObject dataObject)

@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class VehementRenewalAbility : TimedRealmAbility
 	{
-		public VehementRenewalAbility(DBAbility dba, int level) : base(dba, level) { }
+		public VehementRenewalAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

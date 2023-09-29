@@ -128,7 +128,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Type database type
 		/// </summary>
-		protected ConnectionType m_dbType;
+		protected EConnectionType m_dbType;
 
 		/// <summary>
 		/// True if the server shall autosave the db
@@ -198,25 +198,25 @@ namespace DOL.GS
 			switch (db.ToLower())
 			{
 				case "xml":
-					m_dbType = ConnectionType.DATABASE_XML;
+					m_dbType = EConnectionType.DATABASE_XML;
 					break;
 				case "mysql":
-					m_dbType = ConnectionType.DATABASE_MYSQL;
+					m_dbType = EConnectionType.DATABASE_MYSQL;
 					break;
 				case "sqlite":
-					m_dbType = ConnectionType.DATABASE_SQLITE;
+					m_dbType = EConnectionType.DATABASE_SQLITE;
 					break;
 				case "mssql":
-					m_dbType = ConnectionType.DATABASE_MSSQL;
+					m_dbType = EConnectionType.DATABASE_MSSQL;
 					break;
 				case "odbc":
-					m_dbType = ConnectionType.DATABASE_ODBC;
+					m_dbType = EConnectionType.DATABASE_ODBC;
 					break;
 				case "oledb":
-					m_dbType = ConnectionType.DATABASE_OLEDB;
+					m_dbType = EConnectionType.DATABASE_OLEDB;
 					break;
 				default:
-					m_dbType = ConnectionType.DATABASE_XML;
+					m_dbType = EConnectionType.DATABASE_XML;
 					break;
 			}
 			m_dbConnectionString = root["Server"]["DBConnectionString"].GetString(m_dbConnectionString);
@@ -301,26 +301,26 @@ namespace DOL.GS
 			
 			switch (m_dbType)
 			{
-			case ConnectionType.DATABASE_XML:
+			case EConnectionType.DATABASE_XML:
 				db = "XML";
 					break;
-			case ConnectionType.DATABASE_MYSQL:
+			case EConnectionType.DATABASE_MYSQL:
 				db = "MYSQL";
 					break;
-			case ConnectionType.DATABASE_SQLITE:
+			case EConnectionType.DATABASE_SQLITE:
 				db = "SQLITE";
 					break;
-			case ConnectionType.DATABASE_MSSQL:
+			case EConnectionType.DATABASE_MSSQL:
 				db = "MSSQL";
 					break;
-			case ConnectionType.DATABASE_ODBC:
+			case EConnectionType.DATABASE_ODBC:
 				db = "ODBC";
 					break;
-			case ConnectionType.DATABASE_OLEDB:
+			case EConnectionType.DATABASE_OLEDB:
 				db = "OLEDB";
 					break;
 				default:
-					m_dbType = ConnectionType.DATABASE_XML;
+					m_dbType = EConnectionType.DATABASE_XML;
 					break;
 			}
 			root["Server"]["DBType"].Set(db);
@@ -365,7 +365,7 @@ namespace DOL.GS
 		    InventoryLoggerName = "inventories";
 		    m_invalidNamesFile = Path.Combine(Path.Combine(".", "config"), "invalidnames.txt");
 
-			m_dbType = ConnectionType.DATABASE_SQLITE;
+			m_dbType = EConnectionType.DATABASE_SQLITE;
 			m_dbConnectionString = string.Format("Data Source={0};Version=3;Pooling=False;Cache Size=1073741824;Journal Mode=Off;Synchronous=Off;Foreign Keys=True;Default Timeout=60",
 			                                     Path.Combine(m_rootDirectory, "dol.sqlite3.db"));
 			m_autoSave = true;
@@ -549,7 +549,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the DB type
 		/// </summary>
-		public ConnectionType DBType
+		public EConnectionType DBType
 		{
 			get { return m_dbType; }
 			set { m_dbType = value; }

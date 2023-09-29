@@ -15,7 +15,7 @@ namespace DOL.GS.RealmAbilities
 
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public AtlasOF_FaithHealing(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_FaithHealing(DbAbility dba, int level) : base(dba, level) { }
 
 		public int Range = 2000;
 

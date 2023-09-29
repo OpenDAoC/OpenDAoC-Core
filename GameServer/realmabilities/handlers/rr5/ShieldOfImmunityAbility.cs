@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class ShieldOfImmunityAbility : RR5RealmAbility
 	{
-		public ShieldOfImmunityAbility(DBAbility dba, int level) : base(dba, level) { }
+		public ShieldOfImmunityAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action

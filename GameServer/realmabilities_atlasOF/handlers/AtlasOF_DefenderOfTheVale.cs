@@ -12,7 +12,7 @@ namespace DOL.GS.RealmAbilities
 {
     public class AtlasOF_DefenderOfTheVale : TimedRealmAbility
     {
-        public AtlasOF_DefenderOfTheVale(DBAbility dba, int level) : base(dba, level) { }
+        public AtlasOF_DefenderOfTheVale(DbAbility dba, int level) : base(dba, level) { }
 
         public const int duration = 60000; // 60 seconds
         public override int MaxLevel { get { return 1; } }
@@ -30,7 +30,7 @@ namespace DOL.GS.RealmAbilities
             list.Add("Casting time: instant");
         }
         
-        private DBSpell m_dbspell;
+        private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
         private double m_value = 0;
@@ -38,7 +38,7 @@ namespace DOL.GS.RealmAbilities
 
         public virtual void CreateSpell()
         {
-            m_dbspell = new DBSpell();
+            m_dbspell = new DbSpell();
             m_dbspell.Name = "Defender Of The Vale";
             m_dbspell.Icon = 7160;
             m_dbspell.ClientEffect = 11253;

@@ -170,11 +170,11 @@ namespace DOL.GS
         }
         #endregion Effect End Messages
 
-        public override PlayerXEffect getSavedEffect()
+        public override DbPlayerXEffect getSavedEffect()
         {
             if (SpellHandler == null || SpellHandler.Spell == null) return null;
 
-            PlayerXEffect eff = new PlayerXEffect();
+            DbPlayerXEffect eff = new DbPlayerXEffect();
             eff.Var1 = SpellHandler.Spell.ID;
             eff.Var2 = Effectiveness;
             eff.Var3 = (int)SpellHandler.Spell.Value;

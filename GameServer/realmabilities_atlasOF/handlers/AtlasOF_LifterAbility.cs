@@ -17,7 +17,7 @@ namespace DOL.GS.RealmAbilities
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		// TODO: Chek if this should be changed to eProperty.Strength 
-		public AtlasOF_LifterAbility(DBAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
+		public AtlasOF_LifterAbility(DbAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
 		
 		protected override string ValueUnit { get {	return "%"; } }
 

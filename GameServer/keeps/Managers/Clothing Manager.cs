@@ -745,7 +745,7 @@ namespace DOL.GS.Keeps
 
 			const int renegadeArmorColor = 19;
 
-			InventoryItem item = null;
+			DbInventoryItem item = null;
 			item = guard.Inventory.GetItem(eInventorySlot.TorsoArmor);
 			if (item != null)
 			{
@@ -839,7 +839,7 @@ namespace DOL.GS.Keeps
 			{
 				emblem = guard.Component.Keep.Guild.Emblem;
 			}
-			InventoryItem cloak = guard.Inventory.GetItem(eInventorySlot.Cloak);
+			DbInventoryItem cloak = guard.Inventory.GetItem(eInventorySlot.Cloak);
 			if (cloak != null)
 			{
 				cloak.Emblem = emblem;
@@ -847,7 +847,7 @@ namespace DOL.GS.Keeps
 				if (cloak.Emblem != 0)
 					cloak.Model = 558; // change to a model that looks ok with an emblem
 			}
-			InventoryItem shield = guard.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItem shield = guard.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 			if (shield != null)
 			{
 				shield.Emblem = emblem;

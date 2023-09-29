@@ -179,7 +179,7 @@ namespace DOL.GS
 
             foreach (var slot in invSlots)
             {
-                InventoryItem invItem = new InventoryItem();
+                DbInventoryItem invItem = new DbInventoryItem();
                 invItem.Item_Type = slot;
                 invItem.Object_Type = (int)armorType;
                 invItem = GenerateItemNameModel(invItem);
@@ -197,7 +197,7 @@ namespace DOL.GS
             ClientService.UpdateObjectForPlayers(this);
         }
 
-        private InventoryItem GenerateArmorStats(InventoryItem item)
+        private DbInventoryItem GenerateArmorStats(DbInventoryItem item)
         {
             eObjectType type = (eObjectType)item.Object_Type;
 
@@ -339,7 +339,7 @@ namespace DOL.GS
             player.Out.SendMessage(msg, eChatType.CT_Merchant, eChatLoc.CL_PopupWindow);
         }
 
-        private InventoryItem GenerateItemNameModel(InventoryItem item)
+        private DbInventoryItem GenerateItemNameModel(DbInventoryItem item)
         {
             eInventorySlot slot = (eInventorySlot)item.Item_Type;
             eDamageType damage = (eDamageType)item.Type_Damage;

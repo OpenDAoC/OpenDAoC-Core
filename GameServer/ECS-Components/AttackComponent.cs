@@ -110,7 +110,7 @@ namespace DOL.GS
         /// The chance for a critical hit
         /// </summary>
         /// <param name="weapon">attack weapon</param>
-        public int AttackCriticalChance(WeaponAction action, InventoryItem weapon)
+        public int AttackCriticalChance(WeaponAction action, DbInventoryItem weapon)
         {
             if (owner is GamePlayer playerOwner)
             {
@@ -153,7 +153,7 @@ namespace DOL.GS
         /// Returns the damage type of the current attack
         /// </summary>
         /// <param name="weapon">attack weapon</param>
-        public eDamageType AttackDamageType(InventoryItem weapon)
+        public eDamageType AttackDamageType(DbInventoryItem weapon)
         {
             if (owner is GamePlayer || owner is CommanderPet)
             {
@@ -169,7 +169,7 @@ namespace DOL.GS
                     case eObjectType.CompositeBow:
                     case eObjectType.RecurvedBow:
                     case eObjectType.Fired:
-                        InventoryItem ammo = p.rangeAttackComponent.Ammo;
+                        DbInventoryItem ammo = p.rangeAttackComponent.Ammo;
 
                         if (ammo == null)
                             return (eDamageType) weapon.Type_Damage;
@@ -215,7 +215,7 @@ namespace DOL.GS
             {
                 if (owner is GamePlayer)
                 {
-                    InventoryItem weapon = owner.ActiveWeapon;
+                    DbInventoryItem weapon = owner.ActiveWeapon;
 
                     if (weapon == null)
                         return 0;
@@ -250,7 +250,7 @@ namespace DOL.GS
                         }
 
                         range = Math.Max(32, range * player.GetModified(eProperty.ArcheryRange) * 0.01);
-                        InventoryItem ammo = player.rangeAttackComponent.Ammo;
+                        DbInventoryItem ammo = player.rangeAttackComponent.Ammo;
 
                         if (ammo != null)
                             switch ((ammo.SPD_ABS >> 2) & 0x3)
@@ -306,7 +306,7 @@ namespace DOL.GS
         /// Gets the current attackspeed of this living in milliseconds
         /// </summary>
         /// <returns>effective speed of the attack. average if more than one weapon.</returns>
-        public int AttackSpeed(InventoryItem mainWeapon, InventoryItem leftWeapon = null)
+        public int AttackSpeed(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon = null)
         {
             if (owner is GamePlayer player)
             {
@@ -452,7 +452,7 @@ namespace DOL.GS
             }
         }
 
-        public double AttackDamage(InventoryItem weapon, out double damageCap)
+        public double AttackDamage(DbInventoryItem weapon, out double damageCap)
         {
             double effectiveness = 1;
             damageCap = 0;
@@ -467,7 +467,7 @@ namespace DOL.GS
                 if (weapon.Item_Type == Slot.RANGED)
                 {
                     damageCap *= CalculateTwoHandedDamageModifier(weapon);
-                    InventoryItem ammo = player.rangeAttackComponent.Ammo;
+                    DbInventoryItem ammo = player.rangeAttackComponent.Ammo;
 
                     if (ammo != null)
                     {
@@ -654,7 +654,7 @@ namespace DOL.GS
                     player.Sit(false);
                 }
 
-                InventoryItem attackWeapon = owner.ActiveWeapon;
+                DbInventoryItem attackWeapon = owner.ActiveWeapon;
 
                 if (attackWeapon == null)
                 {
@@ -833,7 +833,7 @@ namespace DOL.GS
                 owner.CancelEngageEffect();
 
             AttackState = true;
-            InventoryItem attackWeapon = owner.ActiveWeapon;
+            DbInventoryItem attackWeapon = owner.ActiveWeapon;
 
             int speed = AttackSpeed(attackWeapon);
 
@@ -928,7 +928,7 @@ namespace DOL.GS
         /// <summary>
         /// Called whenever a single attack strike is made
         /// </summary>
-        public AttackData MakeAttack(WeaponAction action, GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
+        public AttackData MakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
         {
             if (owner is GamePlayer playerOwner)
             {
@@ -1010,8 +1010,8 @@ namespace DOL.GS
                         {
                             List<GameObject> extraTargets = new();
                             List<GameObject> listAvailableTargets = new();
-                            InventoryItem attackWeapon = owner.ActiveWeapon;
-                            InventoryItem leftWeapon = playerOwner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+                            DbInventoryItem attackWeapon = owner.ActiveWeapon;
+                            DbInventoryItem leftWeapon = playerOwner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
                             int numTargetsCanHit = style.ID switch
                             {
@@ -1100,7 +1100,7 @@ namespace DOL.GS
         /// attacktimer and should not be called manually
         /// </summary>
         /// <returns>the object where we collect and modifiy all parameters about the attack</returns>
-        public AttackData LivingMakeAttack(WeaponAction action, GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS = false)
+        public AttackData LivingMakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS = false)
         {
             AttackData ad = new()
             {
@@ -1238,16 +1238,16 @@ namespace DOL.GS
                 case eAttackResult.HitStyle:
                 {
                     double damage = AttackDamage(weapon, out double damageCap) * effectiveness;
-                    InventoryItem armor = null;
+                    DbInventoryItem armor = null;
 
                     if (ad.Target.Inventory != null)
                         armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
 
-                    InventoryItem weaponForSpecModifier = null;
+                    DbInventoryItem weaponForSpecModifier = null;
 
                     if (weapon != null)
                     {
-                        weaponForSpecModifier = new InventoryItem();
+                        weaponForSpecModifier = new DbInventoryItem();
                         weaponForSpecModifier.Object_Type = weapon.Object_Type;
                         weaponForSpecModifier.SlotPosition = weapon.SlotPosition;
 
@@ -1712,7 +1712,7 @@ namespace DOL.GS
             return ad;
         }
 
-        public double CalculateWeaponSkill(GameLiving target, InventoryItem weapon, double specModifier, out double baseWeaponSkill)
+        public double CalculateWeaponSkill(GameLiving target, DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
         {
             baseWeaponSkill = 1 + owner.GetWeaponSkill(weapon);
             return CalculateWeaponSkill(target, baseWeaponSkill, 1 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength), specModifier);
@@ -1731,7 +1731,7 @@ namespace DOL.GS
             return baseWeaponSkill;
         }
 
-        public double CalculateSpecModifier(GameLiving target, InventoryItem weapon)
+        public double CalculateSpecModifier(GameLiving target, DbInventoryItem weapon)
         {
             double specModifier;
 
@@ -1788,7 +1788,7 @@ namespace DOL.GS
             return absorb >= 1 ? double.MaxValue : armorFactor / (1 - absorb);
         }
 
-        public static double CalculateTargetResistance(GameLiving target, eDamageType damageType, InventoryItem armor)
+        public static double CalculateTargetResistance(GameLiving target, eDamageType damageType, DbInventoryItem armor)
         {
             eProperty resistType = target.GetResistTypeForDamage(damageType);
             double damageModifier = 1.0;
@@ -1896,8 +1896,8 @@ namespace DOL.GS
                 !guard.GuardSource.IsWithinRadius(guard.GuardTarget, GuardAbilityHandler.GUARD_DISTANCE))
                 return false;
 
-            InventoryItem leftHand = guard.GuardSource.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-            InventoryItem rightHand = guard.GuardSource.ActiveWeapon;
+            DbInventoryItem leftHand = guard.GuardSource.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem rightHand = guard.GuardSource.ActiveWeapon;
 
             if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || leftHand.Object_Type != (int) eObjectType.Shield) && guard.GuardSource is not GameNPC)
                 return false;
@@ -1989,8 +1989,8 @@ namespace DOL.GS
             if (!dashing.GuardSource.IsWithinRadius(dashing.GuardTarget, DashingDefenseEffect.GUARD_DISTANCE))
                 return false;
 
-            InventoryItem leftHand = dashing.GuardSource.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-            InventoryItem rightHand = dashing.GuardSource.ActiveWeapon;
+            DbInventoryItem leftHand = dashing.GuardSource.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem rightHand = dashing.GuardSource.ActiveWeapon;
 
             if ((rightHand == null || rightHand.Hand != 1) && leftHand != null && leftHand.Object_Type == (int) eObjectType.Shield)
             {
@@ -2076,7 +2076,7 @@ namespace DOL.GS
         /// <summary>
         /// Returns the result of an enemy attack
         /// </summary>
-        public virtual eAttackResult CalculateEnemyAttackResult(WeaponAction action, AttackData ad, InventoryItem attackerWeapon)
+        public virtual eAttackResult CalculateEnemyAttackResult(WeaponAction action, AttackData ad, DbInventoryItem attackerWeapon)
         {
             if (owner.EffectList.CountOfType<NecromancerShadeEffect>() > 0)
                 return eAttackResult.NoValidTarget;
@@ -2394,7 +2394,7 @@ namespace DOL.GS
                 var p = owner as GamePlayer;
 
                 GameObject target = ad.Target;
-                InventoryItem weapon = ad.Weapon;
+                DbInventoryItem weapon = ad.Weapon;
                 if (ad.Target is GameNPC)
                 {
                     switch (ad.AttackResult)
@@ -2639,7 +2639,7 @@ namespace DOL.GS
             }
         }
 
-        public int CalculateMeleeCriticalDamage(AttackData ad, WeaponAction action, InventoryItem weapon)
+        public int CalculateMeleeCriticalDamage(AttackData ad, WeaponAction action, DbInventoryItem weapon)
         {
             if (!Util.Chance(AttackCriticalChance(action, weapon)))
                 return 0;
@@ -2693,7 +2693,7 @@ namespace DOL.GS
             }
         }
 
-        public int GetMissChance(WeaponAction action, AttackData ad, AttackData lastAD, InventoryItem weapon)
+        public int GetMissChance(WeaponAction action, AttackData ad, AttackData lastAD, DbInventoryItem weapon)
         {
             // No miss if the target is sitting or for Volley attacks.
              if ((owner is GamePlayer player && player.IsSitting) || action.RangedAttackType == eRangedAttackType.Volley)
@@ -2728,7 +2728,7 @@ namespace DOL.GS
 
                 if (ad.Target.Inventory != null)
                 {
-                    InventoryItem armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
+                    DbInventoryItem armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
 
                     if (armor != null)
                         armorBonus = armor.Bonus;
@@ -2768,7 +2768,7 @@ namespace DOL.GS
 
             if (action.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
-                InventoryItem ammo = ad.Attacker.rangeAttackComponent.Ammo;
+                DbInventoryItem ammo = ad.Attacker.rangeAttackComponent.Ammo;
 
                 if (ammo != null)
                 {
@@ -2800,13 +2800,13 @@ namespace DOL.GS
         /// </summary>
         protected float MinMeleeCriticalDamage => 0.1f;
 
-        public static double CalculateSlowWeaponDamageModifier(InventoryItem weapon)
+        public static double CalculateSlowWeaponDamageModifier(DbInventoryItem weapon)
         {
             // Slow weapon bonus as found here: https://www2.uthgard.net/tracker/issue/2753/@/Bow_damage_variance_issue_(taking_item_/_spec_???)
             return 1 + (weapon.SPD_ABS - 20) * 0.003;
         }
 
-        public double CalculateTwoHandedDamageModifier(InventoryItem weapon)
+        public double CalculateTwoHandedDamageModifier(DbInventoryItem weapon)
         {
             return 1.1 + (owner.WeaponSpecLevel(weapon) - 1) * 0.005;
         }
@@ -2865,8 +2865,8 @@ namespace DOL.GS
 
             // HtH chance
             specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
-            InventoryItem attackWeapon = owner.ActiveWeapon;
-            InventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem attackWeapon = owner.ActiveWeapon;
+            DbInventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 
             if (specLevel > 0 && attackWeapon != null && leftWeapon != null && leftWeapon.Object_Type == (int) eObjectType.HandToHand)
             {

@@ -191,7 +191,7 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var player = NewFakePlayer();
             player.fakeCharacterClass = new ClassPaladin();
-            var dbDataQuest = new DBDataQuest();
+            var dbDataQuest = new DbDataQuest();
             var clericClassID = (int)eCharacterClass.Cleric;
             dbDataQuest.AllowedClasses = clericClassID.ToString();
             var dataQuest = NewDataQuest(dbDataQuest);
@@ -248,7 +248,7 @@ namespace DOL.Tests.Unit.Gameserver
         public void CheckQuestQualification_DependentQuestNotDone_False()
         {
             var player = NewFakePlayer();
-            var dbDataQuest = new DBDataQuest();
+            var dbDataQuest = new DbDataQuest();
             dbDataQuest.QuestDependency = "SomeQuestName";
             var dataQuest = NewDataQuest(dbDataQuest);
 
@@ -347,8 +347,8 @@ namespace DOL.Tests.Unit.Gameserver
 
         private FakeQuestPlayer NewFakePlayer() => new FakeQuestPlayer();
         private DataQuestSpy NewDataQuest() => NewDataQuest(NewDBDataQuest());
-        private DataQuestSpy NewDataQuest(DBDataQuest dbDataQuest) => new DataQuestSpy(null, dbDataQuest, new CharacterXDataQuest());
-        private DBDataQuest NewDBDataQuest() => new DBDataQuest();
+        private DataQuestSpy NewDataQuest(DbDataQuest dbDataQuest) => new DataQuestSpy(null, dbDataQuest, new DbCharacterXDataQuest());
+        private DbDataQuest NewDBDataQuest() => new DbDataQuest();
 
         private class FakeQuestPlayer : FakePlayer
         {
@@ -366,10 +366,10 @@ namespace DOL.Tests.Unit.Gameserver
             public long SpyRewardBP => RewardBP;
             public string SpyTargetText => TargetText;
 
-            public DBDataQuest SpyDBDataQuest => m_dataQuest;
-            public CharacterXDataQuest SpyCharQuest => m_charQuest;
+            public DbDataQuest SpyDBDataQuest => m_dataQuest;
+            public DbCharacterXDataQuest SpyCharQuest => m_charQuest;
 
-            public DataQuestSpy(GamePlayer player, DBDataQuest dbDataQuest, CharacterXDataQuest charXDataQuest) : base(player, dbDataQuest, charXDataQuest) { }
+            public DataQuestSpy(GamePlayer player, DbDataQuest dbDataQuest, DbCharacterXDataQuest charXDataQuest) : base(player, dbDataQuest, charXDataQuest) { }
         }
     }
 }

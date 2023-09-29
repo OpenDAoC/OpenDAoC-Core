@@ -27,8 +27,8 @@ namespace DOL.Tests.Integration.Server
 	public class InventoryTest : ServerTests
 	{
 		static GamePlayer player;
-		static ItemTemplate itemt;
-		static ItemUnique itemu;
+		static DbItemTemplate itemt;
+		static DbItemUnique itemu;
 		
 		public InventoryTest() {}
 		
@@ -38,13 +38,13 @@ namespace DOL.Tests.Integration.Server
 		{
 			player = CreateMockGamePlayer();
 			Assert.IsNotNull(player, "Player is null !");
-			itemt = DOLDB<ItemTemplate>.SelectObject(DB.Column("Id_nb").IsEqualTo("championDocharWardenBlade"));
+			itemt = DOLDB<DbItemTemplate>.SelectObject(DB.Column("Id_nb").IsEqualTo("championDocharWardenBlade"));
 			Assert.IsNotNull(itemt, "ItemTemplate is null !");
-			itemu = new ItemUnique();
+			itemu = new DbItemUnique();
 			itemu.Id_nb = "tunik"+DateTime.Now.Ticks;
 			GameServer.Database.AddObject(itemu);
 			Assert.IsNotNull(itemu, "ItemUnique is created !");
-			_ = DOLDB<ItemTemplate>.SelectObject(DB.Column("id_nb").IsEqualTo("traitors_dagger_hib"));
+			_ = DOLDB<DbItemTemplate>.SelectObject(DB.Column("id_nb").IsEqualTo("traitors_dagger_hib"));
 		}
 
 		/* Tests for items - 1/ IT 2/ IU 3/ Ghost
@@ -62,15 +62,15 @@ namespace DOL.Tests.Integration.Server
 			InventoryTestCreation();
 			Console.WriteLine("Creation of Ghost Inventory entry based on ItemTemplate");
 
-			InventoryItem ii = GameInventoryItem.Create(itemt);
+			DbInventoryItem ii = GameInventoryItem.Create(itemt);
 			player.Inventory.AddItem(eInventorySlot.FirstBackpack, ii);
 			Assert.IsNotNull(ii, "ii-t #1 : " + ii.Template.Id_nb + " created & added to " + ii.OwnerID);
-			var iicheck = GameServer.Database.FindObjectByKey<InventoryItem>(ii.ObjectId);
+			var iicheck = GameServer.Database.FindObjectByKey<DbInventoryItem>(ii.ObjectId);
 			Assert.IsNotNull(iicheck, "ii-t #2 : saved in db " + ii.Template.Id_nb + " to " + ii.OwnerID);
 			GameServer.Database.DeleteObject(ii);
-			iicheck = GameServer.Database.FindObjectByKey<InventoryItem>(ii.ObjectId);
+			iicheck = GameServer.Database.FindObjectByKey<DbInventoryItem>(ii.ObjectId);
 			Assert.IsNull(iicheck, "ii-t #3 : deleted from db " + ii.Template.Id_nb + " to " + ii.OwnerID);
-			var itcheck = GameServer.Database.FindObjectByKey<ItemTemplate>(itemt.Id_nb);
+			var itcheck = GameServer.Database.FindObjectByKey<DbItemTemplate>(itemt.Id_nb);
 			Assert.IsNotNull(itcheck, "ii-t #4 : not deleted from db " + itemt.Id_nb);
 		}
 		
@@ -80,17 +80,17 @@ namespace DOL.Tests.Integration.Server
 			InventoryTestCreation();
 			Console.WriteLine("Creation of Inventory entry based on ItemUnique");
 
-			InventoryItem ii = GameInventoryItem.Create(itemu);
+			DbInventoryItem ii = GameInventoryItem.Create(itemu);
 			player.Inventory.AddItem(eInventorySlot.FirstBackpack, ii);
 			Assert.IsNotNull(ii, "ii-u #1 : " + ii.Template.Id_nb + " created & added to " + ii.OwnerID);
-			var iicheck = GameServer.Database.FindObjectByKey<InventoryItem>(ii.ObjectId);
+			var iicheck = GameServer.Database.FindObjectByKey<DbInventoryItem>(ii.ObjectId);
 			Assert.IsNotNull(iicheck, "ii-u #2 : saved in db " + ii.Template.Id_nb + " to " + ii.OwnerID);
-			var iucheck = GameServer.Database.FindObjectByKey<ItemUnique>(itemu.Id_nb);
+			var iucheck = GameServer.Database.FindObjectByKey<DbItemUnique>(itemu.Id_nb);
 			Assert.IsNotNull(iicheck, "ii-u #3 : saved to db " + itemu.Id_nb);
 			GameServer.Database.DeleteObject(ii);
-			iicheck = GameServer.Database.FindObjectByKey<InventoryItem>(ii.ObjectId);
+			iicheck = GameServer.Database.FindObjectByKey<DbInventoryItem>(ii.ObjectId);
 			Assert.IsNull(iicheck, "ii-u #4 : deleted from db " + ii.Template.Id_nb + " to " + ii.OwnerID);
-			iucheck = GameServer.Database.FindObjectByKey<ItemUnique>(itemu.Id_nb);
+			iucheck = GameServer.Database.FindObjectByKey<DbItemUnique>(itemu.Id_nb);
 			Assert.IsNull(iucheck, "ii-t #5 : deleted from db " + itemu.Id_nb);
 			
 		}
@@ -101,10 +101,10 @@ namespace DOL.Tests.Integration.Server
 			InventoryTestCreation();
 			Console.WriteLine("Creation of Ghost Inventory entry based on ItemTemplate");
 
-			InventoryItem ii = new InventoryItem();
+			DbInventoryItem ii = new DbInventoryItem();
 			player.Inventory.AddItem(eInventorySlot.FirstBackpack, ii);
 			Assert.IsNotNull(ii, "ii-g #1 : " + ii.Template.Id_nb + " created & added to " + ii.OwnerID);
-			var iicheck = GameServer.Database.FindObjectByKey<InventoryItem>(ii.ObjectId);
+			var iicheck = GameServer.Database.FindObjectByKey<DbInventoryItem>(ii.ObjectId);
 			Assert.IsNull(iicheck, "ii-g #2 : not saved in db " + ii.Template.Id_nb + " to " + ii.OwnerID);
 		}
 	}

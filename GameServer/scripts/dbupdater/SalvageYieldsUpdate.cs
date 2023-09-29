@@ -40,24 +40,24 @@ namespace DOL.GS.DatabaseUpdate
 		public void Update()
 		{
 			int count = 0;
-			var newSalvage = GameServer.Database.SelectAllObjects<SalvageYield>();
+			var newSalvage = GameServer.Database.SelectAllObjects<DbSalvageYield>();
 
 			if (newSalvage == null || newSalvage.Count == 0)
 			{
 				log.InfoFormat("Updating the SalvageYield table...", count);
 
-				var oldSalvage = GameServer.Database.SelectAllObjects<DBSalvage>();
+				var oldSalvage = GameServer.Database.SelectAllObjects<DbSalvage>();
 
-				foreach (DBSalvage salvage in oldSalvage)
+				foreach (DbSalvage salvage in oldSalvage)
 				{
-					SalvageYield salvageYield = new SalvageYield();
+					DbSalvageYield salvageYield = new DbSalvageYield();
 					salvageYield.ID = ++count; // start at 1
 					salvageYield.ObjectType = salvage.ObjectType;
 					salvageYield.SalvageLevel = salvage.SalvageLevel;
 					salvageYield.MaterialId_nb = salvage.Id_nb;
 					salvageYield.Count = 0;
 					salvageYield.Realm = salvage.Realm;
-					salvageYield.PackageID = SalvageYield.LEGACY_SALVAGE_ID;
+					salvageYield.PackageID = DbSalvageYield.LEGACY_SALVAGE_ID;
 					GameServer.Database.AddObject(salvageYield);
 				}
 			}

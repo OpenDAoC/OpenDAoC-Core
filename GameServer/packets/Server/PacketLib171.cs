@@ -104,8 +104,8 @@ namespace DOL.GS.PacketHandler
 						}
 						else
 						{
-							if (!string.IsNullOrEmpty(((DBLanguageGameObject)translation).Name))
-								name = ((DBLanguageGameObject)translation).Name;
+							if (!string.IsNullOrEmpty(((DbLanguageGameObject)translation).Name))
+								name = ((DbLanguageGameObject)translation).Name;
 						}
 					}
 				}
@@ -226,11 +226,11 @@ namespace DOL.GS.PacketHandler
 				LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, npc);
 				if (translation != null)
 				{
-					if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).Name))
-						name = ((DBLanguageNPC)translation).Name;
+					if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
+						name = ((DbLanguageGameNpc)translation).Name;
 
-					if (!string.IsNullOrEmpty(((DBLanguageNPC)translation).GuildName))
-						guildName = ((DBLanguageNPC)translation).GuildName;
+					if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).GuildName))
+						guildName = ((DbLanguageGameNpc)translation).GuildName;
 				}
 
 				if (name.Length + add.Length + 2 > 47) // clients crash with too long names

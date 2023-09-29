@@ -22,7 +22,7 @@ namespace DOL.GS.RealmAbilities
 			eProperty.Resist_Spirit,
 		};
 
-		public AvoidanceOfMagicAbility(DBAbility dba, int level)
+		public AvoidanceOfMagicAbility(DbAbility dba, int level)
 			: base(dba, level, properties)
 		{
 		}
@@ -73,7 +73,7 @@ namespace DOL.GS.RealmAbilities
 			eProperty.Resist_Thrust,
 		};
 
-		public PhysicalDefenceAbility(DBAbility dba, int level)
+		public PhysicalDefenceAbility(DbAbility dba, int level)
 			: base(dba, level, properties)
 		{
 		}

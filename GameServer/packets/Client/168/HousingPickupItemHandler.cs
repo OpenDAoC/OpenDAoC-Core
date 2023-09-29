@@ -126,7 +126,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					else if (iitem.DatabaseItem.BaseItemID.Contains("GuildBanner"))
 					{
-						var it = new ItemTemplate
+						var it = new DbItemTemplate
 						         	{
 						         		Id_nb = iitem.DatabaseItem.BaseItemID,
 						         		CanDropAsLoot = false,
@@ -202,7 +202,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 		}
 
-		private static bool GetItemBack(InventoryItem item)
+		private static bool GetItemBack(DbInventoryItem item)
 		{
 			switch (item.Object_Type)
 			{

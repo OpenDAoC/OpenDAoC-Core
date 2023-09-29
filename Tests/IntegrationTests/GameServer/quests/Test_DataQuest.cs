@@ -9,7 +9,7 @@ namespace DOL.Tests.Integration.Gameserver
     [TestFixture]
     class Test_DataQuest
     {
-        DBDataQuest dbDataQuest = new DBDataQuest();
+        DbDataQuest dbDataQuest = new DbDataQuest();
 
         [SetUp]
         public void init()
@@ -92,7 +92,7 @@ namespace DOL.Tests.Integration.Gameserver
 
         private class DataQuestSpy : DataQuest
         {
-            public DataQuestSpy(DBDataQuest dbDataQuest) : base(dbDataQuest) { m_charQuest = new CharacterXDataQuest(); }
+            public DataQuestSpy(DbDataQuest dbDataQuest) : base(dbDataQuest) { m_charQuest = new DbCharacterXDataQuest(); }
 
             public string SpySourceName => SourceName;
             public List<string> SpyQuestDependency => m_questDependencies;

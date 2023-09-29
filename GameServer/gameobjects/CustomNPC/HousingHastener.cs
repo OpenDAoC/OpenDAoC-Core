@@ -62,7 +62,7 @@ namespace DOL.GS
 			return list;
 		}
 
-		public override bool ReceiveItem(GameLiving source, InventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
 		{
 			if (source == null || item == null)
 				return false;

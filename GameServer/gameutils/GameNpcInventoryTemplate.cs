@@ -136,12 +136,12 @@ namespace DOL.GS
 						m_items.Remove(slot);
 					}
 					string itemID = string.Format("{0}:{1},{2},{3},{4}", slot, model, color, effect, extension);
-					InventoryItem item = null;
+					DbInventoryItem item = null;
 
 					if (!m_usedInventoryItems.ContainsKey(itemID))
 					{
 						item = new GameInventoryItem();
-						item.Template = new ItemTemplate();
+						item.Template = new DbItemTemplate();
 						item.Template.Id_nb = itemID;
 						item.Model = model;
 						item.Color = color;
@@ -200,7 +200,7 @@ namespace DOL.GS
 					{
 						m_isClosed = true;
 						StringBuilder templateID = new StringBuilder(m_items.Count * 16);
-						foreach (InventoryItem item in new SortedList(m_items).Values)
+						foreach (DbInventoryItem item in new SortedList(m_items).Values)
 						{
 							if (templateID.Length > 0)
 								templateID.Append(";");
@@ -239,10 +239,10 @@ namespace DOL.GS
 
 				foreach (var de in m_items)
 				{
-					InventoryItem oldItem = de.Value;
+					DbInventoryItem oldItem = de.Value;
 
-					InventoryItem item = new GameInventoryItem();
-					item.Template = new ItemTemplate();
+					DbInventoryItem item = new GameInventoryItem();
+					item.Template = new DbItemTemplate();
 					item.Template.Id_nb = oldItem.Id_nb;
 					item.Model = oldItem.Model;
 					item.Color = oldItem.Color;
@@ -266,7 +266,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Cache for fast loading of npc equipment
 		/// </summary>
-		protected static Dictionary<string, List<NPCEquipment>> m_npcEquipmentCache = null;
+		protected static Dictionary<string, List<DbNpcEquipment>> m_npcEquipmentCache = null;
 
 		/// <summary>
 		/// Loads the inventory template from the Database
@@ -279,12 +279,12 @@ namespace DOL.GS
 
 			lock (m_items)
 			{
-				IList<NPCEquipment> npcEquip;
+				IList<DbNpcEquipment> npcEquip;
 				
 				if (m_npcEquipmentCache.ContainsKey(templateID))
 					npcEquip = m_npcEquipmentCache[templateID];
 				else
-					npcEquip = DOLDB<NPCEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
+					npcEquip = DOLDB<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
 
 				if (npcEquip == null || npcEquip.Count == 0)
 				{
@@ -293,7 +293,7 @@ namespace DOL.GS
 					return false;
 				}
 				
-				foreach (NPCEquipment npcItem in npcEquip)
+				foreach (DbNpcEquipment npcItem in npcEquip)
 				{
 					if (!AddNPCEquipment((eInventorySlot)npcItem.Slot, npcItem.Model, npcItem.Color, npcItem.Effect, npcItem.Extension, npcItem.Emblem))
 					{
@@ -312,17 +312,17 @@ namespace DOL.GS
 		{
 			try
 			{
-				m_npcEquipmentCache = new Dictionary<string, List<NPCEquipment>>(1000);
-				foreach (NPCEquipment equip in GameServer.Database.SelectAllObjects<NPCEquipment>())
+				m_npcEquipmentCache = new Dictionary<string, List<DbNpcEquipment>>(1000);
+				foreach (DbNpcEquipment equip in GameServer.Database.SelectAllObjects<DbNpcEquipment>())
 				{
-					List<NPCEquipment> list;
+					List<DbNpcEquipment> list;
 					if (m_npcEquipmentCache.ContainsKey(equip.TemplateID))
 					{
 						list = m_npcEquipmentCache[equip.TemplateID];
 					}
 					else
 					{
-						list = new List<NPCEquipment>();
+						list = new List<DbNpcEquipment>();
 						m_npcEquipmentCache[equip.TemplateID] = list;
 					}
 
@@ -350,20 +350,20 @@ namespace DOL.GS
 					if (templateID == null)
 						throw new ArgumentNullException("templateID");
 
-					var npcEquipment = DOLDB<NPCEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
+					var npcEquipment = DOLDB<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
 
 					// delete removed item templates
-					foreach (NPCEquipment npcItem in npcEquipment)
+					foreach (DbNpcEquipment npcItem in npcEquipment)
 					{
 						if (!m_items.ContainsKey((eInventorySlot)npcItem.Slot))
 							GameServer.Database.DeleteObject(npcItem);
 					}
 
 					// save changed item templates
-					foreach (InventoryItem item in m_items.Values)
+					foreach (DbInventoryItem item in m_items.Values)
 					{
 						bool foundInDB = false;
-						foreach (NPCEquipment npcItem in npcEquipment)
+						foreach (DbNpcEquipment npcItem in npcEquipment)
 						{
 							if (item.SlotPosition != npcItem.Slot)
 								continue;
@@ -385,7 +385,7 @@ namespace DOL.GS
 
 						if (!foundInDB)
 						{
-							NPCEquipment npcItem = new NPCEquipment();
+							DbNpcEquipment npcItem = new DbNpcEquipment();
 							npcItem.Slot = item.SlotPosition;
 							npcItem.Model = item.Model;
 							npcItem.Color = item.Color;
@@ -419,7 +419,7 @@ namespace DOL.GS
 		/// <param name="slot"></param>
 		/// <param name="item"></param>
 		/// <returns>false</returns>
-		public override bool AddItem(eInventorySlot slot, InventoryItem item)
+		public override bool AddItem(eInventorySlot slot, DbInventoryItem item)
 		{
 			return false;
 		}
@@ -429,7 +429,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="item">the item to remove</param>
 		/// <returns>false</returns>
-		public override bool RemoveItem(InventoryItem item)
+		public override bool RemoveItem(DbInventoryItem item)
 		{
 			return false;
 		}
@@ -440,7 +440,7 @@ namespace DOL.GS
 		/// <param name="item"></param>
 		/// <param name="count"></param>
 		/// <returns>false</returns>
-		public override bool AddCountToStack(InventoryItem item, int count)
+		public override bool AddCountToStack(DbInventoryItem item, int count)
 		{
 			return false;
 		}
@@ -451,7 +451,7 @@ namespace DOL.GS
 		/// <param name="item">the item to remove</param>
 		/// <param name="count">the count of items to be removed from the stack</param>
 		/// <returns>false</returns>
-		public override bool RemoveCountFromStack(InventoryItem item, int count)
+		public override bool RemoveCountFromStack(DbInventoryItem item, int count)
 		{
 			return false;
 		}
@@ -474,7 +474,7 @@ namespace DOL.GS
 		/// <param name="fromItem">First Item</param>
 		/// <param name="toItem">Second Item</param>
 		/// <returns>false</returns>
-		protected override bool CombineItems(InventoryItem fromItem, InventoryItem toItem)
+		protected override bool CombineItems(DbInventoryItem fromItem, DbInventoryItem toItem)
 		{
 			return false;
 		}
@@ -510,7 +510,7 @@ namespace DOL.GS
 		/// <param name="minSlot">The first slot</param>
 		/// <param name="maxSlot">The last slot</param>
 		/// <returns>false</returns>
-		public override bool AddTemplate(InventoryItem template, int count, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public override bool AddTemplate(DbInventoryItem template, int count, eInventorySlot minSlot, eInventorySlot maxSlot)
 		{
 			return false;
 		}

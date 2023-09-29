@@ -43,7 +43,7 @@ namespace DOL.GS
         {
             get { return 40000; }
         }
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
@@ -227,7 +227,7 @@ namespace DOL.GS
         {
         }
 
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
@@ -302,7 +302,7 @@ namespace DOL.GS
         {
         }
 
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
@@ -377,7 +377,7 @@ namespace DOL.GS
         {
         }
 
-        public override double AttackDamage(InventoryItem weapon)
+        public override double AttackDamage(DbInventoryItem weapon)
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }

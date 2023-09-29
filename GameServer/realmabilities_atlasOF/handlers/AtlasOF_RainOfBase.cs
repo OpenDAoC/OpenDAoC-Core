@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
         private Spell m_spell;
         private SpellLine m_spellline;
 
-        public AtlasOF_RainOfBase(DBAbility ability, int level) : base(ability, level) { }
+        public AtlasOF_RainOfBase(DbAbility ability, int level) : base(ability, level) { }
 
         public override int MaxLevel => 3;
 
@@ -45,7 +45,7 @@ namespace DOL.GS.RealmAbilities
 
         private void CreateSpell(string name, int icon, int clientEffect, int damageType, double damage)
         {
-            DBSpell m_dbspell = new DBSpell
+            DbSpell m_dbspell = new DbSpell
             {
                 Name = name,
                 Icon = icon,

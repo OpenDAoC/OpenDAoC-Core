@@ -30,14 +30,14 @@ namespace DOL.GS.RealmAbilities
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public ArrowSummoningAbility(DBAbility dba, int level) : base(dba, level) { }
+        public ArrowSummoningAbility(DbAbility dba, int level) : base(dba, level) { }
         public override void Execute(GameLiving living)
 		{
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
             GamePlayer player = living as GamePlayer;
-            ItemTemplate arrow_summoning_1 = GameServer.Database.FindObjectByKey<ItemTemplate>("arrow_summoning1");
-            ItemTemplate arrow_summoning_2 = GameServer.Database.FindObjectByKey<ItemTemplate>("arrow_summoning2");
-            ItemTemplate arrow_summoning_3 = GameServer.Database.FindObjectByKey<ItemTemplate>("arrow_summoning3");
+            DbItemTemplate arrow_summoning_1 = GameServer.Database.FindObjectByKey<DbItemTemplate>("arrow_summoning1");
+            DbItemTemplate arrow_summoning_2 = GameServer.Database.FindObjectByKey<DbItemTemplate>("arrow_summoning2");
+            DbItemTemplate arrow_summoning_3 = GameServer.Database.FindObjectByKey<DbItemTemplate>("arrow_summoning3");
 
 			// what are these used for? - tolakram
             WorldInventoryItem as1 = WorldInventoryItem.CreateFromTemplate(arrow_summoning_1);
@@ -76,7 +76,7 @@ namespace DOL.GS.RealmAbilities
 			if (player == null) return;		
 			lock(player.Inventory)
 			{
-                InventoryItem item = player.Inventory.GetFirstItemByID("arrow_summoning1", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                DbInventoryItem item = player.Inventory.GetFirstItemByID("arrow_summoning1", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 				while (item != null)
 				{
 					player.Inventory.RemoveItem(item);
@@ -102,10 +102,10 @@ namespace DOL.GS.RealmAbilities
             if (!ServerProperties.Properties.LOAD_ARROW_SUMMONING)
                 return;            
             
-            ItemTemplate arrow_summoning1 = GameServer.Database.FindObjectByKey<ItemTemplate>("arrow_summoning1");
+            DbItemTemplate arrow_summoning1 = GameServer.Database.FindObjectByKey<DbItemTemplate>("arrow_summoning1");
 			if (arrow_summoning1 == null)
 			{
-				arrow_summoning1 = new ItemTemplate();
+				arrow_summoning1 = new DbItemTemplate();
 				arrow_summoning1.Name = "mystical barbed footed flight broadhead arrows";
 				arrow_summoning1.Level = 1;
 				arrow_summoning1.MaxDurability = 100;
@@ -128,10 +128,10 @@ namespace DOL.GS.RealmAbilities
 				if (log.IsDebugEnabled)
 					log.Debug("Added " + arrow_summoning1.Id_nb);
 			}
-			ItemTemplate arrow_summoning2 = GameServer.Database.FindObjectByKey<ItemTemplate>("arrow_summoning2");
+			DbItemTemplate arrow_summoning2 = GameServer.Database.FindObjectByKey<DbItemTemplate>("arrow_summoning2");
 			if (arrow_summoning2 == null)
 			{
-				arrow_summoning2 = new ItemTemplate();
+				arrow_summoning2 = new DbItemTemplate();
 				arrow_summoning2.Name = "mystical keen footed flight broadhead arrows";
 				arrow_summoning2.Level = 1;
 				arrow_summoning2.MaxDurability = 100;
@@ -154,10 +154,10 @@ namespace DOL.GS.RealmAbilities
 				if (log.IsDebugEnabled)
 					log.Debug("Added " + arrow_summoning2.Id_nb);
 			}
-			ItemTemplate arrow_summoning3 = GameServer.Database.FindObjectByKey<ItemTemplate>("arrow_summoning3");
+			DbItemTemplate arrow_summoning3 = GameServer.Database.FindObjectByKey<DbItemTemplate>("arrow_summoning3");
 			if (arrow_summoning3 == null)
 			{
-				arrow_summoning3 = new ItemTemplate();
+				arrow_summoning3 = new DbItemTemplate();
 				arrow_summoning3.Name = "mystical blunt footed flight broadhead arrows";
 				arrow_summoning3.Level = 1;
 				arrow_summoning3.MaxDurability = 100;

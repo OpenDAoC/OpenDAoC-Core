@@ -127,8 +127,8 @@ namespace DOL.GS.PacketHandler
 						}
 						else
 						{
-							if (!string.IsNullOrEmpty(((DBLanguageGameObject)translation).Name))
-								name = ((DBLanguageGameObject)translation).Name;
+							if (!string.IsNullOrEmpty(((DbLanguageGameObject)translation).Name))
+								name = ((DbLanguageGameObject)translation).Name;
 						}
 					}
 				}
@@ -160,7 +160,7 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)(updatedSlot - (int)eInventorySlot.Consignment_First + (int)eInventorySlot.HousingInventory_First));
 						else
 							pak.WriteByte((byte)(updatedSlot));
-						InventoryItem item = null;
+						DbInventoryItem item = null;
 						item = m_gameClient.Player.Inventory.GetItem((eInventorySlot)updatedSlot);
 
 						if (item == null)
@@ -271,7 +271,7 @@ namespace DOL.GS.PacketHandler
 
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
 			{
-				ICollection<InventoryItem> items = null;
+				ICollection<DbInventoryItem> items = null;
 				if (living.Inventory != null)
 					items = living.Inventory.VisibleItems;
 
@@ -282,7 +282,7 @@ namespace DOL.GS.PacketHandler
 				if (items != null)
 				{
 					pak.WriteByte((byte)items.Count);
-					foreach (InventoryItem item in items)
+					foreach (DbInventoryItem item in items)
 					{
 						ushort model = (ushort)(item.Model & 0x1FFF);
 						int slot = item.SlotPosition;

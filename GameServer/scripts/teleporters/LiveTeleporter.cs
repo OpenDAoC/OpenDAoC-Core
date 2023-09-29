@@ -306,7 +306,7 @@ namespace DOL.GS.Scripts
                 else
                 {
                     IGameLocation location = house.OutdoorJumpPoint;
-                    Teleport teleport = new Teleport();
+                    DbTeleport teleport = new DbTeleport();
                     teleport.TeleportID = "your house";
                     teleport.Realm = (int) DestinationRealm;
                     teleport.RegionID = location.RegionID;
@@ -342,10 +342,10 @@ namespace DOL.GS.Scripts
 
                 // Check if the house at the player's house bind location contains a bind stone
                 House targetHouse = (House) houses[0];
-                IDictionary<uint, DBHouseHookpointItem> hookpointItems = targetHouse.HousepointItems;
+                IDictionary<uint, DbHouseHookPointItem> hookpointItems = targetHouse.HousepointItems;
                 Boolean hasBindstone = false;
 
-                foreach (KeyValuePair<uint, DBHouseHookpointItem> targetHouseItem in hookpointItems)
+                foreach (KeyValuePair<uint, DbHouseHookPointItem> targetHouseItem in hookpointItems)
                 {
                     if (((GameObject) targetHouseItem.Value.GameObject).GetName(0, false).ToLower()
                         .EndsWith("bindstone"))
@@ -370,7 +370,7 @@ namespace DOL.GS.Scripts
                     return false;
                 }
 
-                Teleport teleport = new Teleport();
+                DbTeleport teleport = new DbTeleport();
                 teleport.TeleportID = "hearth";
                 teleport.Realm = (int) DestinationRealm;
                 teleport.RegionID = player.BindHouseRegion;
@@ -395,7 +395,7 @@ namespace DOL.GS.Scripts
                 else
                 {
                     IGameLocation location = house.OutdoorJumpPoint;
-                    Teleport teleport = new Teleport();
+                    DbTeleport teleport = new DbTeleport();
                     teleport.TeleportID = "guild house";
                     teleport.Realm = (int) DestinationRealm;
                     teleport.RegionID = location.RegionID;
@@ -425,7 +425,7 @@ namespace DOL.GS.Scripts
             }
 
             // Find the teleport location in the database.
-            Teleport port = WorldMgr.GetTeleportLocation(DestinationRealm, String.Format("{0}:{1}", Type, text));
+            DbTeleport port = WorldMgr.GetTeleportLocation(DestinationRealm, String.Format("{0}:{1}", Type, text));
             if (port != null)
             {
                 if (port.RegionID == 0 && port.X == 0 && port.Y == 0 && port.Z == 0)
@@ -450,7 +450,7 @@ namespace DOL.GS.Scripts
         /// </summary>
         /// <param name="player"></param>
         /// <param name="destination"></param>
-        protected virtual void OnDestinationPicked(GamePlayer player, Teleport destination)
+        protected virtual void OnDestinationPicked(GamePlayer player, DbTeleport destination)
         {
             Region region = WorldMgr.GetRegion((ushort) destination.RegionID);
 
@@ -474,7 +474,7 @@ namespace DOL.GS.Scripts
         /// </summary>
         /// <param name="player"></param>
         /// <param name="subSelection"></param>
-        protected virtual void OnSubSelectionPicked(GamePlayer player, Teleport subSelection)
+        protected virtual void OnSubSelectionPicked(GamePlayer player, DbTeleport subSelection)
         {
         }
 
@@ -484,7 +484,7 @@ namespace DOL.GS.Scripts
         /// </summary>
         /// <param name="player"></param>
         /// <param name="destination"></param>
-        protected virtual void OnTeleportSpell(GamePlayer player, Teleport destination)
+        protected virtual void OnTeleportSpell(GamePlayer player, DbTeleport destination)
         {
             SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
             List<Spell> spellList = SkillBase.GetSpellList(GlobalSpellsLines.Mob_Spells);
@@ -512,7 +512,7 @@ namespace DOL.GS.Scripts
         /// </summary>
         /// <param name="player"></param>
         /// <param name="destination"></param>
-        protected virtual void OnTeleport(GamePlayer player, Teleport destination)
+        protected virtual void OnTeleport(GamePlayer player, DbTeleport destination)
         {
             if (player.InCombat == false && GameRelic.IsPlayerCarryingRelic(player) == false)
             {

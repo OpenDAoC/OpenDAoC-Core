@@ -33,13 +33,13 @@ namespace DOL.GS.SkillHandler
 			get { return m_property; }
 		}
 
-		public PropertyChangingAbility(DBAbility dba, int level, eProperty[] property)
+		public PropertyChangingAbility(DbAbility dba, int level, eProperty[] property)
 			: base(dba, level)
 		{
 			m_property = property;
 		}
 
-		public PropertyChangingAbility(DBAbility dba, int level, eProperty property)
+		public PropertyChangingAbility(DbAbility dba, int level, eProperty property)
 			: base(dba, level)
 		{
 			m_property = new eProperty[] { property };

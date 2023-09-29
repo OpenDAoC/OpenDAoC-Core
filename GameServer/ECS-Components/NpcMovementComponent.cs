@@ -189,7 +189,7 @@ namespace DOL.GS
                     return;
                 }
 
-                if (CurrentWaypoint.Type == ePathType.Path_Reverse && CurrentWaypoint.FiredFlag)
+                if (CurrentWaypoint.Type == EPathType.Path_Reverse && CurrentWaypoint.FiredFlag)
                     CurrentWaypoint = CurrentWaypoint.Next;
                 else if (CurrentWaypoint.Prev != null)
                     CurrentWaypoint = CurrentWaypoint.Prev;
@@ -464,25 +464,25 @@ namespace DOL.GS
             PathPoint oldPathPoint = CurrentWaypoint;
             PathPoint nextPathPoint = CurrentWaypoint.Next;
 
-            if ((CurrentWaypoint.Type == ePathType.Path_Reverse) && CurrentWaypoint.FiredFlag)
+            if ((CurrentWaypoint.Type == EPathType.Path_Reverse) && CurrentWaypoint.FiredFlag)
                 nextPathPoint = CurrentWaypoint.Prev;
 
             if (nextPathPoint == null)
             {
                 switch (CurrentWaypoint.Type)
                 {
-                    case ePathType.Loop:
+                    case EPathType.Loop:
                     {
                         CurrentWaypoint = MovementMgr.FindFirstPathPoint(CurrentWaypoint);
                         break;
                     }
-                    case ePathType.Once:
+                    case EPathType.Once:
                     {
                         CurrentWaypoint = null;
                         PathID = null; // Unset the path ID, otherwise the brain will re-enter patrolling state and restart it.
                         break;
                     }
-                    case ePathType.Path_Reverse:
+                    case EPathType.Path_Reverse:
                     {
                         if (oldPathPoint.FiredFlag)
                             CurrentWaypoint = CurrentWaypoint.Next;
@@ -495,7 +495,7 @@ namespace DOL.GS
             }
             else
             {
-                if (CurrentWaypoint.Type == ePathType.Path_Reverse && CurrentWaypoint.FiredFlag)
+                if (CurrentWaypoint.Type == EPathType.Path_Reverse && CurrentWaypoint.FiredFlag)
                     CurrentWaypoint = CurrentWaypoint.Prev;
                 else
                     CurrentWaypoint = CurrentWaypoint.Next;

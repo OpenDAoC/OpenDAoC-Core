@@ -53,7 +53,7 @@ namespace DOL.GS.Effects
             EffectOwner = owner;
 
             // Build spell
-            DBSpell tSpell = new DBSpell();
+            DbSpell tSpell = new DbSpell();
             tSpell.AllowAdd = false;
             tSpell.Description = "Damage the target.";
             tSpell.Name = "PBAoE damage";

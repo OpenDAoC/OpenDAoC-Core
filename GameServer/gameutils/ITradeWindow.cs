@@ -27,7 +27,7 @@ using log4net;
 namespace DOL.GS
 {
 	/// <summary>
-	/// Description résume de ITradeWindow.
+	/// Description rï¿½sume de ITradeWindow.
 	/// </summary>
 	public interface ITradeWindow
 	{
@@ -46,8 +46,8 @@ namespace DOL.GS
 		bool Repairing { get; set; }
 		bool Combine { get; set; }
 		
-		bool AddItemToTrade(InventoryItem itemForTrade);
-		void RemoveItemToTrade(InventoryItem itemToRemove);
+		bool AddItemToTrade(DbInventoryItem itemForTrade);
+		void RemoveItemToTrade(DbInventoryItem itemToRemove);
 		void AddMoneyToTrade(long money);
 		
 		bool AcceptTrade();

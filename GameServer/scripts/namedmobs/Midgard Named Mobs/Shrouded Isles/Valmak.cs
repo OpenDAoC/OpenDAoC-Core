@@ -26,7 +26,7 @@ namespace DOL.GS
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(InventoryItem weapon)
+		public override double AttackDamage(DbInventoryItem weapon)
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
@@ -92,7 +92,7 @@ namespace DOL.GS
 			{
 				if (m_Valmak_Mezz == null)
 				{
-					DBSpell spell = new DBSpell();
+					DbSpell spell = new DbSpell();
 					spell.AllowAdd = false;
 					spell.CastTime = 0;
 					spell.RecastDelay = 60;

@@ -32,7 +32,7 @@ namespace DOL.GS.RealmAbilities
     {
         public const int DURATION = 19 * 1000;
 
-        public SearingPetAbility(DBAbility dba, int level) : base(dba, level) { }
+        public SearingPetAbility(DbAbility dba, int level) : base(dba, level) { }
 
         /// <summary>
         /// Action

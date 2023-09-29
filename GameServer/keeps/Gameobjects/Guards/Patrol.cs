@@ -18,11 +18,11 @@ namespace DOL.GS.Keeps
 			m_component = component;
 		}
 
-		private DBKeepPosition m_spawnPosition = null;
+		private DbKeepPosition m_spawnPosition = null;
 		/// <summary>
 		/// The Position object the guards are assigned to
 		/// </summary>
-		public DBKeepPosition SpawnPosition
+		public DbKeepPosition SpawnPosition
 		{
 			get { return m_spawnPosition; }
 			set { m_spawnPosition = value; }
@@ -52,7 +52,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// The Patrol ID, consider this a template ID
 		/// </summary>
-		public string PatrolID = DOL.Database.UniqueID.IDGenerator.GenerateID();
+		public string PatrolID = DOL.Database.UniqueID.IdGenerator.GenerateID();
 		/// <summary>
 		/// The Guard Types that make up the Patrol
 		/// </summary>
@@ -123,7 +123,7 @@ namespace DOL.GS.Keeps
 			PositionMgr.LoadGuardPosition(SpawnPosition, guard);
 			guard.RefreshTemplate();
 			PatrolGuards.Add(guard);
-			Component.Keep.Guards.Add(Database.UniqueID.IDGenerator.GenerateID(), guard);
+			Component.Keep.Guards.Add(Database.UniqueID.IdGenerator.GenerateID(), guard);
 			guard.AddToWorld();
 
 			if (ServerProperties.Properties.ENABLE_DEBUG)

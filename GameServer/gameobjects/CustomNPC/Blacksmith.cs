@@ -95,7 +95,7 @@ public class Blacksmith : GameNPC
     /// <param name="source">The entity giving the item to the NPC (e.g., 'GamePlayer player').</param>
     /// ///
     /// <param name="item">The specific item being given to the NPC.</param>
-    public override bool ReceiveItem(GameLiving source, InventoryItem item)
+    public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
     {
         var player = source as GamePlayer;
         if (player == null || item == null)
@@ -166,7 +166,7 @@ public class Blacksmith : GameNPC
     {
         var itemWeak = player.TempProperties.GetProperty<WeakReference>(REPAIR_ITEM_WEAK, new WeakRef(null));
         player.TempProperties.RemoveProperty(REPAIR_ITEM_WEAK);
-        var item = (InventoryItem) itemWeak.Target;
+        var item = (DbInventoryItem) itemWeak.Target;
 
         if (response != 0x01)
         {
@@ -246,7 +246,7 @@ public class Blacksmith : GameNPC
                 "All items are fully repaired already.");
     }
 
-    private bool CanBeRepaired(InventoryItem item)
+    private bool CanBeRepaired(DbInventoryItem item)
     {
         if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
                          || item.OwnerID == null) return false;
@@ -256,7 +256,7 @@ public class Blacksmith : GameNPC
         return true;
     }
 
-    private long CalculateCost(InventoryItem item)
+    private long CalculateCost(DbInventoryItem item)
     {
         long NeededMoney = 0;
         NeededMoney = ((item.Template.MaxCondition - item.Condition) * item.Template.Price) /
@@ -311,7 +311,7 @@ public class Blacksmith : GameNPC
                 "Scripts.Recharger.RechargerDialogResponse.FullyCharged"));
     }
 
-    private void Repair(InventoryItem item, GamePlayer player)
+    private void Repair(DbInventoryItem item, GamePlayer player)
     {
         var ToRecoverCond = item.MaxCondition - item.Condition;
 

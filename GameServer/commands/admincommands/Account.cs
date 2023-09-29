@@ -98,7 +98,7 @@ namespace DOL.GS.Commands
 	                        }
 	                        
 	                        // Check for existing accounts, throw error if one exists with same name
-	                        Account account = GetAccount(accountname);
+	                        DbAccount account = GetAccount(accountname);
 	                        if (account != null)
 	                        {
 		                        // Message: "An account already exists with the name '{0}'! Try again with a different value."
@@ -106,7 +106,7 @@ namespace DOL.GS.Commands
 	                            return;
 	                        }
 	                        
-	                        account = new Account
+	                        account = new DbAccount
 	                        {
 	                            Name = accountname,
 	                            Password = LoginRequestHandler.CryptPassword(password),
@@ -155,7 +155,7 @@ namespace DOL.GS.Commands
 						string accountname = args[2];
 						string newpass = args[3];
 
-						Account acc = GetAccount(accountname);
+						DbAccount acc = GetAccount(accountname);
 						
 						// If no account currently exists with the specified account name
 						if (acc == null)
@@ -207,7 +207,7 @@ namespace DOL.GS.Commands
 						}
 
 						string accountname = args[2];
-                        Account acc = GetAccount(accountname);
+                        DbAccount acc = GetAccount(accountname);
 
                         // If no account matches
 						if (acc == null)
@@ -250,7 +250,7 @@ namespace DOL.GS.Commands
                         }
 
                         string charname = args[2];
-                        DOLCharacters cha = GetCharacter(charname);
+                        DbCoreCharacter cha = GetCharacter(charname);
 
                         // If no character exists that matches the exact name entered
                         if (cha == null)
@@ -298,7 +298,7 @@ namespace DOL.GS.Commands
                         string accountname = args[3];
 
                         // Check 'dolcharacters' table for exact name match
-                        DOLCharacters cha = GetCharacter(charname);
+                        DbCoreCharacter cha = GetCharacter(charname);
                         
                         if (cha == null)
                         {
@@ -308,7 +308,7 @@ namespace DOL.GS.Commands
                         }
                         
                         // Check 'account' table for exact match
-                        Account acc = GetAccount(accountname);
+                        DbAccount acc = GetAccount(accountname);
                         
                         // If the destination account does not exist
                         if (acc == null)
@@ -344,7 +344,7 @@ namespace DOL.GS.Commands
                         for (freeslot = firstAccountSlot; freeslot < firstAccountSlot + 8; freeslot++)
                         {
                             bool found = false;
-                            foreach (DOLCharacters ch in acc.Characters)
+                            foreach (DbCoreCharacter ch in acc.Characters)
                             {
                                 if (ch.Realm == cha.Realm && ch.AccountSlot == freeslot)
                                 {
@@ -412,7 +412,7 @@ namespace DOL.GS.Commands
 						}
 
 						string accountname = args[2];
-						Account acc = GetAccount(accountname);
+						DbAccount acc = GetAccount(accountname);
 
 						if (acc == null)
 						{
@@ -468,7 +468,7 @@ namespace DOL.GS.Commands
 						}
 
 						string accountname = args[2];
-						Account acc = GetAccount(accountname);
+						DbAccount acc = GetAccount(accountname);
 						
 						if (acc == null)
 						{
@@ -477,7 +477,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						var banacc = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(accountname)));
+						var banacc = DOLDB<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(accountname)));
 						
 						// If no ban record exists for the specified account
 						if (banacc.Count == 0)
@@ -523,7 +523,7 @@ namespace DOL.GS.Commands
                         }
 
                         var charname = args[2];
-                        DOLCharacters Char = GetCharacter(charname);
+                        DbCoreCharacter Char = GetCharacter(charname);
                         
                         if (Char == null)
                         {
@@ -547,10 +547,10 @@ namespace DOL.GS.Commands
 		/// </summary>
 		/// <param name="name">The account name</param>
 		/// <returns>The matching account name or 'null'</returns>
-		private static Account GetAccount(string accountName)
+		private static DbAccount GetAccount(string accountName)
 		{
 			GameClient client = ClientService.GetClientFromAccountName(accountName);
-			return client != null ? client.Account : GameServer.Database.FindObjectByKey<Account>(accountName);
+			return client != null ? client.Account : GameServer.Database.FindObjectByKey<DbAccount>(accountName);
 		}
 
 		/// <summary>
@@ -558,17 +558,17 @@ namespace DOL.GS.Commands
 		/// </summary>
 		/// <param name="charname">The character name</param>
 		/// <returns>The matching character name or 'null'</returns>
-		private static DOLCharacters GetCharacter(string characterName)
+		private static DbCoreCharacter GetCharacter(string characterName)
 		{
 			GamePlayer player = ClientService.GetPlayerByExactName(characterName);
-			return player != null ? player.DBCharacter : DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
+			return player != null ? player.DBCharacter : DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
 		}
 
 		/// <summary>
 		/// Kicks an active playing account from the server and closes the client
 		/// </summary>
 		/// <param name="acc">The account</param>
-		private static void KickAccount(Account account)
+		private static void KickAccount(DbAccount account)
 		{
 			GameClient client = ClientService.GetClientFromAccount(account);
 
@@ -583,7 +583,7 @@ namespace DOL.GS.Commands
 		/// Kicks an active playing character from the server and closes the client
 		/// </summary>
 		/// <param name="cha">The character</param>
-		private static void KickCharacter(DOLCharacters character)
+		private static void KickCharacter(DbCoreCharacter character)
 		{
 			GamePlayer player = ClientService.GetPlayerByExactName(character.Name);
 
@@ -606,7 +606,7 @@ namespace DOL.GS.Commands
 			if (player != null)
 				return player.Client.Account.Name;
 
-			DOLCharacters characterDb = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
+			DbCoreCharacter characterDb = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
 			return characterDb?.AccountName;
 		}
 	}

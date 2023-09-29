@@ -34,7 +34,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The InventoryItem that is contained within
 		/// </summary>
-		private InventoryItem m_item;
+		private DbInventoryItem m_item;
 
 		/// <summary>
 		/// Has this item been removed from the world?
@@ -61,7 +61,7 @@ namespace DOL.GS
 		/// added to the world
 		/// </summary>
 		/// <param name="item">the InventoryItem to put into this class</param>
-		public WorldInventoryItem(InventoryItem item) : this()
+		public WorldInventoryItem(DbInventoryItem item) : this()
 		{
 			m_item = item;
 			m_item.SlotPosition = 0;
@@ -72,9 +72,9 @@ namespace DOL.GS
 			this.Emblem = item.Emblem;
 			this.Name = item.Name;
 
-			if (item.Template is ItemUnique && item.Template.IsPersisted == false)
+			if (item.Template is DbItemUnique && item.Template.IsPersisted == false)
 			{
-				GameServer.Database.AddObject(item.Template as ItemUnique);
+				GameServer.Database.AddObject(item.Template as DbItemUnique);
 			}
 		}
 
@@ -85,9 +85,9 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="item">The InventoryItem to load and create an item from</param>
 		/// <returns>Found item or null</returns>
-		public static WorldInventoryItem CreateFromTemplate(InventoryItem item)
+		public static WorldInventoryItem CreateFromTemplate(DbInventoryItem item)
 		{
-			if (item.Template is ItemUnique)
+			if (item.Template is DbItemUnique)
 				return null;
 			
 			return CreateFromTemplate(item.Id_nb);
@@ -102,7 +102,7 @@ namespace DOL.GS
 		/// <returns>Found item or null</returns>
 		public static WorldInventoryItem CreateFromTemplate(string templateID)
 		{
-			ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(templateID);
+			DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(templateID);
 			if (template == null)
 			{
 				if (log.IsWarnEnabled)
@@ -120,7 +120,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static WorldInventoryItem CreateUniqueFromTemplate(string templateID)
 		{
-			ItemTemplate template = GameServer.Database.FindObjectByKey<ItemTemplate>(templateID);
+			DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(templateID);
 
 			if (template == null)
 			{
@@ -138,7 +138,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="template">The template to load and create an item from.</param>
 		/// <returns>Item reference or null.</returns>
-		public static WorldInventoryItem CreateFromTemplate(ItemTemplate template)
+		public static WorldInventoryItem CreateFromTemplate(DbItemTemplate template)
 		{
 			if (template == null)
 				return null;
@@ -158,13 +158,13 @@ namespace DOL.GS
 			return invItem;
 		}
 
-		public static WorldInventoryItem CreateUniqueFromTemplate(ItemTemplate template)
+		public static WorldInventoryItem CreateUniqueFromTemplate(DbItemTemplate template)
 		{
 			if (template == null)
 				return null;
 
 			WorldInventoryItem invItem = new WorldInventoryItem();
-			ItemUnique item = new ItemUnique(template);
+			DbItemUnique item = new DbItemUnique(template);
 			GameServer.Database.AddObject(item);
 
 			invItem.m_item = GameInventoryItem.Create(item);
@@ -194,10 +194,10 @@ namespace DOL.GS
 
 		public override void Delete()
 		{
-			if (m_item != null && m_isRemoved == false && m_item.Template is ItemUnique)
+			if (m_item != null && m_isRemoved == false && m_item.Template is DbItemUnique)
 			{
 				// for world items that expire we need to delete the associated ItemUnique
-				GameServer.Database.DeleteObject(m_item.Template as ItemUnique);
+				GameServer.Database.DeleteObject(m_item.Template as DbItemUnique);
 			}
 
 			base.Delete();
@@ -254,7 +254,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the InventoryItem contained within this class
 		/// </summary>
-		public InventoryItem Item
+		public DbInventoryItem Item
 		{
 			get
 			{

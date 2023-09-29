@@ -105,7 +105,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						return;
 					}
 
-					InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)fromClientSlot);
+					DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)fromClientSlot);
 					if (item == null)
 					{
 						client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });
@@ -243,7 +243,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				//We want to drop the item
 				if (toClientSlot == (ushort)eInventorySlot.Ground)
 				{
-					InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)fromClientSlot);
+					DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)fromClientSlot);
 					if (item == null)
 					{
 						client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });
@@ -284,7 +284,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				|| (toClientSlot >= (ushort)eInventorySlot.FirstVault && toClientSlot <= (ushort)eInventorySlot.LastVault)
 				|| (toClientSlot >= (ushort)eInventorySlot.FirstBagHorse && toClientSlot <= (ushort)eInventorySlot.LastBagHorse)))
 			{
-				InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)fromClientSlot);
+				DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)fromClientSlot);
 				if (item == null) return;
 
 				toClientSlot = 0;

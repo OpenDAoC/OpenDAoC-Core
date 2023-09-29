@@ -487,7 +487,7 @@ namespace DOL.GS
 			} // switch (text.ToLower())
 
 			// Find the teleport location in the database.
-			Teleport port = GetTeleportLocation(player, text, realmTarget);
+			DbTeleport port = GetTeleportLocation(player, text, realmTarget);
 			if (port != null)
 				OnTeleportSpell(player, port);
 			else
@@ -496,7 +496,7 @@ namespace DOL.GS
 			return true;
 		}
 
-		protected Teleport GetTeleportLocation(GamePlayer player, string text, eRealm realm)
+		protected DbTeleport GetTeleportLocation(GamePlayer player, string text, eRealm realm)
 		{
 			// Battlegrounds are specials, as the teleport location depends on
 			// the level of the player, so let's deal with that first.
@@ -511,7 +511,7 @@ namespace DOL.GS
 					AbstractGameKeep portalKeep = GameServer.KeepManager.GetBGPK(player);
 					if (portalKeep != null)
 					{
-						Teleport teleport = new Teleport();
+						DbTeleport teleport = new DbTeleport();
 						teleport.TeleportID = "battlegrounds";
 						teleport.Realm = (byte)portalKeep.Realm;
 						teleport.RegionID = portalKeep.Region;
@@ -545,7 +545,7 @@ namespace DOL.GS
 				else
 				{
 					IGameLocation location = house.OutdoorJumpPoint;
-					Teleport teleport = new Teleport();
+					DbTeleport teleport = new DbTeleport();
 					teleport.TeleportID = "personal";
 					teleport.Realm = (int)player.Realm;
 					teleport.RegionID = location.RegionID;
@@ -581,10 +581,10 @@ namespace DOL.GS
 
 				// Check if the house at the player's house bind location contains a bind stone
 				House targetHouse = (House)houses[0];
-				IDictionary<uint, DBHouseHookpointItem> hookpointItems = targetHouse.HousepointItems;
+				IDictionary<uint, DbHouseHookPointItem> hookpointItems = targetHouse.HousepointItems;
 				Boolean hasBindstone = false;
 
-				foreach (KeyValuePair<uint, DBHouseHookpointItem> targetHouseItem in hookpointItems)
+				foreach (KeyValuePair<uint, DbHouseHookPointItem> targetHouseItem in hookpointItems)
 				{
 					if (((GameObject)targetHouseItem.Value.GameObject).GetName(0, false).ToLower().EndsWith("bindstone"))
 					{
@@ -608,7 +608,7 @@ namespace DOL.GS
 					return null;
 				}
 
-				Teleport teleport = new Teleport();
+				DbTeleport teleport = new DbTeleport();
 				teleport.TeleportID = "hearth";
 				teleport.Realm = (int)player.Realm;
 				teleport.RegionID = player.BindHouseRegion;
@@ -630,7 +630,7 @@ namespace DOL.GS
 				else
 				{
 					IGameLocation location = house.OutdoorJumpPoint;
-					Teleport teleport = new Teleport();
+					DbTeleport teleport = new DbTeleport();
 					teleport.TeleportID = "guild house";
 					teleport.Realm = (int)player.Realm;
 					teleport.RegionID = location.RegionID;

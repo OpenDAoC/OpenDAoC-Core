@@ -262,7 +262,7 @@ namespace DOL.GS.PacketHandler
 				SendForceTooltipUpdate(spellsXLines.SelectMany(e => e.Item2));
 		}
 
-		protected override void WriteTemplateData(GSTCPPacketOut pak, ItemTemplate template, int count)
+		protected override void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)
 		{
 			if (template == null)
 			{
@@ -350,7 +350,7 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(template.Name);
 		}
 
-		protected override void WriteItemData(GSTCPPacketOut pak, InventoryItem item)
+		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{

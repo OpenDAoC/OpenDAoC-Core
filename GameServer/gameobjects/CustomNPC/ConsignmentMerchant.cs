@@ -121,7 +121,7 @@ namespace DOL.GS
                     {"dunshire_market", new GameLocation("", 202, 495494, 555646, 2960, 1057)},
                 };
 
-        public override bool ReceiveItem(GameLiving source, InventoryItem item)
+        public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
         {
             GamePlayer player = source as GamePlayer;
 
@@ -170,7 +170,7 @@ namespace DOL.GS
         /// <summary>
         /// Inventory of the Consignment Merchant, mapped to client slots
         /// </summary>
-        public virtual Dictionary<int, InventoryItem> GetClientInventory(GamePlayer player)
+        public virtual Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player)
         {
 			return this.GetClientItems(player);
         }
@@ -178,7 +178,7 @@ namespace DOL.GS
         /// <summary>
         /// List of items in the Consignment Merchants Inventory
         /// </summary>
-		public virtual IList<InventoryItem> DBItems(GamePlayer player = null)
+		public virtual IList<DbInventoryItem> DBItems(GamePlayer player = null)
         {
             House house = HouseMgr.GetHouse(CurrentRegionID, HouseNumber);
 			if (house == null)
@@ -205,7 +205,7 @@ namespace DOL.GS
                 {
                     m_totalMoney = value;
 
-                    var merchant = DOLDB<HouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+                    var merchant = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
                     merchant.Money = m_totalMoney;
                     GameServer.Database.SaveObject(merchant);
                 }
@@ -291,7 +291,7 @@ namespace DOL.GS
 					{
 						// ... player
 
-						InventoryItem toItem = player.Inventory.GetItem((eInventorySlot)toClientSlot);
+						DbInventoryItem toItem = player.Inventory.GetItem((eInventorySlot)toClientSlot);
 
 						if (toItem != null)
 						{
@@ -322,7 +322,7 @@ namespace DOL.GS
 					// moving an item from the client to the consignment merchant
 					if (HasPermissionToMove(player))
 					{
-						InventoryItem toItem = player.Inventory.GetItem((eInventorySlot)toClientSlot);
+						DbInventoryItem toItem = player.Inventory.GetItem((eInventorySlot)toClientSlot);
 
 						if (toItem != null)
 						{
@@ -346,7 +346,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Add an item to this object
 		/// </summary>
-		public virtual bool OnAddItem(GamePlayer player, InventoryItem item)
+		public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item)
 		{
 			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
 			{
@@ -358,7 +358,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Remove an item from this object
 		/// </summary>
-		public virtual bool OnRemoveItem(GamePlayer player, InventoryItem item)
+		public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItem item)
 		{
 			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
 			{
@@ -394,7 +394,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			InventoryItem item = player.TempProperties.GetProperty<InventoryItem>(GameInventoryObjectExtensions.ITEM_BEING_ADDED, null);
+			DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(GameInventoryObjectExtensions.ITEM_BEING_ADDED, null);
 
 			if (item != null)
 			{
@@ -444,9 +444,9 @@ namespace DOL.GS
         /// <param name="toClientSlot"></param>
 		public virtual void OnPlayerBuy(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, bool usingMarketExplorer = false)
         {
-			IDictionary<int, InventoryItem> clientInventory = GetClientInventory(player);
+			IDictionary<int, DbInventoryItem> clientInventory = GetClientInventory(player);
 
-			InventoryItem fromItem = null;
+			DbInventoryItem fromItem = null;
 
 			if (clientInventory.ContainsKey((int)fromClientSlot))
 			{
@@ -524,14 +524,14 @@ namespace DOL.GS
 			eInventorySlot fromClientSlot = player.TempProperties.GetProperty<eInventorySlot>(CONSIGNMENT_BUY_ITEM, eInventorySlot.Invalid);
 			player.TempProperties.RemoveProperty(CONSIGNMENT_BUY_ITEM);
 
-			InventoryItem item = null;
+			DbInventoryItem item = null;
 
 			lock (LockObject())
 			{
 
 				if (fromClientSlot != eInventorySlot.Invalid)
 				{
-					IDictionary<int, InventoryItem> clientInventory = GetClientInventory(player);
+					IDictionary<int, DbInventoryItem> clientInventory = GetClientInventory(player);
 
 					if (clientInventory.ContainsKey((int)fromClientSlot))
 					{
@@ -649,7 +649,7 @@ namespace DOL.GS
         /// players that are too far away will be considered inactive.
         /// </summary>
         /// <param name="updateItems"></param>
-		protected virtual void NotifyObservers(GamePlayer player, IDictionary<int, InventoryItem> updateItems)
+		protected virtual void NotifyObservers(GamePlayer player, IDictionary<int, DbInventoryItem> updateItems)
         {
             var inactiveList = new List<string>();
 			bool hasUpdatedPlayer = false;
@@ -743,7 +743,7 @@ namespace DOL.GS
 
 			SetInventoryTemplate();
 
-			var houseCM = DOLDB<HouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+			var houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (houseCM != null)
 			{
 				TotalMoney = houseCM.Money;
@@ -775,9 +775,9 @@ namespace DOL.GS
 
 			bool isFixed = false;
 
-			var items = DOLDB<InventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(house.OwnerID).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDBSlot)).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDBSlot)).And(DB.Column("OwnerLot").IsEqualTo(0)));
+			var items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(house.OwnerID).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDBSlot)).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDBSlot)).And(DB.Column("OwnerLot").IsEqualTo(0)));
 
-			foreach (InventoryItem item in items)
+			foreach (DbInventoryItem item in items)
 			{
 				item.OwnerLot = (ushort)HouseNumber;
 				MarketCache.AddItem(item);
@@ -872,10 +872,10 @@ namespace DOL.GS
 
             if (house.DatabaseItem.GuildHouse)
             {
-            	var guild = DOLDB<DBGuild>.SelectObject(DB.Column("GuildName").IsEqualTo(house.DatabaseItem.GuildName));
+            	var guild = DOLDB<DbGuild>.SelectObject(DB.Column("GuildName").IsEqualTo(house.DatabaseItem.GuildName));
                 int emblem = guild.Emblem;
 
-                InventoryItem cloak = Inventory.GetItem(eInventorySlot.Cloak);
+                DbInventoryItem cloak = Inventory.GetItem(eInventorySlot.Cloak);
                 if (cloak != null)
                 {
                     cloak.Emblem = emblem;

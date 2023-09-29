@@ -7,7 +7,7 @@ namespace DOL.GS.RealmAbilities;
 
 public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHandler
 {
-    public AtlasOF_BrilliantAura(DBAbility dba, int level) : base(dba, level) { }
+    public AtlasOF_BrilliantAura(DbAbility dba, int level) : base(dba, level) { }
 
     private SpellHandler m_handler;
     
@@ -61,7 +61,7 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
 
     public virtual SpellHandler CreateSpell(GameLiving caster)
     {
-        m_dbspell = new DBSpell();
+        m_dbspell = new DbSpell();
         m_dbspell.Name = "Brilliant Aura of Deflection";
         m_dbspell.Icon = 7149;
         m_dbspell.ClientEffect = 7009;
@@ -84,7 +84,7 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
         return new SpellHandler(caster, m_spell, m_spellline);
     }
     
-    private DBSpell m_dbspell;
+    private DbSpell m_dbspell;
     private Spell m_spell = null;
     private SpellLine m_spellline;
 

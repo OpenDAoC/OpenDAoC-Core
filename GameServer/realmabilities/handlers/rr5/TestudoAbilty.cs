@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class TestudoAbility : RR5RealmAbility
 	{
-		public TestudoAbility(DBAbility dba, int level) : base(dba, level) { }
+		public TestudoAbility(DbAbility dba, int level) : base(dba, level) { }
 
 		/// <summary>
 		/// Action
@@ -21,7 +21,7 @@ namespace DOL.GS.RealmAbilities
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
 
-			InventoryItem shield = living.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItem shield = living.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 			if (shield == null)
 				return;
 			if (shield.Object_Type != (int)eObjectType.Shield)

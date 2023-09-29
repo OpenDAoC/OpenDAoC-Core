@@ -36,8 +36,8 @@ namespace DOL.Tests.Integration.Database
 			Database = DatabaseSetUp.Database;
 		}
 		
-		protected SQLObjectDatabase Database { get; set; }
-		protected virtual SQLObjectDatabase GetDatabaseV2 { get { return (SQLObjectDatabase)ObjectDatabase.GetObjectDatabase(ConnectionType.DATABASE_SQLITE, DatabaseSetUp.ConnectionString); } }
+		protected SqlObjectDatabase Database { get; set; }
+		protected virtual SqlObjectDatabase GetDatabaseV2 { get { return (SqlObjectDatabase)ObjectDatabase.GetObjectDatabase(EConnectionType.DATABASE_SQLITE, DatabaseSetUp.ConnectionString); } }
 		
 		/// <summary>
 		/// Test to Register all Assemblies Tables
@@ -78,7 +78,7 @@ namespace DOL.Tests.Integration.Database
 		public void TestWrongDataObject()
 		{
 			Assert.Throws(typeof(ArgumentException), () => {
-			              	var dth = new DataTableHandler(typeof(AttributesUtils));
+			              	var dth = new DataTableHandler(typeof(AttributeUtil));
 			              	Database.CheckOrCreateTableImpl(dth);
 			              }, "Registering a wrong DataObject should throw Argument Exception");
 		}
@@ -100,7 +100,7 @@ namespace DOL.Tests.Integration.Database
 		public void TestTableMigrationFromNoPrimaryKeyToAutoInc()
 		{
 			// Destroy previous table
-			Database.ExecuteNonQuery(string.Format("DROP TABLE IF EXISTS `{0}`", AttributesUtils.GetTableName(typeof(TestTableWithNoPrimaryV1))));
+			Database.ExecuteNonQuery(string.Format("DROP TABLE IF EXISTS `{0}`", AttributeUtil.GetTableName(typeof(TestTableWithNoPrimaryV1))));
 			
 			// Get a new Database Object to Trigger Migration
 			var DatabaseV2 = GetDatabaseV2;
@@ -145,7 +145,7 @@ namespace DOL.Tests.Integration.Database
 		public void TestTableMigrationWithDifferentTypes()
 		{
 			// Destroy previous table
-			Database.ExecuteNonQuery(string.Format("DROP TABLE IF EXISTS `{0}`", AttributesUtils.GetTableName(typeof(TestTableDifferentTypesV1))));
+			Database.ExecuteNonQuery(string.Format("DROP TABLE IF EXISTS `{0}`", AttributeUtil.GetTableName(typeof(TestTableDifferentTypesV1))));
 			
 			// Get a new Database Object to Trigger Migration
 			var DatabaseV2 = GetDatabaseV2;
@@ -253,7 +253,7 @@ namespace DOL.Tests.Integration.Database
 		public void TestTableMigrationChangingPrimaryKey()
 		{
 			// Destroy previous table
-			Database.ExecuteNonQuery(string.Format("DROP TABLE IF EXISTS `{0}`", AttributesUtils.GetTableName(typeof(TestTableWithPrimaryChangingV1))));
+			Database.ExecuteNonQuery(string.Format("DROP TABLE IF EXISTS `{0}`", AttributeUtil.GetTableName(typeof(TestTableWithPrimaryChangingV1))));
 			
 			// Get a new Database Object to Trigger Migration
 			var DatabaseV2 = GetDatabaseV2;
@@ -283,7 +283,7 @@ namespace DOL.Tests.Integration.Database
         public void TestTableMigrationToNonNullValue()
         {
             // Destroy previous table
-            Database.ExecuteNonQuery(string.Format("DROP TABLE IF EXISTS `{0}`", AttributesUtils.GetTableName(typeof(TestTableMigrationNullToNonNull))));
+            Database.ExecuteNonQuery(string.Format("DROP TABLE IF EXISTS `{0}`", AttributeUtil.GetTableName(typeof(TestTableMigrationNullToNonNull))));
             
             // Get a new Database Object to Trigger Migration
             var DatabaseV2 = GetDatabaseV2;

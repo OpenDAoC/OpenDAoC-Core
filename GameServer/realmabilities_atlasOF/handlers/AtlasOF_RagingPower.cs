@@ -7,7 +7,7 @@ namespace DOL.GS.RealmAbilities
 {
 	public class AtlasOF_RagingPower : RagingPowerAbility
 	{
-		public AtlasOF_RagingPower(DBAbility dba, int level) : base(dba, level) { }
+		public AtlasOF_RagingPower(DbAbility dba, int level) : base(dba, level) { }
 
         public override int MaxLevel { get { return 1; } }
         public override int CostForUpgrade(int level) { return 10; }
