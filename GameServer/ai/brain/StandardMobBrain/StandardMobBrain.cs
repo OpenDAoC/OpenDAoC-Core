@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -129,9 +110,7 @@ namespace DOL.AI.Brain
                 !Body.attackComponent.AttackState &&
                 !Body.InCombat &&
                 !Body.IsMovingOnPath &&
-                Body.PathID != null &&
-                Body.PathID != "" &&
-                Body.PathID != "NULL";
+                !string.IsNullOrEmpty(Body.PathID);
         }
 
         /// <summary>
@@ -862,12 +841,8 @@ namespace DOL.AI.Brain
                     if (Body.GetSkillDisabledDuration(spell) > 0)
                         continue;
 
-                    if (spell.Target.Equals("enemy", StringComparison.OrdinalIgnoreCase) ||
-                        spell.Target.Equals("area", StringComparison.OrdinalIgnoreCase) ||
-                        spell.Target.Equals("cone", StringComparison.OrdinalIgnoreCase))
-                    {
+                    if (spell.Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
                         continue;
-                    }
 
                     if (Body.ControlledBrain == null)
                     {
@@ -882,13 +857,13 @@ namespace DOL.AI.Brain
                             spell.SpellType == eSpellType.Heal &&
                             Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range &&
                             Body.ControlledBrain.Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD &&
-                            !spell.Target.Equals("self", StringComparison.OrdinalIgnoreCase))
+                            spell.Target != eSpellTarget.SELF)
                         {
                             spellsToCast.Add(spell);
                             needHeal = true;
                         }
 
-                        if (LivingHasEffect(Body.ControlledBrain.Body, spell) && !spell.Target.Equals("self", StringComparison.OrdinalIgnoreCase))
+                        if (LivingHasEffect(Body.ControlledBrain.Body, spell) && spell.Target != eSpellTarget.SELF)
                             continue;
                     }
 
@@ -915,12 +890,8 @@ namespace DOL.AI.Brain
                     {
                         if (spell.CastTime > 0)
                         {
-                            if (spell.Target.Equals("enemy", StringComparison.OrdinalIgnoreCase) ||
-                                spell.Target.Equals("area", StringComparison.OrdinalIgnoreCase) ||
-                                spell.Target.Equals("cone", StringComparison.OrdinalIgnoreCase))
-                            {
+                            if (spell.Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
                                 spellsToCast.Add(spell);
-                            }
                         }
                     }
                 }
@@ -1022,13 +993,13 @@ namespace DOL.AI.Brain
                 {
                     // Buff self, if not in melee, but not each and every mob
                     // at the same time, because it looks silly.
-                    if (!LivingHasEffect(Body, spell) && !Body.attackComponent.AttackState && Util.Chance(40) && spell.Target.ToLower() != "pet")
+                    if (!LivingHasEffect(Body, spell) && !Body.attackComponent.AttackState && Util.Chance(40) && spell.Target != eSpellTarget.PET)
                     {
                         Body.TargetObject = Body;
                         break;
                     }
 
-                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Util.Chance(40) && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell) && spell.Target.ToLower() != "self")
+                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Util.Chance(40) && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell) && spell.Target != eSpellTarget.SELF)
                     {
                         Body.TargetObject = Body.ControlledBrain.Body;
                         break;
@@ -1047,7 +1018,7 @@ namespace DOL.AI.Brain
                     }
 
                     if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Body.ControlledBrain.Body.IsDiseased
-                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target.ToLower() != "self")
+                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target != eSpellTarget.SELF)
                     {
                         Body.TargetObject = Body.ControlledBrain.Body;
                         break;
@@ -1062,7 +1033,7 @@ namespace DOL.AI.Brain
                     }
 
                     if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && LivingIsPoisoned(Body.ControlledBrain.Body)
-                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target.ToLower() != "self")
+                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target != eSpellTarget.SELF)
                     {
                         Body.TargetObject = Body.ControlledBrain.Body;
                         break;
@@ -1105,7 +1076,7 @@ namespace DOL.AI.Brain
                 case eSpellType.OmniHeal:
                 case eSpellType.PBAoEHeal:
                 case eSpellType.SpreadHeal:
-                    if (spell.Target.ToLower() == "self")
+                    if (spell.Target == eSpellTarget.SELF)
                     {
                         // if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
                         if (Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD)
@@ -1118,7 +1089,7 @@ namespace DOL.AI.Brain
 
                     // Chance to heal self when dropping below 30%, do NOT spam it.
                     if (Body.HealthPercent < (Properties.NPC_HEAL_THRESHOLD / 2.0)
-                        && Util.Chance(10) && spell.Target.ToLower() != "pet")
+                        && Util.Chance(10) && spell.Target != eSpellTarget.PET)
                     {
                         Body.TargetObject = Body;
                         break;
@@ -1127,7 +1098,7 @@ namespace DOL.AI.Brain
                     if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null
                         && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range
                         && Body.ControlledBrain.Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD
-                        && spell.Target.ToLower() != "self")
+                        && spell.Target != eSpellTarget.SELF)
                     {
                         Body.TargetObject = Body.ControlledBrain.Body;
                         break;
@@ -1168,12 +1139,8 @@ namespace DOL.AI.Brain
         /// </summary>
         protected virtual bool CheckOffensiveSpells(Spell spell)
         {
-            if (!spell.Target.Equals("enemy", StringComparison.OrdinalIgnoreCase) &&
-                !spell.Target.Equals("area", StringComparison.OrdinalIgnoreCase) &&
-                !spell.Target.Equals("cone", StringComparison.OrdinalIgnoreCase))
-            {
+            if (spell.Target is not eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
                 return false;
-            }
 
             bool casted = false;
 

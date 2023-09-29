@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,35 +86,41 @@ namespace DOL.GS.Spells
 				{
 					MessageToCaster("You must wait " + (left / 1000 + 1).ToString() + " seconds to use this spell!", eChatType.CT_System);
 					return false;
-				}
-			}
-			String targetType = m_spell.Target.ToLower();
-			if (targetType == "area")
+                }
+            }
+
+			switch (m_spell.Target)
 			{
-				if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
+				case eSpellTarget.AREA:
 				{
-					MessageToCaster("Your area target is out of range.  Select a closer target.", eChatType.CT_SpellResisted);
-					return false;
+					if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
+					{
+						MessageToCaster("Your area target is out of range.  Select a closer target.", eChatType.CT_SpellResisted);
+						return false;
+					}
+
+					break;
+				}
+				case eSpellTarget.ENEMY:
+				{
+					if (m_caster.IsObjectInFront(selectedTarget, 180) == false)
+					{
+						MessageToCaster("Your target is not in view!", eChatType.CT_SpellResisted);
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
+						return false;
+					}
+
+					if (m_caster.TargetInView == false)
+					{
+						MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
+						return false;
+					}
+
+					break;
 				}
 			}
 
-			if (targetType == "enemy")
-			{
-				if (m_caster.IsObjectInFront(selectedTarget, 180) == false)
-				{
-					MessageToCaster("Your target is not in view!", eChatType.CT_SpellResisted);
-					Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
-					return false;
-				}
-
-				if (m_caster.TargetInView == false)
-				{
-					MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
-					Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
-					return false;
-				}
-			}
-			
 			if (Caster != null && Caster is GamePlayer && Caster.ActiveWeapon != null && GlobalConstants.IsBowWeapon((eObjectType)Caster.ActiveWeapon.Object_Type))
 			{
 				if (Spell.LifeDrainReturn == (int)eShotType.Critical && (!(Caster.IsStealthed)))
@@ -272,7 +259,7 @@ namespace DOL.GS.Spells
 				}
 
 				// Volley damage reduction based on live testing - tolakram
-				if (Spell.Target.ToLower() == "area")
+				if (Spell.Target == eSpellTarget.AREA)
 				{
 					ad.Damage = (int)(ad.Damage * 0.815);
 				}
@@ -321,15 +308,16 @@ namespace DOL.GS.Spells
 
 		public override void FinishSpellCast(GameLiving target)
 		{
-			if (target == null && Spell.Target.ToLower() != "area") return;
-			if (Caster == null) return;
+			if (target == null && Spell.Target != eSpellTarget.AREA)
+				return;
 
-			if (Caster is GamePlayer && Caster.IsStealthed)
-			{
-				(Caster as GamePlayer).Stealth(false);
-			}
+			if (Caster == null)
+				return;
 
-			if (Spell.Target.ToLower() == "area")
+			if (Caster is GamePlayer playerCaster && Caster.IsStealthed)
+				playerCaster.Stealth(false);
+
+			if (Spell.Target == eSpellTarget.AREA)
 			{
 				// always put archer into combat when using area (volley)
 				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;

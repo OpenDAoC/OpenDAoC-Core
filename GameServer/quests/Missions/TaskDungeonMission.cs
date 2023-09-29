@@ -561,27 +561,25 @@ namespace DOL.GS.Quests
         //because i want people to think carefully about how they change levels in their instance.
         public void UpdateInstanceLevel()
         {
-            m_level = (byte)(GetInstanceLevel());
-            //Set all mobs to that level...
+            m_level = (byte) GetInstanceLevel();
+
+            // Set all mobs to that level.
             if (m_level > 0)
             {
-            	foreach (GameObject obj in Objects)
-	            {
-	                if (obj == null)
-	                    continue;
-	
-	                GameNPC npc = obj as GameNPC;
-	                if (npc == null)
-	                    continue;
-	
-	                npc.Level = (byte)m_level;
-	            }
-	            //Update to the players..
-	            foreach (GameClient client in WorldMgr.GetClientsOfRegion(ID))
-	                if (client != null)
-	                    client.Out.SendMessage("This instance is now level " + m_level, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                foreach (GameObject obj in Objects)
+                {
+                    if (obj == null)
+                        continue;
+
+                    if (obj is not GameNPC npc)
+                        continue;
+
+                    npc.Level = (byte) m_level;
+                }
+
+                foreach (GamePlayer player in ClientService.GetPlayersOfRegion(this))
+                    player.Out.SendMessage($"This instance is now level {m_level}.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
-            
         }
 
         /// <summary>

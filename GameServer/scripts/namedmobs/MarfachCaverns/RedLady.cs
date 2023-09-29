@@ -227,7 +227,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 1500;
                     spell.SpellID = 11790;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DamageOverTime.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -332,7 +332,7 @@ namespace DOL.GS
                     spell.Radius = 100;
                     spell.Range = 1500;
                     spell.SpellID = 11789;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.Disease.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

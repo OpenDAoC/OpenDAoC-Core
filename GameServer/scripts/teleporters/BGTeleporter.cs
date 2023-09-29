@@ -15,7 +15,6 @@ namespace DOL.GS.Scripts
         {
             Model = 2026;
             Name = "BG TELEPORTER";
-            GuildName = "Atlas Alpha";
             Level = 50;
             Size = 60;
             Flags |= GameNPC.eFlags.PEACE;

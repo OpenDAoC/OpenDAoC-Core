@@ -53,7 +53,7 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakePlayer();
             var spell = NewFakeSpell();
             spell.fakeIsFocus = true;
-            spell.fakeTarget = "Realm";
+            spell.fakeTarget = eSpellTarget.REALM;
             spell.Duration = 20;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
@@ -74,7 +74,7 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakeNPC();
             var spell = NewFakeSpell();
             spell.fakeIsFocus = true;
-            spell.fakeTarget = "Enemy";
+            spell.fakeTarget = eSpellTarget.ENEMY;
             spell.Duration = 20;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
@@ -96,7 +96,7 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakePlayer();
             var spell = NewFakeSpell();
             spell.fakeIsFocus = true;
-            spell.fakeTarget = "Realm";
+            spell.fakeTarget = eSpellTarget.REALM;
             spell.Duration = 20;
             spell.fakeFrequency = 20;
             spell.fakeSpellType = eSpellType.DamageShield;
@@ -484,7 +484,7 @@ namespace DOL.Tests.Unit.Gameserver
         private class FakeSpell : Spell
         {
             public bool fakeIsFocus = false;
-            public string fakeTarget = "";
+            public eSpellTarget fakeTarget = eSpellTarget.SELF;
             public int fakeFrequency = 0;
             public eSpellType fakeSpellType = 0;
             public int fakePulse = 0;
@@ -495,7 +495,7 @@ namespace DOL.Tests.Unit.Gameserver
             public override int Pulse => fakePulse;
             public override eSpellType SpellType => fakeSpellType;
             public override bool IsFocus => fakeIsFocus;
-            public override string Target => fakeTarget;
+            public override eSpellTarget Target => fakeTarget;
             public override int Frequency => fakeFrequency;
             public override int Range => fakeRange;
         }

@@ -140,7 +140,7 @@ namespace DOL.GS
 					spell.Name = "Lifedrain";
 					spell.Range = 400;
 					spell.SpellID = 11903;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
@@ -467,7 +467,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Lifedrain";
 					spell.Range = 1800;
 					spell.SpellID = 11902;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

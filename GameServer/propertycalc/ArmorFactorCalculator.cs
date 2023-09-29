@@ -120,7 +120,7 @@ namespace DOL.GS.PropertyCalc
             int petCount = 0;
 
             // TODO: Find a way to remove `ToList` call.
-            foreach (GameObject attacker in living.attackComponent.Attackers.ToList())
+            foreach (GameLiving attacker in living.attackComponent.Attackers.Keys)
             {
                 if (attacker is GamePlayer)
                     epicScaleFactor -= 0.04;

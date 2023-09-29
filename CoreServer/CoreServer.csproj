@@ -1,0 +1,53 @@
+﻿<Project>
+    <PropertyGroup>
+        <BaseIntermediateOutputPath>..\build\CoreServer\$(Configuration)\</BaseIntermediateOutputPath>
+        <PackageId>CoreServer</PackageId>
+        <RootNamespace>Core.Server</RootNamespace>
+    </PropertyGroup>
+    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
+        <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+        <OutputPath>..\$(Configuration)\</OutputPath>
+        <IntermediateOutputPath>..\build\CoreServer\$(Configuration)\obj\</IntermediateOutputPath>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <Deterministic>false</Deterministic>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <Optimize>False</Optimize>
+        <DebugType>Full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
+        <RemoveIntegerChecks>false</RemoveIntegerChecks>
+        <ErrorReport>prompt</ErrorReport>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DefineConstants>TRACE</DefineConstants>
+        <Optimize>true</Optimize>
+        <DebugType>None</DebugType>
+        <DebugSymbols>false</DebugSymbols>
+        <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+        <RegisterForComInterop>False</RegisterForComInterop>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="6.0.0" />
+        <PackageReference Include="log4net" Version="2.0.13" />
+        <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include=".\config\serverconfig.xml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="config\serverconfig.example.xml" />
+    </ItemGroup>
+    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+</Project>

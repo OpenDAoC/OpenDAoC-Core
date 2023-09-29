@@ -122,7 +122,7 @@ namespace DOL.GS
 					spell.Range = 500;
 					spell.Radius = 300;
 					spell.SpellID = 11885;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Heat;
 					m_Weapon_Heat = new Spell(spell, 70);
@@ -150,7 +150,7 @@ namespace DOL.GS
 					spell.Range = 500;
 					spell.Radius = 300;
 					spell.SpellID = 11886;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Cold;
 					m_Weapon_Cold = new Spell(spell, 70);

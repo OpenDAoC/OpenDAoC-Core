@@ -1,47 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-/* <--- SendMessage Standardization --->
-*  All messages now use translation IDs to both
-*  centralize their location and standardize the method
-*  of message calls used throughout this project. All messages affected
-*  are in English. Other languages are not yet supported.
-* 
-*  To  find a message at its source location, either use
-*  the message body contained in the comment above the return
-*  (e.g., // Message: "This is a message.") or the
-*  translation ID (e.g., "AdminCommands.Account.Description").
-* 
-*  To perform message changes, take note of your server settings.
-*  If the `serverproperty` table setting `use_dblanguage`
-*  is set to `True`, you must make your changes from the
-*  `languagesystem` DB table.
-* 
-*  If the `serverproperty` table setting
-*  `update_existing_db_system_sentences_from_files` is set to `True`,
-*  perform changes to messages from this file at "GameServer >
-*  language > EN > OtherSentences.txt" and "Commands > AdminCommands.txt".
-*
-*  OPTIONAL: After changing a message, paste the new content
-*  into the comment above the affected message return(s). This is
-*  done for ease of reference. */
-
 using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -55,7 +11,7 @@ namespace DOL.GS.Commands
 		// Message: <----- '/plvl' Commands (plvl 3) ----->
 		"AdminCommands.Header.Syntax.Plvl",
 		ePrivLevel.Admin,
-		// Message: "Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game. These commands are intended for testing purposes and should not be used on non-Atlas staff accounts."
+		// Message: "Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game."
 		"AdminCommands.Plvl.Description",
 		// Syntax: /plvl command
 		"AdminCommands.Plvl.Syntax.Comm",
@@ -129,20 +85,17 @@ namespace DOL.GS.Commands
 						// Player name specified
 						case >= 4:
 						{
-							GameClient targetClient = WorldMgr.GetClientByPlayerName(args[3], true, true);
+							target = ClientService.GetPlayerByExactName(args[3]);
 
-							if (targetClient == null)
+							if (target == null)
 							{
 								// Message: "No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online."
 								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerExists", args[3]);
 								return;
 							}
 
-							// Target is the player logged in
-							target = targetClient.Player;
-
 							// Adds the command type to the 'singlepermission' table
-							SinglePermission.setPermission(targetClient.Player, args[2]);
+							SinglePermission.setPermission(target, args[2]);
 							// Message: "You've granted {0} access to the '/{1}' command!"
 							ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Msg.AddSinglePerm", target.Name, args[2]);
 
@@ -192,16 +145,14 @@ namespace DOL.GS.Commands
 						// If full command is entered
 						case >= 4:
 						{
-							GameClient targetClient = WorldMgr.GetClientByPlayerName(args[3], true, true);
+							target = ClientService.GetPlayerByExactName(args[3]);
 
-							if (targetClient == null)
+							if (target == null)
 							{
 								// Message: "No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online."
 								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerExists", args[3]);
 								return;
 							}
-
-							target = targetClient.Player;
 
 							SinglePermission.setPermissionAccount(target, args[2]);
 							// Message: "You have granted {0}'s account access to the '/{1}' command!"
@@ -252,18 +203,15 @@ namespace DOL.GS.Commands
 						// If full command is entered
 						case >= 4:
 						{
-							GameClient targetClient = WorldMgr.GetClientByPlayerName(args[3], true, true);
+							target = ClientService.GetPlayerByExactName(args[3]);
 
 							// If the account doesn't exist
-							if (targetClient == null)
+							if (target == null)
 							{
 								// Message: "No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online."
 								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerExists", args[3]);
 								return;
 							}
-
-							// Target is the player logged in
-							target = targetClient.Player;
 
 							// If player has permission, remove it
 							if (SinglePermission.HasPermission(target, args[2]))
@@ -331,18 +279,15 @@ namespace DOL.GS.Commands
 						// If full command is entered
 						case >= 4:
 						{
-							GameClient targetClient = WorldMgr.GetClientByPlayerName(args[3], true, true);
+							target = ClientService.GetPlayerByExactName(args[3]);
 
 							// If the account doesn't exist
-							if (targetClient == null)
+							if (target == null)
 							{
 								// Message: "No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online."
 								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerExists", args[3]);
 								return;
 							}
-
-							// Target is the player logged in
-							target = targetClient.Player;
 
 							// If player's account has the permission, remove it from the 'singlepermission' table
 							if (SinglePermission.HasPermission(target, args[2]))
@@ -388,8 +333,6 @@ namespace DOL.GS.Commands
 						{
 							// Message: "<----- '/plvl' Commands (plvl 3) ----->"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Plvl", null);
-							// Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 							// Syntax: /plvl <newPlvl> <playerName>
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Plvl.Syntax.Plvl", null);
 							// Message: "Sets the privilege level for a targeted player's account. They will then have access to all commands associated with that role. Use '/plvl single' or '/plvl singleaccount' to retain access to specific command types as a Player."
@@ -399,16 +342,14 @@ namespace DOL.GS.Commands
 						// If a player name is specified
 						if (args.Length > 2)
 						{
-							GameClient targetClient = WorldMgr.GetClientByPlayerName(args[2], true, true);
+							target = ClientService.GetPlayerByExactName(args[2]);
 
-							if (targetClient == null) 
+							if (target == null) 
 							{
 								// Message: "No player is online with the name '{0}'. Please make sure that you entered the whole player's name and they are online."
 								ChatUtil.SendErrorMessage(client, "AdminCommands.Plvl.Err.NoPlayerExists", args[2]);
 								return;
 							}
-							
-							target = targetClient.Player;
 						}
 						// If plvl specified is Player or GM and no target is specified
 						if (args[1] == "1" || args[1] == "2" && client.Player == target && target == null)
@@ -487,12 +428,6 @@ namespace DOL.GS.Commands
 						info.Add(" ");
 						// Message: "----- Additional Info -----"
 						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.MoreInfo"));
-						info.Add(" ");
-						// Message: "For more information regarding the '/plvl' command type, see page 22 (post #430) of the GM Commands Library on the Atlas Developers forum."
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Plvl.Comm.Desc"));
-						info.Add(" ");
-						// Message: "https://www.atlasfreeshard.com/threads/gm-commands-library.408/post-4379"
-						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "Hyperlinks.CommLibrary.Plvl"));
 						info.Add(" ");
 			
 						client.Out.SendCustomTextWindow("Using the '/plvl' Command Type", info);

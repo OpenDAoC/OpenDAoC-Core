@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,13 +18,13 @@ namespace DOL.Language
 
         protected virtual bool TryGetTranslationImpl(out string translation, ref string language, string translationId, ref object[] args)
         {
-            if (Util.IsEmpty(translationId))
+            if (string.IsNullOrEmpty(translationId))
             {
                 translation = TRANSLATION_ID_EMPTY;
                 return false;
             }
 
-            if (Util.IsEmpty(language))
+            if (string.IsNullOrEmpty(language))
                 language = DefaultLanguage;
 
             LanguageDataObject result = GetLanguageDataObject(language, translationId, LanguageDataObject.eTranslationIdentifier.eSystem);
@@ -55,7 +36,7 @@ namespace DOL.Language
             }
             else
             {
-                if (!Util.IsEmpty(((DBLanguageSystem) result).Text))
+                if (!string.IsNullOrEmpty(((DBLanguageSystem) result).Text))
                     translation = ((DBLanguageSystem) result).Text;
                 else
                 {
@@ -411,7 +392,7 @@ namespace DOL.Language
         #region GetLanguageDataObject
         public static LanguageDataObject GetLanguageDataObject(string language, string translationId, LanguageDataObject.eTranslationIdentifier translationIdentifier)
         {
-            if (Util.IsEmpty(translationId))
+            if (string.IsNullOrEmpty(translationId))
                 return null;
 
             if (!Translations.TryGetValue(language, out var languages) && language != DefaultLanguage)
@@ -493,7 +474,7 @@ namespace DOL.Language
                 return false;
             }
 
-            if (Util.IsEmpty(language) || language == DefaultLanguage /*Use the objects base data (e.g. NPC.Name)*/)
+            if (string.IsNullOrEmpty(language) || language == DefaultLanguage /*Use the objects base data (e.g. NPC.Name)*/)
             {
                 translation = null;
                 return false;

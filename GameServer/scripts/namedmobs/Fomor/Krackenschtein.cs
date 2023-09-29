@@ -263,7 +263,7 @@ namespace DOL.AI.Brain
 					spell.Damage = 250;
 					spell.Range = 1800;
 					spell.SpellID = 11835;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.Bolt.ToString();
 					spell.DamageType = (int)eDamageType.Cold;
 					spell.Uninterruptible = true;
@@ -292,7 +292,7 @@ namespace DOL.AI.Brain
 					spell.Range = 500;
 					spell.Radius = 1000;
 					spell.SpellID = 11836;
-					spell.Target = eSpellTarget.Area.ToString();
+					spell.Target = eSpellTarget.AREA.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Energy;
 					spell.Uninterruptible = true;

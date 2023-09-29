@@ -1,7 +1,4 @@
-﻿// I don't know the original author but this
-// file has been modified by clait for Atlas Freeshard
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using DOL.Database;

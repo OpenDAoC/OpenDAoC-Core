@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 using DOL.Language;
-using Newtonsoft.Json.Linq;
 
 namespace DOL.GS
 {
@@ -316,7 +313,7 @@ namespace DOL.GS
                             }
                         }
 
-                        if (!Util.IsEmpty(message))
+                        if (!string.IsNullOrEmpty(message))
                             p.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }
                 }

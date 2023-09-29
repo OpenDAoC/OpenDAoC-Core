@@ -1,8 +1,3 @@
-/*
- *
- * Atlas - Admin command to add zonepoints jump (i.e. BG/DF portals)
- *
- */
 using System;
 using DOL.Database;
 using DOL.GS.API;

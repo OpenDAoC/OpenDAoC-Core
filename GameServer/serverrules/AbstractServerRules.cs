@@ -60,9 +60,9 @@ namespace DOL.GS.ServerRules
 			objs = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(username)));
 			if (objs.Count > 0)
 			{
-				client.IsConnected = false;
 				client.Out.SendLoginDenied(eLoginError.AccountIsBannedFromThisServerType);
 				log.Debug("IsAllowedToConnect deny access to username " + username);
+				client.IsConnected = false;
 				return false;
 			}
 
@@ -71,27 +71,27 @@ namespace DOL.GS.ServerRules
 			objs = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("I").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Ip").IsLike(accip)));
 			if (objs.Count > 0)
 			{
-				client.IsConnected = false;
 				client.Out.SendLoginDenied(eLoginError.AccountIsBannedFromThisServerType);
 				log.Debug("IsAllowedToConnect deny access to IP " + accip);
+				client.IsConnected = false;
 				return false;
 			}
 
 			GameClient.eClientVersion min = (GameClient.eClientVersion)Properties.CLIENT_VERSION_MIN;
 			if (min != GameClient.eClientVersion.VersionNotChecked && client.Version < min)
 			{
-				client.IsConnected = false;
 				client.Out.SendLoginDenied(eLoginError.ClientVersionTooLow);
 				log.Debug("IsAllowedToConnect deny access to client version (too low) " + client.Version);
+				client.IsConnected = false;
 				return false;
 			}
 
 			GameClient.eClientVersion max = (GameClient.eClientVersion)Properties.CLIENT_VERSION_MAX;
 			if (max != GameClient.eClientVersion.VersionNotChecked && client.Version > max)
 			{
-				client.IsConnected = false;
 				client.Out.SendLoginDenied(eLoginError.NotAuthorizedToUseExpansionVersion);
 				log.Debug("IsAllowedToConnect deny access to client version (too high) " + client.Version);
+				client.IsConnected = false;
 				return false;
 			}
 
@@ -100,9 +100,9 @@ namespace DOL.GS.ServerRules
 				GameClient.eClientType type = (GameClient.eClientType)Properties.CLIENT_TYPE_MAX;
 				if ((int)client.ClientType > (int)type)
 				{
-					client.IsConnected = false;
 					client.Out.SendLoginDenied(eLoginError.ExpansionPacketNotAllowed);
 					log.Debug("IsAllowedToConnect deny access to expansion pack.");
+					client.IsConnected = false;
 					return false;
 				}
 			}
@@ -136,15 +136,15 @@ namespace DOL.GS.ServerRules
 
 			if (Properties.MAX_PLAYERS > 0 && string.IsNullOrEmpty(Properties.QUEUE_API_URI))
 			{
-				if (WorldMgr.GetAllClients().Count >= Properties.MAX_PLAYERS)
+				if (ClientService.ClientCount >= Properties.MAX_PLAYERS)
 				{
 					// GMs are still allowed to enter server
 					if (account == null || (account.PrivLevel == 1 && account.Status <= 0))
 					{
 						// Normal Players will not be allowed over the max
-						client.IsConnected = false;
 						client.Out.SendLoginDenied(eLoginError.TooManyPlayersLoggedIn);
 						log.Debug("IsAllowedToConnect deny access due to too many players.");
+						client.IsConnected = false;
 						return false;
 					}
 			
@@ -157,9 +157,9 @@ namespace DOL.GS.ServerRules
 				{
 					// GMs are still allowed to enter server
 					// Normal Players will not be allowed to Log in
-					client.IsConnected = false;
 					client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
 					log.Debug("IsAllowedToConnect deny access; staff only login");
+					client.IsConnected = false;
 					return false;
 				}
 			}
@@ -170,9 +170,9 @@ namespace DOL.GS.ServerRules
 				{
 					// Admins and Testers are still allowed to enter server
 					// Normal Players will not be allowed to Log in
-					client.IsConnected = false;
 					client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
 					log.Debug("IsAllowedToConnect deny access; tester and staff only login");
+					client.IsConnected = false;
 					return false;
 				}
 			}
@@ -183,9 +183,9 @@ namespace DOL.GS.ServerRules
 				{
 					// GMs are still allowed to enter server
 					// Normal Players will not be allowed to Log in unless they have linked their Discord
-					client.IsConnected = false;
 					client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
 					log.Debug("Denied access, account is not linked to Discord");
+					client.IsConnected = false;
 					return false;
 				}
 			}
@@ -194,27 +194,20 @@ namespace DOL.GS.ServerRules
 			{
 				if ((account == null || account.PrivLevel == 1) && client.TcpEndpointAddress != "not connected")
 				{
-					foreach (GameClient cln in WorldMgr.GetAllClients())
+					GameClient otherClient = ClientService.GetClientWithSameIp(client);
+					
+					if (otherClient != null)
 					{
-						if (cln == null || client == cln) continue;
-						if (cln.TcpEndpointAddress == client.TcpEndpointAddress)
-						{
-							if (cln.Account != null && cln.Account.PrivLevel > 1)
-							{
-								break;
-							}
-							client.IsConnected = false;
-							client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIntoOtherServer);
-							log.Debug("IsAllowedToConnect deny access; dual login not allowed");
-							return false;
-						}
+						client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIntoOtherServer);
+						log.Debug("IsAllowedToConnect deny access; dual login not allowed");
+						client.IsConnected = false;
+						return false;
 					}
 				}
 			}
 
 			return true;
 		}
-
 
 		/// <summary>
 		/// Called when player enters the game for first time
@@ -471,32 +464,33 @@ namespace DOL.GS.ServerRules
 			{
 				bool isAllowed = false;
 
-				switch (spell.Target.ToLower())
+				switch (spell.Target)
 				{
-					case "self":
-					case "group":
-					case "pet":
-					case "controlled":
-					case "realm":
-					case "area":
+					case eSpellTarget.SELF:
+					case eSpellTarget.GROUP:
+					case eSpellTarget.PET:
+					case eSpellTarget.CONTROLLED:
+					case eSpellTarget.REALM:
+					case eSpellTarget.AREA:
+					{
 						isAllowed = true;
 						break;
-
-					case "enemy":
-
+					}
+					case eSpellTarget.ENEMY:
+					{
 						if (spell.Radius == 0)
 						{
 							switch (spell.SpellType)
 							{
-                                case eSpellType.Archery:
+								case eSpellType.Archery:
 								case eSpellType.Bolt:
 								case eSpellType.Bomber:
-                                case eSpellType.DamageSpeedDecrease:
-                                case eSpellType.DirectDamage:
-                                case eSpellType.MagicalStrike:
-                                case eSpellType.SiegeArrow:
-                                case eSpellType.SummonTheurgistPet:
-                                case eSpellType.DirectDamageWithDebuff:
+								case eSpellType.DamageSpeedDecrease:
+								case eSpellType.DirectDamage:
+								case eSpellType.MagicalStrike:
+								case eSpellType.SiegeArrow:
+								case eSpellType.SummonTheurgistPet:
+								case eSpellType.DirectDamageWithDebuff:
 									isAllowed = true;
 									break;
 							}
@@ -509,15 +503,14 @@ namespace DOL.GS.ServerRules
 						}
 
 						break;
+					}
 				}
 
-				if (!isAllowed && caster is GamePlayer)
-					(caster as GamePlayer).Client.Out.SendMessage("You can't cast this spell on the " + target.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				if (!isAllowed && caster is GamePlayer playerCaster)
+					playerCaster.Client.Out.SendMessage("You can't cast this spell on the " + target.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 				return isAllowed;
 			}
-
-
 
 			return true;
 		}
@@ -712,8 +705,8 @@ namespace DOL.GS.ServerRules
 					return false;
 			}
 
-			// classes restriction. 0 means every class
-			if (player != null && !Util.IsEmpty(item.AllowedClasses, true))
+			// classes restriction.
+			if (player != null && !string.IsNullOrEmpty(item.AllowedClasses))
 			{
 				if (!Util.SplitCSV(item.AllowedClasses, true).Contains(player.CharacterClass.ID.ToString()))
 					return false;
@@ -1445,19 +1438,6 @@ namespace DOL.GS.ServerRules
 
 			#endregion
 
-			#region Atlas Bonus
-
-			//up to 100% more exp while solo, scaled lower as group size grows
-			long atlasBonus = 0;
-			if (player != null && player.Group != null)
-			{
-				atlasBonus = (xpReward) / player.Group.GetPlayersInTheGroup().Count;
-			}
-			else
-				atlasBonus = (xpReward);
-
-			#endregion
-
 			#region Outpost Bonus
 
 			//outpost XP
@@ -1476,7 +1456,7 @@ namespace DOL.GS.ServerRules
 					byte bonus = 0;
 					if (keep.Guild != null && keep.Guild == player.Guild)
 						bonus = 20;
-					else if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_Normal &&
+					else if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_Normal &&
 					         keep.Realm == living.Realm)
 						bonus = 10;
 
@@ -1515,7 +1495,7 @@ namespace DOL.GS.ServerRules
 				}
 
 				//Ok we've calculated all the base experience.  Now let's add them all together.
-				xpReward += (long) campBonus + groupExp + outpostXP + atlasBonus;
+				xpReward += (long) campBonus + groupExp + outpostXP;
 
 				if (!living.IsAlive) //Dead living gets 25% exp only
 					xpReward = (long) (xpReward * 0.25);
@@ -1527,7 +1507,7 @@ namespace DOL.GS.ServerRules
 				if (player != null && (player.XPLogState == eXPLogState.On ||
 				                       player.XPLogState == eXPLogState.Verbose))
 				{
-					double baseXP = xpReward - atlasBonus - campBonus - groupExp - outpostXP;
+					double baseXP = xpReward - campBonus - groupExp - outpostXP;
 					/*int scaleFactor = 1;
 					if (player.Group?.MemberCount > 1)
 						scaleFactor = player.Group.MemberCount;
@@ -1546,7 +1526,6 @@ namespace DOL.GS.ServerRules
 
 					if (player.XPLogState == eXPLogState.Verbose)
 					{
-						double soloPercent = ((double) atlasBonus / (baseXP)) * 100.0;
 						double campPercent = ((double) campBonus / (baseXP)) * 100.0;
 						double groupPercent = ((double) groupExp / (baseXP)) * 100.0;
 						double outpostPercent = ((double) outpostXP / (baseXP)) * 100.0;
@@ -1562,11 +1541,6 @@ namespace DOL.GS.ServerRules
 						player.Out.SendMessage(
 							$"# of kills needed to level at this rate: {(player.ExperienceForNextLevel - player.Experience) / xpReward}",
 							eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-						if (atlasBonus > 0)
-							player.Out.SendMessage(
-								$"Atlas: {atlasBonus.ToString("N0", format)} | {soloPercent.ToString("0.##")}% bonus",
-								eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 						if (campBonus > 0)
 							player.Out.SendMessage(
@@ -1588,12 +1562,12 @@ namespace DOL.GS.ServerRules
 								$"Relic: {relicXp.ToString("N0", format)} | {relicPercent.ToString("0.##")}% bonus",
 								eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-						//player.Out.SendMessage($"Total Bonus: {((double)((atlasBonus + campBonus + groupExp + outpostXP) / xpReward) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						//player.Out.SendMessage($"Total Bonus: {((double)((campBonus + groupExp + outpostXP) / xpReward) * 100).ToString("0.##")}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
 				}
 
 				//XP Rate is handled in GainExperience
-				living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, atlasBonus, true,
+				living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, true,
 					true, true);
 			}
 		}
@@ -2036,7 +2010,7 @@ namespace DOL.GS.ServerRules
 						byte bonus = 0;
 						if (keep.Guild != null && keep.Guild == (living as GamePlayer).Guild)
 							bonus = 20;
-						else if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_Normal &&
+						else if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_Normal &&
 								 keep.Realm == living.Realm)
 							bonus = 10;
 
@@ -2157,7 +2131,7 @@ namespace DOL.GS.ServerRules
             {
                 if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE || player.GetConLevel(killedPlayer) <= -3) continue;
                 
-                if (GameServer.Instance.Configuration.ServerType != eGameServerType.GST_PvP)
+                if (GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvP)
                 {
 	                AtlasROGManager.GenerateOrbAmount(player, Util.Random(50, 150));
                 }

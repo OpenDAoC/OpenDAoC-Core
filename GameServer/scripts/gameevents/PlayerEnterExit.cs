@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using DOL.Events;
 using DOL.GS.PacketHandler;
@@ -56,28 +38,24 @@ namespace DOL.GS.GameEvents
 		/// <param name="arguments"></param>
 		private static void PlayerEntered(DOLEvent e, object sender, EventArgs arguments)
 		{
-			if (ServerProperties.Properties.SHOW_LOGINS == false)
+			if (!ServerProperties.Properties.SHOW_LOGINS || sender is not GamePlayer player || player.IsAnonymous)
 				return;
 
-			GamePlayer player = sender as GamePlayer;
-			if (player == null) return;
-			if (player.IsAnonymous) return;
-
-			foreach (GameClient pclient in WorldMgr.GetAllPlayingClients())
+			foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
 			{
-				if (player.Client == pclient)
+				if (player == otherPlayer)
 					continue;
 
-				string message = LanguageMgr.GetTranslation(pclient, "Scripts.Events.PlayerEnterExit.Entered", player.Name);
+				string message = LanguageMgr.GetTranslation(otherPlayer.Client, "Scripts.Events.PlayerEnterExit.Entered", player.Name);
 
 				if (player.Client.Account.PrivLevel > 1)
 				{
-					message = LanguageMgr.GetTranslation(pclient, "Scripts.Events.PlayerEnterExit.Staff", message);
+					message = LanguageMgr.GetTranslation(otherPlayer.Client, "Scripts.Events.PlayerEnterExit.Staff", message);
 				}
 				else
 				{
 					string realm = "";
-					if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_Normal)
+					if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_Normal)
 					{
 						realm = "[" + GlobalConstants.RealmToName(player.Realm) + "] ";
 					}
@@ -89,7 +67,7 @@ namespace DOL.GS.GameEvents
 				if (Enum.IsDefined(typeof(eChatType), ServerProperties.Properties.SHOW_LOGINS_CHANNEL))
 					chatType = (eChatType)ServerProperties.Properties.SHOW_LOGINS_CHANNEL;
 
-				pclient.Out.SendMessage(message, chatType, eChatLoc.CL_SystemWindow);
+				otherPlayer.Out.SendMessage(message, chatType, eChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -108,21 +86,21 @@ namespace DOL.GS.GameEvents
 			if (player == null) return;
 			if (player.IsAnonymous) return;
 
-			foreach (GameClient pclient in WorldMgr.GetAllPlayingClients())
+			foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
 			{
-				if (player.Client == pclient)
+				if (player == otherPlayer)
 					continue;
 
-				string message = LanguageMgr.GetTranslation(pclient, "Scripts.Events.PlayerEnterExit.Left", player.Name);
+				string message = LanguageMgr.GetTranslation(otherPlayer.Client, "Scripts.Events.PlayerEnterExit.Left", player.Name);
 
 				if (player.Client.Account.PrivLevel > 1)
 				{
-					message = LanguageMgr.GetTranslation(pclient, "Scripts.Events.PlayerEnterExit.Staff", message);
+					message = LanguageMgr.GetTranslation(otherPlayer.Client, "Scripts.Events.PlayerEnterExit.Staff", message);
 				}
 				else
 				{
 					string realm = "";
-					if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_Normal)
+					if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_Normal)
 					{
 						realm = "[" + GlobalConstants.RealmToName(player.Realm) + "] ";
 					}
@@ -134,7 +112,7 @@ namespace DOL.GS.GameEvents
 				if (Enum.IsDefined(typeof(eChatType), ServerProperties.Properties.SHOW_LOGINS_CHANNEL))
 					chatType = (eChatType)ServerProperties.Properties.SHOW_LOGINS_CHANNEL;
 
-				pclient.Out.SendMessage(message, chatType, eChatLoc.CL_SystemWindow);
+				otherPlayer.Out.SendMessage(message, chatType, eChatLoc.CL_SystemWindow);
 			}
 		}
 	}

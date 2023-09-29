@@ -151,7 +151,7 @@ With Git ready, it's time to clone the `OpenDAoC-Core` repository.
 
 With the repo on your local hard drive, you need to alter the `serverconfig.xml` file to avoid some errors when building OpenDAoC locally.
 
-1. Copy the file `/OpenDAoC-Core/DOLServer/config/serverconfig.example.xml` to `/OpenDAoC-Core/DOLServer/config/serverconfig.xml`.
+1. Copy the file `/OpenDAoC-Core/CoreServer/config/serverconfig.example.xml` to `/OpenDAoC-Core/CoreServer/config/serverconfig.xml`.
 2. Open the `serverconfig.xml` file.
 3. Within the `RegionIP` tags, change the value `0.0.0.0` to one of these:
    1. To test locally, enter `127.0.0.1`.
@@ -249,7 +249,7 @@ With Git ready, it's time to clone the `OpenDAoC-Core` repositories.
 
 With the repos on your local hard drive, you need to alter the `serverconfig.xml` file to avoid some errors when building OpenDAoC locally.
 
-1. Copy the file `/OpenDAoC-Core/DOLServer/config/serverconfig.example.xml` to `/OpenDAoC-Core/DOLServer/config/serverconfig.xml`.
+1. Copy the file `/OpenDAoC-Core/CoreServer/config/serverconfig.example.xml` to `/OpenDAoC-Core/CoreServer/config/serverconfig.xml`.
 2. Open the `serverconfig.xml` file.
 3. Within the `RegionIP` tags, change the value `0.0.0.0` to one of these:
    1. To test locally, enter `127.0.0.1`.
@@ -259,12 +259,12 @@ With the repos on your local hard drive, you need to alter the `serverconfig.xml
 
 Now you're ready to [run your own instance of OpenDAoC](#building-your-dol-server-locally)!
 
-## Building Your DoL Server Locally
+## Building Your OpenDAoC Server Locally
 
-This section provides the commands necessary for both building and running a DoL server locally.
+This section provides the commands necessary for both building and running an OpenDAoC server locally.
 
-1. Launch the Terminal or PowerShell, navigate to the `/OpenDAoC-Core/` directory and type `dotnet build DOLLinux.sln`. This builds the DoL server on your machine. <!-- This may take several minutes to complete. -->
-2. If the build was successful, now enter the command `dotnet run --project DOLServer` to launch the server, making it accessible to player logins. <!-- This may take several minutes to complete. -->
+1. Launch the Terminal or PowerShell, navigate to the `/OpenDAoC-Core/` directory and type `dotnet build DOLLinux.sln`. This builds the OpenDAoC server on your machine. <!-- This may take several minutes to complete. -->
+2. If the build was successful, now enter the command `dotnet run --project CoreServer` to launch the server, making it accessible to player logins. <!-- This may take several minutes to complete. -->
 
 Congratulations! You're now running an instance of OpenDAoC on your machine.
 

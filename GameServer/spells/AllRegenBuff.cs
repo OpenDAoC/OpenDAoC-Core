@@ -1,7 +1,3 @@
-/*
- * Atlas
- *
- */
 using System;
 using System.Collections.Generic;
 using DOL.GS.Effects;

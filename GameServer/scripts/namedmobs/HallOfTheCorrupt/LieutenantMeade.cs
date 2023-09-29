@@ -1,10 +1,11 @@
 ﻿using System;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
+
 namespace DOL.GS
 {
     public class LieutenantMeade : GameNPC
@@ -306,7 +307,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 0;
                     spell.SpellID = 11782;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.MeleeDamageDebuff.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -319,9 +320,3 @@ namespace DOL.AI.Brain
         }
     }
 }
-
-
-
-
-
-

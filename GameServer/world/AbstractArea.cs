@@ -1,27 +1,7 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System;
-
 using DOL.Database;
 using DOL.Events;
-using DOL.Language;
 using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS
 {
@@ -204,7 +184,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		public virtual void OnPlayerEnter(GamePlayer player)
 		{
-			if (m_displayMessage && Description != null && Description != "")
+			if (m_displayMessage && !string.IsNullOrEmpty(Description))
 			{
                 string description = Description;
                 string screenDescription = description;
@@ -212,10 +192,10 @@ namespace DOL.GS
                 var translation = LanguageMgr.GetTranslation(player, this) as DBLanguageArea;
                 if (translation != null)
                 {
-                    if (!Util.IsEmpty(translation.Description))
+                    if (!string.IsNullOrEmpty(translation.Description))
                         description = translation.Description;
 
-                    if (!Util.IsEmpty(translation.ScreenDescription))
+                    if (!string.IsNullOrEmpty(translation.ScreenDescription))
                         screenDescription = translation.ScreenDescription;
                 }
 

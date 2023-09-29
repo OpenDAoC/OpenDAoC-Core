@@ -2,13 +2,15 @@ namespace DOL.GS
 {
     public enum eSpellTarget
     {
-        Self = 0,
-        Group = 3,
-        Realm = 7,
-        Enemy = 1,
-        Ground = 3,
-        Area = 0,
-        Cone = 0,
-        
+        NONE,
+        SELF,
+        GROUP,
+        REALM,
+        PET,
+        CONTROLLED,
+        ENEMY,
+        AREA,
+        CONE,
+        CORPSE
     }
 }

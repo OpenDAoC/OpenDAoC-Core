@@ -1,25 +1,6 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
@@ -654,19 +635,19 @@ namespace DOL.GS
 
 				// TODO test & remove the following
 				// graveen = fix for allowedclasses is empty or null
-				if (fromItem != null && Util.IsEmpty(fromItem.AllowedClasses))
+				if (fromItem != null && string.IsNullOrEmpty(fromItem.AllowedClasses))
 				{
-					fromItem.AllowedClasses = "0";
+					fromItem.AllowedClasses = "";
 				}
 
-				if (toItem != null && Util.IsEmpty(toItem.AllowedClasses))
+				if (toItem != null && string.IsNullOrEmpty(toItem.AllowedClasses))
 				{
-					toItem.AllowedClasses = "0";
+					toItem.AllowedClasses = "";
 				}
 
                 bool noactiveslot = false;
                 //Andraste - Vico / fixing a bugexploit : when player switch from his char slot to an inventory slot, allowedclasses were not checked
-                if (valid && fromItem.AllowedClasses != "0")
+                if (valid && !string.IsNullOrEmpty(fromItem.AllowedClasses))
                 {
 
                     if (toSlot >= eInventorySlot.MaxEquipable)
@@ -693,7 +674,7 @@ namespace DOL.GS
                     }
                 }
 
-                if (valid && toItem != null && toItem.AllowedClasses != "0")
+                if (valid && toItem != null && !string.IsNullOrEmpty(toItem.AllowedClasses))
                 {
 
                     if (toSlot >= eInventorySlot.MaxEquipable)

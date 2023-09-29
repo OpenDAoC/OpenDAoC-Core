@@ -492,7 +492,7 @@ namespace DOL.GS
 					spell.Radius = 300; 
 					spell.Range = 240;
 					spell.SpellID = 11751;
-					spell.Target = eSpellTarget.Area.ToString();
+					spell.Target = eSpellTarget.AREA.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

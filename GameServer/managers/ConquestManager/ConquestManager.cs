@@ -411,14 +411,15 @@ public class ConquestManager
         LastConquestStopTime = GameLoop.GameLoopTime;
     }
 
-    private void BroadcastConquestMessageToRvRPlayers(String message)
+    private static void BroadcastConquestMessageToRvRPlayers(string message)
     {
         //notify everyone an objective was captured
-        foreach (var client in WorldMgr.GetAllPlayingClients())
+        foreach (GamePlayer player in ClientService.GetPlayers<object>(Predicate))
+            player.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+
+        static bool Predicate(GamePlayer player, object unused)
         {
-            if ((client.Player.CurrentZone.IsRvR || client.Player.Level >= 40 ) && !client.Player.CurrentZone.IsBG)
-                client.Player.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller_And_CT_System,
-                    eChatLoc.CL_SystemWindow);
+            return (player.CurrentZone.IsRvR || player.Level >= 40 ) && !player.CurrentZone.IsBG;
         }
     }
 
@@ -499,20 +500,14 @@ public class ConquestManager
         }
     }
 
-    private int GetFrontierPlayerCount()
+    private static int GetFrontierPlayerCount()
     {
-        int frontiers = 0;
-        IList<GameClient> clients = WorldMgr.GetAllClients();
-        foreach (GameClient c in clients)
-        {
-            if (c == null || c.Player == null || c.Player.CurrentZone == null)
-                continue;
-            
-            if (c.Player.CurrentZone.IsOF && c.Account.PrivLevel == (uint)ePrivLevel.Player)
-                frontiers++;
-        }
+        return ClientService.GetPlayers<object>(Predicate).Count;
 
-        return frontiers;
+        static bool Predicate(GamePlayer client, object unused)
+        {
+            return client.CurrentZone.IsOF && client.Client.Account.PrivLevel == (uint) ePrivLevel.Player;
+        }
     }
 
     private void SetDefensiveKeepForRealm(eRealm realm, int minimumValue)

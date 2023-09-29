@@ -1,47 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-/* <--- SendMessage Standardization --->
-*  All messages now use translation IDs to both
-*  centralize their location and standardize the method
-*  of message calls used throughout this project. All messages affected
-*  are in English. Other languages are not yet supported.
-* 
-*  To  find a message at its source location, either use
-*  the message body contained in the comment above the return
-*  (e.g., // Message: "This is a message.") or the
-*  translation ID (e.g., "AdminCommands.Account.Description").
-* 
-*  To perform message changes, take note of your server settings.
-*  If the `serverproperty` table setting `use_dblanguage`
-*  is set to `True`, you must make your changes from the
-*  `languagesystem` DB table.
-* 
-*  If the `serverproperty` table setting
-*  `update_existing_db_system_sentences_from_files` is set to `True`,
-*  perform changes to messages from this file at "GameServer >
-*  language > EN > OtherSentences.txt" and "Commands > AdminCommands.txt".
-*
-*  OPTIONAL: After changing a message, paste the new content
-*  into the comment above the affected message return(s). This is
-*  done for ease of reference. */
-
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -58,12 +14,8 @@ namespace DOL.GS.Commands
 		// Message: <----- '/account' Commands (plvl 3) ----->
 		"AdminCommands.Header.Syntax.Account",
 		ePrivLevel.Admin,
-		// Message: "Creates new, manages existing, and controls character assignment for Atlas DAoC accounts. We recommend using the Atlas Web Admin tool (https://admin.atlasfreeshard.com/) where possible to perform many of these same functions. Otherwise, use the following syntax:"
+		// Message: "Creates new, manages existing, and controls character assignment for accounts."
 		"AdminCommands.Account.Description",
-		// Syntax: /account command
-		"AdminCommands.Account.Syntax.Comm",
-		// Message: "Provides additional information regarding the '/account' command type."
-		"AdminCommands.Account.Usage.Comm",
 		// Syntax: /account accountname <characterName>
 		"AdminCommands.Account.Syntax.AccountName",
 		// Message: "Identifies the account associated with the character. This may be used on offline characters."
@@ -193,8 +145,6 @@ namespace DOL.GS.Commands
 						{
 							// Syntax: "<----- '/account' Commands (plvl 3) ----->"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Account", null);
-							// Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 							// Message: "/account changepassword <accountName> <newPassword>"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Account.Syntax.ChangePassword", null);
 							// Message: "Changes the password associated with an existing account. If a player requests a password reset, verify ownership of the account."
@@ -249,8 +199,6 @@ namespace DOL.GS.Commands
 						{
 							// Message: "<----- '/account' Commands (plvl 3) ----->"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Account", null);
-							// Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 							// Message: "/account delete <accountName>"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Account.Syntax.Delete", null);
 							// Message: "Deletes the specified account, along with any associated characters."
@@ -294,8 +242,6 @@ namespace DOL.GS.Commands
                         {
 	                        // Message: "<----- '/account' Commands (plvl 3) ----->"
 	                        ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Account", null);
-	                        // Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-	                        ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 	                        // Message: "/account deletecharacter <characterName>"
 	                        ChatUtil.SendSyntaxMessage(client, "AdminCommands.Account.Syntax.DeleteChar", null);
 	                        // Message: "Deletes the matching character from its associated account."
@@ -387,7 +333,7 @@ namespace DOL.GS.Commands
                             default:
                             {
 	                            // If the character does not belong to any of these realms (i.e., somehow got assigned Neutral (0))
-	                            // Message: "{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed! Use the Atlas Web Admin tool or the '/player realm' command on the desired character to resolve this issue."
+	                            // Message: "{0} is currently assigned a realm ID of {1}. That is not an accepted value and the character move failed!"
 	                            ChatUtil.SendErrorMessage(client, "AdminCommands.Account.Err.CharNotFromValidRealm", cha.Name, cha.Realm);
                                 return;
 	                        }
@@ -420,13 +366,13 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        GameClient playingclient = WorldMgr.GetClientByPlayerName(cha.Name, true, false);
-                        
+                        GamePlayer player = ClientService.GetPlayerByExactName(cha.Name);
+
                         // Kick the player from the server to complete the character move
-                        if (playingclient != null)
+                        if (player != null)
                         {
-                            playingclient.Out.SendPlayerQuit(true);
-                            playingclient.Disconnect();
+                            player.Out.SendPlayerQuit(true);
+                            player.Client.Disconnect();
                         }
 
                         cha.AccountName = acc.Name;
@@ -514,8 +460,6 @@ namespace DOL.GS.Commands
 						{
 							// Message: "<----- '/account' Commands (plvl 3) ----->"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Account", null);
-							// Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-							ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 							// Message: "/account unban <accountName>"
 							ChatUtil.SendSyntaxMessage(client, "AdminCommands.Account.Syntax.Unban", null);
 							// Message: "Removes an account's ban state, if one is active. This command cannot remove IP-only bans ('/ban ip')."
@@ -571,8 +515,6 @@ namespace DOL.GS.Commands
 	                        // Lists the command's full syntax
 	                        // Message: "<----- '/account' Commands (plvl 3) ----->"
 	                        ChatUtil.SendSyntaxMessage(client, "AdminCommands.Header.Syntax.Account", null);
-	                        // Message: "If you are unable to access the Atlas Web Admin tool (https://admin.atlasfreeshard.com) to perform this action, use the following syntax:"
-	                        ChatUtil.SendCommMessage(client, "AdminCommands.Command.SyntaxCRUD", null);
 	                        // Message: "/account accountname <characterName>"
 	                        ChatUtil.SendSyntaxMessage(client, "AdminCommands.Account.Syntax.AccountName", null);
 	                        // Message: "Identifies the account associated with the character. This may be used on offline characters."
@@ -597,43 +539,6 @@ namespace DOL.GS.Commands
                         return;
                     }
                 #endregion Account Name
-				
-				#region Command
-				// Provides information about accessing the GM Command Library for more information about the '/account' command type
-				// Syntax: /account command
-				// Args:   /account args[1]
-				// See the comments above 'using' about SendMessage translation IDs
-				case "command":
-				{
-					var info = new List<string>
-					{
-						" ",
-						" ",
-						// Message: "----- Web Admin Tool -----"
-						LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.WebAdmin"),
-						" ",
-						// Message: "It is recommended that Atlas staff utilize the Web Admin tool to perform account management activities where possible, such as resetting passwords and deleting characters or accounts."
-						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Desc2"),
-							" ",
-						// Message: "https://admin.atlasfreeshard.com"
-						LanguageMgr.GetTranslation(client.Account.Language, "Hyperlinks.Atlas.WebAdminTool"),
-						" ",
-						" ",
-						// Message: "----- Additional Info -----"
-						LanguageMgr.GetTranslation(client.Account.Language, "Dialog.Header.Content.MoreInfo"),
-						" ",
-						// Message: "For more information regarding the '/account' command type, see page 1 of the GM Commands Library on the Atlas Developers forum."
-						LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.Comm.Desc1"),
-						" ",
-						// Message: "https://www.atlasfreeshard.com/threads/gm-commands-library.408/"
-						LanguageMgr.GetTranslation(client.Account.Language, "Hyperlinks.CommLibrary.Main")
-					};
-
-					// Title of dialog
-					client.Out.SendCustomTextWindow("Using the '/account' Command Type", info);
-					return;
-				}
-				#endregion Command
             }
 		}
         
@@ -642,12 +547,10 @@ namespace DOL.GS.Commands
 		/// </summary>
 		/// <param name="name">The account name</param>
 		/// <returns>The matching account name or 'null'</returns>
-		private Account GetAccount(string name)
+		private static Account GetAccount(string accountName)
 		{
-			GameClient client = WorldMgr.GetClientByAccountName(name, true);
-			if (client != null)
-				return client.Account;
-			return GameServer.Database.FindObjectByKey<Account>(name);
+			GameClient client = ClientService.GetClientFromAccountName(accountName);
+			return client != null ? client.Account : GameServer.Database.FindObjectByKey<Account>(accountName);
 		}
 
 		/// <summary>
@@ -655,25 +558,24 @@ namespace DOL.GS.Commands
 		/// </summary>
 		/// <param name="charname">The character name</param>
 		/// <returns>The matching character name or 'null'</returns>
-		private DOLCharacters GetCharacter(string charname)
+		private static DOLCharacters GetCharacter(string characterName)
 		{
-			GameClient client = WorldMgr.GetClientByPlayerName(charname, true, false);
-			if (client != null)
-				return client.Player.DBCharacter;
-			return DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(charname));
+			GamePlayer player = ClientService.GetPlayerByExactName(characterName);
+			return player != null ? player.DBCharacter : DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
 		}
 
 		/// <summary>
 		/// Kicks an active playing account from the server and closes the client
 		/// </summary>
 		/// <param name="acc">The account</param>
-		private void KickAccount(Account acc)
+		private static void KickAccount(Account account)
 		{
-			GameClient playingclient = WorldMgr.GetClientByAccountName(acc.Name, true);
-			if (playingclient != null)
+			GameClient client = ClientService.GetClientFromAccount(account);
+
+			if (client != null)
 			{
-				playingclient.Out.SendPlayerQuit(true);
-				playingclient.Disconnect();
+				client.Out.SendPlayerQuit(true);
+				client.Disconnect();
 			}
 		}
 
@@ -681,13 +583,14 @@ namespace DOL.GS.Commands
 		/// Kicks an active playing character from the server and closes the client
 		/// </summary>
 		/// <param name="cha">The character</param>
-		private void KickCharacter(DOLCharacters cha)
+		private static void KickCharacter(DOLCharacters character)
 		{
-			GameClient playingclient = WorldMgr.GetClientByPlayerName(cha.Name, true, false);
-			if (playingclient != null)
+			GamePlayer player = ClientService.GetPlayerByExactName(character.Name);
+
+			if (player != null)
 			{
-				playingclient.Out.SendPlayerQuit(true);
-				playingclient.Disconnect();
+				player.Out.SendPlayerQuit(true);
+				player.Client.Disconnect();
 			}
 		}
 
@@ -696,17 +599,15 @@ namespace DOL.GS.Commands
 		/// </summary>
 		/// <param name="charname">The character name</param>
 		/// <returns>The account name or 'null'</returns>
-		private string GetAccountName(string charname)
+		private static string GetAccountName(string characterName)
 		{
-			GameClient client = WorldMgr.GetClientByPlayerName(charname, true, false);
-			if (client != null)
-				return client.Account.Name;
+			GamePlayer player = ClientService.GetPlayerByExactName(characterName);
 
-			var ch = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(charname));
-			if (ch != null)
-				return ch.AccountName;
-			else
-				return null;
+			if (player != null)
+				return player.Client.Account.Name;
+
+			DOLCharacters characterDb = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
+			return characterDb?.AccountName;
 		}
 	}
 }

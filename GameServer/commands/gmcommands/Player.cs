@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1118,68 +1099,61 @@ namespace DOL.GS.Commands
                         }
 
                         string name = string.Join(" ", args, 2, args.Length - 2);
+                        GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(name, out ClientService.PlayerGuessResult result);;
 
-                        int result = 0;
-                        GameClient fclient = WorldMgr.GuessClientByPlayerNameAndRealm(name, 0, true, out result);
-                        if (fclient != null && !GameServer.ServerRules.IsSameRealm(fclient.Player, player.Client.Player, true))
-                        {
-                            fclient = null;
-                        }
+                        if (targetPlayer != null && !GameServer.ServerRules.IsSameRealm(targetPlayer, player.Client.Player, true))
+                            targetPlayer = null;
 
-                        if (fclient == null)
+                        if (targetPlayer == null)
                         {
                             name = args[2];
+
                             if (player.GetFriends().Contains(name) && player.RemoveFriend(name))
                             {
-                                player.Out.SendMessage(
-                                    client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has removed " + player.Name +
-                                    " from your friend list!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                                client.Out.SendMessage("Removed " + name + " from " + player.Name + "'s friend list successfully!",
-                                                       eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                player.Out.SendMessage($"{client.Player.Name} (PrivLevel: {client.Account.PrivLevel}) has removed {name} from your friend list!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                client.Out.SendMessage($"Removed {name} from {player.Name}'s friend list successfully!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 return;
                             }
                             else
                             {
-                                // nothing found
-                                client.Out.SendMessage("No players online with name " + name + ".", eChatType.CT_Important,
-                                                       eChatLoc.CL_SystemWindow);
+                                client.Out.SendMessage($"No players online with name {name}.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 return;
                             }
                         }
 
                         switch (result)
                         {
-                            case 2: // name not unique
+                            case ClientService.PlayerGuessResult.FOUND_MULTIPLE:
+                            {
                                 client.Out.SendMessage("Character name is not unique.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 return;
-                            case 3: // exact match
-                            case 4: // guessed name
-                                if (fclient == player.Client)
+                            }
+                            case ClientService.PlayerGuessResult.FOUND_EXACT:
+                            case ClientService.PlayerGuessResult.FOUND_PARTIAL:
+                            {
+                                if (targetPlayer == player)
                                 {
-                                    client.Out.SendMessage("You can't add that player to his or her own friend list!", eChatType.CT_Important,
-                                                           eChatLoc.CL_SystemWindow);
+                                    client.Out.SendMessage("You can't add that player to his or her own friend list!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                     return;
                                 }
 
-                                name = fclient.Player.Name;
+                                name = targetPlayer.Name;
+
                                 if (player.GetFriends().Contains(name) && player.RemoveFriend(name))
                                 {
-                                    player.Out.SendMessage(
-                                        client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has removed " + name +
-                                        " from your friend list!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                                    client.Out.SendMessage("Removed " + name + " from " + player.Name + "'s friend list successfully!",
-                                                           eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    player.Out.SendMessage($"{client.Player.Name} (PrivLevel: {client.Account.PrivLevel}) has removed {name} from your friend list!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    client.Out.SendMessage($"Removed {name} from {player.Name}'s friend list successfully!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 }
                                 else if (player.AddFriend(name))
                                 {
-                                    player.Out.SendMessage(
-                                        client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has added " + name +
-                                        " to your friend list!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                                    client.Out.SendMessage("Added " + name + " to " + player.Name + "'s friend list successfully!",
-                                                           eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    player.Out.SendMessage($"{client.Player.Name} (PrivLevel: {client.Account.PrivLevel}) has added {name} to your friend list!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    client.Out.SendMessage($"Added {name} to {player.Name}'s friend list successfully!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 }
-                                return;
+
+                                break;
+                            }
                         }
+
                         player.Out.SendUpdatePlayer();
                         player.SaveIntoDatabase();
                     }
@@ -1340,9 +1314,9 @@ namespace DOL.GS.Commands
 
                 case "save":
                     {
-                        var player = client.Player.TargetObject as GamePlayer;
+                        GamePlayer player = client.Player.TargetObject as GamePlayer;
 
-                        if (args.Length > 3 || args.Length < 2)
+                        if (args.Length is > 3 or < 2)
                         {
                             DisplaySyntax(client);
                             return;
@@ -1356,10 +1330,8 @@ namespace DOL.GS.Commands
 
                         if (args.Length == 2 && player != null)
                         {
-                            player.Out.SendMessage(
-                                client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has saved your character.",
-                                eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                            client.Out.SendMessage(player.Name + " saved successfully!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage($"{client.Player.Name} (PrivLevel: {client.Account.PrivLevel}) has saved your character.",eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                            client.Out.SendMessage($"{player.Name} saved successfully!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                             player.SaveIntoDatabase();
                         }
 
@@ -1368,20 +1340,18 @@ namespace DOL.GS.Commands
                             switch (args[2])
                             {
                                 case "all":
-                                    {
-                                        foreach (GameClient c in WorldMgr.GetAllPlayingClients())
-                                        {
-                                            if (c != null && c.Player != null) c.Player.SaveIntoDatabase();
-                                        }
-                                        client.Out.SendMessage("Saved all characters!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                                    }
-                                    break;
+                                {
+                                    foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
+                                        otherPlayer.SaveIntoDatabase();
 
+                                    client.Out.SendMessage("Saved all characters!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    break;
+                                }
                                 default:
-                                    {
-                                        DisplaySyntax(client);
-                                        return;
-                                    }
+                                {
+                                    DisplaySyntax(client);
+                                    return;
+                                }
                             }
                         }
                     }
@@ -1428,18 +1398,13 @@ namespace DOL.GS.Commands
                             {
                                 case "all":
                                     {
-                                        foreach (GameClient allplayer in WorldMgr.GetAllPlayingClients())
+                                        foreach (GamePlayer otherPlayer in ClientService.GetNonGmPlayers())
                                         {
-                                            if (allplayer.Account.PrivLevel == 1)
-                                            {
-                                                allplayer.Out.SendMessage(
-                                                    client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has kicked all players!",
-                                                    eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                                                allplayer.Out.SendPlayerQuit(true);
-                                                allplayer.Player.SaveIntoDatabase();
-                                                allplayer.Player.Quit(true);
-                                                return;
-                                            }
+                                            otherPlayer.Out.SendMessage($"{client.Player.Name} (PrivLevel: {client.Account.PrivLevel}) has kicked all players!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                            otherPlayer.Out.SendPlayerQuit(true);
+                                            otherPlayer.SaveIntoDatabase();
+                                            otherPlayer.Quit(true);
+                                            continue;
                                         }
                                     }
                                     break;
@@ -1460,9 +1425,9 @@ namespace DOL.GS.Commands
 
                 case "rez":
                     {
-                        var player = client.Player.TargetObject as GamePlayer;
+                        GamePlayer player = client.Player.TargetObject as GamePlayer;
 
-                        if (args.Length > 3 || args.Length < 2)
+                        if (args.Length is > 3 or < 2)
                         {
                             DisplaySyntax(client);
                             return;
@@ -1476,23 +1441,17 @@ namespace DOL.GS.Commands
 
                         if (args.Length == 2 && player != null)
                         {
-                            if (!(player.IsAlive))
+                            if (!player.IsAlive)
                             {
                                 player.Health = player.MaxHealth;
                                 player.Mana = player.MaxMana;
                                 player.Endurance = player.MaxEndurance;
-                                player.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
-                                              client.Player.Heading);
-
-                                client.Out.SendMessage("You resurrected " + player.Name + " successfully!", eChatType.CT_Important,
-                                                       eChatLoc.CL_SystemWindow);
-                                //player.Out.SendMessage(client.Player.Name +" has resurrected you!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
+                                player.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
+                                client.Out.SendMessage($"You resurrected {player.Name} successfully!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 player.StopReleaseTimer();
                                 player.Out.SendPlayerRevive(player);
                                 player.Out.SendStatusUpdate();
-                                player.Out.SendMessage("You have been resurrected by " + client.Player.GetName(0, false) + "!",
-                                                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                player.Out.SendMessage($"You have been resurrected by {client.Player.GetName(0, false)}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 player.Notify(GamePlayerEvent.Revive, player);
                             }
                             else
@@ -1508,22 +1467,19 @@ namespace DOL.GS.Commands
                             {
                                 case "albs":
                                     {
-                                        foreach (GameClient aplayer in WorldMgr.GetClientsOfRealm(eRealm.Albion))
+                                        foreach (GamePlayer albPlayer in ClientService.GetPlayersOfRealm(eRealm.Albion))
                                         {
-                                            if (!(aplayer.Player.IsAlive))
+                                            if (!albPlayer.IsAlive)
                                             {
-                                                aplayer.Player.Health = aplayer.Player.MaxHealth;
-                                                aplayer.Player.Mana = aplayer.Player.MaxMana;
-                                                aplayer.Player.Endurance = aplayer.Player.MaxEndurance;
-                                                aplayer.Player.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
-                                                                      client.Player.Heading);
-
-                                                aplayer.Player.StopReleaseTimer();
-                                                aplayer.Player.Out.SendPlayerRevive(aplayer.Player);
-                                                aplayer.Player.Out.SendStatusUpdate();
-                                                aplayer.Player.Out.SendMessage("You have been resurrected by " + client.Player.GetName(0, false) + "!",
-                                                                               eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                                aplayer.Player.Notify(GamePlayerEvent.Revive, aplayer.Player);
+                                                albPlayer.Health = albPlayer.MaxHealth;
+                                                albPlayer.Mana = albPlayer.MaxMana;
+                                                albPlayer.Endurance = albPlayer.MaxEndurance;
+                                                albPlayer.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
+                                                albPlayer.StopReleaseTimer();
+                                                albPlayer.Out.SendPlayerRevive(albPlayer);
+                                                albPlayer.Out.SendStatusUpdate();
+                                                albPlayer.Out.SendMessage($"You have been resurrected by {client.Player.GetName(0, false)}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                albPlayer.Notify(GamePlayerEvent.Revive, albPlayer);
                                             }
                                         }
                                     }
@@ -1531,45 +1487,38 @@ namespace DOL.GS.Commands
 
                                 case "hibs":
                                     {
-                                        foreach (GameClient hplayer in WorldMgr.GetClientsOfRealm(eRealm.Hibernia))
+                                        foreach (GamePlayer hibPlayer in ClientService.GetPlayersOfRealm(eRealm.Hibernia))
                                         {
-                                            if (!(hplayer.Player.IsAlive))
+                                            if (!hibPlayer.IsAlive)
                                             {
-                                                hplayer.Player.Health = hplayer.Player.MaxHealth;
-                                                hplayer.Player.Mana = hplayer.Player.MaxMana;
-                                                hplayer.Player.Endurance = hplayer.Player.MaxEndurance;
-                                                hplayer.Player.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
-                                                                      client.Player.Heading);
-
-                                                hplayer.Player.StopReleaseTimer();
-                                                hplayer.Player.Out.SendPlayerRevive(hplayer.Player);
-                                                hplayer.Player.Out.SendStatusUpdate();
-                                                hplayer.Player.Out.SendMessage("You have been resurrected by " + client.Player.GetName(0, false) + "!",
-                                                                               eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                                hplayer.Player.Notify(GamePlayerEvent.Revive, hplayer.Player);
+                                                hibPlayer.Health = hibPlayer.MaxHealth;
+                                                hibPlayer.Mana = hibPlayer.MaxMana;
+                                                hibPlayer.Endurance = hibPlayer.MaxEndurance;
+                                                hibPlayer.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
+                                                hibPlayer.StopReleaseTimer();
+                                                hibPlayer.Out.SendPlayerRevive(hibPlayer);
+                                                hibPlayer.Out.SendStatusUpdate();
+                                                hibPlayer.Out.SendMessage($"You have been resurrected by {client.Player.GetName(0, false)}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                hibPlayer.Notify(GamePlayerEvent.Revive, hibPlayer);
                                             }
                                         }
                                     }
                                     break;
-
                                 case "mids":
                                     {
-                                        foreach (GameClient mplayer in WorldMgr.GetClientsOfRealm(eRealm.Midgard))
+                                        foreach (GamePlayer midPlayer in ClientService.GetPlayersOfRealm(eRealm.Midgard))
                                         {
-                                            if (!(mplayer.Player.IsAlive))
+                                            if (!midPlayer.IsAlive)
                                             {
-                                                mplayer.Player.Health = mplayer.Player.MaxHealth;
-                                                mplayer.Player.Mana = mplayer.Player.MaxMana;
-                                                mplayer.Player.Endurance = mplayer.Player.MaxEndurance;
-                                                mplayer.Player.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
-                                                                      client.Player.Heading);
-
-                                                mplayer.Player.StopReleaseTimer();
-                                                mplayer.Player.Out.SendPlayerRevive(mplayer.Player);
-                                                mplayer.Player.Out.SendStatusUpdate();
-                                                mplayer.Player.Out.SendMessage("You have been resurrected by " + client.Player.GetName(0, false) + "!",
-                                                                               eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                                mplayer.Player.Notify(GamePlayerEvent.Revive, mplayer.Player);
+                                                midPlayer.Health = midPlayer.MaxHealth;
+                                                midPlayer.Mana = midPlayer.MaxMana;
+                                                midPlayer.Endurance = midPlayer.MaxEndurance;
+                                                midPlayer.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
+                                                midPlayer.StopReleaseTimer();
+                                                midPlayer.Out.SendPlayerRevive(midPlayer);
+                                                midPlayer.Out.SendStatusUpdate();
+                                                midPlayer.Out.SendMessage($"You have been resurrected by {client.Player.GetName(0, false)}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                midPlayer.Notify(GamePlayerEvent.Revive, midPlayer);
                                             }
                                         }
                                     }
@@ -1577,22 +1526,19 @@ namespace DOL.GS.Commands
 
                                 case "self":
                                     {
-                                        GamePlayer selfplayer = client.Player;
+                                        GamePlayer self = client.Player;
 
-                                        if (!(selfplayer.IsAlive))
+                                        if (!self.IsAlive)
                                         {
-                                            selfplayer.Health = selfplayer.MaxHealth;
-                                            selfplayer.Mana = selfplayer.MaxMana;
-                                            selfplayer.Endurance = selfplayer.MaxEndurance;
-                                            selfplayer.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
-                                                              client.Player.Heading);
-
-                                            selfplayer.Out.SendMessage("You revive yourself.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
-                                            selfplayer.StopReleaseTimer();
-                                            selfplayer.Out.SendPlayerRevive(selfplayer);
-                                            selfplayer.Out.SendStatusUpdate();
-                                            selfplayer.Notify(GamePlayerEvent.Revive, selfplayer);
+                                            self.Health = self.MaxHealth;
+                                            self.Mana = self.MaxMana;
+                                            self.Endurance = self.MaxEndurance;
+                                            self.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
+                                            self.Out.SendMessage("You revive yourself.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                            self.StopReleaseTimer();
+                                            self.Out.SendPlayerRevive(self);
+                                            self.Out.SendStatusUpdate();
+                                            self.Notify(GamePlayerEvent.Revive, self);
                                         }
                                         else
                                         {
@@ -1604,31 +1550,28 @@ namespace DOL.GS.Commands
 
                                 case "all":
                                     {
-                                        foreach (GameClient allplayer in WorldMgr.GetAllPlayingClients())
+                                        foreach (GamePlayer otherPlayer in ClientService.GetPlayers<object>(Predicate, default))
                                         {
-                                            if (!(allplayer.Player.IsAlive))
-                                            {
-                                                allplayer.Player.Health = allplayer.Player.MaxHealth;
-                                                allplayer.Player.Mana = allplayer.Player.MaxMana;
-                                                allplayer.Player.Endurance = allplayer.Player.MaxEndurance;
-                                                allplayer.Player.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
-                                                                        client.Player.Heading);
+                                            otherPlayer.Health = otherPlayer.MaxHealth;
+                                            otherPlayer.Mana = otherPlayer.MaxMana;
+                                            otherPlayer.Endurance = otherPlayer.MaxEndurance;
+                                            otherPlayer.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
+                                            otherPlayer.StopReleaseTimer();
+                                            otherPlayer.Out.SendPlayerRevive(otherPlayer);
+                                            otherPlayer.Out.SendStatusUpdate();
+                                            otherPlayer.Out.SendMessage($"You have been resurrected by {client.Player.GetName(0, false)}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                            otherPlayer.Notify(GamePlayerEvent.Revive, otherPlayer);
+                                        }
 
-                                                allplayer.Player.StopReleaseTimer();
-                                                allplayer.Player.Out.SendPlayerRevive(allplayer.Player);
-                                                allplayer.Player.Out.SendStatusUpdate();
-                                                allplayer.Player.Out.SendMessage("You have been resurrected by " + client.Player.GetName(0, false) + "!",
-                                                                                 eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                                allplayer.Player.Notify(GamePlayerEvent.Revive, allplayer.Player);
-                                            }
+                                        static bool Predicate(GamePlayer x, object unused)
+                                        {
+                                            return !x.IsAlive;
                                         }
                                     }
                                     break;
-
                                 default:
                                     {
-                                        client.Out.SendMessage("SYNTAX: /player rez <albs|mids|hibs|all>", eChatType.CT_System,
-                                                               eChatLoc.CL_SystemWindow);
+                                        client.Out.SendMessage("SYNTAX: /player rez <albs|mids|hibs|all>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                     }
                                     break;
                             }
@@ -1680,47 +1623,41 @@ namespace DOL.GS.Commands
                         {
                             case "albs":
                                 {
-                                    foreach (GameClient aplayer in WorldMgr.GetClientsOfRealm(eRealm.Albion))
+                                    foreach (GamePlayer albPlayer in ClientService.GetPlayersOfRealm(eRealm.Albion))
                                     {
-                                        if (aplayer.Player.IsAlive && aplayer.Account.PrivLevel == 1)
-                                        {
-                                            KillPlayer(client.Player, aplayer.Player);
-                                        }
+                                        if (albPlayer.IsAlive && albPlayer.Client.Account.PrivLevel == 1)
+                                            KillPlayer(client.Player, albPlayer);
                                     }
                                 }
                                 break;
 
                             case "mids":
                                 {
-                                    foreach (GameClient mplayer in WorldMgr.GetClientsOfRealm(eRealm.Midgard))
+                                    foreach (GamePlayer midPlayer in ClientService.GetPlayersOfRealm(eRealm.Midgard))
                                     {
-                                        if (mplayer.Player.IsAlive && mplayer.Account.PrivLevel == 1)
-                                        {
-                                            KillPlayer(client.Player, mplayer.Player);
-                                        }
+                                        if (midPlayer.IsAlive && midPlayer.Client.Account.PrivLevel == 1)
+                                            KillPlayer(client.Player, midPlayer);
                                     }
                                 }
                                 break;
+
                             case "hibs":
                                 {
-                                    foreach (GameClient hplayer in WorldMgr.GetClientsOfRealm(eRealm.Hibernia))
+                                    foreach (GamePlayer hibPlayer in ClientService.GetPlayersOfRealm(eRealm.Hibernia))
                                     {
-                                        if (hplayer.Player.IsAlive && hplayer.Account.PrivLevel == 1)
-                                        {
-                                            KillPlayer(client.Player, hplayer.Player);
-                                        }
+                                        if (hibPlayer.IsAlive && hibPlayer.Client.Account.PrivLevel == 1)
+                                            KillPlayer(client.Player, hibPlayer);
                                     }
                                 }
                                 break;
 
                             case "self":
                                 {
-                                    GamePlayer selfplayer = client.Player;
+                                    GamePlayer self = client.Player;
 
-                                    if (!(selfplayer.IsAlive))
+                                    if (!self.IsAlive)
                                     {
-                                        client.Out.SendMessage("You are already dead. Use /player rez <self> to resurrect yourself.",
-                                                               eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                        client.Out.SendMessage("You are already dead. Use /player rez <self> to resurrect yourself.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                         return;
                                     }
                                     else
@@ -1733,20 +1670,17 @@ namespace DOL.GS.Commands
 
                             case "all":
                                 {
-                                    foreach (GameClient allplayer in WorldMgr.GetAllPlayingClients())
+                                    foreach (GamePlayer otherPlayer in ClientService.GetNonGmPlayers())
                                     {
-                                        if (allplayer.Player.IsAlive && allplayer.Account.PrivLevel == 1)
-                                        {
-                                            KillPlayer(client.Player, allplayer.Player);
-                                        }
+                                        if (otherPlayer.IsAlive)
+                                            KillPlayer(client.Player, otherPlayer);
                                     }
                                 }
                                 break;
 
                             default:
                                 {
-                                    client.Out.SendMessage("'" + args[2] + "' is not a valid arguement.", eChatType.CT_Important,
-                                                           eChatLoc.CL_SystemWindow);
+                                    client.Out.SendMessage($"'{args[2]}' is not a valid argument.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 }
                                 break;
                         }
@@ -1770,123 +1704,119 @@ namespace DOL.GS.Commands
                         {
                             case "guild":
                                 {
-                                    short count = 0;
-
-                                    foreach (GameClient pname in WorldMgr.GetAllPlayingClients())
+                                    if (args[3] == null)
                                     {
-                                        string guild = string.Join(" ", args, 3, args.Length - 3);
-
-                                        if (args[3] == null)
-                                        {
-                                            DisplaySyntax(client);
-                                            return;
-                                        }
-
-                                        if (pname.Player.GuildName == guild && guild != "")
-                                        {
-                                            count++;
-                                            pname.Player.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
-                                                                client.Player.Heading);
-                                        }
+                                        DisplaySyntax(client);
+                                        return;
                                     }
 
-                                    client.Out.SendMessage(count + " players jumped!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    short count = 0;
+                                    string guildName = string.Join(" ", args, 3, args.Length - 3);
+                                    List<GamePlayer> players = ClientService.GetPlayers(Predicate, guildName);
+
+                                    foreach (GamePlayer guildMember in players)
+                                    {
+                                        count++;
+                                        guildMember.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
+                                    }
+
+                                    client.Out.SendMessage($"{count} players jumped!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+                                    static bool Predicate(GamePlayer player, string guildName)
+                                    {
+                                        return !string.IsNullOrEmpty(player.GuildName) && player.GuildName.Equals(guildName);
+                                    }
                                 }
                                 break;
 
                             case "group":
                                 {
-                                    short count = 0;
-
-                                    foreach (GameClient pname in WorldMgr.GetAllPlayingClients())
+                                    if (args[3] == null)
                                     {
-                                        string name = args[3];
+                                        DisplaySyntax(client);
+                                        return;
+                                    }
 
-                                        if (name == null)
-                                        {
-                                            DisplaySyntax(client);
-                                            return;
-                                        }
+                                    short count = 0;
+                                    string name = args[3];
+                                    GamePlayer player = ClientService.GetPlayerByExactName(name);
 
-                                        if (name == pname.Player.Name)
+                                    if (player != null)
+                                    {
+                                        foreach (GameLiving groupMember in player.Group.GetMembersInTheGroup())
                                         {
-                                            foreach (GameLiving groupedplayers in pname.Player.Group.GetMembersInTheGroup())
-                                            {
-                                                groupedplayers.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
-                                                                      client.Player.Heading);
-                                                count++;
-                                            }
+                                            groupMember.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
+                                            count++;
                                         }
                                     }
 
-                                    client.Out.SendMessage(count + " players jumped!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    client.Out.SendMessage($"{count} players jumped!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 }
                                 break;
 
                             case "cg":
                                 {
-                                    short count = 0;
-
-                                    foreach (GameClient pname in WorldMgr.GetAllPlayingClients())
+                                    if (args[3] == null)
                                     {
-                                        string name = args[3];
+                                        DisplaySyntax(client);
+                                        return;
+                                    }
 
-                                        if (name == null)
-                                        {
-                                            DisplaySyntax(client);
-                                            return;
-                                        }
-                                        var cg = pname.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+                                    short count = 0;
+                                    string name = args[3];
+                                    GamePlayer player = ClientService.GetPlayerByExactName(name);
 
-                                        if (name == pname.Player.Name)
+                                    if (player != null)
+                                    {
+                                        ChatGroup cg = player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+
+                                        if (cg != null)
                                         {
-                                            foreach (GamePlayer cgplayers in cg.Members.Keys)
+                                            foreach (GamePlayer bgMember in cg.Members.Keys)
                                             {
-                                                cgplayers.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
-                                                                 client.Player.Heading);
+                                                bgMember.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
                                                 count++;
                                             }
                                         }
                                     }
 
-                                    client.Out.SendMessage(count + " players jumped!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    client.Out.SendMessage($"{count} players jumped!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 }
                                 break;
-
 
                             case "bg":
                                 {
-                                    short count = 0;
-
-                                    foreach (GameClient pname in WorldMgr.GetAllPlayingClients())
+                                    if (args[3] == null)
                                     {
-                                        string name = args[3];
+                                        DisplaySyntax(client);
+                                        return;
+                                    }
 
-                                        if (name == null)
-                                        {
-                                            DisplaySyntax(client);
-                                            return;
-                                        }
-                                        var bg = pname.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                                    short count = 0;
+                                    string name = args[3];
+                                    GamePlayer player = ClientService.GetPlayerByExactName(name);
 
-                                        if (name == pname.Player.Name)
+                                    if (player != null)
+                                    {
+                                        BattleGroup bg = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+
+                                        if (bg != null)
                                         {
-                                            foreach (GamePlayer cgplayers in bg.Members.Keys)
+                                            foreach (GamePlayer bgMember in bg.Members.Keys)
                                             {
-                                                cgplayers.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z,
-                                                                 client.Player.Heading);
+                                                bgMember.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
                                                 count++;
                                             }
                                         }
                                     }
 
-                                    client.Out.SendMessage(count + " players jumped!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    client.Out.SendMessage($"{count} players jumped!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 }
                                 break;
+
                             default:
                                 {
-                                    client.Out.SendMessage("'" + args[2] + "' is not a valid arguement.", eChatType.CT_Important,
-                                                           eChatLoc.CL_SystemWindow);
+                                    client.Out.SendMessage($"'{args[2]}' is not a valid argument.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                 }
                                 break;
                         }
@@ -2150,15 +2080,14 @@ namespace DOL.GS.Commands
 
                 case "allchars":
                     {
-                        var targetPlayer = client.Player.TargetObject as GamePlayer;
-                        GameClient targetClient = targetPlayer == null ? null : targetPlayer.Client;
+                       GamePlayer targetPlayer;
 
                         if (args.Length > 2)
-                        {
-                            targetClient = WorldMgr.GetClientByPlayerName(args[2], true, false);
-                        }
+                            targetPlayer = ClientService.GetPlayerByExactName(args[2]);
+                        else
+                            targetPlayer = client.Player.TargetObject as GamePlayer;
 
-                        if (targetClient == null)
+                        if (targetPlayer == null)
                         {
                             DisplaySyntax(client, args[1]);
                             return;
@@ -2167,10 +2096,10 @@ namespace DOL.GS.Commands
                         {
                             string characterNames = string.Empty;
 
-                            foreach (DOLCharacters acctChar in targetClient.Account.Characters)
+                            foreach (DOLCharacters acctChar in targetPlayer.Client.Account.Characters)
                             {
                                 if (acctChar != null)
-                                    characterNames += acctChar.Name + " " + acctChar.LastName + "\n";
+                                    characterNames += $"{acctChar.Name} {acctChar.LastName}\n";
                             }
 
                             client.Out.SendMessage(characterNames, eChatType.CT_Say, eChatLoc.CL_PopupWindow);

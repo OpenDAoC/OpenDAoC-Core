@@ -1,7 +1,7 @@
 ﻿using System;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
@@ -395,7 +395,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 1800;
                     spell.SpellID = 11771;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -555,7 +555,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 2500;
                     spell.SpellID = 11766;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -690,7 +690,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 2500;
                     spell.SpellID = 11767;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -821,7 +821,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 2500;
                     spell.SpellID = 11768;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -951,7 +951,7 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 2500;
                     spell.SpellID = 11769;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -964,4 +964,3 @@ namespace DOL.AI.Brain
         }
     }
 }
-

@@ -9,6 +9,7 @@ using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.Commands;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
@@ -52,6 +53,7 @@ namespace DOL.GS
         public double CombatRegen { get; set; }
         public double SpecLock { get; set; }
         public long LastWorldUpdate { get; set; }
+        public ChainedActions ChainedActions { get; private set; }
 
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
         public ECSGameTimer PredatorTimeoutTimer
@@ -875,7 +877,7 @@ namespace DOL.GS
         {
             // Other clients will forget about us if we don't keep sending them packets
             // Doesn't work well with dead characters
-            if (IsAlive)
+            if (IsAlive && ObjectState == eObjectState.Active)
             {
                 foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
@@ -893,9 +895,11 @@ namespace DOL.GS
                 if (!IsAlive)
                 {
                     Release(m_releaseType, true);
+
                     if (log.IsInfoEnabled)
                         log.InfoFormat("Linkdead player {0}({1}) was auto-released from death!", Name, Client.Account.Name);
                 }
+
                 CraftingProgressMgr.FlushAndSaveInstance(this);
                 SaveIntoDatabase();
             }
@@ -5068,9 +5072,9 @@ namespace DOL.GS
         /// <param name="expGroupBonus"></param>
         /// <param name="expOutpostBonus"></param>
         /// <param name="sendMessage"></param>
-        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long atlasBonus, long expOutpostBonus, bool sendMessage)
+        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage)
         {
-            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, true);
+            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, true);
         }
 
         /// <summary>
@@ -5082,9 +5086,9 @@ namespace DOL.GS
         /// <param name="expOutpostBonus"></param>
         /// <param name="sendMessage"></param>
         /// <param name="allowMultiply"></param>
-        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long atlasBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply)
+        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply)
         {
-            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, allowMultiply, true);
+            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, true);
         }
 
         /// <summary>
@@ -5097,7 +5101,7 @@ namespace DOL.GS
         /// <param name="sendMessage"></param>
         /// <param name="allowMultiply"></param>
         /// <param name="notify"></param>
-        public override void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, long atlasBonus, bool sendMessage, bool allowMultiply, bool notify)
+        public override void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify)
         {
             if (!GainXP && expTotal > 0)
                 return;
@@ -5209,7 +5213,6 @@ namespace DOL.GS
                 expTotal -= expGroupBonus;
                 expTotal -= expCampBonus;
                 expTotal -= expOutpostBonus;
-                expTotal -= atlasBonus;
 
                 baseXp = expTotal;
                 //[StephenxPimentel] - Zone Bonus XP Support
@@ -5221,7 +5224,7 @@ namespace DOL.GS
                         long tmpBonus = (long)(zoneBonus * ServerProperties.Properties.XP_RATE);
                         Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)tmpBonus, ZoneBonus.eZoneBonusType.XP),
                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                        GainExperience(eXPSource.Other, tmpBonus, 0, 0, 0, 0, false, false, false);
+                        GainExperience(eXPSource.Other, tmpBonus, 0, 0, 0, false, false, false);
                     }
                 }
 
@@ -5250,7 +5253,6 @@ namespace DOL.GS
                 expTotal += expOutpostBonus;
                 expTotal += expGroupBonus;
                 expTotal += expCampBonus;
-                expTotal += atlasBonus;
                 expTotal += RealmLoyaltyBonus;
             }
 
@@ -5274,9 +5276,6 @@ namespace DOL.GS
             expTotal += guildBonus;
 
             #endregion Guild XP Bonus
-
-            //Commenting base.GainExperience out as it was used to Notify which was only used by GuildEvent (which is now moved here)
-            //base.GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, atlasBonus, sendMessage, allowMultiply, notify);
 
             if (IsLevelSecondStage)
             {
@@ -5325,11 +5324,6 @@ namespace DOL.GS
 
                 if (relicBonus > 0)
                     expRelicBonusStr = "("+ relicBonus.ToString("N0", format) + " relic bonus)";
-
-                if(atlasBonus > 0)
-                {
-                    expSoloBonusStr = "("+ atlasBonus.ToString("N0", format) + " Atlas bonus)";
-                }
 
                 if(guildBonus > 0)
                 {
@@ -6807,15 +6801,14 @@ namespace DOL.GS
             else
                 playerName = name;
 
-            var DiscordObituaryHook =
-                "https://discord.com/api/webhooks/929154632389910558/kfJbtzDC9JzyOXvZ0rYUwaPM31LRUebGzDZKSczUKDk_4YyHmB-WJVsh7pJoa4M9-D1U"; // Make it a property later
+            var DiscordObituaryHook = ""; // Make it a property later
             var client = new DiscordWebhookClient(DiscordObituaryHook);
 
             // Create your DiscordMessage with all parameters of your message.
             var discordMessage = new DiscordMessage(
                 "",
-                username: "Atlas Obituary",
-                avatarUrl: "https://cdn.discordapp.com/attachments/919610633656369214/928726197645496382/skull2.png",
+                username: "Obituary",
+                avatarUrl: "",
                 tts: false,
                 embeds: new[]
                 {
@@ -6949,22 +6942,12 @@ namespace DOL.GS
                 ((GamePlayer)killer).Out.SendMessage(playerMessage, messageType, eChatLoc.CL_SystemWindow);
             }
 
-            ArrayList players = new ArrayList();
+            List<GamePlayer> players;
+
             if (messageDistance == 0)
-            {
-                foreach (GameClient client in WorldMgr.GetClientsOfRegion(CurrentRegionID))
-                {
-                    players.Add(client.Player);
-                }
-            }
+                players = ClientService.GetPlayersOfRegion(CurrentRegion);
             else
-            {
-                foreach (GamePlayer player in GetPlayersInRadius(messageDistance))
-                {
-                    if (player == null) continue;
-                    players.Add(player);
-                }
-            }
+                players = GetPlayersInRadius(messageDistance);
 
             foreach (GamePlayer player in players)
             {
@@ -7052,13 +7035,13 @@ namespace DOL.GS
                     int conpenalty = 0;
                     switch (GameServer.Instance.Configuration.ServerType)
                     {
-                        case eGameServerType.GST_Normal:
+                        case EGameServerType.GST_Normal:
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.DeadRVR"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
                             xpLossPercent = 0;
                             m_deathtype = eDeathType.RvR;
                             break;
 
-                        case eGameServerType.GST_PvP:
+                        case EGameServerType.GST_PvP:
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.DeadRVR"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
                             xpLossPercent = 0;
                             m_deathtype = eDeathType.PvP;
@@ -7091,7 +7074,7 @@ namespace DOL.GS
                         DeathCount++;
                         m_deathtype = eDeathType.PvE;
                         long xpLoss = (ExperienceForNextLevel - ExperienceForCurrentLevel) * xpLossPercent / 1000;
-                        GainExperience(eXPSource.Other, -xpLoss, 0, 0, 0, 0, false, true);
+                        GainExperience(eXPSource.Other, -xpLoss, 0, 0, 0, false, true);
                         TempProperties.SetProperty(DEATH_EXP_LOSS_PROPERTY, xpLoss);
                     }
 
@@ -7164,23 +7147,16 @@ namespace DOL.GS
             {
                 foreach (GamePlayer player in Group.GetPlayersInTheGroup())
                 {
-                    if (player == this) continue;
-                    if (enemy.attackComponent.Attackers.Contains(player)) continue;
-                    if (this.IsWithinRadius(player, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-                    {
+                    if (player == this)
+                        continue;
+
+                    if (enemy.attackComponent.Attackers.ContainsKey(player))
+                        continue;
+
+                    if (IsWithinRadius(player, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                         Notify(GameLivingEvent.EnemyKilled, player, new EnemyKilledEventArgs(enemy));
-                    }
-
-                    if (player.attackComponent.Attackers.Contains(enemy))
-                        player.attackComponent.RemoveAttacker(enemy);
-
-                    if (player.ControlledBrain != null && player.ControlledBrain.Body.attackComponent.Attackers.Contains(enemy))
-                        player.ControlledBrain.Body.attackComponent.RemoveAttacker(enemy);
                 }
             }
-
-            if (ControlledBrain != null && ControlledBrain.Body.attackComponent.Attackers.Contains(enemy))
-                ControlledBrain.Body.attackComponent.RemoveAttacker(enemy);
 
             if (CurrentZone.IsRvR)
             {
@@ -8031,7 +8007,7 @@ namespace DOL.GS
                                                     if (spellHandler is AllRegenBuff)
                                                         target = this;
 
-                                                    if (spell.Target.Equals("enemy", StringComparison.OrdinalIgnoreCase))
+                                                    if (spell.Target == eSpellTarget.ENEMY)
                                                     {
                                                         if (!GameServer.ServerRules.IsAllowedToAttack(this, target, true))
                                                         {
@@ -12243,7 +12219,7 @@ namespace DOL.GS
             string message = "";
             switch (GameServer.Instance.Configuration.ServerType)
             {//FIXME: Better extract this to a new function in ServerRules !!! (VaNaTiC)
-                case eGameServerType.GST_Normal:
+                case EGameServerType.GST_Normal:
                 {
                     if (Realm == player.Realm || Client.Account.PrivLevel > 1 || player.Client.Account.PrivLevel > 1)
                         message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.RealmMember", player.GetName(this), GetPronoun(Client, 0, true), CharacterClass.Name);
@@ -12252,7 +12228,7 @@ namespace DOL.GS
                     break;
                 }
 
-                case eGameServerType.GST_PvP:
+                case EGameServerType.GST_PvP:
                 {
                     if (Client.Account.PrivLevel > 1 || player.Client.Account.PrivLevel > 1)
                         message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.YourGuildMember", player.GetName(this), GetPronoun(Client, 0, true), CharacterClass.Name);
@@ -13854,7 +13830,7 @@ namespace DOL.GS
         /// <returns>true if invulnerability was set (smaller than old invulnerability)</returns>
         public virtual bool StartInvulnerabilityTimer(int duration, InvulnerabilityExpiredCallback callback)
         {
-            if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
+            if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
                 return false;
 
             if (duration < 1)
@@ -15171,6 +15147,7 @@ namespace DOL.GS
             }));
 
             m_drowningTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DrowningTimerCallback));
+            ChainedActions = new(this);
         }
 
         /// <summary>

@@ -1,24 +1,4 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Linq;
-
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
@@ -246,11 +226,13 @@ namespace DOL.GS.Commands
 							return;
 						}
 						component.Skin = skin;
-                        foreach (GameClient cli in WorldMgr.GetClientsOfRegion(client.Player.CurrentRegionID))
-                        {
-                            cli.Out.SendKeepComponentInfo(component);
-							cli.Out.SendKeepComponentDetailUpdate(component);
-                        }
+
+						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
+						{
+							otherPlayer.Out.SendKeepComponentInfo(component);
+							otherPlayer.Out.SendKeepComponentDetailUpdate(component);
+						}
+
 						//client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepComponents.Skin.YChangeSkin"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						client.Out.SendMessage("Component skin updated.  Use /keepcomponent save to save, or reload to reload the original skin.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					} break;
@@ -306,10 +288,10 @@ namespace DOL.GS.Commands
                         component.ComponentHeading = dbcomponent.Heading;
 						component.Skin = dbcomponent.Skin;
 
-						foreach (GameClient cli in WorldMgr.GetClientsOfRegion(client.Player.CurrentRegionID))
+						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
-							cli.Out.SendKeepComponentInfo(component);
-							cli.Out.SendKeepComponentDetailUpdate(component);
+							otherPlayer.Out.SendKeepComponentInfo(component);
+							otherPlayer.Out.SendKeepComponentDetailUpdate(component);
 						}
 
                         client.Out.SendMessage("Component Reloaded", eChatType.CT_System, eChatLoc.CL_SystemWindow);

@@ -141,33 +141,35 @@ namespace DOL.GS.SkillHandler
 					if (!IsObjectTooClose(npc, player)) continue;
 
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseToCloseAnEnemy"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				    return;
+					return;
 				}
 			}
+
 			//since 1.88 (?), players which stealth, doesn't be followed by mobs [by Suncheck]
 			//TODO: Some further checks need?
-			var attackers = new List<GameObject>();
-			attackers.AddRange(player.attackComponent.Attackers);
-			foreach (GameLiving attacker in attackers)
+			foreach (GameObject attacker in player.attackComponent.Attackers.Keys)
 			{
-				if (attacker.TargetObject == (GameLiving)player)
+				if (attacker is not GameLiving livingAttacker)
+					continue;
+
+				if (livingAttacker.TargetObject == player)
 				{
-					attacker.TargetObject = null;
-					if (attacker is GamePlayer)
+					livingAttacker.TargetObject = null;
+
+					if (attacker is GamePlayer playerAttacker)
+						playerAttacker.Out.SendChangeTarget(null);
+					if (attacker is GameNPC npcAttacker)
 					{
-						((GamePlayer)attacker).Out.SendChangeTarget(attacker.TargetObject);
-					}
-					if (attacker is GameNPC)
-					{
-						GameNPC npc = (GameNPC)attacker;
-						if (npc.Brain is IOldAggressiveBrain)
+						if (npcAttacker.Brain is IOldAggressiveBrain npcAttackerBrain)
 						{
-							((IOldAggressiveBrain)npc.Brain).RemoveFromAggroList(player);
+							npcAttackerBrain.RemoveFromAggroList(player);
 						}
-						attacker.attackComponent.StopAttack();
+
+						npcAttacker.attackComponent.StopAttack();
 					}
 				}
 			}
+
 			player.Stealth(!player.IsStealthed);
 		}
 

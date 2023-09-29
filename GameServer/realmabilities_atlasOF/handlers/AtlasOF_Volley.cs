@@ -149,7 +149,7 @@ namespace DOL.GS.RealmAbilities
             }
 
             // Can't use Volley inside portal and border keeps on a RvR server.
-            if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_Normal)
+            if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_Normal)
             {
                 foreach (AbstractArea area in region.GetAreasOfSpot(_player.GroundTarget).Where(x => x is AbstractArea))
                 {
@@ -210,9 +210,9 @@ namespace DOL.GS.RealmAbilities
                 }
             }
 
-            if (_player.attackComponent.Attackers.Count > 0 && _player.IsBeingInterrupted)
+            if (!_player.attackComponent.Attackers.IsEmpty && _player.IsBeingInterrupted)
             {
-                GameObject attacker = _player.attackComponent.Attackers.Last();
+                GameObject attacker = _player.LastInterrupter;
 
                 if (attacker is GameNPC npcAttacker)
                     _player.Out.SendMessage(LanguageMgr.GetTranslation(_player.Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true, _player.Client.Account.Language, npcAttacker), "volley"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);

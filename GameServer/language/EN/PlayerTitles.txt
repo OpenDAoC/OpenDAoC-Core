@@ -49,7 +49,7 @@ Titles.Level.Level20Info:				    Level 20+
 Titles.Level.Level20:					    Level {0}
 
 ## Privilege Level Titles
-Titles.PrivLevel.Administrator:				Atlas Team
+Titles.PrivLevel.Administrator:				Administrator
 Titles.PrivLevel.Gamemaster:				Gamemaster
 
 ## Champion Level Titles

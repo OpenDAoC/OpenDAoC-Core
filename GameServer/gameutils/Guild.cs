@@ -301,7 +301,7 @@ namespace DOL.GS
 
 		static Guild()
 		{
-			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
+			if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
 				DummyGuild = GuildMgr.CreateGuild(0, "DummyGuildToMakePetsUntargetable") ?? GuildMgr.GetGuildByName("DummyGuildToMakePetsUntargetable");
 		}
 

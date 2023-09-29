@@ -388,7 +388,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Major Conflagration";
 					spell.Range = 1500;
 					spell.SpellID = 11883;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Heat;
 					m_Mage_DD = new Spell(spell, 70);
@@ -415,7 +415,7 @@ namespace DOL.AI.Brain
 					spell.Name = "Major Ice Blast";
 					spell.Range = 1500;
 					spell.SpellID = 11884;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Cold;
 					m_Mage_DD2 = new Spell(spell, 70);

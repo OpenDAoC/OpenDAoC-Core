@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -318,12 +299,12 @@ namespace DOL.GS.Commands
 						}
 					}
 
-					if (target.attackComponent.Attackers != null && target.attackComponent.Attackers.Count > 0)
+					if (target.attackComponent.Attackers != null && !target.attackComponent.Attackers.IsEmpty)
 					{
 						info.Add("");
 						info.Add("Attacker List:");
 
-						foreach (GameLiving attacker in target.attackComponent.Attackers)
+						foreach (GameObject attacker in target.attackComponent.Attackers.Keys)
 							info.Add(attacker.Name);
 					}
 
@@ -335,7 +316,7 @@ namespace DOL.GS.Commands
 						foreach (IGameEffect effect in target.EffectList)
 							info.Add(effect.Name + " remaining " + effect.RemainingTime);
 					}
-										
+
 					info.Add("");
 					info.Add(" + Loot:");
 
@@ -817,14 +798,13 @@ namespace DOL.GS.Commands
 					}
 
 					info.Add(" ");
-					info.Add(" Server players: " + WorldMgr.GetAllPlayingClientsCount());
+					info.Add(" Server players: " + ClientService.ClientCount);
                     info.Add(" ");
                     info.Add(" Region Players:");
-                    info.Add(" All players: " + WorldMgr.GetClientsOfRegionCount(client.Player.CurrentRegion.ID));
-                    info.Add(" ");
-                    info.Add(" Alb players: " + WorldMgr.GetClientsOfRegionCount(client.Player.CurrentRegion.ID, eRealm.Albion));
-                    info.Add(" Hib players: " + WorldMgr.GetClientsOfRegionCount(client.Player.CurrentRegion.ID, eRealm.Hibernia));
-                    info.Add(" Mid players: " + WorldMgr.GetClientsOfRegionCount(client.Player.CurrentRegion.ID, eRealm.Midgard));
+                    info.Add(" All players: " + ClientService.GetPlayersOfRegion(client.Player.CurrentRegion).Count);
+                    info.Add(" Alb players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Albion).Count);
+                    info.Add(" Hib players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Hibernia).Count);
+                    info.Add(" Mid players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Midgard).Count);
 
 					info.Add(" ");
 					info.Add(" Total objects in region: " + client.Player.CurrentRegion.TotalNumberOfObjects);

@@ -103,7 +103,7 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11875;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					spell.Uninterruptible = true;
@@ -242,7 +242,7 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11956;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					spell.Uninterruptible = true;
@@ -381,7 +381,7 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11959;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					spell.Uninterruptible = true;
@@ -1175,7 +1175,7 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11878;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					spell.Uninterruptible = true;

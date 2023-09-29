@@ -1,27 +1,17 @@
-/* This script was created to automate registering with the daocportal.net
- * Server List. Please take some time to edit the settings below to fit
- * your needs.
- * 
- * Author: Dawn of Light
- * Date: 10th December 2007
- * Updated: 11th April 2011 (new portal url)
- * Credits: Thanks to Cisien for the initial release.
- */
-
 using System;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using DOL.Events;
 using DOL.GS.ServerProperties;
 using log4net;
-using System.Reflection;
 
 namespace DOL.GS.GameEvents
 {
 	public class ServerListUpdate
 	{
-        private const string UpdateURL = "http://portal.dolserver.net/serverlist.php?action=submit";
+		private const string UpdateURL = "http://portal.dolserver.net/serverlist.php?action=submit";
 
 		#region Code
 
@@ -118,12 +108,8 @@ namespace DOL.GS.GameEvents
 		/// </summary>
 		private static void StartList()
 		{
-			//Get Playing Clients Count
-			string ClientCount = WorldMgr.GetAllPlayingClientsCount().ToString();
-			
 			//Set up our URI to be passed to the WebClient.
-			string Updater = UrlEncode(UpdateURL + "&username=" + Properties.SERVER_LIST_UPDATE_USER + 
-                "&password=" + Properties.SERVER_LIST_UPDATE_PASS + "&totalclients=" + ClientCount + "&version=" + ScriptVersion);
+			string Updater = UrlEncode($"{UpdateURL}&username={Properties.SERVER_LIST_UPDATE_USER}&password={Properties.SERVER_LIST_UPDATE_PASS}&totalclients={ClientService.ClientCount}&version={ScriptVersion}");
 
 			if (!ListUpdater(Updater))
 			{

@@ -134,9 +134,6 @@ namespace DOL.GS
 				
 				foreach (InventoryItem item in items)
 				{
-					// Petrius custom change for Atlas freeshard
-					// we will control the return conditions within this loop
-					// and remove the where condition from the if above
 					if (index >= first && index <= last)
                     {
 						if (GetRealmOfLot(item.OwnerLot) != player.Realm)

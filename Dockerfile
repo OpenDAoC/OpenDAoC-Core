@@ -20,7 +20,7 @@ RUN unzip DummyDB.zip -d /tmp/dummy-db
 RUN dotnet restore DOLLinux.sln
 
 # Copy serverconfig.example.xml to serverconfig.xml
-RUN cp /build/DOLServer/config/serverconfig.example.xml /build/DOLServer/config/serverconfig.xml
+RUN cp /build/CoreServer/config/serverconfig.example.xml /build/CoreServer/config/serverconfig.xml
 
 # Build the application in Release mode
 RUN dotnet build DOLLinux.sln -c Release

@@ -166,8 +166,9 @@ namespace DOL.GS
 
             // Check if Reflex Attack RA should apply. This is checked once here and cached since it is used multiple times below (every swing triggers Reflex Attack).
             bool targetHasReflexAttackRA = false;
+            GamePlayer targetPlayer = mainHandAD.Target as GamePlayer;
 
-            if (mainHandAD.Target is GamePlayer targetPlayer && targetPlayer.effectListComponent != null && targetPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.ReflexAttack))
+            if (targetPlayer != null && targetPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.ReflexAttack))
                 targetHasReflexAttackRA = true;
 
             // Reflex Attack - Mainhand.
@@ -208,13 +209,7 @@ namespace DOL.GS
                 && (mainHandAD.AttackResult == eAttackResult.HitUnstyled || mainHandAD.AttackResult == eAttackResult.HitStyle))
             {
                 if (mainHandAD.Target.TargetObject == null)
-                {
-                    if (mainHandAD.Target is GamePlayer)
-                    {
-                        GameClient targetClient = WorldMgr.GetClientByPlayerID(mainHandAD.Target.InternalID, false, false);
-                        targetClient?.Out.SendChangeTarget(mainHandAD.Attacker);
-                    }
-                }
+                    targetPlayer?.Out.SendChangeTarget(mainHandAD.Attacker);
             }
 
             if (mainHandAD == null || mainHandAD.Target == null)
@@ -235,7 +230,7 @@ namespace DOL.GS
                     case eAttackResult.Missed:
                     case eAttackResult.Blocked:
                     case eAttackResult.Evaded:
-                    case eAttackResult.Fumbled: // Takii - Fumble should not prevent Offhand attack. https://www.atlasfreeshard.com/tickets/fumble-mainhand-lets-offhand-not-swing.1012/
+                    case eAttackResult.Fumbled: // Takii - Fumble should not prevent Offhand attack.
                     case eAttackResult.Parried:
                         for (int i = 0; i < leftHandSwingCount; i++)
                         {

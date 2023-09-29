@@ -123,7 +123,7 @@ namespace DOL.GS {
 
         public static void GenerateReward(GameLiving living, int amount)
         {
-            if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
+            if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
             {
                 GenerateBPs(living, amount);
             }

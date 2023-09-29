@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -45,9 +26,8 @@ namespace DOL.GS.Commands
                 }
 
                 GamePlayer assistPlayer = null;
-                
-                //Should be faster then WorldMgr.GetClientByPlayerName
-                foreach(GamePlayer plr in client.Player.GetPlayersInRadius(2048))
+
+                foreach (GamePlayer plr in client.Player.GetPlayersInRadius(2048))
                 {
                     //ToLower() is correct, don't change it!
                     if(plr.Name.ToLower() != args[1].ToLower())
@@ -63,7 +43,7 @@ namespace DOL.GS.Commands
                     switch(GameServer.Instance.Configuration.ServerType)
                     {
                             #region Normal rules
-                        case eGameServerType.GST_Normal:
+                        case EGameServerType.GST_Normal:
                             {
                                 //We cannot assist players of an enemy realm.
                                 if (!SameRealm(client, assistPlayer, false))
@@ -78,7 +58,7 @@ namespace DOL.GS.Commands
                             }
                             #endregion
                             #region PvE rules
-                        case eGameServerType.GST_PvE:
+                        case EGameServerType.GST_PvE:
                             {
                                 //We cannot assist our target when it has no target.
                                 if (!HasTarget(client, assistPlayer))
@@ -89,7 +69,7 @@ namespace DOL.GS.Commands
                             }
                             #endregion
                             #region PvP rules
-                        case eGameServerType.GST_PvP:
+                        case EGameServerType.GST_PvP:
                             {
                                 //Note:
                                 //I absolutely don't have experience with pvp servers - change it when something is wrong.
@@ -196,7 +176,7 @@ namespace DOL.GS.Commands
                     switch(GameServer.Instance.Configuration.ServerType)
                     {
                         #region Normal rules
-						case eGameServerType.GST_Normal:
+						case EGameServerType.GST_Normal:
 						{
 							GameLiving targetLiving = (GameLiving)client.Player.TargetObject;
 							//We cannot assist npc's or players of an enemy realm.
@@ -212,7 +192,7 @@ namespace DOL.GS.Commands
 						}
 						#endregion
                         #region PvE rules
-                        case eGameServerType.GST_PvE:
+                        case EGameServerType.GST_PvE:
                             {
                                 if(client.Player.TargetObject is GamePlayer)
                                 {
@@ -241,7 +221,7 @@ namespace DOL.GS.Commands
                             } break;
                         #endregion
                         #region PvP rules
-                        case eGameServerType.GST_PvP:
+                        case EGameServerType.GST_PvP:
                             {
                                 //Note:
                                 //I absolutely don't have experience with pvp servers - change it when something is wrong.

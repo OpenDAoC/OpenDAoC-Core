@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Text;
 using DOL.GS.PacketHandler;
@@ -105,21 +86,23 @@ namespace DOL.GS.Commands
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.UsageInvite"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						GameClient inviteeclient = WorldMgr.GetClientByPlayerName(args[2], false, true);
-						if (inviteeclient == null || !GameServer.ServerRules.IsSameRealm(inviteeclient.Player, client.Player, true)) // allow priv level>1 to invite anyone
+
+						GamePlayer inviteePlayer = ClientService.GetPlayerByPartialName(args[2], out _);
+
+						if (inviteePlayer == null || !GameServer.ServerRules.IsSameRealm(inviteePlayer, client.Player, true)) // allow priv level>1 to invite anyone
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.NoPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						if (client == inviteeclient)
+						if (client == inviteePlayer.Client)
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.InviteYourself"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						ChatGroup oldchatgroup = inviteeclient.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+						ChatGroup oldchatgroup = inviteePlayer.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
 						if (oldchatgroup != null)
 						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.PlayerInChatgroup", inviteeclient.Player.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.PlayerInChatgroup", inviteePlayer.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
 						ChatGroup mychatgroup = client.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
@@ -133,8 +116,8 @@ namespace DOL.GS.Commands
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.LeaderInvite"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						inviteeclient.Player.TempProperties.SetProperty(JOIN_CHATGROUP_PROPERTY, mychatgroup);
-						inviteeclient.Player.Out.SendCustomDialog(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.JoinChatGroup", client.Player.Name), new CustomDialogResponse(JoinChatGroup));
+						inviteePlayer.TempProperties.SetProperty(JOIN_CHATGROUP_PROPERTY, mychatgroup);
+						inviteePlayer.Out.SendCustomDialog(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.JoinChatGroup", client.Player.Name), new CustomDialogResponse(JoinChatGroup));
 					}
 					break;
 				case "who":
@@ -180,13 +163,15 @@ namespace DOL.GS.Commands
 						{
 							PrintHelp(client);
 						}
-						GameClient inviteeclient = WorldMgr.GetClientByPlayerName(args[2], false, false);
-						if (inviteeclient == null)
+
+						GamePlayer inviteePlayer = ClientService.GetPlayerByPartialName(args[2], out _);
+
+						if (inviteePlayer == null)
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.NoPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						mychatgroup.RemovePlayer(inviteeclient.Player);
+						mychatgroup.RemovePlayer(inviteePlayer);
 					}
 					break;
 				case "leave":
@@ -239,14 +224,15 @@ namespace DOL.GS.Commands
 							PrintHelp(client);
 						}
 						string invitename = String.Join(" ", args, 2, args.Length - 2);
-						GameClient inviteeclient = WorldMgr.GetClientByPlayerName(invitename, false, false);
-						if (inviteeclient == null)
+						GamePlayer inviteePlayer = ClientService.GetPlayerByPartialName(invitename, out _);
+
+						if (inviteePlayer == null)
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.NoPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						mychatgroup.Members[inviteeclient.Player] = true;
-						string message = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.Moderator", inviteeclient.Player.Name);
+						mychatgroup.Members[inviteePlayer] = true;
+						string message = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.Moderator", inviteePlayer.Name);
 						foreach (GamePlayer ply in mychatgroup.Members.Keys)
 						{
 							ply.Out.SendMessage(message, eChatType.CT_Chat, eChatLoc.CL_ChatWindow);
@@ -318,25 +304,27 @@ namespace DOL.GS.Commands
 							PrintHelp(client);
 							return;
 						}
-						GameClient inviteeclient = WorldMgr.GetClientByPlayerName(args[2], false, false);
-						if (inviteeclient == null || !GameServer.ServerRules.IsSameRealm(client.Player, inviteeclient.Player, true)) // allow priv level>1 to join anywhere
+
+						GamePlayer inviteePlayer = ClientService.GetPlayerByPartialName(args[2], out _);
+
+						if (inviteePlayer == null || !GameServer.ServerRules.IsSameRealm(client.Player, inviteePlayer, true)) // allow priv level>1 to join anywhere
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.NoPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						if (client == inviteeclient)
+						if (client == inviteePlayer.Client)
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.OwnChatGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
 
-						ChatGroup mychatgroup = inviteeclient.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+						ChatGroup mychatgroup = inviteePlayer.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
 						if (mychatgroup == null)
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.NotChatGroupMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						if ((bool)mychatgroup.Members[inviteeclient.Player] == false)
+						if ((bool)mychatgroup.Members[inviteePlayer] == false)
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.NotChatGroupLeader"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;

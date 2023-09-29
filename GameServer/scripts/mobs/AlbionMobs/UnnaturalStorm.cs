@@ -65,15 +65,9 @@ namespace DOL.GS
         }
 		private void SpawnAdditionalStorms()
         {
-			foreach (GameClient client in WorldMgr.GetClientsOfZone(CurrentZone.ID))
-			{
-				if (client == null) break;
-				if (client.Player == null) continue;
-				if (client.IsPlaying)
-				{
-					client.Out.SendMessage("An intense supernatural storm explodes in the sky over the northeastern expanse of Lyonesse!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
-				}
-			}
+			foreach (GamePlayer player in ClientService.GetPlayersOfZone(CurrentZone))
+				player.Out.SendMessage("An intense supernatural storm explodes in the sky over the northeastern expanse of Lyonesse!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+
 			for (int i = 0; i < Util.Random(4, 5); i++)
 			{
 				UnnaturalStormAdds Add = new UnnaturalStormAdds();

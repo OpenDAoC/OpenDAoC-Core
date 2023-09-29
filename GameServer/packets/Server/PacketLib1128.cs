@@ -17,6 +17,7 @@
                 pak.WriteByte(0x00); // Build number.
                 pak.WriteByte(0x00); // Build number.
                 SendTCP(pak);
+                m_gameClient.PacketProcessor.ProcessTcpQueue();
             }
         }
     }

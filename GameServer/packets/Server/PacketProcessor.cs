@@ -359,13 +359,24 @@ namespace DOL.GS.PacketHandler
                     m_client.Socket.BeginSend(m_tcpSendBuffer, 0, count, SocketFlags.None, m_asyncTcpCallback, m_client);
                 } while (!empty);
             }
-            catch (Exception e)
+            catch (ObjectDisposedException e)
+            {
+                if (log.IsInfoEnabled)
+                    log.Info($"({m_client.Account?.Name ?? m_client.TcpEndpoint}) - {e.Message}");
+            }
+            catch (SocketException e)
             {
                 if (log.IsWarnEnabled)
-                    log.Warn($"({nameof(ProcessTcpQueue)}) It seems {m_client.Account?.Name ?? m_client.TcpEndpoint} went link-dead. Closing connection. {e.GetType()}: {e.Message}");
+                    log.Warn($"({m_client.Account?.Name ?? m_client.TcpEndpoint}) Closing connection - {e.Message}");
 
                 GameServer.Instance.Disconnect(m_client);
-                return;
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"({m_client.Account?.Name ?? m_client.TcpEndpoint}) Unexpected exception, closing connection - {e}");
+
+                GameServer.Instance.Disconnect(m_client);
             }
         }
 
@@ -397,22 +408,20 @@ namespace DOL.GS.PacketHandler
             }
             catch (ObjectDisposedException e)
             {
-                if (log.IsErrorEnabled)
-                    log.Error($"Exception in {nameof(AsyncTcpSendCallback)} (Client: {client})", e);
-
-                GameServer.Instance.Disconnect(client);
+                if (log.IsInfoEnabled)
+                    log.Info($"({client.Account?.Name ?? client.TcpEndpoint}) - {e.Message}");
             }
             catch (SocketException e)
             {
-                if (log.IsErrorEnabled)
-                    log.Error($"Exception in {nameof(AsyncTcpSendCallback)} (Client: {client})", e);
+                if (log.IsWarnEnabled)
+                    log.Warn($"({client.Account?.Name ?? client.TcpEndpoint}) Closing connection - {e.Message}");
 
                 GameServer.Instance.Disconnect(client);
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"Exception in {nameof(AsyncTcpSendCallback)} (Client: {client})", e);
+                    log.Error($"({client.Account?.Name ?? client.TcpEndpoint}) Unexpected exception, closing connection - {e}");
 
                 GameServer.Instance.Disconnect(client);
             }

@@ -103,29 +103,20 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 			
 			if (sk is Spell spell && sl != null)
+				player.castingComponent.RequestStartCastSpell(spell, sl);
+			else if (sk is Styles.Style style)
+				player.styleComponent.ExecuteWeaponStyle(style);
+			else if (sk is Ability ability)
 			{
-				if (GameLoop.GameLoopTime > player.TempProperties.GetProperty<long>(sk.Name) + GameLoop.TICK_RATE)
-				{
-					if (player.castingComponent.PairedSpellInputCheck(spell, sl))
-						player.castingComponent.RequestStartCastSpell(spell, sl);
-				}
+				IAbilityActionHandler handler = SkillBase.GetAbilityActionHandler(ability.KeyName);
 
-				player.TempProperties.SetProperty(sk.Name, 75);
-			}
-			else if (sk is Styles.Style)
-			{
-				player.styleComponent.ExecuteWeaponStyle((Styles.Style)sk);
-			}
-			else if (sk is Ability)
-			{
-				Ability ab = (Ability)sk;
-				IAbilityActionHandler handler = SkillBase.GetAbilityActionHandler(ab.KeyName);
 				if (handler != null)
 				{
-					handler.Execute(ab, player);
+					handler.Execute(ability, player);
+					return;
 				}
-				
-				ab.Execute(player);
+
+				ability.Execute(player);
 			}
 			else
 			{

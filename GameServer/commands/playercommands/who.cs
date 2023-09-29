@@ -1,54 +1,6 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-/*
-* TODO: listStart
-*
-* /who  Can be modified with
-* [playername],
-* [class],
-* [#] level,
-* [location],
-* [##] [##] level range -
-* please note that /who CSR will not show hidden CSRs
-*
-* 1.69
-* - The /who command has been altered to show a [CG] and a [BG] next to players'
-* names who are the leaders of a public chat group and battlegroup respectively.
-*
-* - The /who command now allows multiple different search filters at once.
-* For example, typing /who 40 50 Wizard Emain Dragonhearts would list all of the
-* level 40 through 50 Wizards currently in Emain Macha with a guild that matches
-* the "Dragonhearts" filter.
-*/
-
-/* ---REGARDING THE REMOVAL OF `/who`---
- * The `/who` command has been updated for the Titan project with the requirement of plvl 2+ so as to prevent any intentional
- * targeting/griefing of players.
- * Folks will just have to find one another the old-fashioned way, with radar, lag, and camera panning.
-*/
-
-
 using System;
 using System.Collections;
 using System.Text;
-
 
 namespace DOL.GS.Commands
 {
@@ -94,23 +46,22 @@ namespace DOL.GS.Commands
 			ArrayList clientsList = new ArrayList();
 			ArrayList resultMessages = new ArrayList();
 
-			// get list of clients depending on server type
-			foreach (GameClient serverClient in WorldMgr.GetAllPlayingClients())
+			foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
 			{
-				GamePlayer addPlayer = serverClient.Player;
-				if (addPlayer == null) continue;
-				if (serverClient.Account.PrivLevel > (uint)ePrivLevel.Player && serverClient.Player.IsAnonymous == false)
+				if (otherPlayer.Client.Account.PrivLevel > (uint) ePrivLevel.Player && otherPlayer.IsAnonymous == false)
 				{
-					clientsList.Add(addPlayer.Client);
+					clientsList.Add(otherPlayer.Client);
 					continue;
 				}
-				if (addPlayer.Client != client // always add self
-					&& client.Account.PrivLevel == (uint)ePrivLevel.Player
-					&& (addPlayer.IsAnonymous || !GameServer.ServerRules.IsSameRealm(addPlayer, client.Player, true)))
+
+				if (otherPlayer.Client != client
+					&& client.Account.PrivLevel == (uint) ePrivLevel.Player
+					&& (otherPlayer.IsAnonymous || !GameServer.ServerRules.IsSameRealm(otherPlayer, client.Player, true)))
 				{
 					continue;
 				}
-				clientsList.Add(addPlayer.Client);
+
+				clientsList.Add(otherPlayer.Client);
 			}
 
 			// no params
@@ -128,40 +79,40 @@ namespace DOL.GS.Commands
 			switch (args[1].ToLower())
 			{
 				case "all": // display all players, no filter
-					{
-						filters = null;
-						break;
-					}
+				{
+					filters = null;
+					break;
+				}
 				case "help": // list syntax for the who command
-					{
-						DisplaySyntax(client);
-						return;
-					}
+				{
+					DisplaySyntax(client);
+					return;
+				}
 				case "staff":
 				case "gm":
 				case "admin":
-					{
-						filters = new ArrayList(1);
-						filters.Add(new GMFilter());
-						break;
-					}
+				{
+					filters = new ArrayList(1);
+					filters.Add(new GMFilter());
+					break;
+				}
 				case "en":
 				case "cz":
 				case "de":
 				case "es":
 				case "fr":
 				case "it":
-					{
-						filters = new ArrayList(1);
-						filters.Add(new LanguageFilter(args[1].ToLower()));
-						break;
-					}
+				{
+					filters = new ArrayList(1);
+					filters.Add(new LanguageFilter(args[1].ToLower()));
+					break;
+				}
 				case "cg":
-					{
-						filters = new ArrayList(1);
-						filters.Add(new ChatGroupFilter());
-						break;
-					}
+				{
+					filters = new ArrayList(1);
+					filters.Add(new ChatGroupFilter());
+					break;
+				}
 				case "bg":
 				{
 					filters = new ArrayList(1);
@@ -169,15 +120,17 @@ namespace DOL.GS.Commands
 					break;
 				}
 				case "nogroup":
+				{
 					filters = new ArrayList();
 					filters.Add(new SoloFilter());
 					break;
+				}
 				case "rp":
-					{
-						filters = new ArrayList(1);
-						filters.Add(new RPFilter());
-						break;
-					}
+				{
+					filters = new ArrayList(1);
+					filters.Add(new RPFilter());
+					break;
+				}
 				case "hc":
 				case "hardcore":
 				{
@@ -205,11 +158,11 @@ namespace DOL.GS.Commands
 					break;
 				}
 				default:
-					{
-						filters = new ArrayList();
-						AddFilters(filters, args, 1);
-						break;
-					}
+				{
+					filters = new ArrayList();
+					AddFilters(filters, args, 1);
+					break;
+				}
 			}
 
 			int resultCount = 0;
@@ -288,7 +241,7 @@ namespace DOL.GS.Commands
 					log.Error("no character class spec in who commandhandler for player " + player.Name);
 			}
 
-			if (player.CurrentZone != null && GameServer.Instance.Configuration.ServerType != eGameServerType.GST_PvP)
+			if (player.CurrentZone != null && GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvP)
 			{
 				// If '/who' source is a Player and target is plvl 3, do not return zone description (only return for Admins if Admin is source)
 				if (source.Account.PrivLevel == (uint)ePrivLevel.Player && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player || source.Account.PrivLevel == (uint)ePrivLevel.Admin)
@@ -361,7 +314,7 @@ namespace DOL.GS.Commands
 		{
 			for (int i = skip; i < args.Length; i++)
 			{
-				if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
+				if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
 					filters.Add(new StringFilter(args[i]));
 				else
 				{
@@ -426,7 +379,7 @@ namespace DOL.GS.Commands
 					return true;
 				if (player.GuildName.ToLower().StartsWith(m_filterString))
 					return true;
-				if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
+				if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
 					return false;
 				if (player.CharacterClass.Name.ToLower().StartsWith(m_filterString))
 					return true;

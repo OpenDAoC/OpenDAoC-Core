@@ -212,7 +212,7 @@ namespace DOL.GS
 			{
 				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 100);
 
-				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, 0, false);
+				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, false);
 				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				// player.Guild.UpdateGuildWindow();
 			}
@@ -221,7 +221,7 @@ namespace DOL.GS
 			{
 				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 200);
 
-				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, 0, false);
+				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, false);
 				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your starting guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				// player.Guild.UpdateGuildWindow();
 			}

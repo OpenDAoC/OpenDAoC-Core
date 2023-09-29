@@ -29,6 +29,7 @@ namespace DOL.GS
 	public abstract class GameLiving : GameObject
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		public static int IN_COMBAT_DURATION = 10000;
 
 		public int UsedConcentration;
 
@@ -731,112 +732,40 @@ namespace DOL.GS
 		/// <summary>
 		/// Check this flag to see if this living is involved in combat
 		/// </summary>
-		public virtual bool InCombat
-		{
-			get
-			{
-				if ((InCombatPvE || InCombatPvP))
-				{
-					return true;
-				}
-				
-				if (attackComponent.Attackers.Count > 0)
-				{
-					attackComponent.Attackers.Clear();
-				}
-
-				return false;
-			}
-		}
+		public virtual bool InCombat => InCombatPvE || InCombatPvP;
 
 		/// <summary>
 		/// Check this flag to see if this living has been involved in combat in the given milliseconds
 		/// </summary>
 		public virtual bool InCombatInLast(int milliseconds)
 		{
-			if ((InCombatPvEInLast(milliseconds) || InCombatPvPInLast(milliseconds)) == false)
-			{
-				if (attackComponent.Attackers.Count > 0)
-				{
-					attackComponent.Attackers.Clear();
-				}
-
-				return false;
-			}
-
-			return true;
+			return InCombatPvEInLast(milliseconds) || InCombatPvPInLast(milliseconds);
 		}
 
 		/// <summary>
 		/// checks if the living is involved in pvp combat
 		/// </summary>
-		public virtual bool InCombatPvP
-		{
-			get
-			{
-				Region region = CurrentRegion;
-				if (region == null)
-					return false;
-
-				if (LastCombatTickPvP == 0)
-					return false;
-
-				return LastCombatTickPvP + 10000 >= GameLoop.GameLoopTime;
-			}
-		}
+		public virtual bool InCombatPvP => LastCombatTickPvP > 0 && LastCombatTickPvP + IN_COMBAT_DURATION >= GameLoop.GameLoopTime;
 
 		/// <summary>
 		/// checks if the living is involved in pvp combat in the given milliseconds
 		/// </summary>
 		public virtual bool InCombatPvPInLast(int milliseconds)
 		{
-			Region region = CurrentRegion;
-			if (region == null)
-				return false;
-
-			if (LastCombatTickPvP == 0)
-				return false;
-
-			return LastCombatTickPvP + milliseconds >= GameLoop.GameLoopTime;
+			return LastCombatTickPvP > 0 && LastCombatTickPvP + milliseconds >= GameLoop.GameLoopTime;
 		}
 
 		/// <summary>
 		/// checks if the living is involved in pve combat
 		/// </summary>
-		public virtual bool InCombatPvE
-		{
-			get
-			{
-				Region region = CurrentRegion;
-				if (region == null)
-					return false;
-
-				if (LastCombatTickPvE == 0)
-					return false;
-
-				//if (LastCombatTickPvE + 10000 - region.Time > 0 && this is GameNPC && (this as GameNPC).Brain is IControlledBrain)
-				//	log.Debug(Name + " in combat " + (LastCombatTickPvE + 10000 - region.Time));
-
-				return LastCombatTickPvE + 10000 >= GameLoop.GameLoopTime;
-			}
-		}
+		public virtual bool InCombatPvE => LastCombatTickPvE > 0 && LastCombatTickPvE + IN_COMBAT_DURATION >= GameLoop.GameLoopTime;
 
 		/// <summary>
 		/// checks if the living is involved in pve combat in the given milliseconds
 		/// </summary>
 		public virtual bool InCombatPvEInLast(int milliseconds)
 		{
-			Region region = CurrentRegion;
-			if (region == null)
-				return false;
-
-			if (LastCombatTickPvE == 0)
-				return false;
-
-			//if (LastCombatTickPvE + 10000 - region.Time > 0 && this is GameNPC && (this as GameNPC).Brain is IControlledBrain)
-			//	log.Debug(Name + " in combat " + (LastCombatTickPvE + 10000 - region.Time));
-
-			return LastCombatTickPvE + milliseconds >= GameLoop.GameLoopTime;
+			return LastCombatTickPvE > 0 && LastCombatTickPvE + milliseconds >= GameLoop.GameLoopTime;
 		}
 
 		/// <summary>
@@ -1145,6 +1074,7 @@ namespace DOL.GS
 			// Dont't replace the current interrut with a shorter one.
 			// Otherwise a slow melee hit's interrupt duration will be made shorter by a proc for example.
 			InterruptTime = Math.Max(InterruptTime, GameLoop.GameLoopTime + duration);
+			LastInterrupter = attacker;
 
 			if (castingComponent?.SpellHandler != null)
 				castingComponent.SpellHandler.CasterIsAttacked(attacker);
@@ -1166,6 +1096,8 @@ namespace DOL.GS
 		{
 			return true;
 		}
+
+		public GameObject LastInterrupter { get; private set; }
 
 		protected long m_interruptTime = 0;
 		public long InterruptTime
@@ -1381,10 +1313,10 @@ namespace DOL.GS
 						}
 
 						ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(ad.Attacker, procSpell, spellLine);
-												
+
 						if (spellHandler != null)
 						{
-							bool rangeCheck = spellHandler.Spell.Target.ToLower().Equals("enemy") && spellHandler.Spell.Range > 0;
+							bool rangeCheck = spellHandler.Spell.Target == eSpellTarget.ENEMY && spellHandler.Spell.Range > 0;
 
 							if (!rangeCheck || ad.Attacker.IsWithinRadius(ad.Target, spellHandler.CalculateSpellRange()))
 								spellHandler.StartSpell(ad.Target, weapon);
@@ -1637,7 +1569,7 @@ namespace DOL.GS
 				if (player != null)
 				{
 					if (player.HasAbility(Abilities.Shield) && leftHand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND))
-						blockChance = GetModified(eProperty.BlockChance) * leftHand.Quality * 0.01 * leftHand.Condition / leftHand.MaxCondition;
+						blockChance = GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
 				}
 				else
 					blockChance = GetModified(eProperty.BlockChance);
@@ -1664,16 +1596,17 @@ namespace DOL.GS
 
 				if (blockChance < 0.01)
 					blockChance = 0.01;
-				else if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer)
+				else if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 					blockChance = Properties.BLOCK_CAP;
-				
+
+				// Possibly intended to be applied in RvR only.
 				if (shieldSize == 1 && blockChance > 0.8)
 					blockChance = 0.8;
 				else if (shieldSize == 2 && blockChance > 0.9)
 					blockChance = 0.9;
 				else if (shieldSize == 3 && blockChance > 0.99)
 					blockChance = 0.99;
-				
+
 				if (IsEngaging)
 				{
 					EngageECSGameEffect engage = (EngageECSGameEffect) EffectListService.GetEffectOnTarget(this, eEffect.Engage);
@@ -1694,10 +1627,10 @@ namespace DOL.GS
 						}
 					}
 				}
-			}
 
-			if (ad.AttackType == eAttackType.MeleeDualWield)
-				blockChance = Math.Max(blockChance * 0.5, 0);
+				if (ad.AttackType == eAttackType.MeleeDualWield)
+					blockChance *= 0.5;
+			}
 
 			// Infiltrator RR5.
 			if (player != null)
@@ -2029,7 +1962,7 @@ namespace DOL.GS
 				if (this is GameNPC gameNpc && ActiveWeaponSlot == eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
 					gameNpc.SwitchToMelee(ad.Attacker);
 
-				attackComponent.AddAttacker( ad.Attacker );
+				attackComponent.AddAttacker(ad.Attacker);
 
 				if (ad.SpellHandler == null || (ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler))
 				{
@@ -2254,7 +2187,7 @@ namespace DOL.GS
 						continue;
 
 					var spellEffect = effects[i];
-					if (spellEffect != null && spellEffect.SpellHandler.Spell.Target == "Pet")
+					if (spellEffect != null && spellEffect.SpellHandler.Spell.Target == eSpellTarget.PET)
 					{
 						if (spellEffect.SpellHandler.Spell.ID is 305 // Whip of Encouragement
 							or (>= 895 and <= 897)) // Tracker, Chaser, Pursuer Enhancement
@@ -2278,7 +2211,7 @@ namespace DOL.GS
 
 				for (int i = 0; i < ownerEffects.Count; i++)
 				{
-					if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target != "Self")
+					if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target != eSpellTarget.SELF)
 						EffectService.RequestImmediateCancelEffect(ownerEffects[i]);
 				}				
             }
@@ -2330,19 +2263,17 @@ namespace DOL.GS
 			//natural regeneration, this allows for aggro on healers!
 			if (healthChanged > 0 && healthChangeType != eHealthChangeType.Regenerate)
 			{
-				IList<GameObject> attackers;
-				lock (attackComponent.Attackers) { attackers = new List<GameObject>(attackComponent.Attackers); }
-				EnemyHealedEventArgs args = new EnemyHealedEventArgs(this, changeSource, healthChangeType, healthChanged);
-				foreach (GameObject attacker in attackers)
+				EnemyHealedEventArgs args = new(this, changeSource, healthChangeType, healthChanged);
+
+				foreach (GameLiving attacker in attackComponent.Attackers.Keys)
 				{
-					if (attacker is GameLiving)
-					{
-						(attacker as GameLiving).Notify(GameLivingEvent.EnemyHealed, attacker, args);
-						// Desactivate XPGainer, Heal Rps implentation.
-						//(attacker as GameLiving).AddXPGainer(changeSource, healthChanged);
-					}
+					if (attacker is not GameLiving attackerLiving)
+						continue;
+
+					attackerLiving.Notify(GameLivingEvent.EnemyHealed, attacker, args);
 				}
 			}
+
 			return healthChanged;
 		}
 
@@ -2400,121 +2331,94 @@ namespace DOL.GS
 
 		public virtual void ProcessDeath(GameObject killer)
 		{
-            try
-            {
-
-			if (this is GameNPC == false && this is GamePlayer == false)
+			try
 			{
-				// deal out exp and realm points based on server rules
-				GameServer.ServerRules.OnLivingKilled(this, killer);
-			}
-
-			attackComponent.StopAttack();
-
-			List<GameObject> clone;
-			lock (attackComponent.Attackers)
-			{
-				if (attackComponent.Attackers.Contains(killer) == false)
-                    attackComponent.Attackers.Add(killer);
-				clone = new List<GameObject>(attackComponent.Attackers);
-			}
-			List<GamePlayer> playerAttackers = null;
-
-			foreach (GameObject obj in clone)
-			{
-				if (obj is GameLiving)
+				if (this is not GameNPC and not GamePlayer)
 				{
-					GamePlayer player = obj as GamePlayer;
+					// deal out exp and realm points based on server rules
+					GameServer.ServerRules.OnLivingKilled(this, killer);
+				}
 
-					if (obj as GameNPC != null && (obj as GameNPC).Brain is IControlledBrain)
+				attackComponent.StopAttack();
+
+				if (killer is GameLiving livingKiller)
+					attackComponent.Attackers.TryAdd(livingKiller, long.MaxValue);
+
+				List<GamePlayer> playerAttackers = new();
+
+				foreach (GameObject attacker in attackComponent.Attackers.Keys)
+				{
+					if (attacker is not GameLiving livingAttacker)
+						continue;
+
+					GamePlayer player = attacker as GamePlayer;
+
+					if (attacker is GameNPC npcAttacker && npcAttacker.Brain is IControlledBrain npcAttackerBrain)
 					{
 						// Ok, we're a pet - if our Player owner isn't in the attacker list, let's make them a 'virtual' attacker
-						player = ((obj as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+						player = npcAttackerBrain.GetPlayerOwner();
+
 						if (player != null)
 						{
-							if (clone.Contains(player) == false)
+							if (!attackComponent.Attackers.ContainsKey(player))
 							{
-								if (playerAttackers == null)
-									playerAttackers = new List<GamePlayer>();
-
-								if (playerAttackers.Contains(player) == false)
+								if (!playerAttackers.Contains(player))
 									playerAttackers.Add(player);
 							}
 
 							// Pet gets the killed message as well
-							((GameLiving)obj).EnemyKilled(this);
+							livingAttacker.EnemyKilled(this);
 						}
 					}
 
 					if (player != null)
 					{
-						if (playerAttackers == null)
-							playerAttackers = new List<GamePlayer>();
-
-						if (playerAttackers.Contains(player) == false)
-						{
+						if (!playerAttackers.Contains(player))
 							playerAttackers.Add(player);
-						}
 
 						if (player.Group != null)
 						{
 							foreach (GamePlayer groupPlayer in player.Group.GetPlayersInTheGroup())
 							{
 								if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE) && playerAttackers.Contains(groupPlayer) == false)
-								{
 									playerAttackers.Add(groupPlayer);
-								}
 							}
 						}
 					}
 					else
-					{
-						((GameLiving)obj).EnemyKilled(this);
-					}
+						livingAttacker.EnemyKilled(this);
 				}
-			}
 
-			if (playerAttackers != null)
-			{
 				foreach (GamePlayer player in playerAttackers)
-				{
 					player.EnemyKilled(this);
-				}
-			}
 
-			foreach (DOL.GS.Quests.DataQuest q in DataQuestList)
-			{
-				q.Notify(GamePlayerEvent.Dying, this, new DyingEventArgs(killer, playerAttackers));
-			}
+				foreach (Quests.DataQuest q in DataQuestList)
+					q.Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer, playerAttackers));
 
-            attackComponent.Attackers.Clear();
+				attackComponent.Attackers.Clear();
 
-			// cancel all concentration effects
-			//ConcentrationEffects.CancelAll();
+				// clear all of our targets
+				rangeAttackComponent.AutoFireTarget = null;
+				TargetObject = null;
 
-            // clear all of our targets
-            rangeAttackComponent.AutoFireTarget = null;
-			TargetObject = null;
+				// cancel all left effects
+				EffectList.CancelAll();
+				effectListComponent.CancelAll();
 
-			// cancel all left effects
-			EffectList.CancelAll();
-			effectListComponent.CancelAll();
+				// Stop the regeneration timers
+				StopHealthRegeneration();
+				StopPowerRegeneration();
+				StopEnduranceRegeneration();
 
-			// Stop the regeneration timers
-			StopHealthRegeneration();
-			StopPowerRegeneration();
-			StopEnduranceRegeneration();
+				//Reduce health to zero
+				Health = 0;
 
-			//Reduce health to zero
-			Health = 0;
+				// Remove all last attacked times
+				LastAttackedByEnemyTickPvE = 0;
+				LastAttackedByEnemyTickPvP = 0;
 
-			// Remove all last attacked times
-			
-			LastAttackedByEnemyTickPvE = 0;
-			LastAttackedByEnemyTickPvP = 0;
-			
-			//Let's send the notification at the end
-			Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer));
+				//Let's send the notification at the end
+				Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer));
 			}
 			catch(Exception e)
 			{
@@ -2536,9 +2440,10 @@ namespace DOL.GS
 		/// <param name="expOutpostBonus">outpost bonux to display</param>
 		/// <param name="sendMessage">should exp gain message be sent</param>
 		/// <param name="allowMultiply">should the xp amount be multiplied</param>
-		public virtual void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, long atlasBonus, bool sendMessage, bool allowMultiply, bool notify)
+		public virtual void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify)
 		{
-			if (expTotal > 0 && notify) Notify(GameLivingEvent.GainedExperience, this, new GainedExperienceEventArgs(expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, xpSource));
+			if (expTotal > 0 && notify)
+				Notify(GameLivingEvent.GainedExperience, this, new GainedExperienceEventArgs(expTotal, expCampBonus, expGroupBonus, expOutpostBonus, sendMessage, allowMultiply, xpSource));
 		}
 		/// <summary>
 		/// Called when this living gains realm points
@@ -2562,7 +2467,7 @@ namespace DOL.GS
 		/// <param name="exp">base amount of xp to gain</param>
 		public void GainExperience(eXPSource xpSource, long exp)
 		{
-			GainExperience(xpSource, exp, 0, 0, 0, 0, true, false, true);
+			GainExperience(xpSource, exp, 0, 0, 0, true, false, true);
 		}
 
 		/// <summary>
@@ -2572,7 +2477,7 @@ namespace DOL.GS
 		/// <param name="allowMultiply">Do we allow the xp to be multiplied</param>
 		public void GainExperience(eXPSource xpSource, long exp, bool allowMultiply)
 		{
-			GainExperience(xpSource, exp, 0, 0, 0, 0, true, allowMultiply, true);
+			GainExperience(xpSource, exp, 0, 0, 0, true, allowMultiply, true);
 		}
 
 		/// <summary>
@@ -2581,7 +2486,6 @@ namespace DOL.GS
 		/// <param name="enemy">enemy killed</param>
 		public virtual void EnemyKilled(GameLiving enemy)
 		{
-            attackComponent.RemoveAttacker(enemy);
 			Notify(GameLivingEvent.EnemyKilled, this, new EnemyKilledEventArgs(enemy));
 		}
 
@@ -4486,15 +4390,16 @@ namespace DOL.GS
 				return false;
 
 			attackComponent.StopAttack();
-			List<GameObject> temp;
 
-			lock (attackComponent.Attackers)
+			foreach (GameObject attacker in attackComponent.Attackers.Keys)
 			{
-				temp = new List<GameObject>(attackComponent.Attackers);
-				attackComponent.Attackers.Clear();
+				if (attacker is not GameLiving attackerLiving)
+					continue;
+
+				attackerLiving.EnemyKilled(this);
 			}
 
-			Util.ForEach(temp.OfType<GameLiving>(), o => o.EnemyKilled(this));
+			attackComponent.Attackers.Clear();
 			StopHealthRegeneration();
 			StopPowerRegeneration();
 			StopEnduranceRegeneration();

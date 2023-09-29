@@ -1025,7 +1025,7 @@ namespace DOL.GS.Keeps
 				spell.CastTime = 2;
 				spell.Target = "Self";
 				spell.Value = 225;
-				if (GameServer.Instance.Configuration.ServerType != eGameServerType.GST_PvE)
+				if (GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvE)
 					spell.Uninterruptible = true;
 				return spell;
 			}

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -31,7 +12,7 @@ namespace DOL.GS.ServerRules
 	/// <summary>
 	/// Set of rules for "PvP" server type.
 	/// </summary>
-	[ServerRules(eGameServerType.GST_PvP)]
+	[ServerRules(EGameServerType.GST_PvP)]
 	public class PvPServerRules : AbstractServerRules
 	{
 		public override string RulesDescription()
@@ -132,7 +113,7 @@ namespace DOL.GS.ServerRules
 
 			//No PVP Dungeons: http://support.darkageofcamelot.com/cgi-bin/support.cfg/php/enduser/std_adp.php?p_sid=frxnPUjg&p_lva=&p_refno=020709-000000&p_created=1026248996&p_sp=cF9ncmlkc29ydD0mcF9yb3dfY250PTE0JnBfc2VhcmNoX3RleHQ9JnBfc2VhcmNoX3R5cGU9MyZwX2NhdF9sdmwxPTI2JnBfY2F0X2x2bDI9fmFueX4mcF9zb3J0X2J5PWRmbHQmcF9wYWdlPTE*&p_li
 			21,  //Tomb of Mithra
-			129, //Nisse’s Lair (Nisee's Lair in regions.ini)
+			129, //Nisseï¿½s Lair (Nisee's Lair in regions.ini)
 			221, //Muire Tomb (Undead in regions.ini)
 
 		};
@@ -306,7 +287,8 @@ namespace DOL.GS.ServerRules
 		/// <returns>true if allowed</returns>
 		public override bool IsAllowedToCastSpell(GameLiving caster, GameLiving target, Spell spell, SpellLine spellLine)
 		{
-			if (!base.IsAllowedToCastSpell(caster, target, spell, spellLine)) return false;
+			if (!base.IsAllowedToCastSpell(caster, target, spell, spellLine))
+				return false;
 
 			GamePlayer casterPlayer = caster as GamePlayer;
 			if (casterPlayer != null)
@@ -314,11 +296,12 @@ namespace DOL.GS.ServerRules
 				if (casterPlayer.IsInvulnerableToAttack)
 				{
 					// always allow selftargeted spells
-					if (spell.Target == "Self") return true;
+					if (spell.Target == eSpellTarget.SELF)
+						return true;
 
 					// only caster can be the target, can't buff/heal other players
 					// PBAE/GTAE doesn't need a target so we check spell type as well
-					if (caster != target || spell.Target == "Area" || spell.Target == "Enemy" || (spell.Target == "Group" && spell.SpellType != eSpellType.SpeedEnhancement))
+					if (caster != target || spell.Target == eSpellTarget.AREA || spell.Target == eSpellTarget.ENEMY || (spell.Target == eSpellTarget.GROUP && spell.SpellType != eSpellType.SpeedEnhancement))
 					{
 						MessageToLiving(caster, "You can only cast spells on yourself until your PvP invulnerability timer wears off!", eChatType.CT_Important);
 						return false;

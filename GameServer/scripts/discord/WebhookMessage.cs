@@ -8,7 +8,7 @@ namespace DOL.GS.Scripts.discord
 {
     public static class WebhookMessage
     {
-        public static void SendMessage(String webhookId, String message, String userName = "Atlas Bot", string avatar = "https://cdn.discordapp.com/avatars/924819091028586546/656e2b335e60cb1bfaf3316d7754a8fd.webp")
+        public static void SendMessage(String webhookId, String message, String userName = "Server Bot", string avatar = "")
         {
             var client = new DiscordWebhookClient(webhookId);
 
@@ -62,21 +62,21 @@ namespace DOL.GS.Scripts.discord
                 case eRealm.Albion:
                     if (!string.IsNullOrEmpty(Properties.DISCORD_ALBCHAT_WEBHOOK_ID))
                     {
-                        avatar = "https://cdn.discordapp.com/attachments/861979059550421023/929455017902104627/alb.png";
+                        avatar = "";
                         SendMessage(Properties.DISCORD_ALBCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;
                 case eRealm.Hibernia:
                     if (!string.IsNullOrEmpty(Properties.DISCORD_HIBCHAT_WEBHOOK_ID))
                     {
-                        avatar = "https://cdn.discordapp.com/attachments/861979059550421023/929455017457496214/hib.png";
+                        avatar = "";
                         SendMessage(Properties.DISCORD_HIBCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;
                 case eRealm.Midgard:
                     if (!string.IsNullOrEmpty(Properties.DISCORD_MIDCHAT_WEBHOOK_ID))
                     {
-                        avatar = "https://cdn.discordapp.com/attachments/861979059550421023/929455017675616288/mid.png";
+                        avatar = "";
                         SendMessage(Properties.DISCORD_MIDCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;

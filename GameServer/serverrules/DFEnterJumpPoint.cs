@@ -1,27 +1,7 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-
 using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
 using DOL.Events;
+using DOL.GS.PacketHandler;
 using JNogueira.Discord.Webhook.Client;
 
 namespace DOL.GS.ServerRules
@@ -45,7 +25,7 @@ namespace DOL.GS.ServerRules
             {
                 return true;
             }
-			if (GameServer.Instance.Configuration.ServerType != eGameServerType.GST_Normal)
+			if (GameServer.Instance.Configuration.ServerType != EGameServerType.GST_Normal)
 				return true;
 			if (ServerProperties.Properties.ALLOW_ALL_REALMS_DF)
 				return true;
@@ -144,15 +124,8 @@ namespace DOL.GS.ServerRules
 		/// <param name="realm">The realm</param>
 		public static void BroadcastMessage(string message, eRealm realm)
 		{
-			foreach (GameClient client in WorldMgr.GetAllClients())
-			{
-				if (client.Player == null)
-					continue;
-				if ((client.Account.PrivLevel != 1 || realm == eRealm.None) || client.Player.Realm == realm)
-				{
-					client.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				}
-			}
+			foreach (GamePlayer player in ClientService.GetPlayersOfRealm(realm))
+				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			
 			if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID))
 			{
@@ -161,8 +134,8 @@ namespace DOL.GS.ServerRules
 				// Create your DiscordMessage with all parameters of your message.
 				var discordMessage = new DiscordMessage(
 					"",
-					username: "Atlas RvR",
-					avatarUrl: "https://cdn.discordapp.com/attachments/919610633656369214/928728399449571388/keep.png",
+					username: "RvR",
+					avatarUrl: "",
 					tts: false,
 					embeds: new[]
 					{
@@ -173,40 +146,24 @@ namespace DOL.GS.ServerRules
 						)
 					}
 				);
-				
+
 				client.SendToDiscord(discordMessage);
 			}
-			
 		}
 
 		public static void SetDFOwner(GamePlayer p, eRealm NewDFOwner)
 		{
 			if (DarknessFallOwner != NewDFOwner)
 			{
-				foreach (GameClient pp in WorldMgr.GetClientsOfRegion(249))
+				foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(WorldMgr.GetRegion(249)))
 				{
-					if (pp == null) break;
-					if (pp.Player == null) continue;
-					if (pp.IsPlaying && pp.Player.Realm == DarknessFallOwner)
-					{
-						pp.Out.SendSoundEffect(217, 0, 0, 0, 0, 0);
-					}
-
+					if (otherPlayer.Realm == DarknessFallOwner)
+						otherPlayer.Out.SendSoundEffect(217, 0, 0, 0, 0, 0);
+					else if (otherPlayer.Realm == NewDFOwner)
+						otherPlayer.Out.SendSoundEffect(216, 0, 0, 0, 0, 0);
 				}
 
 				DarknessFallOwner = NewDFOwner;
-
-				foreach (GameClient pp in WorldMgr.GetClientsOfRegion(249))
-				{
-					if (pp == null) break;
-					if (pp.Player == null) continue;
-					if (pp.IsPlaying && pp.Player.Realm == DarknessFallOwner)
-					{
-						pp.Out.SendSoundEffect(216, 0, 0, 0, 0, 0);
-					}
-
-				}
-
 				p.Out.SendMessage(string.Format("New DF Owner set to {0}", GlobalConstants.RealmToName(NewDFOwner)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 			else

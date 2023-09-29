@@ -38,7 +38,7 @@ namespace DOL.GS.Commands
 
 			if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.GcSpeak))
 			{
-				DisplayMessage(client, "You don't have permission to speak on the on guild line.");
+				DisplayMessage(client, "You don't have permission to speak on the guild channel.");
 				return;
 			}
 
@@ -71,7 +71,7 @@ namespace DOL.GS.Commands
 
 			if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.OcSpeak))
 			{
-				DisplayMessage(client, "You don't have permission to speak on the officer line.");
+				DisplayMessage(client, "You don't have permission to speak on the officer channel.");
 				return;
 			}
 
@@ -117,7 +117,13 @@ namespace DOL.GS.Commands
 
 			if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.AcSpeak))
 			{
-				DisplayMessage(client, "You can not speak on alliance chan.");
+				DisplayMessage(client, "You don't have permission to speak on the alliance channel.");
+				return;
+			}
+
+			if (IsSpammingCommand(client.Player, "asend", 500))
+			{
+				DisplayMessage(client, "Slow down! Think before you say each word!");
 				return;
 			}
 
@@ -132,7 +138,7 @@ namespace DOL.GS.Commands
 			{
 				foreach (GamePlayer ply in gui.GetListOfOnlineMembers())
 				{
-					if (!gui.HasRank(ply, Guild.eRank.AcHear))
+					if (!gui.HasRank(ply, Guild.eRank.AcHear) || ply.IsIgnoring(client.Player))
 					{
 						continue;
 					}

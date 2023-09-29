@@ -159,7 +159,7 @@ namespace DOL.GS
                                         if (!newSpell.IsPulsing)
                                         {
                                             // Self cast Bladeturns should never be overwritten.
-                                            if (existingSpell.Target.ToLower() != "self")
+                                            if (existingSpell.Target != eSpellTarget.SELF)
                                             {
                                                 EffectService.RequestCancelEffect(existingEffect);
                                                 addEffect = true;

@@ -608,7 +608,7 @@ namespace DOL.GS.Keeps
 			if (target.Client.Account.PrivLevel != 1)
 				return false;
 
-			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
+			if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
 			{
 				if (keep.Guild == null)
 					return ServerProperties.Properties.PVP_UNCLAIMED_KEEPS_ENEMY;

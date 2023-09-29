@@ -1,7 +1,4 @@
 /*
- * Atlas SI Quest - Atlas 1.65v Classic Freeshard
- */
-/*
 *Author         : Kelt
 *Editor			: Kelt
 *Source         : SI Quest

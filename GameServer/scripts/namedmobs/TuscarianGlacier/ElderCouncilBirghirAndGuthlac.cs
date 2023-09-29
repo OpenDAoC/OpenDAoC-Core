@@ -338,7 +338,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Frost Sphere";
                     spell.Range = 1800;
                     spell.SpellID = 11749;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.Bolt.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -367,7 +367,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Frost Strike";
                     spell.Range = 1800;
                     spell.SpellID = 11750;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -730,7 +730,7 @@ namespace DOL.AI.Brain
                     spell.Range = 1500;
                     spell.Radius = 350;
                     spell.SpellID = 11932;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DexterityQuicknessDebuff.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -789,7 +789,7 @@ namespace DOL.AI.Brain
                     spell.Name = "Rune of Mazing";
                     spell.Range = 1800;
                     spell.SpellID = 11930;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
@@ -927,7 +927,7 @@ namespace DOL.GS
                     spell.Radius = 3000; //very big radius to make them feel pain lol
                     spell.Range = 0;
                     spell.SpellID = 11751;
-                    spell.Target = eSpellTarget.Enemy.ToString();
+                    spell.Target = eSpellTarget.ENEMY.ToString();
                     spell.Type = eSpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;

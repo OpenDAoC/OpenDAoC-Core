@@ -189,22 +189,22 @@ namespace DOLConfig
 
 			switch (currentConfig.ServerType)
 			{
-				case DOL.eGameServerType.GST_PvP:
+				case DOL.EGameServerType.GST_PvP:
 					this.game_type_selectbox.SelectedItem = "PvP";
 					break;
-				case DOL.eGameServerType.GST_PvE:
+				case DOL.EGameServerType.GST_PvE:
 					this.game_type_selectbox.SelectedItem = "PvE";
 					break;
-				case DOL.eGameServerType.GST_Roleplay:
+				case DOL.EGameServerType.GST_Roleplay:
 					this.game_type_selectbox.SelectedItem = "Roleplay";
 					break;
-				case DOL.eGameServerType.GST_Casual:
+				case DOL.EGameServerType.GST_Casual:
 					this.game_type_selectbox.SelectedItem = "Casual";
 					break;
-				case DOL.eGameServerType.GST_Test:
+				case DOL.EGameServerType.GST_Test:
 					this.game_type_selectbox.SelectedItem = "Test";
 					break;
-				case DOL.eGameServerType.GST_Normal:
+				case DOL.EGameServerType.GST_Normal:
 				default:
 					this.game_type_selectbox.SelectedItem = "Normal";
 					break;
@@ -305,23 +305,23 @@ namespace DOLConfig
 			switch (this.game_type_selectbox.SelectedItem.ToString().ToLower())
 			{
 				case "pvp":
-					currentConfig.ServerType = DOL.eGameServerType.GST_PvP;
+					currentConfig.ServerType = DOL.EGameServerType.GST_PvP;
 					break;
 				case "pve":
-					currentConfig.ServerType = DOL.eGameServerType.GST_PvE;
+					currentConfig.ServerType = DOL.EGameServerType.GST_PvE;
 					break;
 				case "roleplay":
-					currentConfig.ServerType = DOL.eGameServerType.GST_Roleplay;
+					currentConfig.ServerType = DOL.EGameServerType.GST_Roleplay;
 					break;
 				case "casual":
-					currentConfig.ServerType = DOL.eGameServerType.GST_Casual;
+					currentConfig.ServerType = DOL.EGameServerType.GST_Casual;
 					break;
 				case "test":
-					currentConfig.ServerType = DOL.eGameServerType.GST_Test;
+					currentConfig.ServerType = DOL.EGameServerType.GST_Test;
 					break;
 				case "normal":
 				default:
-					currentConfig.ServerType = DOL.eGameServerType.GST_Normal;
+					currentConfig.ServerType = DOL.EGameServerType.GST_Normal;
 					break;
 			}
 

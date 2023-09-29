@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
-using System.Collections.Generic;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
@@ -423,7 +423,7 @@ namespace DOL.GS
 					spell.Duration = 30;
 					spell.Range = 350;
 					spell.SpellID = 11801;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.StyleSpeedDecrease.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

@@ -191,7 +191,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11837;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.StrengthConstitutionDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;

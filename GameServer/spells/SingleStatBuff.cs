@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerClass;
@@ -51,7 +32,7 @@ namespace DOL.GS.Spells
                 Effectiveness = 1.0;
             else if (Caster is GamePlayer playerCaster)
             {
-			    if (playerCaster.CharacterClass.ID != (int)eCharacterClass.Savage && Spell.Target != "Enemy")
+                if (playerCaster.CharacterClass.ID != (int)eCharacterClass.Savage && Spell.Target != eSpellTarget.ENEMY)
                 {
                     if (playerCaster.CharacterClass.ClassType != eClassType.ListCaster)
                     {
@@ -61,11 +42,11 @@ namespace DOL.GS.Spells
                         Effectiveness = Math.Min(1.25, Effectiveness);
                     }
                 }
-                else if (Spell.Target == "Enemy")
+                else if (Spell.Target == eSpellTarget.ENEMY)
                 {
-				    Effectiveness = 0.75; // This section is for list casters stat debuffs.
-				    if (playerCaster.CharacterClass.ClassType == eClassType.ListCaster)
-				    {
+                    Effectiveness = 0.75; // This section is for list casters stat debuffs.
+                    if (playerCaster.CharacterClass.ClassType == eClassType.ListCaster)
+                    {
                         Effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
                         Effectiveness = Math.Max(0.75, Effectiveness);
                         Effectiveness = Math.Min(1.25, Effectiveness);
@@ -74,14 +55,14 @@ namespace DOL.GS.Spells
                         if (playerCaster.UseDetailedCombatLog && m_caster.GetModified(eProperty.DebuffEffectivness) > 0)
                             playerCaster.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(eProperty.DebuffEffectivness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                     }
-				    else
-				    {
-					    Effectiveness = 1.0; // Non list casters debuffs. Reaver curses, Champ debuffs etc.
-					    Effectiveness *= 1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01;
+                    else
+                    {
+                        Effectiveness = 1.0; // Non list casters debuffs. Reaver curses, Champ debuffs etc.
+                        Effectiveness *= 1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01;
                     }
-			    }
+                }
             }
-            else if (Caster is NecromancerPet necroPetCaster && necroPetCaster.Owner is GamePlayer playerOwner && Spell.Target == "Enemy")
+            else if (Caster is NecromancerPet necroPetCaster && necroPetCaster.Owner is GamePlayer playerOwner && Spell.Target == eSpellTarget.ENEMY)
             {
                 specLevel = playerOwner.GetModifiedSpecLevel(m_spellLine.Spec);
 
@@ -100,7 +81,7 @@ namespace DOL.GS.Spells
             else
                 Effectiveness = 1.0;
 
-            if (Spell.Target != "Enemy")
+            if (Spell.Target != eSpellTarget.ENEMY)
             {
                 Effectiveness *= 1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
 
@@ -125,10 +106,13 @@ namespace DOL.GS.Spells
         {
             if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
                 return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
+
             if (!base.IsOverwritable(compare))
                 return false;
+
             if (Spell.Duration > 0 && compare.SpellHandler.Spell.Concentration > 0)
                 return compare.SpellHandler.Spell.Value >= Spell.Value;
+
             return compare.SpellHandler.SpellLine.IsBaseLine == SpellLine.IsBaseLine;
         }
 
@@ -146,7 +130,7 @@ namespace DOL.GS.Spells
                 playerCaster.Out.SendMessage($"Debuff crit chance: {Caster.DotCriticalChance}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
             if (Util.Chance(critChance))
-            {                    
+            {
                 critMod *= 1 + Util.Random(1, 10) * 0.1;
                 playerCaster?.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(critMod - 1,3) * 100}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
             }
@@ -231,9 +215,15 @@ namespace DOL.GS.Spells
         {
             get
             {
-                if (Caster is GamePlayer c && (c.CharacterClass is ClassRanger || c.CharacterClass is ClassHunter) && (SpellLine.KeyName.ToLower().Equals("beastcraft") || SpellLine.KeyName.ToLower().Equals("pathfinding"))) return eBuffBonusCategory.BaseBuff;
-            	if (Spell.Target.Equals("Self", StringComparison.OrdinalIgnoreCase)) return eBuffBonusCategory.Other; // no caps for self buffs
-                if (m_spellLine.IsBaseLine) return eBuffBonusCategory.BaseBuff; // baseline cap
+                if (Caster is GamePlayer c && (c.CharacterClass is ClassRanger || c.CharacterClass is ClassHunter) && (SpellLine.KeyName.ToLower().Equals("beastcraft") || SpellLine.KeyName.ToLower().Equals("pathfinding")))
+                    return eBuffBonusCategory.BaseBuff;
+
+                if (Spell.Target == eSpellTarget.SELF)
+                    return eBuffBonusCategory.Other; // no caps for self buffs
+
+                if (m_spellLine.IsBaseLine)
+                    return eBuffBonusCategory.BaseBuff; // baseline cap
+
                 return eBuffBonusCategory.Other; // no caps for spec line buffs
             }
         }
@@ -491,8 +481,12 @@ namespace DOL.GS.Spells
         {
             get
             {
-                if (Spell.Target == "Self") return eBuffBonusCategory.Other; // no caps for self buffs
-                if (m_spellLine.IsBaseLine) return eBuffBonusCategory.BaseBuff; // baseline cap
+                if (Spell.Target == eSpellTarget.SELF)
+                    return eBuffBonusCategory.Other; // no caps for self buffs
+
+                if (m_spellLine.IsBaseLine)
+                    return eBuffBonusCategory.BaseBuff; // baseline cap
+
                 return eBuffBonusCategory.Other; // no caps for spec line buffs
             }
         }

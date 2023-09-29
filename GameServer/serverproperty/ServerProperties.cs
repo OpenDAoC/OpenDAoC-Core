@@ -993,7 +993,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// The highest possible Block Rate against an Enemy (Hard Cap)
 		/// </summary>
-		[ServerProperty("rates", "block_cap", "Block Rate Cap Modifier - Edit this to change the highest possible block rate against an enemy (Hard Cap) in game e.g .60 = 60%", 0.60)]
+		[ServerProperty("rates", "block_cap", "Block Rate Cap Modifier - Edit this to change the highest possible block rate against an enemy (Hard Cap) in game e.g .60 = 60%", 1.00)]
 		public static double BLOCK_CAP;
 
 		///<summary>
@@ -2899,8 +2899,8 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("controls_automation", "allow_non_anytime_backup_styles", "If /backupstyle is enabled, can players set a non-anytime style as their backup?", false)] 
 		public static bool ALLOW_NON_ANYTIME_BACKUP_STYLES;
 
-		[ServerProperty("controls_automation", "allow_paired_spells", "Allow players to pair two spells together with /pairspell. The second spell will be attempted to be cast if the first one cannot be cast.", false)] 
-		public static bool ALLOW_PAIRED_SPELLS;
+		[ServerProperty("controls_automation", "allow_chained_actions", "Allow players to chain actions with /chainactions. They will be executed consecutively.", false)] 
+		public static bool ALLOW_CHAINED_ACTIONS;
 
 		#endregion
 

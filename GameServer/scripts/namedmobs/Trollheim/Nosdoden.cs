@@ -722,7 +722,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1800;
 					spell.Radius = 500;
 					spell.SpellID = 11856;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DamageOverTime.ToString();
 					spell.DamageType = (int)eDamageType.Body;
 					spell.Uninterruptible = true;
@@ -752,7 +752,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1800;
 					spell.Radius = 550;
 					spell.SpellID = 11857;
-					spell.Target = eSpellTarget.Enemy.ToString();
+					spell.Target = eSpellTarget.ENEMY.ToString();
 					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
 					spell.DamageType = (int)eDamageType.Cold;
 					spell.Uninterruptible = true;

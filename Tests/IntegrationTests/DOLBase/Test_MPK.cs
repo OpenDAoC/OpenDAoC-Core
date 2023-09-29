@@ -29,8 +29,8 @@ namespace DOL.Tests.Integration.DOLBase
         [Test, Order(1)]
         public void Save_TestTxtToMPK_CorrectCRC()
         {
-            var newMPK = new MPK.MPK(mpkFileLocation, true);
-            var mpkFile = new MPKFile(textFileLocation);
+            var newMPK = new MPK.MpkHandler(mpkFileLocation, true);
+            var mpkFile = new MpkFile(textFileLocation);
             newMPK.AddFile(mpkFile);
             newMPK[textFileLocation].Header.TimeStamp = 0; //Make MPK creation deterministic
 
@@ -44,13 +44,13 @@ namespace DOL.Tests.Integration.DOLBase
         [Test, Order(2)]
         public void Open_TestMPK_NoExceptions()
         {
-            _ = new MPK.MPK(mpkFileLocation, false);
+            _ = new MPK.MpkHandler(mpkFileLocation, false);
         }
 
         [Test, Order(3)]
         public void Extract_TestMPK_SameTxtContent()
         {
-            var mpk = new MPK.MPK(mpkFileLocation, false);
+            var mpk = new MPK.MpkHandler(mpkFileLocation, false);
             mpk.Extract(extractPath);
 
             var actualFileText = File.ReadAllText(Path.Combine(extractPath,  textFileLocation));

@@ -103,10 +103,10 @@ public class Utils
 
         if (!_cache.TryGetValue(_playerCountCacheKey, out PlayerCount playerCount))
         {
-            var clients = WorldMgr.GetAllPlayingClientsCount();
-            var albPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Albion);
-            var midPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Midgard);
-            var hibPlayers = WorldMgr.GetClientsOfRealmCount(eRealm.Hibernia);
+            var clients = ClientService.ClientCount;
+            var albPlayers = ClientService.GetPlayersOfRealm(eRealm.Albion).Count;
+            var midPlayers = ClientService.GetPlayersOfRealm(eRealm.Midgard).Count;
+            var hibPlayers = ClientService.GetPlayersOfRealm(eRealm.Hibernia).Count;
             var now = DateTime.Now;
 
             playerCount = new PlayerCount
@@ -156,20 +156,18 @@ public class Utils
 
     public IDictionary<string, ClientStatus> GetAllClientStatuses()
     {
-        Dictionary<string, ClientStatus> playersOnline = new Dictionary<string, ClientStatus>();
-        List<GameClient> clients = (List<GameClient>)WorldMgr.GetAllClients();
+        Dictionary<string, ClientStatus> playersOnline = new();
 
-        foreach (GameClient client in clients)
+        foreach (GameClient client in ClientService.GetClients())
         {
-            if (client?.Account == null || client?.Account?.Name == null || client?.Account?.PrivLevel == null)
+            ClientStatus clientStatus = new()
             {
-                continue;
-            }
-            ClientStatus clientStatus = new ClientStatus();
-            clientStatus.PrivLevel = client?.Account?.PrivLevel ?? 1;
-            clientStatus.State = (int)client.ClientState;
-            clientStatus.IsTester = client.Account.IsTester;
-            playersOnline.TryAdd(client?.Account?.Name, clientStatus);
+                PrivLevel = client.Account.PrivLevel,
+                State = (int) client.ClientState,
+                IsTester = client.Account.IsTester
+            };
+
+            playersOnline.TryAdd(client.Account.Name, clientStatus);
         }
 
         return playersOnline;

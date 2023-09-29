@@ -44,7 +44,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Name = "Heal Dummy";
-            GuildName = "Atlas Dummy Union";
+            GuildName = "Dummy Union";
             base.ChangeHealth(this, eHealthChangeType.Spell, -200);
             Model = 34;
             return base.AddToWorld(); // Finish up and add him to the world.

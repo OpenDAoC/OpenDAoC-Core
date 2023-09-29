@@ -23,14 +23,14 @@ namespace DOL.Tests.Integration.Net
 	[TestFixture]
 	public class uPnP
 	{
-		UPnPNat upnp;
+		UpnpNat upnp;
 		
 		public uPnP(){}
 		
 		[OneTimeSetUp]
 		public void init()
 		{
-			upnp = new UPnPNat();
+			upnp = new UpnpNat();
 		}
 		
 		[Test, Explicit]
