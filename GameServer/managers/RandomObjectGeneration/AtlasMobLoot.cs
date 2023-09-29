@@ -150,14 +150,6 @@ namespace DOL.GS {
                     chance += 10; //solo drop bonus
                     
                     DbItemTemplate item = null;
-
-                    if (mob.Level < 5)
-                    {
-                        chance += 75;
-                    }
-                    else if (mob.Level < 10)
-                        chance += (100 - mob.Level * 10);
-
                     if (Util.Chance(chance))
                     {
                         GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1), player.CurrentZone?.IsOF ?? false);
