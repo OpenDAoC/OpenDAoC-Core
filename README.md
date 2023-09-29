@@ -1,7 +1,8 @@
-#ACTIVE WORK
+# ACTIVE WORK
 
 FULLY WORKING:
---- Artifacts
+
+Artifacts
 - Alvarus' Leggings
 - Belt of the Moon
 - Belt of the Sun
@@ -10,20 +11,21 @@ FULLY WORKING:
 - Band of Stars
 - Flask
 
---- Master Levels
+Master Levels
 
-PARTIALLy WORKING:
---- Artifacts
+PARTIALLY WORKING:
+
+Artifacts
 - Bracer of Zo'Arkat
 
---- Master Levels
+Master Levels
 
 NOT YET LOOKED AT:
---- Artifacts
+
+Artifacts
 
 - Arms of the Winds
 - Bane of Battler
-
 - Braggart's Bow
 - Bruiser
 - Ceremonial Bracer
@@ -74,7 +76,7 @@ NOT YET LOOKED AT:
 - Winged Helm
 - Wings Dive
 
---- Master Levels
+Master Levels
 - Banelord
 - Battlemaster
 - Convoker
