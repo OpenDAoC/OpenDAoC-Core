@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 

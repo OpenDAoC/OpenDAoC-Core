@@ -9098,7 +9098,7 @@ namespace DOL.GS
             {
                 var items = Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
                 bool removedSomething = false;
-                foreach (InventoryItem invItem in items)
+                foreach (DbInventoryItem invItem in items)
                 {
                     if (player.CurrentRegion.IsNightTime)
                     {

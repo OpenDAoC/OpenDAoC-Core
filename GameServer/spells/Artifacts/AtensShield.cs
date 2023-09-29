@@ -28,41 +28,41 @@ namespace DOL.GS.Spells
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private ItemTemplate m_goldenTridentofFlame;
+		private DbItemTemplate m_goldenTridentofFlame;
 
 		public AtensShield(GameLiving caster, Spell spell, SpellLine line)
 			: base(caster, spell, line)
 		{
 			if (caster.Realm == eRealm.Albion)
 			{
-				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<ItemTemplate>("Golden_Trident_of_Flame") ?? Javelin;
+				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_Flame") ?? Javelin;
 				items.Add (GameInventoryItem.Create(m_goldenTridentofFlame));
 				return;
 			}
 
 			if (caster.Realm == eRealm.Midgard)
 			{
-				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<ItemTemplate>("Golden_Trident_of_Flame") ?? JavelinM;
+				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_Flame") ?? JavelinM;
 				items.Add (GameInventoryItem.Create(m_goldenTridentofFlame));
 				return;
 			}
 			if (caster.Realm == eRealm.Hibernia)
 			{
-				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<ItemTemplate>("Golden_Trident_of_Flame") ?? JavelinH;
+				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_Flame") ?? JavelinH;
 				items.Add (GameInventoryItem.Create(m_goldenTridentofFlame));
 				return;
 			}
 		}
 
-		private ItemTemplate Javelin
+		private DbItemTemplate Javelin
 		{
 			get
 			{
-				m_goldenTridentofFlame = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Golden_Trident_of_Flame");
+				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_Flame");
 				if (m_goldenTridentofFlame == null)
 				{
 					if (log.IsWarnEnabled) log.Warn("Could not find Golden_Trident_of_Flame, loading it ...");
-					m_goldenTridentofFlame = new ItemTemplate();
+					m_goldenTridentofFlame = new DbItemTemplate();
 					m_goldenTridentofFlame.Id_nb = "Golden_Trident_of_Flame";
 					m_goldenTridentofFlame.Name = "Golden Triden of Flame";
 					m_goldenTridentofFlame.Level = 45;
@@ -103,15 +103,15 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		private ItemTemplate JavelinM
+		private DbItemTemplate JavelinM
 		{
 			get
 			{
-				m_goldenTridentofFlame = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Golden_Trident_of_FlameM");
+				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_FlameM");
 				if (m_goldenTridentofFlame == null)
 				{
 					if (log.IsWarnEnabled) log.Warn("Could not find Golden_Trident_of_Flame, loading it ...");
-					m_goldenTridentofFlame = new ItemTemplate();
+					m_goldenTridentofFlame = new DbItemTemplate();
 					m_goldenTridentofFlame.Id_nb = "Golden_Trident_of_FlameM";
 					m_goldenTridentofFlame.Name = "Golden Triden of Flame";
 					m_goldenTridentofFlame.Level = 45;
@@ -152,15 +152,15 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		private ItemTemplate JavelinH
+		private DbItemTemplate JavelinH
 		{
 			get
 			{
-				m_goldenTridentofFlame = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Golden_Trident_of_FlameH");
+				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_FlameH");
 				if (m_goldenTridentofFlame == null)
 				{
 					if (log.IsWarnEnabled) log.Warn("Could not find Golden_Trident_of_Flame, loading it ...");
-					m_goldenTridentofFlame = new ItemTemplate();
+					m_goldenTridentofFlame = new DbItemTemplate();
 					m_goldenTridentofFlame.Id_nb = "Golden_Trident_of_FlameH";
 					m_goldenTridentofFlame.Name = "Golden Triden of Flame";
 					m_goldenTridentofFlame.Level = 45;
