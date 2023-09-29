@@ -1,3 +1,89 @@
+#ACTIVE WORK
+
+FULLY WORKING:
+--- Artifacts
+- Alvarus' Leggings
+- Belt of the Moon
+- Belt of the Sun
+- Aten's Shield
+- Atlantis Tablet
+- Band of Stars
+- Flask
+
+--- Master Levels
+
+PARTIALLy WORKING:
+--- Artifacts
+- Bracer of Zo'Arkat
+
+--- Master Levels
+
+NOT YET LOOKED AT:
+--- Artifacts
+
+- Arms of the Winds
+- Bane of Battler
+
+- Braggart's Bow
+- Bruiser
+- Ceremonial Bracer
+- Cloudsong
+- Crocodile's Tears Ring
+- Crocodile's Tooth Dagger
+- Crown of Zahur
+- Cyclops Eye Shield
+- Dream Sphere
+- Eerie Darkness Lighting Stone
+- Egg of Youth
+- Eirene's Hauberk
+- Enyalio's Boots
+- Erinys Charm
+- Eternal Plant
+- Flamedancer's Boots
+- Fool's Bow
+- Foppish Sleeves
+- Guard of Valor
+- Goddess' Necklace
+- Golden Scarab Vest
+- Golden Spear
+- Harpy's Feather Cloak
+- Healing Embrace Cloak
+- Jacina's Sash
+- Kalare's Necklace
+- Maddening Scalars
+- Malice Axe
+- Sharkskin Gloves
+- Nailah's Robes
+- Night's Shroud Bracelet
+- Oglidarsh's Belt
+- Phoebus Harp
+- Ring of Dances
+- Ring of Fire
+- Scepter of the Meritorious
+- Scorpions Tail Ring
+- Shades of Mist
+- Shield of Khaos
+- Snakecharmer's Weapon
+- Snatcher's Tale
+- Spear of Kings
+- Staff of the Gods
+- Stone of Atlantis
+- Tartaro's Gift
+- Traitor's Dagger
+- Traldor's Oracle
+- Winged Helm
+- Wings Dive
+
+--- Master Levels
+- Banelord
+- Battlemaster
+- Convoker
+- Perfecter
+- Sojourner
+- Stormlord
+- Spymaster
+- Warlord
+
 # Docker
 [![Build and Push Docker Image](https://github.com/OpenDAoC/OpenDAoC-Core/actions/workflows/build-docker-image.yml/badge.svg)](https://github.com/OpenDAoC/OpenDAoC-Core/actions/workflows/build-docker-image.yml)
 
