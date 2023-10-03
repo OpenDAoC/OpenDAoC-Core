@@ -11,7 +11,7 @@
         <DetectRegionIP>True</DetectRegionIP>
         <ServerName>OpenDAoC</ServerName>
         <ServerNameShort>CoreServer</ServerNameShort>
-        <LogConfigFile>./config/logconfig.xml</LogConfigFile>
+        <LogConfigFile>./Configs/logconfig.xml</LogConfigFile>
         <ScriptCompilationTarget>./lib/GameServerScripts.dll</ScriptCompilationTarget>
         <ScriptAssemblies> </ScriptAssemblies>
         <EnableCompilation>True</EnableCompilation>
@@ -19,7 +19,7 @@
         <GameType>Normal</GameType>
         <CheatLoggerName>cheats</CheatLoggerName>
         <GMActionLoggerName>gmactions</GMActionLoggerName>
-        <InvalidNamesFile>./config/invalidnames.txt</InvalidNamesFile>
+        <InvalidNamesFile>./Configs/invalidnames.txt</InvalidNamesFile>
         <DBType>MYSQL</DBType>
         <DBConnectionString>server=localhost;port=3306;database=DBNAME;userid=USERNAME;password=PASSWORD;treattinyasboolean=false</DBConnectionString>
         <DBAutosave>True</DBAutosave>
