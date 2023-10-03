@@ -19,11 +19,10 @@
 using System;
 
 using DOL.GS;
-using DOL.GS.Friends;
 using DOL.Database;
-using DOL.Tests;
 using DOL.Events;
-
+using DOL.Tests;
+using DOL.GS.Friends;
 using NUnit.Framework;
 
 namespace DOL.Tests.Integration.Server
