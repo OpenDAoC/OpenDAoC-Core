@@ -60,7 +60,7 @@ namespace DOL.GS.Scripts
             };
             MaxDistance = 2500;
             TetherRange = 3500;
-            SetOwnBrain(new ArosBrain());
+            SetOwnBrain(new ArosTheSpiritmasterBrain());
         }
         public override double GetArmorAF(eArmorSlot slot)
         {

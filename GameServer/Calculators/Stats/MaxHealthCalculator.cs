@@ -146,7 +146,7 @@ namespace DOL.GS.PropertyCalc
 						hp += 20;
 				}
 
-				if (ani.Brain != null && ani.Brain is DOL.AI.Brain.TurretFNFBrain)
+				if (ani.Brain != null && ani.Brain is DOL.AI.Brain.TurretFnfBrain)
 					hp = (int)(hp * .8);
 
 				return hp;

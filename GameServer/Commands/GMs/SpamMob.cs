@@ -221,7 +221,7 @@ namespace DOL.GS.SpamMob
             base.Think();
         }
 
-        public override bool CheckSpells(eCheckSpellType type)
+        public override bool CheckSpells(ECheckSpellType type)
         {
             if (Body.IsCasting)
                 return true;
@@ -233,7 +233,7 @@ namespace DOL.GS.SpamMob
                 ArrayList spell_rec = new ArrayList();
                 Spell spellToCast = null;
 
-                if (type == eCheckSpellType.Defensive)
+                if (type == ECheckSpellType.Defensive)
                 {
                     foreach (Spell spell in Body.Spells)
                     {
@@ -249,7 +249,7 @@ namespace DOL.GS.SpamMob
                             casted = true;
                     }
                 }
-                else if (type == eCheckSpellType.Offensive)
+                else if (type == ECheckSpellType.Offensive)
                 {
                     foreach (Spell spell in Body.Spells)
                     {

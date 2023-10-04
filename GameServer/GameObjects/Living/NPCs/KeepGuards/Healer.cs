@@ -21,7 +21,7 @@ namespace DOL.GS.Keeps
 			BlockChance = 5;
 		}
 
-		protected override KeepGuardBrain GetBrain() => new HealerBrain();
+		protected override KeepGuardBrain GetBrain() => new HealerGuardBrain();
 
 		protected override void SetName()
 		{

@@ -182,7 +182,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 Silencer.attackers_count = 0;
                 //Silencer silencer = new Silencer();
@@ -199,7 +199,7 @@ namespace DOL.AI.Brain
                 ClearAttackers = false;
             if (Body.IsOutOfTetherRange)
             {
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }

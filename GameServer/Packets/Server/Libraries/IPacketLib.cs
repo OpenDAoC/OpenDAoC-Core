@@ -745,7 +745,7 @@ namespace DOL.GS.PacketHandler
 		void SendUpdateCraftingSkills();
 		void SendChangeTarget(GameObject newTarget);
 		void SendChangeGroundTarget(Point3D newTarget);
-		void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, eAggressionState aggroState, eWalkState walkState);
+		void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, EAggressionState aggroState, EWalkState walkState);
 		void SendPlaySound(eSoundType soundType, ushort soundID);
 		void SendNPCsQuestEffect(GameNPC npc, eQuestIndicator indicator);
 		void SendMasterLevelWindow(byte ml);

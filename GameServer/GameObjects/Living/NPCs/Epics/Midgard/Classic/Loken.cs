@@ -147,7 +147,7 @@ namespace DOL.AI.Brain
 			}
 			if(!CheckProximityAggro())
             {
-				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163372);
 				Body.MaxSpeedBase = npcTemplate.MaxSpeed;

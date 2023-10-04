@@ -637,7 +637,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 teleport_player = false;
                 cast1 = true;
                 spawn_antipass = false;
@@ -1095,7 +1095,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             }
 
             if (Body.IsAlive)
@@ -1739,7 +1739,7 @@ namespace DOL.AI.Brain
 
                 if (Body.TargetObject != null)
                 {
-                    if (!CheckSpells(eCheckSpellType.Offensive))
+                    if (!CheckSpells(ECheckSpellType.Offensive))
                     {
                         Body.StartAttack(Body.TargetObject);
                     }
@@ -2465,7 +2465,7 @@ namespace DOL.AI.Brain
             }
             if (Body.IsOutOfTetherRange && !HasAggro)
             {
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
             }
             base.Think();
         }

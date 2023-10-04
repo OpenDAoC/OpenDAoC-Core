@@ -4,11 +4,11 @@ using DOL.GS;
 
 namespace DOL.AI.Brain
 {
-    public abstract class BDPetBrain : ControlledNpcBrain
+    public abstract class SubPetBrain : ControlledNpcBrain
     {
         protected const int BASEFORMATIONDIST = 50;
 
-        public BDPetBrain(GameLiving Owner) : base(Owner)
+        public SubPetBrain(GameLiving Owner) : base(Owner)
         {
             IsMainPet = false;
         }
@@ -34,19 +34,19 @@ namespace DOL.AI.Brain
                     break;
             }
 
-            if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()) { FSM.SetCurrentState(eFSMStateType.AGGRO); }
+            if (FiniteStateMachine.GetState(eFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO); }
             AttackMostWanted();
         }
 
-        public override void SetAggressionState(eAggressionState state)
+        public override void SetAggressionState(EAggressionState state)
         {
             if (MinionsAssisting)
                 base.SetAggressionState(state);
             else
-                base.SetAggressionState(eAggressionState.Passive);
+                base.SetAggressionState(EAggressionState.Passive);
 
             // Attack immediately rather than waiting for the next Think()
-            if (AggressionState != eAggressionState.Passive)
+            if (AggressionState != EAggressionState.Passive)
                 Attack(Owner.TargetObject);
         }
 
@@ -60,7 +60,7 @@ namespace DOL.AI.Brain
             base.OnAttackedByEnemy(ad);
 
             // Get help from the commander and other minions
-            if (ad.CausesCombat && Owner is GameSummonedPet own && own.Brain is CommanderBrain ownBrain)
+            if (ad.CausesCombat && Owner is GameSummonedPet own && own.Brain is CommanderPetBrain ownBrain)
                 ownBrain.DefendMinion(ad.Attacker);
         }
 
@@ -184,7 +184,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             CheckAbilities();
-            CheckSpells(eCheckSpellType.Defensive);
+            CheckSpells(ECheckSpellType.Defensive);
             base.Think();
         }
 
@@ -203,9 +203,9 @@ namespace DOL.AI.Brain
             Body.TargetObject = null;
         }
 
-        public override eWalkState WalkState
+        public override EWalkState WalkState
         {
-            get => eWalkState.Follow;
+            get => EWalkState.Follow;
             set { }
         }
     }

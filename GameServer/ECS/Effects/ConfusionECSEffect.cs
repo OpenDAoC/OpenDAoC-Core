@@ -61,7 +61,7 @@ namespace DOL.GS
                     //it's a pet.
                     GamePlayer playerowner = (npc.Brain as IControlledBrain).GetPlayerOwner();
                     if (playerowner != null && (playerowner.CharacterClass.ID == (int)eCharacterClass.Theurgist || 
-                        playerowner.CharacterClass.ID == (int)eCharacterClass.Animist && npc.Brain is TurretFNFBrain))
+                        playerowner.CharacterClass.ID == (int)eCharacterClass.Animist && npc.Brain is TurretFnfBrain))
                     {
                         //Theurgist pets die.
                         npc.Die(SpellHandler.Caster);

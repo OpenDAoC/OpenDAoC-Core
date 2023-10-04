@@ -27,7 +27,6 @@ namespace DOL.GS.Commands
     /// <summary>
     /// A command to manage teleport destinations.
     /// </summary>
-    /// <author>Aredhel</author>
 	[Cmd(
 		"&teleport",
 		ePrivLevel.GM,

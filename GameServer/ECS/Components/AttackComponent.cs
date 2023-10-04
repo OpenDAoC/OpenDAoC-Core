@@ -881,7 +881,7 @@ namespace DOL.GS
 
             if (npc.Brain != null && npc.Brain is IControlledBrain)
             {
-                if ((npc.Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
+                if ((npc.Brain as IControlledBrain).AggressionState == EAggressionState.Passive)
                     return;
             }
 

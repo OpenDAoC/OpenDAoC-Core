@@ -638,8 +638,8 @@ namespace DOL.Tests
 		{
 			if (SendChangeGroundTargetMethod != null) SendChangeGroundTargetMethod(this, newTarget);
 		}
-		public Action<TestPacketLib, GameLiving, ePetWindowAction, eAggressionState, eWalkState> SendPetWindowMethod { get; set; }
-		public void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, eAggressionState aggroState, eWalkState walkState)
+		public Action<TestPacketLib, GameLiving, ePetWindowAction, EAggressionState, EWalkState> SendPetWindowMethod { get; set; }
+		public void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, EAggressionState aggroState, EWalkState walkState)
 		{
 			if (SendPetWindowMethod != null) SendPetWindowMethod(this, pet, windowAction, aggroState, walkState);
 		}

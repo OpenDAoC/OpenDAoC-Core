@@ -67,7 +67,7 @@ namespace DOL.GS.Spells
 
 			foreach (GameNPC npc in Caster.CurrentRegion.GetNPCsInRadius(Caster.GroundTarget, (ushort) Properties.TURRET_AREA_CAP_RADIUS))
 			{
-				if (npc.Brain is TurretFNFBrain)
+				if (npc.Brain is TurretFnfBrain)
 					nCount++;
 			}
 
@@ -124,7 +124,7 @@ namespace DOL.GS.Spells
 			if (m_pet == null)
 				return;
 
-			if ((m_pet.Brain as TurretFNFBrain) == null)
+			if ((m_pet.Brain as TurretFnfBrain) == null)
 				return;
 
 			if (Caster.ControlledBrain == null)
@@ -156,7 +156,7 @@ namespace DOL.GS.Spells
 
 		protected override IControlledBrain GetPetBrain(GameLiving owner)
 		{
-			return new TurretFNFBrain(owner);
+			return new TurretFnfBrain(owner);
 		}
 		
 		/// <summary>

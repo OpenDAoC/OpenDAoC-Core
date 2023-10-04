@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.GS;
 
 namespace DOL.AI.Brain
@@ -24,9 +5,9 @@ namespace DOL.AI.Brain
 	/// <summary>
 	/// A brain for the commanders
 	/// </summary>
-	public class CommanderBrain : ControlledNpcBrain
+	public class CommanderPetBrain : ControlledNpcBrain
 	{
-		public CommanderBrain(GameLiving owner) : base(owner) { }
+		public CommanderPetBrain(GameLiving owner) : base(owner) { }
 
         public bool MinionsAssisting => Body is CommanderPet commander && commander.MinionsAssisting;
 
@@ -55,7 +36,7 @@ namespace DOL.AI.Brain
 			{
 				foreach (var controlledBrain in Body.ControlledNpcList)
 				{
-					if (controlledBrain is BDPetBrain bdPetBrain)
+					if (controlledBrain is SubPetBrain bdPetBrain)
 						bdPetBrain.OnOwnerAttacked(ad);
 				}
 			}
@@ -74,8 +55,8 @@ namespace DOL.AI.Brain
 					break;
 			}
 
-			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState())
-				FSM.SetCurrentState(eFSMStateType.AGGRO);
+			if (FiniteStateMachine.GetState(eFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState())
+				FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO);
 
 			AttackMostWanted();
 		}
@@ -93,7 +74,7 @@ namespace DOL.AI.Brain
 			{
 				lock (Body.ControlledNpcList)
 				{
-					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					foreach (SubPetBrain icb in Body.ControlledNpcList)
 						icb?.Attack(target);
 				}
 			}
@@ -107,7 +88,7 @@ namespace DOL.AI.Brain
 			{
 				lock (Body.ControlledNpcList)
 				{
-					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					foreach (SubPetBrain icb in Body.ControlledNpcList)
 					{
 						if (icb != null)
 							icb.Disengage();
@@ -145,7 +126,7 @@ namespace DOL.AI.Brain
 			{
 				lock (Body.ControlledNpcList)
 				{
-					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					foreach (SubPetBrain icb in Body.ControlledNpcList)
 					{
 						if (icb != null)
 							icb.FollowOwner();
@@ -182,14 +163,14 @@ namespace DOL.AI.Brain
 			SubpetFollow();
 		}
 
-		public override void SetAggressionState(eAggressionState state)
+		public override void SetAggressionState(EAggressionState state)
 		{
 			base.SetAggressionState(state);
 			if (Body.ControlledNpcList != null)
 			{
 				lock (Body.ControlledNpcList)
 				{
-					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					foreach (SubPetBrain icb in Body.ControlledNpcList)
 					{
 						if (icb != null)
 							icb.SetAggressionState(state);
@@ -203,11 +184,11 @@ namespace DOL.AI.Brain
 		/// </summary>
 		/// <param name="type">Which type should we go through and check for?</param>
 		/// <returns></returns>
-		public override bool CheckSpells(eCheckSpellType type)
+		public override bool CheckSpells(ECheckSpellType type)
 		{
 			bool casted = false;
 
-			if (type == eCheckSpellType.Offensive && Body is CommanderPet pet
+			if (type == ECheckSpellType.Offensive && Body is CommanderPet pet
 				&& pet.PreferredSpell != CommanderPet.eCommanderPreferredSpell.None
 				&& !pet.IsCasting && !pet.IsBeingInterrupted && pet.TargetObject is GameLiving living && living.IsAlive)
 

@@ -28,7 +28,6 @@ namespace DOL.GS.Spells
     /// Shades of Mist spell handler: Shape change (shade) on self with
     /// a defensive proc (200 pt. melee health buffer).
     /// </summary>
-    /// <author>Aredhel</author>
     [SpellHandler("ShadesOfMist")]
     public class ShadeOfMistDefensiveProcSpellHandler : SpellHandler
     {

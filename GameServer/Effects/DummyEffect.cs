@@ -25,7 +25,6 @@ namespace DOL.GS.Effects
     /// <summary>
     /// Dummy effect for testing purposes (identifying buff icons and such).
     /// </summary>
-    /// <author>Aredhel</author>
     public class DummyEffect : TimedEffect, IGameEffect
     {
         /// <summary>

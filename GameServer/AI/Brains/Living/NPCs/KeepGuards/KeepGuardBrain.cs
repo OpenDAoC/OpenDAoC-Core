@@ -57,7 +57,7 @@ namespace DOL.AI.Brain
 				// Drop aggro and disengage if the target is out of range
 				if (Body.IsAttacking && !Body.IsWithinRadius(target, AggroRange, false))
 				{
-					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+					FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 
 					if (target is GameLiving livingTarget && livingTarget != null)
 						RemoveFromAggroList(livingTarget);
@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 
 				if (gameObject is GameLiving gameLiving)
 				{
-					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+					FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 					RemoveFromAggroList(gameLiving);
 				}
 			}

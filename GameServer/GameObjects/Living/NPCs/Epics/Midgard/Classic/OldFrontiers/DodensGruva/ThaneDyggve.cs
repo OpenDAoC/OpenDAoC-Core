@@ -112,7 +112,7 @@ namespace DOL.GS.Scripts
 			{
 				if(!CheckProximityAggro())
                 {
-					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+					FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 					Body.Health = Body.MaxHealth;
 					CanCastSpell = false;
 				}

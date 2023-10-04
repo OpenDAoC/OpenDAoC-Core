@@ -7,7 +7,7 @@ namespace DOL.AI.Brain
 	/// <summary>
 	/// A brain that can be controlled
 	/// </summary>
-	public class BDBufferBrain : BDPetBrain
+	public class BufferSubPetBrain : SubPetBrain
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -18,7 +18,7 @@ namespace DOL.AI.Brain
 		/// Constructs new controlled npc brain
 		/// </summary>
 		/// <param name="owner"></param>
-		public BDBufferBrain(GameLiving owner) : base(owner) { }
+		public BufferSubPetBrain(GameLiving owner) : base(owner) { }
 
 		/// <summary>
 		/// Attack the target on command
@@ -32,7 +32,7 @@ namespace DOL.AI.Brain
 				return;
 
 			m_orderAttackTarget = target as GameLiving;
-			FSM.SetCurrentState(eFSMStateType.AGGRO);
+			FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO);
 		}
 
 		#region AI

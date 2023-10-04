@@ -228,7 +228,7 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(8821);
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 Phase2 = false;
                 CanWalk = false;

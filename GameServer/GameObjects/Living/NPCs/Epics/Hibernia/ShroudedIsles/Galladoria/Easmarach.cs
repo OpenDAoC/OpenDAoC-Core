@@ -166,7 +166,7 @@ namespace DOL.AI.Brain
                 Body.TargetObject = CalculateNextAttackTarget();
                 if (Body.TargetObject != null)
                 {
-                    if (!CheckSpells(eCheckSpellType.Offensive))
+                    if (!CheckSpells(ECheckSpellType.Offensive))
                     {
                         Body.StartAttack(Body.TargetObject);
                     }

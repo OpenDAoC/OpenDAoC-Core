@@ -7,9 +7,9 @@ namespace DOL.AI.Brain
 	/// <summary>
 	/// The Brain for the Area Lord
 	/// </summary>
-	public class LordBrain : KeepGuardBrain
+	public class KeepLordBrain : KeepGuardBrain
 	{
-		public LordBrain() : base() { }
+		public KeepLordBrain() : base() { }
 
 		public override void Think()
 		{

@@ -1349,11 +1349,11 @@ namespace DOL.GS.Keeps
                 if (guard is GuardFighterRK)
                     brain = new KeepGuardBrain();
                 else if (guard is GuardCaster)
-                    brain = new CasterBrain();
+                    brain = new CasterGuardBrain();
                 else if (guard is GuardHealer)
-                    brain = new HealerBrain();
+                    brain = new HealerGuardBrain();
                 else if (guard is GuardLord)
-                    brain = new LordBrain();
+                    brain = new KeepLordBrain();
                 else if (guard is GuardCorpseSummoner)
                     brain = new CorpseSummonerBrain();
                 else

@@ -9,13 +9,13 @@ namespace DOL.GS
     {
         public GameGuard() : base()
         {
-            m_ownBrain = new GuardBrain();
+            m_ownBrain = new RealmGuardBrain();
             m_ownBrain.Body = this;
         }
 
         public GameGuard(INpcTemplate template) : base(template)
         {
-            m_ownBrain = new GuardBrain();
+            m_ownBrain = new RealmGuardBrain();
             m_ownBrain.Body = this;
         }
 

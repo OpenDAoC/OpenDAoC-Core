@@ -22,7 +22,6 @@ namespace DOL.GS
     /// <summary>
     /// Djinn stone (spawns ancient bound djinn).
     /// </summary>
-    /// <author>Aredhel</author>
     public class SpawnDjinnStone : DjinnStone
     {
         /// <summary>

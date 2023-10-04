@@ -22,7 +22,6 @@ namespace DOL.GS
     /// <summary>
     /// Djinn stone base class.
     /// </summary>
-    /// <author>Aredhel</author>
     public class DjinnStone : GameStaticItem
     {
         private AncientBoundDjinn m_djinn;

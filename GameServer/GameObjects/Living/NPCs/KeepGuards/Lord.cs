@@ -358,7 +358,7 @@ namespace DOL.GS.Keeps
             }
         }
 
-        protected override KeepGuardBrain GetBrain() => new LordBrain();
+        protected override KeepGuardBrain GetBrain() => new KeepLordBrain();
 
         public override void AutoSetStats(DbMob dbMob = null)
         {

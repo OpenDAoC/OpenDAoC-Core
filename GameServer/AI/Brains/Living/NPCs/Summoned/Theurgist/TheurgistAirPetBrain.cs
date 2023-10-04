@@ -1,9 +1,8 @@
 ﻿using DOL.GS;
 
-namespace DOL.AI.Brain
+namespace DOL.AI.Brain;
+
+public class TheurgistAirPetBrain : TheurgistPetBrain
 {
-    public class TheurgistAirPetBrain : TheurgistPetBrain
-    {
-        public TheurgistAirPetBrain(GameLiving owner) : base(owner) { }
-    }
+    public TheurgistAirPetBrain(GameLiving owner) : base(owner) { }
 }

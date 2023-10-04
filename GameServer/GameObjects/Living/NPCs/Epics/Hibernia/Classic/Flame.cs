@@ -127,7 +127,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
@@ -246,7 +246,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 			}
 			base.Think();
 		}
@@ -357,7 +357,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 			}
 			if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
 				Body.RemoveFromWorld();

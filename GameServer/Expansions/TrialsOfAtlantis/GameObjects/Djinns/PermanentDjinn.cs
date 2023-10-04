@@ -27,7 +27,6 @@ namespace DOL.GS
     /// Ancient bound djinn (Atlantis teleporter).
     /// This is the type that stays up all the time.
     /// </summary>
-    /// <author>Aredhel</author>
     public class PermanentDjinn : AncientBoundDjinn
     {
         public PermanentDjinn(DjinnStone djinnStone) : base(djinnStone)

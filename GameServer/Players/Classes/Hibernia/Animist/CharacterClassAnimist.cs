@@ -34,7 +34,7 @@ namespace DOL.GS
 		public override void CommandNpcRelease()
 		{
 			TurretPet turretFnF = Player.TargetObject as TurretPet;
-			if (turretFnF != null && turretFnF.Brain is TurretFNFBrain && Player.IsControlledNPC(turretFnF))
+			if (turretFnF != null && turretFnF.Brain is TurretFnfBrain && Player.IsControlledNPC(turretFnF))
 			{
 				Player.Notify(GameLivingEvent.PetReleased, turretFnF);
 				return;

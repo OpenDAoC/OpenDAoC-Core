@@ -33,7 +33,7 @@ namespace DOL.GS.Scripts
             SaveIntoDatabase();
             base.AddToWorld();
             BroadcastLivingEquipmentUpdate();
-            base.SetOwnBrain(new ArosBrain());
+            base.SetOwnBrain(new ArosTheSpiritmasterBrain());
             return true;
         }
         [ScriptLoadedEvent]

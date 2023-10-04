@@ -500,7 +500,7 @@ namespace DOL.GS.Spells
 				summoned.Level = 1;
 				summoned.Size = 10;
 				summoned.AddToWorld();
-				controlledBrain.AggressionState = eAggressionState.Passive;
+				controlledBrain.AggressionState = EAggressionState.Passive;
 				GameEventMgr.AddHandler(summoned, GameLivingEvent.Dying, new DOLEventHandler(GuardDie));
 				beffect.Start(Caster);
 			}
@@ -645,7 +645,7 @@ namespace DOL.GS.Spells
 			GameSpellEffect effect = CreateSpellEffect(target, Effectiveness);
 			TitanBrain controlledBrain = new TitanBrain(player);
 			controlledBrain.IsMainPet = false;
-			controlledBrain.WalkState = eWalkState.Stay;
+			controlledBrain.WalkState = EWalkState.Stay;
 			summoned = new GameNPC(template);
 			summoned.SetOwnBrain(controlledBrain);
 			//Suncheck:
@@ -663,7 +663,7 @@ namespace DOL.GS.Spells
 			summoned.Level = 100;
 			summoned.Flags |= GameNPC.eFlags.PEACE;
 			summoned.AddToWorld();
-			controlledBrain.AggressionState = eAggressionState.Aggressive;
+			controlledBrain.AggressionState = EAggressionState.Aggressive;
 			effect.Start(summoned);
 			m_growTimer = new ECSGameTimer((GameObject)m_caster, new ECSGameTimer.ECSTimerCallback(TitanGrows), C_GROWTIMER);
 		}
@@ -829,7 +829,7 @@ namespace DOL.AI.Brain
 			}
 			else if (enemies.Count < 1)
 			{
-				WalkState = eWalkState.Stay;
+				WalkState = EWalkState.Stay;
 				enemies = FindTarget();
 			}
 
@@ -857,7 +857,7 @@ namespace DOL.AI.Brain
 #endregion
 
 #region MLBrain
-public class MLBrain : GuardBrain
+public class MLBrain : RealmGuardBrain
 {
 	public MLBrain() : base() { }
 

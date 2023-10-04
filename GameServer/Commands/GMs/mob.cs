@@ -3084,7 +3084,7 @@ namespace DOL.GS.Commands
 				text.Add("");
 				text.Add($"Brain: {brain.GetType().FullName}");
 
-				FSMState fsm = brain.FSM?.GetCurrentState();
+				FsmState fsm = brain.FiniteStateMachine?.GetCurrentState();
 
 				if (fsm != null)
 					text.Add($"FSM State: {fsm.GetType().FullName}");

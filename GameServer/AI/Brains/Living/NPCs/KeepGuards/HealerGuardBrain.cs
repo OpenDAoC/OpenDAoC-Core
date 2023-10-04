@@ -5,7 +5,7 @@ namespace DOL.AI.Brain
 	/// <summary>
 	/// Healer Guard Brain
 	/// </summary>
-	public class HealerBrain : KeepGuardBrain
+	public class HealerGuardBrain : KeepGuardBrain
 	{
 		/// <summary>
 		/// Brain Think Method

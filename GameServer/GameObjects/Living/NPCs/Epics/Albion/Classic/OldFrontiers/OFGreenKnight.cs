@@ -693,7 +693,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             if (!CheckProximityAggro())
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 
             base.Think();
         }

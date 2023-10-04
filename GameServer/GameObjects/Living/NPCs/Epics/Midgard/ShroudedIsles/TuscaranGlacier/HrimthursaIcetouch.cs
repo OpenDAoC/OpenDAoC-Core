@@ -107,7 +107,7 @@ namespace DOL.AI.Brain
 								Body.TargetObject = null;
 								ResetNoTarget = true;
 							}
-							FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+							FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 						}
 					}
 				}

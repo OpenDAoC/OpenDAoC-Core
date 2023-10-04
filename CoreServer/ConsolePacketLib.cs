@@ -159,7 +159,7 @@ namespace DOLGameServerConsole
 		public void SendUpdateCraftingSkills() { }
 		public void SendChangeTarget(GameObject newTarget) { }
 		public void SendChangeGroundTarget(Point3D newTarget) { }
-		public void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, eAggressionState aggroState, eWalkState walkState) { }
+		public void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, EAggressionState aggroState, EWalkState walkState) { }
 		public void SendKeepInfo(IGameKeep keep) { }
 		public void SendKeepRealmUpdate(IGameKeep keep) { }
 		public void SendKeepRemove(IGameKeep keep) { }

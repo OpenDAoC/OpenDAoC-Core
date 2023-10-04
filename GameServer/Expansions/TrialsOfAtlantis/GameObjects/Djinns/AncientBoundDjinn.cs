@@ -26,7 +26,6 @@ namespace DOL.GS
     /// <summary>
     /// Ancient bound djinn (Atlantis teleporter).
     /// </summary>
-    /// <author>Aredhel</author>
     public abstract class AncientBoundDjinn : GameTeleporter
     {
         private const int NpcTemplateId = 3000;      

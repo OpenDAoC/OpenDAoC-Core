@@ -30,16 +30,16 @@ namespace DOL.AI.Brain
         /// </summary>
         public StandardMobBrain() : base()
         {
-            FSM = new FSM();
-            FSM.Add(new StandardMobState_IDLE(this));
-            FSM.Add(new StandardMobState_WAKING_UP(this));
-            FSM.Add(new StandardMobState_AGGRO(this));
-            FSM.Add(new StandardMobState_RETURN_TO_SPAWN(this));
-            FSM.Add(new StandardMobState_PATROLLING(this));
-            FSM.Add(new StandardMobState_ROAMING(this));
-            FSM.Add(new StandardMobState_DEAD(this));
+            FiniteStateMachine = new FiniteStateMachine();
+            FiniteStateMachine.Add(new StandardNpcStateIdle(this));
+            FiniteStateMachine.Add(new StandardNpcStateWakingUp(this));
+            FiniteStateMachine.Add(new StandardNpcStateAggro(this));
+            FiniteStateMachine.Add(new StandardNpcStateReturnToSpawn(this));
+            FiniteStateMachine.Add(new StandardNpcStatePatrolling(this));
+            FiniteStateMachine.Add(new StandardNpcStateRoaming(this));
+            FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-            FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+            FiniteStateMachine.SetCurrentState(eFSMStateType.WAKING_UP);
         }
 
         /// <summary>
@@ -64,14 +64,14 @@ namespace DOL.AI.Brain
 
         public override void KillFSM()
         {
-            FSM.KillFSM();
+            FiniteStateMachine.KillFSM();
         }
 
         #region AI
 
         public override void Think()
         {
-            FSM.Think();
+            FiniteStateMachine.Think();
         }
 
         public virtual bool CheckProximityAggro()
@@ -442,7 +442,7 @@ namespace DOL.AI.Brain
 
             if (Body.TargetObject != null)
             {
-                if (CheckSpells(eCheckSpellType.Offensive))
+                if (CheckSpells(ECheckSpellType.Offensive))
                     Body.StopAttack();
                 else
                     Body.StartAttack(Body.TargetObject);
@@ -593,15 +593,15 @@ namespace DOL.AI.Brain
             if (!Body.IsAlive || Body.ObjectState != GameObject.eObjectState.Active)
                 return;
 
-            if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE))
+            if (FiniteStateMachine.GetCurrentState() == FiniteStateMachine.GetState(eFSMStateType.PASSIVE))
                 return;
 
             int damage = ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier);
             ConvertDamageToAggroAmount(ad.Attacker, Math.Max(1, damage));
 
-            if (!Body.attackComponent.AttackState && FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
+            if (!Body.attackComponent.AttackState && FiniteStateMachine.GetCurrentState() != FiniteStateMachine.GetState(eFSMStateType.AGGRO))
             {
-                FSM.SetCurrentState(eFSMStateType.AGGRO);
+                FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO);
                 Think();
             }
         }
@@ -814,18 +814,12 @@ namespace DOL.AI.Brain
         #endregion
 
         #region Spells
-
-        public enum eCheckSpellType
-        {
-            Offensive,
-            Defensive
-        }
-
+        
         /// <summary>
         /// Checks if any spells need casting
         /// </summary>
         /// <param name="type">Which type should we go through and check for?</param>
-        public virtual bool CheckSpells(eCheckSpellType type)
+        public virtual bool CheckSpells(ECheckSpellType type)
         {
             if (Body == null || Body.Spells == null || Body.Spells.Count <= 0)
                 return false;
@@ -834,7 +828,7 @@ namespace DOL.AI.Brain
             List<Spell> spellsToCast = new();
             bool needHeal = false;
 
-            if (type == eCheckSpellType.Defensive)
+            if (type == ECheckSpellType.Defensive)
             {
                 foreach (Spell spell in Body.Spells)
                 {
@@ -882,7 +876,7 @@ namespace DOL.AI.Brain
                     }
                 }
             }
-            else if (type == eCheckSpellType.Offensive)
+            else if (type == ECheckSpellType.Offensive)
             {
                 foreach (Spell spell in Body.Spells)
                 {

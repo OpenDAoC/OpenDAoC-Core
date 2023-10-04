@@ -12,20 +12,19 @@ namespace DOL.AI.Brain
     /// <summary>
     /// A brain for the necromancer pets.
     /// </summary>
-    /// <author>Aredhel</author>
     public class NecromancerPetBrain : ControlledNpcBrain
     {
         public NecromancerPetBrain(GameLiving owner) : base(owner)
         {
-            FSM.ClearStates();
+            FiniteStateMachine.ClearStates();
 
-            FSM.Add(new NecromancerPetState_WAKING_UP(this));
-            FSM.Add(new NecromancerPetState_DEFENSIVE(this));
-            FSM.Add(new NecromancerPetState_AGGRO(this));
-            FSM.Add(new NecromancerPetState_PASSIVE(this));
-            FSM.Add(new StandardMobState_DEAD(this));
+            FiniteStateMachine.Add(new NecromancerPetStateWakingUp(this));
+            FiniteStateMachine.Add(new NecromancerPetStateDefensive(this));
+            FiniteStateMachine.Add(new NecromancerPetStateAggro(this));
+            FiniteStateMachine.Add(new NecromancerPetStatePassive(this));
+            FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-            FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+            FiniteStateMachine.SetCurrentState(eFSMStateType.WAKING_UP);
         }
 
         public override int ThinkInterval => 500;
@@ -36,7 +35,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             CheckTether();
-            FSM.Think();
+            FiniteStateMachine.Think();
         }
 
         #region Events

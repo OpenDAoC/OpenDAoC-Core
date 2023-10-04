@@ -48,9 +48,9 @@ namespace DOL.GS.Behaviour.Actions
         {
             GameNPC npc = Q;
 
-            if (npc.Brain is RoundsBrain)
+            if (npc.Brain is MobRoundsBrain)
             {
-                RoundsBrain brain = (RoundsBrain)npc.Brain;
+                MobRoundsBrain brain = (MobRoundsBrain)npc.Brain;
                 npc.CurrentWaypoint = P;
                 brain.Start();
             }

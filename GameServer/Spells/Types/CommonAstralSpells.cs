@@ -130,7 +130,7 @@ namespace DOL.GS.Spells
                 summoned.Level = Caster.Level;
                 summoned.Size = 50;
                 summoned.AddToWorld();
-                controlledBrain.AggressionState = eAggressionState.Passive;
+                controlledBrain.AggressionState = EAggressionState.Passive;
                 beffect.Start(Caster);
             }
         }

@@ -4,7 +4,7 @@ using DOL.Language;
 
 namespace DOL.AI.Brain
 {
-    public class CasterBrain : KeepGuardBrain
+    public class CasterGuardBrain : KeepGuardBrain
     {
         public const int ANIMATION_INTERVAL = 60 * 60 * 1000;
 

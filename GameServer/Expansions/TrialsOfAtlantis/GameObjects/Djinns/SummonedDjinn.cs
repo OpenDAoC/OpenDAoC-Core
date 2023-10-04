@@ -26,7 +26,6 @@ namespace DOL.GS
     /// Ancient bound djinn (Atlantis teleporter).
     /// This is the type that is summoned through the djinn stone.
     /// </summary>
-    /// <author>Aredhel</author>
     public class SummonedDjinn : AncientBoundDjinn
     {
         private const int SummonSpellEffect = 0x1818;

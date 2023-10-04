@@ -204,7 +204,7 @@ namespace DOL.AI.Brain
                 {
                     Enemys_To_Mezz.Clear();
                 }
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 if (!RemoveAdds)
                 {
                     foreach (GameNPC npc in Body.GetNPCsInRadius(4000))

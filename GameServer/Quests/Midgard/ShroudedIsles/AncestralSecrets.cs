@@ -328,7 +328,7 @@ namespace DOL.GS.Quests.Hibernia
 		{
 			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(151, 363016, 310849, 3933, 8000))
 			{
-				if (npc.Brain is SINeckBossBrain)
+				if (npc.Brain is SiNecklaceBossBrain)
 					return;
 			}
 			AncestralKeeper = new SINeckBoss();
@@ -348,7 +348,7 @@ namespace DOL.GS.Quests.Hibernia
 			AncestralKeeper.MaxSpeedBase = 250;
 			//AncestralKeeper.AddToWorld();
 
-			var brain = new SINeckBossBrain();
+			var brain = new SiNecklaceBossBrain();
 			brain.AggroLevel = 200;
 			brain.AggroRange = 500;
 			AncestralKeeper.SetOwnBrain(brain);

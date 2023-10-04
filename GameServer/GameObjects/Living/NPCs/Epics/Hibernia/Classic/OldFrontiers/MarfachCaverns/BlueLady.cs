@@ -161,7 +161,7 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
                 CanSpawnAdds = false;
-                FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 if (!RemoveAdds)
                 {
                     foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))

@@ -25,7 +25,6 @@ namespace DOL.Events
     /// <summary>
     /// This class holds the old and the new target for
     /// GameLiving.SwitchedTargetEvent.
-    /// <author>Aredhel</author>
     /// </summary>
     public class SwitchedTargetEventArgs : EventArgs
     {

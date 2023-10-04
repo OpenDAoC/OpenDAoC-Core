@@ -178,7 +178,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				TorturedSouls.TorturedSoulKilled = 0;
 				TorturedSouls.TorturedSoulCount = 0;
@@ -347,7 +347,7 @@ namespace DOL.AI.Brain
 		{
 			if (!CheckProximityAggro())
 			{
-				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 			}
 			base.Think();
 		}

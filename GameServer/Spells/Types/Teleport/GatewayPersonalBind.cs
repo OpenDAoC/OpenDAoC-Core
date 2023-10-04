@@ -27,7 +27,6 @@ namespace DOL.GS.Spells
     /// <summary>
     /// The spell used for the Personal Bind Recall Stone.
     /// </summary>
-    /// <author>Aredhel</author>
     [SpellHandler("GatewayPersonalBind")]
 	public class GatewayPersonalBind : SpellHandler
 	{

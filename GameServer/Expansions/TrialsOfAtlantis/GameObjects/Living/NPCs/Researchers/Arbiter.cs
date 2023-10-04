@@ -26,7 +26,6 @@ namespace DOL.GS
     /// <summary>
     /// The Atlantis arbiter.
     /// </summary>
-    /// <author>Aredhel</author>
     public class Arbiter : Researcher
     {
         public Arbiter()

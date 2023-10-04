@@ -9169,7 +9169,7 @@ namespace DOL.GS
             // Remove the last update tick property to prevent speedhack messages during zoning and teleporting.
             LastPositionUpdateTick = 0;
 
-            if (ControlledBrain != null && ControlledBrain.WalkState != eWalkState.Stay)
+            if (ControlledBrain != null && ControlledBrain.WalkState != EWalkState.Stay)
             {
                 if (CharacterClass.ID is not ((int) eCharacterClass.Theurgist) and not ((int) eCharacterClass.Animist))
                     hasPetToMove = true;
@@ -13579,7 +13579,7 @@ namespace DOL.GS
             }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Passive", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            npc.SetAggressionState(eAggressionState.Passive);
+            npc.SetAggressionState(EAggressionState.Passive);
         }
 
         /// <summary>
@@ -13598,7 +13598,7 @@ namespace DOL.GS
             }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Aggressive", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            npc.SetAggressionState(eAggressionState.Aggressive);
+            npc.SetAggressionState(EAggressionState.Aggressive);
         }
 
         /// <summary>
@@ -13617,7 +13617,7 @@ namespace DOL.GS
             }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.CommandNpcAttack.Denfensive", npc.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            npc.SetAggressionState(eAggressionState.Defensive);
+            npc.SetAggressionState(EAggressionState.Defensive);
         }
         #endregion
 

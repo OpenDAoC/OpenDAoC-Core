@@ -1,8 +1,3 @@
-/*
-AI for Aros The Spiritmaster like NPCs.
-<author>Kelt</author>
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,7 +10,7 @@ using log4net;
 
 namespace DOL.AI.Brain
 {
-    public class ArosBrain : StandardMobBrain
+    public class ArosTheSpiritmasterBrain : StandardMobBrain
     {
         /// <summary>
         /// Defines a logger for this class.
@@ -25,21 +20,21 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Create a new ArosBrain.
         /// </summary>
-        public ArosBrain() : base()
+        public ArosTheSpiritmasterBrain() : base()
         {
             AggroLevel = 200;
             AggroRange = 500;
             ThinkInterval = 1500;
 
-            FSM.ClearStates();
+            FiniteStateMachine.ClearStates();
 
-            FSM.Add(new StandardMobState_WAKING_UP(this));
-            FSM.Add(new ArosState_RETURN_TO_SPAWN(this));
-            FSM.Add(new ArosState_IDLE(this));
-            FSM.Add(new ArosState_AGGRO(this));
-            FSM.Add(new StandardMobState_DEAD(this));
+            FiniteStateMachine.Add(new StandardNpcStateWakingUp(this));
+            FiniteStateMachine.Add(new ArosTheSpiritmasterStateReturnToSpawn(this));
+            FiniteStateMachine.Add(new ArosTheSpiritmasterStateIdle(this));
+            FiniteStateMachine.Add(new ArosTheSpiritmasterStateAggro(this));
+            FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-            FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+            FiniteStateMachine.SetCurrentState(eFSMStateType.WAKING_UP);
         }
 
         /// <summary>
@@ -51,7 +46,7 @@ namespace DOL.AI.Brain
         {
             Resists();
             ResistsTwo();
-            FSM.Think();
+            FiniteStateMachine.Think();
         }
 
         public void Resists()

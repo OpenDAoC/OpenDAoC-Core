@@ -43,12 +43,12 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Holds the walk state of the brain
 		/// </summary>
-		protected eWalkState m_walkState;
+		protected EWalkState m_walkState;
 
 		/// <summary>
 		/// Holds the aggression level of the brain
 		/// </summary>
-		protected eAggressionState m_aggressionState;
+		protected EAggressionState m_aggressionState;
 
 		private HashSet<GameLiving> m_buffedTargets = new();
 		private object m_buffedTargetsLock = new();
@@ -60,8 +60,8 @@ namespace DOL.AI.Brain
 		public ControlledNpcBrain(GameLiving owner) : base()
 		{
 			m_owner = owner ?? throw new ArgumentNullException("owner");
-			m_aggressionState = eAggressionState.Defensive;
-			m_walkState = eWalkState.Follow;
+			m_aggressionState = EAggressionState.Defensive;
+			m_walkState = EWalkState.Follow;
 
 			if (owner is GameNPC npcOwner && npcOwner.Brain is StandardMobBrain npcOwnerBrain)
 				AggroLevel = npcOwnerBrain.AggroLevel;
@@ -69,15 +69,15 @@ namespace DOL.AI.Brain
 				AggroLevel = 99;
 			AggroRange = MAX_PET_AGGRO_DISTANCE;
 
-			FSM.ClearStates();
+			FiniteStateMachine.ClearStates();
 
-			FSM.Add(new ControlledNPCState_WAKING_UP(this));
-			FSM.Add(new ControlledNPCState_PASSIVE(this));
-			FSM.Add(new ControlledNPCState_DEFENSIVE(this));
-			FSM.Add(new ControlledNPCState_AGGRO(this));
-			FSM.Add(new StandardMobState_DEAD(this));
+			FiniteStateMachine.Add(new ControlledNpcStateWakingUp(this));
+			FiniteStateMachine.Add(new ControlledNpcStatePassive(this));
+			FiniteStateMachine.Add(new ControlledNpcStateDefensive(this));
+			FiniteStateMachine.Add(new ControlledNpcStateAggro(this));
+			FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+			FiniteStateMachine.SetCurrentState(eFSMStateType.WAKING_UP);
 		}
 
 		protected bool m_isMainPet = true;
@@ -189,7 +189,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Gets or sets the walk state of the brain
 		/// </summary>
-		public virtual eWalkState WalkState
+		public virtual EWalkState WalkState
 		{
 			get { return m_walkState; }
 			set
@@ -202,18 +202,18 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Gets or sets the aggression state of the brain
 		/// </summary>
-		public virtual eAggressionState AggressionState
+		public virtual EAggressionState AggressionState
         {
             get => m_aggressionState;
             set
             {
                 m_aggressionState = value;
 
-                if (m_aggressionState == eAggressionState.Passive)
+                if (m_aggressionState == EAggressionState.Passive)
                 {
                     Disengage();
 
-                    if (WalkState == eWalkState.Follow)
+                    if (WalkState == EWalkState.Follow)
                         FollowOwner();
                     else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
                     {
@@ -230,9 +230,9 @@ namespace DOL.AI.Brain
         /// <param name="target"></param>
         public virtual void Attack(GameObject target)
 		{
-			if (AggressionState == eAggressionState.Passive)
+			if (AggressionState == EAggressionState.Passive)
 			{
-				AggressionState = eAggressionState.Defensive;
+				AggressionState = EAggressionState.Defensive;
 				UpdatePetWindow();
 			}
 
@@ -240,7 +240,7 @@ namespace DOL.AI.Brain
 				return;
 
 			m_orderAttackTarget = target as GameLiving;
-			FSM.SetCurrentState(eFSMStateType.AGGRO);
+			FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO);
 
 			if (target != Body.TargetObject && Body.IsCasting)
 				Body.StopCurrentSpellcast();
@@ -251,9 +251,9 @@ namespace DOL.AI.Brain
 		public virtual void Disengage()
 		{
 			// We switch to defensive mode if we're in aggressive and have a target, so that we don't immediately aggro back
-			if (AggressionState == eAggressionState.Aggressive && Body.TargetObject != null)
+			if (AggressionState == EAggressionState.Aggressive && Body.TargetObject != null)
 			{
-				AggressionState = eAggressionState.Defensive;
+				AggressionState = EAggressionState.Defensive;
 				UpdatePetWindow();
 			}
 
@@ -270,7 +270,7 @@ namespace DOL.AI.Brain
 		/// <param name="target"></param>
 		public virtual void Follow(GameObject target)
 		{
-			WalkState = eWalkState.Follow;
+			WalkState = EWalkState.Follow;
 			Body.Follow(target, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
 		}
 
@@ -282,7 +282,7 @@ namespace DOL.AI.Brain
 			m_tempX = Body.X;
 			m_tempY = Body.Y;
 			m_tempZ = Body.Z;
-			WalkState = eWalkState.Stay;
+			WalkState = EWalkState.Stay;
 			Body.StopMoving();
 		}
 
@@ -294,7 +294,7 @@ namespace DOL.AI.Brain
 			m_tempX = Owner.X;
 			m_tempY = Owner.Y;
 			m_tempZ = Owner.Z;
-			WalkState = eWalkState.ComeHere;
+			WalkState = EWalkState.ComeHere;
 			Body.StopFollowing();
 			Body.PathTo(Owner, Body.MaxSpeed);
 		}
@@ -308,12 +308,12 @@ namespace DOL.AI.Brain
 			m_tempX = target.X;
 			m_tempY = target.Y;
 			m_tempZ = target.Z;
-			WalkState = eWalkState.GoTarget;
+			WalkState = EWalkState.GoTarget;
 			Body.StopFollowing();
 			Body.PathTo(target, Body.MaxSpeed);
 		}
 
-		public virtual void SetAggressionState(eAggressionState state)
+		public virtual void SetAggressionState(EAggressionState state)
 		{
 			AggressionState = state;
 			UpdatePetWindow();
@@ -368,7 +368,7 @@ namespace DOL.AI.Brain
 			if (!base.Start())
 				return false;
 
-			if (WalkState == eWalkState.Follow)
+			if (WalkState == EWalkState.Follow)
 				FollowOwner();
 
 			return true;
@@ -466,13 +466,13 @@ namespace DOL.AI.Brain
 		/// </summary>
 		/// <param name="type">Which type should we go through and check for?</param>
 		/// <returns>True if we are begin to cast or are already casting</returns>
-		public override bool CheckSpells(eCheckSpellType type)
+		public override bool CheckSpells(ECheckSpellType type)
 		{
 			if (Body == null || Body.Spells == null || Body.Spells.Count < 1)
 				return false;
 			
 			bool casted = false;
-			if (type == eCheckSpellType.Defensive)
+			if (type == ECheckSpellType.Defensive)
 			{
 				// Check instant spells, but only cast one of each type to prevent spamming
 				if (Body.CanCastInstantHealSpells)
@@ -938,7 +938,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		protected virtual GameLiving CheckAttackOrderTarget()
 		{
-			if (AggressionState != eAggressionState.Passive && m_orderAttackTarget != null)
+			if (AggressionState != EAggressionState.Passive && m_orderAttackTarget != null)
 			{
 				if (m_orderAttackTarget.IsAlive &&
 					m_orderAttackTarget.ObjectState == GameObject.eObjectState.Active &&
@@ -961,7 +961,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void AttackMostWanted()
 		{
-			if (!IsActive || m_aggressionState == eAggressionState.Passive)
+			if (!IsActive || m_aggressionState == EAggressionState.Passive)
 				return;
 
 			GameNPC owner_npc = GetNPCOwner();
@@ -974,7 +974,7 @@ namespace DOL.AI.Brain
 					GameServer.ServerRules.IsAllowedToAttack(owner_npc, owner_npc.TargetObject as GameLiving, false))
 				{
 
-					if (!CheckSpells(eCheckSpellType.Offensive))
+					if (!CheckSpells(ECheckSpellType.Offensive))
 						Body.StartAttack(owner_npc.TargetObject);
 
 					return;
@@ -1013,7 +1013,7 @@ namespace DOL.AI.Brain
 						effect.Cancel(false);
 				}
 
-				if (!CheckSpells(eCheckSpellType.Offensive))
+				if (!CheckSpells(ECheckSpellType.Offensive))
 				{
 					Body.StartAttack(target);
 
@@ -1028,7 +1028,7 @@ namespace DOL.AI.Brain
 				if (Body.IsAttacking)
 					Body.StopAttack();
 
-				if (WalkState == eWalkState.Follow)
+				if (WalkState == EWalkState.Follow)
 					FollowOwner();
 				else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
 				{
@@ -1041,7 +1041,7 @@ namespace DOL.AI.Brain
 
 		public virtual void OnOwnerAttacked(AttackData ad)
 		{
-			if(FSM.GetState(eFSMStateType.PASSIVE) == FSM.GetCurrentState()) { return; }
+			if(FiniteStateMachine.GetState(eFSMStateType.PASSIVE) == FiniteStateMachine.GetCurrentState()) { return; }
 
 			// Theurgist pets don't help their owner.
 			if (Owner is GamePlayer && ((GamePlayer)Owner).CharacterClass.ID == (int)eCharacterClass.Theurgist)
@@ -1063,7 +1063,7 @@ namespace DOL.AI.Brain
 					break;
 			}
 
-			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()) { FSM.SetCurrentState(eFSMStateType.AGGRO); }
+			if (FiniteStateMachine.GetState(eFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO); }
 			AttackMostWanted();
 		}
 

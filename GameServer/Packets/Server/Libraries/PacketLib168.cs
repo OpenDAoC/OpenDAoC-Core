@@ -3025,8 +3025,8 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, eAggressionState aggroState,
-		                                  eWalkState walkState)
+		public virtual void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, EAggressionState aggroState,
+		                                  EWalkState walkState)
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PetWindow)))
 			{
@@ -3048,13 +3048,13 @@ namespace DOL.GS.PacketHandler
 				}
 				switch (aggroState) //1-aggressive, 2-defensive, 3-passive
 				{
-					case eAggressionState.Aggressive:
+					case EAggressionState.Aggressive:
 						pak.WriteByte(1);
 						break;
-					case eAggressionState.Defensive:
+					case EAggressionState.Defensive:
 						pak.WriteByte(2);
 						break;
-					case eAggressionState.Passive:
+					case EAggressionState.Passive:
 						pak.WriteByte(3);
 						break;
 					default:
@@ -3063,16 +3063,16 @@ namespace DOL.GS.PacketHandler
 				}
 				switch (walkState) //1-follow, 2-stay, 3-goto, 4-here
 				{
-					case eWalkState.Follow:
+					case EWalkState.Follow:
 						pak.WriteByte(1);
 						break;
-					case eWalkState.Stay:
+					case EWalkState.Stay:
 						pak.WriteByte(2);
 						break;
-					case eWalkState.GoTarget:
+					case EWalkState.GoTarget:
 						pak.WriteByte(3);
 						break;
-					case eWalkState.ComeHere:
+					case EWalkState.ComeHere:
 						pak.WriteByte(4);
 						break;
 					default:

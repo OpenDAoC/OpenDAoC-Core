@@ -27,7 +27,6 @@ namespace DOL.GS
     /// <summary>
     /// Base class for all Atlantis scholar type NPCs.
     /// </summary>
-    /// <author>Aredhel</author>
     public class Researcher : GameNPC
     {
         public Researcher()

@@ -2080,7 +2080,7 @@ namespace DOL.GS
 					return false;
 
 				// Only move pet if it's following the owner.
-				if (Brain is ControlledNpcBrain controlledBrain && controlledBrain.WalkState != eWalkState.Follow)
+				if (Brain is ControlledNpcBrain controlledBrain && controlledBrain.WalkState != EWalkState.Follow)
 					return false;
 			}
 

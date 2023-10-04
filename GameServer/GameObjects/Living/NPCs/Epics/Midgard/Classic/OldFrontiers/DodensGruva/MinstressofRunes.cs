@@ -93,7 +93,7 @@ namespace DOL.AI.Brain
 		{
 			if(!CheckProximityAggro())
             {
-				FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanCastSpear = false;
 				RandomTarget = null;

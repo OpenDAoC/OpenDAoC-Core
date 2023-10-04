@@ -22,7 +22,6 @@ namespace DOL.GS
     /// <summary>
     /// Head scholar class.
     /// </summary>
-    /// <author>Aredhel</author>
     public class HeadScholar : Researcher
     {
         public HeadScholar()

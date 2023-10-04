@@ -369,7 +369,7 @@ namespace DOL.GS
                         {
                             Owner.LastAttackedByEnemyTickPvE = 0;
                             Owner.LastAttackedByEnemyTickPvP = 0;
-                            brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                             return 0;
                         }
                     }

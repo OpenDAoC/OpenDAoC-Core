@@ -6,7 +6,7 @@ namespace DOL.AI.Brain
 	/// <summary>
 	/// A brain that make npc walk on rounds with way point
 	/// </summary>
-	public class RoundsBrain : StandardMobBrain
+	public class MobRoundsBrain : StandardMobBrain
 	{
 		/// <summary>
 		/// Load the path of the mob

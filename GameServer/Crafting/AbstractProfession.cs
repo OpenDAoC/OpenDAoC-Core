@@ -24,7 +24,6 @@ namespace DOL.GS
 {
     /// <summary>
     /// Tradeskills that earn the crafter a title.
-    /// <author>Aredhel</author>
     /// </summary>
     public abstract class AbstractProfession : AbstractCraftingSkill
     {
