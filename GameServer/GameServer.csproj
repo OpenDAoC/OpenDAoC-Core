@@ -316,7 +316,6 @@
     <Folder Include="Expansions\Classic\" />
     <Folder Include="Expansions\NewFrontiers\" />
     <Folder Include="Expansions\ShroudedIsles\" />
-    <Folder Include="GameObjects\Living\NPCs\Mobs\Albion\Classic\" />
     <Folder Include="GameObjects\Living\NPCs\Mobs\Albion\ShroudedIsles\" />
     <Folder Include="GameObjects\Living\NPCs\Mobs\Hibernia\Classic\" />
     <Folder Include="GameObjects\Living\NPCs\Mobs\Midgard\Classic\" />
