@@ -29,7 +29,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
             Assert.AreEqual(-6, actual);
         }
 
-        private ResistCalculator ResistCalculator => new ResistCalculator();
+        private ResistsCalculator ResistCalculator => new ResistsCalculator();
         private FakeNPC NewNPC() => new FakeNPC();
         private eProperty SomeResistProperty => eProperty.Resist_First;
     }

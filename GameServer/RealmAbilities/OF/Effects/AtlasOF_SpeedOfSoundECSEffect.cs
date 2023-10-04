@@ -81,7 +81,7 @@ namespace DOL.GS.Effects
                 EffectService.RequestDisableEffect(OwnerPlayer.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.Ichor));
             
             OwnerPlayer.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this,
-                PropertyCalc.MaxSpeedCalculator.SPEED4);
+                PropertyCalc.MaxMovementSpeedCalculator.SPEED4);
             OwnerPlayer.Out.SendUpdateMaxSpeed();
         }
 

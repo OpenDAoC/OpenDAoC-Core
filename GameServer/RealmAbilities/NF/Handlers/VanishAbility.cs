@@ -31,10 +31,10 @@ namespace DOL.GS.RealmAbilities
 				switch (Level)
 				{
 					case 1: duration = 3000; speedBonus = 1.0; break;
-					case 2: duration = 3000; speedBonus = MaxSpeedCalculator.SPEED1; break;
-					case 3: duration = 4000; speedBonus = MaxSpeedCalculator.SPEED3; break;
-					case 4: duration = 5000; speedBonus = MaxSpeedCalculator.SPEED4; break;
-					case 5: duration = 6000; speedBonus = MaxSpeedCalculator.SPEED5; break;
+					case 2: duration = 3000; speedBonus = MaxMovementSpeedCalculator.SPEED1; break;
+					case 3: duration = 4000; speedBonus = MaxMovementSpeedCalculator.SPEED3; break;
+					case 4: duration = 5000; speedBonus = MaxMovementSpeedCalculator.SPEED4; break;
+					case 5: duration = 6000; speedBonus = MaxMovementSpeedCalculator.SPEED5; break;
 				}
 			}
 			else
@@ -42,8 +42,8 @@ namespace DOL.GS.RealmAbilities
 				switch (Level)
 				{
 					case 1: duration = 1000; speedBonus = 1.0; break;
-					case 2: duration = 2000; speedBonus = MaxSpeedCalculator.SPEED1; break;
-					case 3: duration = 5000; speedBonus = MaxSpeedCalculator.SPEED5; break;
+					case 2: duration = 2000; speedBonus = MaxMovementSpeedCalculator.SPEED1; break;
+					case 3: duration = 5000; speedBonus = MaxMovementSpeedCalculator.SPEED5; break;
 				}
 			}
 

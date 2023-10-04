@@ -30,7 +30,7 @@ namespace DOL.GS.Effects
 			living.TempProperties.SetProperty("Charging", true);
 			GameEventMgr.AddHandler(living, GameLivingEvent.AttackFinished, m_attackFinished);
 			GameEventMgr.AddHandler(living, GameLivingEvent.CastFinished, m_attackFinished);
-			living.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, PropertyCalc.MaxSpeedCalculator.SPEED4);		
+			living.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, PropertyCalc.MaxMovementSpeedCalculator.SPEED4);		
 			if (living is GamePlayer)
 				(living as GamePlayer).Out.SendUpdateMaxSpeed();
 		}

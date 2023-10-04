@@ -128,7 +128,7 @@ namespace DOL.GS
 			{
 				case eProperty.MaxHealth:
 				{
-					int hitsCap = MaxHealthCalculator.GetItemBonusCap(Owner) + MaxHealthCalculator.GetItemBonusCapIncrease(Owner);
+					int hitsCap = MaxHitPointsCalculator.GetItemBonusCap(Owner) + MaxHitPointsCalculator.GetItemBonusCapIncrease(Owner);
 					int conFromRa = 0;
 					int conFromItems = 0;
 					int maxHealthFromItems = 0;
