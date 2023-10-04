@@ -11,7 +11,7 @@ namespace DOL.GS.PropertyCalc
 	/// BuffBonusCategory4 unused
 	/// BuffBonusMultCategory1 unused
 	/// </summary>
-	[APropertyCalculator(eProperty.EnduranceRegenerationRate)]
+	[PropertyCalculator(eProperty.EnduranceRegenerationRate)]
 	public class EnduranceRegenerationRateCalculator : PropertyCalculator
 	{
 		public EnduranceRegenerationRateCalculator() {}

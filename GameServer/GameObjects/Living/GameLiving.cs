@@ -4516,7 +4516,7 @@ namespace DOL.GS
 							if (!t.IsClass || t.IsAbstract) continue;
 							if (!typeof(IPropertyCalculator).IsAssignableFrom(t)) continue;
 							IPropertyCalculator calc = (IPropertyCalculator)Activator.CreateInstance(t);
-							foreach (APropertyCalculator attr in t.GetCustomAttributes(typeof(APropertyCalculator), false))
+							foreach (PropertyCalculatorAttribute attr in t.GetCustomAttributes(typeof(PropertyCalculatorAttribute), false))
 							{
 								for (int i = (int)attr.Min; i <= (int)attr.Max; i++)
 								{

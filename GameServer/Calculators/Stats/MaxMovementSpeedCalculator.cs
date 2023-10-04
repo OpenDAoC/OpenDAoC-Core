@@ -13,7 +13,7 @@ namespace DOL.GS.PropertyCalc
     /// BuffBonusCategory4 unused
     /// BuffBonusMultCategory1 used for all multiplicative speed bonuses
     /// </summary>
-    [APropertyCalculator(eProperty.MaxSpeed)]
+    [PropertyCalculator(eProperty.MaxSpeed)]
     public class MaxMovementSpeedCalculator : PropertyCalculator
     {
         public static readonly double SPEED1 = 1.44;

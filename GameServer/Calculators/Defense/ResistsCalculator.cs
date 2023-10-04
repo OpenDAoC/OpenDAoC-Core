@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc
 {
-    [APropertyCalculator(eProperty.Resist_First, eProperty.Resist_Last)]
+    [PropertyCalculator(eProperty.Resist_First, eProperty.Resist_Last)]
     public class ResistsCalculator : PropertyCalculator
     {
         public ResistsCalculator() { }
@@ -200,7 +200,7 @@ namespace DOL.GS.PropertyCalc
         }
     }
     
-    [APropertyCalculator(eProperty.Resist_Natural)]
+    [PropertyCalculator(eProperty.Resist_Natural)]
     public class ResistNaturalCalculator : PropertyCalculator
     {
         public ResistNaturalCalculator() { }

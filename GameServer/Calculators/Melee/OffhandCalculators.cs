@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.OffhandDamage)]
+[PropertyCalculator(eProperty.OffhandDamage)]
 public class OffhandDamageCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)
@@ -11,7 +11,7 @@ public class OffhandDamageCalculator : PropertyCalculator
 	}
 }
 
-[APropertyCalculator(eProperty.OffhandChance)]
+[PropertyCalculator(eProperty.OffhandChance)]
 public class OffhandChanceCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)
@@ -20,7 +20,7 @@ public class OffhandChanceCalculator : PropertyCalculator
 	}
 }
 
-[APropertyCalculator(eProperty.OffhandDamageAndChance)]
+[PropertyCalculator(eProperty.OffhandDamageAndChance)]
 public class OffhandDamageAndChanceCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)

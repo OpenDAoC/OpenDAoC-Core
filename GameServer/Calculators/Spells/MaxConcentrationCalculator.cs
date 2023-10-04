@@ -9,7 +9,7 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[APropertyCalculator(eProperty.MaxConcentration)]
+[PropertyCalculator(eProperty.MaxConcentration)]
 public class MaxConcentrationCalculator : PropertyCalculator
 {
 	public MaxConcentrationCalculator() {}

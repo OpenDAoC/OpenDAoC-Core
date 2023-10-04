@@ -11,7 +11,7 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[APropertyCalculator(eProperty.ArrowRecovery)]
+[PropertyCalculator(eProperty.ArrowRecovery)]
 public class ArrowSalvagePercentCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)

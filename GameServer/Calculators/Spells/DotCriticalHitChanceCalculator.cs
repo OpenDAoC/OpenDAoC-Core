@@ -13,7 +13,7 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusMultCategory1 unused
 /// AbilityBonus used
 /// </summary>
-[APropertyCalculator(eProperty.CriticalDotHitChance)]
+[PropertyCalculator(eProperty.CriticalDotHitChance)]
 public class DotCriticalHitChanceCalculator : PropertyCalculator
 {
 	public DotCriticalHitChanceCalculator() { }

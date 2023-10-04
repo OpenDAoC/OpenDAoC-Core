@@ -8,7 +8,7 @@ namespace DOL.GS.PropertyCalc;
 ///                    category 4 kicks in at last
 /// BuffBonusMultCategory1 used after all buffs/debuffs
 /// </summary>
-[APropertyCalculator(eProperty.WaterSpeed)]
+[PropertyCalculator(eProperty.WaterSpeed)]
 public class WaterSpeedCalculator : PropertyCalculator
 {
 	public WaterSpeedCalculator() { }

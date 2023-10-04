@@ -9,7 +9,7 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[APropertyCalculator(eProperty.ArcherySpeed)]
+[PropertyCalculator(eProperty.ArcherySpeed)]
 public class ArcherySpeedPercentCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)

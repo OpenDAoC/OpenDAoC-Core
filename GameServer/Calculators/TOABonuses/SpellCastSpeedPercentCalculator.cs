@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.CastingSpeed)]
+[PropertyCalculator(eProperty.CastingSpeed)]
 public class SpellCastSpeedPercentCalculator : PropertyCalculator
 {
     public override int CalcValue(GameLiving living, eProperty property)

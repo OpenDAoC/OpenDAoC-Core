@@ -11,9 +11,9 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[APropertyCalculator(eProperty.Focus_Darkness, eProperty.Focus_Matter)]
-[APropertyCalculator(eProperty.Focus_Mind, eProperty.Focus_Arboreal)]
-[APropertyCalculator(eProperty.Focus_EtherealShriek, eProperty.Focus_Witchcraft)]
+[PropertyCalculator(eProperty.Focus_Darkness, eProperty.Focus_Matter)]
+[PropertyCalculator(eProperty.Focus_Mind, eProperty.Focus_Arboreal)]
+[PropertyCalculator(eProperty.Focus_EtherealShriek, eProperty.Focus_Witchcraft)]
 public class FocusLevelCalculator : PropertyCalculator
 {
 	public FocusLevelCalculator() { }

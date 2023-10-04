@@ -1,6 +1,6 @@
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.ToHitBonus)]
+[PropertyCalculator(eProperty.ToHitBonus)]
 public class ToHitBonusCalculator : PropertyCalculator
 {
 	public ToHitBonusCalculator() { }

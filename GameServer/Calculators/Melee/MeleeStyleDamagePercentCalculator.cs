@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.StyleDamage)]
+[PropertyCalculator(eProperty.StyleDamage)]
 public class MeleeStyleDamagePercentCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)

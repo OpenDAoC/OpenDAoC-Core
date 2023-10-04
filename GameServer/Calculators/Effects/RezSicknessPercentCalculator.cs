@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.ResIllnessReduction)]
+[PropertyCalculator(eProperty.ResIllnessReduction)]
 public class RezSicknessPercentCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)

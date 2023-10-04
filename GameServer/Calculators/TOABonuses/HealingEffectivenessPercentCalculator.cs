@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.HealingEffectiveness)]
+[PropertyCalculator(eProperty.HealingEffectiveness)]
 public class HealingEffectivenessPercentCalculator : PropertyCalculator
 {
     public override int CalcValue(GameLiving living, eProperty property)

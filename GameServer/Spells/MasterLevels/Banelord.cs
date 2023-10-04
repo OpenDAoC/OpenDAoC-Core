@@ -420,7 +420,7 @@ namespace DOL.GS.PropertyCalc
     /// BuffBonusCategory4 unused
     /// BuffBonusMultCategory1 unused
     /// </summary>
-    [APropertyCalculator(eProperty.MissHit)]
+    [PropertyCalculator(eProperty.MissHit)]
     public class MissHitPercentCalculator : PropertyCalculator
     {
         public override int CalcValue(GameLiving living, eProperty property)

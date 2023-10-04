@@ -8,7 +8,7 @@ namespace DOL.GS.PropertyCalc;
 ///                    category 4 kicks in at last
 /// BuffBonusMultCategory1 used after all buffs/debuffs
 /// </summary>
-[APropertyCalculator(eProperty.DPS)]
+[PropertyCalculator(eProperty.DPS)]
 public class WeaponDpsCalculator : PropertyCalculator
 {
 	public WeaponDpsCalculator() {}

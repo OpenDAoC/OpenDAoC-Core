@@ -11,7 +11,7 @@ namespace DOL.GS.PropertyCalc
 	/// BuffBonusCategory4 unused
 	/// BuffBonusMultCategory1 unused
 	/// </summary>
-	[APropertyCalculator(eProperty.MaxMana)]
+	[PropertyCalculator(eProperty.MaxMana)]
 	public class MaxPowerPoolCalculator : PropertyCalculator
 	{
 		public MaxPowerPoolCalculator() {}

@@ -1,6 +1,6 @@
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.ExtraHP)]
+[PropertyCalculator(eProperty.ExtraHP)]
 public class ExtraHitPointPercentCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)

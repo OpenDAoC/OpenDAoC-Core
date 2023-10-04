@@ -11,7 +11,7 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[APropertyCalculator(eProperty.MesmerizeDurationReduction)]
+[PropertyCalculator(eProperty.MesmerizeDurationReduction)]
 public class MezDurationPercentCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property) 

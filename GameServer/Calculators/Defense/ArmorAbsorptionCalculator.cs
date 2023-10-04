@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.ArmorAbsorption)]
+[PropertyCalculator(eProperty.ArmorAbsorption)]
 public class ArmorAbsorptionCalculator : PropertyCalculator
 {
     public override int CalcValue(GameLiving living, eProperty property)

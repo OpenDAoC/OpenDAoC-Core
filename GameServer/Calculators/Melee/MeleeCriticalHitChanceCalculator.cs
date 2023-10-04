@@ -14,7 +14,7 @@ namespace DOL.GS.PropertyCalc
 	///
 	/// Crit propability is capped to 50% except for berserk
 	/// </summary>
-	[APropertyCalculator(eProperty.CriticalMeleeHitChance)]
+	[PropertyCalculator(eProperty.CriticalMeleeHitChance)]
 	public class MeleeCriticalHitChanceCalculator : PropertyCalculator
 	{
 		public MeleeCriticalHitChanceCalculator() { }

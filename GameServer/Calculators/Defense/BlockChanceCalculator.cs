@@ -9,7 +9,7 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[APropertyCalculator(eProperty.BlockChance)]
+[PropertyCalculator(eProperty.BlockChance)]
 public class BlockChanceCalculator : PropertyCalculator
 {
     public override int CalcValue(GameLiving living, eProperty property)

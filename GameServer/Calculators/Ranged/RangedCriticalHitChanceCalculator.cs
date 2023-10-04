@@ -11,7 +11,7 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 for uncapped realm ability bonus
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[APropertyCalculator(eProperty.CriticalArcheryHitChance)]
+[PropertyCalculator(eProperty.CriticalArcheryHitChance)]
 public class RangedCriticalHitChanceCalculator : PropertyCalculator
 {
 	public RangedCriticalHitChanceCalculator() {}

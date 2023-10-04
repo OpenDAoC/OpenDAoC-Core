@@ -14,7 +14,7 @@ namespace DOL.GS.PropertyCalc;
 /// [Freya] Nidel: Item are cap to 10%, buff increase cap to 15% (10% item, 5% buff)
 /// http://www.youtube.com/watch?v=XcETvw5ge3s
 /// </summary>
-[APropertyCalculator(eProperty.SpellRange)]
+[PropertyCalculator(eProperty.SpellRange)]
 public class SpellRangePercentCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property) 

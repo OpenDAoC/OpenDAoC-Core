@@ -13,7 +13,7 @@ namespace DOL.GS.PropertyCalc
     /// BuffBonusMultCategory1 unused
     /// ItemBonus is used for players TOA bonuse, living.Level cap
     /// </summary>
-    [APropertyCalculator(eProperty.ArmorFactor)]
+    [PropertyCalculator(eProperty.ArmorFactor)]
     public class ArmorFactorCalculator : PropertyCalculator
     {
         public override int CalcValue(GameLiving living, eProperty property)

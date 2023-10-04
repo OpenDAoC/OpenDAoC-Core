@@ -11,7 +11,7 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[APropertyCalculator(eProperty.HealthRegenerationRate)]
+[PropertyCalculator(eProperty.HealthRegenerationRate)]
 public class HealthRegenerationRateCalculator : PropertyCalculator
 {
 	public HealthRegenerationRateCalculator() {}

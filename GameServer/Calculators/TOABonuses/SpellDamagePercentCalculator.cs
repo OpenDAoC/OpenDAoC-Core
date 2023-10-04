@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.SpellDamage)]
+[PropertyCalculator(eProperty.SpellDamage)]
 public class SpellDamagePercentCalculator : PropertyCalculator
 {
     public override int CalcValue(GameLiving living, eProperty property)

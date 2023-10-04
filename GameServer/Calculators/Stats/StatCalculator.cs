@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc
 {
-    [APropertyCalculator(eProperty.Stat_First, eProperty.Stat_Last)]
+    [PropertyCalculator(eProperty.Stat_First, eProperty.Stat_Last)]
     public class StatCalculator : PropertyCalculator
     {
         public const double SPEC_DEBUFF_VS_BUFF_MODIFIER = 0.5;

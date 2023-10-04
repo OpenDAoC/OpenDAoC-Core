@@ -7,7 +7,7 @@ namespace DOL.GS.PropertyCalc;
 /// 
 /// Crit probability is capped to 50%
 /// </summary>
-[APropertyCalculator(eProperty.CriticalHealHitChance)]
+[PropertyCalculator(eProperty.CriticalHealHitChance)]
 public class HealCriticalHitChanceCalculator : PropertyCalculator
 {
     public HealCriticalHitChanceCalculator() { }

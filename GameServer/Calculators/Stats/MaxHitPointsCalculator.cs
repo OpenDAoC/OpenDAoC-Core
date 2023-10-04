@@ -14,7 +14,7 @@ namespace DOL.GS.PropertyCalc
 	/// BuffBonusCategory4 unused
 	/// BuffBonusMultCategory1 unused
 	/// </summary>
-	[APropertyCalculator(eProperty.MaxHealth)]
+	[PropertyCalculator(eProperty.MaxHealth)]
 	public class MaxHitPointsCalculator : PropertyCalculator
 	{
 		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

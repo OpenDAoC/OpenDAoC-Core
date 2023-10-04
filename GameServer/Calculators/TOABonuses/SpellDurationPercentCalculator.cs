@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.SpellDuration)]
+[PropertyCalculator(eProperty.SpellDuration)]
 public class SpellDurationPercentCalculator : PropertyCalculator
 {
     public override int CalcValue(GameLiving living, eProperty property)

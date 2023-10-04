@@ -10,7 +10,7 @@ namespace DOL.GS.PropertyCalc;
 ///                    category 4 kicks in at last
 /// BuffBonusMultCategory1 used after all buffs/debuffs
 /// </summary>
-[APropertyCalculator(eProperty.SpellLevel)]
+[PropertyCalculator(eProperty.SpellLevel)]
 public class SpellLevelCalculator : PropertyCalculator
 {
 	public SpellLevelCalculator() { }

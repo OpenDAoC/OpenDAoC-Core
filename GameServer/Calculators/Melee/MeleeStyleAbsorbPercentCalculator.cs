@@ -1,6 +1,6 @@
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.StyleAbsorb)]
+[PropertyCalculator(eProperty.StyleAbsorb)]
 public class MeleeStyleAbsorbPercentCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)

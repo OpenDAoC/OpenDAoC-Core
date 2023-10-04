@@ -6,7 +6,7 @@ namespace DOL.GS.PropertyCalc
 	/// Denotes a class as a property calculator. Must also implement IPropertyCalculator.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
-	public class APropertyCalculator : Attribute
+	public class PropertyCalculatorAttribute : Attribute
 	{
 		/// <summary>
 		/// Defines lowest property of calculator properties range
@@ -37,7 +37,7 @@ namespace DOL.GS.PropertyCalc
 		/// Constructs a new calculator attribute for just one property
 		/// </summary>
 		/// <param name="prop">The property calculator is assigned to</param>
-		public APropertyCalculator(eProperty prop) : this(prop, prop)
+		public PropertyCalculatorAttribute(eProperty prop) : this(prop, prop)
 		{
 		}
 
@@ -46,7 +46,7 @@ namespace DOL.GS.PropertyCalc
 		/// </summary>
 		/// <param name="min">The lowest property in range</param>
 		/// <param name="max">The highest property in range</param>
-		public APropertyCalculator(eProperty min, eProperty max)
+		public PropertyCalculatorAttribute(eProperty min, eProperty max)
 		{
 			if (min > max)
 				throw new ArgumentException("min property is higher than max (min=" + (int)min + " max=" + (int)max + ")");

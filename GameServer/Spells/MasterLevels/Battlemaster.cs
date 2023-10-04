@@ -804,7 +804,7 @@ namespace DOL.GS.PropertyCalc
     /// BuffBonusCategory4 unused
     /// BuffBonusMultCategory1 unused
     /// </summary>
-    [APropertyCalculator(eProperty.KeepDamage)]
+    [PropertyCalculator(eProperty.KeepDamage)]
     public class KeepDamagePercentCalculator : PropertyCalculator
     {
         public override int CalcValue(GameLiving living, eProperty property)

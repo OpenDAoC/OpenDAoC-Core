@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[APropertyCalculator(eProperty.WeaponSkill)]
+[PropertyCalculator(eProperty.WeaponSkill)]
 public class WeaponSkillPercentCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)

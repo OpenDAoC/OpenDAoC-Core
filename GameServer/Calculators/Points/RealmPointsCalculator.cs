@@ -5,7 +5,7 @@ namespace DOL.GS.PropertyCalc;
 /// <summary>
 /// Calculator for RP % bonus
 /// </summary>
-[APropertyCalculator(eProperty.RealmPoints)]
+[PropertyCalculator(eProperty.RealmPoints)]
 public class RealmPointsCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, eProperty property)
