@@ -73,7 +73,6 @@
     <TranslationFiles Include="Languages\CZ\GameObjects\CommanderPet.txt" />
     <TranslationFiles Include="Languages\DE\AI.txt" />
     <TranslationFiles Include="Languages\DE\Commands\PlayerCommands.txt" />
-    <TranslationFiles Include="Languages\DE\Crafting.txt" />
     <TranslationFiles Include="Languages\DE\Effects.txt" />
     <TranslationFiles Include="Languages\DE\Expansions\Atlantis.txt" />
     <TranslationFiles Include="Languages\DE\GameObjects\GameDoor.txt" />
@@ -100,7 +99,6 @@
     <TranslationFiles Include="Languages\DE\GameUtils\GameUtils.txt" />
     <TranslationFiles Include="Languages\DE\GameUtils\money.txt" />
     <TranslationFiles Include="Languages\DE\Housing.txt" />
-    <TranslationFiles Include="Languages\DE\Keeps.txt" />
     <TranslationFiles Include="Languages\DE\Keeps\Guards.txt" />
     <TranslationFiles Include="Languages\DE\Keeps\Managers.txt" />
     <TranslationFiles Include="Languages\DE\OtherSentences.txt" />
@@ -145,7 +143,6 @@
     <TranslationFiles Include="Languages\EN\Commands\AdminCommands.txt" />
     <TranslationFiles Include="Languages\EN\Commands\GMCommands.txt" />
     <TranslationFiles Include="Languages\EN\Commands\PlayerCommands.txt" />
-    <TranslationFiles Include="Languages\EN\Crafting.txt" />
     <TranslationFiles Include="Languages\EN\Effects.txt" />
     <TranslationFiles Include="Languages\EN\Expansions\Atlantis.txt" />
     <TranslationFiles Include="Languages\EN\Expansions\MasterLevel.txt" />
@@ -170,7 +167,6 @@
     <TranslationFiles Include="Languages\EN\GameObjects\Living\NPCs\Merchants\GameStableMaster.txt" />
     <TranslationFiles Include="Languages\EN\GameObjects\Living\NPCs\Other.txt" />
     <TranslationFiles Include="Languages\EN\GameObjects\Living\NPCs\Recharger.txt" />
-    <TranslationFiles Include="Languages\EN\GameUtils.txt" />
     <TranslationFiles Include="Languages\EN\GameUtils\Guild.txt" />
     <TranslationFiles Include="Languages\EN\GameUtils\money.txt" />
     <TranslationFiles Include="Languages\EN\Housing.txt" />
@@ -179,7 +175,6 @@
     <TranslationFiles Include="Languages\EN\Keeps\Managers.txt" />
     <TranslationFiles Include="Languages\EN\Language-EN.txt" />
     <TranslationFiles Include="Languages\EN\OtherSentences.txt" />
-    <TranslationFiles Include="Languages\EN\Players\Ability.txt" />
     <TranslationFiles Include="Languages\EN\Players\PlayerClasses.txt" />
     <TranslationFiles Include="Languages\EN\Players\PlayerRaces.txt" />
     <TranslationFiles Include="Languages\EN\Players\PlayerRealmTitles.txt" />
@@ -211,7 +206,6 @@
     <TranslationFiles Include="Languages\EN\Quests\Midgard\StolenEggs.txt" />
     <TranslationFiles Include="Languages\EN\Quests\Midgard\TheBirthdayGift.txt" />
     <TranslationFiles Include="Languages\EN\RealmAbilities.txt" />
-    <TranslationFiles Include="Languages\EN\SkillHandler.txt" />
     <TranslationFiles Include="Languages\EN\Spells.txt" />
     <TranslationFiles Include="Languages\EN\World\World.txt" />
     <TranslationFiles Include="Languages\EN\World\Zones.txt" />
@@ -317,18 +311,16 @@
     <Folder Include="AAA\Enums*\Ranged\" />
     <Folder Include="AAA\Enums*\Spells\" />
     <Folder Include="AAA\Enums*\Stats\" />
+    <Folder Include="AI\States\Living\NPCs\Mobs\" />
     <Folder Include="Expansions\Catacombs\" />
     <Folder Include="Expansions\Classic\" />
-    <Folder Include="Expansions\Foundations\Managers\" />
     <Folder Include="Expansions\NewFrontiers\" />
     <Folder Include="Expansions\ShroudedIsles\" />
-    <Folder Include="Expansions\TrialsOfAtlantis\" />
-    <Folder Include="GameObjects\Living\Doors\Managers\" />
-    <Folder Include="GameObjects\Living\NPCs\Custom\" />
-    <Folder Include="GameUtils\Interface\" />
-    <Folder Include="Scripts\Custom\Commands\Admins\" />
-    <Folder Include="Scripts\Custom\Commands\GMs\" />
-    <Folder Include="Scripts\Custom\Commands\Players\" />
+    <Folder Include="GameObjects\Living\NPCs\Mobs\Albion\Classic\" />
+    <Folder Include="GameObjects\Living\NPCs\Mobs\Albion\ShroudedIsles\" />
+    <Folder Include="GameObjects\Living\NPCs\Mobs\Hibernia\Classic\" />
+    <Folder Include="GameObjects\Living\NPCs\Mobs\Midgard\Classic\" />
+    <Folder Include="GameObjects\Living\NPCs\Mobs\Midgard\ShroudedIsles\" />
   </ItemGroup>
   <Target Name="CopyFiles" AfterTargets="AfterBuild">
     <Copy SourceFiles="@(TranslationFiles)" DestinationFiles="@(TranslationFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\languages\%(RecursiveDir)%(Filename)%(Extension)')" />

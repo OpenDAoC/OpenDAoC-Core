@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using DOL.GS.Scripts;
+using ECS.Debug;
 using log4net;
 
 namespace DOL.GS
@@ -52,7 +53,7 @@ namespace DOL.GS
         private static void Tick(object obj)
         {
             _stopwatch.Restart();
-            ECS.Debug.Diagnostics.StartPerfCounter(THREAD_NAME);
+            Diagnostics.StartPerfCounter(THREAD_NAME);
 
             try
             {
@@ -83,9 +84,9 @@ namespace DOL.GS
             if (ZoneBonusRotator._lastRvRChangeTick == 0)
                 ZoneBonusRotator._lastRvRChangeTick = GameLoopTime;
 
-            ECS.Debug.Diagnostics.Tick();
+            Diagnostics.Tick();
             CurrentServiceTick = "";
-            ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
+            Diagnostics.StopPerfCounter(THREAD_NAME);
             GameLoopTime = GetCurrentTime();
             _stopwatch.Stop();
 
