@@ -6,11 +6,11 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
 
-public class Realm
+public class ApiRealm
 {
     private readonly IMemoryCache _cache;
 
-    public Realm()
+    public ApiRealm()
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
     }

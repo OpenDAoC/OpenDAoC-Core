@@ -8,11 +8,11 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
 
-public class Utils
+public class ApiUtils
 {
     private readonly IMemoryCache _cache;
 
-    public Utils()
+    public ApiUtils()
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
     }
@@ -130,15 +130,15 @@ public class Utils
         return jsonString;
     }
 
-    public IList<Player.PlayerInfo> GetTopRP()
+    public IList<ApiPlayer.PlayerInfo> GetTopRP()
     {
         var _topRPKey = "api_top_rp";
 
-        var _player = new Player();
+        var _player = new ApiPlayer();
 
-        if (!_cache.TryGetValue(_topRPKey, out IList<Player.PlayerInfo> topRP))
+        if (!_cache.TryGetValue(_topRPKey, out IList<ApiPlayer.PlayerInfo> topRP))
         {
-            topRP = new List<Player.PlayerInfo>();
+            topRP = new List<ApiPlayer.PlayerInfo>();
 
             var topRpPlayers = DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("RealmPoints").IsLessThan(7000000)).OrderByDescending(x => x.RealmPoints).Take(10).ToDictionary(x => x.Name, x => x.RealmPoints);
             

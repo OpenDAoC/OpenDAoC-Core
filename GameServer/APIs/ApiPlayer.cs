@@ -6,11 +6,11 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
 
-public class Player
+public class ApiPlayer
 {
     private static IMemoryCache _cache;
 
-    public Player()
+    public ApiPlayer()
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
     }

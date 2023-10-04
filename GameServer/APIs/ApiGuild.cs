@@ -4,11 +4,11 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
 
-public class Guild
+public class ApiGuild
 {
     private static IMemoryCache _cache;
 
-    public Guild()
+    public ApiGuild()
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
     }

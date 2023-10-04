@@ -3,11 +3,11 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
 
-public class Shutdown
+public class ApiShutdown
 {
     private IMemoryCache _cache;
 
-    public Shutdown()
+    public ApiShutdown()
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
     }

@@ -6,13 +6,13 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace DOL.GS.API;
 
-public class News
+public class ApiNews
 {
     private readonly IMemoryCache _cache;
 
     private readonly int _numNews = 100;
 
-    public News()
+    public ApiNews()
     {
         _cache = new MemoryCache(new MemoryCacheOptions());
     }

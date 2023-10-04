@@ -2,9 +2,9 @@
 
 namespace DOL.GS.API;
 
-public class PasswordVerification
+public class ApiPasswordVerification
 {
-    public PasswordVerification()
+    public ApiPasswordVerification()
     {
 
     }
