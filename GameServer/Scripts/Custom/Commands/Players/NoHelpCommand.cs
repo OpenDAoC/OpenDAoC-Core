@@ -25,7 +25,7 @@ public class NoHelpCommand : ACommandHandler, ICommandHandler
 			}
 		
 			const string customKey = "grouped_char";
-			var hasGrouped = DOLDB<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
+			var hasGrouped = CoreDb<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
 				.IsEqualTo(client.Player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 		
 			DateTime d1 = new DateTime(2022, 1, 4);
@@ -103,7 +103,7 @@ public class NoHelpCommand : ACommandHandler, ICommandHandler
 				player.Out.SendMessage("You have chickened out. You can now run back to your ...friends.",
 					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				const string customKey = "grouped_char";
-				var hasGrouped = DOLDB<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
+				var hasGrouped = CoreDb<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
 					.IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 				if (hasGrouped == null)
 				{

@@ -461,7 +461,7 @@ namespace DOL.GS.Commands
 							else
 							{
 								obj = ClientService.GetPlayerByExactName(playername);
-								obj ??= DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playername));
+								obj ??= CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playername));
 							}
 							if (obj == null)
 							{
@@ -536,7 +536,7 @@ namespace DOL.GS.Commands
 
 							string accountName = String.Join(" ", args, 2, args.Length - 2);
 							// Patch 1.84: look for offline players
-							var chs = DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("AccountName").IsEqualTo(accountName).And(DB.Column("GuildID").IsEqualTo(client.Player.GuildID)));
+							var chs = CoreDb<DbCoreCharacter>.SelectObjects(DB.Column("AccountName").IsEqualTo(accountName).And(DB.Column("GuildID").IsEqualTo(client.Player.GuildID)));
 							if (chs.Count > 0)
 							{
 								GameClient myclient = ClientService.GetClientFromAccountName(accountName);
@@ -1303,7 +1303,7 @@ namespace DOL.GS.Commands
 								obj = ClientService.GetPlayerByExactName(playerName);
 								if (obj == null)
 								{
-									obj = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
+									obj = CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
 									useDB = true;
 								}
 							}
@@ -1459,7 +1459,7 @@ namespace DOL.GS.Commands
 								obj = ClientService.GetPlayerByExactName(playername);
 								if (obj == null)
 								{
-									obj = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playername));
+									obj = CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playername));
 									useDB = true;
 								}
 							}
@@ -1768,7 +1768,7 @@ namespace DOL.GS.Commands
 								}
 								else
 								{
-									DbCoreCharacter c = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playername));
+									DbCoreCharacter c = CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playername));
 
 									if (c == null)
 									{
@@ -1779,7 +1779,7 @@ namespace DOL.GS.Commands
 									accountId = c.AccountName;
 								}
 								List<DbCoreCharacter> chars = new List<DbCoreCharacter>();
-								chars.AddRange(DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("AccountName").IsEqualTo(accountId)));
+								chars.AddRange(CoreDb<DbCoreCharacter>.SelectObjects(DB.Column("AccountName").IsEqualTo(accountId)));
 								//chars.AddRange((Character[])DOLDB<CharacterArchive>.SelectObjects("AccountID = '" + accountId + "'"));
 
 								foreach (DbCoreCharacter ply in chars)
@@ -1800,7 +1800,7 @@ namespace DOL.GS.Commands
 								}
 								else
 								{
-									var c = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(args[2]));
+									var c = CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(args[2]));
 									if (c == null)
 									{
 										client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.PlayerNotFound"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

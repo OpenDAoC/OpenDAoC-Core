@@ -475,7 +475,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						var banacc = DOLDB<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(accountname)));
+						var banacc = CoreDb<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(accountname)));
 						
 						// If no ban record exists for the specified account
 						if (banacc.Count == 0)
@@ -559,7 +559,7 @@ namespace DOL.GS.Commands
 		private static DbCoreCharacter GetCharacter(string characterName)
 		{
 			GamePlayer player = ClientService.GetPlayerByExactName(characterName);
-			return player != null ? player.DBCharacter : DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
+			return player != null ? player.DBCharacter : CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
 		}
 
 		/// <summary>
@@ -604,7 +604,7 @@ namespace DOL.GS.Commands
 			if (player != null)
 				return player.Client.Account.Name;
 
-			DbCoreCharacter characterDb = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
+			DbCoreCharacter characterDb = CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
 			return characterDb?.AccountName;
 		}
 	}

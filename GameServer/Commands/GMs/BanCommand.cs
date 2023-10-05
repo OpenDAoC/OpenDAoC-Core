@@ -47,7 +47,7 @@ public class BanCommand : ACommandHandler, ICommandHandler
 			gc = ClientService.GetPlayerByExactName(args[1])?.Client;
 		}
 
-		var acc = gc != null ? gc.Account : DOLDB<DbAccount>.SelectObject(DB.Column("Name").IsLike(args[2]));
+		var acc = gc != null ? gc.Account : CoreDb<DbAccount>.SelectObject(DB.Column("Name").IsLike(args[2]));
 		if (acc == null)
 		{
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.UnableToFindPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -85,7 +85,7 @@ public class BanCommand : ACommandHandler, ICommandHandler
 			{
 					#region Account
 				case "account":
-					var acctBans = DOLDB<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(acc.Name)));
+					var acctBans = CoreDb<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(acc.Name)));
 					if (acctBans.Count > 0)
 					{
 						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.AAlreadyBanned"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -98,7 +98,7 @@ public class BanCommand : ACommandHandler, ICommandHandler
 					#endregion Account
 					#region IP
 				case "ip":
-					var ipBans = DOLDB<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("I").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Ip").IsEqualTo(acc.LastLoginIP)));
+					var ipBans = CoreDb<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("I").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Ip").IsEqualTo(acc.LastLoginIP)));
 					if (ipBans.Count > 0)
 					{
 						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.IAlreadyBanned"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -111,7 +111,7 @@ public class BanCommand : ACommandHandler, ICommandHandler
 					#endregion IP
 					#region Both
 				case "both":
-					var acctIpBans = DOLDB<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("B").And(DB.Column("Account").IsEqualTo(acc.Name)).And(DB.Column("Ip").IsEqualTo(acc.LastLoginIP)));
+					var acctIpBans = CoreDb<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("B").And(DB.Column("Account").IsEqualTo(acc.Name)).And(DB.Column("Ip").IsEqualTo(acc.LastLoginIP)));
 					if (acctIpBans.Count > 0)
 					{
 						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.BAlreadyBanned"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);

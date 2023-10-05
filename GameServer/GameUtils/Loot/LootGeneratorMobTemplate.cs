@@ -177,7 +177,7 @@ namespace DOL.GS
 			bool isDefaultLootTemplateRefreshed = false;
 
 			// First see if there are any MobXLootTemplates associated with this mob
-			IList<DbMobDropTemplate> mxlts = DOLDB<DbMobDropTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name));
+			IList<DbMobDropTemplate> mxlts = CoreDb<DbMobDropTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name));
 
 			if (mxlts != null)
 			{
@@ -211,7 +211,7 @@ namespace DOL.GS
 
 		protected void RefreshLootTemplate(string templateName)
 		{
-			var lootTemplates = DOLDB<DbDropTemplateXItemTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(templateName));
+			var lootTemplates = CoreDb<DbDropTemplateXItemTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(templateName));
 
 			if (lootTemplates != null)
 			{

@@ -155,7 +155,7 @@ namespace DOL.GS
 				HybridDictionary itemsInPage = new HybridDictionary(MAX_ITEM_IN_TRADEWINDOWS);
 				if (m_itemsListID != null && m_itemsListID.Length > 0)
 				{
-					var itemList = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(m_itemsListID).And(DB.Column("PageNumber").IsEqualTo(page)));
+					var itemList = CoreDb<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(m_itemsListID).And(DB.Column("PageNumber").IsEqualTo(page)));
 					foreach (DbMerchantItem merchantitem in itemList)
 					{
 						DbItemTemplate item = GameServer.Database.FindObjectByKey<DbItemTemplate>(merchantitem.ItemTemplateID);
@@ -218,7 +218,7 @@ namespace DOL.GS
 
 				if (m_itemsListID != null && m_itemsListID.Length > 0)
 				{
-					var itemToFind = DOLDB<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(m_itemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo((int)slot)));
+					var itemToFind = CoreDb<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(m_itemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo((int)slot)));
 					if (itemToFind != null)
 					{
 						item = GameServer.Database.FindObjectByKey<DbItemTemplate>(itemToFind.ItemTemplateID);
@@ -245,7 +245,7 @@ namespace DOL.GS
 				Hashtable allItems = new Hashtable();
 				if (m_itemsListID != null && m_itemsListID.Length > 0)
 				{
-					var itemList = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(m_itemsListID));
+					var itemList = CoreDb<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(m_itemsListID));
 					foreach (DbMerchantItem merchantitem in itemList)
 					{
 						DbItemTemplate item = GameServer.Database.FindObjectByKey<DbItemTemplate>(merchantitem.ItemTemplateID);

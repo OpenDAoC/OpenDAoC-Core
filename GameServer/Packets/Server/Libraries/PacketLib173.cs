@@ -277,7 +277,7 @@ namespace DOL.GS.PacketHandler
 							if (characters[j].AccountSlot == i)
 							{
 								pak.FillString(characters[j].Name, 24);
-								items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
+								items = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
 								byte ExtensionTorso = 0;
 								byte ExtensionGloves = 0;
 								byte ExtensionBoots = 0;

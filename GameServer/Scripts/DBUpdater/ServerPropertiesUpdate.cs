@@ -25,8 +25,8 @@ namespace DOL.GS.DatabaseUpdate
     /// <summary>
     /// Checks and updates the ServerProperty table.
     /// </summary>
-    [DatabaseUpdate]
-    public class ServerPropertiesUpdate : IDatabaseUpdater
+    [DbUpdate]
+    public class ServerPropertiesUpdate : IDbUpdater
     {
         /// <summary>
         /// Defines a logger for this class.

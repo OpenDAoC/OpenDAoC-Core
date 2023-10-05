@@ -125,7 +125,7 @@ namespace DOL.GS.Commands
 					{
 						string currentID = targetMerchant.TradeItems.ItemsListID;
 
-						var itemList = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(currentID));
+						var itemList = CoreDb<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(currentID));
 						foreach (DbMerchantItem merchantItem in itemList)
 						{
 							DbMerchantItem item = new DbMerchantItem();
@@ -246,7 +246,7 @@ namespace DOL.GS.Commands
 												return;
 											}
 
-											var item = DOLDB<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo(slot)));
+											var item = CoreDb<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo(slot)));
 											if (item == null)
 											{
 												item = new DbMerchantItem();
@@ -305,7 +305,7 @@ namespace DOL.GS.Commands
 												return;
 											}
 
-											DbMerchantItem item = DOLDB<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo(slot)));
+											DbMerchantItem item = CoreDb<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo(slot)));
 											if (item == null)
 											{
 												DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Merchant.Articles.Remove.SlotInPageIsAEmpty", slot, page));
@@ -342,7 +342,7 @@ namespace DOL.GS.Commands
 											}
 											DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Merchant.Articles.Delete.DeletingListTemp"));
 
-											var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID));
+											var merchantitems = CoreDb<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(targetMerchant.TradeItems.ItemsListID));
 											if (merchantitems.Count > 0)
 											{
 												GameServer.Database.DeleteObject(merchantitems);

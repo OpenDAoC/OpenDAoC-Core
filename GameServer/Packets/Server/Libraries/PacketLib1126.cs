@@ -121,7 +121,7 @@ namespace DOL.GS.PacketHandler
 				{
 					var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.MinEquipable)
 						.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.MaxEquipable));
-					var allItems = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
+					var allItems = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
 
 					foreach (DbInventoryItem item in allItems)
 					{

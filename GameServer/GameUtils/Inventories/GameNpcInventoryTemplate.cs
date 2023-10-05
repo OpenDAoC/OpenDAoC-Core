@@ -284,7 +284,7 @@ namespace DOL.GS
 				if (m_npcEquipmentCache.ContainsKey(templateID))
 					npcEquip = m_npcEquipmentCache[templateID];
 				else
-					npcEquip = DOLDB<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
+					npcEquip = CoreDb<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
 
 				if (npcEquip == null || npcEquip.Count == 0)
 				{
@@ -350,7 +350,7 @@ namespace DOL.GS
 					if (templateID == null)
 						throw new ArgumentNullException("templateID");
 
-					var npcEquipment = DOLDB<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
+					var npcEquipment = CoreDb<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
 
 					// delete removed item templates
 					foreach (DbNpcEquipment npcItem in npcEquipment)

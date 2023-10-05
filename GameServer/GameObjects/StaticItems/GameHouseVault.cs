@@ -88,7 +88,7 @@ namespace DOL.GS
                 Index = (byte)Index
             };
 
-            var hpitem = DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber).And(DB.Column("HookpointID").IsEqualTo(hookpointID)));
+            var hpitem = CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber).And(DB.Column("HookpointID").IsEqualTo(hookpointID)));
 
 			// if there isn't anything already on this hookpoint then add it to the DB
 			if (hpitem.Count == 0)

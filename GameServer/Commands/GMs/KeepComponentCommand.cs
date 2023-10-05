@@ -282,7 +282,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        var dbcomponent = DOLDB<DbKeepComponent>.SelectObject(DB.Column("KeepID").IsEqualTo(component.Keep.KeepID).And(DB.Column("ID").IsEqualTo(component.ID)));
+                        var dbcomponent = CoreDb<DbKeepComponent>.SelectObject(DB.Column("KeepID").IsEqualTo(component.Keep.KeepID).And(DB.Column("ID").IsEqualTo(component.ID)));
                         component.ComponentX = dbcomponent.X;
                         component.ComponentY = dbcomponent.Y;
                         component.ComponentHeading = dbcomponent.Heading;

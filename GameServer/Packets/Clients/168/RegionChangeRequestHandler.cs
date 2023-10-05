@@ -58,7 +58,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				whereClause = whereClause.And(realmFilter);
 			}
 
-			DbZonePoint zonePoint = DOLDB<DbZonePoint>.SelectObject(whereClause);
+			DbZonePoint zonePoint = CoreDb<DbZonePoint>.SelectObject(whereClause);
 
 			if (zonePoint == null)
 			{

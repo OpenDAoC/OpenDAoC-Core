@@ -68,7 +68,7 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 		string line = string.Join(" ", args, 1, args.Length - 2);
 		line = GameServer.Database.Escape(line);
 
-		var dbSpec = DOLDB<DbSpecialization>.SelectObject(DB.Column("KeyName").IsLike($"{line}%"));
+		var dbSpec = CoreDb<DbSpecialization>.SelectObject(DB.Column("KeyName").IsLike($"{line}%"));
 
 		Specialization spec = null;
 

@@ -71,7 +71,7 @@ namespace DOL.GS
 
         private void SaveFactionAggroToPlayer(GamePlayer player)
         {
-            DbFactionAggroLevel dbFactionAggroLevel = DOLDB<DbFactionAggroLevel>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.ObjectId).And(DB.Column("FactionID").IsEqualTo(Id)));
+            DbFactionAggroLevel dbFactionAggroLevel = CoreDb<DbFactionAggroLevel>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.ObjectId).And(DB.Column("FactionID").IsEqualTo(Id)));
 
             if (dbFactionAggroLevel == null)
             {

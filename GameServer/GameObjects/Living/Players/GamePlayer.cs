@@ -5127,7 +5127,7 @@ namespace DOL.GS
             //check for cached loyalty days, and grab value if needed
             if (numCurrentLoyalDays == 0)
             {
-                DbAccountXRealmLoyalty realmLoyalty = DOLDB<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+                DbAccountXRealmLoyalty realmLoyalty = CoreDb<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
                 if (realmLoyalty == null)
                 {
                     DbAccountXRealmLoyalty newLoyalty = new DbAccountXRealmLoyalty();
@@ -5153,7 +5153,7 @@ namespace DOL.GS
 
             if (loyaltyCheck < DateTime.Now.AddDays(-1))
             {
-                List<DbAccountXRealmLoyalty> rloyal = new List<DbAccountXRealmLoyalty>(DOLDB<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
+                List<DbAccountXRealmLoyalty> rloyal = new List<DbAccountXRealmLoyalty>(CoreDb<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
                 bool realmFound = false;
                 foreach (var rl in rloyal)
                 {
@@ -5857,7 +5857,7 @@ namespace DOL.GS
 
         public void RaiseRealmLoyaltyFloor(int amount)
         {
-            DbAccountXRealmLoyalty realmLoyalty = DOLDB<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+            DbAccountXRealmLoyalty realmLoyalty = CoreDb<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
             if (realmLoyalty != null)
             {
@@ -7132,7 +7132,7 @@ namespace DOL.GS
 
             if (HCFlag)
             {
-                DbCoreCharacter cha = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(Name));
+                DbCoreCharacter cha = CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(Name));
                 if (cha == null) return;
                 Client.Out.SendPlayerQuit(true);
                 GameServer.Database.DeleteObject(cha);
@@ -9030,7 +9030,7 @@ namespace DOL.GS
 
             RefreshItemBonuses();
 
-            var playerDeck = DOLDB<DbCoreCharacterXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
+            var playerDeck = CoreDb<DbCoreCharacterXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
             if (playerDeck != null)
             {
                 this.RandomNumberDeck.LoadDeckFromJSON((playerDeck.Deck));
@@ -11639,7 +11639,7 @@ namespace DOL.GS
             m_dbCharacter = (DbCoreCharacter)obj;
 
             LoyaltyManager.CachePlayer(this);
-            List<DbAccountXRealmLoyalty> realmLoyaltyList = DOLDB<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<DbAccountXRealmLoyalty>;
+            List<DbAccountXRealmLoyalty> realmLoyaltyList = CoreDb<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<DbAccountXRealmLoyalty>;
             DateTime lastRealmLoyaltyUpdateTime = DateTime.UnixEpoch;
             int loyaltyDays = 0;
 
@@ -11660,7 +11660,7 @@ namespace DOL.GS
             this.TempProperties.SetProperty(REALM_LOYALTY_KEY, lastRealmLoyaltyUpdateTime);
             this.TempProperties.SetProperty(CURRENT_LOYALTY_KEY, loyaltyDays);
 
-            DbAccountXMoney MoneyForRealm = DOLDB<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+            DbAccountXMoney MoneyForRealm = CoreDb<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
             if (MoneyForRealm == null)
             {
@@ -11832,7 +11832,7 @@ namespace DOL.GS
             LoadQuests();
 
             // Load Task object of player ...
-            var tasks = DOLDB<DbTask>.SelectObjects(DB.Column("Character_ID").IsEqualTo(InternalID));
+            var tasks = CoreDb<DbTask>.SelectObjects(DB.Column("Character_ID").IsEqualTo(InternalID));
             if (tasks.Count == 1)
             {
                 m_task = AbstractTask.LoadFromDatabase(this, tasks[0]);
@@ -11844,7 +11844,7 @@ namespace DOL.GS
             }
 
             // Load ML steps of player ...
-            var mlsteps = DOLDB<DbCharacterXMasterLevel>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+            var mlsteps = CoreDb<DbCharacterXMasterLevel>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
             if (mlsteps.Count > 0)
             {
                 foreach (DbCharacterXMasterLevel mlstep in mlsteps)
@@ -11891,7 +11891,7 @@ namespace DOL.GS
         {
             try
             {
-                var existingDeck = DOLDB<DbCoreCharacterXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
+                var existingDeck = CoreDb<DbCoreCharacterXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
                 if (existingDeck != null)
                 {
                     existingDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
@@ -11905,7 +11905,7 @@ namespace DOL.GS
                     GameServer.Database.AddObject(playerDeck);
                 }
 
-                DbAccountXRealmLoyalty realmLoyalty = DOLDB<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+                DbAccountXRealmLoyalty realmLoyalty = CoreDb<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
                 if (realmLoyalty == null)
                 {
@@ -11922,7 +11922,7 @@ namespace DOL.GS
                     GameServer.Database.SaveObject(realmLoyalty);
                 }
 
-                DbAccountXMoney MoneyForRealm = DOLDB<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+                DbAccountXMoney MoneyForRealm = CoreDb<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
                 if (MoneyForRealm == null)
                 {
@@ -12608,7 +12608,7 @@ namespace DOL.GS
             _questListFinished.Clear();
 
             // Scripted quests
-            var quests = DOLDB<DbQuest>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+            var quests = CoreDb<DbQuest>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
             int activeQuestCount = 0;
 
             foreach (DbQuest dbquest in quests)
@@ -12646,7 +12646,7 @@ namespace DOL.GS
             }
 
             // Data driven quests for this player
-            var dataQuests = DOLDB<DbCharacterXDataQuest>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+            var dataQuests = CoreDb<DbCharacterXDataQuest>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
 
             foreach (DbCharacterXDataQuest quest in dataQuests)
             {
@@ -13160,7 +13160,7 @@ namespace DOL.GS
             if (DBCharacter == null)
                 return;
 
-            DbAccountXCrafting CraftingForRealm = DOLDB<DbAccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+            DbAccountXCrafting CraftingForRealm = CoreDb<DbAccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
             if (CraftingForRealm == null)
             {
@@ -13956,7 +13956,7 @@ namespace DOL.GS
         public void Achieve(string achievementName, int count = 1)
         {
             //DOL.Database.Achievement
-            DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+            DbAchievement achievement = CoreDb<DbAchievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
 
             if (achievement == null)
             {
@@ -13976,7 +13976,7 @@ namespace DOL.GS
         public void SetAchievementTo(string achievementName, int value)
         {
             //DOL.Database.Achievement
-            DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+            DbAchievement achievement = CoreDb<DbAchievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
 
             if (achievement == null)
             {
@@ -13995,7 +13995,7 @@ namespace DOL.GS
 
         public int GetAchievementProgress(string achievementName)
         {
-            DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID")
+            DbAchievement achievement = CoreDb<DbAchievement>.SelectObject(DB.Column("AccountID")
                 .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
 
             if (achievement == null)

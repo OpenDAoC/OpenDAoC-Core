@@ -326,7 +326,7 @@ namespace DOL.GS
 				foreach (string lineName in m_spellLineIndex.Keys)
 				{
 					// Get SpellLine X Spell relation
-					var spells = DOLDB<DbLineXSpell>.SelectObjects(DB.Column("LineName").IsEqualTo(lineName));
+					var spells = CoreDb<DbLineXSpell>.SelectObjects(DB.Column("LineName").IsEqualTo(lineName));
 
 					// Load them if any records.
 					if (spells != null)
@@ -2355,7 +2355,7 @@ namespace DOL.GS
 			m_syncLockUpdates.EnterWriteLock();
 			try
 			{
-				var dbSpell = DOLDB<DbSpell>.SelectObject(DB.Column("SpellID").IsEqualTo(spellID));
+				var dbSpell = CoreDb<DbSpell>.SelectObject(DB.Column("SpellID").IsEqualTo(spellID));
 
 				if (dbSpell != null)
 				{

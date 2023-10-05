@@ -45,7 +45,7 @@ namespace DOL.GS.Commands
 					info.Add(" Zone Waterlevel: " + client.Player.CurrentZone.Waterlevel);
 
 					zone = WorldMgr.GetZone(client.Player.CurrentZone.ID);
-					var dbZone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(zone.ID).And(DB.Column("RegionID").IsEqualTo(zone.ZoneRegion.ID)));
+					var dbZone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(zone.ID).And(DB.Column("RegionID").IsEqualTo(zone.ZoneRegion.ID)));
 
 					if (dbZone != null)
 					{
@@ -79,7 +79,7 @@ namespace DOL.GS.Commands
 					else
 						zone.IsDivingEnabled = false;
 
-					var dbZone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(zone.ID).And(DB.Column("RegionID").IsEqualTo(zone.ZoneRegion.ID)));
+					var dbZone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(zone.ID).And(DB.Column("RegionID").IsEqualTo(zone.ZoneRegion.ID)));
 					dbZone.DivingFlag = divingFlag;
 					GameServer.Database.SaveObject(dbZone);
 
@@ -102,7 +102,7 @@ namespace DOL.GS.Commands
 					int waterlevel = Convert.ToInt32(args[2]);
 					zone.Waterlevel = waterlevel;
 
-					var dbZone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(zone.ID).And(DB.Column("RegionID").IsEqualTo(zone.ZoneRegion.ID)));
+					var dbZone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(zone.ID).And(DB.Column("RegionID").IsEqualTo(zone.ZoneRegion.ID)));
 					dbZone.WaterLevel = waterlevel;
 					GameServer.Database.SaveObject(dbZone);
 
@@ -195,7 +195,7 @@ namespace DOL.GS.Commands
             }
 
             //find the zone.
-            var dbZone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(zone.ID).And(DB.Column("RegionID").IsEqualTo(zone.ZoneRegion.ID)));
+            var dbZone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(zone.ID).And(DB.Column("RegionID").IsEqualTo(zone.ZoneRegion.ID)));
             //update the zone bonuses.
             dbZone.Bountypoints = zone.BonusBountypoints;
             dbZone.Realmpoints = zone.BonusRealmpoints;

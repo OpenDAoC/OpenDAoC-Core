@@ -33,7 +33,7 @@ public class LevelCommand : ACommandHandler, ICommandHandler
 				client.Player.Out.SendMessage($"This command will be available after {endSoftLaunch} UTC+1", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			var alreadyUsed = DOLDB<DbAccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(client.Account.Name).And(DB.Column("KeyName").IsEqualTo(SoftLaunchLevelKey)));
+			var alreadyUsed = CoreDb<DbAccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(client.Account.Name).And(DB.Column("KeyName").IsEqualTo(SoftLaunchLevelKey)));
 			
 			if (alreadyUsed != null)
 			{
@@ -92,7 +92,7 @@ public class LevelCommand : ACommandHandler, ICommandHandler
 					return;
 				}
 				
-				var alreadyUsed = DOLDB<DbAccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(client.Account.Name).And(DB.Column("KeyName").IsEqualTo(SoftLaunchLevelGearKey)));
+				var alreadyUsed = CoreDb<DbAccountXCustomParam>.SelectObject(DB.Column("Name").IsEqualTo(client.Account.Name).And(DB.Column("KeyName").IsEqualTo(SoftLaunchLevelGearKey)));
 				
 				if (alreadyUsed != null)
 				{

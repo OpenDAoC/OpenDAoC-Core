@@ -240,7 +240,7 @@ namespace DOL.GS.Keeps
 				// Battlegrounds, ignore all but GameKeepDoor
 				whereClause = whereClause.And(DB.Column("ClassType").IsEqualTo("DOL.GS.Keeps.GameKeepDoor"));
 			}
-			var DBPositions = DOLDB<DbKeepPosition>.SelectObjects(whereClause);
+			var DBPositions = CoreDb<DbKeepPosition>.SelectObjects(whereClause);
 
 			foreach (DbKeepPosition position in DBPositions)
 			{

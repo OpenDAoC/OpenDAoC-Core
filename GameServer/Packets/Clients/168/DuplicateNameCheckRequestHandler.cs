@@ -34,7 +34,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			else
 				name = packet.ReadString(30);
 
-			var character = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(name));
+			var character = CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(name));
 			byte result = 0;
 			// Bad Name check.
 			if (character != null)

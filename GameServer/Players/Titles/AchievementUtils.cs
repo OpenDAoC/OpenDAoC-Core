@@ -95,7 +95,7 @@ public class AchievementUtils
         List<string> temp = new List<string>();
         temp.Clear();
 
-        var achievements = DOLDB<DbAchievement>.SelectObjects(DB.Column("AccountID")
+        var achievements = CoreDb<DbAchievement>.SelectObjects(DB.Column("AccountID")
             .IsEqualTo(player.Client.Account.ObjectId));
 
         if (achievements == null) return temp;
@@ -164,7 +164,7 @@ public class AchievementUtils
     
     public static List<DbAchievement> GetAchievementInfoForPlayerPerRealm(GamePlayer player, int realm)
     {
-        var achievements = DOLDB<DbAchievement>.SelectObjects(DB.Column("AccountID")
+        var achievements = CoreDb<DbAchievement>.SelectObjects(DB.Column("AccountID")
             .IsEqualTo(player.Client.Account.ObjectId));
 
         if (achievements == null) return null;
@@ -182,7 +182,7 @@ public class AchievementUtils
 
     public static bool CheckPlayerCredit(string mob, GamePlayer player, int realm)
     {
-        var achievements = DOLDB<DbAchievement>.SelectObjects(DB.Column("AccountID")
+        var achievements = CoreDb<DbAchievement>.SelectObjects(DB.Column("AccountID")
             .IsEqualTo(player.Client.Account.ObjectId));
         var hasCredit = false;
         
@@ -204,7 +204,7 @@ public class AchievementUtils
     
     public static bool CheckAccountCredit(string mob, GamePlayer player)
     {
-        var achievements = DOLDB<DbAchievement>.SelectObjects(DB.Column("AccountID")
+        var achievements = CoreDb<DbAchievement>.SelectObjects(DB.Column("AccountID")
             .IsEqualTo(player.Client.Account.ObjectId));
         var hasCredit = false;
         

@@ -1,80 +1,60 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.Database;
 using log4net;
 
-namespace DOL.GS.DatabaseConverters
+namespace DOL.GS.DatabaseConverters;
+
+/// <summary>
+/// Converts the database format to the version 2
+/// </summary>
+[DbConverter(2)]
+public class Version002 : IDbConverter
 {
 	/// <summary>
-	/// Converts the database format to the version 2
+	/// Defines a logger for this class.
 	/// </summary>
-	[DatabaseConverter(2)]
-	public class Version002 : IDatabaseConverter
+	private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+	/// <summary>
+	/// style icon field added this should copy the ID value
+	/// realm 6 should be peace flag and realm changed
+	/// </summary>
+	public void ConvertDatabase()
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		log.Info("Database Version 2 Convert Started");
 
-		/// <summary>
-		/// style icon field added this should copy the ID value
-		/// realm 6 should be peace flag and realm changed
-		/// </summary>
-		public void ConvertDatabase()
+		log.Info("Converting Styles");
+		var styles = GameServer.Database.SelectAllObjects<DbStyle>();
+		foreach (DbStyle style in styles)
 		{
-			log.Info("Database Version 2 Convert Started");
+			style.Icon = style.ID;
 
-			log.Info("Converting Styles");
-			var styles = GameServer.Database.SelectAllObjects<DbStyle>();
-			foreach (DbStyle style in styles)
-			{
-				style.Icon = style.ID;
-
-				GameServer.Database.SaveObject(style);
-			}
-			log.Info(styles.Count + " Styles Processed");
-
-			log.Info("Converting Mobs");
-			var mobs = DOLDB<DbMob>.SelectObjects(DB.Column("Realm").IsEqualTo(6));
-			foreach (DbMob mob in mobs)
-			{
-				if ((mob.Flags & (uint)GameNPC.eFlags.PEACE) == 0)
-				{
-					mob.Flags ^= (uint)GameNPC.eFlags.PEACE;
-				}
-
-				Region region = WorldMgr.GetRegion(mob.Region);
-				if (region != null)
-				{
-					Zone zone = region.GetZone(mob.X, mob.Y);
-					if (zone != null)
-					{
-						mob.Realm = (byte)zone.Realm;
-					}
-				}
-
-				GameServer.Database.SaveObject(mob);
-			}
-			log.Info(mobs.Count + " Mobs Processed");
-
-			log.Info("Database Version 2 Convert Finished");
+			GameServer.Database.SaveObject(style);
 		}
+		log.Info(styles.Count + " Styles Processed");
+
+		log.Info("Converting Mobs");
+		var mobs = CoreDb<DbMob>.SelectObjects(DB.Column("Realm").IsEqualTo(6));
+		foreach (DbMob mob in mobs)
+		{
+			if ((mob.Flags & (uint)GameNPC.eFlags.PEACE) == 0)
+			{
+				mob.Flags ^= (uint)GameNPC.eFlags.PEACE;
+			}
+
+			Region region = WorldMgr.GetRegion(mob.Region);
+			if (region != null)
+			{
+				Zone zone = region.GetZone(mob.X, mob.Y);
+				if (zone != null)
+				{
+					mob.Realm = (byte)zone.Realm;
+				}
+			}
+
+			GameServer.Database.SaveObject(mob);
+		}
+		log.Info(mobs.Count + " Mobs Processed");
+
+		log.Info("Database Version 2 Convert Finished");
 	}
 }

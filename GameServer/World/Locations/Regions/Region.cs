@@ -727,8 +727,8 @@ namespace DOL.GS
                 return;
 
             Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
-            var staticObjs = DOLDB<DbWorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
-            var bindPoints = DOLDB<DbBindPoint>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
+            var staticObjs = CoreDb<DbWorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
+            var bindPoints = CoreDb<DbBindPoint>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
             int count = mobObjs.Length + staticObjs.Count;
             if (count > 0) PreAllocateRegionSpace(count + 100);
             int myItemCount = staticObjs.Count;

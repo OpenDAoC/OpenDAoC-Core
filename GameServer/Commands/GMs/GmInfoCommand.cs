@@ -320,7 +320,7 @@ namespace DOL.GS.Commands
 					info.Add("");
 					info.Add(" + Loot:");
 
-					var template = DOLDB<DbLootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(target.Name));
+					var template = CoreDb<DbLootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(target.Name));
 					foreach (DbLootTemplate loot in template)
 					{
 						DbItemTemplate drop = GameServer.Database.FindObjectByKey<DbItemTemplate>(loot.ItemTemplateID);

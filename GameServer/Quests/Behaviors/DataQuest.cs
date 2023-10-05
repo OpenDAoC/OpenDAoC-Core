@@ -977,7 +977,7 @@ namespace DOL.GS.Quests
 		/// <returns></returns>
 		public static DbCharacterXDataQuest GetCharacterQuest(GamePlayer player, int ID, bool create)
 		{
-			DbCharacterXDataQuest charQuest = DOLDB<DbCharacterXDataQuest>.SelectObject(DB.Column("Character_ID").IsEqualTo(player.QuestPlayerID).And(DB.Column("DataQuestID").IsEqualTo(ID)));
+			DbCharacterXDataQuest charQuest = CoreDb<DbCharacterXDataQuest>.SelectObject(DB.Column("Character_ID").IsEqualTo(player.QuestPlayerID).And(DB.Column("DataQuestID").IsEqualTo(ID)));
 
 			if (charQuest == null && create)
 			{

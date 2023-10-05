@@ -570,7 +570,7 @@ namespace DOL.GS.Housing
 		{
 			var usedVaults = new[] {false, false, false, false};
 
-			foreach (var housePointItem in DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber).And(DB.Column("ItemTemplateID").IsLike("%_vault"))))
+			foreach (var housePointItem in CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber).And(DB.Column("ItemTemplateID").IsLike("%_vault"))))
 			{
 				if (housePointItem.Index >= 0 && housePointItem.Index <= 3)
 				{
@@ -754,7 +754,7 @@ namespace DOL.GS.Housing
 				return;
 			}
 
-			var items = DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HookpointID").IsEqualTo(position).And(DB.Column("HouseNumber").IsEqualTo(obj.CurrentHouse.HouseNumber)));
+			var items = CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HookpointID").IsEqualTo(position).And(DB.Column("HouseNumber").IsEqualTo(obj.CurrentHouse.HouseNumber)));
 			if (items.Count == 0)
 			{
 				ChatUtil.SendSystemMessage(player, "No hookpoint item found at position " + position);
@@ -825,14 +825,14 @@ namespace DOL.GS.Housing
 				return false;
 			}
 
-			var houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+			var houseCM = CoreDb<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (houseCM != null)
 			{
 				log.DebugFormat("Add CM: Found active consignment merchant in HousingConsignmentMerchant table for house {0}.", HouseNumber);
 				return false;
 			}
 
-			var obj = DOLDB<DbMob>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+			var obj = CoreDb<DbMob>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (obj != null)
 			{
 				log.DebugFormat("Add CM: Found consignment merchant in Mob table for house {0} but none in HousingConsignmentMerchant!  Creating a new merchant.", HouseNumber);
@@ -845,7 +845,7 @@ namespace DOL.GS.Housing
 			}
 
 			// now let's try to find a CM with this owner ID and no house and if we find it, attach
-			houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(OwnerID));
+			houseCM = CoreDb<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(OwnerID));
 
 			if (houseCM != null)
 			{
@@ -930,7 +930,7 @@ namespace DOL.GS.Housing
 				log.Warn("HOUSING: Cleared OwnerLot for " + count + " items on the consignment merchant!");
 			}
 
-			var houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+			var houseCM = CoreDb<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (houseCM != null)
 			{
 				houseCM.HouseNumber = 0;
@@ -1502,26 +1502,26 @@ namespace DOL.GS.Housing
 		{
 			int i = 0;
 			_indoorItems.Clear();
-			foreach (DbHouseIndoorItem dbiitem in DOLDB<DbHouseIndoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
+			foreach (DbHouseIndoorItem dbiitem in CoreDb<DbHouseIndoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				_indoorItems.Add(i++, new IndoorItem(dbiitem));
 			}
 
 			i = 0;
 			_outdoorItems.Clear();
-			foreach (DbHouseOutdoorItem dboitem in DOLDB<DbHouseOutdoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
+			foreach (DbHouseOutdoorItem dboitem in CoreDb<DbHouseOutdoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				_outdoorItems.Add(i++, new OutdoorItem(dboitem));
 			}
 
 			_housePermissions.Clear();
-			foreach (DbHouseCharsXPerms d in DOLDB<DbHouseCharsXPerms>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
+			foreach (DbHouseCharsXPerms d in CoreDb<DbHouseCharsXPerms>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				_housePermissions.Add(GetOpenPermissionSlot(), d);
 			}
 
 			_permissionLevels.Clear();
-			foreach (DbHousePermissions dbperm in DOLDB<DbHousePermissions>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
+			foreach (DbHousePermissions dbperm in CoreDb<DbHousePermissions>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				if (_permissionLevels.ContainsKey(dbperm.PermissionLevel) == false)
 				{
@@ -1534,7 +1534,7 @@ namespace DOL.GS.Housing
 			}
 
 			HousepointItems.Clear();
-			foreach (DbHouseHookPointItem item in DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
+			foreach (DbHouseHookPointItem item in CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				if (HousepointItems.ContainsKey(item.HookpointID) == false)
 				{

@@ -25,8 +25,8 @@ namespace DOL.GS.DatabaseUpdate
 	/// <summary>
 	/// Checks and updates the new SalvageYields table
 	/// </summary>
-	[DatabaseUpdate]
-	public class SalvageYieldsUpdate : IDatabaseUpdater
+	[DbUpdate]
+	public class SalvageYieldsUpdate : IDbUpdater
 	{
 		/// <summary>
 		/// Defines a logger for this class.

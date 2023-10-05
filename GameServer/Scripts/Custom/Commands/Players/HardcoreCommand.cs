@@ -45,7 +45,7 @@ namespace DOL.GS.GameEvents
             
             if (player.DeathCount > 0 && player.HCFlag)
             {
-                DbCoreCharacter cha = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
+                DbCoreCharacter cha = CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(player.Name));
                 if (cha != null)
                 {
                     Log.Warn("[HARDCORE] player " + player.Name + " has " + player.DeathCount + " deaths and has been removed from the database.");
@@ -195,7 +195,7 @@ namespace DOL.GS.Commands
                 bool isSolo = false;
                 
                 const string customKey = "grouped_char";
-                var hasGrouped = DOLDB<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(c.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
+                var hasGrouped = CoreDb<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(c.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
 
                 if (hasGrouped == null || c.NoHelp)
                 {
@@ -273,7 +273,7 @@ namespace DOL.GS.PlayerTitles
         public override bool IsSuitable(GamePlayer player)
         {
             const string customKey2 = "solo_to_50";
-            var solo_to_50 = DOLDB<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
+            var solo_to_50 = CoreDb<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey2)));
             
             return (player.HCFlag || player.HCCompleted) && (player.NoHelp || solo_to_50 != null);
         }

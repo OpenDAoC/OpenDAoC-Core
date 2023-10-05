@@ -11566,9 +11566,9 @@ namespace DOL.GS {
         private static void CacheProcSpells()
         {
             //LT spells
-            DbSpell Level5Lifetap = DOLDB<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8010));
-            DbSpell Level10Lifetap = DOLDB<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8011));
-            DbSpell Level15Lifetap = DOLDB<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8012));
+            DbSpell Level5Lifetap = CoreDb<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8010));
+            DbSpell Level10Lifetap = CoreDb<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8011));
+            DbSpell Level15Lifetap = CoreDb<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8012));
 
             ProcSpells.Add(8010, new Spell(Level5Lifetap, 0));
             ProcSpells.Add(8011, new Spell(Level10Lifetap, 0));

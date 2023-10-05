@@ -1547,7 +1547,7 @@ namespace DOL.GS.Commands
 								whereClause = whereClause.And(DB.Column("Realm").IsEqualTo((int)eRealm.None).Or(DB.Column("Realm").IsEqualTo(item.Realm)));
 							}
 
-							salvageYield = DOLDB<DbSalvageYield>.SelectObject(whereClause);
+							salvageYield = CoreDb<DbSalvageYield>.SelectObject(whereClause);
 
 							DbSalvageYield yield = null;
 
@@ -1834,7 +1834,7 @@ namespace DOL.GS.Commands
 							string name = string.Join(" ", args, 2, args.Length - 2);
 							if (name != "")
 							{
-								var items = DOLDB<DbItemTemplate>.SelectObjects(DB.Column("id_nb").IsLike($"%{name}%"));
+								var items = CoreDb<DbItemTemplate>.SelectObjects(DB.Column("id_nb").IsLike($"%{name}%"));
 								DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.FindID.MatchingIDsForX", name, items.Count), new object[] { });
 								foreach (DbItemTemplate item in items)
 								{
@@ -1850,7 +1850,7 @@ namespace DOL.GS.Commands
 							string name = string.Join(" ", args, 2, args.Length - 2);
 							if (name != "")
 							{
-								var items = DOLDB<DbItemTemplate>.SelectObjects(DB.Column("name").IsLike($"%{name}%"));
+								var items = CoreDb<DbItemTemplate>.SelectObjects(DB.Column("name").IsLike($"%{name}%"));
 								DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.FindName.MatchingNamesForX", name, items.Count), new object[] { });
 								foreach (DbItemTemplate item in items)
 								{
@@ -1877,7 +1877,7 @@ namespace DOL.GS.Commands
 						}
 					case "reloadall":
 						{
-							var allItems = DOLDB<DbItemTemplate>.SelectAllObjects();
+							var allItems = CoreDb<DbItemTemplate>.SelectAllObjects();
 							
 							if (allItems != null)
 							{
@@ -1903,7 +1903,7 @@ namespace DOL.GS.Commands
 							{
 								if (args[2] == "**all**") args[2] = String.Empty;
 
-								var packageItems = DOLDB<DbItemTemplate>.SelectObjects(DB.Column("PackageID").IsEqualTo(args[2]));
+								var packageItems = CoreDb<DbItemTemplate>.SelectObjects(DB.Column("PackageID").IsEqualTo(args[2]));
 
 								if (packageItems != null)
 								{

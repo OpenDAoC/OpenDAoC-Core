@@ -140,7 +140,7 @@ public class ApiUtils
         {
             topRP = new List<ApiPlayer.PlayerInfo>();
 
-            var topRpPlayers = DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("RealmPoints").IsLessThan(7000000)).OrderByDescending(x => x.RealmPoints).Take(10).ToDictionary(x => x.Name, x => x.RealmPoints);
+            var topRpPlayers = CoreDb<DbCoreCharacter>.SelectObjects(DB.Column("RealmPoints").IsLessThan(7000000)).OrderByDescending(x => x.RealmPoints).Take(10).ToDictionary(x => x.Name, x => x.RealmPoints);
             
             foreach (var player in topRpPlayers)
             {

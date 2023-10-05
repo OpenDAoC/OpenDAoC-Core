@@ -50,7 +50,7 @@ namespace DOL.GS
 					// in addition, a player with a housing vault may still have an item in cache that may have been
 					// removed by another player with the appropriate house permission.  - Tolakram
 					var filterBySlot = DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.LastVault).Or(DB.Column("SlotPosition").IsGreaterOrEqualTo(500).And(DB.Column("SlotPosition").IsLessThan(600)));
-					var items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(inventoryID).And(filterBySlot));
+					var items = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(inventoryID).And(filterBySlot));
 
 					foreach (DbInventoryItem item in items)
 					{

@@ -1140,16 +1140,16 @@ namespace DOL.GS
 					{
 						if (!type.IsClass)
 							continue;
-						if (!typeof(IDatabaseUpdater).IsAssignableFrom(type))
+						if (!typeof(IDbUpdater).IsAssignableFrom(type))
 							continue;
 
-						object[] attributes = type.GetCustomAttributes(typeof(DatabaseUpdateAttribute), false);
+						object[] attributes = type.GetCustomAttributes(typeof(DbUpdateAttribute), false);
 						if (attributes.Length <= 0)
 							continue;
 
 						try
 						{
-							var instance = Activator.CreateInstance(type) as IDatabaseUpdater;
+							var instance = Activator.CreateInstance(type) as IDbUpdater;
 							instance.Update();
 						}
 						catch (Exception uex)

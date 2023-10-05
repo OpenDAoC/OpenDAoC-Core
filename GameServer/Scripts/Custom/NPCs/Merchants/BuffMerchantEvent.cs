@@ -1458,11 +1458,11 @@ namespace DOL.GS.Items
         [GameServerStartedEvent]
         public static void OnServerStartup(DOLEvent e, object sender, EventArgs args)
         {
-            DbItemTemplate[] buffMerchEvent = DOLDB<DbItemTemplate>.SelectObjects(DB.Column("PackageID").IsLike("BuffTokens")).OrderBy(it => it.Item_Type).ToArray();
+            DbItemTemplate[] buffMerchEvent = CoreDb<DbItemTemplate>.SelectObjects(DB.Column("PackageID").IsLike("BuffTokens")).OrderBy(it => it.Item_Type).ToArray();
             DbMerchantItem m_item = null;
             int pagenumber = 0;
             int slotposition = 0;
-            m_item = DOLDB<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo("BuffTokens"));
+            m_item = CoreDb<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo("BuffTokens"));
             if (m_item == null)
             {
                 foreach (DbItemTemplate item in buffMerchEvent)
