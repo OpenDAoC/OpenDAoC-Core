@@ -57,7 +57,7 @@ namespace DOL.GS.RealmAbilities
 			//		((GamePlayer)living).Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 			//	return;
 			//}
-			ChargeECSGameEffect charge = (ChargeECSGameEffect)EffectListService.GetEffectOnTarget(living, eEffect.Charge);
+			ChargeEcsAbilityEffect charge = (ChargeEcsAbilityEffect)EffectListService.GetEffectOnTarget(living, eEffect.Charge);
 			//ChargeEffect charge = living.EffectList.GetOfType<ChargeEffect>();
 			if (charge != null)
 				charge.Cancel(false);
@@ -65,7 +65,7 @@ namespace DOL.GS.RealmAbilities
 			//	((GamePlayer)living).Out.SendUpdateMaxSpeed();
 
 			//new ChargeEffect().Start(living);
-			new ChargeECSGameEffect(new ECSGameEffectInitParams(living, DURATION, 1, null));
+			new ChargeEcsAbilityEffect(new EcsGameEffectInitParams(living, DURATION, 1, null));
 			DisableSkill(living);
 		}
 

@@ -27,9 +27,9 @@ namespace DOL.GS.Spells
 	[SpellHandler("StyleSpeedDecrease")]
 	public class StyleSpeedDecrease : SpeedDecreaseSpellHandler
 	{
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new StatDebuffECSEffect(initParams);
+			new StatDebuffEcsSpellEffect(initParams);
 		}
 		
 		public override int CalculateSpellResistChance(GameLiving target)

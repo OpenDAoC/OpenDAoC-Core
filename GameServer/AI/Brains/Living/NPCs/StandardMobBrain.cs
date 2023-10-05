@@ -321,7 +321,7 @@ namespace DOL.AI.Brain
                     }
                 }
 
-                foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+                foreach (ProtectEcsAbilityEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
                 {
                     if (aggroAmount <= 0)
                         break;
@@ -1257,7 +1257,7 @@ namespace DOL.AI.Brain
             // May not be the right place for that, but without that check NPCs with more than one offensive or defensive proc will only buff themselves once.
             if (spell.SpellType is eSpellType.OffensiveProc or eSpellType.DefensiveProc)
             {
-                if (target.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(spell, m_mobSpellLine.IsBaseLine), out List<ECSGameEffect> existingEffects))
+                if (target.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(spell, m_mobSpellLine.IsBaseLine), out List<EcsGameEffect> existingEffects))
                 {
                     if (existingEffects.FirstOrDefault(e => e.SpellHandler.Spell.ID == spell.ID || (spell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == spell.EffectGroup)) != null)
                         return true;
@@ -1267,7 +1267,7 @@ namespace DOL.AI.Brain
             }
 
             eEffect spellEffect = EffectService.GetEffectFromSpell(spell, m_mobSpellLine.IsBaseLine);
-            ECSGameEffect effect = EffectListService.GetEffectOnTarget(target, spellEffect);
+            EcsGameEffect effect = EffectListService.GetEffectOnTarget(target, spellEffect);
 
             if (effect != null)
                 return true;

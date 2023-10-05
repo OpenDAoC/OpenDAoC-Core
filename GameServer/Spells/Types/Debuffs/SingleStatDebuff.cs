@@ -29,9 +29,9 @@ namespace DOL.GS.Spells
 		// bonus category
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.Debuff; } }
 
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-			new StatDebuffECSEffect(initParams);
+			new StatDebuffEcsSpellEffect(initParams);
         }
 
         public override void ApplyEffectOnTarget(GameLiving target)

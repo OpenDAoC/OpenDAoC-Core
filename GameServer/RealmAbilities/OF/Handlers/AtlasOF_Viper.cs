@@ -23,7 +23,7 @@ namespace DOL.GS.RealmAbilities
 
             DisableSkill(living);
 
-            new AtlasOF_ViperECSEffect(new ECSGameEffectInitParams(player, m_duration, 1, CreateSpell(living)));
+            new AtlasOF_ViperECSEffect(new EcsGameEffectInitParams(player, m_duration, 1, CreateSpell(living)));
         }
         
         private SpellHandler CreateSpell(GameLiving owner)

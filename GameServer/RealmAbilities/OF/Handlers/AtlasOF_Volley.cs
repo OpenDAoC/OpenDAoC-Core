@@ -108,7 +108,7 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            ECSGameEffect volley = EffectListService.GetEffectOnTarget(_player, eEffect.Volley);
+            EcsGameEffect volley = EffectListService.GetEffectOnTarget(_player, eEffect.Volley);
 
             if (volley != null)
             {
@@ -222,7 +222,7 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            new AtlasOF_VolleyECSEffect(new ECSGameEffectInitParams(_player, 0, 1));
+            new AtlasOF_VolleyECSEffect(new EcsGameEffectInitParams(_player, 0, 1));
         }
 
         public override void AddEffectsInfo(IList<string> list)

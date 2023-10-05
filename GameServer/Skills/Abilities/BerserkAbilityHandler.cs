@@ -87,14 +87,14 @@ namespace DOL.GS.SkillHandler
 			//	berserk.Cancel(false);
 			//	return;
 			//}
-			ECSGameEffect berserk = EffectListService.GetEffectOnTarget(player, eEffect.Berserk);
+			EcsGameEffect berserk = EffectListService.GetEffectOnTarget(player, eEffect.Berserk);
 			if (berserk != null)
 				EffectService.RequestImmediateCancelEffect(berserk);
 
 			player.DisableSkill(ab, REUSE_TIMER);
 
 			//new BerserkEffect().Start(player);
-			new BerserkECSGameEffect(new ECSGameEffectInitParams(player, DURATION, 1, null));
+			new BerserkEcsAbilityEffect(new EcsGameEffectInitParams(player, DURATION, 1, null));
 		}                       
     }
 }

@@ -136,7 +136,7 @@ namespace DOL.GS
 		void CommandNpcRelease();
 		void OnPetReleased();
 		bool StartAttack(GameObject attackTarget);
-		ShadeECSGameEffect CreateShadeEffect();
+		ShadeEcsAbilityEffect CreateShadeEffect();
 		void Shade(bool state);
 		bool RemoveFromWorld();
 		void Die(GameObject killer);

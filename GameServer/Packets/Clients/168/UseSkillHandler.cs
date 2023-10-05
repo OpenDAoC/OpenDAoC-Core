@@ -124,7 +124,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						// Allow Pulse Spells to be canceled while they are on reusetimer
 						if (sk is Spell spell && spell.IsPulsing && player.ActivePulseSpells.ContainsKey(spell.SpellType))
 						{
-							ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(player, spell);
+							EcsPulseEffect effect = EffectListService.GetPulseEffectOnTarget(player, spell);
 							EffectService.RequestImmediateCancelConcEffect(effect);
 
 							if (spell.InstrumentRequirement == 0)

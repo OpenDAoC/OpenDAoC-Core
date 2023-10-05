@@ -275,7 +275,7 @@ namespace DOL.GS
 
                 if ((PALevel > 0) && (_owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long))
                 {
-                    ECSGameSpellEffect bladeturn = livingTarget.effectListComponent.GetSpellEffects(eEffect.Bladeturn)?.FirstOrDefault();
+                    EcsGameSpellEffect bladeturn = livingTarget.effectListComponent.GetSpellEffects(eEffect.Bladeturn)?.FirstOrDefault();
 
                     if (bladeturn != null && _target != bladeturn.SpellHandler.Caster)
                         _effectiveness *= 0.25 + PALevel * 0.25;

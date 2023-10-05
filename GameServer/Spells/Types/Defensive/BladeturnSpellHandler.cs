@@ -29,9 +29,9 @@ namespace DOL.GS.Spells
 	[SpellHandler("Bladeturn")]
 	public class BladeturnSpellHandler : SpellHandler
 	{
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-            new BladeturnECSGameEffect(initParams);
+            new BladeturnEcsSpellEffect(initParams);
         }
 
         /// <summary>

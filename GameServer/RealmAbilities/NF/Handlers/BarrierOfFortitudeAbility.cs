@@ -43,7 +43,7 @@ namespace DOL.GS.RealmAbilities
 				SendCasterSpellEffect(playerInGroup, 10535, success);
 				
 				if (success)
-					new BunkerOfFaithECSEffect(new ECSGameEffectInitParams(playerInGroup, m_duration, GetAbsorbAmount(), CreateSpell(player)));
+					new BunkerOfFaithECSEffect(new EcsGameEffectInitParams(playerInGroup, m_duration, GetAbsorbAmount(), CreateSpell(player)));
 			}
 
 			DisableSkill(player);

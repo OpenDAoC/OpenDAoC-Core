@@ -2,9 +2,9 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Effects
 {
-    public class ReflexAttackECSEffect : ECSGameAbilityEffect
+    public class ReflexAttackECSEffect : EcsGameAbilityEffect
     {
-        public ReflexAttackECSEffect(ECSGameEffectInitParams initParams)
+        public ReflexAttackECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.ReflexAttack;

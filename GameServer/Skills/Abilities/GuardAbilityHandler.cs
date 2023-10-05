@@ -47,7 +47,7 @@ namespace DOL.GS.SkillHandler
 
             if (player.TargetObject == null)
             {
-                foreach (GuardECSGameEffect guard in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
+                foreach (GuardEcsAbilityEffect guard in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
                 {
                     if (guard.GuardSource == player)
                         EffectService.RequestImmediateCancelEffect(guard);
@@ -74,7 +74,7 @@ namespace DOL.GS.SkillHandler
             }
 
             // Cancel our effect if it exists and check if someone is already guarding the target.
-            CheckExistingEffectsOnTarget(player, guardTarget, true, out bool foundOurEffect, out GuardECSGameEffect existingEffectFromAnotherSource);
+            CheckExistingEffectsOnTarget(player, guardTarget, true, out bool foundOurEffect, out GuardEcsAbilityEffect existingEffectFromAnotherSource);
 
             if (foundOurEffect)
                 return;
@@ -89,12 +89,12 @@ namespace DOL.GS.SkillHandler
             CancelOurEffectThenAddOnTarget(player, guardTarget);
         }
 
-        public static void CheckExistingEffectsOnTarget(GameLiving guardSource, GameLiving guardTarget, bool cancelOurs, out bool foundOurEffect, out GuardECSGameEffect effectFromAnotherSource)
+        public static void CheckExistingEffectsOnTarget(GameLiving guardSource, GameLiving guardTarget, bool cancelOurs, out bool foundOurEffect, out GuardEcsAbilityEffect effectFromAnotherSource)
         {
             foundOurEffect = false;
             effectFromAnotherSource = null;
 
-            foreach (GuardECSGameEffect guard in guardTarget.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
+            foreach (GuardEcsAbilityEffect guard in guardTarget.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
             {
                 if (guard.GuardSource == guardSource)
                 {
@@ -111,13 +111,13 @@ namespace DOL.GS.SkillHandler
 
         public static void CancelOurEffectThenAddOnTarget(GameLiving guardSource, GameLiving guardTarget)
         {
-            foreach (GuardECSGameEffect guard in guardSource.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
+            foreach (GuardEcsAbilityEffect guard in guardSource.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
             {
                 if (guard.GuardSource == guardSource)
                     EffectService.RequestImmediateCancelEffect(guard);
             }
 
-            new GuardECSGameEffect(new ECSGameEffectInitParams(guardSource, 0, 1, null), guardSource, guardTarget);
+            new GuardEcsAbilityEffect(new EcsGameEffectInitParams(guardSource, 0, 1, null), guardSource, guardTarget);
         }
     }
 }

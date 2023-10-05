@@ -811,13 +811,13 @@ namespace DOL.GS.PacketHandler
 						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
 					foreach (var effect in effects)
 					{
-						if (effect is ECSGameEffect && !effect.IsDisabled)
+						if (effect is EcsGameEffect && !effect.IsDisabled)
 							i++;
 					}
 					pak.WriteByte(i);
 					foreach (var effect in effects)
 					{
-						if (effect is ECSGameEffect && !effect.IsDisabled)
+						if (effect is EcsGameEffect && !effect.IsDisabled)
 						{
 							pak.WriteByte(0);
 							pak.WriteShort(effect.Icon);

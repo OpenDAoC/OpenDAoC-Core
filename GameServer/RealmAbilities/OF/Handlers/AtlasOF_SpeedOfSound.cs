@@ -62,7 +62,7 @@ namespace DOL.GS.RealmAbilities
 				//send spelleffect
 				foreach (GamePlayer visPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					visPlayer.Out.SendSpellEffectAnimation(player, target, 7021, 0, false, CastSuccess(true));
-				new SpeedOfSoundECSEffect(new ECSGameEffectInitParams(target, m_duration, 1));
+				new SpeedOfSoundECSEffect(new EcsGameEffectInitParams(target, m_duration, 1));
 			}
 
 		}

@@ -1995,7 +1995,7 @@ namespace DOL.GS.Commands
                         if (player.effectListComponent != null)
                         {
 
-                            foreach (ECSGameSpellEffect e in player.effectListComponent.GetSpellEffects())
+                            foreach (EcsGameSpellEffect e in player.effectListComponent.GetSpellEffects())
                             {
                                 if (e.HasPositiveEffect)
                                     positiveEffects.Add(e);
@@ -2008,7 +2008,7 @@ namespace DOL.GS.Commands
                             if (positiveEffects.Count > 0)
                             {
                                 // List active spell effects
-                                foreach (ECSGameSpellEffect e in positiveEffects)
+                                foreach (EcsGameSpellEffect e in positiveEffects)
                                 {
                                     var caster = "NONE";
                                     if (e.SpellHandler.Caster.Name != null)
@@ -2027,7 +2027,7 @@ namespace DOL.GS.Commands
                             if (negativeEffects.Count > 0)
                             {
                                 // List active spell effects
-                                foreach (ECSGameSpellEffect e in negativeEffects)
+                                foreach (EcsGameSpellEffect e in negativeEffects)
                                 {
                                     var caster = "NONE";
                                     if (e.SpellHandler.Caster.Name != null)

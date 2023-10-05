@@ -31,9 +31,9 @@ namespace DOL.GS.Spells
 	{
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new SavageBuffECSGameEffect(initParams);
+			new SavageBuffEcsEffect(initParams);
 		}
 
 		public override bool CheckBeginCast(GameLiving selectedTarget)

@@ -31,7 +31,7 @@ public class RangeBonusPercentCalculator : PropertyCalculator
 		if (living.rangeAttackComponent.RangedAttackType == eRangedAttackType.Long)
 		{
 			ra = 50;
-			TrueShotECSGameEffect effect = (TrueShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(living, eEffect.TrueShot);
+			TrueShotEcsAbilityEffect effect = (TrueShotEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(living, eEffect.TrueShot);
 			if (effect != null)
 				EffectService.RequestImmediateCancelEffect(effect, false);
 		}

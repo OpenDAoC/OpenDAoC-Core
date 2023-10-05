@@ -32,9 +32,9 @@ namespace DOL.GS.Spells
 			: base(caster, spell, line) 
         {
         }
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new FacilitatePainworkingECSGameEffect(initParams);
+			new FacilitatePainworkingEcsSpellEffect(initParams);
 		}
 		protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
         {

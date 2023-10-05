@@ -26,9 +26,9 @@ namespace DOL.GS.Spells
 	[SpellHandler("Amnesia")]
 	public class AmnesiaSpellHandler : SpellHandler
 	{
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new AmnesiaECSEffect(initParams);
+			new AmnesiaEcsSpellEffect(initParams);
 		}
 		
 		/// <summary>

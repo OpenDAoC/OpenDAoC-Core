@@ -40,9 +40,9 @@ namespace DOL.GS.Spells
 
 		public SummonSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new PetECSGameEffect(initParams);
+			new PetEcsSpellEffect(initParams);
 		}
 
 		/// <summary>
@@ -168,7 +168,7 @@ namespace DOL.GS.Spells
 			m_pet.Health = m_pet.MaxHealth;
 			m_pet.Spells = template.Spells; // Have to sort spells again now that the pet level has been assigned.
 
-			CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target, Effectiveness), Effectiveness, this));
+			CreateECSEffect(new EcsGameEffectInitParams(m_pet, CalculateEffectDuration(target, Effectiveness), Effectiveness, this));
 			Caster.OnPetSummoned(m_pet);
 		}
 
@@ -218,7 +218,7 @@ namespace DOL.GS.Spells
 
 			foreach (var ability in pet.effectListComponent.GetAbilityEffects())
 			{
-				if (ability is InterceptECSGameEffect interceptEffect && interceptEffect.InterceptSource == pet && interceptEffect.InterceptTarget == petOwner)
+				if (ability is InterceptEcsAbilityEffect interceptEffect && interceptEffect.InterceptSource == pet && interceptEffect.InterceptTarget == petOwner)
 					interceptEffect.Cancel(false);
 			}
 

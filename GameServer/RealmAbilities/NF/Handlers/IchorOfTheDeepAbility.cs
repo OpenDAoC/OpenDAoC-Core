@@ -266,7 +266,7 @@ namespace DOL.GS.RealmAbilities
 				return;
 
 			//GameSpellEffect mez = SpellHandler.FindEffectOnTarget(aeplayer, "Mesmerize");
-			ECSGameEffect mez = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
+			EcsGameEffect mez = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
 			if (mez != null)
 				EffectService.RequestCancelEffect(mez);
 				//mez.Cancel(false);
@@ -316,7 +316,7 @@ namespace DOL.GS.RealmAbilities
 					//TODO - Refresh existing Ichor duration (or whatever the proper mechanic is?)
 				}
 				else
-					new AtlasOF_IchorECSEffect(new ECSGameEffectInitParams(target, duration, 1));
+					new AtlasOF_IchorECSEffect(new EcsGameEffectInitParams(target, duration, 1));
 			}
 			else
 				// Send resist animation if they cannot be rooted

@@ -1,9 +1,9 @@
 
 namespace DOL.GS.Effects
 {
-    public class MasteryOfConcentrationECSEffect : ECSGameAbilityEffect
+    public class MasteryOfConcentrationECSEffect : EcsGameAbilityEffect
     {
-        public MasteryOfConcentrationECSEffect(ECSGameEffectInitParams initParams)
+        public MasteryOfConcentrationECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.MasteryOfConcentration;

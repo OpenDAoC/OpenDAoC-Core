@@ -101,19 +101,19 @@ namespace DOL.GS.RealmAbilities
                 return false;
 
             // Gather effects to cancel
-            foreach (ECSGameEffect e in effectListComponent.GetAllEffects())
+            foreach (EcsGameEffect e in effectListComponent.GetAllEffects())
             {
                 if (e.HasPositiveEffect)
                     continue;
 
-                if (e is ECSImmunityEffect)
+                if (e is EcsImmunityEffect)
                     continue;
 
                 effectsToRemove.Add(e);
             }
 
             // Cancel effects
-            foreach (ECSGameEffect e in effectsToRemove)
+            foreach (EcsGameEffect e in effectsToRemove)
             {
                 EffectService.RequestCancelEffect(e);
                 removed = true;

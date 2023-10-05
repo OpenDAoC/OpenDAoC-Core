@@ -257,18 +257,18 @@ public class RespecCommand : ACommandHandler, ICommandHandler
         DisplayMessage(player, "All self-cast buffs have been removed due to a respec.");
         if (player.effectListComponent != null)
         {
-			foreach (ECSGameEffect e in player.effectListComponent.GetAllEffects())
+			foreach (EcsGameEffect e in player.effectListComponent.GetAllEffects())
             {
-				if (e is ECSGameSpellEffect eSpell && eSpell.SpellHandler.Caster == player)
+				if (e is EcsGameSpellEffect eSpell && eSpell.SpellHandler.Caster == player)
                 {
 					EffectService.RequestCancelEffect(e);
 				}
             }
 
 			//Remove self-casted pulsing effects
-			foreach (ECSGameEffect e in player.effectListComponent.GetAllPulseEffects())
+			foreach (EcsGameEffect e in player.effectListComponent.GetAllPulseEffects())
             {
-				if (e is ECSGameSpellEffect eSpell && eSpell.SpellHandler.Caster == player)
+				if (e is EcsGameSpellEffect eSpell && eSpell.SpellHandler.Caster == player)
                 {
 					EffectService.RequestCancelEffect(e);
 				}

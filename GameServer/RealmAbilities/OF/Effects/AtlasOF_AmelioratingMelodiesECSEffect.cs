@@ -3,12 +3,12 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Effects
 {
-    public class AmelioratingMelodiesECSEffect : ECSGameAbilityEffect
+    public class AmelioratingMelodiesECSEffect : EcsGameAbilityEffect
     {
         private const int m_range = 1500;
         private int m_heal;
         
-        public AmelioratingMelodiesECSEffect(ECSGameEffectInitParams initParams)
+        public AmelioratingMelodiesECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.AmelioratingMelodies;

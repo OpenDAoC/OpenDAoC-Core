@@ -32,7 +32,7 @@ namespace DOL.GS
                 _nullBrainCount = 0;
             }
 
-            List<ABrain> list = EntityManager.UpdateAndGetAll<ABrain>(EntityManager.EntityType.Brain, out int lastValidIndex);
+            List<ABrain> list = EntityManager.UpdateAndGetAll<ABrain>(EEntityType.Brain, out int lastValidIndex);
 
             Parallel.For(0, lastValidIndex + 1, i =>
             {
@@ -85,7 +85,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, brain, brain.Body);
+                    ServiceUtil.HandleServiceException(e, SERVICE_NAME, brain, brain.Body);
                 }
             });
 

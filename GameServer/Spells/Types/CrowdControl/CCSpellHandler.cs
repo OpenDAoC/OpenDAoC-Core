@@ -158,9 +158,9 @@ namespace DOL.GS.Spells
         public const int FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL = 2000;
         public long FluteMezLastEndOfCastMessage { get; set; } // Flute mez should probably have its own spell handler.
 
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-            new MezECSGameEffect(initParams);
+            new MezEcsSpellEffect(initParams);
         }
 
         public override void OnEffectPulse(GameSpellEffect effect)
@@ -177,7 +177,7 @@ namespace DOL.GS.Spells
             {
                 if (target != null && (!target.IsAlive))
                 {
-                    ECSGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.Mez);
+                    EcsGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.Mez);
 
                     if (effect != null)
                     {
@@ -198,7 +198,7 @@ namespace DOL.GS.Spells
                     return;
             }
 
-            ECSGameEffect mezz = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
+            EcsGameEffect mezz = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
 
             if (mezz != null)
             {
@@ -206,7 +206,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (EffectListService.GetEffectOnTarget(target, eEffect.MezImmunity) is ECSImmunityEffect immunity)
+            if (EffectListService.GetEffectOnTarget(target, eEffect.MezImmunity) is EcsImmunityEffect immunity)
             {
                 MessageToCaster(immunity.Owner.GetName(0, true) + " can't have that effect again yet!!!", eChatType.CT_SpellPulse);
                 return;
@@ -231,7 +231,7 @@ namespace DOL.GS.Spells
 
                 if (target != null && (!target.IsAlive)) 
                 {
-                    ECSGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.Mez);
+                    EcsGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.Mez);
 
                     if (effect != null)
                     {
@@ -310,7 +310,7 @@ namespace DOL.GS.Spells
         {
             double duration = base.CalculateEffectDuration(target, effectiveness);
             duration *= target.GetModified(eProperty.MesmerizeDurationReduction) * 0.01;
-            NPCECSMezImmunityEffect npcImmune = (NPCECSMezImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCMezImmunity);
+            NpcEcsMezImmunityEffect npcImmune = (NpcEcsMezImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCMezImmunity);
 
             if (npcImmune != null)
                 duration = npcImmune.CalculateMezDuration((long)duration);
@@ -332,9 +332,9 @@ namespace DOL.GS.Spells
     [SpellHandler("Stun")]
     public class StunSpellHandler : AbstractCCSpellHandler
     {
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-            new StunECSGameEffect(initParams);
+            new StunEcsSpellEffect(initParams);
         }
 
         protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
@@ -411,7 +411,7 @@ namespace DOL.GS.Spells
         {
             double duration = base.CalculateEffectDuration(target, effectiveness);
             duration *= target.GetModified(eProperty.StunDurationReduction) * 0.01;
-            NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
+            NpcEcsStunImmunityEffect npcImmune = (NpcEcsStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
 
             if (npcImmune != null)
                 duration = npcImmune.CalculateStunDuration((long)duration); //target.GetModified(eProperty.StunDurationReduction) * 0.01;
@@ -429,7 +429,7 @@ namespace DOL.GS.Spells
         /// and therefore overwritable by better versions
         /// spells that are overwritable cannot stack
         /// </summary>
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(EcsGameSpellEffect compare)
         {
             if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
                 return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

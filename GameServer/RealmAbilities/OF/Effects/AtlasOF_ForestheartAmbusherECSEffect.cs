@@ -2,9 +2,9 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_ForestheartAmbusherECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_ForestheartAmbusherECSEffect : EcsGameAbilityEffect
     {
-        public AtlasOF_ForestheartAmbusherECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public AtlasOF_ForestheartAmbusherECSEffect(EcsGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.ForestheartAmbusher;
             EffectService.RequestStartEffect(this);

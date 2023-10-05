@@ -242,7 +242,7 @@ namespace DOL.GS.Styles
 					if (player.IsEngaging)
 					{
 						// Cancel engage effect if exist.
-						EngageECSGameEffect effect = (EngageECSGameEffect) EffectListService.GetEffectOnTarget(player, eEffect.Engage);
+						EngageEcsAbilityEffect effect = (EngageEcsAbilityEffect) EffectListService.GetEffectOnTarget(player, eEffect.Engage);
 
 						if (effect != null)
 							effect.Cancel(false, true);

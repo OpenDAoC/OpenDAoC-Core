@@ -7820,7 +7820,7 @@ namespace DOL.GS
                             }
 
                             GameSpellEffect effects = SpellHandler.FindEffectOnTarget(this, "VampiirSpeedEnhancement");
-                            ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
+                            EcsGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
 
                             if (effects != null)
                                 effects.Cancel(false);
@@ -7856,7 +7856,7 @@ namespace DOL.GS
                     case Slot.RANGED:
                     {
                         bool newAttack = false;
-                        ECSGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+                        EcsGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);
 
                         if (ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                         {
@@ -9957,7 +9957,7 @@ namespace DOL.GS
                     return false;
                 }
 
-                new SprintECSGameEffect(new ECSGameEffectInitParams(this, 0, 1, null));
+                new SprintEcsAbilityEffect(new EcsGameEffectInitParams(this, 0, 1, null));
                 return true;
             }
             else
@@ -10135,7 +10135,7 @@ namespace DOL.GS
         /// </summary>
         public override void SetGroundTarget(int groundX, int groundY, int groundZ)
         {
-            ECSGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);//volley check for gt
+            EcsGameEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley);//volley check for gt
             if (volley != null)
             {
                 Out.SendMessage("You can't change ground target under volley effect!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -12271,7 +12271,7 @@ namespace DOL.GS
 
             if (goStealth)
             {
-                new StealthECSGameEffect(new ECSGameEffectInitParams(this, 0, 1));
+                new StealthEcsAbilityEffect(new EcsGameEffectInitParams(this, 0, 1));
             }
             else
             {
@@ -13623,12 +13623,12 @@ namespace DOL.GS
 
         #region Shade
 
-        protected ShadeECSGameEffect m_ShadeEffect = null;
+        protected ShadeEcsAbilityEffect m_ShadeEffect = null;
 
         /// <summary>
         /// The shade effect of this player
         /// </summary>
-        public ShadeECSGameEffect ShadeEffect
+        public ShadeEcsAbilityEffect ShadeEffect
         {
             get { return m_ShadeEffect; }
             set { m_ShadeEffect = value; }
@@ -13650,7 +13650,7 @@ namespace DOL.GS
         /// Create a shade effect for this player.
         /// </summary>
         /// <returns></returns>
-        protected virtual ShadeECSGameEffect CreateShadeEffect()
+        protected virtual ShadeEcsAbilityEffect CreateShadeEffect()
         {
             return CharacterClass.CreateShadeEffect();
         }
@@ -15168,7 +15168,7 @@ namespace DOL.GS
             //GameSpellEffect evade = SpellHandler.FindEffectOnTarget(this, "EvadeBuff");
             //if (evade == null)
             //	evade = SpellHandler.FindEffectOnTarget(this, "SavageEvadeBuff");
-            ECSGameEffect evade = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageEvadeBuff);
+            EcsGameEffect evade = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageEvadeBuff);
 
             if (HasAbility(Abilities.Advanced_Evade) || HasAbility(Abilities.Enhanced_Evade) || EffectList.GetOfType<CombatAwarenessEffect>() != null || EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
                 evadeChance = GetModified(eProperty.EvadeChance);
@@ -15224,7 +15224,7 @@ namespace DOL.GS
             //GameSpellEffect parry = SpellHandler.FindEffectOnTarget(this, "ParryBuff");
             //if (parry == null)
             //	parry = SpellHandler.FindEffectOnTarget(this, "SavageParryBuff");
-            ECSGameEffect parry = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageParryBuff);
+            EcsGameEffect parry = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageParryBuff);
 
             if ((HasSpecialization(Specs.Parry) || parry != null) && (ActiveWeapon != null))
                 parryChance = GetModified(eProperty.ParryChance);

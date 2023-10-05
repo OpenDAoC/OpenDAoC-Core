@@ -30,9 +30,9 @@ namespace DOL.GS.Spells
 	[SpellHandler("HealOverTime")]
 	public class HoTSpellHandler : SpellHandler
 	{
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new HealOverTimeECSGameEffect(initParams);
+			new HealOverTimeEcsSpellEffect(initParams);
 		}
 
 		/// <summary>

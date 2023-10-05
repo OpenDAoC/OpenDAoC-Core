@@ -542,8 +542,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 						// 		}
 						// 	}
 						// }
-						ECSGameEffect foundEffect = client.Player.effectListComponent.TryGetEffectFromEffectId(objectId);
-						ECSGameSpellEffect spellEffect = foundEffect as ECSGameSpellEffect;
+						EcsGameEffect foundEffect = client.Player.effectListComponent.TryGetEffectFromEffectId(objectId);
+						EcsGameSpellEffect spellEffect = foundEffect as EcsGameSpellEffect;
 						if (foundEffect == null)
 							break;
 

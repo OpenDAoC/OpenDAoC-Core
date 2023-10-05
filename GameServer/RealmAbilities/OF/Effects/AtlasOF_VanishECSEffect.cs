@@ -2,10 +2,10 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_VanishECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_VanishECSEffect : EcsGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_VanishECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_VanishECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.Vanish;

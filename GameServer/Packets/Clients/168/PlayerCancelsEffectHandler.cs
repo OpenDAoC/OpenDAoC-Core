@@ -108,7 +108,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 				EffectListComponent effectListComponent = player.effectListComponent;
-				ECSGameEffect effect = effectListComponent.TryGetEffectFromEffectId(m_effectId);
+				EcsGameEffect effect = effectListComponent.TryGetEffectFromEffectId(m_effectId);
 
 				if (effect != null)
 					EffectService.RequestImmediateCancelEffect(effect, true);

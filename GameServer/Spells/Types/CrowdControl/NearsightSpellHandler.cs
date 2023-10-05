@@ -30,9 +30,9 @@ namespace DOL.GS.Spells
 	[SpellHandler("Nearsight")]
 	public class NearsightSpellHandler : ImmunityEffectSpellHandler
 	{
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-            new NearsightECSGameEffect(initParams);
+            new NearsightEcsSpellEffect(initParams);
         }
 
         public override void ApplyEffectOnTarget(GameLiving target)

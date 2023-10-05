@@ -47,7 +47,7 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
         bool AtLeastOneEffectRemoved = false;
         foreach (GamePlayer target in targets)
         {
-            new StatBuffECSEffect(new ECSGameEffectInitParams(target, 30000, 1, m_handler));
+            new StatBuffEcsSpellEffect(new EcsGameEffectInitParams(target, 30000, 1, m_handler));
             foreach (GamePlayer pl in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 pl.Out.SendSpellEffectAnimation(target,target,4317,20000,false,1);

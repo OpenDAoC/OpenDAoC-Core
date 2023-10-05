@@ -43,7 +43,7 @@ namespace DOL.GS.SkillHandler
                 return;
 			}
 			 
-			CamouflageECSGameEffect camouflage = (CamouflageECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.Camouflage);
+			CamouflageEcsAbilityEffect camouflage = (CamouflageEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.Camouflage);
 			
 			if (camouflage != null)
 			{				
@@ -51,7 +51,7 @@ namespace DOL.GS.SkillHandler
 				return;
 			}
 			
-			new CamouflageECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));
+			new CamouflageEcsAbilityEffect(new EcsGameEffectInitParams(player, 0, 1));
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Camouflage.UseCamo"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
 	}

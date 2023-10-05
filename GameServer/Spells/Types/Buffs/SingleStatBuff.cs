@@ -17,9 +17,9 @@ namespace DOL.GS.Spells
             target.UpdateHealthManaEndu();
         }
 
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-            new StatBuffECSEffect(initParams);
+            new StatBuffEcsSpellEffect(initParams);
         }
 
         public override void ApplyEffectOnTarget(GameLiving target)
@@ -102,7 +102,7 @@ namespace DOL.GS.Spells
         /// </summary>
         /// <param name="compare"></param>
         /// <returns></returns>
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(EcsGameSpellEffect compare)
         {
             if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
                 return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

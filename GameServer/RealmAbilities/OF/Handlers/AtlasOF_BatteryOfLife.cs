@@ -26,7 +26,7 @@ namespace DOL.GS.RealmAbilities
             SendCasterSpellEffectAndCastMessage(player, 7009, true);
             DisableSkill(player);
 
-            new AtlasOF_BatteryOfLifeECSEffect(new ECSGameEffectInitParams(player, m_duration, 1, CreateSpell(player)));
+            new AtlasOF_BatteryOfLifeECSEffect(new EcsGameEffectInitParams(player, m_duration, 1, CreateSpell(player)));
         }
         
         private SpellHandler CreateSpell(GameLiving owner)

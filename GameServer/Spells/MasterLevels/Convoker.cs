@@ -87,7 +87,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("Prescience")]
 	public class PrescienceSpellHandler : SpellHandler
 	{
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(EcsGameSpellEffect compare)
 		{
 			return false;
 		}
@@ -284,7 +284,7 @@ namespace DOL.GS.Spells
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);
 		}
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(EcsGameSpellEffect compare)
 		{
 			return false;
 		}

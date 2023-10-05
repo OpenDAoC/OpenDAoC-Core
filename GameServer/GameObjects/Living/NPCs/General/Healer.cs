@@ -71,14 +71,14 @@ namespace DOL.GS
 				ChatUtil.SendSayMessage(player, "GameNPC.Dialogue.Greetings.Healer", GetName(0, true), player.CharacterClass.Name);
 
 			//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(player, CURED_SPELL_TYPE);
-            ECSGameEffect effect = EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness); // Identify effect to remove
+            EcsGameEffect effect = EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness); // Identify effect to remove
 			if (effect != null) // If PvE sickness is active
 			{
 				EffectService.RequestImmediateCancelEffect(effect); // Cancel sickness
 				// Message: {0} cures your resurrection sickness.
                 ChatUtil.SendSystemMessage(player, "GameNPC.Interact.CuresRS.Healer", GetName(0, true, player.Client.Account.Language, this));
             }
-            ECSGameEffect rvrEffect = EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness); // Identify effect to remove
+            EcsGameEffect rvrEffect = EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness); // Identify effect to remove
             if (rvrEffect != null) // If RvR sickness is active
             {
 	            EffectService.RequestImmediateCancelEffect(rvrEffect); // Cancel sickness

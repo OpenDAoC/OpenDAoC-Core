@@ -29,7 +29,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("PveResurrectionIllness")]
 	public class PveResurrectionIllness : AbstractIllnessSpellHandler
 	{
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
 			GamePlayer targetPlayer = Target as GamePlayer;
 			if (targetPlayer != null)
@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
                 }
             }
 
-			new ResurrectionIllnessECSGameEffect(initParams);
+			new RezSicknessEcsSpellEffect(initParams);
 		}
 
 		/// <summary>

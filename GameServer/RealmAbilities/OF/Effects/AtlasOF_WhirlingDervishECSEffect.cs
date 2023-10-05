@@ -2,9 +2,9 @@ using System;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_WhirlingDervishECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_WhirlingDervishECSEffect : EcsGameAbilityEffect
     {
-        public AtlasOF_WhirlingDervishECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_WhirlingDervishECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.WhirlingDervish;

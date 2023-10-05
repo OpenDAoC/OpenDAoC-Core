@@ -7,7 +7,7 @@ namespace DOL.GS
         public GamePlayer Owner { get; private set; }
         public CraftAction CraftAction { get; set; }
         public bool CraftState { get; set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.CraftComponent, false);
+        public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.CraftComponent, false);
         public List<RecipeMgr> Recipes { get; private set; } = new();
         private object _recipesLock = new();
 

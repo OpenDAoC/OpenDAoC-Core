@@ -29,7 +29,7 @@ namespace DOL.GS.RealmAbilities
         
         public virtual void CreateSpell()
         {
-            new AtlasOF_WhirlingDervishECSEffect(new ECSGameEffectInitParams(m_player, duration, Level));
+            new AtlasOF_WhirlingDervishECSEffect(new EcsGameEffectInitParams(m_player, duration, Level));
         }
 
         public override void Execute(GameLiving living)

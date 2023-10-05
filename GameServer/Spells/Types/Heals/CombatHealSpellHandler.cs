@@ -36,7 +36,7 @@ namespace DOL.GS.Spells
 
 			foreach (GameLiving member in GetGroupAndPets(Spell))
 			{
-				new CombatHealECSEffect(new ECSGameEffectInitParams(member, Spell.Frequency, Caster.Effectiveness, this));
+				new CombatHealEcsSpellEffect(new EcsGameEffectInitParams(member, Spell.Frequency, Caster.Effectiveness, this));
 			}
 
 			GamePlayer player = Caster as GamePlayer;

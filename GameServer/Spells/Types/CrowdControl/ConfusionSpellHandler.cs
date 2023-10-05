@@ -34,9 +34,9 @@ namespace DOL.GS.Spells
 
 		public ArrayList targetList = new ArrayList();
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new ConfusionECSGameEffect(initParams);
+			new ConfusionEcsSpellEffect(initParams);
 		}
 
 		public override void FinishSpellCast(GameLiving target)

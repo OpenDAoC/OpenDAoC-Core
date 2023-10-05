@@ -21,7 +21,7 @@ public class RangedCriticalHitChanceCalculator : PropertyCalculator
 		int chance = living.BuffBonusCategory4[(int)property] + living.AbilityBonus[(int)property];
 
 		//Volley effect apply crit chance during volley effect
-		ECSGameEffect volley = EffectListService.GetEffectOnTarget(living, eEffect.Volley);
+		EcsGameEffect volley = EffectListService.GetEffectOnTarget(living, eEffect.Volley);
 		if (living is GamePlayer archer && volley != null)
 		{
 			chance += 10;

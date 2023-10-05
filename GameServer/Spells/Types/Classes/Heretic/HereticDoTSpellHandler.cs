@@ -20,7 +20,7 @@ namespace DOL.GS.Spells
 		}
 
 
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(EcsGameSpellEffect compare)
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

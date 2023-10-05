@@ -4,9 +4,9 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_RuneOfDecimationECSEffect : ECSGameSpellEffect
+    public class AtlasOF_RuneOfDecimationECSEffect : EcsGameSpellEffect
     {
-        public AtlasOF_RuneOfDecimationECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_RuneOfDecimationECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.RuneOfDecimation;

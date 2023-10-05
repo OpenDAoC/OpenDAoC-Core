@@ -53,7 +53,7 @@ namespace DOL.GS.SkillHandler
 			GameObject targetObject = player.TargetObject;
 			if (targetObject == null)
 			{
-				foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+				foreach (ProtectEcsAbilityEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
 				{
 					if (protect.ProtectSource == player)
 						protect.Cancel(false);
@@ -80,7 +80,7 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// check if someone is protecting the target
-			foreach (ProtectECSGameEffect protect in protectTarget.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+			foreach (ProtectEcsAbilityEffect protect in protectTarget.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
 			{
 				if (protect.ProtectTarget != protectTarget)
 					continue;
@@ -94,14 +94,14 @@ namespace DOL.GS.SkillHandler
 			}
 
 			// cancel all guard effects by this player before adding a new one
-			foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+			foreach (ProtectEcsAbilityEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
 			{
 				if (protect.ProtectSource == player)
 					protect.Cancel(false);
 			}
 
 			//new ProtectEffect().Start(player, protectTarget);
-			new ProtectECSGameEffect(new ECSGameEffectInitParams(player, 0, 1), player, protectTarget);
+			new ProtectEcsAbilityEffect(new EcsGameEffectInitParams(player, 0, 1), player, protectTarget);
 		}
 	}
 }

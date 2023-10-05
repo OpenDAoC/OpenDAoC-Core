@@ -31,11 +31,11 @@ namespace DOL.GS.Spells
 	public class SpeedDecreaseSpellHandler : UnbreakableSpeedDecreaseSpellHandler
 	{
 		private bool crit = false;
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
 			if (crit)
 				initParams.Effectiveness *= 2; //critical hit effectiveness needs to be set after duration is calculated to prevent double duration
-			new StatDebuffECSEffect(initParams);
+			new StatDebuffEcsSpellEffect(initParams);
 		}
 
 		public override void ApplyEffectOnTarget(GameLiving target)
@@ -105,7 +105,7 @@ namespace DOL.GS.Spells
 			GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
 			// Cancels mezz on the effect owner, if applied
 			//GameSpellEffect mezz = SpellHandler.FindEffectOnTarget(effect.Owner, "Mesmerize");
-			ECSGameEffect mezz = EffectListService.GetEffectOnTarget(effect.Owner, eEffect.Mez);
+			EcsGameEffect mezz = EffectListService.GetEffectOnTarget(effect.Owner, eEffect.Mez);
 			if (mezz != null)
 				EffectService.RequestImmediateCancelEffect(mezz);
 				//mezz.Cancel(false);
@@ -142,7 +142,7 @@ namespace DOL.GS.Spells
 				case eAttackResult.HitStyle:
 				case eAttackResult.HitUnstyled:
 					//GameSpellEffect effect = FindEffectOnTarget(living, this);
-					ECSGameEffect effect = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff);
+					EcsGameEffect effect = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff);
 					if (effect != null)
 						EffectService.RequestImmediateCancelEffect(effect);
 						//effect.Cancel(false);

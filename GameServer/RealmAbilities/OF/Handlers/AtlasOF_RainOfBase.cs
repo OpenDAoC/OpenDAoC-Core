@@ -39,7 +39,7 @@ namespace DOL.GS.RealmAbilities
             ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(living, m_spell, m_spellline);
             spellHandler.IgnoreDamageCap = true;
 
-            new AtlasOF_RainOfBaseECSEffect(new ECSGameEffectInitParams(living, duration, 1, spellHandler));
+            new AtlasOF_RainOfBaseECSEffect(new EcsGameEffectInitParams(living, duration, 1, spellHandler));
             DisableSkill(living);
         }
 

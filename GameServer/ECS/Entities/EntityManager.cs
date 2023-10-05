@@ -10,34 +10,19 @@ namespace DOL.GS
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public enum EntityType
+        private static Dictionary<EEntityType, object> _entityArrays = new()
         {
-            Client,
-            Brain,
-            Effect,
-            AttackComponent,
-            CastingComponent,
-            EffectListComponent,
-            CraftComponent,
-            ObjectChangingSubZone,
-            LivingBeingKilled,
-            Timer,
-            AuxTimer
-        }
-
-        private static Dictionary<EntityType, object> _entityArrays = new()
-        {
-            { EntityType.Client, new EntityArray<GameClient>(ServerProperties.Properties.MAX_PLAYERS) },
-            { EntityType.Brain, new EntityArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
-            { EntityType.Effect, new EntityArray<ECSGameEffect>(250) },
-            { EntityType.AttackComponent, new EntityArray<AttackComponent>(1250) },
-            { EntityType.CastingComponent, new EntityArray<CastingComponent>(1250) },
-            { EntityType.EffectListComponent, new EntityArray<EffectListComponent>(3000) },
-            { EntityType.CraftComponent, new EntityArray<CraftComponent>(100) },
-            { EntityType.ObjectChangingSubZone, new EntityArray<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) },
-            { EntityType.LivingBeingKilled, new EntityArray<LivingBeingKilled>(200) },
-            { EntityType.Timer, new EntityArray<ECSGameTimer>(500) },
-            { EntityType.AuxTimer, new EntityArray<AuxECSGameTimer>(500) }
+            { EEntityType.Client, new EntityArray<GameClient>(ServerProperties.Properties.MAX_PLAYERS) },
+            { EEntityType.Brain, new EntityArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
+            { EEntityType.Effect, new EntityArray<EcsGameEffect>(250) },
+            { EEntityType.AttackComponent, new EntityArray<AttackComponent>(1250) },
+            { EEntityType.CastingComponent, new EntityArray<CastingComponent>(1250) },
+            { EEntityType.EffectListComponent, new EntityArray<EffectListComponent>(3000) },
+            { EEntityType.CraftComponent, new EntityArray<CraftComponent>(100) },
+            { EEntityType.ObjectChangingSubZone, new EntityArray<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) },
+            { EEntityType.LivingBeingKilled, new EntityArray<LivingBeingKilled>(200) },
+            { EEntityType.Timer, new EntityArray<ECSGameTimer>(500) },
+            { EEntityType.AuxTimer, new EntityArray<AuxECSGameTimer>(500) }
         };
 
         public static bool Add<T>(T entity) where T : class, IManagedEntity
@@ -52,7 +37,7 @@ namespace DOL.GS
             return true;
         }
 
-        public static bool TryReuse<T>(EntityType type, out T entity) where T : class, IManagedEntity
+        public static bool TryReuse<T>(EEntityType type, out T entity) where T : class, IManagedEntity
         {
             return (_entityArrays[type] as EntityArray<T>).TryReuse(out entity);
         }
@@ -71,7 +56,7 @@ namespace DOL.GS
 
         // Applies pending additions and removals then returns the list alongside the last valid index.
         // Thread unsafe. The returned list should not be modified.
-        public static List<T> UpdateAndGetAll<T>(EntityType type, out int lastValidIndex) where T : IManagedEntity
+        public static List<T> UpdateAndGetAll<T>(EEntityType type, out int lastValidIndex) where T : IManagedEntity
         {
             dynamic array = _entityArrays[type];
             lastValidIndex = array.Update();
@@ -239,13 +224,13 @@ namespace DOL.GS
                 _pendingState = PendingState.NONE;
             }
         }
-        public EntityManager.EntityType Type { get; private set; }
+        public EEntityType Type { get; private set; }
         public bool AllowReuseByEntityManager { get; private set; }
         public bool IsSet => _value > UNSET_ID;
         public bool IsPendingAddition => _pendingState == PendingState.ADDITION;
         public bool IsPendingRemoval => _pendingState == PendingState.REMOVAL;
 
-        public EntityManagerId(EntityManager.EntityType type, bool allowReuseByEntityManager)
+        public EntityManagerId(EEntityType type, bool allowReuseByEntityManager)
         {
             Type = type;
             AllowReuseByEntityManager = allowReuseByEntityManager;

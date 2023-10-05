@@ -87,7 +87,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(Icons); // unknown
 				pak.WriteByte(0); // unknown
 
-				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.GetAllEffects().Where(e => e.EffectType != eEffect.Pulse))
+				foreach (EcsGameEffect effect in m_gameClient.Player.effectListComponent.GetAllEffects().Where(e => e.EffectType != eEffect.Pulse))
 				{
 					if (effect.Icon == 0)
 						continue;
@@ -99,7 +99,7 @@ namespace DOL.GS.PacketHandler
 					}
 
 					// store tooltip update for gamespelleffect.
-					if (ForceTooltipUpdate && effect is ECSGameSpellEffect gameEffect)
+					if (ForceTooltipUpdate && effect is EcsGameSpellEffect gameEffect)
 					{
 						tooltipSpellHandlers.Add(gameEffect.SpellHandler);
 					}
@@ -108,12 +108,12 @@ namespace DOL.GS.PacketHandler
 					// icon index
 					pak.WriteByte((byte)(fxcount - 1));
 					// Determines where to grab the icon from. Spell-based effect icons use a different source than Ability-based icons.
-					pak.WriteByte((effect is ECSGameAbilityEffect && effect.Icon <= 5000) ? (byte)0xff : (byte)(fxcount - 1));
+					pak.WriteByte((effect is EcsGameAbilityEffect && effect.Icon <= 5000) ? (byte)0xff : (byte)(fxcount - 1));
 					//pak.WriteByte((effect is ECSGameSpellEffect || effect.Icon > 5000) ? (byte)(fxcount - 1) : (byte)0xff); // <- [Takii] previous version
 
 					byte ImmunByte = 0;
-					var gsp = effect as ECSGameEffect;
-					if (gsp is ECSImmunityEffect || gsp.IsDisabled)
+					var gsp = effect as EcsGameEffect;
+					if (gsp is EcsImmunityEffect || gsp.IsDisabled)
 						ImmunByte = 1;
 					//todo this should be the ImmunByte
 					pak.WriteByte(ImmunByte); // new in 1.73; if non zero says "protected by" on right click
@@ -121,7 +121,7 @@ namespace DOL.GS.PacketHandler
 					// bit 0x08 adds "more..." to right click info
 					pak.WriteShort(effect.Icon);
 					pak.WriteShort((ushort)(effect.GetRemainingTimeForClient() / 1000));
-					if (effect is ECSGameEffect || effect is ECSImmunityEffect)
+					if (effect is EcsGameEffect || effect is EcsImmunityEffect)
 						pak.WriteShort(effect.Icon); //v1.110+ send the spell ID for delve info in active icon
 					else
 						pak.WriteShort(0);//don't override existing tooltip ids

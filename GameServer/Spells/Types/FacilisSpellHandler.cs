@@ -22,7 +22,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("Facilis")]
 	public class FacilisSpellHandler : SpellHandler
 	{
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(EcsGameSpellEffect compare)
 		{
 			return true;
 		}

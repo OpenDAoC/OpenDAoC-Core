@@ -106,7 +106,7 @@ namespace DOL.GS.Spells
     [SpellHandler("Oppression")]
     public class OppressionSpellHandler : MasterlevelHandling
     {
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(EcsGameSpellEffect compare)
         {
             return true;
         }
@@ -300,7 +300,7 @@ namespace DOL.GS.Spells
             return Spell.Duration;
         }
 
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(EcsGameSpellEffect compare)
         {
             if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
                 return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

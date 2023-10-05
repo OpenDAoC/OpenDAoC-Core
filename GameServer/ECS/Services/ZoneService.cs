@@ -18,7 +18,7 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<ObjectChangingSubZone> list = EntityManager.UpdateAndGetAll<ObjectChangingSubZone>(EntityManager.EntityType.ObjectChangingSubZone, out int lastValidIndex);
+            List<ObjectChangingSubZone> list = EntityManager.UpdateAndGetAll<ObjectChangingSubZone>(EEntityType.ObjectChangingSubZone, out int lastValidIndex);
 
             // Remove objects from one sub zone, and add them to another.
             Parallel.For(0, lastValidIndex + 1, i =>
@@ -107,7 +107,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, objectChangingSubZone, objectChangingSubZone.SubZoneObject?.Node?.Value);
+                    ServiceUtil.HandleServiceException(e, SERVICE_NAME, objectChangingSubZone, objectChangingSubZone.SubZoneObject?.Node?.Value);
                 }
                 finally
                 {
@@ -125,7 +125,7 @@ namespace DOL.GS
         public SubZoneObject SubZoneObject { get; private set; }
         public Zone DestinationZone { get; private set; }
         public SubZone DestinationSubZone { get; private set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.ObjectChangingSubZone, true);
+        public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.ObjectChangingSubZone, true);
 
         private ObjectChangingSubZone(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
@@ -134,7 +134,7 @@ namespace DOL.GS
 
         public static void Create(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
-            if (EntityManager.TryReuse(EntityManager.EntityType.ObjectChangingSubZone, out ObjectChangingSubZone objectChangingSubZone))
+            if (EntityManager.TryReuse(EEntityType.ObjectChangingSubZone, out ObjectChangingSubZone objectChangingSubZone))
                 objectChangingSubZone.Initialize(subZoneObject, destinationZone, destinationSubZone);
             else
             {

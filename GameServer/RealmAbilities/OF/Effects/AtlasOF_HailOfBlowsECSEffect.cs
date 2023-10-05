@@ -1,8 +1,8 @@
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_HailOfBlowsECSEffect : StatBuffECSEffect
+    public class AtlasOF_HailOfBlowsECSEffect : StatBuffEcsSpellEffect
     {
-        public AtlasOF_HailOfBlowsECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_HailOfBlowsECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.MeleeHasteBuff;

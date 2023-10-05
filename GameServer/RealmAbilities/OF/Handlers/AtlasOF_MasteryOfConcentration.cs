@@ -70,7 +70,7 @@ namespace DOL.GS.RealmAbilities
 
 			DisableSkill(living);
 
-			new MasteryOfConcentrationECSEffect(new ECSGameEffectInitParams(caster, Duration, 1));
+			new MasteryOfConcentrationECSEffect(new EcsGameEffectInitParams(caster, Duration, 1));
 		}
 	}
 }

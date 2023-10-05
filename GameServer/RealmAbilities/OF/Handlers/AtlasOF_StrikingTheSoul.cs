@@ -24,7 +24,7 @@ namespace DOL.GS.RealmAbilities
 			var player = living as GamePlayer;
 
 			if (player is not {IsAlive: true}) return;
-			new StrikingTheSoulECSEffect(new ECSGameEffectInitParams(player, m_duration, m_value));
+			new StrikingTheSoulECSEffect(new EcsGameEffectInitParams(player, m_duration, m_value));
 			foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				visPlayer.Out.SendSpellEffectAnimation(player, player, 7163, 0, false, 1);
 			DisableSkill(living);

@@ -70,9 +70,9 @@ namespace DOL.GS.Spells
             Reptile = 8
         }
 
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-            new CharmECSGameEffect(initParams);
+            new CharmEcsSpellEffect(initParams);
         }
 
         /// <summary>
@@ -407,7 +407,7 @@ namespace DOL.GS.Spells
             // Make sure the pet is in the same region and alive
             if (target.CurrentRegion != Caster.CurrentRegion || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active)
             {
-                ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(Caster, Spell);
+                EcsPulseEffect song = EffectListService.GetPulseEffectOnTarget(Caster, Spell);
 
                 if (song != null)
                     EffectService.RequestImmediateCancelConcEffect(song);
@@ -500,7 +500,7 @@ namespace DOL.GS.Spells
             if (sender is not GameNPC pet || pet.Brain is not IControlledBrain)
                 return;
 
-            if (pet.effectListComponent.Effects.TryGetValue(eEffect.Charm, out List<ECSGameEffect> charms))
+            if (pet.effectListComponent.Effects.TryGetValue(eEffect.Charm, out List<EcsGameEffect> charms))
                 EffectService.RequestImmediateCancelEffect(charms.FirstOrDefault());
         }
 

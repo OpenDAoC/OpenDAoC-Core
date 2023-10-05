@@ -2,9 +2,9 @@ using DOL.AI.Brain;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_JuggernautECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_JuggernautECSEffect : EcsGameAbilityEffect
     {
-        public AtlasOF_JuggernautECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public AtlasOF_JuggernautECSEffect(EcsGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Juggernaut;
             EffectService.RequestStartEffect(this);

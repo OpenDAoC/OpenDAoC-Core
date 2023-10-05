@@ -413,7 +413,7 @@ namespace DOL.AI.Brain
 						GamePlayer playerOwner = GetPlayerOwner();
 
 						if (playerOwner != null)
-							new InterceptECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1), Body, playerOwner);
+							new InterceptEcsAbilityEffect(new EcsGameEffectInitParams(Body, 0, 1), Body, playerOwner);
 
 						break;
 					}
@@ -423,7 +423,7 @@ namespace DOL.AI.Brain
 
 						if (playerOwner != null)
 						{
-							GuardAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out GuardECSGameEffect existingEffectFromAnotherSource);
+							GuardAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out GuardEcsAbilityEffect existingEffectFromAnotherSource);
 
 							if (foundOurEffect)
 								break;
@@ -439,7 +439,7 @@ namespace DOL.AI.Brain
 						GamePlayer playerOwner = GetPlayerOwner();
 
 						if (playerOwner != null)
-							new ProtectECSGameEffect(new ECSGameEffectInitParams(playerOwner, 0, 1), null, playerOwner);
+							new ProtectEcsAbilityEffect(new EcsGameEffectInitParams(playerOwner, 0, 1), null, playerOwner);
 
 						break;
 					}
@@ -924,7 +924,7 @@ namespace DOL.AI.Brain
 				return true;
 			else
 			{
-				ECSGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
+				EcsGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
 
 				if (root != null && root.SpellHandler.Spell.Value == 99)
 					return true;
@@ -1084,7 +1084,7 @@ namespace DOL.AI.Brain
 			{
 				foreach (GameLiving living in m_buffedTargets)
 				{
-					foreach (ECSGameEffect effect in living.effectListComponent.GetAllEffects().Where(x => x.SpellHandler.Caster == Body))
+					foreach (EcsGameEffect effect in living.effectListComponent.GetAllEffects().Where(x => x.SpellHandler.Caster == Body))
 						EffectService.RequestCancelEffect(effect);
 				}
 

@@ -20,9 +20,9 @@ namespace DOL.GS.Spells
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new ProcECSGameEffect(initParams);
+			new ProcEcsSpellEffect(initParams);
 		}
 
 		/// <summary>
@@ -154,7 +154,7 @@ namespace DOL.GS.Spells
 
 			return true;
 		}
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(EcsGameSpellEffect compare)
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

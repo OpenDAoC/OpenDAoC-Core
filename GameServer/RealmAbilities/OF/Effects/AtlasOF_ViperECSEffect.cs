@@ -3,10 +3,10 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_ViperECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_ViperECSEffect : EcsGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_ViperECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_ViperECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.Viper;

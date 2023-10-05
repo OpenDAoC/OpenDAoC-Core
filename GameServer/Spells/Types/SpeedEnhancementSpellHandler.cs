@@ -42,9 +42,9 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-            new StatBuffECSEffect(initParams);
+            new StatBuffEcsSpellEffect(initParams);
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace DOL.GS.Spells
 				return;
 			
 			//GameSpellEffect speed = SpellHandler.FindEffectOnTarget(living, this);
-			ECSGameEffect speed = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedBuff);
+			EcsGameEffect speed = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedBuff);
 			if (speed != null)
 				EffectService.RequestImmediateCancelEffect(speed);
 				//speed.Cancel(false);

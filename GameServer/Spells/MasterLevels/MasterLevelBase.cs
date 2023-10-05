@@ -476,7 +476,7 @@ namespace DOL.GS.Spells
         protected bool Friendly = true;
         protected ushort sRadius = 350;
 
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(EcsGameSpellEffect compare)
         {
             return false;
         }
@@ -546,7 +546,7 @@ namespace DOL.GS.Spells
         protected bool DestroyOnEffect = true;
         protected ushort sRadius = 350;
         
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(EcsGameSpellEffect compare)
         {
             return false;
         }

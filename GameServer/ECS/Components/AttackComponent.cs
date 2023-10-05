@@ -26,7 +26,7 @@ namespace DOL.GS
         public GameLiving owner;
         public WeaponAction weaponAction;
         public AttackAction attackAction;
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.AttackComponent, false);
+        public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.AttackComponent, false);
 
         /// <summary>
         /// Returns the list of attackers
@@ -995,7 +995,7 @@ namespace DOL.GS
                         if ((target is GamePlayer && playerOwner.HasAbility(Abilities.Camouflage)) ||
                             (target is GameNPC targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain && targetNpcBrain.GetPlayerOwner() != null))
                         {
-                            CamouflageECSGameEffect camouflage = (CamouflageECSGameEffect) EffectListService.GetAbilityEffectOnTarget(playerOwner, eEffect.Camouflage);
+                            CamouflageEcsAbilityEffect camouflage = (CamouflageEcsAbilityEffect) EffectListService.GetAbilityEffectOnTarget(playerOwner, eEffect.Camouflage);
 
                             if (camouflage != null)
                                 EffectService.RequestImmediateCancelEffect(camouflage, false);
@@ -1876,7 +1876,7 @@ namespace DOL.GS
 
         public bool CheckGuard(AttackData ad, bool stealthStyle, double attackerConLevel)
         {
-            GuardECSGameEffect guard = EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Guard) as GuardECSGameEffect;
+            GuardEcsAbilityEffect guard = EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Guard) as GuardEcsAbilityEffect;
 
             if (guard?.GuardTarget != owner)
                 return false;
@@ -2086,8 +2086,8 @@ namespace DOL.GS
             //5.Positional degrees - Side Positional combat styles now will work an extra 15 degrees towards the rear of an opponent, and rear position styles work in a 60 degree arc rather than the original 90 degree standard. This change should even out the difficulty between side and rear positional combat styles, which have the same damage bonus. Please note that front positional styles are not affected by this change. 1.62
             //http://daoc.catacombs.com/forum.cfm?ThreadKey=511&DefMessage=681444&forum=DAOCMainForum#Defense
 
-            InterceptECSGameEffect intercept = null;
-            ECSGameSpellEffect bladeturn = null;
+            InterceptEcsAbilityEffect intercept = null;
+            EcsGameSpellEffect bladeturn = null;
             // ML effects
             GameSpellEffect phaseshift = null;
             GameSpellEffect grapple = null;
@@ -2107,14 +2107,14 @@ namespace DOL.GS
             if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Berserk) != null)
                 defenseDisabled = true;
 
-            if (EffectListService.GetSpellEffectOnTarget(owner, eEffect.Bladeturn) is ECSGameSpellEffect bladeturnEffect)
+            if (EffectListService.GetSpellEffectOnTarget(owner, eEffect.Bladeturn) is EcsGameSpellEffect bladeturnEffect)
             {
                 if (bladeturn == null)
                     bladeturn = bladeturnEffect;
             }
 
             // We check if interceptor can intercept.
-            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Intercept) is InterceptECSGameEffect inter)
+            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Intercept) is InterceptEcsAbilityEffect inter)
             {
                 if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
                     && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == GameObject.eObjectState.Active && inter.InterceptSource.IsAlive
@@ -2650,7 +2650,7 @@ namespace DOL.GS
 
                 int critMin;
                 int critMax;
-                ECSGameEffect berserk = EffectListService.GetEffectOnTarget(owner, eEffect.Berserk);
+                EcsGameEffect berserk = EffectListService.GetEffectOnTarget(owner, eEffect.Berserk);
 
                 if (berserk != null)
                 {

@@ -10,7 +10,7 @@ using DOL.Language;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_VolleyECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_VolleyECSEffect : EcsGameAbilityEffect
     {
         private class WeaponActionData
         {
@@ -34,7 +34,7 @@ namespace DOL.GS.Effects
         private bool _isReadyToShoot;
         ConcurrentDictionary<ECSGameTimer, WeaponActionData> _weaponActionData = new();
 
-        public AtlasOF_VolleyECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public AtlasOF_VolleyECSEffect(EcsGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Volley;
             EffectService.RequestStartEffect(this);
@@ -118,7 +118,7 @@ namespace DOL.GS.Effects
 
         private int TooTired(ECSGameTimer timer)
         {
-            ECSGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Volley);
+            EcsGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Volley);
 
             if (volley == null || !OwnerPlayer.IsAlive)
                 return 0;
@@ -133,7 +133,7 @@ namespace DOL.GS.Effects
 
         private int ReadyToShoot(ECSGameTimer timer)
         {
-            ECSGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Volley);
+            EcsGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Volley);
 
             if (volley == null || !OwnerPlayer.IsAlive)
                 return 0;
@@ -310,7 +310,7 @@ namespace DOL.GS.Effects
 
             if (_isReadyToShoot)
             {
-                ECSGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Volley);
+                EcsGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Volley);
 
                 if (volley != null)
                     LaunchVolley(player);

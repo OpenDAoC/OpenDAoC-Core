@@ -30,9 +30,9 @@ namespace DOL.GS.Spells
 			base.ApplyEffectOnTarget(target);
 		}
 
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-			new StatBuffECSEffect(initParams);
+			new StatBuffEcsSpellEffect(initParams);
         }
 
         protected override void SendUpdates(GameLiving target)

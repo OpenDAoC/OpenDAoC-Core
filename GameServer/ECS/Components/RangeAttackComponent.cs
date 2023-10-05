@@ -106,7 +106,7 @@ namespace DOL.GS
                     if (target is null or not GameLiving)
                     {
                         // Volley check to avoid spam.
-                        ECSGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, eEffect.Volley);
+                        EcsGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, eEffect.Volley);
 
                         if (volley == null)
                             playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "System.MustSelectTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -164,7 +164,7 @@ namespace DOL.GS
 
                 if (RangedAttackState == eRangedAttackState.Aim)
                 {
-                    ECSGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, eEffect.Volley);//volley check to avoid spam
+                    EcsGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, eEffect.Volley);//volley check to avoid spam
                     if (volley == null)
                     {
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.ReadyToFire"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

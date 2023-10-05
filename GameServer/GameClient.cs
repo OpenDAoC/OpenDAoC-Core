@@ -231,7 +231,7 @@ namespace DOL.GS
 		// Tooltip Request Time Cache, (Object Type => (Object ID => expires))
 		private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> m_tooltipRequestTimes = new();
 
-		public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Client, false);
+		public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.Client, false);
 
 		/// <summary>
 		/// Try to Send Tooltip to Client, return false if cache hit.

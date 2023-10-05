@@ -31,9 +31,9 @@ namespace DOL.GS.Spells
 	{
 		private const string EFFECT_PROPERTY = "UnbreakableSpeedDecreaseProperty";
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new StatDebuffECSEffect(initParams);
+			new StatDebuffEcsSpellEffect(initParams);
 		}
 		
 		public override void ApplyEffectOnTarget(GameLiving target)

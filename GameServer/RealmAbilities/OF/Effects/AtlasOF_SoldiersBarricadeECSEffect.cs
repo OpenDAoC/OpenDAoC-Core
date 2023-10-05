@@ -1,9 +1,9 @@
 
 namespace DOL.GS.Effects
 {
-    public class SoldiersBarricadeECSEffect : ECSGameAbilityEffect
+    public class SoldiersBarricadeECSEffect : EcsGameAbilityEffect
     {
-        public SoldiersBarricadeECSEffect(ECSGameEffectInitParams initParams)
+        public SoldiersBarricadeECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.SoldiersBarricade;

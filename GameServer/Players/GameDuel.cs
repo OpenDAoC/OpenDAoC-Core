@@ -202,11 +202,11 @@ namespace DOL.GS
 			
 			var effects = target.effectListComponent.GetAllEffects();
 			var spelle = target.effectListComponent.GetSpellEffects();
-			foreach (var spellEffect in spelle.Where(spellEffect => spellEffect != null && spellEffect is ECSImmunityEffect && spellEffect.Caster != target))
+			foreach (var spellEffect in spelle.Where(spellEffect => spellEffect != null && spellEffect is EcsImmunityEffect && spellEffect.Caster != target))
 			{
 				EffectService.RequestImmediateCancelEffect(EffectListService.GetImmunityEffectOnTarget(target, spellEffect.EffectType));
 			}
-			foreach (var effect in effects.Where(effect => effect != null && effect is ECSImmunityEffect && effect.Owner != Caster))
+			foreach (var effect in effects.Where(effect => effect != null && effect is EcsImmunityEffect && effect.Owner != Caster))
 			{
 				EffectService.RequestImmediateCancelEffect(EffectListService.GetImmunityEffectOnTarget(target, effect.EffectType));
 			}

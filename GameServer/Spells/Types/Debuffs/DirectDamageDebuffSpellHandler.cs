@@ -12,9 +12,9 @@ namespace DOL.GS.Spells
 	[SpellHandler("DirectDamageWithDebuff")]
 	public class DirectDamageDebuffSpellHandler : AbstractResistDebuff
 	{
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new StatDebuffECSEffect(initParams);
+			new StatDebuffEcsSpellEffect(initParams);
 		}
 		
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

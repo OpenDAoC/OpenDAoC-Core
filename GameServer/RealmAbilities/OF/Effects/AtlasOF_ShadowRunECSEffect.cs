@@ -2,10 +2,10 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_ShadowRunECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_ShadowRunECSEffect : EcsGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_ShadowRunECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_ShadowRunECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.ShadowRun;

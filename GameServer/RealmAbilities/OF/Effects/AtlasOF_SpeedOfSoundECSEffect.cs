@@ -2,9 +2,9 @@ using System.Linq;
 
 namespace DOL.GS.Effects
 {
-    public class SpeedOfSoundECSEffect : ECSGameAbilityEffect
+    public class SpeedOfSoundECSEffect : EcsGameAbilityEffect
     {
-        public SpeedOfSoundECSEffect(ECSGameEffectInitParams initParams)
+        public SpeedOfSoundECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.SpeedOfSound;

@@ -60,7 +60,7 @@ namespace DOL.GS.SkillHandler
             //Cancel old engage effects on player
             if (player.IsEngaging)
             {
-                if (EffectListService.GetEffectOnTarget(player, eEffect.Engage) is EngageECSGameEffect engage)
+                if (EffectListService.GetEffectOnTarget(player, eEffect.Engage) is EngageEcsAbilityEffect engage)
                 {
                     engage.Cancel(true, true);
                     return;
@@ -104,7 +104,7 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 
-            new EngageECSGameEffect(new ECSGameEffectInitParams(player, 0, 1, null));
+            new EngageEcsAbilityEffect(new EcsGameEffectInitParams(player, 0, 1, null));
         }
     }
 }

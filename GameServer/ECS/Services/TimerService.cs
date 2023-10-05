@@ -30,7 +30,7 @@ namespace DOL.GS
                 _nullTimerCount = 0;
             }
 
-            List<ECSGameTimer> list = EntityManager.UpdateAndGetAll<ECSGameTimer>(EntityManager.EntityType.Timer, out int lastValidIndex);
+            List<ECSGameTimer> list = EntityManager.UpdateAndGetAll<ECSGameTimer>(EEntityType.Timer, out int lastValidIndex);
 
             Parallel.For(0, lastValidIndex + 1, i =>
             {
@@ -61,7 +61,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, timer, timer.Owner);
+                    ServiceUtil.HandleServiceException(e, SERVICE_NAME, timer, timer.Owner);
                 }
             });
 
@@ -87,7 +87,7 @@ namespace DOL.GS
         public long NextTick => StartTick + Interval;
         public bool IsAlive { get; set; }
         public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Timer, false);
+        public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.Timer, false);
         private PropertyCollection _properties;
 
         public ECSGameTimer(GameObject timerOwner)

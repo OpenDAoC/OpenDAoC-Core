@@ -2,10 +2,10 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_MajesticWillECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_MajesticWillECSEffect : EcsGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_MajesticWillECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_MajesticWillECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.MajesticWill;

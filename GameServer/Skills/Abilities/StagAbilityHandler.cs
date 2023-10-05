@@ -75,7 +75,7 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 			//Cancel old stag effects on player
-			StagECSGameEffect stag = (StagECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.Stag);
+			StagEcsAbilityEffect stag = (StagEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.Stag);
 			if (stag != null)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseAlreadyActive"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -83,7 +83,7 @@ namespace DOL.GS.SkillHandler
 			}
 			player.DisableSkill(ab, REUSE_TIMER);
 
-			new StagECSGameEffect(new ECSGameEffectInitParams(player, DURATION, 1), ab.Level);
+			new StagEcsAbilityEffect(new EcsGameEffectInitParams(player, DURATION, 1), ab.Level);
 		}
 	}
 }

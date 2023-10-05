@@ -30,9 +30,9 @@ namespace DOL.GS.Spells
 	[SpellHandler("FocusShell")]
 	public class FocusShellHandler : SpellHandler
 	{
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new FocusECSEffect(initParams);
+			new FocusEcsSpellEffect(initParams);
 		}
 		
 		private GamePlayer FSTarget = null;

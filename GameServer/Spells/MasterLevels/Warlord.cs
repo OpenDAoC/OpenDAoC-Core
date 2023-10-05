@@ -162,7 +162,7 @@ namespace DOL.GS.Spells
     [SpellHandler("CleansingAura")]
     public class CleansingAurauraSpellHandler : SpellHandler
     {
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(EcsGameSpellEffect compare)
         {
             return true;
         }

@@ -330,16 +330,16 @@ namespace DOL.GS
 
         private static void HandleDamageAdd(GameLiving owner, AttackData ad)
         {
-            List<ECSGameSpellEffect> dmgAddEffects = owner.effectListComponent.GetSpellEffects(eEffect.DamageAdd);
+            List<EcsGameSpellEffect> dmgAddEffects = owner.effectListComponent.GetSpellEffects(eEffect.DamageAdd);
 
             /// [Atlas - Takii] This could probably be optimized a bit by doing the split below between "affected/unaffected by stacking"
             /// when the effect is applied in the EffectListComponent instead of every time we swing our weapon?
             if (dmgAddEffects != null)
             {
-                List<ECSGameSpellEffect> dmgAddsUnaffectedByStacking = new();
+                List<EcsGameSpellEffect> dmgAddsUnaffectedByStacking = new();
 
                 // 1 - Apply the DmgAdds that are unaffected by stacking (usually RA-based DmgAdds, EffectGroup 99999) first regardless of their damage.
-                foreach (ECSGameSpellEffect effect in dmgAddEffects)
+                foreach (EcsGameSpellEffect effect in dmgAddEffects)
                 {
                     if (effect.SpellHandler.Spell.EffectGroup == 99999)
                     {
@@ -352,7 +352,7 @@ namespace DOL.GS
                 // "Unaffected by stacking" dmg adds also dont reduce subsequence damage adds; they are effectively outside of the stacking mechanism.
                 int numRegularDmgAddsApplied = 0;
 
-                foreach (ECSGameSpellEffect effect in dmgAddEffects.Except(dmgAddsUnaffectedByStacking).OrderByDescending(e => e.SpellHandler.Spell.Damage))
+                foreach (EcsGameSpellEffect effect in dmgAddEffects.Except(dmgAddsUnaffectedByStacking).OrderByDescending(e => e.SpellHandler.Spell.Damage))
                 {
                     double effectiveness = 1 + effect.SpellHandler.Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
                     if (effect.IsBuffActive)

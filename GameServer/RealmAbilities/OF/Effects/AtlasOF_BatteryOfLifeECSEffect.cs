@@ -5,10 +5,10 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_BatteryOfLifeECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_BatteryOfLifeECSEffect : EcsGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_BatteryOfLifeECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_BatteryOfLifeECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.BatteryOfLife;

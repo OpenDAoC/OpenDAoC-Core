@@ -376,9 +376,9 @@ namespace DOL.GS
 		/// Create a shade effect for this player.
 		/// </summary>
 		/// <returns></returns>
-		public virtual ShadeECSGameEffect CreateShadeEffect()
+		public virtual ShadeEcsAbilityEffect CreateShadeEffect()
 		{
-			return new ShadeECSGameEffect(new ECSGameEffectInitParams(Player, 0, 1));
+			return new ShadeEcsAbilityEffect(new EcsGameEffectInitParams(Player, 0, 1));
 		}
 
 		/// <summary>

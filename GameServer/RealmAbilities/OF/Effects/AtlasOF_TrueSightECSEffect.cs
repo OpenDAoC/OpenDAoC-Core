@@ -2,10 +2,10 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_TrueSightECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_TrueSightECSEffect : EcsGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_TrueSightECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_TrueSightECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.TrueSight;

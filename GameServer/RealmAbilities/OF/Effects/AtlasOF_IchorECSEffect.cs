@@ -3,10 +3,10 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.Effects
 {
-    public class AtlasOF_IchorECSEffect : ECSGameAbilityEffect
+    public class AtlasOF_IchorECSEffect : EcsGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_IchorECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_IchorECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.Ichor;

@@ -157,7 +157,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// The timer for pulsing effects
 		/// </summary>
-		protected ECSPulseEffect m_timer;
+		protected EcsPulseEffect m_timer;
 		#endregion
 
 		#region public Getters

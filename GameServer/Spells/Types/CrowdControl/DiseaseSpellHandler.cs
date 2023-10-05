@@ -32,9 +32,9 @@ namespace DOL.GS.Spells
     [SpellHandler("Disease")]
 	public class DiseaseSpellHandler : SpellHandler
 	{
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-            new DiseaseECSGameEffect(initParams);
+            new DiseaseEcsSpellEffect(initParams);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace DOL.GS.Spells
 		/// Sends needed updates on start/stop
 		/// </summary>
 		/// <param name="effect"></param>
-		public virtual void SendUpdates(ECSGameEffect effect)
+		public virtual void SendUpdates(EcsGameEffect effect)
 		{
             GamePlayer player = effect.Owner as GamePlayer;
             if (player != null)

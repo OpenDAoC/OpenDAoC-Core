@@ -174,7 +174,7 @@ namespace DOL.GS.PacketHandler
 						ArrayList icons = new ArrayList();
 						foreach (var effects in pet.effectListComponent.Effects.Values)
 						{
-							foreach (ECSGameEffect effect in effects)
+							foreach (EcsGameEffect effect in effects)
 							{
 								if (icons.Count >= 8)
 									break;

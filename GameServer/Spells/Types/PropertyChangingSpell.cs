@@ -35,9 +35,9 @@ namespace DOL.GS.Spells
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new StatBuffECSEffect(initParams);
+			new StatBuffEcsSpellEffect(initParams);
 		}
 
 		/// <summary>
@@ -140,9 +140,9 @@ namespace DOL.GS.Spells
 						//GameSpellEffect Matter = FindEffectOnTarget(player, "MatterResistBuff");
 						//GameSpellEffect Cold = FindEffectOnTarget(player, "ColdResistBuff");
 						//GameSpellEffect Heat = FindEffectOnTarget(player, "HeatResistBuff");
-						ECSGameEffect Matter = EffectListService.GetEffectOnTarget(player, eEffect.MatterResistBuff);
-						ECSGameEffect Cold = EffectListService.GetEffectOnTarget(player, eEffect.ColdResistBuff);
-						ECSGameEffect Heat = EffectListService.GetEffectOnTarget(player, eEffect.HeatResistBuff);
+						EcsGameEffect Matter = EffectListService.GetEffectOnTarget(player, eEffect.MatterResistBuff);
+						EcsGameEffect Cold = EffectListService.GetEffectOnTarget(player, eEffect.ColdResistBuff);
+						EcsGameEffect Heat = EffectListService.GetEffectOnTarget(player, eEffect.HeatResistBuff);
 						if (Matter != null || Cold != null || Heat != null)
 						{
 							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);
@@ -158,9 +158,9 @@ namespace DOL.GS.Spells
 						//GameSpellEffect Body = FindEffectOnTarget(player, "BodyResistBuff");
 						//GameSpellEffect Spirit = FindEffectOnTarget(player, "SpiritResistBuff");
 						//GameSpellEffect Energy = FindEffectOnTarget(player, "EnergyResistBuff");
-						ECSGameEffect Body = EffectListService.GetEffectOnTarget(player, eEffect.BodyResistBuff);
-						ECSGameEffect Spirit = EffectListService.GetEffectOnTarget(player, eEffect.SpiritResistBuff);
-						ECSGameEffect Energy = EffectListService.GetEffectOnTarget(player, eEffect.EnergyResistBuff);
+						EcsGameEffect Body = EffectListService.GetEffectOnTarget(player, eEffect.BodyResistBuff);
+						EcsGameEffect Spirit = EffectListService.GetEffectOnTarget(player, eEffect.SpiritResistBuff);
+						EcsGameEffect Energy = EffectListService.GetEffectOnTarget(player, eEffect.EnergyResistBuff);
 						if (Body != null || Spirit != null || Energy != null)
 						{
 							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);

@@ -34,9 +34,9 @@ namespace DOL.GS.Spells
 		public int CriticalDamage { get; protected set; } = 0;
 		private bool firstTick = true;
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new DamageOverTimeECSGameEffect(initParams);
+			new DamageOverTimeEcsSpellEffect(initParams);
 		}
 		/// <summary>
 		/// Execute damage over time spell
@@ -65,7 +65,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(EcsGameSpellEffect compare)
 		{
 			return Spell.SpellType == compare.SpellHandler.Spell.SpellType && Spell.DamageType == compare.SpellHandler.Spell.DamageType && SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine;
 		}

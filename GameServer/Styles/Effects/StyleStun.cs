@@ -27,9 +27,9 @@ namespace DOL.GS.Spells
 	[SpellHandler("StyleStun")]
 	public class StyleStun : StunSpellHandler
 	{
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new StunECSGameEffect(initParams);
+			new StunEcsSpellEffect(initParams);
 		}
 		
 		public override int CalculateSpellResistChance(GameLiving target)
@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
 		/// <returns>The effect duration in milliseconds</returns>
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
-			NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
+			NpcEcsStunImmunityEffect npcImmune = (NpcEcsStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
 			if (npcImmune != null)
 			{
 				int duration = (int)npcImmune.CalculateStunDuration(Spell.Duration);
@@ -77,7 +77,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(EcsGameSpellEffect compare)
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

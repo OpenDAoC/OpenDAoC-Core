@@ -35,9 +35,9 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public abstract string DebuffTypeName { get; }
 
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override void CreateECSEffect(EcsGameEffectInitParams initParams)
         {
-			new StatDebuffECSEffect(initParams);
+			new StatDebuffEcsSpellEffect(initParams);
         }
 
         /// <summary>

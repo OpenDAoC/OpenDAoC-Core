@@ -33,7 +33,7 @@ namespace DOL.GS
 
             using (_lock.GetWrite())
             {
-                _clients = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out _lastValidIndex);
+                _clients = EntityManager.UpdateAndGetAll<GameClient>(EEntityType.Client, out _lastValidIndex);
             }
 
             Parallel.For(0, _lastValidIndex + 1, i =>
@@ -82,7 +82,7 @@ namespace DOL.GS
                             }
                             catch (Exception e)
                             {
-                                ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, player);
+                                ServiceUtil.HandleServiceException(e, SERVICE_NAME, client, player);
                             }
                         }
 
@@ -106,7 +106,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, client.Player);
+                    ServiceUtil.HandleServiceException(e, SERVICE_NAME, client, client.Player);
                 }
             });
 

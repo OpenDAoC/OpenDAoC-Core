@@ -1337,7 +1337,7 @@ namespace DOL.GS
 		/// </summary>
 		public void CancelEngageEffect()
 		{
-			EngageECSGameEffect effect = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(this, eEffect.Engage);
+			EngageEcsAbilityEffect effect = (EngageEcsAbilityEffect)EffectListService.GetEffectOnTarget(this, eEffect.Engage);
 
 			if (effect != null)
 				effect.Cancel(false, false);
@@ -1375,7 +1375,7 @@ namespace DOL.GS
 
 			double evadeChance = 0;
 			GamePlayer player = this as GamePlayer;
-			ECSGameEffect evadeBuff = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageEvadeBuff);
+			EcsGameEffect evadeBuff = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageEvadeBuff);
 
 			if (player != null)
 			{
@@ -1464,7 +1464,7 @@ namespace DOL.GS
 			if (ad.IsMeleeAttack)
 			{
 				BladeBarrierEffect BladeBarrier = null;
-				ECSGameEffect parryBuff = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageParryBuff);
+				EcsGameEffect parryBuff = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageParryBuff);
 
 				if (this is GamePlayer player)
 				{
@@ -1608,7 +1608,7 @@ namespace DOL.GS
 
 				if (IsEngaging)
 				{
-					EngageECSGameEffect engage = (EngageECSGameEffect) EffectListService.GetEffectOnTarget(this, eEffect.Engage);
+					EngageEcsAbilityEffect engage = (EngageEcsAbilityEffect) EffectListService.GetEffectOnTarget(this, eEffect.Engage);
 
 					if (engage != null && attackComponent.AttackState && engage.EngageTarget == ad.Attacker)
 					{
@@ -1839,7 +1839,7 @@ namespace DOL.GS
 					if (effects[i] is null)
 						continue;
 
-					var spellEffect = effects[i] as ECSGameSpellEffect;
+					var spellEffect = effects[i] as EcsGameSpellEffect;
 					if (spellEffect != null && spellEffect.Name.ToLower().Equals("speed of the realm"))
 					{
 						EffectService.RequestImmediateCancelEffect(effects[i]);
@@ -1861,12 +1861,12 @@ namespace DOL.GS
                     (oProcEffect.SpellHandler as OffensiveProcSpellHandler).EventHandler(ad);
                 }
             }
-			DirtyTricksECSGameEffect dt = (DirtyTricksECSGameEffect)EffectListService.GetAbilityEffectOnTarget(this, eEffect.DirtyTricks);
+			DirtyTricksEcsAbilityEffect dt = (DirtyTricksEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(this, eEffect.DirtyTricks);
 			if (dt != null)
             {
 				dt.EventHandler(ad);
             }
-			TripleWieldECSGameEffect tw = (TripleWieldECSGameEffect)EffectListService.GetAbilityEffectOnTarget(this, eEffect.TripleWield);
+			TripleWieldEcsAbilityEffect tw = (TripleWieldEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(this, eEffect.TripleWield);
 			if (tw != null)
             {
 				tw.EventHandler(ad);
@@ -1971,11 +1971,11 @@ namespace DOL.GS
 				if (ad.IsMeleeAttack && ad.Damage > 0)
 				{
 					// Handle Ablatives.
-					List<ECSGameSpellEffect> effects = effectListComponent.GetSpellEffects(eEffect.AblativeArmor);
+					List<EcsGameSpellEffect> effects = effectListComponent.GetSpellEffects(eEffect.AblativeArmor);
 
 					for (int i = 0; i < effects.Count; i++)
 					{
-						AblativeArmorECSGameEffect effect = effects[i] as AblativeArmorECSGameEffect;
+						AblativeArmorEcsSpellEffect effect = effects[i] as AblativeArmorEcsSpellEffect;
 
 						if (effect == null)
 							continue;
@@ -2011,7 +2011,7 @@ namespace DOL.GS
 				}
 
 				// Handle DefensiveProcs.
-				List<ECSGameSpellEffect> dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
+				List<EcsGameSpellEffect> dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
 
 				if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
 				{
@@ -2124,7 +2124,7 @@ namespace DOL.GS
             {
 				var effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
 
-				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != eSpellType.UnbreakableSpeedDecrease)
+				if (effect != null && effect is EcsGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != eSpellType.UnbreakableSpeedDecrease)
 					EffectService.RequestImmediateCancelEffect(effect);
 
 				var ichor_effect = EffectListService.GetEffectOnTarget(this, eEffect.Ichor);
@@ -2189,7 +2189,7 @@ namespace DOL.GS
 
 			if (this is GameNPC npc && npc.Brain is ControlledNpcBrain || this is GameSummonedPet)
             {
-				List<ECSGameSpellEffect> ownerEffects;
+				List<EcsGameSpellEffect> ownerEffects;
 				ControlledNpcBrain pBrain = (this as GameNPC).Brain as ControlledNpcBrain;
 				GameSummonedPet pet = this as GameSummonedPet;
 
@@ -2200,7 +2200,7 @@ namespace DOL.GS
 
 				for (int i = 0; i < ownerEffects.Count; i++)
 				{
-					if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target != eSpellTarget.SELF)
+					if (isAttacker || ownerEffects[i] is not EcsGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target != eSpellTarget.SELF)
 						EffectService.RequestImmediateCancelEffect(ownerEffects[i]);
 				}				
             }

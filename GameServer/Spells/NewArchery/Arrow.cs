@@ -180,7 +180,7 @@ namespace DOL.GS.Spells
 
 							if (target.IsEngaging)
 							{
-								EngageECSGameEffect engage = (EngageECSGameEffect)EffectListService.GetEffectOnTarget(target, eEffect.Engage);
+								EngageEcsAbilityEffect engage = (EngageEcsAbilityEffect)EffectListService.GetEffectOnTarget(target, eEffect.Engage);
 								if (engage != null && target.attackComponent.AttackState && engage.EngageTarget == caster)
 								{
 									// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate
