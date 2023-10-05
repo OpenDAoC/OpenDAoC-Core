@@ -252,24 +252,24 @@ namespace DOL.GS
                 // Luhz Crafting Update:
                 // Players may now have any, and all, "primary" crafting skills.
                 // AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(m_owner.CraftingPrimarySkill);
-                AbstractCraftingSkill skill = null;
+                ACraftingSkill skill = null;
                 lock (m_owner.TradeWindow.Sync)
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
                         if (i.Object_Type == (int)eObjectType.AlchemyTincture)
                         {
-                            if (m_owner.GetCraftingSkillValue(eCraftingSkill.Alchemy) > 0)
+                            if (m_owner.GetCraftingSkillValue(ECraftingSkill.Alchemy) > 0)
                             {
-                                skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.Alchemy);
+                                skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.Alchemy);
                                 break;
                             }
                         }
                         else if (i.Object_Type == (int)eObjectType.SpellcraftGem)
                         {
-                            if (m_owner.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) > 0)
+                            if (m_owner.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) > 0)
                             {
-                                skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.SpellCrafting);
+                                skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.SpellCrafting);
                                 break;
                             }
                         }
@@ -280,8 +280,8 @@ namespace DOL.GS
 				{
 					if(((AdvancedCraftingSkill)skill).IsAllowedToCombine(m_owner, itemToCombine))
 					{
-						if(skill is SpellCrafting)
-							((SpellCrafting)skill).ShowSpellCraftingInfos(m_owner, itemToCombine);
+						if(skill is Spellcrafting)
+							((Spellcrafting)skill).ShowSpellCraftingInfos(m_owner, itemToCombine);
 					}
 				}
 
@@ -306,24 +306,24 @@ namespace DOL.GS
                 // Luhz Crafting Update:
                 // Players may now have any, and all, "primary" crafting skills.
                 // AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(m_owner.CraftingPrimarySkill);
-                AbstractCraftingSkill skill = null;
+                ACraftingSkill skill = null;
                 lock (m_owner.TradeWindow.Sync)
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
                         if (i.Object_Type == (int)eObjectType.AlchemyTincture)
                         {
-                            if (m_owner.GetCraftingSkillValue(eCraftingSkill.Alchemy) > 0)
+                            if (m_owner.GetCraftingSkillValue(ECraftingSkill.Alchemy) > 0)
                             {
-                                skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.Alchemy);
+                                skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.Alchemy);
                                 break;
                             }
                         }
                         else if (i.Object_Type == (int)eObjectType.SpellcraftGem)
                         {
-                            if (m_owner.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) > 0)
+                            if (m_owner.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) > 0)
                             {
-                                skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.SpellCrafting);
+                                skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.SpellCrafting);
                                 break;
                             }
                         }

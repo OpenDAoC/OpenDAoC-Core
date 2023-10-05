@@ -24,14 +24,14 @@
 	[NPCGuildScript("Siegecrafting Master")]
 	public class SiegecraftingMaster : CraftNPC
 	{
-		private static readonly eCraftingSkill[] m_trainedSkills = 
+		private static readonly ECraftingSkill[] m_trainedSkills = 
 		{
-			eCraftingSkill.MetalWorking,
-			eCraftingSkill.WoodWorking,
-			eCraftingSkill.SiegeCrafting,
+			ECraftingSkill.MetalWorking,
+			ECraftingSkill.WoodWorking,
+			ECraftingSkill.SiegeCrafting,
 		};
 
-		public override eCraftingSkill[] TrainedSkills
+		public override ECraftingSkill[] TrainedSkills
 		{
 			get { return m_trainedSkills; }
 		}
@@ -55,9 +55,9 @@
 		/// <summary>
 		/// The eCraftingSkill
 		/// </summary>
-		public override eCraftingSkill TheCraftingSkill
+		public override ECraftingSkill TheCraftingSkill
 		{
-			get { return eCraftingSkill.SiegeCrafting; }
+			get { return ECraftingSkill.SiegeCrafting; }
 		}
 
 		/// <summary>

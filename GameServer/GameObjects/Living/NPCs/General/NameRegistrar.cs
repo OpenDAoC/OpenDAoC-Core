@@ -24,7 +24,7 @@ namespace DOL.GS
 			{
 				/* Get primary crafting skill (if any) */
 				int CraftSkill = 0;
-				if (player.CraftingPrimarySkill != eCraftingSkill.NoCrafting)
+				if (player.CraftingPrimarySkill != ECraftingSkill.NoCrafting)
 					CraftSkill = player.GetCraftingSkillValue(player.CraftingPrimarySkill);
 
 				/* Check if level and/or crafting skill let you have a lastname */

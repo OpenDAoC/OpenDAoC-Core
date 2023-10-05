@@ -232,7 +232,7 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 		else if (player.CharacterClass != null)
 		{
 			result.Append(" ");
-			AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(player.CraftingPrimarySkill);
+			ACraftingSkill skill = CraftingMgr.getSkillbyEnum(player.CraftingPrimarySkill);
 			result.Append(player.CraftTitle.GetValue(source.Player, player));
 		}
 		else

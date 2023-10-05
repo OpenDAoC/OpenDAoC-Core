@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
@@ -26,25 +7,25 @@ using log4net;
 
 namespace DOL.GS
 {
-    public class Recipe
+    public class RecipeMgr
     {
         protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private Ingredient[] ingredients;
+        private IngredientDb[] ingredients;
 
         public DbItemTemplate Product { get; }
-        public eCraftingSkill RequiredCraftingSkill { get; }
+        public ECraftingSkill RequiredCraftingSkill { get; }
         public int Level { get; }
-        public List<Ingredient> Ingredients => new List<Ingredient>(ingredients);
+        public List<IngredientDb> Ingredients => new List<IngredientDb>(ingredients);
         public bool IsForUniqueProduct { get; private set; } = false;
 
-        public Recipe(DbItemTemplate product, List<Ingredient> ingredients)
+        public RecipeMgr(DbItemTemplate product, List<IngredientDb> ingredients)
         {
             this.ingredients = ingredients.ToArray();
             Product = product;
         }
 
-        public Recipe(DbItemTemplate product, List<Ingredient> ingredients, eCraftingSkill requiredSkill, int level, bool makeTemplated)
+        public RecipeMgr(DbItemTemplate product, List<IngredientDb> ingredients, ECraftingSkill requiredSkill, int level, bool makeTemplated)
             : this(product, ingredients)
         {
             RequiredCraftingSkill = requiredSkill;
@@ -80,8 +61,8 @@ namespace DOL.GS
             if (updatePrice)
             {
                 long pricetoset;
-                var secondaryCraftingSkills = new List<eCraftingSkill>() { 
-                    eCraftingSkill.MetalWorking, eCraftingSkill.LeatherCrafting, eCraftingSkill.ClothWorking, eCraftingSkill.WoodWorking
+                var secondaryCraftingSkills = new List<ECraftingSkill>() { 
+                    ECraftingSkill.MetalWorking, ECraftingSkill.LeatherCrafting, ECraftingSkill.ClothWorking, ECraftingSkill.WoodWorking
                 };
 
                 if (secondaryCraftingSkills.Contains(RequiredCraftingSkill))
@@ -108,12 +89,12 @@ namespace DOL.GS
         }
     }
 
-    public class Ingredient
+    public class IngredientDb
     {
         public int Count { get; }
         public DbItemTemplate Material { get; }
 
-        public Ingredient(int count, DbItemTemplate ingredient)
+        public IngredientDb(int count, DbItemTemplate ingredient)
         {
             Count = count;
             Material = ingredient;
@@ -122,14 +103,14 @@ namespace DOL.GS
         public long Cost => Count * Material.Price;
     }
 
-    public class RecipeDB
+    public class RecipeDb
     {
         protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static Dictionary<ushort, Recipe> recipeCache = new Dictionary<ushort, Recipe>();
+        private static Dictionary<ushort, RecipeMgr> recipeCache = new Dictionary<ushort, RecipeMgr>();
 
-        public static Recipe FindBy(ushort recipeDatabaseID)
+        public static RecipeMgr FindBy(ushort recipeDatabaseID)
         {
-            Recipe recipe;
+            RecipeMgr recipe;
             recipeCache.TryGetValue(recipeDatabaseID, out recipe);
             if (recipe != null)
             {
@@ -158,9 +139,9 @@ namespace DOL.GS
 
         }
 
-        private static Recipe NullRecipe => new Recipe(null, null);
+        private static RecipeMgr NullRecipe => new RecipeMgr(null, null);
 
-        private static Recipe LoadFromDB(ushort recipeDatabaseID)
+        private static RecipeMgr LoadFromDB(ushort recipeDatabaseID)
         {
 
             string craftingDebug = "";
@@ -196,7 +177,7 @@ namespace DOL.GS
 
             bool isRecipeValid = true;
 
-            var ingredients = new List<Ingredient>();
+            var ingredients = new List<IngredientDb>();
             foreach (DbCraftedXItem material in rawMaterials)
             {
                 DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(material.IngredientId_nb);
@@ -206,7 +187,7 @@ namespace DOL.GS
                     craftingDebug = "[CRAFTING] Cannot find raw material ItemTemplate: " + material.IngredientId_nb + ") needed for recipe: " + dbRecipe.CraftedItemID + "\n";
                     isRecipeValid = false;
                 }
-                ingredients.Add(new Ingredient(material.Count, template));
+                ingredients.Add(new IngredientDb(material.Count, template));
             }
 
             if (!isRecipeValid)
@@ -216,7 +197,7 @@ namespace DOL.GS
                 //throw new ArgumentException(errorText);
             }
 
-            var recipe = new Recipe(product, ingredients, (eCraftingSkill)dbRecipe.CraftingSkillType, dbRecipe.CraftingLevel, dbRecipe.MakeTemplated);
+            var recipe = new RecipeMgr(product, ingredients, (ECraftingSkill)dbRecipe.CraftingSkillType, dbRecipe.CraftingLevel, dbRecipe.MakeTemplated);
             return recipe;
         }
     }

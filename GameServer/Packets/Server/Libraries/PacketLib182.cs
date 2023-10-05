@@ -144,15 +144,15 @@ namespace DOL.GS.PacketHandler
 						flag |= 0x02; // enable salvage button
 
 						// Enable craft button if the item can be modified and the player has alchemy or spellcrafting
-						eCraftingSkill skill = CraftingMgr.GetCraftingSkill(item);
+						ECraftingSkill skill = CraftingMgr.GetCraftingSkill(item);
 						switch (skill)
 						{
-							case eCraftingSkill.ArmorCrafting:
-							case eCraftingSkill.Fletching:
-							case eCraftingSkill.Tailoring:
-							case eCraftingSkill.WeaponCrafting:
-								if (m_gameClient.Player.CraftingSkills.ContainsKey(eCraftingSkill.Alchemy)
-									|| m_gameClient.Player.CraftingSkills.ContainsKey(eCraftingSkill.SpellCrafting))
+							case ECraftingSkill.ArmorCrafting:
+							case ECraftingSkill.Fletching:
+							case ECraftingSkill.Tailoring:
+							case ECraftingSkill.WeaponCrafting:
+								if (m_gameClient.Player.CraftingSkills.ContainsKey(ECraftingSkill.Alchemy)
+									|| m_gameClient.Player.CraftingSkills.ContainsKey(ECraftingSkill.SpellCrafting))
 									flag |= 0x04; // enable craft button
 								break;
 

@@ -25,7 +25,7 @@ public class LastNameCommand : ACommandHandler, ICommandHandler
 	{
 		/* Get primary crafting skill (if any) */
 		int CraftSkill = 0;
-		if (client.Player.CraftingPrimarySkill != eCraftingSkill.NoCrafting)
+		if (client.Player.CraftingPrimarySkill != ECraftingSkill.NoCrafting)
 			CraftSkill = client.Player.GetCraftingSkillValue(client.Player.CraftingPrimarySkill);
 
 		/* Check if level and/or crafting skill let you have a lastname */

@@ -27,20 +27,20 @@ namespace DOL.GS
 	[NPCGuildScript("Armorsmiths Master")]
 	public class ArmorCraftingMaster : CraftNPC
 	{
-		private static readonly eCraftingSkill[] m_trainedSkills = 
+		private static readonly ECraftingSkill[] m_trainedSkills = 
 		{
-			eCraftingSkill.ArmorCrafting,
-			eCraftingSkill.ClothWorking,
-			eCraftingSkill.Fletching,
-			eCraftingSkill.LeatherCrafting,
-			eCraftingSkill.SiegeCrafting,
-			eCraftingSkill.Tailoring,
-			eCraftingSkill.WeaponCrafting,
-			eCraftingSkill.MetalWorking,
-			eCraftingSkill.WoodWorking
+			ECraftingSkill.ArmorCrafting,
+			ECraftingSkill.ClothWorking,
+			ECraftingSkill.Fletching,
+			ECraftingSkill.LeatherCrafting,
+			ECraftingSkill.SiegeCrafting,
+			ECraftingSkill.Tailoring,
+			ECraftingSkill.WeaponCrafting,
+			ECraftingSkill.MetalWorking,
+			ECraftingSkill.WoodWorking
 		};
 
-		public override eCraftingSkill[] TrainedSkills
+		public override ECraftingSkill[] TrainedSkills
 		{
 			get { return m_trainedSkills; }
 		}
@@ -61,9 +61,9 @@ namespace DOL.GS
             }
 		}
 
-		public override eCraftingSkill TheCraftingSkill
+		public override ECraftingSkill TheCraftingSkill
 		{
-			get { return eCraftingSkill.ArmorCrafting; }
+			get { return ECraftingSkill.ArmorCrafting; }
 		}
 
 		public override string InitialEntersentence

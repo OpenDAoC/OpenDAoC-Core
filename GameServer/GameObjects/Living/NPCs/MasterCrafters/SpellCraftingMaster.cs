@@ -27,16 +27,16 @@
 	[NPCGuildScript("Spellcrafters Master")]
 	public class SpellCraftingMaster : CraftNPC
 	{
-		private static readonly eCraftingSkill[] m_trainedSkills = 
+		private static readonly ECraftingSkill[] m_trainedSkills = 
 		{
-			eCraftingSkill.SpellCrafting,
-			eCraftingSkill.Alchemy,
-			eCraftingSkill.GemCutting,
-			eCraftingSkill.HerbalCrafting,
-			eCraftingSkill.SiegeCrafting,
+			ECraftingSkill.SpellCrafting,
+			ECraftingSkill.Alchemy,
+			ECraftingSkill.GemCutting,
+			ECraftingSkill.HerbalCrafting,
+			ECraftingSkill.SiegeCrafting,
 		};
 
-		public override eCraftingSkill[] TrainedSkills
+		public override ECraftingSkill[] TrainedSkills
 		{
 			get { return m_trainedSkills; }
 		}
@@ -57,9 +57,9 @@
             }
 		}
 
-		public override eCraftingSkill TheCraftingSkill
+		public override ECraftingSkill TheCraftingSkill
 		{
-			get { return eCraftingSkill.SpellCrafting; }
+			get { return ECraftingSkill.SpellCrafting; }
 		}
 
 		public override string InitialEntersentence

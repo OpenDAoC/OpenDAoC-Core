@@ -165,7 +165,7 @@ public class RepairCommand : ACommandHandler, ICommandHandler
 			return false;
 		}
 
-		if (player.GetCraftingSkillValue(eCraftingSkill.WoodWorking) < 1)
+		if (player.GetCraftingSkillValue(ECraftingSkill.WoodWorking) < 1)
 		{
 			DisplayMessage(player, "You need woodworking skill to repair.");
 			return false;
@@ -252,7 +252,7 @@ public class RepairCommand : ACommandHandler, ICommandHandler
 		if (player.Client.Account.PrivLevel > (int)ePrivLevel.Player)
 			return 100;
 
-		double skill = player.GetCraftingSkillValue(eCraftingSkill.WoodWorking);
+		double skill = player.GetCraftingSkillValue(ECraftingSkill.WoodWorking);
 		int skillneeded = (obj.Level + 1) * 50;
 		double chance = skill / skillneeded;
 		return chance;

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Database;
@@ -29,7 +10,7 @@ namespace DOL.GS
 	/// <summary>
 	/// The class holding all repair functions
 	/// </summary>
-	public class Repair
+	public class RepairMgr
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -77,9 +58,9 @@ namespace DOL.GS
 			player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.BeginWork.Repairing", item.Name), workDuration);
 			player.CraftTimer = new ECSGameTimer(player);
 			player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(Proceed);
-			player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
+			player.CraftTimer.Properties.SetProperty(ACraftingSkill.PLAYER_CRAFTER, player);
 			player.CraftTimer.Properties.SetProperty(PLAYER_PARTNER, tradePartner);
-			player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, item);
+			player.CraftTimer.Properties.SetProperty(ACraftingSkill.RECIPE_BEING_CRAFTED, item);
 			player.CraftTimer.Start(workDuration * 1000);
 			return 1;
 		}
@@ -91,9 +72,9 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected static int Proceed(ECSGameTimer timer)
 		{
-			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(ACraftingSkill.PLAYER_CRAFTER, null);
 			GamePlayer tradePartner = timer.Properties.GetProperty<GamePlayer>(PLAYER_PARTNER, null);
-			DbInventoryItem item = timer.Properties.GetProperty<DbInventoryItem>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, null);
+			DbInventoryItem item = timer.Properties.GetProperty<DbInventoryItem>(ACraftingSkill.RECIPE_BEING_CRAFTED, null);
 
 			if (player == null || item == null)
 			{
@@ -158,8 +139,8 @@ namespace DOL.GS
 				return false;
 			}
 			
-			eCraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
-			if (skill == eCraftingSkill.NoCrafting)
+			ECraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
+			if (skill == ECraftingSkill.NoCrafting)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.IsAllowedToBeginWork.CantRepair", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
@@ -203,8 +184,8 @@ namespace DOL.GS
 		/// </summary>
 		protected static int CalculateSuccessChances(GamePlayer player, DbInventoryItem item)
 		{
-			eCraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
-			if (skill == eCraftingSkill.NoCrafting) return 0;
+			ECraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
+			if (skill == ECraftingSkill.NoCrafting) return 0;
 
 			int chancePercent = (int)((90 / (CraftingMgr.GetItemCraftLevel(item) * 0.5)) * player.GetCraftingSkillValue(skill)) - 80; // 50% = 10% chance, 100% = 100% chance
 			if (chancePercent > 100)
@@ -246,8 +227,8 @@ namespace DOL.GS
 			player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.BeginWork.Repairing", siegeWeapon.Name), workDuration);
 			player.CraftTimer = new ECSGameTimer(player);
 			player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(ProceedSiegeWeapon);
-			player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
-			player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, siegeWeapon);
+			player.CraftTimer.Properties.SetProperty(ACraftingSkill.PLAYER_CRAFTER, player);
+			player.CraftTimer.Properties.SetProperty(ACraftingSkill.RECIPE_BEING_CRAFTED, siegeWeapon);
 			player.CraftTimer.Start(workDuration * 1000);
 			return 1;
 		}
@@ -259,8 +240,8 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected static int ProceedSiegeWeapon(ECSGameTimer timer)
 		{
-			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
-			GameSiegeWeapon siegeWeapon = timer.Properties.GetProperty<GameSiegeWeapon>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(ACraftingSkill.PLAYER_CRAFTER, null);
+			GameSiegeWeapon siegeWeapon = timer.Properties.GetProperty<GameSiegeWeapon>(ACraftingSkill.RECIPE_BEING_CRAFTED, null);
 
 			if (player == null || siegeWeapon == null)
 			{
@@ -294,7 +275,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool IsAllowedToBeginWork(GamePlayer player, GameSiegeWeapon siegeWeapon, int percentNeeded)
 		{
-			if (player.GetCraftingSkillValue(eCraftingSkill.WeaponCrafting) < 301)
+			if (player.GetCraftingSkillValue(ECraftingSkill.WeaponCrafting) < 301)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.IsAllowedToBeginWork.WeaponCrafter"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 				return false;
@@ -331,8 +312,8 @@ namespace DOL.GS
 		/// </summary>
 		protected static int CalculateSuccessChances(GamePlayer player, GameSiegeWeapon siegeWeapon)
 		{
-			player.GetCraftingSkillValue(eCraftingSkill.WoodWorking);
-			int chancePercent = 90 - 50 / player.GetCraftingSkillValue(eCraftingSkill.WoodWorking);
+			player.GetCraftingSkillValue(ECraftingSkill.WoodWorking);
+			int chancePercent = 90 - 50 / player.GetCraftingSkillValue(ECraftingSkill.WoodWorking);
 
 			if (chancePercent > 100)
 				chancePercent = 100;

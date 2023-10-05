@@ -159,7 +159,7 @@ public class ApiPlayer
                 var spec = x.Split('|');
                 if (spec.Length == 2)
                 {
-                    skills.Add(CraftingMgr.getSkillbyEnum((eCraftingSkill)int.Parse(spec[0])).Name, int.Parse(spec[1]));
+                    skills.Add(CraftingMgr.getSkillbyEnum((ECraftingSkill)int.Parse(spec[0])).Name, int.Parse(spec[1]));
                 }
             });
             

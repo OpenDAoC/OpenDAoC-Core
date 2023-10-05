@@ -228,7 +228,7 @@ namespace DOL.GS
 					return;
 				}
 
-				if(Repair.IsAllowedToBeginWork(m_owner, itemToRepair, 100))
+				if(RepairMgr.IsAllowedToBeginWork(m_owner, itemToRepair, 100))
 				{
 					m_partnerWindow.m_repair = true;
 					m_repair = true;
@@ -285,24 +285,24 @@ namespace DOL.GS
                 // --------------------------------------------------------------
                 // Luhz Crafting Update:
                 // Players may now have any, and all, "primary" crafting skills.
-                AbstractCraftingSkill skill = null;
+                ACraftingSkill skill = null;
                 lock (m_owner.TradeWindow.Sync)
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
                         if (i.Object_Type == (int)eObjectType.AlchemyTincture)
                         {
-                            if (m_owner.GetCraftingSkillValue(eCraftingSkill.Alchemy) > 0)
+                            if (m_owner.GetCraftingSkillValue(ECraftingSkill.Alchemy) > 0)
                             {
-                                skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.Alchemy);
+                                skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.Alchemy);
                                 break;
                             }
                         }
 						else if (i.Object_Type == (int)eObjectType.SpellcraftGem)
 						{
-							if (m_owner.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) > 0)
+							if (m_owner.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) > 0)
 							{
-								skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.SpellCrafting);
+								skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.SpellCrafting);
 								break;
 							}
 						}
@@ -313,8 +313,8 @@ namespace DOL.GS
 				{
 					if(((AdvancedCraftingSkill)skill).IsAllowedToCombine(m_owner, itemToCombine))
 					{
-						if(skill is SpellCrafting)
-							((SpellCrafting)skill).ShowSpellCraftingInfos(m_owner, itemToCombine);
+						if(skill is Spellcrafting)
+							((Spellcrafting)skill).ShowSpellCraftingInfos(m_owner, itemToCombine);
 
 						m_partnerWindow.m_combine = true;
 						m_combine = true;
@@ -488,24 +488,24 @@ namespace DOL.GS
                     // Luhz Crafting Update:
                     // Players may now have any, and all, "primary" crafting skills.
                     // AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(crafter.CraftingPrimarySkill);
-                    AbstractCraftingSkill skill = null;
+                    ACraftingSkill skill = null;
                     lock (crafter.TradeWindow.Sync)
                     {
                         foreach (DbInventoryItem i in (ArrayList)crafter.TradeWindow.TradeItems.Clone())
                         {
                             if (i.Object_Type == (int)eObjectType.AlchemyTincture)
                             {
-                                if (m_owner.GetCraftingSkillValue(eCraftingSkill.Alchemy) > 0)
+                                if (m_owner.GetCraftingSkillValue(ECraftingSkill.Alchemy) > 0)
                                 {
-                                    skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.Alchemy);
+                                    skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.Alchemy);
                                     break;
                                 }
                             }
                             else if (i.Object_Type == (int)eObjectType.SpellcraftGem)
                             {
-                                if (crafter.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) > 0)
+                                if (crafter.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) > 0)
                                 {
-                                    skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.SpellCrafting);
+                                    skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.SpellCrafting);
                                     break;
                                 }
                             }

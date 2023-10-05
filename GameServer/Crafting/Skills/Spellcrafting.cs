@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using DOL.Database;
@@ -25,7 +6,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-	public class SpellCrafting : AdvancedCraftingSkill
+	public class Spellcrafting : AdvancedCraftingSkill
 	{
         protected override String Profession
         {
@@ -93,23 +74,23 @@ namespace DOL.GS
         private static readonly int[] OCStartPercentages = { 0, 10, 20, 30, 50, 70 };
         private static readonly int[] ItemQualOCModifiers = { 0, 0, 6, 8, 10, 18, 26 };
 
-		public SpellCrafting()
+		public Spellcrafting()
 		{
 			Icon = 0x0D;
 			Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, 
 				"Crafting.Name.Evocation");
-			eSkill = eCraftingSkill.SpellCrafting;
+			eSkill = ECraftingSkill.SpellCrafting;
 		}
 
 		#region Classic craft functions
-		public override void GainCraftingSkillPoints(GamePlayer player, Recipe recipe)
+		public override void GainCraftingSkillPoints(GamePlayer player, RecipeMgr recipe)
 		{
 			if (Util.Chance(CalculateChanceToGainPoint(player, recipe.Level)))
 			{
-				player.GainCraftingSkill(eCraftingSkill.SpellCrafting, 1);
+				player.GainCraftingSkill(ECraftingSkill.SpellCrafting, 1);
 
-				if (player.GetCraftingSkillValue(eCraftingSkill.GemCutting) < subSkillCap)
-	                player.GainCraftingSkill(eCraftingSkill.GemCutting, 1);
+				if (player.GetCraftingSkillValue(ECraftingSkill.GemCutting) < subSkillCap)
+	                player.GainCraftingSkill(ECraftingSkill.GemCutting, 1);
 
 				player.Out.SendUpdateCraftingSkills();
 			}
@@ -205,7 +186,7 @@ namespace DOL.GS
 				}
 
 				int bonusLevel = GetTotalImbuePoints(player, item);
-				if (bonusLevel > player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) / 20)
+				if (bonusLevel > player.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) / 20)
 				{
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.IsAllowedToCombine.NotEnoughSkill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
@@ -264,7 +245,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		private void ApplyMagicalDusts(GamePlayer player, DbInventoryItem item)
 		{
-			int spellCrafterLevel = player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting);
+			int spellCrafterLevel = player.GetCraftingSkillValue(ECraftingSkill.SpellCrafting);
 
 			int bonusCap;
 			if (spellCrafterLevel < 300 || item.Level < 15) bonusCap = 0;
@@ -517,7 +498,7 @@ namespace DOL.GS
             try {
             int success = 34 + ItemQualOCModifiers[item.Quality - 94];
             success -= OCStartPercentages[bonusLevel-maxBonusLevel];
-            int skillbonus = (player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) / 10);
+            int skillbonus = (player.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) / 10);
             if (skillbonus > 100) 
                 skillbonus = 100;
             success += skillbonus;
@@ -673,7 +654,7 @@ namespace DOL.GS
 
 			gemModifier = gemModifier * item.Quality / 100;
 
-			int intSkill = player.GetCraftingSkillValue(eCraftingSkill.SpellCrafting);
+			int intSkill = player.GetCraftingSkillValue(ECraftingSkill.SpellCrafting);
 			int intSkillMod;
 			if (intSkill < 50) { intSkillMod = -50; }
 			else if (intSkill < 100) { intSkillMod = -45; }

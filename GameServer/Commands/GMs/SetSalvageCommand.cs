@@ -49,7 +49,7 @@ public class SetSalvageCommand : ACommandHandler, ICommandHandler
             DisplayMessage(client, "This item can' be configured.");
             return;
         }
-        var sCalc = new SalvageCalculator();
+        var sCalc = new SalvagingCalculator();
         var ReturnSalvage = sCalc.GetSalvage(client.Player, item);
 
         var oldprice = item.Price;

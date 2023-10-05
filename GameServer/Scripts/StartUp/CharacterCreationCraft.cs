@@ -71,19 +71,19 @@ namespace DOL.GS.GameEvents
 			
 			// Add all Crafting skills at level 1
 			var collectionAllCraftingSkills = new List<string>();
-			foreach (int craftingSkillId in Enum.GetValues(typeof(eCraftingSkill)))
+			foreach (int craftingSkillId in Enum.GetValues(typeof(ECraftingSkill)))
 			{
 				if (craftingSkillId > 0)
 				{
 					collectionAllCraftingSkills.Add(string.Format("{0}|1", craftingSkillId));
-					if (craftingSkillId == (int)eCraftingSkill._Last)
+					if (craftingSkillId == (int)ECraftingSkill._Last)
 						break;
 				}
 			}
 			
 			// Set Primary Skill to Basic.
 			ch.SerializedCraftingSkills = string.Join(";", collectionAllCraftingSkills);
-			ch.CraftingPrimarySkill = (int)eCraftingSkill.BasicCrafting;
+			ch.CraftingPrimarySkill = (int)ECraftingSkill.BasicCrafting;
 		}
 
 	}

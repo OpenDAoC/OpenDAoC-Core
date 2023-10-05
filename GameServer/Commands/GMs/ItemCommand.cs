@@ -1607,7 +1607,7 @@ namespace DOL.GS.Commands
 								list.Add("     ObjectType: " + yield.ObjectType);
 								list.Add("   SalvageLevel: " + yield.SalvageLevel);
 								list.Add("       Material: " + materialName);
-								list.Add("          Count: " + Salvage.GetMaterialYield(client.Player, item, yield, material));
+								list.Add("          Count: " + SalvageMgr.GetMaterialYield(client.Player, item, yield, material));
 								list.Add("          Realm: " + (yield.Realm == 0 ? "Any" : GlobalConstants.RealmToName((eRealm)yield.Realm)));
 								list.Add("      PackageID: " + yield.PackageID);
 							}

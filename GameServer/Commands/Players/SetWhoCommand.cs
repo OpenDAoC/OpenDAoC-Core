@@ -32,7 +32,7 @@ public class SetWhoCommand : ACommandHandler, ICommandHandler
 			client.Player.ClassNameFlag = true;
 		else if (args[1].ToLower() == "trade")
 		{
-			if (client.Player.CraftingPrimarySkill == eCraftingSkill.NoCrafting)
+			if (client.Player.CraftingPrimarySkill == ECraftingSkill.NoCrafting)
 			{
 				DisplayMessage(client, "You need a profession to enable it in for who messages");
 				return;

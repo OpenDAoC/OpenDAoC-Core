@@ -12880,17 +12880,17 @@ namespace DOL.GS
         /// <summary>
         /// Store all player crafting skill and their value (eCraftingSkill => Value)
         /// </summary>
-        protected Dictionary<eCraftingSkill, int> m_craftingSkills = new Dictionary<eCraftingSkill, int>();
+        protected Dictionary<ECraftingSkill, int> m_craftingSkills = new Dictionary<ECraftingSkill, int>();
 
         /// <summary>
         /// Store the player primary crafting skill
         /// </summary>
-        protected eCraftingSkill m_craftingPrimarySkill = 0;
+        protected ECraftingSkill m_craftingPrimarySkill = 0;
 
         /// <summary>
         /// Get all player crafting skill and their value
         /// </summary>
-        public Dictionary<eCraftingSkill, int> CraftingSkills
+        public Dictionary<ECraftingSkill, int> CraftingSkills
         {
             get { return m_craftingSkills; }
         }
@@ -12898,7 +12898,7 @@ namespace DOL.GS
         /// <summary>
         /// Store the player primary crafting skill
         /// </summary>
-        public eCraftingSkill CraftingPrimarySkill
+        public ECraftingSkill CraftingPrimarySkill
         {
             get { return m_craftingPrimarySkill; }
             set { m_craftingPrimarySkill = value; }
@@ -12909,7 +12909,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="skill">The crafting skill to get value</param>
         /// <returns>the level in the specified crafting if valid and -1 if not</returns>
-        public virtual int GetCraftingSkillValue(eCraftingSkill skill)
+        public virtual int GetCraftingSkillValue(ECraftingSkill skill)
         {
             lock (CraftingLock)
             {
@@ -12924,13 +12924,13 @@ namespace DOL.GS
         /// <param name="skill">Crafting skill to increase</param>
         /// <param name="count">How much increase or decrase</param>
         /// <returns>true if the skill is valid and -1 if not</returns>
-        public virtual bool GainCraftingSkill(eCraftingSkill skill, int count)
+        public virtual bool GainCraftingSkill(ECraftingSkill skill, int count)
         {
-            if (skill == eCraftingSkill.NoCrafting) return false;
+            if (skill == ECraftingSkill.NoCrafting) return false;
 
             lock (CraftingLock)
             {
-                AbstractCraftingSkill craftingSkill = CraftingMgr.getSkillbyEnum(skill);
+                ACraftingSkill craftingSkill = CraftingMgr.getSkillbyEnum(skill);
                 if (craftingSkill != null && count >0)
                 {
                     m_craftingSkills[skill] = count + m_craftingSkills[skill];
@@ -13069,18 +13069,18 @@ namespace DOL.GS
         /// <param name="skill"></param>
         /// <param name="startValue"></param>
         /// <returns></returns>
-        public virtual bool AddCraftingSkill(eCraftingSkill skill, int startValue)
+        public virtual bool AddCraftingSkill(ECraftingSkill skill, int startValue)
         {
-            if (skill == eCraftingSkill.NoCrafting) return false;
+            if (skill == ECraftingSkill.NoCrafting) return false;
 
-            if (CraftingPrimarySkill == eCraftingSkill.NoCrafting)
-                CraftingPrimarySkill = eCraftingSkill.BasicCrafting;
+            if (CraftingPrimarySkill == ECraftingSkill.NoCrafting)
+                CraftingPrimarySkill = ECraftingSkill.BasicCrafting;
 
             lock (CraftingLock)
             {
                 if (m_craftingSkills.ContainsKey(skill))
                 {
-                    AbstractCraftingSkill craftingSkill = CraftingMgr.getSkillbyEnum(skill);
+                    ACraftingSkill craftingSkill = CraftingMgr.getSkillbyEnum(skill);
                     if (craftingSkill != null)
                     {
                         m_craftingSkills.Add(skill, startValue);
@@ -13173,7 +13173,7 @@ namespace DOL.GS
             }
             try
             {
-                CraftingPrimarySkill = (eCraftingSkill)CraftingForRealm.CraftingPrimarySkill;
+                CraftingPrimarySkill = (ECraftingSkill)CraftingForRealm.CraftingPrimarySkill;
 
                 lock (CraftingLock)
                 {
@@ -13202,17 +13202,17 @@ namespace DOL.GS
                                 case "BasicCrafting": i = 15; break;
 
                             }
-                            if (!m_craftingSkills.ContainsKey((eCraftingSkill)i))
+                            if (!m_craftingSkills.ContainsKey((ECraftingSkill)i))
                             {
                                 if (IsCraftingSkillDefined(Convert.ToInt32(values[0])))
                                 {
                                     if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
                                     {
-                                        m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
+                                        m_craftingSkills.Add((ECraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
                                     }
                                     else
                                     {
-                                        m_craftingSkills.Add((eCraftingSkill)i, Convert.ToInt32(values[1]));
+                                        m_craftingSkills.Add((ECraftingSkill)i, Convert.ToInt32(values[1]));
                                     }
                                 }
                                 else
@@ -13222,17 +13222,17 @@ namespace DOL.GS
                             }
                         }
                         //Load by number
-                        else if (!m_craftingSkills.ContainsKey((eCraftingSkill)Convert.ToInt32(values[0])))
+                        else if (!m_craftingSkills.ContainsKey((ECraftingSkill)Convert.ToInt32(values[0])))
                         {
                             if(IsCraftingSkillDefined(Convert.ToInt32(values[0])))
                             {
                                 if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
                                 {
-                                    m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
+                                    m_craftingSkills.Add((ECraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
                                 }
                                 else
                                 {
-                                    m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
+                                    m_craftingSkills.Add((ECraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
                                 }
                             }
                             else
@@ -13252,7 +13252,7 @@ namespace DOL.GS
 
         private bool IsCraftingSkillDefined(int craftingSkillToCheck)
         {
-            return Enum.IsDefined(typeof(eCraftingSkill), craftingSkillToCheck);
+            return Enum.IsDefined(typeof(ECraftingSkill), craftingSkillToCheck);
         }
 
         /// <summary>
@@ -13260,7 +13260,7 @@ namespace DOL.GS
         /// </summary>
         public virtual void CraftItem(ushort itemID)
         {
-            var recipe = RecipeDB.FindBy(itemID);
+            var recipe = RecipeDb.FindBy(itemID);
 
             if (recipe == null)
             {
@@ -13269,7 +13269,7 @@ namespace DOL.GS
                 return;
             }
 
-            AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(recipe.RequiredCraftingSkill);
+            ACraftingSkill skill = CraftingMgr.getSkillbyEnum(recipe.RequiredCraftingSkill);
             if (skill != null)
             {
                 skill.CraftItem(this, recipe);
@@ -13285,12 +13285,12 @@ namespace DOL.GS
         /// </summary>
         public virtual void SalvageItem(DbInventoryItem item)
         {
-            Salvage.BeginWork(this, item);
+            SalvageMgr.BeginWork(this, item);
         }
 
         public virtual void SalvageItemList(IList<DbInventoryItem> itemList)
         {
-            Salvage.BeginWorkList(this, itemList);
+            SalvageMgr.BeginWorkList(this, itemList);
         }
 
         /// <summary>
@@ -13298,7 +13298,7 @@ namespace DOL.GS
         /// </summary>
         public virtual void RepairItem(DbInventoryItem item)
         {
-            Repair.BeginWork(this, item);
+            RepairMgr.BeginWork(this, item);
         }
 
         #endregion
@@ -13735,7 +13735,7 @@ namespace DOL.GS
                 this.Out.SendMessage("You cannot salvage another realm's siege weapon!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
                 return;
             }
-            Salvage.BeginWork(this, siegeWeapon);
+            SalvageMgr.BeginWork(this, siegeWeapon);
         }
         #endregion
 

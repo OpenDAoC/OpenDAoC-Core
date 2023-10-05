@@ -28,9 +28,9 @@ namespace DOL.GS
 
 		public abstract string ACCEPTED_BY_ORDER_NAME { get; }
 
-		public abstract eCraftingSkill[] TrainedSkills { get; }
+		public abstract ECraftingSkill[] TrainedSkills { get; }
 
-		public abstract eCraftingSkill TheCraftingSkill { get; }
+		public abstract ECraftingSkill TheCraftingSkill { get; }
 
 		public abstract string InitialEntersentence { get; }
 
@@ -91,7 +91,7 @@ namespace DOL.GS
 
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftNPC.CraftNpcDialogResponse.Accepted", ACCEPTED_BY_ORDER_NAME), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				
-			foreach (eCraftingSkill skill in TrainedSkills)
+			foreach (ECraftingSkill skill in TrainedSkills)
 			{
 				player.AddCraftingSkill(skill, 1);
 			}

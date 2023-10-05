@@ -2150,7 +2150,7 @@ namespace DOL.GS.PacketHandler
 					pak.WritePascalString("");
 				pak.WriteByte(0x0);
 
-				AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(player.CraftingPrimarySkill);
+				ACraftingSkill skill = CraftingMgr.getSkillbyEnum(player.CraftingPrimarySkill);
 				if (skill != null)
 					pak.WritePascalString(skill.Name); //crafter guilde: alchemist
 				else
@@ -2391,9 +2391,9 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x03); //subtype
 				pak.WriteByte(0x00); //unk
 
-				foreach (KeyValuePair<eCraftingSkill, int> de in m_gameClient.Player.CraftingSkills)
+				foreach (KeyValuePair<ECraftingSkill, int> de in m_gameClient.Player.CraftingSkills)
 				{
-					AbstractCraftingSkill curentCraftingSkill = CraftingMgr.getSkillbyEnum((eCraftingSkill) de.Key);
+					ACraftingSkill curentCraftingSkill = CraftingMgr.getSkillbyEnum((ECraftingSkill) de.Key);
 					pak.WriteShort(Convert.ToUInt16(Math.Max(0, de.Value))); //points
 					pak.WriteByte(curentCraftingSkill.Icon); //icon
 					pak.WriteInt(1);

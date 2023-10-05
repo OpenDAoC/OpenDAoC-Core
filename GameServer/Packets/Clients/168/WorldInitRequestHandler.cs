@@ -111,7 +111,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 }
                                 if (player.Level < 20)
                                 {
-                                    if (player.CraftingPrimarySkill == eCraftingSkill.NoCrafting)
+                                    if (player.CraftingPrimarySkill == ECraftingSkill.NoCrafting)
                                     {
                                         myitem.Emblem = 0;
                                     }

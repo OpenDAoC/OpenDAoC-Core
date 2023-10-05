@@ -23,9 +23,9 @@ namespace DOL.Events
 {
 	public class NextCraftingTierReachedEventArgs : System.EventArgs
 	{
-		private eCraftingSkill m_skill;
+		private ECraftingSkill m_skill;
 		private int m_points;
-		public eCraftingSkill Skill
+		public ECraftingSkill Skill
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace DOL.Events
 				return m_points;
 			}
 		}
-		public NextCraftingTierReachedEventArgs(eCraftingSkill skill, int points)
+		public NextCraftingTierReachedEventArgs(ECraftingSkill skill, int points)
 			: base()
 		{
 			m_skill = skill;

@@ -1,51 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Reflection;
 using DOL.Database;
 using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Enum of all crafting skill (related to client file)
-	/// </summary>
-	public enum eCraftingSkill : int
-	{
-		NoCrafting = 0,
-		WeaponCrafting = 1,
-		ArmorCrafting = 2,
-		SiegeCrafting = 3,
-		Alchemy = 4,
-		MetalWorking = 6,
-		LeatherCrafting = 7,
-		ClothWorking = 8,
-		GemCutting = 9,
-		HerbalCrafting = 10,
-		Tailoring = 11,
-		Fletching = 12,
-		SpellCrafting = 13,
-		WoodWorking = 14,
-		BasicCrafting = 15,
-		_Last = 15,
-	}
-
 	/// <summary>
 	/// Description r�sum�e de CraftingMgr.
 	/// </summary>
@@ -59,17 +17,17 @@ namespace DOL.GS
 		/// <summary>
 		/// Hold all crafting skill
 		/// </summary>
-		protected static AbstractCraftingSkill[] m_craftingskills = new AbstractCraftingSkill[(int)eCraftingSkill._Last];
+		protected static ACraftingSkill[] m_craftingskills = new ACraftingSkill[(int)ECraftingSkill._Last];
 
 		/// <summary>
 		/// get a crafting skill by the enum index
 		/// </summary>
 		/// <param name="skill"></param>
 		/// <returns></returns>
-		public static AbstractCraftingSkill getSkillbyEnum(eCraftingSkill skill)
+		public static ACraftingSkill getSkillbyEnum(ECraftingSkill skill)
 		{
-			if (skill == eCraftingSkill.NoCrafting) return null;
-			return m_craftingskills[(int)skill - 1] as AbstractCraftingSkill;
+			if (skill == ECraftingSkill.NoCrafting) return null;
+			return m_craftingskills[(int)skill - 1] as ACraftingSkill;
 		}
 
 		/// <summary>
@@ -79,23 +37,23 @@ namespace DOL.GS
 		public static bool Init()
 		{
 			// skill
-			m_craftingskills[(int)eCraftingSkill.ArmorCrafting - 1] = new ArmorCrafting();
-			m_craftingskills[(int)eCraftingSkill.Fletching - 1] = new Fletching();
-			m_craftingskills[(int)eCraftingSkill.SiegeCrafting - 1] = new SiegeCrafting();
-			m_craftingskills[(int)eCraftingSkill.Tailoring - 1] = new Tailoring();
-			m_craftingskills[(int)eCraftingSkill.WeaponCrafting - 1] = new WeaponCrafting();
+			m_craftingskills[(int)ECraftingSkill.ArmorCrafting - 1] = new Armorcrafting();
+			m_craftingskills[(int)ECraftingSkill.Fletching - 1] = new Fletching();
+			m_craftingskills[(int)ECraftingSkill.SiegeCrafting - 1] = new Siegecrafting();
+			m_craftingskills[(int)ECraftingSkill.Tailoring - 1] = new Tailoring();
+			m_craftingskills[(int)ECraftingSkill.WeaponCrafting - 1] = new Weaponcrafting();
 
-			m_craftingskills[(int)eCraftingSkill.ClothWorking - 1] = new ClothWorking();
-			m_craftingskills[(int)eCraftingSkill.GemCutting - 1] = new GemCutting();
-			m_craftingskills[(int)eCraftingSkill.HerbalCrafting - 1] = new HerbalCrafting();
-			m_craftingskills[(int)eCraftingSkill.LeatherCrafting - 1] = new LeatherCrafting();
-			m_craftingskills[(int)eCraftingSkill.MetalWorking - 1] = new MetalWorking();
-			m_craftingskills[(int)eCraftingSkill.WoodWorking - 1] = new WoodWorking();
-			m_craftingskills[(int)eCraftingSkill.BasicCrafting - 1] = new BasicCrafting();
+			m_craftingskills[(int)ECraftingSkill.ClothWorking - 1] = new Clothworking();
+			m_craftingskills[(int)ECraftingSkill.GemCutting - 1] = new Gemcutting();
+			m_craftingskills[(int)ECraftingSkill.HerbalCrafting - 1] = new Herbcraft();
+			m_craftingskills[(int)ECraftingSkill.LeatherCrafting - 1] = new Leathercrafting();
+			m_craftingskills[(int)ECraftingSkill.MetalWorking - 1] = new Metalworking();
+			m_craftingskills[(int)ECraftingSkill.WoodWorking - 1] = new Woodworking();
+			m_craftingskills[(int)ECraftingSkill.BasicCrafting - 1] = new BasicCrafting();
 
 			//Advanced skill
-			m_craftingskills[(int)eCraftingSkill.Alchemy - 1] = new Alchemy();
-			m_craftingskills[(int)eCraftingSkill.SpellCrafting - 1] = new SpellCrafting();
+			m_craftingskills[(int)ECraftingSkill.Alchemy - 1] = new Alchemy();
+			m_craftingskills[(int)ECraftingSkill.SpellCrafting - 1] = new Spellcrafting();
 
 			return true;
 		}
@@ -105,23 +63,23 @@ namespace DOL.GS
 		/// <summary>
 		/// Return the crafting skill which created the item
 		/// </summary>
-		public static eCraftingSkill GetCraftingSkill(DbInventoryItem item)
+		public static ECraftingSkill GetCraftingSkill(DbInventoryItem item)
 		{
 			if (!item.IsCrafted)
-				return eCraftingSkill.NoCrafting;
+				return ECraftingSkill.NoCrafting;
 
 			switch (item.Object_Type)
 			{
 				case (int)eObjectType.Cloth:
 				case (int)eObjectType.Leather:
-					return eCraftingSkill.Tailoring;
+					return ECraftingSkill.Tailoring;
 
 				case (int)eObjectType.Studded:
 				case (int)eObjectType.Reinforced:
 				case (int)eObjectType.Chain:
 				case (int)eObjectType.Scale:
 				case (int)eObjectType.Plate:
-					return eCraftingSkill.ArmorCrafting;
+					return ECraftingSkill.ArmorCrafting;
 
 				// all weapon
 				case (int)eObjectType.Axe:
@@ -143,7 +101,7 @@ namespace DOL.GS
 				case (int)eObjectType.Sword:
 				case (int)eObjectType.ThrustWeapon:
 				case (int)eObjectType.TwoHandedWeapon:
-					return eCraftingSkill.WeaponCrafting;
+					return ECraftingSkill.WeaponCrafting;
 
 				case (int)eObjectType.CompositeBow:
 				case (int)eObjectType.Crossbow:
@@ -152,40 +110,40 @@ namespace DOL.GS
 				case (int)eObjectType.Longbow:
 				case (int)eObjectType.RecurvedBow:
 				case (int)eObjectType.Staff:
-					return eCraftingSkill.Fletching;
+					return ECraftingSkill.Fletching;
 
 				case (int)eObjectType.AlchemyTincture:
 				case (int)eObjectType.Poison:
-					return eCraftingSkill.Alchemy;
+					return ECraftingSkill.Alchemy;
 
 				case (int)eObjectType.SpellcraftGem:
-					return eCraftingSkill.SpellCrafting;
+					return ECraftingSkill.SpellCrafting;
 
 				case (int)eObjectType.SiegeBalista:
 				case (int)eObjectType.SiegeCatapult:
 				case (int)eObjectType.SiegeCauldron:
 				case (int)eObjectType.SiegeRam:
 				case (int)eObjectType.SiegeTrebuchet:
-					return eCraftingSkill.SiegeCrafting;
+					return ECraftingSkill.SiegeCrafting;
 
 				default:
-					return eCraftingSkill.NoCrafting;
+					return ECraftingSkill.NoCrafting;
 			}
 		}
 
 		/// <summary>
 		/// Return the crafting skill needed to work on the item
 		/// </summary>
-		public static eCraftingSkill GetSecondaryCraftingSkillToWorkOnItem(DbInventoryItem item)
+		public static ECraftingSkill GetSecondaryCraftingSkillToWorkOnItem(DbInventoryItem item)
 		{
 			switch (item.Object_Type)
 			{
 				case (int)eObjectType.Cloth:
-					return eCraftingSkill.ClothWorking;
+					return ECraftingSkill.ClothWorking;
 
 				case (int)eObjectType.Leather:
 				case (int)eObjectType.Studded:
-					return eCraftingSkill.LeatherCrafting;
+					return ECraftingSkill.LeatherCrafting;
 
 				// all weapon
 				case (int)eObjectType.Axe:
@@ -212,7 +170,7 @@ namespace DOL.GS
 				case (int)eObjectType.Plate:
 				case (int)eObjectType.Reinforced:
 				case (int)eObjectType.Scale:
-					return eCraftingSkill.MetalWorking;
+					return ECraftingSkill.MetalWorking;
 
 				case (int)eObjectType.CompositeBow:
 				case (int)eObjectType.Crossbow:
@@ -221,13 +179,13 @@ namespace DOL.GS
 				case (int)eObjectType.Longbow:
 				case (int)eObjectType.RecurvedBow:
 				case (int)eObjectType.Staff:
-					return eCraftingSkill.WoodWorking;
+					return ECraftingSkill.WoodWorking;
 				
 				case (int)eObjectType.Magical:
-					return eCraftingSkill.GemCutting;
+					return ECraftingSkill.GemCutting;
 
 				default:
-					return eCraftingSkill.NoCrafting;
+					return ECraftingSkill.NoCrafting;
 			}
 		}
 

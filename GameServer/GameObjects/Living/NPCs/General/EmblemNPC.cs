@@ -80,7 +80,7 @@ namespace DOL.GS
 				}
 				if (t.Level < 20) //if level of player < 20 so can not put emblem
 				{
-					if (t.CraftingPrimarySkill == eCraftingSkill.NoCrafting)
+					if (t.CraftingPrimarySkill == ECraftingSkill.NoCrafting)
 					{
 						t.Out.SendMessage("You have to be at least level 20 or have 400 in a tradeskill to be able to wear an emblem.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return false;

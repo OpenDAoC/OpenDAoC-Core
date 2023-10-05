@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -31,7 +12,7 @@ namespace DOL.GS
 	/// <summary>
 	/// The class holding all salvage functions
 	/// </summary>
-	public class Salvage
+	public class SalvageMgr
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -148,7 +129,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				var sCalc = new SalvageCalculator();
+				var sCalc = new SalvagingCalculator();
 				var ReturnSalvage = sCalc.GetSalvage(player, item);
 				salvageYield = new DbSalvageYield();
 				salvageYield.Count = ReturnSalvage.Count;
@@ -191,7 +172,7 @@ namespace DOL.GS
             {
                 Callback = new ECSGameTimer.ECSTimerCallback(Proceed)
             };
-            player.CraftTimer.Properties.SetProperty(AbstractCraftingSkill.PLAYER_CRAFTER, player);
+            player.CraftTimer.Properties.SetProperty(ACraftingSkill.PLAYER_CRAFTER, player);
 			player.CraftTimer.Properties.SetProperty(SALVAGED_ITEM, item);
 			player.CraftTimer.Properties.SetProperty(SALVAGE_YIELD, salvageYield);
 
@@ -327,7 +308,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected static int Proceed(ECSGameTimer timer)
 		{
-			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(ACraftingSkill.PLAYER_CRAFTER, null);
 			DbInventoryItem itemToSalvage = timer.Properties.GetProperty<DbInventoryItem>(SALVAGED_ITEM, null);
 			DbSalvageYield yield = timer.Properties.GetProperty<DbSalvageYield>(SALVAGE_YIELD, null);
 			IList<DbInventoryItem> itemList = player.TempProperties.GetProperty<IList<DbInventoryItem>>(SALVAGE_QUEUE, null);
@@ -483,8 +464,8 @@ namespace DOL.GS
 				return false;
 			}
 
-			eCraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
-			if(skill == eCraftingSkill.NoCrafting)
+			ECraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
+			if(skill == ECraftingSkill.NoCrafting)
 			{
 				if (!mute)
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  You do not have the required secondary skill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -535,8 +516,8 @@ namespace DOL.GS
 				return false;
 			}
 
-			eCraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
-			if(skill == eCraftingSkill.NoCrafting)
+			ECraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
+			if(skill == ECraftingSkill.NoCrafting)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  You do not have the required secondary skill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;

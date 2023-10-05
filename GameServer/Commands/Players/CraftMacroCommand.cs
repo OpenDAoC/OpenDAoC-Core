@@ -60,7 +60,7 @@ public class CraftMacroCommand : ACommandHandler, ICommandHandler
                 client.Player.TempProperties.RemoveProperty(CraftQueueLength);
                 
 
-                var recipe = client.Player.TempProperties.GetProperty<Recipe>(RecipeToCraft);
+                var recipe = client.Player.TempProperties.GetProperty<RecipeMgr>(RecipeToCraft);
                 if (recipe != null)
                 {
                     client.Player.TempProperties.RemoveProperty(RecipeToCraft);
@@ -98,7 +98,7 @@ public class CraftMacroCommand : ACommandHandler, ICommandHandler
                     }
                 }
 
-                var recipe = client.Player.TempProperties.GetProperty<Recipe>("RecipeToCraft");
+                var recipe = client.Player.TempProperties.GetProperty<RecipeMgr>("RecipeToCraft");
                 if (recipe != null)
                 {
                     if (client.Player.TargetObject is GameMerchant merchant)
@@ -106,7 +106,7 @@ public class CraftMacroCommand : ACommandHandler, ICommandHandler
                         var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                             .IsEqualTo(merchant.TradeItems.ItemsListID));
                         
-                        IList<Ingredient> recipeIngredients;
+                        IList<IngredientDb> recipeIngredients;
 
                         lock (recipe)
                         {
@@ -133,7 +133,7 @@ public class CraftMacroCommand : ACommandHandler, ICommandHandler
                         var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                             .IsEqualTo(guardMerchant.TradeItems.ItemsListID));
                         
-                        IList<Ingredient> recipeIngredients;
+                        IList<IngredientDb> recipeIngredients;
 
                         lock (recipe)
                         {
@@ -160,7 +160,7 @@ public class CraftMacroCommand : ACommandHandler, ICommandHandler
                         var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                             .IsEqualTo(guardCurrencyMerchant.TradeItems.ItemsListID));
                         
-                        IList<Ingredient> recipeIngredients;
+                        IList<IngredientDb> recipeIngredients;
 
                         lock (recipe)
                         {
@@ -214,7 +214,7 @@ public class CraftMacroCommand : ACommandHandler, ICommandHandler
                     return;
                 }
 
-                var recipe = client.Player.TempProperties.GetProperty<Recipe>("RecipeToCraft");
+                var recipe = client.Player.TempProperties.GetProperty<RecipeMgr>("RecipeToCraft");
                 if (recipe != null)
                 {
                     if (client.Player.TargetObject is GameMerchant merchant)
@@ -222,7 +222,7 @@ public class CraftMacroCommand : ACommandHandler, ICommandHandler
                         var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                             .IsEqualTo(merchant.TradeItems.ItemsListID));
 
-                        IList<Ingredient> recipeIngredients;
+                        IList<IngredientDb> recipeIngredients;
 
                         lock (recipe)
                         {

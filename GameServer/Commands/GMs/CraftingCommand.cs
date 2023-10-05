@@ -32,10 +32,10 @@ namespace DOL.GS.Commands
 				{
 					List<string> list = new List<string>();
 					int count = 0;
-					foreach (int value in Enum.GetValues(typeof(eCraftingSkill)))
+					foreach (int value in Enum.GetValues(typeof(ECraftingSkill)))
 					{
 						if (++count < 16) // get rid of duplicate due to _Last
-							list.Add(value + " = " + Enum.GetName(typeof(eCraftingSkill), value));
+							list.Add(value + " = " + Enum.GetName(typeof(ECraftingSkill), value));
 					}
 
 					client.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Crafting.SkillDescription"), list);
@@ -88,7 +88,7 @@ namespace DOL.GS.Commands
 
 					foreach (var r in recipeIDs)
 					{
-						RecipeDB.FindBy(r);
+						RecipeDb.FindBy(r);
 					}
 
 					return;
@@ -207,15 +207,15 @@ namespace DOL.GS.Commands
 					#region Add
 					case "add":
 						{
-							eCraftingSkill craftingSkillID = eCraftingSkill.NoCrafting;
+							ECraftingSkill craftingSkillID = ECraftingSkill.NoCrafting;
 							int startLevel = 1;
 							try
 							{
-								craftingSkillID = (eCraftingSkill)Convert.ToUInt16(args[2]);
+								craftingSkillID = (ECraftingSkill)Convert.ToUInt16(args[2]);
 								if (args.Length > 3)
 									startLevel = Convert.ToUInt16(args[3]);
 
-								AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(craftingSkillID);
+								ACraftingSkill skill = CraftingMgr.getSkillbyEnum(craftingSkillID);
 								if (skill == null)
 								{
 									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Crafting.InvalidSkill"));
@@ -244,18 +244,18 @@ namespace DOL.GS.Commands
 					#region Change
 					case "change":
 						{
-							eCraftingSkill craftingSkillID = eCraftingSkill.NoCrafting;
+							ECraftingSkill craftingSkillID = ECraftingSkill.NoCrafting;
 							int amount = 1;
 							try
 							{
-								craftingSkillID = (eCraftingSkill)Convert.ToUInt16(args[2]);
+								craftingSkillID = (ECraftingSkill)Convert.ToUInt16(args[2]);
 
 								if (args.Length > 3)
 								{
 									amount = Convert.ToInt32(args[3]);
 								}
 
-								AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(craftingSkillID);
+								ACraftingSkill skill = CraftingMgr.getSkillbyEnum(craftingSkillID);
 								if (skill == null)
 								{
 									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Crafting.InvalidSkill"));
@@ -279,7 +279,7 @@ namespace DOL.GS.Commands
 									target.Out.SendUpdateCraftingSkills();
 									target.SaveIntoDatabase();
 									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Crafting.SkillChanged", skill.Name));
-									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Crafting.NowHasSkillPoints", target.Name, target.GetCraftingSkillValue(craftingSkillID), (eCraftingSkill)craftingSkillID));
+									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Crafting.NowHasSkillPoints", target.Name, target.GetCraftingSkillValue(craftingSkillID), (ECraftingSkill)craftingSkillID));
 								}
 							}
 							catch (Exception)

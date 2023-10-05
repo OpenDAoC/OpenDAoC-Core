@@ -38,8 +38,8 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var item = new DbItemTemplate();
             item.Price = 2;
-            var ingredient = new Ingredient(1, item);
-            var recipe = new Recipe(null, new List<Ingredient>() { ingredient});
+            var ingredient = new IngredientDb(1, item);
+            var recipe = new RecipeMgr(null, new List<IngredientDb>() { ingredient});
 
             var actual = recipe.CostToCraft;
 
@@ -51,9 +51,9 @@ namespace DOL.Tests.Unit.Gameserver
         public void GetIngredientCosts_OneIngredientWithPrice2AndOneWithPrice4_6()
         {
             var item = new DbItemTemplate() { Price = 2 };
-            var ingredient1 = new Ingredient(1, item);
-            var ingredient2 = new Ingredient(2, item);
-            var recipe = new Recipe(null, new List<Ingredient>() { ingredient1, ingredient2 });
+            var ingredient1 = new IngredientDb(1, item);
+            var ingredient2 = new IngredientDb(2, item);
+            var recipe = new RecipeMgr(null, new List<IngredientDb>() { ingredient1, ingredient2 });
 
             var actual = recipe.CostToCraft;
 
@@ -65,8 +65,8 @@ namespace DOL.Tests.Unit.Gameserver
         public void SetRecommendedProductPriceInDB_ProductWithPrice2AndNoIngredients_ProductPriceIs2()
         {
             var product = new DbItemTemplate() { Price = 2 };
-            var ingredients = new List<Ingredient>() { };
-            var recipe = new Recipe(product, ingredients);
+            var ingredients = new List<IngredientDb>() { };
+            var recipe = new RecipeMgr(product, ingredients);
 
             recipe.SetRecommendedProductPriceInDB();
 
@@ -81,8 +81,8 @@ namespace DOL.Tests.Unit.Gameserver
             var product = new DbItemTemplate() { Price = 2 };
             var count = 1;
             var material = new DbItemTemplate() { Price = 100 };
-            var ingredients = new List<Ingredient>() { new Ingredient(count, material) };
-            var recipe = new Recipe(product, ingredients);
+            var ingredients = new List<IngredientDb>() { new IngredientDb(count, material) };
+            var recipe = new RecipeMgr(product, ingredients);
             GS.ServerProperties.Properties.CRAFTING_SELLBACK_PERCENT = 95;
 
             recipe.SetRecommendedProductPriceInDB();
@@ -100,7 +100,7 @@ namespace DOL.Tests.Unit.Gameserver
         public void Cost_CountIsOneItemPriceIsOne_One()
         {
             var item = new DbItemTemplate() { Price = 1 };
-            var ingredient = new Ingredient(1, item);
+            var ingredient = new IngredientDb(1, item);
 
             var actual = ingredient.Cost;
 
@@ -112,7 +112,7 @@ namespace DOL.Tests.Unit.Gameserver
         public void Cost_2ItemsWithPriceOne_2()
         {
             var item = new DbItemTemplate() { Price = 1 };
-            var ingredient = new Ingredient(2, item);
+            var ingredient = new IngredientDb(2, item);
 
             var actual = ingredient.Cost;
 

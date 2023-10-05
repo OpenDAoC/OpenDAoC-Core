@@ -24,31 +24,31 @@ namespace DOL.GS
 	[NPCGuildScript("Basic Crafters Master")]
 	public class BasicCraftingMaster: CraftNPC
 	{
-		private static readonly eCraftingSkill[] m_trainedSkills = {
-			eCraftingSkill.Alchemy,
-			eCraftingSkill.ArmorCrafting,
-			eCraftingSkill.BasicCrafting,
-			eCraftingSkill.ClothWorking,
-			eCraftingSkill.Fletching,
-			eCraftingSkill.GemCutting,
-			eCraftingSkill.HerbalCrafting,
-			eCraftingSkill.LeatherCrafting,
-			eCraftingSkill.MetalWorking,
-			eCraftingSkill.SiegeCrafting,
-			eCraftingSkill.SpellCrafting,
-			eCraftingSkill.Tailoring,
-			eCraftingSkill.WeaponCrafting,
-			eCraftingSkill.WoodWorking
+		private static readonly ECraftingSkill[] m_trainedSkills = {
+			ECraftingSkill.Alchemy,
+			ECraftingSkill.ArmorCrafting,
+			ECraftingSkill.BasicCrafting,
+			ECraftingSkill.ClothWorking,
+			ECraftingSkill.Fletching,
+			ECraftingSkill.GemCutting,
+			ECraftingSkill.HerbalCrafting,
+			ECraftingSkill.LeatherCrafting,
+			ECraftingSkill.MetalWorking,
+			ECraftingSkill.SiegeCrafting,
+			ECraftingSkill.SpellCrafting,
+			ECraftingSkill.Tailoring,
+			ECraftingSkill.WeaponCrafting,
+			ECraftingSkill.WoodWorking
 		};
 
-		public override eCraftingSkill[] TrainedSkills
+		public override ECraftingSkill[] TrainedSkills
 		{
 			get { return m_trainedSkills; }
 		}
 
-		public override eCraftingSkill TheCraftingSkill
+		public override ECraftingSkill TheCraftingSkill
 		{
-			get { return eCraftingSkill.BasicCrafting; }
+			get { return ECraftingSkill.BasicCrafting; }
 		}
 
 		public override string GUILD_ORDER

@@ -1,24 +1,4 @@
 ﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- * 
- * 
- * The following changes to item extensions are needed in the database
- * for this calculator to work
- * 
  * ALBION DATABASE ARMOR CHANGES
 Cloth       Extension 0	Quilted	
 Cloth2	    Extension 1 Double Stiched	
@@ -73,7 +53,6 @@ Chain4	    Extension 3	Heavy Starkakedja
 Plate2	    Extension 1	Scaled Plate	
 Plate3	    Extension 2	Fluted Plate	
 Plate4	    Extension 3	Full Plate	
-
  * 
 Update originsmyisam.itemtemplate set Extension = 1 where Id_nb like "%double_stitched%";
 Update originsmyisam.itemtemplate set Extension = 0 where Id_nb like "%double_stitched_quilted_boots";
@@ -112,9 +91,7 @@ Update databasename.itemtemplate set Extension = 3 where Id_nb like "%padded_sta
 Update databasename.itemtemplate set Extension = 3 where Id_nb like "%heavy_starkaskodd%";
 Update databasename.itemtemplate set Extension = 3 where Id_nb like "%heavy_starkakedja%";
 Update databasename.itemtemplate set Extension = 3 where Id_nb like "%superior_war_circlet%";
-
  */
-
 
 using System.Text.RegularExpressions;
 using DOL.Database;
@@ -154,7 +131,7 @@ namespace DOL.GS.SalvageCalc
         public int MSRP;
     }
 
-    public class SalvageCalculator
+    public class SalvagingCalculator
     {
         public SalvageReturn GetSalvage(GamePlayer Player, DbInventoryItem Item)
         {

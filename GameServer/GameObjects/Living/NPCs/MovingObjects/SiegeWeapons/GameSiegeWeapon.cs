@@ -461,7 +461,7 @@ namespace DOL.GS
 			if (Owner == null) return;
 			if (TimesRepaired <= 3)
 			{
-				if (Owner.GetCraftingSkillValue(eCraftingSkill.WoodWorking) < 301)
+				if (Owner.GetCraftingSkillValue(ECraftingSkill.WoodWorking) < 301)
 				{
 					Owner.Out.SendMessage("You must have woodworking skill to repair a siege weapon.", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 					return;
@@ -499,7 +499,7 @@ namespace DOL.GS
 
 		public void salvage()
 		{
-			if (Owner.GetCraftingSkillValue(eCraftingSkill.SiegeCrafting) == -1)
+			if (Owner.GetCraftingSkillValue(ECraftingSkill.SiegeCrafting) == -1)
 			{
 				Owner.Out.SendMessage("You must be a Siege weapon crafter to salvage it.", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 				return;

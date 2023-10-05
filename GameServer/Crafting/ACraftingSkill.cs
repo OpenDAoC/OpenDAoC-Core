@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,7 +13,7 @@ namespace DOL.GS
 	/// <summary>
 	/// AbstractCraftingSkill is the base class for all crafting skill
 	/// </summary>
-	public abstract class AbstractCraftingSkill
+	public abstract class ACraftingSkill
 	{
 		protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -56,7 +37,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The crafting skill id of this craft
 		/// </summary>
-		private eCraftingSkill m_eskill;
+		private ECraftingSkill m_eskill;
 
 		/// <summary>
 		/// The player currently crafting
@@ -82,7 +63,7 @@ namespace DOL.GS
 				return "";
 			}
 		}
-		public eCraftingSkill eSkill
+		public ECraftingSkill eSkill
 		{
 			get
 			{
@@ -118,7 +99,7 @@ namespace DOL.GS
 		#endregion
 
 		#region First call function and callback
-		public virtual void CraftItem(GamePlayer player, Recipe recipe)
+		public virtual void CraftItem(GamePlayer player, RecipeMgr recipe)
 		{
 			if (!CanPlayerStartToCraftItem(player, recipe))
 			{
@@ -143,7 +124,7 @@ namespace DOL.GS
 			player.craftComponent.StartCraft(recipe, this, craftingTime);
 		}
 
-		protected virtual void StartCraftingTimerAndSetCallBackMethod(GamePlayer player, Recipe recipe, int craftingTime)
+		protected virtual void StartCraftingTimerAndSetCallBackMethod(GamePlayer player, RecipeMgr recipe, int craftingTime)
         {
 			//player.CraftTimer = new ECSGameTimer(player);
 			//player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(MakeItem);
@@ -159,7 +140,7 @@ namespace DOL.GS
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.StopWork", itemToCraft.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
 
-		protected virtual bool CanPlayerStartToCraftItem(GamePlayer player, Recipe recipe)
+		protected virtual bool CanPlayerStartToCraftItem(GamePlayer player, RecipeMgr recipe)
 		{
 			
 			player.TempProperties.SetProperty("RecipeToCraft", recipe);
@@ -210,12 +191,12 @@ namespace DOL.GS
 
 		#region Requirement check
 
-		protected virtual bool CheckForTools(GamePlayer player, Recipe recipe)
+		protected virtual bool CheckForTools(GamePlayer player, RecipeMgr recipe)
 		{
 			return true;
 		}
 
-		public virtual bool CheckSecondCraftingSkillRequirement(GamePlayer player, Recipe recipe)
+		public virtual bool CheckSecondCraftingSkillRequirement(GamePlayer player, RecipeMgr recipe)
         {
 			int minimumLevel = GetSecondaryCraftingSkillMinimumLevel(recipe);
 
@@ -231,7 +212,7 @@ namespace DOL.GS
 					case 522:   //"cloth square"
 					case 537:   //"heavy thread"
 						{
-							if (player.GetCraftingSkillValue(eCraftingSkill.ClothWorking) < minimumLevel)
+							if (player.GetCraftingSkillValue(ECraftingSkill.ClothWorking) < minimumLevel)
 							{
 								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoClothworkingSkill", minimumLevel, material.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return false;
@@ -241,7 +222,7 @@ namespace DOL.GS
 
 					case 521:   //"leather square"
 						{
-							if (player.GetCraftingSkillValue(eCraftingSkill.LeatherCrafting) < minimumLevel)
+							if (player.GetCraftingSkillValue(ECraftingSkill.LeatherCrafting) < minimumLevel)
 							{
 								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoLeathercraftingSkill", minimumLevel, material.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return false;
@@ -251,7 +232,7 @@ namespace DOL.GS
 
 					case 519:   //"metal bars"
 						{
-							if (player.GetCraftingSkillValue(eCraftingSkill.MetalWorking) < minimumLevel)
+							if (player.GetCraftingSkillValue(ECraftingSkill.MetalWorking) < minimumLevel)
 							{
 								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoMetalworkingSkill", minimumLevel, material.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return false;
@@ -261,7 +242,7 @@ namespace DOL.GS
 
 					case 520:   //"wooden boards"
 						{
-							if (player.GetCraftingSkillValue(eCraftingSkill.WoodWorking) < minimumLevel)
+							if (player.GetCraftingSkillValue(ECraftingSkill.WoodWorking) < minimumLevel)
 							{
 								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoWoodworkingSkill", minimumLevel, material.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return false;
@@ -273,7 +254,7 @@ namespace DOL.GS
 			return true;
 		}
 
-		public virtual bool CheckRawMaterials(GamePlayer player, Recipe recipe)
+		public virtual bool CheckRawMaterials(GamePlayer player, RecipeMgr recipe)
         {
 			ArrayList missingMaterials = null;
 
@@ -335,7 +316,7 @@ namespace DOL.GS
 		#endregion
 
 		#region Gain points
-		public virtual void GainCraftingSkillPoints(GamePlayer player, Recipe recipe)
+		public virtual void GainCraftingSkillPoints(GamePlayer player, RecipeMgr recipe)
 		{
 			foreach (var ingredient in recipe.Ingredients)
 			{
@@ -346,36 +327,36 @@ namespace DOL.GS
 					case 522:   //"cloth square"
 					case 537:   //"heavy thread"
 						{
-							if (player.GetCraftingSkillValue(eCraftingSkill.ClothWorking) < subSkillCap)
+							if (player.GetCraftingSkillValue(ECraftingSkill.ClothWorking) < subSkillCap)
 							{
-								player.GainCraftingSkill(eCraftingSkill.ClothWorking, 1);
+								player.GainCraftingSkill(ECraftingSkill.ClothWorking, 1);
 							}
 							break;
 						}
 
 					case 521:   //"leather square"
 						{
-							if (player.GetCraftingSkillValue(eCraftingSkill.LeatherCrafting) < subSkillCap)
+							if (player.GetCraftingSkillValue(ECraftingSkill.LeatherCrafting) < subSkillCap)
 							{
-								player.GainCraftingSkill(eCraftingSkill.LeatherCrafting, 1);
+								player.GainCraftingSkill(ECraftingSkill.LeatherCrafting, 1);
 							}
 							break;
 						}
 
 					case 519:   //"metal bars"
 						{
-							if (player.GetCraftingSkillValue(eCraftingSkill.MetalWorking) < subSkillCap)
+							if (player.GetCraftingSkillValue(ECraftingSkill.MetalWorking) < subSkillCap)
 							{
-								player.GainCraftingSkill(eCraftingSkill.MetalWorking, 1);
+								player.GainCraftingSkill(ECraftingSkill.MetalWorking, 1);
 							}
 							break;
 						}
 
 					case 520:   //"wooden boards"
 						{
-							if (player.GetCraftingSkillValue(eCraftingSkill.WoodWorking) < subSkillCap)
+							if (player.GetCraftingSkillValue(ECraftingSkill.WoodWorking) < subSkillCap)
 							{
-								player.GainCraftingSkill(eCraftingSkill.WoodWorking, 1);
+								player.GainCraftingSkill(ECraftingSkill.WoodWorking, 1);
 							}
 							break;
 						}
@@ -388,7 +369,7 @@ namespace DOL.GS
 		#endregion
 
 		#region Use materials and created crafted item
-		public virtual bool RemoveUsedMaterials(GamePlayer player, Recipe recipe)
+		public virtual bool RemoveUsedMaterials(GamePlayer player, RecipeMgr recipe)
 		{
 			Dictionary<int, int?> dataSlots = new Dictionary<int, int?>(10);
 
@@ -456,7 +437,7 @@ namespace DOL.GS
 			return true;//all raw material removed and item created
 		}
 
-		public virtual void BuildCraftedItem(GamePlayer player, Recipe recipe)
+		public virtual void BuildCraftedItem(GamePlayer player, RecipeMgr recipe)
 		{
 			var product = recipe.Product;
 
@@ -652,7 +633,7 @@ namespace DOL.GS
 
 			return chance;
 		}
-		public virtual int GetCraftingTime(GamePlayer player, Recipe recipe)
+		public virtual int GetCraftingTime(GamePlayer player, RecipeMgr recipe)
 		{
 			double baseMultiplier = (recipe.Level / 100) + 1;
 			if (baseMultiplier < 1) baseMultiplier = 1;
@@ -726,7 +707,7 @@ namespace DOL.GS
 			return craftingTime;
 		}
 
-		public virtual int GetSecondaryCraftingSkillMinimumLevel(Recipe recipe)
+		public virtual int GetSecondaryCraftingSkillMinimumLevel(RecipeMgr recipe)
 		{
 			return 0;
 		}

@@ -938,7 +938,7 @@ namespace DOL.GS.PacketHandler
 			}
 			//flag |= 0x01; // newGuildEmblem
 			flag |= 0x02; // enable salvage button
-			AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(m_gameClient.Player.CraftingPrimarySkill);
+			ACraftingSkill skill = CraftingMgr.getSkillbyEnum(m_gameClient.Player.CraftingPrimarySkill);
 			if (skill != null && skill is AdvancedCraftingSkill/* && ((AdvancedCraftingSkill)skill).IsAllowedToCombine(_gameClient.Player, item)*/)
 				flag |= 0x04; // enable craft button
 			ushort icon1 = 0;

@@ -144,7 +144,7 @@ public class SalvageCommand : ACommandHandler, ICommandHandler
 				if (item == null)
 					continue;
 
-				if (!Salvage.IsAllowedToBeginWork(client.Player, item, true))
+				if (!SalvageMgr.IsAllowedToBeginWork(client.Player, item, true))
 					continue;
 
 				if (qualityInt > 0)
