@@ -5,11 +5,11 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS.Scripts
 {
-    [Cmd(
+    [Command(
         "&predator",
         ePrivLevel.Player,
         "Join the hunt or view your current prey", "/predator join", "/predator prey", "/predator abandon")]
-    public class PredatorCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class PredatorCommandHandler : ACommandHandler, ICommandHandler
     {
         private const string KILLEDBY = "KilledBy";
 

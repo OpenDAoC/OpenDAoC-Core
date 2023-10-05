@@ -27,11 +27,11 @@ namespace DOL.GS.Commands
     /// <summary>
     /// Command handler for the /killself command
     /// </summary>
-    [Cmd(
+    [Command(
         "&suicide",
         ePrivLevel.Admin,
         "Kill yourself. You can't suicide while in combat!")]
-    public class KillselfCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class KillselfCommandHandler : ACommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {

@@ -4,10 +4,10 @@ using DOL.GS.ServerRules;
 
 namespace DOL.GS.Commands
 {
-    [Cmd("&dfowner", ePrivLevel.Admin,
+    [Command("&dfowner", ePrivLevel.Admin,
         "Changes the Realm owning access to Darkness Falls", "&dfowner <Realm>")]
 
-    public class DFOwnerCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class DFOwnerCommandHandler : ACommandHandler, ICommandHandler
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

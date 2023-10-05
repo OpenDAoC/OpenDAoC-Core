@@ -6,7 +6,7 @@ using DOL.Language;
 
 namespace DOL.GS.Commands
 {
-	[Cmd("&jump",
+	[Command("&jump",
 		ePrivLevel.GM,
 		"GMCommands.Jump.Description",
 		"GMCommands.Jump.Information",
@@ -27,7 +27,7 @@ namespace DOL.GS.Commands
 		"GMCommands.Jump.Usage.Pop",
 		"/jump refresh - force a world refresh around you"
 		)]
-	public class JumpCommandHandler : AbstractCommandHandler, ICommandHandler
+	public class JumpCommandHandler : ACommandHandler, ICommandHandler
 	{
 		private const string TEMP_KEY_JUMP = "JumpLocStack";
 

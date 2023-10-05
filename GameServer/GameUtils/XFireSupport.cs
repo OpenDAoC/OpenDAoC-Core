@@ -43,8 +43,8 @@ namespace DOL.GS.GameEvents
 }
 namespace DOL.GS.Commands
 {
-	[Cmd("&xfire", ePrivLevel.Player, "Xfire support", "/xfire <on|off>")]
-	public class CheckXFireCommandHandler : AbstractCommandHandler, ICommandHandler
+	[Command("&xfire", ePrivLevel.Player, "Xfire support", "/xfire <on|off>")]
+	public class CheckXFireCommandHandler : ACommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{

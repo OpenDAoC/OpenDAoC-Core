@@ -473,7 +473,7 @@ namespace DOL.GS
 				return;
 			}
 
-			RepairCommandHandler repairCommand = new RepairCommandHandler();
+			RepairCommand repairCommand = new RepairCommand();
 			if (!repairCommand.PreFireChecks(Owner, this)) return;
 			repairCommand.StartRepair(Owner, this);
 		}

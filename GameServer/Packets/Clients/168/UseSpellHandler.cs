@@ -10,7 +10,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 	/// Handles spell cast requests from client
 	/// </summary>
 	[PacketHandler(PacketHandlerType.TCP, eClientPackets.UseSpell, "Handles Player Use Spell Request.", eClientStatus.PlayerInGame)]
-	public class UseSpellHandler : AbstractCommandHandler, IPacketHandler
+	public class UseSpellHandler : ACommandHandler, IPacketHandler
 	{
 		/// <summary>
 		/// Defines a logger for this class.

@@ -16,7 +16,7 @@ public class ApiShutdown
 
     public bool ShutdownServer()
     {
-        ShutdownCommandHandler.CountDown(0); // Immediately shutdown server
+        ShutdownCommand.CountDown(0); // Immediately shutdown server
         return true;
     }
 

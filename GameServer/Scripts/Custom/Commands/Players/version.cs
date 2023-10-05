@@ -22,12 +22,12 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
-	[Cmd(
+	[Command(
 		"&version",
 		ePrivLevel.Player,
 		"Get the version of the GameServer",
 		"/version")]
-	public class VersionCommandHandler : AbstractCommandHandler, ICommandHandler
+	public class VersionCommandHandler : ACommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{

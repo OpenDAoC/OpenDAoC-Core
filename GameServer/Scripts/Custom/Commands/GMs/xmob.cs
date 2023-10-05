@@ -7,7 +7,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
-    [Cmd("&xmob", //command to handle
+    [Command("&xmob", //command to handle
          ePrivLevel.GM, //minimum privelege level
          "/xmob get <radius> (max5000)",
          "/xmob view",
@@ -20,7 +20,7 @@ namespace DOL.GS.Commands
          "/xmob setrealm <radius> <realm>",
          "/xmob remove <radius> (max5000)")]
 
-    public class XCreateCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class XCreateCommandHandler : ACommandHandler, ICommandHandler
     {
         public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

@@ -2,11 +2,11 @@
 
 namespace DOL.GS.Scripts
 {
-    [Cmd(
+    [Command(
        "&conquest",
        ePrivLevel.Player,
          "Displays the current conqust status.", "/conquest")]
-    public class ConquestCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class ConquestCommandHandler : ACommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {

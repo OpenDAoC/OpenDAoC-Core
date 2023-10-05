@@ -5,11 +5,11 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
-    [Cmd(
+    [Command(
         "&summonmerchant",
         ePrivLevel.Admin, // Set to player.
         "/summonmerchant - summon a merchant at the cost of 10g")]
-    public class SummonMerchantCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class SummonMerchantCommand : ACommandHandler, ICommandHandler
     {
         [ScriptLoadedEvent]
         public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)

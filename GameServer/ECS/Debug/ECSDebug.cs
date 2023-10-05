@@ -219,7 +219,7 @@ namespace ECS.Debug
 
 namespace DOL.GS.Commands
 {
-    [Cmd(
+    [Command(
     "&diag",
     ePrivLevel.GM,
     "Toggle server logging of performance diagnostics.",
@@ -228,7 +228,7 @@ namespace DOL.GS.Commands
     "/diag timer <tickcount> enables debugging of the TimerService for <tickcount> ticks and outputs to the server Console.",
     "/diag think <tickcount> enables debugging of the NPCThinkService for <tickcount> ticks and outputs to the server Console.",
     "/diag currentservicetick - returns the current service the gameloop tick is on; useful for debugging lagging/frozen server.")]
-    public class ECSDiagnosticsCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class ECSDiagnosticsCommandHandler : ACommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {
@@ -323,11 +323,11 @@ namespace DOL.GS.Commands
     }
 
     // This should be moved outside of this file if we want this as a real player-facing feature.
-    [Cmd(
+    [Command(
         "&charstats",
         ePrivLevel.GM,
         "Shows normally hidden character stats.")]
-    public class CharStatsCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class CharStatsCommandHandler : ACommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {
@@ -395,12 +395,12 @@ namespace DOL.GS.Commands
         }
     }
 
-    [Cmd(
+    [Command(
     "&fsm",
     ePrivLevel.GM,
     "Toggle server logging of mob FSM states.",
     "/fsm debug <on|off> to toggle performance diagnostics logging on server.")]
-    public class StateMachineCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class StateMachineCommandHandler : ACommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {
@@ -435,12 +435,12 @@ namespace DOL.GS.Commands
         }
     }
 
-    [Cmd(
+    [Command(
     "&aggro",
     ePrivLevel.GM,
     "Toggle server logging of mob aggro tables.",
     "/aggro debug <on|off> to toggle mob aggro logging on server.")]
-    public class AggroCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class AggroCommandHandler : ACommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {

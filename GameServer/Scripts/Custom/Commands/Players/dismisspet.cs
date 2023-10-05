@@ -3,11 +3,11 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
-	[Cmd(
+	[Command(
 	   "&dismisspet",
 	   ePrivLevel.Player,
 		 "Dismiss the novelty pet", "/dismisspet")]
-	public class DismissPetCommandHandler : AbstractCommandHandler, ICommandHandler
+	public class DismissPetCommandHandler : ACommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{

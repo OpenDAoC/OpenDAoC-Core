@@ -194,8 +194,8 @@ namespace DOL.GS
 
 					try
 					{
-						object[] objs = type.GetCustomAttributes(typeof(CmdAttribute), false);
-						foreach (CmdAttribute attrib in objs)
+						object[] objs = type.GetCustomAttributes(typeof(CommandAttribute), false);
+						foreach (CommandAttribute attrib in objs)
 						{
 							bool disabled = false;
 							foreach (string str in disabledarray)
@@ -265,7 +265,7 @@ namespace DOL.GS
 
 				if (client.Account.PrivLevel < myCommand.m_lvl)
 				{
-					if (!SinglePermission.HasPermission(client.Player, pars[0].Substring(1, pars[0].Length - 1)))
+					if (!SingleCommandPermission.HasPermission(client.Player, pars[0].Substring(1, pars[0].Length - 1)))
 					{
 						if (pars[0][0] == '&')
 							pars[0] = '/' + pars[0].Remove(0, 1);

@@ -12,7 +12,7 @@ using DOL.Events;
 
 namespace DOL.GS.Commands
 {
-    [Cmd("&ngg", //command to handle
+    [Command("&ngg", //command to handle
        ePrivLevel.GM, //minimum privelege level
        "NPC Gear Generator", //command description
        "'/ngg random [color]' Create a completely random equipment template",
@@ -43,7 +43,7 @@ namespace DOL.GS.Commands
        "---------------------------------",
        "don't forget to use '/ngg save' when you have finish the npc template."
        )]
-    public class NGGCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class NGGCommandHandler : ACommandHandler, ICommandHandler
     {
         /*
            armor[0][][] = cloth;

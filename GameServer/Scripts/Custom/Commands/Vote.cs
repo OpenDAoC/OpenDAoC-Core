@@ -415,13 +415,13 @@ namespace DOL.GS.GameEvents
 
 namespace DOL.GS.Commands
 {
-    [Cmd(
+    [Command(
         "&vote",
         ePrivLevel.Player,
         "Displays the current poll or let you vote",
         "/vote  shows you the current voting",
         "/vote 1|2|...|x  vote for your choice with the given number")]
-    public class VoteCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class VoteCommandHandler : ACommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {
@@ -458,7 +458,7 @@ namespace DOL.GS.Commands
 
 namespace DOL.GS.Commands
 {
-    [Cmd(
+    [Command(
         "&gmvote",
        ePrivLevel.GM,
         "Various voting commands!",
@@ -475,7 +475,7 @@ namespace DOL.GS.Commands
         "/gmvote info ... shows you the details of the newly created voting",
         "/gmvote info NAME ... loads the voting given by name and shows you the details",
         "/gmvote remove ... resets/clears the newly created voting (u have to use '/gmvote create' to make new)")]
-    public class GMVoteCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class GMVoteCommandHandler : ACommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {

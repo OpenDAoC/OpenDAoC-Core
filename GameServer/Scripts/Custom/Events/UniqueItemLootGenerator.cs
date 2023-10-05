@@ -41,11 +41,11 @@ namespace DOL.GS
 {
     public class LootGeneratorUniqueItem : LootGeneratorBase
     {
-        [Cmd(
+        [Command(
             "&genuniques",
             ePrivLevel.GM,
             "/genuniques ([TOA] || [L51] || [self] || [suit] || [objecttype]) [itemtype] : generate 8 unique items")]
-        public class LootGeneratorUniqueObjectCommandHandler : DOL.GS.Commands.AbstractCommandHandler,
+        public class LootGeneratorUniqueObjectCommandHandler : DOL.GS.Commands.ACommandHandler,
             DOL.GS.Commands.ICommandHandler
         {
             public void OnCommand(GameClient client, string[] args)
@@ -149,11 +149,11 @@ namespace DOL.GS
             }
         }
 
-        [Cmd(
+        [Command(
             "&clearinventory",
             ePrivLevel.GM,
             "/clearinventory YES - clears your entire inventory!")]
-        public class ClearInventoryCommandHandler : DOL.GS.Commands.AbstractCommandHandler,
+        public class ClearInventoryCommandHandler : DOL.GS.Commands.ACommandHandler,
             DOL.GS.Commands.ICommandHandler
         {
             public void OnCommand(GameClient client, string[] args)

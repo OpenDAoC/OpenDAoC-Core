@@ -3,12 +3,12 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
-    [Cmd(
+    [Command(
         "&transfercorpse",
         new string[] {"&tc"},
         ePrivLevel.Player, // Set to player.
         "/transfercorpse <Keep name> ie: /transfercorpse dun crauchon")]
-    public class transfercorpseCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class transfercorpseCommandHandler : ACommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {

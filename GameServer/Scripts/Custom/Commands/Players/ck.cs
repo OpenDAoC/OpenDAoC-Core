@@ -4,11 +4,11 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
-	[Cmd(
+	[Command(
 	   "&ck",
 	   ePrivLevel.Player,
 		 "Displays who owns the CK while in a battleground.", "/ck")]
-	public class CkCommandHandler : AbstractCommandHandler, ICommandHandler
+	public class CkCommandHandler : ACommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
 		{

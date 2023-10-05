@@ -2,11 +2,11 @@
 
 namespace DOL.GS.Scripts
 {
-    [Cmd(
+    [Command(
         "&achievements",
         ePrivLevel.Player,
         "View your progress towards various achievements", "/achievements list")]
-    public class AchievementCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class AchievementCommandHandler : ACommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {

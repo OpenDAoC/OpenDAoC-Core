@@ -4,11 +4,11 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS.Scripts
 {
-    [Cmd(
+    [Command(
         "&bounty",
         ePrivLevel.Player,
         "Allows to set a bounty on an enemy player", "/bounty list", "/bounty add <amount>")]
-    public class BountyCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class BountyCommandHandler : ACommandHandler, ICommandHandler
     {
         private const string KILLEDBY = "KilledBy";
 

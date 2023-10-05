@@ -31,12 +31,12 @@ namespace DOL.GS.DatabaseUpdate
 	/// <summary>
 	/// UnloadXMLCommandHandler is used to Fully unload DataBase or DataTable to a Local XML file.
 	/// </summary>
-	[Cmd(
+	[Command(
 		"&unloadxmldb",
 		ePrivLevel.Admin,
 		"Unload your Database Tables to a local XML File Repository.",
 		"Usage: /unloadxmldb [FULL|TableName]")]
-	public class UnloadXMLCommandHandler : AbstractCommandHandler, ICommandHandler
+	public class UnloadXMLCommandHandler : ACommandHandler, ICommandHandler
 	{
 		#region ServerProperties
 		/// <summary>
