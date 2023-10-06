@@ -5,9 +5,6 @@ using DOL.Language;
 
 namespace DOL.GS.Effects
 {
-	/// <summary>
-	/// 
-	/// </summary>
 	public class StaticEffect : IGameEffect
 	{
 		private ushort m_id;

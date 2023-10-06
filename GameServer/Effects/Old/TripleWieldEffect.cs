@@ -6,9 +6,6 @@ using DOL.Language;
 
 namespace DOL.GS.Effects
 {
-	/// <summary>
-	/// TripleWield
-	/// </summary>
 	public class TripleWieldEffect : TimedEffect
 	{
 		public TripleWieldEffect(int duration) : base(duration)

@@ -50,7 +50,7 @@ namespace DOL.GS
 					if (newTarget && Owner is GamePlayer playerOwner && playerOwner.TargetObject == null)
 						playerOwner.Client.Out.SendChangeTarget(value);
 
-					if (newTarget && EffectList.GetOfType<TauntEffect>() != null)
+					if (newTarget && EffectList.GetOfType<PetTauntEffect>() != null)
 						Taunt();
 				}
 			}
@@ -254,7 +254,7 @@ namespace DOL.GS
 
 		private void ToggleTauntMode()
 		{
-			TauntEffect tauntEffect = EffectList.GetOfType<TauntEffect>();
+			PetTauntEffect tauntEffect = EffectList.GetOfType<PetTauntEffect>();
 			GamePlayer owner = (Brain as IControlledBrain).Owner as GamePlayer;
 
 			if (tauntEffect != null)
@@ -265,7 +265,7 @@ namespace DOL.GS
 			else
 			{
 				owner.Out.SendMessage(string.Format("{0} enters an aggressive stance.", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				new TauntEffect().Start(this);
+				new PetTauntEffect().Start(this);
 			}
 		}
 
