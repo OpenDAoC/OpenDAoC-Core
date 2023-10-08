@@ -91,7 +91,7 @@ namespace DOL.GS.Spells
 			// invoke direct effect if not resisted for DD w/ debuff spells
 			if (Caster is GamePlayer && Spell.Level > 0)
             {
-                if (((GamePlayer)Caster).CharacterClass.ClassType == eClassType.ListCaster)
+                if (((GamePlayer)Caster).PlayerClass.ClassType == EPlayerClassType.ListCaster)
 				{
 					int specLevel = Caster.GetModifiedSpecLevel(m_spellLine.Spec);
 					Effectiveness = 0.75;

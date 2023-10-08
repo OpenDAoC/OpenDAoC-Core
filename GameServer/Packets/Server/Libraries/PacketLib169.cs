@@ -75,7 +75,7 @@ namespace DOL.GS.PacketHandler
 							pak.WriteShort(0);
 						}
 						pak.WritePascalString(living.Name);
-						pak.WritePascalString(living is GamePlayer ? ((GamePlayer)living).CharacterClass.Name : "NPC");//classname
+						pak.WritePascalString(living is GamePlayer ? ((GamePlayer)living).PlayerClass.Name : "NPC");//classname
 					}
 				}
 				SendTCP(pak);
@@ -92,7 +92,7 @@ namespace DOL.GS.PacketHandler
                 player = living as GamePlayer;
 
                 if (player != null)
-                    pak.WriteByte(player.CharacterClass.HealthPercentGroupWindow);
+                    pak.WriteByte(player.PlayerClass.HealthPercentGroupWindow);
                 else
                     pak.WriteByte(living.HealthPercent);
 

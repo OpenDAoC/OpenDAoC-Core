@@ -37,8 +37,8 @@ public class SameIpCommand : ACommandHandler, ICommandHandler
                 string ip2 = ((IPEndPoint)cls.Socket.RemoteEndPoint).Address.ToString();
 
                 output.Add($"Same IP violation #{i} - IP: {accountIp}");
-                output.Add($"Acc 1: {otherClient.Account.Name} ({name1}  L{otherClient.Player?.Level} {otherClient.Player?.CharacterClass.Name} in {otherClient.Player?.CurrentZone.Description})");
-                output.Add($"Acc 2: {cls.Account.Name} ({name2} L{cls.Player?.Level} {cls.Player?.CharacterClass.Name} in {cls.Player?.CurrentZone.Description})");
+                output.Add($"Acc 1: {otherClient.Account.Name} ({name1}  L{otherClient.Player?.Level} {otherClient.Player?.PlayerClass.Name} in {otherClient.Player?.CurrentZone.Description})");
+                output.Add($"Acc 2: {cls.Account.Name} ({name2} L{cls.Player?.Level} {cls.Player?.PlayerClass.Name} in {cls.Player?.CurrentZone.Description})");
                 output.Add("\n");
                 i++;
             }

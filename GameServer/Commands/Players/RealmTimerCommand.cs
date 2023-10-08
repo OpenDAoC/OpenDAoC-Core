@@ -15,7 +15,7 @@ public class RealmTimerCommand : ACommandHandler, ICommandHandler
 			return;
 
 		string realmname = "None";
-		switch ((ERealm)RealmTimer.CurrentRealm(client.Player))
+		switch ((ERealm)RealmTimerUtil.CurrentRealm(client.Player))
 		{
 			case ERealm.Albion: 
 				realmname = "Albion";
@@ -32,7 +32,7 @@ public class RealmTimerCommand : ACommandHandler, ICommandHandler
 
 		}
 
-		TimeSpan realmtimerminutes = TimeSpan.FromMinutes(RealmTimer.TimeLeftOnTimer(client.Player));
+		TimeSpan realmtimerminutes = TimeSpan.FromMinutes(RealmTimerUtil.TimeLeftOnTimer(client.Player));
 		DisplayMessage(client, "Realm Timer Status. Realm: " + realmname + " Time Left: " + realmtimerminutes.Hours + "h " + realmtimerminutes.Minutes + "m");
 		
 	}

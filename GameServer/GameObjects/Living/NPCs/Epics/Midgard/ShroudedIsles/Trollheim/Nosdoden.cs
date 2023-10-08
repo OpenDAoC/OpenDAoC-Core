@@ -254,7 +254,7 @@ namespace DOL.GS
 						{
 							template.AddNPCEquipment(EInventorySlot.RightHandWeapon, righthand.Model, righthand.Color, righthand.Effect);
 							#region Styles for Warrior and Thane
-							if (player.CharacterClass.ID == (int)ECharacterClass.Warrior || player.CharacterClass.ID == (int)ECharacterClass.Thane)
+							if (player.PlayerClass.ID == (int)EPlayerClass.Warrior || player.PlayerClass.ID == (int)EPlayerClass.Thane)
 							{
 								if (righthand.Object_Type == (int)EObjectType.Axe)
 								{
@@ -274,7 +274,7 @@ namespace DOL.GS
 							}
 							#endregion
 							#region Styles for Savage
-							if (player.CharacterClass.ID == (int)ECharacterClass.Savage)
+							if (player.PlayerClass.ID == (int)EPlayerClass.Savage)
 							{
 								if (righthand.Object_Type == (int)EObjectType.HandToHand || lefthand.Object_Type == (int)EObjectType.HandToHand)
 								{
@@ -301,14 +301,14 @@ namespace DOL.GS
 						{
 							template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, twohand.Model, twohand.Color, twohand.Effect);
 							#region Styles for Savage 2h
-							if (player.CharacterClass.ID == (int)ECharacterClass.Savage && righthand == null)
+							if (player.PlayerClass.ID == (int)EPlayerClass.Savage && righthand == null)
 							{
 								if (!add.Styles.Contains(NosdodenGhostAddBrain.Taunt2h))
 									add.Styles.Add(NosdodenGhostAddBrain.Taunt2h);
 							}
 							#endregion
 							#region Styles for Hunter Spear 2h
-							if (player.CharacterClass.ID == (int)ECharacterClass.Hunter && twohand.Object_Type == (int)EObjectType.Spear)
+							if (player.PlayerClass.ID == (int)EPlayerClass.Hunter && twohand.Object_Type == (int)EObjectType.Spear)
 							{
 								if (!add.Styles.Contains(NosdodenGhostAddBrain.TauntSpearHunt))
 									add.Styles.Add(NosdodenGhostAddBrain.TauntSpearHunt);
@@ -361,7 +361,7 @@ namespace DOL.GS
 						add.VisibleActiveWeaponSlots = 51;
 					}
 					#endregion
-					add.PackageID = "NosdodenGhost" + player.CharacterClass.Name;
+					add.PackageID = "NosdodenGhost" + player.PlayerClass.Name;
 					add.AddToWorld();
 					BroadcastMessage(String.Format("Life essense of " + enemy.Name + " has turned into spirit."));
 				}

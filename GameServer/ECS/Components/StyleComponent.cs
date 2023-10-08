@@ -260,7 +260,7 @@ namespace DOL.GS
                                 case Style.eAttackResultRequirement.Style:
                                 case Style.eAttackResultRequirement.Hit: // TODO: make own message for hit after styles DB is updated
 
-                                    Style reqStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, p.CharacterClass.ID);
+                                    Style reqStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, p.PlayerClass.ID);
 
                                     if (reqStyle == null)
                                         message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterStyle", "(style " + style.OpeningRequirementValue + " not found)");

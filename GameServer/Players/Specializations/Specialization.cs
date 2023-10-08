@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +5,6 @@ using DOL.GS.Styles;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// callback handler for a spec that is activated by clicking on an associated icon
-	/// </summary>
 	public interface ISpecActionHandler
 	{
 		void Execute(Specialization ab, GamePlayer player);
@@ -150,11 +128,11 @@ namespace DOL.GS
 				GamePlayer player = (GamePlayer)living;
 				
 				// select only spec line if is advanced class...
-				var tmp = spsl.Where(item => (item.Item1.IsBaseLine || player.CharacterClass.HasAdvancedFromBaseClass()))
+				var tmp = spsl.Where(item => (item.Item1.IsBaseLine || player.PlayerClass.HasAdvancedFromBaseClass()))
 					.OrderBy(item => (item.Item1.IsBaseLine ? 0 : 1)).ThenBy(item => item.Item1.ID);
 				
 				// try with class hint
-				var baseline = tmp.Where(item => item.Item1.IsBaseLine && item.Item2 == player.CharacterClass.ID);
+				var baseline = tmp.Where(item => item.Item1.IsBaseLine && item.Item2 == player.PlayerClass.ID);
 				if (baseline.Any())
 				{
 					foreach (Tuple<SpellLine, int> ls in baseline)
@@ -173,7 +151,7 @@ namespace DOL.GS
 				}
 				
 				// try spec with class hint
-				var specline = tmp.Where(item => !item.Item1.IsBaseLine && item.Item2 == player.CharacterClass.ID);
+				var specline = tmp.Where(item => !item.Item1.IsBaseLine && item.Item2 == player.PlayerClass.ID);
 				if (specline.Any())
 				{
 					foreach (Tuple<SpellLine, int> ls in specline)
@@ -280,7 +258,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual List<Ability> PretendAbilitiesForLiving(GameLiving living, int step)
 		{
-			return SkillBase.GetSpecAbilityList(KeyName, living is GamePlayer ? ((GamePlayer)living).CharacterClass.ID : 0)
+			return SkillBase.GetSpecAbilityList(KeyName, living is GamePlayer ? ((GamePlayer)living).PlayerClass.ID : 0)
 				.Where(k => k.SpecLevelRequirement <= step)
 				.OrderBy(k => k.SpecLevelRequirement).ToList();
 		}
@@ -296,7 +274,7 @@ namespace DOL.GS
 		protected virtual List<Ability> GetAbilitiesForLiving(GameLiving living, int level)
 		{
 			// Select only Enabled and Max Level Abilities
-			List<Ability> abs = SkillBase.GetSpecAbilityList(KeyName, living is GamePlayer ? ((GamePlayer)living).CharacterClass.ID : 0);
+			List<Ability> abs = SkillBase.GetSpecAbilityList(KeyName, living is GamePlayer ? ((GamePlayer)living).PlayerClass.ID : 0);
 			
 			// Get order of first appearing skills
 			IOrderedEnumerable<Ability> order = abs.GroupBy(item => item.KeyName)
@@ -364,7 +342,7 @@ namespace DOL.GS
 			int classid = 0;
 			if (living is GamePlayer)
 			{
-				classid = ((GamePlayer)living).CharacterClass.ID;
+				classid = ((GamePlayer)living).PlayerClass.ID;
 			}
 			
 			List<Style> styles = null;
@@ -441,5 +419,4 @@ namespace DOL.GS
 			return Math.Max(0, (int)living.Level);
 		}
 	}
-
 }

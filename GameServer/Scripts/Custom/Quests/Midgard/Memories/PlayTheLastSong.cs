@@ -355,14 +355,14 @@ namespace DOL.GS.Quests.Midgard
 							if (player.Name.Contains("Dextz") || (player.Guild != null && player.Guild.Name.Contains("Thor Boyaux")))
 							{
 								Freeya.Emote(EEmote.Hug);
-								Freeya.SayTo(player, player.CharacterClass.Name + "... It is good to see you here again, my friend. " +
+								Freeya.SayTo(player, player.PlayerClass.Name + "... It is good to see you here again, my friend. " +
 								                     "I know you are protecting the realm in my stead. Fight with confidence knowing that I am watching from Odin's halls and lending you my strength! " +
 								                     "Would you join me in singing my [last songs for Midgard]?");
 							}
 							else
 							{
 								Freeya.Emote(EEmote.Hug);
-								Freeya.SayTo(player, "God dag " + player.CharacterClass.Name + ". I could sense you were coming. Please don't be scared, I promise I am friendly! " +
+								Freeya.SayTo(player, "God dag " + player.PlayerClass.Name + ". I could sense you were coming. Please don't be scared, I promise I am friendly! " +
 								                     "My friend Dextz use to visit me very often, it must be something special that he has chosen you to check on me! " +
 								                     "I really wished to see him once again, but maybe you can help me to play my [last songs for Midgard]?");	
 							}
@@ -382,7 +382,7 @@ namespace DOL.GS.Quests.Midgard
 					}
 					else
 					{
-						Freeya.SayTo(player, "Hello " + player.CharacterClass.Name + ". Do not forget, nobody is useless in this world who makes someone else\'s burden easier.");
+						Freeya.SayTo(player, "Hello " + player.PlayerClass.Name + ". Do not forget, nobody is useless in this world who makes someone else\'s burden easier.");
 					}
 					
 				}

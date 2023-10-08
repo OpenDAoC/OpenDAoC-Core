@@ -233,7 +233,7 @@ namespace DOL.AI.Brain
                         GamePlayer player = Body.TargetObject as GamePlayer;
                         if (player != null && player.IsAlive)
                         {
-                            BroadcastMessage(String.Format(Body.Name + " Impossible! An ugly " + player.CharacterClass.Name + " there? How could this be? Guthlac, we must defend our Queen and King!"));
+                            BroadcastMessage(String.Format(Body.Name + " Impossible! An ugly " + player.PlayerClass.Name + " there? How could this be? Guthlac, we must defend our Queen and King!"));
                             message1 = true;
                         }
                     }

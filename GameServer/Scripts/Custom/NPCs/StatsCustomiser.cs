@@ -35,7 +35,7 @@ namespace DOL.GS
 			
 			if(alreadyReset == null)
 			{
-				SayTo(player, EChatLoc.CL_PopupWindow, $"Hello {player.CharacterClass.Name}, I can grant you a [stats respec] if you need one." );
+				SayTo(player, EChatLoc.CL_PopupWindow, $"Hello {player.PlayerClass.Name}, I can grant you a [stats respec] if you need one." );
 			}
 			else
 			{

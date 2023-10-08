@@ -1,11 +1,11 @@
 namespace DOL.GS;
 
-public class RealmLoyalty
+public class RealmLoyaltyUtil
 {
     public int Days;
     public double Percent;
     
-    public RealmLoyalty()
+    public RealmLoyaltyUtil()
     {
         Days = 0;
         Percent = 0;

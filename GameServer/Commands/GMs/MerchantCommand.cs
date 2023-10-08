@@ -219,7 +219,7 @@ namespace DOL.GS.Commands
 										{
 											string templateID = args[3];
 											int page = Convert.ToInt32(args[4]);
-											eMerchantWindowSlot slot = eMerchantWindowSlot.FirstEmptyInPage;
+											EMerchantWindowSlot slot = EMerchantWindowSlot.FirstEmptyInPage;
 
 											if (targetMerchant.TradeItems == null)
 											{
@@ -236,11 +236,11 @@ namespace DOL.GS.Commands
 
 											if (args.Length == 6)
 											{
-												slot = (eMerchantWindowSlot)Convert.ToInt32(args[5]);
+												slot = (EMerchantWindowSlot)Convert.ToInt32(args[5]);
 											}
 
 											slot = targetMerchant.TradeItems.GetValidSlot(page, slot);
-											if (slot == eMerchantWindowSlot.Invalid)
+											if (slot == EMerchantWindowSlot.Invalid)
 											{
 												DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Merchant.Articles.Add.PageAndSlotInvalid", page, (MerchantTradeItems.MAX_PAGES_IN_TRADEWINDOWS - 1), slot, (MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS - 1)));
 												return;

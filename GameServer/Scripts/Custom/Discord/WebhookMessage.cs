@@ -41,7 +41,7 @@ namespace DOL.GS.Scripts.discord
                     formattedMessage = "**[ADVICE] ";
                     break;
                 case EChatType.CT_LFG:
-                    formattedMessage = "**[LFG] (" + player.CharacterClass.Name + " " + player.Level + ") ";
+                    formattedMessage = "**[LFG] (" + player.PlayerClass.Name + " " + player.Level + ") ";
                     break;
                 case EChatType.CT_Trade:
                     formattedMessage = "**[TRADE] ";

@@ -20,7 +20,7 @@ namespace DOL.GS.RealmAbilities
             GamePlayer player = living as GamePlayer;
             if (player != null)
             {
-                if(player.CharacterClass.ID == (int)ECharacterClass.Necromancer)
+                if(player.PlayerClass.ID == (int)EPlayerClass.Necromancer)
                 {
                     
                     Skill FacilitatePainworking = null;

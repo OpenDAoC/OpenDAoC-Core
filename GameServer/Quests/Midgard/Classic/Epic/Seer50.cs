@@ -988,8 +988,8 @@ namespace DOL.GS.Quests.Midgard
 			if (player.IsDoingQuest(typeof (Seer_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) ECharacterClass.Shaman &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Healer)
+			if (player.PlayerClass.ID != (byte) EPlayerClass.Shaman &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Healer)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -1153,7 +1153,7 @@ namespace DOL.GS.Quests.Midgard
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Shaman)
+			if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Shaman)
 			{
 				GiveItem(m_questPlayer, ShamanEpicArms);
 				GiveItem(m_questPlayer, ShamanEpicBoots);
@@ -1162,7 +1162,7 @@ namespace DOL.GS.Quests.Midgard
 				GiveItem(m_questPlayer, ShamanEpicLegs);
 				GiveItem(m_questPlayer, ShamanEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Healer)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Healer)
 			{
 				GiveItem(m_questPlayer, HealerEpicArms);
 				GiveItem(m_questPlayer, HealerEpicBoots);

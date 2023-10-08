@@ -227,9 +227,9 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 		if (player.ClassNameFlag)
 		{
 			result.Append(" ");
-			result.Append(player.CharacterClass.Name);
+			result.Append(player.PlayerClass.Name);
 		}
-		else if (player.CharacterClass != null)
+		else if (player.PlayerClass != null)
 		{
 			result.Append(" ");
 			ACraftingSkill skill = CraftingMgr.getSkillbyEnum(player.CraftingPrimarySkill);
@@ -381,7 +381,7 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 				return true;
 			if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
 				return false;
-			if (player.CharacterClass.Name.ToLower().StartsWith(m_filterString))
+			if (player.PlayerClass.Name.ToLower().StartsWith(m_filterString))
 				return true;
 			if (player.CurrentZone != null && player.CurrentZone.Description.ToLower().Contains(m_filterString) && !player.CurrentZone.IsOF)
 				return true;

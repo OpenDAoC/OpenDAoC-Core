@@ -800,7 +800,7 @@ namespace DOL.GS.Spells
 			}
 
 			//Ryan: don't want mobs to have reductions in mana
-			if (Spell.Power != 0 && m_caster is GamePlayer && (m_caster as GamePlayer).CharacterClass.ID != (int)ECharacterClass.Savage && m_caster.Mana < PowerCost(Target) && EffectListService.GetAbilityEffectOnTarget(Caster, EEffect.QuickCast) == null && Spell.SpellType != ESpellType.Archery)
+			if (Spell.Power != 0 && m_caster is GamePlayer && (m_caster as GamePlayer).PlayerClass.ID != (int)EPlayerClass.Savage && m_caster.Mana < PowerCost(Target) && EffectListService.GetAbilityEffectOnTarget(Caster, EEffect.QuickCast) == null && Spell.SpellType != ESpellType.Archery)
 			{
 				if (!quiet)
 					MessageToCaster("You don't have enough power to cast that!", EChatType.CT_SpellResisted);
@@ -1336,10 +1336,10 @@ namespace DOL.GS.Spells
 			// percent of maxPower if less than zero
 			if (basepower < 0)
 			{
-				if (Caster is GamePlayer && ((GamePlayer)Caster).CharacterClass.ManaStat != EStat.UNDEFINED)
+				if (Caster is GamePlayer && ((GamePlayer)Caster).PlayerClass.ManaStat != EStat.UNDEFINED)
 				{
 					GamePlayer player = Caster as GamePlayer;
-					basepower = player.CalculateMaxMana(player.Level, player.GetBaseStat(player.CharacterClass.ManaStat)) * basepower * -0.01;
+					basepower = player.CalculateMaxMana(player.Level, player.GetBaseStat(player.PlayerClass.ManaStat)) * basepower * -0.01;
 				}
 				else
 				{
@@ -1369,7 +1369,7 @@ namespace DOL.GS.Spells
 				}
 				power -= basepower * focusBonus; //<== So i can finally use 'basepower' for both calculations: % and absolut
 			}
-			else if (Caster is GamePlayer && ((GamePlayer)Caster).CharacterClass.ClassType == eClassType.Hybrid)
+			else if (Caster is GamePlayer && ((GamePlayer)Caster).PlayerClass.ClassType == EPlayerClassType.Hybrid)
 			{
 				double specBonus = 0;
 				if (Spell.Level != 0) specBonus = (((GamePlayer)Caster).GetBaseSpecLevel(SpellLine.Spec) * 0.4 / Spell.Level);
@@ -1624,7 +1624,7 @@ namespace DOL.GS.Spells
 			{
 				(Caster as GamePlayer).Out.SendObjectUpdate(target);
 			}*/
-			if(!this.Spell.IsPulsingEffect && !this.Spell.IsPulsing && Caster is GamePlayer {CharacterClass: not ClassSavage})
+			if(!this.Spell.IsPulsingEffect && !this.Spell.IsPulsing && Caster is GamePlayer {PlayerClass: not ClassSavage})
 				m_caster.ChangeEndurance(m_caster, EEnduranceChangeType.Spell, -5);
 
 			GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
@@ -1732,7 +1732,7 @@ namespace DOL.GS.Spells
 					// Check 'ControlledBrain' if 'target' isn't a valid target.
 					if (!list.Any() && Caster.ControlledBrain != null)
 					{
-						if (Caster is GamePlayer player && player.CharacterClass.Name.ToLower() == "bonedancer")
+						if (Caster is GamePlayer player && player.PlayerClass.Name.ToLower() == "bonedancer")
 						{
 							foreach (GameNPC npcInRadius in player.GetNPCsInRadius((ushort) Spell.Range))
 							{
@@ -1860,7 +1860,7 @@ namespace DOL.GS.Spells
 						{
 							if (GameServer.ServerRules.IsSameRealm(Caster, player, true))
 							{
-								if (player.CharacterClass.ID == (int)ECharacterClass.Necromancer && player.IsShade)
+								if (player.PlayerClass.ID == (int)EPlayerClass.Necromancer && player.IsShade)
 								{
 									if (!Spell.IsBuff)
 										aoePlayers.Add(player.ControlledBrain.Body);
@@ -1892,7 +1892,7 @@ namespace DOL.GS.Spells
 					{
 						if (target != null && GameServer.ServerRules.IsSameRealm(Caster, target, true))
 						{
-							if (target is GamePlayer player && player.CharacterClass.ID == (int)ECharacterClass.Necromancer && player.IsShade)
+							if (target is GamePlayer player && player.PlayerClass.ID == (int)EPlayerClass.Necromancer && player.IsShade)
 							{
 								// Only buffs, Necromancer's power transfer, and teleport spells can be casted on the shade
 								if (Spell.IsBuff || Spell.SpellType == ESpellType.PowerTransferPet || Spell.SpellType == ESpellType.UniPortal)
@@ -2219,7 +2219,7 @@ namespace DOL.GS.Spells
 // 				}
 // 			}
 
-			if (Caster is GamePlayer && (Caster as GamePlayer).CharacterClass.ID == (int)ECharacterClass.Warlock && m_spell.IsSecondary)
+			if (Caster is GamePlayer && (Caster as GamePlayer).PlayerClass.ID == (int)EPlayerClass.Warlock && m_spell.IsSecondary)
 			{
 				Spell uninterruptibleSpell = Caster.TempProperties.GetProperty<Spell>(UninterruptableSpellHandler.WARLOCK_UNINTERRUPTABLE_SPELL);
 
@@ -3288,7 +3288,7 @@ namespace DOL.GS.Spells
 						if (pet.Owner is GamePlayer own)
 						{
 							//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
-							int manaStatValue = own.GetModified((EProperty)own.CharacterClass.ManaStat);
+							int manaStatValue = own.GetModified((EProperty)own.PlayerClass.ManaStat);
 							//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
 							spellDamage *= ((manaStatValue - own.Level) * 0.005) + 1;
 						}
@@ -3312,17 +3312,17 @@ namespace DOL.GS.Spells
 											   (1 + .005 * player.GetWeaponStat(player.ActiveWeapon));
 					spellDamage *= (player.GetWeaponSkill(player.ActiveWeapon) * weaponskillScalar /3 + 100) / 200;
 				}
-				else if (player.CharacterClass.ManaStat != EStat.UNDEFINED
+				else if (player.PlayerClass.ManaStat != EStat.UNDEFINED
 					&& SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect
 					&& m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons
 					&& SpellLine.KeyName != GlobalSpellsLines.Item_Effects
-					&& player.CharacterClass.ID != (int)ECharacterClass.MaulerAlb
-					&& player.CharacterClass.ID != (int)ECharacterClass.MaulerMid
-					&& player.CharacterClass.ID != (int)ECharacterClass.MaulerHib
-					&& player.CharacterClass.ID != (int)ECharacterClass.Vampiir)
+					&& player.PlayerClass.ID != (int)EPlayerClass.MaulerAlb
+					&& player.PlayerClass.ID != (int)EPlayerClass.MaulerMid
+					&& player.PlayerClass.ID != (int)EPlayerClass.MaulerHib
+					&& player.PlayerClass.ID != (int)EPlayerClass.Vampiir)
 				{
 					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
-					int manaStatValue = player.GetModified((EProperty)player.CharacterClass.ManaStat);
+					int manaStatValue = player.GetModified((EProperty)player.PlayerClass.ManaStat);
 					//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
 					spellDamage *= ((manaStatValue - player.Level) * 0.005) + 1;
 					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) -
@@ -3330,12 +3330,12 @@ namespace DOL.GS.Spells
 					spellDamage *= 1 + (modSkill * .005);
 
 					//list casters get a little extra sauce
-					if ((ECharacterClass) player.CharacterClass.ID is ECharacterClass.Wizard
-						or ECharacterClass.Theurgist
-						or ECharacterClass.Cabalist or ECharacterClass.Sorcerer or ECharacterClass.Necromancer
-						or ECharacterClass.Eldritch or ECharacterClass.Enchanter or ECharacterClass.Mentalist
-						or ECharacterClass.Animist or ECharacterClass.Valewalker
-						or ECharacterClass.Runemaster or ECharacterClass.Spiritmaster or ECharacterClass.Bonedancer)
+					if ((EPlayerClass) player.PlayerClass.ID is EPlayerClass.Wizard
+						or EPlayerClass.Theurgist
+						or EPlayerClass.Cabalist or EPlayerClass.Sorcerer or EPlayerClass.Necromancer
+						or EPlayerClass.Eldritch or EPlayerClass.Enchanter or EPlayerClass.Mentalist
+						or EPlayerClass.Animist or EPlayerClass.Valewalker
+						or EPlayerClass.Runemaster or EPlayerClass.Spiritmaster or EPlayerClass.Bonedancer)
 					{
 						spellDamage *= 1.10;
 					}

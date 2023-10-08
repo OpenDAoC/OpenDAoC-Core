@@ -24,7 +24,7 @@ namespace DOL.GS.Scripts
             
             if (args[1] == "list")
             {
-                client.Out.SendCustomTextWindow("Achievements", AchievementUtils.GetAchievementInfoForPlayer(client.Player));
+                client.Out.SendCustomTextWindow("Achievements", AchievementUtil.GetAchievementInfoForPlayer(client.Player));
             }
             else
             {

@@ -972,8 +972,8 @@ namespace DOL.GS.Quests.Midgard
 			if (player.IsDoingQuest(typeof (Rogue_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) ECharacterClass.Shadowblade &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Hunter)
+			if (player.PlayerClass.ID != (byte) EPlayerClass.Shadowblade &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Hunter)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -1137,7 +1137,7 @@ namespace DOL.GS.Quests.Midgard
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Shadowblade)
+			if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Shadowblade)
 			{
 				GiveItem(m_questPlayer, ShadowbladeEpicArms);
 				GiveItem(m_questPlayer, ShadowbladeEpicBoots);
@@ -1146,7 +1146,7 @@ namespace DOL.GS.Quests.Midgard
 				GiveItem(m_questPlayer, ShadowbladeEpicLegs);
 				GiveItem(m_questPlayer, ShadowbladeEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Hunter)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Hunter)
 			{
 				GiveItem(m_questPlayer, HunterEpicArms);
 				GiveItem(m_questPlayer, HunterEpicBoots);

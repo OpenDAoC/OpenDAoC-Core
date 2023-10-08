@@ -1654,7 +1654,7 @@ namespace DOL.GS
 				//p.CharacterClass.WeaponSkillBase returns unscaled damage table value
 				//divide by 200 to change to scaling factor. example: warrior's 460 WeaponSkillBase / 200 = 2.3 Damage Table
 				//divide by final 2.1 to use the 2.1 damage table as our anchor. classes below 2.1 damage table will have slightly reduced penetration, above 2.1 will have increased penetration
-				double tableMod = p.CharacterClass.WeaponSkillBase / 200.0 / 2.1;
+				double tableMod = p.PlayerClass.WeaponSkillBase / 200.0 / 2.1;
 				totalReduction = (skillBasedReduction + statBasedReduction) * tableMod;
             }
 			else
@@ -3195,8 +3195,8 @@ namespace DOL.GS
 		{
 			
 			if (this is GamePlayer &&
-			    (((GamePlayer)this).CharacterClass.ID == (int)ECharacterClass.Vampiir ||
-			     (((GamePlayer)this).CharacterClass.ID > 59 && ((GamePlayer)this).CharacterClass.ID < 63))) // Maulers
+			    (((GamePlayer)this).PlayerClass.ID == (int)EPlayerClass.Vampiir ||
+			     (((GamePlayer)this).PlayerClass.ID > 59 && ((GamePlayer)this).PlayerClass.ID < 63))) // Maulers
 			{
 				double MinMana = MaxMana * 0.15;
 				double OnePercMana = Math.Ceiling(MaxMana * 0.01);
@@ -3359,8 +3359,8 @@ namespace DOL.GS
 				int maxmana = MaxMana;
 				m_mana = Math.Min(value, maxmana);
 				m_mana = Math.Max(m_mana, 0);
-				if (IsAlive && (m_mana < maxmana || (this is GamePlayer && ((GamePlayer)this).CharacterClass.ID == (int)ECharacterClass.Vampiir)
-				                || (this is GamePlayer && ((GamePlayer)this).CharacterClass.ID > 59 && ((GamePlayer)this).CharacterClass.ID < 63)))
+				if (IsAlive && (m_mana < maxmana || (this is GamePlayer && ((GamePlayer)this).PlayerClass.ID == (int)EPlayerClass.Vampiir)
+				                || (this is GamePlayer && ((GamePlayer)this).PlayerClass.ID > 59 && ((GamePlayer)this).PlayerClass.ID < 63)))
 				{
 					StartPowerRegeneration();
 				}

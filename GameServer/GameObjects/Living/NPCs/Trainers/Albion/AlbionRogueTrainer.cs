@@ -27,9 +27,9 @@ namespace DOL.GS.Trainer
 	[NPCGuildScript("Rogue Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Rogue Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class AlbionRogueTrainer : GameTrainer
 	{
-		public override ECharacterClass TrainedClass
+		public override EPlayerClass TrainedClass
 		{
-			get { return ECharacterClass.AlbionRogue; }
+			get { return EPlayerClass.AlbionRogue; }
 		}
 
 		public const string PRACTICE_WEAPON_ID = "practice_dirk";
@@ -48,7 +48,7 @@ namespace DOL.GS.Trainer
 			if (!base.Interact(player)) return false;
 			
 			// check if class matches
-			if (player.CharacterClass.ID == (int)TrainedClass)
+			if (player.PlayerClass.ID == (int)TrainedClass)
 			{
 				// player can be promoted
 				if (player.Level>=5)

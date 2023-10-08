@@ -35,7 +35,7 @@ namespace DOL.GS
         //base Chance to get a magical RoG item, PlayerLevel*2 is added to get final value
         private static int MagicalItemOffset = Properties.ROG_MAGICAL_ITEM_OFFSET;
 
-        private ECharacterClass charClass = ECharacterClass.Unknown;
+        private EPlayerClass charClass = EPlayerClass.Unknown;
 
         private static Dictionary<int,Spell> ProcSpells = new Dictionary<int,Spell>();
 
@@ -48,62 +48,62 @@ namespace DOL.GS
         }
 
         public GeneratedUniqueItem()
-            : this((ERealm)Util.Random(1, 3), (ECharacterClass)Util.Random(1, 32), (byte)Util.Random(1, 50))
+            : this((ERealm)Util.Random(1, 3), (EPlayerClass)Util.Random(1, 32), (byte)Util.Random(1, 50))
         {
 
         }
 
         #region Constructor Randomized
 
-        public GeneratedUniqueItem(ERealm realm, ECharacterClass charClass, byte level, int minUtility = 15)
+        public GeneratedUniqueItem(ERealm realm, EPlayerClass charClass, byte level, int minUtility = 15)
             : this(realm, charClass, level, GenerateObjectType(realm, charClass, level), minUtility)
         {
 
         }
 
-        public GeneratedUniqueItem(ERealm realm, ECharacterClass charClass, byte level, EObjectType type, int minUtility = 15)
+        public GeneratedUniqueItem(ERealm realm, EPlayerClass charClass, byte level, EObjectType type, int minUtility = 15)
             : this(realm, charClass, level, type, GenerateItemType(type), minUtility)
         {
 
         }
 
-        public GeneratedUniqueItem(ERealm realm, ECharacterClass charClass, byte level, EObjectType type, EInventorySlot slot, int minUtility = 15)
+        public GeneratedUniqueItem(ERealm realm, EPlayerClass charClass, byte level, EObjectType type, EInventorySlot slot, int minUtility = 15)
             : this(realm, charClass, level, type, slot, GenerateDamageType(type, charClass), minUtility)
         {
 
         }
 
-        public GeneratedUniqueItem(ERealm realm, ECharacterClass charClass, byte level, EObjectType type, EInventorySlot slot, EDamageType dmg, int minUtility = 15)
+        public GeneratedUniqueItem(ERealm realm, EPlayerClass charClass, byte level, EObjectType type, EInventorySlot slot, EDamageType dmg, int minUtility = 15)
             : this(false, realm, charClass, level, type, slot, dmg, minUtility)
         {
 
         }
 
         public GeneratedUniqueItem(bool toa)
-            : this(toa, (ERealm)Util.Random(1, 3), (ECharacterClass)Util.Random(1, 32), (byte)Util.Random(1, 50))
+            : this(toa, (ERealm)Util.Random(1, 3), (EPlayerClass)Util.Random(1, 32), (byte)Util.Random(1, 50))
         {
 
         }
 
-        public GeneratedUniqueItem(bool toa, ERealm realm, ECharacterClass charClass, byte level)
+        public GeneratedUniqueItem(bool toa, ERealm realm, EPlayerClass charClass, byte level)
             : this(toa, realm, charClass, level, GenerateObjectType(realm, charClass, level))
         {
 
         }
 
-        public GeneratedUniqueItem(bool toa, ERealm realm, ECharacterClass charClass, byte level, EObjectType type)
+        public GeneratedUniqueItem(bool toa, ERealm realm, EPlayerClass charClass, byte level, EObjectType type)
             : this(toa, realm, charClass, level, type, GenerateItemType(type))
         {
 
         }
 
-        public GeneratedUniqueItem(bool toa, ERealm realm, ECharacterClass charClass, byte level, EObjectType type, EInventorySlot slot)
+        public GeneratedUniqueItem(bool toa, ERealm realm, EPlayerClass charClass, byte level, EObjectType type, EInventorySlot slot)
             : this(toa, realm, charClass, level, type, slot, GenerateDamageType(type, charClass))
         {
 
         }
 
-        public GeneratedUniqueItem(bool toa, ERealm realm, ECharacterClass charClass, byte level, EObjectType type, EInventorySlot slot, EDamageType dmg, int utilityMinimum = 15)
+        public GeneratedUniqueItem(bool toa, ERealm realm, EPlayerClass charClass, byte level, EObjectType type, EInventorySlot slot, EDamageType dmg, int utilityMinimum = 15)
             : base()
         {
             this.Realm = (int)realm;
@@ -1098,7 +1098,7 @@ namespace DOL.GS
             return false;
         }
 
-        private EProperty GetWeightedStatForClass(ECharacterClass charClass)
+        private EProperty GetWeightedStatForClass(EPlayerClass charClass)
         {
             if (Util.Chance(10))
                 return EProperty.MaxHealth;
@@ -1106,19 +1106,19 @@ namespace DOL.GS
             int rand = Util.Random(100);
             switch (charClass)
             {
-                case ECharacterClass.Armsman:
-                case ECharacterClass.Mercenary:
-                case ECharacterClass.Infiltrator:
-                case ECharacterClass.Scout:
-                case ECharacterClass.Blademaster:
-                case ECharacterClass.Hero:
-                case ECharacterClass.Berserker:
-                case ECharacterClass.Warrior:
-                case ECharacterClass.Savage:
-                case ECharacterClass.Hunter:
-                case ECharacterClass.Shadowblade:
-                case ECharacterClass.Nightshade:
-                case ECharacterClass.Ranger:
+                case EPlayerClass.Armsman:
+                case EPlayerClass.Mercenary:
+                case EPlayerClass.Infiltrator:
+                case EPlayerClass.Scout:
+                case EPlayerClass.Blademaster:
+                case EPlayerClass.Hero:
+                case EPlayerClass.Berserker:
+                case EPlayerClass.Warrior:
+                case EPlayerClass.Savage:
+                case EPlayerClass.Hunter:
+                case EPlayerClass.Shadowblade:
+                case EPlayerClass.Nightshade:
+                case EPlayerClass.Ranger:
                     //25% chance of getting any useful stat
                     //for classes who do not need mana/acuity/casting stats
                     if (rand <= 25)
@@ -1129,15 +1129,15 @@ namespace DOL.GS
                         return EProperty.Constitution;
                     else return EProperty.Quickness;
 
-                case ECharacterClass.Cabalist:
-                case ECharacterClass.Sorcerer:
-                case ECharacterClass.Theurgist:
-                case ECharacterClass.Wizard:
-                case ECharacterClass.Necromancer:
-                case ECharacterClass.Eldritch:
-                case ECharacterClass.Enchanter:
-                case ECharacterClass.Mentalist:
-                case ECharacterClass.Animist:
+                case EPlayerClass.Cabalist:
+                case EPlayerClass.Sorcerer:
+                case EPlayerClass.Theurgist:
+                case EPlayerClass.Wizard:
+                case EPlayerClass.Necromancer:
+                case EPlayerClass.Eldritch:
+                case EPlayerClass.Enchanter:
+                case EPlayerClass.Mentalist:
+                case EPlayerClass.Animist:
                     if (Util.Chance(20))
                         return EProperty.MaxMana;
                     
@@ -1153,9 +1153,9 @@ namespace DOL.GS
                         return EProperty.Quickness;
                     else return EProperty.Constitution;
 
-                case ECharacterClass.Runemaster:
-                case ECharacterClass.Spiritmaster:
-                case ECharacterClass.Bonedancer:
+                case EPlayerClass.Runemaster:
+                case EPlayerClass.Spiritmaster:
+                case EPlayerClass.Bonedancer:
                     if (Util.Chance(20))
                         return EProperty.MaxMana;
                     //weight stats for casters towards dex, acu, con
@@ -1170,7 +1170,7 @@ namespace DOL.GS
                         return EProperty.Quickness;
                     else return EProperty.Constitution;
 
-                case ECharacterClass.Paladin:
+                case EPlayerClass.Paladin:
                     if (rand <= 25)
                         return EProperty.Strength;
                     else if (rand <= 40)
@@ -1181,8 +1181,8 @@ namespace DOL.GS
                         return EProperty.Piety;
                     else return EProperty.Constitution;
                 
-                case ECharacterClass.Cleric:
-                case ECharacterClass.Shaman:
+                case EPlayerClass.Cleric:
+                case EPlayerClass.Shaman:
                     if (Util.Chance(20))
                         return EProperty.MaxMana;
                     if (rand <= 10)
@@ -1195,8 +1195,8 @@ namespace DOL.GS
                         return EProperty.Piety;
                     else return EProperty.Constitution;
                 
-                case ECharacterClass.Thane:
-                case ECharacterClass.Reaver:
+                case EPlayerClass.Thane:
+                case EPlayerClass.Reaver:
                     if (Util.Chance(20))
                         return EProperty.MaxMana;
                     if (rand <= 20)
@@ -1209,7 +1209,7 @@ namespace DOL.GS
                         return EProperty.Piety;
                     else return EProperty.Constitution;
 
-                case ECharacterClass.Friar:
+                case EPlayerClass.Friar:
                     if (Util.Chance(20))
                         return EProperty.MaxMana;
                     if (rand <= 25)
@@ -1221,7 +1221,7 @@ namespace DOL.GS
                     else return EProperty.Quickness;
 
                 
-                case ECharacterClass.Druid:
+                case EPlayerClass.Druid:
                     if (Util.Chance(20))
                         return EProperty.MaxMana;
                     if (rand <= 10)
@@ -1234,7 +1234,7 @@ namespace DOL.GS
                         return EProperty.Empathy;
                     else return EProperty.Constitution;
 
-                case ECharacterClass.Warden:
+                case EPlayerClass.Warden:
                     if (Util.Chance(10))
                         return EProperty.MaxMana;
                     if (rand <= 20)
@@ -1247,8 +1247,8 @@ namespace DOL.GS
                         return EProperty.Empathy;
                     else return EProperty.Constitution;
 
-                case ECharacterClass.Champion:
-                case ECharacterClass.Valewalker:
+                case EPlayerClass.Champion:
+                case EPlayerClass.Valewalker:
                     if (Util.Chance(10))
                         return EProperty.MaxMana;
                     if (rand <= 22)
@@ -1261,9 +1261,9 @@ namespace DOL.GS
                         return EProperty.Constitution;
                     else return EProperty.Intelligence;
 
-                case ECharacterClass.Bard:
-                case ECharacterClass.Skald:
-                case ECharacterClass.Minstrel:
+                case EPlayerClass.Bard:
+                case EPlayerClass.Skald:
+                case EPlayerClass.Minstrel:
                     if (Util.Chance(20))
                         return EProperty.MaxMana;
                     if (rand <= 22)
@@ -1276,7 +1276,7 @@ namespace DOL.GS
                         return EProperty.Constitution;
                     else return EProperty.Charisma;
 
-                case ECharacterClass.Healer:
+                case EPlayerClass.Healer:
                     if (Util.Chance(15))
                         return EProperty.MaxMana;
                     if (rand <= 30)
@@ -1295,7 +1295,7 @@ namespace DOL.GS
         {
             switch (charClass)
             {
-                case ECharacterClass.Paladin:
+                case EPlayerClass.Paladin:
                     if (property == EProperty.Skill_Parry ||
                         property == EProperty.Skill_Slashing ||
                         property == EProperty.Skill_Crushing ||
@@ -1307,7 +1307,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Armsman:
+                case EPlayerClass.Armsman:
                     if (property == EProperty.Skill_Parry ||
                         property == EProperty.Skill_Slashing ||
                         property == EProperty.Skill_Crushing ||
@@ -1321,7 +1321,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Reaver:
+                case EPlayerClass.Reaver:
                     if (property == EProperty.Skill_Parry ||
                         property == EProperty.Skill_Slashing ||
                         property == EProperty.Skill_Crushing ||
@@ -1334,7 +1334,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Mercenary:
+                case EPlayerClass.Mercenary:
                     if (property == EProperty.Skill_Parry ||
                         property == EProperty.Skill_Slashing ||
                         property == EProperty.Skill_Crushing ||
@@ -1347,7 +1347,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Cleric:
+                case EPlayerClass.Cleric:
                     if (property == EProperty.Skill_Rejuvenation ||
                         property == EProperty.Skill_Enhancement ||
                         property == EProperty.Skill_Smiting ||
@@ -1356,7 +1356,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Friar:
+                case EPlayerClass.Friar:
                     if (property == EProperty.Skill_Rejuvenation ||
                         property == EProperty.Skill_Enhancement ||
                         property == EProperty.Skill_Parry ||
@@ -1367,7 +1367,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Infiltrator:
+                case EPlayerClass.Infiltrator:
                     if (property == EProperty.Skill_Stealth ||
                         property == EProperty.Skill_Envenom ||
                         property == EProperty.Skill_Slashing ||
@@ -1380,7 +1380,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Minstrel:
+                case EPlayerClass.Minstrel:
                     if (property == EProperty.Skill_Stealth ||
                         property == EProperty.Skill_Instruments ||
                         property == EProperty.Skill_Slashing ||
@@ -1390,7 +1390,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Scout:
+                case EPlayerClass.Scout:
                     if (property == EProperty.Skill_Stealth ||
                         property == EProperty.Skill_Slashing ||
                         property == EProperty.Skill_Thrusting ||
@@ -1402,7 +1402,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Cabalist:
+                case EPlayerClass.Cabalist:
                     if (property == EProperty.Skill_Matter ||
                         property == EProperty.Skill_Body ||
                         property == EProperty.Skill_Spirit ||
@@ -1415,7 +1415,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Sorcerer:
+                case EPlayerClass.Sorcerer:
                     if (property == EProperty.Skill_Matter ||
                         property == EProperty.Skill_Body ||
                         property == EProperty.Skill_Mind ||
@@ -1428,7 +1428,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Theurgist:
+                case EPlayerClass.Theurgist:
                     if (property == EProperty.Skill_Earth ||
                         property == EProperty.Skill_Cold ||
                         property == EProperty.Skill_Wind ||
@@ -1441,7 +1441,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Wizard:
+                case EPlayerClass.Wizard:
                     if (property == EProperty.Skill_Earth ||
                         property == EProperty.Skill_Cold ||
                         property == EProperty.Skill_Fire ||
@@ -1454,7 +1454,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Necromancer:
+                case EPlayerClass.Necromancer:
                     if (property == EProperty.Skill_DeathSight ||
                         property == EProperty.Skill_Death_Servant ||
                         property == EProperty.Skill_Pain_working ||
@@ -1467,7 +1467,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Bard:
+                case EPlayerClass.Bard:
                     if (property == EProperty.Skill_Regrowth ||
                         property == EProperty.Skill_Nurture ||
                         property == EProperty.Skill_Music ||
@@ -1479,7 +1479,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Druid:
+                case EPlayerClass.Druid:
                     if (property == EProperty.Skill_Regrowth ||
                         property == EProperty.Skill_Nurture ||
                         property == EProperty.Skill_Nature ||
@@ -1488,7 +1488,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Warden:
+                case EPlayerClass.Warden:
                     if (property == EProperty.Skill_Regrowth ||
                         property == EProperty.Skill_Nurture ||
                         property == EProperty.Skill_Blunt ||
@@ -1500,7 +1500,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Blademaster:
+                case EPlayerClass.Blademaster:
                     if (property == EProperty.Skill_Blunt ||
                         property == EProperty.Skill_Blades ||
                         property == EProperty.Skill_Piercing ||
@@ -1513,7 +1513,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Hero:
+                case EPlayerClass.Hero:
                     if (property == EProperty.Skill_Blunt ||
                         property == EProperty.Skill_Blades ||
                         property == EProperty.Skill_Piercing ||
@@ -1526,7 +1526,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Champion:
+                case EPlayerClass.Champion:
                     if (property == EProperty.Skill_Blunt ||
                         property == EProperty.Skill_Blades ||
                         property == EProperty.Skill_Piercing ||
@@ -1539,7 +1539,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Eldritch:
+                case EPlayerClass.Eldritch:
                     if (property == EProperty.Skill_Light ||
                         property == EProperty.Skill_Mana ||
                         property == EProperty.Skill_Void ||
@@ -1552,7 +1552,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Enchanter:
+                case EPlayerClass.Enchanter:
                     if (property == EProperty.Skill_Light ||
                         property == EProperty.Skill_Mana ||
                         property == EProperty.Skill_Enchantments ||
@@ -1565,7 +1565,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Mentalist:
+                case EPlayerClass.Mentalist:
                     if (property == EProperty.Skill_Light ||
                         property == EProperty.Skill_Mana ||
                         property == EProperty.Skill_Mentalism ||
@@ -1578,7 +1578,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Nightshade:
+                case EPlayerClass.Nightshade:
                     if (property == EProperty.Skill_Envenom ||
                         property == EProperty.Skill_Blades ||
                         property == EProperty.Skill_Piercing ||
@@ -1591,7 +1591,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Ranger:
+                case EPlayerClass.Ranger:
                     if (property == EProperty.Skill_RecurvedBow ||
                         property == EProperty.Skill_Blades ||
                         property == EProperty.Skill_Piercing ||
@@ -1604,7 +1604,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Animist:
+                case EPlayerClass.Animist:
                     if (property == EProperty.Skill_Arboreal ||
                         property == EProperty.Skill_Creeping ||
                         property == EProperty.Skill_Verdant ||
@@ -1617,7 +1617,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Valewalker:
+                case EPlayerClass.Valewalker:
                     if (property == EProperty.Skill_Arboreal ||
                         property == EProperty.Skill_Scythe ||
                         property == EProperty.Skill_Parry ||
@@ -1627,7 +1627,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Berserker:
+                case EPlayerClass.Berserker:
                     if (property == EProperty.Skill_Parry ||
                         property == EProperty.Skill_Sword ||
                         property == EProperty.Skill_Axe ||
@@ -1638,7 +1638,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Warrior:
+                case EPlayerClass.Warrior:
                     if (property == EProperty.Skill_Parry ||
                         property == EProperty.Skill_Sword ||
                         property == EProperty.Skill_Axe ||
@@ -1649,7 +1649,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Skald:
+                case EPlayerClass.Skald:
                     if (property == EProperty.Skill_Parry ||
                         property == EProperty.Skill_Sword ||
                         property == EProperty.Skill_Axe ||
@@ -1660,7 +1660,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Thane:
+                case EPlayerClass.Thane:
                     if (property == EProperty.Skill_Parry ||
                         property == EProperty.Skill_Sword ||
                         property == EProperty.Skill_Axe ||
@@ -1673,7 +1673,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Savage:
+                case EPlayerClass.Savage:
                     if (property == EProperty.Skill_Parry ||
                         property == EProperty.Skill_Sword ||
                         property == EProperty.Skill_Axe ||
@@ -1685,7 +1685,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Healer:
+                case EPlayerClass.Healer:
                     if (property == EProperty.Skill_Mending ||
                         property == EProperty.Skill_Augmentation ||
                         property == EProperty.Skill_Pacification ||
@@ -1695,7 +1695,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Shaman:
+                case EPlayerClass.Shaman:
                     if (property == EProperty.Skill_Mending ||
                         property == EProperty.Skill_Augmentation ||
                         property == EProperty.Skill_Subterranean ||
@@ -1705,7 +1705,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Hunter:
+                case EPlayerClass.Hunter:
                     if (property == EProperty.Skill_BeastCraft ||
                         property == EProperty.Skill_Stealth ||
                         property == EProperty.Skill_Sword ||
@@ -1716,7 +1716,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Shadowblade:
+                case EPlayerClass.Shadowblade:
                     if (property == EProperty.Skill_Envenom ||
                         property == EProperty.Skill_Stealth ||
                         property == EProperty.Skill_Sword ||
@@ -1728,7 +1728,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Runemaster:
+                case EPlayerClass.Runemaster:
                     if (property == EProperty.Skill_Darkness ||
                         property == EProperty.Skill_Suppression ||
                         property == EProperty.Skill_Runecarving ||
@@ -1741,7 +1741,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Spiritmaster:
+                case EPlayerClass.Spiritmaster:
                     if (property == EProperty.Skill_Darkness ||
                         property == EProperty.Skill_Suppression ||
                         property == EProperty.Skill_Summoning ||
@@ -1754,7 +1754,7 @@ namespace DOL.GS
                         )
                         return true;
                     return false;
-                case ECharacterClass.Bonedancer:
+                case EPlayerClass.Bonedancer:
                     if (property == EProperty.Skill_Darkness ||
                         property == EProperty.Skill_Suppression ||
                         property == EProperty.Skill_BoneArmy ||
@@ -1825,42 +1825,42 @@ namespace DOL.GS
             {
                 case EProperty.MaxMana: //mana isn't a thing!! >:(
                 case EProperty.PowerPool:
-                    if (charClass == ECharacterClass.Armsman ||
-                        charClass == ECharacterClass.Mercenary ||
-                        charClass == ECharacterClass.Infiltrator ||
-                        charClass == ECharacterClass.Scout ||
-                        charClass == ECharacterClass.Paladin ||
-                        charClass == ECharacterClass.Blademaster ||
-                        charClass == ECharacterClass.Hero ||
-                        charClass == ECharacterClass.Nightshade ||
-                        charClass == ECharacterClass.Ranger ||
-                        charClass == ECharacterClass.Berserker ||
-                        charClass == ECharacterClass.Warrior ||
-                        charClass == ECharacterClass.Savage ||
-                        charClass == ECharacterClass.Shadowblade)
+                    if (charClass == EPlayerClass.Armsman ||
+                        charClass == EPlayerClass.Mercenary ||
+                        charClass == EPlayerClass.Infiltrator ||
+                        charClass == EPlayerClass.Scout ||
+                        charClass == EPlayerClass.Paladin ||
+                        charClass == EPlayerClass.Blademaster ||
+                        charClass == EPlayerClass.Hero ||
+                        charClass == EPlayerClass.Nightshade ||
+                        charClass == EPlayerClass.Ranger ||
+                        charClass == EPlayerClass.Berserker ||
+                        charClass == EPlayerClass.Warrior ||
+                        charClass == EPlayerClass.Savage ||
+                        charClass == EPlayerClass.Shadowblade)
                     {
                         return false;
                     }
                     return true;
 
                 case EProperty.Acuity:
-                    if (charClass == ECharacterClass.Armsman ||
-                        charClass == ECharacterClass.Mercenary ||
-                        charClass == ECharacterClass.Paladin ||
-                        charClass == ECharacterClass.Reaver ||
-                        charClass == ECharacterClass.Infiltrator ||
-                        charClass == ECharacterClass.Scout ||
-                        charClass == ECharacterClass.Warden ||
-                        charClass == ECharacterClass.Champion ||
-                        charClass == ECharacterClass.Nightshade ||
-                        charClass == ECharacterClass.Ranger ||
-                        charClass == ECharacterClass.Blademaster ||
-                        charClass == ECharacterClass.Hero ||
-                        charClass == ECharacterClass.Hunter ||
-                        charClass == ECharacterClass.Berserker ||
-                        charClass == ECharacterClass.Warrior ||
-                        charClass == ECharacterClass.Savage ||
-                        charClass == ECharacterClass.Shadowblade)
+                    if (charClass == EPlayerClass.Armsman ||
+                        charClass == EPlayerClass.Mercenary ||
+                        charClass == EPlayerClass.Paladin ||
+                        charClass == EPlayerClass.Reaver ||
+                        charClass == EPlayerClass.Infiltrator ||
+                        charClass == EPlayerClass.Scout ||
+                        charClass == EPlayerClass.Warden ||
+                        charClass == EPlayerClass.Champion ||
+                        charClass == EPlayerClass.Nightshade ||
+                        charClass == EPlayerClass.Ranger ||
+                        charClass == EPlayerClass.Blademaster ||
+                        charClass == EPlayerClass.Hero ||
+                        charClass == EPlayerClass.Hunter ||
+                        charClass == EPlayerClass.Berserker ||
+                        charClass == EPlayerClass.Warrior ||
+                        charClass == EPlayerClass.Savage ||
+                        charClass == EPlayerClass.Shadowblade)
                     {
                         return false;
                     }
@@ -1922,14 +1922,14 @@ namespace DOL.GS
             int level = this.Level;
             ERealm realm = (ERealm)this.Realm;
             EObjectType type = (EObjectType)this.Object_Type;
-            ECharacterClass charClass = this.charClass;
+            EPlayerClass charClass = this.charClass;
 
             switch (property)
             {
                 case EProperty.Skill_Augmentation:
                     {
-                        if (charClass != ECharacterClass.Healer &&
-                            charClass != ECharacterClass.Shaman)
+                        if (charClass != EPlayerClass.Healer &&
+                            charClass != EPlayerClass.Shaman)
                         {
                             return false;
                         }
@@ -1938,12 +1938,12 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Axe:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
@@ -1952,7 +1952,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Battlesongs:
                     {
-                        if (charClass != ECharacterClass.Skald)
+                        if (charClass != EPlayerClass.Skald)
                         {
                             return false;
                         }
@@ -1962,7 +1962,7 @@ namespace DOL.GS
                 case EProperty.Skill_Pathfinding:
                 case EProperty.Skill_BeastCraft:
                     {
-                        if (charClass != ECharacterClass.Hunter)
+                        if (charClass != EPlayerClass.Hunter)
                         {
                             return false;
                         }
@@ -1970,12 +1970,12 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Blades:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
@@ -1984,11 +1984,11 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Blunt:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Bard &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
@@ -1997,8 +1997,8 @@ namespace DOL.GS
                 //Cloth skills
                 //witchcraft is unused except as a goto target for cloth checks
                 case EProperty.Skill_Arboreal:
-                    if (charClass != ECharacterClass.Valewalker &&
-                        charClass != ECharacterClass.Animist)
+                    if (charClass != EPlayerClass.Valewalker &&
+                        charClass != EPlayerClass.Animist)
                     {
                         return false;
                     }
@@ -2006,8 +2006,8 @@ namespace DOL.GS
                 case EProperty.Skill_Matter:
                 case EProperty.Skill_Body:
                     {
-                        if (charClass != ECharacterClass.Cabalist &&
-                            charClass != ECharacterClass.Sorcerer)
+                        if (charClass != EPlayerClass.Cabalist &&
+                            charClass != EPlayerClass.Sorcerer)
                         {
                             return false;
                         }
@@ -2017,8 +2017,8 @@ namespace DOL.GS
                 case EProperty.Skill_Earth:
                 case EProperty.Skill_Cold:
                     {
-                        if (charClass != ECharacterClass.Theurgist &&
-                            charClass != ECharacterClass.Wizard)
+                        if (charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard)
                         {
                             return false;
                         }
@@ -2028,9 +2028,9 @@ namespace DOL.GS
                 case EProperty.Skill_Suppression:
                 case EProperty.Skill_Darkness:
                     {
-                        if (charClass != ECharacterClass.Spiritmaster &&
-                            charClass != ECharacterClass.Runemaster &&
-                            charClass != ECharacterClass.Bonedancer)
+                        if (charClass != EPlayerClass.Spiritmaster &&
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Bonedancer)
                         {
                             return false;
                         }
@@ -2040,9 +2040,9 @@ namespace DOL.GS
                 case EProperty.Skill_Light:
                 case EProperty.Skill_Mana:
                     {
-                        if (charClass != ECharacterClass.Enchanter &&
-                            charClass != ECharacterClass.Eldritch &&
-                            charClass != ECharacterClass.Mentalist)
+                        if (charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Mentalist)
                         {
                             return false;
                         }
@@ -2051,45 +2051,45 @@ namespace DOL.GS
 
 
                 case EProperty.Skill_Mind:
-                    if (charClass != ECharacterClass.Sorcerer) { return false; }
+                    if (charClass != EPlayerClass.Sorcerer) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Spirit:
-                    if (charClass != ECharacterClass.Cabalist) { return false; }
+                    if (charClass != EPlayerClass.Cabalist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Wind:
-                    if (charClass != ECharacterClass.Theurgist) { return false; }
+                    if (charClass != EPlayerClass.Theurgist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Fire:
-                    if (charClass != ECharacterClass.Wizard) { return false; }
+                    if (charClass != EPlayerClass.Wizard) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Death_Servant:
                 case EProperty.Skill_DeathSight:
                 case EProperty.Skill_Pain_working:
-                    if (charClass != ECharacterClass.Necromancer) { return false; }
+                    if (charClass != EPlayerClass.Necromancer) { return false; }
                     goto case EProperty.Skill_Witchcraft;
 
                 case EProperty.Skill_Summoning:
-                    if (charClass != ECharacterClass.Spiritmaster) { return false; }
+                    if (charClass != EPlayerClass.Spiritmaster) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Runecarving:
-                    if (charClass != ECharacterClass.Runemaster) { return false; }
+                    if (charClass != EPlayerClass.Runemaster) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_BoneArmy:
-                    if (charClass != ECharacterClass.Bonedancer) { return false; }
+                    if (charClass != EPlayerClass.Bonedancer) { return false; }
                     goto case EProperty.Skill_Witchcraft;
 
                 case EProperty.Skill_Void:
-                    if (charClass != ECharacterClass.Eldritch) { return false; }
+                    if (charClass != EPlayerClass.Eldritch) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Enchantments:
-                    if (charClass != ECharacterClass.Enchanter) { return false; }
+                    if (charClass != EPlayerClass.Enchanter) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Mentalism:
-                    if (charClass != ECharacterClass.Mentalist) { return false; }
+                    if (charClass != EPlayerClass.Mentalist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Creeping:
                 case EProperty.Skill_Verdant:
-                    if (charClass != ECharacterClass.Animist) { return false; }
+                    if (charClass != EPlayerClass.Animist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
 
 
@@ -2107,9 +2107,9 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Celtic_Dual:
                     {
-                        if (charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Nightshade)
+                        if (charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade)
                         {
                             return false;
                         }
@@ -2118,7 +2118,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Celtic_Spear:
                     {
-                        if (charClass != ECharacterClass.Hero)
+                        if (charClass != EPlayerClass.Hero)
                         {
                             return false;
                         }
@@ -2126,7 +2126,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Chants:
                     {
-                        if (charClass != ECharacterClass.Paladin)
+                        if (charClass != EPlayerClass.Paladin)
                         {
                             return false;
                         }
@@ -2137,9 +2137,9 @@ namespace DOL.GS
                 case EProperty.Skill_Long_bows:
                 case EProperty.Skill_Archery:
                     {
-                        if (charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Scout &&
-                            charClass != ECharacterClass.Hunter)
+                        if (charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout &&
+                            charClass != EPlayerClass.Hunter)
                         {
                             return false;
                         }
@@ -2152,9 +2152,9 @@ namespace DOL.GS
                 case EProperty.Skill_ShadowMastery:
                 case EProperty.Skill_VampiiricEmbrace:
                     {
-                        if (charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
@@ -2162,9 +2162,9 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Cross_Bows:
                     {
-                        if (charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -2173,10 +2173,10 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Crushing:
                     {
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver)
                         {
                             return false;
                         }
@@ -2184,8 +2184,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Dual_Wield:
                     {
-                        if (charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary)
                         {
                             return false;
                         }
@@ -2194,8 +2194,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Enhancement:
                     {
-                        if (charClass != ECharacterClass.Friar &&
-                            charClass != ECharacterClass.Cleric)
+                        if (charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Cleric)
                         {
                             return false;
                         }
@@ -2203,16 +2203,16 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Flexible_Weapon:
                     {
-                        if (charClass != ECharacterClass.Reaver) { return false; }
+                        if (charClass != EPlayerClass.Reaver) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Hammer:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
@@ -2220,18 +2220,18 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_HandToHand:
                     {
-                        if (charClass != ECharacterClass.Savage) { return false; }
+                        if (charClass != EPlayerClass.Savage) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Instruments:
                     {
-                        if (charClass != ECharacterClass.Minstrel) { return false; }
+                        if (charClass != EPlayerClass.Minstrel) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Large_Weapon:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero)
                         {
                             return false;
                         }
@@ -2239,8 +2239,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Left_Axe:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
@@ -2248,20 +2248,20 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Music:
                     {
-                        if (charClass != ECharacterClass.Bard) { return false; }
+                        if (charClass != EPlayerClass.Bard) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Nature:
                     {
-                        if (charClass != ECharacterClass.Druid) { return false; }
+                        if (charClass != EPlayerClass.Druid) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Nurture:
                 case EProperty.Skill_Regrowth:
                     {
-                        if (charClass != ECharacterClass.Bard &&
-                            charClass != ECharacterClass.Warden &&
-                            charClass != ECharacterClass.Druid)
+                        if (charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Druid)
                         {
                             return false;
                         }
@@ -2273,26 +2273,26 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Pacification:
                     {
-                        if (charClass != ECharacterClass.Healer) { return false; }
+                        if (charClass != EPlayerClass.Healer) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Parry:
                     {
-                        if (charClass != ECharacterClass.Berserker && //midgard
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Champion && //hibernia
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Valewalker &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Warden &&
-                            charClass != ECharacterClass.Armsman && //albion
-                            charClass != ECharacterClass.Friar &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver)
+                        if (charClass != EPlayerClass.Berserker && //midgard
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Champion && //hibernia
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver)
                         {
                             return false;
                         }
@@ -2301,11 +2301,11 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Piercing:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
@@ -2313,13 +2313,13 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Polearms:
                     {
-                        if (charClass != ECharacterClass.Armsman) { return false; }
+                        if (charClass != EPlayerClass.Armsman) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Rejuvenation:
                     {
-                        if (charClass != ECharacterClass.Friar &&
-                            charClass != ECharacterClass.Cleric)
+                        if (charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Cleric)
                         {
                             return false;
                         }
@@ -2327,26 +2327,26 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Savagery:
                     {
-                        if (charClass != ECharacterClass.Savage) { return false; }
+                        if (charClass != EPlayerClass.Savage) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Scythe:
                     {
-                        if (charClass != ECharacterClass.Valewalker) { return false; }
+                        if (charClass != EPlayerClass.Valewalker) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Shields:
                     {
-                        if (charClass != ECharacterClass.Thane &&  //midgard
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Champion && //hibernia
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Armsman && //albion
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Thane &&  //midgard
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Champion && //hibernia
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -2358,33 +2358,33 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Smiting:
                     {
-                        if (charClass != ECharacterClass.Cleric) { return false; }
+                        if (charClass != EPlayerClass.Cleric) { return false; }
                         return true;
                     }
                 case EProperty.Skill_SoulRending:
                     {
-                        if (charClass != ECharacterClass.Reaver) { return false; }
+                        if (charClass != EPlayerClass.Reaver) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Spear:
                     {
-                        if (charClass != ECharacterClass.Hunter) { return false; }
+                        if (charClass != EPlayerClass.Hunter) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Staff:
                     {
-                        if (charClass != ECharacterClass.Friar) { return false; }
+                        if (charClass != EPlayerClass.Friar) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Stealth:
                     {
-                        if (charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -2392,23 +2392,23 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Stormcalling:
                     {
-                        if (charClass != ECharacterClass.Thane) { return false; }
+                        if (charClass != EPlayerClass.Thane) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Subterranean:
                     {
-                        if (charClass != ECharacterClass.Shaman) { return false; }
+                        if (charClass != EPlayerClass.Shaman) { return false; }
                         return true;
                     }
                 case EProperty.Skill_Sword:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
@@ -2416,13 +2416,13 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Slashing:
                     {
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -2432,13 +2432,13 @@ namespace DOL.GS
                 case EProperty.Skill_Thrusting:
                     {
 
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -2447,8 +2447,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Two_Handed:
                     {
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Paladin)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Paladin)
                         {
                             return false;
                         }
@@ -2456,14 +2456,14 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Valor:
                     {
-                        if (charClass != ECharacterClass.Champion) { return false; }
+                        if (charClass != EPlayerClass.Champion) { return false; }
                         return true;
                     }
                 case EProperty.AllArcherySkills:
                     {
-                        if (charClass != ECharacterClass.Scout &&
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Scout &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
@@ -2471,13 +2471,13 @@ namespace DOL.GS
                     }
                 case EProperty.AllDualWieldingSkills:
                     {
-                        if (charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary)
+                        if (charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary)
                         {
                             return false;
                         }
@@ -2485,20 +2485,20 @@ namespace DOL.GS
                     }
                 case EProperty.AllMagicSkills:
                     {
-                        if (charClass != ECharacterClass.Cabalist && //albion
-                            charClass != ECharacterClass.Cleric &&
-                            charClass != ECharacterClass.Necromancer &&
-                            charClass != ECharacterClass.Sorcerer &&
-                            charClass != ECharacterClass.Theurgist &&
-                            charClass != ECharacterClass.Wizard &&
-                            charClass != ECharacterClass.Animist && //hibernia
-                            charClass != ECharacterClass.Eldritch &&
-                            charClass != ECharacterClass.Enchanter &&
-                            charClass != ECharacterClass.Mentalist &&
-                            charClass != ECharacterClass.Valewalker &&
-                            charClass != ECharacterClass.Bonedancer && //midgard
-                            charClass != ECharacterClass.Runemaster &&
-                            charClass != ECharacterClass.Spiritmaster)
+                        if (charClass != EPlayerClass.Cabalist && //albion
+                            charClass != EPlayerClass.Cleric &&
+                            charClass != EPlayerClass.Necromancer &&
+                            charClass != EPlayerClass.Sorcerer &&
+                            charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard &&
+                            charClass != EPlayerClass.Animist && //hibernia
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Mentalist &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Bonedancer && //midgard
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Spiritmaster)
                         {
                             return false;
                         }
@@ -2507,28 +2507,28 @@ namespace DOL.GS
                     }
                 case EProperty.AllMeleeWeaponSkills:
                     {
-                        if (charClass != ECharacterClass.Berserker &&  //midgard
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Blademaster && //hibernia
-                            charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Valewalker &&
-                            charClass != ECharacterClass.Warden &&
-                            charClass != ECharacterClass.Armsman && //albion
-                            charClass != ECharacterClass.Friar &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Berserker &&  //midgard
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Blademaster && //hibernia
+                            charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -2559,15 +2559,15 @@ namespace DOL.GS
             int level = this.Level;
             ERealm realm = (ERealm)this.Realm;
             EObjectType type = (EObjectType)this.Object_Type;
-            ECharacterClass charClass = this.charClass;
+            EPlayerClass charClass = this.charClass;
 
             switch (property)
             {
                 case EProperty.Skill_Mending:
                 case EProperty.Skill_Augmentation:
                     {
-                        if (charClass != ECharacterClass.Healer &&
-                            charClass != ECharacterClass.Shaman)
+                        if (charClass != EPlayerClass.Healer &&
+                            charClass != EPlayerClass.Shaman)
                         {
                             return false;
                         }
@@ -2592,12 +2592,12 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Axe:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
@@ -2610,7 +2610,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Battlesongs:
                     {
-                        if (charClass != ECharacterClass.Skald)
+                        if (charClass != EPlayerClass.Skald)
                         {
                             return false;
                         }
@@ -2630,7 +2630,7 @@ namespace DOL.GS
                 case EProperty.Skill_Pathfinding:
                 case EProperty.Skill_BeastCraft:
                     {
-                        if (charClass != ECharacterClass.Hunter)
+                        if (charClass != EPlayerClass.Hunter)
                         {
                             return false;
                         }
@@ -2649,13 +2649,13 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Blades:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Bard &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
@@ -2666,11 +2666,11 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Blunt:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Bard &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
@@ -2684,8 +2684,8 @@ namespace DOL.GS
                 //Cloth skills
                 //witchcraft is unused except as a goto target for cloth checks
                 case EProperty.Skill_Arboreal:
-                    if (charClass != ECharacterClass.Valewalker &&
-                        charClass != ECharacterClass.Animist)
+                    if (charClass != EPlayerClass.Valewalker &&
+                        charClass != EPlayerClass.Animist)
                     {
                         return false;
                     }
@@ -2695,8 +2695,8 @@ namespace DOL.GS
                 case EProperty.Skill_Matter:
                 case EProperty.Skill_Body:
                     {
-                        if (charClass != ECharacterClass.Cabalist &&
-                            charClass != ECharacterClass.Sorcerer)
+                        if (charClass != EPlayerClass.Cabalist &&
+                            charClass != EPlayerClass.Sorcerer)
                         {
                             return false;
                         }
@@ -2706,8 +2706,8 @@ namespace DOL.GS
                 case EProperty.Skill_Earth:
                 case EProperty.Skill_Cold:
                     {
-                        if (charClass != ECharacterClass.Theurgist &&
-                            charClass != ECharacterClass.Wizard)
+                        if (charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard)
                         {
                             return false;
                         }
@@ -2717,9 +2717,9 @@ namespace DOL.GS
                 case EProperty.Skill_Suppression:
                 case EProperty.Skill_Darkness:
                     {
-                        if (charClass != ECharacterClass.Spiritmaster &&
-                            charClass != ECharacterClass.Runemaster &&
-                            charClass != ECharacterClass.Bonedancer)
+                        if (charClass != EPlayerClass.Spiritmaster &&
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Bonedancer)
                         {
                             return false;
                         }
@@ -2729,9 +2729,9 @@ namespace DOL.GS
                 case EProperty.Skill_Light:
                 case EProperty.Skill_Mana:
                     {
-                        if (charClass != ECharacterClass.Enchanter &&
-                            charClass != ECharacterClass.Eldritch &&
-                            charClass != ECharacterClass.Mentalist)
+                        if (charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Mentalist)
                         {
                             return false;
                         }
@@ -2740,45 +2740,45 @@ namespace DOL.GS
 
 
                 case EProperty.Skill_Mind:
-                    if (charClass != ECharacterClass.Sorcerer) { return false; }
+                    if (charClass != EPlayerClass.Sorcerer) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Spirit:
-                    if (charClass != ECharacterClass.Cabalist) { return false; }
+                    if (charClass != EPlayerClass.Cabalist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Wind:
-                    if (charClass != ECharacterClass.Theurgist) { return false; }
+                    if (charClass != EPlayerClass.Theurgist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Fire:
-                    if (charClass != ECharacterClass.Wizard) { return false; }
+                    if (charClass != EPlayerClass.Wizard) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Death_Servant:
                 case EProperty.Skill_DeathSight:
                 case EProperty.Skill_Pain_working:
-                    if (charClass != ECharacterClass.Necromancer) { return false; }
+                    if (charClass != EPlayerClass.Necromancer) { return false; }
                     goto case EProperty.Skill_Witchcraft;
 
                 case EProperty.Skill_Summoning:
-                    if (charClass != ECharacterClass.Spiritmaster) { return false; }
+                    if (charClass != EPlayerClass.Spiritmaster) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Runecarving:
-                    if (charClass != ECharacterClass.Runemaster) { return false; }
+                    if (charClass != EPlayerClass.Runemaster) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_BoneArmy:
-                    if (charClass != ECharacterClass.Bonedancer) { return false; }
+                    if (charClass != EPlayerClass.Bonedancer) { return false; }
                     goto case EProperty.Skill_Witchcraft;
 
                 case EProperty.Skill_Void:
-                    if (charClass != ECharacterClass.Eldritch) { return false; }
+                    if (charClass != EPlayerClass.Eldritch) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Enchantments:
-                    if (charClass != ECharacterClass.Enchanter) { return false; }
+                    if (charClass != EPlayerClass.Enchanter) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Mentalism:
-                    if (charClass != ECharacterClass.Mentalist) { return false; }
+                    if (charClass != EPlayerClass.Mentalist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Creeping:
                 case EProperty.Skill_Verdant:
-                    if (charClass != ECharacterClass.Animist) { return false; }
+                    if (charClass != EPlayerClass.Animist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
 
 
@@ -2802,9 +2802,9 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Celtic_Dual:
                     {
-                        if (charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Nightshade)
+                        if (charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade)
                         {
                             return false;
                         }
@@ -2816,7 +2816,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Celtic_Spear:
                     {
-                        if (charClass != ECharacterClass.Hero)
+                        if (charClass != EPlayerClass.Hero)
                         {
                             return false;
                         }
@@ -2835,7 +2835,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Chants:
                     {
-                        if (charClass != ECharacterClass.Paladin)
+                        if (charClass != EPlayerClass.Paladin)
                         {
                             return false;
                         }
@@ -2846,9 +2846,9 @@ namespace DOL.GS
                 case EProperty.Skill_Long_bows:
                 case EProperty.Skill_Archery:
                     {
-                        if (charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Scout &&
-                            charClass != ECharacterClass.Hunter)
+                        if (charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout &&
+                            charClass != EPlayerClass.Hunter)
                         {
                             return false;
                         }
@@ -2874,9 +2874,9 @@ namespace DOL.GS
                 case EProperty.Skill_ShadowMastery:
                 case EProperty.Skill_VampiiricEmbrace:
                     {
-                        if (charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
@@ -2903,10 +2903,10 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Crushing:
                     {
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver)
                         {
                             return false;
                         }
@@ -2928,8 +2928,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Dual_Wield:
                     {
-                        if (charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary)
                         {
                             return false;
                         }
@@ -2949,8 +2949,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Enhancement:
                     {
-                        if (charClass != ECharacterClass.Friar &&
-                            charClass != ECharacterClass.Cleric)
+                        if (charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Cleric)
                         {
                             return false;
                         }
@@ -2973,7 +2973,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Flexible_Weapon:
                     {
-                        if (charClass != ECharacterClass.Reaver) { return false; }
+                        if (charClass != EPlayerClass.Reaver) { return false; }
                         if (type == EObjectType.Cloth) // Heretic
                             return true;
 
@@ -2992,11 +2992,11 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Hammer:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
@@ -3021,14 +3021,14 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_HandToHand:
                     {
-                        if (charClass != ECharacterClass.Savage) { return false; }
+                        if (charClass != EPlayerClass.Savage) { return false; }
                         if (type == EObjectType.Studded)
                             return true;
                         return false;
                     }
                 case EProperty.Skill_Instruments:
                     {
-                        if (charClass != ECharacterClass.Minstrel) { return false; }
+                        if (charClass != EPlayerClass.Minstrel) { return false; }
                         if (level < 10)
                         {
                             if (type == EObjectType.Leather)
@@ -3050,8 +3050,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Large_Weapon:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero)
                         {
                             return false;
                         }
@@ -3072,8 +3072,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Left_Axe:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
@@ -3083,7 +3083,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Music:
                     {
-                        if (charClass != ECharacterClass.Bard) { return false; }
+                        if (charClass != EPlayerClass.Bard) { return false; }
                         if (level < 15)
                         {
                             if (type == EObjectType.Leather)
@@ -3099,7 +3099,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Nature:
                     {
-                        if (charClass != ECharacterClass.Druid) { return false; }
+                        if (charClass != EPlayerClass.Druid) { return false; }
                         if (level < 10)
                         {
                             if (type == EObjectType.Leather)
@@ -3122,9 +3122,9 @@ namespace DOL.GS
                 case EProperty.Skill_Nurture:
                 case EProperty.Skill_Regrowth:
                     {
-                        if (charClass != ECharacterClass.Bard &&
-                            charClass != ECharacterClass.Warden &&
-                            charClass != ECharacterClass.Druid)
+                        if (charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Druid)
                         {
                             return false;
                         }
@@ -3159,7 +3159,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Pacification:
                     {
-                        if (charClass != ECharacterClass.Healer) { return false; }
+                        if (charClass != EPlayerClass.Healer) { return false; }
                         if (level < 10)
                         {
                             if (type == EObjectType.Leather)
@@ -3181,21 +3181,21 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Parry:
                     {
-                        if (charClass != ECharacterClass.Berserker && //midgard
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Champion && //hibernia
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Valewalker &&
-                            charClass != ECharacterClass.Warden &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Armsman && //albion
-                            charClass != ECharacterClass.Friar &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver)
+                        if (charClass != EPlayerClass.Berserker && //midgard
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Champion && //hibernia
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver)
                         {
                             return false;
                         }
@@ -3221,10 +3221,10 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Piercing:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
@@ -3234,7 +3234,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Polearms:
                     {
-                        if (charClass != ECharacterClass.Armsman) { return false; }
+                        if (charClass != EPlayerClass.Armsman) { return false; }
                         if (level < 5 && type == EObjectType.Studded)
                         {
                             return true;
@@ -3256,8 +3256,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Rejuvenation:
                     {
-                        if (charClass != ECharacterClass.Friar &&
-                            charClass != ECharacterClass.Cleric)
+                        if (charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Cleric)
                         {
                             return false;
                         }
@@ -3273,30 +3273,30 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Savagery:
                     {
-                        if (charClass != ECharacterClass.Savage) { return false; }
+                        if (charClass != EPlayerClass.Savage) { return false; }
                         if (type == EObjectType.Studded)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Scythe:
                     {
-                        if (charClass != ECharacterClass.Valewalker) { return false; }
+                        if (charClass != EPlayerClass.Valewalker) { return false; }
                         if (type == EObjectType.Cloth)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Shields:
                     {
-                        if (charClass != ECharacterClass.Thane &&  //midgard
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Champion && //hibernia
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Armsman && //albion
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Thane &&  //midgard
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Champion && //hibernia
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -3312,7 +3312,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Smiting:
                     {
-                        if (charClass != ECharacterClass.Cleric) { return false; }
+                        if (charClass != EPlayerClass.Cleric) { return false; }
                         if (type == EObjectType.Leather && level < 10)
                             return true;
                         else if (type == EObjectType.Studded && level < 20)
@@ -3323,7 +3323,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_SoulRending:
                     {
-                        if (charClass != ECharacterClass.Reaver) { return false; }
+                        if (charClass != EPlayerClass.Reaver) { return false; }
                         if (type == EObjectType.Studded && level < 10)
                             return true;
                         else if (type == EObjectType.Chain && level >= 10)
@@ -3332,7 +3332,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Spear:
                     {
-                        if (charClass != ECharacterClass.Hunter) { return false; }
+                        if (charClass != EPlayerClass.Hunter) { return false; }
                         if (type == EObjectType.Leather && level < 10)
                             return true;
                         else if (type == EObjectType.Studded)
@@ -3343,20 +3343,20 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Staff:
                     {
-                        if (charClass != ECharacterClass.Friar) { return false; }
+                        if (charClass != EPlayerClass.Friar) { return false; }
                         if (type == EObjectType.Leather && realm == ERealm.Albion)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Stealth:
                     {
-                        if (charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -3368,7 +3368,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Stormcalling:
                     {
-                        if (charClass != ECharacterClass.Thane) { return false; }
+                        if (charClass != EPlayerClass.Thane) { return false; }
                         if (type == EObjectType.Studded && level < 10)
                             return true;
                         else if (type == EObjectType.Chain && level >= 10)
@@ -3377,7 +3377,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Subterranean:
                     {
-                        if (charClass != ECharacterClass.Shaman) { return false; }
+                        if (charClass != EPlayerClass.Shaman) { return false; }
                         if (type == EObjectType.Leather && level < 10)
                             return true;
                         else if (type == EObjectType.Studded && level < 20)
@@ -3388,13 +3388,13 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Sword:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
@@ -3404,13 +3404,13 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Slashing:
                     {
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -3422,13 +3422,13 @@ namespace DOL.GS
                 case EProperty.Skill_Thrusting:
                     {
 
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -3439,8 +3439,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Two_Handed:
                     {
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Paladin)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Paladin)
                         {
                             return false;
                         }
@@ -3454,7 +3454,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Valor:
                     {
-                        if (charClass != ECharacterClass.Champion) { return false; }
+                        if (charClass != EPlayerClass.Champion) { return false; }
                         if (type == EObjectType.Reinforced && level < 20)
                             return true;
                         else if (type == EObjectType.Scale)
@@ -3463,9 +3463,9 @@ namespace DOL.GS
                     }
                 case EProperty.AllArcherySkills:
                     {
-                        if (charClass != ECharacterClass.Scout &&
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Scout &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
@@ -3478,13 +3478,13 @@ namespace DOL.GS
                     }
                 case EProperty.AllDualWieldingSkills:
                     {
-                        if (charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary)
+                        if (charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary)
                         {
                             return false;
                         }
@@ -3503,20 +3503,20 @@ namespace DOL.GS
                     }
                 case EProperty.AllMagicSkills:
                     {
-                        if (charClass != ECharacterClass.Cabalist && //albion
-                            charClass != ECharacterClass.Cleric &&
-                            charClass != ECharacterClass.Necromancer &&
-                            charClass != ECharacterClass.Sorcerer &&
-                            charClass != ECharacterClass.Theurgist &&
-                            charClass != ECharacterClass.Wizard &&
-                            charClass != ECharacterClass.Animist && //hibernia
-                            charClass != ECharacterClass.Eldritch &&
-                            charClass != ECharacterClass.Enchanter &&
-                            charClass != ECharacterClass.Mentalist &&
-                            charClass != ECharacterClass.Valewalker &&
-                            charClass != ECharacterClass.Bonedancer && //midgard
-                            charClass != ECharacterClass.Runemaster &&
-                            charClass != ECharacterClass.Spiritmaster)
+                        if (charClass != EPlayerClass.Cabalist && //albion
+                            charClass != EPlayerClass.Cleric &&
+                            charClass != EPlayerClass.Necromancer &&
+                            charClass != EPlayerClass.Sorcerer &&
+                            charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard &&
+                            charClass != EPlayerClass.Animist && //hibernia
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Mentalist &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Bonedancer && //midgard
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Spiritmaster)
                         {
                             return false;
                         }
@@ -3532,28 +3532,28 @@ namespace DOL.GS
                     }
                 case EProperty.AllMeleeWeaponSkills:
                     {
-                        if (charClass != ECharacterClass.Berserker &&  //midgard
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Blademaster && //hibernia
-                            charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Valewalker &&
-                            charClass != ECharacterClass.Warden &&
-                            charClass != ECharacterClass.Armsman && //albion
-                            charClass != ECharacterClass.Friar &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Berserker &&  //midgard
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Blademaster && //hibernia
+                            charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -3604,8 +3604,8 @@ namespace DOL.GS
                     return false;
 
                 case EProperty.Skill_Arboreal:
-                    if (charClass != ECharacterClass.Valewalker &&
-                        charClass != ECharacterClass.Animist)
+                    if (charClass != EPlayerClass.Valewalker &&
+                        charClass != EPlayerClass.Animist)
                     {
                         return false;
                     }
@@ -3615,8 +3615,8 @@ namespace DOL.GS
                 case EProperty.Skill_Matter:
                 case EProperty.Skill_Body:
                     {
-                        if (charClass != ECharacterClass.Cabalist &&
-                            charClass != ECharacterClass.Sorcerer)
+                        if (charClass != EPlayerClass.Cabalist &&
+                            charClass != EPlayerClass.Sorcerer)
                         {
                             return false;
                         }
@@ -3626,8 +3626,8 @@ namespace DOL.GS
                 case EProperty.Skill_Earth:
                 case EProperty.Skill_Cold:
                     {
-                        if (charClass != ECharacterClass.Theurgist &&
-                            charClass != ECharacterClass.Wizard)
+                        if (charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard)
                         {
                             return false;
                         }
@@ -3637,9 +3637,9 @@ namespace DOL.GS
                 case EProperty.Skill_Suppression:
                 case EProperty.Skill_Darkness:
                     {
-                        if (charClass != ECharacterClass.Spiritmaster &&
-                            charClass != ECharacterClass.Runemaster &&
-                            charClass != ECharacterClass.Bonedancer)
+                        if (charClass != EPlayerClass.Spiritmaster &&
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Bonedancer)
                         {
                             return false;
                         }
@@ -3649,9 +3649,9 @@ namespace DOL.GS
                 case EProperty.Skill_Light:
                 case EProperty.Skill_Mana:
                     {
-                        if (charClass != ECharacterClass.Enchanter &&
-                            charClass != ECharacterClass.Eldritch &&
-                            charClass != ECharacterClass.Mentalist)
+                        if (charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Mentalist)
                         {
                             return false;
                         }
@@ -3660,45 +3660,45 @@ namespace DOL.GS
 
 
                 case EProperty.Skill_Mind:
-                    if (charClass != ECharacterClass.Sorcerer) { return false; }
+                    if (charClass != EPlayerClass.Sorcerer) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Spirit:
-                    if (charClass != ECharacterClass.Cabalist) { return false; }
+                    if (charClass != EPlayerClass.Cabalist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Wind:
-                    if (charClass != ECharacterClass.Theurgist) { return false; }
+                    if (charClass != EPlayerClass.Theurgist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Fire:
-                    if (charClass != ECharacterClass.Wizard) { return false; }
+                    if (charClass != EPlayerClass.Wizard) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Death_Servant:
                 case EProperty.Skill_DeathSight:
                 case EProperty.Skill_Pain_working:
-                    if (charClass != ECharacterClass.Necromancer) { return false; }
+                    if (charClass != EPlayerClass.Necromancer) { return false; }
                     goto case EProperty.Skill_Witchcraft;
 
                 case EProperty.Skill_Summoning:
-                    if (charClass != ECharacterClass.Spiritmaster) { return false; }
+                    if (charClass != EPlayerClass.Spiritmaster) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Runecarving:
-                    if (charClass != ECharacterClass.Runemaster) { return false; }
+                    if (charClass != EPlayerClass.Runemaster) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_BoneArmy:
-                    if (charClass != ECharacterClass.Bonedancer) { return false; }
+                    if (charClass != EPlayerClass.Bonedancer) { return false; }
                     goto case EProperty.Skill_Witchcraft;
 
                 case EProperty.Skill_Void:
-                    if (charClass != ECharacterClass.Eldritch) { return false; }
+                    if (charClass != EPlayerClass.Eldritch) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Enchantments:
-                    if (charClass != ECharacterClass.Enchanter) { return false; }
+                    if (charClass != EPlayerClass.Enchanter) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Mentalism:
-                    if (charClass != ECharacterClass.Mentalist) { return false; }
+                    if (charClass != EPlayerClass.Mentalist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
                 case EProperty.Skill_Creeping:
                 case EProperty.Skill_Verdant:
-                    if (charClass != ECharacterClass.Animist) { return false; }
+                    if (charClass != EPlayerClass.Animist) { return false; }
                     goto case EProperty.Skill_Witchcraft;
 
                 case EProperty.Skill_Witchcraft:
@@ -3715,14 +3715,14 @@ namespace DOL.GS
                 case EProperty.Skill_Smiting:
                     {
                         if (((type == EObjectType.Shield && this.Type_Damage < 3) || type == EObjectType.CrushingWeapon)
-                            && charClass == ECharacterClass.Cleric)
+                            && charClass == EPlayerClass.Cleric)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Enhancement:
                 case EProperty.Skill_Rejuvenation:
                     {
-                        if (realm != ERealm.Albion || (charClass != ECharacterClass.Cleric && charClass != ECharacterClass.Friar)) { return false; }
+                        if (realm != ERealm.Albion || (charClass != EPlayerClass.Cleric && charClass != EPlayerClass.Friar)) { return false; }
                         if ((type == EObjectType.Staff && this.Description == "friar") || (type == EObjectType.Shield && this.Type_Damage < 3) || type == EObjectType.CrushingWeapon)
                             return true;
                         break;
@@ -3730,7 +3730,7 @@ namespace DOL.GS
                 case EProperty.Skill_Augmentation:
                 case EProperty.Skill_Mending:
                     {
-                        if (realm != ERealm.Midgard || (charClass != ECharacterClass.Healer && charClass != ECharacterClass.Shaman)) { return false; }
+                        if (realm != ERealm.Midgard || (charClass != EPlayerClass.Healer && charClass != EPlayerClass.Shaman)) { return false; }
                         if ((type == EObjectType.Shield && this.Type_Damage < 2) || type == EObjectType.Hammer)
                         {
                             return true;
@@ -3739,7 +3739,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Subterranean:
                     {
-                        if (realm != ERealm.Midgard || charClass != ECharacterClass.Shaman) { return false; }
+                        if (realm != ERealm.Midgard || charClass != EPlayerClass.Shaman) { return false; }
                         if ((type == EObjectType.Shield && this.Type_Damage < 2) || type == EObjectType.Hammer)
                         {
                             return true;
@@ -3794,26 +3794,26 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Battlesongs:
                     {
-                        if (charClass != ECharacterClass.Skald) { return false; }
+                        if (charClass != EPlayerClass.Skald) { return false; }
                         if (type == EObjectType.Sword || type == EObjectType.Axe || type == EObjectType.Hammer || (type == EObjectType.Shield && this.Type_Damage < 3))
                             return true;
                         break;
                     }
                 case EProperty.Skill_BeastCraft:
                     {
-                        if (charClass != ECharacterClass.Hunter) { return false; }
+                        if (charClass != EPlayerClass.Hunter) { return false; }
                         if (type == EObjectType.Spear)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Blades:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
@@ -3824,11 +3824,11 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Blunt:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Bard &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
@@ -3839,9 +3839,9 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Celtic_Dual:
                     {
-                        if (charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Blademaster)
+                        if (charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster)
                         {
                             return false;
                         }
@@ -3851,7 +3851,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Celtic_Spear:
                     {
-                        if (charClass != ECharacterClass.Hero) { return false; }
+                        if (charClass != EPlayerClass.Hero) { return false; }
                         if (type == EObjectType.CelticSpear)
                             return true;
                         break;
@@ -3862,9 +3862,9 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Critical_Strike:
                     {
-                        if (charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
@@ -3888,13 +3888,13 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Dual_Wield:
                     {
-                        if (charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Berserker)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Berserker)
                         {
                             return false;
                         }
@@ -3905,9 +3905,9 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Envenom:
                     {
-                        if (charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
@@ -3917,18 +3917,18 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Flexible_Weapon:
                     {
-                        if (charClass != ECharacterClass.Reaver) { return false; }
+                        if (charClass != EPlayerClass.Reaver) { return false; }
                         if (type == EObjectType.Flexible || type == EObjectType.Shield)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Hammer:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
@@ -3938,22 +3938,22 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_HandToHand:
                     {
-                        if (charClass != ECharacterClass.Savage) { return false; }
+                        if (charClass != EPlayerClass.Savage) { return false; }
                         if (type == EObjectType.HandToHand)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Instruments:
                     {
-                        if (charClass != ECharacterClass.Minstrel) { return false; }
+                        if (charClass != EPlayerClass.Minstrel) { return false; }
                         if (type == EObjectType.Instrument)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Large_Weapon:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero)
                         {
                             return false;
                         }
@@ -3963,8 +3963,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Left_Axe:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
@@ -3975,7 +3975,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Music:
                     {
-                        if (charClass != ECharacterClass.Bard)
+                        if (charClass != EPlayerClass.Bard)
                         {
                             return false;
                         }
@@ -3985,7 +3985,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Nightshade:
                     {
-                        if (charClass != ECharacterClass.Nightshade)
+                        if (charClass != EPlayerClass.Nightshade)
                         {
                             return false;
                         }
@@ -4001,28 +4001,28 @@ namespace DOL.GS
                         break;
                     }
                 case EProperty.Skill_Parry:
-                    if (charClass != ECharacterClass.Berserker &&  //midgard
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Blademaster && //hibernia
-                            charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Valewalker &&
-                            charClass != ECharacterClass.Warden &&
-                            charClass != ECharacterClass.Armsman && //albion
-                            charClass != ECharacterClass.Friar &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver)
+                    if (charClass != EPlayerClass.Berserker &&  //midgard
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Blademaster && //hibernia
+                            charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver)
                     {
                         return false;
                     }
                     return true;
                 case EProperty.Skill_Pathfinding:
                     {
-                        if (charClass != ECharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
@@ -4032,11 +4032,11 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Piercing:
                     {
-                        if (charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
@@ -4046,21 +4046,21 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Polearms:
                     {
-                        if (charClass != ECharacterClass.Armsman) { return false; }
+                        if (charClass != EPlayerClass.Armsman) { return false; }
                         if (type == EObjectType.PolearmWeapon)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Savagery:
                     {
-                        if (charClass != ECharacterClass.Savage) { return false; }
+                        if (charClass != EPlayerClass.Savage) { return false; }
                         if (type == EObjectType.Sword || type == EObjectType.Axe || type == EObjectType.Hammer || type == EObjectType.HandToHand)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Scythe:
                     {
-                        if (charClass != ECharacterClass.Valewalker) { return false; }
+                        if (charClass != EPlayerClass.Valewalker) { return false; }
                         if (type == EObjectType.Scythe)
                             return true;
                         break;
@@ -4076,16 +4076,16 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Shields:
                     {
-                        if (charClass != ECharacterClass.Thane &&  //midgard
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Champion && //hibernia
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Armsman && //albion
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Thane &&  //midgard
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Champion && //hibernia
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -4099,13 +4099,13 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Slashing:
                     {
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -4119,27 +4119,27 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_SoulRending:
                     {
-                        if (charClass != ECharacterClass.Reaver) { return false; }
+                        if (charClass != EPlayerClass.Reaver) { return false; }
                         if (type == EObjectType.SlashingWeapon || type == EObjectType.CrushingWeapon || type == EObjectType.ThrustWeapon || type == EObjectType.Flexible || type == EObjectType.Shield)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Spear:
                     {
-                        if (charClass != ECharacterClass.Hunter) { return false; }
+                        if (charClass != EPlayerClass.Hunter) { return false; }
                         if (type == EObjectType.Spear)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Stealth:
                     {
-                        if (charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -4149,20 +4149,20 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Stormcalling:
                     {
-                        if (charClass != ECharacterClass.Thane) { return false; }
+                        if (charClass != EPlayerClass.Thane) { return false; }
                         if (type == EObjectType.Sword || type == EObjectType.Axe || type == EObjectType.Hammer || type == EObjectType.Shield)
                             return true;
                         break;
                     }
                 case EProperty.Skill_Sword:
                     {
-                        if (charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
@@ -4172,13 +4172,13 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Thrusting:
                     {
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -4191,8 +4191,8 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Two_Handed:
                     {
-                        if (charClass != ECharacterClass.Armsman &&
-                            charClass != ECharacterClass.Paladin)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Paladin)
                         {
                             return false;
                         }
@@ -4202,7 +4202,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Valor:
                     {
-                        if (charClass != ECharacterClass.Champion) { return false; }
+                        if (charClass != EPlayerClass.Champion) { return false; }
                         if (type == EObjectType.Blades || type == EObjectType.Piercing || type == EObjectType.Blunt || type == EObjectType.LargeWeapons || type == EObjectType.Shield)
                             return true;
                         break;
@@ -4213,7 +4213,7 @@ namespace DOL.GS
                     }
                 case EProperty.Skill_Pacification:
                     {
-                        if (charClass != ECharacterClass.Healer) { return false; }
+                        if (charClass != EPlayerClass.Healer) { return false; }
                         if (type == EObjectType.Hammer)
                             return true;
                         break;
@@ -4227,9 +4227,9 @@ namespace DOL.GS
                     }
                 case EProperty.AllArcherySkills:
                     {
-                        if (charClass != ECharacterClass.Scout &&
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Scout &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
@@ -4239,13 +4239,13 @@ namespace DOL.GS
                     }
                 case EProperty.AllDualWieldingSkills:
                     {
-                        if (charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Berserker &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Blademaster &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary)
+                        if (charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary)
                         {
                             return false;
                         }
@@ -4255,20 +4255,20 @@ namespace DOL.GS
                     }
                 case EProperty.AllMagicSkills:
                     {
-                        if (charClass != ECharacterClass.Cabalist && //albion
-                            charClass != ECharacterClass.Cleric &&
-                            charClass != ECharacterClass.Necromancer &&
-                            charClass != ECharacterClass.Sorcerer &&
-                            charClass != ECharacterClass.Theurgist &&
-                            charClass != ECharacterClass.Wizard &&
-                            charClass != ECharacterClass.Animist && //hibernia
-                            charClass != ECharacterClass.Eldritch &&
-                            charClass != ECharacterClass.Enchanter &&
-                            charClass != ECharacterClass.Mentalist &&
-                            charClass != ECharacterClass.Valewalker &&
-                            charClass != ECharacterClass.Bonedancer && //midgard
-                            charClass != ECharacterClass.Runemaster &&
-                            charClass != ECharacterClass.Spiritmaster)
+                        if (charClass != EPlayerClass.Cabalist && //albion
+                            charClass != EPlayerClass.Cleric &&
+                            charClass != EPlayerClass.Necromancer &&
+                            charClass != EPlayerClass.Sorcerer &&
+                            charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard &&
+                            charClass != EPlayerClass.Animist && //hibernia
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Mentalist &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Bonedancer && //midgard
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Spiritmaster)
                         {
                             return false;
                         }
@@ -4280,28 +4280,28 @@ namespace DOL.GS
                     }
                 case EProperty.AllMeleeWeaponSkills:
                     {
-                        if (charClass != ECharacterClass.Berserker &&  //midgard
-                            charClass != ECharacterClass.Hunter &&
-                            charClass != ECharacterClass.Savage &&
-                            charClass != ECharacterClass.Shadowblade &&
-                            charClass != ECharacterClass.Skald &&
-                            charClass != ECharacterClass.Thane &&
-                            charClass != ECharacterClass.Warrior &&
-                            charClass != ECharacterClass.Blademaster && //hibernia
-                            charClass != ECharacterClass.Champion &&
-                            charClass != ECharacterClass.Hero &&
-                            charClass != ECharacterClass.Nightshade &&
-                            charClass != ECharacterClass.Ranger &&
-                            charClass != ECharacterClass.Valewalker &&
-                            charClass != ECharacterClass.Warden &&
-                            charClass != ECharacterClass.Armsman && //albion
-                            charClass != ECharacterClass.Friar &&
-                            charClass != ECharacterClass.Infiltrator &&
-                            charClass != ECharacterClass.Mercenary &&
-                            charClass != ECharacterClass.Minstrel &&
-                            charClass != ECharacterClass.Paladin &&
-                            charClass != ECharacterClass.Reaver &&
-                            charClass != ECharacterClass.Scout)
+                        if (charClass != EPlayerClass.Berserker &&  //midgard
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Blademaster && //hibernia
+                            charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
@@ -5541,7 +5541,7 @@ namespace DOL.GS
         #region generate item type
 
 
-        private static EObjectType GenerateObjectType(ERealm realm, ECharacterClass charClass, byte level)
+        private static EObjectType GenerateObjectType(ERealm realm, EPlayerClass charClass, byte level)
         {
             eGenerateType type = GetObjectTypeByWeight(level);
 
@@ -5653,7 +5653,7 @@ namespace DOL.GS
             return genTypes[Util.Random(genTypes.Count - 1)];
         }
 
-        public static EObjectType GetAlbionWeapon(ECharacterClass charClass)
+        public static EObjectType GetAlbionWeapon(EPlayerClass charClass)
         {
             List<EObjectType> weaponTypes = new List<EObjectType>();
             /*
@@ -5675,21 +5675,21 @@ namespace DOL.GS
             switch (charClass)
             {
                 //staff classes
-                case ECharacterClass.Cabalist:
-                case ECharacterClass.Necromancer:
-                case ECharacterClass.Sorcerer:
-                case ECharacterClass.Theurgist:
-                case ECharacterClass.Wizard:
+                case EPlayerClass.Cabalist:
+                case EPlayerClass.Necromancer:
+                case EPlayerClass.Sorcerer:
+                case EPlayerClass.Theurgist:
+                case EPlayerClass.Wizard:
                     weaponTypes.Add(EObjectType.Staff);
                     break;
-                case ECharacterClass.Friar:
+                case EPlayerClass.Friar:
                     weaponTypes.Add(EObjectType.Staff);
                     weaponTypes.Add(EObjectType.Staff);
                     weaponTypes.Add(EObjectType.Staff);
                     weaponTypes.Add(EObjectType.CrushingWeapon);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Armsman:
+                case EPlayerClass.Armsman:
                     weaponTypes.Add(EObjectType.PolearmWeapon);
                     weaponTypes.Add(EObjectType.PolearmWeapon);
                     weaponTypes.Add(EObjectType.PolearmWeapon);
@@ -5705,7 +5705,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.Shield);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Paladin:
+                case EPlayerClass.Paladin:
                     weaponTypes.Add(EObjectType.SlashingWeapon);
                     weaponTypes.Add(EObjectType.ThrustWeapon);
                     weaponTypes.Add(EObjectType.CrushingWeapon);
@@ -5714,7 +5714,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.Shield);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Reaver:
+                case EPlayerClass.Reaver:
                     weaponTypes.Add(EObjectType.Flexible);
                     weaponTypes.Add(EObjectType.Flexible);
                     weaponTypes.Add(EObjectType.Flexible);
@@ -5723,7 +5723,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.CrushingWeapon);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Minstrel:
+                case EPlayerClass.Minstrel:
                     weaponTypes.Add(EObjectType.Instrument);
                     weaponTypes.Add(EObjectType.Instrument);
                     weaponTypes.Add(EObjectType.SlashingWeapon);
@@ -5732,7 +5732,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.ThrustWeapon);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Infiltrator:
+                case EPlayerClass.Infiltrator:
                     weaponTypes.Add(EObjectType.SlashingWeapon);
                     weaponTypes.Add(EObjectType.ThrustWeapon);
                     weaponTypes.Add(EObjectType.SlashingWeapon);
@@ -5743,14 +5743,14 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.Crossbow);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Scout:
+                case EPlayerClass.Scout:
                     weaponTypes.Add(EObjectType.SlashingWeapon);
                     weaponTypes.Add(EObjectType.ThrustWeapon);
                     weaponTypes.Add(EObjectType.Longbow);
                     weaponTypes.Add(EObjectType.Longbow);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Mercenary:
+                case EPlayerClass.Mercenary:
                     weaponTypes.Add(EObjectType.Fired); //shortbow
                     weaponTypes.Add(EObjectType.SlashingWeapon);
                     weaponTypes.Add(EObjectType.ThrustWeapon);
@@ -5760,7 +5760,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.CrushingWeapon);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Cleric:
+                case EPlayerClass.Cleric:
                     weaponTypes.Add(EObjectType.CrushingWeapon);
                     weaponTypes.Add(EObjectType.Staff);
                     weaponTypes.Add(EObjectType.Shield);
@@ -5789,24 +5789,24 @@ namespace DOL.GS
 
         }
 
-        public static EObjectType GetAlbionArmorType(ECharacterClass charClass, byte level)
+        public static EObjectType GetAlbionArmorType(EPlayerClass charClass, byte level)
         {
 
             switch (charClass)
             {
                 //staff classes
-                case ECharacterClass.Cabalist:
-                case ECharacterClass.Necromancer:
-                case ECharacterClass.Sorcerer:
-                case ECharacterClass.Theurgist:
-                case ECharacterClass.Wizard:
+                case EPlayerClass.Cabalist:
+                case EPlayerClass.Necromancer:
+                case EPlayerClass.Sorcerer:
+                case EPlayerClass.Theurgist:
+                case EPlayerClass.Wizard:
                     return EObjectType.Cloth;
 
-                case ECharacterClass.Friar:
-                case ECharacterClass.Infiltrator:
+                case EPlayerClass.Friar:
+                case EPlayerClass.Infiltrator:
                     return EObjectType.Leather;
 
-                case ECharacterClass.Armsman:
+                case EPlayerClass.Armsman:
                     if (level < 5)
                     {
                         return EObjectType.Studded;
@@ -5820,7 +5820,7 @@ namespace DOL.GS
                         return EObjectType.Plate;
                     }
 
-                case ECharacterClass.Paladin:
+                case EPlayerClass.Paladin:
                     if (level < 10)
                     {
                         return EObjectType.Studded;
@@ -5834,8 +5834,8 @@ namespace DOL.GS
                         return EObjectType.Plate;
                     }
 
-                case ECharacterClass.Reaver:
-                case ECharacterClass.Mercenary:
+                case EPlayerClass.Reaver:
+                case EPlayerClass.Mercenary:
                     if (level < 10)
                     {
                         return EObjectType.Studded;
@@ -5845,7 +5845,7 @@ namespace DOL.GS
                         return EObjectType.Chain;
                     }
 
-                case ECharacterClass.Minstrel:
+                case EPlayerClass.Minstrel:
                     if (level < 10)
                     {
                         return EObjectType.Leather;
@@ -5859,14 +5859,14 @@ namespace DOL.GS
                         return EObjectType.Chain;
                     }
 
-                case ECharacterClass.Scout:
+                case EPlayerClass.Scout:
                     if (level < 10)
                     {
                         return EObjectType.Leather;
                     }
                     else { return EObjectType.Studded; }
 
-                case ECharacterClass.Cleric:
+                case EPlayerClass.Cleric:
                     if (level < 10)
                     {
                         return EObjectType.Leather;
@@ -5884,7 +5884,7 @@ namespace DOL.GS
             }
         }
 
-        public static EObjectType GetMidgardWeapon(ECharacterClass charClass)
+        public static EObjectType GetMidgardWeapon(EPlayerClass charClass)
         {
 
             List<EObjectType> weaponTypes = new List<EObjectType>();
@@ -5905,27 +5905,27 @@ namespace DOL.GS
             switch (charClass)
             {
                 //staff classes
-                case ECharacterClass.Bonedancer:
-                case ECharacterClass.Runemaster:
-                case ECharacterClass.Spiritmaster:
+                case EPlayerClass.Bonedancer:
+                case EPlayerClass.Runemaster:
+                case EPlayerClass.Spiritmaster:
                     weaponTypes.Add(EObjectType.Staff);
                     break;
-                case ECharacterClass.Healer:
-                case ECharacterClass.Shaman:
+                case EPlayerClass.Healer:
+                case EPlayerClass.Shaman:
                     weaponTypes.Add(EObjectType.Staff);
                     weaponTypes.Add(EObjectType.Hammer);
                     weaponTypes.Add(EObjectType.Hammer);
                     weaponTypes.Add(EObjectType.Hammer);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Hunter:
+                case EPlayerClass.Hunter:
                     weaponTypes.Add(EObjectType.Spear);
                     weaponTypes.Add(EObjectType.CompositeBow);
                     weaponTypes.Add(EObjectType.Spear);
                     weaponTypes.Add(EObjectType.CompositeBow);
                     weaponTypes.Add(EObjectType.Sword);
                     break;
-                case ECharacterClass.Savage:
+                case EPlayerClass.Savage:
                     weaponTypes.Add(EObjectType.HandToHand);
                     weaponTypes.Add(EObjectType.HandToHand);
                     weaponTypes.Add(EObjectType.HandToHand);
@@ -5936,7 +5936,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.Axe);
                     weaponTypes.Add(EObjectType.Hammer);
                     break;
-                case ECharacterClass.Shadowblade:
+                case EPlayerClass.Shadowblade:
                     weaponTypes.Add(EObjectType.Sword);
                     weaponTypes.Add(EObjectType.Axe);
                     weaponTypes.Add(EObjectType.Sword);
@@ -5947,7 +5947,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.LeftAxe);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Berserker:
+                case EPlayerClass.Berserker:
                     weaponTypes.Add(EObjectType.LeftAxe);
                     weaponTypes.Add(EObjectType.LeftAxe);
                     weaponTypes.Add(EObjectType.LeftAxe);
@@ -5960,8 +5960,8 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.Hammer);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Thane:
-                case ECharacterClass.Warrior:
+                case EPlayerClass.Thane:
+                case EPlayerClass.Warrior:
                     weaponTypes.Add(EObjectType.Sword);
                     weaponTypes.Add(EObjectType.Axe);
                     weaponTypes.Add(EObjectType.Hammer);
@@ -5971,7 +5971,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.Shield);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Skald:
+                case EPlayerClass.Skald:
                     //hi Catkain <3
                     weaponTypes.Add(EObjectType.Sword);
                     weaponTypes.Add(EObjectType.Axe);
@@ -6006,21 +6006,21 @@ namespace DOL.GS
 
         }
 
-        public static EObjectType GetMidgardArmorType(ECharacterClass charClass, byte level)
+        public static EObjectType GetMidgardArmorType(EPlayerClass charClass, byte level)
         {
 
             switch (charClass)
             {
                 //staff classes
-                case ECharacterClass.Bonedancer:
-                case ECharacterClass.Runemaster:
-                case ECharacterClass.Spiritmaster:
+                case EPlayerClass.Bonedancer:
+                case EPlayerClass.Runemaster:
+                case EPlayerClass.Spiritmaster:
                     return EObjectType.Cloth;
 
-                case ECharacterClass.Shadowblade:
+                case EPlayerClass.Shadowblade:
                     return EObjectType.Leather;
 
-                case ECharacterClass.Hunter:
+                case EPlayerClass.Hunter:
                     if (level < 10)
                     {
                         return EObjectType.Leather;
@@ -6030,12 +6030,12 @@ namespace DOL.GS
                         return EObjectType.Studded;
                     }
 
-                case ECharacterClass.Berserker:
-                case ECharacterClass.Savage:
+                case EPlayerClass.Berserker:
+                case EPlayerClass.Savage:
                     return EObjectType.Studded;
 
-                case ECharacterClass.Shaman:
-                case ECharacterClass.Healer:
+                case EPlayerClass.Shaman:
+                case EPlayerClass.Healer:
                     if (level < 10)
                     {
                         return EObjectType.Leather;
@@ -6049,21 +6049,21 @@ namespace DOL.GS
                         return EObjectType.Chain;
                     }
 
-                case ECharacterClass.Skald:
+                case EPlayerClass.Skald:
                     if (level < 20)
                     {
                         return EObjectType.Studded;
                     }
                     else { return EObjectType.Chain; }
 
-                case ECharacterClass.Warrior:
+                case EPlayerClass.Warrior:
                     if (level < 10)
                     {
                         return EObjectType.Studded;
                     }
                     else { return EObjectType.Chain; }
 
-                case ECharacterClass.Thane:
+                case EPlayerClass.Thane:
                     if (level < 12)
                     {
                         return EObjectType.Studded;
@@ -6078,7 +6078,7 @@ namespace DOL.GS
             }
         }
 
-        public static EObjectType GetHiberniaWeapon(ECharacterClass charClass)
+        public static EObjectType GetHiberniaWeapon(EPlayerClass charClass)
         {
             List<EObjectType> weaponTypes = new List<EObjectType>();
             /*
@@ -6099,16 +6099,16 @@ namespace DOL.GS
             switch (charClass)
             {
                 //staff classes
-                case ECharacterClass.Eldritch:
-                case ECharacterClass.Enchanter:
-                case ECharacterClass.Mentalist:
-                case ECharacterClass.Animist:
+                case EPlayerClass.Eldritch:
+                case EPlayerClass.Enchanter:
+                case EPlayerClass.Mentalist:
+                case EPlayerClass.Animist:
                     weaponTypes.Add(EObjectType.Staff);
                     break;
-                case ECharacterClass.Valewalker:
+                case EPlayerClass.Valewalker:
                     weaponTypes.Add(EObjectType.Scythe);
                     break;
-                case ECharacterClass.Nightshade:
+                case EPlayerClass.Nightshade:
                     weaponTypes.Add(EObjectType.Blades);
                     weaponTypes.Add(EObjectType.Piercing);
                     weaponTypes.Add(EObjectType.Blades);
@@ -6116,7 +6116,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.Piercing);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Ranger:
+                case EPlayerClass.Ranger:
                     weaponTypes.Add(EObjectType.Blades);
                     weaponTypes.Add(EObjectType.Piercing);
                     weaponTypes.Add(EObjectType.Blades);
@@ -6126,7 +6126,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.RecurvedBow);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Champion:
+                case EPlayerClass.Champion:
                     weaponTypes.Add(EObjectType.Blades);
                     weaponTypes.Add(EObjectType.Piercing);
                     weaponTypes.Add(EObjectType.Blunt);
@@ -6135,7 +6135,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.LargeWeapons);
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Hero:
+                case EPlayerClass.Hero:
                     weaponTypes.Add(EObjectType.Blades);
                     weaponTypes.Add(EObjectType.Piercing);
                     weaponTypes.Add(EObjectType.Blunt);
@@ -6151,7 +6151,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.Shield);
                     weaponTypes.Add(EObjectType.Fired); //shortbow
                     break;
-                case ECharacterClass.Blademaster:
+                case EPlayerClass.Blademaster:
                     weaponTypes.Add(EObjectType.Blades);
                     weaponTypes.Add(EObjectType.Piercing);
                     weaponTypes.Add(EObjectType.Blunt);
@@ -6161,7 +6161,7 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.Fired); //shortbow
                     weaponTypes.Add(EObjectType.Shield);
                     break;
-                case ECharacterClass.Warden:
+                case EPlayerClass.Warden:
                     weaponTypes.Add(EObjectType.Blades);
                     weaponTypes.Add(EObjectType.Blunt);
                     weaponTypes.Add(EObjectType.Blades);
@@ -6169,13 +6169,13 @@ namespace DOL.GS
                     weaponTypes.Add(EObjectType.Shield);
                     weaponTypes.Add(EObjectType.Fired); //shortbow
                     break;
-                case ECharacterClass.Druid:
+                case EPlayerClass.Druid:
                     weaponTypes.Add(EObjectType.Blades);
                     weaponTypes.Add(EObjectType.Blunt);
                     weaponTypes.Add(EObjectType.Shield);
                     weaponTypes.Add(EObjectType.Staff);
                     break;
-                case ECharacterClass.Bard:
+                case EPlayerClass.Bard:
                     weaponTypes.Add(EObjectType.Blades);
                     weaponTypes.Add(EObjectType.Blunt);
                     weaponTypes.Add(EObjectType.Blades);
@@ -6209,7 +6209,7 @@ namespace DOL.GS
 
         }
 
-        public static EObjectType GetHiberniaArmorType(ECharacterClass charClass, byte level)
+        public static EObjectType GetHiberniaArmorType(EPlayerClass charClass, byte level)
         {
 
             /* Hib Armor
@@ -6221,20 +6221,20 @@ namespace DOL.GS
             switch (charClass)
             {
                 //staff classes
-                case ECharacterClass.Valewalker:
-                case ECharacterClass.Animist:
-                case ECharacterClass.Mentalist:
-                case ECharacterClass.Enchanter:
-                case ECharacterClass.Eldritch:
+                case EPlayerClass.Valewalker:
+                case EPlayerClass.Animist:
+                case EPlayerClass.Mentalist:
+                case EPlayerClass.Enchanter:
+                case EPlayerClass.Eldritch:
                     return EObjectType.Cloth;
 
-                case ECharacterClass.Nightshade:
+                case EPlayerClass.Nightshade:
                     return EObjectType.Leather;
 
-                case ECharacterClass.Blademaster:
+                case EPlayerClass.Blademaster:
                     return EObjectType.Reinforced;
 
-                case ECharacterClass.Ranger:
+                case EPlayerClass.Ranger:
                     if (level < 10)
                     {
                         return EObjectType.Leather;
@@ -6244,21 +6244,21 @@ namespace DOL.GS
                         return EObjectType.Reinforced;
                     }
 
-                case ECharacterClass.Champion:
+                case EPlayerClass.Champion:
                     if (level < 20)
                     {
                         return EObjectType.Reinforced;
                     }
                     else { return EObjectType.Scale; }
 
-                case ECharacterClass.Hero:
+                case EPlayerClass.Hero:
                     if (level < 15)
                     {
                         return EObjectType.Reinforced;
                     }
                     else { return EObjectType.Scale; }
 
-                case ECharacterClass.Warden:
+                case EPlayerClass.Warden:
                     if (level < 10)
                     {
                         return EObjectType.Leather;
@@ -6269,7 +6269,7 @@ namespace DOL.GS
                     }
                     else { return EObjectType.Scale; }
 
-                case ECharacterClass.Druid:
+                case EPlayerClass.Druid:
                     if (level < 10)
                     {
                         return EObjectType.Leather;
@@ -6280,7 +6280,7 @@ namespace DOL.GS
                     }
                     else { return EObjectType.Scale; }
 
-                case ECharacterClass.Bard:
+                case EPlayerClass.Bard:
                     if (level < 15)
                     {
                         return EObjectType.Leather;
@@ -6347,7 +6347,7 @@ namespace DOL.GS
             return EInventorySlot.FirstEmptyBackpack;
         }
 
-        private static EDamageType GenerateDamageType(EObjectType type, ECharacterClass charClass)
+        private static EDamageType GenerateDamageType(EObjectType type, EPlayerClass charClass)
         {
             switch (type)
             {
@@ -6397,7 +6397,7 @@ namespace DOL.GS
             return EDamageType.Natural;
         }
 
-        private static int GetMaxShieldSizeFromClass(ECharacterClass charClass)
+        private static int GetMaxShieldSizeFromClass(EPlayerClass charClass)
         {
             //shield size is based off of damage type
             //1 = small shield
@@ -6405,34 +6405,34 @@ namespace DOL.GS
             //3 = large
             switch (charClass)
             {
-                case ECharacterClass.Berserker:
-                case ECharacterClass.Skald:
-                case ECharacterClass.Savage:
-                case ECharacterClass.Healer:
-                case ECharacterClass.Shaman:
-                case ECharacterClass.Shadowblade:
-                case ECharacterClass.Bard:
-                case ECharacterClass.Druid:
-                case ECharacterClass.Nightshade:
-                case ECharacterClass.Ranger:
-                case ECharacterClass.Infiltrator:
-                case ECharacterClass.Minstrel:
-                case ECharacterClass.Scout:
+                case EPlayerClass.Berserker:
+                case EPlayerClass.Skald:
+                case EPlayerClass.Savage:
+                case EPlayerClass.Healer:
+                case EPlayerClass.Shaman:
+                case EPlayerClass.Shadowblade:
+                case EPlayerClass.Bard:
+                case EPlayerClass.Druid:
+                case EPlayerClass.Nightshade:
+                case EPlayerClass.Ranger:
+                case EPlayerClass.Infiltrator:
+                case EPlayerClass.Minstrel:
+                case EPlayerClass.Scout:
                     return 1;
 
-                case ECharacterClass.Thane:
-                case ECharacterClass.Warden:
-                case ECharacterClass.Blademaster:
-                case ECharacterClass.Champion:
-                case ECharacterClass.Mercenary:
-                case ECharacterClass.Cleric:
+                case EPlayerClass.Thane:
+                case EPlayerClass.Warden:
+                case EPlayerClass.Blademaster:
+                case EPlayerClass.Champion:
+                case EPlayerClass.Mercenary:
+                case EPlayerClass.Cleric:
                     return 2;
 
-                case ECharacterClass.Warrior:
-                case ECharacterClass.Hero:
-                case ECharacterClass.Armsman:
-                case ECharacterClass.Paladin:
-                case ECharacterClass.Reaver:
+                case EPlayerClass.Warrior:
+                case EPlayerClass.Hero:
+                case EPlayerClass.Armsman:
+                case EPlayerClass.Paladin:
+                case EPlayerClass.Reaver:
                     return 3;
                 default: return 1;
             }

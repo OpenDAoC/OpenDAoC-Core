@@ -134,7 +134,7 @@ namespace DOL.GS.Spells
             if(effect.Owner is GamePlayer)
             {
                 GamePlayer player = effect.Owner as GamePlayer;  
-                if(m_spell.LifeDrainReturn>0) if(player.CharacterClass.ID!=(byte)ECharacterClass.Necromancer) player.Model=(ushort)m_spell.LifeDrainReturn;
+                if(m_spell.LifeDrainReturn>0) if(player.PlayerClass.ID!=(byte)EPlayerClass.Necromancer) player.Model=(ushort)m_spell.LifeDrainReturn;
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumberance();
                 player.UpdatePlayerStatus();
@@ -159,7 +159,7 @@ namespace DOL.GS.Spells
             if(effect.Owner is GamePlayer)
             {
                 GamePlayer player = effect.Owner as GamePlayer;  
-                if(player.CharacterClass.ID!=(byte)ECharacterClass.Necromancer) player.Model = player.CreationModel;
+                if(player.PlayerClass.ID!=(byte)EPlayerClass.Necromancer) player.Model = player.CreationModel;
                 player.Out.SendCharStatsUpdate();
                 player.UpdateEncumberance();
                 player.UpdatePlayerStatus();

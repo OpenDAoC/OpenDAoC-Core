@@ -597,7 +597,7 @@ namespace DOL.GS
                 {
 					if(player != null)
                     {
-						if(player.IsAlive && player.CharacterClass.ID != 12 && player.Client.Account.PrivLevel==1)
+						if(player.IsAlive && player.PlayerClass.ID != 12 && player.Client.Account.PrivLevel==1)
                         {
 							if(!Zombie_Targets.Contains(player))
                             {

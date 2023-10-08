@@ -317,7 +317,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							byte pagenumber = (byte)(objectId / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS);
 							short slotnumber = (short)(objectId % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS);
 
-							item = merchant.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+							item = merchant.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 						}
 						else if (objectType == 19)
 						{
@@ -699,7 +699,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							//delve on realm abilities
 							if (objectId >= 50)
 							{
-								int clientclassID = client.Player.CharacterClass.ID;
+								int clientclassID = client.Player.PlayerClass.ID;
 								int sub = 50;
 								var ra_list = SkillBase.GetClassRealmAbilities(clientclassID).Where(ra => !(ra is RR5RealmAbility));
 								
@@ -931,7 +931,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						int clSkillIndex = objectId & 0x00FF;
 
 						// Get Player CL Spec
-						var clspec = client.Player.GetSpecList().Where(sp => sp is LiveChampionsSpecialization).Cast<LiveChampionsSpecialization>().FirstOrDefault();
+						var clspec = client.Player.GetSpecList().Where(sp => sp is LiveChampionLevelsSpecialization).Cast<LiveChampionLevelsSpecialization>().FirstOrDefault();
 						
 						// check if the tree can be used
 						List<Tuple<MiniLineSpecialization, List<Tuple<Skill, byte>>>> tree = null;
@@ -1255,7 +1255,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				int classID = -1;
 				if (int.TryParse(allowed, out classID))
-					output.Add("- " + ((ECharacterClass)classID).ToString());
+					output.Add("- " + ((EPlayerClass)classID).ToString());
 				else log.Error(item.Id_nb + " has an invalid entry for allowed classes '" + allowed + "'");
 			}
 		}
@@ -2125,7 +2125,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     foreach ((Spell, int, int) proc in style.Procs)
                     {
-                        if (clt.Player.CharacterClass.ID == proc.Item2)
+                        if (clt.Player.PlayerClass.ID == proc.Item2)
                         {
                             dw.AddKeyValuePair("SpecialNumber", proc.Item1.InternalID);
                             dw.AddKeyValuePair("SpecialType", 1);

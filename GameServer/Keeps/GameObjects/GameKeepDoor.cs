@@ -372,7 +372,7 @@ namespace DOL.GS.Keeps
 						if (player != null)
 						{
 							// special considerations for pet spam classes
-							if (player.CharacterClass.ID == (int)ECharacterClass.Theurgist || player.CharacterClass.ID == (int)ECharacterClass.Animist)
+							if (player.PlayerClass.ID == (int)EPlayerClass.Theurgist || player.PlayerClass.ID == (int)EPlayerClass.Animist)
 							{
 								baseDamage = (int)(baseDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
 								styleDamage = (int)(styleDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);

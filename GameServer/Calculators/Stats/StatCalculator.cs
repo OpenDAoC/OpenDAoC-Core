@@ -29,9 +29,9 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GamePlayer player)
             {
-                if (property == (EProperty) player.CharacterClass.ManaStat)
+                if (property == (EProperty) player.PlayerClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
+                    if (IsClassAffectedByAcuityAbility(player.PlayerClass))
                         abilityBonus += player.AbilityBonus[(int)EProperty.Acuity];
                 }
 
@@ -68,9 +68,9 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GamePlayer player)
             {
-                if (property == (EProperty) player.CharacterClass.ManaStat)
+                if (property == (EProperty) player.PlayerClass.ManaStat)
                 {
-                    if (player.CharacterClass.ClassType == eClassType.ListCaster)
+                    if (player.PlayerClass.ClassType == EPlayerClassType.ListCaster)
                         specBuffBonus += player.BaseBuffBonusCategory[(int)EProperty.Acuity];
                 }
             }
@@ -94,9 +94,9 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GamePlayer player)
             {
-                if (property == (EProperty) player.CharacterClass.ManaStat)
+                if (property == (EProperty) player.PlayerClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
+                    if (IsClassAffectedByAcuityAbility(player.PlayerClass))
                         itemBonus += living.ItemBonus[(int)EProperty.Acuity];
                 }
             }
@@ -121,9 +121,9 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GamePlayer player)
             {
-                if (property == (EProperty) player.CharacterClass.ManaStat)
+                if (property == (EProperty) player.PlayerClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
+                    if (IsClassAffectedByAcuityAbility(player.PlayerClass))
                         itemBonusCapIncrease += living.ItemBonus[(int)EProperty.AcuCapBonus];
                 }
             }
@@ -142,9 +142,9 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GamePlayer player)
             {
-                if (property == (EProperty) player.CharacterClass.ManaStat)
+                if (property == (EProperty) player.PlayerClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
+                    if (IsClassAffectedByAcuityAbility(player.PlayerClass))
                         mythicalItemBonusCapIncrease += living.ItemBonus[(int) EProperty.MythicalAcuCapBonus];
                 }
             }
@@ -165,13 +165,13 @@ namespace DOL.GS.PropertyCalc
             return living == null ? 0 : 52;
         }
 
-        public static bool IsClassAffectedByAcuityAbility(ICharacterClass characterClass)
+        public static bool IsClassAffectedByAcuityAbility(IPlayerClass playerClass)
         {
-            return (ECharacterClass) characterClass.ID is
-                not ECharacterClass.Scout and
-                not ECharacterClass.Hunter and
-                not ECharacterClass.Ranger and
-                not ECharacterClass.Nightshade;
+            return (EPlayerClass) playerClass.ID is
+                not EPlayerClass.Scout and
+                not EPlayerClass.Hunter and
+                not EPlayerClass.Ranger and
+                not EPlayerClass.Nightshade;
         }
 
         public static void ApplyDebuffs(ref int baseDebuff, ref int specDebuff, ref int buffBonus, ref int baseAndItemStat)

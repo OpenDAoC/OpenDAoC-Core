@@ -41,7 +41,7 @@ namespace DOL.GS
                 int baseChance = 80;
                 double carapaceChance = Properties.CARAPACE_DROPCHANCE;
                 int realmLoyalty = 0;
-                double numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(playerKiller)?.Days ?? 0;
+                double numCurrentLoyalDays = RealmLoyaltyMgr.GetPlayerRealmLoyalty(playerKiller)?.Days ?? 0;
 
                 if (numCurrentLoyalDays > 30)
                     numCurrentLoyalDays = 30;

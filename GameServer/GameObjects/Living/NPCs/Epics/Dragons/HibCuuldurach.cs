@@ -110,7 +110,7 @@ namespace DOL.GS
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				player.KillsDragon++;
-				player.Achieve(AchievementUtils.AchievementNames.Dragon_Kills);
+				player.Achieve(AchievementUtil.AchievementName.Dragon_Kills);
 				count++;
 			}
 			return count;
@@ -264,7 +264,7 @@ namespace DOL.GS
 			if (enemy is GamePlayer player)
 			{
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfZone(CurrentZone))
-					otherPlayer.Out.SendMessage($"{Name} laughs at the {player.CharacterClass.Name} who has fallen beneath his crushing blow.", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
+					otherPlayer.Out.SendMessage($"{Name} laughs at the {player.PlayerClass.Name} who has fallen beneath his crushing blow.", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 
 			base.EnemyKilled(enemy);
@@ -629,7 +629,7 @@ namespace DOL.AI.Brain
 				Body.TurnTo(RandomTarget);
 				Body.CastSpell(Dragon_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				string glaretext = glare_text[Util.Random(0, glare_text.Count - 1)];
-				RandomTarget.Out.SendMessage(String.Format(glaretext, Body.Name, RandomTarget.CharacterClass.Name), EChatType.CT_Say, EChatLoc.CL_ChatWindow);
+				RandomTarget.Out.SendMessage(String.Format(glaretext, Body.Name, RandomTarget.PlayerClass.Name), EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGlare), 2000);
 			return 0;
@@ -704,7 +704,7 @@ namespace DOL.AI.Brain
 				Body.TurnTo(RandomTarget2);
 				Body.CastSpell(Dragon_DD2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);//special roaming glare
 				string glaretextroam = glareroam_text[Util.Random(0, glareroam_text.Count - 1)];
-				RandomTarget2.Out.SendMessage(String.Format(glaretextroam, Body.Name, RandomTarget2.CharacterClass.Name), EChatType.CT_Say, EChatLoc.CL_ChatWindow);
+				RandomTarget2.Out.SendMessage(String.Format(glaretextroam, Body.Name, RandomTarget2.PlayerClass.Name), EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGlareRoam), 2000);
 			return 0;

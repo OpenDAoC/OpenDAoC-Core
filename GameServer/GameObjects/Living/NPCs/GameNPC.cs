@@ -4190,7 +4190,7 @@ namespace DOL.GS
 				
 				// Replace trigger keywords
 				if (living is GamePlayer)
-					text = text.Replace("{class}", ((GamePlayer) living).CharacterClass.Name).Replace("{race}", ((GamePlayer) living).RaceName);
+					text = text.Replace("{class}", ((GamePlayer) living).PlayerClass.Name).Replace("{race}", ((GamePlayer) living).RaceName);
 				if (living is GameNPC)
 					text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
 			}
@@ -4202,7 +4202,7 @@ namespace DOL.GS
 				
 				// Replace trigger keywords
 				if (TargetObject is GamePlayer)
-					text = text.Replace("{class}", ((GamePlayer) TargetObject).CharacterClass.Name).Replace("{race}", ((GamePlayer) TargetObject).RaceName);
+					text = text.Replace("{class}", ((GamePlayer) TargetObject).PlayerClass.Name).Replace("{race}", ((GamePlayer) TargetObject).RaceName);
 				if (TargetObject is GameNPC)
 					text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
 			}
@@ -4215,7 +4215,7 @@ namespace DOL.GS
 			
 			// Replace trigger keywords
 			if (TargetObject is GamePlayer && living is GamePlayer)
-				text = text.Replace("{class}", ((GamePlayer) living).CharacterClass.Name).Replace("{race}", ((GamePlayer) living).RaceName);
+				text = text.Replace("{class}", ((GamePlayer) living).PlayerClass.Name).Replace("{race}", ((GamePlayer) living).RaceName);
 			if (TargetObject is GameNPC && living is GameNPC)
 				text = text.Replace("{class}", "NPC").Replace("{race}", "NPC");
 			

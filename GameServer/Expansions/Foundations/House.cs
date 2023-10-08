@@ -979,7 +979,7 @@ namespace DOL.GS.Housing
 				int page = slot/30;
 				int pslot = slot%30;
 
-				DbItemTemplate item = items.GetItem(page, (eMerchantWindowSlot) pslot);
+				DbItemTemplate item = items.GetItem(page, (EMerchantWindowSlot) pslot);
 				if (item != null)
 				{
 					price += item.Price;
@@ -1002,7 +1002,7 @@ namespace DOL.GS.Housing
 				int page = slot/30;
 				int pslot = slot%30;
 
-				DbItemTemplate item = items.GetItem(page, (eMerchantWindowSlot) pslot);
+				DbItemTemplate item = items.GetItem(page, (EMerchantWindowSlot) pslot);
 
 				if (item != null)
 				{

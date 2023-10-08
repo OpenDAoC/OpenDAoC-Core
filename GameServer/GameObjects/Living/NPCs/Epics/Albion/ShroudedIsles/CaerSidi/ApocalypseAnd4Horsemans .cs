@@ -360,7 +360,7 @@ namespace DOL.GS
                                 {
                                     if (player != null)
                                     {
-                                        player.Out.SendMessage("Fames says, 'Done. You are brave " + t.CharacterClass.Name + " ... or foolish. While it is most certain that your" +
+                                        player.Out.SendMessage("Fames says, 'Done. You are brave " + t.PlayerClass.Name + " ... or foolish. While it is most certain that your" +
                                             " actions will have little chance to alter the course of fate, you and your companions are granted a few grains of time," +
                                             " two minutes in your terms, to prepare.", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
                                         new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(StartFamesTimer), 120000);//2min
@@ -1914,8 +1914,8 @@ namespace DOL.GS
             {
                 GamePlayer truc = source as GamePlayer;
                 //cleri,merc,arms,infi,scout
-                if (truc.CharacterClass.ID == 6 || (truc.CharacterClass.ID == 11 && truc.ActiveWeapon.Object_Type == 5) || (truc.CharacterClass.ID == 2 && truc.ActiveWeapon.Object_Type == 10) 
-                    || (truc.CharacterClass.ID == 9 && truc.ActiveWeapon.Object_Type == 10) || (truc.CharacterClass.ID == 3 && truc.ActiveWeapon.Object_Type == 9))
+                if (truc.PlayerClass.ID == 6 || (truc.PlayerClass.ID == 11 && truc.ActiveWeapon.Object_Type == 5) || (truc.PlayerClass.ID == 2 && truc.ActiveWeapon.Object_Type == 10) 
+                    || (truc.PlayerClass.ID == 9 && truc.ActiveWeapon.Object_Type == 10) || (truc.PlayerClass.ID == 3 && truc.ActiveWeapon.Object_Type == 9))
                 {
                     base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }
@@ -2215,7 +2215,7 @@ namespace DOL.GS
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.KillsEpicBoss++;
-                player.Achieve(AchievementUtils.AchievementNames.Epic_Boss_Kills);
+                player.Achieve(AchievementUtil.AchievementName.Epic_Boss_Kills);
                 count++;
             }
             return count;

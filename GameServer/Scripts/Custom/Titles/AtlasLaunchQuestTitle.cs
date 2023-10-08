@@ -7,7 +7,7 @@ namespace DOL.GS.PlayerTitles
     /// Example...
     /// </summary>
     ///
-    public class LaunchQuestTitle : SimplePlayerTitle
+    public class LaunchQuestTitle : APlayerTitle
     {
 
         public override string GetDescription(GamePlayer player)
@@ -27,11 +27,11 @@ namespace DOL.GS.PlayerTitles
 
         public override bool IsSuitable(GamePlayer player)
         {
-            return AchievementUtils.CheckAccountCredit("LaunchQuest", player);;
+            return AchievementUtil.CheckAccountCredit("LaunchQuest", player);;
         }
     }
     
-    public class LaunchDayTitle : SimplePlayerTitle
+    public class LaunchDayTitle : APlayerTitle
     {
         public override string GetDescription(GamePlayer player)
         {

@@ -335,7 +335,7 @@ namespace DOL.GS.Spells
                 // 2) Caster's modified spec level * 1.1
                 // The second point is based upon the spell limitation where mob level cannot exceed 110% of the Caster's modified spec level.
                 // For example, with a modified spec of 65, the Caster cannot charm a mob above level 71 AT ALL (no 99% resist, just outright return of 'false').
-                if (casterPlayer.CharacterClass.ID is (int)ECharacterClass.Minstrel or (int)ECharacterClass.Mentalist)
+                if (casterPlayer.PlayerClass.ID is (int)EPlayerClass.Minstrel or (int)EPlayerClass.Mentalist)
                 {
                     // If the target mob's level surpasses Spell.Value
                     if (charmMob.Level > Spell.Value)
@@ -361,7 +361,7 @@ namespace DOL.GS.Spells
                 // The main limitation on Sorcerer charms is that the mob level cannot exceed the Spell.Value or the Caster's level, unlike Minstrel/Mentalist charms.
                 // For example, with a Caster level of 50, the Caster cannot charm a mob above level 50 AT ALL (no 99% resist, just outright return of 'false').
                 // For Spell.Value, each charm spell has a maximum level value for Sorc's below level 50, which means lower-level charms cannot be used to save on power or charm same-level mobs of different body types. The highest-level spell should always be used.
-                if (casterPlayer.CharacterClass.ID is (int)ECharacterClass.Hunter or (int)ECharacterClass.Sorcerer)
+                if (casterPlayer.PlayerClass.ID is (int)EPlayerClass.Hunter or (int)EPlayerClass.Sorcerer)
                 {
                     // Check first if the target mob's level surpasses the Caster's level
                     // Mob level cannot exceed the Caster's level

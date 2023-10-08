@@ -101,7 +101,7 @@ namespace DOL.GS.PacketHandler
 								if (characters[j].Class == 0)
 									pak.FillString("", 24); //Class name
 								else
-									pak.FillString(((ECharacterClass)characters[j].Class).ToString(), 24); //Class name
+									pak.FillString(((EPlayerClass)characters[j].Class).ToString(), 24); //Class name
 
 								//pak.FillString(GamePlayer.RACENAMES[characters[j].Race], 24);
 	                            pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
@@ -281,7 +281,7 @@ namespace DOL.GS.PacketHandler
 				if (playerToCreate.IsWireframe) flags |= 0x20;
 				pak.WriteByte((byte)flags);
 				pak.WriteByte(0x00); // new in 1.74
-				if (playerToCreate.CharacterClass.ID == (int)ECharacterClass.Vampiir) flags |= 0x40; //Vamp fly
+				if (playerToCreate.PlayerClass.ID == (int)EPlayerClass.Vampiir) flags |= 0x40; //Vamp fly
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerName(m_gameClient.Player, playerToCreate));
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerGuildName(m_gameClient.Player, playerToCreate));
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerLastName(m_gameClient.Player, playerToCreate));

@@ -68,7 +68,7 @@ namespace DOL.GS
 			// If the NPC has no ambient trigger message assigned, then return this message upon interact
 			if (triggers == null || triggers.Length == 0)
 				// Message: {0} says, "Greetings, {1}. What can I do for you today?"
-				ChatUtil.SendSayMessage(player, "GameNPC.Dialogue.Greetings.Healer", GetName(0, true), player.CharacterClass.Name);
+				ChatUtil.SendSayMessage(player, "GameNPC.Dialogue.Greetings.Healer", GetName(0, true), player.PlayerClass.Name);
 
 			//GameSpellEffect effect = SpellHandler.FindEffectOnTarget(player, CURED_SPELL_TYPE);
             EcsGameEffect effect = EffectListService.GetEffectOnTarget(player, EEffect.ResurrectionIllness); // Identify effect to remove

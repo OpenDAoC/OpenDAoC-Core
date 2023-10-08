@@ -8,7 +8,7 @@ namespace DOL.Tests.Unit.Gameserver
 {
     public class FakePlayer : GamePlayer
     {
-        public ICharacterClass fakeCharacterClass = new DefaultCharacterClass();
+        public IPlayerClass FakePlayerClass = new DefaultPlayerClass();
         public int modifiedSpecLevel;
         public int modifiedIntelligence;
         public int modifiedToHitBonus;
@@ -26,7 +26,7 @@ namespace DOL.Tests.Unit.Gameserver
             this.m_invulnerabilityTick = -1;
         }
 
-        public override ICharacterClass CharacterClass { get { return fakeCharacterClass; } }
+        public override IPlayerClass PlayerClass { get { return FakePlayerClass; } }
         public override byte Level { get; set; }
         public override Region CurrentRegion { get { return fakeRegion; } set { } }
         public override IPacketLib Out => new FakePacketLib();

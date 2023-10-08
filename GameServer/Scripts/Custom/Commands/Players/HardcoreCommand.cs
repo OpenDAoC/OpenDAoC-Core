@@ -191,7 +191,7 @@ namespace DOL.GS.Commands
                 if (c == null)
                     continue;
 
-                string className = ((ECharacterClass)c.Class).ToString();
+                string className = ((EPlayerClass)c.Class).ToString();
                 bool isSolo = false;
                 
                 const string customKey = "grouped_char";
@@ -228,7 +228,7 @@ namespace DOL.GS.Commands
 #region title
 namespace DOL.GS.PlayerTitles
 {
-    public class HardCoreTitle : SimplePlayerTitle
+    public class HardCoreTitle : APlayerTitle
     {
 
         public override string GetDescription(GamePlayer player)
@@ -252,7 +252,7 @@ namespace DOL.GS.PlayerTitles
         }
     }
     
-    public class HardCoreSoloTitle : SimplePlayerTitle
+    public class HardCoreSoloTitle : APlayerTitle
     {
 
         public override string GetDescription(GamePlayer player)

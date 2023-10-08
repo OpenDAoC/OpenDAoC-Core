@@ -14,7 +14,7 @@ public class SpacingCommand : ACommandHandler, ICommandHandler
 		GamePlayer player = client.Player;
 
 		//No one else needs to use this spell
-		if (player.CharacterClass.ID != (int)ECharacterClass.Bonedancer)
+		if (player.PlayerClass.ID != (int)EPlayerClass.Bonedancer)
 		{
 			DisplayMessage(player, "Only Bonedancers can use this command!");
 			return;

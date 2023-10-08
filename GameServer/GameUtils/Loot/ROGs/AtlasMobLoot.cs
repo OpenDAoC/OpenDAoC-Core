@@ -46,7 +46,7 @@ namespace DOL.GS {
                     return loot;
                 }
 
-                ECharacterClass classForLoot = (ECharacterClass)player.CharacterClass.ID;
+                EPlayerClass classForLoot = (EPlayerClass)player.PlayerClass.ID;
                 // allow the leader to decide the loot realm
                 if (player.Group != null)
                 {
@@ -201,7 +201,7 @@ namespace DOL.GS {
         }
 
 
-        private DbItemTemplate GenerateItemTemplate(GamePlayer player, ECharacterClass classForLoot, byte lootLevel, int killedcon)
+        private DbItemTemplate GenerateItemTemplate(GamePlayer player, EPlayerClass classForLoot, byte lootLevel, int killedcon)
         {
             DbItemTemplate item = null;
                 
@@ -215,79 +215,79 @@ namespace DOL.GS {
             return item;
         }
 
-        private ECharacterClass GetRandomClassFromGroup(GroupUtil group)
+        private EPlayerClass GetRandomClassFromGroup(GroupUtil group)
         {
-            List<ECharacterClass> validClasses = new List<ECharacterClass>();
+            List<EPlayerClass> validClasses = new List<EPlayerClass>();
 
             foreach (GamePlayer player in group.GetMembersInTheGroup())
             {
-                validClasses.Add((ECharacterClass)player.CharacterClass.ID);
+                validClasses.Add((EPlayerClass)player.PlayerClass.ID);
             }
-            ECharacterClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
+            EPlayerClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
 
             return ranClass;
         }
         
-        private ECharacterClass GetRandomClassFromBattlegroup(BattleGroupUtil battlegroup)
+        private EPlayerClass GetRandomClassFromBattlegroup(BattleGroupUtil battlegroup)
         {
-            List<ECharacterClass> validClasses = new List<ECharacterClass>();
+            List<EPlayerClass> validClasses = new List<EPlayerClass>();
 
             foreach (GamePlayer player in battlegroup.Members.Keys)
             {
-                validClasses.Add((ECharacterClass)player.CharacterClass.ID);
+                validClasses.Add((EPlayerClass)player.PlayerClass.ID);
             }
-            ECharacterClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
+            EPlayerClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
 
             return ranClass;
         }
 
-        private ECharacterClass GetRandomClassFromRealm(ERealm realm)
+        private EPlayerClass GetRandomClassFromRealm(ERealm realm)
         {
-            List<ECharacterClass> classesForRealm = new List<ECharacterClass>();
+            List<EPlayerClass> classesForRealm = new List<EPlayerClass>();
             switch (realm)
             {
                 case ERealm.Albion:
-                    classesForRealm.Add(ECharacterClass.Armsman);
-                    classesForRealm.Add(ECharacterClass.Cabalist);
-                    classesForRealm.Add(ECharacterClass.Cleric);
-                    classesForRealm.Add(ECharacterClass.Friar);
-                    classesForRealm.Add(ECharacterClass.Infiltrator);
-                    classesForRealm.Add(ECharacterClass.Mercenary);
-                    classesForRealm.Add(ECharacterClass.Necromancer);
-                    classesForRealm.Add(ECharacterClass.Paladin);
-                    classesForRealm.Add(ECharacterClass.Reaver);
-                    classesForRealm.Add(ECharacterClass.Scout);
-                    classesForRealm.Add(ECharacterClass.Sorcerer);
-                    classesForRealm.Add(ECharacterClass.Theurgist);
-                    classesForRealm.Add(ECharacterClass.Wizard);
+                    classesForRealm.Add(EPlayerClass.Armsman);
+                    classesForRealm.Add(EPlayerClass.Cabalist);
+                    classesForRealm.Add(EPlayerClass.Cleric);
+                    classesForRealm.Add(EPlayerClass.Friar);
+                    classesForRealm.Add(EPlayerClass.Infiltrator);
+                    classesForRealm.Add(EPlayerClass.Mercenary);
+                    classesForRealm.Add(EPlayerClass.Necromancer);
+                    classesForRealm.Add(EPlayerClass.Paladin);
+                    classesForRealm.Add(EPlayerClass.Reaver);
+                    classesForRealm.Add(EPlayerClass.Scout);
+                    classesForRealm.Add(EPlayerClass.Sorcerer);
+                    classesForRealm.Add(EPlayerClass.Theurgist);
+                    classesForRealm.Add(EPlayerClass.Wizard);
                     break;
                 case ERealm.Midgard:
-                    classesForRealm.Add(ECharacterClass.Berserker);
-                    classesForRealm.Add(ECharacterClass.Bonedancer);
-                    classesForRealm.Add(ECharacterClass.Healer);
-                    classesForRealm.Add(ECharacterClass.Hunter);
-                    classesForRealm.Add(ECharacterClass.Runemaster);
-                    classesForRealm.Add(ECharacterClass.Savage);
-                    classesForRealm.Add(ECharacterClass.Shadowblade);
-                    classesForRealm.Add(ECharacterClass.Skald);
-                    classesForRealm.Add(ECharacterClass.Spiritmaster);
-                    classesForRealm.Add(ECharacterClass.Thane);
-                    classesForRealm.Add(ECharacterClass.Warrior);
+                    classesForRealm.Add(EPlayerClass.Berserker);
+                    classesForRealm.Add(EPlayerClass.Bonedancer);
+                    classesForRealm.Add(EPlayerClass.Healer);
+                    classesForRealm.Add(EPlayerClass.Hunter);
+                    classesForRealm.Add(EPlayerClass.Runemaster);
+                    classesForRealm.Add(EPlayerClass.Savage);
+                    classesForRealm.Add(EPlayerClass.Shadowblade);
+                    classesForRealm.Add(EPlayerClass.Skald);
+                    classesForRealm.Add(EPlayerClass.Spiritmaster);
+                    classesForRealm.Add(EPlayerClass.Thane);
+                    classesForRealm.Add(EPlayerClass.Warrior);
                     break;
                 case ERealm.Hibernia:
-                    classesForRealm.Add(ECharacterClass.Animist);
-                    classesForRealm.Add(ECharacterClass.Bard);
-                    classesForRealm.Add(ECharacterClass.Blademaster);
-                    classesForRealm.Add(ECharacterClass.Champion);
-                    classesForRealm.Add(ECharacterClass.Druid);
-                    classesForRealm.Add(ECharacterClass.Eldritch);
-                    classesForRealm.Add(ECharacterClass.Enchanter);
-                    classesForRealm.Add(ECharacterClass.Hero);
-                    classesForRealm.Add(ECharacterClass.Mentalist);
-                    classesForRealm.Add(ECharacterClass.Nightshade);
-                    classesForRealm.Add(ECharacterClass.Ranger);
-                    classesForRealm.Add(ECharacterClass.Valewalker);
-                    classesForRealm.Add(ECharacterClass.Warden);
+                    classesForRealm.Add(EPlayerClass.Animist);
+                    classesForRealm.Add(EPlayerClass.Bard);
+                    classesForRealm.Add(EPlayerClass.Blademaster);
+                    classesForRealm.Add(EPlayerClass.Champion);
+                    classesForRealm.Add(EPlayerClass.Druid);
+                    classesForRealm.Add(EPlayerClass.Eldritch);
+                    classesForRealm.Add(EPlayerClass.Enchanter);
+                    classesForRealm.Add(EPlayerClass.Hero);
+                    classesForRealm.Add(EPlayerClass.Mentalist);
+                    classesForRealm.Add(EPlayerClass.Nightshade);
+                    classesForRealm.Add(EPlayerClass.Ranger);
+                    classesForRealm.Add(EPlayerClass.Valewalker);
+                    classesForRealm.Add(EPlayerClass.Warden);
                     break;
             }
 

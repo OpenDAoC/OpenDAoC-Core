@@ -110,7 +110,7 @@ namespace DOL.GS
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				player.KillsDragon++;
-				player.Achieve(AchievementUtils.AchievementNames.Dragon_Kills);
+				player.Achieve(AchievementUtil.AchievementName.Dragon_Kills);
 				count++;
 			}
 			return count;
@@ -262,7 +262,7 @@ namespace DOL.GS
 			if (enemy is GamePlayer player)
 			{
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfZone(CurrentZone))
-					otherPlayer.Out.SendMessage($"{Name} shouts, 'Your soul now belongs to me, {player.CharacterClass.Name}!'", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
+					otherPlayer.Out.SendMessage($"{Name} shouts, 'Your soul now belongs to me, {player.PlayerClass.Name}!'", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 
 			base.EnemyKilled(enemy);

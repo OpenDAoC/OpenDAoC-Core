@@ -826,7 +826,7 @@ namespace DOL.GS
                     return 1000;
                 }
             }
-            if (CharacterClass.ID == (int)ECharacterClass.Necromancer && IsShade)
+            if (PlayerClass.ID == (int)EPlayerClass.Necromancer && IsShade)
                 Shade(false);
             Out.SendPlayerQuit(false);
             Quit(true);
@@ -917,8 +917,8 @@ namespace DOL.GS
                 log.InfoFormat("Player {0}({1}) went linkdead!", Name, Client.Account.Name);
 
             // Unshade necromancers.
-            if (Client.Player.CharacterClass.Player.IsShade)
-                Client.Player.CharacterClass.Player.Shade(false);
+            if (Client.Player.PlayerClass.Player.IsShade)
+                Client.Player.PlayerClass.Player.Shade(false);
 
             // Dead link-dead players release on live servers.
             if (!IsAlive)
@@ -1187,7 +1187,7 @@ namespace DOL.GS
             else
             {
                 Notify(GamePlayerEvent.Quit, this);
-                AuditMgr.AddAuditEntry(Client, AuditType.Character, AuditSubtype.CharacterLogout, "", Name);
+                AuditMgr.AddAuditEntry(Client, EAuditType.Character, EAuditSubType.CharacterLogout, "", Name);
                 Delete();
             }
 
@@ -2775,7 +2775,7 @@ namespace DOL.GS
             // hp2 : from constitution
             // hp3 : from champions level
             // hp4 : from artifacts such Spear of Kings charge
-            int hp1 = CharacterClass.BaseHP * level;
+            int hp1 = PlayerClass.BaseHP * level;
             int hp2 = hp1 * constitution / 10000;
             int hp3 = 0;
             if (ChampionLevel >= 1)
@@ -2791,7 +2791,7 @@ namespace DOL.GS
         {
             get
             {
-                return CharacterClass.HealthPercentGroupWindow;
+                return PlayerClass.HealthPercentGroupWindow;
             }
         }
 
@@ -2824,11 +2824,11 @@ namespace DOL.GS
              * Extra points added through ITEMS, however, does increase the size of your power pool.
 
              */
-            if (CharacterClass.ManaStat != EStat.UNDEFINED || CharacterClass.ID == (int)ECharacterClass.Vampiir)
+            if (PlayerClass.ManaStat != EStat.UNDEFINED || PlayerClass.ID == (int)EPlayerClass.Vampiir)
             {
                 maxpower = Math.Max(5, (level * 5) + (manaStat - 50));
             }
-            else if (CharacterClass.ManaStat == EStat.UNDEFINED && Champion && ChampionLevel > 0)
+            else if (PlayerClass.ManaStat == EStat.UNDEFINED && Champion && ChampionLevel > 0)
             {
                 maxpower = 100; // This is a guess, need feedback
             }
@@ -3030,14 +3030,14 @@ namespace DOL.GS
         /// <summary>
         /// Players class
         /// </summary>
-        protected ICharacterClass m_characterClass;
+        protected IPlayerClass MPlayerClass;
 
         /// <summary>
         /// Gets the player's character class
         /// </summary>
-        public virtual ICharacterClass CharacterClass
+        public virtual IPlayerClass PlayerClass
         {
-            get { return m_characterClass; }
+            get { return MPlayerClass; }
         }
 
         /// <summary>
@@ -3047,7 +3047,7 @@ namespace DOL.GS
         /// <returns>success</returns>
         public virtual bool SetCharacterClass(int id)
         {
-            ICharacterClass cl = ScriptMgr.FindCharacterClass(id);
+            IPlayerClass cl = ScriptMgr.FindCharacterClass(id);
 
             if (cl == null)
             {
@@ -3056,10 +3056,10 @@ namespace DOL.GS
                 return false;
             }
 
-            m_characterClass = cl;
-            m_characterClass.Init(this);
+            MPlayerClass = cl;
+            MPlayerClass.Init(this);
 
-            DBCharacter.Class = m_characterClass.ID;
+            DBCharacter.Class = MPlayerClass.ID;
 
             if (Group != null)
             {
@@ -3394,22 +3394,22 @@ namespace DOL.GS
             {
                 for (int i = 6; i <= originalLevel; i++)
                 {
-                    if (CharacterClass.PrimaryStat != EStat.UNDEFINED)
+                    if (PlayerClass.PrimaryStat != EStat.UNDEFINED)
                     {
-                        ChangeBaseStat(CharacterClass.PrimaryStat, -1);
+                        ChangeBaseStat(PlayerClass.PrimaryStat, -1);
                     }
-                    if (CharacterClass.SecondaryStat != EStat.UNDEFINED && ((i - 6) % 2 == 0))
+                    if (PlayerClass.SecondaryStat != EStat.UNDEFINED && ((i - 6) % 2 == 0))
                     {
-                        ChangeBaseStat(CharacterClass.SecondaryStat, -1);
+                        ChangeBaseStat(PlayerClass.SecondaryStat, -1);
                     }
-                    if (CharacterClass.TertiaryStat != EStat.UNDEFINED && ((i - 6) % 3 == 0))
+                    if (PlayerClass.TertiaryStat != EStat.UNDEFINED && ((i - 6) % 3 == 0))
                     {
-                        ChangeBaseStat(CharacterClass.TertiaryStat, -1);
+                        ChangeBaseStat(PlayerClass.TertiaryStat, -1);
                     }
                 }
             }
 
-            CharacterClass.OnLevelUp(this, originalLevel);
+            PlayerClass.OnLevelUp(this, originalLevel);
         }
 
         public virtual bool RespecAll()
@@ -3497,7 +3497,7 @@ namespace DOL.GS
 
             // If BD subpet spells scaled and capped by BD spec, respecing a spell line
             //	requires re-scaling the spells for all subpets from that line.
-            if (CharacterClass is CharacterClassBoneDancer
+            if (PlayerClass is ClassBonedancerBase
                 && DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0
                 && DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
                 && ControlledBrain is IControlledBrain brain && brain.Body is GameSummonedPet pet
@@ -3722,11 +3722,11 @@ namespace DOL.GS
                 {
                     if (keyName == GlobalSpellsLines.Combat_Styles_Effect)
                     {
-                        if (CharacterClass.ID == (int)ECharacterClass.Reaver || CharacterClass.ID == (int)ECharacterClass.Heretic)
+                        if (PlayerClass.ID == (int)EPlayerClass.Reaver || PlayerClass.ID == (int)EPlayerClass.Heretic)
                             level = GetModifiedSpecLevel(Specs.Flexible);
-                        if (CharacterClass.ID == (int)ECharacterClass.Valewalker)
+                        if (PlayerClass.ID == (int)EPlayerClass.Valewalker)
                             level = GetModifiedSpecLevel(Specs.Scythe);
-                        if (CharacterClass.ID == (int)ECharacterClass.Savage)
+                        if (PlayerClass.ID == (int)EPlayerClass.Savage)
                             level = GetModifiedSpecLevel(Specs.Savagery);
                     }
 
@@ -4114,7 +4114,7 @@ namespace DOL.GS
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnSkillTrained.YouSpend", skill.Level, skill.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnSkillTrained.YouHave", SkillSpecialtyPoints), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             MessageUtil.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnSkillTrained.TrainsInVarious", GetName(0, true)), EChatType.CT_System);
-            CharacterClass.OnSkillTrained(this, skill);
+            PlayerClass.OnSkillTrained(this, skill);
             RefreshSpecDependantSkills(true);
 
             Out.SendUpdatePlayerSkills();
@@ -4197,7 +4197,7 @@ namespace DOL.GS
             {
                 if (DBCharacter != null)
                     DBCharacter.RealmLevel = value;
-                CharacterClass.OnRealmLevelUp(this);
+                PlayerClass.OnRealmLevelUp(this);
             }
         }
 
@@ -4382,9 +4382,9 @@ namespace DOL.GS
                 }
             }
 
-            if (GetAchievementProgress(AchievementUtils.AchievementNames.Realm_Rank) <= (int) Math.Floor((double)(RealmLevel + 10.0) / 10.0))
+            if (GetAchievementProgress(AchievementUtil.AchievementName.Realm_Rank) <= (int) Math.Floor((double)(RealmLevel + 10.0) / 10.0))
             {
-                SetAchievementTo(AchievementUtils.AchievementNames.Realm_Rank, (int) Math.Floor((double)(RealmLevel + 10.0) / 10.0));
+                SetAchievementTo(AchievementUtil.AchievementName.Realm_Rank, (int) Math.Floor((double)(RealmLevel + 10.0) / 10.0));
             }
 
             Out.SendUpdatePoints();
@@ -5043,7 +5043,7 @@ namespace DOL.GS
             if (expTotal >= 0)
             {
                 //Level up
-                if (Level >= 5 && !CharacterClass.HasAdvancedFromBaseClass())
+                if (Level >= 5 && !PlayerClass.HasAdvancedFromBaseClass())
                 {
                     if (expTotal > 0)
                     {
@@ -5201,7 +5201,7 @@ namespace DOL.GS
 
             if (xpSource == EXpSource.Player && !this.CurrentZone.IsBG)
             {
-               LoyaltyManager.HandlePVPKill(this);
+               RealmLoyaltyMgr.HandlePVPKill(this);
             }
 
             long RealmLoyaltyBonus = 0;
@@ -5338,7 +5338,7 @@ namespace DOL.GS
             if (expTotal >= 0)
             {
                 //Level up
-                if (Level >= 5 && !CharacterClass.HasAdvancedFromBaseClass())
+                if (Level >= 5 && !PlayerClass.HasAdvancedFromBaseClass())
                 {
                     if (expTotal > 0)
                     {
@@ -5471,7 +5471,7 @@ namespace DOL.GS
                     MaxLevelTime.Character_ID = this.ObjectId;
                     MaxLevelTime.Character_Name = this.Name;
                     MaxLevelTime.Character_Realm = realm;
-                    MaxLevelTime.Character_Class = ((ECharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Class = ((EPlayerClass)this.PlayerClass.ID).ToString();
                     MaxLevelTime.Character_Level = this.Level;
                     MaxLevelTime.Solo = isSolo;
                     MaxLevelTime.Hardcore = isHardcore;
@@ -5493,7 +5493,7 @@ namespace DOL.GS
                     MaxLevelTime.Character_ID = this.ObjectId;
                     MaxLevelTime.Character_Name = this.Name;
                     MaxLevelTime.Character_Realm = realm;
-                    MaxLevelTime.Character_Class = ((ECharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Class = ((EPlayerClass)this.PlayerClass.ID).ToString();
                     MaxLevelTime.Character_Level = this.Level;
                     MaxLevelTime.Solo = isSolo;
                     MaxLevelTime.Hardcore = isHardcore;
@@ -5526,7 +5526,7 @@ namespace DOL.GS
                     MaxLevelTime.Character_ID = this.ObjectId;
                     MaxLevelTime.Character_Name = this.Name;
                     MaxLevelTime.Character_Realm = realm;
-                    MaxLevelTime.Character_Class = ((ECharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Class = ((EPlayerClass)this.PlayerClass.ID).ToString();
                     MaxLevelTime.Character_Level = this.Level;
                     MaxLevelTime.Solo = isSolo;
                     MaxLevelTime.Hardcore = isHardcore;
@@ -5548,7 +5548,7 @@ namespace DOL.GS
                     MaxLevelTime.Character_ID = this.ObjectId;
                     MaxLevelTime.Character_Name = this.Name;
                     MaxLevelTime.Character_Realm = realm;
-                    MaxLevelTime.Character_Class = ((ECharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Class = ((EPlayerClass)this.PlayerClass.ID).ToString();
                     MaxLevelTime.Character_Level = this.Level;
                     MaxLevelTime.Solo = isSolo;
                     MaxLevelTime.Hardcore = isHardcore;
@@ -5580,7 +5580,7 @@ namespace DOL.GS
                     MaxLevelTime.Character_ID = this.ObjectId;
                     MaxLevelTime.Character_Name = this.Name;
                     MaxLevelTime.Character_Realm = realm;
-                    MaxLevelTime.Character_Class = ((ECharacterClass)this.CharacterClass.ID).ToString();
+                    MaxLevelTime.Character_Class = ((EPlayerClass)this.PlayerClass.ID).ToString();
                     MaxLevelTime.Character_Level = this.Level;
                     MaxLevelTime.Solo = isSolo;
                     MaxLevelTime.Hardcore = isHardcore;
@@ -5614,19 +5614,19 @@ namespace DOL.GS
             {
                 for (int i = Level; i > Math.Max(previouslevel, 5); i--)
                 {
-                    if (CharacterClass.PrimaryStat != EStat.UNDEFINED)
+                    if (PlayerClass.PrimaryStat != EStat.UNDEFINED)
                     {
-                        ChangeBaseStat(CharacterClass.PrimaryStat, 1);
+                        ChangeBaseStat(PlayerClass.PrimaryStat, 1);
                         statsChanged = true;
                     }
-                    if (CharacterClass.SecondaryStat != EStat.UNDEFINED && ((i - 6) % 2 == 0))
+                    if (PlayerClass.SecondaryStat != EStat.UNDEFINED && ((i - 6) % 2 == 0))
                     { // base level to start adding stats is 6
-                        ChangeBaseStat(CharacterClass.SecondaryStat, 1);
+                        ChangeBaseStat(PlayerClass.SecondaryStat, 1);
                         statsChanged = true;
                     }
-                    if (CharacterClass.TertiaryStat != EStat.UNDEFINED && ((i - 6) % 3 == 0))
+                    if (PlayerClass.TertiaryStat != EStat.UNDEFINED && ((i - 6) % 3 == 0))
                     { // base level to start adding stats is 6
-                        ChangeBaseStat(CharacterClass.TertiaryStat, 1);
+                        ChangeBaseStat(PlayerClass.TertiaryStat, 1);
                         statsChanged = true;
                     }
                 }
@@ -5637,16 +5637,16 @@ namespace DOL.GS
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.StatRaise"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
             }
 
-            CharacterClass.OnLevelUp(this, previouslevel);
+            PlayerClass.OnLevelUp(this, previouslevel);
             GameServer.ServerRules.OnPlayerLevelUp(this, previouslevel);
             RefreshSpecDependantSkills(true);
 
             // Echostorm - Code for display of new title on level up
             // Get old and current rank titles
-            string currenttitle = CharacterClass.GetTitle(this, Level);
+            string currenttitle = PlayerClass.GetTitle(this, Level);
 
             // check for difference
-            if (CharacterClass.GetTitle(this, previouslevel) != currenttitle)
+            if (PlayerClass.GetTitle(this, previouslevel) != currenttitle)
             {
                 // Inform player of new title.
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.AttainedRank", currenttitle), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
@@ -5657,7 +5657,7 @@ namespace DOL.GS
             for (int i = Level; i > previouslevel; i--)
             {
                 if (i <= 5) specpoints += i; //start levels
-                else specpoints += CharacterClass.SpecPointsMultiplier * i / 10; //spec levels
+                else specpoints += PlayerClass.SpecPointsMultiplier * i / 10; //spec levels
             }
             if (specpoints > 0)
             {
@@ -5669,9 +5669,9 @@ namespace DOL.GS
 
             // old power
             int oldpow = 0;
-            if (CharacterClass.ManaStat != EStat.UNDEFINED)
+            if (PlayerClass.ManaStat != EStat.UNDEFINED)
             {
-                oldpow = CalculateMaxMana(previouslevel, GetBaseStat(CharacterClass.ManaStat));
+                oldpow = CalculateMaxMana(previouslevel, GetBaseStat(PlayerClass.ManaStat));
             }
 
             // hp upgrade
@@ -5682,9 +5682,9 @@ namespace DOL.GS
             }
 
             // power upgrade
-            if (CharacterClass.ManaStat != EStat.UNDEFINED)
+            if (PlayerClass.ManaStat != EStat.UNDEFINED)
             {
-                int newpow = CalculateMaxMana(Level, GetBaseStat(CharacterClass.ManaStat));
+                int newpow = CalculateMaxMana(Level, GetBaseStat(PlayerClass.ManaStat));
                 if (newpow > 0 && oldpow < newpow)
                 {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.PowerRaise", (newpow - oldpow)), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
@@ -5768,7 +5768,7 @@ namespace DOL.GS
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.SecondStage", Level), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
             // spec points
-            int specpoints = CharacterClass.SpecPointsMultiplier * Level / 20;
+            int specpoints = PlayerClass.SpecPointsMultiplier * Level / 20;
             if (specpoints > 0)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.YouGetSpec", specpoints), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
@@ -5810,7 +5810,7 @@ namespace DOL.GS
             int max_autotrain = Level / 4;
             if (max_autotrain == 0) max_autotrain = 1;
 
-            foreach (string autotrainKey in CharacterClass.GetAutotrainableSkills())
+            foreach (string autotrainKey in PlayerClass.GetAutotrainableSkills())
             {
                 if (autotrainKey == spec.KeyName)
                 {
@@ -6279,7 +6279,7 @@ namespace DOL.GS
                 }
             }
             // vampiir
-            if (CharacterClass is PlayerClass.ClassVampiir)
+            if (PlayerClass is PlayerClass.ClassVampiir)
             {
                 GameSpellEffect removeEffect = SpellHandler.FindEffectOnTarget(this, "VampiirSpeedEnhancement");
                 if (removeEffect != null)
@@ -6608,7 +6608,7 @@ namespace DOL.GS
             if (weapon == null)
                 return 0;
 
-            int classBaseWeaponSkill = weapon.SlotPosition == (int)EInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
+            int classBaseWeaponSkill = weapon.SlotPosition == (int)EInventorySlot.DistanceWeapon ? PlayerClass.WeaponSkillRangedBase : PlayerClass.WeaponSkillBase;
             double weaponSkill = Level * classBaseWeaponSkill / 200.0 * (1 + 0.01 * GetWeaponStat(weapon) / 2) * Effectiveness;
             return Math.Max(0, weaponSkill * GetModified(EProperty.WeaponSkill) * 0.01);
         }
@@ -6758,7 +6758,7 @@ namespace DOL.GS
 
         public override bool CanCastWhileAttacking()
         {
-            switch (CharacterClass)
+            switch (PlayerClass)
             {
                 case ClassVampiir:
                 case ClassMaulerAlb:
@@ -6838,7 +6838,7 @@ namespace DOL.GS
             if (killer is GameNPC)
                 (killer as GameNPC).FireAmbientSentence(GameNPC.eAmbientTrigger.killing, killer as GameLiving);
 
-            CharacterClass.Die(killer);
+            PlayerClass.Die(killer);
 
             bool realmDeath = killer != null && killer.Realm != ERealm.None && killer.Realm != Realm;
 
@@ -6910,7 +6910,7 @@ namespace DOL.GS
 
                 if (Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID))
                 {
-                    BroadcastDeathOnDiscord(publicMessage, Name, LastName, CharacterClass.Name, Level, PlayedTime);
+                    BroadcastDeathOnDiscord(publicMessage, Name, LastName, PlayerClass.Name, Level, PlayedTime);
                 }
             }
 
@@ -7235,7 +7235,7 @@ namespace DOL.GS
         /// <summary>
         /// Get the GameDuel of this player
         /// </summary>
-        protected GameDuel Duel { get; set; }
+        protected GameDuelHelper Duel { get; set; }
 
         /// <summary>
         /// Starts the duel
@@ -7246,7 +7246,7 @@ namespace DOL.GS
             if (Duel != null)
                 return;
 
-            Duel = new GameDuel(this, duelTarget);
+            Duel = new GameDuelHelper(this, duelTarget);
             Duel.Start();
 
             //Get PvP Combat ticks before duel.
@@ -7389,7 +7389,7 @@ namespace DOL.GS
                 return ticks;
             }
 
-            if (CharacterClass.CanChangeCastingSpeed(line, spell) == false)
+            if (PlayerClass.CanChangeCastingSpeed(line, spell) == false)
                 return ticks;
 
             if (EffectListService.GetAbilityEffectOnTarget(this, EEffect.QuickCast) != null)
@@ -8297,7 +8297,7 @@ namespace DOL.GS
                     return;
                 }
 
-                if (LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30 && SelfBuffChargeIDs.Contains(spell.ID))
+                if (RealmLoyaltyMgr.GetPlayerRealmLoyalty(this).Days > 30 && SelfBuffChargeIDs.Contains(spell.ID))
                 {
                     spell.Duration = 0;
                     spell.Concentration = 1;
@@ -9051,7 +9051,7 @@ namespace DOL.GS
         /// <returns>true if removed, false if removing failed</returns>
         public override bool RemoveFromWorld()
         {
-            if (!CharacterClass.RemoveFromWorld())
+            if (!PlayerClass.RemoveFromWorld())
                 return false;
 
             DismountSteed(true);
@@ -9171,7 +9171,7 @@ namespace DOL.GS
 
             if (ControlledBrain != null && ControlledBrain.WalkState != EWalkState.Stay)
             {
-                if (CharacterClass.ID is not ((int) ECharacterClass.Theurgist) and not ((int) ECharacterClass.Animist))
+                if (PlayerClass.ID is not ((int) EPlayerClass.Theurgist) and not ((int) EPlayerClass.Animist))
                     hasPetToMove = true;
             }
 
@@ -11529,8 +11529,8 @@ namespace DOL.GS
                 }
             }
 
-            CharacterClass.OnLevelUp(this, Level); // load all skills from DB first to keep the order
-            CharacterClass.OnRealmLevelUp(this);
+            PlayerClass.OnLevelUp(this, Level); // load all skills from DB first to keep the order
+            PlayerClass.OnRealmLevelUp(this);
         }
 
         /// <summary>
@@ -11539,7 +11539,7 @@ namespace DOL.GS
         public virtual void LoadClassSpecializations(bool sendMessages)
         {
             // Get this Attached Class Specialization from SkillBase.
-            IDictionary<Specialization, int> careers = SkillBase.GetSpecializationCareer(CharacterClass.ID);
+            IDictionary<Specialization, int> careers = SkillBase.GetSpecializationCareer(PlayerClass.ID);
 
             // Remove All Trainable Specialization or "Career Spec" that aren't managed by This Data Career anymore
             var speclist = GetSpecList();
@@ -11597,11 +11597,11 @@ namespace DOL.GS
             for (int i = 1; i <= Level; i++)
             {
                 if (i <= 5) allpoints += i; //start levels
-                if (i > 5) allpoints += CharacterClass.SpecPointsMultiplier * i / 10; //normal levels
-                if (i > 40) allpoints += CharacterClass.SpecPointsMultiplier * (i - 1) / 20; //half levels
+                if (i > 5) allpoints += PlayerClass.SpecPointsMultiplier * i / 10; //normal levels
+                if (i > 40) allpoints += PlayerClass.SpecPointsMultiplier * (i - 1) / 20; //half levels
             }
             if (IsLevelSecondStage && Level != MaxLevel)
-                allpoints += CharacterClass.SpecPointsMultiplier * Level / 20; // add current half level
+                allpoints += PlayerClass.SpecPointsMultiplier * Level / 20; // add current half level
 
             // calc spec points player have (autotrain is not anymore processed here - 1.87 livelike)
             int usedpoints = 0;
@@ -11638,7 +11638,7 @@ namespace DOL.GS
                 return;
             m_dbCharacter = (DbCoreCharacter)obj;
 
-            LoyaltyManager.CachePlayer(this);
+            RealmLoyaltyMgr.CachePlayer(this);
             List<DbAccountXRealmLoyalty> realmLoyaltyList = CoreDb<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<DbAccountXRealmLoyalty>;
             DateTime lastRealmLoyaltyUpdateTime = DateTime.UnixEpoch;
             int loyaltyDays = 0;
@@ -11956,7 +11956,7 @@ namespace DOL.GS
                 EffectService.SaveAllEffects(this);
 
                 //Save realmtimer
-                RealmTimer.SaveRealmTimer(this);
+                RealmTimerUtil.SaveRealmTimer(this);
 
                 SaveSkillsToCharacter();
                 //SaveCraftingSkills();
@@ -12157,7 +12157,7 @@ namespace DOL.GS
                 case EGameServerType.GST_Normal:
                 {
                     if (Realm == player.Realm || Client.Account.PrivLevel > 1 || player.Client.Account.PrivLevel > 1)
-                        message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.RealmMember", player.GetName(this), GetPronoun(Client, 0, true), CharacterClass.Name);
+                        message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.RealmMember", player.GetName(this), GetPronoun(Client, 0, true), PlayerClass.Name);
                     else
                         message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.EnemyRealmMember", player.GetName(this), GetPronoun(Client, 0, true));
                     break;
@@ -12166,11 +12166,11 @@ namespace DOL.GS
                 case EGameServerType.GST_PvP:
                 {
                     if (Client.Account.PrivLevel > 1 || player.Client.Account.PrivLevel > 1)
-                        message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.YourGuildMember", player.GetName(this), GetPronoun(Client, 0, true), CharacterClass.Name);
+                        message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.YourGuildMember", player.GetName(this), GetPronoun(Client, 0, true), PlayerClass.Name);
                     else if (Guild == null)
                         message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.NeutralMember", player.GetName(this), GetPronoun(Client, 0, true));
                     else if (Guild == player.Guild || Client.Account.PrivLevel > 1 || player.Client.Account.PrivLevel > 1)
-                        message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.YourGuildMember", player.GetName(this), GetPronoun(Client, 0, true), CharacterClass.Name);
+                        message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.YourGuildMember", player.GetName(this), GetPronoun(Client, 0, true), PlayerClass.Name);
                     else
                         message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.GetExamineMessages.OtherGuildMember", player.GetName(this), GetPronoun(Client, 0, true), GuildName);
                     break;
@@ -12440,10 +12440,10 @@ namespace DOL.GS
                 return true;
 
             if (HasAbilityType(typeof(AtlasOF_SeeHidden)) 
-                && ( enemy.CharacterClass is ClassMinstrel 
-                     || enemy.CharacterClass is ClassRanger
-                     || enemy.CharacterClass is ClassHunter
-                     || enemy.CharacterClass is ClassScout)
+                && ( enemy.PlayerClass is ClassMinstrel 
+                     || enemy.PlayerClass is ClassRanger
+                     || enemy.PlayerClass is ClassHunter
+                     || enemy.PlayerClass is ClassScout)
                 && this.IsWithinRadius(enemy, 650)
                 && !enemy.effectListComponent.ContainsEffectForEffectType(EEffect.Camouflage))
             {
@@ -12836,7 +12836,7 @@ namespace DOL.GS
         #region Notify
         public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
-            CharacterClass.Notify(e, sender, args);
+            PlayerClass.Notify(e, sender, args);
             base.Notify(e, sender, args);
 
             foreach (AbstractQuest quest in QuestList.Keys)
@@ -13422,7 +13422,7 @@ namespace DOL.GS
         {
             try
             {
-                CharacterClass.SetControlledBrain(controlledBrain);
+                PlayerClass.SetControlledBrain(controlledBrain);
             }
             catch (Exception e)
             {
@@ -13436,7 +13436,7 @@ namespace DOL.GS
         /// </summary>
         public virtual void CommandNpcRelease()
         {
-            CharacterClass.CommandNpcRelease();
+            PlayerClass.CommandNpcRelease();
         }
 
         /// <summary>
@@ -13652,7 +13652,7 @@ namespace DOL.GS
         /// <returns></returns>
         protected virtual ShadeEcsAbilityEffect CreateShadeEffect()
         {
-            return CharacterClass.CreateShadeEffect();
+            return PlayerClass.CreateShadeEffect();
         }
 
         /// <summary>
@@ -13676,7 +13676,7 @@ namespace DOL.GS
                 // Aredhel: Bit fishy, necro in caster from could use
                 // Traitor's Dagger... FIXME!
 
-                if (CharacterClass.ID == (int)ECharacterClass.Necromancer)
+                if (PlayerClass.ID == (int)EPlayerClass.Necromancer)
                     return 822;
 
                 switch (Race)
@@ -13716,7 +13716,7 @@ namespace DOL.GS
         /// <param name="state">The new state.</param>
         public virtual void Shade(bool state)
         {
-            CharacterClass.Shade(state);
+            PlayerClass.Shade(state);
         }
         #endregion
 
@@ -14592,7 +14592,7 @@ namespace DOL.GS
         /// </summary>
         public virtual int ChampionSpecialtyPoints
         {
-            get { return ChampionLevel - GetSpecList().Where(sp => sp is LiveChampionsLineSpec).Sum(sp => sp.Level); }
+            get { return ChampionLevel - GetSpecList().Where(sp => sp is LiveChampionLevelsLineSpec).Sum(sp => sp.Level); }
         }
 
         /// <summary>
@@ -14707,7 +14707,7 @@ namespace DOL.GS
         /// </summary>
         public virtual void RespecChampionSkills()
         {
-            foreach (var spec in GetSpecList().Where(sp => sp is LiveChampionsLineSpec))
+            foreach (var spec in GetSpecList().Where(sp => sp is LiveChampionLevelsLineSpec))
             {
                 RemoveSpecialization(spec.KeyName);
             }
@@ -14739,7 +14739,7 @@ namespace DOL.GS
             ChampionLevel++;
 
             // If this is a pure tank then give them full power when reaching champ level 1
-            if (ChampionLevel == 1 && CharacterClass.ClassType == eClassType.PureTank)
+            if (ChampionLevel == 1 && PlayerClass.ClassType == EPlayerClassType.PureTank)
             {
                 Mana = CalculateMaxMana(Level, 0);
             }
@@ -15024,18 +15024,18 @@ namespace DOL.GS
         public override string ToString()
         {
             return new StringBuilder(base.ToString())
-                .Append(" class=").Append(CharacterClass.Name)
-                .Append('(').Append(CharacterClass.ID.ToString()).Append(')')
+                .Append(" class=").Append(PlayerClass.Name)
+                .Append('(').Append(PlayerClass.ID.ToString()).Append(')')
                 .ToString();
         }
 
-        public static GamePlayer CreateTestableGamePlayer() { return CreateTestableGamePlayer(new DefaultCharacterClass()); }
+        public static GamePlayer CreateTestableGamePlayer() { return CreateTestableGamePlayer(new DefaultPlayerClass()); }
 
-        public static GamePlayer CreateTestableGamePlayer(ICharacterClass charClass) { return new GamePlayer(charClass); }
+        public static GamePlayer CreateTestableGamePlayer(IPlayerClass charClass) { return new GamePlayer(charClass); }
 
-        private GamePlayer(ICharacterClass charClass) : base()
+        private GamePlayer(IPlayerClass charClass) : base()
         {
-            m_characterClass = charClass;
+            MPlayerClass = charClass;
         }
 
         /// <summary>
@@ -15062,7 +15062,7 @@ namespace DOL.GS
             m_customDialogCallback = null;
             m_sitting = false;
             m_isWireframe = false;
-            m_characterClass = new DefaultCharacterClass();
+            MPlayerClass = new DefaultPlayerClass();
             m_groupIndex = 0xFF;
             m_saveInDB = true;
 

@@ -44,7 +44,7 @@ namespace DOL.GS.Spells
 					Style style = SkillBase.GetStyleByID((int)Spell.Value, 0);
 					if (style == null)
 					{
-						style = SkillBase.GetStyleByID((int)Spell.Value, player.CharacterClass.ID);
+						style = SkillBase.GetStyleByID((int)Spell.Value, player.PlayerClass.ID);
 					}
 
 					if (style != null)

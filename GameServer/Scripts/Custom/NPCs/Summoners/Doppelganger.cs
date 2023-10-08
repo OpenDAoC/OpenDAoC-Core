@@ -146,7 +146,7 @@ namespace DOL.GS
             else
                 Gender = EGender.Female;
 
-            ICharacterClass characterClass = new DefaultCharacterClass();
+            IPlayerClass playerClass = new DefaultPlayerClass();
 
             switch (Util.Random(2))
             {
@@ -158,23 +158,23 @@ namespace DOL.GS
                         case 0: // Archer
                             Inventory = ClothingMgr.Albion_Archer.CloneTemplate();
                             SwitchWeapon(EActiveWeaponSlot.Distance);
-                            characterClass = new ClassScout();
+                            playerClass = new ClassScout();
                             break;
                         case 1: // Caster
                             Inventory = ClothingMgr.Albion_Caster.CloneTemplate();
-                            characterClass = new ClassTheurgist();
+                            playerClass = new ClassTheurgist();
                             break;
                         case 2: // Fighter
                             Inventory = ClothingMgr.Albion_Fighter.CloneTemplate();
-                            characterClass = new ClassArmsman();
+                            playerClass = new ClassArmsman();
                             break;
                         case 3: // GuardHealer
                             Inventory = ClothingMgr.Albion_Healer.CloneTemplate();
-                            characterClass = new ClassCleric();
+                            playerClass = new ClassCleric();
                             break;
                         case 4: // Stealther
                             Inventory = ClothingMgr.Albion_Stealther.CloneTemplate();
-                            characterClass = new ClassInfiltrator();
+                            playerClass = new ClassInfiltrator();
                             break;
                     }
                     break;
@@ -186,23 +186,23 @@ namespace DOL.GS
                         case 0: // Archer
                             Inventory = ClothingMgr.Hibernia_Archer.CloneTemplate();
                             SwitchWeapon(EActiveWeaponSlot.Distance);
-                            characterClass = new ClassRanger();
+                            playerClass = new ClassRanger();
                             break;
                         case 1: // Caster
                             Inventory = ClothingMgr.Hibernia_Caster.CloneTemplate();
-                            characterClass = new ClassEldritch();
+                            playerClass = new ClassEldritch();
                             break;
                         case 2: // Fighter
                             Inventory = ClothingMgr.Hibernia_Fighter.CloneTemplate();
-                            characterClass = new ClassArmsman();
+                            playerClass = new ClassArmsman();
                             break;
                         case 3: // GuardHealer
                             Inventory = ClothingMgr.Hibernia_Healer.CloneTemplate();
-                            characterClass = new ClassDruid();
+                            playerClass = new ClassDruid();
                             break;
                         case 4: // Stealther
                             Inventory = ClothingMgr.Hibernia_Stealther.CloneTemplate();
-                            characterClass = new ClassNightshade();
+                            playerClass = new ClassNightshade();
                             break;
                     }
                     break;
@@ -214,29 +214,29 @@ namespace DOL.GS
                         case 0: // Archer
                             Inventory = ClothingMgr.Midgard_Archer.CloneTemplate();
                             SwitchWeapon(EActiveWeaponSlot.Distance);
-                            characterClass = new ClassHunter();
+                            playerClass = new ClassHunter();
                             break;
                         case 1: // Caster
                             Inventory = ClothingMgr.Midgard_Caster.CloneTemplate();
-                            characterClass = new ClassRunemaster();
+                            playerClass = new ClassRunemaster();
                             break;
                         case 2: // Fighter
                             Inventory = ClothingMgr.Midgard_Fighter.CloneTemplate();
-                            characterClass = new ClassWarrior();
+                            playerClass = new ClassWarrior();
                             break;
                         case 3: // GuardHealer
                             Inventory = ClothingMgr.Midgard_Healer.CloneTemplate();
-                            characterClass = new ClassHealer();
+                            playerClass = new ClassHealer();
                             break;
                         case 4: // Stealther
                             Inventory = ClothingMgr.Midgard_Stealther.CloneTemplate();
-                            characterClass = new ClassShadowblade();
+                            playerClass = new ClassShadowblade();
                             break;
                     }
                     break;
             }
 
-            var possibleRaces = characterClass.EligibleRaces;
+            var possibleRaces = playerClass.EligibleRaces;
             var indexPick = Util.Random(0, possibleRaces.Count - 1);
             Model = (ushort)possibleRaces[indexPick].GetModel(Gender);
 

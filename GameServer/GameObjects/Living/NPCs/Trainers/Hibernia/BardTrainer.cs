@@ -27,9 +27,9 @@ namespace DOL.GS.Trainer
 	[NPCGuildScript("Bard Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Bard Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class BardTrainer : GameTrainer
 	{
-		public override ECharacterClass TrainedClass
+		public override EPlayerClass TrainedClass
 		{
-			get { return ECharacterClass.Bard; }
+			get { return EPlayerClass.Bard; }
 		}
 
 		public const string WEAPON_ID1 = "bard_item";
@@ -48,7 +48,7 @@ namespace DOL.GS.Trainer
 			if (!base.Interact(player)) return false;
 			
 			// check if class matches.
-			if (player.CharacterClass.ID == (int) TrainedClass)
+			if (player.PlayerClass.ID == (int) TrainedClass)
 			{
 				player.Out.SendMessage(this.Name + " says, \"Ahh, well met " + player.Name + ". Back for more lore and knowledge, eh.\"", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
@@ -86,7 +86,7 @@ namespace DOL.GS.Trainer
 				case "song":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)ECharacterClass.Bard, "Welcome then, " + source.GetName(0, false) + ", to the Bard's life. Here, take this. Keep it well, " + source.GetName(0, false) + ", for the tools of our trade can be quite expensive.", null);
+						PromotePlayer(player, (int)EPlayerClass.Bard, "Welcome then, " + source.GetName(0, false) + ", to the Bard's life. Here, take this. Keep it well, " + source.GetName(0, false) + ", for the tools of our trade can be quite expensive.", null);
 						player.ReceiveItem(this,WEAPON_ID1);
 					}
 					break;

@@ -2,7 +2,7 @@ using DOL.Database;
 
 namespace DOL.GS;
 
-public class KillCreditUtils
+public class KillCreditUtil
 {
     public static string GetRequiredKillMob(string id_nb)
     {

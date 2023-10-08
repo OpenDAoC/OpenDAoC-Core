@@ -364,7 +364,7 @@ namespace DOL.GS.PacketHandler
 				if (playerToCreate.IsUnderwater) flags |= 0x02; //swimming
 				if (playerToCreate.IsStealthed) flags |= 0x10;
 				if (playerToCreate.IsWireframe) flags |= 0x20;
-				if (playerToCreate.CharacterClass.ID == (int)ECharacterClass.Vampiir) flags |= 0x40; //Vamp fly
+				if (playerToCreate.PlayerClass.ID == (int)EPlayerClass.Vampiir) flags |= 0x40; //Vamp fly
 				pak.WriteByte((byte)flags);
 
 				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
@@ -778,7 +778,7 @@ namespace DOL.GS.PacketHandler
 			}
 			var player = living as GamePlayer;
 
-			pak.WriteByte(player?.CharacterClass?.HealthPercentGroupWindow ?? living.HealthPercent);
+			pak.WriteByte(player?.PlayerClass?.HealthPercentGroupWindow ?? living.HealthPercent);
 			pak.WriteByte(living.ManaPercent);
 			pak.WriteByte(living.EndurancePercent); // new in 1.69
 
@@ -807,7 +807,7 @@ namespace DOL.GS.PacketHandler
 				{
 					byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();
-					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)ECharacterClass.Necromancer && necro.IsShade)
+					if (living is GamePlayer necro && necro.PlayerClass.ID == (int)EPlayerClass.Necromancer && necro.IsShade)
 						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
 					foreach (var effect in effects)
 					{

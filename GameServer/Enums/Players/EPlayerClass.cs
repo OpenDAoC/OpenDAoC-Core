@@ -1,6 +1,6 @@
 ﻿namespace DOL.GS;
 
-public enum ECharacterClass : byte
+public enum EPlayerClass : byte
 {
 	Unknown = 0,
 

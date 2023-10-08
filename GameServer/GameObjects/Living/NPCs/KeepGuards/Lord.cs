@@ -336,12 +336,12 @@ namespace DOL.GS.Keeps
             return true;
         }
 
-        protected override ICharacterClass GetClass()
+        protected override IPlayerClass GetClass()
         {
             if (ModelRealm == ERealm.Albion) return new ClassArmsman();
             else if (ModelRealm == ERealm.Midgard) return new ClassWarrior();
             else if (ModelRealm == ERealm.Hibernia) return new ClassHero();
-            return new DefaultCharacterClass();
+            return new DefaultPlayerClass();
         }
 
         protected override void SetBlockEvadeParryChance()

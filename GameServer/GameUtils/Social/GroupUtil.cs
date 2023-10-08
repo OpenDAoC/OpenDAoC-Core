@@ -634,7 +634,7 @@ namespace DOL.GS
 				BattleGroupUtil mybattlegroup = player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 				foreach (GamePlayer plr in m_groupMembers)
 				{
-					text.Append($"{plr.Name} ({plr.CharacterClass.Name}) ");
+					text.Append($"{plr.Name} ({plr.PlayerClass.Name}) ");
 				}
 				return text.ToString();
 			}

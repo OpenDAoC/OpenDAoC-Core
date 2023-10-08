@@ -12,7 +12,7 @@ public class LoyaltyCommand : ACommandHandler, ICommandHandler
     public void OnCommand(GameClient client, string[] args)
     {
 
-        var playerLoyalty = LoyaltyManager.GetPlayerLoyalty(client.Player);
+        var playerLoyalty = RealmLoyaltyMgr.GetPlayerLoyalty(client.Player);
         var midLoyalty = playerLoyalty.MidLoyaltyDays;
         var hibLoyalty = playerLoyalty.HibLoyaltyDays;
         var albLoyalty = playerLoyalty.AlbLoyaltyDays;
@@ -20,8 +20,8 @@ public class LoyaltyCommand : ACommandHandler, ICommandHandler
         var midPercent = playerLoyalty.MidPercent;
         var hibPercent = playerLoyalty.HibPercent;
 
-        LoyaltyManager.LoyaltyUpdateAddDays(client.Player, 1);
-        var lastUpdatedTime = LoyaltyManager.GetLastLoyaltyUpdate(client.Player);
+        RealmLoyaltyMgr.LoyaltyUpdateAddDays(client.Player, 1);
+        var lastUpdatedTime = RealmLoyaltyMgr.GetLastLoyaltyUpdate(client.Player);
 
         var timeMilli = (long)(lastUpdatedTime - new DateTime(1970, 1, 1)).TotalMilliseconds;
 

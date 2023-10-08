@@ -974,9 +974,9 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		protected virtual ICharacterClass GetClass()
+		protected virtual IPlayerClass GetClass()
         {
-			return new DefaultCharacterClass();
+			return new DefaultPlayerClass();
 		}
 
 		protected virtual void SetModel()

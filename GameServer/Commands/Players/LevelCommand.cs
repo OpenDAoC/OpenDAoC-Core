@@ -43,7 +43,7 @@ public class LevelCommand : ACommandHandler, ICommandHandler
 
 			if ((int)client.Player.Realm == 2)
 			{
-				var hasCredit = AchievementUtils.CheckPlayerCredit("SoftLaunch39", client.Player, (int)client.Player.Realm);
+				var hasCredit = AchievementUtil.CheckPlayerCredit("SoftLaunch39", client.Player, (int)client.Player.Realm);
 				if (!hasCredit)
 				{
 					client.Player.Out.SendMessage($"You are not eligible to use /level on {client.Player.Realm.ToString()}.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
@@ -52,7 +52,7 @@ public class LevelCommand : ACommandHandler, ICommandHandler
 			}
 			else
 			{
-				var hasCredit = AchievementUtils.CheckAccountCredit("SoftLaunch39", client.Player);
+				var hasCredit = AchievementUtil.CheckAccountCredit("SoftLaunch39", client.Player);
 		
 				if (!hasCredit)
 				{

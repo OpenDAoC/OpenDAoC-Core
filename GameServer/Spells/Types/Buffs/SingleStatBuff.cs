@@ -32,9 +32,9 @@ namespace DOL.GS.Spells
                 Effectiveness = 1.0;
             else if (Caster is GamePlayer playerCaster)
             {
-                if (playerCaster.CharacterClass.ID != (int)ECharacterClass.Savage && Spell.Target != ESpellTarget.ENEMY)
+                if (playerCaster.PlayerClass.ID != (int)EPlayerClass.Savage && Spell.Target != ESpellTarget.ENEMY)
                 {
-                    if (playerCaster.CharacterClass.ClassType != eClassType.ListCaster)
+                    if (playerCaster.PlayerClass.ClassType != EPlayerClassType.ListCaster)
                     {
                         Effectiveness = 0.75; // This section is for self bulfs, cleric buffs etc.
                         Effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
                 else if (Spell.Target == ESpellTarget.ENEMY)
                 {
                     Effectiveness = 0.75; // This section is for list casters stat debuffs.
-                    if (playerCaster.CharacterClass.ClassType == eClassType.ListCaster)
+                    if (playerCaster.PlayerClass.ClassType == EPlayerClassType.ListCaster)
                     {
                         Effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
                         Effectiveness = Math.Max(0.75, Effectiveness);
@@ -215,7 +215,7 @@ namespace DOL.GS.Spells
         {
             get
             {
-                if (Caster is GamePlayer c && (c.CharacterClass is ClassRanger || c.CharacterClass is ClassHunter) && (SpellLine.KeyName.ToLower().Equals("beastcraft") || SpellLine.KeyName.ToLower().Equals("pathfinding")))
+                if (Caster is GamePlayer c && (c.PlayerClass is ClassRanger || c.PlayerClass is ClassHunter) && (SpellLine.KeyName.ToLower().Equals("beastcraft") || SpellLine.KeyName.ToLower().Equals("pathfinding")))
                     return EBuffBonusCategory.BaseBuff;
 
                 if (Spell.Target == ESpellTarget.SELF)

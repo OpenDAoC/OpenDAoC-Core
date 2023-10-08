@@ -39,7 +39,7 @@ public class HasCreditCommand : ACommandHandler, ICommandHandler
 
 		var mob = args[1];
 
-		var hascredit = AchievementUtils.CheckPlayerCredit(mob, target,
+		var hascredit = AchievementUtil.CheckPlayerCredit(mob, target,
 			(int) client.Player.Realm);
 		
 		DisplayMessage(client.Player,$"{target.Name} credit for {mob}: {hascredit}");

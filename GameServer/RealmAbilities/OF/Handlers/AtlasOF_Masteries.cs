@@ -59,7 +59,7 @@ namespace DOL.GS.RealmAbilities
         public override bool CheckRequirement(GamePlayer player)
         { 
             // Atlas custom change - Friar pre-req is AugDex3 instead of a 100% useless AugStr3.
-            if (player.CharacterClass.ID == (byte)ECharacterClass.Friar)
+            if (player.PlayerClass.ID == (byte)EPlayerClass.Friar)
             {
                 return AtlasRAHelpers.GetAugDexLevel(player) >= 3;
             }

@@ -5,9 +5,8 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Utils;
 
-
 //Utility class for checking realmtimer of a character/account and acting accordingly 
-public class RealmTimer
+public class RealmTimerUtil
 {
 
     public static bool CanPvP(GamePlayer player)
@@ -156,7 +155,4 @@ public class RealmTimer
         else
             return 0;
     }
-    
-   
-
 }

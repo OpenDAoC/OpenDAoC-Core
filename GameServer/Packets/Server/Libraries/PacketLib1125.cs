@@ -196,7 +196,7 @@ namespace DOL.GS.PacketHandler
 							string classname = "";
 							if (c.Class != 0)
 							{
-								classname = ((ECharacterClass)c.Class).ToString();
+								classname = ((EPlayerClass)c.Class).ToString();
 							}
 							pak.WritePascalStringIntLE(classname);
 
@@ -407,7 +407,7 @@ namespace DOL.GS.PacketHandler
 					{
 						if (living == null) continue;
 						pak.WritePascalString(living.Name);
-						pak.WritePascalString(living is GamePlayer ? ((GamePlayer)living).CharacterClass.Name : "NPC");
+						pak.WritePascalString(living is GamePlayer ? ((GamePlayer)living).PlayerClass.Name : "NPC");
 						pak.WriteShort((ushort)living.ObjectID); //or session id?
 						pak.WriteByte(living.Level);
 					}
@@ -436,7 +436,7 @@ namespace DOL.GS.PacketHandler
 
 			var player = living as GamePlayer;
 
-			pak.WriteByte(player?.CharacterClass?.HealthPercentGroupWindow ?? living.HealthPercent);
+			pak.WriteByte(player?.PlayerClass?.HealthPercentGroupWindow ?? living.HealthPercent);
 			pak.WriteByte(living.ManaPercent);
 			pak.WriteByte(living.EndurancePercent); // new in 1.69
 
@@ -479,7 +479,7 @@ namespace DOL.GS.PacketHandler
 				{
 					byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();
-					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)ECharacterClass.Necromancer && necro.IsShade)
+					if (living is GamePlayer necro && necro.PlayerClass.ID == (int)EPlayerClass.Necromancer && necro.IsShade)
 						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
 					foreach (var effect in effects)//.Effects.Values)
 												   //foreach (ECSGameEffect effect in effects)

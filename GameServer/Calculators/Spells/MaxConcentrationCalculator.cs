@@ -19,11 +19,11 @@ public class MaxConcentrationCalculator : PropertyCalculator
 		if (living is GamePlayer) 
 		{
 			GamePlayer player = living as GamePlayer;
-			if (player.CharacterClass.ManaStat == EStat.UNDEFINED) 
+			if (player.PlayerClass.ManaStat == EStat.UNDEFINED) 
                 return 1000000;
 
 			int concBase = (int)((player.Level * 4) * 2.2);
-			int stat = player.GetModified((EProperty)player.CharacterClass.ManaStat);
+			int stat = player.GetModified((EProperty)player.PlayerClass.ManaStat);
 			var statConc = (stat-50) * 2.8;
 			//int factor = (stat > 50) ? (stat - 50) / 2 : (stat - 50);
 			//int conc = (concBase + concBase * factor / 100) / 2;

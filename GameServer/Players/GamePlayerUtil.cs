@@ -6,10 +6,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// GamePlayer Utils Extension Class
-	/// </summary>
-	public static class GamePlayerUtils
+	public static class GamePlayerUtil
 	{
 		#region Spot and Area Description / Translation
 		/// <summary>

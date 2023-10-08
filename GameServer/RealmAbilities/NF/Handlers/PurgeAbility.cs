@@ -79,7 +79,7 @@ namespace DOL.GS.RealmAbilities
 
             EffectListComponent effectListComponent = null;
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Necromancer)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Necromancer)
             {
                 NecromancerPet necroPet = (NecromancerPet)player.ControlledBrain.Body;
 

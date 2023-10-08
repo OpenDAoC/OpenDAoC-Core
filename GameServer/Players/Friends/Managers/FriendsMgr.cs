@@ -9,10 +9,7 @@ using log4net;
 
 namespace DOL.GS.Friends
 {
-	/// <summary>
-	/// Game Player Friends List Manager
-	/// </summary>
-	public sealed class FriendsManager
+	public sealed class FriendsMgr
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -50,9 +47,9 @@ namespace DOL.GS.Friends
 		}
 
 		/// <summary>
-		/// Create a new Instance of <see cref="FriendsManager"/>
+		/// Create a new Instance of <see cref="FriendsMgr"/>
 		/// </summary>
-		public FriendsManager(IObjectDatabase Database)
+		public FriendsMgr(IObjectDatabase Database)
 		{
 			this.Database = Database;
 			GameEventMgr.AddHandler(GameClientEvent.StateChanged, OnClientStateChanged);
@@ -240,7 +237,7 @@ namespace DOL.GS.Friends
 					index++,
 					friend.Name,
 					friend.Level,
-					friend.CharacterClass.ID,
+					friend.PlayerClass.ID,
 					friend.CurrentZone == null ? string.Empty : friend.CurrentZone.Description),
 					EChatType.CT_SocialInterface, EChatLoc.CL_SystemWindow);
 			}
@@ -304,7 +301,7 @@ namespace DOL.GS.Friends
 				friend.Out.SendRemoveFriends(playerUpdate);
 			}
 
-			var offline = new FriendStatus(Player.Name, Player.Level, Player.CharacterClass.ID, DateTime.Now);
+			var offline = new FriendStatus(Player.Name, Player.Level, Player.PlayerClass.ID, DateTime.Now);
 
 			foreach (var cache in PlayersFriendsStatusCache.Where(kv => kv.Value.Any(frd => frd.Name == Player.Name)).ToArray())
 				PlayersFriendsStatusCache[cache.Key] = cache.Value.Where(frd => frd.Name != Player.Name).Concat(new[] { offline }).ToArray();

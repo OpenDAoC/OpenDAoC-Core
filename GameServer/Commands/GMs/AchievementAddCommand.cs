@@ -129,7 +129,7 @@ namespace DOL.GS.Commands
 
                 foreach (var p in targetPlayers)
                 {
-                    var hascredit = AchievementUtils.CheckPlayerCredit(achievementName, p, (int) p.Realm);
+                    var hascredit = AchievementUtil.CheckPlayerCredit(achievementName, p, (int) p.Realm);
                     if (hascredit) continue;
 
                     var credit = achievementName + "-Credit";

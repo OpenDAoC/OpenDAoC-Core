@@ -434,7 +434,7 @@ namespace DOL.GS.Quests.Hibernia
 							Terod.SayTo(player, "Kredril has studied this treant for years, he will know much more about it. Seek for him in the outskirts of Droighaid, he will be able to help you.");
 							break;
 						case 3:
-							Terod.SayTo(player, "Greetings "+player.CharacterClass.Name+", Kredril told me that you are on your way to visit Jandros, is that right? " +
+							Terod.SayTo(player, "Greetings "+player.PlayerClass.Name+", Kredril told me that you are on your way to visit Jandros, is that right? " +
 							                    "Emolia can be found next to Droighaid's Bindstone, she will be able to help with your journey to Aalid Feie.");
 							break;
 						case 4:
@@ -534,7 +534,7 @@ namespace DOL.GS.Quests.Hibernia
 							                      "Find Terod in Droighaid, he will tell you more about it.");
 							break;
 						case 2:
-							Kredril.SayTo(player, "Hey "+player.CharacterClass.Name+", has Terod told you about [the Lost Seed]?");
+							Kredril.SayTo(player, "Hey "+player.PlayerClass.Name+", has Terod told you about [the Lost Seed]?");
 							break;
 						case 3:
 							Kredril.SayTo(player, "Hey "+player.Name+", you can find Emolia around Droighaid's Bindstone. She will teleport you to Aalid Feie.");
@@ -696,11 +696,11 @@ namespace DOL.GS.Quests.Hibernia
 					switch (quest.Step)
 					{
 						case 1:
-							Jandros.SayTo(player, "Hello "+player.CharacterClass.Name+", I saw you in Aalid Feie for a few times. Have you visited Droighaid yet? " +
+							Jandros.SayTo(player, "Hello "+player.PlayerClass.Name+", I saw you in Aalid Feie for a few times. Have you visited Droighaid yet? " +
 							                      "It's a beautiful place, my friends Kredril and Terod live there.");
 							break;
 						case 2:
-							Jandros.SayTo(player, "Hey "+player.CharacterClass.Name+", I am sorry for seeming so distracted. We found a track for the Lost Seed.");
+							Jandros.SayTo(player, "Hey "+player.PlayerClass.Name+", I am sorry for seeming so distracted. We found a track for the Lost Seed.");
 							break;
 						case 3:
 							Jandros.SayTo(player, "Hello "+player.Name+", has Emolia sent you? I wasn't expecting you anytime soon.");

@@ -500,13 +500,13 @@ namespace DOL.GS.Quests.Hibernia
 									Longbeard.Emote(EEmote.Rofl);
 									Longbeard.TurnTo(player);
 									Styr.Emote(EEmote.Laugh);
-									message = $"Longbeard yells, \"Haha, Styr look at this \"{player.CharacterClass.Name}\"";
+									message = $"Longbeard yells, \"Haha, Styr look at this \"{player.PlayerClass.Name}\"";
 									break;
 								case 2: 
 									Longbeard.Emote(EEmote.Laugh);
 									Styr.TurnTo(player);
 									Styr.Emote(EEmote.Rofl);
-									message = $"Styr yells, \"Haha, Longbeard look at this \"{player.CharacterClass.Name}\"";
+									message = $"Styr yells, \"Haha, Longbeard look at this \"{player.PlayerClass.Name}\"";
 									break;
 								case 3: 
 									Longbeard.Emote(EEmote.Laugh);
@@ -563,7 +563,7 @@ namespace DOL.GS.Quests.Hibernia
 							if (quest.Step == 1)
 							{
 								OtaYrling.SayTo(player, "Please visit Jaklyr in Bjarken and tell him that I se... Oh no Longbeard and his friend Styr...");
-								Longbeard.Yell("Haha, you need help from this "+player.CharacterClass.Name+" Ota Yrling?");
+								Longbeard.Yell("Haha, you need help from this "+player.PlayerClass.Name+" Ota Yrling?");
 								Longbeard.Emote(EEmote.Laugh);
 								Styr.Emote(EEmote.Laugh);
 								quest.Step = 2;
@@ -621,11 +621,11 @@ namespace DOL.GS.Quests.Hibernia
 							Jaklyr.SayTo(player, "Hello Adventurer, great to see more people in our town. Can I help you?");
 							break;
 						case 2:
-							Jaklyr.SayTo(player, "Hey "+player.CharacterClass.Name+", did you hear about two dwarfs who fled from Dellingstad and living now in Aegirhamn? " +
+							Jaklyr.SayTo(player, "Hey "+player.PlayerClass.Name+", did you hear about two dwarfs who fled from Dellingstad and living now in Aegirhamn? " +
 							                     "Ota Yrling said that they are annoying.");
 							break;
 						case 3:
-							Jaklyr.SayTo(player, "Hey "+player.CharacterClass.Name+", how can I help you? Did someone [sent] you?");
+							Jaklyr.SayTo(player, "Hey "+player.PlayerClass.Name+", how can I help you? Did someone [sent] you?");
 							break;
 						case 4:
 							Jaklyr.SayTo(player, "I wish you all the strength you need for your adventure!");
@@ -741,7 +741,7 @@ namespace DOL.GS.Quests.Hibernia
 							Longbeard.SayTo(player, "You are kidding me right? Nobody came back, just [don't try] it kid.");
 							break;
 						case 3:
-							Longbeard.SayTo(player, "Hey "+player.CharacterClass.Name+", have you visited Jaklyr in Bjarken yet? I thought you want to go to Delling Crater.");
+							Longbeard.SayTo(player, "Hey "+player.PlayerClass.Name+", have you visited Jaklyr in Bjarken yet? I thought you want to go to Delling Crater.");
 							break;
 						case 4:
 							Longbeard.SayTo(player, "I wish you good luck my friend! It's not an easy mission.");

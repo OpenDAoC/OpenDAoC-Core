@@ -130,7 +130,7 @@ namespace DOL.GS.PacketHandler
 
 							string classname = "";
 							if (c.Class != 0)
-								classname = ((ECharacterClass)c.Class).ToString();
+								classname = ((EPlayerClass)c.Class).ToString();
 							pak.FillString(classname, 24);
 
 							string racename = m_gameClient.RaceToTranslatedName(c.Race, c.Gender);

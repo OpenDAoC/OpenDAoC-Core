@@ -27,9 +27,9 @@ namespace DOL.GS.Trainer
 	[NPCGuildScript("Valewalker Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Valewalker Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ValewalkerTrainer : GameTrainer
 	{
-		public override ECharacterClass TrainedClass
+		public override EPlayerClass TrainedClass
 		{
-			get { return ECharacterClass.Valewalker; }
+			get { return EPlayerClass.Valewalker; }
 		}
 
 		public const string WEAPON_ID1 = "valewalker_item";
@@ -47,7 +47,7 @@ namespace DOL.GS.Trainer
 			if (!base.Interact(player)) return false;
 			
 			// check if class matches.
-			if (player.CharacterClass.ID == (int) TrainedClass)
+			if (player.PlayerClass.ID == (int) TrainedClass)
 			{
 				player.Out.SendMessage(this.Name + " says, \"Training makes for a strong, healthy Hero! Keep up the good work, " + player.Name + "!\"", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
@@ -85,7 +85,7 @@ namespace DOL.GS.Trainer
 				case "Path of Affinity":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)ECharacterClass.Valewalker, "Welcome, then, to the Path of Affinity. Here is a gift. Consider it a welcoming gesture. Welcome, " + source.GetName(0, false) + ".", null);
+						PromotePlayer(player, (int)EPlayerClass.Valewalker, "Welcome, then, to the Path of Affinity. Here is a gift. Consider it a welcoming gesture. Welcome, " + source.GetName(0, false) + ".", null);
 						player.ReceiveItem(this,WEAPON_ID1);
 					}
 					break;

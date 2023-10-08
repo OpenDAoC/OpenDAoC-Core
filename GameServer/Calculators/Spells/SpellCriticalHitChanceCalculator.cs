@@ -24,7 +24,7 @@ public class SpellCriticalHitChanceCalculator : PropertyCalculator
 
 		if (living is GamePlayer player)
 		{
-			if (player.CharacterClass.ClassType == eClassType.ListCaster)
+			if (player.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 				chance += 10;
 		}
 		else if (living is NecromancerPet necroPet)

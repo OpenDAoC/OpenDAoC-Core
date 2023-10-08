@@ -26,7 +26,7 @@ namespace DOL.GS {
 
 			if (!this.Flags.HasFlag(GameNPC.eFlags.GHOST))
             {
-				player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I can teleport you to our [fight club], if you promise not to speak of it to anyone.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Greetings, " + player.PlayerClass.Name + ".\n\n" + "I can teleport you to our [fight club], if you promise not to speak of it to anyone.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 
 			}
 

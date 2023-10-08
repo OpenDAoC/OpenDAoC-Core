@@ -254,7 +254,7 @@ public class ConquestManager
         {
             if (player == source) continue; //don't double award the killer
             
-            var loyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player).Days;
+            var loyalDays = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player).Days;
             if (loyalDays > 30) loyalDays = 30;
             
             double RPFraction = 0.05 * (loyalDays / 30.0);

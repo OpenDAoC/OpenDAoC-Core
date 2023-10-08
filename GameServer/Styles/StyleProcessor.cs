@@ -195,7 +195,7 @@ namespace DOL.GS.Styles
 
 					while (!CanUseStyle(lastAttackData, player, styleToUse, weapon))
 					{
-						styleToUse = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.CharacterClass.ID);
+						styleToUse = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.PlayerClass.ID);
 
 						if (styleToUse == null)
 							break;
@@ -216,7 +216,7 @@ namespace DOL.GS.Styles
 				Style preRequireStyle = null;
 
 				if (!Properties.AUTO_SELECT_OPENING_STYLE && style.OpeningRequirementType == Style.eOpening.Offensive && style.AttackResultRequirement == Style.eAttackResultRequirement.Style)
-					preRequireStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.CharacterClass.ID);
+					preRequireStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.PlayerClass.ID);
 
 				// We have not set any primary style yet?
 				if (player.styleComponent.NextCombatStyle == null)
@@ -420,7 +420,7 @@ namespace DOL.GS.Styles
 
 							foreach ((Spell, int, int) proc in style.Procs)
 							{
-								if (player != null && proc.Item2 == player.CharacterClass.ID)
+								if (player != null && proc.Item2 == player.PlayerClass.ID)
 								{
 									procsToExecute.Add(proc);
 									onlyExecuteClassSpecific = true;
@@ -649,7 +649,7 @@ namespace DOL.GS.Styles
 						temp += LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.HandlePacket.YouFumble");
 						break;
 					case Style.eAttackResultRequirement.Style:
-						Style reqStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.CharacterClass.ID);
+						Style reqStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.PlayerClass.ID);
 						if (reqStyle == null)
 						{
 							reqStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, 0);
@@ -728,7 +728,7 @@ namespace DOL.GS.Styles
 
 			temp = "";
 
-			foreach (Style st in SkillBase.GetStyleList(style.Spec, player.CharacterClass.ID))
+			foreach (Style st in SkillBase.GetStyleList(style.Spec, player.PlayerClass.ID))
 			{
 				if (st.AttackResultRequirement == Style.eAttackResultRequirement.Style && st.OpeningRequirementValue == style.ID)
 				{
@@ -842,7 +842,7 @@ namespace DOL.GS.Styles
 					bool hasClassSpecificProc = false;
 					foreach ((Spell, int, int) proc in style.Procs)
 					{
-						if (proc.Item2 == player.CharacterClass.ID)
+						if (proc.Item2 == player.PlayerClass.ID)
 						{
 							hasClassSpecificProc = true;
 							break;
@@ -852,7 +852,7 @@ namespace DOL.GS.Styles
 					foreach ((Spell, int, int) proc in style.Procs)
 					{
 						// RR4: we added all the procs to the style, now it's time to check for class ID
-						if (hasClassSpecificProc && proc.Item2 != player.CharacterClass.ID) continue;
+						if (hasClassSpecificProc && proc.Item2 != player.PlayerClass.ID) continue;
 						else if (!hasClassSpecificProc && proc.Item2 != 0) continue;
 
 						Spell spell = proc.Item1;

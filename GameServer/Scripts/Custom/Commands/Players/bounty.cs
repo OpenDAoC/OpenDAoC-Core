@@ -56,7 +56,7 @@ namespace DOL.GS.Scripts
                     return;
                 }
 
-                var playerLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(client.Player).Days;
+                var playerLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(client.Player).Days;
 
                 if (playerLoyalty < minLoyalty)
                 {

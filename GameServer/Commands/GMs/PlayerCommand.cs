@@ -98,7 +98,7 @@ namespace DOL.GS.Commands
                                                EChatLoc.CL_SystemWindow);
 
                         // Log change
-                        AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterRename, oldName, args[2]);
+                        AuditMgr.AddAuditEntry(client, EAuditType.Character, EAuditSubType.CharacterRename, oldName, args[2]);
 
                         player.SaveIntoDatabase();
                         break;
@@ -1961,7 +1961,7 @@ namespace DOL.GS.Commands
 
                         foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
                         {
-                            text.Add(p.Name + " " + p.Level + " " + p.CharacterClass.Name);
+                            text.Add(p.Name + " " + p.Level + " " + p.PlayerClass.Name);
                         }
 
                         client.Out.SendCustomTextWindow("Group Members", text);
@@ -2127,9 +2127,9 @@ namespace DOL.GS.Commands
                                 {
                                     IList<string> classList = new List<string>();
 
-                                    foreach (ECharacterClass cl in Enum.GetValues(typeof(ECharacterClass)))
+                                    foreach (EPlayerClass cl in Enum.GetValues(typeof(EPlayerClass)))
                                     {
-                                        classList.Add(Enum.GetName(typeof(ECharacterClass), cl) + " - " + (int)cl);
+                                        classList.Add(Enum.GetName(typeof(EPlayerClass), cl) + " - " + (int)cl);
                                     }
 
                                     client.Player.Out.SendCustomTextWindow("[Class IDs List]", classList);
@@ -2147,7 +2147,7 @@ namespace DOL.GS.Commands
                                     {
                                         SetClass(targetPlayer, valueInt);
                                     }
-                                    else if (Enum.TryParse(args[2], true, out ECharacterClass valueEnum))
+                                    else if (Enum.TryParse(args[2], true, out EPlayerClass valueEnum))
                                     {
                                         SetClass(targetPlayer, (byte)valueEnum);
                                     }
@@ -2227,7 +2227,7 @@ namespace DOL.GS.Commands
 			var text = new List<string>();
 			text.Add("  - Name Lastname : " + player.Name + " " + player.LastName);
 			text.Add("  - Realm Level Class : " + GlobalConstants.RealmToName(player.Realm) + " " + player.Level + " " +
-					 player.CharacterClass.Name);
+					 player.PlayerClass.Name);
 			text.Add(" ");
 			text.Add(MoneyMgr.GetShortString(player.GetCurrentMoney()));
 			text.Add(" ");
@@ -2317,7 +2317,7 @@ namespace DOL.GS.Commands
 			text.Add(" ");
 			text.Add("PLAYER INFORMATION (Client # " + player.Client.SessionID + ", " + player.GetType().FullName + ")");
 			text.Add("  - Name Lastname : " + player.Name + " " + player.LastName);
-			text.Add("  - Realm Level Gender Class : " + GlobalConstants.RealmToName(player.Realm) + " " + player.Level + " " + player.Gender + " " + player.CharacterClass.Name + " (" + player.CharacterClass.ID + ")");
+			text.Add("  - Realm Level Gender Class : " + GlobalConstants.RealmToName(player.Realm) + " " + player.Level + " " + player.Gender + " " + player.PlayerClass.Name + " (" + player.PlayerClass.ID + ")");
 			text.Add("  - Guild : " + player.GuildName + " " + (player.GuildRank != null ? "Rank: " + player.GuildRank.RankLevel.ToString() : ""));
 			text.Add("  - XPs/RPs/BPs : " + player.Experience + " xp, " + player.RealmPoints + " rp, " + player.BountyPoints + " bp");
 

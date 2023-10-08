@@ -27,9 +27,9 @@ namespace DOL.GS.Trainer
 	[NPCGuildScript("Nightshade Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Nightshade Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class NightshadeTrainer : GameTrainer
 	{
-		public override ECharacterClass TrainedClass
+		public override EPlayerClass TrainedClass
 		{
-			get { return ECharacterClass.Nightshade; }
+			get { return EPlayerClass.Nightshade; }
 		}
 
 		public NightshadeTrainer() : base()
@@ -46,7 +46,7 @@ namespace DOL.GS.Trainer
  			if (!base.Interact(player)) return false;
 								
 			// check if class matches.				
-			if (player.CharacterClass.ID == (int) TrainedClass)
+			if (player.PlayerClass.ID == (int) TrainedClass)
 			{
 				player.Out.SendMessage(this.Name + " says, \"Here for a bit of training, " + player.Name + "? Step up and get it!\"", EChatType.CT_System, EChatLoc.CL_PopupWindow); //popup window on live
 			} 
@@ -84,7 +84,7 @@ namespace DOL.GS.Trainer
 			case "Nightshade":
 				// promote player to other class
 				if (CanPromotePlayer(player)) {
-					PromotePlayer(player, (int)ECharacterClass.Nightshade, "Some would think you mad, choosing to walk through life as a Nightshade. It is not meant for everyone, but I think it will suit you, " + source.GetName(0, false) + ". Here, from me, a small gift to aid you in your journeys.", null);	// TODO: gifts
+					PromotePlayer(player, (int)EPlayerClass.Nightshade, "Some would think you mad, choosing to walk through life as a Nightshade. It is not meant for everyone, but I think it will suit you, " + source.GetName(0, false) + ". Here, from me, a small gift to aid you in your journeys.", null);	// TODO: gifts
 					//"You receive  Nightshade Initiate Boots from Lierna!"
 				}
 				break;

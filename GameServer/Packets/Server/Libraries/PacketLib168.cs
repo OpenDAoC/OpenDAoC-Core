@@ -678,7 +678,7 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 
-			if (playerToCreate.CharacterClass.ID == (int) ECharacterClass.Warlock)
+			if (playerToCreate.PlayerClass.ID == (int) EPlayerClass.Warlock)
 			{
 				/*
 				ChamberEffect ce = (ChamberEffect)playerToCreate.EffectList.GetOfType(typeof(ChamberEffect));
@@ -1300,7 +1300,7 @@ namespace DOL.GS.PacketHandler
 						}
 						pak.WriteByte(player.Level);
 						pak.WritePascalString(player.Name);
-						pak.WriteString(player.CharacterClass.Name, 4);
+						pak.WriteString(player.PlayerClass.Name, 4);
 						//Dinberg:Instances - have to write zoneskinID, it uses this to display the text 'x is in y'.
 						if (player.CurrentZone != null)
 							pak.WriteByte((byte) player.CurrentZone.ZoneSkinID);
@@ -1627,7 +1627,7 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte(0);
 						}
 						pak.WritePascalString(updateLiving.Name);
-						pak.WritePascalString(updateLiving is GamePlayer ? ((GamePlayer) updateLiving).CharacterClass.Name : "NPC");
+						pak.WritePascalString(updateLiving is GamePlayer ? ((GamePlayer) updateLiving).PlayerClass.Name : "NPC");
 						//classname
 					}
 				}
@@ -2123,11 +2123,11 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(player.GetDisplayLevel(m_gameClient.Player)); //level
 				pak.WritePascalString(player.Name); // player name
 				pak.WriteByte((byte) (player.MaxHealth >> 8)); // maxhealth high byte ?
-				pak.WritePascalString(player.CharacterClass.Name); // class name
+				pak.WritePascalString(player.PlayerClass.Name); // class name
 				pak.WriteByte((byte) (player.MaxHealth & 0xFF)); // maxhealth low byte ?
-				pak.WritePascalString( /*"The "+*/player.CharacterClass.Profession); // Profession
+				pak.WritePascalString( /*"The "+*/player.PlayerClass.Profession); // Profession
 				pak.WriteByte(0x00); //unk
-                pak.WritePascalString(player.CharacterClass.GetTitle(player, player.Level)); // player level
+                pak.WritePascalString(player.PlayerClass.GetTitle(player, player.Level)); // player level
 
 				//todo make function to calcule realm rank
 				//client.Player.RealmPoints
@@ -2135,7 +2135,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte) player.RealmLevel); //urealm rank
 				pak.WritePascalString(player.RealmRankTitle(player.Client.Account.Language)); // Realm title
 				pak.WriteByte((byte) player.RealmSpecialtyPoints); // realm skill points
-				pak.WritePascalString(player.CharacterClass.BaseName); // base class
+				pak.WritePascalString(player.PlayerClass.BaseName); // base class
 				pak.WriteByte((byte) (HouseMgr.GetHouseNumberByPlayer(player) >> 8)); // personal house high byte
 				pak.WritePascalString(player.GuildName); // Guild name
 				pak.WriteByte((byte) (HouseMgr.GetHouseNumberByPlayer(player) & 0xFF)); // personal house low byte
@@ -2624,7 +2624,7 @@ namespace DOL.GS.PacketHandler
 			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.TrainerWindow)))
 			{
 				// Get Player CL Spec
-				var clspec = player.GetSpecList().Where(sp => sp is LiveChampionsSpecialization).Cast<LiveChampionsSpecialization>().FirstOrDefault();
+				var clspec = player.GetSpecList().Where(sp => sp is LiveChampionLevelsSpecialization).Cast<LiveChampionLevelsSpecialization>().FirstOrDefault();
 
 				// check if the tree can be used
 				List<Tuple<MiniLineSpecialization, List<Tuple<Skill, byte>>>> tree = null;
@@ -2724,7 +2724,7 @@ namespace DOL.GS.PacketHandler
 
 
 			// send RA usable by this class
-			var raList = SkillBase.GetClassRealmAbilities(m_gameClient.Player.CharacterClass.ID).Where(ra => !(ra is RR5RealmAbility));
+			var raList = SkillBase.GetClassRealmAbilities(m_gameClient.Player.PlayerClass.ID).Where(ra => !(ra is RR5RealmAbility));
 			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.TrainerWindow)))
 			{
 				pak.WriteByte((byte) raList.Count());
@@ -3975,7 +3975,7 @@ namespace DOL.GS.PacketHandler
                 player = living as GamePlayer;
 
                 if (player != null)
-                    pak.WriteByte(player.CharacterClass.HealthPercentGroupWindow);
+                    pak.WriteByte(player.PlayerClass.HealthPercentGroupWindow);
                 else
                     pak.WriteByte(living.HealthPercent);
 

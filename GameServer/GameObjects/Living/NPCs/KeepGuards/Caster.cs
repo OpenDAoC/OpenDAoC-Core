@@ -30,7 +30,7 @@ namespace DOL.GS.Keeps
             return base.GetArmorAbsorb(slot) - 0.05;
         }
 
-        protected override ICharacterClass GetClass()
+        protected override IPlayerClass GetClass()
         {
             if (ModelRealm == ERealm.Albion)
                 return new ClassWizard();
@@ -39,7 +39,7 @@ namespace DOL.GS.Keeps
             else if (ModelRealm == ERealm.Hibernia)
                 return new ClassEldritch();
 
-            return new DefaultCharacterClass();
+            return new DefaultPlayerClass();
         }
 
         protected override KeepGuardBrain GetBrain()

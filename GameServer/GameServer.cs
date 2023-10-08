@@ -171,7 +171,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the server PlayerManager
 		/// </summary>
-		public PlayerManager PlayerManager { get; protected set; }
+		public PlayerMgr PlayerManager { get; protected set; }
 
 		/// <summary>
 		/// Gets the server NpcManager
@@ -639,7 +639,7 @@ namespace DOL.GS
 
 				//---------------------------------------------------------------
 				//Try to initialize the PlayerManager
-				if (!InitComponent(() => PlayerManager = new PlayerManager(this), "Player Manager Initialization"))
+				if (!InitComponent(() => PlayerManager = new PlayerMgr(this), "Player Manager Initialization"))
 					return false;
 
 				//---------------------------------------------------------------

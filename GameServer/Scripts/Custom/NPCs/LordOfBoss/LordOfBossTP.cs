@@ -29,7 +29,7 @@ namespace DOL.GS {
                 return false;
             }
 
-            player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I can teleport you to our [boss arena] if you think you stand a chance..", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+            player.Out.SendMessage("Greetings, " + player.PlayerClass.Name + ".\n\n" + "I can teleport you to our [boss arena] if you think you stand a chance..", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
             return true;
         }
         public override bool WhisperReceive(GameLiving source, string str)

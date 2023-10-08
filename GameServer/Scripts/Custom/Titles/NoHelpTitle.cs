@@ -3,7 +3,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.PlayerTitles
 {
-    public class NoHelpTitle : SimplePlayerTitle
+    public class NoHelpTitle : APlayerTitle
     {
 
         public override string GetDescription(GamePlayer player)

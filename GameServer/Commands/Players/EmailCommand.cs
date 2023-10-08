@@ -49,7 +49,7 @@ public class EmailCommand : ACommandHandler, ICommandHandler
 				GameServer.Database.SaveObject(obj.Client.Account); // Save account.
 
 				// Log change
-				AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountEmailChange, oldEmail, EmailAddy);
+				AuditMgr.AddAuditEntry(client, EAuditType.Account, EAuditSubType.AccountEmailChange, oldEmail, EmailAddy);
 
 				client.Out.SendMessage("Contact e-mail address set to " +
 				                       obj.Client.Account.Mail + ". Thanks!",

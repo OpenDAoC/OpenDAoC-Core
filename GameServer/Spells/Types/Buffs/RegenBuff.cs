@@ -45,10 +45,10 @@ namespace DOL.GS.Spells
 	{
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-            if (target is GamePlayer && (((GamePlayer)target).CharacterClass.ID == (int)ECharacterClass.Vampiir
-                || ((GamePlayer)target).CharacterClass.ID == (int)ECharacterClass.MaulerAlb
-                || ((GamePlayer)target).CharacterClass.ID == (int)ECharacterClass.MaulerMid
-                || ((GamePlayer)target).CharacterClass.ID == (int)ECharacterClass.MaulerHib)) { MessageToCaster("This spell has no effect on this class!", EChatType.CT_Spell); return; }
+            if (target is GamePlayer && (((GamePlayer)target).PlayerClass.ID == (int)EPlayerClass.Vampiir
+                || ((GamePlayer)target).PlayerClass.ID == (int)EPlayerClass.MaulerAlb
+                || ((GamePlayer)target).PlayerClass.ID == (int)EPlayerClass.MaulerMid
+                || ((GamePlayer)target).PlayerClass.ID == (int)EPlayerClass.MaulerHib)) { MessageToCaster("This spell has no effect on this class!", EChatType.CT_Spell); return; }
 			base.ApplyEffectOnTarget(target);
 		}
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }

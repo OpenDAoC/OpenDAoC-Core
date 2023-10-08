@@ -1215,7 +1215,7 @@ namespace DOL.GS.Quests.Albion
 							Ferowl.SayTo(player, "Morgana is probably performing her rital at the fallen tower in Lyonesse. To get there follow the Telamon road past the majority of the Danaoian Farmers, until you see the [fallen tower].");
 							break;
 						case "fallen tower":
-							Ferowl.SayTo(player, "Be wise and don't take any unneccessary risks by going directly on Morgana , you might be a strong " + player.CharacterClass.Name + ", but you are no match for Morgana herself. Kill her demons and return to me, we will then try to take care of the rest, once her time has come.");
+							Ferowl.SayTo(player, "Be wise and don't take any unneccessary risks by going directly on Morgana , you might be a strong " + player.PlayerClass.Name + ", but you are no match for Morgana herself. Kill her demons and return to me, we will then try to take care of the rest, once her time has come.");
 							break;
 
 							// once the deomns are dead:
@@ -1267,9 +1267,9 @@ namespace DOL.GS.Quests.Albion
 			if (player.IsDoingQuest(typeof (Academy_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) ECharacterClass.Minstrel &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Wizard &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Sorcerer)
+			if (player.PlayerClass.ID != (byte) EPlayerClass.Minstrel &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Wizard &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Sorcerer)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -1439,7 +1439,7 @@ namespace DOL.GS.Quests.Albion
 		{
 			RemoveItem(Ferowl, m_questPlayer, sealed_pouch);
 
-			if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Minstrel)
+			if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Minstrel)
 			{
 				GiveItem(m_questPlayer, MinstrelEpicBoots);
 				GiveItem(m_questPlayer, MinstrelEpicHelm);
@@ -1448,7 +1448,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, MinstrelEpicVest);
 				GiveItem(m_questPlayer, MinstrelEpicLegs);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Wizard)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Wizard)
 			{
 				GiveItem(m_questPlayer, WizardEpicBoots);
 				GiveItem(m_questPlayer, WizardEpicHelm);
@@ -1457,7 +1457,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, WizardEpicArms);
 				GiveItem(m_questPlayer, WizardEpicLegs);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Sorcerer)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Sorcerer)
 			{
 				GiveItem(m_questPlayer, SorcerorEpicBoots);
 				GiveItem(m_questPlayer, SorcerorEpicHelm);

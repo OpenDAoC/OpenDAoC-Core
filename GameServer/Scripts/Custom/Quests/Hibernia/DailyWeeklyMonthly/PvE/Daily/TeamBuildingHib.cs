@@ -356,14 +356,14 @@ namespace DOL.GS.DailyQuest.Hibernia
 					//update class counters
 					if (member is GamePlayer gplayer)
 					{
-						if (gplayer.CharacterClass is ClassGuardian)
+						if (gplayer.PlayerClass is ClassGuardian)
 							HasGuardian = true;
-						if (gplayer.CharacterClass is ClassNaturalist)
+						if (gplayer.PlayerClass is ClassNaturalist)
 							HasNaturalist = true;
-						if (gplayer.CharacterClass is ClassStalker)
+						if (gplayer.PlayerClass is ClassStalker)
 							HasStalker = true;
-						if (gplayer.CharacterClass is ClassMagician ||
-						    gplayer.CharacterClass is ClassForester)
+						if (gplayer.PlayerClass is ClassMagician ||
+						    gplayer.PlayerClass is ClassForester)
 							HasMagicianForester = true;
 					}
 				}

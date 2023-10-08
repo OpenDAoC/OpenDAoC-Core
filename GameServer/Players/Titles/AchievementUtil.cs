@@ -5,9 +5,9 @@ using DOL.Database;
 
 namespace DOL.GS;
 
-public class AchievementUtils
+public class AchievementUtil
 {
-    public abstract class AchievementNames
+    public abstract class AchievementName
     {
         public const string Orbs_Earned = "Lifetime Orbs Earned";
         
@@ -58,34 +58,34 @@ public class AchievementUtils
         List<string> achievements = new List<string>();
         
         //general
-        achievements.Add(AchievementNames.Orbs_Earned);
+        achievements.Add(AchievementName.Orbs_Earned);
         
         //pve
-        achievements.Add(AchievementNames.Dragon_Kills);
-        achievements.Add(AchievementNames.Epic_Boss_Kills);
-        achievements.Add(AchievementNames.Legion_Kills);
+        achievements.Add(AchievementName.Dragon_Kills);
+        achievements.Add(AchievementName.Epic_Boss_Kills);
+        achievements.Add(AchievementName.Legion_Kills);
         
         //rvr
-        achievements.Add(AchievementNames.Realm_Rank);
-        achievements.Add(AchievementNames.Relic_Captures);
-        achievements.Add(AchievementNames.Keeps_Taken);
+        achievements.Add(AchievementName.Realm_Rank);
+        achievements.Add(AchievementName.Relic_Captures);
+        achievements.Add(AchievementName.Keeps_Taken);
         
-        achievements.Add(AchievementNames.Players_Killed);
-        achievements.Add(AchievementNames.Alb_Players_Killed);
-        achievements.Add(AchievementNames.Hib_Players_Killed);
-        achievements.Add(AchievementNames.Mid_Players_Killed);
+        achievements.Add(AchievementName.Players_Killed);
+        achievements.Add(AchievementName.Alb_Players_Killed);
+        achievements.Add(AchievementName.Hib_Players_Killed);
+        achievements.Add(AchievementName.Mid_Players_Killed);
         
-        achievements.Add(AchievementNames.Alb_Deathblows);
-        achievements.Add(AchievementNames.Hib_Deathblows);
-        achievements.Add(AchievementNames.Mid_Deathblows);
+        achievements.Add(AchievementName.Alb_Deathblows);
+        achievements.Add(AchievementName.Hib_Deathblows);
+        achievements.Add(AchievementName.Mid_Deathblows);
         
-        achievements.Add(AchievementNames.Solo_Kills);
-        achievements.Add(AchievementNames.Alb_Solo_Kills);
-        achievements.Add(AchievementNames.Hib_Solo_Kills);
-        achievements.Add(AchievementNames.Mid_Solo_Kills);
+        achievements.Add(AchievementName.Solo_Kills);
+        achievements.Add(AchievementName.Alb_Solo_Kills);
+        achievements.Add(AchievementName.Hib_Solo_Kills);
+        achievements.Add(AchievementName.Mid_Solo_Kills);
 
         //crafting
-        achievements.Add(AchievementNames.Mastered_Crafts);
+        achievements.Add(AchievementName.Mastered_Crafts);
 
         return achievements;
     }

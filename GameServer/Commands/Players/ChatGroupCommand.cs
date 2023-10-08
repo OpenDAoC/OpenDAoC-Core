@@ -95,7 +95,7 @@ public class ChatGroupCommand : ACommandHandler, ICommandHandler
 							text.Append(">");
 						}
 						text.Append(" (");
-						text.Append(player.CharacterClass.Name);
+						text.Append(player.PlayerClass.Name);
 						text.Append(")");
 						client.Out.SendMessage(text.ToString(), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						//TODO: make function formatstring

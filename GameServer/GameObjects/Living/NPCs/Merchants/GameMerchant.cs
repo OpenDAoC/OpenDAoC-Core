@@ -119,7 +119,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -174,7 +174,7 @@ namespace DOL.GS
 			//Get the template
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -239,7 +239,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			DbItemTemplate template = TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -537,7 +537,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -705,7 +705,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -861,7 +861,7 @@ namespace DOL.GS
 			int pagenumber = itemSlot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = itemSlot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -883,11 +883,11 @@ namespace DOL.GS
 				totalValue = number * template.Price;
 			}
 
-			var mobRequirement = KillCreditUtils.GetRequiredKillMob(template.Id_nb);
+			var mobRequirement = KillCreditUtil.GetRequiredKillMob(template.Id_nb);
 
 			if (mobRequirement != null && player.Client.Account.PrivLevel == 1)
 			{
-				var hasCredit = AchievementUtils.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
+				var hasCredit = AchievementUtil.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
 
 				if (!hasCredit)
 				{
@@ -896,7 +896,7 @@ namespace DOL.GS
 				}
 			}
 
-			var loyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+			var loyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
 			if (loyalty.Days > 0)
 			{
 				var discountAmount = (.25 * (loyalty.Days > 30 ? 30 : loyalty.Days) / 30);
@@ -960,7 +960,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -982,11 +982,11 @@ namespace DOL.GS
 				totalValue = number * template.Price;
 			}
 
-			var mobRequirement = KillCreditUtils.GetRequiredKillMob(template.Id_nb);
+			var mobRequirement = KillCreditUtil.GetRequiredKillMob(template.Id_nb);
 
 			if (mobRequirement != null && player.Client.Account.PrivLevel == 1)
 			{
-				var hasCredit = AchievementUtils.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
+				var hasCredit = AchievementUtil.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
 
 				if (!hasCredit)
 				{
@@ -995,7 +995,7 @@ namespace DOL.GS
 				}
 			}
 
-			var loyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+			var loyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
 			if (loyalty.Days > 0)
 			{
 				var discountAmount = (.25 * (loyalty.Days > 30 ? 30 : loyalty.Days) / 30);

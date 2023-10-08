@@ -265,7 +265,7 @@ namespace DOL.GS.Quests.Hibernia
                 else
                 {
                     Theresa.SayTo(player,
-                        $"Hello {player.CharacterClass.Name}. For many years there has been war in our areas and I am afraid that those days will come back. " +
+                        $"Hello {player.PlayerClass.Name}. For many years there has been war in our areas and I am afraid that those days will come back. " +
                         $"My father hasn't been to Tir na Nog since before the wars. I miss him dearly, and I hope he's doing well. Could you [help me] to find him?");
                 }
             }
@@ -375,7 +375,7 @@ namespace DOL.GS.Quests.Hibernia
                             break;
                         case 2:
                             Karl.SayTo(player,
-                                $"Hello {player.CharacterClass.Name}, you are very brave to come here. This lake swarms with monsters and vermin, but I am happy for every visitor to [this place].");
+                                $"Hello {player.PlayerClass.Name}, you are very brave to come here. This lake swarms with monsters and vermin, but I am happy for every visitor to [this place].");
                             break;
                         case 3:
                             Karl.SayTo(player,

@@ -45,7 +45,7 @@ public class LfgCommand : ACommandHandler, ICommandHandler
     private static void Broadcast(GamePlayer player, string message)
     {
         foreach (GamePlayer otherPlayer in ClientService.GetPlayersForRealmWideChatMessage(player))
-            otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.LFG.Message", $"{player.Name} ({player.Level}, {player.CharacterClass.Name})", message), EChatType.CT_LFG, EChatLoc.CL_ChatWindow);
+            otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.LFG.Message", $"{player.Name} ({player.Level}, {player.PlayerClass.Name})", message), EChatType.CT_LFG, EChatLoc.CL_ChatWindow);
 
         if (Properties.DISCORD_ACTIVE)
             WebhookMessage.LogChatMessage(player, EChatType.CT_LFG, message);

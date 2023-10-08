@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
             GamePlayer player = caster as GamePlayer;
 
             #region Alb
-            if (player.CharacterClass.ID == (int)ECharacterClass.Armsman)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Armsman)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -75,7 +75,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Friar)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Friar)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -85,7 +85,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Heretic)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Heretic)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -95,7 +95,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Infiltrator)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Infiltrator)
             {
                 m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? Slash;
                 items.Add(GameInventoryItem.Create(m_SunSlash));
@@ -105,7 +105,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Mercenary)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Mercenary)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -118,7 +118,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Minstrel)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Minstrel)
             {
                 m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? Slash;
                 items.Add(GameInventoryItem.Create(m_SunSlash));
@@ -128,7 +128,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Paladin)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Paladin)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -144,7 +144,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Reaver)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Reaver)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? Crush;
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -160,7 +160,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Scout)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Scout)
             {
                 m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? Slash;
                 items.Add(GameInventoryItem.Create(m_SunSlash));
@@ -173,7 +173,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.MaulerAlb)
+            if (player.PlayerClass.ID == (int)EPlayerClass.MaulerAlb)
             {
                 m_SunMFist = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MFist") ?? MFist;
                 items.Add(GameInventoryItem.Create(m_SunMFist));
@@ -185,7 +185,7 @@ namespace DOL.GS.Spells
             #endregion Alb
 
             #region Mid
-            if (player.CharacterClass.ID == (int)ECharacterClass.Berserker)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Berserker)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushM; //
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -207,7 +207,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Hunter)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Hunter)
             {
                 m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
@@ -220,7 +220,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Savage)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Savage)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushM; //
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -236,7 +236,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Shadowblade)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Shadowblade)
             {
                 m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
@@ -255,7 +255,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Skald)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Skald)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushM; //
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -277,7 +277,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Thane)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Thane)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushM; //
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -299,7 +299,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Thane)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Thane)
             {
                 m_SunSlash = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashM; //
                 items.Add(GameInventoryItem.Create(m_SunSlash));
@@ -313,7 +313,7 @@ namespace DOL.GS.Spells
             }
 
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Warrior)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Warrior)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushM; //
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -335,7 +335,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.MaulerMid)
+            if (player.PlayerClass.ID == (int)EPlayerClass.MaulerMid)
             {
                 m_SunMFist = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MFist") ?? MFist;
                 items.Add(GameInventoryItem.Create(m_SunMFist));
@@ -348,7 +348,7 @@ namespace DOL.GS.Spells
             #endregion Mid
 
             #region Hib
-            if (player.CharacterClass.ID == (int)ECharacterClass.Bard)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Bard)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -358,7 +358,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Blademaster)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Blademaster)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -371,7 +371,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Champion)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Champion)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -387,7 +387,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Hero)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Hero)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -406,7 +406,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Nightshade)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Nightshade)
             {
                 m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashH; // Blades
                 items.Add(GameInventoryItem.Create(m_SunSlash));
@@ -416,7 +416,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Ranger)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Ranger)
             {
                 m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Slash") ?? SlashH; // Blades
                 items.Add(GameInventoryItem.Create(m_SunSlash));
@@ -429,21 +429,21 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Valewalker)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Valewalker)
             {
                 m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_FlexScythe") ?? Scythe;
                 items.Add(GameInventoryItem.Create(m_SunFlexScytheClaw));
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Valewalker)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Valewalker)
             {
                 m_SunStaff = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Thrust") ?? ThrustH; // Piercing
                 items.Add(GameInventoryItem.Create(m_SunThrust));
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.Warden)
+            if (player.PlayerClass.ID == (int)EPlayerClass.Warden)
             {
                 m_SunCrush = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_Crush") ?? CrushH; // Blunt
                 items.Add(GameInventoryItem.Create(m_SunCrush));
@@ -453,7 +453,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (player.CharacterClass.ID == (int)ECharacterClass.MaulerHib)
+            if (player.PlayerClass.ID == (int)EPlayerClass.MaulerHib)
             {
                 m_SunMFist = GameServer.Database.FindObjectByKey<DbItemTemplate>("Sun_MFist") ?? MFist;
                 items.Add(GameInventoryItem.Create(m_SunMFist));
@@ -465,7 +465,7 @@ namespace DOL.GS.Spells
 
             else
             {
-                player.Out.SendMessage("" + player.CharacterClass.Name + "'s cant Summon Light!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("" + player.PlayerClass.Name + "'s cant Summon Light!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
         }

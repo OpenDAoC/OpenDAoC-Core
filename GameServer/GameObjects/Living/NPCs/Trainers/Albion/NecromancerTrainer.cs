@@ -28,9 +28,9 @@ namespace DOL.GS.Trainer
 	[NPCGuildScript("Necromancer Trainer", ERealm.Albion)]
 	public class NecromancerTrainer : GameTrainer
 	{
-		public override ECharacterClass TrainedClass
+		public override EPlayerClass TrainedClass
 		{
-			get { return ECharacterClass.Necromancer; }
+			get { return EPlayerClass.Necromancer; }
 		}
 
 		public const string WEAPON_ID = "necromancer_item";
@@ -49,7 +49,7 @@ namespace DOL.GS.Trainer
 			
 			// If the player is a necromancer, offer training, if it is a disciple,
 			// offer a promotion. Otherwise send them somewhere else.
-			if (player.CharacterClass.ID == (int)TrainedClass)
+			if (player.PlayerClass.ID == (int)TrainedClass)
 			{
 				OfferTraining(player);
 			}
@@ -102,7 +102,7 @@ namespace DOL.GS.Trainer
 				case "join the temple of arawn":
 					if (CanPromotePlayer(player))
 					{
-						PromotePlayer(player, (int)ECharacterClass.Necromancer,
+						PromotePlayer(player, (int)EPlayerClass.Necromancer,
 						              "Lord Arawn has accepted you into his Temple. Here is his gift to you. Use it well, Disciple.", null);
 						player.ReceiveItem(this, WEAPON_ID);
 					}

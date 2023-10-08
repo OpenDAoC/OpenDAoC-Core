@@ -290,7 +290,7 @@ namespace DOL.GS.Scripts
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.KillsLegion++;
-                player.Achieve(AchievementUtils.AchievementNames.Legion_Kills);
+                player.Achieve(AchievementUtil.AchievementName.Legion_Kills);
                 player.RaiseRealmLoyaltyFloor(1);
                 count++;
             }

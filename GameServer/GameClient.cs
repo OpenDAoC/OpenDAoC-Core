@@ -782,7 +782,7 @@ namespace DOL.GS
 
 						Account.LastDisconnected = DateTime.Now;
 						GameServer.Database.SaveObject(Account);
-						AuditMgr.AddAuditEntry(this, AuditType.Account, AuditSubtype.AccountLogout, "", Account.Name);
+						AuditMgr.AddAuditEntry(this, EAuditType.Account, EAuditSubType.AccountLogout, "", Account.Name);
 					}
 				}
 				catch (Exception e)
@@ -810,7 +810,7 @@ namespace DOL.GS
 				.Append(" session:").Append(SessionID)
 				.Append(" acc:").Append(Account == null ? "null" : Account.Name)
 				.Append(" char:").Append(Player == null ? "null" : Player.Name)
-				.Append(" class:").Append(Player == null ? "null" : Player.CharacterClass.ID.ToString())
+				.Append(" class:").Append(Player == null ? "null" : Player.PlayerClass.ID.ToString())
 				.ToString();
 		}
 	}

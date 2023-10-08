@@ -1,6 +1,6 @@
 namespace DOL.GS;
 
-public class PlayerLoyalty
+public class PlayerLoyaltyUtil
 {
     public int AlbLoyaltyDays;
     public double AlbPercent;
@@ -9,7 +9,7 @@ public class PlayerLoyalty
     public int HibLoyaltyDays;
     public double HibPercent;
 
-    public PlayerLoyalty()
+    public PlayerLoyaltyUtil()
     {
         AlbLoyaltyDays = 0;
         AlbPercent = 0;

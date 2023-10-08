@@ -113,7 +113,7 @@ namespace DOL.GS
             {
                 GamePlayer player = killer as GamePlayer;
                 if(player != null)
-                    BroadcastMessage(String.Format("my kind will avenge me! You won't make out of here alive " + player.CharacterClass.Name+ "!"));
+                    BroadcastMessage(String.Format("my kind will avenge me! You won't make out of here alive " + player.PlayerClass.Name+ "!"));
             }
             var prepareMezz = TempProperties.GetProperty<ECSGameTimer>("kvasir_prepareMezz");//cancel message
             if (prepareMezz != null)
@@ -175,7 +175,7 @@ namespace DOL.AI.Brain
                     GamePlayer player = Body.TargetObject as GamePlayer;
                     if (player != null && player.IsAlive)
                     {
-                        BroadcastMessage(String.Format("To come this far... only to die a horrible death! Huh! Do you not wish that you were taking on a safer endavour at this moment? You realize of course that all of your efforts will come to naught as you are about to die " + player.CharacterClass.Name + "?"));
+                        BroadcastMessage(String.Format("To come this far... only to die a horrible death! Huh! Do you not wish that you were taking on a safer endavour at this moment? You realize of course that all of your efforts will come to naught as you are about to die " + player.PlayerClass.Name + "?"));
                         AggroText = true;
                     }
                 }

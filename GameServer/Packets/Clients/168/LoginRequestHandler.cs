@@ -343,7 +343,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								GameServer.Database.AddObject(playerAccount);
 
 								// Log account creation
-								AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountCreate, "", userName);
+								AuditMgr.AddAuditEntry(client, EAuditType.Account, EAuditSubType.AccountCreate, "", userName);
 							}
 							else
 							{
@@ -372,7 +372,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								client.IsConnected = false;
 
 								// Log failure
-								AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountFailedLogin, "", userName);
+								AuditMgr.AddAuditEntry(client, EAuditType.Account, EAuditSubType.AccountFailedLogin, "", userName);
 								return;
 							}
 
@@ -447,7 +447,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					// }
 
 					// Log entry
-					AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountSuccessfulLogin, "", userName);
+					AuditMgr.AddAuditEntry(client, EAuditType.Account, EAuditSubType.AccountSuccessfulLogin, "", userName);
 				}
 			}
 			catch (DatabaseException e)

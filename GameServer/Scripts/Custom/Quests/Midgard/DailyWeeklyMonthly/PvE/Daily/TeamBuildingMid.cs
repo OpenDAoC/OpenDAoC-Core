@@ -355,13 +355,13 @@ namespace DOL.GS.DailyQuest.Midgard
 					//update class counters
 					if (member is GamePlayer gplayer)
 					{
-						if (gplayer.CharacterClass is ClassViking)
+						if (gplayer.PlayerClass is ClassViking)
 							HasViking = true;
-						if (gplayer.CharacterClass is ClassSeer)
+						if (gplayer.PlayerClass is ClassSeer)
 							HasSeer = true;
-						if (gplayer.CharacterClass is ClassMidgardRogue)
+						if (gplayer.PlayerClass is ClassMidgardRogue)
 							HasRogue = true;
-						if (gplayer.CharacterClass is ClassMystic )
+						if (gplayer.PlayerClass is ClassMystic )
 							HasMystic = true;
 					}
 				}

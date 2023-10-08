@@ -258,7 +258,7 @@ namespace DOL.AI.Brain
 				{
 					if (player != null)
 					{
-						if (player.IsAlive && player.Client.Account.PrivLevel == 1 && player.CharacterClass.ID != 12)
+						if (player.IsAlive && player.Client.Account.PrivLevel == 1 && player.PlayerClass.ID != 12)
 						{
 							if (!DD_Enemys.Contains(player))
 									DD_Enemys.Add(player);

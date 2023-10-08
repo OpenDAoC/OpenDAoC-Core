@@ -2179,13 +2179,13 @@ namespace DOL.GS.Quests.Hibernia
 			if (player.IsDoingQuest(typeof(Harmony_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte)ECharacterClass.Blademaster &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Druid &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Valewalker &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Animist &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Mentalist &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Vampiir &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Bainshee)
+			if (player.PlayerClass.ID != (byte)EPlayerClass.Blademaster &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Druid &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Valewalker &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Animist &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Mentalist &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Vampiir &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Bainshee)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -2334,9 +2334,9 @@ namespace DOL.GS.Quests.Hibernia
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			switch ((ECharacterClass)m_questPlayer.CharacterClass.ID)
+			switch ((EPlayerClass)m_questPlayer.PlayerClass.ID)
 			{
-				case ECharacterClass.Blademaster:
+				case EPlayerClass.Blademaster:
 					{
 						GiveItem(m_questPlayer, BlademasterEpicArms);
 						GiveItem(m_questPlayer, BlademasterEpicBoots);
@@ -2346,7 +2346,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, BlademasterEpicVest);
 						break;
 					}
-				case ECharacterClass.Animist:
+				case EPlayerClass.Animist:
 					{
 						GiveItem(m_questPlayer, AnimistEpicArms);
 						GiveItem(m_questPlayer, AnimistEpicBoots);
@@ -2356,7 +2356,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, AnimistEpicVest);
 						break;
 					}
-				case ECharacterClass.Mentalist:
+				case EPlayerClass.Mentalist:
 					{
 						GiveItem(m_questPlayer, MentalistEpicArms);
 						GiveItem(m_questPlayer, MentalistEpicBoots);
@@ -2366,7 +2366,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, MentalistEpicVest);
 						break;
 					}
-				case ECharacterClass.Druid:
+				case EPlayerClass.Druid:
 					{
 						GiveItem(m_questPlayer, DruidEpicArms);
 						GiveItem(m_questPlayer, DruidEpicBoots);
@@ -2376,7 +2376,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, DruidEpicVest);
 						break;
 					}
-				case ECharacterClass.Valewalker:
+				case EPlayerClass.Valewalker:
 					{
 						GiveItem(m_questPlayer, ValewalkerEpicArms);
 						GiveItem(m_questPlayer, ValewalkerEpicBoots);
@@ -2386,7 +2386,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, ValewalkerEpicVest);
 						break;
 					}
-				case ECharacterClass.Vampiir:
+				case EPlayerClass.Vampiir:
 					{
 						GiveItem(m_questPlayer, VampiirEpicArms);
 						GiveItem(m_questPlayer, VampiirEpicBoots);
@@ -2396,7 +2396,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, VampiirEpicVest);
 						break;
 					}
-				case ECharacterClass.Bainshee:
+				case EPlayerClass.Bainshee:
 					{
 						GiveItem(m_questPlayer, BainsheeEpicArms);
 						GiveItem(m_questPlayer, BainsheeEpicBoots);

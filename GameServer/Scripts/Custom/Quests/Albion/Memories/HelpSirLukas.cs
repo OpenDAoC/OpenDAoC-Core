@@ -352,7 +352,7 @@ namespace DOL.GS.Quests.Albion
 				else
 				{
 					SirLukas.SayTo(player, "Hello "+ player.Name +", I am Sir Lukas, protector of Camelot and Albion. "+
-					                       "I heard from your "+ player.CharacterClass.Name +" Trainer that you are ready to take on tasks from Camelot. \n\n"+
+					                       "I heard from your "+ player.PlayerClass.Name +" Trainer that you are ready to take on tasks from Camelot. \n\n"+
 					                       "I am expecting a delivery from Ellyn Weyland in the Cotswold Forge, which has to be picked up. However I cannot leave my post for many hours.\n" +
 					                       "\nCan you [support Camelot] and get this for me?");
 				}

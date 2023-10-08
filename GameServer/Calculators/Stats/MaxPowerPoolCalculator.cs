@@ -21,9 +21,9 @@ namespace DOL.GS.PropertyCalc
 			if (living is GamePlayer) 
 			{
 				GamePlayer player = living as GamePlayer;
-				EStat manaStat = player.CharacterClass.ManaStat;
+				EStat manaStat = player.PlayerClass.ManaStat;
 
-				if (player.CharacterClass.ManaStat == EStat.UNDEFINED)
+				if (player.PlayerClass.ManaStat == EStat.UNDEFINED)
 				{
 					//Special handling for Vampiirs:
 					/* There is no stat that affects the Vampiir's power pool or the damage done by its power based spells.
@@ -35,7 +35,7 @@ namespace DOL.GS.PropertyCalc
 					 * 
 					 * This means that strength ONLY affects a Vampiir's mana pool
 					 */
-					if (player.CharacterClass.ID == (int)ECharacterClass.Vampiir)
+					if (player.PlayerClass.ID == (int)EPlayerClass.Vampiir)
 					{
 						manaStat = EStat.STR;
 					}

@@ -37,7 +37,7 @@ namespace DOL.GS
 				return false;
 
 			
-			SayTo(player, $"Hello {player.CharacterClass.Name}, you can come to me if you lost your Personal Bind Recall Stone.\n");
+			SayTo(player, $"Hello {player.PlayerClass.Name}, you can come to me if you lost your Personal Bind Recall Stone.\n");
 
 			if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv) == 0)
 			{

@@ -647,7 +647,7 @@ namespace DOL.GS
 			}
 
 			var divisorMod = 4;
-			var loyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player).Days;
+			var loyalDays = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player).Days;
 			if ( loyalDays > 30) divisorMod++;
 			if ( loyalDays > 20) divisorMod++;
 			if ( loyalDays > 10) divisorMod++;

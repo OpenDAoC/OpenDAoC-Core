@@ -29,9 +29,9 @@ namespace DOL.GS.Trainer
 	[NPCGuildScript("Valkyrie Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Valkyrie Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ValkyrieTrainer : GameTrainer
 	{
-		public override ECharacterClass TrainedClass
+		public override EPlayerClass TrainedClass
 		{
-			get { return ECharacterClass.Valkyrie; }
+			get { return EPlayerClass.Valkyrie; }
 		}
 
 		public const string WEAPON_ID1 = "valkyrie_item_sword";
@@ -48,7 +48,7 @@ namespace DOL.GS.Trainer
 			if (!base.Interact(player)) return false;
 
 			// check if class matches.
-			if (player.CharacterClass.ID == (int)TrainedClass)
+			if (player.PlayerClass.ID == (int)TrainedClass)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "ValkyrieTrainer.Interact.Text2", this.Name), EChatType.CT_System, EChatLoc.CL_ChatWindow);
 			}
@@ -89,7 +89,7 @@ namespace DOL.GS.Trainer
 				// promote player to other class
 				if (CanPromotePlayer(player))
 				{
-					PromotePlayer(player, (int)ECharacterClass.Valkyrie, LanguageMgr.GetTranslation(player.Client.Account.Language, "ValkyrieTrainer.WhisperReceive.Text1"), null);
+					PromotePlayer(player, (int)EPlayerClass.Valkyrie, LanguageMgr.GetTranslation(player.Client.Account.Language, "ValkyrieTrainer.WhisperReceive.Text1"), null);
 				}
 			}
 			else if ((player.Inventory.GetFirstItemByID(WEAPON_ID1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) == null) &&

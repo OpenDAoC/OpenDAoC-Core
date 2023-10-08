@@ -27,9 +27,9 @@ namespace DOL.GS.Trainer
 	[NPCGuildScript("Warrior Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Warrior Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class WarriorTrainer : GameTrainer
 	{
-		public override ECharacterClass TrainedClass
+		public override EPlayerClass TrainedClass
 		{
-			get { return ECharacterClass.Warrior; }
+			get { return EPlayerClass.Warrior; }
 		}
 
         public const string WEAPON_ID = "warrior_item";
@@ -44,7 +44,7 @@ namespace DOL.GS.Trainer
  			if (!base.Interact(player)) return false;
 								
 			// check if class matches.				
-			if (player.CharacterClass.ID == (int)TrainedClass)
+			if (player.PlayerClass.ID == (int)TrainedClass)
 			{
 				OfferTraining(player);
 			}
@@ -82,7 +82,7 @@ namespace DOL.GS.Trainer
 			case "join the House of Tyr":
 				// promote player to other class
 				if (CanPromotePlayer(player)) {
-					PromotePlayer(player, (int)ECharacterClass.Warrior, "Welcome young Warrior! May your time in Midgard army be rewarding!", null);
+					PromotePlayer(player, (int)EPlayerClass.Warrior, "Welcome young Warrior! May your time in Midgard army be rewarding!", null);
                     player.ReceiveItem(this, WEAPON_ID);
 				}
 				break;

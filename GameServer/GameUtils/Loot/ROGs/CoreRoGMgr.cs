@@ -32,7 +32,7 @@ namespace DOL.GS
             {
                 GamePlayer player = living as GamePlayer;
                 ERealm realm = player.Realm;
-                ECharacterClass charclass = (ECharacterClass)player.CharacterClass.ID;
+                EPlayerClass charclass = (EPlayerClass)player.PlayerClass.ID;
 
                 GeneratedUniqueItem item = null;
                 item = new GeneratedUniqueItem(realm, charclass, itemLevel);
@@ -73,7 +73,7 @@ namespace DOL.GS
             {
                 GamePlayer player = living as GamePlayer;
                 ERealm realm = player.Realm;
-                ECharacterClass charclass = (ECharacterClass)player.CharacterClass.ID;
+                EPlayerClass charclass = (EPlayerClass)player.PlayerClass.ID;
 
                 GeneratedUniqueItem item = null;
                 item = new GeneratedUniqueItem(realm, charclass, (byte)(living.Level+1), minimumUtility);
@@ -95,7 +95,7 @@ namespace DOL.GS
             {
                 GamePlayer player = living as GamePlayer;
                 ERealm realm = player.Realm;
-                ECharacterClass charclass = (ECharacterClass) player.CharacterClass.ID;
+                EPlayerClass charclass = (EPlayerClass) player.PlayerClass.ID;
 
                 GeneratedUniqueItem item = null;
                 
@@ -138,7 +138,7 @@ namespace DOL.GS
                 var player = living as GamePlayer;
                 
 
-                double numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player) != null ? LoyaltyManager.GetPlayerRealmLoyalty(player).Days : 0;
+                double numCurrentLoyalDays = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player) != null ? RealmLoyaltyMgr.GetPlayerRealmLoyalty(player).Days : 0;
 
                 if(numCurrentLoyalDays >= 30)
                 {
@@ -179,7 +179,7 @@ namespace DOL.GS
 
                 DbInventoryItem item = GameInventoryItem.Create(orbs);
 
-                double numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player) != null ? LoyaltyManager.GetPlayerRealmLoyalty(player).Days : 0;
+                double numCurrentLoyalDays = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player) != null ? RealmLoyaltyMgr.GetPlayerRealmLoyalty(player).Days : 0;
 
                 if(numCurrentLoyalDays >= 30)
                 {
@@ -212,7 +212,7 @@ namespace DOL.GS
 
                 }
                 
-                player.Achieve(AchievementUtils.AchievementNames.Orbs_Earned, totOrbs);
+                player.Achieve(AchievementUtil.AchievementName.Orbs_Earned, totOrbs);
             }
         }
         
@@ -272,11 +272,11 @@ namespace DOL.GS
                     }
 
                 }
-                player.Achieve(AchievementUtils.AchievementNames.Carapace_Farmed, amount);
+                player.Achieve(AchievementUtil.AchievementName.Carapace_Farmed, amount);
             }
         }
 
-        public static GeneratedUniqueItem GenerateMonsterLootROG(ERealm realm, ECharacterClass charClass, byte level, bool isFrontierKill)
+        public static GeneratedUniqueItem GenerateMonsterLootROG(ERealm realm, EPlayerClass charClass, byte level, bool isFrontierKill)
         {
             GeneratedUniqueItem item = null;
             

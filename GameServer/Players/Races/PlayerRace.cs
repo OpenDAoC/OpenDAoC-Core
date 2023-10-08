@@ -1,35 +1,16 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DOL.GS.Realm
 {
 	public class PlayerRace
 	{
 		public ERace ID { get; }
-		public virtual eDAoCExpansion Expansion { get; }
+		public virtual EDAoCExpansion Expansion { get; }
 		public ERealm Realm { get; }
 		private ELivingModel FemaleModel { get; }
 		private ELivingModel MaleModel { get; }
 
-		private PlayerRace(ERace race, ERealm realm, eDAoCExpansion expansion, ELivingModel maleModel, ELivingModel femaleModel)
+		private PlayerRace(ERace race, ERealm realm, EDAoCExpansion expansion, ELivingModel maleModel, ELivingModel femaleModel)
         {
 			ID = race;
 			Realm = realm;
@@ -40,27 +21,27 @@ namespace DOL.GS.Realm
 
 		private static Dictionary<ERace, PlayerRace> races = new Dictionary<ERace, PlayerRace>()
 		{
-			{ ERace.Briton, new PlayerRace( ERace.Briton, ERealm.Albion, eDAoCExpansion.Classic, ELivingModel.BritonMale, ELivingModel.BritonFemale) } ,
-			{ ERace.Highlander, new PlayerRace(ERace.Highlander, ERealm.Albion, eDAoCExpansion.Classic, ELivingModel.HighlanderMale, ELivingModel.HighlanderFemale) } ,
-			{ ERace.Saracen, new PlayerRace(ERace.Saracen, ERealm.Albion, eDAoCExpansion.Classic, ELivingModel.SaracenMale, ELivingModel.SaracenFemale) } ,
-			{ ERace.Avalonian, new PlayerRace(ERace.Avalonian, ERealm.Albion, eDAoCExpansion.Classic, ELivingModel.AvalonianMale, ELivingModel.AvalonianFemale) } ,
-			{ ERace.Inconnu, new PlayerRace(ERace.Inconnu, ERealm.Albion, eDAoCExpansion.ShroudedIsles, ELivingModel.InconnuMale, ELivingModel.InconnuFemale) } ,
-			{ ERace.HalfOgre, new PlayerRace(ERace.HalfOgre, ERealm.Albion, eDAoCExpansion.Catacombs, ELivingModel.HalfOgreMale, ELivingModel.HalfOgreFemale) } ,
-			{ ERace.Korazh, new PlayerRace(ERace.Korazh, ERealm.Albion, eDAoCExpansion.LabyrinthOfTheMinotaur, ELivingModel.MinotaurMaleAlb, ELivingModel.None) },
-			{ ERace.Troll, new PlayerRace(ERace.Troll, ERealm.Midgard, eDAoCExpansion.Classic, ELivingModel.TrollMale, ELivingModel.TrollFemale) },
-			{ ERace.Norseman, new PlayerRace(ERace.Norseman, ERealm.Midgard, eDAoCExpansion.Classic, ELivingModel.NorseMale, ELivingModel.NorseFemale) } ,
-			{ ERace.Kobold, new PlayerRace(ERace.Kobold, ERealm.Midgard, eDAoCExpansion.Classic, ELivingModel.KoboldMale, ELivingModel.KoboldFemale) } ,
-			{ ERace.Dwarf, new PlayerRace(ERace.Dwarf, ERealm.Midgard, eDAoCExpansion.Classic, ELivingModel.DwarfMale, ELivingModel.DwarfFemale) } ,
-			{ ERace.Valkyn, new PlayerRace(ERace.Valkyn, ERealm.Midgard, eDAoCExpansion.ShroudedIsles, ELivingModel.ValkynMale, ELivingModel.ValkynFemale) } ,
-			{ ERace.Frostalf, new PlayerRace(ERace.Frostalf, ERealm.Midgard, eDAoCExpansion.Catacombs, ELivingModel.FrostalfMale, ELivingModel.FrostalfFemale) } ,
-			{ ERace.Deifrang, new PlayerRace(ERace.Deifrang, ERealm.Midgard, eDAoCExpansion.LabyrinthOfTheMinotaur, ELivingModel.MinotaurMaleMid, ELivingModel.None) } ,
-			{ ERace.Firbolg, new PlayerRace(ERace.Firbolg, ERealm.Hibernia, eDAoCExpansion.Classic, ELivingModel.FirbolgMale, ELivingModel.FirbolgFemale) } ,
-			{ ERace.Celt, new PlayerRace(ERace.Celt, ERealm.Hibernia, eDAoCExpansion.Classic, ELivingModel.CeltMale, ELivingModel.CeltFemale) } ,
-			{ ERace.Lurikeen, new PlayerRace(ERace.Lurikeen, ERealm.Hibernia, eDAoCExpansion.Classic, ELivingModel.LurikeenMale, ELivingModel.LurikeenFemale) } ,
-			{ ERace.Elf, new PlayerRace(ERace.Elf, ERealm.Hibernia, eDAoCExpansion.Classic, ELivingModel.ElfMale, ELivingModel.ElfFemale) } ,
-			{ ERace.Sylvan, new PlayerRace(ERace.Sylvan, ERealm.Hibernia, eDAoCExpansion.ShroudedIsles, ELivingModel.SylvanMale, ELivingModel.SylvanFemale) } ,
-			{ ERace.Shar, new PlayerRace(ERace.Shar, ERealm.Hibernia, eDAoCExpansion.Catacombs, ELivingModel.SharMale, ELivingModel.SharFemale) } ,
-			{ ERace.Graoch, new PlayerRace(ERace.Graoch, ERealm.Hibernia, eDAoCExpansion.LabyrinthOfTheMinotaur, ELivingModel.MinotaurMaleHib, ELivingModel.None) } ,
+			{ ERace.Briton, new PlayerRace( ERace.Briton, ERealm.Albion, EDAoCExpansion.Classic, ELivingModel.BritonMale, ELivingModel.BritonFemale) } ,
+			{ ERace.Highlander, new PlayerRace(ERace.Highlander, ERealm.Albion, EDAoCExpansion.Classic, ELivingModel.HighlanderMale, ELivingModel.HighlanderFemale) } ,
+			{ ERace.Saracen, new PlayerRace(ERace.Saracen, ERealm.Albion, EDAoCExpansion.Classic, ELivingModel.SaracenMale, ELivingModel.SaracenFemale) } ,
+			{ ERace.Avalonian, new PlayerRace(ERace.Avalonian, ERealm.Albion, EDAoCExpansion.Classic, ELivingModel.AvalonianMale, ELivingModel.AvalonianFemale) } ,
+			{ ERace.Inconnu, new PlayerRace(ERace.Inconnu, ERealm.Albion, EDAoCExpansion.ShroudedIsles, ELivingModel.InconnuMale, ELivingModel.InconnuFemale) } ,
+			{ ERace.HalfOgre, new PlayerRace(ERace.HalfOgre, ERealm.Albion, EDAoCExpansion.Catacombs, ELivingModel.HalfOgreMale, ELivingModel.HalfOgreFemale) } ,
+			{ ERace.Korazh, new PlayerRace(ERace.Korazh, ERealm.Albion, EDAoCExpansion.LabyrinthOfTheMinotaur, ELivingModel.MinotaurMaleAlb, ELivingModel.None) },
+			{ ERace.Troll, new PlayerRace(ERace.Troll, ERealm.Midgard, EDAoCExpansion.Classic, ELivingModel.TrollMale, ELivingModel.TrollFemale) },
+			{ ERace.Norseman, new PlayerRace(ERace.Norseman, ERealm.Midgard, EDAoCExpansion.Classic, ELivingModel.NorseMale, ELivingModel.NorseFemale) } ,
+			{ ERace.Kobold, new PlayerRace(ERace.Kobold, ERealm.Midgard, EDAoCExpansion.Classic, ELivingModel.KoboldMale, ELivingModel.KoboldFemale) } ,
+			{ ERace.Dwarf, new PlayerRace(ERace.Dwarf, ERealm.Midgard, EDAoCExpansion.Classic, ELivingModel.DwarfMale, ELivingModel.DwarfFemale) } ,
+			{ ERace.Valkyn, new PlayerRace(ERace.Valkyn, ERealm.Midgard, EDAoCExpansion.ShroudedIsles, ELivingModel.ValkynMale, ELivingModel.ValkynFemale) } ,
+			{ ERace.Frostalf, new PlayerRace(ERace.Frostalf, ERealm.Midgard, EDAoCExpansion.Catacombs, ELivingModel.FrostalfMale, ELivingModel.FrostalfFemale) } ,
+			{ ERace.Deifrang, new PlayerRace(ERace.Deifrang, ERealm.Midgard, EDAoCExpansion.LabyrinthOfTheMinotaur, ELivingModel.MinotaurMaleMid, ELivingModel.None) } ,
+			{ ERace.Firbolg, new PlayerRace(ERace.Firbolg, ERealm.Hibernia, EDAoCExpansion.Classic, ELivingModel.FirbolgMale, ELivingModel.FirbolgFemale) } ,
+			{ ERace.Celt, new PlayerRace(ERace.Celt, ERealm.Hibernia, EDAoCExpansion.Classic, ELivingModel.CeltMale, ELivingModel.CeltFemale) } ,
+			{ ERace.Lurikeen, new PlayerRace(ERace.Lurikeen, ERealm.Hibernia, EDAoCExpansion.Classic, ELivingModel.LurikeenMale, ELivingModel.LurikeenFemale) } ,
+			{ ERace.Elf, new PlayerRace(ERace.Elf, ERealm.Hibernia, EDAoCExpansion.Classic, ELivingModel.ElfMale, ELivingModel.ElfFemale) } ,
+			{ ERace.Sylvan, new PlayerRace(ERace.Sylvan, ERealm.Hibernia, EDAoCExpansion.ShroudedIsles, ELivingModel.SylvanMale, ELivingModel.SylvanFemale) } ,
+			{ ERace.Shar, new PlayerRace(ERace.Shar, ERealm.Hibernia, EDAoCExpansion.Catacombs, ELivingModel.SharMale, ELivingModel.SharFemale) } ,
+			{ ERace.Graoch, new PlayerRace(ERace.Graoch, ERealm.Hibernia, EDAoCExpansion.LabyrinthOfTheMinotaur, ELivingModel.MinotaurMaleHib, ELivingModel.None) } ,
 		};
 
 		public ELivingModel GetModel(EGender gender)
@@ -119,14 +100,4 @@ namespace DOL.GS.Realm
 			return (int)ID;
         }
     }
-
-	public enum eDAoCExpansion : byte
-	{
-		Classic = 1,
-		ShroudedIsles = 2,
-		TrialsOfAtlantis = 3,
-		Catacombs = 4,
-		DarknessRising = 5,
-		LabyrinthOfTheMinotaur = 6
-	}
 }

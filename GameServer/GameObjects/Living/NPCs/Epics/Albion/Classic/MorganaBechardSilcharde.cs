@@ -95,7 +95,7 @@ namespace DOL.AI.Brain
 						if (quest != null && quest.Step == 1)
 						{
 							SpawnDemons = true;
-							player.Out.SendMessage("Ha, is this all the forces of Albion have to offer? I expected a whole army leaded by my brother Arthur, but what do they send a little group of adventurers lead by a poor " + player.CharacterClass.Name + "?",EChatType.CT_Say,EChatLoc.CL_ChatWindow);
+							player.Out.SendMessage("Ha, is this all the forces of Albion have to offer? I expected a whole army leaded by my brother Arthur, but what do they send a little group of adventurers lead by a poor " + player.PlayerClass.Name + "?",EChatType.CT_Say,EChatLoc.CL_ChatWindow);
 							PlayerAreaCheck = true;
 						}
 					}

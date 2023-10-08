@@ -31,10 +31,10 @@ namespace DOL.GS.Spells
 			{
 				if (healTarget is GamePlayer 
 				    && (
-				    ((GamePlayer)healTarget).CharacterClass is PlayerClass.ClassVampiir
-					|| ((GamePlayer)healTarget).CharacterClass is PlayerClass.ClassMaulerAlb
-					|| ((GamePlayer)healTarget).CharacterClass is PlayerClass.ClassMaulerHib
-					|| ((GamePlayer)healTarget).CharacterClass is PlayerClass.ClassMaulerMid))
+				    ((GamePlayer)healTarget).PlayerClass is PlayerClass.ClassVampiir
+					|| ((GamePlayer)healTarget).PlayerClass is PlayerClass.ClassMaulerAlb
+					|| ((GamePlayer)healTarget).PlayerClass is PlayerClass.ClassMaulerHib
+					|| ((GamePlayer)healTarget).PlayerClass is PlayerClass.ClassMaulerMid))
 					continue;
 
 				if (Spell.Value < 0)

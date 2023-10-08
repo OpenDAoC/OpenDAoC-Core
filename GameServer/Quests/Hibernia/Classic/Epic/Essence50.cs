@@ -1378,10 +1378,10 @@ namespace DOL.GS.Quests.Hibernia
 			if (player.IsDoingQuest(typeof (Essence_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) ECharacterClass.Champion &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Bard &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Nightshade &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Enchanter)
+			if (player.PlayerClass.ID != (byte) EPlayerClass.Champion &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Bard &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Nightshade &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Enchanter)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -1530,7 +1530,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Champion)
+			if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Champion)
 			{
 				GiveItem(m_questPlayer, ChampionEpicArms);
 				GiveItem(m_questPlayer, ChampionEpicBoots);
@@ -1539,7 +1539,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, ChampionEpicLegs);
 				GiveItem(m_questPlayer, ChampionEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Bard)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Bard)
 			{
 				GiveItem(m_questPlayer, BardEpicArms);
 				GiveItem(m_questPlayer, BardEpicBoots);
@@ -1548,7 +1548,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, BardEpicLegs);
 				GiveItem(m_questPlayer, BardEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Enchanter)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Enchanter)
 			{
 				GiveItem(m_questPlayer, EnchanterEpicArms);
 				GiveItem(m_questPlayer, EnchanterEpicBoots);
@@ -1557,7 +1557,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, EnchanterEpicLegs);
 				GiveItem(m_questPlayer, EnchanterEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Nightshade)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Nightshade)
 			{
 				GiveItem(m_questPlayer, NightshadeEpicArms);
 				GiveItem(m_questPlayer, NightshadeEpicBoots);

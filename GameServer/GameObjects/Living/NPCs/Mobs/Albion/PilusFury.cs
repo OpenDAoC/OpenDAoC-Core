@@ -107,7 +107,7 @@ namespace DOL.AI.Brain
 
 				if (nearbyPoint != null)
 				{
-					if (player.CharacterClass.ID == (int) ECharacterClass.Necromancer && player.ControlledBrain != null)
+					if (player.PlayerClass.ID == (int) EPlayerClass.Necromancer && player.ControlledBrain != null)
 					{
 						if (player.ControlledBrain.Body != null)
 						{
@@ -127,7 +127,7 @@ namespace DOL.AI.Brain
 				}
 				else 
 				{
-					if (player.CharacterClass.ID == (int) ECharacterClass.Necromancer && player.ControlledBrain != null)
+					if (player.PlayerClass.ID == (int) EPlayerClass.Necromancer && player.ControlledBrain != null)
 					{
 						if (player.ControlledBrain.Body != null && DD_Enemys.Contains(player.ControlledBrain.Body))
 						{
@@ -144,7 +144,7 @@ namespace DOL.AI.Brain
 
 			if (player != null && player.Client.Account.PrivLevel != 1)
 			{
-				if (player.CharacterClass.ID == (int) ECharacterClass.Necromancer && player.ControlledBrain != null)
+				if (player.PlayerClass.ID == (int) EPlayerClass.Necromancer && player.ControlledBrain != null)
 				{
 					if (player.ControlledBrain.Body != null)
 					{
@@ -160,7 +160,7 @@ namespace DOL.AI.Brain
 				}
 			}
 
-			if (player?.CharacterClass.ID == (int) ECharacterClass.Necromancer && player.ControlledBrain != null)
+			if (player?.PlayerClass.ID == (int) EPlayerClass.Necromancer && player.ControlledBrain != null)
 			{
 				NecromancerPet pet = (NecromancerPet) player.ControlledBrain.Body;
 				if (pet is {IsAlive: false} && DD_Enemys.Contains(pet))

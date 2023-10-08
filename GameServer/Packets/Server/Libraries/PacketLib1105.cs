@@ -35,7 +35,7 @@ namespace DOL.GS.PacketHandler
 			GamePlayer player = m_gameClient.Player;
 
 			List<Specialization> specs = m_gameClient.Player.GetSpecList().Where(it => it.Trainable).ToList();
-			IList<string> autotrains = player.CharacterClass.GetAutotrainableSkills();
+			IList<string> autotrains = player.PlayerClass.GetAutotrainableSkills();
 
 			// Send Trainer Window with Trainable Specs
 			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.TrainerWindow)))
@@ -57,7 +57,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// send RA usable by this class
-			var raList = SkillBase.GetClassRealmAbilities(m_gameClient.Player.CharacterClass.ID).Where(ra => !(ra is RR5RealmAbility));
+			var raList = SkillBase.GetClassRealmAbilities(m_gameClient.Player.PlayerClass.ID).Where(ra => !(ra is RR5RealmAbility));
 			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.TrainerWindow)))
 			{
 				pak.WriteByte((byte)raList.Count());

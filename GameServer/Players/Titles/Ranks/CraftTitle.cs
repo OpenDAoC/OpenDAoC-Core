@@ -24,7 +24,7 @@ namespace DOL.GS.PlayerTitles
   	/// <summary>
 	/// Craft Title Handler
 	/// </summary>
-	public class CraftTitle : SimplePlayerTitle
+	public class CraftTitle : APlayerTitle
 	{
 		/// <summary>
 		/// The title description, shown in "Titles" window.

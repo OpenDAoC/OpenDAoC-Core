@@ -16,7 +16,7 @@ public class FormationCommand : ACommandHandler, ICommandHandler
 		GamePlayer player = client.Player;
 
 		//No one else needs to use this spell
-		if (player.CharacterClass.ID != (int)ECharacterClass.Bonedancer)
+		if (player.PlayerClass.ID != (int)EPlayerClass.Bonedancer)
 		{
 			client.Out.SendMessage("Only Bonedancers can use this command!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;

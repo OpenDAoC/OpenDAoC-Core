@@ -29,9 +29,9 @@ namespace DOL.GS.Trainer
 	{
 		public const string PRACTICE_WEAPON_ID = "training_axe";
 
-		public override ECharacterClass TrainedClass
+		public override EPlayerClass TrainedClass
 		{
-			get { return ECharacterClass.Viking; }
+			get { return EPlayerClass.Viking; }
 		}
 
 		public VikingTrainer() : base(eChampionTrainerType.Viking)
@@ -48,7 +48,7 @@ namespace DOL.GS.Trainer
 			if (!base.Interact(player)) return false;
 			
 			// check if class matches
-			if (player.CharacterClass.ID == (int)TrainedClass)
+			if (player.PlayerClass.ID == (int)TrainedClass)
 			{
 				// player can be promoted
 				if (player.Level>=5)

@@ -139,7 +139,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 
 				//Check realmtimer and move player to bind if realm timer is not for this realm.
-				RealmTimer.CheckRealmTimer(player);
+				RealmTimerUtil.CheckRealmTimer(player);
 
 				if (checkInstanceLogin)
 				{

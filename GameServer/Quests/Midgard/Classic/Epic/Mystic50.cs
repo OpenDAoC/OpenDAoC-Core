@@ -1429,10 +1429,10 @@ namespace DOL.GS.Quests.Midgard
 			if (player.IsDoingQuest(typeof (Mystic_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) ECharacterClass.Spiritmaster &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Runemaster &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Bonedancer &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Warlock)
+			if (player.PlayerClass.ID != (byte) EPlayerClass.Spiritmaster &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Runemaster &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Bonedancer &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Warlock)
 				return false;
 
 			if (player.Level < minimumLevel || player.Level > maximumLevel)
@@ -1575,9 +1575,9 @@ namespace DOL.GS.Quests.Midgard
 		{
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			switch ((ECharacterClass)m_questPlayer.CharacterClass.ID)
+			switch ((EPlayerClass)m_questPlayer.PlayerClass.ID)
 			{
-				case ECharacterClass.Spiritmaster:
+				case EPlayerClass.Spiritmaster:
 					{
 						GiveItem(m_questPlayer, SpiritmasterEpicArms);
 						GiveItem(m_questPlayer, SpiritmasterEpicBoots);
@@ -1587,7 +1587,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, SpiritmasterEpicVest);
 						break;
 					}
-				case ECharacterClass.Runemaster:
+				case EPlayerClass.Runemaster:
 					{
 						GiveItem(m_questPlayer, RunemasterEpicArms);
 						GiveItem(m_questPlayer, RunemasterEpicBoots);
@@ -1597,7 +1597,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, RunemasterEpicVest);
 						break;
 					}
-				case ECharacterClass.Bonedancer:
+				case EPlayerClass.Bonedancer:
 					{
 						GiveItem(m_questPlayer, BonedancerEpicArms);
 						GiveItem(m_questPlayer, BonedancerEpicBoots);
@@ -1607,7 +1607,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, BonedancerEpicVest);
 						break;
 					}
-				case ECharacterClass.Warlock:
+				case EPlayerClass.Warlock:
 					{
 						GiveItem(m_questPlayer, WarlockEpicArms);
 						GiveItem(m_questPlayer, WarlockEpicBoots);

@@ -454,7 +454,7 @@ public class LostStoneofArawn : BaseQuest
                         break;
                     case 6:
                         Honaytrt.SayTo(player, "I can't really explain how happy I am, thanks for your help " +
-                                               player.CharacterClass.Name + "!\n" +
+                                               player.PlayerClass.Name + "!\n" +
                                                "Here's your [reward].");
                         break;
                 }
@@ -538,7 +538,7 @@ public class LostStoneofArawn : BaseQuest
                         break;
                     case 3:
                         Nchever.SayTo(player,
-                            "Hey " + player.CharacterClass.Name +
+                            "Hey " + player.PlayerClass.Name +
                             ", have you visited O\'honat yet? You can find her near Caer Diogel's ramparts.");
                         break;
                     case 4:

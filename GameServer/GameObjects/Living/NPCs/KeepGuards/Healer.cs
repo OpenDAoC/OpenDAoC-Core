@@ -7,12 +7,12 @@ namespace DOL.GS.Keeps
 {
 	public class GuardHealer : GameKeepGuard
 	{
-		protected override ICharacterClass GetClass()
+		protected override IPlayerClass GetClass()
 		{
 			if (ModelRealm == ERealm.Albion) return new ClassCleric();
 			else if (ModelRealm == ERealm.Midgard) return new ClassHealer();
 			else if (ModelRealm == ERealm.Hibernia) return new ClassDruid();
-			return new DefaultCharacterClass();
+			return new DefaultPlayerClass();
 		}
 
 		protected override void SetBlockEvadeParryChance()

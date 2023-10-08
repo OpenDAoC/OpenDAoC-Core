@@ -474,7 +474,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"Client {client.Account.Name} tried to create a disabled classe: {(ECharacterClass)ch.Class}");
+                    log.Debug($"Client {client.Account.Name} tried to create a disabled classe: {(EPlayerClass)ch.Class}");
                 }
 
                 return true;
@@ -499,7 +499,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             }
 
             // If sending invalid Class ID
-            if (!Enum.IsDefined(typeof(ECharacterClass), (ECharacterClass)ch.Class))
+            if (!Enum.IsDefined(typeof(EPlayerClass), (EPlayerClass)ch.Class))
             {
                 if (log.IsErrorEnabled)
                 {
@@ -538,7 +538,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             GameServer.Database.SaveObject(ch);
 
             // Log creation
-            AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.CharacterCreate, string.Empty, pdata.CharName);
+            AuditMgr.AddAuditEntry(client, EAuditType.Account, EAuditSubType.CharacterCreate, string.Empty, pdata.CharName);
 
             client.Account.Characters = null;
 
@@ -604,7 +604,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                     if (flagChangedStats)
                     {
-                        ICharacterClass charClass = ScriptMgr.FindCharacterClass(character.Class);
+                        IPlayerClass charClass = ScriptMgr.FindCharacterClass(character.Class);
 
                         if (charClass != null)
                         {
@@ -761,7 +761,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                         if (flagChangedStats)
                         {
-                            ICharacterClass charClass = ScriptMgr.FindCharacterClass(character.Class);
+                            IPlayerClass charClass = ScriptMgr.FindCharacterClass(character.Class);
 
                             if (charClass != null)
                             {
@@ -989,7 +989,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         GameServer.Database.SaveObject(client.Account);
 
                         // Log deletion
-                        AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterDelete, string.Empty, deletedChar);
+                        AuditMgr.AddAuditEntry(client, EAuditType.Character, EAuditSubType.CharacterDelete, string.Empty, deletedChar);
 
                         return true;
                     }
@@ -1008,7 +1008,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <returns></returns>
         public static bool IsCustomPointsDistributionValid(DbCoreCharacter character, IDictionary<EStat, int> stats, out int points)
         {
-            ICharacterClass charClass = ScriptMgr.FindCharacterClass(character.Class);
+            IPlayerClass charClass = ScriptMgr.FindCharacterClass(character.Class);
 
             if (charClass != null)
             {
@@ -1094,7 +1094,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     valid = false;
                 }
 
-                if (!GlobalConstants.STARTING_CLASSES_DICT.ContainsKey((ERealm)ch.Realm) || !GlobalConstants.STARTING_CLASSES_DICT[(ERealm)ch.Realm].Contains((ECharacterClass)ch.Class))
+                if (!GlobalConstants.STARTING_CLASSES_DICT.ContainsKey((ERealm)ch.Realm) || !GlobalConstants.STARTING_CLASSES_DICT[(ERealm)ch.Realm].Contains((EPlayerClass)ch.Class))
                 {
                     if (log.IsWarnEnabled)
                     {
@@ -1104,7 +1104,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     valid = false;
                 }
                 
-                ICharacterClass charClass = ScriptMgr.FindCharacterClass(ch.Class);
+                IPlayerClass charClass = ScriptMgr.FindCharacterClass(ch.Class);
 
 				if(!charClass.EligibleRaces.Exists(s => (int)s.ID == ch.Race))
 				{
@@ -1141,7 +1141,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     valid = false;
                 }
 
-                if (GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT.ContainsKey((ECharacterClass)ch.Class) && GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT[(ECharacterClass)ch.Class] != gender)
+                if (GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT.ContainsKey((EPlayerClass)ch.Class) && GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT[(EPlayerClass)ch.Class] != gender)
                 {
                     if (log.IsWarnEnabled)
                     {

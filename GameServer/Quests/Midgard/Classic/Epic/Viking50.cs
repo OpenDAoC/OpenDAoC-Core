@@ -1924,7 +1924,7 @@ namespace DOL.GS.Quests.Midgard
 				return;
 
 			// player is not allowed to start this quest until the quest rewards are available
-			if (player.CharacterClass.ID == (byte)ECharacterClass.MaulerMid &&
+			if (player.PlayerClass.ID == (byte)EPlayerClass.MaulerMid &&
 				(MaulerMidEpicArms == null || MaulerMidEpicBoots == null || MaulerMidEpicGloves == null ||
 				MaulerMidEpicHelm == null || MaulerMidEpicLegs == null || MaulerMidEpicVest == null))
 			{
@@ -2105,13 +2105,13 @@ namespace DOL.GS.Quests.Midgard
 			if (player.IsDoingQuest(typeof (Viking_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) ECharacterClass.Warrior &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Berserker &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Thane &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Skald &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Savage &&
-                player.CharacterClass.ID != (byte) ECharacterClass.MaulerMid &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Valkyrie)
+			if (player.PlayerClass.ID != (byte) EPlayerClass.Warrior &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Berserker &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Thane &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Skald &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Savage &&
+                player.PlayerClass.ID != (byte) EPlayerClass.MaulerMid &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Valkyrie)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -2259,9 +2259,9 @@ namespace DOL.GS.Quests.Midgard
 		{
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			switch ((ECharacterClass)m_questPlayer.CharacterClass.ID)
+			switch ((EPlayerClass)m_questPlayer.PlayerClass.ID)
 			{
-				case ECharacterClass.Warrior:
+				case EPlayerClass.Warrior:
 					{
 						GiveItem(m_questPlayer, WarriorEpicArms);
 						GiveItem(m_questPlayer, WarriorEpicBoots);
@@ -2271,7 +2271,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, WarriorEpicVest);
 						break;
 					}
-				case ECharacterClass.Berserker:
+				case EPlayerClass.Berserker:
 					{
 						GiveItem(m_questPlayer, BerserkerEpicArms);
 						GiveItem(m_questPlayer, BerserkerEpicBoots);
@@ -2281,7 +2281,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, BerserkerEpicVest);
 						break;
 					}
-				case ECharacterClass.Thane:
+				case EPlayerClass.Thane:
 					{
 						GiveItem(m_questPlayer, ThaneEpicArms);
 						GiveItem(m_questPlayer, ThaneEpicBoots);
@@ -2291,7 +2291,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, ThaneEpicVest);
 						break;
 					}
-				case ECharacterClass.Skald:
+				case EPlayerClass.Skald:
 					{
 						GiveItem(m_questPlayer, SkaldEpicArms);
 						GiveItem(m_questPlayer, SkaldEpicBoots);
@@ -2301,7 +2301,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, SkaldEpicVest);
 						break;
 					}
-				case ECharacterClass.Savage:
+				case EPlayerClass.Savage:
 					{
 						GiveItem(m_questPlayer, SavageEpicArms);
 						GiveItem(m_questPlayer, SavageEpicBoots);
@@ -2311,7 +2311,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, SavageEpicVest);
 						break;
 					}
-				case ECharacterClass.Valkyrie:
+				case EPlayerClass.Valkyrie:
 					{
 						GiveItem(m_questPlayer, ValkyrieEpicArms);
 						GiveItem(m_questPlayer, ValkyrieEpicBoots);
@@ -2321,7 +2321,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, ValkyrieEpicVest);
 						break;
 					}
-				case ECharacterClass.MaulerMid:
+				case EPlayerClass.MaulerMid:
 					{
 						GiveItem(m_questPlayer, MaulerMidEpicArms);
 						GiveItem(m_questPlayer, MaulerMidEpicBoots);

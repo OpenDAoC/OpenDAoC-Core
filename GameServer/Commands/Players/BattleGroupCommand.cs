@@ -268,7 +268,7 @@ public class BattleGroupCommand : ACommandHandler, ICommandHandler
                             text.Append(" <Member> ");
                         }
                         
-                        text.Append($"{nongrouped.Name}, the level {nongrouped.Level} {nongrouped.CharacterClass.Name} \n");
+                        text.Append($"{nongrouped.Name}, the level {nongrouped.Level} {nongrouped.PlayerClass.Name} \n");
                         client.Out.SendMessage(text.ToString(), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     }
                 }

@@ -122,7 +122,7 @@ namespace DOL.GS.SkillHandler
 
 			GameLiving target = (GameLiving)player.TargetObject;
 			int damage = 0;
-			int specc = (player.CharacterClass is PlayerClass.ClassBlademaster) ?
+			int specc = (player.PlayerClass is PlayerClass.ClassBlademaster) ?
 				player.GetModifiedSpecLevel(Specs.Celtic_Dual) : player.GetModifiedSpecLevel(Specs.Dual_Wield);
 
 			//damage = base HP / 100 * DWspec / 2.7 that would be the original calculation

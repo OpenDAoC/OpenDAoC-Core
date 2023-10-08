@@ -825,7 +825,7 @@ namespace DOL.GS.Quests.Albion
 					switch (wArgs.Text)
 					{
 						case "Lyonesse":
-							Roben.SayTo(player, "The cathedral that Axton speaks of lies deep at the heart of that land, behind the Pikeman, across from the Trees. Its remaining walls can be seen at great distances during the day so you should not miss it. I would travel with thee, but my services are required elswhere. Fare thee well " + player.CharacterClass.Name + ".");
+							Roben.SayTo(player, "The cathedral that Axton speaks of lies deep at the heart of that land, behind the Pikeman, across from the Trees. Its remaining walls can be seen at great distances during the day so you should not miss it. I would travel with thee, but my services are required elswhere. Fare thee well " + player.PlayerClass.Name + ".");
 							break;
 						case "defeat":
 							if (quest.Step == 2)
@@ -872,8 +872,8 @@ namespace DOL.GS.Quests.Albion
 			if (player.IsDoingQuest(typeof (Church_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) ECharacterClass.Cleric &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Paladin)
+			if (player.PlayerClass.ID != (byte) EPlayerClass.Cleric &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Paladin)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -1025,7 +1025,7 @@ namespace DOL.GS.Quests.Albion
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Cleric)
+			if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Cleric)
 			{
 				GiveItem(m_questPlayer, ClericEpicBoots);
 				GiveItem(m_questPlayer, ClericEpicArms);
@@ -1034,7 +1034,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, ClericEpicVest);
 				GiveItem(m_questPlayer, ClericEpicLegs);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Paladin)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Paladin)
 			{
 				GiveItem(m_questPlayer, PaladinEpicBoots);
 				GiveItem(m_questPlayer, PaladinEpicArms);

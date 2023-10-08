@@ -19,13 +19,6 @@ namespace DOL.GS.Appeal
 
 		private static int m_CallbackFrequency = 5 * 60 * 1000; // How often appeal stat updates are sent out.
 		private static volatile Timer m_timer = null;
-		public enum eSeverity
-		{
-			Low = 1,
-			Medium = 2,
-			High = 3,
-			Critical = 4
-		}
 		public static List<GamePlayer> StaffList = new List<GamePlayer>();
 		public static int TotalAppeals;
 
@@ -87,16 +80,16 @@ namespace DOL.GS.Appeal
 				if (a.Severity < 1) { return; }
 				switch (a.Severity)
 				{
-					case (int)AppealMgr.eSeverity.Low:
+					case (int)EAppealSeverity.Low:
 						low++;
 						break;
-					case (int)AppealMgr.eSeverity.Medium:
+					case (int)EAppealSeverity.Medium:
 						med++;
 						break;
-					case (int)AppealMgr.eSeverity.High:
+					case (int)EAppealSeverity.High:
 						high++;
 						break;
-					case (int)AppealMgr.eSeverity.Critical:
+					case (int)EAppealSeverity.Critical:
 						crit++;
 						break;
 				}

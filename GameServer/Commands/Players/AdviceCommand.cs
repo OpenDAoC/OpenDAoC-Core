@@ -74,7 +74,7 @@ public class AdviceCommand : ACommandHandler, ICommandHandler
                 else
                     // Message: "{0}) {1}, Level {2} {3} ({4} days, {5} hours, {6} minutes played)"
                     // Example: 1) Kelt, Level 50 Bard (14 days, 3 hours, 31 minutes played)
-                    ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Result", total, otherPlayer.Name, otherPlayer.Level, otherPlayer.CharacterClass.Name, showPlayed.Days, showPlayed.Hours, showPlayed.Minutes);
+                    ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Result", total, otherPlayer.Name, otherPlayer.Level, otherPlayer.PlayerClass.Name, showPlayed.Days, showPlayed.Hours, showPlayed.Minutes);
             }
 
             if (total == 1)

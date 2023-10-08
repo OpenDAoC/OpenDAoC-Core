@@ -360,8 +360,8 @@ namespace DOL.AI.Brain
             {
                 if(player != null)
                 {
-                    if(player.IsAlive && player.IsVisibleTo(Body) && player.Client.Account.PrivLevel == 1 && (player.CharacterClass.ID == 6 || player.CharacterClass.ID == 10 || player.CharacterClass.ID == 48
-                    || player.CharacterClass.ID == 46 || player.CharacterClass.ID == 47 || player.CharacterClass.ID == 42 || player.CharacterClass.ID == 28 || player.CharacterClass.ID == 26))
+                    if(player.IsAlive && player.IsVisibleTo(Body) && player.Client.Account.PrivLevel == 1 && (player.PlayerClass.ID == 6 || player.PlayerClass.ID == 10 || player.PlayerClass.ID == 48
+                    || player.PlayerClass.ID == 46 || player.PlayerClass.ID == 47 || player.PlayerClass.ID == 42 || player.PlayerClass.ID == 28 || player.PlayerClass.ID == 26))
                     {
                         if(!AggroTable.ContainsKey(player))
                         {

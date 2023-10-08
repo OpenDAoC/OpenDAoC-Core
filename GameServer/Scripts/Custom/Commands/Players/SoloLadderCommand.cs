@@ -66,7 +66,7 @@ public class SoloLadderCommand : ACommandHandler, ICommandHandler
 				if (c == null)
 					continue;
 
-				string className = ((ECharacterClass) c.Class).ToString();
+				string className = ((EPlayerClass) c.Class).ToString();
 				
 
 				soloCharacters.Add(new SoloCharacter() {CharacterName = c.Name, CharacterLevel = c.Level, CharacterClass = className, isHC = c.HCFlag});

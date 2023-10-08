@@ -338,8 +338,8 @@ namespace DOL.AI.Brain
 				
 			if (Owner is GamePlayer
 			    && IsMainPet
-			    && ((GamePlayer)Owner).CharacterClass.ID != (int)ECharacterClass.Animist
-			    && ((GamePlayer)Owner).CharacterClass.ID != (int)ECharacterClass.Theurgist)
+			    && ((GamePlayer)Owner).PlayerClass.ID != (int)EPlayerClass.Animist
+			    && ((GamePlayer)Owner).PlayerClass.ID != (int)EPlayerClass.Theurgist)
 				Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
 			else if (Owner is GameNPC)
 				Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
@@ -1044,7 +1044,7 @@ namespace DOL.AI.Brain
 			if(FiniteStateMachine.GetState(EFSMStateType.PASSIVE) == FiniteStateMachine.GetCurrentState()) { return; }
 
 			// Theurgist pets don't help their owner.
-			if (Owner is GamePlayer && ((GamePlayer)Owner).CharacterClass.ID == (int)ECharacterClass.Theurgist)
+			if (Owner is GamePlayer && ((GamePlayer)Owner).PlayerClass.ID == (int)EPlayerClass.Theurgist)
 				return;
 
 			if (ad.Target is GamePlayer && ((ad.Target as GamePlayer).ControlledBrain != this || (ad.Target as GamePlayer).ControlledBrain.Body == Owner))

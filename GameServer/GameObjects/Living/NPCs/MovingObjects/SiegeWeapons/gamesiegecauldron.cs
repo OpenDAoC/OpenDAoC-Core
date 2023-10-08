@@ -134,9 +134,9 @@ namespace DOL.GS.Spells
 			if (target is GamePlayer)
 			{
 				GamePlayer player = target as GamePlayer;
-				int id = player.CharacterClass.ID;
+				int id = player.PlayerClass.ID;
 				//50% reduction for tanks
-				if (id == (int)ECharacterClass.Armsman || id == (int)ECharacterClass.Warrior || id == (int)ECharacterClass.Hero)
+				if (id == (int)EPlayerClass.Armsman || id == (int)EPlayerClass.Warrior || id == (int)EPlayerClass.Hero)
 					ad.Damage /= 2;
 				//3000 spec
 				//ram protection

@@ -1865,12 +1865,12 @@ namespace DOL.GS.Quests.Albion
 			if (player.IsDoingQuest(typeof(Shadows_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte)ECharacterClass.Reaver &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Mercenary &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Cabalist &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Necromancer &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Infiltrator &&
-				player.CharacterClass.ID != (byte)ECharacterClass.Heretic)
+			if (player.PlayerClass.ID != (byte)EPlayerClass.Reaver &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Mercenary &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Cabalist &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Necromancer &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Infiltrator &&
+				player.PlayerClass.ID != (byte)EPlayerClass.Heretic)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -2023,9 +2023,9 @@ namespace DOL.GS.Quests.Albion
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			switch ((ECharacterClass)m_questPlayer.CharacterClass.ID)
+			switch ((EPlayerClass)m_questPlayer.PlayerClass.ID)
 			{
-				case ECharacterClass.Reaver:
+				case EPlayerClass.Reaver:
 					{
 						GiveItem(m_questPlayer, ReaverEpicArms);
 						GiveItem(m_questPlayer, ReaverEpicBoots);
@@ -2035,7 +2035,7 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, ReaverEpicVest);
 						break;
 					}
-				case ECharacterClass.Mercenary:
+				case EPlayerClass.Mercenary:
 					{
 						GiveItem(m_questPlayer, MercenaryEpicArms);
 						GiveItem(m_questPlayer, MercenaryEpicBoots);
@@ -2045,7 +2045,7 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, MercenaryEpicVest);
 						break;
 					}
-				case ECharacterClass.Cabalist:
+				case EPlayerClass.Cabalist:
 					{
 						GiveItem(m_questPlayer, CabalistEpicArms);
 						GiveItem(m_questPlayer, CabalistEpicBoots);
@@ -2055,7 +2055,7 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, CabalistEpicVest);
 						break;
 					}
-				case ECharacterClass.Infiltrator:
+				case EPlayerClass.Infiltrator:
 					{
 						GiveItem(m_questPlayer, InfiltratorEpicArms);
 						GiveItem(m_questPlayer, InfiltratorEpicBoots);
@@ -2065,7 +2065,7 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, InfiltratorEpicVest);
 						break;
 					}
-				case ECharacterClass.Necromancer:
+				case EPlayerClass.Necromancer:
 					{
 						GiveItem(m_questPlayer, NecromancerEpicArms);
 						GiveItem(m_questPlayer, NecromancerEpicBoots);
@@ -2075,7 +2075,7 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, NecromancerEpicVest);
 						break;
 					}
-				case ECharacterClass.Heretic:
+				case EPlayerClass.Heretic:
 					{
 						GiveItem(m_questPlayer, HereticEpicArms);
 						GiveItem(m_questPlayer, HereticEpicBoots);

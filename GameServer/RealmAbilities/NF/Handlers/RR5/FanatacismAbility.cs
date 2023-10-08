@@ -45,8 +45,8 @@ namespace DOL.GS.RealmAbilities
 			else
 				foreach (GamePlayer grpMate in player.Group.GetPlayersInTheGroup())
 					if (player.IsWithinRadius( grpMate, RANGE ) && grpMate.IsAlive)
-						if(grpMate.CharacterClass.ClassType == eClassType.Hybrid
-				  			|| grpMate.CharacterClass.ClassType == eClassType.PureTank)
+						if(grpMate.PlayerClass.ClassType == EPlayerClassType.Hybrid
+				  			|| grpMate.PlayerClass.ClassType == EPlayerClassType.PureTank)
 							targets.Add(grpMate);
 			
 			foreach (GamePlayer target in targets)

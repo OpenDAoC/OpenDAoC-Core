@@ -123,7 +123,7 @@ public class BountyManager
             var reward = totalReward / playersToAwardCount * 10000; // *10000 as DOL is expecting the value in copper
             foreach (GamePlayer player in playersToAward)
             {
-                var playerLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+                var playerLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
 
                 if (playerLoyalty.Days >= 30)
                 {
@@ -134,7 +134,7 @@ public class BountyManager
                 
                 reward = (int)(reward * bountyRate);
                 
-                LoyaltyManager.LoyaltyUpdateAddHours(player, loyaltyHoursReward);
+                RealmLoyaltyMgr.LoyaltyUpdateAddHours(player, loyaltyHoursReward);
                 player.AddMoney(reward , "You have been rewarded {0} extra for killing a bounty target!");
             }
 
@@ -162,7 +162,7 @@ public class BountyManager
 
         foreach (BountyPoster activeBounty in activeBounties.ToList())
         {
-            var playerLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+            var playerLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
             
             if (playerLoyalty.Days >= 30)
             {
@@ -262,7 +262,7 @@ public class BountyManager
                 
                     GamePlayer playerToReimburse = bP.Ganked;
                 
-                    var posterLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(playerToReimburse);
+                    var posterLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(playerToReimburse);
 
                     if (posterLoyalty.Days >= 30)
                     {
@@ -432,7 +432,7 @@ public class BountyManager
                 bountyAvailable = true;
                 timeLeft = bountyDuration - (GameLoop.GameLoopTime - bounty.PostedTime);
                 temp.Add(
-                    $"{count} - {bounty.Target.Name} the {bounty.Target.CharacterClass.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
+                    $"{count} - {bounty.Target.Name} the {bounty.Target.PlayerClass.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
             }
         }
         

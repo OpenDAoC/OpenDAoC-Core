@@ -276,7 +276,7 @@ namespace DOL.GS.Scripts
 				{
 					pi.Name = player.Name;
 					pi.LastName = player.LastName;
-					pi.Class = player.CharacterClass.Name;
+					pi.Class = player.PlayerClass.Name;
 					pi.Race = player.RaceName;
 					pi.Guild = player.GuildName;
 					pi.Level = player.Level;

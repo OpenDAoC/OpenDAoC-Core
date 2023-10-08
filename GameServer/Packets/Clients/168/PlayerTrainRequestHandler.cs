@@ -45,7 +45,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (row > 0 && skillIndex > 0)
 				{
 					// Get Player CL Spec
-					var clspec = client.Player.GetSpecList().Where(sp => sp is LiveChampionsSpecialization).Cast<LiveChampionsSpecialization>().FirstOrDefault();
+					var clspec = client.Player.GetSpecList().Where(sp => sp is LiveChampionLevelsSpecialization).Cast<LiveChampionLevelsSpecialization>().FirstOrDefault();
 					
 					// check if the tree can be used
 					List<Tuple<MiniLineSpecialization, List<Tuple<Skill, byte>>>> tree = null;
@@ -128,7 +128,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				else if (skillIndex >= 100)
 				{
 					// Realm Abilities
-					var raList = SkillBase.GetClassRealmAbilities(client.Player.CharacterClass.ID).Where(ra => !(ra is RR5RealmAbility));
+					var raList = SkillBase.GetClassRealmAbilities(client.Player.PlayerClass.ID).Where(ra => !(ra is RR5RealmAbility));
 					if (skillIndex < raList.Count() + 100)
 					{
 						RealmAbility ra = raList.ElementAtOrDefault(skillIndex - 100);
@@ -254,7 +254,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (amounts != null && amounts.Count > 0)
 			{
 				// Realm Abilities
-				var raList = SkillBase.GetClassRealmAbilities(client.Player.CharacterClass.ID).Where(ra => !(ra is RR5RealmAbility));
+				var raList = SkillBase.GetClassRealmAbilities(client.Player.PlayerClass.ID).Where(ra => !(ra is RR5RealmAbility));
 				foreach (var kv in amounts)
 				{
 					RealmAbility ra = raList.ElementAtOrDefault((int)kv.Key);

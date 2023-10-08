@@ -1263,7 +1263,7 @@ namespace DOL.GS.Quests.Albion
 				return;
 
 			// player is not allowed to start this quest until the quest rewards are available
-			if (player.CharacterClass.ID == (byte)ECharacterClass.MaulerAlb &&
+			if (player.PlayerClass.ID == (byte)EPlayerClass.MaulerAlb &&
 				(MaulerAlbEpicArms == null || MaulerAlbEpicBoots == null || MaulerAlbEpicGloves == null ||
 				MaulerAlbEpicHelm == null || MaulerAlbEpicLegs == null || MaulerAlbEpicVest == null))
 			{
@@ -1361,11 +1361,11 @@ namespace DOL.GS.Quests.Albion
 			if (player.IsDoingQuest(typeof (Defenders_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) ECharacterClass.Armsman &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Scout &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Theurgist &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Friar &&
-				player.CharacterClass.ID != (byte) ECharacterClass.MaulerAlb)
+			if (player.PlayerClass.ID != (byte) EPlayerClass.Armsman &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Scout &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Theurgist &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Friar &&
+				player.PlayerClass.ID != (byte) EPlayerClass.MaulerAlb)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -1518,7 +1518,7 @@ namespace DOL.GS.Quests.Albion
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Armsman)
+			if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Armsman)
 			{
 				GiveItem(m_questPlayer, ArmsmanEpicBoots);
 				GiveItem(m_questPlayer, ArmsmanEpicArms);
@@ -1527,7 +1527,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, ArmsmanEpicLegs);
 				GiveItem(m_questPlayer, ArmsmanEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Scout)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Scout)
 			{
 				GiveItem(m_questPlayer, ScoutEpicArms);
 				GiveItem(m_questPlayer, ScoutEpicBoots);
@@ -1536,7 +1536,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, ScoutEpicLegs);
 				GiveItem(m_questPlayer, ScoutEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Theurgist)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Theurgist)
 			{
 				GiveItem(m_questPlayer, TheurgistEpicArms);
 				GiveItem(m_questPlayer, TheurgistEpicBoots);
@@ -1545,7 +1545,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, TheurgistEpicLegs);
 				GiveItem(m_questPlayer, TheurgistEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Friar)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Friar)
 			{
 				GiveItem(m_questPlayer, FriarEpicArms);
 				GiveItem(m_questPlayer, FriarEpicBoots);
@@ -1554,7 +1554,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, FriarEpicLegs);
 				GiveItem(m_questPlayer, FriarEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.MaulerAlb)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.MaulerAlb)
 			{
 				GiveItem(m_questPlayer, MaulerAlbEpicArms);
 				GiveItem(m_questPlayer, MaulerAlbEpicBoots);

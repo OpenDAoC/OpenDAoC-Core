@@ -380,7 +380,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								checkrvrarea.Description.Equals("Druim Ligen") ||
 								checkrvrarea.Description.Equals("Druim Cain")))
 							{
-								RealmTimer.CheckRealmTimer(client.Player);
+								RealmTimerUtil.CheckRealmTimer(client.Player);
 							}
 						}
 					}
@@ -696,7 +696,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			var outpak190 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerPosition));
 			outpak190.Write(outpakArr, 5, outpakArr.Length - 5);
-			outpak190.FillString(client.Player.CharacterClass.Name, 32);
+			outpak190.FillString(client.Player.PlayerClass.Name, 32);
 			outpak190.WriteByte((byte)(client.Player.RPFlag ? 1 : 0)); // roleplay flag, if == 1, show name (RP) with gray color
 			outpak190.WriteByte(0); // send last byte for 190+ packets
 			outpak190.WritePacketLength();
@@ -771,7 +771,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.Out.SendObjectDelete(client.Player); //remove the stealthed player from view
 			}
 
-			if (client.Player.CharacterClass.ID == (int)ECharacterClass.Warlock)
+			if (client.Player.PlayerClass.ID == (int)EPlayerClass.Warlock)
 			{
 				//Send Chamber effect
 				client.Player.Out.SendWarlockChamberEffect(client.Player);
@@ -1085,7 +1085,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								checkrvrarea.Description.Equals("Druim Ligen") ||
 								checkrvrarea.Description.Equals("Druim Cain")))
 							{
-								RealmTimer.CheckRealmTimer(client.Player);
+								RealmTimerUtil.CheckRealmTimer(client.Player);
 							}
 						}
 					}
@@ -1195,7 +1195,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						if (fallSpeed > 500)
 						{
-							if (client.Player.CharacterClass.ID != (int)ECharacterClass.Necromancer || !client.Player.IsShade)
+							if (client.Player.PlayerClass.ID != (int)EPlayerClass.Necromancer || !client.Player.IsShade)
 							{
 								client.Player.CalcFallDamage(fallPercent);
 							}
@@ -1293,7 +1293,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1112.WriteByte(0);
 			outpak1112.WritePacketLength();
 
-			outpak190.FillString(client.Player.CharacterClass.Name, 32);
+			outpak190.FillString(client.Player.PlayerClass.Name, 32);
 			outpak190.WriteByte((byte)(client.Player.RPFlag ? 1 : 0));
 			outpak190.WriteByte(0);
 			outpak190.WritePacketLength();

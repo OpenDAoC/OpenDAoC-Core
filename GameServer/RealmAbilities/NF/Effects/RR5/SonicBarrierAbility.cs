@@ -25,25 +25,25 @@ namespace DOL.GS.RealmAbilities
             {
                 foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
                 {
-                    if (member.CharacterClass.ID == 1 || member.CharacterClass.ID == 2) // Plate
+                    if (member.PlayerClass.ID == 1 || member.PlayerClass.ID == 2) // Plate
                     {
                         Spell Spell1 = SkillBase.GetSpellByID(36005); // 34 % Absorb-Spell
                         ISpellHandler spellhandler1 = ScriptMgr.CreateSpellHandler(player, Spell1, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
                         spellhandler1.StartSpell(member);
                     }
-                    else if (member.CharacterClass.ID == 9 || member.CharacterClass.ID == 10 || member.CharacterClass.ID == 23 || member.CharacterClass.ID == 49 || member.CharacterClass.ID == 58)    // Leather
+                    else if (member.PlayerClass.ID == 9 || member.PlayerClass.ID == 10 || member.PlayerClass.ID == 23 || member.PlayerClass.ID == 49 || member.PlayerClass.ID == 58)    // Leather
                     {
                         Spell Spell2 = SkillBase.GetSpellByID(36002); // 10 % Absorb-Spell
                         ISpellHandler spellhandler2 = ScriptMgr.CreateSpellHandler(player, Spell2, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
                         spellhandler2.StartSpell(member);
                     }
-                    else if (member.CharacterClass.ID == 3 || member.CharacterClass.ID == 25 || member.CharacterClass.ID == 31 || member.CharacterClass.ID == 32 || member.CharacterClass.ID == 43 || member.CharacterClass.ID == 48 || member.CharacterClass.ID == 50 || member.CharacterClass.ID == 25) // Studderd
+                    else if (member.PlayerClass.ID == 3 || member.PlayerClass.ID == 25 || member.PlayerClass.ID == 31 || member.PlayerClass.ID == 32 || member.PlayerClass.ID == 43 || member.PlayerClass.ID == 48 || member.PlayerClass.ID == 50 || member.PlayerClass.ID == 25) // Studderd
                     {
                         Spell Spell3 = SkillBase.GetSpellByID(36003); // 19 % Absorb-Spell
                         ISpellHandler spellhandler3 = ScriptMgr.CreateSpellHandler(player, Spell3, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
                         spellhandler3.StartSpell(member);
                     }
-                    else if (member.CharacterClass.ID == 4 || member.CharacterClass.ID == 6 || member.CharacterClass.ID == 11 || member.CharacterClass.ID == 19 || member.CharacterClass.ID == 21 || member.CharacterClass.ID == 22 || member.CharacterClass.ID == 24 || member.CharacterClass.ID == 26 || member.CharacterClass.ID == 28 || member.CharacterClass.ID == 34 || member.CharacterClass.ID == 44 || member.CharacterClass.ID == 45 || member.CharacterClass.ID == 46 || member.CharacterClass.ID == 47) // Chain 
+                    else if (member.PlayerClass.ID == 4 || member.PlayerClass.ID == 6 || member.PlayerClass.ID == 11 || member.PlayerClass.ID == 19 || member.PlayerClass.ID == 21 || member.PlayerClass.ID == 22 || member.PlayerClass.ID == 24 || member.PlayerClass.ID == 26 || member.PlayerClass.ID == 28 || member.PlayerClass.ID == 34 || member.PlayerClass.ID == 44 || member.PlayerClass.ID == 45 || member.PlayerClass.ID == 46 || member.PlayerClass.ID == 47) // Chain 
                     {
                         Spell Spell4 = SkillBase.GetSpellByID(36004);// 24 % Absorb-Spell			
                         ISpellHandler spellhandler4 = ScriptMgr.CreateSpellHandler(player, Spell4, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));

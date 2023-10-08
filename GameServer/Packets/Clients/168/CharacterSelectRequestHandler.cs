@@ -57,7 +57,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     else
                     {
                         // Log character play
-                        AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterLogin, string.Empty, charName);
+                        AuditMgr.AddAuditEntry(client, EAuditType.Character, EAuditSubType.CharacterLogin, string.Empty, charName);
                     }
                 }
 

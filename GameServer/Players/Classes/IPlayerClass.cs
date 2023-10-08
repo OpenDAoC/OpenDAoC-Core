@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -26,9 +7,9 @@ using DOL.GS.Realm;
 namespace DOL.GS
 {
 	/// <summary>
-	/// Represents a DOL Character class
+	/// Represents a player class
 	/// </summary>
-	public interface ICharacterClass
+	public interface IPlayerClass
 	{
 		/// <summary>
 		/// Unique Class Identifier based on eCharacterClass
@@ -103,7 +84,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Class Type
 		/// </summary>
-		eClassType ClassType { get; }
+		EPlayerClassType ClassType { get; }
 
 		/// <summary>
 		/// Instance Attached GamePlayer
@@ -144,24 +125,5 @@ namespace DOL.GS
 		bool CanChangeCastingSpeed(SpellLine line, Spell spell);
 		GameTrainer.eChampionTrainerType ChampionTrainerType();
 		List<PlayerRace> EligibleRaces { get; }
-	}
-
-	/// <summary>
-	/// The type of character class
-	/// </summary>
-	public enum eClassType : int
-	{
-		/// <summary>
-		/// The class has access to all spells
-		/// </summary>
-		ListCaster,
-		/// <summary>
-		/// The class has access to best one or two spells
-		/// </summary>
-		Hybrid,
-		/// <summary>
-		/// The class has no spells
-		/// </summary>
-		PureTank,
 	}
 }

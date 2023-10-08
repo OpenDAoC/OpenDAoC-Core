@@ -708,7 +708,7 @@ namespace DOL.GS.ServerRules
 			// classes restriction.
 			if (player != null && !string.IsNullOrEmpty(item.AllowedClasses))
 			{
-				if (!Util.SplitCSV(item.AllowedClasses, true).Contains(player.CharacterClass.ID.ToString()))
+				if (!Util.SplitCSV(item.AllowedClasses, true).Contains(player.PlayerClass.ID.ToString()))
 					return false;
 			}
 
@@ -1574,10 +1574,10 @@ namespace DOL.GS.ServerRules
 
 		private int GetUniqueClassCount(GroupUtil group)
         {
-			HashSet<ECharacterClass> groupClasses = new HashSet<ECharacterClass>();
+			HashSet<EPlayerClass> groupClasses = new HashSet<EPlayerClass>();
             foreach (var player in group.GetPlayersInTheGroup().ToList())
             {
-				groupClasses.Add((ECharacterClass)player.CharacterClass.ID);
+				groupClasses.Add((EPlayerClass)player.PlayerClass.ID);
             }
 			return groupClasses.Count;
         }
@@ -2071,33 +2071,33 @@ namespace DOL.GS.ServerRules
 						{
 							case ERealm.Albion:
 								expGainPlayer.KillsAlbionPlayers++;
-								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Players_Killed);
+								expGainPlayer.Achieve(AchievementUtil.AchievementName.Alb_Players_Killed);
 								if (expGainPlayer == killerCheck )
 								{
 									expGainPlayer.KillsAlbionDeathBlows++;
-									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Deathblows);
+									expGainPlayer.Achieve(AchievementUtil.AchievementName.Alb_Deathblows);
 									CheckSoloKills(ERealm.Albion, XPGainerList, expGainPlayer, totalDamage);
 								}
 								break;
 
 							case ERealm.Hibernia:
 								expGainPlayer.KillsHiberniaPlayers++;
-								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Players_Killed);
+								expGainPlayer.Achieve(AchievementUtil.AchievementName.Hib_Players_Killed);
 								if (expGainPlayer == killerCheck)
 								{
 									expGainPlayer.KillsHiberniaDeathBlows++;
-									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Deathblows);
+									expGainPlayer.Achieve(AchievementUtil.AchievementName.Hib_Deathblows);
 									CheckSoloKills(ERealm.Hibernia, XPGainerList, expGainPlayer, totalDamage);
 								}
 								break;
 
 							case ERealm.Midgard:
 								expGainPlayer.KillsMidgardPlayers++;
-								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Players_Killed);
+								expGainPlayer.Achieve(AchievementUtil.AchievementName.Mid_Players_Killed);
 								if (expGainPlayer == killerCheck)
 								{
 									expGainPlayer.KillsMidgardDeathBlows++;
-									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Deathblows);
+									expGainPlayer.Achieve(AchievementUtil.AchievementName.Mid_Deathblows);
 									CheckSoloKills(ERealm.Midgard, XPGainerList, expGainPlayer, totalDamage);
 								}
 								break;
@@ -2227,15 +2227,15 @@ namespace DOL.GS.ServerRules
 				{
 					case ERealm.Albion:
 						playerToCheck.KillsAlbionSolo++;
-						playerToCheck.Achieve(AchievementUtils.AchievementNames.Alb_Solo_Kills);
+						playerToCheck.Achieve(AchievementUtil.AchievementName.Alb_Solo_Kills);
 						break;
 					case ERealm.Midgard:
 						playerToCheck.KillsMidgardSolo++;
-						playerToCheck.Achieve(AchievementUtils.AchievementNames.Mid_Solo_Kills);
+						playerToCheck.Achieve(AchievementUtil.AchievementName.Mid_Solo_Kills);
 						break;
 					case ERealm.Hibernia:
 						playerToCheck.KillsHiberniaSolo++;
-						playerToCheck.Achieve(AchievementUtils.AchievementNames.Hib_Solo_Kills);
+						playerToCheck.Achieve(AchievementUtil.AchievementName.Hib_Solo_Kills);
 						break;
 				}
 			}
@@ -2509,7 +2509,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="killer">The lord's killer</param>
 		public virtual void ResetKeep(GuardLord lord, GameObject killer)
 		{
-			PlayerMgr.UpdateStats(lord);
+			Keeps.PlayerMgr.UpdateStats(lord);
 		}
 
 		/// <summary>

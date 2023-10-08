@@ -190,9 +190,9 @@ namespace DOL.Tests.Unit.Gameserver
         public void CheckQuestQualification_PlayerIsPaladinAndAllowedClassIsCleric_False()
         {
             var player = NewFakePlayer();
-            player.fakeCharacterClass = new ClassPaladin();
+            player.FakePlayerClass = new ClassPaladin();
             var dbDataQuest = new DbDataQuest();
-            var clericClassID = (int)ECharacterClass.Cleric;
+            var clericClassID = (int)EPlayerClass.Cleric;
             dbDataQuest.AllowedClasses = clericClassID.ToString();
             var dataQuest = NewDataQuest(dbDataQuest);
 

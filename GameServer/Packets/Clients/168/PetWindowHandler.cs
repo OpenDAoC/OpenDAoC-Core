@@ -21,7 +21,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			//[Ganrod] Nidel: Animist can removed his TurretFnF without MainPet. Theurgist pets can also be removed.
 			if (client.Player.TargetObject != null && command == 2 && client.Player.ControlledBrain == null)
 			{
-				if (client.Player.CharacterClass.ID == (int)ECharacterClass.Animist)
+				if (client.Player.PlayerClass.ID == (int)EPlayerClass.Animist)
 				{
 					var turret = client.Player.TargetObject as TurretPet;
 					if (turret != null && turret.Brain is TurretFnfBrain && client.Player.IsControlledNPC(turret))
@@ -31,7 +31,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						return;
 					}
 				}
-				else if (client.Player.CharacterClass.ID == (int)ECharacterClass.Theurgist)
+				else if (client.Player.PlayerClass.ID == (int)EPlayerClass.Theurgist)
                 {
 					var tPet = client.Player.TargetObject as TheurgistPet;
 					if (tPet != null && tPet.Brain is TheurgistPetBrain && client.Player.IsControlledNPC(tPet))

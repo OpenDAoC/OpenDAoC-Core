@@ -28,9 +28,9 @@ namespace DOL.GS.Trainer
 	public class ThaneTrainer : GameTrainer
 	{
 
-		public override ECharacterClass TrainedClass
+		public override EPlayerClass TrainedClass
 		{
-			get { return ECharacterClass.Thane; }
+			get { return EPlayerClass.Thane; }
 		}
 
 		public const string WEAPON_ID = "thane_item";
@@ -45,7 +45,7 @@ namespace DOL.GS.Trainer
 			if (!base.Interact(player)) return false;
 			
 			// check if class matches.
-			if (player.CharacterClass.ID == (int)TrainedClass)
+			if (player.PlayerClass.ID == (int)TrainedClass)
 			{
 				OfferTraining(player);
 			}
@@ -83,7 +83,7 @@ namespace DOL.GS.Trainer
 				case "join the House of Thor":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)ECharacterClass.Thane, "Welcome young Thane! May your time in Midgard army be rewarding!", null);
+						PromotePlayer(player, (int)EPlayerClass.Thane, "Welcome young Thane! May your time in Midgard army be rewarding!", null);
 						player.ReceiveItem(this, WEAPON_ID);
 					}
 					break;

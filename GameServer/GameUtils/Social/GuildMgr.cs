@@ -85,7 +85,7 @@ namespace DOL.GS
 					GuildMemberDisplay member = new GuildMemberDisplay(	player.InternalID, 
 																		player.Name, 
 																		player.Level.ToString(), 
-																		player.CharacterClass.ID.ToString(), 
+																		player.PlayerClass.ID.ToString(), 
 																		player.GuildRank.RankLevel.ToString(), 
 																		player.Group != null ? player.Group.MemberCount.ToString() : "1", 
 																		player.CurrentZone.Description, 
@@ -713,7 +713,7 @@ namespace DOL.GS
 				m_internalID = player.InternalID;
 				m_name = player.Name;
 				m_level = player.Level.ToString();
-				m_characterClassID = player.CharacterClass.ID.ToString();
+				m_characterClassID = player.PlayerClass.ID.ToString();
 				m_rank = player.GuildRank.RankLevel.ToString(); ;
 				m_groupSize = player.Group == null ? "1" : "2";
 				m_zoneOnline = player.CurrentZone.ToString();
@@ -735,7 +735,7 @@ namespace DOL.GS
 			public void UpdateMember(GamePlayer player)
 			{
 				Level = player.Level.ToString();
-				ClassID = player.CharacterClass.ID.ToString();
+				ClassID = player.PlayerClass.ID.ToString();
 				Rank = player.GuildRank.RankLevel.ToString();
 				GroupSize = player.Group == null ? "1" : "2";
 				Note = player.GuildNote;

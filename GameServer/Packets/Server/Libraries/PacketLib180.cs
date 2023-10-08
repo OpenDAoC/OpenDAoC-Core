@@ -157,7 +157,7 @@ namespace DOL.GS.PacketHandler
 				if (playerToCreate.IsUnderwater) flags |= 0x02; //swimming
 				if (playerToCreate.IsStealthed) flags |= 0x10;
 				if (playerToCreate.IsWireframe) flags |= 0x20;
-				if (playerToCreate.CharacterClass.ID == (int)ECharacterClass.Vampiir) flags |= 0x40; //Vamp fly
+				if (playerToCreate.PlayerClass.ID == (int)EPlayerClass.Vampiir) flags |= 0x40; //Vamp fly
 				pak.WriteByte((byte)flags);
 				pak.WriteByte(0x00); // new in 1.74
 

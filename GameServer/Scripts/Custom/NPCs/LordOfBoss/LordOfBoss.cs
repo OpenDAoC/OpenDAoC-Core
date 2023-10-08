@@ -38,23 +38,23 @@ namespace DOL.GS {
 
 	        if (player.Group == null && player.Client.Account.PrivLevel == 1)
 	        {
-		        player.Out.SendMessage($"This challenge is too big for a lonely {player.CharacterClass.Name}, assemble a group and come back to me! \n I can port you [back] while you find some companions.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+		        player.Out.SendMessage($"This challenge is too big for a lonely {player.PlayerClass.Name}, assemble a group and come back to me! \n I can port you [back] while you find some companions.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 		        return false;
 	        }
 	        
 	        if (player.Group != null && player.Group.Leader != player)
 	        {
-		        player.Out.SendMessage($"You are not the leader of your group, {player.CharacterClass.Name}. Ask them to come speak with me to start.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+		        player.Out.SendMessage($"You are not the leader of your group, {player.PlayerClass.Name}. Ask them to come speak with me to start.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 		        return false;
 	        }
 	        
 	        if (inFight)
 	        {
-		        player.Out.SendMessage($"There's a battle already going on, {player.CharacterClass.Name}. You can't start a new fight yet. \n\n I can also [reset] the arena.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+		        player.Out.SendMessage($"There's a battle already going on, {player.PlayerClass.Name}. You can't start a new fight yet. \n\n I can also [reset] the arena.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 		        return false;
 	        }
 	        
-	        player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I hope you're up for a challenge.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+	        player.Out.SendMessage("Greetings, " + player.PlayerClass.Name + ".\n\n" + "I hope you're up for a challenge.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 
 	        switch (player.Realm)
 	        {

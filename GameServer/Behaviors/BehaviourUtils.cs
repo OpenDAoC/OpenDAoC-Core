@@ -150,7 +150,7 @@ namespace DOL.GS.Behaviour
             }
 
             message = message.Replace(RACE, player.RaceName);
-            message = message.Replace(CLASS, player.CharacterClass.Name);
+            message = message.Replace(CLASS, player.PlayerClass.Name);
             message = message.Replace("<RealmTitle>", player.RealmTitle);
 
             if (message.Contains("<Guild>"))

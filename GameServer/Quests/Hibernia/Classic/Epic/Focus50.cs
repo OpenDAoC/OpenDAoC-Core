@@ -1301,7 +1301,7 @@ namespace DOL.GS.Quests.Hibernia
 				return;
 
 			// player is not allowed to start this quest until the quest rewards are available
-			if (player.CharacterClass.ID == (byte)ECharacterClass.MaulerHib &&
+			if (player.PlayerClass.ID == (byte)EPlayerClass.MaulerHib &&
 				(MaulerHibEpicBoots == null || MaulerHibEpicBoots == null || MaulerHibEpicGloves == null ||
 				MaulerHibEpicHelm == null || MaulerHibEpicLegs == null || MaulerHibEpicVest == null))
 			{
@@ -1394,11 +1394,11 @@ namespace DOL.GS.Quests.Hibernia
 			if (player.IsDoingQuest(typeof (Focus_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) ECharacterClass.Hero &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Ranger &&
-                player.CharacterClass.ID != (byte) ECharacterClass.MaulerHib &&
-                player.CharacterClass.ID != (byte) ECharacterClass.Warden &&
-				player.CharacterClass.ID != (byte) ECharacterClass.Eldritch)
+			if (player.PlayerClass.ID != (byte) EPlayerClass.Hero &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Ranger &&
+                player.PlayerClass.ID != (byte) EPlayerClass.MaulerHib &&
+                player.PlayerClass.ID != (byte) EPlayerClass.Warden &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Eldritch)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -1551,7 +1551,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Hero)
+			if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Hero)
 			{
 				GiveItem(m_questPlayer, HeroEpicArms);
 				GiveItem(m_questPlayer, HeroEpicBoots);
@@ -1560,7 +1560,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, HeroEpicLegs);
 				GiveItem(m_questPlayer, HeroEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Ranger)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Ranger)
 			{
 				GiveItem(m_questPlayer, RangerEpicArms);
 				GiveItem(m_questPlayer, RangerEpicBoots);
@@ -1569,7 +1569,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, RangerEpicLegs);
 				GiveItem(m_questPlayer, RangerEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Eldritch)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Eldritch)
 			{
 				GiveItem(m_questPlayer, EldritchEpicArms);
 				GiveItem(m_questPlayer, EldritchEpicBoots);
@@ -1578,7 +1578,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, EldritchEpicLegs);
 				GiveItem(m_questPlayer, EldritchEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Warden)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Warden)
 			{
 				GiveItem(m_questPlayer, WardenEpicArms);
 				GiveItem(m_questPlayer, WardenEpicBoots);
@@ -1587,7 +1587,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, WardenEpicLegs);
 				GiveItem(m_questPlayer, WardenEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.MaulerHib)
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.MaulerHib)
 			{
 				GiveItem(m_questPlayer, MaulerHibEpicBoots);
 				GiveItem(m_questPlayer, MaulerHibEpicArms);

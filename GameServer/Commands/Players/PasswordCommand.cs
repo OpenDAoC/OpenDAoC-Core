@@ -69,7 +69,7 @@ public class PasswordCommand : ACommandHandler, ICommandHandler
 		GameServer.Database.SaveObject(player.Client.Account);
 
 		// Log change
-		AuditMgr.AddAuditEntry(player, AuditType.Account, AuditSubtype.AccountPasswordChange, "", player.Name);
+		AuditMgr.AddAuditEntry(player, EAuditType.Account, EAuditSubType.AccountPasswordChange, "", player.Name);
 
 		if (log.IsInfoEnabled)
 			log.Info(player.Name + " (" + player.Client.Account.Name + ") changed password.");

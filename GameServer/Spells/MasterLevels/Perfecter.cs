@@ -324,10 +324,10 @@ namespace DOL.GS.Spells
             if (target is GamePlayer)
             {
                 GamePlayer player = target as GamePlayer;
-                if (player.CharacterClass.ID == (int)ECharacterClass.Vampiir 
-                    || player.CharacterClass.ID == (int)ECharacterClass.MaulerHib
-                    || player.CharacterClass.ID == (int)ECharacterClass.MaulerMid
-                    || player.CharacterClass.ID == (int)ECharacterClass.MaulerAlb)
+                if (player.PlayerClass.ID == (int)EPlayerClass.Vampiir 
+                    || player.PlayerClass.ID == (int)EPlayerClass.MaulerHib
+                    || player.PlayerClass.ID == (int)EPlayerClass.MaulerMid
+                    || player.PlayerClass.ID == (int)EPlayerClass.MaulerAlb)
                     return;
             }
 

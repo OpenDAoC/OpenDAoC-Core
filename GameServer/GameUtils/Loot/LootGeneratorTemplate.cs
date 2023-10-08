@@ -369,7 +369,7 @@ namespace DOL.GS
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
                                                     .IsEqualTo(player.Client.Account.ObjectId)
                                                     .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+                                            var realmLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
                                             if (realmLoyalty != null && realmLoyalty.Days > 0)
                                             {
                                                 int tmpLoyal = realmLoyalty.Days > 30
@@ -397,7 +397,7 @@ namespace DOL.GS
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
                                                     .IsEqualTo(GroupedTimerToUse.Client.Account.ObjectId)
                                                     .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(GroupedTimerToUse);
+                                            var realmLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(GroupedTimerToUse);
                                             if (realmLoyalty != null && realmLoyalty.Days > 0)
                                             {
                                                 int tmpLoyal = realmLoyalty.Days > 30
@@ -519,7 +519,7 @@ namespace DOL.GS
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
                                                     .IsEqualTo(player.Client.Account.ObjectId)
                                                     .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+                                            var realmLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
                                             if (realmLoyalty != null && realmLoyalty.Days > 0)
                                             {
                                                 int tmpLoyal = realmLoyalty.Days > 30
@@ -546,7 +546,7 @@ namespace DOL.GS
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
                                                     .IsEqualTo(GroupedTimerToUse.Client.Account.ObjectId)
                                                     .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(GroupedTimerToUse);
+                                            var realmLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(GroupedTimerToUse);
                                             if (realmLoyalty != null && realmLoyalty.Days > 0)
                                             {
                                                 int tmpLoyal = realmLoyalty.Days > 30

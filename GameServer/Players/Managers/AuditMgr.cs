@@ -7,31 +7,6 @@ using DOL.Database.Attributes;
 
 namespace DOL.GS
 {
-	public enum AuditType
-	{
-		Account,
-		Character,
-		Chat
-	}
-
-	public enum AuditSubtype
-	{
-		AccountCreate,
-		AccountFailedLogin,
-		AccountSuccessfulLogin,
-		AccountLogout,
-		AccountPasswordChange,
-		AccountEmailChange,
-		AccountDelete,
-		CharacterCreate,
-		CharacterDelete,
-		CharacterRename,
-		CharacterLogin,
-		CharacterLogout,
-		PublicChat,
-		PrivateChat
-	}
-
 	/// <summary>
 	/// Manages all audit entries.
 	/// </summary>
@@ -195,7 +170,7 @@ namespace DOL.GS
 			}
 		}
 
-		public static void AddAuditEntry(AuditType type, AuditSubtype subType, string oldValue, string newValue)
+		public static void AddAuditEntry(EAuditType type, EAuditSubType subType, string oldValue, string newValue)
 		{
 			AddAuditEntry((int) type, (int) subType, oldValue, newValue);
 		}
@@ -237,12 +212,12 @@ namespace DOL.GS
 			}
 		}
 
-		public static void AddAuditEntry(GameClient client, AuditType type, AuditSubtype subType)
+		public static void AddAuditEntry(GameClient client, EAuditType type, EAuditSubType subType)
 		{
 			AddAuditEntry(client, (int) type, (int) subType, "", "");
 		}
 
-		public static void AddAuditEntry(GameClient client, AuditType type, AuditSubtype subType, string oldValue,
+		public static void AddAuditEntry(GameClient client, EAuditType type, EAuditSubType subType, string oldValue,
 		                                 string newValue)
 		{
 			AddAuditEntry(client, (int) type, (int) subType, oldValue, newValue);
@@ -253,7 +228,7 @@ namespace DOL.GS
 			AddAuditEntry(player.Client, type, subType, oldValue, newValue);
 		}
 
-		public static void AddAuditEntry(GamePlayer player, AuditType type, AuditSubtype subType, string oldValue,
+		public static void AddAuditEntry(GamePlayer player, EAuditType type, EAuditSubType subType, string oldValue,
 		                                 string newValue)
 		{
 			AddAuditEntry(player.Client, type, subType, oldValue, newValue);

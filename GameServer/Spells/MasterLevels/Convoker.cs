@@ -557,7 +557,7 @@ namespace DOL.GS.Spells
 
 			// Add byNefa 04.02.2011 13:35
 			// Check if Necro try to use ML9 Convoker at own Pet
-			if  (m_player != null && m_player.CharacterClass.ID == (int)ECharacterClass.Necromancer)
+			if  (m_player != null && m_player.PlayerClass.ID == (int)EPlayerClass.Necromancer)
 			{ // Caster is a Necro
 				NecromancerPet necroPet = target as NecromancerPet;
 				if (necroPet == null || necroPet.Owner == m_player)

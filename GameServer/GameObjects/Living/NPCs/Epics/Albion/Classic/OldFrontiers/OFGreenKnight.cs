@@ -173,7 +173,7 @@ namespace DOL.GS
             //window. Text inside the [brackets] is clickable in popup
             //windows and will generate a /whis text command!
             player.Out.SendMessage(
-                "You are wise to speak with me " + player.CharacterClass.Name +
+                "You are wise to speak with me " + player.PlayerClass.Name +
                 "! My forest is a delicate beast that can easily turn against you. " +
                 "Should you wake the beast within, I must then rise to [defend it].",
                 EChatType.CT_System, EChatLoc.CL_PopupWindow);
@@ -207,7 +207,7 @@ namespace DOL.GS
                 {
                     SendReply(t,
                         "Caution will be your guide through the dark places of Sauvage. " +
-                        "Tread lightly " + t.CharacterClass.Name + "! I am ever watchful of my home!");
+                        "Tread lightly " + t.PlayerClass.Name + "! I am ever watchful of my home!");
                     if (t.IsAlive && t.IsAttackable)
                     {
                         Flags = 0;
@@ -219,7 +219,7 @@ namespace DOL.GS
                 {
                     SendReply(t,
                         "Caution will be your guide through the dark places of Sauvage. " +
-                        "Tread lightly " + t.CharacterClass.Name + "! I am ever watchful of my home!");
+                        "Tread lightly " + t.PlayerClass.Name + "! I am ever watchful of my home!");
                     if (t.IsAlive && t.IsAttackable)
                     {
                         Flags = 0;
@@ -334,7 +334,7 @@ namespace DOL.AI.Brain
                                 if (ppl.IsAlive && ppl.Client.Account.PrivLevel == 1)
                                 {
                                     //cleric, bard, healer, warden, friar, druid, mentalist, shaman
-                                    if (ppl.CharacterClass.ID is 6 or 48 or 26 or 46 or 10 or 47 or 42 or 28)
+                                    if (ppl.PlayerClass.ID is 6 or 48 or 26 or 46 or 10 or 47 or 42 or 28)
                                     {
                                         if (!healer.Contains(ppl))
                                             healer.Add(ppl);

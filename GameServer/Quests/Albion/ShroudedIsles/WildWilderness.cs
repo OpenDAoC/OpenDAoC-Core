@@ -218,7 +218,7 @@ namespace DOL.GS.Quests.Hibernia
                                                  $"I told him I'd acquire a [tail] for him.");
                             break;
                         case 2:
-                            _miach.SayTo(player, $"Hello {player.CharacterClass.Name}, find those lungers and bring a tail to Resalg!");
+                            _miach.SayTo(player, $"Hello {player.PlayerClass.Name}, find those lungers and bring a tail to Resalg!");
                             break;
                         case 3:
                             _miach.SayTo(player, $"Oh you got a tail, please bring that to Resalg.");
@@ -283,7 +283,7 @@ namespace DOL.GS.Quests.Hibernia
                             _resalg.SayTo(player, $"Hey Forester, Miach told me that you get me a tail?");
                             break;
                         case 3:
-                            _resalg.SayTo(player, $"What can I do for you, fine {player.CharacterClass.Name}?");
+                            _resalg.SayTo(player, $"What can I do for you, fine {player.PlayerClass.Name}?");
                             
                             _resalg.SayTo(player, "Ah! You've brought me a lunger tail! Now, I'm not sure if this is going to work, " +
                                                   "but I think it just might... yes, it just might. You see, I'm working on a special [formula].");
@@ -396,8 +396,8 @@ namespace DOL.GS.Quests.Hibernia
             {
                 return false;
             }
-            if (player.CharacterClass.ID != (byte) ECharacterClass.Animist &&
-                player.CharacterClass.ID != (byte) ECharacterClass.Forester)
+            if (player.PlayerClass.ID != (byte) EPlayerClass.Animist &&
+                player.PlayerClass.ID != (byte) EPlayerClass.Forester)
                 return false;
             
             return true;

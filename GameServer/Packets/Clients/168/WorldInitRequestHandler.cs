@@ -54,7 +54,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     client.ActiveCharIndex = -1;
                 }
                 else
-                    AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterLogin, "", selectedChar);
+                    AuditMgr.AddAuditEntry(client, EAuditType.Character, EAuditSubType.CharacterLogin, "", selectedChar);
             }
         }
 

@@ -25,7 +25,7 @@ public class FocusLevelCalculator : PropertyCalculator
 			int itemBonus = living.ItemBonus[(int)property];
 			int focusLevel = living.BaseBuffBonusCategory[(int)property];
 			if (SkillBase.CheckPropertyType(property, EPropertyType.Focus)
-			 && ((GamePlayer)living).CharacterClass.ClassType == eClassType.ListCaster)
+			 && ((GamePlayer)living).PlayerClass.ClassType == EPlayerClassType.ListCaster)
 			{
 				focusLevel += living.BaseBuffBonusCategory[(int)EProperty.AllFocusLevels];
 				itemBonus = Math.Max(itemBonus, living.ItemBonus[(int)EProperty.AllFocusLevels]);

@@ -153,7 +153,7 @@ namespace DOL.GS.PacketHandler
 						locationDescription = m_gameClient.GetTranslatedSpotDescription(region, c.Xpos, c.Ypos, c.Zpos);
 					string classname = "";
 					if (c.Class != 0)
-						classname = ((ECharacterClass)c.Class).ToString();
+						classname = ((EPlayerClass)c.Class).ToString();
 					string racename = m_gameClient.RaceToTranslatedName(c.Race, c.Gender);
 
 					charItems.TryGetValue(EInventorySlot.RightHandWeapon, out DbInventoryItem rightHandWeapon);

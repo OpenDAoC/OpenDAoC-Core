@@ -38,7 +38,7 @@ namespace DOL.GS
 		{
 			if (!base.Interact(player))
 				return false;
-			if (player.CharacterClass == null)
+			if (player.PlayerClass == null)
 				return false;
 
 			TurnTo(player, 5000);

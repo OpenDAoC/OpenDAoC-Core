@@ -659,7 +659,7 @@ namespace DOL.GS
                         valid = false;
                         foreach (string allowed in Util.SplitCSV(fromItem.AllowedClasses, true))
                         {
-                            if (m_player.CharacterClass.ID.ToString() == allowed || m_player.Client.Account.PrivLevel > 1)
+                            if (m_player.PlayerClass.ID.ToString() == allowed || m_player.Client.Account.PrivLevel > 1)
                             {
                                 valid = true;
                                 break;
@@ -686,7 +686,7 @@ namespace DOL.GS
                         valid = false;
                         foreach (string allowed in Util.SplitCSV(toItem.AllowedClasses, true))
                         {
-                            if (m_player.CharacterClass.ID.ToString() == allowed || m_player.Client.Account.PrivLevel > 1)
+                            if (m_player.PlayerClass.ID.ToString() == allowed || m_player.Client.Account.PrivLevel > 1)
                             {
                                 valid = true;
                                 break;

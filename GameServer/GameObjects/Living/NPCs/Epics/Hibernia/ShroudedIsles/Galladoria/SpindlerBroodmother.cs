@@ -510,7 +510,7 @@ namespace DOL.AI.Brain
             {
                 if (player != null && player.IsAlive)
                 {
-                    if (player.CharacterClass.ID is 48 or 47 or 42 or 46) //bard,druid,menta,warden
+                    if (player.PlayerClass.ID is 48 or 47 or 42 or 46) //bard,druid,menta,warden
                     {
                         if (Body.TargetObject != player)
                         {

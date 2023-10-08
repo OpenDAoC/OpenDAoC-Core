@@ -9,9 +9,9 @@ using DOL.Language;
 namespace DOL.GS
 {
 	/// <summary>
-	/// The Base class for all Character Classes in DOL
+	/// The Base class for all player Classes in OpenDAoC
 	/// </summary>
-	public abstract class CharacterClassBase : ICharacterClass
+	public abstract class PlayerClassBase : IPlayerClass
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -91,7 +91,7 @@ namespace DOL.GS
 
 		private static readonly string[] AutotrainableSkills = new string[0];
 
-		public CharacterClassBase()
+		public PlayerClassBase()
 		{
 			m_id = 0;
 			m_name = "Unknown Class";
@@ -99,16 +99,16 @@ namespace DOL.GS
 			m_profession = "";
 
 			// initialize members from attributes
-			Attribute[] attrs = Attribute.GetCustomAttributes(this.GetType(), typeof(CharacterClassAttribute));
+			Attribute[] attrs = Attribute.GetCustomAttributes(this.GetType(), typeof(PlayerClassAttribute));
 			foreach (Attribute attr in attrs)
 			{
-				if (attr is CharacterClassAttribute)
+				if (attr is PlayerClassAttribute)
 				{
-					m_id = ((CharacterClassAttribute)attr).ID;
-					m_name = ((CharacterClassAttribute)attr).Name;
-					m_basename = ((CharacterClassAttribute)attr).BaseName;
-					if (!string.IsNullOrEmpty(((CharacterClassAttribute)attr).FemaleName))
-						m_femaleName = ((CharacterClassAttribute)attr).FemaleName;
+					m_id = ((PlayerClassAttribute)attr).ID;
+					m_name = ((PlayerClassAttribute)attr).Name;
+					m_basename = ((PlayerClassAttribute)attr).BaseName;
+					if (!string.IsNullOrEmpty(((PlayerClassAttribute)attr).FemaleName))
+						m_femaleName = ((PlayerClassAttribute)attr).FemaleName;
 					break;
 				}
 			}
@@ -227,9 +227,9 @@ namespace DOL.GS
 			return none;
 		}
 
-		public virtual eClassType ClassType
+		public virtual EPlayerClassType ClassType
 		{
-			get { return eClassType.ListCaster; }
+			get { return EPlayerClassType.ListCaster; }
 		}
 
 		/// <summary>
@@ -268,7 +268,7 @@ namespace DOL.GS
 		public virtual void OnRealmLevelUp(GamePlayer player)
 		{
 			//we dont want to add things when players arent using their advanced class
-			if (player.CharacterClass.BaseName == player.CharacterClass.Name)
+			if (player.PlayerClass.BaseName == player.PlayerClass.Name)
 				return;
 		}
 
@@ -445,9 +445,9 @@ namespace DOL.GS
 	/// Usable default Character Class, if not other can be found or used
 	/// just for getting things valid in problematic situations
 	/// </summary>
-	public class DefaultCharacterClass : CharacterClassBase
+	public class DefaultPlayerClass : PlayerClassBase
 	{
-		public DefaultCharacterClass()
+		public DefaultPlayerClass()
 			: base()
 		{
 			m_id = 0;

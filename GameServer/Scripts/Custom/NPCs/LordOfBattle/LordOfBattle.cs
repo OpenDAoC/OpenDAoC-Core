@@ -27,7 +27,7 @@ namespace DOL.GS {
 			TurnTo(player.X, player.Y);
 
 			
-				player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Greetings, " + player.PlayerClass.Name + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 
             if (player.effectListComponent.ContainsEffectForEffectType(EEffect.ResurrectionIllness))
             {

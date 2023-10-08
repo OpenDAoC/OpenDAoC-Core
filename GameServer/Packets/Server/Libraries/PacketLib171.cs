@@ -271,7 +271,7 @@ namespace DOL.GS.PacketHandler
 						}
 						pak.WriteByte(player.Level);
 						pak.WritePascalString(player.Name);
-						pak.WriteString(player.CharacterClass.Name, 4);
+						pak.WriteString(player.PlayerClass.Name, 4);
 						//Dinberg:Instances - you know the score by now ;)
 						//ZoneSkinID for clientside positioning of objects.
 						if (player.CurrentZone != null)

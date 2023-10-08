@@ -49,7 +49,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Table Cache
 		/// </summary>
-		private static readonly Dictionary<ECharacterClass, List<DbItemTemplate>> m_cachedClassEquipment = new Dictionary<ECharacterClass, List<DbItemTemplate>>();
+		private static readonly Dictionary<EPlayerClass, List<DbItemTemplate>> m_cachedClassEquipment = new Dictionary<EPlayerClass, List<DbItemTemplate>>();
 		
 		/// <summary>
 		/// Register Character Creation Events
@@ -84,7 +84,7 @@ namespace DOL.GS.GameEvents
 						{
 							try
 							{
-								ECharacterClass gameClass = (ECharacterClass)cId;
+								EPlayerClass gameClass = (EPlayerClass)cId;
 								if (!m_cachedClassEquipment.ContainsKey(gameClass))
 									m_cachedClassEquipment.Add(gameClass, new List<DbItemTemplate>());
 								
@@ -142,10 +142,10 @@ namespace DOL.GS.GameEvents
 			{
 				var usedSlots = new Dictionary<EInventorySlot, bool>();
 				
-				if (m_cachedClassEquipment.ContainsKey((ECharacterClass)ch.Class))
+				if (m_cachedClassEquipment.ContainsKey((EPlayerClass)ch.Class))
 				{
 					// sort for filling righ hand first...
-					foreach (var item in m_cachedClassEquipment.Where(k => k.Key == 0 || k.Key == (ECharacterClass)ch.Class).SelectMany(kv => kv.Value).OrderBy(it => it.Item_Type))
+					foreach (var item in m_cachedClassEquipment.Where(k => k.Key == 0 || k.Key == (EPlayerClass)ch.Class).SelectMany(kv => kv.Value).OrderBy(it => it.Item_Type))
 					{
 						// create Inventory item and set to owner.
 						DbInventoryItem inventoryItem = GameInventoryItem.Create(item);

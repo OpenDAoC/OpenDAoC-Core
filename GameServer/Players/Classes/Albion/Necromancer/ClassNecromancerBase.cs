@@ -9,7 +9,7 @@ namespace DOL.GS
 	/// <summary>
 	/// The necromancer character class.
 	/// </summary>
-	public class CharacterClassNecromancer : ClassDisciple
+	public class ClassNecromancerBase : ClassDisciple
 	{
 		public override void Init(GamePlayer player)
 		{

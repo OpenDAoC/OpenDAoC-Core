@@ -296,7 +296,7 @@ namespace DOL.GS.Spells
 
 			if (player != null)
 			{
-				int manaStatValue = player.GetModified((EProperty)player.CharacterClass.ManaStat);
+				int manaStatValue = player.GetModified((EProperty)player.PlayerClass.ManaStat);
 				spellDamage *= (manaStatValue + 300) / 275.0;
 			}
 

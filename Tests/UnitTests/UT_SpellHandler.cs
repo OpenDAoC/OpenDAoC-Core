@@ -301,7 +301,7 @@ namespace DOL.Tests.Unit.Gameserver
             var spell = NewFakeSpell();
             spell.Damage = 100;
             var source = NewFakePlayer();
-            source.fakeCharacterClass = new CharacterClassAnimist();
+            source.FakePlayerClass = new ClassAnimistBase();
             source.modifiedIntelligence = 100;
             var target = NewFakePlayer();
             var spellLine = NewSpellLine();
@@ -319,7 +319,7 @@ namespace DOL.Tests.Unit.Gameserver
             var spell = NewFakeSpell();
             spell.Damage = 100;
             var owner = NewFakePlayer();
-            owner.fakeCharacterClass = new CharacterClassAnimist();
+            owner.FakePlayerClass = new ClassAnimistBase();
             owner.modifiedIntelligence = 100;
             owner.Level = 50; 
             var brain = new FakeControlledBrain();
@@ -507,7 +507,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             public FakePlayerSpy() : base()
             {
-                fakeCharacterClass = new DefaultCharacterClass();
+                FakePlayerClass = new DefaultPlayerClass();
                 fakeRegion.FakeElapsedTime = 0;
             }
 

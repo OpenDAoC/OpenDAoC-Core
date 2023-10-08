@@ -11,12 +11,12 @@ namespace DOL.GS.Keeps
             Flags = eFlags.STEALTH;
         }
 
-		protected override ICharacterClass GetClass()
+		protected override IPlayerClass GetClass()
 		{
 			if (ModelRealm == ERealm.Albion) return new ClassInfiltrator();
 			else if (ModelRealm == ERealm.Midgard) return new ClassShadowblade();
 			else if (ModelRealm == ERealm.Hibernia) return new ClassNightshade();
-			return new DefaultCharacterClass();
+			return new DefaultPlayerClass();
 		}
 
 		protected override void SetBlockEvadeParryChance()

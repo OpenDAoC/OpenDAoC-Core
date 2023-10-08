@@ -56,18 +56,18 @@ namespace DOL.GS
 			if (player.CurrentRegion.IsCapitalCity)
 				SayTo(player, string.Format("{0} {1}. {2}",
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
-					player.CharacterClass.Name,
+					player.PlayerClass.Name,
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.CityMovementOffer")));
 					// LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.StrengthOffer")));
 			else if (IsShroudedIslesStartZone(player.CurrentZone.ID))
 				SayTo(player, string.Format("{0} {1}. {2}",
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
-					player.CharacterClass.Name,
+					player.PlayerClass.Name,
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.CityMovementOffer")));
 			else if(!player.CurrentRegion.IsRvR)//default message outside of RvR
 				SayTo(player, string.Format("{0} {1}. {2}",
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.Greeting"),
-					player.CharacterClass.Name,
+					player.PlayerClass.Name,
 					LanguageMgr.GetTranslation(player.Client.Account.Language, "GameHastener.DefaultMovementOffer")));
 			return true;
 		}

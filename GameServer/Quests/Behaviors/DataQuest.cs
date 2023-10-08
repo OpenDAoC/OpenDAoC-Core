@@ -1003,7 +1003,7 @@ namespace DOL.GS.Quests
 
 			if (m_allowedClasses.Count > 0)
 			{
-				if (m_allowedClasses.Contains((byte)player.CharacterClass.ID) == false)
+				if (m_allowedClasses.Contains((byte)player.PlayerClass.ID) == false)
 				{
 					return false;
 				}
@@ -3135,7 +3135,7 @@ namespace DOL.GS.Quests
 		{
 			string parsed = idnb;
 
-			parsed = parsed.Replace("%c", ((ECharacterClass)player.CharacterClass.ID).ToString());
+			parsed = parsed.Replace("%c", ((EPlayerClass)player.PlayerClass.ID).ToString());
 
 			return parsed;
 		}

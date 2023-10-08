@@ -6,12 +6,12 @@ namespace DOL.GS.Keeps
 {
 	public class GuardArcher : GameKeepGuard
 	{
-		protected override ICharacterClass GetClass()
+		protected override IPlayerClass GetClass()
 		{
 			if (ModelRealm == ERealm.Albion) return new ClassScout();
 			else if (ModelRealm == ERealm.Midgard) return new ClassHunter();
 			else if (ModelRealm == ERealm.Hibernia) return new ClassRanger();
-			return new DefaultCharacterClass();
+			return new DefaultPlayerClass();
 		}
 
 		protected override void SetBlockEvadeParryChance()

@@ -124,14 +124,14 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(player.Name);
 
 				pak.WriteByte((byte) (player.MaxHealth >> 8)); // maxhealth high byte ?
-				pak.WritePascalString(player.CharacterClass.Name); // class name
+				pak.WritePascalString(player.PlayerClass.Name); // class name
 				pak.WriteByte((byte) (player.MaxHealth & 0xFF)); // maxhealth low byte ?
 
-				pak.WritePascalString( /*"The "+*/player.CharacterClass.Profession); // Profession
+				pak.WritePascalString( /*"The "+*/player.PlayerClass.Profession); // Profession
 
 				pak.WriteByte(0x00); //unk
 
-	            pak.WritePascalString(player.CharacterClass.GetTitle(player, player.Level));
+	            pak.WritePascalString(player.PlayerClass.GetTitle(player, player.Level));
 
 				//todo make function to calcule realm rank
 				//client.Player.RealmPoints
@@ -140,7 +140,7 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(player.RealmRankTitle(player.Client.Account.Language));
 				pak.WriteByte((byte) player.RealmSpecialtyPoints); // realm skill points
 
-				pak.WritePascalString(player.CharacterClass.BaseName); // base class
+				pak.WritePascalString(player.PlayerClass.BaseName); // base class
 
 				pak.WriteByte((byte)(HouseMgr.GetHouseNumberByPlayer(player) >> 8)); // personal house high byte
 				pak.WritePascalString(player.GuildName);
@@ -235,7 +235,7 @@ namespace DOL.GS.PacketHandler
 					default: break;
 				}
 
-				if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
+				if (updateStats[i] == m_gameClient.Player.PlayerClass.ManaStat)
 					cap += m_gameClient.Player.ItemBonus[(int)EProperty.AcuCapBonus];
 
 				itemCaps[i] = Math.Min(cap, itemCap + bonusCap);
@@ -263,14 +263,14 @@ namespace DOL.GS.PacketHandler
 					int abilityBonus = m_gameClient.Player.AbilityBonus[(int)updateStats[i]];
 					int acuityItemBonus = 0;
 
-					if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
+					if (updateStats[i] == m_gameClient.Player.PlayerClass.ManaStat)
 					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Ranger
-							&& m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Nightshade)
+						if (m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Scout && m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Hunter && m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Ranger
+							&& m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Nightshade)
 						{
 							abilityBonus += m_gameClient.Player.AbilityBonus[(int)EProperty.Acuity];
 
-							if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
+							if (m_gameClient.Player.PlayerClass.ClassType != EPlayerClassType.PureTank)
 								acuityItemBonus = m_gameClient.Player.ItemBonus[(int)EProperty.Acuity];
 						}
 					}
@@ -289,13 +289,13 @@ namespace DOL.GS.PacketHandler
 				{
 					int acuityItemBonus = 0;
 
-					if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
+					if (updateStats[i] == m_gameClient.Player.PlayerClass.ManaStat)
 					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Ranger
-							&& m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Nightshade)
+						if (m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Scout && m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Hunter && m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Ranger
+							&& m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Nightshade)
 						{
 
-							if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
+							if (m_gameClient.Player.PlayerClass.ClassType != EPlayerClassType.PureTank)
 								acuityItemBonus = m_gameClient.Player.ItemBonus[(int)EProperty.Acuity];
 						}
 					}
@@ -317,10 +317,10 @@ namespace DOL.GS.PacketHandler
 				for (int i = 0; i < updateStats.Length; i++)
 				{
 					int acuityItemBonus = 0;
-					if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank && (int)updateStats[i] == (int)m_gameClient.Player.CharacterClass.ManaStat)
+					if (m_gameClient.Player.PlayerClass.ClassType != EPlayerClassType.PureTank && (int)updateStats[i] == (int)m_gameClient.Player.PlayerClass.ManaStat)
 					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Ranger
-							&& m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Nightshade)
+						if (m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Scout && m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Hunter && m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Ranger
+							&& m_gameClient.Player.PlayerClass.ID != (int)EPlayerClass.Nightshade)
 						{
 							acuityItemBonus = m_gameClient.Player.AbilityBonus[(int)EProperty.Acuity];
 						}
@@ -463,7 +463,7 @@ namespace DOL.GS.PacketHandler
 				if (playerToCreate.IsUnderwater) flags |= 0x02; //swimming
 				if (playerToCreate.IsStealthed)  flags |= 0x10;
 				if (playerToCreate.IsWireframe) flags |= 0x20;
-				if (playerToCreate.CharacterClass.ID == (int)ECharacterClass.Vampiir) flags |= 0x40; //Vamp fly
+				if (playerToCreate.PlayerClass.ID == (int)EPlayerClass.Vampiir) flags |= 0x40; //Vamp fly
 				pak.WriteByte((byte)flags);
 				pak.WriteByte(0x00); // new in 1.74
 

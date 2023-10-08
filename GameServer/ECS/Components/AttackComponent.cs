@@ -570,7 +570,7 @@ namespace DOL.GS
         {
             if (owner is GamePlayer player)
             {
-                if (player.CharacterClass.StartAttack(m_startAttackTarget) == false)
+                if (player.PlayerClass.StartAttack(m_startAttackTarget) == false)
                 {
                     return;
                 }
@@ -675,9 +675,9 @@ namespace DOL.GS
                 {
                     if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
                     {
-                        if ((ECharacterClass) player.CharacterClass.ID == ECharacterClass.Scout ||
-                            (ECharacterClass) player.CharacterClass.ID == ECharacterClass.Hunter ||
-                            (ECharacterClass) player.CharacterClass.ID == ECharacterClass.Ranger)
+                        if ((EPlayerClass) player.PlayerClass.ID == EPlayerClass.Scout ||
+                            (EPlayerClass) player.PlayerClass.ID == EPlayerClass.Hunter ||
+                            (EPlayerClass) player.PlayerClass.ID == EPlayerClass.Ranger)
                         {
                             // There is no feedback on live when attempting to fire a bow with arrows
                             return;
@@ -964,7 +964,7 @@ namespace DOL.GS
                         }
 
                         // Vampiir.
-                        if (playerOwner.CharacterClass is PlayerClass.ClassVampiir &&
+                        if (playerOwner.PlayerClass is PlayerClass.ClassVampiir &&
                             target is not GameKeepComponent and not GameKeepDoor and not GameSiegeWeapon)
                         {
                             int perc = Convert.ToInt32((double) (ad.Damage + ad.CriticalDamage) / 100 * (55 - playerOwner.Level));
@@ -1118,7 +1118,7 @@ namespace DOL.GS
             IEnumerable<(Spell, int, int)> rangeProc = style?.Procs.Where(x => x.Item1.SpellType == ESpellType.StyleRange);
             int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Item1.Value - AttackRange) : 0;
 
-            if (dualWield && (ad.Attacker is GamePlayer gPlayer) && gPlayer.CharacterClass.ID != (int) ECharacterClass.Savage)
+            if (dualWield && (ad.Attacker is GamePlayer gPlayer) && gPlayer.PlayerClass.ID != (int) EPlayerClass.Savage)
                 ad.AttackType = AttackData.EAttackType.MeleeDualWield;
             else if (weapon == null)
                 ad.AttackType = AttackData.EAttackType.MeleeOneHand;
@@ -2822,7 +2822,7 @@ namespace DOL.GS
             get
             {
                 if (owner is GamePlayer)
-                    return (owner as GamePlayer).CharacterClass.CanUseLefthandedWeapon;
+                    return (owner as GamePlayer).PlayerClass.CanUseLefthandedWeapon;
                 else
                     return false;
             }

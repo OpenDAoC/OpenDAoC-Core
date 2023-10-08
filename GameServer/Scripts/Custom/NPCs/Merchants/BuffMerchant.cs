@@ -901,7 +901,7 @@ namespace DOL.GS
 				int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 				int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-				DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+				DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 				if (template == null) return;
 
 				int amountToBuy = number;
@@ -941,7 +941,7 @@ namespace DOL.GS
 				int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 				int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-				DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+				DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 				if (template == null) return;
 
 				int amountToBuy = number;
@@ -998,7 +998,7 @@ namespace DOL.GS
 			{
 				if (item.Id_nb == "Full_Buffs_Token" || item.Id_nb == "BPFull_Buffs_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchBaseAFBuff, MerchBaseSpellLine);
 						BuffPlayer(t, casterMerchStrBuff, MerchBaseSpellLine);
@@ -1035,7 +1035,7 @@ namespace DOL.GS
 				}
 				if (item.Id_nb == "Specialization_Buffs_Token" || item.Id_nb == "BPSpecialization_Buffs_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchSpecAFBuff, MerchSpecSpellLine);
 						BuffPlayer(t, casterMerchStrConBuff, MerchSpecSpellLine);
@@ -1056,7 +1056,7 @@ namespace DOL.GS
 				}
 				if (item.Id_nb == "Baseline_Buffs_Token" || item.Id_nb == "BPBaseline_Buffs_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchBaseAFBuff, MerchBaseSpellLine);
 						BuffPlayer(t, casterMerchStrBuff, MerchBaseSpellLine);
@@ -1076,7 +1076,7 @@ namespace DOL.GS
 				}
 				if (item.Id_nb == "Strength_Buff_Token" || item.Id_nb == "BPStrength_Buff_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchStrBuff, MerchBaseSpellLine);
 					}
@@ -1090,7 +1090,7 @@ namespace DOL.GS
 				}
 				if (item.Id_nb == "Fortification_Buff_Token" || item.Id_nb == "BPFortification_Buff_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchConBuff, MerchBaseSpellLine);
 					}
@@ -1104,7 +1104,7 @@ namespace DOL.GS
 				}
 				if (item.Id_nb == "Dexterity_Buff_Token" || item.Id_nb == "BPDexterity_Buff_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchDexBuff, MerchBaseSpellLine);
 					}
@@ -1118,7 +1118,7 @@ namespace DOL.GS
 				}
 				if (item.Id_nb == "Armor_Buff_Token" || item.Id_nb == "BPArmor_Buff_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchBaseAFBuff, MerchBaseSpellLine);
 					}
@@ -1132,7 +1132,7 @@ namespace DOL.GS
 				}
 				if (item.Id_nb == "StrCon_Buff_Token" || item.Id_nb == "BPStrCon_Buff_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchStrConBuff, MerchSpecSpellLine);
 					}
@@ -1146,7 +1146,7 @@ namespace DOL.GS
 				}
 				if (item.Id_nb == "DexQui_Buff_Token" || item.Id_nb == "BPDexQui_Buff_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchDexQuiBuff, MerchSpecSpellLine);
 					}
@@ -1160,7 +1160,7 @@ namespace DOL.GS
 				}
 				if (item.Id_nb == "Acu_Buff_Token" || item.Id_nb == "BPAcu_Buff_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchAcuityBuff, MerchSpecSpellLine);
 					}
@@ -1174,7 +1174,7 @@ namespace DOL.GS
 				}
 				if (item.Id_nb == "SpecAF_Buff_Token" || item.Id_nb == "BPSpecAF_Buff_Token")
 				{
-					if (t.CharacterClass.ClassType == eClassType.ListCaster)
+					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 					{
 						BuffPlayer(t, casterMerchSpecAFBuff, MerchSpecSpellLine);
 					}

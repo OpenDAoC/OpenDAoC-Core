@@ -407,7 +407,7 @@ namespace DOL.GS
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.KillsEpicBoss++;
-                player.Achieve(AchievementUtils.AchievementNames.Epic_Boss_Kills);
+                player.Achieve(AchievementUtil.AchievementName.Epic_Boss_Kills);
                 count++;
             }
             return count;
@@ -952,7 +952,7 @@ namespace DOL.GS
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.KillsEpicBoss++;
-                player.Achieve(AchievementUtils.AchievementNames.Epic_Boss_Kills);
+                player.Achieve(AchievementUtil.AchievementName.Epic_Boss_Kills);
                 count++;
             }
             return count;
@@ -2535,7 +2535,7 @@ namespace DOL.GS
             {
                 GamePlayer truc = source as GamePlayer;
 
-                if (truc.CharacterClass.ID == 43 || truc.CharacterClass.ID == 44 || truc.CharacterClass.ID == 45 || truc.CharacterClass.ID == 56 || truc.CharacterClass.ID == 55)// bm,hero,champ,vw,ani
+                if (truc.PlayerClass.ID == 43 || truc.PlayerClass.ID == 44 || truc.PlayerClass.ID == 45 || truc.PlayerClass.ID == 56 || truc.PlayerClass.ID == 55)// bm,hero,champ,vw,ani
                 {
                     if (source is GamePlayer)
                     {
@@ -2746,7 +2746,7 @@ namespace DOL.GS
             {
                 GamePlayer truc = source as GamePlayer;
 
-                if (truc.CharacterClass.ID == 40 || truc.CharacterClass.ID == 41 || truc.CharacterClass.ID == 42 || truc.CharacterClass.ID == 56 || truc.CharacterClass.ID == 55)// eld,ench,menta,vw,ani
+                if (truc.PlayerClass.ID == 40 || truc.PlayerClass.ID == 41 || truc.PlayerClass.ID == 42 || truc.PlayerClass.ID == 56 || truc.PlayerClass.ID == 55)// eld,ench,menta,vw,ani
                 {
                     if (source is GamePlayer)
                     {
@@ -2954,7 +2954,7 @@ namespace DOL.GS
             {
                 GamePlayer truc = source as GamePlayer;
 
-                if (truc.CharacterClass.ID == 48 || truc.CharacterClass.ID == 47 || truc.CharacterClass.ID == 46 || truc.CharacterClass.ID == 56 || truc.CharacterClass.ID == 55)// bard,druid,warden,ani,vw
+                if (truc.PlayerClass.ID == 48 || truc.PlayerClass.ID == 47 || truc.PlayerClass.ID == 46 || truc.PlayerClass.ID == 56 || truc.PlayerClass.ID == 55)// bard,druid,warden,ani,vw
                 {
                     if (source is GamePlayer)
                     {
@@ -3162,7 +3162,7 @@ namespace DOL.GS
             {
                 GamePlayer truc = source as GamePlayer;
 
-                if (truc.CharacterClass.ID == 49 || truc.CharacterClass.ID == 50 || truc.CharacterClass.ID == 56 || truc.CharacterClass.ID == 55)// ns,ranger,vw,ani
+                if (truc.PlayerClass.ID == 49 || truc.PlayerClass.ID == 50 || truc.PlayerClass.ID == 56 || truc.PlayerClass.ID == 55)// ns,ranger,vw,ani
                 {
                     if (source is GamePlayer)
                     {

@@ -32,7 +32,7 @@ namespace DOL.GS
 			if (!base.Interact(player))
 				return false;
 
-			SayTo(player, "Hail, " + player.CharacterClass.Name + ". Have you come to [" + FORM_A_GUILD + "]?");
+			SayTo(player, "Hail, " + player.PlayerClass.Name + ". Have you come to [" + FORM_A_GUILD + "]?");
 
 			return true;
 		}

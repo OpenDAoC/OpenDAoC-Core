@@ -530,7 +530,7 @@ namespace DOL.GS
                 int classID = -1;
                 if (int.TryParse(allowed, out classID))
                 {
-                    output.Add("- " + ((ECharacterClass)classID).ToString());
+                    output.Add("- " + ((EPlayerClass)classID).ToString());
                 }
                 else
                 {

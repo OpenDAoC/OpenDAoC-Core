@@ -73,33 +73,33 @@ public class AppealCommand : ACommandHandler, ICommandHandler
             {
                 case "harassment":
                     {
-                        severity = (int)AppealMgr.eSeverity.High;
+                        severity = (int)AppealMgr.EAppealSeverity.High;
                         args[1] = "";
                         break;
                     }
                 case "naming":
                     {
-                        severity = (int)AppealMgr.eSeverity.Low;
+                        severity = (int)AppealMgr.EAppealSeverity.Low;
                         args[1] = "";
                         break;
                     }
                 case "other":
                 case "conduct":
                     {
-                        severity = (int)AppealMgr.eSeverity.Medium;
+                        severity = (int)AppealMgr.EAppealSeverity.Medium;
                         args[1] = "";
                         break;
                     }
                 case "stuck":
                 case "emergency":
                     {
-                        severity = (int)AppealMgr.eSeverity.Critical;
+                        severity = (int)AppealMgr.EAppealSeverity.Critical;
                         args[1] = "";
                         break;
                     }
                 default:
                     {
-                        severity = (int)AppealMgr.eSeverity.Medium;
+                        severity = (int)AppealMgr.EAppealSeverity.Medium;
                         break;
                     }
         
@@ -199,7 +199,7 @@ public class ReportHarassCommand : ACommandHandler, ICommandHandler
         }
         string message = string.Join(" ", args, 1, args.Length - 1);
         GamePlayer p = client.Player as GamePlayer;
-        AppealMgr.CreateAppeal(p, (int)AppealMgr.eSeverity.High, "Open", message);
+        AppealMgr.CreateAppeal(p, (int)AppealMgr.EAppealSeverity.High, "Open", message);
         return;
     }
 }
@@ -250,7 +250,7 @@ public class ReportTosCommand : ACommandHandler, ICommandHandler
                     }
                     string message = string.Join(" ", args, 2, args.Length - 2);
                     GamePlayer p = client.Player as GamePlayer;
-                    AppealMgr.CreateAppeal(p, (int)AppealMgr.eSeverity.Low, "Open", message);
+                    AppealMgr.CreateAppeal(p, (int)AppealMgr.EAppealSeverity.Low, "Open", message);
                     break;
                 }
             case "TOS":
@@ -271,7 +271,7 @@ public class ReportTosCommand : ACommandHandler, ICommandHandler
                     }
                     string message = string.Join(" ", args, 2, args.Length - 2);
                     GamePlayer p = client.Player as GamePlayer;
-                    AppealMgr.CreateAppeal(p, (int)AppealMgr.eSeverity.Medium, "Open", message);
+                    AppealMgr.CreateAppeal(p, (int)AppealMgr.EAppealSeverity.Medium, "Open", message);
                     break;
                 }
         }
@@ -321,7 +321,7 @@ public class ReportStuckCommand : ACommandHandler, ICommandHandler
         }
         string message = string.Join(" ", args, 1, args.Length - 1);
         GamePlayer p = client.Player as GamePlayer;
-        AppealMgr.CreateAppeal(p, (int)AppealMgr.eSeverity.Critical, "Open", message);
+        AppealMgr.CreateAppeal(p, (int)AppealMgr.EAppealSeverity.Critical, "Open", message);
         return;
     }
 }
@@ -368,7 +368,7 @@ public class EmergencyAppealCommand : ACommandHandler, ICommandHandler
         }
         string message = string.Join(" ", args, 1, args.Length - 1);
         GamePlayer p = client.Player as GamePlayer;
-        AppealMgr.CreateAppeal(p, (int)AppealMgr.eSeverity.Critical, "Open", message);
+        AppealMgr.CreateAppeal(p, (int)AppealMgr.EAppealSeverity.Critical, "Open", message);
         return;
     }
 }

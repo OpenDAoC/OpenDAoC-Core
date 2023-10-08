@@ -5,24 +5,24 @@ using DOL.Database;
 
 namespace DOL.GS;
 
-public class LoyaltyManager
+public class RealmLoyaltyMgr
 
 {
-    private static Dictionary<GamePlayer, PlayerLoyalty> _CachedPlayerLoyaltyDict;
+    private static Dictionary<GamePlayer, PlayerLoyaltyUtil> _CachedPlayerLoyaltyDict;
 
     public static object CachedDictLock = new object();
 
-    public LoyaltyManager()
+    public RealmLoyaltyMgr()
     {
-        _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyalty>();
+        _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyaltyUtil>();
     }
     
-    public static PlayerLoyalty GetPlayerLoyalty(GamePlayer player)
+    public static PlayerLoyaltyUtil GetPlayerLoyalty(GamePlayer player)
     {
         if (player == null) return null;
-        PlayerLoyalty playerLoyalty = null;
+        PlayerLoyaltyUtil playerLoyalty = null;
 
-        if (_CachedPlayerLoyaltyDict == null) _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyalty>();
+        if (_CachedPlayerLoyaltyDict == null) _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyaltyUtil>();
         bool alreadyExists = false;
 
         //need to do this since we can't safely lock the object in the IF statement below
@@ -46,7 +46,7 @@ public class LoyaltyManager
     public static void CachePlayer(GamePlayer player)
     {
         List<DbAccountXRealmLoyalty> realmLoyalty = new List<DbAccountXRealmLoyalty>(CoreDb<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
-        if (_CachedPlayerLoyaltyDict == null) _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyalty>();
+        if (_CachedPlayerLoyaltyDict == null) _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyaltyUtil>();
 
         lock (CachedDictLock)
         {
@@ -74,7 +74,7 @@ public class LoyaltyManager
         var hibPercent = hibLoyalty > 30 ? 30/30.0 : hibLoyalty / 30.0;
         var midPercent = midLoyalty > 30 ? 30/30.0 : midLoyalty/ 30.0;
         
-        var playerLoyalty = new PlayerLoyalty
+        var playerLoyalty = new PlayerLoyaltyUtil
         {
             AlbLoyaltyDays = albLoyalty,
             AlbPercent = albPercent,
@@ -88,13 +88,13 @@ public class LoyaltyManager
             _CachedPlayerLoyaltyDict.Add(player, playerLoyalty);
     }
     
-    public static RealmLoyalty GetPlayerRealmLoyalty(GamePlayer player)
+    public static RealmLoyaltyUtil GetPlayerRealmLoyalty(GamePlayer player)
     {
         if (player == null) return null;
 
-        RealmLoyalty realmLoyalty = null;
+        RealmLoyaltyUtil realmLoyalty = null;
 
-        PlayerLoyalty totalLoyalty = GetPlayerLoyalty(player);
+        PlayerLoyaltyUtil totalLoyalty = GetPlayerLoyalty(player);
 
         int days = 0;
         double percent = 0;
@@ -115,7 +115,7 @@ public class LoyaltyManager
                 break;
         }
 
-        realmLoyalty = new RealmLoyalty()
+        realmLoyalty = new RealmLoyaltyUtil()
         {
             Days = days,
             Percent = percent
@@ -165,7 +165,7 @@ public class LoyaltyManager
         return lastUpdatedTime;
     }
 
-    public static void UpdateLoyalty(GamePlayer player, PlayerLoyalty loyalty)
+    public static void UpdateLoyalty(GamePlayer player, PlayerLoyaltyUtil loyalty)
     {
         
     }
@@ -191,5 +191,4 @@ public class LoyaltyManager
 
         GameServer.Database.SaveObject(rloyal);
     }
-
 }

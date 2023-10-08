@@ -356,14 +356,14 @@ namespace DOL.GS.DailyQuest.Albion
 					//update class counters
 					if (member is GamePlayer gplayer)
 					{
-						if (gplayer.CharacterClass is ClassFighter)
+						if (gplayer.PlayerClass is ClassFighter)
 							HasFighter = true;
-						if (gplayer.CharacterClass is ClassAcolyte)
+						if (gplayer.PlayerClass is ClassAcolyte)
 							HasAcolyte = true;
-						if (gplayer.CharacterClass is ClassAlbionRogue)
+						if (gplayer.PlayerClass is ClassAlbionRogue)
 							HasRogue = true;
-						if (gplayer.CharacterClass is ClassMage ||
-						    gplayer.CharacterClass is ClassElementalist || gplayer.CharacterClass is ClassDisciple)
+						if (gplayer.PlayerClass is ClassMage ||
+						    gplayer.PlayerClass is ClassElementalist || gplayer.PlayerClass is ClassDisciple)
 							HasMageElemDisc = true;
 					}
 				}

@@ -172,7 +172,7 @@ namespace DOL.AI.Brain
 					if (Target != null && Target.IsAlive)
                     {					
 						Target.MoveTo(Body.CurrentRegionID, 451486, 393503, 2754, 2390);
-						if(Target.CharacterClass.ID != (int)ECharacterClass.Necromancer)
+						if(Target.PlayerClass.ID != (int)EPlayerClass.Necromancer)
                         {
 							Target.TakeDamage(Target, EDamageType.Falling, Target.MaxHealth / 5, 0);
 							Target.Out.SendMessage("You take falling damage!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);

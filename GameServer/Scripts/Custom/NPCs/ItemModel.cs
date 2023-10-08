@@ -1630,128 +1630,128 @@ namespace DOL.GS
                         break;
                     }
                     price = epic;
-                    switch ((ECharacterClass)player.CharacterClass.ID)
+                    switch ((EPlayerClass)player.PlayerClass.ID)
                     {
                         //alb
-                        case ECharacterClass.Armsman:
+                        case EPlayerClass.Armsman:
                             modelIDToAssign = 688;
                             break;
-                        case ECharacterClass.Cabalist:
+                        case EPlayerClass.Cabalist:
                             modelIDToAssign = 682;
                             break;
-                        case ECharacterClass.Cleric:
+                        case EPlayerClass.Cleric:
                             modelIDToAssign = 713;
                             break;
-                        case ECharacterClass.Friar:
+                        case EPlayerClass.Friar:
                             modelIDToAssign = 797;
                             break;
-                        case ECharacterClass.Infiltrator:
+                        case EPlayerClass.Infiltrator:
                             modelIDToAssign = 792;
                             break;
-                        case ECharacterClass.Mercenary:
+                        case EPlayerClass.Mercenary:
                             modelIDToAssign = 718;
                             break;
-                        case ECharacterClass.Minstrel:
+                        case EPlayerClass.Minstrel:
                             modelIDToAssign = 3380;
                             break;
-                        case ECharacterClass.Necromancer:
+                        case EPlayerClass.Necromancer:
                             modelIDToAssign = 1266;
                             break;
-                        case ECharacterClass.Paladin:
+                        case EPlayerClass.Paladin:
                             modelIDToAssign = 693;
                             break;
-                        case ECharacterClass.Reaver:
+                        case EPlayerClass.Reaver:
                             modelIDToAssign = 1267;
                             break;
-                        case ECharacterClass.Scout:
+                        case EPlayerClass.Scout:
                             modelIDToAssign = 728;
                             break;
-                        case ECharacterClass.Sorcerer:
+                        case EPlayerClass.Sorcerer:
                             modelIDToAssign = 804;
                             break;
-                        case ECharacterClass.Theurgist:
+                        case EPlayerClass.Theurgist:
                             modelIDToAssign = 733;
                             break;
-                        case ECharacterClass.Wizard:
+                        case EPlayerClass.Wizard:
                             modelIDToAssign = 798;
                             break;
 
                         //mid
-                        case ECharacterClass.Berserker:
+                        case EPlayerClass.Berserker:
                             modelIDToAssign = 751;
                             break;
-                        case ECharacterClass.Bonedancer:
+                        case EPlayerClass.Bonedancer:
                             modelIDToAssign = 1187;
                             break;
-                        case ECharacterClass.Healer:
+                        case EPlayerClass.Healer:
                             modelIDToAssign = 698;
                             break;
-                        case ECharacterClass.Hunter:
+                        case EPlayerClass.Hunter:
                             modelIDToAssign = 756;
                             break;
-                        case ECharacterClass.Runemaster:
+                        case EPlayerClass.Runemaster:
                             modelIDToAssign = 703;
                             break;
-                        case ECharacterClass.Savage:
+                        case EPlayerClass.Savage:
                             modelIDToAssign = 1192;
                             break;
-                        case ECharacterClass.Shadowblade:
+                        case EPlayerClass.Shadowblade:
                             modelIDToAssign = 761;
                             break;
-                        case ECharacterClass.Shaman:
+                        case EPlayerClass.Shaman:
                             modelIDToAssign = 766;
                             break;
-                        case ECharacterClass.Skald:
+                        case EPlayerClass.Skald:
                             modelIDToAssign = 771;
                             break;
-                        case ECharacterClass.Spiritmaster:
+                        case EPlayerClass.Spiritmaster:
                             modelIDToAssign = 799;
                             break;
-                        case ECharacterClass.Thane:
+                        case EPlayerClass.Thane:
                             modelIDToAssign = 3370;
                             break;
-                        case ECharacterClass.Warrior:
+                        case EPlayerClass.Warrior:
                             modelIDToAssign = 776;
                             break;
 
                         //hib
-                        case ECharacterClass.Animist:
+                        case EPlayerClass.Animist:
                             modelIDToAssign = 1186;
                             break;
-                        case ECharacterClass.Bard:
+                        case EPlayerClass.Bard:
                             modelIDToAssign = 734;
                             break;
-                        case ECharacterClass.Blademaster:
+                        case EPlayerClass.Blademaster:
                             modelIDToAssign = 782;
                             break;
-                        case ECharacterClass.Champion:
+                        case EPlayerClass.Champion:
                             modelIDToAssign = 810;
                             break;
-                        case ECharacterClass.Druid:
+                        case EPlayerClass.Druid:
                             modelIDToAssign = 739;
                             break;
-                        case ECharacterClass.Eldritch:
+                        case EPlayerClass.Eldritch:
                             modelIDToAssign = 744;
                             break;
-                        case ECharacterClass.Enchanter:
+                        case EPlayerClass.Enchanter:
                             modelIDToAssign = 781;
                             break;
-                        case ECharacterClass.Hero:
+                        case EPlayerClass.Hero:
                             modelIDToAssign = 708;
                             break;
-                        case ECharacterClass.Mentalist:
+                        case EPlayerClass.Mentalist:
                             modelIDToAssign = 745;
                             break;
-                        case ECharacterClass.Nightshade:
+                        case EPlayerClass.Nightshade:
                             modelIDToAssign = 746;
                             break;
-                        case ECharacterClass.Ranger:
+                        case EPlayerClass.Ranger:
                             modelIDToAssign = 815;
                             break;
-                        case ECharacterClass.Valewalker:
+                        case EPlayerClass.Valewalker:
                             modelIDToAssign = 1003;
                             break;
-                        case ECharacterClass.Warden:
+                        case EPlayerClass.Warden:
                             modelIDToAssign = 805;
                             break;
                     }
@@ -4748,10 +4748,10 @@ namespace DOL.GS
 
                 case "class epic 1h":
                     price = champion;
-                    switch ((ECharacterClass)player.CharacterClass.ID)
+                    switch ((EPlayerClass)player.PlayerClass.ID)
                     {
                         //alb
-                        case ECharacterClass.Armsman:
+                        case EPlayerClass.Armsman:
                             if(item.Object_Type == (int)EObjectType.Shield)
                             {
                                 SendNotValidMessage(player);
@@ -4771,7 +4771,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Cabalist:
+                        case EPlayerClass.Cabalist:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -4780,10 +4780,10 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3264;
                             break;
-                        case ECharacterClass.Cleric:
+                        case EPlayerClass.Cleric:
                             modelIDToAssign = 3282;
                             break;
-                        case ECharacterClass.Friar:
+                        case EPlayerClass.Friar:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -4792,7 +4792,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3272;
                             break;
-                        case ECharacterClass.Infiltrator:
+                        case EPlayerClass.Infiltrator:
                             if (item.Object_Type != (int)EObjectType.ThrustWeapon ||
                                 item.Object_Type != (int)EObjectType.SlashingWeapon)
                             {
@@ -4810,7 +4810,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Mercenary:
+                        case EPlayerClass.Mercenary:
                             if (item.Object_Type != (int)EObjectType.ThrustWeapon ||
                                 item.Object_Type != (int)EObjectType.SlashingWeapon ||
                                 item.Object_Type != (int)EObjectType.CrushingWeapon)
@@ -4832,7 +4832,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Minstrel:
+                        case EPlayerClass.Minstrel:
                             if (item.Object_Type != (int)EObjectType.ThrustWeapon ||
                                 item.Object_Type != (int)EObjectType.SlashingWeapon)
                             {
@@ -4850,7 +4850,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Necromancer:
+                        case EPlayerClass.Necromancer:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -4859,7 +4859,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3268;
                             break;
-                        case ECharacterClass.Paladin:
+                        case EPlayerClass.Paladin:
                             if (item.Object_Type != (int)EObjectType.ThrustWeapon ||
                                 item.Object_Type != (int)EObjectType.SlashingWeapon ||
                                 item.Object_Type != (int)EObjectType.CrushingWeapon)
@@ -4881,7 +4881,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Reaver:
+                        case EPlayerClass.Reaver:
                             if ((EObjectType)item.Object_Type == EObjectType.Flexible)
                             {
                                 modelIDToAssign = 3292;
@@ -4910,7 +4910,7 @@ namespace DOL.GS
                                 }
                             }
                             break;
-                        case ECharacterClass.Scout:
+                        case EPlayerClass.Scout:
                             if (item.Object_Type != (int)EObjectType.ThrustWeapon ||
                                 item.Object_Type != (int)EObjectType.SlashingWeapon)
                             {
@@ -4928,7 +4928,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Sorcerer:
+                        case EPlayerClass.Sorcerer:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -4937,7 +4937,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3265;
                             break;
-                        case ECharacterClass.Theurgist:
+                        case EPlayerClass.Theurgist:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -4946,7 +4946,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3266;
                             break;
-                        case ECharacterClass.Wizard:
+                        case EPlayerClass.Wizard:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -4957,7 +4957,7 @@ namespace DOL.GS
                             break;
 
                         //mid
-                        case ECharacterClass.Berserker:
+                        case EPlayerClass.Berserker:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Hammer:
@@ -4978,7 +4978,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Bonedancer:
+                        case EPlayerClass.Bonedancer:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -4987,7 +4987,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3311;
                             break;
-                        case ECharacterClass.Healer:
+                        case EPlayerClass.Healer:
                             if (item.Item_Type != Slot.RIGHTHAND || item.Item_Type != Slot.TWOHAND || item.Object_Type != (int)EObjectType.Hammer)
                             {
                                 SendNotValidMessage(player);
@@ -4999,7 +4999,7 @@ namespace DOL.GS
                             else
                                 modelIDToAssign = 3336;
                             break;
-                        case ECharacterClass.Hunter:
+                        case EPlayerClass.Hunter:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Spear:
@@ -5022,10 +5022,10 @@ namespace DOL.GS
 
                             }
                             break;
-                        case ECharacterClass.Runemaster:
+                        case EPlayerClass.Runemaster:
                             modelIDToAssign = 3309;
                             break;
-                        case ECharacterClass.Savage:
+                        case EPlayerClass.Savage:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Hammer:
@@ -5046,7 +5046,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Shadowblade:
+                        case EPlayerClass.Shadowblade:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Axe:
@@ -5067,13 +5067,13 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Shaman:
+                        case EPlayerClass.Shaman:
                             if (item.Item_Type == Slot.TWOHAND)
                                 modelIDToAssign = 3338;
                             else
                                 modelIDToAssign = 3337;
                             break;
-                        case ECharacterClass.Skald:
+                        case EPlayerClass.Skald:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Hammer:
@@ -5100,7 +5100,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Spiritmaster:
+                        case EPlayerClass.Spiritmaster:
                             if(item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5109,7 +5109,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3310;
                             break;
-                        case ECharacterClass.Thane:
+                        case EPlayerClass.Thane:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Hammer:
@@ -5132,7 +5132,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Warrior:
+                        case EPlayerClass.Warrior:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Hammer:
@@ -5157,7 +5157,7 @@ namespace DOL.GS
                             break;
 
                         //hib
-                        case ECharacterClass.Animist:
+                        case EPlayerClass.Animist:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5166,7 +5166,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3229;
                             break;
-                        case ECharacterClass.Bard:
+                        case EPlayerClass.Bard:
                             if (item.Object_Type != (int)EObjectType.Blades &&
                                 item.Object_Type != (int)EObjectType.Blunt)
                             {
@@ -5184,7 +5184,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Blademaster:
+                        case EPlayerClass.Blademaster:
                             if (item.Object_Type != (int)EObjectType.Blades &&
                                 item.Object_Type != (int)EObjectType.Blunt &&
                                 item.Object_Type != (int)EObjectType.Piercing)
@@ -5206,7 +5206,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Champion:
+                        case EPlayerClass.Champion:
                             if (item.Object_Type != (int)EObjectType.Blades &&
                                 item.Object_Type != (int)EObjectType.Blunt &&
                                 item.Object_Type != (int)EObjectType.Piercing)
@@ -5228,7 +5228,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Druid:
+                        case EPlayerClass.Druid:
                             if (item.Object_Type != (int)EObjectType.Blades &&
                                 item.Object_Type != (int)EObjectType.Blunt)
                             {
@@ -5246,7 +5246,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Eldritch:
+                        case EPlayerClass.Eldritch:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5255,7 +5255,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3226;
                             break;
-                        case ECharacterClass.Enchanter:
+                        case EPlayerClass.Enchanter:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5264,7 +5264,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3227;
                             break;
-                        case ECharacterClass.Hero:
+                        case EPlayerClass.Hero:
                             if (item.Object_Type != (int)EObjectType.Blades &&
                                 item.Object_Type != (int)EObjectType.Blunt &&
                                 item.Object_Type != (int)EObjectType.Piercing)
@@ -5286,7 +5286,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Mentalist:
+                        case EPlayerClass.Mentalist:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5295,7 +5295,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3228;
                             break;
-                        case ECharacterClass.Nightshade:
+                        case EPlayerClass.Nightshade:
                             if (item.Object_Type != (int)EObjectType.Blades &&
                                 item.Object_Type != (int)EObjectType.Piercing)
                             {
@@ -5313,7 +5313,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Ranger:
+                        case EPlayerClass.Ranger:
                             if (item.Object_Type != (int)EObjectType.Blades &&
                                 item.Object_Type != (int)EObjectType.Piercing)
                             {
@@ -5331,7 +5331,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Valewalker:
+                        case EPlayerClass.Valewalker:
                             if (item.Object_Type != (int)EObjectType.Scythe)
                             {
                                 SendNotValidMessage(player);
@@ -5340,7 +5340,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3231;
                             break;
-                        case ECharacterClass.Warden:
+                        case EPlayerClass.Warden:
                             if (item.Object_Type != (int)EObjectType.Blades &&
                                 item.Object_Type != (int)EObjectType.Blunt)
                             {
@@ -5366,10 +5366,10 @@ namespace DOL.GS
 
                 case "class epic 2h":
                     price = champion;
-                    switch ((ECharacterClass)player.CharacterClass.ID)
+                    switch ((EPlayerClass)player.PlayerClass.ID)
                     {
                         //alb
-                        case ECharacterClass.Armsman:
+                        case EPlayerClass.Armsman:
                             if ((EObjectType)item.Object_Type == EObjectType.PolearmWeapon)
                             {
                                 switch ((EDamageType)item.Type_Damage)
@@ -5409,7 +5409,7 @@ namespace DOL.GS
                                 }
                             }
                             break;
-                        case ECharacterClass.Cabalist:
+                        case EPlayerClass.Cabalist:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5418,7 +5418,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3264;
                             break;
-                        case ECharacterClass.Cleric:
+                        case EPlayerClass.Cleric:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5427,7 +5427,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3282;
                             break;
-                        case ECharacterClass.Friar:
+                        case EPlayerClass.Friar:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5436,7 +5436,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3271;
                             break;
-                        case ECharacterClass.Necromancer:
+                        case EPlayerClass.Necromancer:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5445,7 +5445,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3268;
                             break;
-                        case ECharacterClass.Paladin:
+                        case EPlayerClass.Paladin:
                             switch ((EDamageType)item.Type_Damage)
                             {
                                 case EDamageType.Thrust:
@@ -5463,7 +5463,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Sorcerer:
+                        case EPlayerClass.Sorcerer:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5478,7 +5478,7 @@ namespace DOL.GS
                                 break;
                             }
                             break;
-                        case ECharacterClass.Theurgist:
+                        case EPlayerClass.Theurgist:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5487,7 +5487,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3266;
                             break;
-                        case ECharacterClass.Wizard:
+                        case EPlayerClass.Wizard:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5498,7 +5498,7 @@ namespace DOL.GS
                             break;
 
                         //mid
-                        case ECharacterClass.Berserker:
+                        case EPlayerClass.Berserker:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Hammer:
@@ -5516,7 +5516,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Bonedancer:
+                        case EPlayerClass.Bonedancer:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5525,7 +5525,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3311;
                             break;
-                        case ECharacterClass.Healer:
+                        case EPlayerClass.Healer:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5534,7 +5534,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3335;
                             break;
-                        case ECharacterClass.Hunter:
+                        case EPlayerClass.Hunter:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Spear:
@@ -5556,7 +5556,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Runemaster:
+                        case EPlayerClass.Runemaster:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5565,7 +5565,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3309;
                             break;
-                        case ECharacterClass.Savage:
+                        case EPlayerClass.Savage:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Hammer:
@@ -5583,7 +5583,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Shadowblade:
+                        case EPlayerClass.Shadowblade:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Axe:
@@ -5598,7 +5598,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Shaman:
+                        case EPlayerClass.Shaman:
                             if (item.Object_Type != (int)EObjectType.Hammer)
                             {
                                 SendNotValidMessage(player);
@@ -5607,7 +5607,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3338;
                             break;
-                        case ECharacterClass.Skald:
+                        case EPlayerClass.Skald:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Hammer:
@@ -5625,7 +5625,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Spiritmaster:
+                        case EPlayerClass.Spiritmaster:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5634,7 +5634,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3310;
                             break;
-                        case ECharacterClass.Thane:
+                        case EPlayerClass.Thane:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Hammer:
@@ -5652,7 +5652,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Warrior:
+                        case EPlayerClass.Warrior:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Hammer:
@@ -5672,7 +5672,7 @@ namespace DOL.GS
                             break;
 
                         //hib
-                        case ECharacterClass.Animist:
+                        case EPlayerClass.Animist:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5681,7 +5681,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3229;
                             break;
-                        case ECharacterClass.Champion:
+                        case EPlayerClass.Champion:
                             switch ((EDamageType)item.Type_Damage)
                             {
                                 case EDamageType.Slash:
@@ -5699,7 +5699,7 @@ namespace DOL.GS
                                     break;
                             }
                             break;
-                        case ECharacterClass.Eldritch:
+                        case EPlayerClass.Eldritch:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5708,7 +5708,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3226;
                             break;
-                        case ECharacterClass.Enchanter:
+                        case EPlayerClass.Enchanter:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5717,7 +5717,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3227;
                             break;
-                        case ECharacterClass.Hero:
+                        case EPlayerClass.Hero:
                             switch ((EObjectType)item.Object_Type)
                             {
                                 case EObjectType.Blades:
@@ -5753,7 +5753,7 @@ namespace DOL.GS
 
                             }
                             break;
-                        case ECharacterClass.Mentalist:
+                        case EPlayerClass.Mentalist:
                             if (item.Object_Type != (int)EObjectType.Staff)
                             {
                                 SendNotValidMessage(player);
@@ -5762,7 +5762,7 @@ namespace DOL.GS
                             }
                             modelIDToAssign = 3228;
                             break;
-                        case ECharacterClass.Valewalker:
+                        case EPlayerClass.Valewalker:
                             if (item.Object_Type != (int)EObjectType.Scythe)
                             {
                                 SendNotValidMessage(player);
@@ -5893,11 +5893,11 @@ namespace DOL.GS
                         break;
                     }
                     price = epic;
-                    if ((ECharacterClass)player.CharacterClass.ID == ECharacterClass.Bard)
+                    if ((EPlayerClass)player.PlayerClass.ID == EPlayerClass.Bard)
                     {
                         modelIDToAssign = 3239;
                     }
-                    else if ((ECharacterClass)player.CharacterClass.ID == ECharacterClass.Minstrel)
+                    else if ((EPlayerClass)player.PlayerClass.ID == EPlayerClass.Minstrel)
                     {
                         modelIDToAssign = 3280;
                     }
@@ -5925,15 +5925,15 @@ namespace DOL.GS
                         break;
                     }
                     price = champion;
-                    if ((ECharacterClass)player.CharacterClass.ID == ECharacterClass.Scout)
+                    if ((EPlayerClass)player.PlayerClass.ID == EPlayerClass.Scout)
                     {
                         modelIDToAssign = 3275;
                     }
-                    else if ((ECharacterClass)player.CharacterClass.ID == ECharacterClass.Hunter)
+                    else if ((EPlayerClass)player.PlayerClass.ID == EPlayerClass.Hunter)
                     {
                         modelIDToAssign = 3365;
                     }
-                    else if ((ECharacterClass)player.CharacterClass.ID == ECharacterClass.Ranger)
+                    else if ((EPlayerClass)player.PlayerClass.ID == EPlayerClass.Ranger)
                     {
                         modelIDToAssign = 3243;
                     }
