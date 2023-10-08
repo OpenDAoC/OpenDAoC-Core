@@ -2422,13 +2422,13 @@ namespace DOL.GS.Commands
 				#region AddBanner
 				case "addbanner":
 					{
-						GameKeepBanner.EBannerType bannerType = GameKeepBanner.EBannerType.Realm;
+						EBannerType bannerType = EBannerType.Realm;
 						if (args.Length > 2)
 						{
 							switch (args[2].ToLower())
 							{
-									case "realm": bannerType = GameKeepBanner.EBannerType.Realm; break;
-									case "guild": bannerType = GameKeepBanner.EBannerType.Guild; break;
+									case "realm": bannerType = EBannerType.Realm; break;
+									case "guild": bannerType = EBannerType.Guild; break;
 									default: return;
 							}
 						}

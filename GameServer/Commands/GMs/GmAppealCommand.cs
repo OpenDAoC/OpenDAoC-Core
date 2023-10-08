@@ -230,16 +230,16 @@ namespace DOL.GS.Commands
                         {
                             switch (a.Severity)
                             {
-                                case (int)AppealMgr.EAppealSeverity.Low:
+                                case (int)EAppealSeverity.Low:
                                     low++;
                                     break;
-                                case (int)AppealMgr.EAppealSeverity.Medium:
+                                case (int)EAppealSeverity.Medium:
                                     med++;
                                     break;
-                                case (int)AppealMgr.EAppealSeverity.High:
+                                case (int)EAppealSeverity.High:
                                     high++;
                                     break;
-                                case (int)AppealMgr.EAppealSeverity.Critical:
+                                case (int)EAppealSeverity.Critical:
                                     crit++;
                                     break;
                             }
@@ -253,7 +253,7 @@ namespace DOL.GS.Commands
                             msg.Add("Critical priority appeals:\n");
                             foreach (DbAppeal a in appeallist)
                             {
-                                if (a.Severity == (int)AppealMgr.EAppealSeverity.Critical)
+                                if (a.Severity == (int)EAppealSeverity.Critical)
                                 {
                                     msg.Add("[Name]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + " [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
                                 }
@@ -264,7 +264,7 @@ namespace DOL.GS.Commands
                             msg.Add("High priority appeals:\n");
                             foreach (DbAppeal a in appeallist)
                             {
-                                if (a.Severity == (int)AppealMgr.EAppealSeverity.High)
+                                if (a.Severity == (int)EAppealSeverity.High)
                                 {
                                     msg.Add("[Name]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + ", [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
                                 }
@@ -275,7 +275,7 @@ namespace DOL.GS.Commands
                             msg.Add("Medium priority Appeals:\n");
                             foreach (DbAppeal a in appeallist)
                             {
-                                if (a.Severity == (int)AppealMgr.EAppealSeverity.Medium)
+                                if (a.Severity == (int)EAppealSeverity.Medium)
                                 {
                                     msg.Add("[Name]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + ", [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
                                 }
@@ -286,7 +286,7 @@ namespace DOL.GS.Commands
                             msg.Add("Low priority appeals:\n");
                             foreach (DbAppeal a in appeallist)
                             {
-                                if (a.Severity == (int)AppealMgr.EAppealSeverity.Low)
+                                if (a.Severity == (int)EAppealSeverity.Low)
                                 {
                                     msg.Add("[Name]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + ", [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
                                 }

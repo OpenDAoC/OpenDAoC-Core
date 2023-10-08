@@ -71,7 +71,7 @@ namespace DOL.GS.Keeps
 					if (player.Group.Mission != null)
 						player.Group.Mission.ExpireMission();
 
-					player.Group.Mission = new CaptureMission(CaptureMission.ECaptureType.Tower, player.Group, str.ToLower().Replace("tower capture", "").Trim());
+					player.Group.Mission = new CaptureMission(ECaptureType.Tower, player.Group, str.ToLower().Replace("tower capture", "").Trim());
 				}
 			}
 			else if (str.ToLower().StartsWith("keep capture"))
@@ -89,7 +89,7 @@ namespace DOL.GS.Keeps
 					if (player.Group.Mission != null)
 						player.Group.Mission.ExpireMission();
 
-					player.Group.Mission = new CaptureMission(CaptureMission.ECaptureType.Keep, player.Group, str.ToLower().Replace("keep capture", "").Trim());
+					player.Group.Mission = new CaptureMission(ECaptureType.Keep, player.Group, str.ToLower().Replace("keep capture", "").Trim());
 				}
 			}
 			else
