@@ -18,7 +18,7 @@ public class GuildChatCommand : ACommandHandler, ICommandHandler
 			return;
 		}
 
-		if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.GcSpeak))
+		if (!client.Player.Guild.HasRank(client.Player, EGuildRank.GcSpeak))
 		{
 			DisplayMessage(client, "You don't have permission to speak on the guild channel.");
 			return;
@@ -51,7 +51,7 @@ public class OfficerGuildChatCommandHandler : ACommandHandler, ICommandHandler
 			return;
 		}
 
-		if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.OcSpeak))
+		if (!client.Player.Guild.HasRank(client.Player, EGuildRank.OcSpeak))
 		{
 			DisplayMessage(client, "You don't have permission to speak on the officer channel.");
 			return;
@@ -66,7 +66,7 @@ public class OfficerGuildChatCommandHandler : ACommandHandler, ICommandHandler
 		string message = "[Officers] " + client.Player.Name + ": \"" + string.Join(" ", args, 1, args.Length - 1) + "\"";
 		foreach (GamePlayer ply in client.Player.Guild.GetListOfOnlineMembers())
 		{
-			if (!client.Player.Guild.HasRank(ply, Guild.eRank.OcHear))
+			if (!client.Player.Guild.HasRank(ply, EGuildRank.OcHear))
 			{
 				continue;
 			}
@@ -97,7 +97,7 @@ public class AllianceGuildChatCommandHandler : ACommandHandler, ICommandHandler
 			return;
 		}
 
-		if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.AcSpeak))
+		if (!client.Player.Guild.HasRank(client.Player, EGuildRank.AcSpeak))
 		{
 			DisplayMessage(client, "You don't have permission to speak on the alliance channel.");
 			return;
@@ -116,11 +116,11 @@ public class AllianceGuildChatCommandHandler : ACommandHandler, ICommandHandler
 		}
 
 		string message = "[Alliance] " + client.Player.Name + ": \"" + string.Join(" ", args, 1, args.Length - 1) + "\"";
-		foreach (Guild gui in client.Player.Guild.alliance.Guilds)
+		foreach (GuildUtil gui in client.Player.Guild.alliance.Guilds)
 		{
 			foreach (GamePlayer ply in gui.GetListOfOnlineMembers())
 			{
-				if (!gui.HasRank(ply, Guild.eRank.AcHear) || ply.IsIgnoring(client.Player))
+				if (!gui.HasRank(ply, EGuildRank.AcHear) || ply.IsIgnoring(client.Player))
 				{
 					continue;
 				}

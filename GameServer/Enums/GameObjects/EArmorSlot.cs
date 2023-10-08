@@ -6,10 +6,10 @@
 public enum EArmorSlot : int
 {
 	NOTSET = 0x00,
-	HEAD = eInventorySlot.HeadArmor,
-	HAND = eInventorySlot.HandsArmor,
-	FEET = eInventorySlot.FeetArmor,
-	TORSO = eInventorySlot.TorsoArmor,
-	LEGS = eInventorySlot.LegsArmor,
-	ARMS = eInventorySlot.ArmsArmor,
+	HEAD = EInventorySlot.HeadArmor,
+	HAND = EInventorySlot.HandsArmor,
+	FEET = EInventorySlot.FeetArmor,
+	TORSO = EInventorySlot.TorsoArmor,
+	LEGS = EInventorySlot.LegsArmor,
+	ARMS = EInventorySlot.ArmsArmor,
 }

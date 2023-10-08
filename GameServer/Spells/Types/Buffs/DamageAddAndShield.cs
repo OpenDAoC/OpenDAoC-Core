@@ -100,7 +100,7 @@ namespace DOL.GS.Spells
 			ad.Damage = (int)((damage + damageResisted) * effectiveness);
 			ad.Modifier = (int)damageResisted;
 			ad.DamageType = Spell.DamageType;
-			ad.AttackType = AttackData.eAttackType.Spell;
+			ad.AttackType = AttackData.EAttackType.Spell;
 			ad.SpellHandler = this;
 			ad.AttackResult = EAttackResult.HitUnstyled;
 
@@ -218,7 +218,7 @@ namespace DOL.GS.Spells
 			ad.Modifier = (int)damageResisted;
 			ad.DamageType = Spell.DamageType;
 			ad.SpellHandler = this;
-			ad.AttackType = AttackData.eAttackType.Spell;
+			ad.AttackType = AttackData.EAttackType.Spell;
 			ad.AttackResult = EAttackResult.HitUnstyled;
 
 			GamePlayer owner = null;
@@ -353,7 +353,7 @@ namespace DOL.GS.Spells
 			}
 			bool upperCase = Spell.Message2.StartsWith("{0}");
 			MessageToLiving(effect.Owner, Spell.Message1, chatType);
-			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, 
+			MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, 
 				effect.Owner.GetName(0, upperCase)), chatType, effect.Owner);
 			GameEventMgr.AddHandler(effect.Owner, EventType, new CoreEventHandler(EventHandler));
 		}
@@ -373,7 +373,7 @@ namespace DOL.GS.Spells
 				// "{0}'s weapon returns to normal."
 				bool upperCase = Spell.Message4.StartsWith("{0}");
 				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, 
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, 
 					effect.Owner.GetName(0, upperCase)), eChatType.CT_SpellExpires, effect.Owner);
 			}
 			GameEventMgr.RemoveHandler(effect.Owner, EventType, new CoreEventHandler(EventHandler));

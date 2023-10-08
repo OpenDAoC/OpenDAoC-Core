@@ -99,13 +99,13 @@ namespace DOL.GS
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 54, 0);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 54);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 141, 54, 0);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 140, 54);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 142, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 143, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 91, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             AidonTheArchwizardBrain.IsPulled = false;
@@ -487,13 +487,13 @@ namespace DOL.GS
             Flags = eFlags.GHOST;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 54, 0);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 54);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 141, 54, 0);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 140, 54);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 142, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 143, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 91, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
@@ -620,13 +620,13 @@ namespace DOL.GS
             Flags = eFlags.GHOST;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 54, 0);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 54);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 141, 54, 0);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 140, 54);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 142, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 143, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 91, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
@@ -753,13 +753,13 @@ namespace DOL.GS
             Flags = eFlags.GHOST;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 54, 0);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 54);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 141, 54, 0);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 140, 54);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 142, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 143, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 91, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
@@ -884,13 +884,13 @@ namespace DOL.GS
             Flags = eFlags.GHOST;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 54, 0);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 54);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 141, 54, 0);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 140, 54);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 142, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 143, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 91, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;

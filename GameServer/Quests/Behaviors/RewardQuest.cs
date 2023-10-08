@@ -232,13 +232,13 @@ namespace DOL.GS.Quests
 		{
 			int inventorySpaceRequired = Rewards.BasicItems.Count + Rewards.ChosenItems.Count;
 
-			if (QuestPlayer.Inventory.IsSlotsFree(inventorySpaceRequired, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (QuestPlayer.Inventory.IsSlotsFree(inventorySpaceRequired, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
 				base.FinishQuest();
 				QuestPlayer.Out.SendSoundEffect(11, 0, 0, 0, 0, 0);
 				QuestPlayer.ForceGainExperience(Rewards.Experience);
 				QuestPlayer.AddMoney(Rewards.Money);
-                InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", QuestPlayer, eInventoryActionType.Quest, Rewards.Money);
+                InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", QuestPlayer, EInventoryActionType.Quest, Rewards.Money);
 				if (Rewards.GiveBountyPoints > 0)
 					QuestPlayer.GainBountyPoints(Rewards.GiveBountyPoints);
 				if (Rewards.GiveRealmPoints > 0)

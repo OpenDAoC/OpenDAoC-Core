@@ -39,7 +39,7 @@ namespace DOL.GS
 			
 			SayTo(player, $"Hello {player.CharacterClass.Name}, you can come to me if you lost your Personal Bind Recall Stone.\n");
 
-			if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv) == 0)
+			if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv) == 0)
 			{
 				SayTo(player, "It looks like you need my service.  Do you need [another] Personal Bind Recall Stone?");
 			}
@@ -62,7 +62,7 @@ namespace DOL.GS
 
 			if (text.ToLower() == "another")
 			{
-				if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv) == 0)
+				if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv) == 0)
 				{
 					SayTo(player, "Very well then, here's your Personal Bind Recall Stone, may it serve you well.");
 					player.ReceiveItem(this, "Personal_Bind_Recall_Stone");

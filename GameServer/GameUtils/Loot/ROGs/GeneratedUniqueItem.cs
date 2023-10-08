@@ -1,55 +1,18 @@
-﻿/*
-* DAWN OF LIGHT - The first free open source DAoC server emulator
-* 
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*/
-
-
-//
-// This is a class writen from the Storm Unique Object Generator.
-//
-// Original version by Etaew
-// Modified by Tolakram to add live like names and item models
-//
-// Released to the public on July 12th, 2010
-//
-// Updating to Class by Leodagan on Aug 2013.
-//
-//
-// **** Atlas ROG Generation system ****
-//
-//	Based on the above mentioned software releases
-//	Converted for use by Atlas server by Fen - Sept 2021 - Dec 21
-//
-
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.ServerProperties;
 
-namespace DOL.GS {
+namespace DOL.GS 
+{
     /// <summary>
     /// GeneratedUniqueItem is a subclass of UniqueItem used to create RoG object
     /// Using it as a class is much more extendable to other usage than just loot and inventory
     /// </summary>
-    public class GeneratedUniqueItem : DbItemUnique {
-        
+    public class GeneratedUniqueItem : DbItemUnique 
+    {
         //The following properties are weights for each roll
         //It is *not* a direct chance to receive the item. It is instead
         //a chance for that item type to be randomly selected as a valid generation type
@@ -104,13 +67,13 @@ namespace DOL.GS {
 
         }
 
-        public GeneratedUniqueItem(ERealm realm, ECharacterClass charClass, byte level, EObjectType type, eInventorySlot slot, int minUtility = 15)
+        public GeneratedUniqueItem(ERealm realm, ECharacterClass charClass, byte level, EObjectType type, EInventorySlot slot, int minUtility = 15)
             : this(realm, charClass, level, type, slot, GenerateDamageType(type, charClass), minUtility)
         {
 
         }
 
-        public GeneratedUniqueItem(ERealm realm, ECharacterClass charClass, byte level, EObjectType type, eInventorySlot slot, EDamageType dmg, int minUtility = 15)
+        public GeneratedUniqueItem(ERealm realm, ECharacterClass charClass, byte level, EObjectType type, EInventorySlot slot, EDamageType dmg, int minUtility = 15)
             : this(false, realm, charClass, level, type, slot, dmg, minUtility)
         {
 
@@ -134,13 +97,13 @@ namespace DOL.GS {
 
         }
 
-        public GeneratedUniqueItem(bool toa, ERealm realm, ECharacterClass charClass, byte level, EObjectType type, eInventorySlot slot)
+        public GeneratedUniqueItem(bool toa, ERealm realm, ECharacterClass charClass, byte level, EObjectType type, EInventorySlot slot)
             : this(toa, realm, charClass, level, type, slot, GenerateDamageType(type, charClass))
         {
 
         }
 
-        public GeneratedUniqueItem(bool toa, ERealm realm, ECharacterClass charClass, byte level, EObjectType type, eInventorySlot slot, EDamageType dmg, int utilityMinimum = 15)
+        public GeneratedUniqueItem(bool toa, ERealm realm, ECharacterClass charClass, byte level, EObjectType type, EInventorySlot slot, EDamageType dmg, int utilityMinimum = 15)
             : base()
         {
             this.Realm = (int)realm;
@@ -221,7 +184,7 @@ namespace DOL.GS {
 
             this.Quality = Util.Random(minQuality, maxQuality);
 
-            this.Price = Money.SetAutoPrice(this.Level, this.Quality);
+            this.Price = MoneyMgr.SetAutoPrice(this.Level, this.Quality);
             this.Price /= 8;
             if (this.Price <= 0)
                 this.Price = 2; // 2c as sell price is 50%
@@ -274,7 +237,7 @@ namespace DOL.GS {
                 case EObjectType.ThrustWeapon:
                 case EObjectType.FistWraps: //Maulers
                     {
-                        if ((eInventorySlot)this.Item_Type == eInventorySlot.LeftHandWeapon)
+                        if ((EInventorySlot)this.Item_Type == EInventorySlot.LeftHandWeapon)
                             this.Hand = 2;
                         break;
                     }
@@ -290,7 +253,7 @@ namespace DOL.GS {
                 case EObjectType.Hammer:
                 case EObjectType.Axe:
                     {
-                        if ((eInventorySlot)this.Item_Type == eInventorySlot.TwoHandWeapon)
+                        if ((EInventorySlot)this.Item_Type == EInventorySlot.TwoHandWeapon)
                             this.Hand = 1;
                         break;
                     }
@@ -6329,10 +6292,10 @@ namespace DOL.GS {
             }
         }
 
-        public static eInventorySlot GenerateItemType(EObjectType type)
+        public static EInventorySlot GenerateItemType(EObjectType type)
         {
             if ((int)type >= (int)EObjectType._FirstArmor && (int)type <= (int)EObjectType._LastArmor)
-                return (eInventorySlot)ArmorSlots[Util.Random(0, ArmorSlots.Length - 1)];
+                return (EInventorySlot)ArmorSlots[Util.Random(0, ArmorSlots.Length - 1)];
             switch (type)
             {
                 //left or right standard
@@ -6346,19 +6309,19 @@ namespace DOL.GS {
                 case EObjectType.ThrustWeapon:
                 case EObjectType.FistWraps: //Maulers
                 case EObjectType.Flexible:
-                    return (eInventorySlot)Slot.RIGHTHAND;
+                    return (EInventorySlot)Slot.RIGHTHAND;
                 //left or right or twohand
                 case EObjectType.Sword:
                 case EObjectType.Axe:
                 case EObjectType.Hammer:
                     if (Util.Random(100) >= 50)
-                        return (eInventorySlot)Slot.RIGHTHAND;
+                        return (EInventorySlot)Slot.RIGHTHAND;
                     else
-                        return (eInventorySlot)Slot.TWOHAND;
+                        return (EInventorySlot)Slot.TWOHAND;
                 //left
                 case EObjectType.LeftAxe:
                 case EObjectType.Shield:
-                    return (eInventorySlot)Slot.LEFTHAND;
+                    return (EInventorySlot)Slot.LEFTHAND;
                 //twohanded
                 case EObjectType.LargeWeapons:
                 case EObjectType.CelticSpear:
@@ -6368,20 +6331,20 @@ namespace DOL.GS {
                 case EObjectType.Scythe:
                 case EObjectType.TwoHandedWeapon:
                 case EObjectType.MaulerStaff:
-                    return (eInventorySlot)Slot.TWOHAND;
+                    return (EInventorySlot)Slot.TWOHAND;
                 //ranged
                 case EObjectType.CompositeBow:
                 case EObjectType.Fired:
                 case EObjectType.Longbow:
                 case EObjectType.RecurvedBow:
                 case EObjectType.Crossbow:
-                    return (eInventorySlot)Slot.RANGED;
+                    return (EInventorySlot)Slot.RANGED;
                 case EObjectType.Magical:
-                    return (eInventorySlot)MagicalSlots[Util.Random(0, MagicalSlots.Length - 1)];
+                    return (EInventorySlot)MagicalSlots[Util.Random(0, MagicalSlots.Length - 1)];
                 case EObjectType.Instrument:
-                    return (eInventorySlot)Slot.RANGED;
+                    return (EInventorySlot)Slot.RANGED;
             }
-            return eInventorySlot.FirstEmptyBackpack;
+            return EInventorySlot.FirstEmptyBackpack;
         }
 
         private static EDamageType GenerateDamageType(EObjectType type, ECharacterClass charClass)
@@ -6692,7 +6655,7 @@ namespace DOL.GS {
         public void GenerateItemWeight()
         {
             EObjectType type = (EObjectType)this.Object_Type;
-            eInventorySlot slot = (eInventorySlot)this.Item_Type;
+            EInventorySlot slot = (EInventorySlot)this.Item_Type;
 
             switch (type)
             {
@@ -6730,12 +6693,12 @@ namespace DOL.GS {
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: this.Weight = 48; return;
-                            case eInventorySlot.FeetArmor: this.Weight = 32; return;
-                            case eInventorySlot.HandsArmor: this.Weight = 32; return;
-                            case eInventorySlot.HeadArmor: this.Weight = 32; return;
-                            case eInventorySlot.LegsArmor: this.Weight = 56; return;
-                            case eInventorySlot.TorsoArmor: this.Weight = 80; return;
+                            case EInventorySlot.ArmsArmor: this.Weight = 48; return;
+                            case EInventorySlot.FeetArmor: this.Weight = 32; return;
+                            case EInventorySlot.HandsArmor: this.Weight = 32; return;
+                            case EInventorySlot.HeadArmor: this.Weight = 32; return;
+                            case EInventorySlot.LegsArmor: this.Weight = 56; return;
+                            case EInventorySlot.TorsoArmor: this.Weight = 80; return;
                         }
                         this.Weight = 0;
                         return;
@@ -6744,12 +6707,12 @@ namespace DOL.GS {
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: this.Weight = 8; return;
-                            case eInventorySlot.FeetArmor: this.Weight = 8; return;
-                            case eInventorySlot.HandsArmor: this.Weight = 8; return;
-                            case eInventorySlot.HeadArmor: this.Weight = 32; return;
-                            case eInventorySlot.LegsArmor: this.Weight = 14; return;
-                            case eInventorySlot.TorsoArmor: this.Weight = 20; return;
+                            case EInventorySlot.ArmsArmor: this.Weight = 8; return;
+                            case EInventorySlot.FeetArmor: this.Weight = 8; return;
+                            case EInventorySlot.HandsArmor: this.Weight = 8; return;
+                            case EInventorySlot.HeadArmor: this.Weight = 32; return;
+                            case EInventorySlot.LegsArmor: this.Weight = 14; return;
+                            case EInventorySlot.TorsoArmor: this.Weight = 20; return;
                         }
                         this.Weight = 0;
                         return;
@@ -6764,12 +6727,12 @@ namespace DOL.GS {
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: this.Weight = 24; return;
-                            case eInventorySlot.FeetArmor: this.Weight = 16; return;
-                            case eInventorySlot.HandsArmor: this.Weight = 16; return;
-                            case eInventorySlot.HeadArmor: this.Weight = 16; return;
-                            case eInventorySlot.LegsArmor: this.Weight = 28; return;
-                            case eInventorySlot.TorsoArmor: this.Weight = 40; return;
+                            case EInventorySlot.ArmsArmor: this.Weight = 24; return;
+                            case EInventorySlot.FeetArmor: this.Weight = 16; return;
+                            case EInventorySlot.HandsArmor: this.Weight = 16; return;
+                            case EInventorySlot.HeadArmor: this.Weight = 16; return;
+                            case EInventorySlot.LegsArmor: this.Weight = 28; return;
+                            case EInventorySlot.TorsoArmor: this.Weight = 40; return;
                         }
                         this.Weight = 0;
                         return;
@@ -6781,12 +6744,12 @@ namespace DOL.GS {
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: this.Weight = 54; return;
-                            case eInventorySlot.FeetArmor: this.Weight = 36; return;
-                            case eInventorySlot.HandsArmor: this.Weight = 36; return;
-                            case eInventorySlot.HeadArmor: this.Weight = 40; return;
-                            case eInventorySlot.LegsArmor: this.Weight = 63; return;
-                            case eInventorySlot.TorsoArmor: this.Weight = 90; return;
+                            case EInventorySlot.ArmsArmor: this.Weight = 54; return;
+                            case EInventorySlot.FeetArmor: this.Weight = 36; return;
+                            case EInventorySlot.HandsArmor: this.Weight = 36; return;
+                            case EInventorySlot.HeadArmor: this.Weight = 40; return;
+                            case EInventorySlot.LegsArmor: this.Weight = 63; return;
+                            case EInventorySlot.TorsoArmor: this.Weight = 90; return;
                         }
                         this.Weight = 0;
                         return;
@@ -6799,12 +6762,12 @@ namespace DOL.GS {
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: this.Weight = 36; return;
-                            case eInventorySlot.FeetArmor: this.Weight = 24; return;
-                            case eInventorySlot.HandsArmor: this.Weight = 24; return;
-                            case eInventorySlot.HeadArmor: this.Weight = 24; return;
-                            case eInventorySlot.LegsArmor: this.Weight = 42; return;
-                            case eInventorySlot.TorsoArmor: this.Weight = 60; return;
+                            case EInventorySlot.ArmsArmor: this.Weight = 36; return;
+                            case EInventorySlot.FeetArmor: this.Weight = 24; return;
+                            case EInventorySlot.HandsArmor: this.Weight = 24; return;
+                            case EInventorySlot.HeadArmor: this.Weight = 24; return;
+                            case EInventorySlot.LegsArmor: this.Weight = 42; return;
+                            case EInventorySlot.TorsoArmor: this.Weight = 60; return;
                         }
                         this.Weight = 0;
                         return;
@@ -6854,7 +6817,7 @@ namespace DOL.GS {
 
         private void GenerateItemNameModel()
         {
-            eInventorySlot slot = (eInventorySlot)this.Item_Type;
+            EInventorySlot slot = (EInventorySlot)this.Item_Type;
             EDamageType damage = (EDamageType)this.Type_Damage;
             ERealm realm = (ERealm)this.Realm;
             EObjectType type = (EObjectType)this.Object_Type;
@@ -6875,17 +6838,17 @@ namespace DOL.GS {
                             case ERealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 141; break;
-                                    case eInventorySlot.LegsArmor: model = 140; break;
-                                    case eInventorySlot.FeetArmor: model = 143; break;
-                                    case eInventorySlot.HeadArmor:
+                                    case EInventorySlot.ArmsArmor: model = 141; break;
+                                    case EInventorySlot.LegsArmor: model = 140; break;
+                                    case EInventorySlot.FeetArmor: model = 143; break;
+                                    case EInventorySlot.HeadArmor:
                                         if (Util.Chance(30))
                                             model = 1278; //30% chance of wizard hat
                                         else
                                             model = 822;
                                         break;
-                                    case eInventorySlot.HandsArmor: model = 142; break;
-                                    case eInventorySlot.TorsoArmor:
+                                    case EInventorySlot.HandsArmor: model = 142; break;
+                                    case EInventorySlot.TorsoArmor:
                                         if (Util.Chance(60))
                                         {
                                             model = 139;
@@ -6908,17 +6871,17 @@ namespace DOL.GS {
                             case ERealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 247; break;
-                                    case eInventorySlot.LegsArmor: model = 246; break;
-                                    case eInventorySlot.FeetArmor: model = 249; break;
-                                    case eInventorySlot.HeadArmor:
+                                    case EInventorySlot.ArmsArmor: model = 247; break;
+                                    case EInventorySlot.LegsArmor: model = 246; break;
+                                    case EInventorySlot.FeetArmor: model = 249; break;
+                                    case EInventorySlot.HeadArmor:
                                         if (Util.Chance(30))
                                             model = 1280; //30% chance of wizard hat
                                         else
                                             model = 825;
                                         break;
-                                    case eInventorySlot.HandsArmor: model = 248; break;
-                                    case eInventorySlot.TorsoArmor:
+                                    case EInventorySlot.HandsArmor: model = 248; break;
+                                    case EInventorySlot.TorsoArmor:
                                         if (Util.Chance(60))
                                         {
                                             model = 245;
@@ -6941,17 +6904,17 @@ namespace DOL.GS {
                             case ERealm.Hibernia:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 380; break;
-                                    case eInventorySlot.LegsArmor: model = 379; break;
-                                    case eInventorySlot.FeetArmor: model = 382; break;
-                                    case eInventorySlot.HeadArmor:
+                                    case EInventorySlot.ArmsArmor: model = 380; break;
+                                    case EInventorySlot.LegsArmor: model = 379; break;
+                                    case EInventorySlot.FeetArmor: model = 382; break;
+                                    case EInventorySlot.HeadArmor:
                                         if (Util.Chance(30))
                                             model = 1279; //30% chance of wizard hat
                                         else
                                             model = 826;
                                         break;
-                                    case eInventorySlot.HandsArmor: model = 381; break;
-                                    case eInventorySlot.TorsoArmor:
+                                    case EInventorySlot.HandsArmor: model = 381; break;
+                                    case EInventorySlot.TorsoArmor:
                                         if (Util.Chance(60))
                                         {
                                             model = 378;
@@ -6973,7 +6936,7 @@ namespace DOL.GS {
 
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
@@ -6987,44 +6950,44 @@ namespace DOL.GS {
                             case ERealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, ERealm.Albion); break;
                                 }
                                 break;
 
                             case ERealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, ERealm.Midgard); break;
                                 }
                                 break;
 
                             case ERealm.Hibernia:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, ERealm.Hibernia); break;
-                                    case eInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, ERealm.Hibernia); break;
-                                    case eInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, ERealm.Hibernia); break;
-                                    case eInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, ERealm.Hibernia); break;
-                                    case eInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, ERealm.Hibernia); break;
-                                    case eInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, ERealm.Hibernia); break;
                                 }
                                 break;
 
                         }
 
-                        if (slot != eInventorySlot.HeadArmor
-                            && slot != eInventorySlot.ArmsArmor
-                            && slot != eInventorySlot.LegsArmor)
+                        if (slot != EInventorySlot.HeadArmor
+                            && slot != EInventorySlot.ArmsArmor
+                            && slot != EInventorySlot.LegsArmor)
                             canAddExtension = true;
 
                         break;
@@ -7037,29 +7000,29 @@ namespace DOL.GS {
                             case ERealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetStuddedSleevesForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.LegsArmor: model = GetStuddedPantsForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.FeetArmor: model = GetStuddedBootsForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.HeadArmor: model = GetStuddedHelmForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.TorsoArmor: model = GetStuddedTorsoForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.HandsArmor: model = GetStuddedHandsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.ArmsArmor: model = GetStuddedSleevesForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.LegsArmor: model = GetStuddedPantsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.FeetArmor: model = GetStuddedBootsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HeadArmor: model = GetStuddedHelmForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.TorsoArmor: model = GetStuddedTorsoForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HandsArmor: model = GetStuddedHandsForLevel(Level, ERealm.Albion); break;
                                 }
                                 break;
 
                             case ERealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetStuddedSleevesForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.LegsArmor: model = GetStuddedPantsForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.FeetArmor: model = GetStuddedBootsForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.HeadArmor: model = GetStuddedHelmForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.TorsoArmor: model = GetStuddedTorsoForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.HandsArmor: model = GetStuddedHandsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.ArmsArmor: model = GetStuddedSleevesForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.LegsArmor: model = GetStuddedPantsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.FeetArmor: model = GetStuddedBootsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HeadArmor: model = GetStuddedHelmForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.TorsoArmor: model = GetStuddedTorsoForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HandsArmor: model = GetStuddedHandsForLevel(Level, ERealm.Midgard); break;
                                 }
                                 break;
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
@@ -7069,19 +7032,19 @@ namespace DOL.GS {
                         name = "Plate " + ArmorSlotToName(slot, type);
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = GetPlateSleevesForLevel(Level, ERealm.Albion); break;
-                            case eInventorySlot.LegsArmor: model = GetPlatePantsForLevel(Level, ERealm.Albion); break;
-                            case eInventorySlot.FeetArmor: model = GetPlateBootsForLevel(Level, ERealm.Albion); break;
-                            case eInventorySlot.HeadArmor:
+                            case EInventorySlot.ArmsArmor: model = GetPlateSleevesForLevel(Level, ERealm.Albion); break;
+                            case EInventorySlot.LegsArmor: model = GetPlatePantsForLevel(Level, ERealm.Albion); break;
+                            case EInventorySlot.FeetArmor: model = GetPlateBootsForLevel(Level, ERealm.Albion); break;
+                            case EInventorySlot.HeadArmor:
                                 model = GetPlateHelmForLevel(Level, ERealm.Albion);
                                 if (model == 93 || model == 95)
                                     name = "Plate Full Helm";
                                 break;
-                            case eInventorySlot.TorsoArmor: model = GetPlateTorsoForLevel(Level, ERealm.Albion); break;
-                            case eInventorySlot.HandsArmor: model = GetPlateHandsForLevel(Level, ERealm.Albion); break;
+                            case EInventorySlot.TorsoArmor: model = GetPlateTorsoForLevel(Level, ERealm.Albion); break;
+                            case EInventorySlot.HandsArmor: model = GetPlateHandsForLevel(Level, ERealm.Albion); break;
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
@@ -7094,29 +7057,29 @@ namespace DOL.GS {
                             case ERealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetChainSleevesForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.LegsArmor: model = GetChainPantsForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.FeetArmor: model = GetChainBootsForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.HeadArmor: model = GetChainHelmForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.TorsoArmor: model = GetChainTorsoForLevel(Level, ERealm.Albion); break;
-                                    case eInventorySlot.HandsArmor: model = GetChainHandsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.ArmsArmor: model = GetChainSleevesForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.LegsArmor: model = GetChainPantsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.FeetArmor: model = GetChainBootsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HeadArmor: model = GetChainHelmForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.TorsoArmor: model = GetChainTorsoForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HandsArmor: model = GetChainHandsForLevel(Level, ERealm.Albion); break;
                                 }
                                 break;
 
                             case ERealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetChainSleevesForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.LegsArmor: model = GetChainPantsForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.FeetArmor: model = GetChainBootsForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.HeadArmor: model = GetChainHelmForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.TorsoArmor: model = GetChainTorsoForLevel(Level, ERealm.Midgard); break;
-                                    case eInventorySlot.HandsArmor: model = GetChainHandsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.ArmsArmor: model = GetChainSleevesForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.LegsArmor: model = GetChainPantsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.FeetArmor: model = GetChainBootsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HeadArmor: model = GetChainHelmForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.TorsoArmor: model = GetChainTorsoForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HandsArmor: model = GetChainHandsForLevel(Level, ERealm.Midgard); break;
                                 }
                                 break;
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
@@ -7126,15 +7089,15 @@ namespace DOL.GS {
                         name = "Reinforced " + ArmorSlotToName(slot, type);
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = GetReinforcedSleevesForLevel(Level, ERealm.Hibernia); break;
-                            case eInventorySlot.LegsArmor: model = GetReinforcedPantsForLevel(Level, ERealm.Hibernia); break;
-                            case eInventorySlot.FeetArmor: model = GetReinforcedBootsForLevel(Level, ERealm.Hibernia); break;
-                            case eInventorySlot.HeadArmor: model = GetReinforcedHelmForLevel(Level, ERealm.Hibernia); break;
-                            case eInventorySlot.TorsoArmor: model = GetReinforcedTorsoForLevel(Level, ERealm.Hibernia); break;
-                            case eInventorySlot.HandsArmor: model = GetReinforcedHandsForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.ArmsArmor: model = GetReinforcedSleevesForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.LegsArmor: model = GetReinforcedPantsForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.FeetArmor: model = GetReinforcedBootsForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.HeadArmor: model = GetReinforcedHelmForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.TorsoArmor: model = GetReinforcedTorsoForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.HandsArmor: model = GetReinforcedHandsForLevel(Level, ERealm.Hibernia); break;
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
@@ -7144,15 +7107,15 @@ namespace DOL.GS {
                         name = "Scale " + ArmorSlotToName(slot, type);
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = GetScaleSleevesForLevel(Level, ERealm.Hibernia); break;
-                            case eInventorySlot.LegsArmor: model = GetScalePantsForLevel(Level, ERealm.Hibernia); break;
-                            case eInventorySlot.FeetArmor: model = GetScaleBootsForLevel(Level, ERealm.Hibernia); break;
-                            case eInventorySlot.HeadArmor: model = GetScaleHelmForLevel(Level, ERealm.Hibernia); break;
-                            case eInventorySlot.TorsoArmor: model = GetScaleTorsoForLevel(Level, ERealm.Hibernia); break;
-                            case eInventorySlot.HandsArmor: model = GetScaleHandsForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.ArmsArmor: model = GetScaleSleevesForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.LegsArmor: model = GetScalePantsForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.FeetArmor: model = GetScaleBootsForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.HeadArmor: model = GetScaleHelmForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.TorsoArmor: model = GetScaleTorsoForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.HandsArmor: model = GetScaleHandsForLevel(Level, ERealm.Hibernia); break;
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
@@ -7480,7 +7443,7 @@ namespace DOL.GS {
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.Cloak:
+                            case EInventorySlot.Cloak:
                                 {
                                     if (Util.Chance(50))
                                         name = "Mantle";
@@ -7496,7 +7459,7 @@ namespace DOL.GS {
 
                                     break;
                                 }
-                            case eInventorySlot.Waist:
+                            case EInventorySlot.Waist:
                                 {
                                     if (Util.Chance(50))
                                         name = "Belt";
@@ -7506,7 +7469,7 @@ namespace DOL.GS {
                                     model = 597;
                                     break;
                                 }
-                            case eInventorySlot.Neck:
+                            case EInventorySlot.Neck:
                                 {
                                     if (Util.Chance(50))
                                         name = "Choker";
@@ -7516,7 +7479,7 @@ namespace DOL.GS {
                                     model = 101;
                                     break;
                                 }
-                            case eInventorySlot.Jewellery:
+                            case EInventorySlot.Jewellery:
                                 {
                                     if (Util.Chance(50))
                                         name = "Gem";
@@ -7526,8 +7489,8 @@ namespace DOL.GS {
                                     model = Util.Random(110, 119);
                                     break;
                                 }
-                            case eInventorySlot.LeftBracer:
-                            case eInventorySlot.RightBracer:
+                            case EInventorySlot.LeftBracer:
+                            case EInventorySlot.RightBracer:
                                 {
                                     if (Util.Chance(50))
                                     {
@@ -7542,8 +7505,8 @@ namespace DOL.GS {
 
                                     break;
                                 }
-                            case eInventorySlot.LeftRing:
-                            case eInventorySlot.RightRing:
+                            case EInventorySlot.LeftRing:
+                            case EInventorySlot.RightRing:
                                 {
                                     if (Util.Chance(50))
                                         name = "Ring";
@@ -7847,7 +7810,7 @@ namespace DOL.GS {
             }
 
             //each realm has a chance for special helmets during generation
-            if (slot == eInventorySlot.HeadArmor)
+            if (slot == EInventorySlot.HeadArmor)
             {
                 switch (realm)
                 {
@@ -7886,10 +7849,10 @@ namespace DOL.GS {
             if (canAddExtension)
             {
                 byte ext = 0;
-                if (slot == eInventorySlot.HandsArmor ||
-                     slot == eInventorySlot.FeetArmor)
+                if (slot == EInventorySlot.HandsArmor ||
+                     slot == EInventorySlot.FeetArmor)
                     ext = GetNonTorsoExtensionForLevel(Level);
-                else if (slot == eInventorySlot.TorsoArmor)
+                else if (slot == EInventorySlot.TorsoArmor)
                     ext = GetTorsoExtensionForLevel(Level);
 
                 this.Extension = ext;
@@ -11011,26 +10974,26 @@ namespace DOL.GS {
             return appliedExtension;
         }
 
-        private static string ArmorSlotToName(eInventorySlot slot, EObjectType type)
+        private static string ArmorSlotToName(EInventorySlot slot, EObjectType type)
         {
             switch (slot)
             {
-                case eInventorySlot.ArmsArmor:
+                case EInventorySlot.ArmsArmor:
                     if (type == EObjectType.Plate)
                         return "Arms";
                     else
                         return "Sleeves";
 
-                case eInventorySlot.FeetArmor:
+                case EInventorySlot.FeetArmor:
                     return "Boots";
 
-                case eInventorySlot.HandsArmor:
+                case EInventorySlot.HandsArmor:
                     if (type == EObjectType.Plate)
                         return "Gauntlets";
                     else
                         return "Gloves";
 
-                case eInventorySlot.HeadArmor:
+                case EInventorySlot.HeadArmor:
                     if (type == EObjectType.Cloth)
                         return "Cap";
                     else if (type == EObjectType.Scale)
@@ -11038,7 +11001,7 @@ namespace DOL.GS {
                     else
                         return "Helm";
 
-                case eInventorySlot.LegsArmor:
+                case EInventorySlot.LegsArmor:
                     if (type == EObjectType.Cloth)
                         return "Pants";
                     else if (type == EObjectType.Plate)
@@ -11046,7 +11009,7 @@ namespace DOL.GS {
                     else
                         return "Leggings";
 
-                case eInventorySlot.TorsoArmor:
+                case EInventorySlot.TorsoArmor:
                     if (type == EObjectType.Chain || type == EObjectType.Scale)
                         return "Hauberk";
                     else if (type == EObjectType.Plate)

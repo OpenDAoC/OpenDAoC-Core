@@ -102,7 +102,7 @@ public class InviteCommand : ACommandHandler, ICommandHandler
             // you have no choice!
             if (client.Player.Group == null)
             {
-                Group group = new(client.Player);
+                GroupUtil group = new(client.Player);
                 GroupMgr.AddGroup(group);
                 group.AddMember(client.Player);
                 group.AddMember(target);

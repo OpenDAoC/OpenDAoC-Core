@@ -205,7 +205,7 @@ namespace DOL.GS.Scripts
                     case "respec_single":
                         {
                             player.Inventory.RemoveCountFromStack(item, 1);
-                            InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
+                            InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
                             player.RespecAmountSingleSkill++;
                             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecSingle"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
                             return true;
@@ -213,7 +213,7 @@ namespace DOL.GS.Scripts
                     case "respec_full":
                         {
                             player.Inventory.RemoveCountFromStack(item, 1);
-                            InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
+                            InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
                             player.RespecAmountAllSkill++;
                             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecFull", item.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
                             return true;
@@ -221,7 +221,7 @@ namespace DOL.GS.Scripts
                     case "respec_realm":
                         {
                             player.Inventory.RemoveCountFromStack(item, 1);
-                            InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
+                            InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
                             player.RespecAmountRealmSkill++;
                             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecRealm"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
                             return true;
@@ -276,38 +276,38 @@ namespace DOL.GS.Scripts
                 case ERealm.Albion:
                     Name = "Albion Trainer";
                     Model = 39;
-                    template.AddNPCEquipment(eInventorySlot.HeadArmor, 1290);
-                    template.AddNPCEquipment(eInventorySlot.TorsoArmor, 713);
-                    template.AddNPCEquipment(eInventorySlot.ArmsArmor, 715);
-                    template.AddNPCEquipment(eInventorySlot.LegsArmor, 714);
-                    template.AddNPCEquipment(eInventorySlot.HandsArmor, 716);
-                    template.AddNPCEquipment(eInventorySlot.FeetArmor, 717);
-                    template.AddNPCEquipment(eInventorySlot.Cloak, 4105);
+                    template.AddNPCEquipment(EInventorySlot.HeadArmor, 1290);
+                    template.AddNPCEquipment(EInventorySlot.TorsoArmor, 713);
+                    template.AddNPCEquipment(EInventorySlot.ArmsArmor, 715);
+                    template.AddNPCEquipment(EInventorySlot.LegsArmor, 714);
+                    template.AddNPCEquipment(EInventorySlot.HandsArmor, 716);
+                    template.AddNPCEquipment(EInventorySlot.FeetArmor, 717);
+                    template.AddNPCEquipment(EInventorySlot.Cloak, 4105);
                     break;
 
                 case ERealm.Midgard:
                     Name = "Midgard Trainer";
                     Model = 153;
-                    template.AddNPCEquipment(eInventorySlot.HeadArmor, 1291);
-                    template.AddNPCEquipment(eInventorySlot.TorsoArmor, 698);
-                    template.AddNPCEquipment(eInventorySlot.ArmsArmor, 700);
-                    template.AddNPCEquipment(eInventorySlot.LegsArmor, 699);
-                    template.AddNPCEquipment(eInventorySlot.HandsArmor, 701);
-                    template.AddNPCEquipment(eInventorySlot.FeetArmor, 702);
-                    template.AddNPCEquipment(eInventorySlot.Cloak, 4107);
+                    template.AddNPCEquipment(EInventorySlot.HeadArmor, 1291);
+                    template.AddNPCEquipment(EInventorySlot.TorsoArmor, 698);
+                    template.AddNPCEquipment(EInventorySlot.ArmsArmor, 700);
+                    template.AddNPCEquipment(EInventorySlot.LegsArmor, 699);
+                    template.AddNPCEquipment(EInventorySlot.HandsArmor, 701);
+                    template.AddNPCEquipment(EInventorySlot.FeetArmor, 702);
+                    template.AddNPCEquipment(EInventorySlot.Cloak, 4107);
                     break;
 
                 case ERealm.Hibernia:
                     Name = "Hibernia Trainer";
                     Model = 302;
                     Size = 55;
-                    template.AddNPCEquipment(eInventorySlot.HeadArmor, 1292);
-                    template.AddNPCEquipment(eInventorySlot.TorsoArmor, 739);
-                    template.AddNPCEquipment(eInventorySlot.ArmsArmor, 741);
-                    template.AddNPCEquipment(eInventorySlot.LegsArmor, 740);
-                    template.AddNPCEquipment(eInventorySlot.HandsArmor, 742);
-                    template.AddNPCEquipment(eInventorySlot.FeetArmor, 743);
-                    template.AddNPCEquipment(eInventorySlot.Cloak, 4109);
+                    template.AddNPCEquipment(EInventorySlot.HeadArmor, 1292);
+                    template.AddNPCEquipment(EInventorySlot.TorsoArmor, 739);
+                    template.AddNPCEquipment(EInventorySlot.ArmsArmor, 741);
+                    template.AddNPCEquipment(EInventorySlot.LegsArmor, 740);
+                    template.AddNPCEquipment(EInventorySlot.HandsArmor, 742);
+                    template.AddNPCEquipment(EInventorySlot.FeetArmor, 743);
+                    template.AddNPCEquipment(EInventorySlot.Cloak, 4109);
                     break;
             }
 

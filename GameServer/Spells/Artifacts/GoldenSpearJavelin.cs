@@ -84,7 +84,7 @@ namespace DOL.GS.Spells
             GamePlayer player = sender as GamePlayer;
             lock(player.Inventory)
             {
-                var items = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                var items = player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
                 foreach(DbInventoryItem invItem in items)
                 {
                     if(invItem.Id_nb.Equals("Artef_Javelin"))

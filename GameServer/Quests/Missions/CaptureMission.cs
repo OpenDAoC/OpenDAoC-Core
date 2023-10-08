@@ -20,8 +20,8 @@ namespace DOL.GS.Quests
 			: base(owner)
 		{
 			ERealm realm = ERealm.None;
-			if (owner is Group)
-				realm = (owner as Group).Leader.Realm;
+			if (owner is GroupUtil)
+				realm = (owner as GroupUtil).Leader.Realm;
 			else if (owner is GamePlayer)
 				realm = (owner as GamePlayer).Realm;
 
@@ -32,8 +32,8 @@ namespace DOL.GS.Quests
 				case eCaptureType.Tower:
 					{
 						ICollection<AbstractGameKeep> keeps;
-						if (owner is Group)
-							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as Group).Leader.CurrentRegionID);
+						if (owner is GroupUtil)
+							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
 						else if (owner is GamePlayer)
 							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
 						else keeps = new List<AbstractGameKeep>();
@@ -50,8 +50,8 @@ namespace DOL.GS.Quests
 				case eCaptureType.Keep:
 					{
 						ICollection<AbstractGameKeep> keeps;
-						if (owner is Group)
-							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as Group).Leader.CurrentRegionID);
+						if (owner is GroupUtil)
+							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
 						else if (owner is GamePlayer)
 							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
 						else keeps = new List<AbstractGameKeep>();
@@ -101,8 +101,8 @@ namespace DOL.GS.Quests
 			GamePlayer testPlayer = null;
 			if (m_owner is GamePlayer)
 				testPlayer = m_owner as GamePlayer;
-			else if (m_owner is Group)
-				testPlayer = (m_owner as Group).Leader;
+			else if (m_owner is GroupUtil)
+				testPlayer = (m_owner as GroupUtil).Leader;
 
 			if (testPlayer != null)
 			{

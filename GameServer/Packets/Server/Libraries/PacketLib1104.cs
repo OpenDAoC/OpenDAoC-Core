@@ -71,12 +71,12 @@ namespace DOL.GS.PacketHandler
 							log.Error("SendCharacterOverview - Duplicate char in slot? Slot: " + c.AccountSlot + ", Account: " + c.AccountName, ex);
 						}
 					}
-					var itemsByOwnerID = new Dictionary<string, Dictionary<eInventorySlot, DbInventoryItem>>();
+					var itemsByOwnerID = new Dictionary<string, Dictionary<EInventorySlot, DbInventoryItem>>();
 
 					if (charsBySlot.Any())
 					{
-						var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.MinEquipable)
-							.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.MaxEquipable));
+						var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)EInventorySlot.MinEquipable)
+							.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)EInventorySlot.MaxEquipable));
 						var allItems = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
 
 						foreach (DbInventoryItem item in allItems)
@@ -84,9 +84,9 @@ namespace DOL.GS.PacketHandler
 							try
 							{
 								if (!itemsByOwnerID.ContainsKey(item.OwnerID))
-									itemsByOwnerID.Add(item.OwnerID, new Dictionary<eInventorySlot, DbInventoryItem>());
+									itemsByOwnerID.Add(item.OwnerID, new Dictionary<EInventorySlot, DbInventoryItem>());
 
-								itemsByOwnerID[item.OwnerID].Add((eInventorySlot)item.SlotPosition, item);
+								itemsByOwnerID[item.OwnerID].Add((EInventorySlot)item.SlotPosition, item);
 							}
 							catch (Exception ex)
 							{
@@ -104,10 +104,10 @@ namespace DOL.GS.PacketHandler
 						}
 						else
 						{
-							Dictionary<eInventorySlot, DbInventoryItem> charItems = null;
+							Dictionary<EInventorySlot, DbInventoryItem> charItems = null;
 
 							if (!itemsByOwnerID.TryGetValue(c.ObjectId, out charItems))
-								charItems = new Dictionary<eInventorySlot, DbInventoryItem>();
+								charItems = new Dictionary<EInventorySlot, DbInventoryItem>();
 
 							byte extensionTorso = 0;
 							byte extensionGloves = 0;
@@ -115,13 +115,13 @@ namespace DOL.GS.PacketHandler
 
 							DbInventoryItem item = null;
 
-							if (charItems.TryGetValue(eInventorySlot.TorsoArmor, out item))
+							if (charItems.TryGetValue(EInventorySlot.TorsoArmor, out item))
 								extensionTorso = item.Extension;
 
-							if (charItems.TryGetValue(eInventorySlot.HandsArmor, out item))
+							if (charItems.TryGetValue(EInventorySlot.HandsArmor, out item))
 								extensionGloves = item.Extension;
 
-							if (charItems.TryGetValue(eInventorySlot.FeetArmor, out item))
+							if (charItems.TryGetValue(EInventorySlot.FeetArmor, out item))
 								extensionBoots = item.Extension;
 
 							pak.Fill(0x00, 4);//new heading bytes in from 1.99 relocated in 1.104
@@ -176,28 +176,28 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)c.Charisma);
 
 							DbInventoryItem rightHandWeapon = null;
-							charItems.TryGetValue(eInventorySlot.RightHandWeapon, out rightHandWeapon);
+							charItems.TryGetValue(EInventorySlot.RightHandWeapon, out rightHandWeapon);
 							DbInventoryItem leftHandWeapon = null;
-							charItems.TryGetValue(eInventorySlot.LeftHandWeapon, out leftHandWeapon);
+							charItems.TryGetValue(EInventorySlot.LeftHandWeapon, out leftHandWeapon);
 							DbInventoryItem twoHandWeapon = null;
-							charItems.TryGetValue(eInventorySlot.TwoHandWeapon, out twoHandWeapon);
+							charItems.TryGetValue(EInventorySlot.TwoHandWeapon, out twoHandWeapon);
 							DbInventoryItem distanceWeapon = null;
-							charItems.TryGetValue(eInventorySlot.DistanceWeapon, out distanceWeapon);
+							charItems.TryGetValue(EInventorySlot.DistanceWeapon, out distanceWeapon);
 
 							DbInventoryItem helmet = null;
-							charItems.TryGetValue(eInventorySlot.HeadArmor, out helmet);
+							charItems.TryGetValue(EInventorySlot.HeadArmor, out helmet);
 							DbInventoryItem gloves = null;
-							charItems.TryGetValue(eInventorySlot.HandsArmor, out gloves);
+							charItems.TryGetValue(EInventorySlot.HandsArmor, out gloves);
 							DbInventoryItem boots = null;
-							charItems.TryGetValue(eInventorySlot.FeetArmor, out boots);
+							charItems.TryGetValue(EInventorySlot.FeetArmor, out boots);
 							DbInventoryItem torso = null;
-							charItems.TryGetValue(eInventorySlot.TorsoArmor, out torso);
+							charItems.TryGetValue(EInventorySlot.TorsoArmor, out torso);
 							DbInventoryItem cloak = null;
-							charItems.TryGetValue(eInventorySlot.Cloak, out cloak);
+							charItems.TryGetValue(EInventorySlot.Cloak, out cloak);
 							DbInventoryItem legs = null;
-							charItems.TryGetValue(eInventorySlot.LegsArmor, out legs);
+							charItems.TryGetValue(EInventorySlot.LegsArmor, out legs);
 							DbInventoryItem arms = null;
-							charItems.TryGetValue(eInventorySlot.ArmsArmor, out arms);
+							charItems.TryGetValue(EInventorySlot.ArmsArmor, out arms);
 
 							pak.WriteShortLowEndian((ushort)(helmet != null ? helmet.Model : 0));
 							pak.WriteShortLowEndian((ushort)(gloves != null ? gloves.Model : 0));

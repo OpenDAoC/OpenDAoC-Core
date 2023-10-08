@@ -61,19 +61,19 @@ namespace DOL.GS
                     if (args.Length > 1 && Convert.ToString(args[1]).ToUpper() == "SUIT")
                     {
                         GamePlayer player = client.Player;
-                        List<eInventorySlot> bodySlots = new List<eInventorySlot>();
-                        bodySlots.Add(eInventorySlot.ArmsArmor);
-                        bodySlots.Add(eInventorySlot.FeetArmor);
-                        bodySlots.Add(eInventorySlot.HandsArmor);
-                        bodySlots.Add(eInventorySlot.HeadArmor);
-                        bodySlots.Add(eInventorySlot.LegsArmor);
-                        bodySlots.Add(eInventorySlot.TorsoArmor);
+                        List<EInventorySlot> bodySlots = new List<EInventorySlot>();
+                        bodySlots.Add(EInventorySlot.ArmsArmor);
+                        bodySlots.Add(EInventorySlot.FeetArmor);
+                        bodySlots.Add(EInventorySlot.HandsArmor);
+                        bodySlots.Add(EInventorySlot.HeadArmor);
+                        bodySlots.Add(EInventorySlot.LegsArmor);
+                        bodySlots.Add(EInventorySlot.TorsoArmor);
 
                         ERealm realm = player.Realm;
                         ECharacterClass charclass = (ECharacterClass) player.CharacterClass.ID;
                         EObjectType armorType = GetArmorType(realm, charclass, (byte) (player.Level));
 
-                        foreach (eInventorySlot islot in bodySlots)
+                        foreach (EInventorySlot islot in bodySlots)
                         {
                             GeneratedUniqueItem item = null;
                             item = new GeneratedUniqueItem(realm, charclass, (byte) (81), armorType, islot);
@@ -83,7 +83,7 @@ namespace DOL.GS
                             //item.CapUtility(81);
                             GameServer.Database.AddObject(item);
                             DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
-                            player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+                            player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
                             //player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         }
 
@@ -123,7 +123,7 @@ namespace DOL.GS
                                         item = new GeneratedUniqueItem(client.Player.Realm,
                                             (ECharacterClass) client.Player.CharacterClass.ID, client.Player.Level,
                                             (EObjectType) Convert.ToInt32(args[1]),
-                                            (eInventorySlot) Convert.ToInt32(args[2]));
+                                            (EInventorySlot) Convert.ToInt32(args[2]));
                                     else
                                         item = new GeneratedUniqueItem(client.Player.Realm,
                                             (ECharacterClass) client.Player.CharacterClass.ID, client.Player.Level,
@@ -134,7 +134,7 @@ namespace DOL.GS
                             item.AllowAdd = true;
                             GameServer.Database.AddObject(item);
                             DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
-                            client.Player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+                            client.Player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
                             client.Player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System,
                                 eChatLoc.CL_SystemWindow);
                         }
@@ -161,8 +161,8 @@ namespace DOL.GS
                 // must add at least one parameter just to be safe
                 if (args.Length > 1 && args[1].ToString() == "YES")
                 {
-                    foreach (DbInventoryItem item in client.Player.Inventory.GetItemRange(eInventorySlot.FirstBackpack,
-                                 eInventorySlot.LastBackpack))
+                    foreach (DbInventoryItem item in client.Player.Inventory.GetItemRange(EInventorySlot.FirstBackpack,
+                                 EInventorySlot.LastBackpack))
                         client.Player.Inventory.RemoveItem(item);
 
                     client.Out.SendMessage("Inventory cleared!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -261,7 +261,7 @@ namespace DOL.GS
             return loot;
         }
 
-        private ECharacterClass GetRandomClassFromGroup(Group group)
+        private ECharacterClass GetRandomClassFromGroup(GroupUtil group)
         {
             List<ECharacterClass> validClasses = new List<ECharacterClass>();
             foreach (GamePlayer player in group.GetMembersInTheGroup())
@@ -312,194 +312,194 @@ namespace DOL.GS
 				case ECharacterClass.Runemaster:
 				case ECharacterClass.Spiritmaster:
 				case ECharacterClass.Bonedancer:
-					GenerateWeapon(player, charClass, EObjectType.Staff, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Staff, EInventorySlot.TwoHandWeapon);
 					break;
 
 				case ECharacterClass.Valewalker:
-					GenerateWeapon(player, charClass, EObjectType.Scythe, eInventorySlot.TwoHandWeapon); ;
+					GenerateWeapon(player, charClass, EObjectType.Scythe, EInventorySlot.TwoHandWeapon); ;
 					break;
 
 				case ECharacterClass.Reaver:
-					GenerateWeapon(player, charClass, EObjectType.Flexible, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Flexible, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
 					break;
 
 				case ECharacterClass.Savage:
-					GenerateWeapon(player, charClass, EObjectType.HandToHand, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.HandToHand, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Axe, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Hammer, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.HandToHand, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.HandToHand, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Axe, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Hammer, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.TwoHandWeapon);
 					break;
 
 				case ECharacterClass.Berserker:
-					GenerateWeapon(player, charClass, EObjectType.Axe, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Hammer, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.LeftAxe, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Axe, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Hammer, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Axe, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Hammer, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.LeftAxe, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Axe, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Hammer, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.TwoHandWeapon);
 					break;
 
 				case ECharacterClass.Shadowblade:
-					GenerateWeapon(player, charClass, EObjectType.Axe, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.LeftAxe, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Axe, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Axe, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.LeftAxe, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Axe, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.TwoHandWeapon);
 					break;
 
 				case ECharacterClass.Warrior:
 				case ECharacterClass.Thane:
-					GenerateWeapon(player, charClass, EObjectType.Axe, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Hammer, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Axe, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Hammer, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Axe, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Hammer, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Axe, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Hammer, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.TwoHandWeapon);
 					break;
 
 				case ECharacterClass.Skald:
-					GenerateWeapon(player, charClass, EObjectType.Axe, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Hammer, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Axe, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Hammer, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Axe, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Hammer, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Axe, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Hammer, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.TwoHandWeapon);
 					break;
 
 				case ECharacterClass.Hunter:
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Sword, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.CompositeBow, eInventorySlot.DistanceWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Spear, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Sword, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.CompositeBow, EInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Spear, EInventorySlot.TwoHandWeapon);
 					break;
 
 				case ECharacterClass.Healer:
 				case ECharacterClass.Shaman:
-					GenerateWeapon(player, charClass, EObjectType.Staff, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Hammer, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Hammer, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Staff, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Hammer, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Hammer, EInventorySlot.TwoHandWeapon);
 					break;
 
 				case ECharacterClass.Bard:
-					GenerateWeapon(player, charClass, EObjectType.Instrument, eInventorySlot.DistanceWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blades, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blunt, eInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Instrument, EInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blades, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blunt, EInventorySlot.RightHandWeapon);
 					break;
 
 				case ECharacterClass.Warden:
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blades, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blunt, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Fired, eInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blades, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blunt, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Fired, EInventorySlot.DistanceWeapon);
 					break;
 
 				case ECharacterClass.Druid:
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blades, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blunt, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Staff, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blades, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blunt, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Staff, EInventorySlot.TwoHandWeapon);
 					break;
 
 				case ECharacterClass.Blademaster:
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blades, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blunt, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Piercing, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blades, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blunt, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Piercing, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Fired, eInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blades, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blunt, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Piercing, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blades, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blunt, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Piercing, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Fired, EInventorySlot.DistanceWeapon);
 					
 					break;
 
 				case ECharacterClass.Hero:
-					GenerateWeapon(player, charClass, EObjectType.Blades, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blunt, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Piercing, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.LargeWeapons, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.CelticSpear, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Fired, eInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blades, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blunt, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Piercing, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.LargeWeapons, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.CelticSpear, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Fired, EInventorySlot.DistanceWeapon);
 					break;
 
 				case ECharacterClass.Champion:
-					GenerateWeapon(player, charClass, EObjectType.Blades, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blunt, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Piercing, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.LargeWeapons, eInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blades, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blunt, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Piercing, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.LargeWeapons, EInventorySlot.TwoHandWeapon);
 					break;
 
 				case ECharacterClass.Ranger:
-					GenerateWeapon(player, charClass, EObjectType.RecurvedBow, eInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.RecurvedBow, EInventorySlot.DistanceWeapon);
 					goto case ECharacterClass.Nightshade;
 
 				case ECharacterClass.Nightshade:
-					GenerateWeapon(player, charClass, EObjectType.Blades, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Piercing, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Blades, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Piercing, eInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blades, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Piercing, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Blades, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Piercing, EInventorySlot.LeftHandWeapon);
 					break;
 
 				case ECharacterClass.Scout:
-					GenerateWeapon(player, charClass, EObjectType.Longbow, eInventorySlot.DistanceWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, eInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Longbow, EInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, EInventorySlot.RightHandWeapon);
 					break;
 
 				case ECharacterClass.Minstrel:
-					GenerateWeapon(player, charClass, EObjectType.Instrument, eInventorySlot.DistanceWeapon);
-					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, eInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Instrument, EInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, EInventorySlot.RightHandWeapon);
 					break;
 
 				case ECharacterClass.Infiltrator:
-					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Crossbow, eInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Crossbow, EInventorySlot.DistanceWeapon);
 					break;
 
 				case ECharacterClass.Cleric:
-					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
 					break;
 
 				case ECharacterClass.Armsman:
-					GenerateWeapon(player, charClass, EObjectType.PolearmWeapon, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Crossbow, eInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.PolearmWeapon, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Crossbow, EInventorySlot.DistanceWeapon);
 					goto case ECharacterClass.Paladin;
 
 				case ECharacterClass.Paladin: //hey one guy might get these :')
-					GenerateWeapon(player, charClass, EObjectType.TwoHandedWeapon, eInventorySlot.TwoHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Shield, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, eInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.TwoHandedWeapon, EInventorySlot.TwoHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Shield, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, EInventorySlot.RightHandWeapon);
 					break;
 
 				case ECharacterClass.Mercenary:
-					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, eInventorySlot.RightHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, eInventorySlot.LeftHandWeapon);
-					GenerateWeapon(player, charClass, EObjectType.Fired, eInventorySlot.DistanceWeapon);
+					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, EInventorySlot.RightHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.SlashingWeapon, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.CrushingWeapon, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.ThrustWeapon, EInventorySlot.LeftHandWeapon);
+					GenerateWeapon(player, charClass, EObjectType.Fired, EInventorySlot.DistanceWeapon);
 					break;
 
 
@@ -512,7 +512,7 @@ namespace DOL.GS
 			return weapons;
 		}
          
-         private static void GenerateWeapon(GameLiving player, ECharacterClass charClass, EObjectType type, eInventorySlot invSlot)
+         private static void GenerateWeapon(GameLiving player, ECharacterClass charClass, EObjectType type, EInventorySlot invSlot)
         {
 			//need to figure out shield size
 			EColor color = EColor.White;
@@ -542,7 +542,7 @@ namespace DOL.GS
 					//item.CapUtility(81);
 					GameServer.Database.AddObject(item);
 					DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
-					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+					player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
 				}
 				
 			}
@@ -556,7 +556,7 @@ namespace DOL.GS
 				//dmgTypeItem.CapUtility(81);
 				GameServer.Database.AddObject(dmgTypeItem);
 				DbInventoryItem tempItem = GameInventoryItem.Create<DbItemUnique>(dmgTypeItem);
-				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, tempItem);
+				player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, tempItem);
 
 				//crush flex
 				GeneratedUniqueItem dmgTypeItem2 = new GeneratedUniqueItem(realm, charClass, (byte)(81), type, invSlot, EDamageType.Crush);
@@ -566,7 +566,7 @@ namespace DOL.GS
 				//dmgTypeItem2.CapUtility(81);
 				GameServer.Database.AddObject(dmgTypeItem2);
 				DbInventoryItem tempItem2 = GameInventoryItem.Create<DbItemUnique>(dmgTypeItem2);
-				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, tempItem2);
+				player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, tempItem2);
 			}
 			else if(type == EObjectType.TwoHandedWeapon || type == EObjectType.PolearmWeapon || type == EObjectType.LargeWeapons)
             {
@@ -586,7 +586,7 @@ namespace DOL.GS
 					//dmgTypeItem.CapUtility(81);
 					GameServer.Database.AddObject(dmgTypeItem);
 					DbInventoryItem tempItem = GameInventoryItem.Create<DbItemUnique>(dmgTypeItem);
-					player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, tempItem);
+					player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, tempItem);
 				}	
 			} else
             {
@@ -598,7 +598,7 @@ namespace DOL.GS
 				//item.CapUtility(81);
 				GameServer.Database.AddObject(item);
 				DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
-				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+				player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
 			}	
 		}
 

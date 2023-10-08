@@ -379,12 +379,12 @@ namespace DOL.GS.Quests
 
             lock (player.Inventory)
             {
-                DbInventoryItem item = player.Inventory.GetFirstItemByID(itemTemplate.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                DbInventoryItem item = player.Inventory.GetFirstItemByID(itemTemplate.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
                 if (item != null)
                 {
                     player.Inventory.RemoveItem(item);
-                    InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
+                    InventoryLogging.LogInventoryAction(player, target, EInventoryActionType.Quest, item.Template, item.Count);
 
                     if (target != null)
                         player.Out.SendMessage($"You give the {itemTemplate.Name} to {target.GetName(0, false)}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -407,7 +407,7 @@ namespace DOL.GS.Quests
                 if (item != null)
                 {
                     player.Inventory.RemoveItem(item);
-                    InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
+                    InventoryLogging.LogInventoryAction(player, target, EInventoryActionType.Quest, item.Template, item.Count);
 
                     if (target != null)
                         player.Out.SendMessage($"You give the {item.Name} to {target.GetName(0, false)}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -429,14 +429,14 @@ namespace DOL.GS.Quests
 
             lock (player.Inventory)
             {
-                DbInventoryItem item = player.Inventory.GetFirstItemByID(itemTemplate.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                DbInventoryItem item = player.Inventory.GetFirstItemByID(itemTemplate.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
                 while (item != null)
                 {
                     player.Inventory.RemoveItem(item);
-                    InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
+                    InventoryLogging.LogInventoryAction(player, target, EInventoryActionType.Quest, item.Template, item.Count);
                     itemsRemoved++;
-                    item = player.Inventory.GetFirstItemByID(itemTemplate.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                    item = player.Inventory.GetFirstItemByID(itemTemplate.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
                 }
 
                 if (notify)
@@ -598,7 +598,7 @@ namespace DOL.GS.Quests
                     Item_Type = 40,
                     IsPickable = true,
                     IsDropable = true,
-                    Price = Money.GetMoney(0, 0, 0, 5, 3),
+                    Price = MoneyMgr.GetMoney(0, 0, 0, 5, 3),
                     PackSize = 1,
                     Weight = 0
                 };

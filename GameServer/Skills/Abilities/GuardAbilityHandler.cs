@@ -65,7 +65,7 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 
-            Group group = player.Group;
+            GroupUtil group = player.Group;
 
             if (guardTarget == null || group == null || !group.IsInTheGroup(guardTarget))
             {

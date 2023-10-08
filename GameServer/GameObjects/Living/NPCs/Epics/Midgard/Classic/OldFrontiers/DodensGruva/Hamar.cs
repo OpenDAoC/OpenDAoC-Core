@@ -28,8 +28,8 @@ namespace DOL.GS.Scripts
 		
 			// 1h Axe, left + main
 			GameNpcInventoryTemplate hamarTemp = new GameNpcInventoryTemplate();
-			hamarTemp.AddNPCEquipment(eInventorySlot.RightHandWeapon, 319);
-			hamarTemp.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 319);
+			hamarTemp.AddNPCEquipment(EInventorySlot.RightHandWeapon, 319);
+			hamarTemp.AddNPCEquipment(EInventorySlot.LeftHandWeapon, 319);
 			Inventory = hamarTemp.CloseTemplate();
 			
 			// undead

@@ -75,7 +75,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 							// finally try direct inventory access
 							if (invItem == null)
-								invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
+								invItem = client.Player.Inventory.GetItem((EInventorySlot)objectId);
 
 							// Failed to get any inventory
 							if (invItem == null)
@@ -174,7 +174,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (invItem.Object_Type == (int)EObjectType.Poison)
 							WritePoisonInfo(objectInfo, invItem, client);
 
-						if (invItem.Object_Type == (int)EObjectType.Magical && invItem.Item_Type == (int)eInventorySlot.FirstBackpack) // potion
+						if (invItem.Object_Type == (int)EObjectType.Magical && invItem.Item_Type == (int)EInventorySlot.FirstBackpack) // potion
 							WritePotionInfo(objectInfo, invItem, client);
 						else if (invItem.CanUseEvery > 0)
 						{
@@ -420,10 +420,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						// fallback to old delve
 
-						if (item.Item_Type == (int)eInventorySlot.Horse)
+						if (item.Item_Type == (int)EInventorySlot.Horse)
 							WriteHorseInfo(objectInfo, item, client, "");
 
-						if ((item.Item_Type == (int)eInventorySlot.HorseBarding || item.Item_Type == (int)eInventorySlot.HorseArmor) && item.Level > 0)
+						if ((item.Item_Type == (int)EInventorySlot.HorseBarding || item.Item_Type == (int)EInventorySlot.HorseArmor) && item.Level > 0)
 						{
 							objectInfo.Add(" ");//empty line
 							objectInfo.Add(" ");//empty line
@@ -452,7 +452,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							WriteClassicShieldInfos(objectInfo, item, client);
 						}
 
-						if ((item.Item_Type != (int)eInventorySlot.Horse && item.Object_Type == (int)EObjectType.Magical)
+						if ((item.Item_Type != (int)EInventorySlot.Horse && item.Object_Type == (int)EObjectType.Magical)
 							|| item.Object_Type == (int)EObjectType.AlchemyTincture
 							|| item.Object_Type == (int)EObjectType.SpellcraftGem)
 						{
@@ -607,10 +607,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 						#region Old Delve
 						// fallback to old delve
 
-						if (invItem.Item_Type == (int)eInventorySlot.Horse)
+						if (invItem.Item_Type == (int)EInventorySlot.Horse)
 							WriteHorseInfo(objectInfo, invItem, client, "");
 
-						if ((invItem.Item_Type == (int)eInventorySlot.HorseBarding || invItem.Item_Type == (int)eInventorySlot.HorseArmor) && invItem.Level > 0)
+						if ((invItem.Item_Type == (int)EInventorySlot.HorseBarding || invItem.Item_Type == (int)EInventorySlot.HorseArmor) && invItem.Level > 0)
 						{
 							objectInfo.Add(" ");//empty line
 							objectInfo.Add(" ");//empty line
@@ -638,7 +638,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							WriteClassicShieldInfos(objectInfo, invItem, client);
 						}
 
-						if ((invItem.Item_Type != (int)eInventorySlot.Horse && invItem.Object_Type == (int)EObjectType.Magical)
+						if ((invItem.Item_Type != (int)EInventorySlot.Horse && invItem.Object_Type == (int)EObjectType.Magical)
 							|| invItem.Object_Type == (int)EObjectType.AlchemyTincture
 							|| invItem.Object_Type == (int)EObjectType.SpellcraftGem)
 						{
@@ -725,7 +725,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					#region Group
 				case 14: // Item info to Group Chat
 					{
-						invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
+						invItem = client.Player.Inventory.GetItem((EInventorySlot)objectId);
 						if (invItem == null)
 							return;
 						string str = LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.Item", client.Player.Name, GetShortItemInfo(invItem, client));
@@ -741,7 +741,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					#region Guild
 				case 12: // Item info to Guild Chat
 					{
-						invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
+						invItem = client.Player.Inventory.GetItem((EInventorySlot)objectId);
 						if (invItem == null)
 							return;
 						string str = LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.GuildItem", client.Player.Name, GetShortItemInfo(invItem, client));
@@ -750,14 +750,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.DontBelongGuild"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
-						if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.GcSpeak))
+						if (!client.Player.Guild.HasRank(client.Player, EGuildRank.GcSpeak))
 						{
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.NoPermissionToSpeak"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}
 						foreach (GamePlayer ply in client.Player.Guild.GetListOfOnlineMembers())
 						{
-							if (!client.Player.Guild.HasRank(ply, Guild.eRank.GcHear))
+							if (!client.Player.Guild.HasRank(ply, EGuildRank.GcHear))
 								continue;
 							ply.Out.SendMessage(str, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);
 						}
@@ -767,11 +767,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 					#region ChatGroup
 				case 15: // Item info to Chat group
 					{
-						invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
+						invItem = client.Player.Inventory.GetItem((EInventorySlot)objectId);
 						if (invItem == null)
 							return;
 
-						ChatGroup mychatgroup = client.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+						ChatGroupUtil mychatgroup = client.Player.TempProperties.GetProperty<ChatGroupUtil>(ChatGroupUtil.CHATGROUP_PROPERTY, null);
 						if (mychatgroup == null)
 						{
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.MustBeInChatGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -844,7 +844,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					#region Repair / craft / salvage
 				case 100: // repair
 					{
-						invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
+						invItem = client.Player.Inventory.GetItem((EInventorySlot)objectId);
 						if (invItem != null)
 							client.Player.RepairItem(invItem);
 						else
@@ -853,7 +853,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 				case 101: // selfcraft
 					{
-						invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
+						invItem = client.Player.Inventory.GetItem((EInventorySlot)objectId);
 						if (invItem != null)
 							client.Player.OpenSelfCraft(invItem);
 						else
@@ -862,7 +862,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 				case 102: // salvage
 					{
-						invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
+						invItem = client.Player.Inventory.GetItem((EInventorySlot)objectId);
 						if (invItem != null)
 							client.Player.SalvageItem(invItem);
 						else
@@ -873,10 +873,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 					#region BattleGroup
 				case 17: // Item info to battle group
 					{
-						invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
+						invItem = client.Player.Inventory.GetItem((EInventorySlot)objectId);
 						if (invItem == null) return;
 
-						BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+						BattleGroupUtil mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 						if (mybattlegroup == null)
 						{
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.MustBeInBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1070,7 +1070,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			output.Add("        Color: " + item.Color);
 			output.Add("       Emblem: " + item.Emblem);
 			output.Add("       Effect: " + item.Effect);
-			output.Add("  Value/Price: " + Money.GetShortString(item.Price));
+			output.Add("  Value/Price: " + MoneyMgr.GetShortString(item.Price));
 			output.Add("       Weight: " + (item.Weight / 10.0f) + "lbs");
 			output.Add("      Quality: " + item.Quality + "%");
 			output.Add("   Durability: " + dur + "/" + item.MaxDurability);
@@ -1423,7 +1423,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					output.Add(" ");
 				}
 
-				if (item.Object_Type == (int)EObjectType.Magical && item.Item_Type == (int)eInventorySlot.FirstBackpack) // potion
+				if (item.Object_Type == (int)EObjectType.Magical && item.Item_Type == (int)EInventorySlot.FirstBackpack) // potion
 				{
 					// let WritePotion handle the rest of the display
 					return;

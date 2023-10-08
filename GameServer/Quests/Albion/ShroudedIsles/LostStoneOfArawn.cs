@@ -366,7 +366,7 @@ public class LostStoneofArawn : BaseQuest
     {
         var quest = player.IsDoingQuest(typeof(LostStoneofArawn)) as LostStoneofArawn;
         if (quest is not {Step: 4}) return;
-        if (!player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+        if (!player.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
             player.Out.SendMessage(
                 "You dont have enough room for " + lost_stone_of_arawn.Name + " and drops on the ground.",
                 eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -665,8 +665,8 @@ public class LostStoneofArawn : BaseQuest
 
                         break;
                     case "Farewell":
-                        if (quest.Step == 5 && player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
-                                eInventorySlot.LastBackpack))
+                        if (quest.Step == 5 && player.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack,
+                                EInventorySlot.LastBackpack))
                         {
                             GiveItem(player, scroll_wearyall_loststone);
                             RemoveItem(player, lost_stone_of_arawn);
@@ -778,7 +778,7 @@ public class LostStoneofArawn : BaseQuest
 
     public override void FinishQuest()
     {
-        if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+        if (m_questPlayer.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
         {
             if (m_questPlayer.Level >= 49)
                 m_questPlayer.GainExperience(EXpSource.Quest,
@@ -788,7 +788,7 @@ public class LostStoneofArawn : BaseQuest
                     (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
             RemoveItem(m_questPlayer, scroll_wearyall_loststone);
             GiveItem(m_questPlayer, ancient_copper_necklace);
-            m_questPlayer.AddMoney(Money.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
+            m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
 
             base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }

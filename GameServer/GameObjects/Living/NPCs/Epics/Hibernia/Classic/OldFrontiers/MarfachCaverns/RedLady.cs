@@ -96,13 +96,13 @@ namespace DOL.GS
             SpecialInnocent.InnocentCount = 0;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 58, 67, 0, 0);//modelID,color,effect,extension
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 380, 67, 0);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 379, 67);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 381, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 382, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 443, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468, 67, 94);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 67, 0, 0);//modelID,color,effect,extension
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 380, 67, 0);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 379, 67);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 381, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 382, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 443, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 468, 67, 94);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

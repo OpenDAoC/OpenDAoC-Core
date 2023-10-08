@@ -71,7 +71,7 @@ namespace DOL.GS
 			Charisma = 200;
 			Empathy = 400;
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 19, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
@@ -339,7 +339,7 @@ namespace DOL.GS
 			Empathy = 400;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 842, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 842, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

@@ -237,7 +237,7 @@ namespace DOL.GS.Keeps
 								return false;
 							}
 
-							if (!player.Guild.HasRank(player, Guild.eRank.OcSpeak))
+							if (!player.Guild.HasRank(player, EGuildRank.OcSpeak))
 							{
 								SayTo(player, "You are not high enough rank in your guild!");
 								return false;

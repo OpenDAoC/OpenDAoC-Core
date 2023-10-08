@@ -14,16 +14,16 @@ namespace DOL.GS.Quests
 			: base(owner)
 		{
 			ERealm realm = 0;
-			if (owner is Group)
-				realm = (owner as Group).Leader.Realm;
+			if (owner is GroupUtil)
+				realm = (owner as GroupUtil).Leader.Realm;
 			else if (owner is GamePlayer)
 				realm = (owner as GamePlayer).Realm;
 
 			ArrayList list = new ArrayList();
 
 			ICollection<AbstractGameKeep> keeps;
-			if (owner is Group)
-				keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as Group).Leader.CurrentRegionID);
+			if (owner is GroupUtil)
+				keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
 			else if (owner is GamePlayer)
 				keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
 			else keeps = new List<AbstractGameKeep>();

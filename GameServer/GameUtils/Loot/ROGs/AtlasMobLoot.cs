@@ -9,7 +9,7 @@ namespace DOL.GS {
     /// ROGMobGenerator
     /// At the moment this generator only adds ROGs to the loot
     /// </summary>
-    public class ROGMobGenerator : LootGeneratorBase {
+    public class RogMobGenerator : LootGeneratorBase {
 
         //base chance in %
         public static ushort BASE_ROG_CHANCE = 14;
@@ -58,7 +58,7 @@ namespace DOL.GS {
 
                 //chance = 100;
                 
-                BattleGroup bg = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                BattleGroupUtil bg = player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 
                 if (bg != null)
                 {
@@ -132,7 +132,7 @@ namespace DOL.GS {
 
                     if(player.Level < 50 || mob.Level < 50)
                     {
-                        var item = AtlasROGManager.GenerateBeadOfRegeneration();
+                        var item = CoreRoGMgr.GenerateBeadOfRegeneration();
                         loot.AddRandom(2, item, 1);
                     }
                     //classForLoot = GetRandomClassFromGroup(player.Group);
@@ -159,7 +159,7 @@ namespace DOL.GS {
 
                     if (Util.Chance(chance))
                     {
-                        GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1), player.CurrentZone?.IsOF ?? false);
+                        GeneratedUniqueItem tmp = CoreRoGMgr.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1), player.CurrentZone?.IsOF ?? false);
                         item = tmp;
                         item.MaxCount = 1;
                         loot.AddFixed(item, 1);
@@ -182,7 +182,7 @@ namespace DOL.GS {
 
                     if(player.Level < 50 || mob.Level < 50)
                     {
-                        item = AtlasROGManager.GenerateBeadOfRegeneration();
+                        item = CoreRoGMgr.GenerateBeadOfRegeneration();
                         loot.AddRandom(2, item, 1);
                     }
                 }
@@ -206,7 +206,7 @@ namespace DOL.GS {
             DbItemTemplate item = null;
                 
                 
-            GeneratedUniqueItem tmp = AtlasROGManager.GenerateMonsterLootROG(player.Realm, classForLoot, lootLevel, player.CurrentZone?.IsOF ?? false);
+            GeneratedUniqueItem tmp = CoreRoGMgr.GenerateMonsterLootROG(player.Realm, classForLoot, lootLevel, player.CurrentZone?.IsOF ?? false);
             tmp.GenerateItemQuality(killedcon);
             //tmp.CapUtility(mob.Level + 1);
             item = tmp;
@@ -215,7 +215,7 @@ namespace DOL.GS {
             return item;
         }
 
-        private ECharacterClass GetRandomClassFromGroup(Group group)
+        private ECharacterClass GetRandomClassFromGroup(GroupUtil group)
         {
             List<ECharacterClass> validClasses = new List<ECharacterClass>();
 
@@ -228,7 +228,7 @@ namespace DOL.GS {
             return ranClass;
         }
         
-        private ECharacterClass GetRandomClassFromBattlegroup(BattleGroup battlegroup)
+        private ECharacterClass GetRandomClassFromBattlegroup(BattleGroupUtil battlegroup)
         {
             List<ECharacterClass> validClasses = new List<ECharacterClass>();
 

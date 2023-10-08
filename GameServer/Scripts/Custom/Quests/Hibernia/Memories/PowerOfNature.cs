@@ -304,8 +304,8 @@ namespace DOL.GS.Quests.Hibernia
                         case "toy":
                             Theresa.SayTo(player,
                                 "(She pauses for a moment) I want to give you this toy to take it with you on your way to the lake. If you meet him, give him this as a sign of love. I will never forget him!");
-                            if (quest.Step == 1 && player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
-                                    eInventorySlot.LastBackpack))
+                            if (quest.Step == 1 && player.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack,
+                                    EInventorySlot.LastBackpack))
                             {
                                 GiveItem(player, theresas_doll);
                                 quest.Step = 2;
@@ -767,7 +767,7 @@ namespace DOL.GS.Quests.Hibernia
         public override void FinishQuest()
         {
             m_questPlayer.GainExperience(EXpSource.Quest, 20, false);
-            m_questPlayer.AddMoney(Money.GetMoney(0, 0, 1, 32, Util.Random(50)), "You receive {0} as a reward.");
+            m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, 1, 32, Util.Random(50)), "You receive {0} as a reward.");
 
             base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }

@@ -31,7 +31,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the interceptor/intercepted group
 		/// </summary>
-		private Group m_group;
+		private GroupUtil m_group;
 
 		/// <summary>
 		/// Gets the interceptor

@@ -235,8 +235,8 @@ public class CraftMacroCommand : ACommandHandler, ICommandHandler
                         {
                             foreach (var pItem in client.Player.Inventory.AllItems)
                             {
-                                if (pItem.SlotPosition < (int)eInventorySlot.FirstBackpack ||
-                                    pItem.SlotPosition > (int)eInventorySlot.LastBackpack)
+                                if (pItem.SlotPosition < (int)EInventorySlot.FirstBackpack ||
+                                    pItem.SlotPosition > (int)EInventorySlot.LastBackpack)
                                     continue; 
                                 playerItems.Add(pItem);
                             }

@@ -51,7 +51,7 @@ namespace DOL.GS.Behaviour.Actions
 			Dictionary<DbInventoryItem, int?> dataSlots = new Dictionary<DbInventoryItem, int?>(10);
             lock (player.Inventory)
             {
-                var allBackpackItems = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                var allBackpackItems = player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
                 bool result = false;
                 foreach (DbInventoryItem item in allBackpackItems)
@@ -110,12 +110,12 @@ namespace DOL.GS.Behaviour.Actions
                 if (!de.Value.HasValue)
                 {
                     playerInventory.RemoveItem(de.Key);
-                    InventoryLogging.LogInventoryAction(player, NPC, eInventoryActionType.Quest, de.Key.Template, de.Key.Count);
+                    InventoryLogging.LogInventoryAction(player, NPC, EInventoryActionType.Quest, de.Key.Template, de.Key.Count);
                 }
                 else
                 {
                     playerInventory.RemoveCountFromStack(de.Key, de.Value.Value);
-                    InventoryLogging.LogInventoryAction(player, NPC, eInventoryActionType.Quest, de.Key.Template, de.Value.Value);
+                    InventoryLogging.LogInventoryAction(player, NPC, EInventoryActionType.Quest, de.Key.Template, de.Value.Value);
                 }
             }
             playerInventory.CommitChanges();

@@ -218,7 +218,7 @@ namespace DOL.GS.Scripts
             foreach (GamePlayer player in GetPlayersInRadius(500))
             {
                 GameLocation PortLocation = null;
-                medallion = player.Inventory.GetItem(eInventorySlot.Mythical);
+                medallion = player.Inventory.GetItem(EInventorySlot.Mythical);
 
                 switch (player.Realm)
                 {

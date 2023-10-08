@@ -103,15 +103,15 @@ namespace DOL.GS.Quests.Midgard
 				Freeya.Heading = 60;
 								
 				GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-				template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 3341);
-				template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 3342);
-				template.AddNPCEquipment(eInventorySlot.Cloak, 326, 43);
-				template.AddNPCEquipment(eInventorySlot.TorsoArmor, 771, 50);
-				template.AddNPCEquipment(eInventorySlot.LegsArmor, 772);
-				template.AddNPCEquipment(eInventorySlot.HandsArmor, 774, 50);
-				template.AddNPCEquipment(eInventorySlot.ArmsArmor, 773);
-				template.AddNPCEquipment(eInventorySlot.FeetArmor, 775, 50);
-				template.AddNPCEquipment(eInventorySlot.HeadArmor, 1227);
+				template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 3341);
+				template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 3342);
+				template.AddNPCEquipment(EInventorySlot.Cloak, 326, 43);
+				template.AddNPCEquipment(EInventorySlot.TorsoArmor, 771, 50);
+				template.AddNPCEquipment(EInventorySlot.LegsArmor, 772);
+				template.AddNPCEquipment(EInventorySlot.HandsArmor, 774, 50);
+				template.AddNPCEquipment(EInventorySlot.ArmsArmor, 773);
+				template.AddNPCEquipment(EInventorySlot.FeetArmor, 775, 50);
+				template.AddNPCEquipment(EInventorySlot.HeadArmor, 1227);
 				Freeya.Inventory = template.CloseTemplate();
 				Freeya.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -151,15 +151,15 @@ namespace DOL.GS.Quests.Midgard
 				VikingDextz.Heading = 3346;
 				
 				GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-				template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 3335);
-				template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 2218);
-				template.AddNPCEquipment(eInventorySlot.Cloak, 677);
-				template.AddNPCEquipment(eInventorySlot.TorsoArmor, 698, 50);
-				template.AddNPCEquipment(eInventorySlot.LegsArmor, 699);
-				template.AddNPCEquipment(eInventorySlot.HandsArmor, 701, 50);
-				template.AddNPCEquipment(eInventorySlot.ArmsArmor, 700);
-				template.AddNPCEquipment(eInventorySlot.FeetArmor, 702, 50);
-				template.AddNPCEquipment(eInventorySlot.HeadArmor, 1227);
+				template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 3335);
+				template.AddNPCEquipment(EInventorySlot.LeftHandWeapon, 2218);
+				template.AddNPCEquipment(EInventorySlot.Cloak, 677);
+				template.AddNPCEquipment(EInventorySlot.TorsoArmor, 698, 50);
+				template.AddNPCEquipment(EInventorySlot.LegsArmor, 699);
+				template.AddNPCEquipment(EInventorySlot.HandsArmor, 701, 50);
+				template.AddNPCEquipment(EInventorySlot.ArmsArmor, 700);
+				template.AddNPCEquipment(EInventorySlot.FeetArmor, 702, 50);
+				template.AddNPCEquipment(EInventorySlot.HeadArmor, 1227);
 				VikingDextz.Inventory = template.CloseTemplate();
 				VikingDextz.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -898,7 +898,7 @@ namespace DOL.GS.Quests.Midgard
 		public override void FinishQuest()
 		{
 			m_questPlayer.GainExperience(EXpSource.Quest, 20, false);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			

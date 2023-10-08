@@ -64,7 +64,7 @@ namespace DOL.GS.Keeps
 			}*/
 
 			BroadcastKeepTakeMessage(message, keep.Realm);
-			NewsMgr.CreateNews(message, keep.Realm, eNewsType.RvRGlobal, false);
+			NewsMgr.CreateNews(message, keep.Realm, ENewsType.RvRGlobal, false);
 
 			if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
 			{
@@ -82,7 +82,7 @@ namespace DOL.GS.Keeps
 		{
 			string message = string.Format(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PlayerManager.BroadcastRaize.Razed", keep.Name, GlobalConstants.RealmToName(realm)));
 			BroadcastMessage(message, ERealm.None);
-			NewsMgr.CreateNews(message, keep.Realm, eNewsType.RvRGlobal, false);
+			NewsMgr.CreateNews(message, keep.Realm, ENewsType.RvRGlobal, false);
 		}
 
 		/// <summary>

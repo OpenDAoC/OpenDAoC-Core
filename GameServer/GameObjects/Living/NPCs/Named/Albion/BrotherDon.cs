@@ -26,7 +26,7 @@ namespace DOL.GS.Scripts
 
                 if (gArgs.Target.Name == this.Name && gArgs.Item.Id_nb == _wolfPeltCloak.Id_nb)
                 {
-                    DbInventoryItem item = player.Inventory.GetFirstItemByID(wolfPeltCloak, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                    DbInventoryItem item = player.Inventory.GetFirstItemByID(wolfPeltCloak, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
                     if(item != null)
                     {
                         SayTo(player, "Thank you! Your service to the church will been noted!");
@@ -69,7 +69,7 @@ namespace DOL.GS.Scripts
             {
                 return false;
             }
-            if (player.Inventory.GetFirstItemByID(wolfPeltCloak, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) != null)
+            if (player.Inventory.GetFirstItemByID(wolfPeltCloak, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) != null)
             {
                 SayTo(player, "Hail! You don't perhaps have one of those fine wolf pelt cloaks? If you no longer have need of it, we could greatly use it at the [orphanage].");
             }            

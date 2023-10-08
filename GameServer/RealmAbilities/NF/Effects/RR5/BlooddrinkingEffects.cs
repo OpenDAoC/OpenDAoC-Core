@@ -133,7 +133,7 @@ namespace DOL.GS.Effects
 
             if (ad == null || (ad.AttackResult != EAttackResult.HitStyle && ad.AttackResult != EAttackResult.HitUnstyled))
                 return false;
-            if (!ad.IsMeleeAttack && ad.AttackType != AttackData.eAttackType.Ranged)
+            if (!ad.IsMeleeAttack && ad.AttackType != AttackData.EAttackType.Ranged)
                 return false;
 
             return true;

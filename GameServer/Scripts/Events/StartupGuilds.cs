@@ -126,11 +126,11 @@ namespace DOL.GS.GameEvents
 		{
 			if (!GuildMgr.DoesGuildExist(guildName))
 			{
-				Guild newguild = GuildMgr.CreateGuild(currentRealm, guildName);
+				GuildUtil newguild = GuildMgr.CreateGuild(currentRealm, guildName);
 				newguild.Ranks[8].OcHear = true;
 				newguild.Motd = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Motd");
 				newguild.Omotd = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Omotd");
-				newguild.BonusType = Guild.eBonusType.Experience;
+				newguild.BonusType = EGuildBonusType.Experience;
 				newguild.BonusStartTime = DateTime.Now;
 				newguild.Ranks[8].Title =  LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Title");
 				newguild.Ranks[8].Invite = true;

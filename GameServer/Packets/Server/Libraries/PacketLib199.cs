@@ -173,7 +173,7 @@ namespace DOL.GS.PacketHandler
 									int l;
 									if (k == 0x15 + 3)
 										//shield emblem
-										l = (int)eInventorySlot.LeftHandWeapon;
+										l = (int)EInventorySlot.LeftHandWeapon;
 									else
 										l = k;
 
@@ -223,9 +223,9 @@ namespace DOL.GS.PacketHandler
 									byte lefthand = 0xFF;
 									foreach (DbInventoryItem item in items)
 									{
-										if (item.SlotPosition == (int)eInventorySlot.RightHandWeapon)
+										if (item.SlotPosition == (int)EInventorySlot.RightHandWeapon)
 											righthand = 0x00;
-										if (item.SlotPosition == (int)eInventorySlot.LeftHandWeapon)
+										if (item.SlotPosition == (int)EInventorySlot.LeftHandWeapon)
 											lefthand = 0x01;
 									}
 									if (righthand == lefthand)

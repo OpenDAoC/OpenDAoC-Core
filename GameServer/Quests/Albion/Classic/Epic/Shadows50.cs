@@ -1824,8 +1824,8 @@ namespace DOL.GS.Quests.Albion
 							if (quest.Step == 2)
 							{
 								RemoveItem(player, sealed_pouch);
-								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
-									    eInventorySlot.LastBackpack))
+								if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+									    EInventorySlot.LastBackpack))
 								{
 									Lidmann.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 									quest.FinishQuest();
@@ -1846,8 +1846,8 @@ namespace DOL.GS.Quests.Albion
 				if (quest != null)
 					if (rArgs.Item.Id_nb == sealed_pouch.Id_nb && quest.Step == 2)
 					{
-						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
-							    eInventorySlot.LastBackpack))
+						if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+							    EInventorySlot.LastBackpack))
 						{
 							Lidmann.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 							quest.FinishQuest();
@@ -1998,8 +1998,8 @@ namespace DOL.GS.Quests.Albion
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == Lidmann.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
 				{
-					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
-						    eInventorySlot.LastBackpack))
+					if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+						    EInventorySlot.LastBackpack))
 					{
 						Lidmann.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 						FinishQuest();

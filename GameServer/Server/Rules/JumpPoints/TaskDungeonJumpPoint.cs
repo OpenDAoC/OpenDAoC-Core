@@ -44,7 +44,7 @@ namespace DOL.GS.ServerRules
             //First, we try the groups mission.
             if (player.Group != null)
             {
-                Group grp = player.Group;
+                GroupUtil grp = player.Group;
                 if (grp.Mission != null && grp.Mission is TaskDungeonMission)
                 {
                     //Attempt to get the instance entrance location...

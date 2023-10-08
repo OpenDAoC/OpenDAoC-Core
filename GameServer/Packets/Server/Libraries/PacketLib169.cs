@@ -42,7 +42,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte(0x06);
 
-				Group group = m_gameClient.Player.Group;
+				GroupUtil group = m_gameClient.Player.Group;
 				if (group == null)
 				{
 					pak.WriteByte(0x00);

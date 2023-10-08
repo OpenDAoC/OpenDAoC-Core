@@ -107,7 +107,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="source"></param>
 		/// <param name="guild"></param>
 		/// <returns></returns>
-		bool IsAllowedToJoinGuild(GamePlayer source, Guild guild);
+		bool IsAllowedToJoinGuild(GamePlayer source, GuildUtil guild);
 
 		/// <summary>
 		/// Is source allowed to trade with target.

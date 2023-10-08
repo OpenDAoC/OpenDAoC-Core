@@ -38,7 +38,7 @@ namespace DOL.GS
             {
                 // Message: "{0}The slough serpent} is now enthralled!"
                 if (!string.IsNullOrEmpty(SpellHandler.Spell.Message1))
-                    Message.SystemToArea(charmMob, Util.MakeSentence(SpellHandler.Spell.Message1, charmMob.GetName(0, true)), eChatType.CT_System, charmMob, casterPlayer);
+                    MessageUtil.SystemToArea(charmMob, Util.MakeSentence(SpellHandler.Spell.Message1, charmMob.GetName(0, true)), eChatType.CT_System, charmMob, casterPlayer);
 
                 // Message: {0} is now under your control.
                 if (!string.IsNullOrEmpty(SpellHandler.Spell.Message2))

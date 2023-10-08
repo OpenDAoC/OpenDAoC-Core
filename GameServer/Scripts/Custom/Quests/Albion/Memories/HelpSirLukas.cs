@@ -757,7 +757,7 @@ namespace DOL.GS.Quests.Albion
 			Lukas.TurnTo(Lukas.SpawnHeading);
 
 			m_questPlayer.GainExperience(EXpSource.Quest, 20, false);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
+			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			

@@ -237,12 +237,12 @@ namespace DOL.GS.PacketHandler
 				{
 					foreach (int updatedSlot in slots)
 					{
-						if (updatedSlot >= (int)eInventorySlot.Consignment_First && updatedSlot <= (int)eInventorySlot.Consignment_Last)
-							pak.WriteByte((byte)(updatedSlot - (int)eInventorySlot.Consignment_First + (int)eInventorySlot.HousingInventory_First));
+						if (updatedSlot >= (int)EInventorySlot.Consignment_First && updatedSlot <= (int)EInventorySlot.Consignment_Last)
+							pak.WriteByte((byte)(updatedSlot - (int)EInventorySlot.Consignment_First + (int)EInventorySlot.HousingInventory_First));
 						else
 							pak.WriteByte((byte)(updatedSlot));
 						DbInventoryItem item = null;
-						item = m_gameClient.Player.Inventory.GetItem((eInventorySlot)updatedSlot);
+						item = m_gameClient.Player.Inventory.GetItem((EInventorySlot)updatedSlot);
 
 						if (item == null)
 						{
@@ -327,7 +327,7 @@ namespace DOL.GS.PacketHandler
 							if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 	                            name += "[" + item.SellPrice.ToString() + " BP]";
 	                        else
-	                            name += "[" + Money.GetString(item.SellPrice) + "]";
+	                            name += "[" + MoneyMgr.GetString(item.SellPrice) + "]";
 	                    }
 						pak.WritePascalString(name);
 					}
@@ -410,18 +410,18 @@ namespace DOL.GS.PacketHandler
 					pak.Fill(0x00, 10 - m_gameClient.Player.TradeWindow.TradeItems.Count);
 
 					pak.WriteShort(0x0000);
-					pak.WriteShort((ushort)Money.GetMithril(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetPlatinum(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetGold(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetSilver(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetCopper(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetMithril(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetPlatinum(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetGold(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetSilver(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetCopper(m_gameClient.Player.TradeWindow.TradeMoney));
 
 					pak.WriteShort(0x0000);
-					pak.WriteShort((ushort)Money.GetMithril(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetPlatinum(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetGold(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetSilver(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetCopper(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetMithril(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetPlatinum(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetGold(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetSilver(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetCopper(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
 
 					pak.WriteShort(0x0000);
 					ArrayList items = m_gameClient.Player.TradeWindow.PartnerTradeItems;

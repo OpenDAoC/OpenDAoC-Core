@@ -287,12 +287,12 @@ namespace DOL.GS
 
 				item = GameInventoryItem.Create(template);
 				item.Count = material.Count;
-				if (!player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+				if (!player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, item))
 				{
 					error = true;
 					break;
 				}
-				InventoryLogging.LogInventoryAction("(salvage)", player, eInventoryActionType.Craft, item.Template, item.Count);
+				InventoryLogging.LogInventoryAction("(salvage)", player, EInventoryActionType.Craft, item.Template, item.Count);
 			}
 
 			if (error)
@@ -344,13 +344,13 @@ namespace DOL.GS
 				return 0;
 			}
 
-			InventoryLogging.LogInventoryAction(player, "(salvage)", eInventoryActionType.Craft, itemToSalvage.Template, itemToSalvage.Count);
+			InventoryLogging.LogInventoryAction(player, "(salvage)", EInventoryActionType.Craft, itemToSalvage.Template, itemToSalvage.Count);
 
 			Dictionary<int, int> changedSlots = new Dictionary<int, int>(5); // value: < 0 = new item count; > 0 = add to old
 			lock(player.Inventory)
 			{
 				int count = materialCount;
-				foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				foreach (DbInventoryItem item in player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
 					if (item == null) continue;
 					if (item.Id_nb != rawMaterial.Id_nb) continue;
@@ -372,7 +372,7 @@ namespace DOL.GS
 
 				if(count > 0) // Add new object
 				{
-					eInventorySlot firstEmptySlot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+					EInventorySlot firstEmptySlot = player.Inventory.FindFirstEmptySlot(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 					changedSlots.Add((int)firstEmptySlot, -count); // Create the item in the free slot (always at least one)
 				}
 				
@@ -388,16 +388,16 @@ namespace DOL.GS
 				int countToAdd = de.Value;
 				if(countToAdd > 0)	// Add to exiting item
 				{
-					newItem = player.Inventory.GetItem((eInventorySlot)de.Key);
+					newItem = player.Inventory.GetItem((EInventorySlot)de.Key);
 					player.Inventory.AddCountToStack(newItem, countToAdd);
-					InventoryLogging.LogInventoryAction("(salvage)", player, eInventoryActionType.Craft, newItem.Template, countToAdd);
+					InventoryLogging.LogInventoryAction("(salvage)", player, EInventoryActionType.Craft, newItem.Template, countToAdd);
 				}
 				else
 				{
 					newItem = GameInventoryItem.Create(rawMaterial);
 					newItem.Count = -countToAdd;
-					player.Inventory.AddItem((eInventorySlot)de.Key, newItem);
-					InventoryLogging.LogInventoryAction("(salvage)", player, eInventoryActionType.Craft, newItem.Template, newItem.Count);
+					player.Inventory.AddItem((EInventorySlot)de.Key, newItem);
+					InventoryLogging.LogInventoryAction("(salvage)", player, EInventoryActionType.Craft, newItem.Template, newItem.Count);
 				}
 			}
 
@@ -457,7 +457,7 @@ namespace DOL.GS
 				return false;
 			}
 			
-			if(item.SlotPosition < (int)eInventorySlot.FirstBackpack || item.SlotPosition > (int)eInventorySlot.LastBackpack)
+			if(item.SlotPosition < (int)EInventorySlot.FirstBackpack || item.SlotPosition > (int)EInventorySlot.LastBackpack)
 			{
 				if (!mute)
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.BackpackItems"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -510,7 +510,7 @@ namespace DOL.GS
 				return false;
 			}
 			
-			if(item.SlotPosition < (int)eInventorySlot.FirstBackpack || item.SlotPosition > (int)eInventorySlot.LastBackpack)
+			if(item.SlotPosition < (int)EInventorySlot.FirstBackpack || item.SlotPosition > (int)EInventorySlot.LastBackpack)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.BackpackItems"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;

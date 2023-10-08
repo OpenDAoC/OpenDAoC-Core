@@ -81,13 +81,13 @@ namespace DOL.GS
 				Styles.Add(taunt);
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 403, 43, 0, 0);//modelID,color,effect,extension
-			template.AddNPCEquipment(eInventorySlot.ArmsArmor, 405, 43);
-			template.AddNPCEquipment(eInventorySlot.LegsArmor, 404, 43);
-			template.AddNPCEquipment(eInventorySlot.HandsArmor, 406, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.FeetArmor, 407, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.HeadArmor, 831, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 577, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TorsoArmor, 403, 43, 0, 0);//modelID,color,effect,extension
+			template.AddNPCEquipment(EInventorySlot.ArmsArmor, 405, 43);
+			template.AddNPCEquipment(EInventorySlot.LegsArmor, 404, 43);
+			template.AddNPCEquipment(EInventorySlot.HandsArmor, 406, 43, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.FeetArmor, 407, 43, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.HeadArmor, 831, 43, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 577, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

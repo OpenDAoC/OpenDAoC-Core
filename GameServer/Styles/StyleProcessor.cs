@@ -175,7 +175,7 @@ namespace DOL.GS.Styles
 					return;
 				}
 
-				DbInventoryItem weapon = (style.WeaponTypeRequirement == (int) EObjectType.Shield) ? player.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : player.ActiveWeapon;
+				DbInventoryItem weapon = (style.WeaponTypeRequirement == (int) EObjectType.Shield) ? player.Inventory.GetItem(EInventorySlot.LeftHandWeapon) : player.ActiveWeapon;
 
 				if (!CheckWeaponType(style, player, weapon))
 				{
@@ -380,7 +380,7 @@ namespace DOL.GS.Styles
 
 						// Styles with a static growth don't use unstyled damage, so armor has to be taken into account here.
 						// TODO: Check if ignoring AF is indeed intended.
-						DbInventoryItem armor = target.Inventory?.GetItem((eInventorySlot) armorHitLocation);
+						DbInventoryItem armor = target.Inventory?.GetItem((EInventorySlot) armorHitLocation);
 						styleDamage = (int) (styleDamage * (1.0 - Math.Min(0.85, target.GetArmorAbsorb(armorHitLocation))));
 					}
 					else
@@ -474,7 +474,7 @@ namespace DOL.GS.Styles
 					if (weapon != null)
 						animationId = (weapon.Hand != 1) ? style.Icon : style.TwoHandAnimation; // special animation for two-hand
 					else if (living.Inventory != null)
-						animationId = (living.Inventory.GetItem(eInventorySlot.RightHandWeapon) != null) ? style.Icon : style.TwoHandAnimation; // special animation for two-hand
+						animationId = (living.Inventory.GetItem(EInventorySlot.RightHandWeapon) != null) ? style.Icon : style.TwoHandAnimation; // special animation for two-hand
 					else
 						animationId = style.Icon;
 
@@ -535,7 +535,7 @@ namespace DOL.GS.Styles
 					// both weapons are needed to use style,
 					// shield is not a weapon here
 					DbInventoryItem rightHand = player.ActiveWeapon;
-					DbInventoryItem leftHand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+					DbInventoryItem leftHand = player.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 
 					if (rightHand == null || leftHand == null || (rightHand.Item_Type != Slot.RIGHTHAND && rightHand.Item_Type != Slot.LEFTHAND))
 						return false;

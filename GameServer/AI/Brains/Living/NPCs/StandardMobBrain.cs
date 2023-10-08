@@ -706,10 +706,10 @@ namespace DOL.AI.Brain
             HashSet<string> countedVictims = null;
             HashSet<string> countedAttackers = null;
 
-            BattleGroup bg = puller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            BattleGroupUtil bg = puller.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 
             // Check group first to minimize the number of HashSet.Add() calls
-            if (puller.Group is Group group)
+            if (puller.Group is GroupUtil group)
             {
                 if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && bg != null)
                     countedAttackers = new HashSet<string>(); // We have to check for duplicates when counting attackers

@@ -367,9 +367,9 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 		public override void FinishQuest()
 		{
 			//m_questPlayer.GainExperience(eXPSource.Quest, (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/10, true);
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateReward(m_questPlayer, 1500);
-			AtlasROGManager.GenerateJewel(m_questPlayer, (byte)(m_questPlayer.Level + 1), m_questPlayer.Level + Util.Random(10, 11));
+			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
+			CoreRoGMgr.GenerateReward(m_questPlayer, 1500);
+			CoreRoGMgr.GenerateJewel(m_questPlayer, (byte)(m_questPlayer.Level + 1), m_questPlayer.Level + Util.Random(10, 11));
 			_evernKilled = 0;
 			_glacierGiantKilled = 0;
 			_greenKnightKilled = 0;

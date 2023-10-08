@@ -342,12 +342,12 @@ namespace DOL.GS.DailyQuest.Hibernia
 		}
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (m_questPlayer.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
 				m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 3);
-				m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 2, 32, Util.Random(50)),
+				m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, m_questPlayer.Level * 2, 32, Util.Random(50)),
 					"You receive {0} as a reward.");
-				AtlasROGManager.GenerateBattlegroundToken(m_questPlayer, 1);
+				CoreRoGMgr.GenerateBattlegroundToken(m_questPlayer, 1);
 				PlayersKilled = 0;
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 			}

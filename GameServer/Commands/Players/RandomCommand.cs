@@ -58,7 +58,7 @@ public class RandomCommand : ACommandHandler, ICommandHandler
 		// throw result
 		int thrown = Util.Random(1, thrownMax);
 		
-		BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+		BattleGroupUtil mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 		if (mybattlegroup != null && mybattlegroup.IsRecordingRolls() && thrownMax <= mybattlegroup.GetRecordingThreshold())
 		{
 			mybattlegroup.AddRoll(client.Player, thrown);

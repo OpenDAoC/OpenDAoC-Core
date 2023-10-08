@@ -5,51 +5,20 @@ using DOL.Database;
 using log4net;
 
 namespace DOL.GS
-{
-	/// <summary>
-	/// Type of trade
-	/// </summary>
-	public enum eInventoryActionType
-	{
-		/// <summary>
-		/// Trade between 2 players
-		/// </summary>
-		Trade,
-		/// <summary>
-		/// A player pick up a loot
-		/// </summary>
-		Loot,
-		/// <summary>
-		/// Gain of a quest or quest's items
-		/// </summary>
-		Quest,
-		/// <summary>
-		/// Buy/sell an item
-		/// </summary>
-		Merchant,
-		/// <summary>
-		/// Crafting an item
-		/// </summary>
-		Craft,
-		/// <summary>
-		/// Any other action
-		/// </summary>
-		Other,
-	}
-
+{ 
 	public static class InventoryLogging
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public static readonly Dictionary<eInventoryActionType, string> ActionXformat =
-			new Dictionary<eInventoryActionType, string>
+		public static readonly Dictionary<EInventoryActionType, string> ActionXformat =
+			new Dictionary<EInventoryActionType, string>
                 {
-                    {eInventoryActionType.Trade, "[TRADE] {0} > {1}: {2}"},
-                    {eInventoryActionType.Loot, "[LOOT] {0} > {1}: {2}"},
-                    {eInventoryActionType.Quest, "[QUEST] {0} > {1}: {2}"},
-                    {eInventoryActionType.Merchant, "[MERCHANT] {0} > {1}: {2}"},
-                    {eInventoryActionType.Craft, "[CRAFT] {0} > {1}: {2}"},
-                    {eInventoryActionType.Other, "[OTHER] {0} > {1}: {2}"}
+                    {EInventoryActionType.Trade, "[TRADE] {0} > {1}: {2}"},
+                    {EInventoryActionType.Loot, "[LOOT] {0} > {1}: {2}"},
+                    {EInventoryActionType.Quest, "[QUEST] {0} > {1}: {2}"},
+                    {EInventoryActionType.Merchant, "[MERCHANT] {0} > {1}: {2}"},
+                    {EInventoryActionType.Craft, "[CRAFT] {0} > {1}: {2}"},
+                    {EInventoryActionType.Other, "[OTHER] {0} > {1}: {2}"}
                 };
 
 		public static Func<GameObject, string> GetGameObjectString = obj =>
@@ -68,7 +37,7 @@ namespace DOL.GS
 		/// <param name="destination">Destination of the item</param>
 		/// <param name="type">Type of action (trade, loot, quest, ...)</param>
 		/// <param name="item">The item or money account traded</param>
-		public static void LogInventoryAction(GameObject source, GameObject destination, eInventoryActionType type, DbItemTemplate item, int count = 1)
+		public static void LogInventoryAction(GameObject source, GameObject destination, EInventoryActionType type, DbItemTemplate item, int count = 1)
 		{
 			LogInventoryAction(GetGameObjectString(source), GetGameObjectString(destination), type, item, count);
 		}
@@ -80,7 +49,7 @@ namespace DOL.GS
 		/// <param name="destination">Destination of the item</param>
 		/// <param name="type">Type of action (trade, loot, quest, ...)</param>
 		/// <param name="item">The item or money account traded</param>
-		public static void LogInventoryAction(string source, GameObject destination, eInventoryActionType type, DbItemTemplate item, int count = 1)
+		public static void LogInventoryAction(string source, GameObject destination, EInventoryActionType type, DbItemTemplate item, int count = 1)
 		{
 			LogInventoryAction(source, GetGameObjectString(destination), type, item, count);
 		}
@@ -92,7 +61,7 @@ namespace DOL.GS
 		/// <param name="destination">Destination of the item</param>
 		/// <param name="type">Type of action (trade, loot, quest, ...)</param>
 		/// <param name="item">The item or money account traded</param>
-		public static void LogInventoryAction(GameObject source, string destination, eInventoryActionType type, DbItemTemplate item, int count = 1)
+		public static void LogInventoryAction(GameObject source, string destination, EInventoryActionType type, DbItemTemplate item, int count = 1)
 		{
 			LogInventoryAction(GetGameObjectString(source), destination, type, item, count);
 		}
@@ -104,7 +73,7 @@ namespace DOL.GS
 		/// <param name="destination">Destination of the item</param>
 		/// <param name="type">Type of action (trade, loot, quest, ...)</param>
 		/// <param name="item">The item or money account traded</param>
-		public static void LogInventoryAction(string source, string destination, eInventoryActionType type, DbItemTemplate item, int count = 1)
+		public static void LogInventoryAction(string source, string destination, EInventoryActionType type, DbItemTemplate item, int count = 1)
 		{
 			// Check if you can log this action
 			if (!_IsLoggingEnabled(type))
@@ -132,7 +101,7 @@ namespace DOL.GS
 		/// <param name="destination">Destination of the item</param>
 		/// <param name="type">Type of action (trade, loot, quest, ...)</param>
 		/// <param name="item">The item or money account traded</param>
-		public static void LogInventoryAction(GameObject source, GameObject destination, eInventoryActionType type, long money)
+		public static void LogInventoryAction(GameObject source, GameObject destination, EInventoryActionType type, long money)
 		{
 			LogInventoryAction(GetGameObjectString(source), GetGameObjectString(destination), type, money);
 		}
@@ -144,7 +113,7 @@ namespace DOL.GS
 		/// <param name="destination">Destination of the item</param>
 		/// <param name="type">Type of action (trade, loot, quest, ...)</param>
 		/// <param name="item">The item or money account traded</param>
-		public static void LogInventoryAction(string source, GameObject destination, eInventoryActionType type, long money)
+		public static void LogInventoryAction(string source, GameObject destination, EInventoryActionType type, long money)
 		{
 			LogInventoryAction(source, GetGameObjectString(destination), type, money);
 		}
@@ -156,7 +125,7 @@ namespace DOL.GS
 		/// <param name="destination">Destination of the item</param>
 		/// <param name="type">Type of action (trade, loot, quest, ...)</param>
 		/// <param name="item">The item or money account traded</param>
-		public static void LogInventoryAction(GameObject source, string destination, eInventoryActionType type, long money)
+		public static void LogInventoryAction(GameObject source, string destination, EInventoryActionType type, long money)
 		{
 			LogInventoryAction(GetGameObjectString(source), destination, type, money);
 		}
@@ -168,7 +137,7 @@ namespace DOL.GS
 		/// <param name="destination">Destination of the item</param>
 		/// <param name="type">Type of action (trade, loot, quest, ...)</param>
 		/// <param name="item">The item or money account traded</param>
-		public static void LogInventoryAction(string source, string destination, eInventoryActionType type, long money)
+		public static void LogInventoryAction(string source, string destination, EInventoryActionType type, long money)
 		{
 			// Check if you can log this action
 			if (!_IsLoggingEnabled(type))
@@ -189,19 +158,19 @@ namespace DOL.GS
 			}
 		}
 
-		private static bool _IsLoggingEnabled(eInventoryActionType type)
+		private static bool _IsLoggingEnabled(EInventoryActionType type)
 		{
 			if (!ServerProperties.Properties.LOG_INVENTORY)
 				return false;
 
 			switch (type)
 			{
-				case eInventoryActionType.Trade: return ServerProperties.Properties.LOG_INVENTORY_TRADE;
-				case eInventoryActionType.Loot: return ServerProperties.Properties.LOG_INVENTORY_LOOT;
-				case eInventoryActionType.Craft: return ServerProperties.Properties.LOG_INVENTORY_CRAFT;
-				case eInventoryActionType.Merchant: return ServerProperties.Properties.LOG_INVENTORY_MERCHANT;
-				case eInventoryActionType.Quest: return ServerProperties.Properties.LOG_INVENTORY_QUEST;
-				case eInventoryActionType.Other: return ServerProperties.Properties.LOG_INVENTORY_OTHER;
+				case EInventoryActionType.Trade: return ServerProperties.Properties.LOG_INVENTORY_TRADE;
+				case EInventoryActionType.Loot: return ServerProperties.Properties.LOG_INVENTORY_LOOT;
+				case EInventoryActionType.Craft: return ServerProperties.Properties.LOG_INVENTORY_CRAFT;
+				case EInventoryActionType.Merchant: return ServerProperties.Properties.LOG_INVENTORY_MERCHANT;
+				case EInventoryActionType.Quest: return ServerProperties.Properties.LOG_INVENTORY_QUEST;
+				case EInventoryActionType.Other: return ServerProperties.Properties.LOG_INVENTORY_OTHER;
 			}
 			return false;
 		}

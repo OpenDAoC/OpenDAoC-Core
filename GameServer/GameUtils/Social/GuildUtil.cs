@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,70 +10,32 @@ using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Guild inside the game.
-	/// </summary>
-	public class Guild
+	public class GuildUtil
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public enum eRank : int
-		{
-			Emblem,
-			AcHear,
-			AcSpeak,
-			Demote,
-			Promote,
-			GcHear,
-			GcSpeak,
-			Invite,
-			OcHear,
-			OcSpeak,
-			Remove,
-			Leader,
-			Alli,
-			View,
-			Claim,
-			Upgrade,
-			Release,
-			Buff,
-			Dues,
-			Withdraw
-		}
-
-		public enum eBonusType : byte
-		{
-			None = 0,
-			RealmPoints = 1,
-			BountyPoints = 2,	// not live like?
-			MasterLevelXP = 3,	// Not implemented
-			CraftingHaste = 4,
-			ArtifactXP = 5,
-			Experience = 6
-		}
-
-		public static string BonusTypeToName(eBonusType bonusType)
+		public static string BonusTypeToName(EGuildBonusType bonusType)
 		{
 			string bonusName = "None";
 
 			switch (bonusType)
 			{
-				case Guild.eBonusType.ArtifactXP:
+				case EGuildBonusType.ArtifactXP:
 					bonusName = "Artifact XP";
 					break;
-				case Guild.eBonusType.BountyPoints:
+				case EGuildBonusType.BountyPoints:
 					bonusName = "Bounty Points";
 					break;
-				case Guild.eBonusType.CraftingHaste:
+				case EGuildBonusType.CraftingHaste:
 					bonusName = "Crafting Speed";
 					break;
-				case Guild.eBonusType.Experience:
+				case EGuildBonusType.Experience:
 					bonusName = "PvE Experience";
 					break;
-				case Guild.eBonusType.MasterLevelXP:
+				case EGuildBonusType.MasterLevelXP:
 					bonusName = "Master Level XP";
 					break;
-				case Guild.eBonusType.RealmPoints:
+				case EGuildBonusType.RealmPoints:
 					bonusName = "Realm Points";
 					break;
 			}
@@ -113,7 +56,7 @@ namespace DOL.GS
 		/// <summary>
 		/// This holds all players inside the guild
 		/// </summary>
-		protected Alliance m_alliance = null;
+		protected AllianceUtil m_alliance = null;
 
 		/// <summary>
 		/// This holds the DB instance of the guild
@@ -260,12 +203,12 @@ namespace DOL.GS
                 return;
             }
 
-			donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositAmount", Money.GetString(long.Parse(amount.ToString()))), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+			donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositAmount", MoneyMgr.GetString(long.Parse(amount.ToString()))), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 
 			donating.Guild.UpdateGuildWindow();
 			m_DBguild.Bank += amount;
 
-            InventoryLogging.LogInventoryAction(donating, "(GUILD;" + Name + ")", eInventoryActionType.Other, long.Parse(amount.ToString()));
+            InventoryLogging.LogInventoryAction(donating, "(GUILD;" + Name + ")", EInventoryActionType.Other, long.Parse(amount.ToString()));
 			//donating.SaveIntoDatabase();
 			donating.Out.SendUpdatePlayer();			
 			return;
@@ -283,13 +226,13 @@ namespace DOL.GS
 				return;
 			}
 
-            withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.Withdrawamount", Money.GetString(long.Parse(amount.ToString()))), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+            withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.Withdrawamount", MoneyMgr.GetString(long.Parse(amount.ToString()))), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 			withdraw.Guild.UpdateGuildWindow();
 			m_DBguild.Bank -= amount;
 
 		    var amt = long.Parse(amount.ToString());
             withdraw.AddMoney(amt);
-            InventoryLogging.LogInventoryAction("(GUILD;" + Name + ")", withdraw, eInventoryActionType.Other, amt);
+            InventoryLogging.LogInventoryAction("(GUILD;" + Name + ")", withdraw, EInventoryActionType.Other, amt);
             withdraw.Out.SendUpdatePlayer();
             withdraw.SaveIntoDatabase();
             withdraw.Guild.SaveIntoDatabase();
@@ -297,9 +240,9 @@ namespace DOL.GS
 		}
 
 		// Used by the hack to make pets untargetable with tab on a PvP server. Effectively creates a dummy guild to get a unique ID.
-		public static readonly Guild DummyGuild;
+		public static readonly GuildUtil DummyGuild;
 
-		static Guild()
+		static GuildUtil()
 		{
 			if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
 				DummyGuild = GuildMgr.CreateGuild(0, "DummyGuildToMakePetsUntargetable") ?? GuildMgr.GetGuildByName("DummyGuildToMakePetsUntargetable");
@@ -309,7 +252,7 @@ namespace DOL.GS
 		/// Creates an empty Guild. Don't use this, use
 		/// GuildMgr.CreateGuild() to create a guild
 		/// </summary>
-		public Guild(DbGuild dbGuild)
+		public GuildUtil(DbGuild dbGuild)
 		{
 			this.m_DBguild = dbGuild;
 			bannerStatus = "None";
@@ -401,7 +344,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the guild alliance
 		/// </summary>
-		public Alliance alliance
+		public AllianceUtil alliance
 		{
 			get 
 			{ 
@@ -696,7 +639,7 @@ namespace DOL.GS
 		/// Looks up if a given client have access for the specific command in this guild
 		/// </summary>
 		/// <returns>true or false</returns>
-		public bool HasRank(GamePlayer member, Guild.eRank rankNeeded)
+		public bool HasRank(GamePlayer member, EGuildRank rankNeeded)
 		{
 			try
 			{
@@ -721,83 +664,83 @@ namespace DOL.GS
 
                 switch (rankNeeded)
                 {
-                    case Guild.eRank.Emblem:
+                    case EGuildRank.Emblem:
                         {
                             return member.GuildRank.Emblem;
                         }
-                    case Guild.eRank.AcHear:
+                    case EGuildRank.AcHear:
                         {
                             return member.GuildRank.AcHear;
                         }
-                    case Guild.eRank.AcSpeak:
+                    case EGuildRank.AcSpeak:
                         {
                             return member.GuildRank.AcSpeak;
                         }
-                    case Guild.eRank.Demote:
+                    case EGuildRank.Demote:
                         {
                             return member.GuildRank.Promote;
                         }
-                    case Guild.eRank.Promote:
+                    case EGuildRank.Promote:
                         {
                             return member.GuildRank.Promote;
                         }
-                    case Guild.eRank.GcHear:
+                    case EGuildRank.GcHear:
                         {
                             return member.GuildRank.GcHear;
                         }
-                    case Guild.eRank.GcSpeak:
+                    case EGuildRank.GcSpeak:
                         {
                             return member.GuildRank.GcSpeak;
                         }
-                    case Guild.eRank.Invite:
+                    case EGuildRank.Invite:
                         {
                             return member.GuildRank.Invite;
                         }
-                    case Guild.eRank.OcHear:
+                    case EGuildRank.OcHear:
                         {
                             return member.GuildRank.OcHear;
                         }
-                    case Guild.eRank.OcSpeak:
+                    case EGuildRank.OcSpeak:
                         {
                             return member.GuildRank.OcSpeak;
                         }
-                    case Guild.eRank.Remove:
+                    case EGuildRank.Remove:
                         {
                             return member.GuildRank.Remove;
                         }
-                    case Guild.eRank.Alli:
+                    case EGuildRank.Alli:
                         {
                             return member.GuildRank.Alli;
                         }
-                    case Guild.eRank.View:
+                    case EGuildRank.View:
                         {
                             return member.GuildRank.View;
                         }
-                    case Guild.eRank.Claim:
+                    case EGuildRank.Claim:
                         {
                             return member.GuildRank.Claim;
                         }
-                    case Guild.eRank.Release:
+                    case EGuildRank.Release:
                         {
                             return member.GuildRank.Release;
                         }
-                    case Guild.eRank.Upgrade:
+                    case EGuildRank.Upgrade:
                         {
                             return member.GuildRank.Upgrade;
                         }
-                    case Guild.eRank.Dues:
+                    case EGuildRank.Dues:
                         {
                             return member.GuildRank.Dues;
                         }
-                    case Guild.eRank.Withdraw:
+                    case EGuildRank.Withdraw:
                         {
                             return member.GuildRank.Withdraw;
                         }
-                    case Guild.eRank.Leader:
+                    case EGuildRank.Leader:
                         {
                             return (member.GuildRank.RankLevel == 0);
                         }
-                    case Guild.eRank.Buff:
+                    case EGuildRank.Buff:
                         {
                             return member.GuildRank.Buff;
                         }
@@ -870,7 +813,7 @@ namespace DOL.GS
 			
 			foreach (GamePlayer pl in guildPlayers)
 			{
-				if (!HasRank(pl, Guild.eRank.GcHear))
+				if (!HasRank(pl, EGuildRank.GcHear))
 				{
 					continue;
 				}
@@ -925,11 +868,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the guild buff type
 		/// </summary>
-		public eBonusType BonusType
+		public EGuildBonusType BonusType
 		{
 			get 
 			{ 
-				return (eBonusType)m_DBguild.BonusType; 
+				return (EGuildBonusType)m_DBguild.BonusType; 
 			}
 			set 
 			{

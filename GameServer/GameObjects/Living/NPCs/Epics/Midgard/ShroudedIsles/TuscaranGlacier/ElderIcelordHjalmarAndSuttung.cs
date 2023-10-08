@@ -76,7 +76,7 @@ namespace DOL.GS
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 573, 0);
+            template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 573, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.Standard);
             SuttungBrain.message1 = false;
@@ -397,7 +397,7 @@ namespace DOL.GS
                 Styles.Add(back_style);
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 572, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 572, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

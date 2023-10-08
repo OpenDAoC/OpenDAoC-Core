@@ -42,15 +42,15 @@ namespace DOL.GS.RealmAbilities
             WorldInventoryItem as2 = WorldInventoryItem.CreateFromTemplate(arrow_summoning_2);
             WorldInventoryItem as3 = WorldInventoryItem.CreateFromTemplate(arrow_summoning_3);
 
-            if(!player.Inventory.AddTemplate(GameInventoryItem.Create(arrow_summoning_1),10,eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+            if(!player.Inventory.AddTemplate(GameInventoryItem.Create(arrow_summoning_1),10,EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
 				player.Out.SendMessage("You do not have enough inventory space to place this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
-			else if (!player.Inventory.AddTemplate(GameInventoryItem.Create(arrow_summoning_2), 10, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			else if (!player.Inventory.AddTemplate(GameInventoryItem.Create(arrow_summoning_2), 10, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
                 player.Out.SendMessage("You do not have enough inventory space to place this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
-			else if (!player.Inventory.AddTemplate(GameInventoryItem.Create(arrow_summoning_3), 10, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			else if (!player.Inventory.AddTemplate(GameInventoryItem.Create(arrow_summoning_3), 10, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
                 player.Out.SendMessage("You do not have enough inventory space to place this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}			
@@ -74,23 +74,23 @@ namespace DOL.GS.RealmAbilities
 			if (player == null) return;		
 			lock(player.Inventory)
 			{
-                DbInventoryItem item = player.Inventory.GetFirstItemByID("arrow_summoning1", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                DbInventoryItem item = player.Inventory.GetFirstItemByID("arrow_summoning1", EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 				while (item != null)
 				{
 					player.Inventory.RemoveItem(item);
-                    item = player.Inventory.GetFirstItemByID("arrow_summoning1", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                    item = player.Inventory.GetFirstItemByID("arrow_summoning1", EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 				}
-                item = player.Inventory.GetFirstItemByID("arrow_summoning2", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                item = player.Inventory.GetFirstItemByID("arrow_summoning2", EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 				while (item != null)
 				{
 					player.Inventory.RemoveItem(item);
-                    item = player.Inventory.GetFirstItemByID("arrow_summoning2", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                    item = player.Inventory.GetFirstItemByID("arrow_summoning2", EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 				}
-                item = player.Inventory.GetFirstItemByID("arrow_summoning3", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                item = player.Inventory.GetFirstItemByID("arrow_summoning3", EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 				while (item != null)
 				{
 					player.Inventory.RemoveItem(item);
-                    item = player.Inventory.GetFirstItemByID("arrow_summoning3", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                    item = player.Inventory.GetFirstItemByID("arrow_summoning3", EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 				}
 			}
 		}

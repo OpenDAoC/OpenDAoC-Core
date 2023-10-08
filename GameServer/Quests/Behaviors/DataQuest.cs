@@ -1642,7 +1642,7 @@ namespace DOL.GS.Quests
 
 						lock (QuestPlayer.Inventory)
 						{
-							if (QuestPlayer.Inventory.IsSlotsFree(stepTemplates.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+							if (QuestPlayer.Inventory.IsSlotsFree(stepTemplates.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 							{
 								foreach (string template in stepTemplates)
 								{
@@ -1691,7 +1691,7 @@ namespace DOL.GS.Quests
 						if (RewardMoney > 0)
 						{
 							m_questPlayer.AddMoney(RewardMoney, "You are awarded {0}!");
-	                        InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, RewardMoney);
+	                        InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, EInventoryActionType.Quest, RewardMoney);
 						}
 	
 						if (RewardCLXP > 0)
@@ -1995,7 +1995,7 @@ namespace DOL.GS.Quests
 							{
 								lock (player.Inventory)
 								{
-									if (player.Inventory.IsSlotsFree(m_finalRewards.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+									if (player.Inventory.IsSlotsFree(m_finalRewards.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 									{
 										foreach (DbItemTemplate item in m_finalRewards)
 										{
@@ -2036,7 +2036,7 @@ namespace DOL.GS.Quests
 							if (m_rewardMoneys.Count > 0 && m_rewardMoneys[0] > 0)
 							{
 								player.AddMoney(m_rewardMoneys[0], "You are awarded {0}!");
-                                InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", player, eInventoryActionType.Quest, m_rewardMoneys[0]);
+                                InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", player, EInventoryActionType.Quest, m_rewardMoneys[0]);
 							}
 
 							charQuest.Count++;
@@ -2097,7 +2097,7 @@ namespace DOL.GS.Quests
                     {
                         lock (player.Inventory)
                         {
-                            if (player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+                            if (player.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
                             {
                                 DbItemTemplate item = GameServer.Database.FindObjectByKey<DbItemTemplate>(m_searchStartItemTemplate.Trim());
                                 if (item == null)
@@ -2655,7 +2655,7 @@ namespace DOL.GS.Quests
 								{
 									lock (player.Inventory)
 									{
-										if (player.Inventory.IsSlotsFree(m_finalRewards.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+										if (player.Inventory.IsSlotsFree(m_finalRewards.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 										{
 											foreach (DbItemTemplate item in m_finalRewards)
 											{
@@ -2696,7 +2696,7 @@ namespace DOL.GS.Quests
 								if (m_rewardMoneys.Count > 0 && m_rewardMoneys[0] > 0)
 								{
 									player.AddMoney(m_rewardMoneys[0], "You are awarded {0}!");
-                                    InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", player, eInventoryActionType.Quest, m_rewardMoneys[0]);
+                                    InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", player, EInventoryActionType.Quest, m_rewardMoneys[0]);
 								}
 
 								charQuest.Count++;
@@ -2869,7 +2869,7 @@ namespace DOL.GS.Quests
 
 			lock (m_questPlayer.Inventory)
 			{
-				if (m_questPlayer.Inventory.IsSlotsFree(m_finalRewards.Count + m_optionalRewardChoice.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				if (m_questPlayer.Inventory.IsSlotsFree(m_finalRewards.Count + m_optionalRewardChoice.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
 					long rewardXP = 0; 
 					long rewardRP = 0;
@@ -2957,7 +2957,7 @@ namespace DOL.GS.Quests
 							if (rewardMoney > 0)
 							{
 								m_questPlayer.AddMoney(rewardMoney, "You are awarded {0}!");
-	                            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, rewardMoney);
+	                            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, EInventoryActionType.Quest, rewardMoney);
 							}
 						}
 					}
@@ -3041,7 +3041,7 @@ namespace DOL.GS.Quests
 							if (rewardMoney > 0)
 							{
 								m_questPlayer.AddMoney(rewardMoney, "You are awarded {0}!");
-	                            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, rewardMoney);
+	                            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, EInventoryActionType.Quest, rewardMoney);
 							}
 						}
 					}

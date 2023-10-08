@@ -32,15 +32,15 @@ namespace DOL.GS
             switch (ActiveQuiverSlot)
             {
                 case EActiveQuiverSlot.First:
-                    return m_owner.Inventory.GetItem(eInventorySlot.FirstQuiver);
+                    return m_owner.Inventory.GetItem(EInventorySlot.FirstQuiver);
                 case EActiveQuiverSlot.Second:
-                    return m_owner.Inventory.GetItem(eInventorySlot.SecondQuiver);
+                    return m_owner.Inventory.GetItem(EInventorySlot.SecondQuiver);
                 case EActiveQuiverSlot.Third:
-                    return m_owner.Inventory.GetItem(eInventorySlot.ThirdQuiver);
+                    return m_owner.Inventory.GetItem(EInventorySlot.ThirdQuiver);
                 case EActiveQuiverSlot.Fourth:
-                    return m_owner.Inventory.GetItem(eInventorySlot.FourthQuiver);
+                    return m_owner.Inventory.GetItem(EInventorySlot.FourthQuiver);
                 case EActiveQuiverSlot.None:
-                    return m_owner.Inventory.GetFirstItemByObjectType((int)ammoType, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                    return m_owner.Inventory.GetFirstItemByObjectType((int)ammoType, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
             }
 
             return null;
@@ -57,7 +57,7 @@ namespace DOL.GS
             switch (weapon.Object_Type)
             {
                 case (int)EObjectType.Thrown:
-                    Ammo = m_owner.Inventory.GetItem(eInventorySlot.DistanceWeapon);
+                    Ammo = m_owner.Inventory.GetItem(EInventorySlot.DistanceWeapon);
                     break;
                 case (int)EObjectType.Crossbow:
                     Ammo = GetAmmoFromInventory(EObjectType.Bolt);

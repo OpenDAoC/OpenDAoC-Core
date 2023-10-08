@@ -78,7 +78,7 @@ namespace DOLGameServerConsole
 		public void SendUDPInitReply() { }
 		public void SendTime() { }
 		public void SendPlayerCreate(GamePlayer playerToCreate) { }
-		public void SendObjectGuildID(GameObject obj, Guild guild) { }
+		public void SendObjectGuildID(GameObject obj, GuildUtil guild) { }
 		public void SendPlayerQuit(bool totalOut) { }
 		public void SendDebugMode(bool on) { }
 		public void SendModelChange(GameObject obj, ushort newModel) { }

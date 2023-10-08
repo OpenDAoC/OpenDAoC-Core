@@ -7,14 +7,14 @@ namespace DOL.Events;
 public class ItemUnequippedArgs : EventArgs
 {
 	private DbInventoryItem m_item;
-	private eInventorySlot m_previousSlotPos;
+	private EInventorySlot m_previousSlotPos;
 
 	/// <summary>
 	/// Constructs a new ItemEquippedArgs
 	/// </summary>
 	/// <param name="item">The unequipped item</param>
 	/// <param name="previousSlotPos">The slot position item had before it was equipped</param>
-	public ItemUnequippedArgs(DbInventoryItem item, eInventorySlot previousSlotPos)
+	public ItemUnequippedArgs(DbInventoryItem item, EInventorySlot previousSlotPos)
 	{
 		m_item = item;
 		m_previousSlotPos = previousSlotPos;
@@ -28,7 +28,7 @@ public class ItemUnequippedArgs : EventArgs
 	public ItemUnequippedArgs(DbInventoryItem item, int previousSlotPos)
 	{
 		m_item = item;
-		m_previousSlotPos = (eInventorySlot)previousSlotPos;
+		m_previousSlotPos = (EInventorySlot)previousSlotPos;
 	}
 
 	/// <summary>
@@ -42,7 +42,7 @@ public class ItemUnequippedArgs : EventArgs
 	/// <summary>
 	/// Gets the previous slot position
 	/// </summary>
-	public eInventorySlot PreviousSlotPosition
+	public EInventorySlot PreviousSlotPosition
 	{
 		get { return m_previousSlotPos; }
 	}

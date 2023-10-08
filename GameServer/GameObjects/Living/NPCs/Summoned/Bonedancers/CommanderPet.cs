@@ -514,7 +514,7 @@ namespace DOL.GS
 				temp.Object_Type = (int)EObjectType.CompositeBow;
 				temp.Type_Damage = (int)EDamageType.Thrust;
 				temp.SPD_ABS = 45;
-				temp.Item_Type = (int)eInventorySlot.DistanceWeapon;
+				temp.Item_Type = (int)EInventorySlot.DistanceWeapon;
 				temp.Hand = (int)EActiveWeaponSlot.Distance;
 			}
 			else if (weaponType == eWeaponType.OneHandAxe)
@@ -525,7 +525,7 @@ namespace DOL.GS
 				temp.Object_Type = (int)EObjectType.Axe;
 				temp.Type_Damage = (int)EDamageType.Slash;
 				temp.SPD_ABS = 37;
-				temp.Item_Type = (int)eInventorySlot.RightHandWeapon;
+				temp.Item_Type = (int)EInventorySlot.RightHandWeapon;
 				temp.Hand = (int)EActiveWeaponSlot.Standard;
 			}
 			else if (weaponType == eWeaponType.OneHandHammer)
@@ -536,7 +536,7 @@ namespace DOL.GS
 				temp.Object_Type = (int)EObjectType.Hammer;
 				temp.Type_Damage = (int)EDamageType.Crush;
 				temp.SPD_ABS = 37;
-				temp.Item_Type = (int)eInventorySlot.RightHandWeapon;
+				temp.Item_Type = (int)EInventorySlot.RightHandWeapon;
 				temp.Hand = (int)EActiveWeaponSlot.Standard;
 			}
 			else if (weaponType == eWeaponType.OneHandSword)
@@ -547,7 +547,7 @@ namespace DOL.GS
 				temp.Object_Type = (int)EObjectType.Sword;
 				temp.Type_Damage = (int)EDamageType.Slash;
 				temp.SPD_ABS = 34;
-				temp.Item_Type = (int)eInventorySlot.RightHandWeapon;
+				temp.Item_Type = (int)EInventorySlot.RightHandWeapon;
 				temp.Hand = (int)EActiveWeaponSlot.Standard;
 			}
 			else if (weaponType == eWeaponType.TwoHandAxe)
@@ -558,7 +558,7 @@ namespace DOL.GS
 				temp.Object_Type = (int)EObjectType.Axe;
 				temp.Type_Damage = (int)EDamageType.Slash;
 				temp.SPD_ABS = 50;
-				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
+				temp.Item_Type = (int)EInventorySlot.TwoHandWeapon;
 				temp.Hand = (int)EActiveWeaponSlot.TwoHanded;
 			}
 			else if (weaponType == eWeaponType.TwoHandHammer)
@@ -569,7 +569,7 @@ namespace DOL.GS
 				temp.Object_Type = (int)EObjectType.Hammer;
 				temp.Type_Damage = (int)EDamageType.Crush;
 				temp.SPD_ABS = 50;
-				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
+				temp.Item_Type = (int)EInventorySlot.TwoHandWeapon;
 				temp.Hand = (int)EActiveWeaponSlot.TwoHanded;
 			}
 			else if (weaponType == eWeaponType.TwoHandSword)
@@ -580,7 +580,7 @@ namespace DOL.GS
 				temp.Object_Type = (int)EObjectType.Sword;
 				temp.Type_Damage = (int)EDamageType.Slash;
 				temp.SPD_ABS = 45;
-				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
+				temp.Item_Type = (int)EInventorySlot.TwoHandWeapon;
 				temp.Hand = (int)EActiveWeaponSlot.TwoHanded;
 			}
 			else if (weaponType == eWeaponType.Staff)
@@ -591,7 +591,7 @@ namespace DOL.GS
 				temp.Object_Type = (int)EObjectType.Staff;
 				temp.Type_Damage = (int)EDamageType.Crush;
 				temp.SPD_ABS = 50;
-				temp.Item_Type = (int)eInventorySlot.TwoHandWeapon;
+				temp.Item_Type = (int)EInventorySlot.TwoHandWeapon;
 				temp.Hand = (int)EActiveWeaponSlot.TwoHanded;
 			}
 			else
@@ -633,11 +633,11 @@ namespace DOL.GS
 						switch (slot)
 						{
 							case EActiveWeaponSlot.Distance:
-								return Inventory.GetItem(eInventorySlot.DistanceWeapon) != null;
+								return Inventory.GetItem(EInventorySlot.DistanceWeapon) != null;
 							case EActiveWeaponSlot.Standard:
-								return Inventory.GetItem(eInventorySlot.RightHandWeapon) != null;
+								return Inventory.GetItem(EInventorySlot.RightHandWeapon) != null;
 							case EActiveWeaponSlot.TwoHanded:
-								return Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null;
+								return Inventory.GetItem(EInventorySlot.TwoHandWeapon) != null;
 						}
 					return false;
 			}
@@ -703,27 +703,27 @@ namespace DOL.GS
 			if (weapon != null)
 			{
 				if (Inventory == null)
-					Inventory = new GameNPCInventory(new GameNpcInventoryTemplate());
+					Inventory = new GameNpcInventory(new GameNpcInventoryTemplate());
 				else
 				{
 					if (itemTemp.Hand == (int)EActiveWeaponSlot.Distance)
-						Inventory.RemoveItem(Inventory.GetItem(eInventorySlot.DistanceWeapon));
+						Inventory.RemoveItem(Inventory.GetItem(EInventorySlot.DistanceWeapon));
 					else if (CommanderType == eCommanderType.Unknown)
 					{
 						// Only empty the slot we're about to fill, as we check the other weapon slots
 						//	to determine which weapon types unknown commanders can switch to
-						Inventory.RemoveItem(Inventory.GetItem((eInventorySlot)weapon.Item_Type));
+						Inventory.RemoveItem(Inventory.GetItem((EInventorySlot)weapon.Item_Type));
 					}
 					else
 					{
 						// Remove melee weapons
-						Inventory.RemoveItem(Inventory.GetItem(eInventorySlot.RightHandWeapon));
-						Inventory.RemoveItem(Inventory.GetItem(eInventorySlot.TwoHandWeapon));
+						Inventory.RemoveItem(Inventory.GetItem(EInventorySlot.RightHandWeapon));
+						Inventory.RemoveItem(Inventory.GetItem(EInventorySlot.TwoHandWeapon));
 					}
 
 				}
 
-				Inventory.AddItem((eInventorySlot)weapon.Item_Type, weapon);
+				Inventory.AddItem((EInventorySlot)weapon.Item_Type, weapon);
 
 				// If we've got a ranged weapon, keep using it
 				if (ActiveWeaponSlot == EActiveWeaponSlot.Distance)

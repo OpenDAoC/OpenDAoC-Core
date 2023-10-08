@@ -326,7 +326,7 @@ namespace DOL.GS.Keeps
 				if (this is GuardArcher || this is GuardLord)
 				{
 					if (Inventory == null) return false;
-					if (Inventory.GetItem(eInventorySlot.DistanceWeapon) == null) return false;
+					if (Inventory.GetItem(EInventorySlot.DistanceWeapon) == null) return false;
 					if (ActiveWeaponSlot == EActiveWeaponSlot.Distance) return false;
 				}
 				if (this is GuardCaster || this is GuardHealer)
@@ -723,7 +723,7 @@ namespace DOL.GS.Keeps
 				GuildName = "Orb Merchant";
 				return;
 			}
-			Guild guild = Component.Keep.Guild;
+			GuildUtil guild = Component.Keep.Guild;
 			string guildname = "";
 			if (guild != null)
 				guildname = guild.Name;
@@ -736,11 +736,11 @@ namespace DOL.GS.Keeps
 			int emblem = 0;
 			if (guild != null)
 				emblem = guild.Emblem;
-			DbInventoryItem lefthand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItem lefthand = Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 			if (lefthand != null)
 				lefthand.Emblem = emblem;
 
-			DbInventoryItem cloak = Inventory.GetItem(eInventorySlot.Cloak);
+			DbInventoryItem cloak = Inventory.GetItem(EInventorySlot.Cloak);
 			if (cloak != null)
 			{
 				cloak.Emblem = emblem;

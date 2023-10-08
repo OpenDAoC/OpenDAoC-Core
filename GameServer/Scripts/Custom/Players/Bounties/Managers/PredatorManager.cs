@@ -580,7 +580,7 @@ public class PredatorManager
 
     private static void JoinedGroup(CoreEvent coreEvent, object sender, EventArgs arguments)
     {
-        if (sender is Group g)
+        if (sender is GroupUtil g)
         {
             foreach (GamePlayer groupmate in g.GetPlayersInTheGroup())
             {

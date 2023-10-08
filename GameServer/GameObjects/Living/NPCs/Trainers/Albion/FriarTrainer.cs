@@ -58,12 +58,12 @@ namespace DOL.GS.Trainer
 
 				if (player.Level >= 10 && player.Level < 15)
 				{
-					if (player.Inventory.GetFirstItemByID(ARMOR_ID3, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
+					if (player.Inventory.GetFirstItemByID(ARMOR_ID3, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) == null)
 					{
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "FriarTrainer.Interact.Text4", this.Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 						addGift(ARMOR_ID3, player);
 					}
-					if (player.Inventory.GetFirstItemByID(ARMOR_ID1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
+					if (player.Inventory.GetFirstItemByID(ARMOR_ID1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) == null)
 					{}
 					else
 					{

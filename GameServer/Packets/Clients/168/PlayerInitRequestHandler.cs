@@ -183,9 +183,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						try
 						{
-							IList<TempPropertiesManager.TempPropContainer> TempPropContainerList = TempPropertiesManager.TempPropContainerList.Where(item => item.OwnerID == player.DBCharacter.ObjectId).ToList();
+							IList<TempPropertiesMgr.TempPropContainer> TempPropContainerList = TempPropertiesMgr.TempPropContainerList.Where(item => item.OwnerID == player.DBCharacter.ObjectId).ToList();
 
-							foreach (TempPropertiesManager.TempPropContainer container in TempPropContainerList)
+							foreach (TempPropertiesMgr.TempPropContainer container in TempPropContainerList)
 							{
 								long longresult = 0;
 								if (long.TryParse(container.Value, out longresult))
@@ -195,7 +195,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
 										Log.Debug("Container " + container.TempPropString + " with value " + container.Value + " for player " + player.Name + " was removed from container list, tempproperties added");
 								}
-									TempPropertiesManager.TempPropContainerList.TryRemove(container);
+									TempPropertiesMgr.TempPropContainerList.TryRemove(container);
 							}
 						}
 						catch (Exception e)

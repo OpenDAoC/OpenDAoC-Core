@@ -105,13 +105,13 @@ namespace DOL.GS
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 58, 43, 0, 0);//modelID,color,effect,extension
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 380, 43, 0);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 379, 43);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 381, 43, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 382, 43, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 443, 43, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468, 43, 91);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 43, 0, 0);//modelID,color,effect,extension
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 380, 43, 0);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 379, 43);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 381, 43, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 382, 43, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 443, 43, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 468, 43, 91);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             // humanoid

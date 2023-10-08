@@ -856,7 +856,7 @@ namespace DOL.GS
                 case 1:
                     {
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                        template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 17, 0, 0);
+                        template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 17, 0, 0);
                         Inventory = template.CloseTemplate();
                         SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
@@ -866,7 +866,7 @@ namespace DOL.GS
                 case 2:
                     {
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                        template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 70, 0, 0);
+                        template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 70, 0, 0);
                         Inventory = template.CloseTemplate();
                         SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
@@ -875,7 +875,7 @@ namespace DOL.GS
                 case 3:
                     {
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                        template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 12, 0, 0);
+                        template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 12, 0, 0);
                         Inventory = template.CloseTemplate();
                         SwitchWeapon(EActiveWeaponSlot.Standard);
                         VisibleActiveWeaponSlots = 10;
@@ -927,7 +927,7 @@ namespace DOL.AI.Brain
                     case 1:
                         {
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 17, 0, 0);
+                            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 17, 0, 0);
                             Add.Inventory = template.CloseTemplate();
                             Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
@@ -936,7 +936,7 @@ namespace DOL.AI.Brain
                     case 2:
                         {
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 70, 0, 0);
+                            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 70, 0, 0);
                             Add.Inventory = template.CloseTemplate();
                             Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
@@ -945,7 +945,7 @@ namespace DOL.AI.Brain
                     case 3:
                         {
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                            template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 12, 0, 0);
+                            template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 12, 0, 0);
                             Add.Inventory = template.CloseTemplate();
                             Add.SwitchWeapon(EActiveWeaponSlot.Standard);
                             Add.VisibleActiveWeaponSlots = 10;
@@ -1016,7 +1016,7 @@ namespace DOL.GS
                 case 1:
                     {
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                        template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 6, 0, 0);
+                        template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 6, 0, 0);
                         Inventory = template.CloseTemplate();
                         SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
@@ -1026,7 +1026,7 @@ namespace DOL.GS
                 case 2:
                     {
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                        template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 73, 0, 0);
+                        template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 73, 0, 0);
                         Inventory = template.CloseTemplate();
                         SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
@@ -1035,7 +1035,7 @@ namespace DOL.GS
                 case 3:
                     {
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                        template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 67, 0, 0);
+                        template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 67, 0, 0);
                         Inventory = template.CloseTemplate();
                         SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
@@ -1044,7 +1044,7 @@ namespace DOL.GS
                 case 4:
                     {
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                        template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 4, 0, 0);
+                        template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 4, 0, 0);
                         Inventory = template.CloseTemplate();
                         SwitchWeapon(EActiveWeaponSlot.Standard);
                         VisibleActiveWeaponSlots = 10;
@@ -1096,7 +1096,7 @@ namespace DOL.AI.Brain
                     case 1:
                         {
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 6, 0, 0);
+                            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 6, 0, 0);
                             Add.Inventory = template.CloseTemplate();
                             Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
@@ -1105,7 +1105,7 @@ namespace DOL.AI.Brain
                     case 2:
                         {
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 73, 0, 0);
+                            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 73, 0, 0);
                             Add.Inventory = template.CloseTemplate();
                             Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
@@ -1114,7 +1114,7 @@ namespace DOL.AI.Brain
                     case 3:
                         {
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 67, 0, 0);
+                            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 67, 0, 0);
                             Add.Inventory = template.CloseTemplate();
                             Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
@@ -1123,7 +1123,7 @@ namespace DOL.AI.Brain
                     case 4:
                         {
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                            template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 4, 0, 0);
+                            template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 4, 0, 0);
                             Add.Inventory = template.CloseTemplate();
                             Add.SwitchWeapon(EActiveWeaponSlot.Standard);
                             Add.VisibleActiveWeaponSlots = 10;
@@ -1194,7 +1194,7 @@ namespace DOL.GS
                 case 1:
                     {
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                        template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 69, 0, 0);
+                        template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 69, 0, 0);
                         Inventory = template.CloseTemplate();
                         SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
@@ -1204,7 +1204,7 @@ namespace DOL.GS
                 case 2:
                     {
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                        template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 846, 0, 0);
+                        template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 846, 0, 0);
                         Inventory = template.CloseTemplate();
                         SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
@@ -1213,7 +1213,7 @@ namespace DOL.GS
                 case 3:
                     {
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                        template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 886, 0, 0);
+                        template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 886, 0, 0);
                         Inventory = template.CloseTemplate();
                         SwitchWeapon(EActiveWeaponSlot.Standard);
                         VisibleActiveWeaponSlots = 255;
@@ -1265,7 +1265,7 @@ namespace DOL.AI.Brain
                     case 1:
                         {
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 69, 0, 0);
+                            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 69, 0, 0);
                             Add.Inventory = template.CloseTemplate();
                             Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
@@ -1275,7 +1275,7 @@ namespace DOL.AI.Brain
                     case 2:
                         {
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 846, 0, 0);
+                            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 846, 0, 0);
                             Add.Inventory = template.CloseTemplate();
                             Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
@@ -1284,7 +1284,7 @@ namespace DOL.AI.Brain
                     case 3:
                         {
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                            template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 886, 0, 0);
+                            template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 886, 0, 0);
                             Add.Inventory = template.CloseTemplate();
                             Add.SwitchWeapon(EActiveWeaponSlot.Standard);
                             Add.VisibleActiveWeaponSlots = 255;
@@ -2224,7 +2224,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 843, 82, 32);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 843, 82, 32);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
@@ -2626,7 +2626,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 6, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 6, 0, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;

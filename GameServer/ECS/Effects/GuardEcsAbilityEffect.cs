@@ -38,7 +38,7 @@ namespace DOL.GS
         /// <summary>
         /// Holds player group
         /// </summary>
-        private Group m_playerGroup;
+        private GroupUtil m_playerGroup;
 
         public override ushort Icon => Owner is GameNPC ? (ushort) 1001 : (ushort) 412;
 

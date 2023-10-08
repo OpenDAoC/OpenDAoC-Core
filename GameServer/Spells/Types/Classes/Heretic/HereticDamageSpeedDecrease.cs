@@ -34,7 +34,7 @@ namespace DOL.GS.Spells
         {
             AttackData ad = base.CalculateDamageToTarget(target);
             ad.CriticalDamage = 0;
-            ad.AttackType = AttackData.eAttackType.Unknown;
+            ad.AttackType = AttackData.EAttackType.Unknown;
             return ad;
         }
 
@@ -123,7 +123,7 @@ namespace DOL.GS.Spells
 
             MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
 
-            Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
+            MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
 
             OnDirectEffect(effect.Owner);
 
@@ -153,7 +153,7 @@ namespace DOL.GS.Spells
             {
                 MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
 
-                Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+                MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
             }
 
             return 0;
@@ -216,7 +216,7 @@ namespace DOL.GS.Spells
                 AttackData ad = new AttackData();
                 ad.Attacker = Caster;
                 ad.Target = target;
-                ad.AttackType = AttackData.eAttackType.Spell;
+                ad.AttackType = AttackData.EAttackType.Spell;
                 ad.AttackResult = EAttackResult.Missed;
 				ad.SpellHandler = this;
                 target.OnAttackedByEnemy(ad);
@@ -224,7 +224,7 @@ namespace DOL.GS.Spells
             }
             else if (Spell.CastTime > 0)
             {
-                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
             }
 
             if (target is GameNPC)

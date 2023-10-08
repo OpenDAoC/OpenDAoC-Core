@@ -94,10 +94,10 @@ namespace DOL.GS.Commands
                                 Id_nb = DbInventoryItem.BLANK_ITEM
                             };
                             GameInventoryItem item = new GameInventoryItem(newTemplate);
-							if (client.Player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+							if (client.Player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, item))
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Blank.ItemCreated"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								InventoryLogging.LogInventoryAction(client.Player, client.Player, eInventoryActionType.Other, item.Template, item.Count);
+								InventoryLogging.LogInventoryAction(client.Player, client.Player, EInventoryActionType.Other, item.Template, item.Count);
 							}
 							else
 							{
@@ -109,14 +109,14 @@ namespace DOL.GS.Commands
 						#region Classes
 					case "classes":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (args.Length >= 4)
 							{
 								slot = Convert.ToInt32(args[3]);
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 
 							if (item == null)
 							{
@@ -158,10 +158,10 @@ namespace DOL.GS.Commands
 								{
 									item.Count = count;
 								}
-								if (client.Player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+								if (client.Player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, item))
 								{
 									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Create.Created", item.Level, item.GetName(0, false), count), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									InventoryLogging.LogInventoryAction(client.Player, client.Player, eInventoryActionType.Other, item.Template, item.Count);
+									InventoryLogging.LogInventoryAction(client.Player, client.Player, EInventoryActionType.Other, item.Template, item.Count);
 								}
 							}
 							break;
@@ -170,14 +170,14 @@ namespace DOL.GS.Commands
 						#region Count
 					case "count":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (args.Length >= 4)
 							{
 								slot = Convert.ToInt32(args[3]);
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 
 							if (item == null)
 							{
@@ -206,14 +206,14 @@ namespace DOL.GS.Commands
 						#region MaxCount
 					case "maxcount":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (args.Length >= 4)
 							{
 								slot = Convert.ToInt32(args[3]);
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 
 							if (item == null)
 							{
@@ -229,14 +229,14 @@ namespace DOL.GS.Commands
 						#region PackSize
 					case "packsize":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (args.Length >= 4)
 							{
 								slot = Convert.ToInt32(args[3]);
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 
 							if (item == null)
 							{
@@ -268,7 +268,7 @@ namespace DOL.GS.Commands
 						#region Model
 					case "model":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -277,10 +277,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -288,7 +288,7 @@ namespace DOL.GS.Commands
 							}
 							item.Model = Convert.ToUInt16(args[2]);
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
-							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
+							if (item.SlotPosition < (int)EInventorySlot.FirstBackpack)
 								client.Player.UpdateEquipmentAppearance();
 							break;
 						}
@@ -296,7 +296,7 @@ namespace DOL.GS.Commands
 						#region Extension
 					case "extension":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -305,10 +305,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -322,7 +322,7 @@ namespace DOL.GS.Commands
 							}
 
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
-							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
+							if (item.SlotPosition < (int)EInventorySlot.FirstBackpack)
 								client.Player.UpdateEquipmentAppearance();
 							break;
 						}
@@ -330,7 +330,7 @@ namespace DOL.GS.Commands
 						#region Color
 					case "color":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -339,10 +339,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -356,7 +356,7 @@ namespace DOL.GS.Commands
 							}
 
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
-							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
+							if (item.SlotPosition < (int)EInventorySlot.FirstBackpack)
 								client.Player.UpdateEquipmentAppearance();
 							break;
 						}
@@ -364,7 +364,7 @@ namespace DOL.GS.Commands
 						#region Effect
 					case "effect":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -373,10 +373,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -384,7 +384,7 @@ namespace DOL.GS.Commands
 							}
 							item.Effect = Convert.ToUInt16(args[2]);
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
-							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
+							if (item.SlotPosition < (int)EInventorySlot.FirstBackpack)
 								client.Player.UpdateEquipmentAppearance();
 							break;
 						}
@@ -392,7 +392,7 @@ namespace DOL.GS.Commands
 						#region Type
 					case "type":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -401,10 +401,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -418,7 +418,7 @@ namespace DOL.GS.Commands
 						#region Object
 					case "object":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -427,10 +427,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -444,7 +444,7 @@ namespace DOL.GS.Commands
 						#region Hand
 					case "hand":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -453,10 +453,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -470,7 +470,7 @@ namespace DOL.GS.Commands
 						#region DamageType
 					case "damagetype":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -479,10 +479,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -497,7 +497,7 @@ namespace DOL.GS.Commands
 					case "name":
 						{
 							string name = args[2];
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (int.TryParse(args[args.Length - 1], out slot))
 							{
@@ -506,10 +506,10 @@ namespace DOL.GS.Commands
 							else
 							{
 								name = string.Join(" ", args, 2, args.Length - 2);
-								slot = (int)eInventorySlot.LastBackpack;
+								slot = (int)EInventorySlot.LastBackpack;
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -525,7 +525,7 @@ namespace DOL.GS.Commands
 					case "description":
 						{
 							string desc = args[2];
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (int.TryParse(args[args.Length - 1], out slot))
 							{
@@ -534,10 +534,10 @@ namespace DOL.GS.Commands
 							else
 							{
 								desc = string.Join(" ", args, 2, args.Length - 2);
-								slot = (int)eInventorySlot.LastBackpack;
+								slot = (int)EInventorySlot.LastBackpack;
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -552,7 +552,7 @@ namespace DOL.GS.Commands
 						#region CrafterName
 					case "craftername":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -561,10 +561,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -579,7 +579,7 @@ namespace DOL.GS.Commands
 						#region Emblem
 					case "emblem":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -588,10 +588,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -605,7 +605,7 @@ namespace DOL.GS.Commands
 							}
 
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
-							if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
+							if (item.SlotPosition < (int)EInventorySlot.FirstBackpack)
 								client.Player.UpdateEquipmentAppearance();
 							break;
 						}
@@ -613,7 +613,7 @@ namespace DOL.GS.Commands
 						#region Level
 					case "level":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -622,10 +622,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -639,7 +639,7 @@ namespace DOL.GS.Commands
 						#region Price
 					case "price":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 7)
 							{
 								try
@@ -648,16 +648,16 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							item.Price = Money.GetMoney(0, (int)(Convert.ToInt16(args[2]) % 1000), (int)(Convert.ToInt16(args[3]) % 1000), (int)(Convert.ToByte(args[4]) % 100), (int)(Convert.ToByte(args[5]) % 100));
+							item.Price = MoneyMgr.GetMoney(0, (int)(Convert.ToInt16(args[2]) % 1000), (int)(Convert.ToInt16(args[3]) % 1000), (int)(Convert.ToByte(args[4]) % 100), (int)(Convert.ToByte(args[5]) % 100));
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
 							break;
 						}
@@ -665,7 +665,7 @@ namespace DOL.GS.Commands
 						#region Condition
 					case "condition":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 5)
 							{
 								try
@@ -674,10 +674,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -700,7 +700,7 @@ namespace DOL.GS.Commands
 						#region Durability
 					case "durability":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 5)
 							{
 								try
@@ -709,10 +709,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -735,7 +735,7 @@ namespace DOL.GS.Commands
 						#region Quality
 					case "quality":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -744,10 +744,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -762,7 +762,7 @@ namespace DOL.GS.Commands
 						#region Bonus
 					case "bonus":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -771,10 +771,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -789,7 +789,7 @@ namespace DOL.GS.Commands
 						#region mBonus
 					case "mbonus":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							int num = 0;
 							int bonusType = 0;
 							int bonusValue = 0;
@@ -801,10 +801,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -906,7 +906,7 @@ namespace DOL.GS.Commands
 										client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.mBonus.UnknownBonusNumber", num), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 										return;
 								}
-								if (item.SlotPosition < (int)eInventorySlot.FirstBackpack)
+								if (item.SlotPosition < (int)EInventorySlot.FirstBackpack)
 								{
 									client.Out.SendCharStatsUpdate();
 									client.Out.SendCharResistsUpdate();
@@ -922,7 +922,7 @@ namespace DOL.GS.Commands
 						#region Weight
 					case "weight":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -931,10 +931,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -950,7 +950,7 @@ namespace DOL.GS.Commands
 					case "dps":
 					case "af":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -959,10 +959,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -978,7 +978,7 @@ namespace DOL.GS.Commands
 					case "spd":
 					case "abs":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -987,10 +987,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1004,7 +1004,7 @@ namespace DOL.GS.Commands
 						#region IsDropable
 					case "isdropable":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1013,10 +1013,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1029,7 +1029,7 @@ namespace DOL.GS.Commands
 						#region IsPickable
 					case "ispickable":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1038,10 +1038,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1054,7 +1054,7 @@ namespace DOL.GS.Commands
 						#region IsNotLosingDur
 					case "isnotlosingdur":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1063,10 +1063,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1079,7 +1079,7 @@ namespace DOL.GS.Commands
 						#region IsIndestructible
 					case "isindestructible":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1088,10 +1088,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1104,7 +1104,7 @@ namespace DOL.GS.Commands
 						#region IsTradable
 					case "istradable":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1113,10 +1113,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1129,7 +1129,7 @@ namespace DOL.GS.Commands
 						#region CanDropAsLoot
 					case "candropasloot":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1138,10 +1138,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1154,7 +1154,7 @@ namespace DOL.GS.Commands
 						#region Spell
 					case "spell":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 6)
 							{
 								try
@@ -1163,10 +1163,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1190,7 +1190,7 @@ namespace DOL.GS.Commands
 						#region Spell1
 					case "spell1":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 6)
 							{
 								try
@@ -1199,10 +1199,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1226,7 +1226,7 @@ namespace DOL.GS.Commands
 						#region Proc
 					case "proc":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1235,10 +1235,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1252,7 +1252,7 @@ namespace DOL.GS.Commands
 						#region Proc1
 					case "proc1":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1261,10 +1261,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1278,7 +1278,7 @@ namespace DOL.GS.Commands
 						#region ProcChance
 					case "procchance":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1287,10 +1287,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1304,7 +1304,7 @@ namespace DOL.GS.Commands
 						#region Poison
 					case "poison":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 6)
 							{
 								try
@@ -1313,10 +1313,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1340,7 +1340,7 @@ namespace DOL.GS.Commands
 						#region Realm
 					case "realm":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1349,10 +1349,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1365,7 +1365,7 @@ namespace DOL.GS.Commands
 						#region Level Required
 					case "levelrequired":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1374,10 +1374,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1392,7 +1392,7 @@ namespace DOL.GS.Commands
 						#region Bonus Level
 					case "bonuslevel":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1401,10 +1401,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1420,14 +1420,14 @@ namespace DOL.GS.Commands
 					case "classtype":
 						{
 							string classType = args[2];
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (int.TryParse(args[args.Length - 1], out slot) == false)
 							{
-								slot = (int)eInventorySlot.LastBackpack;
+								slot = (int)EInventorySlot.LastBackpack;
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1443,14 +1443,14 @@ namespace DOL.GS.Commands
 					case "packageid":
 						{
 							string packageID = args[2];
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (int.TryParse(args[args.Length - 1], out slot) == false)
 							{
-								slot = (int)eInventorySlot.LastBackpack;
+								slot = (int)EInventorySlot.LastBackpack;
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1466,14 +1466,14 @@ namespace DOL.GS.Commands
 					case "flags":
 						{
 							int flags = Convert.ToInt32(args[2]);
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (args.Length == 4)
 							{
 								slot = Convert.ToInt32(args[3]);
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1489,14 +1489,14 @@ namespace DOL.GS.Commands
 					case "salvageid":
 						{
 							int salvageID = Convert.ToInt32(args[2]);
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (args.Length == 4)
 							{
 								slot = Convert.ToInt32(args[3]);
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1509,14 +1509,14 @@ namespace DOL.GS.Commands
 						}
 					case "salvageinfo":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 
 							if (args.Length == 3)
 							{
 								slot = Convert.ToInt32(args[2]);
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1620,13 +1620,13 @@ namespace DOL.GS.Commands
 					case "update":
 					case "updatetemplate":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length == 3)
 							{
 								slot = Convert.ToInt32(args[2]);
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1640,7 +1640,7 @@ namespace DOL.GS.Commands
 						#region SaveUnique
 					case "saveunique":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							string idnb = string.Empty;
 							if (args.Length >= 4)
 							{
@@ -1650,11 +1650,11 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
-								if (slot > (int)eInventorySlot.LastBackpack)
+								if (slot > (int)EInventorySlot.LastBackpack)
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 								if (slot < 0)
 								{
@@ -1673,7 +1673,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1699,7 +1699,7 @@ namespace DOL.GS.Commands
 					case "save":
 					case "addunique":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							string idnb = string.Empty;
 							if (args.Length >= 4)
 							{
@@ -1709,11 +1709,11 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
-								if (slot > (int)eInventorySlot.LastBackpack)
+								if (slot > (int)EInventorySlot.LastBackpack)
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 								if (slot < 0)
 								{
@@ -1732,7 +1732,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1779,8 +1779,8 @@ namespace DOL.GS.Commands
 										Log.Debug("Added New Item Template: " + itemTemplate.Id_nb);
 										DisplayMessage(client, "Added New Item Template: " + itemTemplate.Id_nb);
 										GameInventoryItem newItem = GameInventoryItem.Create(itemTemplate);
-										if (client.Player.Inventory.AddItem((eInventorySlot)slot, newItem))
-											InventoryLogging.LogInventoryAction(client.Player, client.Player, eInventoryActionType.Other, newItem.Template, newItem.Count);
+										if (client.Player.Inventory.AddItem((EInventorySlot)slot, newItem))
+											InventoryLogging.LogInventoryAction(client.Player, client.Player, EInventoryActionType.Other, newItem.Template, newItem.Count);
 									}
 									catch (Exception ex)
 									{
@@ -1801,8 +1801,8 @@ namespace DOL.GS.Commands
 										Log.Debug("Added New ItemUnique: " + unique.Id_nb + " (" + unique.ObjectId + ")");
 										DisplayMessage(client, "Added New ItemUnique: " + unique.Id_nb + " (" + unique.ObjectId + ")");
 										GameInventoryItem newItem = GameInventoryItem.Create(unique);
-										if (client.Player.Inventory.AddItem((eInventorySlot)slot, newItem))
-											InventoryLogging.LogInventoryAction(client.Player, client.Player, eInventoryActionType.Other, newItem.Template, newItem.Count);
+										if (client.Player.Inventory.AddItem((EInventorySlot)slot, newItem))
+											InventoryLogging.LogInventoryAction(client.Player, client.Player, EInventoryActionType.Other, newItem.Template, newItem.Count);
 									}
 									catch (Exception ex)
 									{
@@ -1931,7 +1931,7 @@ namespace DOL.GS.Commands
 						#region LoadSpells
 					case "loadspells":
 						{
-							int slot = (int)eInventorySlot.LastBackpack;
+							int slot = (int)EInventorySlot.LastBackpack;
 							if (args.Length >= 4)
 							{
 								try
@@ -1940,10 +1940,10 @@ namespace DOL.GS.Commands
 								}
 								catch
 								{
-									slot = (int)eInventorySlot.LastBackpack;
+									slot = (int)EInventorySlot.LastBackpack;
 								}
 							}
-							DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+							DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 							if (item == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);

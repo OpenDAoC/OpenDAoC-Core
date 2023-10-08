@@ -47,12 +47,12 @@ namespace DOL.GS.Behaviour.Actions
             DbItemTemplate newItem = Q;
 
             //TODO: what about stacked items???
-            if (player.Inventory.RemoveTemplate(oldItem.Id_nb, 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+            if (player.Inventory.RemoveTemplate(oldItem.Id_nb, 1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
             {
-                InventoryLogging.LogInventoryAction(player, NPC, eInventoryActionType.Quest, oldItem, 1);
+                InventoryLogging.LogInventoryAction(player, NPC, EInventoryActionType.Quest, oldItem, 1);
 				DbInventoryItem inventoryItem = GameInventoryItem.Create(newItem);
-                if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, inventoryItem))
-                    InventoryLogging.LogInventoryAction(NPC, player, eInventoryActionType.Quest, newItem, 1);
+                if (player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, inventoryItem))
+                    InventoryLogging.LogInventoryAction(NPC, player, EInventoryActionType.Quest, newItem, 1);
             }
         }
     }

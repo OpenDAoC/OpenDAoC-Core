@@ -29,14 +29,14 @@ namespace DOL.GS {
             var template = new GameNpcInventoryTemplate();
             foreach (var invItem in player.Inventory.EquippedItems)
             {
-                template.AddNPCEquipment((eInventorySlot)invItem.Item_Type, invItem.Model, invItem.Color, invItem.Effect, invItem.Extension);
+                template.AddNPCEquipment((EInventorySlot)invItem.Item_Type, invItem.Model, invItem.Color, invItem.Effect, invItem.Extension);
             }
 
             if (item != null)
             {
-                if(template.GetItem((eInventorySlot)item.Item_Type) != null)
-                    template.RemoveNPCEquipment((eInventorySlot)item.Item_Type);
-                template.AddNPCEquipment((eInventorySlot)item.Item_Type, item.Model, item.Color, item.Effect, item.Extension);
+                if(template.GetItem((EInventorySlot)item.Item_Type) != null)
+                    template.RemoveNPCEquipment((EInventorySlot)item.Item_Type);
+                template.AddNPCEquipment((EInventorySlot)item.Item_Type, item.Model, item.Color, item.Effect, item.Extension);
             }
             
             this.Inventory = template.CloseTemplate();

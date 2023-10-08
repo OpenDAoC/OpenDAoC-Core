@@ -83,10 +83,10 @@ namespace DOL.Tests.Integration.Server
 				}
 
 				// arificial pickup Item
-				player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+				player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, item);
 				
 				// Check item in Inventory
-				if (player.Inventory.GetFirstItemByName(task.ItemName,eInventorySlot.FirstBackpack,eInventorySlot.LastBackpack) != null)
+				if (player.Inventory.GetFirstItemByName(task.ItemName,EInventorySlot.FirstBackpack,EInventorySlot.LastBackpack) != null)
 					Assert.Fail("Player didn't receive task item.");
 				
 				// Now give item tro trainer

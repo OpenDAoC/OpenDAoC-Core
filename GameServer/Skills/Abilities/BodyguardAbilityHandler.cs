@@ -77,7 +77,7 @@ namespace DOL.GS.SkillHandler
 
             // Only attacks on other players may be guarded. 
             // guard may only be used on other players in group
-            Group group = player.Group;
+            GroupUtil group = player.Group;
             if (guardTarget == null || group == null || !group.IsInTheGroup(guardTarget))
             {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.Bodyguard.GuardTargetIsGuardSource"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

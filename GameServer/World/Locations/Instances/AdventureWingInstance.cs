@@ -39,12 +39,12 @@ namespace DOL.GS
 		/// <summary>
 		/// Group Owner
 		/// </summary>
-		private Group m_group;
+		private GroupUtil m_group;
 		
 		/// <summary>
 		/// Group Owner
 		/// </summary>
-		public Group Group
+		public GroupUtil Group
         {
             get { return m_group; }
             set { m_group = value; }
@@ -84,7 +84,7 @@ namespace DOL.GS
         	
         	//search vars
         	GamePlayer arbitraryplayer = null;
-            Group arbitrarygroup = null;
+            GroupUtil arbitrarygroup = null;
             bool stillOwner = false;
             
             // group instance

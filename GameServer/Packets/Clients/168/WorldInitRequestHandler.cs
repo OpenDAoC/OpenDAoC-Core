@@ -100,7 +100,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     lock (player.Inventory)
                     {
-                        Guild playerGuild = player.Guild;
+                        GuildUtil playerGuild = player.Guild;
                         foreach (DbInventoryItem myitem in player.Inventory.AllItems)
                         {
                             if (myitem != null && myitem.Emblem != 0)
@@ -187,7 +187,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 player.Out.SendUpdateMaxSpeed(); // Speed after conc buffs
                 player.Out.SendStatusUpdate();
                 player.Out.SendInventoryItemsUpdate(eInventoryWindowType.Equipment, player.Inventory.EquippedItems);
-                player.Out.SendInventoryItemsUpdate(eInventoryWindowType.Inventory, player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBagHorse));
+                player.Out.SendInventoryItemsUpdate(eInventoryWindowType.Inventory, player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBagHorse));
                 player.Out.SendUpdatePlayerSkills();   //TODO Insert 0xBE - 08 Various in SendUpdatePlayerSkills() before send spells
                 player.Out.SendUpdateCraftingSkills(); // ^
                 player.Out.SendUpdatePlayer();

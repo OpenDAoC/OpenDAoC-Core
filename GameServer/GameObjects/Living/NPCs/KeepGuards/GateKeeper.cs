@@ -152,7 +152,7 @@ namespace DOL.GS.Keeps
                     target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_PopupWindow);
                     if (announce)
                     {
-                        Message.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
+                        MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
                     }
                     break;
                 case eChatLoc.CL_ChatWindow:
@@ -347,7 +347,7 @@ namespace DOL.GS.Keeps
                     target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_PopupWindow);
                     if (announce)
                     {
-                        Message.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
+                        MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
                     }
                     break;
                 case eChatLoc.CL_ChatWindow:

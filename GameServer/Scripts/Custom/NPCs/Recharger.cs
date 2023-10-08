@@ -99,20 +99,20 @@ public class Recharger : GameNPC
         if (item.Charges < item.MaxCharges)
         {
             player.TempProperties.SetProperty(RECHARGE_ITEM_WEAK, new WeakRef(item));
-            NeededMoney += (item.MaxCharges - item.Charges) * Money.GetMoney(0, 0, 10, 0, 0);
+            NeededMoney += (item.MaxCharges - item.Charges) * MoneyMgr.GetMoney(0, 0, 10, 0, 0);
         }
 
         if (item.Charges1 < item.MaxCharges1)
         {
             player.TempProperties.SetProperty(RECHARGE_ITEM_WEAK, new WeakRef(item));
-            NeededMoney += (item.MaxCharges1 - item.Charges1) * Money.GetMoney(0, 0, 10, 0, 0);
+            NeededMoney += (item.MaxCharges1 - item.Charges1) * MoneyMgr.GetMoney(0, 0, 10, 0, 0);
         }
 
         if (NeededMoney > 0)
         {
             player.Client.Out.SendCustomDialog(
                 LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Recharger.ReceiveItem.Cost",
-                    Money.GetString(NeededMoney)), RechargerDialogResponse);
+                    MoneyMgr.GetString(NeededMoney)), RechargerDialogResponse);
             return true;
         }
 
@@ -126,7 +126,7 @@ public class Recharger : GameNPC
 
         var item = (DbInventoryItem) itemWeak.Target;
 
-        if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
+        if (item == null || item.SlotPosition == (int) EInventorySlot.Ground
                          || item.OwnerID == null || item.OwnerID != player.InternalID)
         {
             player.Out.SendMessage(
@@ -146,10 +146,10 @@ public class Recharger : GameNPC
         }
 
         long cost = 0;
-        if (item.Charges < item.MaxCharges) cost += (item.MaxCharges - item.Charges) * Money.GetMoney(0, 0, 10, 0, 0);
+        if (item.Charges < item.MaxCharges) cost += (item.MaxCharges - item.Charges) * MoneyMgr.GetMoney(0, 0, 10, 0, 0);
 
         if (item.Charges1 < item.MaxCharges1)
-            cost += (item.MaxCharges1 - item.Charges1) * Money.GetMoney(0, 0, 10, 0, 0);
+            cost += (item.MaxCharges1 - item.Charges1) * MoneyMgr.GetMoney(0, 0, 10, 0, 0);
 
         if (!player.RemoveMoney(cost))
         {
@@ -160,11 +160,11 @@ public class Recharger : GameNPC
             return;
         }
 
-        InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, cost);
+        InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, cost);
 
         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                 "Scripts.Recharger.RechargerDialogResponse.GiveMoney",
-                GetName(0, false, player.Client.Account.Language, this), Money.GetString(cost)),
+                GetName(0, false, player.Client.Account.Language, this), MoneyMgr.GetString(cost)),
             eChatType.CT_System, eChatLoc.CL_SystemWindow);
         item.Charges = item.MaxCharges;
         item.Charges1 = item.MaxCharges1;
@@ -192,7 +192,7 @@ public class Recharger : GameNPC
         if (TotalCost > 0)
             player.Client.Out.SendCustomDialog(
             LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Recharger.ReceiveItem.Cost",
-                Money.GetString(TotalCost)), RechargeAll);
+                MoneyMgr.GetString(TotalCost)), RechargeAll);
         else
             SayTo(player, eChatLoc.CL_PopupWindow,
                 "All items are fully charged already.");
@@ -224,11 +224,11 @@ public class Recharger : GameNPC
             return;
         }
 
-        InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, cost);
+        InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, cost);
 
         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                 "Scripts.Recharger.RechargerDialogResponse.GiveMoney",
-                GetName(0, false, player.Client.Account.Language, this), Money.GetString(cost)),
+                GetName(0, false, player.Client.Account.Language, this), MoneyMgr.GetString(cost)),
             eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
         foreach (var inventoryItem in player.Inventory.AllItems)
@@ -246,7 +246,7 @@ public class Recharger : GameNPC
     private void Recharge(DbInventoryItem item)
     {
         
-        if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
+        if (item == null || item.SlotPosition == (int) EInventorySlot.Ground
                          || item.OwnerID == null) return;
 
         item.Charges = item.MaxCharges;
@@ -257,11 +257,11 @@ public class Recharger : GameNPC
         long NeededMoney = 0;
         if (item.Charges < item.MaxCharges)
         {
-            NeededMoney += (item.MaxCharges - item.Charges) * Money.GetMoney(0, 0, 10, 0, 0);
+            NeededMoney += (item.MaxCharges - item.Charges) * MoneyMgr.GetMoney(0, 0, 10, 0, 0);
         }
         if (item.Charges1 < item.MaxCharges1)
         {
-            NeededMoney += (item.MaxCharges1 - item.Charges1) * Money.GetMoney(0, 0, 10, 0, 0);
+            NeededMoney += (item.MaxCharges1 - item.Charges1) * MoneyMgr.GetMoney(0, 0, 10, 0, 0);
         }
 
         var tax = NeededMoney * RECHARGE_ALL_TAX;

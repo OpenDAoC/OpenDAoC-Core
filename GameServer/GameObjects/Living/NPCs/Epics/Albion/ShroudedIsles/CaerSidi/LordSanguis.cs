@@ -298,7 +298,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 442, 67);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 442, 67);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
@@ -428,13 +428,13 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 798, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 67);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 67);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 67, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 96, 67);
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 442, 67);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 798, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 141, 67);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 140, 67);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 142, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 143, 67, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 96, 67);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 442, 67);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

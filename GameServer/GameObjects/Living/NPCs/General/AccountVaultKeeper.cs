@@ -170,7 +170,7 @@ namespace DOL.GS
         {
 
             var items = new Dictionary<int, DbInventoryItem>();
-            int slotOffset = -FirstDBSlot + (int)(eInventorySlot.HousingInventory_First);
+            int slotOffset = -FirstDBSlot + (int)(EInventorySlot.HousingInventory_First);
             foreach (DbInventoryItem item in DBItems(player))
             {
                 if (item != null)
@@ -204,13 +204,13 @@ namespace DOL.GS
             bool canHandle = false;
 
             // House Vaults and GameConsignmentMerchant Merchants deliver the same slot numbers
-            if (fromSlot >= (ushort)eInventorySlot.HousingInventory_First &&
-                fromSlot <= (ushort)eInventorySlot.HousingInventory_Last)
+            if (fromSlot >= (ushort)EInventorySlot.HousingInventory_First &&
+                fromSlot <= (ushort)EInventorySlot.HousingInventory_Last)
             {
                 canHandle = true;
             }
-            else if (toSlot >= (ushort)eInventorySlot.HousingInventory_First &&
-                toSlot <= (ushort)eInventorySlot.HousingInventory_Last)
+            else if (toSlot >= (ushort)EInventorySlot.HousingInventory_First &&
+                toSlot <= (ushort)EInventorySlot.HousingInventory_Last)
             {
                 canHandle = true;
             }
@@ -230,8 +230,8 @@ namespace DOL.GS
                 return false;
             }
 
-            bool fromAccountVault = (fromSlot >= (ushort)eInventorySlot.HousingInventory_First && fromSlot <= (ushort)eInventorySlot.HousingInventory_Last);
-            bool toAccountVault = (toSlot >= (ushort)eInventorySlot.HousingInventory_First && toSlot <= (ushort)eInventorySlot.HousingInventory_Last);
+            bool fromAccountVault = (fromSlot >= (ushort)EInventorySlot.HousingInventory_First && fromSlot <= (ushort)EInventorySlot.HousingInventory_Last);
+            bool toAccountVault = (toSlot >= (ushort)EInventorySlot.HousingInventory_First && toSlot <= (ushort)EInventorySlot.HousingInventory_Last);
 
             if (fromAccountVault == false && toAccountVault == false)
             {
@@ -241,7 +241,7 @@ namespace DOL.GS
             //Prevent exploit shift+clicking quiver exploit
             if (fromAccountVault)
             {
-                if (fromSlot < (ushort)eInventorySlot.HousingInventory_First || fromSlot > (ushort) eInventorySlot.HousingInventory_Last) return false;
+                if (fromSlot < (ushort)EInventorySlot.HousingInventory_First || fromSlot > (ushort) EInventorySlot.HousingInventory_Last) return false;
             }
 
             GameVault gameVault = player.ActiveInventoryObject as GameVault;
@@ -254,7 +254,7 @@ namespace DOL.GS
 
             if (toAccountVault)
             {
-                DbInventoryItem item = player.Inventory.GetItem((eInventorySlot)toSlot);
+                DbInventoryItem item = player.Inventory.GetItem((EInventorySlot)toSlot);
                 if (item != null)
                 {
                     if (gameVault.CanRemoveItems(player) == false)
@@ -276,8 +276,8 @@ namespace DOL.GS
                 return false;
             }
 
-            DbInventoryItem itemInFromSlot = player.Inventory.GetItem((eInventorySlot)fromSlot);
-            DbInventoryItem itemInToSlot = player.Inventory.GetItem((eInventorySlot)toSlot);
+            DbInventoryItem itemInFromSlot = player.Inventory.GetItem((EInventorySlot)fromSlot);
+            DbInventoryItem itemInToSlot = player.Inventory.GetItem((EInventorySlot)toSlot);
 
             // Check for a swap to get around not allowing non-tradables in a housing vault - Tolakram
             if (fromAccountVault && itemInToSlot != null && itemInToSlot.IsTradable == false)
@@ -308,16 +308,16 @@ namespace DOL.GS
                 {
                     if (toAccountVault)
                     {
-                        NotifyObservers(player, this.MoveItemInsideObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
+                        NotifyObservers(player, this.MoveItemInsideObject(player, (EInventorySlot)fromSlot, (EInventorySlot)toSlot));
                     }
                     else
                     {
-                        NotifyObservers(player, this.MoveItemFromObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
+                        NotifyObservers(player, this.MoveItemFromObject(player, (EInventorySlot)fromSlot, (EInventorySlot)toSlot));
                     }
                 }
                 else if (toAccountVault)
                 {
-                    NotifyObservers(player, this.MoveItemToObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
+                    NotifyObservers(player, this.MoveItemToObject(player, (EInventorySlot)fromSlot, (EInventorySlot)toSlot));
                 }
             }
 

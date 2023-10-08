@@ -74,7 +74,7 @@ namespace DOL.GS
 			TetherRange = 2600;			
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 468, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

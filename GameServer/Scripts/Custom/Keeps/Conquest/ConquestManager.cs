@@ -243,7 +243,7 @@ public class ConquestManager
             if (!primaryObjective) awardBase = (int)(awardBase * 0.75);
             int numFlags = ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
             player.GainRealmPoints((long)(awardBase + (numFlags * 200)), false);
-            AtlasROGManager.GenerateReward(player, (int)(awardBase + (numFlags * 200)));
+            CoreRoGMgr.GenerateReward(player, (int)(awardBase + (numFlags * 200)));
         }
     }
     

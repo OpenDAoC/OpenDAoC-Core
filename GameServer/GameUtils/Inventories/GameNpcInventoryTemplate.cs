@@ -59,12 +59,12 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="slot">SlotPosition to check</param>
 		/// <returns>the slot if it's valid or eInventorySlot.Invalid if not</returns>
-		protected override eInventorySlot GetValidInventorySlot(eInventorySlot slot)
+		protected override EInventorySlot GetValidInventorySlot(EInventorySlot slot)
 		{
-			foreach (eInventorySlot visibleSlot in VISIBLE_SLOTS)
+			foreach (EInventorySlot visibleSlot in VISIBLE_SLOTS)
 				if (visibleSlot == slot)
 					return slot;
-			return eInventorySlot.Invalid;
+			return EInventorySlot.Invalid;
 		}
 
 		#region AddNPCEquipment/RemoveNPCEquipment/CloseTemplate/CloneTemplate
@@ -75,7 +75,7 @@ namespace DOL.GS
 		/// <param name="slot">The equipment slot</param>
 		/// <param name="model">The equipment model</param>
 		/// <returns>true if added</returns>
-		public bool AddNPCEquipment(eInventorySlot slot, int model)
+		public bool AddNPCEquipment(EInventorySlot slot, int model)
 		{
 			return AddNPCEquipment(slot, model, 0, 0, 0);
 		}
@@ -87,7 +87,7 @@ namespace DOL.GS
 		/// <param name="model">The equipment model</param>
 		/// <param name="color">The equipment color</param>
 		/// <returns>true if added</returns>
-		public bool AddNPCEquipment(eInventorySlot slot, int model, int color)
+		public bool AddNPCEquipment(EInventorySlot slot, int model, int color)
 		{
 			return AddNPCEquipment(slot, model, color, 0, 0);
 		}
@@ -100,7 +100,7 @@ namespace DOL.GS
 		/// <param name="color">The equipment color</param>
 		/// <param name="effect">The equipment effect</param>
 		/// <returns>true if added</returns>
-		public bool AddNPCEquipment(eInventorySlot slot, int model, int color, int effect)
+		public bool AddNPCEquipment(EInventorySlot slot, int model, int color, int effect)
 		{
 			return AddNPCEquipment(slot, model, color, effect, 0);
 		}
@@ -114,7 +114,7 @@ namespace DOL.GS
 		/// <param name="effect">The equipment effect</param>
 		/// <param name="extension">The equipment extension</param>
 		/// <returns>true if added</returns>
-		public bool AddNPCEquipment(eInventorySlot slot, int model, int color, int effect, int extension, int emblem = 0)
+		public bool AddNPCEquipment(EInventorySlot slot, int model, int color, int effect, int extension, int emblem = 0)
 		{
 			lock (m_items)
 			{
@@ -123,7 +123,7 @@ namespace DOL.GS
 					if (m_isClosed)
 						return false;
 					slot = GetValidInventorySlot(slot);
-					if (slot == eInventorySlot.Invalid)
+					if (slot == EInventorySlot.Invalid)
 						return false;
 					//Changed to support randomization of slots - if we try to load a weapon in the same spot with a different model,
 					//let's make it random 50% chance to either overwrite the item or leave it be
@@ -164,13 +164,13 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="slot">The slot to remove</param>
 		/// <returns>true if removed</returns>
-		public bool RemoveNPCEquipment(eInventorySlot slot)
+		public bool RemoveNPCEquipment(EInventorySlot slot)
 		{
 			lock (m_items)
 			{
 				slot = GetValidInventorySlot(slot);
 
-				if (slot == eInventorySlot.Invalid)
+				if (slot == EInventorySlot.Invalid)
 					return false;
 
 				if (m_isClosed)
@@ -234,7 +234,7 @@ namespace DOL.GS
 			lock (m_items)
 			{
 				var clone = new GameNpcInventoryTemplate();
-				clone.m_changedSlots = new List<eInventorySlot>(m_changedSlots);
+				clone.m_changedSlots = new List<EInventorySlot>(m_changedSlots);
 				clone.m_changesCounter = m_changesCounter;
 
 				foreach (var de in m_items)
@@ -295,7 +295,7 @@ namespace DOL.GS
 				
 				foreach (DbNpcEquipment npcItem in npcEquip)
 				{
-					if (!AddNPCEquipment((eInventorySlot)npcItem.Slot, npcItem.Model, npcItem.Color, npcItem.Effect, npcItem.Extension, npcItem.Emblem))
+					if (!AddNPCEquipment((EInventorySlot)npcItem.Slot, npcItem.Model, npcItem.Color, npcItem.Effect, npcItem.Extension, npcItem.Emblem))
 					{
 						if (log.IsWarnEnabled)
 							log.Warn("Error adding NPC equipment for templateID " + templateID + ", ModelID=" + npcItem.Model + ", slot=" + npcItem.Slot);
@@ -355,7 +355,7 @@ namespace DOL.GS
 					// delete removed item templates
 					foreach (DbNpcEquipment npcItem in npcEquipment)
 					{
-						if (!m_items.ContainsKey((eInventorySlot)npcItem.Slot))
+						if (!m_items.ContainsKey((EInventorySlot)npcItem.Slot))
 							GameServer.Database.DeleteObject(npcItem);
 					}
 
@@ -419,7 +419,7 @@ namespace DOL.GS
 		/// <param name="slot"></param>
 		/// <param name="item"></param>
 		/// <returns>false</returns>
-		public override bool AddItem(eInventorySlot slot, DbInventoryItem item)
+		public override bool AddItem(EInventorySlot slot, DbInventoryItem item)
 		{
 			return false;
 		}
@@ -463,7 +463,7 @@ namespace DOL.GS
 		/// <param name="toSlot"></param>
 		/// <param name="itemCount"></param>
 		/// <returns></returns>
-		public override bool MoveItem(eInventorySlot fromSlot, eInventorySlot toSlot, int itemCount)
+		public override bool MoveItem(EInventorySlot fromSlot, EInventorySlot toSlot, int itemCount)
 		{
 			return false;
 		}
@@ -486,7 +486,7 @@ namespace DOL.GS
 		/// <param name="toSlot">Second SlotPosition</param>
 		/// <param name="itemCount">How many items to move</param>
 		/// <returns>false</returns>
-		protected override bool StackItems(eInventorySlot fromSlot, eInventorySlot toSlot, int itemCount)
+		protected override bool StackItems(EInventorySlot fromSlot, EInventorySlot toSlot, int itemCount)
 		{
 			return false;
 		}
@@ -497,7 +497,7 @@ namespace DOL.GS
 		/// <param name="fromSlot">First SlotPosition</param>
 		/// <param name="toSlot">Second SlotPosition</param>
 		/// <returns>false</returns>
-		protected override bool ExchangeItems(eInventorySlot fromSlot, eInventorySlot toSlot)
+		protected override bool ExchangeItems(EInventorySlot fromSlot, EInventorySlot toSlot)
 		{
 			return false;
 		}
@@ -510,7 +510,7 @@ namespace DOL.GS
 		/// <param name="minSlot">The first slot</param>
 		/// <param name="maxSlot">The last slot</param>
 		/// <returns>false</returns>
-		public override bool AddTemplate(DbInventoryItem template, int count, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public override bool AddTemplate(DbInventoryItem template, int count, EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			return false;
 		}
@@ -523,7 +523,7 @@ namespace DOL.GS
 		/// <param name="minSlot">The first slot</param>
 		/// <param name="maxSlot">The last slot</param>
 		/// <returns>false</returns>
-		public override bool RemoveTemplate(string templateID, int count, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public override bool RemoveTemplate(string templateID, int count, EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			return false;
 		}

@@ -258,7 +258,7 @@ namespace DOL.GS
                         if (Locked == 0)
                             Open();
 
-                        Group attackerGroup = attackerPlayer.Group;
+                        GroupUtil attackerGroup = attackerPlayer.Group;
 
                         if (attackerGroup != null)
                         {

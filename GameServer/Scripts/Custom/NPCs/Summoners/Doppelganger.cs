@@ -91,7 +91,7 @@ namespace DOL.GS
                 {
                     Model = doppelModel;
                     Name = "doppelganger";
-                    Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
+                    Inventory = new GameNpcInventory(GameNpcInventoryTemplate.EmptyTemplate);
                     BroadcastLivingEquipmentUpdate();
                 }
             }
@@ -117,8 +117,8 @@ namespace DOL.GS
             // Don't allow ranged attacks
             if (ActiveWeaponSlot == EActiveWeaponSlot.Distance)
             {
-                bool standard = Inventory.GetItem(eInventorySlot.RightHandWeapon) != null;
-                bool twoHanded = Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null;
+                bool standard = Inventory.GetItem(EInventorySlot.RightHandWeapon) != null;
+                bool twoHanded = Inventory.GetItem(EInventorySlot.TwoHandWeapon) != null;
 
                 if (standard && twoHanded)
                 {
@@ -240,9 +240,9 @@ namespace DOL.GS
             var indexPick = Util.Random(0, possibleRaces.Count - 1);
             Model = (ushort)possibleRaces[indexPick].GetModel(Gender);
 
-            bool distance = Inventory.GetItem(eInventorySlot.DistanceWeapon) != null;
-            bool standard = Inventory.GetItem(eInventorySlot.RightHandWeapon) != null;
-            bool twoHanded = Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null;
+            bool distance = Inventory.GetItem(EInventorySlot.DistanceWeapon) != null;
+            bool standard = Inventory.GetItem(EInventorySlot.RightHandWeapon) != null;
+            bool twoHanded = Inventory.GetItem(EInventorySlot.TwoHandWeapon) != null;
 
             if (distance)
                 SwitchWeapon(EActiveWeaponSlot.Distance);

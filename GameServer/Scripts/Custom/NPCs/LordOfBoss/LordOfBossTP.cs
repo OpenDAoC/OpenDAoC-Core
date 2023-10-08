@@ -12,7 +12,7 @@ namespace DOL.GS {
             Model = 465;
             Size = 35;
             Level = 75;
-            Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
+            Inventory = new GameNpcInventory(GameNpcInventoryTemplate.EmptyTemplate);
             SetOwnBrain(new BlankBrain());
 
             return base.AddToWorld(); // Finish up and add him to the world.

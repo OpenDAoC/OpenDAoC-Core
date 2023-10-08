@@ -94,9 +94,9 @@ namespace DOL.GS.MonthlyQuest.Albion
 				James.Z = 4940;
 				James.Heading = 3143;
 				GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
-				templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 1005);
-				templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 142);
-				templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 143);
+				templateAlb.AddNPCEquipment(EInventorySlot.TorsoArmor, 1005);
+				templateAlb.AddNPCEquipment(EInventorySlot.HandsArmor, 142);
+				templateAlb.AddNPCEquipment(EInventorySlot.FeetArmor, 143);
 				James.Inventory = templateAlb.CloseTemplate();
 				James.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -358,14 +358,14 @@ namespace DOL.GS.MonthlyQuest.Albion
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(3, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (m_questPlayer.Inventory.IsSlotsFree(3, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
 				m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
-				m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
+				m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
 					"You receive {0} as a reward.");
-				AtlasROGManager.GenerateReward(m_questPlayer, 3000);
-				AtlasROGManager.GenerateBeetleCarapace(m_questPlayer, 2);
-				AtlasROGManager.GenerateJewel(m_questPlayer, 51);
+				CoreRoGMgr.GenerateReward(m_questPlayer, 3000);
+				CoreRoGMgr.GenerateBeetleCarapace(m_questPlayer, 2);
+				CoreRoGMgr.GenerateJewel(m_questPlayer, 51);
 				_orylleKilled = 0;
 				_xanxicarKilled = 0;
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...

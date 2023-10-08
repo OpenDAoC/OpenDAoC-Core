@@ -167,15 +167,15 @@ namespace DOL.GS
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 51, 0, 0, 0);//modelID,color,effect,extension
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 53, 0);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 52, 0);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 80, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 54, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 653, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 1042, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.DistanceWeapon, 132, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 51, 0, 0, 0);//modelID,color,effect,extension
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 53, 0);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 52, 0);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 80, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 54, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 91, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 653, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.LeftHandWeapon, 1042, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.DistanceWeapon, 132, 0, 0);
             Inventory = template.CloseTemplate();
             IsRanged = false;
             if (!this.Styles.Contains(slam))

@@ -42,14 +42,14 @@ namespace DOL.GS.Effects
         {
             AttackFinishedEventArgs afea = (AttackFinishedEventArgs)args;
             
-            if (m_owner != afea.AttackData.Attacker || afea.AttackData.AttackType == AttackData.eAttackType.Spell)
+            if (m_owner != afea.AttackData.Attacker || afea.AttackData.AttackType == AttackData.EAttackType.Spell)
                 return;
             //only affect this onto players
             if (!(afea.AttackData.Target is GamePlayer))
                 return;
             GamePlayer target = afea.AttackData.Target as GamePlayer;
             
-            Database.DbInventoryItem armor = target.Inventory.GetItem((eInventorySlot)((int)afea.AttackData.ArmorHitLocation));
+            Database.DbInventoryItem armor = target.Inventory.GetItem((EInventorySlot)((int)afea.AttackData.ArmorHitLocation));
             
             if (armor == null || armor.SPD_ABS == 0)
                 return;

@@ -30,7 +30,7 @@ namespace DOL.GS.Effects
 	{
 		private GamePlayer EffectOwner;
 		private GamePlayer EffectCaster;
-		private Group m_playerGroup;
+		private GroupUtil m_playerGroup;
 
 		public MarkofPreyEffect()
 			: base(RealmAbilities.MarkOfPreyAbility.DURATION)
@@ -112,7 +112,7 @@ namespace DOL.GS.Effects
 			ad.Damage = (int)(damage + damageResisted);
 			ad.Modifier = (int)damageResisted;
 			ad.DamageType = EDamageType.Heat;
-			ad.AttackType = AttackData.eAttackType.Spell;
+			ad.AttackType = AttackData.EAttackType.Spell;
 			ad.AttackResult = EAttackResult.HitUnstyled;
 			target.OnAttackedByEnemy(ad);
 			EffectCaster.ChangeMana(EffectOwner, EPowerChangeType.Spell, (int)ad.Damage);

@@ -189,7 +189,7 @@ namespace DOL.GS
                 //Console.WriteLine($"AF item prop{ItemBonus[eProperty.ArmorFactor]}");
                 ApplyBonus(this, EBuffBonusCategory.Other, EProperty.ArmorFactor, invItem.DPS_AF, 1, false);
                 //ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorAbsorption, invItem.SPD_ABS, 1, false);
-                Inventory.AddItem((eInventorySlot)slot, invItem);
+                Inventory.AddItem((EInventorySlot)slot, invItem);
             }
 
             this.ItemBonus[EProperty.ArmorAbsorption] += GetAbsorb(armorType);
@@ -330,7 +330,7 @@ namespace DOL.GS
             Name = "Total: 0 DPS: 0";
             GuildName = "Dummy Union";
             Model = 34;
-            Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
+            Inventory = new GameNpcInventory(GameNpcInventoryTemplate.EmptyTemplate);
             return base.AddToWorld(); // Finish up and add him to the world.
         }
 
@@ -341,7 +341,7 @@ namespace DOL.GS
 
         private DbInventoryItem GenerateItemNameModel(DbInventoryItem item)
         {
-            eInventorySlot slot = (eInventorySlot)item.Item_Type;
+            EInventorySlot slot = (EInventorySlot)item.Item_Type;
             EDamageType damage = (EDamageType)item.Type_Damage;
             ERealm realm = (ERealm)this.Realm;
             EObjectType type = (EObjectType)item.Object_Type;
@@ -355,12 +355,12 @@ namespace DOL.GS
 
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = 141; break;
-                            case eInventorySlot.LegsArmor: model = 140; break;
-                            case eInventorySlot.FeetArmor: model = 143; break;
-                            case eInventorySlot.HeadArmor: model = 822; break;
-                            case eInventorySlot.HandsArmor: model = 142; break;
-                            case eInventorySlot.TorsoArmor:
+                            case EInventorySlot.ArmsArmor: model = 141; break;
+                            case EInventorySlot.LegsArmor: model = 140; break;
+                            case EInventorySlot.FeetArmor: model = 143; break;
+                            case EInventorySlot.HeadArmor: model = 822; break;
+                            case EInventorySlot.HandsArmor: model = 142; break;
+                            case EInventorySlot.TorsoArmor:
                                 if (Util.Chance(60))
                                 {
                                     model = 139;
@@ -383,12 +383,12 @@ namespace DOL.GS
 
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = 38; break;
-                            case eInventorySlot.LegsArmor: model = 37; break;
-                            case eInventorySlot.FeetArmor: model = 40; break;
-                            case eInventorySlot.HeadArmor: model = 62; break;
-                            case eInventorySlot.TorsoArmor: model = 36; break;
-                            case eInventorySlot.HandsArmor: model = 39; break;
+                            case EInventorySlot.ArmsArmor: model = 38; break;
+                            case EInventorySlot.LegsArmor: model = 37; break;
+                            case EInventorySlot.FeetArmor: model = 40; break;
+                            case EInventorySlot.HeadArmor: model = 62; break;
+                            case EInventorySlot.TorsoArmor: model = 36; break;
+                            case EInventorySlot.HandsArmor: model = 39; break;
                         }
                         break;
                     }
@@ -396,12 +396,12 @@ namespace DOL.GS
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = 83; break;
-                            case eInventorySlot.LegsArmor: model = 82; break;
-                            case eInventorySlot.FeetArmor: model = 84; break;
-                            case eInventorySlot.HeadArmor: model = 824; break;
-                            case eInventorySlot.TorsoArmor: model = 81; break;
-                            case eInventorySlot.HandsArmor: model = 85; break;
+                            case EInventorySlot.ArmsArmor: model = 83; break;
+                            case EInventorySlot.LegsArmor: model = 82; break;
+                            case EInventorySlot.FeetArmor: model = 84; break;
+                            case EInventorySlot.HeadArmor: model = 824; break;
+                            case EInventorySlot.TorsoArmor: model = 81; break;
+                            case EInventorySlot.HandsArmor: model = 85; break;
                         }
                         break;
                     }
@@ -409,11 +409,11 @@ namespace DOL.GS
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = 48; break;
-                            case eInventorySlot.LegsArmor: model = 47; break;
-                            case eInventorySlot.FeetArmor: model = 50; break;
-                            case eInventorySlot.HandsArmor: model = 49; break;
-                            case eInventorySlot.HeadArmor:
+                            case EInventorySlot.ArmsArmor: model = 48; break;
+                            case EInventorySlot.LegsArmor: model = 47; break;
+                            case EInventorySlot.FeetArmor: model = 50; break;
+                            case EInventorySlot.HandsArmor: model = 49; break;
+                            case EInventorySlot.HeadArmor:
                                 if (Util.Chance(25))
                                 {
                                     model = 93;
@@ -423,7 +423,7 @@ namespace DOL.GS
 
                                 break;
 
-                            case eInventorySlot.TorsoArmor:
+                            case EInventorySlot.TorsoArmor:
                                 model = 46;
                                 break;
                         }
@@ -434,12 +434,12 @@ namespace DOL.GS
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = 43; break;
-                            case eInventorySlot.LegsArmor: model = 42; break;
-                            case eInventorySlot.FeetArmor: model = 45; break;
-                            case eInventorySlot.HeadArmor: model = 63; break;
-                            case eInventorySlot.TorsoArmor: model = 41; break;
-                            case eInventorySlot.HandsArmor: model = 44; break;
+                            case EInventorySlot.ArmsArmor: model = 43; break;
+                            case EInventorySlot.LegsArmor: model = 42; break;
+                            case EInventorySlot.FeetArmor: model = 45; break;
+                            case EInventorySlot.HeadArmor: model = 63; break;
+                            case EInventorySlot.TorsoArmor: model = 41; break;
+                            case EInventorySlot.HandsArmor: model = 44; break;
                         }
                         break;
                     }
@@ -447,12 +447,12 @@ namespace DOL.GS
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = 385; break;
-                            case eInventorySlot.LegsArmor: model = 384; break;
-                            case eInventorySlot.FeetArmor: model = 387; break;
-                            case eInventorySlot.HeadArmor: model = 835; break;
-                            case eInventorySlot.TorsoArmor: model = 383; break;
-                            case eInventorySlot.HandsArmor: model = 386; break;
+                            case EInventorySlot.ArmsArmor: model = 385; break;
+                            case EInventorySlot.LegsArmor: model = 384; break;
+                            case EInventorySlot.FeetArmor: model = 387; break;
+                            case EInventorySlot.HeadArmor: model = 835; break;
+                            case EInventorySlot.TorsoArmor: model = 383; break;
+                            case EInventorySlot.HandsArmor: model = 386; break;
                         }
 
                         break;
@@ -461,12 +461,12 @@ namespace DOL.GS
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = 390; break;
-                            case eInventorySlot.LegsArmor: model = 389; break;
-                            case eInventorySlot.FeetArmor: model = 392; break;
-                            case eInventorySlot.HeadArmor: model = 838; break;
-                            case eInventorySlot.TorsoArmor: model = 388; break;
-                            case eInventorySlot.HandsArmor: model = 391; break;
+                            case EInventorySlot.ArmsArmor: model = 390; break;
+                            case EInventorySlot.LegsArmor: model = 389; break;
+                            case EInventorySlot.FeetArmor: model = 392; break;
+                            case EInventorySlot.HeadArmor: model = 838; break;
+                            case EInventorySlot.TorsoArmor: model = 388; break;
+                            case EInventorySlot.HandsArmor: model = 391; break;
                         }
 
 

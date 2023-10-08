@@ -75,11 +75,11 @@ namespace DOL.GS.Quests
             log.Info("INFO: Successfully entered TaskDungeonMission!");
 			GamePlayer player = owner as GamePlayer;
 
-            if (owner is Group)
+            if (owner is GroupUtil)
             {
-                player = (owner as Group).Leader;
+                player = (owner as GroupUtil).Leader;
                 //Assign the mission to the group.
-                (owner as Group).Mission = this;
+                (owner as GroupUtil).Mission = this;
             }
 
 			if (player == null)
@@ -157,7 +157,7 @@ namespace DOL.GS.Quests
             
             //Set the mission description again if owner is group, otherwise
             //mission description is always "Clear" before entering the dungeon.
-            if (owner is Group)
+            if (owner is GroupUtil)
             	UpdateMission();
             
             m_mobIsAlive = new bool[m_total];
@@ -439,7 +439,7 @@ namespace DOL.GS.Quests
 							//Additional check if region is null in case of group mission.
 							//Otherwise else condition is used with m_total = 0.
 							if ((m_owner is GamePlayer && (m_owner as GamePlayer).CurrentRegion != m_taskRegion) ||
-						    	(m_owner is Group && m_taskRegion == null))
+						    	(m_owner is GroupUtil && m_taskRegion == null))
                             {
                                 return "You have been asked to clear the nearby caves.";
                             }
@@ -463,8 +463,8 @@ namespace DOL.GS.Quests
 		{
 			get {
 				GamePlayer player = m_owner as GamePlayer;
-				if (m_owner is Group)
-					player = (m_owner as Group).Leader;
+				if (m_owner is GroupUtil)
+					player = (m_owner as GroupUtil).Leader;
 				return player.Level * player.Level * 100;
 			}
 		}
@@ -488,8 +488,8 @@ namespace DOL.GS.Quests
 			get
 			{
 				GamePlayer player = m_owner as GamePlayer;
-				if (m_owner is Group)
-					player = (m_owner as Group).Leader;
+				if (m_owner is GroupUtil)
+					player = (m_owner as GroupUtil).Leader;
 				long amount = XPMagicNumber * player.Level;
 				if (player.Level > 1)
 					amount += XPMagicNumber * (player.Level - 1);
@@ -507,9 +507,9 @@ namespace DOL.GS.Quests
 			{
 				(m_owner as GamePlayer).Out.SendMessage("Mission Complete", eChatType.CT_ScreenCenter, eChatLoc.CL_ChatWindow);
 			}
-			else if (m_owner is Group)
+			else if (m_owner is GroupUtil)
 			{
-				foreach (GamePlayer player in (m_owner as Group).GetPlayersInTheGroup())
+				foreach (GamePlayer player in (m_owner as GroupUtil).GetPlayersInTheGroup())
 				{
 					player.Out.SendMessage("Mission Complete", eChatType.CT_ScreenCenter, eChatLoc.CL_ChatWindow);
 				}

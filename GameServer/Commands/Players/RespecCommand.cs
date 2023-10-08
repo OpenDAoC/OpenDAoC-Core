@@ -228,7 +228,7 @@ public class RespecCommand : ACommandHandler, ICommandHandler
 			player.TempProperties.RemoveProperty(BUY_RESPEC);
 			if (player.RespecCost >= 0 && player.RemoveMoney(player.RespecCost * 10000))
 			{
-                InventoryLogging.LogInventoryAction(player, "(respec)", eInventoryActionType.Merchant, player.RespecCost * 10000);
+                InventoryLogging.LogInventoryAction(player, "(respec)", EInventoryActionType.Merchant, player.RespecCost * 10000);
 				player.RespecAmountSingleSkill++;
 				player.RespecBought++;
 				DisplayMessage(player, "You bought a single line respec!");

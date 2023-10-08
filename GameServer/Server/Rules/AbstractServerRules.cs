@@ -290,7 +290,7 @@ namespace DOL.GS.ServerRules
 		public abstract bool IsSameRealm(GameLiving source, GameLiving target, bool quiet);
 		public abstract bool IsAllowedCharsInAllRealms(GameClient client);
 		public abstract bool IsAllowedToGroup(GamePlayer source, GamePlayer target, bool quiet);
-		public abstract bool IsAllowedToJoinGuild(GamePlayer source, Guild guild);
+		public abstract bool IsAllowedToJoinGuild(GamePlayer source, GuildUtil guild);
 		public abstract bool IsAllowedToTrade(GameLiving source, GameLiving target, bool quiet);
 		public abstract bool IsAllowedToUnderstand(GameLiving source, GamePlayer target);
 		public abstract string RulesDescription();
@@ -1109,11 +1109,11 @@ namespace DOL.GS.ServerRules
 			#region Group/Total Damage
 
 			float totalDamage = 0;
-			Dictionary<Group, int> plrGrpExp = new Dictionary<Group, int>();
-			Dictionary<Group, float> grpToDmgDict = new Dictionary<Group, float>();
+			Dictionary<GroupUtil, int> plrGrpExp = new Dictionary<GroupUtil, int>();
+			Dictionary<GroupUtil, float> grpToDmgDict = new Dictionary<GroupUtil, float>();
 			GamePlayer highestPlayer = null;
 			bool isGroupInRange = false;
-			Group highestDamageDealingGroup = null;
+			GroupUtil highestDamageDealingGroup = null;
 
 			//Collect the total damage
 			foreach (DictionaryEntry de in XPGainerList)
@@ -1165,7 +1165,7 @@ namespace DOL.GS.ServerRules
 
 					if (player != null)
 					{
-						BattleGroup clientBattleGroup = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+						BattleGroupUtil clientBattleGroup = player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 						if (clientBattleGroup != null)
 						{
 							livingsToAward.Add(living);
@@ -1210,14 +1210,14 @@ namespace DOL.GS.ServerRules
 						max *= 5;
 					}
 
-					AtlasROGManager.GenerateReward(living, Util.Random(min, max));
+					CoreRoGMgr.GenerateReward(living, Util.Random(min, max));
 				}
 			}
 
 			Diagnostics.StopPerfCounter("ReaperService-NPC-OnNPCKilled-XP-NPC("+killedNPC.GetHashCode()+")");
 		}
 
-		private void AwardExperience(DictionaryEntry de, GameNPC killedNPC, GameObject killer, float totalDamage, Dictionary<Group, int> plrGrpExp, bool isGroupInRange)
+		private void AwardExperience(DictionaryEntry de, GameNPC killedNPC, GameObject killer, float totalDamage, Dictionary<GroupUtil, int> plrGrpExp, bool isGroupInRange)
 		{
 			System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
 			long npcExpValue = killedNPC.ExperienceValue;
@@ -1572,7 +1572,7 @@ namespace DOL.GS.ServerRules
 			}
 		}
 
-		private int GetUniqueClassCount(Group group)
+		private int GetUniqueClassCount(GroupUtil group)
         {
 			HashSet<ECharacterClass> groupClasses = new HashSet<ECharacterClass>();
             foreach (var player in group.GetPlayersInTheGroup().ToList())
@@ -1816,7 +1816,7 @@ namespace DOL.GS.ServerRules
 			}
 
 			List<KeyValuePair<GamePlayer, int>> playerKillers = new List<KeyValuePair<GamePlayer, int>>();
-            List<Group> groupsToAward = new List<Group>();
+            List<GroupUtil> groupsToAward = new List<GroupUtil>();
 			List<GamePlayer> playersToAward = new List<GamePlayer>();
 
             //Now deal the XP and RPs to all livings
@@ -2039,13 +2039,13 @@ namespace DOL.GS.ServerRules
 					{
 						money += killBonus;
 						//long money = (long)(Money.GetMoney(0, 0, 17, 85, 0) * damagePercent * killedPlayer.Level / 50);
-						player.AddMoney(money, "You receive {0} ("+ Money.GetShortString(killBonus) +" streak bonus)");
-						InventoryLogging.LogInventoryAction(killer, player, eInventoryActionType.Other, money);
+						player.AddMoney(money, "You receive {0} ("+ MoneyMgr.GetShortString(killBonus) +" streak bonus)");
+						InventoryLogging.LogInventoryAction(killer, player, EInventoryActionType.Other, money);
 					}
 					else
 					{
 						player.AddMoney(money, "You receive {0}");
-						InventoryLogging.LogInventoryAction(killer, player, eInventoryActionType.Other, money);
+						InventoryLogging.LogInventoryAction(killer, player, EInventoryActionType.Other, money);
 					}
 					
 					
@@ -2133,7 +2133,7 @@ namespace DOL.GS.ServerRules
                 
                 if (GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvP)
                 {
-	                AtlasROGManager.GenerateOrbAmount(player, Util.Random(50, 150));
+	                CoreRoGMgr.GenerateOrbAmount(player, Util.Random(50, 150));
                 }
 
                 int bonusRegion = 0;
@@ -2153,12 +2153,12 @@ namespace DOL.GS.ServerRules
                 if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(10))
                 {
 	                var RRMod = (int)Math.Floor(killedPlayer.RealmLevel / 10d) * 3;
-	                AtlasROGManager.GenerateROG(player, (byte)(player.Level + RRMod));
+	                CoreRoGMgr.GenerateROG(player, (byte)(player.Level + RRMod));
                 }
 
                 if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(1))
                 {
-	                AtlasROGManager.GenerateBeetleCarapace(player);
+	                CoreRoGMgr.GenerateBeetleCarapace(player);
                 }
             }
 

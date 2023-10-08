@@ -379,7 +379,7 @@ namespace DOL.GS.Quests
             {
                 m_taskPlayer.AddMoney(RewardMoney, "You receive {0} for completing your task.");
                 InventoryLogging.LogInventoryAction("(TASK;" + m_dbTask.TaskType + ")", m_taskPlayer,
-                    eInventoryActionType.Quest, RewardMoney);
+                    EInventoryActionType.Quest, RewardMoney);
             }
 
             if (RewardItems != null && RewardItems.Count > 0)
@@ -387,9 +387,9 @@ namespace DOL.GS.Quests
                 m_taskPlayer.Inventory.BeginChanges();
                 foreach (DbInventoryItem item in RewardItems)
                 {
-                    if (m_taskPlayer.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+                    if (m_taskPlayer.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, item))
                         InventoryLogging.LogInventoryAction("(TASK;" + m_dbTask.TaskType + ")", m_taskPlayer,
-                            eInventoryActionType.Quest, item.Template, item.Count);
+                            EInventoryActionType.Quest, item.Template, item.Count);
                 }
 
                 m_taskPlayer.Inventory.CommitChanges();
@@ -417,13 +417,13 @@ namespace DOL.GS.Quests
             {
                 lock (m_taskPlayer.Inventory)
                 {
-                    DbInventoryItem item = m_taskPlayer.Inventory.GetFirstItemByID(ItemName, eInventorySlot.Min_Inv,
-                        eInventorySlot.Max_Inv);
+                    DbInventoryItem item = m_taskPlayer.Inventory.GetFirstItemByID(ItemName, EInventorySlot.Min_Inv,
+                        EInventorySlot.Max_Inv);
                     if (item != null)
                     {
                         m_taskPlayer.Inventory.RemoveItem(item);
                         InventoryLogging.LogInventoryAction(m_taskPlayer, "(TASK;" + m_dbTask.TaskType + ")",
-                            eInventoryActionType.Quest, item.Template, item.Count);
+                            EInventoryActionType.Quest, item.Template, item.Count);
                     }
                 }
 

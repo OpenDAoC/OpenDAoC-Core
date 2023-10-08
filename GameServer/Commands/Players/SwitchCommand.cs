@@ -18,21 +18,21 @@ public class SwitchCommand : ACommandHandler, ICommandHandler
             return;
         }
 
-        eInventorySlot ToSlot = eInventorySlot.FirstBackpack;
+        EInventorySlot ToSlot = EInventorySlot.FirstBackpack;
 
         switch (args[1])
         {
             case "1h":
-                ToSlot = eInventorySlot.RightHandWeapon;
+                ToSlot = EInventorySlot.RightHandWeapon;
                 break;
             case "2h":
-                ToSlot = eInventorySlot.TwoHandWeapon;
+                ToSlot = EInventorySlot.TwoHandWeapon;
                 break;
             case "offhand":
-                ToSlot = eInventorySlot.LeftHandWeapon;
+                ToSlot = EInventorySlot.LeftHandWeapon;
                 break;
             case "range":
-                ToSlot = eInventorySlot.DistanceWeapon;
+                ToSlot = EInventorySlot.DistanceWeapon;
                 break;
         }
 
@@ -42,7 +42,7 @@ public class SwitchCommand : ACommandHandler, ICommandHandler
         if (int.TryParse(args[2], out FromSlot))
         {
             FromSlot = int.Parse(args[2]);
-            SwitchItem(client.Player, ToSlot, (eInventorySlot)FromSlot + 39);
+            SwitchItem(client.Player, ToSlot, (EInventorySlot)FromSlot + 39);
         }
         else
         {
@@ -52,7 +52,7 @@ public class SwitchCommand : ACommandHandler, ICommandHandler
         }
 
     }
-    public void SwitchItem(GamePlayer player, eInventorySlot ToSlot, eInventorySlot FromSlot)
+    public void SwitchItem(GamePlayer player, EInventorySlot ToSlot, EInventorySlot FromSlot)
     {
         if (player.Inventory.GetItem(FromSlot) != null)
         {

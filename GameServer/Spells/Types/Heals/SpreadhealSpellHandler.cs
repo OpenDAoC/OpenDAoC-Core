@@ -62,7 +62,7 @@ namespace DOL.GS.Spells
 
 			int groupHealCap = targetHealCap;
 
-			Group group = target.Group;
+			GroupUtil group = target.Group;
 			if (group != null)
 			{
 				groupHealCap *= group.MemberCount;

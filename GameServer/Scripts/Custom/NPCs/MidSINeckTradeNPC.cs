@@ -61,7 +61,7 @@ namespace DOL.GS
             var newNeckTp = GameServer.Database.FindObjectByKey<DbItemTemplate>("Beaded Resisting Stones");
             var newNeck = GameInventoryItem.Create(newNeckTp);
 
-            if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newNeck)) return true;
+            if (player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, newNeck)) return true;
             player.CreateItemOnTheGround(newNeck);
             player.Out.SendMessage($"Your inventory is full, your {newNeck.Name}s have been placed on the ground.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 

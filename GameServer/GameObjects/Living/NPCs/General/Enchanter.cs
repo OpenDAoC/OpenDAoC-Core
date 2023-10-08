@@ -118,7 +118,7 @@ namespace DOL.GS
 					{
 						player.TempProperties.SetProperty(ENCHANT_ITEM_WEAK, new WeakRef(item));
 						// Message: It will cost {0} to enchant that. Do you accept?
-                        player.Client.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client, "GameNPC.Enchanter.ReceiveItem.Cost", Money.GetString(CalculEnchantPrice(item))), new CustomDialogResponse(EnchanterDialogResponse));
+                        player.Client.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client, "GameNPC.Enchanter.ReceiveItem.Cost", MoneyMgr.GetString(CalculEnchantPrice(item))), new CustomDialogResponse(EnchanterDialogResponse));
                     }
 					else
 						// Message: {0} says, "That is already enchanted."
@@ -162,7 +162,7 @@ namespace DOL.GS
 				return;
 			}
 
-			if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
+			if (item == null || item.SlotPosition == (int) EInventorySlot.Ground
 			                 || item.OwnerID == null || item.OwnerID != player.InternalID)
 			{
 				// Message: {0} says, "I can't enchant that."
@@ -178,7 +178,7 @@ namespace DOL.GS
 				// Message: {0} says, "It costs {1} to enchant {2}. You don't have that much."
 				ChatUtil.SendSayMessage(player, "GameNPC.Enchanter.Response.NotEnoughMoney", 
 					GetName(0, true), 
-					Money.GetString(Fee), 
+					MoneyMgr.GetString(Fee), 
 					item.GetName(0, false));
                 //SayTo(player, eChatLoc.CL_SystemWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Enchanter.Response.NotEnoughMoney", Money.GetString(Fee)));
                 return;
@@ -195,11 +195,11 @@ namespace DOL.GS
             // Message: You give {0} {1}.
             ChatUtil.SendSayMessage(player, "GameNPC.Enchanter.Response.YouGive",
 	            GetName(0, true),
-	            Money.GetString(Fee));
+	            MoneyMgr.GetString(Fee));
             //player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Enchanter.Response.YouGive", 
                                     //GetName(0, false, player.Client.Account.Language, this), Money.GetString(Fee)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             player.RemoveMoney(Fee, null);
-            InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, Fee);
+            InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, Fee);
             // Message: {0} says, "There, it is now {1}!"
             ChatUtil.SendSayMessage(player, "GameNPC.Enchanter.Response.NowEnchanted", 
 	            GetName(0, true),

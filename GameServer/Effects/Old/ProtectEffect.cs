@@ -37,7 +37,7 @@ namespace DOL.GS.Effects
 			set { m_protectTarget = value; }
 		}
 
-		private Group m_playerGroup;
+		private GroupUtil m_playerGroup;
 
 		/// <summary>
 		/// Creates a new protect effect

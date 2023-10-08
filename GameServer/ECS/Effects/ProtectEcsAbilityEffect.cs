@@ -46,7 +46,7 @@ namespace DOL.GS
 			set { m_protectTarget = value; }
 		}
 
-		private Group m_playerGroup;
+		private GroupUtil m_playerGroup;
 
 		public override ushort Icon { get { return 411; } }
         public override string Name 

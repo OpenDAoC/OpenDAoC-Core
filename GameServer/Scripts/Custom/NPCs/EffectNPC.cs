@@ -980,7 +980,7 @@ namespace DOL.GS
 
             player.TempProperties.RemoveProperty(EFFECTNPC_ITEM_WEAK);
 
-            if (item == null || item.SlotPosition == (int)eInventorySlot.Ground
+            if (item == null || item.SlotPosition == (int)EInventorySlot.Ground
                 || item.OwnerID == null || item.OwnerID != player.InternalID)
             {
                 player.Out.SendMessage("Invalid item.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -994,7 +994,7 @@ namespace DOL.GS
                 return;
             }
 
-            int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
             log.Info("Player Orbs:" + playerOrbs);
 
             if (playerOrbs < price)
@@ -1027,12 +1027,12 @@ namespace DOL.GS
             if(item.Creator != "")
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
-            player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
+            player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, newInventoryItem);
             player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
             //player.RealmPoints -= price;
             //player.RespecRealm();
             //SetRealmLevel(player, (int)player.RealmPoints);
-            player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            player.Inventory.RemoveTemplate(_currencyID, price, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
             player.TempProperties.RemoveProperty(TempProperty);
             player.TempProperties.RemoveProperty(DisplayedItem);
@@ -1089,14 +1089,14 @@ namespace DOL.GS
                 return;
             }
 
-            if (item == null || item.SlotPosition == (int)eInventorySlot.Ground
+            if (item == null || item.SlotPosition == (int)EInventorySlot.Ground
                 || item.OwnerID == null || item.OwnerID != player.InternalID)
             {
                 player.Out.SendMessage("Invalid item.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
             log.Info("Player Orbs:" + playerOrbs);
 
             if (playerOrbs < price)
@@ -1130,12 +1130,12 @@ namespace DOL.GS
             if(item.Creator != "")
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
-            player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
+            player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, newInventoryItem);
             player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
             //player.RealmPoints -= price;
             //player.RespecRealm();
             //SetRealmLevel(player, (int)player.RealmPoints);
-            player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            player.Inventory.RemoveTemplate(_currencyID, price, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
             player.TempProperties.RemoveProperty(TempProperty);
             player.TempProperties.RemoveProperty(DisplayedItem);
@@ -1171,12 +1171,12 @@ namespace DOL.GS
             tempAd.Target = display;
             if (item.Hand == 1)
             {
-                tempAd.AttackType = AttackData.eAttackType.MeleeTwoHand;
+                tempAd.AttackType = AttackData.EAttackType.MeleeTwoHand;
                 display.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             }
             else
             {
-                tempAd.AttackType = AttackData.eAttackType.MeleeOneHand;
+                tempAd.AttackType = AttackData.EAttackType.MeleeOneHand;
                 display.SwitchWeapon(EActiveWeaponSlot.Standard);
             }
 

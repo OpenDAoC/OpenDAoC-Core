@@ -102,12 +102,12 @@ namespace DOL.GS.AtlasQuest.Midgard
 				Rengahr.Z = 8776;
 				Rengahr.Heading = 3053;
 				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
-				templateMid.AddNPCEquipment(eInventorySlot.Cloak, 559, 43);
-				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 983);
-				templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 984, 43);
-				templateMid.AddNPCEquipment(eInventorySlot.ArmsArmor, 985, 43);
-				templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 986);
-				templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 987);
+				templateMid.AddNPCEquipment(EInventorySlot.Cloak, 559, 43);
+				templateMid.AddNPCEquipment(EInventorySlot.TorsoArmor, 983);
+				templateMid.AddNPCEquipment(EInventorySlot.LegsArmor, 984, 43);
+				templateMid.AddNPCEquipment(EInventorySlot.ArmsArmor, 985, 43);
+				templateMid.AddNPCEquipment(EInventorySlot.HandsArmor, 986);
+				templateMid.AddNPCEquipment(EInventorySlot.FeetArmor, 987);
 				Rengahr.Inventory = templateMid.CloseTemplate();
 				Rengahr.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -442,7 +442,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 			}
 			else
 			{
-				if (player.Inventory.IsSlotsFree(2, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				if (player.Inventory.IsSlotsFree(2, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
 					SendSystemMessage(player, "Thank you for helping Jeremy and his beetle family.");
 					GiveItem(player, beetle_egg);
@@ -468,7 +468,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 			}
 			else
 			{
-				if (player.Inventory.IsSlotsFree(2, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				if (player.Inventory.IsSlotsFree(2, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
 					SendSystemMessage(player, "Thank you for helping Jeremy and his beetle family.");
 					GiveItem(player, beetle_bone);
@@ -608,9 +608,9 @@ namespace DOL.GS.AtlasQuest.Midgard
 		{
 			int reward = ServerProperties.Properties.BEETLE_RVR_REWARD;
 			
-			m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
+			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
 				"You receive {0} as a reward.");
-			AtlasROGManager.GenerateReward(m_questPlayer, 5000);
+			CoreRoGMgr.GenerateReward(m_questPlayer, 5000);
 			_enemiesKilled = 0;
 			_captured = 0;
 			_relicsCaptured = 0;

@@ -40,7 +40,7 @@ namespace DOL.GS
 		}
 
 
-		private Guild m_ownerGuild = null;
+		private GuildUtil m_ownerGuild = null;
 		private GamePlayer m_summonPlayer = null;
 		private eStatus m_status = eStatus.Active;
 
@@ -64,7 +64,7 @@ namespace DOL.GS
 		/// <summary>
 		/// What guild owns this banner
 		/// </summary>
-		public Guild OwnerGuild
+		public GuildUtil OwnerGuild
 		{
 			get { return m_ownerGuild; }
 			set { m_ownerGuild = value; }
@@ -123,7 +123,7 @@ namespace DOL.GS
 
 				GameServer.Database.AddObject(template);
 				GameInventoryItem trophy = new GameInventoryItem(template);
-                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, trophy);
+                player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, trophy);
 				OwnerGuild.SendMessageToGuildMembers(player.Name + " of " + GlobalConstants.RealmToName(player.Realm) + " has captured your guild banner!", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 				OwnerGuild.GuildBannerLostTime = DateTime.Now;
 			}

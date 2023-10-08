@@ -484,7 +484,7 @@ namespace DOL.GS.Housing
 			// clear the house number for the guild if this is a guild house
 			if (house.DatabaseItem.GuildHouse)
 			{
-				Guild guild = GuildMgr.GetGuildByName(house.DatabaseItem.GuildName);
+				GuildUtil guild = GuildMgr.GetGuildByName(house.DatabaseItem.GuildName);
 				if (guild != null)
 				{
 					guild.GuildHouseNumber = 0;
@@ -545,7 +545,7 @@ namespace DOL.GS.Housing
 			// 1) belongs to the guild and is 2) a GM in the guild
 			if (player.Guild != null && house.GuildHouse)
 			{
-				if (player.Guild.Name == house.GuildName && player.Guild.HasRank(player, Guild.eRank.Leader))
+				if (player.Guild.Name == house.GuildName && player.Guild.HasRank(player, EGuildRank.Leader))
 					return true;
 			}
 			else
@@ -662,7 +662,7 @@ namespace DOL.GS.Housing
 			}
 
 			// player needs to be a GM in the guild to xfer his personal house to the guild
-			if (player.Guild.HasRank(player, Guild.eRank.Leader) == false)
+			if (player.Guild.HasRank(player, EGuildRank.Leader) == false)
 			{
 				ChatUtil.SendSystemMessage(player, "You are not the leader of a guild!");
 				return false;

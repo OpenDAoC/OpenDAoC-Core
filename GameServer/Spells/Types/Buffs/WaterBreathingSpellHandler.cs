@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 			eChatType toLiving = (Spell.Pulse == 0) ? eChatType.CT_Spell : eChatType.CT_SpellPulse;
 			eChatType toOther = (Spell.Pulse == 0) ? eChatType.CT_System : eChatType.CT_SpellPulse;
 			if (Spell.Message2 != "")
-				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
 			MessageToLiving(effect.Owner, Spell.Message1 == "" ? "You find yourself able to move freely and breathe water like air!" : Spell.Message1, toLiving);
 			base.OnEffectStart(effect);
 		}
@@ -68,7 +68,7 @@ namespace DOL.GS.Spells
             if (player != null)
 			{
                 //Check for Mythirian of Ektaktos on effect expiration to prevent unneccessary removal of Water Breathing Effect
-                DbInventoryItem item = player.Inventory.GetItem((eInventorySlot)37);
+                DbInventoryItem item = player.Inventory.GetItem((EInventorySlot)37);
                 if (item == null || !item.Name.ToLower().Contains("ektaktos"))
                 {
                     player.CanBreathUnderWater = false;

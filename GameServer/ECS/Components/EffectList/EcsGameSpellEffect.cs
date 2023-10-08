@@ -118,10 +118,10 @@ namespace DOL.GS
             {
                 if (Caster is GamePlayer caster && caster == target)
                     // "{0} looks more agile!"
-                    Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
+                    MessageUtil.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
                 else if (Caster is GameSummonedPet || target is GameSummonedPet or GamePlayer)
                     // "{0} looks more agile!"
-                    Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
+                    MessageUtil.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message2, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
             }
             // Sends a third-person message directly to the caster to indicate the spell has ended
             else if (msgSelf && Caster != target && Caster is GamePlayer)
@@ -162,10 +162,10 @@ namespace DOL.GS
             {
                 if (Caster is GamePlayer areaTarget && areaTarget == target)
                     // "{0}'s enhanced agility fades."
-                    Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
+                    MessageUtil.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_Spell, target, Caster);
                 else if (Caster is GameSummonedPet || target is GameSummonedPet or GamePlayer)
                     // "{0}'s enhanced agility fades."
-                    Message.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
+                    MessageUtil.SystemToArea(target, Util.MakeSentence(SpellHandler.Spell.Message4, target.GetName(0, upperCase)), eChatType.CT_Spell, target);
             }
         }
         #endregion Effect End Messages

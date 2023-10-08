@@ -238,8 +238,8 @@ public class AchievementReskinVendor : GameNPC
     {
         if (price > 0)
         {
-            int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack,
-                eInventorySlot.LastBackpack);
+            int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, EInventorySlot.FirstBackpack,
+                EInventorySlot.LastBackpack);
             log.Info("Player Orbs:" + playerOrbs);
 
             if (playerOrbs < price)
@@ -248,9 +248,9 @@ public class AchievementReskinVendor : GameNPC
                 return false;
             }
 
-            eInventorySlot slot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            EInventorySlot slot = player.Inventory.FindFirstEmptySlot(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
-            if (slot == eInventorySlot.Invalid)
+            if (slot == EInventorySlot.Invalid)
             {
                 SendReply(player, "I'm sorry, but you currently have no available inventory space for this Item.");
                 return false;
@@ -259,7 +259,7 @@ public class AchievementReskinVendor : GameNPC
             DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(TempProperty);
             DbInventoryItem displayItem = player.TempProperties.GetProperty<DbInventoryItem>(DisplayedItem);
 
-            DbInventoryItem foundItem = player.Inventory.GetFirstItemByID(item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            DbInventoryItem foundItem = player.Inventory.GetFirstItemByID(item.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
             if (foundItem == null)
             {
@@ -305,14 +305,14 @@ public class AchievementReskinVendor : GameNPC
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
 
-            player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
+            player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, newInventoryItem);
             player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
             // player.RemoveBountyPoints(300);
             //player.RealmPoints -= price;
             //player.RespecRealm();
             //SetRealmLevel(player, (int)player.RealmPoints);
-            player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack,
-                eInventorySlot.LastBackpack);
+            player.Inventory.RemoveTemplate(_currencyID, price, EInventorySlot.FirstBackpack,
+                EInventorySlot.LastBackpack);
 
             player.SaveIntoDatabase();
             return true;
@@ -327,8 +327,8 @@ public class AchievementReskinVendor : GameNPC
     {
         if (price > 0)
         {
-            int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack,
-                eInventorySlot.LastBackpack);
+            int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, EInventorySlot.FirstBackpack,
+                EInventorySlot.LastBackpack);
             //log.Info("Player Orbs:" + playerOrbs);
 
             if (playerOrbs < price)
@@ -337,9 +337,9 @@ public class AchievementReskinVendor : GameNPC
                 return;
             }
 
-            eInventorySlot slot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            EInventorySlot slot = player.Inventory.FindFirstEmptySlot(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
-            if (slot == eInventorySlot.Invalid)
+            if (slot == EInventorySlot.Invalid)
             {
                 SendReply(player, "I'm sorry, but you currently have no available inventoryspace for this Item.");
                 return;
@@ -347,7 +347,7 @@ public class AchievementReskinVendor : GameNPC
             DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(TempProperty);
             DbInventoryItem displayItem = player.TempProperties.GetProperty<DbInventoryItem>(DisplayedItem);
 
-            DbInventoryItem foundItem = player.Inventory.GetFirstItemByID(item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            DbInventoryItem foundItem = player.Inventory.GetFirstItemByID(item.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
             if (foundItem == null)
             {
@@ -381,15 +381,15 @@ public class AchievementReskinVendor : GameNPC
             if (item.Creator != "")
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
-            player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
+            player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, newInventoryItem);
             player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
             player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
             // player.RemoveBountyPoints(300);
             //player.RealmPoints -= price;
             //player.RespecRealm();
             //SetRealmLevel(player, (int)player.RealmPoints);
-            player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack,
-                eInventorySlot.LastBackpack);
+            player.Inventory.RemoveTemplate(_currencyID, price, EInventorySlot.FirstBackpack,
+                EInventorySlot.LastBackpack);
 
             player.SaveIntoDatabase();
 
@@ -445,12 +445,12 @@ public class AchievementReskinVendor : GameNPC
         tempAd.Target = display;
         if (item.Hand == 1)
         {
-            tempAd.AttackType = AttackData.eAttackType.MeleeTwoHand;
+            tempAd.AttackType = AttackData.EAttackType.MeleeTwoHand;
             display.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
         }
         else
         {
-            tempAd.AttackType = AttackData.eAttackType.MeleeOneHand;
+            tempAd.AttackType = AttackData.EAttackType.MeleeOneHand;
             display.SwitchWeapon(EActiveWeaponSlot.Standard);
         }
 

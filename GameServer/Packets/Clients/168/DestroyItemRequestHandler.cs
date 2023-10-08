@@ -28,7 +28,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		{
 			packet.Skip(4);
 			int slot = packet.ReadShort();
-			DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+			DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 			if (item != null)
 			{
 				if (item.IsIndestructible)
@@ -52,7 +52,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (client.Player.Inventory.RemoveItem(item))
 				{
 					client.Out.SendMessage($"You destroy the {item.Name}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					InventoryLogging.LogInventoryAction(client.Player, "(destroy)", eInventoryActionType.Other, item.Template, item.Count);
+					InventoryLogging.LogInventoryAction(client.Player, "(destroy)", EInventoryActionType.Other, item.Template, item.Count);
 				}
 			}
 		}

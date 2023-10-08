@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
 
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
-			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
 			player = effect.Owner as GamePlayer;
 			if (player == null) return;
 			int slot=Util.Random(0, 2);
@@ -55,7 +55,7 @@ namespace DOL.GS.Spells
 			foreach (GamePlayer visPlayer in player.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE))
 				visPlayer.Out.SendSpellEffectAnimation(player, player, (ushort)(13180+slot), 0, false, 0x01);
 
-			item = player.Inventory.GetItem((eInventorySlot)m_slot);
+			item = player.Inventory.GetItem((EInventorySlot)m_slot);
 			
 			if(item!=null)
 			{

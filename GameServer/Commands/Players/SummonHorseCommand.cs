@@ -20,8 +20,8 @@ public class SummonHorseCommand : ACommandHandler, ICommandHandler
 		}
 		finally
 		{
-			if (client.Player.Inventory.GetItem(eInventorySlot.Horse) != null)
-				client.Player.UseSlot(eInventorySlot.Horse, eUseType.clic);
+			if (client.Player.Inventory.GetItem(EInventorySlot.Horse) != null)
+				client.Player.UseSlot(EInventorySlot.Horse, EUseType.clic);
 		}
 	}
 }

@@ -215,8 +215,8 @@ namespace DOL.Tests
 		{
 			if (SendPlayerCreateMethod != null) SendPlayerCreateMethod(this, playerToCreate);
 		}
-		public Action<TestPacketLib, GameObject, Guild> SendObjectGuildIDMethod { get; set; }
-		public void SendObjectGuildID(GameObject obj, Guild guild)
+		public Action<TestPacketLib, GameObject, GuildUtil> SendObjectGuildIDMethod { get; set; }
+		public void SendObjectGuildID(GameObject obj, GuildUtil guild)
 		{
 			if (SendObjectGuildIDMethod != null) SendObjectGuildIDMethod(this, obj, guild);
 		}

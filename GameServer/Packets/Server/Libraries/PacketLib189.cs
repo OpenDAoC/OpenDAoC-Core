@@ -202,17 +202,17 @@ namespace DOL.GS.PacketHandler
 				{
 					foreach (int updatedSlot in slots)
 					{
-						if (updatedSlot >= (int)eInventorySlot.Consignment_First && updatedSlot <= (int)eInventorySlot.Consignment_Last)
+						if (updatedSlot >= (int)EInventorySlot.Consignment_First && updatedSlot <= (int)EInventorySlot.Consignment_Last)
 						{
 							log.Error("PacketLib198:SendInventorySlotsUpdateBase - GameConsignmentMerchant inventory is no longer cached with player.  Use a Dictionary<int, InventoryItem> instead.");
-							pak.WriteByte((byte)(updatedSlot - (int)eInventorySlot.Consignment_First + (int)eInventorySlot.HousingInventory_First));
+							pak.WriteByte((byte)(updatedSlot - (int)EInventorySlot.Consignment_First + (int)EInventorySlot.HousingInventory_First));
 						}
 						else
 						{
 							pak.WriteByte((byte)(updatedSlot));
 						}
 
-						WriteItemData(pak, m_gameClient.Player.Inventory.GetItem((eInventorySlot)(updatedSlot)));
+						WriteItemData(pak, m_gameClient.Player.Inventory.GetItem((EInventorySlot)(updatedSlot)));
 
 					}
 				}
@@ -405,7 +405,7 @@ namespace DOL.GS.PacketHandler
 				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
                     name += "[" + item.SellPrice.ToString() + " BP]";
                 else
-                    name += "[" + Money.GetShortString(item.SellPrice) + "]";
+                    name += "[" + MoneyMgr.GetShortString(item.SellPrice) + "]";
             }
 
 			if (name.Length > MAX_NAME_LENGTH)

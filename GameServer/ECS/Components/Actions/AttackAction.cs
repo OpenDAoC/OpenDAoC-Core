@@ -65,7 +65,7 @@ namespace DOL.GS
             }
 
             _weapon = _owner.ActiveWeapon;
-            _leftWeapon = _owner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+            _leftWeapon = _owner.Inventory?.GetItem(EInventorySlot.LeftHandWeapon);
             _effectiveness = _owner.Effectiveness;
 
             if (_owner.ActiveWeaponSlot != EActiveWeaponSlot.Distance)

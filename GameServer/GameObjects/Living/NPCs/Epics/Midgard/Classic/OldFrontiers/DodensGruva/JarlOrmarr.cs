@@ -111,7 +111,7 @@ namespace DOL.GS.Scripts
 			if (playerKiller?.Group != null)
 			{
 				foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-					AtlasROGManager.GenerateReward(groupPlayer,OrbsReward);
+					CoreRoGMgr.GenerateReward(groupPlayer,OrbsReward);
 			}
 
 			base.Die(killer);

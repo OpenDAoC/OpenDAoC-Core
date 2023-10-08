@@ -1282,7 +1282,7 @@ namespace DOL.GS.Spells
 					{
 						CastState = ECastState.Cleanup;
 
-						var stone = Caster.Inventory.GetFirstItemByName("Personal Bind Recall Stone", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+						var stone = Caster.Inventory.GetFirstItemByName("Personal Bind Recall Stone", EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 						stone.CanUseAgainIn = stone.CanUseEvery;
 
 						//.SetCooldown();
@@ -1940,7 +1940,7 @@ namespace DOL.GS.Spells
 				}
 				case ESpellTarget.GROUP:
 				{
-					Group group = m_caster.Group;
+					GroupUtil group = m_caster.Group;
 						
 					int spellRange;
 					if (Spell.Range == 0)
@@ -2377,7 +2377,7 @@ namespace DOL.GS.Spells
 				AttackData ad = new AttackData();
 				ad.Attacker = Caster;
 				ad.Target = target;
-				ad.AttackType = AttackData.eAttackType.Spell;
+				ad.AttackType = AttackData.EAttackType.Spell;
 				ad.SpellHandler = this;
 				ad.AttackResult = EAttackResult.HitUnstyled;
 				ad.IsSpellResisted = false;
@@ -2737,7 +2737,7 @@ namespace DOL.GS.Spells
 			AttackData ad = new AttackData();
 			ad.Attacker = Caster;
 			ad.Target = target;
-			ad.AttackType = AttackData.eAttackType.Spell;
+			ad.AttackType = AttackData.EAttackType.Spell;
 			ad.SpellHandler = this;
 			ad.AttackResult = EAttackResult.Missed;
 			ad.IsSpellResisted = true;
@@ -2753,7 +2753,7 @@ namespace DOL.GS.Spells
 			// Spells that would have caused damage or are not instant will still
 			// interrupt a casting player.
 			if(!(Spell.SpellType.ToString().IndexOf("debuff", StringComparison.OrdinalIgnoreCase) >= 0 && Spell.CastTime == 0))
-				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);			
+				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);			
 		}
 		
 		/// <summary>
@@ -3378,7 +3378,7 @@ namespace DOL.GS.Spells
 			{
 				Attacker = m_caster,
 				Target = target,
-				AttackType = AttackData.eAttackType.Spell,
+				AttackType = AttackData.EAttackType.Spell,
 				SpellHandler = this,
 				AttackResult = EAttackResult.HitUnstyled
 			};

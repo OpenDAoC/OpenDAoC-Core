@@ -156,12 +156,12 @@ namespace DOL.GS.PacketHandler
 				{
 					foreach (int updatedSlot in slots)
 					{
-						if (updatedSlot >= (int)eInventorySlot.Consignment_First && updatedSlot <= (int)eInventorySlot.Consignment_Last)
-							pak.WriteByte((byte)(updatedSlot - (int)eInventorySlot.Consignment_First + (int)eInventorySlot.HousingInventory_First));
+						if (updatedSlot >= (int)EInventorySlot.Consignment_First && updatedSlot <= (int)EInventorySlot.Consignment_Last)
+							pak.WriteByte((byte)(updatedSlot - (int)EInventorySlot.Consignment_First + (int)EInventorySlot.HousingInventory_First));
 						else
 							pak.WriteByte((byte)(updatedSlot));
 						DbInventoryItem item = null;
-						item = m_gameClient.Player.Inventory.GetItem((eInventorySlot)updatedSlot);
+						item = m_gameClient.Player.Inventory.GetItem((EInventorySlot)updatedSlot);
 
 						if (item == null)
 						{
@@ -255,7 +255,7 @@ namespace DOL.GS.PacketHandler
 							if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 	                            name += "[" + item.SellPrice.ToString() + " BP]";
 	                        else
-	                            name += "[" + Money.GetString(item.SellPrice) + "]";
+	                            name += "[" + MoneyMgr.GetString(item.SellPrice) + "]";
 	                    }
 						pak.WritePascalString(name);
 					}

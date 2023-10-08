@@ -76,7 +76,7 @@ public class HouseFriendCommand : ACommandHandler, ICommandHandler
                 if (args.Length == 2)
                     return;
 
-                Guild targetGuild = GuildMgr.GetGuildByName(args[2]);
+                GuildUtil targetGuild = GuildMgr.GetGuildByName(args[2]);
 
                 if (targetGuild == null)
                 {

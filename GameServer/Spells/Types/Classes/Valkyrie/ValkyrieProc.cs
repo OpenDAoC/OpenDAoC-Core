@@ -23,7 +23,7 @@ namespace DOL.GS.Spells
                 chatType = eChatType.CT_Spell;
             }
             MessageToLiving(effect.Owner, Spell.Message1, chatType);
-            Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), chatType, effect.Owner);
+            MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), chatType, effect.Owner);
             GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackFinished, new CoreEventHandler(EventHandler));
         }
 
@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
             if (!noMessages)
             {
                 MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-                Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
+                MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
             }
             GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackFinished, new CoreEventHandler(EventHandler));
             return 0;
@@ -50,7 +50,7 @@ namespace DOL.GS.Spells
                 return;
 
             int baseChance = 0;
-            if (ad.AttackType == AttackData.eAttackType.Ranged)
+            if (ad.AttackType == AttackData.EAttackType.Ranged)
             {
                 baseChance = (int)(Spell.Frequency * .0001);
             }
@@ -60,7 +60,7 @@ namespace DOL.GS.Spells
                 if (sender is GamePlayer)
                 {
                     GamePlayer player = (GamePlayer)sender;
-                    DbInventoryItem leftWeapon = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                    DbInventoryItem leftWeapon = player.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
                     // if we can use left weapon, we have currently a weapon in left hand and we still have endurance,
                     // we can assume that we are using the two weapons.
                     if (player.attackComponent.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)EObjectType.Shield)

@@ -110,7 +110,7 @@ namespace DOL.GS
 			Faction = FactionMgr.GetFactionByID(93);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 841, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 841, 0, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

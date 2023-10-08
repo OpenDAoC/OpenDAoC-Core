@@ -68,7 +68,7 @@ namespace DOL.GS.Effects
         // <summary>
         // Holds player group
         // <//summary>
-        private Group m_playerGroup;
+        private GroupUtil m_playerGroup;
 
         // <summary>
         // Creates a new guard effect

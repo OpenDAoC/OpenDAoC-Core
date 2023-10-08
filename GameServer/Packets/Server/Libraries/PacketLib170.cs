@@ -406,7 +406,7 @@ namespace DOL.GS.PacketHandler
 					int map = (id - 25) / 25;
 					int index = id - (map * 25 + 25);
 					int flag = (byte)keep.Realm; // 3 bits
-					Guild guild = keep.Guild;
+					GuildUtil guild = keep.Guild;
 					string name = "";
 					pak.WriteByte((byte)((map << 6) | (index << 3) | tower));
 					if (guild != null)

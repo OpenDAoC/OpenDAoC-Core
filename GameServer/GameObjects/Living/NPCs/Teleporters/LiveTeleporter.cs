@@ -43,13 +43,13 @@ namespace DOL.GS.Scripts
                     Model = 61;
 
                     GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
-                    templateAlb.AddNPCEquipment(eInventorySlot.Cloak, 57, 66);
-                    templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 1005, 86);
-                    templateAlb.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 6);
-                    templateAlb.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 6);
-                    templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 6);
-                    templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 6);
-                    templateAlb.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166);
+                    templateAlb.AddNPCEquipment(EInventorySlot.Cloak, 57, 66);
+                    templateAlb.AddNPCEquipment(EInventorySlot.TorsoArmor, 1005, 86);
+                    templateAlb.AddNPCEquipment(EInventorySlot.LegsArmor, 140, 6);
+                    templateAlb.AddNPCEquipment(EInventorySlot.ArmsArmor, 141, 6);
+                    templateAlb.AddNPCEquipment(EInventorySlot.HandsArmor, 142, 6);
+                    templateAlb.AddNPCEquipment(EInventorySlot.FeetArmor, 143, 6);
+                    templateAlb.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 1166);
                     Inventory = templateAlb.CloseTemplate();
                     break;
                 case ERealm.Midgard:
@@ -58,11 +58,11 @@ namespace DOL.GS.Scripts
                     Model = 215;
 
                     GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
-                    templateMid.AddNPCEquipment(eInventorySlot.Cloak, 57, 26);
-                    templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 245, 26);
-                    templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 246, 26);
-                    templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 248, 26);
-                    templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 249, 26);
+                    templateMid.AddNPCEquipment(EInventorySlot.Cloak, 57, 26);
+                    templateMid.AddNPCEquipment(EInventorySlot.TorsoArmor, 245, 26);
+                    templateMid.AddNPCEquipment(EInventorySlot.LegsArmor, 246, 26);
+                    templateMid.AddNPCEquipment(EInventorySlot.HandsArmor, 248, 26);
+                    templateMid.AddNPCEquipment(EInventorySlot.FeetArmor, 249, 26);
                     Inventory = templateMid.CloseTemplate();
                     break;
                 case ERealm.Hibernia:
@@ -71,10 +71,10 @@ namespace DOL.GS.Scripts
                     Model = 342;
 
                     GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
-                    templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008);
-                    templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 396);
-                    templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 402);
-                    templateHib.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468);
+                    templateHib.AddNPCEquipment(EInventorySlot.TorsoArmor, 1008);
+                    templateHib.AddNPCEquipment(EInventorySlot.HandsArmor, 396);
+                    templateHib.AddNPCEquipment(EInventorySlot.FeetArmor, 402);
+                    templateHib.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 468);
                     Inventory = templateHib.CloseTemplate();
                     break;
             }

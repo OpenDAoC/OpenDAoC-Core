@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,10 +8,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// This class represents a Group inside the game
-	/// </summary>
-	public class Group
+	public class GroupUtil
 	{
 		public object _groupLock = new object();
 
@@ -39,7 +17,7 @@ namespace DOL.GS
 		/// Default Constructor with GamePlayer Leader.
 		/// </summary>
 		/// <param name="leader"></param>
-		public Group(GamePlayer leader)
+		public GroupUtil(GamePlayer leader)
 			: this((GameLiving)leader)
 		{
 		}
@@ -48,7 +26,7 @@ namespace DOL.GS
 		/// Default Constructor with GameLiving Leader.
 		/// </summary>
 		/// <param name="leader"></param>
-		public Group(GameLiving leader)
+		public GroupUtil(GameLiving leader)
 		{
 			LivingLeader = leader;
 			m_groupMembers = new ReaderWriterList<GameLiving>(ServerProperties.Properties.GROUP_MAX_MEMBER);
@@ -235,7 +213,7 @@ namespace DOL.GS
 			if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
 			{
 				IControlledBrain controlledBrain = player.ControlledBrain;
-				Guild playerGuild = player.Guild;
+				GuildUtil playerGuild = player.Guild;
 				bool updateOneself = false;
 
 				// Update how the added player sees their pet and themself.
@@ -248,13 +226,13 @@ namespace DOL.GS
 				// Let's all be friends.
 				foreach (GamePlayer groupMember in m_groupMembers.OfType<GamePlayer>().Where(x => x != player))
 				{
-					Guild groupMemberGuild = groupMember.Guild;
+					GuildUtil groupMemberGuild = groupMember.Guild;
 
 					if (controlledBrain != null)
 					{
 						// Update how the group member sees the added player's pet and themself.
 						SendControlledBodyGuildID(groupMember, groupMemberGuild, controlledBrain.Body);
-						groupMember.Out.SendObjectGuildID(groupMember, groupMemberGuild ?? Guild.DummyGuild);
+						groupMember.Out.SendObjectGuildID(groupMember, groupMemberGuild ?? GuildUtil.DummyGuild);
 					}
 
 					IControlledBrain groupMemberControlledBrain = groupMember.ControlledBrain;
@@ -268,7 +246,7 @@ namespace DOL.GS
 				}
 
 				if (updateOneself)
-					player.Out.SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
+					player.Out.SendObjectGuildID(player, playerGuild ?? GuildUtil.DummyGuild);
 			}
 
 			return true;
@@ -309,7 +287,7 @@ namespace DOL.GS
 				if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
 				{
 					IControlledBrain controlledBrain = player.ControlledBrain;
-					Guild playerGuild = player.Guild;
+					GuildUtil playerGuild = player.Guild;
 					bool updateOneself = false;
 
 					// Update how the removed player sees their pet and themself.
@@ -321,7 +299,7 @@ namespace DOL.GS
 
 					foreach (GamePlayer groupMember in m_groupMembers.OfType<GamePlayer>())
 					{
-						Guild groupMemberGuild = groupMember.Guild;
+						GuildUtil groupMemberGuild = groupMember.Guild;
 
 						if (playerGuild == null || groupMemberGuild == null || playerGuild != groupMemberGuild)
 						{
@@ -342,7 +320,7 @@ namespace DOL.GS
 					}
 
 					if (updateOneself)
-						player.Out.SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
+						player.Out.SendObjectGuildID(player, playerGuild ?? GuildUtil.DummyGuild);
 				}
 
 				player.Out.SendMessage("You leave your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -383,7 +361,7 @@ namespace DOL.GS
 
 		// Part of the hack to make friendly pets untargetable (or targetable again) with TAB on a PvP server.
 		// Calls 'SendObjectGuildID' on the player and looks for all controlled NPCs controlled by 'controlledBody' recursively.
-		private static void SendControlledBodyGuildID(GamePlayer player, Guild playerGuild, GameNPC controlledBody)
+		private static void SendControlledBodyGuildID(GamePlayer player, GuildUtil playerGuild, GameNPC controlledBody)
 		{
 			IControlledBrain[] npcControlledBrains = controlledBody.ControlledNpcList;
 
@@ -393,7 +371,7 @@ namespace DOL.GS
 					SendControlledBodyGuildID(player, playerGuild, npcControlledBrain.Body);
 			}
 
-			player.Out.SendObjectGuildID(controlledBody, playerGuild ?? Guild.DummyGuild);
+			player.Out.SendObjectGuildID(controlledBody, playerGuild ?? GuildUtil.DummyGuild);
 		}
 
 		/// <summary>
@@ -625,7 +603,7 @@ namespace DOL.GS
 			{
 				StringBuilder text = new StringBuilder(64); //create the string builder
 				text.Length = 0;
-				BattleGroup mybattlegroup = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				BattleGroupUtil mybattlegroup = player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 				foreach (GamePlayer plr in m_groupMembers)
 				{
 					if (mybattlegroup.IsInTheBattleGroup(plr))
@@ -653,7 +631,7 @@ namespace DOL.GS
 			{
 				StringBuilder text = new StringBuilder(64); //create the string builder
 				text.Length = 0;
-				BattleGroup mybattlegroup = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				BattleGroupUtil mybattlegroup = player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 				foreach (GamePlayer plr in m_groupMembers)
 				{
 					text.Append($"{plr.Name} ({plr.CharacterClass.Name}) ");

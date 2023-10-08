@@ -17,7 +17,7 @@ namespace DOL.GS.Scripts
             }
             // adding dark blue robe
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 58, 26);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 26);
             //LoadEquipmentTemplateFromDatabase("SummonedVaultkeeper");
             template.CloseTemplate();
             

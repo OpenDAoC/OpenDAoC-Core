@@ -3,9 +3,10 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
-namespace DOL.GS {
-    public static class AtlasROGManager {
-
+namespace DOL.GS 
+{
+    public static class CoreRoGMgr 
+    {
         private static DbItemTemplate beadTemplate = null;
         
         private static string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
@@ -61,7 +62,7 @@ namespace DOL.GS {
                 GameServer.Database.AddObject(item);
                 DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
-                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+                player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
             }
         }
@@ -82,7 +83,7 @@ namespace DOL.GS {
                 GameServer.Database.AddObject(item);
                 DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
-                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+                player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
             }
         }
@@ -109,7 +110,7 @@ namespace DOL.GS {
                 GameServer.Database.AddObject(item);
                 DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
-                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
+                player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
                 player.Out.SendMessage(
                     LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet",
                         invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
@@ -202,7 +203,7 @@ namespace DOL.GS {
 
                 if (!player.Inventory.AddCountToStack(item,totOrbs))
                 {
-                    if(!player.Inventory.AddTemplate(item, totOrbs, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+                    if(!player.Inventory.AddTemplate(item, totOrbs, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
                     {
                         item.Count = totOrbs;
                         player.CreateItemOnTheGround(item);
@@ -236,7 +237,7 @@ namespace DOL.GS {
 
                 if (!player.Inventory.AddCountToStack(item,amount))
                 {
-                    if(!player.Inventory.AddTemplate(item, amount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+                    if(!player.Inventory.AddTemplate(item, amount, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
                     {
                         item.Count = amount;
                         player.CreateItemOnTheGround(item);
@@ -263,7 +264,7 @@ namespace DOL.GS {
 
                 if (!player.Inventory.AddCountToStack(item,amount))
                 {
-                    if(!player.Inventory.AddTemplate(item, amount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+                    if(!player.Inventory.AddTemplate(item, amount, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
                     {
                         item.Count = amount;
                         player.CreateItemOnTheGround(item);

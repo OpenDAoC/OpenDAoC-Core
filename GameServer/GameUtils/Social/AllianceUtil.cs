@@ -1,36 +1,14 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using DOL.Database;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Alliance are the alliance between guild in game
-	/// </summary>
-	public class Alliance
+	public class AllianceUtil
 	{
 		protected ArrayList m_guilds;
 		protected DbGuildAlliance m_dballiance;
-		public Alliance()
+		public AllianceUtil()
 		{
 			m_dballiance = null;
 			m_guilds = new ArrayList(2);
@@ -59,7 +37,7 @@ namespace DOL.GS
 		}
 
 		#region IList
-		public void AddGuild(Guild myguild)
+		public void AddGuild(GuildUtil myguild)
 		{
 			lock (Guilds.SyncRoot)
 			{
@@ -75,7 +53,7 @@ namespace DOL.GS
 				SendMessageToAllianceMembers(myguild.Name + " has joined the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
 			}
 		}
-		public void RemoveGuild(Guild myguild)
+		public void RemoveGuild(GuildUtil myguild)
 		{
 			lock (Guilds.SyncRoot)
 			{
@@ -86,7 +64,7 @@ namespace DOL.GS
                 {
                     SendMessageToAllianceMembers(myguild.Name + " has disbanded the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
                     ArrayList mgl = new ArrayList(Guilds);
-                    foreach (Guild mg in mgl)
+                    foreach (GuildUtil mg in mgl)
                     {
                         try
                         {
@@ -111,7 +89,7 @@ namespace DOL.GS
 			}
 		}
 		
-		public void PromoteGuild(Guild myguild)
+		public void PromoteGuild(GuildUtil myguild)
 		{
 			lock (Guilds.SyncRoot)
 			{
@@ -131,7 +109,7 @@ namespace DOL.GS
 		{
 			lock (Guilds.SyncRoot)
 			{
-				foreach (Guild guild in Guilds)
+				foreach (GuildUtil guild in Guilds)
 				{
 					guild.alliance = null;
 					guild.AllianceId = "";
@@ -141,7 +119,7 @@ namespace DOL.GS
 				Guilds.Clear();
 			}
 		}
-		public bool Contains(Guild myguild)
+		public bool Contains(GuildUtil myguild)
 		{
 			lock (Guilds.SyncRoot)
 			{
@@ -158,7 +136,7 @@ namespace DOL.GS
 		{
 			lock (Guilds.SyncRoot)
 			{
-				foreach (Guild guild in Guilds)
+				foreach (GuildUtil guild in Guilds)
 				{
 					guild.SendMessageToGuildMembers(msg, type, loc);
 				}
@@ -185,7 +163,7 @@ namespace DOL.GS
 			GameServer.Database.SaveObject(m_dballiance);
 			lock (Guilds.SyncRoot)
 			{
-				foreach (Guild guild in Guilds)
+				foreach (GuildUtil guild in Guilds)
 				{
 					guild.SaveIntoDatabase();
 				}

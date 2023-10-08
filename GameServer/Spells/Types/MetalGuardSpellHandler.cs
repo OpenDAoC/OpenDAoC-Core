@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
             if (Caster is GamePlayer)
             {
                 GamePlayer casterPlayer = (GamePlayer)Caster;
-                Group group = casterPlayer.Group;
+                GroupUtil group = casterPlayer.Group;
                 if(group == null) return list; // Should not appen since it is checked in ability handler
                 int spellRange = CalculateSpellRange();
                 if (group != null)

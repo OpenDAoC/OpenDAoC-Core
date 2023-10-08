@@ -30,16 +30,16 @@ namespace DOL.GS
 			switch (Realm)
 			{
 				case ERealm.Albion: 
-					template.AddNPCEquipment(eInventorySlot.TorsoArmor, 2230); break;
+					template.AddNPCEquipment(EInventorySlot.TorsoArmor, 2230); break;
 				case ERealm.Midgard:
-					template.AddNPCEquipment(eInventorySlot.TorsoArmor, 2232);
-					template.AddNPCEquipment(eInventorySlot.ArmsArmor, 2233);
-					template.AddNPCEquipment(eInventorySlot.LegsArmor, 2234);
-					template.AddNPCEquipment(eInventorySlot.HandsArmor, 2235);
-					template.AddNPCEquipment(eInventorySlot.FeetArmor, 2236);
+					template.AddNPCEquipment(EInventorySlot.TorsoArmor, 2232);
+					template.AddNPCEquipment(EInventorySlot.ArmsArmor, 2233);
+					template.AddNPCEquipment(EInventorySlot.LegsArmor, 2234);
+					template.AddNPCEquipment(EInventorySlot.HandsArmor, 2235);
+					template.AddNPCEquipment(EInventorySlot.FeetArmor, 2236);
 					break;
 				case ERealm.Hibernia:
-					template.AddNPCEquipment(eInventorySlot.TorsoArmor, 2231); ; break;
+					template.AddNPCEquipment(EInventorySlot.TorsoArmor, 2231); ; break;
 			}
 
             Inventory = template.CloseTemplate();

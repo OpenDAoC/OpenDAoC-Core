@@ -92,12 +92,12 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 				Stefano.Heading = 3066;
 				Stefano.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
-				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 734,0,0,3);
-				templateHib.AddNPCEquipment(eInventorySlot.LegsArmor, 735);
-				templateHib.AddNPCEquipment(eInventorySlot.ArmsArmor, 736);
-				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 737, 0,0,3);
-				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 738, 0, 0, 3);
-				templateHib.AddNPCEquipment(eInventorySlot.Cloak, 678);
+				templateHib.AddNPCEquipment(EInventorySlot.TorsoArmor, 734,0,0,3);
+				templateHib.AddNPCEquipment(EInventorySlot.LegsArmor, 735);
+				templateHib.AddNPCEquipment(EInventorySlot.ArmsArmor, 736);
+				templateHib.AddNPCEquipment(EInventorySlot.HandsArmor, 737, 0,0,3);
+				templateHib.AddNPCEquipment(EInventorySlot.FeetArmor, 738, 0, 0, 3);
+				templateHib.AddNPCEquipment(EInventorySlot.Cloak, 678);
 				Stefano.Inventory = templateHib.CloseTemplate();
 				Stefano.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -352,8 +352,8 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 			int reward = ServerProperties.Properties.WEEKLY_RVR_REWARD;
 			
 			m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateReward(m_questPlayer, 1500);
+			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
+			CoreRoGMgr.GenerateReward(m_questPlayer, 1500);
 			EnemiesKilled = 0;
 			
 			if (reward > 0)

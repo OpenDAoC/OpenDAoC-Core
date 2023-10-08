@@ -190,7 +190,7 @@ namespace DOL.GS
 					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 
-				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
+				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, ENewsType.RvRGlobal, false);
 				
 				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
 				{
@@ -201,7 +201,7 @@ namespace DOL.GS
 				//select targets to increase CapturedRelics
 				//TODO increase stats
 				
-				BattleGroup relicBG = relic.CurrentCarrier?.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				BattleGroupUtil relicBG = relic.CurrentCarrier?.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 				List<GamePlayer> targets = new List<GamePlayer>();
 
 				if (relicBG != null)
@@ -262,7 +262,7 @@ namespace DOL.GS
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
 					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
-				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
+				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, ENewsType.RvRGlobal, false);
 				
 				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
 				{

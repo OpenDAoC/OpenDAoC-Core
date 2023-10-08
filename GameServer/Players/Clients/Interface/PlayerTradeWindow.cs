@@ -456,7 +456,7 @@ namespace DOL.GS
                         if (partnerEnoughMoney)
                         {
                             partner.AddMoney(m_partnerWindow.TradeMoney);
-                            InventoryLogging.LogInventoryAction(partner, m_owner, eInventoryActionType.Trade, m_partnerWindow.TradeMoney);
+                            InventoryLogging.LogInventoryAction(partner, m_owner, EInventoryActionType.Trade, m_partnerWindow.TradeMoney);
                         }
 
 					    m_owner.Out.SendMessage("You don't have enough money.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
@@ -469,7 +469,7 @@ namespace DOL.GS
                         if (enoughMoney)
                         {
                             m_owner.AddMoney(TradeMoney);
-                            InventoryLogging.LogInventoryAction(m_owner, partner, eInventoryActionType.Trade, TradeMoney);
+                            InventoryLogging.LogInventoryAction(m_owner, partner, EInventoryActionType.Trade, TradeMoney);
                         }
 
 					    partner.Out.SendMessage("You don't have enough money.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
@@ -535,8 +535,8 @@ namespace DOL.GS
 					//Test if we and our partner have enough space in inventory
 					int mySpaceNeeded      = Math.Max(0, partnerTradeItemsCount - myTradeItemsCount);
 					int partnerSpaceNeeded = Math.Max(0, myTradeItemsCount - partnerTradeItemsCount);
-					bool enoughSpace        = m_owner.Inventory.IsSlotsFree(mySpaceNeeded, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-					bool partnerEnoughSpace = partner.Inventory.IsSlotsFree(partnerSpaceNeeded, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+					bool enoughSpace        = m_owner.Inventory.IsSlotsFree(mySpaceNeeded, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
+					bool partnerEnoughSpace = partner.Inventory.IsSlotsFree(partnerSpaceNeeded, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
 					//Check the preconditions
 					if (!enoughSpace || !partnerEnoughSpace)
@@ -629,11 +629,11 @@ namespace DOL.GS
 
 						if (item.IsDeleted)
 						{
-							tradeSuccess = partner.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, itemtoadd);
+							tradeSuccess = partner.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, itemtoadd);
 						}
 						else
 						{
-							tradeSuccess = partner.Inventory.AddTradeItem(eInventorySlot.FirstEmptyBackpack, itemtoadd);
+							tradeSuccess = partner.Inventory.AddTradeItem(EInventorySlot.FirstEmptyBackpack, itemtoadd);
 						}
 
 						if (!tradeSuccess)
@@ -642,7 +642,7 @@ namespace DOL.GS
 						}
 						else
 						{
-                            InventoryLogging.LogInventoryAction(m_owner, partner, eInventoryActionType.Trade, item.Template, item.Count);
+                            InventoryLogging.LogInventoryAction(m_owner, partner, EInventoryActionType.Trade, item.Template, item.Count);
 						    if (logTrade)
 						    {
 						        GameServer.Instance.LogGMAction("   Item: " + m_owner.Name + "(" + m_owner.Client.Account.Name + ") -> " + partner.Name + "(" + partner.Client.Account.Name + ") : " + item.Name + "(" + item.Id_nb + ")");
@@ -672,11 +672,11 @@ namespace DOL.GS
 
 						if (item.IsDeleted)
 						{
-							tradeSuccess = m_owner.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, itemtoadd);
+							tradeSuccess = m_owner.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, itemtoadd);
 						}
 						else
 						{
-							tradeSuccess = m_owner.Inventory.AddTradeItem(eInventorySlot.FirstEmptyBackpack, itemtoadd);
+							tradeSuccess = m_owner.Inventory.AddTradeItem(EInventorySlot.FirstEmptyBackpack, itemtoadd);
 						}
 
 						if (!tradeSuccess)
@@ -685,7 +685,7 @@ namespace DOL.GS
 						}
 						else
 						{
-                            InventoryLogging.LogInventoryAction(partner, m_owner, eInventoryActionType.Trade, item.Template, item.Count);
+                            InventoryLogging.LogInventoryAction(partner, m_owner, EInventoryActionType.Trade, item.Template, item.Count);
 						    if (logTrade)
 						    {
 						        GameServer.Instance.LogGMAction("   Item: " + partner.Name + "(" + partner.Client.Account.Name + ") -> " + m_owner.Name + "(" + m_owner.Client.Account.Name + ") : " + item.Name + "(" + item.Id_nb + ")");
@@ -718,8 +718,8 @@ namespace DOL.GS
 					//Now add the money
 					m_owner.AddMoney(m_partnerWindow.TradeMoney, "You get {0}.");
 					partner.AddMoney(TradeMoney, "You get {0}.");
-                    InventoryLogging.LogInventoryAction(m_owner, partner, eInventoryActionType.Trade, TradeMoney);
-                    InventoryLogging.LogInventoryAction(partner, m_owner, eInventoryActionType.Trade, m_partnerWindow.TradeMoney);
+                    InventoryLogging.LogInventoryAction(m_owner, partner, EInventoryActionType.Trade, TradeMoney);
+                    InventoryLogging.LogInventoryAction(partner, m_owner, EInventoryActionType.Trade, m_partnerWindow.TradeMoney);
 					m_owner.SaveIntoDatabase();
 					partner.SaveIntoDatabase();
 				}

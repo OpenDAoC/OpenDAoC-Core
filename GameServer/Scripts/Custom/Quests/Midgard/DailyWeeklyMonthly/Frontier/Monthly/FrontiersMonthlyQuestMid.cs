@@ -96,14 +96,14 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				Kelteen.Heading = 2245;
 				Kelteen.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
-				templateMid.AddNPCEquipment(eInventorySlot.Cloak, 1722);
-				templateMid.AddNPCEquipment(eInventorySlot.HeadArmor, 1288);
-				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 2517);
-				templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 1645);
-				templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 1643);
-				templateMid.AddNPCEquipment(eInventorySlot.DistanceWeapon, 3239);
+				templateMid.AddNPCEquipment(EInventorySlot.Cloak, 1722);
+				templateMid.AddNPCEquipment(EInventorySlot.HeadArmor, 1288);
+				templateMid.AddNPCEquipment(EInventorySlot.TorsoArmor, 2517);
+				templateMid.AddNPCEquipment(EInventorySlot.HandsArmor, 1645);
+				templateMid.AddNPCEquipment(EInventorySlot.FeetArmor, 1643);
+				templateMid.AddNPCEquipment(EInventorySlot.DistanceWeapon, 3239);
 				Kelteen.Inventory = templateMid.CloseTemplate();
-				Kelteen.VisibleActiveWeaponSlots = (byte) eInventorySlot.DistanceWeapon;
+				Kelteen.VisibleActiveWeaponSlots = (byte) EInventorySlot.DistanceWeapon;
 				Kelteen.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
@@ -367,14 +367,14 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		{
 			int reward = ServerProperties.Properties.MONTHLY_RVR_REWARD;
 			
-			if (m_questPlayer.Inventory.IsSlotsFree(3, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (m_questPlayer.Inventory.IsSlotsFree(3, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
 				m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
-				m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
+				m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
 					"You receive {0} as a reward.");
-				AtlasROGManager.GenerateReward(m_questPlayer, 5000);
-				AtlasROGManager.GenerateBeetleCarapace(m_questPlayer, 2);
-				AtlasROGManager.GenerateJewel(m_questPlayer, 51);
+				CoreRoGMgr.GenerateReward(m_questPlayer, 5000);
+				CoreRoGMgr.GenerateBeetleCarapace(m_questPlayer, 2);
+				CoreRoGMgr.GenerateJewel(m_questPlayer, 51);
 				PlayersKilled = 0;
 				CapturedKeeps = 0;
 				

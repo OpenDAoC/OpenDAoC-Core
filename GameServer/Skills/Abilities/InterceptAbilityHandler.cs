@@ -76,7 +76,7 @@ namespace DOL.GS.SkillHandler
 
 			// Only attacks on other players may be intercepted. 
 			// You cannot intercept attacks on yourself            
-			Group group = player.Group;
+			GroupUtil group = player.Group;
 			GamePlayer interceptTarget = targetObject as GamePlayer;
 			if (interceptTarget == null || group == null || !group.IsInTheGroup(interceptTarget) || interceptTarget == player)
 			{

@@ -41,7 +41,7 @@ namespace DOL.GS.Keeps
 		ushort Heading { get; }
 		Region CurrentRegion { get; }
 		
-		Guild Guild { get; }
+		GuildUtil Guild { get; }
 		ERealm Realm { get; }
 		byte Level { get; }
 		

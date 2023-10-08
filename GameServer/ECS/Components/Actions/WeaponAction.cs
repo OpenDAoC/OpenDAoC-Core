@@ -203,7 +203,7 @@ namespace DOL.GS
             // 1.89:
             // - Characters who are attacked by stealthed archers will now target the attacking archer if the attacked player does not already have a target.
             if (mainHandAD.Attacker.IsStealthed
-                && mainHandAD.AttackType == AttackData.eAttackType.Ranged
+                && mainHandAD.AttackType == AttackData.EAttackType.Ranged
                 && (mainHandAD.AttackResult == EAttackResult.HitUnstyled || mainHandAD.AttackResult == EAttackResult.HitStyle))
             {
                 if (mainHandAD.Target.TargetObject == null)
@@ -267,7 +267,7 @@ namespace DOL.GS
                 }
             }
 
-            if (mainHandAD.AttackType == AttackData.eAttackType.Ranged)
+            if (mainHandAD.AttackType == AttackData.EAttackType.Ranged)
             {
                 m_owner.CheckWeaponMagicalEffect(mainHandAD, mainWeapon);
                 HandleDamageAdd(m_owner, mainHandAD);
@@ -461,7 +461,7 @@ namespace DOL.GS
 
                         if (defender.Inventory != null)
                         {
-                            DbInventoryItem lefthand = defender.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                            DbInventoryItem lefthand = defender.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 
                             if (lefthand != null && lefthand.Object_Type == (int) EObjectType.Shield)
                                 defendersWeapon = lefthand.Model;

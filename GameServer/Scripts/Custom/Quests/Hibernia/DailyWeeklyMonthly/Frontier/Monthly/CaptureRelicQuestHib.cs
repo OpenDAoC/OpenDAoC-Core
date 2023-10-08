@@ -92,14 +92,14 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 				Kelteen.Heading = 1566;
 				Kelteen.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
-				templateHib.AddNPCEquipment(eInventorySlot.Cloak, 1722);
-				templateHib.AddNPCEquipment(eInventorySlot.HeadArmor, 1288);
-				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 2517);
-				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 1645);
-				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 1643);
-				templateHib.AddNPCEquipment(eInventorySlot.DistanceWeapon, 3239);
+				templateHib.AddNPCEquipment(EInventorySlot.Cloak, 1722);
+				templateHib.AddNPCEquipment(EInventorySlot.HeadArmor, 1288);
+				templateHib.AddNPCEquipment(EInventorySlot.TorsoArmor, 2517);
+				templateHib.AddNPCEquipment(EInventorySlot.HandsArmor, 1645);
+				templateHib.AddNPCEquipment(EInventorySlot.FeetArmor, 1643);
+				templateHib.AddNPCEquipment(EInventorySlot.DistanceWeapon, 3239);
 				Kelteen.Inventory = templateHib.CloseTemplate();
-				Kelteen.VisibleActiveWeaponSlots = (byte) eInventorySlot.DistanceWeapon;
+				Kelteen.VisibleActiveWeaponSlots = (byte) EInventorySlot.DistanceWeapon;
 				Kelteen.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
@@ -351,13 +351,13 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 		{
 			int reward = ServerProperties.Properties.MONTHLY_RVR_REWARD;
 			
-			if (m_questPlayer.Inventory.IsSlotsFree(3, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (m_questPlayer.Inventory.IsSlotsFree(3, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
 				m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
-				m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level*8,0,Util.Random(50)), "You receive {0} as a reward.");
-				AtlasROGManager.GenerateReward(m_questPlayer, 5000);
-				AtlasROGManager.GenerateBeetleCarapace(m_questPlayer, 2);
-				AtlasROGManager.GenerateJewel(m_questPlayer, 51);
+				m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,m_questPlayer.Level*8,0,Util.Random(50)), "You receive {0} as a reward.");
+				CoreRoGMgr.GenerateReward(m_questPlayer, 5000);
+				CoreRoGMgr.GenerateBeetleCarapace(m_questPlayer, 2);
+				CoreRoGMgr.GenerateJewel(m_questPlayer, 51);
 				_isCaptured = 0;
 				
 				if (reward > 0)

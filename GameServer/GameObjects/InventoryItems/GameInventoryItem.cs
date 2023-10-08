@@ -423,7 +423,7 @@ namespace DOL.GS
                 WritePoisonInfo(delve, player.Client);
             }
 
-            if (Object_Type == (int)EObjectType.Magical && Item_Type == (int)eInventorySlot.FirstBackpack) // potion
+            if (Object_Type == (int)EObjectType.Magical && Item_Type == (int)EInventorySlot.FirstBackpack) // potion
             {
                 switch (SpellID)
                 {
@@ -596,7 +596,7 @@ namespace DOL.GS
                     }
                 }
 
-                if (Object_Type == (int)EObjectType.Magical && Item_Type == (int)eInventorySlot.FirstBackpack) // potion
+                if (Object_Type == (int)EObjectType.Magical && Item_Type == (int)EInventorySlot.FirstBackpack) // potion
                 {
                     // let WritePotion handle the rest of the display
                     return;
@@ -1785,7 +1785,7 @@ namespace DOL.GS
             }
 
             delve.Add("");
-            delve.Add("   Value/Price: " + Money.GetShortString(Price) + " / " + Money.GetShortString((long)(Price * (long)ServerProperties.Properties.ITEM_SELL_RATIO * .01)));
+            delve.Add("   Value/Price: " + MoneyMgr.GetShortString(Price) + " / " + MoneyMgr.GetShortString((long)(Price * (long)ServerProperties.Properties.ITEM_SELL_RATIO * .01)));
             delve.Add("Count/MaxCount: " + Count + " / " + MaxCount);
             delve.Add("        Weight: " + (Weight / 10.0f) + "lbs");
             delve.Add("       Quality: " + Quality + "%");

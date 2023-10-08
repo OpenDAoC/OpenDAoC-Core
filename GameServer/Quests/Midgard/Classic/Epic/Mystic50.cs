@@ -1380,8 +1380,8 @@ namespace DOL.GS.Quests.Midgard
 						case "take them":
 							if (quest.Step == 3)
 							{
-								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
-									    eInventorySlot.LastBackpack))
+								if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+									    EInventorySlot.LastBackpack))
 								{
 									Danica.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 									quest.FinishQuest();

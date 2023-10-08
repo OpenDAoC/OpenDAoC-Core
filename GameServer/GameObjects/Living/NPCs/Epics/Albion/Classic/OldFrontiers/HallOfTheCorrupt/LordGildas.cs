@@ -130,15 +130,15 @@ namespace DOL.GS
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 46, 0, 0, 6);//modelID,color,effect,extension
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 48, 0);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 47, 0);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 49, 0, 0, 4);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 50, 0, 0, 5);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 4, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 1077, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 46, 0, 0, 6);//modelID,color,effect,extension
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 48, 0);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 47, 0);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 49, 0, 0, 4);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 50, 0, 0, 5);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 91, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 4, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.LeftHandWeapon, 1077, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 7, 0, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.Standard);
             LordGildasBrain.Stage2 = false;
@@ -245,15 +245,15 @@ namespace DOL.AI.Brain
                 {
                     INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(7719);
                     GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                    template.AddNPCEquipment(eInventorySlot.TorsoArmor, 46, 0, 0, 6);//modelID,color,effect,extension
-                    template.AddNPCEquipment(eInventorySlot.ArmsArmor, 48, 0);
-                    template.AddNPCEquipment(eInventorySlot.LegsArmor, 47, 0);
-                    template.AddNPCEquipment(eInventorySlot.HandsArmor, 49, 0, 0, 4);
-                    template.AddNPCEquipment(eInventorySlot.FeetArmor, 50, 0, 0, 5);
-                    template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
-                    template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 4, 0, 0);
-                    template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 1077, 0, 0);
-                    template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 0, 0);
+                    template.AddNPCEquipment(EInventorySlot.TorsoArmor, 46, 0, 0, 6);//modelID,color,effect,extension
+                    template.AddNPCEquipment(EInventorySlot.ArmsArmor, 48, 0);
+                    template.AddNPCEquipment(EInventorySlot.LegsArmor, 47, 0);
+                    template.AddNPCEquipment(EInventorySlot.HandsArmor, 49, 0, 0, 4);
+                    template.AddNPCEquipment(EInventorySlot.FeetArmor, 50, 0, 0, 5);
+                    template.AddNPCEquipment(EInventorySlot.Cloak, 91, 0, 0, 0);
+                    template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 4, 0, 0);
+                    template.AddNPCEquipment(EInventorySlot.LeftHandWeapon, 1077, 0, 0);
+                    template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 7, 0, 0);
                     Body.Inventory = template.CloseTemplate();
                     Body.SwitchWeapon(EActiveWeaponSlot.Standard);
                     Body.VisibleActiveWeaponSlots = 16;
@@ -328,13 +328,13 @@ namespace DOL.AI.Brain
                 if(Body.HealthPercent < 50 && Stage2==false)//boss change to polearm armsman
                 {
                     GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-                    template.AddNPCEquipment(eInventorySlot.TorsoArmor, 46, 0, 0, 6);//modelID,color,effect,extension
-                    template.AddNPCEquipment(eInventorySlot.ArmsArmor, 48, 0);
-                    template.AddNPCEquipment(eInventorySlot.LegsArmor, 47, 0);
-                    template.AddNPCEquipment(eInventorySlot.HandsArmor, 49, 0, 0, 4);
-                    template.AddNPCEquipment(eInventorySlot.FeetArmor, 50, 0, 0, 5);
-                    template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
-                    template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 70, 0, 0);
+                    template.AddNPCEquipment(EInventorySlot.TorsoArmor, 46, 0, 0, 6);//modelID,color,effect,extension
+                    template.AddNPCEquipment(EInventorySlot.ArmsArmor, 48, 0);
+                    template.AddNPCEquipment(EInventorySlot.LegsArmor, 47, 0);
+                    template.AddNPCEquipment(EInventorySlot.HandsArmor, 49, 0, 0, 4);
+                    template.AddNPCEquipment(EInventorySlot.FeetArmor, 50, 0, 0, 5);
+                    template.AddNPCEquipment(EInventorySlot.Cloak, 91, 0, 0, 0);
+                    template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 70, 0, 0);
                     Body.Inventory = template.CloseTemplate();
                     if(Body.Styles.Contains(LordGildas.slam))
                         Body.Styles.Remove(LordGildas.slam);

@@ -20,7 +20,7 @@ namespace DOL.GS
 		private int m_modifier = 0;
 		private EDamageType m_damageType = 0;
 		private Style m_style = null;
-		private eAttackType m_attackType = eAttackType.Unknown;
+		private EAttackType m_attackType = EAttackType.Unknown;
 		private EAttackResult m_attackResult = EAttackResult.Any;
 		private ISpellHandler m_spellHandler;
 		private List<ISpellHandler> m_styleEffects;
@@ -199,9 +199,9 @@ namespace DOL.GS
 		{
 			get
 			{
-				return m_attackType == eAttackType.MeleeOneHand
-					|| m_attackType == eAttackType.MeleeTwoHand
-					|| m_attackType == eAttackType.MeleeDualWield;
+				return m_attackType == EAttackType.MeleeOneHand
+					|| m_attackType == EAttackType.MeleeTwoHand
+					|| m_attackType == EAttackType.MeleeDualWield;
 			}
 		}
 
@@ -218,40 +218,9 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// The type of attack
-		/// </summary>
-		public enum eAttackType : int
-		{
-			/// <summary>
-			/// Attack type has not been set yet
-			/// </summary>
-			Unknown = -1,
-			/// <summary>
-			/// Attack is done using a weapon in one hand
-			/// </summary>
-			MeleeOneHand = 1,
-			/// <summary>
-			/// Attack is done using one weapon in each hand
-			/// </summary>
-			MeleeDualWield = 2,
-			/// <summary>
-			/// Attack is done using one same weapon in both hands
-			/// </summary>
-			MeleeTwoHand = 3,
-			/// <summary>
-			/// Attack is done using a weapon in ranged slot
-			/// </summary>
-			Ranged = 4,
-			/// <summary>
-			/// Attack is done with a spell
-			/// </summary>
-			Spell = 5,
-		}
-
-		/// <summary>
 		/// Sets or gets the attack type
 		/// </summary>
-		public eAttackType AttackType
+		public EAttackType AttackType
 		{
 			get { return m_attackType; }
 			set { m_attackType = value; }

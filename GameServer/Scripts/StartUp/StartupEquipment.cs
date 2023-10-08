@@ -140,7 +140,7 @@ namespace DOL.GS.GameEvents
 			
 			try
 			{
-				var usedSlots = new Dictionary<eInventorySlot, bool>();
+				var usedSlots = new Dictionary<EInventorySlot, bool>();
 				
 				if (m_cachedClassEquipment.ContainsKey((ECharacterClass)ch.Class))
 				{
@@ -155,16 +155,16 @@ namespace DOL.GS.GameEvents
 						bool itemChoosen = false;
 		
 						// if equipable item, find equippable slot
-						foreach (eInventorySlot currentSlot in GameLivingInventory.EQUIP_SLOTS)
+						foreach (EInventorySlot currentSlot in GameLivingInventory.EQUIP_SLOTS)
 						{
-							if ((eInventorySlot)inventoryItem.Item_Type == currentSlot)
+							if ((EInventorySlot)inventoryItem.Item_Type == currentSlot)
 							{
-								eInventorySlot chosenSlot;
+								EInventorySlot chosenSlot;
 		
 								// try to set Left Hand in Right Hand slot if not already used.
-								if (currentSlot == eInventorySlot.LeftHandWeapon && (EObjectType)inventoryItem.Object_Type != EObjectType.Shield && !usedSlots.ContainsKey(eInventorySlot.RightHandWeapon))
+								if (currentSlot == EInventorySlot.LeftHandWeapon && (EObjectType)inventoryItem.Object_Type != EObjectType.Shield && !usedSlots.ContainsKey(EInventorySlot.RightHandWeapon))
 								{
-									chosenSlot = eInventorySlot.RightHandWeapon;
+									chosenSlot = EInventorySlot.RightHandWeapon;
 								}
 								else
 								{
@@ -209,12 +209,12 @@ namespace DOL.GS.GameEvents
 						if (!itemChoosen)
 						{
 							//otherwise stick the item in the backpack
-							for (int i = (int)eInventorySlot.FirstBackpack; i < (int)eInventorySlot.LastBackpack; i++)
+							for (int i = (int)EInventorySlot.FirstBackpack; i < (int)EInventorySlot.LastBackpack; i++)
 							{
-								if (!usedSlots.ContainsKey((eInventorySlot)i))
+								if (!usedSlots.ContainsKey((EInventorySlot)i))
 								{
 									inventoryItem.SlotPosition = i;
-									usedSlots[(eInventorySlot)i] = true;
+									usedSlots[(EInventorySlot)i] = true;
 									break;
 								}
 							}

@@ -231,7 +231,7 @@ namespace DOL.GS.Keeps
 					{
 						if (!player.RemoveMoney(Gold * 100 * 100, "You buy " + this.GetName(1, false) + "."))
 						{
-                            InventoryLogging.LogInventoryAction(player, "(keep)", eInventoryActionType.Merchant, Gold * 10000);
+                            InventoryLogging.LogInventoryAction(player, "(keep)", EInventoryActionType.Merchant, Gold * 10000);
 							player.Out.SendMessage("You dont have enough money!", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
 							return;
 						}

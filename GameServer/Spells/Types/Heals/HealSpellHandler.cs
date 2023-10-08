@@ -356,7 +356,7 @@ namespace DOL.GS.Spells
                     AttackData ad = new AttackData();
                     ad.Attacker = Caster;
                     ad.Target = target;
-                    ad.AttackType = AttackData.eAttackType.Spell;
+                    ad.AttackType = AttackData.EAttackType.Spell;
                     ad.SpellHandler = this;
                     ad.AttackResult = EAttackResult.HitUnstyled;
                     ad.IsSpellResisted = false;

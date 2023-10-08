@@ -114,8 +114,8 @@ public class SalvageCommand : ACommandHandler, ICommandHandler
 			}
 
 			IList<DbInventoryItem> items = new List<DbInventoryItem>();
-			firstItem += (uint)eInventorySlot.FirstBackpack - 1;
-			lastItem += (uint)eInventorySlot.FirstBackpack - 1;
+			firstItem += (uint)EInventorySlot.FirstBackpack - 1;
+			lastItem += (uint)EInventorySlot.FirstBackpack - 1;
 
 			foreach (string arg in args)
 			{
@@ -139,7 +139,7 @@ public class SalvageCommand : ACommandHandler, ICommandHandler
 
 			for (uint i = firstItem; i <= lastItem; i++)
 			{
-				DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)i);
+				DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)i);
 
 				if (item == null)
 					continue;

@@ -13,7 +13,7 @@ namespace DOL.GS.RealmAbilities
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
             GamePlayer player = living as GamePlayer;
 
-			Group playerGroup = player.Group;
+			GroupUtil playerGroup = player.Group;
 
 			if (playerGroup == null)
 			{

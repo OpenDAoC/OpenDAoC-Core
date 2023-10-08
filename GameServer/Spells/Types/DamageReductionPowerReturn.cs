@@ -39,7 +39,7 @@ namespace DOL.GS.Spells
 		 eChatType toLiving = (Spell.Pulse == 0) ? eChatType.CT_Spell : eChatType.CT_SpellPulse;
 			eChatType toOther = (Spell.Pulse == 0) ? eChatType.CT_System : eChatType.CT_Spell;///Pulse;
 		 MessageToLiving(effect.Owner, Spell.Message1, toLiving);
-		 Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
+		 MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
 	  }
 
 	  /// <summary>
@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 		 if (!noMessages && Spell.Pulse == 0)
 		 {
 			MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+			MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
 		 }
 		 return 0;
 	  }
@@ -141,7 +141,7 @@ namespace DOL.GS.Spells
 		 if (!noMessages && Spell.Pulse == 0)
 		 {
 			MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+			MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
 		 }
 		 return 0;
 	  }

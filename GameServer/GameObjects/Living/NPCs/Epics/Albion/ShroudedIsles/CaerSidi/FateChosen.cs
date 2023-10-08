@@ -53,7 +53,7 @@ namespace DOL.GS
 		public override bool AddToWorld()
 		{
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 567, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 567, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

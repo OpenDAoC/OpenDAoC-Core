@@ -96,11 +96,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Move an item from the inventory object to a player's backpack (uses client slots)
 		/// </summary>
-		public static IDictionary<int, DbInventoryItem> MoveItemFromObject(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
+		public static IDictionary<int, DbInventoryItem> MoveItemFromObject(this IGameInventoryObject thisObject, GamePlayer player, EInventorySlot fromClientSlot, EInventorySlot toClientSlot)
 		{
 			// We will only allow moving to the backpack.
 
-			if (toClientSlot < eInventorySlot.FirstBackpack || toClientSlot > eInventorySlot.LastBackpack)
+			if (toClientSlot < EInventorySlot.FirstBackpack || toClientSlot > EInventorySlot.LastBackpack)
 				return null;
 
 			lock (thisObject.LockObject())
@@ -144,11 +144,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Move an item from a player's backpack to this inventory object (uses client slots)
 		/// </summary>
-		public static IDictionary<int, DbInventoryItem> MoveItemToObject(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
+		public static IDictionary<int, DbInventoryItem> MoveItemToObject(this IGameInventoryObject thisObject, GamePlayer player, EInventorySlot fromClientSlot, EInventorySlot toClientSlot)
 		{
 			// We will only allow moving from the backpack.
 
-			if (fromClientSlot < eInventorySlot.FirstBackpack || fromClientSlot > eInventorySlot.LastBackpack)
+			if (fromClientSlot < EInventorySlot.FirstBackpack || fromClientSlot > EInventorySlot.LastBackpack)
 				return null;
 
 			DbInventoryItem fromItem = player.Inventory.GetItem(fromClientSlot);
@@ -188,7 +188,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Move an item around inside this object (uses client slots)
 		/// </summary>
-		public static IDictionary<int, DbInventoryItem> MoveItemInsideObject(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromSlot, eInventorySlot toSlot)
+		public static IDictionary<int, DbInventoryItem> MoveItemInsideObject(this IGameInventoryObject thisObject, GamePlayer player, EInventorySlot fromSlot, EInventorySlot toSlot)
 		{
 			lock (thisObject.LockObject())
 			{

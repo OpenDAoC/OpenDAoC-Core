@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Threading;
 using DOL.Events;
@@ -206,7 +187,7 @@ namespace DOL.GS
 
 			GainedExperienceEventArgs xpArgs = args as GainedExperienceEventArgs;
 
-			if (player.Guild != null && !player.Guild.IsStartingGuild && player.Guild.BonusType == Guild.eBonusType.Experience && xpArgs.XPSource == EXpSource.NPC)
+			if (player.Guild != null && !player.Guild.IsStartingGuild && player.Guild.BonusType == EGuildBonusType.Experience && xpArgs.XPSource == EXpSource.NPC)
 			{
 				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 100);
 
@@ -239,7 +220,7 @@ namespace DOL.GS
 
 			if (player.Guild != null)
 			{
-				if (player.Guild.BonusType == Guild.eBonusType.RealmPoints)
+				if (player.Guild.BonusType == EGuildBonusType.RealmPoints)
 				{
 					long oldGuildRealmPoints = player.Guild.RealmPoints;
 					long bonusRealmPoints = (long)Math.Ceiling((double)rpsArgs.RealmPoints * ServerProperties.Properties.GUILD_BUFF_RP / 100);
@@ -251,7 +232,7 @@ namespace DOL.GS
 					{
 						// Report to Newsmgr
 						string message = player.Guild.Name + " [" + GlobalConstants.RealmToName((ERealm)player.Realm) + "] has reached 100,000,000 Realm Points!";
-						NewsMgr.CreateNews(message, player.Realm, eNewsType.RvRGlobal, false);
+						NewsMgr.CreateNews(message, player.Realm, ENewsType.RvRGlobal, false);
 					}
 
 					// player.Guild.UpdateGuildWindow();
@@ -274,7 +255,7 @@ namespace DOL.GS
 
 			if (player.Guild != null)
 			{
-				if (player.Guild.BonusType == Guild.eBonusType.BountyPoints)
+				if (player.Guild.BonusType == EGuildBonusType.BountyPoints)
 				{
 					long bonusBountyPoints = (long)Math.Ceiling((double)bpsArgs.BountyPoints * ServerProperties.Properties.GUILD_BUFF_BP / 100);
 					player.GainBountyPoints(bonusBountyPoints, false, false, false);
@@ -299,15 +280,15 @@ namespace DOL.GS
 
 		public static void StartCheckThread()
 		{
-			foreach (Guild checkGuild in GuildMgr.GetAllGuilds())
+			foreach (GuildUtil checkGuild in GuildMgr.GetAllGuilds())
 			{
-				if (checkGuild.BonusType != Guild.eBonusType.None)
+				if (checkGuild.BonusType != EGuildBonusType.None)
 				{
 					TimeSpan bonusTime = DateTime.Now.Subtract(checkGuild.BonusStartTime);
 
 					if (bonusTime.Days > 0 && !checkGuild.IsStartingGuild)
 					{
-						checkGuild.BonusType = Guild.eBonusType.None;
+						checkGuild.BonusType = EGuildBonusType.None;
 
 						checkGuild.SaveIntoDatabase();
 

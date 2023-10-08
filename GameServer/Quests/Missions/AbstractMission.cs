@@ -66,7 +66,7 @@ namespace DOL.GS.Quests
 			{
 				if (m_owner is GamePlayer)
 					return eMissionType.Personal;
-				else if (m_owner is Group)
+				else if (m_owner is GroupUtil)
 					return eMissionType.Group;
 				else if (m_owner is ERealm)
 					return eMissionType.Realm;
@@ -199,9 +199,9 @@ namespace DOL.GS.Quests
 		{
 			foreach (GamePlayer player in Targets)
 			{
-				if (m_owner is Group)
+				if (m_owner is GroupUtil)
 				{
-					if (!player.IsWithinRadius((m_owner as Group).Leader, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+					if (!player.IsWithinRadius((m_owner as GroupUtil).Leader, WorldMgr.MAX_EXPFORKILL_DISTANCE))
 						continue;
 				}
 				if (RewardXP > 0)
@@ -210,7 +210,7 @@ namespace DOL.GS.Quests
                 if (RewardMoney > 0)
                 {
                     player.AddMoney(RewardMoney, "You receive {0} for completing your task.");
-                    InventoryLogging.LogInventoryAction("(MISSION;" + MissionType + ")", player, eInventoryActionType.Quest, RewardMoney);
+                    InventoryLogging.LogInventoryAction("(MISSION;" + MissionType + ")", player, EInventoryActionType.Quest, RewardMoney);
                 }
 
 			    if (RewardRealmPoints > 0)
@@ -222,7 +222,7 @@ namespace DOL.GS.Quests
 			switch (MissionType)
 			{
 				case eMissionType.Personal: (m_owner as GamePlayer).Mission = null; break;
-				case eMissionType.Group: (m_owner as Group).Mission = null; break;
+				case eMissionType.Group: (m_owner as GroupUtil).Mission = null; break;
 				//case eMissionType.Realm: (m_owner.RealmMission = null; break;
 			}
 
@@ -244,7 +244,7 @@ namespace DOL.GS.Quests
 						}
 					case eMissionType.Group:
 						{
-							Group group = m_owner as Group;
+							GroupUtil group = m_owner as GroupUtil;
 							return new List<GamePlayer>(group.GetPlayersInTheGroup());
 						}
 					case eMissionType.Realm:
@@ -267,7 +267,7 @@ namespace DOL.GS.Quests
 			switch (MissionType)
 			{
 				case eMissionType.Personal: (m_owner as GamePlayer).Mission = null; break;
-				case eMissionType.Group: (m_owner as Group).Mission = null; break;
+				case eMissionType.Group: (m_owner as GroupUtil).Mission = null; break;
 				//case eMissionType.Realm: m_owner.RealmMission = null; break;
 			}
 			m_customProperties.Clear();

@@ -171,7 +171,7 @@ namespace DOL.GS
 			AttackData ad = new AttackData();
 			ad.Attacker = this;
 			ad.Target = target;
-			ad.AttackType = AttackData.eAttackType.Ranged;
+			ad.AttackType = AttackData.EAttackType.Ranged;
 			ad.AttackResult = EAttackResult.HitUnstyled;
 			ad.Damage = damageAmount;
 			ad.DamageType = MeleeDamageType;
@@ -183,7 +183,7 @@ namespace DOL.GS
 			{
 				Owner.OnAttackEnemy(ad);
 				Owner.Out.SendMessage("The " + this.Name + " hits " + target.Name + " for " + damageAmount + " damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-				Message.SystemToArea(this, GetName(0, false) + " hits " + target.GetName(0, true), eChatType.CT_OthersCombat, Owner);
+				MessageUtil.SystemToArea(this, GetName(0, false) + " hits " + target.GetName(0, true), eChatType.CT_OthersCombat, Owner);
 			}
 			base.DoDamage();
 		}

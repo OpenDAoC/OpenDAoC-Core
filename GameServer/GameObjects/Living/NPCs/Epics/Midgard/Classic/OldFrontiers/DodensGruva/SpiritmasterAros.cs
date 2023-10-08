@@ -110,7 +110,7 @@ namespace DOL.GS
         }
         public override void DealDamage(AttackData ad)
         {
-			if (ad != null && ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0 && ad.DamageType == EDamageType.Cold)
+			if (ad != null && ad.AttackType == AttackData.EAttackType.Spell && ad.Damage > 0 && ad.DamageType == EDamageType.Cold)
 				Health += ad.Damage / 6;
             base.DealDamage(ad);
         }
@@ -429,15 +429,15 @@ namespace DOL.GS
 			Name = "spirit champion";
 			Model = spirit_champion_models[Util.Random(0, spirit_champion_models.Count - 1)];
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 295, 0, 0, 0); //Slot,model,color,effect,extension
-			template.AddNPCEquipment(eInventorySlot.ArmsArmor, 297, 0);
-			template.AddNPCEquipment(eInventorySlot.LegsArmor, 296, 0);
-			template.AddNPCEquipment(eInventorySlot.HandsArmor, 298, 0, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.FeetArmor, 299, 0, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.HeadArmor, 1216, 0, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.Cloak, 677, 0, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 310, 0, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 79, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TorsoArmor, 295, 0, 0, 0); //Slot,model,color,effect,extension
+			template.AddNPCEquipment(EInventorySlot.ArmsArmor, 297, 0);
+			template.AddNPCEquipment(EInventorySlot.LegsArmor, 296, 0);
+			template.AddNPCEquipment(EInventorySlot.HandsArmor, 298, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.FeetArmor, 299, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.HeadArmor, 1216, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.Cloak, 677, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 310, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.LeftHandWeapon, 79, 0, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.Standard);
 

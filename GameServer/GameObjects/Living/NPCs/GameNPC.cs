@@ -997,12 +997,12 @@ namespace DOL.GS
 				if (Inventory != null)
 				{
 					//if the distance slot isnt empty we use that
-					if (Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
+					if (Inventory.GetItem(EInventorySlot.DistanceWeapon) != null)
 						SwitchWeapon(EActiveWeaponSlot.Distance);
 					else
 					{
-						DbInventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-						DbInventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+						DbInventoryItem twohand = Inventory.GetItem(EInventorySlot.TwoHandWeapon);
+						DbInventoryItem onehand = Inventory.GetItem(EInventorySlot.RightHandWeapon);
 
 						if (twohand != null && onehand != null)
 							//Let's add some random chance
@@ -1427,7 +1427,7 @@ namespace DOL.GS
 
 								//If we found some models let's randomly pick one and add it the equipment
 								if (tempModels.Count > 0)
-									equipHasItems |= equip.AddNPCEquipment((eInventorySlot)slot, tempModels[Util.Random(tempModels.Count - 1)]);
+									equipHasItems |= equip.AddNPCEquipment((EInventorySlot)slot, tempModels[Util.Random(tempModels.Count - 1)]);
 							}
 						}
 					}
@@ -1437,13 +1437,13 @@ namespace DOL.GS
 				//We added some items - let's make it the new inventory
 				if (equipHasItems)
 				{
-					this.Inventory = new GameNPCInventory(equip);
-					if (this.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
+					this.Inventory = new GameNpcInventory(equip);
+					if (this.Inventory.GetItem(EInventorySlot.DistanceWeapon) != null)
 						this.SwitchWeapon(EActiveWeaponSlot.Distance);
 					else
 					{
-						DbInventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-						DbInventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+						DbInventoryItem twohand = Inventory.GetItem(EInventorySlot.TwoHandWeapon);
+						DbInventoryItem onehand = Inventory.GetItem(EInventorySlot.RightHandWeapon);
 
 						if (twohand != null && onehand != null)
 							//Let's add some random chance
@@ -2648,7 +2648,7 @@ namespace DOL.GS
 					target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					if (announce)
 					{
-						Message.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true, target.Client.Account.Language, this), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
+						MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true, target.Client.Account.Language, this), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
 					}
 					break;
 				case eChatLoc.CL_ChatWindow:
@@ -2846,7 +2846,7 @@ namespace DOL.GS
 					Diagnostics.StopPerfCounter($"ReaperService-NPC-ProcessDeath-DropLoot-NPC({hashCode})");
 					Diagnostics.StartPerfCounter($"ReaperService-NPC-ProcessDeath-AreaMessages-NPC({hashCode})");
 
-					Message.SystemToArea(this, GetName(0, true) + " dies!", eChatType.CT_PlayerDied, killer);
+					MessageUtil.SystemToArea(this, GetName(0, true) + " dies!", eChatType.CT_PlayerDied, killer);
 
 					if (killer is GamePlayer player)
 						player.Out.SendMessage(GetName(0, true) + " dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
@@ -3013,8 +3013,8 @@ namespace DOL.GS
 			StopFollowing();
 			attackComponent.StopAttack();
 
-			DbInventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-			DbInventoryItem righthand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+			DbInventoryItem twohand = Inventory.GetItem(EInventorySlot.TwoHandWeapon);
+			DbInventoryItem righthand = Inventory.GetItem(EInventorySlot.RightHandWeapon);
 
 			if (twohand != null && righthand == null)
 				SwitchWeapon(EActiveWeaponSlot.TwoHanded);
@@ -3042,7 +3042,7 @@ namespace DOL.GS
 			attackComponent.RequestStartAttack(target);
 		}
 
-		public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
+		public override void StartInterruptTimer(int duration, AttackData.EAttackType attackType, GameLiving attacker)
 		{
 			// Increase substantially the base interrupt timer duration for non player controlled NPCs
 			// so that they don't start attacking immediately after the attacker's melee swing interval.
@@ -3053,10 +3053,10 @@ namespace DOL.GS
 			base.StartInterruptTimer(duration, attackType, attacker);
 		}
 
-		protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.eAttackType attackType)
+		protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.EAttackType attackType)
 		{
 			// Immobile NPCs can only be interrupted from close range attacks.
-			if (MaxSpeedBase == 0 && attackType is AttackData.eAttackType.Ranged or AttackData.eAttackType.Spell && !IsWithinRadius(attacker, 150))
+			if (MaxSpeedBase == 0 && attackType is AttackData.EAttackType.Ranged or AttackData.EAttackType.Spell && !IsWithinRadius(attacker, 150))
 				return false;
 
 			bool interrupted = base.CheckRangedAttackInterrupt(attacker, attackType);
@@ -3339,7 +3339,7 @@ namespace DOL.GS
 							killerPlayer.AddMoney(amount,
 												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperties.Properties.MONEY_DROP), ZoneBonus.eZoneBonusType.COIN),
 												  eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-							InventoryLogging.LogInventoryAction(this, killerPlayer, eInventoryActionType.Loot, amount);
+							InventoryLogging.LogInventoryAction(this, killerPlayer, EInventoryActionType.Loot, amount);
 						}
 					}
 
@@ -3353,7 +3353,7 @@ namespace DOL.GS
 					{
 						GamePlayer killerPlayer = killer as GamePlayer;
 						if (killerPlayer != null)
-							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client, "GameNPC.DropLoot.AdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client, "GameNPC.DropLoot.AdditionalMoney", MoneyMgr.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 					}
 
 					//Mythical Coin bonus property (Can be used for any equipped item, bonus 235)
@@ -3364,7 +3364,7 @@ namespace DOL.GS
 						{
 							value += (value * killerPlayer.GetModified(EProperty.MythicalCoin)) / 100;
 							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client,
-																					"GameNPC.DropLoot.ItemAdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+																					"GameNPC.DropLoot.ItemAdditionalMoney", MoneyMgr.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 						}
 					}
 
@@ -3409,16 +3409,16 @@ namespace DOL.GS
 				}
 
 				GamePlayer playerAttacker = null;
-				BattleGroup activeBG = null;
+				BattleGroupUtil activeBG = null;
 
 				if (killer is GamePlayer playerKiller && activeBG != null)
-					activeBG = playerKiller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+					activeBG = playerKiller.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 				
 				foreach (GameObject gainer in XPGainerList.Keys)
 				{
 					//if a battlegroup killed the mob, filter out any non BG players
 					if (activeBG != null && gainer is GamePlayer p &&
-						p.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null) != activeBG)
+						p.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null) != activeBG)
 						continue;
 					
 					if (gainer is GamePlayer)
@@ -3502,7 +3502,7 @@ namespace DOL.GS
 			if (attackerLiving == null)
 				return;
 
-			Group attackerGroup = attackerLiving.Group;
+			GroupUtil attackerGroup = attackerLiving.Group;
 			if (attackerGroup != null)
 			{
 				// collect "helping" group players in range
@@ -4252,12 +4252,12 @@ namespace DOL.GS
 				}
 				case "s": // Return custom System message in System/Combat window to all players within range
 				{
-					Message.MessageToArea(Brain.Body, text, eChatType.CT_System, eChatLoc.CL_SystemWindow, 512, null);
+					MessageUtil.MessageToArea(Brain.Body, text, eChatType.CT_System, eChatLoc.CL_SystemWindow, 512, null);
 					return;
 				}
 				case "c": // Return custom Say message in Chat window to all players within range, without "{0} says," string start
 				{
-					Message.MessageToArea(Brain.Body, text, eChatType.CT_Say, eChatLoc.CL_ChatWindow, 512, null);
+					MessageUtil.MessageToArea(Brain.Body, text, eChatType.CT_Say, eChatLoc.CL_ChatWindow, 512, null);
 					return;
 				}
 				case "p": // Return custom System message in popup dialog only to player interating with the NPC

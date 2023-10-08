@@ -334,7 +334,7 @@ namespace DOL.GS.Commands
             List<string> messages = new();
             string header = "Hidden Character Stats";
             GamePlayer player = client.Player;
-            DbInventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem lefthand = player.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 
             // Block chance.
             if (player.HasAbility(Abilities.Shield))

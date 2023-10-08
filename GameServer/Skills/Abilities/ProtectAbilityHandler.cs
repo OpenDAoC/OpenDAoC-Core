@@ -72,7 +72,7 @@ namespace DOL.GS.SkillHandler
 
 			// Only attacks on other players may be protected. 
 			// protect may only be used on other players in group
-			Group group = player.Group;
+			GroupUtil group = player.Group;
 			if (protectTarget == null || group == null || !group.IsInTheGroup(protectTarget))
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.NotInGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

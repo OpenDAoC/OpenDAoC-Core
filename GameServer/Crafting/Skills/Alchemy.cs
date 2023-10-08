@@ -117,7 +117,7 @@ public class Alchemy : AdvancedCraftingSkill
 		//item.Level = tincture.LevelRequirement;
 
 		player.Inventory.RemoveCountFromStack(tincture, 1);
-		InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, tincture.Template);
+		InventoryLogging.LogInventoryAction(player, "(craft)", EInventoryActionType.Craft, tincture.Template);
 
 		if (item.Template is DbItemUnique)
 		{

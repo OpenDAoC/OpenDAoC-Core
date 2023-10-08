@@ -1354,8 +1354,8 @@ namespace DOL.GS.Quests.Hibernia
 							if (quest.Step == 2)
 							{
 								RemoveItem(player, GreenMaw_key);
-								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
-									    eInventorySlot.LastBackpack))
+								if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+									    EInventorySlot.LastBackpack))
 								{
 									Ainrebh.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 									quest.FinishQuest();
@@ -1376,8 +1376,8 @@ namespace DOL.GS.Quests.Hibernia
 				if (quest != null)
 					if (rArgs.Item.Id_nb == GreenMaw_key.Id_nb && quest.Step == 2)
 					{
-						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
-							    eInventorySlot.LastBackpack))
+						if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+							    EInventorySlot.LastBackpack))
 						{
 							Ainrebh.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 							quest.FinishQuest();
@@ -1526,8 +1526,8 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == Ainrebh.Name && gArgs.Item.Id_nb == GreenMaw_key.Id_nb)
 				{
-					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
-						    eInventorySlot.LastBackpack))
+					if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+						    EInventorySlot.LastBackpack))
 					{
 						Ainrebh.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 						FinishQuest();

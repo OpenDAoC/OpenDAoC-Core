@@ -41,7 +41,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			lock (client.Player.Inventory)
 			{
-				DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)item_slot);
+				DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)item_slot);
 				if (item == null)
 					return;
 

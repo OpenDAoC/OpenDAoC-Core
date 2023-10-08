@@ -77,13 +77,13 @@ namespace DOL.GS
 			TetherRange = 2600;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 403, 39, 0, 0);//modelID,color,effect,extension
-			template.AddNPCEquipment(eInventorySlot.ArmsArmor, 405, 39);
-			template.AddNPCEquipment(eInventorySlot.LegsArmor, 404, 39);
-			template.AddNPCEquipment(eInventorySlot.HandsArmor, 406, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.FeetArmor, 407, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.Cloak, 91, 39, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TorsoArmor, 403, 39, 0, 0);//modelID,color,effect,extension
+			template.AddNPCEquipment(EInventorySlot.ArmsArmor, 405, 39);
+			template.AddNPCEquipment(EInventorySlot.LegsArmor, 404, 39);
+			template.AddNPCEquipment(EInventorySlot.HandsArmor, 406, 43, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.FeetArmor, 407, 43, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.Cloak, 91, 39, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 468, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

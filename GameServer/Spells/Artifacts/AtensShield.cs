@@ -215,7 +215,7 @@ namespace DOL.GS.Spells
 			GamePlayer player = sender as GamePlayer;
 			lock (player.Inventory)
 			{
-				var items = player.Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
+				var items = player.Inventory.GetItemRange(EInventorySlot.MinEquipable, EInventorySlot.LastBackpack);
 				foreach (DbInventoryItem invItem in items)
 				{
 					if (invItem.Id_nb.Equals("Golden_Trident_of_Flame"))

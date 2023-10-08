@@ -4,7 +4,6 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    /* Maintains decks and cards for all players */
     public class CardMgr
     {
         /* A single card */

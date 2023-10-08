@@ -361,7 +361,7 @@ namespace DOL.GS.Quests.Hibernia
 		{
 			var quest = player.IsDoingQuest(typeof(TheLostSeed)) as TheLostSeed;
 			if (quest is not {Step: 5}) return;
-			if (!player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (!player.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				player.Out.SendMessage(
 					"You dont have enough room for " + glowing_red_jewel.Name + " and drops on the ground.",
 					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -895,7 +895,7 @@ namespace DOL.GS.Quests.Hibernia
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (m_questPlayer.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
 				if (m_questPlayer.Level >= 49)
 					m_questPlayer.GainExperience(EXpSource.Quest,
@@ -905,7 +905,7 @@ namespace DOL.GS.Quests.Hibernia
 						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
 				RemoveItem(m_questPlayer, glowing_red_jewel);
 				GiveItem(m_questPlayer, paidrean_necklace);
-				m_questPlayer.AddMoney(Money.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
+				m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
 
 
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...

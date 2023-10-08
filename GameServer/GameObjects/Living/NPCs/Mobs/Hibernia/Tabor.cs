@@ -29,7 +29,7 @@ namespace DOL.GS
 			Empathy = npcTemplate.Empathy;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 315, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 315, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.Standard);
 
@@ -259,8 +259,8 @@ namespace DOL.GS
 			Empathy = npcTemplate.Empathy;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 445, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.DistanceWeapon, 471, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 445, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.DistanceWeapon, 471, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.Standard);
 

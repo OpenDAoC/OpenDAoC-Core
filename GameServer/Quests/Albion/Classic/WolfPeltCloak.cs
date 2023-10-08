@@ -139,9 +139,9 @@ namespace DOL.GS.Quests.Albion
             {
                 if (quest != null)
                 {
-                    if (player.Inventory.GetFirstItemByID(_wolfFur.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) != null)
+                    if (player.Inventory.GetFirstItemByID(_wolfFur.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) != null)
                         _stewardWillie.SayTo(player, "Ah, well done! His Lordship will be pleased to know there is one less mongrel in the pack! Give me the fur so I can throw it with the others.");
-                    else if (player.Inventory.GetFirstItemByID(_wolfHeadToken.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) != null)
+                    else if (player.Inventory.GetFirstItemByID(_wolfHeadToken.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) != null)
                         _stewardWillie.SayTo(player, "Give the token to Seamstress Lynnet in Ludlow, she'll give ye your reward. Thank ye for your fine services to His Lordship.");
                     else
                         _stewardWillie.SayTo(player, "Good! I know we ca'count on ye. I will reward ye for the pelt ye bring me from one of those vile beasts!");
@@ -232,7 +232,7 @@ namespace DOL.GS.Quests.Albion
 
             if (e == GameObjectEvent.Interact)
             {
-                if (player.Inventory.GetFirstItemByID(_wolfPeltCloak.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) != null)
+                if (player.Inventory.GetFirstItemByID(_wolfPeltCloak.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) != null)
                     _don.SayTo(player, "Hail! You don't perhaps have one of those fine wolf pelt cloaks? If you no longer have need of it, we could greatly use it at the [orphanage].");
                 return;
             }
@@ -400,9 +400,9 @@ namespace DOL.GS.Quests.Albion
             GiveItem(_lynett, m_questPlayer, _wolfPeltCloak);
 
             m_questPlayer.GainExperience(EXpSource.Quest, 50, true);
-            long money = Money.GetMoney(0, 0, 0, 0, 50);
+            long money = MoneyMgr.GetMoney(0, 0, 0, 0, 50);
             m_questPlayer.AddMoney(money, "You recieve {0} for your service.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, EInventoryActionType.Quest, money);
 
         }
 

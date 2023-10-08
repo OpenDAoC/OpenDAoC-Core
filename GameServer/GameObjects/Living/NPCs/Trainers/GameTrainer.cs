@@ -249,14 +249,14 @@ namespace DOL.GS
 				foreach (DbInventoryItem item in player.Inventory.EquippedItems)
 				{
 					if (!player.HasAbilityToUseItem(item.Template))
-						if (player.Inventory.IsSlotsFree(item.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == true)
+						if (player.Inventory.IsSlotsFree(item.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) == true)
 					{
-						player.Inventory.MoveItem((eInventorySlot)item.SlotPosition, player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack), item.Count);
+						player.Inventory.MoveItem((EInventorySlot)item.SlotPosition, player.Inventory.FindFirstEmptySlot(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack), item.Count);
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.CheckAbilityToUseItem.Text1", item.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
 					else
 					{
-						player.Inventory.MoveItem((eInventorySlot)item.SlotPosition, eInventorySlot.Ground, item.Count);
+						player.Inventory.MoveItem((EInventorySlot)item.SlotPosition, EInventorySlot.Ground, item.Count);
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.CheckAbilityToUseItem.Text1", item.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
 				}
@@ -281,7 +281,7 @@ namespace DOL.GS
 					case "respec_single":
 						{
 							player.Inventory.RemoveCountFromStack(item, 1);
-							InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
+							InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
 							player.RespecAmountSingleSkill++;
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecSingle"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 							return true;
@@ -289,7 +289,7 @@ namespace DOL.GS
 					case "respec_full":
 						{
 							player.Inventory.RemoveCountFromStack(item, 1);
-							InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
+							InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
 							player.RespecAmountAllSkill++;
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecFull", item.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 							return true;
@@ -297,7 +297,7 @@ namespace DOL.GS
 					case "respec_realm":
 						{
 							player.Inventory.RemoveCountFromStack(item, 1);
-							InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
+							InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
 							player.RespecAmountRealmSkill++;
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecRealm"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 							return true;
@@ -399,12 +399,12 @@ namespace DOL.GS
 			DbItemTemplate temp = GameServer.Database.FindObjectByKey<DbItemTemplate>(template);
 			if (temp != null)
 			{
-				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(temp), 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(temp), 1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.AddGift.NotEnoughSpace"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
 				}
-				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Other, temp);
+				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Other, temp);
 			}
 			return true;
 		}

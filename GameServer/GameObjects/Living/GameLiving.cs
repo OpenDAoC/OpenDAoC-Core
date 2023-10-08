@@ -586,13 +586,13 @@ namespace DOL.GS
                     switch (ActiveWeaponSlot)
                     {
                         case EActiveWeaponSlot.Standard:
-							m_cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+							m_cachedActiveWeapon.item = Inventory.GetItem(EInventorySlot.RightHandWeapon);
 							break;
                         case EActiveWeaponSlot.TwoHanded:
-							m_cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+							m_cachedActiveWeapon.item = Inventory.GetItem(EInventorySlot.TwoHandWeapon);
 							break;
                         case EActiveWeaponSlot.Distance:
-							m_cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.DistanceWeapon);
+							m_cachedActiveWeapon.item = Inventory.GetItem(EInventorySlot.DistanceWeapon);
 							break;
                     }
                 }
@@ -1056,7 +1056,7 @@ namespace DOL.GS
 		/// <param name="duration"></param>
 		/// <param name="attackType"></param>
 		/// <param name="attacker"></param>
-		public virtual void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)
+		public virtual void StartInterruptTimer(int duration, AttackData.EAttackType attackType, GameLiving attacker)
 		{
 			if (!IsAlive || ObjectState != eObjectState.Active)
 			{
@@ -1154,13 +1154,13 @@ namespace DOL.GS
 			return Util.Chance((int)chance);
 		}
 
-		protected virtual bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.eAttackType attackType)
+		protected virtual bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.EAttackType attackType)
 		{
 			if (rangeAttackComponent.RangedAttackType == ERangedAttackType.SureShot)
 			{
-				if (attackType is not AttackData.eAttackType.MeleeOneHand
-					and not AttackData.eAttackType.MeleeTwoHand
-					and not AttackData.eAttackType.MeleeDualWield)
+				if (attackType is not AttackData.EAttackType.MeleeOneHand
+					and not AttackData.EAttackType.MeleeTwoHand
+					and not AttackData.EAttackType.MeleeDualWield)
 					return false;
 			}
 
@@ -1357,7 +1357,7 @@ namespace DOL.GS
 
 			if (this is GameNPC && ActiveWeaponSlot != EActiveWeaponSlot.Distance &&
 			    ((GameNPC)this).Inventory != null &&
-			    ((GameNPC)this).Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
+			    ((GameNPC)this).Inventory.GetItem(EInventorySlot.DistanceWeapon) != null)
 			{
 				SwitchWeapon(EActiveWeaponSlot.Distance);
 			}
@@ -1405,7 +1405,7 @@ namespace DOL.GS
 				// Reduce chance by attacker's defense penetration.
 				evadeChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100.0;
 
-				if (ad.AttackType == AttackData.eAttackType.Ranged)
+				if (ad.AttackType == AttackData.EAttackType.Ranged)
 					evadeChance /= 5.0;
 
 				if (evadeChance < 0.01)
@@ -1416,13 +1416,13 @@ namespace DOL.GS
 				if (evadeChance > 0.995)
 					evadeChance = 0.995;
 				
-				if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+				if (ad.AttackType == AttackData.EAttackType.MeleeDualWield)
 					evadeChance = Math.Max(evadeChance * 0.5, 0.01);
 			
 				if (IsObjectInFront(ad.Attacker, 180) &&
 					(evadeBuff != null || (player != null && player.HasAbility(Abilities.Evade))) &&
 					evadeChance < 0.05 &&
-					ad.AttackType != AttackData.eAttackType.Ranged)
+					ad.AttackType != AttackData.EAttackType.Ranged)
 				{
 					// If player has a hard evade source, 5% minimum evade chance.
 					evadeChance = 0.05;
@@ -1518,7 +1518,7 @@ namespace DOL.GS
 				}
 			}
 
-			if (ad.AttackType == AttackData.eAttackType.MeleeTwoHand)
+			if (ad.AttackType == AttackData.EAttackType.MeleeTwoHand)
 				parryChance = Math.Max(parryChance * 0.5, 0);
 
 			// Infiltrator RR5.
@@ -1556,7 +1556,7 @@ namespace DOL.GS
 			//your friend is most likely using a player crafted shield. The quality of the player crafted item will make a significant difference  try it and see.
 
 			double blockChance = 0;
-			DbInventoryItem leftHand = Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItem leftHand = Inventory?.GetItem(EInventorySlot.LeftHandWeapon);
 
 			if (leftHand != null && leftHand.Object_Type != (int) EObjectType.Shield)
 				leftHand = null;
@@ -1627,7 +1627,7 @@ namespace DOL.GS
 					}
 				}
 
-				if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+				if (ad.AttackType == AttackData.EAttackType.MeleeDualWield)
 					blockChance *= 0.5;
 			}
 
@@ -1737,7 +1737,7 @@ namespace DOL.GS
 					}
 				}
 
-				Group attackerGroup = attackerPlayer.Group;
+				GroupUtil attackerGroup = attackerPlayer.Group;
 				if (attackerGroup != null)
 				{
 					List<GameLiving> xpGainers = new List<GameLiving>(8);
@@ -1852,7 +1852,7 @@ namespace DOL.GS
 
 			var oProcEffects = effectListComponent.GetSpellEffects(EEffect.OffensiveProc);
             //OffensiveProcs
-            if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell && ad.AttackResult != EAttackResult.Missed)
+            if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.EAttackType.Spell && ad.AttackResult != EAttackResult.Missed)
             {
                 for (int i = 0; i < oProcEffects.Count; i++)
                 {
@@ -1900,7 +1900,7 @@ namespace DOL.GS
 			}
 
 			// Don't cancel offensive focus spell
-			if (ad.AttackType != AttackData.eAttackType.Spell)
+			if (ad.AttackType != AttackData.EAttackType.Spell)
 				CancelFocusSpell();
         }
 
@@ -2013,7 +2013,7 @@ namespace DOL.GS
 				// Handle DefensiveProcs.
 				List<EcsGameSpellEffect> dProcEffects = effectListComponent.GetSpellEffects(EEffect.DefensiveProc);
 
-				if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell)
+				if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != AttackData.EAttackType.Spell)
 				{
 					for (int i = 0; i < dProcEffects.Count; i++)
 						(dProcEffects[i].SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
@@ -2054,7 +2054,7 @@ namespace DOL.GS
 			bool removeMovementSpeedDebuff = false; // Non-immunity snares like focus snare, melee snares, DD+Snare spells, etc.
 
 			// Attack was Melee
-			if (ad.AttackType != AttackData.eAttackType.Spell)
+			if (ad.AttackType != AttackData.EAttackType.Spell)
 			{
 				switch (ad.AttackResult)
 				{
@@ -2548,10 +2548,10 @@ namespace DOL.GS
             rangeAttackComponent.RangedAttackState = ERangedAttackState.None;
             rangeAttackComponent.RangedAttackType = ERangedAttackType.Normal;
 
-			DbInventoryItem rightHandSlot = Inventory.GetItem(eInventorySlot.RightHandWeapon);
-			DbInventoryItem leftHandSlot = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-			DbInventoryItem twoHandSlot = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-			DbInventoryItem distanceSlot = Inventory.GetItem(eInventorySlot.DistanceWeapon);
+			DbInventoryItem rightHandSlot = Inventory.GetItem(EInventorySlot.RightHandWeapon);
+			DbInventoryItem leftHandSlot = Inventory.GetItem(EInventorySlot.LeftHandWeapon);
+			DbInventoryItem twoHandSlot = Inventory.GetItem(EInventorySlot.TwoHandWeapon);
+			DbInventoryItem distanceSlot = Inventory.GetItem(EInventorySlot.DistanceWeapon);
 
 			// simple active slot logic:
 			// 0=right hand, 1=left hand, 2=two-hand, 3=range, F=none
@@ -4620,7 +4620,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the group of this living
 		/// </summary>
-		protected Group m_group;
+		protected GroupUtil m_group;
 		/// <summary>
 		/// Holds the index of this living inside of the group
 		/// </summary>
@@ -4629,7 +4629,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the living's group
 		/// </summary>
-		public Group Group
+		public GroupUtil Group
 		{
 			get { return m_group; }
 			set { m_group = value; }

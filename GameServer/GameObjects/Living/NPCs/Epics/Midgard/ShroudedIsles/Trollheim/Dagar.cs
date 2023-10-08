@@ -61,7 +61,7 @@ namespace DOL.GS
 			Empathy = npcTemplate.Empathy;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 956, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 956, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds

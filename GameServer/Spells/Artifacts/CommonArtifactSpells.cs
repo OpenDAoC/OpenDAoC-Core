@@ -229,7 +229,7 @@ namespace DOL.GS.Spells
             newad.Target = ad.Attacker;
             newad.Damage = DamageAmount;
             newad.DamageType = Spell.DamageType;
-            newad.AttackType = AttackData.eAttackType.Spell;
+            newad.AttackType = AttackData.EAttackType.Spell;
             newad.AttackResult = EAttackResult.HitUnstyled;
             newad.SpellHandler = this;
             newad.Target.OnAttackedByEnemy(newad);

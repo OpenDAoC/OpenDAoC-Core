@@ -669,8 +669,8 @@ namespace DOL.GS.Quests.Hibernia
 						case "Delling Crater":
 							if (quest.Step == 3)
 							{
-								if (player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack,
-									    eInventorySlot.LastBackpack))
+								if (player.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack,
+									    EInventorySlot.LastBackpack))
 								{
 									Jaklyr.SayTo(player, "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards Delling Crater. " +
 									                     "Search for Ancestral Keeper in the crater and kill it. " +
@@ -982,7 +982,7 @@ namespace DOL.GS.Quests.Hibernia
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (m_questPlayer.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
 				if (m_questPlayer.Level >= 49)
 					m_questPlayer.GainExperience(EXpSource.Quest,
@@ -992,7 +992,7 @@ namespace DOL.GS.Quests.Hibernia
 						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
 				RemoveItem(m_questPlayer, stone_pendant);
 				GiveItem(m_questPlayer, beaded_resisting_stone);
-				m_questPlayer.AddMoney(Money.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
+				m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
 
 
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...

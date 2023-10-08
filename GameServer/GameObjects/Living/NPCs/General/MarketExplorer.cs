@@ -63,7 +63,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int FirstClientSlot
 		{
-			get { return (int)eInventorySlot.MarketExplorerFirst; }
+			get { return (int)EInventorySlot.MarketExplorerFirst; }
 		}
 
 		/// <summary>
@@ -71,7 +71,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int LastClientSlot
 		{
-			get { return (int)eInventorySlot.MarketExplorerFirst + 39; } // not really sure
+			get { return (int)EInventorySlot.MarketExplorerFirst + 39; } // not really sure
 		}
 
 		/// <summary>
@@ -79,7 +79,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int FirstDBSlot
 		{
-			get { return (int)eInventorySlot.Consignment_First; } // not used
+			get { return (int)EInventorySlot.Consignment_First; } // not used
 		}
 
 		/// <summary>
@@ -87,7 +87,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int LastDBSlot
 		{
-			get { return (int)eInventorySlot.Consignment_Last; } // not used
+			get { return (int)EInventorySlot.Consignment_Last; } // not used
 		}
 		
 		public ERealm GetRealmOfLot(ushort houseNumber)
@@ -201,7 +201,7 @@ namespace DOL.GS
 
 			bool canHandle = false;
 
-			if (fromClientSlot >= FirstClientSlot && toClientSlot >= (int)eInventorySlot.FirstBackpack && toClientSlot <= (ushort)eInventorySlot.LastBackpack)
+			if (fromClientSlot >= FirstClientSlot && toClientSlot >= (int)EInventorySlot.FirstBackpack && toClientSlot <= (ushort)EInventorySlot.LastBackpack)
 			{
 				// buy request
 				canHandle = true;
@@ -220,9 +220,9 @@ namespace DOL.GS
 		public virtual bool MoveItem(GamePlayer player, ushort fromClientSlot, ushort toClientSlot)
 		{
 			// this move represents a buy item request
-			if (fromClientSlot >= (ushort)eInventorySlot.MarketExplorerFirst && 
-				toClientSlot >= (ushort)eInventorySlot.FirstBackpack && 
-				toClientSlot <= (ushort)eInventorySlot.LastBackpack &&
+			if (fromClientSlot >= (ushort)EInventorySlot.MarketExplorerFirst && 
+				toClientSlot >= (ushort)EInventorySlot.FirstBackpack && 
+				toClientSlot <= (ushort)EInventorySlot.LastBackpack &&
 				player.ActiveInventoryObject == this)
 			{
 				var list = player.TempProperties.GetProperty<List<DbInventoryItem>>(EXPLORER_ITEM_LIST, null);
@@ -231,7 +231,7 @@ namespace DOL.GS
 					return false;
 				}
 
-				int itemSlot = fromClientSlot - (int)eInventorySlot.MarketExplorerFirst;
+				int itemSlot = fromClientSlot - (int)EInventorySlot.MarketExplorerFirst;
 
 				DbInventoryItem item = list[itemSlot];
 

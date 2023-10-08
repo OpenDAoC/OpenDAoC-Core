@@ -264,12 +264,12 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 			if (log.IsErrorEnabled && player.Client.Account.PrivLevel != (uint)EPrivLevel.Admin)
 				log.Error("no currentzone in who commandhandler for player " + player.Name);
 		}
-		ChatGroup mychatgroup = player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+		ChatGroupUtil mychatgroup = player.TempProperties.GetProperty<ChatGroupUtil>(ChatGroupUtil.CHATGROUP_PROPERTY, null);
 		if (mychatgroup != null && (mychatgroup.Members.Contains(player) || mychatgroup.IsPublic && (bool)mychatgroup.Members[player] == true))
 		{
 			result.Append(" [CG]");
 		}
-		BattleGroup mybattlegroup = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+		BattleGroupUtil mybattlegroup = player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 		if (mybattlegroup != null && (mybattlegroup.Members.Contains(player) || mybattlegroup.IsPublic && (bool)mybattlegroup.Members[player] == true))
 		{
 			result.Append(" [BG]");
@@ -453,7 +453,7 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 	{
 		public bool ApplyFilter(GamePlayer player)
 		{
-			ChatGroup cg = player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+			ChatGroupUtil cg = player.TempProperties.GetProperty<ChatGroupUtil>(ChatGroupUtil.CHATGROUP_PROPERTY, null);
 			//no chatgroup found
 			if (cg == null)
 				return false;
@@ -529,7 +529,7 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 	{
 		public bool ApplyFilter(GamePlayer player)
 		{
-			BattleGroup bg = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+			BattleGroupUtil bg = player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 			//no battlegroup found
 			if (bg == null)
 				return false;

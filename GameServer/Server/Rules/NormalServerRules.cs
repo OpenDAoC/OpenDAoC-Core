@@ -146,7 +146,7 @@ namespace DOL.GS.ServerRules
 		}
 
 
-		public override bool IsAllowedToJoinGuild(GamePlayer source, Guild guild)
+		public override bool IsAllowedToJoinGuild(GamePlayer source, GuildUtil guild)
 		{
 			if (source == null) 
 				return false;

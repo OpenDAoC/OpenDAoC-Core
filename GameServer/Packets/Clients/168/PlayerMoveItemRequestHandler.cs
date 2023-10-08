@@ -81,11 +81,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				// Is the item we want to move in our backpack?
 				// we also allow drag'n drop from equipped to blacksmith
-				if ((fromClientSlot >= (ushort)eInventorySlot.FirstBackpack && 
-					 fromClientSlot <= (ushort)eInventorySlot.LastBackpack) || 
+				if ((fromClientSlot >= (ushort)EInventorySlot.FirstBackpack && 
+					 fromClientSlot <= (ushort)EInventorySlot.LastBackpack) || 
 					(obj is Blacksmith && 
-					 fromClientSlot >= (ushort)eInventorySlot.MinEquipable && 
-					 fromClientSlot <= (ushort)eInventorySlot.MaxEquipable))
+					 fromClientSlot >= (ushort)EInventorySlot.MinEquipable && 
+					 fromClientSlot <= (ushort)EInventorySlot.MaxEquipable))
 				{
 					if (!obj.IsWithinRadius(client.Player, WorldMgr.GIVE_ITEM_DISTANCE))
 					{
@@ -103,7 +103,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						return;
 					}
 
-					DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)fromClientSlot);
+					DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)fromClientSlot);
 					if (item == null)
 					{
 						client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });
@@ -156,22 +156,22 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				//Is the "item" we want to move money? For Version 1.78+
 				if (client.Version >= GameClient.eClientVersion.Version178 && 
-					fromClientSlot >= (int)eInventorySlot.Mithril178 && 
-					fromClientSlot <= (int)eInventorySlot.Copper178)
+					fromClientSlot >= (int)EInventorySlot.Mithril178 && 
+					fromClientSlot <= (int)EInventorySlot.Copper178)
 				{
-					fromClientSlot -= eInventorySlot.Mithril178 - eInventorySlot.Mithril;
+					fromClientSlot -= EInventorySlot.Mithril178 - EInventorySlot.Mithril;
 				}
 
 				//Is the "item" we want to move money?
-				if (fromClientSlot >= (ushort)eInventorySlot.Mithril && fromClientSlot <= (ushort)eInventorySlot.Copper)
+				if (fromClientSlot >= (ushort)EInventorySlot.Mithril && fromClientSlot <= (ushort)EInventorySlot.Copper)
 				{
 					int[] money = new int[5];
-					money[fromClientSlot - (ushort)eInventorySlot.Mithril] = itemCount;
-					long flatMoney = Money.GetMoney(money[0], money[1], money[2], money[3], money[4]);
+					money[fromClientSlot - (ushort)EInventorySlot.Mithril] = itemCount;
+					long flatMoney = MoneyMgr.GetMoney(money[0], money[1], money[2], money[3], money[4]);
 
 					if (client.Version >= GameClient.eClientVersion.Version178) // add it back for proper slot update...
 					{
-						fromClientSlot += eInventorySlot.Mithril178 - eInventorySlot.Mithril;
+						fromClientSlot += EInventorySlot.Mithril178 - EInventorySlot.Mithril;
 					}
 
 					if (!obj.IsWithinRadius(client.Player, WorldMgr.GIVE_ITEM_DISTANCE))
@@ -231,24 +231,24 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 
 			//Do we want to move an item from immediate inventory to immediate inventory or drop on the ground
-			if (((fromClientSlot >= (ushort)eInventorySlot.Ground && fromClientSlot <= (ushort)eInventorySlot.LastBackpack)
-				|| (fromClientSlot >= (ushort)eInventorySlot.FirstVault && fromClientSlot <= (ushort)eInventorySlot.LastVault)
-				|| (fromClientSlot >= (ushort)eInventorySlot.FirstBagHorse && fromClientSlot <= (ushort)eInventorySlot.LastBagHorse))
-				&& ((toClientSlot >= (ushort)eInventorySlot.Ground && toClientSlot <= (ushort)eInventorySlot.LastBackpack)
-				|| (toClientSlot >= (ushort)eInventorySlot.FirstVault && toClientSlot <= (ushort)eInventorySlot.LastVault)
-				|| (toClientSlot >= (ushort)eInventorySlot.FirstBagHorse && toClientSlot <= (ushort)eInventorySlot.LastBagHorse)))
+			if (((fromClientSlot >= (ushort)EInventorySlot.Ground && fromClientSlot <= (ushort)EInventorySlot.LastBackpack)
+				|| (fromClientSlot >= (ushort)EInventorySlot.FirstVault && fromClientSlot <= (ushort)EInventorySlot.LastVault)
+				|| (fromClientSlot >= (ushort)EInventorySlot.FirstBagHorse && fromClientSlot <= (ushort)EInventorySlot.LastBagHorse))
+				&& ((toClientSlot >= (ushort)EInventorySlot.Ground && toClientSlot <= (ushort)EInventorySlot.LastBackpack)
+				|| (toClientSlot >= (ushort)EInventorySlot.FirstVault && toClientSlot <= (ushort)EInventorySlot.LastVault)
+				|| (toClientSlot >= (ushort)EInventorySlot.FirstBagHorse && toClientSlot <= (ushort)EInventorySlot.LastBagHorse)))
 			{
 				//We want to drop the item
-				if (toClientSlot == (ushort)eInventorySlot.Ground)
+				if (toClientSlot == (ushort)EInventorySlot.Ground)
 				{
-					DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)fromClientSlot);
+					DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)fromClientSlot);
 					if (item == null)
 					{
 						client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });
 						client.Out.SendMessage("Invalid item (slot# " + fromClientSlot + ").", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return;
 					}
-					if (fromClientSlot < (ushort)eInventorySlot.FirstBackpack)
+					if (fromClientSlot < (ushort)EInventorySlot.FirstBackpack)
 					{
 						client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });
 						return;
@@ -260,7 +260,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						return;
 					}
 
-					if (client.Player.DropItem((eInventorySlot)fromClientSlot))
+					if (client.Player.DropItem((EInventorySlot)fromClientSlot))
 					{
 						client.Out.SendMessage("You drop " + item.GetName(0, false) + " on the ground!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return;
@@ -269,47 +269,47 @@ namespace DOL.GS.PacketHandler.Client.v168
 					return;
 				}
 
-				client.Player.Inventory.MoveItem((eInventorySlot)fromClientSlot, (eInventorySlot)toClientSlot, itemCount);
+				client.Player.Inventory.MoveItem((EInventorySlot)fromClientSlot, (EInventorySlot)toClientSlot, itemCount);
 				//ChatUtil.SendDebugMessage(client, "Player.Inventory handled move");
 				return;
 			}
 
-			if (((fromClientSlot >= (ushort)eInventorySlot.Ground && fromClientSlot <= (ushort)eInventorySlot.LastBackpack)
-				|| (fromClientSlot >= (ushort)eInventorySlot.FirstVault && fromClientSlot <= (ushort)eInventorySlot.LastVault)
-				|| (fromClientSlot >= (ushort)eInventorySlot.FirstBagHorse && fromClientSlot <= (ushort)eInventorySlot.LastBagHorse))
-				&& ((toClientSlot == (ushort)eInventorySlot.PlayerPaperDoll || toClientSlot == (ushort)eInventorySlot.NewPlayerPaperDoll)
-				|| (toClientSlot >= (ushort)eInventorySlot.Ground && toClientSlot <= (ushort)eInventorySlot.LastBackpack)
-				|| (toClientSlot >= (ushort)eInventorySlot.FirstVault && toClientSlot <= (ushort)eInventorySlot.LastVault)
-				|| (toClientSlot >= (ushort)eInventorySlot.FirstBagHorse && toClientSlot <= (ushort)eInventorySlot.LastBagHorse)))
+			if (((fromClientSlot >= (ushort)EInventorySlot.Ground && fromClientSlot <= (ushort)EInventorySlot.LastBackpack)
+				|| (fromClientSlot >= (ushort)EInventorySlot.FirstVault && fromClientSlot <= (ushort)EInventorySlot.LastVault)
+				|| (fromClientSlot >= (ushort)EInventorySlot.FirstBagHorse && fromClientSlot <= (ushort)EInventorySlot.LastBagHorse))
+				&& ((toClientSlot == (ushort)EInventorySlot.PlayerPaperDoll || toClientSlot == (ushort)EInventorySlot.NewPlayerPaperDoll)
+				|| (toClientSlot >= (ushort)EInventorySlot.Ground && toClientSlot <= (ushort)EInventorySlot.LastBackpack)
+				|| (toClientSlot >= (ushort)EInventorySlot.FirstVault && toClientSlot <= (ushort)EInventorySlot.LastVault)
+				|| (toClientSlot >= (ushort)EInventorySlot.FirstBagHorse && toClientSlot <= (ushort)EInventorySlot.LastBagHorse)))
 			{
-				DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)fromClientSlot);
+				DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)fromClientSlot);
 				if (item == null) return;
 
 				toClientSlot = 0;
-				if (item.Item_Type >= (int)eInventorySlot.MinEquipable && item.Item_Type <= (int)eInventorySlot.MaxEquipable)
+				if (item.Item_Type >= (int)EInventorySlot.MinEquipable && item.Item_Type <= (int)EInventorySlot.MaxEquipable)
 					toClientSlot = (ushort)item.Item_Type;
 				if (toClientSlot == 0)
 				{
 					client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });
 					return;
 				}
-				if (toClientSlot == (int)eInventorySlot.LeftBracer || toClientSlot == (int)eInventorySlot.RightBracer)
+				if (toClientSlot == (int)EInventorySlot.LeftBracer || toClientSlot == (int)EInventorySlot.RightBracer)
 				{
-					if (client.Player.Inventory.GetItem(eInventorySlot.LeftBracer) == null)
-						toClientSlot = (int)eInventorySlot.LeftBracer;
+					if (client.Player.Inventory.GetItem(EInventorySlot.LeftBracer) == null)
+						toClientSlot = (int)EInventorySlot.LeftBracer;
 					else
-						toClientSlot = (int)eInventorySlot.RightBracer;
+						toClientSlot = (int)EInventorySlot.RightBracer;
 				}
 
-				if (toClientSlot == (int)eInventorySlot.LeftRing || toClientSlot == (int)eInventorySlot.RightRing)
+				if (toClientSlot == (int)EInventorySlot.LeftRing || toClientSlot == (int)EInventorySlot.RightRing)
 				{
-					if (client.Player.Inventory.GetItem(eInventorySlot.LeftRing) == null)
-						toClientSlot = (int)eInventorySlot.LeftRing;
+					if (client.Player.Inventory.GetItem(EInventorySlot.LeftRing) == null)
+						toClientSlot = (int)EInventorySlot.LeftRing;
 					else
-						toClientSlot = (int)eInventorySlot.RightRing;
+						toClientSlot = (int)EInventorySlot.RightRing;
 				}
 
-				client.Player.Inventory.MoveItem((eInventorySlot)fromClientSlot, (eInventorySlot)toClientSlot, itemCount);
+				client.Player.Inventory.MoveItem((EInventorySlot)fromClientSlot, (EInventorySlot)toClientSlot, itemCount);
 				//ChatUtil.SendDebugMessage(client, "Player.Inventory handled move (2)");
 				return;
 			}

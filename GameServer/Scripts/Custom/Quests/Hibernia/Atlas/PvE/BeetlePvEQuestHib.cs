@@ -98,10 +98,10 @@ namespace DOL.GS.AtlasQuest.Hibernia
 				Harris.Z = 7994;
 				Harris.Heading = 1600;
 				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
-				templateHib.AddNPCEquipment(eInventorySlot.Cloak, 559, 43);
-				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008, 24);
-				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 361, 43);
-				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 362, 43);
+				templateHib.AddNPCEquipment(EInventorySlot.Cloak, 559, 43);
+				templateHib.AddNPCEquipment(EInventorySlot.TorsoArmor, 1008, 24);
+				templateHib.AddNPCEquipment(EInventorySlot.HandsArmor, 361, 43);
+				templateHib.AddNPCEquipment(EInventorySlot.FeetArmor, 362, 43);
 				Harris.Inventory = templateHib.CloseTemplate();
 				Harris.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -436,7 +436,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 			}
 			else
 			{
-				if (player.Inventory.IsSlotsFree(2, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				if (player.Inventory.IsSlotsFree(2, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
 					SendSystemMessage(player, "Thank you for helping Kevin and his beetle family.");
 					GiveItem(player, beetle_egg);
@@ -462,7 +462,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 			}
 			else
 			{
-				if (player.Inventory.IsSlotsFree(2, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				if (player.Inventory.IsSlotsFree(2, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
 					SendSystemMessage(player, "Thank you for helping Kevin and his beetle family.");
 					GiveItem(player, beetle_bone);
@@ -598,9 +598,9 @@ namespace DOL.GS.AtlasQuest.Hibernia
 		
 		public override void FinishQuest()
 		{
-			m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
+			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
 				"You receive {0} as a reward.");
-			AtlasROGManager.GenerateReward(m_questPlayer, 5000);
+			CoreRoGMgr.GenerateReward(m_questPlayer, 5000);
 			_grandSummonerKilled = 0;
 			_legionKilled = 0;
 			_dragonKilled = 0;

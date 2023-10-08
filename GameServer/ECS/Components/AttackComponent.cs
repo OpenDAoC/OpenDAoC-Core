@@ -222,7 +222,7 @@ namespace DOL.GS
                     GameLiving target = player.TargetObject as GameLiving;
 
                     // TODO: Change to real distance of bows.
-                    if (weapon.SlotPosition == (int)eInventorySlot.DistanceWeapon)
+                    if (weapon.SlotPosition == (int)EInventorySlot.DistanceWeapon)
                     {
                         double range;
 
@@ -504,7 +504,7 @@ namespace DOL.GS
 
                     if (weapon.Item_Type == Slot.TWOHAND)
                         damageCap *= CalculateTwoHandedDamageModifier(weapon);
-                    else if (player.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null)
+                    else if (player.Inventory?.GetItem(EInventorySlot.LeftHandWeapon) != null)
                         damageCap *= CalculateLeftAxeModifier();
                 }
 
@@ -919,7 +919,7 @@ namespace DOL.GS
 
             if (owner is GamePlayer playerOwner && playerOwner.IsAlive)
                 playerOwner.Out.SendAttackMode(AttackState);
-            else if (owner is GameNPC npcOwner && npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null && npcOwner.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
+            else if (owner is GameNPC npcOwner && npcOwner.Inventory?.GetItem(EInventorySlot.DistanceWeapon) != null && npcOwner.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
                 npcOwner.SwitchWeapon(EActiveWeaponSlot.Distance);
         }
 
@@ -1009,7 +1009,7 @@ namespace DOL.GS
                             List<GameObject> extraTargets = new();
                             List<GameObject> listAvailableTargets = new();
                             DbInventoryItem attackWeapon = owner.ActiveWeapon;
-                            DbInventoryItem leftWeapon = playerOwner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+                            DbInventoryItem leftWeapon = playerOwner.Inventory?.GetItem(EInventorySlot.LeftHandWeapon);
 
                             int numTargetsCanHit = style.ID switch
                             {
@@ -1119,16 +1119,16 @@ namespace DOL.GS
             int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Item1.Value - AttackRange) : 0;
 
             if (dualWield && (ad.Attacker is GamePlayer gPlayer) && gPlayer.CharacterClass.ID != (int) ECharacterClass.Savage)
-                ad.AttackType = AttackData.eAttackType.MeleeDualWield;
+                ad.AttackType = AttackData.EAttackType.MeleeDualWield;
             else if (weapon == null)
-                ad.AttackType = AttackData.eAttackType.MeleeOneHand;
+                ad.AttackType = AttackData.EAttackType.MeleeOneHand;
             else
             {
                 ad.AttackType = weapon.SlotPosition switch
                 {
-                    Slot.TWOHAND => AttackData.eAttackType.MeleeTwoHand,
-                    Slot.RANGED => AttackData.eAttackType.Ranged,
-                    _ => AttackData.eAttackType.MeleeOneHand,
+                    Slot.TWOHAND => AttackData.EAttackType.MeleeTwoHand,
+                    Slot.RANGED => AttackData.EAttackType.Ranged,
+                    _ => AttackData.EAttackType.MeleeOneHand,
                 };
             }
 
@@ -1149,7 +1149,7 @@ namespace DOL.GS
             }
 
             // LoS / in front check.
-            if (!ignoreLOS && ad.AttackType != AttackData.eAttackType.Ranged && owner is GamePlayer &&
+            if (!ignoreLOS && ad.AttackType != AttackData.EAttackType.Ranged && owner is GamePlayer &&
                 !(ad.Target is GameKeepComponent) &&
                 !(owner.IsObjectInFront(ad.Target, 120) && owner.TargetInView))
             {
@@ -1167,7 +1167,7 @@ namespace DOL.GS
             }
 
             // Melee range check (ranged is already done at this point).
-            if (ad.AttackType != AttackData.eAttackType.Ranged)
+            if (ad.AttackType != AttackData.EAttackType.Ranged)
             {
                 if (!owner.IsWithinRadius(ad.Target, AttackRange + addRange))
                 {
@@ -1239,7 +1239,7 @@ namespace DOL.GS
                     DbInventoryItem armor = null;
 
                     if (ad.Target.Inventory != null)
-                        armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
+                        armor = ad.Target.Inventory.GetItem((EInventorySlot) ad.ArmorHitLocation);
 
                     DbInventoryItem weaponForSpecModifier = null;
 
@@ -1651,7 +1651,7 @@ namespace DOL.GS
                                     eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
                                 break;
                             case EAttackResult.Missed:
-                                if (ad.AttackType != AttackData.eAttackType.Spell)
+                                if (ad.AttackType != AttackData.EAttackType.Spell)
                                     owner.Out.SendMessage(
                                         string.Format(
                                             LanguageMgr.GetTranslation(owner.Client.Account.Language,
@@ -1693,7 +1693,7 @@ namespace DOL.GS
             // broadcast messages
             if (broadcast)
             {
-                Message.SystemToArea(ad.Attacker, message, eChatType.CT_OthersCombat,
+                MessageUtil.SystemToArea(ad.Attacker, message, eChatType.CT_OthersCombat,
                     (GameObject[]) excludes.ToArray(typeof(GameObject)));
             }
 
@@ -1701,7 +1701,7 @@ namespace DOL.GS
             ad.Target.StartInterruptTimer(interruptDuration, ad.AttackType, ad.Attacker);
 
             // If we're attacking via melee, start an interrupt timer on ourselves so we cannot swing + immediately cast.
-            if (ad.AttackType != AttackData.eAttackType.Spell && ad.AttackType != AttackData.eAttackType.Ranged && owner.StartInterruptTimerOnItselfOnMeleeAttack())
+            if (ad.AttackType != AttackData.EAttackType.Spell && ad.AttackType != AttackData.EAttackType.Ranged && owner.StartInterruptTimerOnItselfOnMeleeAttack())
                 owner.StartInterruptTimer(owner.SpellInterruptDuration, ad.AttackType, ad.Attacker);
 
             owner.OnAttackEnemy(ad);
@@ -1861,7 +1861,7 @@ namespace DOL.GS
                     return true;
             }
 
-            if (ad.AttackType is AttackData.eAttackType.Ranged or AttackData.eAttackType.Spell)
+            if (ad.AttackType is AttackData.EAttackType.Ranged or AttackData.EAttackType.Spell)
             {
                 // Nature's shield, 100% block chance, 120° frontal angle.
                 if (owner.IsObjectInFront(ad.Attacker, 120) && (owner.styleComponent.NextCombatStyle?.ID == 394 || owner.styleComponent.NextCombatBackupStyle?.ID == 394))
@@ -1894,7 +1894,7 @@ namespace DOL.GS
                 !guard.GuardSource.IsWithinRadius(guard.GuardTarget, GuardAbilityHandler.GUARD_DISTANCE))
                 return false;
 
-            DbInventoryItem leftHand = guard.GuardSource.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem leftHand = guard.GuardSource.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
             DbInventoryItem rightHand = guard.GuardSource.ActiveWeapon;
 
             if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || leftHand.Object_Type != (int) EObjectType.Shield) && guard.GuardSource is not GameNPC)
@@ -1941,7 +1941,7 @@ namespace DOL.GS
             else if (shieldSize == 3 && guardChance > 0.99)
                 guardChance = 0.99;
 
-            if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+            if (ad.AttackType == AttackData.EAttackType.MeleeDualWield)
                 guardChance *= 0.5;
 
             double guardRoll;
@@ -1987,7 +1987,7 @@ namespace DOL.GS
             if (!dashing.GuardSource.IsWithinRadius(dashing.GuardTarget, DashingDefenseEffect.GUARD_DISTANCE))
                 return false;
 
-            DbInventoryItem leftHand = dashing.GuardSource.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem leftHand = dashing.GuardSource.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
             DbInventoryItem rightHand = dashing.GuardSource.ActiveWeapon;
 
             if ((rightHand == null || rightHand.Hand != 1) && leftHand != null && leftHand.Object_Type == (int) EObjectType.Shield)
@@ -2010,7 +2010,7 @@ namespace DOL.GS
                 if (Attackers.Count > shieldSize)
                     guardchance *= shieldSize / (double) Attackers.Count;
 
-                if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+                if (ad.AttackType == AttackData.EAttackType.MeleeDualWield)
                     guardchance /= 2;
 
                 double parrychance = dashing.GuardSource.GetModified(EProperty.ParryChance);
@@ -2313,7 +2313,7 @@ namespace DOL.GS
                     return EAttackResult.HitUnstyled; // Exit early for stealth to prevent breaking bubble but still register a hit.
 
                 if (action.RangedAttackType == ERangedAttackType.Long ||
-                    (ad.AttackType == AttackData.eAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && playerAttacker?.HasAbility(Abilities.PenetratingArrow) == true))
+                    (ad.AttackType == AttackData.EAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && playerAttacker?.HasAbility(Abilities.PenetratingArrow) == true))
                     penetrate = true;
 
                 if (ad.IsMeleeAttack && !Util.ChanceDouble(bladeturn.SpellHandler.Caster.Level / ad.Attacker.Level))
@@ -2726,7 +2726,7 @@ namespace DOL.GS
 
                 if (ad.Target.Inventory != null)
                 {
-                    DbInventoryItem armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
+                    DbInventoryItem armor = ad.Target.Inventory.GetItem((EInventorySlot) ad.ArmorHitLocation);
 
                     if (armor != null)
                         armorBonus = armor.Bonus;
@@ -2864,7 +2864,7 @@ namespace DOL.GS
             // HtH chance
             specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
             DbInventoryItem attackWeapon = owner.ActiveWeapon;
-            DbInventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 
             if (specLevel > 0 && attackWeapon != null && leftWeapon != null && leftWeapon.Object_Type == (int) EObjectType.HandToHand)
             {

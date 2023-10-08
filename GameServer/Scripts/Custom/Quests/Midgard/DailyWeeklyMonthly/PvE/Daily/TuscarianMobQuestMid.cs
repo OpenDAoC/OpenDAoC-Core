@@ -89,11 +89,11 @@ namespace DOL.GS.DailyQuest.Midgard
                 Jarek.Z = 3867;
                 Jarek.Heading = 1239;
                 GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
-                templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 983);
-                templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 984);
-                templateMid.AddNPCEquipment(eInventorySlot.ArmsArmor, 985);
-                templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 986);
-                templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 987);
+                templateMid.AddNPCEquipment(EInventorySlot.TorsoArmor, 983);
+                templateMid.AddNPCEquipment(EInventorySlot.LegsArmor, 984);
+                templateMid.AddNPCEquipment(EInventorySlot.ArmsArmor, 985);
+                templateMid.AddNPCEquipment(EInventorySlot.HandsArmor, 986);
+                templateMid.AddNPCEquipment(EInventorySlot.FeetArmor, 987);
                 Jarek.Inventory = templateMid.CloseTemplate();
                 Jarek.AddToWorld();
                 if (SAVE_INTO_DATABASE)
@@ -363,8 +363,8 @@ namespace DOL.GS.DailyQuest.Midgard
         public override void FinishQuest()
         {
             m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5);
-            m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level, 0, Util.Random(50)), "You receive {0} as a reward.");
-            AtlasROGManager.GenerateReward(m_questPlayer, 100);
+            m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, m_questPlayer.Level, 0, Util.Random(50)), "You receive {0} as a reward.");
+            CoreRoGMgr.GenerateReward(m_questPlayer, 100);
             _deadTuscaMob = 0;
             base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }

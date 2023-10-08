@@ -450,9 +450,9 @@ namespace DOL.GS.Housing
 				text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.Level", "Lot"));
 
 			text.Add(" ");
-			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.Lockbox", Money.GetString(KeptMoney)));
-			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentalPrice", Money.GetString(HouseMgr.GetRentByModel(Model))));
-			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.MaxLockbox", Money.GetString(HouseMgr.GetRentByModel(Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)));
+			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.Lockbox", MoneyMgr.GetString(KeptMoney)));
+			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentalPrice", MoneyMgr.GetString(HouseMgr.GetRentByModel(Model))));
+			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.MaxLockbox", MoneyMgr.GetString(HouseMgr.GetRentByModel(Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)));
 			if (ServerProperties.Properties.RENT_DUE_DAYS > 0)
 				text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentDueIn", due.Days, due.Hours));
 			else
@@ -754,8 +754,8 @@ namespace DOL.GS.Housing
 				var template = GameServer.Database.FindObjectByKey<DbItemTemplate>(obj.OwnerID);
 				if (template != null)
 				{
-                    if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(template)))
-                        InventoryLogging.LogInventoryAction("(HOUSE;" + HouseNumber + ")", player, eInventoryActionType.Loot, template);
+                    if (player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(template)))
+                        InventoryLogging.LogInventoryAction("(HOUSE;" + HouseNumber + ")", player, EInventoryActionType.Loot, template);
 				}
 			}
 		}
@@ -945,13 +945,13 @@ namespace DOL.GS.Housing
 				return;
 			}
 
-			if (!player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(itemTemplate)))
+			if (!player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(itemTemplate)))
 			{
 				ChatUtil.SendSystemMessage(player, LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"));
 				return;
 			}
 
-			InventoryLogging.LogInventoryAction("(HOUSE;" + HouseNumber + ")", player, eInventoryActionType.Loot, itemTemplate);
+			InventoryLogging.LogInventoryAction("(HOUSE;" + HouseNumber + ")", player, EInventoryActionType.Loot, itemTemplate);
 		}
 
 		public void Edit(GamePlayer player, List<int> changes)
@@ -989,12 +989,12 @@ namespace DOL.GS.Housing
 			// make sure player has enough money to cover the changes
 			if (!player.RemoveMoney(price))
 			{
-                InventoryLogging.LogInventoryAction(player, "(HOUSE;" + HouseNumber + ")", eInventoryActionType.Merchant, price);
+                InventoryLogging.LogInventoryAction(player, "(HOUSE;" + HouseNumber + ")", EInventoryActionType.Merchant, price);
 				ChatUtil.SendMerchantMessage(player, "House.Edit.NotEnoughMoney", null);
 				return;
 			}
 
-			ChatUtil.SendSystemMessage(player, "House.Edit.PayForChanges", Money.GetString(price));
+			ChatUtil.SendSystemMessage(player, "House.Edit.PayForChanges", MoneyMgr.GetString(price));
 
 			// make all the changes
 			foreach (int slot in changes)
@@ -1308,7 +1308,7 @@ namespace DOL.GS.Housing
 			// check based on guild
 			if (player.Guild != null)
 			{
-				return OwnerID == player.Guild.GuildID && player.Guild.HasRank(player, Guild.eRank.Leader);
+				return OwnerID == player.Guild.GuildID && player.Guild.HasRank(player, EGuildRank.Leader);
 			}
 
 			// no character/account/guild match, not an owner

@@ -177,7 +177,7 @@ namespace DOL.GS.ServerRules
 					}
 
 				    // Player can't hit other members of the same BattleGroup
-				    BattleGroup mybattlegroup = playerAttacker.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				    BattleGroupUtil mybattlegroup = playerAttacker.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 
 				    if (mybattlegroup != null && mybattlegroup.IsInTheBattleGroup(playerDefender))
 				    {
@@ -398,7 +398,7 @@ namespace DOL.GS.ServerRules
 			return true;
 		}
 
-		public override bool IsAllowedToJoinGuild(GamePlayer source, Guild guild)
+		public override bool IsAllowedToJoinGuild(GamePlayer source, GuildUtil guild)
 		{
 			return true;
 		}
@@ -529,7 +529,7 @@ namespace DOL.GS.ServerRules
 			//pvp servers, the realm changes to the group leaders realm
 			if (killer is GamePlayer)
 			{
-				Group group = ((killer as GamePlayer).Group);
+				GroupUtil group = ((killer as GamePlayer).Group);
 				if (group != null)
 					realm = (ERealm)group.Leader.Realm;
 				else realm = (ERealm)killer.Realm;
@@ -537,7 +537,7 @@ namespace DOL.GS.ServerRules
 			else if (killer is GameNPC && (killer as GameNPC).Brain is IControlledBrain)
 			{
 				GamePlayer player = ((killer as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-				Group group = null;
+				GroupUtil group = null;
 				if (player != null)
 					group = player.Group;
 				if (group != null)

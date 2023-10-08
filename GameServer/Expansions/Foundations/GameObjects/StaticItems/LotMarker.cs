@@ -30,7 +30,7 @@ namespace DOL.GS.Housing
 
 			if (string.IsNullOrEmpty(DatabaseItem.OwnerID))
 			{
-				list.Add(" It can be bought for " + Money.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + ".");
+				list.Add(" It can be bought for " + MoneyMgr.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + ".");
 			}
 			else if (!string.IsNullOrEmpty(DatabaseItem.Name))
 			{
@@ -59,7 +59,7 @@ namespace DOL.GS.Housing
 
 			if (string.IsNullOrEmpty(DatabaseItem.OwnerID))
 			{
-				player.Out.SendCustomDialog("Do you want to buy this lot?\r\n It costs " + Money.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + "!", BuyLot);
+				player.Out.SendCustomDialog("Do you want to buy this lot?\r\n It costs " + MoneyMgr.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + "!", BuyLot);
 			}
 			else
 			{
@@ -96,7 +96,7 @@ namespace DOL.GS.Housing
 				if (player.RemoveMoney(totalCost, "You just bought this lot for {0}.",
 				                       eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
 				{
-                    InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, totalCost);
+                    InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, totalCost);
 					DatabaseItem.LastPaid = DateTime.Now;
 					DatabaseItem.OwnerID = player.ObjectId;
 					CreateHouse(player, 0);
@@ -165,7 +165,7 @@ namespace DOL.GS.Housing
 				player.Inventory.RemoveItem(item);
 
 				// Tolakram:  Is this always null when purchasing a house?
-				InventoryLogging.LogInventoryAction(player, "(HOUSE;" + (CurrentHouse == null ? DatabaseItem.HouseNumber : CurrentHouse.HouseNumber) + ")", eInventoryActionType.Other, item.Template, item.Count);
+				InventoryLogging.LogInventoryAction(player, "(HOUSE;" + (CurrentHouse == null ? DatabaseItem.HouseNumber : CurrentHouse.HouseNumber) + ")", EInventoryActionType.Other, item.Template, item.Count);
 
 				return true;
 			}

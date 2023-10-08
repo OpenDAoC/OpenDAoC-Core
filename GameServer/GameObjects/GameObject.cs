@@ -1291,7 +1291,7 @@ namespace DOL.GS
 		}
 		public static bool PlayerHasItem(GamePlayer player, string str)
 		{
-			DbInventoryItem item = player.Inventory.GetFirstItemByID(str, eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+			DbInventoryItem item = player.Inventory.GetFirstItemByID(str, EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 			if (item != null)
 				return true;
 			return false;

@@ -94,13 +94,13 @@ namespace DOL.GS
 			IsCloakHoodUp = true;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 139, 43, 0, 0); //Slot,model,color,effect,extension
-			template.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 43);
-			template.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 43);
-			template.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.Cloak, 57, 66, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 43, 94, 0);
+			template.AddNPCEquipment(EInventorySlot.TorsoArmor, 139, 43, 0, 0); //Slot,model,color,effect,extension
+			template.AddNPCEquipment(EInventorySlot.ArmsArmor, 141, 43);
+			template.AddNPCEquipment(EInventorySlot.LegsArmor, 140, 43);
+			template.AddNPCEquipment(EInventorySlot.HandsArmor, 142, 43, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.FeetArmor, 143, 43, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.Cloak, 57, 66, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 19, 43, 94, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

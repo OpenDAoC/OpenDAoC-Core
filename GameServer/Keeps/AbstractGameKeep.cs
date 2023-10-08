@@ -182,7 +182,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// The guild which has claimed the keep
 		/// </summary>
-		public Guild Guild { get; set; } = null;
+		public GuildUtil Guild { get; set; } = null;
 
 		/// <summary>
 		/// Difficulty level of keep for each realm
@@ -531,7 +531,7 @@ namespace DOL.GS.Keeps
 			m_difficultyLevel[2] = DBKeep.HiberniaDifficultyLevel;
 			if (DBKeep.ClaimedGuildName != null && DBKeep.ClaimedGuildName != "")
 			{
-				Guild myguild = GuildMgr.GetGuildByName(DBKeep.ClaimedGuildName);
+				GuildUtil myguild = GuildMgr.GetGuildByName(DBKeep.ClaimedGuildName);
 				if (myguild != null)
 				{
 					Guild = myguild;
@@ -607,7 +607,7 @@ namespace DOL.GS.Keeps
 				player.Out.SendMessage("You must be in a guild to claim a keep.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
 				return false;
 			}
-			if (!player.Guild.HasRank(player, Guild.eRank.Claim))
+			if (!player.Guild.HasRank(player, EGuildRank.Claim))
 			{
 				player.Out.SendMessage("You do not have permission to claim for your guild.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;

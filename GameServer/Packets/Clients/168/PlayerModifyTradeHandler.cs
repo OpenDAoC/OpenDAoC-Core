@@ -48,7 +48,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				for (int i = 0; i < 10; i++)
 				{
 					int slotPosition = packet.ReadByte();
-					DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slotPosition);
+					DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slotPosition);
 					if (item != null 
 						&& ((item.IsDropable && item.IsTradable) || (client.Player.CanTradeAnyItem 
 						|| trade is SelfCraftWindow
@@ -65,7 +65,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				for (int i = 0; i < 5; i++)
 					tradeMoney[i] = packet.ReadShort();
 
-				long money = Money.GetMoney(tradeMoney[0], tradeMoney[1], tradeMoney[2], tradeMoney[3], tradeMoney[4]);
+				long money = MoneyMgr.GetMoney(tradeMoney[0], tradeMoney[1], tradeMoney[2], tradeMoney[3], tradeMoney[4]);
 				trade.TradeMoney = money;
 
 				trade.TradeUpdate();

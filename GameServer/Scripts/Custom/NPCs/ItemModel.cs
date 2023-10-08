@@ -6714,7 +6714,7 @@ namespace DOL.GS
         {
             if (price > 0)
             {
-                int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
                 log.Info("Player Orbs:" + playerOrbs);
 
                 if (playerOrbs < price)
@@ -6746,13 +6746,13 @@ namespace DOL.GS
                 GameServer.Database.AddObject(unique);
                 //Console.WriteLine($"unique model: {unique.Model} assignment {number}");
                 DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
-                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
+                player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, newInventoryItem);
                 player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
                 // player.RemoveBountyPoints(300);
                 //player.RealmPoints -= price;
                 //player.RespecRealm();
                 //SetRealmLevel(player, (int)player.RealmPoints);
-                player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                player.Inventory.RemoveTemplate(_currencyID, price, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
                 player.SaveIntoDatabase();
                 return true;
@@ -6767,7 +6767,7 @@ namespace DOL.GS
         {
             if (price > 0)
             {
-                int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack,eInventorySlot.LastBackpack);
+                int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, EInventorySlot.FirstBackpack,EInventorySlot.LastBackpack);
                 //log.Info("Player Orbs:" + playerOrbs);
 
                 if (playerOrbs < price)
@@ -6798,13 +6798,13 @@ namespace DOL.GS
                 unique.Extension = number;
                 GameServer.Database.AddObject(unique);
                 DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
-                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
+                player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, newInventoryItem);
                 player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
                 // player.RemoveBountyPoints(300);
                 //player.RealmPoints -= price;
                 //player.RespecRealm();
                 //SetRealmLevel(player, (int)player.RealmPoints);
-                player.Inventory.RemoveTemplate(_currencyID, price, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                player.Inventory.RemoveTemplate(_currencyID, price, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
                 player.SaveIntoDatabase();
 
@@ -6855,7 +6855,7 @@ namespace DOL.GS
             var tempAd = new AttackData();
             tempAd.Attacker = display;
             tempAd.Target = display;
-            tempAd.AttackType = AttackData.eAttackType.MeleeOneHand;
+            tempAd.AttackType = AttackData.EAttackType.MeleeOneHand;
             tempAd.AttackResult = EAttackResult.HitUnstyled;
             display.AttackState = true;
             display.TargetObject = display;

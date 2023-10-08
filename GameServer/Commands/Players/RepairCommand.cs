@@ -281,7 +281,7 @@ public class RepairCommand : ACommandHandler, ICommandHandler
 	{
 		int amount = 0;
 
-		foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+		foreach (DbInventoryItem item in player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 		{
 			foreach (string name in woodNames)
 			{
@@ -299,7 +299,7 @@ public class RepairCommand : ACommandHandler, ICommandHandler
 
 	private static void RemoveWU(GamePlayer player, int woodUnits)
 	{
-		foreach (var item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+		foreach (var item in player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 		{
 			if (!woodNames.Contains(item.Name.Replace(" wooden boards", "").ToLower()))
 				continue;
@@ -311,14 +311,14 @@ public class RepairCommand : ACommandHandler, ICommandHandler
 			if (woodValue < woodUnits)
 			{
 				player.Inventory.RemoveItem(item);
-				InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, item.Count);
+				InventoryLogging.LogInventoryAction(player, "(craft)", EInventoryActionType.Craft, item.Template, item.Count);
 				woodUnits -= woodValue;
 			}
 			else
 			{
 				var removeCount = (int)Math.Ceiling(woodUnits / (double)GetWoodValue(item.Name.ToLower()));
 				player.Inventory.RemoveCountFromStack(item, removeCount);
-				InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, removeCount);
+				InventoryLogging.LogInventoryAction(player, "(craft)", EInventoryActionType.Craft, item.Template, removeCount);
 				woodUnits = 0;
 			}
 		}

@@ -76,7 +76,7 @@ namespace DOL.GS
 			TetherRange = 3800;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 7, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
@@ -188,7 +188,7 @@ namespace DOL.AI.Brain
 						player.Out.SendSpellEffectAnimation(Body, Body, 4075, 0, false, 1);
 				}
 				GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-				template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 0, 27);
+				template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 7, 0, 27);
 				Body.Inventory = template.CloseTemplate();
 				Body.BroadcastLivingEquipmentUpdate();
 				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SwitchToHeat), Util.Random(30000, 50000));
@@ -207,7 +207,7 @@ namespace DOL.AI.Brain
 						player.Out.SendSpellEffectAnimation(Body, Body, 4051, 0, false, 1);
 				}
 				GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-				template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 0, 21);
+				template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 7, 0, 21);
 				Body.Inventory = template.CloseTemplate();
 				Body.BroadcastLivingEquipmentUpdate();
 				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SwitchToCold), Util.Random(30000, 50000));
@@ -217,7 +217,7 @@ namespace DOL.AI.Brain
 		public int SwitchToNormal(ECSGameTimer timer)
 		{
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 7, 0, 0);
 			Body.Inventory = template.CloseTemplate();
 			Body.BroadcastLivingEquipmentUpdate();
 			return 0;

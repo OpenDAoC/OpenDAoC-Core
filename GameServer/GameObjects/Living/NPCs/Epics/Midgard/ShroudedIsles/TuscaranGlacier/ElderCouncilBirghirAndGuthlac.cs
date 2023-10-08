@@ -69,7 +69,7 @@ namespace DOL.GS
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 19, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             BirghirBrain.IsTargetPicked = false;
@@ -459,7 +459,7 @@ namespace DOL.GS
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 19, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

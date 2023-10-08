@@ -7,16 +7,9 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public enum eNewsType : byte
-    {
-        RvRGlobal = 0,
-        RvRLocal = 1,
-        PvE = 2,
-    }
-
     public class NewsMgr
     {
-        public static void CreateNews(string message, ERealm realm, eNewsType type, bool sendMessage)
+        public static void CreateNews(string message, ERealm realm, ENewsType type, bool sendMessage)
         {
             if (sendMessage)
             {

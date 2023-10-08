@@ -48,7 +48,7 @@ namespace DOL.GS.Effects
 		{
 			GameLiving living = sender as GameLiving;
 			if (living == null) return;
-			DbInventoryItem shield = living.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItem shield = living.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 			if (shield == null)
 				return;
 			if (shield.Object_Type != (int)EObjectType.Shield)

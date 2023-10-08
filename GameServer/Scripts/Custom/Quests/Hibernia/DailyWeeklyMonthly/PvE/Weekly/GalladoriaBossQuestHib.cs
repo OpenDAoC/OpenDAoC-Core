@@ -89,9 +89,9 @@ namespace DOL.GS.WeeklyQuest.Hibernia
                 Anthony.Z = 5952;
                 Anthony.Heading = 1234;
                 GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
-                templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008);
-                templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 361);
-                templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 362);
+                templateHib.AddNPCEquipment(EInventorySlot.TorsoArmor, 1008);
+                templateHib.AddNPCEquipment(EInventorySlot.HandsArmor, 361);
+                templateHib.AddNPCEquipment(EInventorySlot.FeetArmor, 362);
                 Anthony.Inventory = templateHib.CloseTemplate();
                 Anthony.AddToWorld();
                 if (SAVE_INTO_DATABASE)
@@ -357,8 +357,8 @@ namespace DOL.GS.WeeklyQuest.Hibernia
         public override void FinishQuest()
         {
             m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
-            m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 5, 0, Util.Random(50)), "You receive {0} as a reward.");
-            AtlasROGManager.GenerateReward(m_questPlayer, 1500);
+            m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, m_questPlayer.Level * 5, 0, Util.Random(50)), "You receive {0} as a reward.");
+            CoreRoGMgr.GenerateReward(m_questPlayer, 1500);
             _deadGallaBossMob = 0;
             base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }

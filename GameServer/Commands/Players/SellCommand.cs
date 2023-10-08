@@ -106,14 +106,14 @@ public class SellCommand : ACommandHandler, ICommandHandler
         {
             if (player.TargetObject is GameMerchant merchant)
             {
-				firstItem += (int)eInventorySlot.FirstBackpack - 1;
-				lastItem += (int)eInventorySlot.FirstBackpack - 1;
+				firstItem += (int)EInventorySlot.FirstBackpack - 1;
+				lastItem += (int)EInventorySlot.FirstBackpack - 1;
 
 				var skipPotions = args.Contains("nopot");
 
 				for (int i = firstItem; i <= lastItem; i++)
                 {
-					var item = player.Inventory.GetItem((eInventorySlot)i);
+					var item = player.Inventory.GetItem((EInventorySlot)i);
 
 					if (item != null)
 					{
@@ -125,14 +125,14 @@ public class SellCommand : ACommandHandler, ICommandHandler
 			}
             else if (player.TargetObject is GameGuardMerchant guardMerchant)
             {
-	            firstItem += (int)eInventorySlot.FirstBackpack - 1;
-	            lastItem += (int)eInventorySlot.FirstBackpack - 1;
+	            firstItem += (int)EInventorySlot.FirstBackpack - 1;
+	            lastItem += (int)EInventorySlot.FirstBackpack - 1;
 
 	            var skipPotions = args.Contains("nopot");
 
 	            for (int i = firstItem; i <= lastItem; i++)
 	            {
-		            var item = player.Inventory.GetItem((eInventorySlot)i);
+		            var item = player.Inventory.GetItem((EInventorySlot)i);
 
 		            if (item != null)
 		            {
@@ -144,14 +144,14 @@ public class SellCommand : ACommandHandler, ICommandHandler
             }
             else if (player.TargetObject is GuardCurrencyMerchant guardCurrencyMerchant)
             {
-	            firstItem += (int)eInventorySlot.FirstBackpack - 1;
-	            lastItem += (int)eInventorySlot.FirstBackpack - 1;
+	            firstItem += (int)EInventorySlot.FirstBackpack - 1;
+	            lastItem += (int)EInventorySlot.FirstBackpack - 1;
 
 	            var skipPotions = args.Contains("nopot");
 
 	            for (int i = firstItem; i <= lastItem; i++)
 	            {
-		            var item = player.Inventory.GetItem((eInventorySlot)i);
+		            var item = player.Inventory.GetItem((EInventorySlot)i);
 
 		            if (item != null)
 		            {

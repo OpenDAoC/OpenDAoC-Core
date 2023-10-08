@@ -89,9 +89,9 @@ namespace DOL.GS.DailyQuest.Albion
                 James.Z = 4940;
                 James.Heading = 3143;
                 GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
-                templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 1005);
-                templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 142);
-                templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 143);
+                templateAlb.AddNPCEquipment(EInventorySlot.TorsoArmor, 1005);
+                templateAlb.AddNPCEquipment(EInventorySlot.HandsArmor, 142);
+                templateAlb.AddNPCEquipment(EInventorySlot.FeetArmor, 143);
                 James.Inventory = templateAlb.CloseTemplate();
                 James.AddToWorld();
                 if (SAVE_INTO_DATABASE)
@@ -357,8 +357,8 @@ namespace DOL.GS.DailyQuest.Albion
         public override void FinishQuest()
         {
             m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 5);
-            m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level, 0, Util.Random(50)), "You receive {0} as a reward.");
-            AtlasROGManager.GenerateReward(m_questPlayer, 100);
+            m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, m_questPlayer.Level, 0, Util.Random(50)), "You receive {0} as a reward.");
+            CoreRoGMgr.GenerateReward(m_questPlayer, 100);
             _deadSidiMob = 0;
             base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
         }

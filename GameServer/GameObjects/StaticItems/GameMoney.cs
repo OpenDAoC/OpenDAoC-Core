@@ -80,7 +80,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				return Money.GetMithril(m_copperValue);
+				return MoneyMgr.GetMithril(m_copperValue);
 			}
 		}
 
@@ -91,7 +91,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				return Money.GetPlatinum(m_copperValue);
+				return MoneyMgr.GetPlatinum(m_copperValue);
 			}
 		}
 
@@ -102,7 +102,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				return Money.GetGold(m_copperValue);
+				return MoneyMgr.GetGold(m_copperValue);
 			}
 		}
 
@@ -113,7 +113,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				return Money.GetSilver(m_copperValue);
+				return MoneyMgr.GetSilver(m_copperValue);
 			}
 		}
 
@@ -124,7 +124,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				return Money.GetCopper(m_copperValue);
+				return MoneyMgr.GetCopper(m_copperValue);
 			}
 		}
 

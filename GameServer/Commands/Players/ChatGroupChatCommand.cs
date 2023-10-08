@@ -18,7 +18,7 @@ public class ChatGroupChatCommand : ACommandHandler, ICommandHandler
 		if (IsSpammingCommand(client.Player, "chat"))
 			return;
 
-		ChatGroup mychatgroup = client.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+		ChatGroupUtil mychatgroup = client.Player.TempProperties.GetProperty<ChatGroupUtil>(ChatGroupUtil.CHATGROUP_PROPERTY, null);
 		if (mychatgroup == null)
 		{
 			client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.InChatGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

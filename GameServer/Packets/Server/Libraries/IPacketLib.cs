@@ -652,7 +652,7 @@ namespace DOL.GS.PacketHandler
 		void SendTime();
 		void SendMessage(string msg, eChatType type, eChatLoc loc);
 		void SendPlayerCreate(GamePlayer playerToCreate);
-		void SendObjectGuildID(GameObject obj, Guild guild);
+		void SendObjectGuildID(GameObject obj, GuildUtil guild);
 		void SendPlayerQuit(bool totalOut);
 		void SendObjectRemove(GameObject obj);
 		void SendObjectCreate(GameObject obj);

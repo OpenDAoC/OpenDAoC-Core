@@ -90,12 +90,12 @@ namespace DOL.GS.WeeklyQuest.Midgard
 				Patrick.Heading = 2117;
 				Patrick.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
-				templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 751,0,0,3);
-				templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 752);
-				templateMid.AddNPCEquipment(eInventorySlot.ArmsArmor, 753);
-				templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 754, 0,0,3);
-				templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 755, 0, 0, 3);
-				templateMid.AddNPCEquipment(eInventorySlot.Cloak, 677);
+				templateMid.AddNPCEquipment(EInventorySlot.TorsoArmor, 751,0,0,3);
+				templateMid.AddNPCEquipment(EInventorySlot.LegsArmor, 752);
+				templateMid.AddNPCEquipment(EInventorySlot.ArmsArmor, 753);
+				templateMid.AddNPCEquipment(EInventorySlot.HandsArmor, 754, 0,0,3);
+				templateMid.AddNPCEquipment(EInventorySlot.FeetArmor, 755, 0, 0, 3);
+				templateMid.AddNPCEquipment(EInventorySlot.Cloak, 677);
 				Patrick.Inventory = templateMid.CloseTemplate();
 				Patrick.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -372,8 +372,8 @@ namespace DOL.GS.WeeklyQuest.Midgard
 		public override void FinishQuest()
 		{
 			m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateReward(m_questPlayer, 1500);
+			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
+			CoreRoGMgr.GenerateReward(m_questPlayer, 1500);
 			_mobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}

@@ -1800,7 +1800,7 @@ namespace DOL.GS.Commands
 								if (args.Length >= 8)
 									extension = Convert.ToInt32(args[7]);
 
-								if (!template.AddNPCEquipment((eInventorySlot)slot, model, color, effect, extension))
+								if (!template.AddNPCEquipment((EInventorySlot)slot, model, color, effect, extension))
 								{
 									client.Out.SendMessage("Couldn't add new item to slot " + slot + ". Template could be closed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 									return;
@@ -1836,7 +1836,7 @@ namespace DOL.GS.Commands
 									return;
 								}
 
-								if (!template.RemoveNPCEquipment((eInventorySlot)slot))
+								if (!template.RemoveNPCEquipment((EInventorySlot)slot))
 								{
 									client.Out.SendMessage("Couldn't remove item from slot " + slot + ". Template could be closed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 									return;

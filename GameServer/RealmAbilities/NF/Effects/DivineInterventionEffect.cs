@@ -19,7 +19,7 @@ namespace DOL.GS.RealmAbilities
 			PoolValue = value;
 		}
 
-		private Group m_group = null;
+		private GroupUtil m_group = null;
 		public int PoolValue = 0;
 		private ArrayList m_affected = new ArrayList();
         private GamePlayer m_playerOwner = null;

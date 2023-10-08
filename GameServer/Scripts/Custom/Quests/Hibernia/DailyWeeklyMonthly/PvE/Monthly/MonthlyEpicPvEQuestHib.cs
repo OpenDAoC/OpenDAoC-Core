@@ -94,9 +94,9 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 				Anthony.Z = 5952;
 				Anthony.Heading = 1234;
 				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
-				templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008);
-				templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 361);
-				templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 362);
+				templateHib.AddNPCEquipment(EInventorySlot.TorsoArmor, 1008);
+				templateHib.AddNPCEquipment(EInventorySlot.HandsArmor, 361);
+				templateHib.AddNPCEquipment(EInventorySlot.FeetArmor, 362);
 				Anthony.Inventory = templateHib.CloseTemplate();
 				Anthony.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -358,14 +358,14 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(3, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (m_questPlayer.Inventory.IsSlotsFree(3, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
 				m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
-				m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
+				m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
 					"You receive {0} as a reward.");
-				AtlasROGManager.GenerateReward(m_questPlayer, 3000);
-				AtlasROGManager.GenerateBeetleCarapace(m_questPlayer, 2);
-				AtlasROGManager.GenerateJewel(m_questPlayer, 51);
+				CoreRoGMgr.GenerateReward(m_questPlayer, 3000);
+				CoreRoGMgr.GenerateBeetleCarapace(m_questPlayer, 2);
+				CoreRoGMgr.GenerateJewel(m_questPlayer, 51);
 				_balorKilled = 0;
 				_myrddraxisKilled = 0;
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...

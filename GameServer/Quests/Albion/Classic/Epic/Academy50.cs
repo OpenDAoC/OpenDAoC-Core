@@ -173,8 +173,8 @@ namespace DOL.GS.Quests.Albion
 				Morgana.SetOwnBrain(brain);
 
 				GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-				template.AddNPCEquipment(eInventorySlot.TorsoArmor, 98, 43);
-				template.AddNPCEquipment(eInventorySlot.FeetArmor, 133, 61);
+				template.AddNPCEquipment(EInventorySlot.TorsoArmor, 98, 43);
+				template.AddNPCEquipment(EInventorySlot.FeetArmor, 133, 61);
 				Morgana.Inventory = template.CloseTemplate();
 
 //				Morgana.AddNPCEquipment((byte) eVisibleItems.TORSO, 98, 43, 0, 0);
@@ -1226,8 +1226,8 @@ namespace DOL.GS.Quests.Albion
 							if (quest.Step == 2)
 							{
 								RemoveItem(player, sealed_pouch);
-								if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
-									    eInventorySlot.LastBackpack))
+								if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+									    EInventorySlot.LastBackpack))
 								{
 									Ferowl.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 									quest.FinishQuest();
@@ -1249,8 +1249,8 @@ namespace DOL.GS.Quests.Albion
 				if (quest != null)
 					if (rArgs.Item.Id_nb == sealed_pouch.Id_nb && quest.Step == 2)
 					{
-						if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
-							eInventorySlot.LastBackpack))
+						if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+							EInventorySlot.LastBackpack))
 						{
 							Ferowl.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 							quest.FinishQuest();
@@ -1416,8 +1416,8 @@ namespace DOL.GS.Quests.Albion
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == Ferowl.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
 				{
-					if (player.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack,
-						    eInventorySlot.LastBackpack))
+					if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+						    EInventorySlot.LastBackpack))
 					{
 						Ferowl.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
 						FinishQuest();

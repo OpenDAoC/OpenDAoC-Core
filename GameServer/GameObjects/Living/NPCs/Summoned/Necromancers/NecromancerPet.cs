@@ -91,7 +91,7 @@ namespace DOL.GS
 					EffectList.Add(new MezzRootImmunityEffect());
 					LoadEquipmentTemplate("barehand_weapon");
 					DbInventoryItem item;
-					if (Inventory != null && (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+					if (Inventory != null && (item = Inventory.GetItem(EInventorySlot.RightHandWeapon)) != null)
 						item.ProcSpellID = (int)Procs.Stun;
 					break;
 				case "reanimated servant" :
@@ -102,7 +102,7 @@ namespace DOL.GS
 					break;
 				case "greater necroservant":
 					LoadEquipmentTemplate("barehand_weapon");
-					if (Inventory != null && (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+					if (Inventory != null && (item = Inventory.GetItem(EInventorySlot.RightHandWeapon)) != null)
 						item.ProcSpellID = (int)Procs.Poison;
 					break;
 				case "abomination":
@@ -284,7 +284,7 @@ namespace DOL.GS
 		/// <param name="ad">information about the attack</param>
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
-			if (ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0)
+			if (ad.AttackType == AttackData.EAttackType.Spell && ad.Damage > 0)
 			{
 				GamePlayer player = Owner as GamePlayer;
 				string modmessage = "";
@@ -447,7 +447,7 @@ namespace DOL.GS
 				}
 				case "disease":
 				{
-					DbInventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
+					DbInventoryItem item = Inventory?.GetItem(EInventorySlot.RightHandWeapon);
 
 					if (item != null)
 					{
@@ -465,7 +465,7 @@ namespace DOL.GS
 				}
 				case "poison":
 				{
-					DbInventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
+					DbInventoryItem item = Inventory?.GetItem(EInventorySlot.RightHandWeapon);
 
 					if (item != null)
 					{
@@ -530,10 +530,10 @@ namespace DOL.GS
 
 			if (inventoryTemplate.LoadFromDatabase(templateID))
 			{
-				Inventory = new GameNPCInventory(inventoryTemplate);
+				Inventory = new GameNpcInventory(inventoryTemplate);
 				DbInventoryItem item;
 
-				if ((item = Inventory.GetItem(eInventorySlot.TwoHandWeapon)) != null)
+				if ((item = Inventory.GetItem(EInventorySlot.TwoHandWeapon)) != null)
 				{
 					item.DPS_AF = (int)(Level * 3.3);
 					item.SPD_ABS = 50;
@@ -558,13 +558,13 @@ namespace DOL.GS
 				}
 				else
 				{
-					if ((item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+					if ((item = Inventory.GetItem(EInventorySlot.RightHandWeapon)) != null)
 					{
 						item.DPS_AF = (int)(Level * 3.3);
 						item.SPD_ABS = 37;
 					}
 
-					if ((item = Inventory.GetItem(eInventorySlot.LeftHandWeapon)) != null)
+					if ((item = Inventory.GetItem(EInventorySlot.LeftHandWeapon)) != null)
 					{
 						item.DPS_AF = (int)(Level * 3.3);
 						item.SPD_ABS = 37;

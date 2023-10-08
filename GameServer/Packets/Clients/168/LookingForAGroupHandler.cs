@@ -34,7 +34,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				var groups = GroupMgr.ListGroupByStatus(0x00);
 				if (groups != null)
 				{
-					foreach (Group group in groups)
+					foreach (GroupUtil group in groups)
 						if (GameServer.ServerRules.IsAllowedToGroup(group.Leader, client.Player, true))
 						{
 							list.Add(group.Leader);

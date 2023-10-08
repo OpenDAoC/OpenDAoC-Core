@@ -15,9 +15,9 @@ public class SetSalvageCommand : ACommandHandler, ICommandHandler
     public void OnCommand(GameClient client, string[] args)
     {
      
-        int slot = (int)eInventorySlot.LastBackpack;
+        int slot = (int)EInventorySlot.LastBackpack;
 
-        DbInventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slot);
+        DbInventoryItem item = client.Player.Inventory.GetItem((EInventorySlot)slot);
 
         if (item == null)
         {

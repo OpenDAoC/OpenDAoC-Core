@@ -37,10 +37,10 @@ namespace DOL.GS
 		public override bool AddToWorld()
 		{
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008, 0);
-			template.AddNPCEquipment(eInventorySlot.HandsArmor, 396, 0);
-			template.AddNPCEquipment(eInventorySlot.FeetArmor, 402, 0);
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468);
+			template.AddNPCEquipment(EInventorySlot.TorsoArmor, 1008, 0);
+			template.AddNPCEquipment(EInventorySlot.HandsArmor, 396, 0);
+			template.AddNPCEquipment(EInventorySlot.FeetArmor, 402, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 468);
 			Inventory = template.CloseTemplate();
 
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);

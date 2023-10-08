@@ -214,7 +214,7 @@ namespace DOL.GS.Spells
 
             SendEffectAnimation(target, 0, false, 0);
             MessageToCaster(target.GetName(0, true) + " resists the effect!" + " (" + CalculateSpellResistChance(target).ToString("0.0") + "%)", eChatType.CT_SpellResisted);
-            target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+            target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
         }
 
         public override void ApplyEffectOnTarget(GameLiving target)
@@ -254,7 +254,7 @@ namespace DOL.GS.Spells
             {
                 MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
                 SendEffectAnimation(target, 0, false, 0);
-                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
                 return;
             }
 
@@ -262,7 +262,7 @@ namespace DOL.GS.Spells
             {
                 MessageToCaster("Your target is immune!", eChatType.CT_System);
                 SendEffectAnimation(target, 0, false, 0);
-                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
                 return;
             }
 
@@ -270,7 +270,7 @@ namespace DOL.GS.Spells
             {
                 MessageToCaster("Your target is enraged and resists the spell!", eChatType.CT_System);
                 SendEffectAnimation(target, 0, false, 0);
-                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
                 return;
             }
 
@@ -378,7 +378,7 @@ namespace DOL.GS.Spells
             if ((target.effectListComponent.Effects.ContainsKey(EEffect.StunImmunity) && this is not UnresistableStunSpellHandler) || (EffectListService.GetEffectOnTarget(target, EEffect.Stun) != null && !(Caster is GameSummonedPet)))//target.HasAbility(Abilities.StunImmunity))
             {
                 MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
-                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
                 base.OnSpellResisted(target);
                 return;
             }

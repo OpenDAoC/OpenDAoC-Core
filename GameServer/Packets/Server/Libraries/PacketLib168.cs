@@ -255,7 +255,7 @@ namespace DOL.GS.PacketHandler
 								int l;
 								if (k == 0x15 + 3)
 									//shield emblem
-									l = (int) eInventorySlot.LeftHandWeapon;
+									l = (int) EInventorySlot.LeftHandWeapon;
 								else
 									l = k;
 
@@ -305,9 +305,9 @@ namespace DOL.GS.PacketHandler
 								byte lefthand = 0xFF;
 								foreach (DbInventoryItem item in items)
 								{
-									if (item.SlotPosition == (int) eInventorySlot.RightHandWeapon)
+									if (item.SlotPosition == (int) EInventorySlot.RightHandWeapon)
 										righthand = 0x00;
-									if (item.SlotPosition == (int) eInventorySlot.LeftHandWeapon)
+									if (item.SlotPosition == (int) EInventorySlot.LeftHandWeapon)
 										lefthand = 0x01;
 								}
 								if (righthand == lefthand)
@@ -694,7 +694,7 @@ namespace DOL.GS.PacketHandler
 			//used for nearest friendly/enemy object buttons and name colors on PvP server
 		}
 
-		public virtual void SendObjectGuildID(GameObject obj, Guild guild)
+		public virtual void SendObjectGuildID(GameObject obj, GuildUtil guild)
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ObjectGuildID)))
 			{
@@ -1575,7 +1575,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte(0x06);
 
-				Group group = m_gameClient.Player.Group;
+				GroupUtil group = m_gameClient.Player.Group;
 				if (group == null)
 				{
 					pak.WriteByte(0x00);
@@ -1639,7 +1639,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			Group group = m_gameClient.Player.Group;
+			GroupUtil group = m_gameClient.Player.Group;
 			if (group == null)
 				return;
 
@@ -1658,7 +1658,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			Group group = m_gameClient.Player.Group;
+			GroupUtil group = m_gameClient.Player.Group;
 			if (group == null)
 				return;
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.GroupMemberUpdate)))
@@ -1893,18 +1893,18 @@ namespace DOL.GS.PacketHandler
 					pak.Fill(0x00, 10 - m_gameClient.Player.TradeWindow.TradeItems.Count);
 
 					pak.WriteShort(0x0000);
-					pak.WriteShort((ushort) Money.GetMithril(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort) Money.GetPlatinum(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort) Money.GetGold(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort) Money.GetSilver(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort) Money.GetCopper(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort) MoneyMgr.GetMithril(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort) MoneyMgr.GetPlatinum(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort) MoneyMgr.GetGold(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort) MoneyMgr.GetSilver(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort) MoneyMgr.GetCopper(m_gameClient.Player.TradeWindow.TradeMoney));
 
 					pak.WriteShort(0x0000);
-					pak.WriteShort((ushort) Money.GetMithril(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort) Money.GetPlatinum(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort) Money.GetGold(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort) Money.GetSilver(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort) Money.GetCopper(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort) MoneyMgr.GetMithril(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort) MoneyMgr.GetPlatinum(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort) MoneyMgr.GetGold(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort) MoneyMgr.GetSilver(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort) MoneyMgr.GetCopper(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
 
 					pak.WriteShort(0x0000);
 					ArrayList items = m_gameClient.Player.TradeWindow.PartnerTradeItems;
@@ -3801,13 +3801,13 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ConsignmentMerchantMoney)))
 			{
-				pak.WriteByte((byte)Money.GetCopper(money));
-				pak.WriteByte((byte)Money.GetSilver(money));
-				pak.WriteShort((ushort)Money.GetGold(money));
+				pak.WriteByte((byte)MoneyMgr.GetCopper(money));
+				pak.WriteByte((byte)MoneyMgr.GetSilver(money));
+				pak.WriteShort((ushort)MoneyMgr.GetGold(money));
 
 				// Yes, these are sent in reverse order! - tolakram confirmed 1.98 - 1.109
-				pak.WriteShort((ushort)Money.GetMithril(money));
-				pak.WriteShort((ushort)Money.GetPlatinum(money));
+				pak.WriteShort((ushort)MoneyMgr.GetMithril(money));
+				pak.WriteShort((ushort)MoneyMgr.GetPlatinum(money));
 
 				SendTCP(pak);
 			}
@@ -4041,12 +4041,12 @@ namespace DOL.GS.PacketHandler
 				{
 					foreach (int updatedSlot in slots)
 					{
-						if (updatedSlot >= (int) eInventorySlot.Consignment_First && updatedSlot <= (int) eInventorySlot.Consignment_Last)
+						if (updatedSlot >= (int) EInventorySlot.Consignment_First && updatedSlot <= (int) EInventorySlot.Consignment_Last)
 							pak.WriteByte(
-								(byte) (updatedSlot - (int) eInventorySlot.Consignment_First + (int) eInventorySlot.HousingInventory_First));
+								(byte) (updatedSlot - (int) EInventorySlot.Consignment_First + (int) EInventorySlot.HousingInventory_First));
 						else
 							pak.WriteByte((byte) (updatedSlot));
-						DbInventoryItem item = m_gameClient.Player.Inventory.GetItem((eInventorySlot) updatedSlot);
+						DbInventoryItem item = m_gameClient.Player.Inventory.GetItem((EInventorySlot) updatedSlot);
 
 						if (item == null)
 						{
@@ -4115,7 +4115,7 @@ namespace DOL.GS.PacketHandler
 							if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 								name += "[" + item.SellPrice + " BP]";
 							else
-								name += "[" + Money.GetString(item.SellPrice) + "]";
+								name += "[" + MoneyMgr.GetString(item.SellPrice) + "]";
 						}
 						pak.WritePascalString(name);
 					}

@@ -56,7 +56,7 @@ namespace DOL.GS
 			{
 				String reply = "I am afraid, but the King is busy right now.";
 
-				if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv) == 0)
+				if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv) == 0)
 					reply += " If you're only here to get your Personal Bind Recall Stone then I'll see what I can [do].";
 
 				SayTo(player, reply);
@@ -143,7 +143,7 @@ namespace DOL.GS
 
 			if (text.ToLower() == "do")
 			{
-				if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv) == 0)
+				if (player.Inventory.CountItemTemplate("Personal_Bind_Recall_Stone", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv) == 0)
 				{
 					SayTo(player, "Very well then. Here's your Personal Bind Recall Stone, may it serve you well.");
 					player.ReceiveItem(this, "Personal_Bind_Recall_Stone");

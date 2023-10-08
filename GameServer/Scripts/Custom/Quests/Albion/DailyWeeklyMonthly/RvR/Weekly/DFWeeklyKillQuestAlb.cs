@@ -92,12 +92,12 @@ namespace DOL.GS.WeeklyQuest.Albion
 				Joe.Heading = 466;
 				Joe.Flags |= GameNPC.eFlags.PEACE;
 				GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
-				templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 713,0,0,3);
-				templateAlb.AddNPCEquipment(eInventorySlot.LegsArmor, 714);
-				templateAlb.AddNPCEquipment(eInventorySlot.ArmsArmor, 715);
-				templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 716, 0,0,3);
-				templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 717, 0, 0, 3);
-				templateAlb.AddNPCEquipment(eInventorySlot.Cloak, 676);
+				templateAlb.AddNPCEquipment(EInventorySlot.TorsoArmor, 713,0,0,3);
+				templateAlb.AddNPCEquipment(EInventorySlot.LegsArmor, 714);
+				templateAlb.AddNPCEquipment(EInventorySlot.ArmsArmor, 715);
+				templateAlb.AddNPCEquipment(EInventorySlot.HandsArmor, 716, 0,0,3);
+				templateAlb.AddNPCEquipment(EInventorySlot.FeetArmor, 717, 0, 0, 3);
+				templateAlb.AddNPCEquipment(EInventorySlot.Cloak, 676);
 				Joe.Inventory = templateAlb.CloseTemplate();
 				Joe.AddToWorld();
 				if (SAVE_INTO_DATABASE)
@@ -356,8 +356,8 @@ namespace DOL.GS.WeeklyQuest.Albion
 			int reward = ServerProperties.Properties.WEEKLY_RVR_REWARD;
 			
 			m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
-			m_questPlayer.AddMoney(Money.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
-			AtlasROGManager.GenerateReward(m_questPlayer, 1500);
+			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
+			CoreRoGMgr.GenerateReward(m_questPlayer, 1500);
 			EnemiesKilled = 0;
 			
 			if (reward > 0)

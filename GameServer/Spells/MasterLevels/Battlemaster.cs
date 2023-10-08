@@ -36,7 +36,7 @@ namespace DOL.GS.Spells
                 ((GamePlayer)target).Out.SendMessage(" You lose " + end + " endurance!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
             (m_caster as GamePlayer).Out.SendMessage("" + target.Name + " loses " + end + " endurance!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
 
-            target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+            target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
         }
     }
     #endregion
@@ -72,7 +72,7 @@ namespace DOL.GS.Spells
             int mana = (int)(Spell.Damage);
             target.ChangeMana(target, EPowerChangeType.Spell, (-mana));
 
-            target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
+            target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
         }
     }
     #endregion
@@ -200,7 +200,7 @@ namespace DOL.GS.Spells
                 if (sender is GamePlayer)
                 {
                     GamePlayer player = (GamePlayer)sender;
-                    DbInventoryItem leftWeapon = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                    DbInventoryItem leftWeapon = player.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
                     // if we can use left weapon, we have currently a weapon in left hand and we still have endurance,
                     // we can assume that we are using the two weapons.
                     if (player.attackComponent.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)EObjectType.Shield)
@@ -316,9 +316,9 @@ namespace DOL.GS.Spells
 
             //assign the weapon the player is using, it can be a twohanded or a standard slot weapon
 			if (player.ActiveWeaponSlot.ToString() == "TwoHanded") 
-                weapon = player.Inventory.GetItem((eInventorySlot)12);
+                weapon = player.Inventory.GetItem((EInventorySlot)12);
 			if (player.ActiveWeaponSlot.ToString() == "Standard")
-                weapon = player.Inventory.GetItem((eInventorySlot)10);
+                weapon = player.Inventory.GetItem((EInventorySlot)10);
             
             //if the weapon is null, ie. they don't have an appropriate weapon active
 			if(weapon == null) 
@@ -385,7 +385,7 @@ namespace DOL.GS.Spells
                         resultByte = 2;
                         if (ad.Target != null && ad.Target.Inventory != null)
                         {
-                            DbInventoryItem lefthand = ad.Target.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                            DbInventoryItem lefthand = ad.Target.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
                             if (lefthand != null && lefthand.Object_Type == (int)EObjectType.Shield)
                             {
                                 defendersWeapon = lefthand.Model;
@@ -539,9 +539,9 @@ namespace DOL.GS.Spells
             DbInventoryItem weapon = null;
 
             if (player.ActiveWeaponSlot.ToString() == "TwoHanded")
-                weapon = player.Inventory.GetItem((eInventorySlot)12);
+                weapon = player.Inventory.GetItem((EInventorySlot)12);
             if (player.ActiveWeaponSlot.ToString() == "Standard")
-                weapon = player.Inventory.GetItem((eInventorySlot)10);
+                weapon = player.Inventory.GetItem((EInventorySlot)10);
 
             if (weapon == null)
                 return null;
@@ -563,10 +563,10 @@ namespace DOL.GS.Spells
                 default:
                 case Slot.RIGHTHAND:
                 case Slot.LEFTHAND:
-                    ad.AttackType = AttackData.eAttackType.MeleeOneHand;
+                    ad.AttackType = AttackData.EAttackType.MeleeOneHand;
                     break;
                 case Slot.TWOHAND:
-                    ad.AttackType = AttackData.eAttackType.MeleeTwoHand;
+                    ad.AttackType = AttackData.EAttackType.MeleeTwoHand;
                     break;
             }
             //Throw Weapon is subject to all the conventional attack results, parry, evade, block, etc.
@@ -582,7 +582,7 @@ namespace DOL.GS.Spells
 
                 DbInventoryItem armor = null;
                 if (target.Inventory != null)
-                    armor = target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
+                    armor = target.Inventory.GetItem((EInventorySlot)ad.ArmorHitLocation);
 
                 //calculate the lowerboundary of the damage
                 int lowerboundary = (player.WeaponSpecLevel(weapon) - 1) * 50 / (ad.Target.EffectiveLevel + 1) + 75;

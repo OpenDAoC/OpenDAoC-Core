@@ -76,7 +76,7 @@ namespace DOL.GS.Spells
 			base.OnEffectPulse(effect);
 
 			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_YouWereHit);
-			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
+			MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
 
 			int bleedValue = effect.Owner.TempProperties.GetProperty<int>(BLEED_VALUE_PROPERTY);
 
@@ -117,7 +117,7 @@ namespace DOL.GS.Spells
 			AttackData ad = new AttackData();
 			ad.Attacker = Caster;
 			ad.Target = target;
-			ad.AttackType = AttackData.eAttackType.Spell;
+			ad.AttackType = AttackData.EAttackType.Spell;
 			ad.Modifier = bleedValue * ad.Target.GetResist( Spell.DamageType ) / -100;
 			ad.Damage = bleedValue + ad.Modifier;
 			ad.DamageType = Spell.DamageType;

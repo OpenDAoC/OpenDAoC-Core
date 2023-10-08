@@ -7,7 +7,7 @@ using log4net;
 
 namespace DOL.GS
 {
-    public class GuildBanner
+    public class GuildBannerUtil
     {
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -16,7 +16,7 @@ namespace DOL.GS
 		GuildBannerItem m_item;
         WorldInventoryItem gameItem;
 
-        public GuildBanner(GamePlayer player)
+        public GuildBannerUtil(GamePlayer player)
 		{
 			m_player = player;
 		}

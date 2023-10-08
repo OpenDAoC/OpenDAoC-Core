@@ -119,13 +119,13 @@ namespace DOL.GS
 			GrandSummonerGovannonBrain.Stage2 = false;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 86, 43, 0, 0); //Slot,model,color,effect,extension
-			template.AddNPCEquipment(eInventorySlot.ArmsArmor, 88, 43);
-			template.AddNPCEquipment(eInventorySlot.LegsArmor, 87, 43);
-			template.AddNPCEquipment(eInventorySlot.HandsArmor, 89, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.FeetArmor, 90, 43, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.Cloak, 57, 65, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 442, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TorsoArmor, 86, 43, 0, 0); //Slot,model,color,effect,extension
+			template.AddNPCEquipment(EInventorySlot.ArmsArmor, 88, 43);
+			template.AddNPCEquipment(EInventorySlot.LegsArmor, 87, 43);
+			template.AddNPCEquipment(EInventorySlot.HandsArmor, 89, 43, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.FeetArmor, 90, 43, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.Cloak, 57, 65, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 442, 0, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 

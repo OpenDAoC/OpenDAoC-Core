@@ -29,7 +29,7 @@ namespace DOL.GS
 	/// </summary>
 	public static class GroupMgr
 	{
-		static readonly ConcurrentDictionary<Group, bool> m_groups = new();
+		static readonly ConcurrentDictionary<GroupUtil, bool> m_groups = new();
 		static readonly ConcurrentDictionary<GamePlayer, bool> m_lfgPlayers = new();
 
 		/// <summary>
@@ -37,7 +37,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="group">The group to add</param>
 		/// <returns>True if the function succeeded, otherwise false</returns>
-		public static bool AddGroup(Group group)
+		public static bool AddGroup(GroupUtil group)
 		{
 			return m_groups.TryAdd(group, true);
 		}
@@ -47,7 +47,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		public static bool RemoveGroup(Group group)
+		public static bool RemoveGroup(GroupUtil group)
 		{
 			return m_groups.TryRemove(group, out _);
 		}
@@ -78,7 +78,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="status">statusbyte</param>
 		/// <returns>ArrayList of groups</returns>
-		public static ICollection<Group> ListGroupByStatus(byte status)
+		public static ICollection<GroupUtil> ListGroupByStatus(byte status)
 		{
 			return m_groups.Keys.Where(g => g.Status == 0x0B || g.Status == status).ToArray();
 		}

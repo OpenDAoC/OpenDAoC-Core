@@ -63,7 +63,7 @@ namespace DOL.Tests.Integration.Server
 			Console.WriteLine("Creation of Ghost Inventory entry based on ItemTemplate");
 
 			DbInventoryItem ii = GameInventoryItem.Create(itemt);
-			player.Inventory.AddItem(eInventorySlot.FirstBackpack, ii);
+			player.Inventory.AddItem(EInventorySlot.FirstBackpack, ii);
 			Assert.IsNotNull(ii, "ii-t #1 : " + ii.Template.Id_nb + " created & added to " + ii.OwnerID);
 			var iicheck = GameServer.Database.FindObjectByKey<DbInventoryItem>(ii.ObjectId);
 			Assert.IsNotNull(iicheck, "ii-t #2 : saved in db " + ii.Template.Id_nb + " to " + ii.OwnerID);
@@ -81,7 +81,7 @@ namespace DOL.Tests.Integration.Server
 			Console.WriteLine("Creation of Inventory entry based on ItemUnique");
 
 			DbInventoryItem ii = GameInventoryItem.Create(itemu);
-			player.Inventory.AddItem(eInventorySlot.FirstBackpack, ii);
+			player.Inventory.AddItem(EInventorySlot.FirstBackpack, ii);
 			Assert.IsNotNull(ii, "ii-u #1 : " + ii.Template.Id_nb + " created & added to " + ii.OwnerID);
 			var iicheck = GameServer.Database.FindObjectByKey<DbInventoryItem>(ii.ObjectId);
 			Assert.IsNotNull(iicheck, "ii-u #2 : saved in db " + ii.Template.Id_nb + " to " + ii.OwnerID);
@@ -102,7 +102,7 @@ namespace DOL.Tests.Integration.Server
 			Console.WriteLine("Creation of Ghost Inventory entry based on ItemTemplate");
 
 			DbInventoryItem ii = new DbInventoryItem();
-			player.Inventory.AddItem(eInventorySlot.FirstBackpack, ii);
+			player.Inventory.AddItem(EInventorySlot.FirstBackpack, ii);
 			Assert.IsNotNull(ii, "ii-g #1 : " + ii.Template.Id_nb + " created & added to " + ii.OwnerID);
 			var iicheck = GameServer.Database.FindObjectByKey<DbInventoryItem>(ii.ObjectId);
 			Assert.IsNull(iicheck, "ii-g #2 : not saved in db " + ii.Template.Id_nb + " to " + ii.OwnerID);

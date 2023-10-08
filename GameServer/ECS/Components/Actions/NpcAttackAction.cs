@@ -52,7 +52,7 @@ namespace DOL.GS
 
             // NPCs try to switch to their ranged weapon whenever possible.
             if (!_npcOwner.IsBeingInterrupted &&
-                _npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null &&
+                _npcOwner.Inventory?.GetItem(EInventorySlot.DistanceWeapon) != null &&
                 !_npcOwner.IsWithinRadius(_target, 500))
             {
                 _npcOwner.SwitchToRanged(_target);

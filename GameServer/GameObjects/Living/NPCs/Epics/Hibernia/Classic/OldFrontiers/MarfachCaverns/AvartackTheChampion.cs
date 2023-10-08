@@ -114,14 +114,14 @@ namespace DOL.GS
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-            template.AddNPCEquipment(eInventorySlot.TorsoArmor, 667, 0, 0, 6);//modelID,color,effect,extension
-            template.AddNPCEquipment(eInventorySlot.ArmsArmor, 410, 0);
-            template.AddNPCEquipment(eInventorySlot.LegsArmor, 409, 0);
-            template.AddNPCEquipment(eInventorySlot.HandsArmor, 411, 0, 0, 4);
-            template.AddNPCEquipment(eInventorySlot.FeetArmor, 412, 0, 0, 5);
-            template.AddNPCEquipment(eInventorySlot.HeadArmor, 1200, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.Cloak, 678, 0, 0, 0);
-            template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 474, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TorsoArmor, 667, 0, 0, 6);//modelID,color,effect,extension
+            template.AddNPCEquipment(EInventorySlot.ArmsArmor, 410, 0);
+            template.AddNPCEquipment(EInventorySlot.LegsArmor, 409, 0);
+            template.AddNPCEquipment(EInventorySlot.HandsArmor, 411, 0, 0, 4);
+            template.AddNPCEquipment(EInventorySlot.FeetArmor, 412, 0, 0, 5);
+            template.AddNPCEquipment(EInventorySlot.HeadArmor, 1200, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.Cloak, 678, 0, 0, 0);
+            template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 474, 0, 0);
             Inventory = template.CloseTemplate();
             SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             if (!Styles.Contains(Taunt))

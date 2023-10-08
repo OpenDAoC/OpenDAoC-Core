@@ -96,7 +96,7 @@ namespace DOL.GS
 
 				}
 
-				if (!t.Guild.HasRank(t, Guild.eRank.Emblem))
+				if (!t.Guild.HasRank(t, EGuildRank.Emblem))
 				{
 					t.Out.SendMessage("You do not have enough privileges for that.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
@@ -120,7 +120,7 @@ namespace DOL.GS
 
 			DbInventoryItem item = (DbInventoryItem) itemWeak.Target;
 
-			if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
+			if (item == null || item.SlotPosition == (int) EInventorySlot.Ground
 				|| item.OwnerID == null || item.OwnerID != player.InternalID)
 			{
 				player.Out.SendMessage("Invalid item.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -129,14 +129,14 @@ namespace DOL.GS
 
 			if (!player.RemoveMoney(EMBLEM_COST))
 			{
-                InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, EMBLEM_COST);
+                InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, EMBLEM_COST);
 				player.Out.SendMessage("You don't have enough money.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
 
 			item.Emblem = player.Guild.Emblem;
 			player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] {item});
-			if (item.SlotPosition < (int) eInventorySlot.FirstBackpack)
+			if (item.SlotPosition < (int) EInventorySlot.FirstBackpack)
 				player.UpdateEquipmentAppearance();
 			SayTo(player, eChatLoc.CL_ChatWindow, "I have put an emblem on your item.");
 			return;

@@ -15,7 +15,7 @@ namespace DOL.GS {
             Model = 1903;
             Size = 250;
             Level = 75;
-            Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
+            Inventory = new GameNpcInventory(GameNpcInventoryTemplate.EmptyTemplate);
             SetOwnBrain(new LordOfBattleBrain());
 
             return base.AddToWorld(); // Finish up and add him to the world.
@@ -158,7 +158,7 @@ namespace DOL.GS {
                                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     deadPlayer.Notify(GamePlayerEvent.Revive, deadPlayer);
 
-                    AtlasROGManager.GenerateROG(deadPlayer, true);
+                    CoreRoGMgr.GenerateROG(deadPlayer, true);
 
                     playersToRez.Remove(deadPlayer);
                 }

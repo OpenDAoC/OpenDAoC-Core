@@ -31,7 +31,7 @@ namespace DOL.GS
 		{
 			int numPlayers = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE).Count;
 			String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
-			NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
+			NewsMgr.CreateNews(message, killer.Realm, ENewsType.PvE, true);
 
 			if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
 			{
@@ -204,55 +204,55 @@ namespace DOL.GS
 					add.RespawnInterval = -1;
                     #region equiptemplate for mob and styles
                     GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();					
-					if (player.Inventory.GetItem(eInventorySlot.TorsoArmor) != null)
+					if (player.Inventory.GetItem(EInventorySlot.TorsoArmor) != null)
 					{
-						DbInventoryItem torso = player.Inventory.GetItem(eInventorySlot.TorsoArmor);
+						DbInventoryItem torso = player.Inventory.GetItem(EInventorySlot.TorsoArmor);
 						if(torso != null)
-							template.AddNPCEquipment(eInventorySlot.TorsoArmor, torso.Model, torso.Color,0,torso.Extension);//modelID,color,effect,extension
+							template.AddNPCEquipment(EInventorySlot.TorsoArmor, torso.Model, torso.Color,0,torso.Extension);//modelID,color,effect,extension
 					}
-					if (player.Inventory.GetItem(eInventorySlot.ArmsArmor) != null)
+					if (player.Inventory.GetItem(EInventorySlot.ArmsArmor) != null)
 					{
-						DbInventoryItem arms = player.Inventory.GetItem(eInventorySlot.ArmsArmor);
+						DbInventoryItem arms = player.Inventory.GetItem(EInventorySlot.ArmsArmor);
 						if(arms != null)
-							template.AddNPCEquipment(eInventorySlot.ArmsArmor, arms.Model, arms.Color);
+							template.AddNPCEquipment(EInventorySlot.ArmsArmor, arms.Model, arms.Color);
 					}
-					if (player.Inventory.GetItem(eInventorySlot.LegsArmor) != null)
+					if (player.Inventory.GetItem(EInventorySlot.LegsArmor) != null)
 					{
-						DbInventoryItem legs = player.Inventory.GetItem(eInventorySlot.LegsArmor);
+						DbInventoryItem legs = player.Inventory.GetItem(EInventorySlot.LegsArmor);
 						if(legs != null)
-							template.AddNPCEquipment(eInventorySlot.LegsArmor, legs.Model, legs.Color);
+							template.AddNPCEquipment(EInventorySlot.LegsArmor, legs.Model, legs.Color);
 					}
-					if (player.Inventory.GetItem(eInventorySlot.HeadArmor) != null)
+					if (player.Inventory.GetItem(EInventorySlot.HeadArmor) != null)
 					{
-						DbInventoryItem head = player.Inventory.GetItem(eInventorySlot.HeadArmor);
+						DbInventoryItem head = player.Inventory.GetItem(EInventorySlot.HeadArmor);
 						if(head != null)
-							template.AddNPCEquipment(eInventorySlot.HeadArmor, head.Model, head.Color);
+							template.AddNPCEquipment(EInventorySlot.HeadArmor, head.Model, head.Color);
 					}
-					if (player.Inventory.GetItem(eInventorySlot.HandsArmor) != null)
+					if (player.Inventory.GetItem(EInventorySlot.HandsArmor) != null)
 					{
-						DbInventoryItem hands = player.Inventory.GetItem(eInventorySlot.HandsArmor);
+						DbInventoryItem hands = player.Inventory.GetItem(EInventorySlot.HandsArmor);
 						if(hands != null)
-							template.AddNPCEquipment(eInventorySlot.HandsArmor, hands.Model, hands.Color,0,hands.Extension);
+							template.AddNPCEquipment(EInventorySlot.HandsArmor, hands.Model, hands.Color,0,hands.Extension);
 					}
-					if (player.Inventory.GetItem(eInventorySlot.FeetArmor) != null)
+					if (player.Inventory.GetItem(EInventorySlot.FeetArmor) != null)
 					{
-						DbInventoryItem feet = player.Inventory.GetItem(eInventorySlot.FeetArmor);
+						DbInventoryItem feet = player.Inventory.GetItem(EInventorySlot.FeetArmor);
 						if(feet != null)
-							template.AddNPCEquipment(eInventorySlot.FeetArmor, feet.Model, feet.Color,0,feet.Extension);
+							template.AddNPCEquipment(EInventorySlot.FeetArmor, feet.Model, feet.Color,0,feet.Extension);
 					}
-					if (player.Inventory.GetItem(eInventorySlot.Cloak) != null)
+					if (player.Inventory.GetItem(EInventorySlot.Cloak) != null)
 					{
-						DbInventoryItem cloak = player.Inventory.GetItem(eInventorySlot.Cloak);
+						DbInventoryItem cloak = player.Inventory.GetItem(EInventorySlot.Cloak);
 						if(cloak != null)
-							template.AddNPCEquipment(eInventorySlot.Cloak, cloak.Model, cloak.Color,0,0,cloak.Emblem);
+							template.AddNPCEquipment(EInventorySlot.Cloak, cloak.Model, cloak.Color,0,0,cloak.Emblem);
 					}
-					if (player.Inventory.GetItem(eInventorySlot.RightHandWeapon) != null)
+					if (player.Inventory.GetItem(EInventorySlot.RightHandWeapon) != null)
 					{
-						DbInventoryItem righthand = player.Inventory.GetItem(eInventorySlot.RightHandWeapon);
-						DbInventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+						DbInventoryItem righthand = player.Inventory.GetItem(EInventorySlot.RightHandWeapon);
+						DbInventoryItem lefthand = player.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 						if (righthand != null && lefthand != null)
 						{
-							template.AddNPCEquipment(eInventorySlot.RightHandWeapon, righthand.Model, righthand.Color, righthand.Effect);
+							template.AddNPCEquipment(EInventorySlot.RightHandWeapon, righthand.Model, righthand.Color, righthand.Effect);
 							#region Styles for Warrior and Thane
 							if (player.CharacterClass.ID == (int)ECharacterClass.Warrior || player.CharacterClass.ID == (int)ECharacterClass.Thane)
 							{
@@ -287,19 +287,19 @@ namespace DOL.GS
 							#endregion
 						}
 					}
-                    if (player.Inventory.GetItem(eInventorySlot.LeftHandWeapon) != null)
+                    if (player.Inventory.GetItem(EInventorySlot.LeftHandWeapon) != null)
 					{
-						DbInventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+						DbInventoryItem lefthand = player.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 						if(lefthand != null)
-							template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, lefthand.Model, lefthand.Color, lefthand.Effect);
+							template.AddNPCEquipment(EInventorySlot.LeftHandWeapon, lefthand.Model, lefthand.Color, lefthand.Effect);
 					}
-					if (player.Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null)
+					if (player.Inventory.GetItem(EInventorySlot.TwoHandWeapon) != null)
                     {
-						DbInventoryItem twohand = player.Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-						DbInventoryItem righthand = player.Inventory.GetItem(eInventorySlot.RightHandWeapon);
+						DbInventoryItem twohand = player.Inventory.GetItem(EInventorySlot.TwoHandWeapon);
+						DbInventoryItem righthand = player.Inventory.GetItem(EInventorySlot.RightHandWeapon);
 						if (twohand != null)
 						{
-							template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, twohand.Model, twohand.Color, twohand.Effect);
+							template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, twohand.Model, twohand.Color, twohand.Effect);
 							#region Styles for Savage 2h
 							if (player.CharacterClass.ID == (int)ECharacterClass.Savage && righthand == null)
 							{
@@ -318,19 +318,19 @@ namespace DOL.GS
 							#endregion
 						}
                     }
-                    if (player.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
+                    if (player.Inventory.GetItem(EInventorySlot.DistanceWeapon) != null)
 					{
-						DbInventoryItem distance = player.Inventory.GetItem(eInventorySlot.DistanceWeapon);
+						DbInventoryItem distance = player.Inventory.GetItem(EInventorySlot.DistanceWeapon);
 						if(distance != null)
-							template.AddNPCEquipment(eInventorySlot.DistanceWeapon, distance.Model, distance.Color, distance.Effect);
+							template.AddNPCEquipment(EInventorySlot.DistanceWeapon, distance.Model, distance.Color, distance.Effect);
 					}						
 					add.Inventory = template.CloseTemplate();
                     #endregion
                     #region Set mob visible slot
-                    DbInventoryItem mob_twohand = template.GetItem(eInventorySlot.TwoHandWeapon);
-					DbInventoryItem mob_righthand = template.GetItem(eInventorySlot.RightHandWeapon);
-					DbInventoryItem mob_lefthand = template.GetItem(eInventorySlot.LeftHandWeapon);
-					DbInventoryItem mob_distance = template.GetItem(eInventorySlot.LeftHandWeapon);
+                    DbInventoryItem mob_twohand = template.GetItem(EInventorySlot.TwoHandWeapon);
+					DbInventoryItem mob_righthand = template.GetItem(EInventorySlot.RightHandWeapon);
+					DbInventoryItem mob_lefthand = template.GetItem(EInventorySlot.LeftHandWeapon);
+					DbInventoryItem mob_distance = template.GetItem(EInventorySlot.LeftHandWeapon);
 					if (mob_lefthand != null && mob_righthand != null)
 					{
 						if ((mob_righthand.Object_Type == (int)EObjectType.Axe && mob_righthand.Item_Type == Slot.RIGHTHAND) /*axe*/
@@ -2757,15 +2757,15 @@ namespace DOL.GS
 			Name = "spirit champion";
 			Model = spirit_champion_models[Util.Random(0, spirit_champion_models.Count - 1)];
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-			template.AddNPCEquipment(eInventorySlot.TorsoArmor, 295, 0, 0, 0); //Slot,model,color,effect,extension
-			template.AddNPCEquipment(eInventorySlot.ArmsArmor, 297, 0);
-			template.AddNPCEquipment(eInventorySlot.LegsArmor, 296, 0);
-			template.AddNPCEquipment(eInventorySlot.HandsArmor, 298, 0, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.FeetArmor, 299, 0, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.HeadArmor, 1216, 0, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.Cloak, 677, 0, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 310, 0, 0, 0);
-			template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 79, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.TorsoArmor, 295, 0, 0, 0); //Slot,model,color,effect,extension
+			template.AddNPCEquipment(EInventorySlot.ArmsArmor, 297, 0);
+			template.AddNPCEquipment(EInventorySlot.LegsArmor, 296, 0);
+			template.AddNPCEquipment(EInventorySlot.HandsArmor, 298, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.FeetArmor, 299, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.HeadArmor, 1216, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.Cloak, 677, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 310, 0, 0, 0);
+			template.AddNPCEquipment(EInventorySlot.LeftHandWeapon, 79, 0, 0, 0);
 			Inventory = template.CloseTemplate();
 			SwitchWeapon(EActiveWeaponSlot.Standard);
 			VisibleActiveWeaponSlots = 16;

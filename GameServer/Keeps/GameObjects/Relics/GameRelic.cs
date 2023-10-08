@@ -243,11 +243,11 @@ namespace DOL.GS
 				}
 			}
 
-			if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, m_item))
+			if (player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, m_item))
 			{
 				if (m_item == null)
 					log.Warn("GameRelic: Could not retrieve " + Name + " as InventoryItem on player " + player.Name);
-				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Other, m_item.Template, m_item.Count);
+				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Other, m_item.Template, m_item.Count);
 
 
 				m_currentCarrier = player;
@@ -304,7 +304,7 @@ namespace DOL.GS
 				lock (player.Inventory)
 				{
 					bool success = player.Inventory.RemoveItem(m_item);
-					InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Other, m_item.Template, m_item.Count);
+					InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Other, m_item.Template, m_item.Count);
 					log.Debug("Remove " + m_item.Name + " from " + player.Name + "'s Inventory " + ((success) ? "successfully." : "with errors."));
 				}
 
@@ -419,7 +419,7 @@ namespace DOL.GS
 				return 0;
 			}
 
-			if (CurrentCarrier != null && CurrentCarrier.Inventory.GetFirstItemByID(m_item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
+			if (CurrentCarrier != null && CurrentCarrier.Inventory.GetFirstItemByID(m_item.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) == null)
 			{
 				log.DebugFormat("{0} not found in carriers backpack, relic returned to previous pad.", Name);
 				RelicPadTakesOver(ReturnRelicPad, true);

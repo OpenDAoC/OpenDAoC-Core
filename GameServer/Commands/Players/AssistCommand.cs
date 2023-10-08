@@ -109,7 +109,7 @@ public class AssistCommand : ACommandHandler, ICommandHandler
 							}
 
                             //Ok, they are not in the same alliance, guild or group - maybe in the same battle group?
-                            BattleGroup clientBattleGroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                            BattleGroupUtil clientBattleGroup = client.Player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
                             if(clientBattleGroup != null)
                             {
                                 if(clientBattleGroup.Members.Contains(assistPlayer))
@@ -124,7 +124,7 @@ public class AssistCommand : ACommandHandler, ICommandHandler
                             }
                                         
                             //Ok, they are not in the same alliance, guild, group or battle group - maybe in the same chat group?
-							ChatGroup clientChatGroup = client.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+							ChatGroupUtil clientChatGroup = client.Player.TempProperties.GetProperty<ChatGroupUtil>(ChatGroupUtil.CHATGROUP_PROPERTY, null);
                             if(clientChatGroup != null)
                             {
                                 if(clientChatGroup.Members.Contains(assistPlayer))
@@ -261,7 +261,7 @@ public class AssistCommand : ACommandHandler, ICommandHandler
                                 }
 
                                 //Ok, they are not in the same alliance, guild or group - maybe in the same battle group?
-                                BattleGroup clientBattleGroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                                BattleGroupUtil clientBattleGroup = client.Player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
                                 if(clientBattleGroup != null)
                                 {
                                     if(clientBattleGroup.Members.Contains(targetPlayer))
@@ -276,7 +276,7 @@ public class AssistCommand : ACommandHandler, ICommandHandler
                                 }
                                         
                                 //Ok, they are not in the same alliance, guild, group or battle group - maybe in the same chat group?
-                                ChatGroup clientChatGroup = client.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+                                ChatGroupUtil clientChatGroup = client.Player.TempProperties.GetProperty<ChatGroupUtil>(ChatGroupUtil.CHATGROUP_PROPERTY, null);
                                 if(clientChatGroup != null)
                                 {
                                     if(clientChatGroup.Members.Contains(targetPlayer))
@@ -339,7 +339,7 @@ public class AssistCommand : ACommandHandler, ICommandHandler
                                         }
 
                                         //Ok, they are not in the same alliance, guild or group - maybe in the same battle group?
-                                        BattleGroup clientBattleGroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                                        BattleGroupUtil clientBattleGroup = client.Player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
                                         if(clientBattleGroup != null)
                                         {
                                             if(clientBattleGroup.Members.Contains(targetPlayer))
@@ -354,7 +354,7 @@ public class AssistCommand : ACommandHandler, ICommandHandler
                                         }
                                         
                                         //Ok, they are not in the same alliance, guild, group or battle group - maybe in the same chat group?
-										ChatGroup clientChatGroup = client.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+										ChatGroupUtil clientChatGroup = client.Player.TempProperties.GetProperty<ChatGroupUtil>(ChatGroupUtil.CHATGROUP_PROPERTY, null);
                                         if(clientChatGroup != null)
                                         {
                                             if(clientChatGroup.Members.Contains(targetPlayer))
@@ -395,7 +395,7 @@ public class AssistCommand : ACommandHandler, ICommandHandler
                                     //We do not check if the targeted guard is attacking us, because this can be a bug!
 
                                     GameKeepGuard targetGuard = client.Player.TargetObject as GameKeepGuard;
-                                    Guild targetedGuardGuild = GuildMgr.GetGuildByName(targetGuard.GuildName);
+                                    GuildUtil targetedGuardGuild = GuildMgr.GetGuildByName(targetGuard.GuildName);
 
                                     //We can assist guards of an unclaimed keep!
                                     if(targetedGuardGuild == null)

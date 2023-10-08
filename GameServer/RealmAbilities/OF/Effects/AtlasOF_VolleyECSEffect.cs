@@ -287,13 +287,13 @@ namespace DOL.GS.Effects
 
             int slot = useArgs.Slot;
 
-            if (slot == (int) eInventorySlot.FirstQuiver)
+            if (slot == (int) EInventorySlot.FirstQuiver)
                 return;
-            else if (slot == (int) eInventorySlot.SecondQuiver)
+            else if (slot == (int) EInventorySlot.SecondQuiver)
                 return;
-            else if (slot == (int) eInventorySlot.ThirdQuiver)
+            else if (slot == (int) EInventorySlot.ThirdQuiver)
                 return;
-            else if (slot == (int) eInventorySlot.FourthQuiver)
+            else if (slot == (int) EInventorySlot.FourthQuiver)
                 return;
 
             if (player.IsWithinRadius(player.GroundTarget, AtlasOF_Volley.GetMinAttackRange(player.Realm)))

@@ -128,12 +128,12 @@ namespace DOL.GS.Spells
 				ad.Attacker = caster;
 				ad.Target = target;
 				ad.DamageType = EDamageType.Heat;
-				ad.AttackType = AttackData.eAttackType.Spell;
+				ad.AttackType = AttackData.EAttackType.Spell;
 				ad.AttackResult = EAttackResult.HitUnstyled;
 				ad.SpellHandler = m_handler;
 				target.OnAttackedByEnemy(ad);
 				
-				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, caster);
+				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, caster);
 
 				return 0;
 			}

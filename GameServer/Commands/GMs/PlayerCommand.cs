@@ -643,7 +643,7 @@ namespace DOL.GS.Commands
                                     {
                                         long amount = long.Parse(args[3]);
                                         player.AddMoney(amount);
-                                        InventoryLogging.LogInventoryAction(client.Player, player, eInventoryActionType.Other, amount);
+                                        InventoryLogging.LogInventoryAction(client.Player, player, EInventoryActionType.Other, amount);
                                         client.Out.SendMessage("You gave " + player.Name + " copper successfully!", eChatType.CT_Important,
                                                                eChatLoc.CL_SystemWindow);
                                         player.Out.SendMessage(
@@ -657,7 +657,7 @@ namespace DOL.GS.Commands
                                     {
                                         long amount = long.Parse(args[3]) * 100;
                                         player.AddMoney(amount);
-                                        InventoryLogging.LogInventoryAction(client.Player, player, eInventoryActionType.Other, amount);
+                                        InventoryLogging.LogInventoryAction(client.Player, player, EInventoryActionType.Other, amount);
                                         client.Out.SendMessage("You gave " + player.Name + " silver successfully!", eChatType.CT_Important,
                                                                eChatLoc.CL_SystemWindow);
                                         player.Out.SendMessage(
@@ -670,7 +670,7 @@ namespace DOL.GS.Commands
                                     {
                                         long amount = long.Parse(args[3]) * 100 * 100;
                                         player.AddMoney(amount);
-                                        InventoryLogging.LogInventoryAction(client.Player, player, eInventoryActionType.Other, amount);
+                                        InventoryLogging.LogInventoryAction(client.Player, player, EInventoryActionType.Other, amount);
                                         client.Out.SendMessage("You gave " + player.Name + " gold successfully!", eChatType.CT_Important,
                                                                eChatLoc.CL_SystemWindow);
                                         player.Out.SendMessage(
@@ -683,7 +683,7 @@ namespace DOL.GS.Commands
                                     {
                                         long amount = long.Parse(args[3]) * 100 * 100 * 1000;
                                         player.AddMoney(amount);
-                                        InventoryLogging.LogInventoryAction(client.Player, player, eInventoryActionType.Other, amount);
+                                        InventoryLogging.LogInventoryAction(client.Player, player, EInventoryActionType.Other, amount);
                                         client.Out.SendMessage("You gave " + player.Name + " platinum successfully!", eChatType.CT_Important,
                                                                eChatLoc.CL_SystemWindow);
                                         player.Out.SendMessage(
@@ -696,7 +696,7 @@ namespace DOL.GS.Commands
                                     {
                                         long amount = long.Parse(args[3]) * 100 * 100 * 1000 * 1000;
                                         player.AddMoney(amount);
-                                        InventoryLogging.LogInventoryAction(client.Player, player, eInventoryActionType.Other, amount);
+                                        InventoryLogging.LogInventoryAction(client.Player, player, EInventoryActionType.Other, amount);
                                         client.Out.SendMessage("You gave " + player.Name + " mithril successfully!", eChatType.CT_Important,
                                                                eChatLoc.CL_SystemWindow);
                                         player.Out.SendMessage(
@@ -1768,7 +1768,7 @@ namespace DOL.GS.Commands
 
                                     if (player != null)
                                     {
-                                        ChatGroup cg = player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+                                        ChatGroupUtil cg = player.TempProperties.GetProperty<ChatGroupUtil>(ChatGroupUtil.CHATGROUP_PROPERTY, null);
 
                                         if (cg != null)
                                         {
@@ -1798,7 +1798,7 @@ namespace DOL.GS.Commands
 
                                     if (player != null)
                                     {
-                                        BattleGroup bg = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                                        BattleGroupUtil bg = player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 
                                         if (bg != null)
                                         {
@@ -2229,7 +2229,7 @@ namespace DOL.GS.Commands
 			text.Add("  - Realm Level Class : " + GlobalConstants.RealmToName(player.Realm) + " " + player.Level + " " +
 					 player.CharacterClass.Name);
 			text.Add(" ");
-			text.Add(Money.GetShortString(player.GetCurrentMoney()));
+			text.Add(MoneyMgr.GetShortString(player.GetCurrentMoney()));
 			text.Add(" ");
 
 			bool limitShown = false;
@@ -2253,8 +2253,8 @@ namespace DOL.GS.Commands
 				text.Add("  ----- Backpack:");
 				foreach (DbInventoryItem item in player.Inventory.AllItems)
 				{
-					if (item.SlotPosition >= (int)eInventorySlot.FirstBackpack &&
-						item.SlotPosition <= (int)eInventorySlot.LastBackpack)
+					if (item.SlotPosition >= (int)EInventorySlot.FirstBackpack &&
+						item.SlotPosition <= (int)EInventorySlot.LastBackpack)
 					{
 						text.Add(item.Count.ToString("000") + " " + item.Name + " (" + item.Id_nb + ")");
 					}
@@ -2267,7 +2267,7 @@ namespace DOL.GS.Commands
 				text.Add("  ----- Vault:");
 				foreach (DbInventoryItem item in player.Inventory.AllItems)
 				{
-					if (item.SlotPosition >= (int)eInventorySlot.FirstVault && item.SlotPosition <= (int)eInventorySlot.LastVault)
+					if (item.SlotPosition >= (int)EInventorySlot.FirstVault && item.SlotPosition <= (int)EInventorySlot.LastVault)
 					{
 						text.Add(item.Count.ToString("000") + " " + item.Name + " (" + item.Id_nb + ")");
 					}
@@ -2280,8 +2280,8 @@ namespace DOL.GS.Commands
 				text.Add("  ----- Housing:");
 				foreach (DbInventoryItem item in player.Inventory.AllItems)
 				{
-					if (item.SlotPosition >= (int)eInventorySlot.HouseVault_First &&
-						item.SlotPosition <= (int)eInventorySlot.HouseVault_Last)
+					if (item.SlotPosition >= (int)EInventorySlot.HouseVault_First &&
+						item.SlotPosition <= (int)EInventorySlot.HouseVault_Last)
 					{
 						text.Add(item.Count.ToString("000") + " " + item.Name + " (" + item.Id_nb + ")");
 					}
@@ -2294,8 +2294,8 @@ namespace DOL.GS.Commands
 				text.Add("  ----- GameConsignmentMerchant:");
 				foreach (DbInventoryItem item in player.Inventory.AllItems)
 				{
-					if (item.SlotPosition >= (int)eInventorySlot.Consignment_First &&
-						item.SlotPosition <= (int)eInventorySlot.Consignment_Last)
+					if (item.SlotPosition >= (int)EInventorySlot.Consignment_First &&
+						item.SlotPosition <= (int)EInventorySlot.Consignment_Last)
 					{
 						text.Add(item.Count.ToString("000") + " " + item.Name + " (" + item.Id_nb + ")");
 					}
@@ -2385,7 +2385,7 @@ namespace DOL.GS.Commands
 				text.Add("  - Master Levels :  Not Started");
 			}
 			text.Add("  - Craftingskill : " + player.CraftingPrimarySkill + "");
-			text.Add("  - Money : " + Money.GetString(player.GetCurrentMoney()) + "");
+			text.Add("  - Money : " + MoneyMgr.GetString(player.GetCurrentMoney()) + "");
 			text.Add("  - Model ID : " + player.Model);
 			text.Add("  - Region OID : " + player.ObjectID);
 			text.Add("  - AFK Message: " + player.TempProperties.GetProperty<string>(GamePlayer.AFK_MESSAGE) + "");

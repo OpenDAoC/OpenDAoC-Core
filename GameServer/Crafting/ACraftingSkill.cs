@@ -270,7 +270,7 @@ namespace DOL.GS
 					bool result = false;
 					int count = ingredient.Count;
 
-					foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+					foreach (DbInventoryItem item in player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 					{
 						if (item != null && item.Name == material.Name)
 						{
@@ -382,7 +382,7 @@ namespace DOL.GS
 					bool result = false;
 					int count = ingredient.Count;
 
-					foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+					foreach (DbInventoryItem item in player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 					{
 						if (item != null && item.Name == template.Name)
 						{
@@ -418,7 +418,7 @@ namespace DOL.GS
 			while (enumerator.MoveNext())
 			{
 				KeyValuePair<int, int?> de = enumerator.Current;
-				DbInventoryItem item = player.Inventory.GetItem((eInventorySlot)de.Key);
+				DbInventoryItem item = player.Inventory.GetItem((EInventorySlot)de.Key);
 				if (item != null)
 				{
 					if (!de.Value.HasValue)
@@ -429,7 +429,7 @@ namespace DOL.GS
 					{
 						player.Inventory.RemoveCountFromStack(item, de.Value.Value);
 					}
-					InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, item.Template, de.Value.HasValue ? de.Value.Value : item.Count);
+					InventoryLogging.LogInventoryAction(player, "(craft)", EInventoryActionType.Craft, item.Template, de.Value.HasValue ? de.Value.Value : item.Count);
 				}
 			}
 			player.Inventory.CommitChanges();
@@ -446,7 +446,7 @@ namespace DOL.GS
 			lock (player.Inventory)
 			{
 				int count = product.PackSize < 1 ? 1 : product.PackSize;
-				foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				foreach (DbInventoryItem item in player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
 					if (item == null)
 						continue;
@@ -473,8 +473,8 @@ namespace DOL.GS
 
 				if (count > 0) // Add new object
 				{
-					eInventorySlot firstEmptySlot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-					if (firstEmptySlot == eInventorySlot.Invalid)
+					EInventorySlot firstEmptySlot = player.Inventory.FindFirstEmptySlot(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
+					if (firstEmptySlot == EInventorySlot.Invalid)
 					{
 						changedSlots.Add(-1, -count); // Create the item on the ground
 					}
@@ -497,10 +497,10 @@ namespace DOL.GS
 				int countToAdd = slot.Value;
 				if (countToAdd > 0)	// Add to exiting item
 				{
-					newItem = player.Inventory.GetItem((eInventorySlot)slot.Key);
+					newItem = player.Inventory.GetItem((EInventorySlot)slot.Key);
 					if (newItem != null && player.Inventory.AddCountToStack(newItem, countToAdd))
 					{
-						InventoryLogging.LogInventoryAction("(craft)", player, eInventoryActionType.Other, newItem.Template, countToAdd);
+						InventoryLogging.LogInventoryAction("(craft)", player, EInventoryActionType.Other, newItem.Template, countToAdd);
 						// count incremented, continue with next change
 						continue;
 					}
@@ -524,8 +524,8 @@ namespace DOL.GS
 
 				if (slot.Key > 0)	// Create new item in the backpack
 				{
-					player.Inventory.AddItem((eInventorySlot)slot.Key, newItem);
-					InventoryLogging.LogInventoryAction("(craft)", player, eInventoryActionType.Craft, newItem.Template, newItem.Count);
+					player.Inventory.AddItem((EInventorySlot)slot.Key, newItem);
+					InventoryLogging.LogInventoryAction("(craft)", player, EInventoryActionType.Craft, newItem.Template, newItem.Count);
 				}
 				else					// Create new item on the ground
 				{

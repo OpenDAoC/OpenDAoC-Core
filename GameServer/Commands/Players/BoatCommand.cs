@@ -59,7 +59,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 							if (GameBoat.PlayerHasItem(client.Player, "scout_boat"))
 							{
 								GameBoat playerBoat = new GameBoat();
-								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("scout_boat", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("scout_boat", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 								playerBoat.BoatID = System.Guid.NewGuid().ToString();
 								playerBoat.Name = client.Player.Name + "'s scout boat";
 								playerBoat.X = client.Player.X;
@@ -72,7 +72,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 								playerBoat.OwnerID = client.Player.InternalID;
 								playerBoat.MaxSpeedBase = 500;
 								client.Player.Inventory.RemoveItem(item);
-								InventoryLogging.LogInventoryAction(client.Player, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(ground)", EInventoryActionType.Other, item.Template, item.Count);
 								playerBoat.Riders = new GamePlayer[8];
 								BlankBrain brain = new BlankBrain();
 								playerBoat.SetOwnBrain(brain);
@@ -91,7 +91,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 							else if (GameBoat.PlayerHasItem(client.Player, "warship"))
 							{
 								GameBoat playerBoat = new GameBoat();
-								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("warship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("warship", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 								playerBoat.BoatID = System.Guid.NewGuid().ToString();
 								playerBoat.Name = client.Player.Name + "'s warship";
 								playerBoat.X = client.Player.X;
@@ -104,7 +104,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 								playerBoat.OwnerID = client.Player.InternalID;
 								playerBoat.MaxSpeedBase = 400;
 								client.Player.Inventory.RemoveItem(item);
-								InventoryLogging.LogInventoryAction(client.Player, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(ground)", EInventoryActionType.Other, item.Template, item.Count);
 								playerBoat.Riders = new GamePlayer[32];
 								BlankBrain brain = new BlankBrain();
 								playerBoat.SetOwnBrain(brain);
@@ -123,7 +123,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 							else if (GameBoat.PlayerHasItem(client.Player, "galleon"))
 							{
 								GameBoat playerBoat = new GameBoat();
-								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("galleon", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("galleon", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 								playerBoat.BoatID = System.Guid.NewGuid().ToString();
 								playerBoat.Name = client.Player.Name + "'s galleon";
 								playerBoat.X = client.Player.X;
@@ -136,7 +136,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 								playerBoat.OwnerID = client.Player.InternalID;
 								playerBoat.MaxSpeedBase = 300;
 								client.Player.Inventory.RemoveItem(item);
-								InventoryLogging.LogInventoryAction(client.Player, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(ground)", EInventoryActionType.Other, item.Template, item.Count);
 								playerBoat.Riders = new GamePlayer[16];
 								BlankBrain brain = new BlankBrain();
 								playerBoat.SetOwnBrain(brain);
@@ -155,7 +155,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 							else if (GameBoat.PlayerHasItem(client.Player, "skiff"))
 							{
 								GameBoat playerBoat = new GameBoat();
-								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("skiff", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("skiff", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 								playerBoat.BoatID = System.Guid.NewGuid().ToString();
 								playerBoat.Name = client.Player.Name + "'s skiff";
 								playerBoat.X = client.Player.X;
@@ -168,7 +168,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 								playerBoat.OwnerID = client.Player.InternalID;
 								playerBoat.MaxSpeedBase = 250;
 								client.Player.Inventory.RemoveItem(item);
-								InventoryLogging.LogInventoryAction(client.Player, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(ground)", EInventoryActionType.Other, item.Template, item.Count);
 								playerBoat.Riders = new GamePlayer[8];
 								BlankBrain brain = new BlankBrain();
 								playerBoat.SetOwnBrain(brain);
@@ -187,7 +187,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 							else if (GameBoat.PlayerHasItem(client.Player, "Viking_Longship"))
 							{
 								GameBoat playerBoat = new GameBoat();
-								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("Viking_Longship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("Viking_Longship", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 								playerBoat.BoatID = System.Guid.NewGuid().ToString();
 								playerBoat.Name = client.Player.Name + "'s Viking longship";
 								playerBoat.X = client.Player.X;
@@ -200,7 +200,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 								playerBoat.OwnerID = client.Player.InternalID;
 								playerBoat.MaxSpeedBase = 500;
 								client.Player.Inventory.RemoveItem(item);
-								InventoryLogging.LogInventoryAction(client.Player, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(ground)", EInventoryActionType.Other, item.Template, item.Count);
 								playerBoat.Riders = new GamePlayer[32];
 								BlankBrain brain = new BlankBrain();
 								playerBoat.SetOwnBrain(brain);
@@ -219,7 +219,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 							else if (GameBoat.PlayerHasItem(client.Player, "ps_longship"))
 							{
 								GameBoat playerBoat = new GameBoat();
-								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("ps_longship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("ps_longship", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 								playerBoat.BoatID = System.Guid.NewGuid().ToString();
 								playerBoat.Name = client.Player.Name + "'s Longship";
 								playerBoat.X = client.Player.X;
@@ -232,7 +232,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 								playerBoat.OwnerID = client.Player.InternalID;
 								playerBoat.MaxSpeedBase = 600;
 								client.Player.Inventory.RemoveItem(item);
-								InventoryLogging.LogInventoryAction(client.Player, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(ground)", EInventoryActionType.Other, item.Template, item.Count);
 								playerBoat.Riders = new GamePlayer[31];
 								BlankBrain brain = new BlankBrain();
 								playerBoat.SetOwnBrain(brain);
@@ -251,7 +251,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 							else if (GameBoat.PlayerHasItem(client.Player, "stygian_ship"))
 							{
 								GameBoat playerBoat = new GameBoat();
-								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("stygian_ship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("stygian_ship", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 								playerBoat.BoatID = System.Guid.NewGuid().ToString();
 								playerBoat.Name = client.Player.Name + "'s Stygian ship";
 								playerBoat.X = client.Player.X;
@@ -264,7 +264,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 								playerBoat.OwnerID = client.Player.InternalID;
 								playerBoat.MaxSpeedBase = 500;
 								client.Player.Inventory.RemoveItem(item);
-								InventoryLogging.LogInventoryAction(client.Player, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(ground)", EInventoryActionType.Other, item.Template, item.Count);
 								playerBoat.Riders = new GamePlayer[24];
 								BlankBrain brain = new BlankBrain();
 								playerBoat.SetOwnBrain(brain);
@@ -283,7 +283,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 							else if (GameBoat.PlayerHasItem(client.Player, "atlantean_ship"))
 							{
 								GameBoat playerBoat = new GameBoat();
-								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("atlantean_ship", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("atlantean_ship", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 								playerBoat.BoatID = System.Guid.NewGuid().ToString();
 								playerBoat.Name = client.Player.Name + "'s Atlantean ship";
 								playerBoat.X = client.Player.X;
@@ -296,7 +296,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 								playerBoat.OwnerID = client.Player.InternalID;
 								playerBoat.MaxSpeedBase = 800;
 								client.Player.Inventory.RemoveItem(item);
-								InventoryLogging.LogInventoryAction(client.Player, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(ground)", EInventoryActionType.Other, item.Template, item.Count);
 								playerBoat.Riders = new GamePlayer[64];
 								BlankBrain brain = new BlankBrain();
 								playerBoat.SetOwnBrain(brain);
@@ -315,7 +315,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 							else if (GameBoat.PlayerHasItem(client.Player, "British_Cog"))
 							{
 								GameBoat playerBoat = new GameBoat();
-								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("British_Cog", eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+								DbInventoryItem item = client.Player.Inventory.GetFirstItemByID("British_Cog", EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 								playerBoat.BoatID = System.Guid.NewGuid().ToString();
 								playerBoat.Name = client.Player.Name + "'s British Cog";
 								playerBoat.X = client.Player.X;
@@ -328,7 +328,7 @@ public class BoatCommand : ACommandHandler, ICommandHandler
 								playerBoat.OwnerID = client.Player.InternalID;
 								playerBoat.MaxSpeedBase = 700;
 								client.Player.Inventory.RemoveItem(item);
-								InventoryLogging.LogInventoryAction(client.Player, "(ground)", eInventoryActionType.Other, item.Template, item.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(ground)", EInventoryActionType.Other, item.Template, item.Count);
 								playerBoat.Riders = new GamePlayer[33];
 								BlankBrain brain = new BlankBrain();
 								playerBoat.SetOwnBrain(brain);

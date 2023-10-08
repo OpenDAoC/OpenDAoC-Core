@@ -23,7 +23,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="message">The message</param>
 		/// <param name="guild">The guild</param>
-		public static void SendMessageToGuild(string message, Guild guild)
+		public static void SendMessageToGuild(string message, GuildUtil guild)
 		{
 			if (guild == null)
 				return;
