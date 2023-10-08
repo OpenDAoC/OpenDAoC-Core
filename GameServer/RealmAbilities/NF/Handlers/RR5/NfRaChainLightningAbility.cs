@@ -23,7 +23,7 @@ namespace DOL.GS.RealmAbilities
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
             bool deactivate = false;
-            AbstractServerRules rules = GameServer.ServerRules as AbstractServerRules;
+            AServerRules rules = GameServer.ServerRules as AServerRules;
             GamePlayer player = living as GamePlayer;
             GamePlayer target = living.TargetObject as GamePlayer;
             if (player.TargetObject == null || target == null)

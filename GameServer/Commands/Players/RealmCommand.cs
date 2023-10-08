@@ -126,18 +126,18 @@ public class RealmCommand : ACommandHandler, ICommandHandler
 		}
 		else
 		{
-			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.DarknessFalls") + ": " + GlobalConstants.RealmToName(DFEnterJumpPoint.DarknessFallOwner));
-			if (DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod >= GameLoop.GameLoopTime)
+			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.DarknessFalls") + ": " + GlobalConstants.RealmToName(DfEnterJumpPoint.DarknessFallOwner));
+			if (DfEnterJumpPoint.LastRealmSwapTick + DfEnterJumpPoint.GracePeriod >= GameLoop.GameLoopTime)
 			{
-				var pve = DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod - GameLoop.GameLoopTime;
+				var pve = DfEnterJumpPoint.LastRealmSwapTick + DfEnterJumpPoint.GracePeriod - GameLoop.GameLoopTime;
 				string realmName = "";
-				if (DFEnterJumpPoint.PreviousOwner == ERealm._LastPlayerRealm || 
-				    DFEnterJumpPoint.PreviousOwner == ERealm.Hibernia)
+				if (DfEnterJumpPoint.PreviousOwner == ERealm._LastPlayerRealm || 
+				    DfEnterJumpPoint.PreviousOwner == ERealm.Hibernia)
 					realmName = "Hibernia";
-				if (DFEnterJumpPoint.PreviousOwner == ERealm._FirstPlayerRealm ||
-				    DFEnterJumpPoint.PreviousOwner == ERealm.Albion)
+				if (DfEnterJumpPoint.PreviousOwner == ERealm._FirstPlayerRealm ||
+				    DfEnterJumpPoint.PreviousOwner == ERealm.Albion)
 					realmName = "Albion";
-				if (DFEnterJumpPoint.PreviousOwner == ERealm.Midgard)
+				if (DfEnterJumpPoint.PreviousOwner == ERealm.Midgard)
 					realmName = "Midgard";
 				if(realmName != "")
 					realmInfo.Add(realmName + " can enter Darkness Falls for another " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");

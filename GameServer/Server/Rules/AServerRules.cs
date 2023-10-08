@@ -18,7 +18,7 @@ using log4net;
 
 namespace DOL.GS.ServerRules
 {
-	public abstract class AbstractServerRules : IServerRules
+	public abstract class AServerRules : IServerRules
 	{
 		/// <summary>
 		/// Defines a logger for this class.

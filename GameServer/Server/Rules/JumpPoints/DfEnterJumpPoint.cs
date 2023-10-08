@@ -9,7 +9,7 @@ namespace DOL.GS.ServerRules
 	/// <summary>
 	/// Handles DF entrance jump point allowing only one realm to enter on Normal server type.
 	/// </summary>
-	public class DFEnterJumpPoint : IJumpPointHandler
+	public class DfEnterJumpPoint : IJumpPointHandler
 	{
 		/// <summary>
 		/// Decides whether player can jump to the target point.

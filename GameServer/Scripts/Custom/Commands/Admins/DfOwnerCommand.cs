@@ -27,7 +27,7 @@ namespace DOL.GS.Commands
                                 EChatLoc.CL_SystemWindow);
                         return;
                     }
-                    DFEnterJumpPoint.SetDFOwner(player, (ERealm)newRealm);
+                    DfEnterJumpPoint.SetDFOwner(player, (ERealm)newRealm);
 
                 }
 

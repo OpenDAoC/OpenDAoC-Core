@@ -46,7 +46,7 @@ namespace DOL.GS.Commands
                 return;
             }
             
-            DBJumpPoint p = GameServer.Database.SelectObjects<DBJumpPoint>(DB.Column("Name").IsEqualTo(args[2])).FirstOrDefault();
+            DbJumpPoint p = GameServer.Database.SelectObjects<DbJumpPoint>(DB.Column("Name").IsEqualTo(args[2])).FirstOrDefault();
             
             if(p != null)
             {
@@ -54,7 +54,7 @@ namespace DOL.GS.Commands
                 return;
             }
             
-            p = new DBJumpPoint();
+            p = new DbJumpPoint();
             p.Xpos = client.Player.X;
             p.Ypos = client.Player.Y;
             p.Zpos = client.Player.Z;
@@ -69,11 +69,11 @@ namespace DOL.GS.Commands
 
         private void ListJumpPoints(GameClient client)
         {
-        	var col = GameServer.Database.SelectAllObjects<DBJumpPoint>();
+        	var col = GameServer.Database.SelectAllObjects<DbJumpPoint>();
             
             SendSystemMessage(client,"----------List of JumpPoints----------");
 
-            foreach (DBJumpPoint p in col)
+            foreach (DbJumpPoint p in col)
             {
                 SendSystemMessage(client, p.Name);
             }            
@@ -87,7 +87,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            DBJumpPoint p = GameServer.Database.SelectObjects<DBJumpPoint>(DB.Column("Name").IsEqualTo(args[2])).FirstOrDefault();
+            DbJumpPoint p = GameServer.Database.SelectObjects<DbJumpPoint>(DB.Column("Name").IsEqualTo(args[2])).FirstOrDefault();
 
             if(p == null)
             {
@@ -103,7 +103,7 @@ namespace DOL.GS.Commands
         {
             if (args.Length == 4 && args[2] == "to")
             {
-                DBJumpPoint p = GameServer.Database.SelectObjects<DBJumpPoint>(DB.Column("Name").IsEqualTo(args[3])).FirstOrDefault();
+                DbJumpPoint p = GameServer.Database.SelectObjects<DbJumpPoint>(DB.Column("Name").IsEqualTo(args[3])).FirstOrDefault();
 
                 if(p == null)
                 {

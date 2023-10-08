@@ -9,11 +9,8 @@ using DOL.Language;
 
 namespace DOL.GS.ServerRules
 {
-	/// <summary>
-	/// Set of rules for "PvP" server type.
-	/// </summary>
 	[ServerRules(EGameServerType.GST_PvP)]
-	public class PvPServerRules : AbstractServerRules
+	public class PvpServerRules : AServerRules
 	{
 		public override string RulesDescription()
 		{

@@ -6,11 +6,8 @@ using DOL.GS.Keeps;
 
 namespace DOL.GS.ServerRules
 {
-	/// <summary>
-	/// Set of rules for "normal" server type.
-	/// </summary>
 	[ServerRules(EGameServerType.GST_Normal)]
-	public class NormalServerRules : AbstractServerRules
+	public class NormalServerRules : AServerRules
 	{
 		public override string RulesDescription()
 		{
