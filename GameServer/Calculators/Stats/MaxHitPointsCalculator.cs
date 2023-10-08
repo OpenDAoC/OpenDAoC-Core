@@ -50,7 +50,7 @@ namespace DOL.GS.PropertyCalc
 			}
 			else if (living is GameKeepComponent)
 			{
-				AbstractGameKeep gameKeep = (living as GameKeepComponent)?.Keep;
+				AGameKeep gameKeep = (living as GameKeepComponent)?.Keep;
 
 				if (gameKeep != null)
 				{
@@ -63,7 +63,7 @@ namespace DOL.GS.PropertyCalc
 			}
 			else if (living is GameKeepDoor)
 			{
-				AbstractGameKeep gameKeep = (living as GameKeepDoor)?.Component?.Keep;
+				AGameKeep gameKeep = (living as GameKeepDoor)?.Component?.Keep;
 
 				if (gameKeep != null)
 				{

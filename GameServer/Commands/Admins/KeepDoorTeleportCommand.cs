@@ -103,7 +103,7 @@ namespace DOL.GS.Commands
         /// <param name="client"></param>
         /// <param name="teleportID"></param>
         /// <param name="type"></param>
-        private void AddTeleport(GameClient client, String Text, AbstractGameKeep keep, string teleportType)
+        private void AddTeleport(GameClient client, String Text, AGameKeep keep, string teleportType)
         {
             GamePlayer player = client.Player;
 

@@ -3,9 +3,9 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Keeps
 {
 	/// <summary>
-	/// GameKeep is the keep in New Frontiere
+	/// RelicGameKeep is the relic keep in New Frontiers
 	/// </summary>
-	public class RelicGameKeep : AbstractGameKeep
+	public class RelicGameKeep : AGameKeep
 	{
 		public RelicGameKeep()
 			: base()

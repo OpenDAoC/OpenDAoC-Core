@@ -50,27 +50,27 @@ public class RelicCommand : ACommandHandler, ICommandHandler
             {
                 case ERealm.Albion:
                     {
-                        if (relic.RelicType == eRelicType.Strength)
+                        if (relic.RelicType == ERelicType.Strength)
 							albStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
-                        if (relic.RelicType == eRelicType.Magic)
+                        if (relic.RelicType == ERelicType.Magic)
 							albPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
                         break;
                     }
 
                 case ERealm.Midgard:
                     {
-                        if (relic.RelicType == eRelicType.Strength)
+                        if (relic.RelicType == ERelicType.Strength)
 							midStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
-                        if (relic.RelicType == eRelicType.Magic)
+                        if (relic.RelicType == ERelicType.Magic)
 							midPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
                         break;
                     }
 
                 case ERealm.Hibernia:
                     {
-                        if (relic.RelicType == eRelicType.Strength)
+                        if (relic.RelicType == ERelicType.Strength)
 							hibStr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Strength") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
-                        if (relic.RelicType == eRelicType.Magic)
+                        if (relic.RelicType == ERelicType.Magic)
 							hibPwr = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Relic.Power") + ": " + GlobalConstants.RealmToName(relic.Realm) + relicLoc + " | " + RelicMgr.GetDaysSinceCapture(relic) + "d ago";
                         break;
                     }

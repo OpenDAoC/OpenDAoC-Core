@@ -8,13 +8,6 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
-	public enum eRelicType : int
-	{
-		Invalid = -1,
-		Strength = 0,
-		Magic = 1
-	}
-
 	public class GameRelic : GameStaticItem
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -30,7 +23,7 @@ namespace DOL.GS
 		DateTime m_lastCapturedDate = DateTime.Now;
 		ECSGameTimer m_currentCarrierTimer;
 		DbRelic m_dbRelic;
-		eRelicType m_relicType;
+		ERelicType m_relicType;
 		ECSGameTimer m_returnRelicTimer;
 		long m_timeRelicOnGround = 0;
 
@@ -52,7 +45,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the RelicType (melee or magic)
 		/// </summary>
-		public eRelicType RelicType
+		public ERelicType RelicType
 		{
 			get
 			{
@@ -168,7 +161,7 @@ namespace DOL.GS
 
 			if (IsMounted && !RelicMgr.CanPickupRelicFromShrine(player, this))
 			{
-				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You need to capture your realms " + (Enum.GetName(typeof(eRelicType), RelicType)) + " relic first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You need to capture your realms " + (Enum.GetName(typeof(ERelicType), RelicType)) + " relic first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -232,7 +225,7 @@ namespace DOL.GS
 
 			if (IsMounted)
 			{
-				AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(m_currentRelicPad.CurrentRegionID, m_currentRelicPad, WorldMgr.VISIBILITY_DISTANCE);
+				AGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(m_currentRelicPad.CurrentRegionID, m_currentRelicPad, WorldMgr.VISIBILITY_DISTANCE);
 
 				log.DebugFormat("keep {0}", keep);
 				
@@ -506,7 +499,7 @@ namespace DOL.GS
 			Y = m_dbRelic.Y;
 			Z = m_dbRelic.Z;
 			Heading = (ushort)m_dbRelic.Heading;
-			m_relicType = (eRelicType)m_dbRelic.relicType;
+			m_relicType = (ERelicType)m_dbRelic.relicType;
 			Realm = (ERealm)m_dbRelic.Realm;
 			m_originalRealm = (ERealm)m_dbRelic.OriginalRealm;
 			m_lastRealm = (ERealm)m_dbRelic.LastRealm;
@@ -581,13 +574,13 @@ namespace DOL.GS
 			public ushort Model;
 		}
 
-		public static MiniTemp GetRelicTemplate(ERealm Realm, eRelicType RelicType)
+		public static MiniTemp GetRelicTemplate(ERealm Realm, ERelicType RelicType)
 		{
 			MiniTemp m_template = new MiniTemp();
 			switch (Realm)
 			{
 				case ERealm.Albion:
-					if (RelicType == eRelicType.Magic)
+					if (RelicType == ERelicType.Magic)
 					{
 						m_template.Name = "Merlin's Staff";
 						m_template.Model = 630;
@@ -599,7 +592,7 @@ namespace DOL.GS
 					}
 					break;
 				case ERealm.Midgard:
-					if (RelicType == eRelicType.Magic)
+					if (RelicType == ERelicType.Magic)
 					{
 						m_template.Name = "Horn of Valhalla";
 						m_template.Model = 635;
@@ -611,7 +604,7 @@ namespace DOL.GS
 					}
 					break;
 				case ERealm.Hibernia:
-					if (RelicType == eRelicType.Magic)
+					if (RelicType == ERelicType.Magic)
 					{
 						m_template.Name = "Cauldron of Dagda";
 						m_template.Model = 632;

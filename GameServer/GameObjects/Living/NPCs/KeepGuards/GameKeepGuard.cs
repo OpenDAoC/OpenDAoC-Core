@@ -37,8 +37,8 @@ namespace DOL.GS.Keeps
 	{
 		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private Patrol m_Patrol = null;
-		public Patrol PatrolGroup
+		private KeepGuardPatrol m_Patrol = null;
+		public KeepGuardPatrol PatrolGroup
 		{
 			get { return m_Patrol; }
 			set { m_Patrol = value; }
@@ -483,7 +483,7 @@ namespace DOL.GS.Keeps
 				if (!foundGuard)
 					CurrentWaypoint = PatrolGroup.PatrolPath;
 
-				MoveOnPath(Patrol.PATROL_SPEED);
+				MoveOnPath(KeepGuardPatrol.PATROL_SPEED);
 			}
 
 			return true;
@@ -600,7 +600,7 @@ namespace DOL.GS.Keeps
 			{
 				if (area is KeepArea)
 				{
-					AbstractGameKeep keep = (area as KeepArea).Keep;
+					AGameKeep keep = (area as KeepArea).Keep;
 					Component = new GameKeepComponent();
 					Component.Keep = keep;
 					m_dataObjectID = mobobject.ObjectId;
@@ -679,7 +679,7 @@ namespace DOL.GS.Keeps
 			m_templateID = pos.TemplateID;
 			m_component = component;
 			component.Keep.Guards.Add(m_templateID + component.ID, this);
-			PositionMgr.LoadGuardPosition(pos, this);
+			GuardPositionMgr.LoadGuardPosition(pos, this);
 			RefreshTemplate();
 			this.AddToWorld();
 		}
@@ -690,7 +690,7 @@ namespace DOL.GS.Keeps
 		/// <param name="position">The new position for the guard</param>
 		public void MoveToPosition(DbKeepPosition position)
 		{
-			PositionMgr.LoadGuardPosition(position, this);
+			GuardPositionMgr.LoadGuardPosition(position, this);
 			if (!InCombat)
 				MoveTo(CurrentRegionID, X, Y, Z, Heading);
 		}

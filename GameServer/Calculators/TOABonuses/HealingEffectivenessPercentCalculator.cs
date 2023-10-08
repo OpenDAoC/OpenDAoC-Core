@@ -16,7 +16,7 @@ public class HealingEffectivenessPercentCalculator : PropertyCalculator
 
         // Relic bonus calculated before RA bonuses
         if (living is GamePlayer or GameSummonedPet)
-            percent += (int)(100 * RelicMgr.GetRelicBonusModifier(living.Realm, eRelicType.Magic));
+            percent += (int)(100 * RelicMgr.GetRelicBonusModifier(living.Realm, ERelicType.Magic));
 
         return percent;
     }

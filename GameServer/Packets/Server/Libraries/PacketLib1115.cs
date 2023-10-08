@@ -153,7 +153,7 @@ namespace DOL.GS.PacketHandler
 			{
 				int KeepCount = 0;
 				int TowerCount = 0;
-				foreach (AbstractGameKeep keep in list)
+				foreach (AGameKeep keep in list)
 				{
 					// New Agramon tower are counted as keep
 					if (keep is GameKeep || (keep.KeepID & 0xFF) > 150)
@@ -175,31 +175,31 @@ namespace DOL.GS.PacketHandler
 					switch (relic.OriginalRealm)
 					{
 						case ERealm.Albion:
-							if (relic.RelicType == eRelicType.Strength)
+							if (relic.RelicType == ERelicType.Strength)
 							{
 								albStr = (byte)relic.Realm;
 							}
-							if (relic.RelicType == eRelicType.Magic)
+							if (relic.RelicType == ERelicType.Magic)
 							{
 								albMagic = (byte)relic.Realm;
 							}
 							break;
 						case ERealm.Hibernia:
-							if (relic.RelicType == eRelicType.Strength)
+							if (relic.RelicType == ERelicType.Strength)
 							{
 								hibStr = (byte)relic.Realm;
 							}
-							if (relic.RelicType == eRelicType.Magic)
+							if (relic.RelicType == ERelicType.Magic)
 							{
 								hibMagic = (byte)relic.Realm;
 							}
 							break;
 						case ERealm.Midgard:
-							if (relic.RelicType == eRelicType.Strength)
+							if (relic.RelicType == ERelicType.Strength)
 							{
 								midStr = (byte)relic.Realm;
 							}
-							if (relic.RelicType == eRelicType.Magic)
+							if (relic.RelicType == ERelicType.Magic)
 							{
 								midMagic = (byte)relic.Realm;
 							}
@@ -212,7 +212,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(albMagic);
 				pak.WriteByte(midMagic);
 				pak.WriteByte(hibMagic);
-				foreach (AbstractGameKeep keep in list)
+				foreach (AGameKeep keep in list)
 				{
 					int keepId = keep.KeepID;
 

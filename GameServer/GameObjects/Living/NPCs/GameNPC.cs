@@ -3343,9 +3343,9 @@ namespace DOL.GS
 						}
 					}
 
-					if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_5, (ERealm)killer.Realm))
+					if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.EKeepBonusType.Coin_Drop_5, (ERealm)killer.Realm))
 						value += (value / 100) * 5;
-					else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_3, (ERealm)killer.Realm))
+					else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.EKeepBonusType.Coin_Drop_3, (ERealm)killer.Realm))
 						value += (value / 100) * 3;
 
 					//this will need to be changed when the ML for increasing money is added

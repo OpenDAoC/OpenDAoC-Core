@@ -11,9 +11,9 @@ namespace DOL.GS;
 public class ConquestManager
 {
     private List<DbKeep> DBKeeps;
-    private List<AbstractGameKeep> _albionKeeps;
-    private List<AbstractGameKeep> _hiberniaKeeps;
-    private List<AbstractGameKeep> _midgardKeeps;
+    private List<AGameKeep> _albionKeeps;
+    private List<AGameKeep> _hiberniaKeeps;
+    private List<AGameKeep> _midgardKeeps;
     private int[] albionKeepIDs = new[] {50, 51, 52, 53, 54, 55, 56};
     private int[] midgardKeepIDs = new[] {75, 76, 77, 78, 79, 80, 81};
     private int[] hiberniaKeepIDs = new[] {100, 101, 102, 103, 104, 105, 106};
@@ -66,9 +66,9 @@ public class ConquestManager
 
     private void ResetKeeps()
     {
-        if (_albionKeeps == null) _albionKeeps = new List<AbstractGameKeep>();
-        if (_hiberniaKeeps == null) _hiberniaKeeps = new List<AbstractGameKeep>();
-        if (_midgardKeeps == null) _midgardKeeps = new List<AbstractGameKeep>();
+        if (_albionKeeps == null) _albionKeeps = new List<AGameKeep>();
+        if (_hiberniaKeeps == null) _hiberniaKeeps = new List<AGameKeep>();
+        if (_midgardKeeps == null) _midgardKeeps = new List<AGameKeep>();
         _albionKeeps.Clear();
         _hiberniaKeeps.Clear();
         _midgardKeeps.Clear();
@@ -109,7 +109,7 @@ public class ConquestManager
         }
     }
 
-    private int GetConquestValue(AbstractGameKeep keep)
+    private int GetConquestValue(AGameKeep keep)
     {
         switch (keep.KeepID)
         {
@@ -148,7 +148,7 @@ public class ConquestManager
         return 1;
     }
 
-    public void ConquestCapture(AbstractGameKeep CapturedKeep)
+    public void ConquestCapture(AGameKeep CapturedKeep)
     {
         BroadcastConquestMessageToRvRPlayers(
             $"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest objective!");
@@ -157,7 +157,7 @@ public class ConquestManager
         RotateKeepsOnCapture(CapturedKeep);
     }
     
-    public void ConquestSubCapture(AbstractGameKeep CapturedKeep)
+    public void ConquestSubCapture(AGameKeep CapturedKeep)
     {
         BroadcastConquestMessageToRvRPlayers(
             $"{GetStringFromRealm(CapturedKeep.Realm)} has captured a conquest sub-objective!");
@@ -359,7 +359,7 @@ public class ConquestManager
         }
     }
 
-    private void RotateKeepsOnCapture(AbstractGameKeep capturedKeep)
+    private void RotateKeepsOnCapture(AGameKeep capturedKeep)
     {
         
         ActiveObjective.ConquestCapture();
@@ -423,7 +423,7 @@ public class ConquestManager
         }
     }
 
-    private void SetKeepForCapturedRealm(AbstractGameKeep keep)
+    private void SetKeepForCapturedRealm(AGameKeep keep)
     {
         if (keep.Realm != keep.OriginalRealm && ((ConquestService.IsOverHalfwayDone() && keep.CurrentRegion.ID == ActiveObjective.Keep.CurrentRegion.ID) || keep.CurrentRegion.ID != ActiveObjective.Keep.CurrentRegion.ID))
         {

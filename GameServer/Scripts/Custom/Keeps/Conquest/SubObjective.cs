@@ -23,7 +23,7 @@ public class SubObjective
     private ERealm CapturingRealm;
     public ERealm OwningRealm;
 
-    public SubObjective(int x, int y, int z, AbstractGameKeep keep, int objectiveNumber)
+    public SubObjective(int x, int y, int z, AGameKeep keep, int objectiveNumber)
     {
         FlagObject = new GameStaticItemTimed(fullCycleTime * 60 * 1000);
         FlagObject.Model = GetModelIDForRealm(keep.Realm);

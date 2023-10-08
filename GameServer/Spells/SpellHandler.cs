@@ -3391,7 +3391,7 @@ namespace DOL.GS.Spells
 			if (playerCaster != null)
 			{
 				// Relic bonus applied to damage, does not alter effectiveness or increase cap
-				spellDamage *= 1.0 + RelicMgr.GetRelicBonusModifier(playerCaster.Realm, eRelicType.Magic);
+				spellDamage *= 1.0 + RelicMgr.GetRelicBonusModifier(playerCaster.Realm, ERelicType.Magic);
 				effectiveness *= 1 + playerCaster.GetModified(EProperty.SpellDamage) * 0.01;
 			}
 

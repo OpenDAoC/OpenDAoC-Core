@@ -3,9 +3,6 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// Class to manage all the dealings with Guilds
-	/// </summary>
 	public class KeepGuildMgr
 	{
 		/// <summary>
@@ -32,7 +29,7 @@ namespace DOL.GS.Keeps
 			guild.SendMessageToGuildMembers(message, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);
 		}
 
-		public static void SendLevelChangeMessage(AbstractGameKeep keep)
+		public static void SendLevelChangeMessage(AGameKeep keep)
 		{
 			string message = "Your guild's keep " + keep.Name + " is now level " + keep.Level;
 			if (keep.Level != ServerProperties.Properties.MAX_KEEP_LEVEL)
@@ -40,7 +37,7 @@ namespace DOL.GS.Keeps
 			SendMessageToGuild(message, keep.Guild);
 		}
 
-		public static void SendChangeLevelTimeMessage(AbstractGameKeep keep)
+		public static void SendChangeLevelTimeMessage(AGameKeep keep)
 		{
             string message;
             string changeleveltext = "";

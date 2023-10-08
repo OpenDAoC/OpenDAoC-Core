@@ -659,9 +659,9 @@ namespace DOL.GS
 			craftingTime = (int)(craftingTime * (1 - (.05 * RelicMgr.GetRelicCount(player.Realm))));
 
 			//keep bonuses reduction in crafting time
-			if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Craft_Timers_5, (ERealm)player.Realm))
+			if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.EKeepBonusType.Craft_Timers_5, (ERealm)player.Realm))
 				craftingTime = (int)(craftingTime / 1.05);
-			else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Craft_Timers_3, (ERealm)player.Realm))
+			else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.EKeepBonusType.Craft_Timers_3, (ERealm)player.Realm))
 				craftingTime = (int)(craftingTime / 1.03);
 
 			int con = GetItemCon(player.GetCraftingSkillValue(m_eskill), recipe.Level);

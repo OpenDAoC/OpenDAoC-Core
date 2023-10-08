@@ -365,13 +365,13 @@ namespace DOL.GS
 			if (hasFrontierRegion == false)
 			{
 				Region frontier;
-				if (m_regions.TryGetValue(Keeps.DefaultKeepManager.DEFAULT_FRONTIERS_REGION, out frontier))
+				if (m_regions.TryGetValue(Keeps.KeepMgr.DEFAULT_FRONTIERS_REGION, out frontier))
 				{
 					frontier.IsFrontier = true;
 				}
 				else
 				{
-					log.ErrorFormat("Can't find default Frontier region {0}!", Keeps.DefaultKeepManager.DEFAULT_FRONTIERS_REGION);
+					log.ErrorFormat("Can't find default Frontier region {0}!", Keeps.KeepMgr.DEFAULT_FRONTIERS_REGION);
 				}
 			}
 

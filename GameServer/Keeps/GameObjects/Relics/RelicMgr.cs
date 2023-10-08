@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,10 +8,6 @@ using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// RelicManager
-	/// The manager that keeps track of the relics.
-	/// </summary>
 	public sealed class RelicMgr
 	{
 		/// <summary>
@@ -248,7 +225,7 @@ namespace DOL.GS
 		/// <param name="Realm"></param>
 		/// <param name="RelicType"></param>
 		/// <returns></returns>
-		public static IEnumerable getRelics(ERealm Realm, eRelicType RelicType)
+		public static IEnumerable getRelics(ERealm Realm, ERelicType RelicType)
 		{
 			ArrayList realmTypeRelics = new ArrayList();
 			foreach (GameRelic relic in getRelics(Realm))
@@ -286,7 +263,7 @@ namespace DOL.GS
 		/// <param name="realm"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public static int GetRelicCount(ERealm realm, eRelicType type)
+		public static int GetRelicCount(ERealm realm, ERelicType type)
 		{
 			int index = 0;
 			lock (m_relics.SyncRoot)
@@ -308,7 +285,7 @@ namespace DOL.GS
 		/// <param name="realm"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public static double GetRelicBonusModifier(ERealm realm, eRelicType type)
+		public static double GetRelicBonusModifier(ERealm realm, ERelicType type)
 		{
 			double bonus = 0.0;
 			bool owningSelf = false;

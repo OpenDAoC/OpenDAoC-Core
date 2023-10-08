@@ -8,14 +8,8 @@ using log4net;
 
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// AbstractGameKeep is the keep or a tower in game in RVR
-	/// </summary>
-	public abstract class AbstractGameKeep : IGameKeep
+	public abstract class AGameKeep : IGameKeep
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public bool HasCommander = false;
@@ -163,7 +157,7 @@ namespace DOL.GS.Keeps
 
 		public Dictionary<string, GameKeepBanner> Banners { get; set; } = new Dictionary<string, GameKeepBanner>();
 
-		public Dictionary<string, Patrol> Patrols { get; set; } = new Dictionary<string, Patrol>();
+		public Dictionary<string, KeepGuardPatrol> Patrols { get; set; } = new Dictionary<string, KeepGuardPatrol>();
 
 		public Region CurrentRegion { get; set; }
 
@@ -426,7 +420,7 @@ namespace DOL.GS.Keeps
 
 		#endregion
 
-		~AbstractGameKeep()
+		~AGameKeep()
 		{
 			log.Debug("AbstractGameKeep destructor called for " + Name);
 		}
@@ -824,7 +818,7 @@ namespace DOL.GS.Keeps
 				SetGuardLevel(guard);
 			}
 
-			foreach (Patrol p in this.Patrols.Values)
+			foreach (KeepGuardPatrol p in this.Patrols.Values)
 			{
 				p.ChangePatrolLevel();
 			}

@@ -445,7 +445,7 @@ namespace DOL.GS.PacketHandler
 			int HibKeeps = 0;
 			int OwnerDFTowers = 0;
 			ERealm OwnerDF = ERealm.None;
-			foreach (AbstractGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
+			foreach (AGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
 			{
 
 				switch ((ERealm)keep.Realm)
@@ -509,7 +509,7 @@ namespace DOL.GS.PacketHandler
 						break;
 				}
 				pak.WriteByte((byte)RealmKeeps);
-				pak.WriteByte((byte)(((byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, eRelicType.Magic)) << 4 | (byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, eRelicType.Strength)));
+				pak.WriteByte((byte)(((byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Magic)) << 4 | (byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Strength)));
 				pak.WriteByte((byte)OwnerDF);
 				pak.WriteByte((byte)RealmTowers);
 				pak.WriteByte((byte)OwnerDFTowers);

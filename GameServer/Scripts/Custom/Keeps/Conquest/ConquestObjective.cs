@@ -7,7 +7,7 @@ namespace DOL.GS;
 
 public class ConquestObjective
 {
-    public AbstractGameKeep Keep;
+    public AGameKeep Keep;
     public long LastRolloverTick = 0;
     public long StartTick;
 
@@ -20,7 +20,7 @@ public class ConquestObjective
 
     public bool ActiveFlags => ObjectiveOne != null && ObjectiveTwo != null && ObjectiveThree != null && ObjectiveFour != null;
 
-    public ConquestObjective(AbstractGameKeep keep)
+    public ConquestObjective(AGameKeep keep)
     {
         Keep = keep;
     }
@@ -32,7 +32,7 @@ public class ConquestObjective
         LastRolloverTick = StartTick;
     }
 
-    private void InitializeFlags(AbstractGameKeep keep)
+    private void InitializeFlags(AGameKeep keep)
     {
         var locs = GetFlagLocsForKeep(keep);
         ObjectiveOne = new SubObjective(locs[0].X, locs[0].Y, locs[0].Z, keep, 1);
@@ -41,7 +41,7 @@ public class ConquestObjective
         ObjectiveFour = new SubObjective(locs[3].X, locs[3].Y, locs[3].Z, keep, 4);
     }
 
-    private List<Point3D> GetFlagLocsForKeep(AbstractGameKeep keep)
+    private List<Point3D> GetFlagLocsForKeep(AGameKeep keep)
     {
         List<Point3D> flagLocs = new List<Point3D>();
 
@@ -144,7 +144,7 @@ public class ConquestObjective
         return flagLocs;
     }
 
-    public List<String> GetPlayerCoordsForKeep(AbstractGameKeep keep)
+    public List<String> GetPlayerCoordsForKeep(AGameKeep keep)
     {
         List<String> flagLocs = new List<String>();
 

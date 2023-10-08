@@ -87,7 +87,7 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual eRelicType PadType
+		public virtual ERelicType PadType
 		{
 			get
 			{
@@ -96,13 +96,13 @@ namespace DOL.GS
 					case 1:
 					case 2:
 					case 3:
-						return eRelicType.Strength;
+						return ERelicType.Strength;
 					case 11:
 					case 12:
 					case 13:
-						return eRelicType.Magic;
+						return ERelicType.Magic;
 					default:
-						return eRelicType.Invalid;
+						return ERelicType.Invalid;
 
 				}
 			}

@@ -73,7 +73,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			AbstractGameKeep myKeep = client.Player.TempProperties.GetProperty<AbstractGameKeep>(TEMP_KEEP_LAST, null);
+			AGameKeep myKeep = client.Player.TempProperties.GetProperty<AGameKeep>(TEMP_KEEP_LAST, null);
 			if (myKeep == null) myKeep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player, 10000);
 			
 			switch (args[1])
@@ -134,7 +134,7 @@ namespace DOL.GS.Commands
 
 						if ((int)keepType < 8)
 						{
-							keep.KeepType = (AbstractGameKeep.eKeepType)keepType;
+							keep.KeepType = (AGameKeep.eKeepType)keepType;
 						}
 						else
 						{
@@ -2400,9 +2400,9 @@ namespace DOL.GS.Commands
 						GameKeepComponent component = client.Player.TargetObject as GameKeepComponent;
 						if (component != null)
 						{
-							DbKeepPosition pos = PositionMgr.CreatePosition(typeof(FrontiersPortalStone), 0, client.Player, Guid.NewGuid().ToString(), component);
-							PositionMgr.AddPosition(pos);
-							PositionMgr.FillPositions();
+							DbKeepPosition pos = GuardPositionMgr.CreatePosition(typeof(FrontiersPortalStone), 0, client.Player, Guid.NewGuid().ToString(), component);
+							GuardPositionMgr.AddPosition(pos);
+							GuardPositionMgr.FillPositions();
 						}
 						else
 						{
@@ -2422,13 +2422,13 @@ namespace DOL.GS.Commands
 				#region AddBanner
 				case "addbanner":
 					{
-						GameKeepBanner.eBannerType bannerType = GameKeepBanner.eBannerType.Realm;
+						GameKeepBanner.EBannerType bannerType = GameKeepBanner.EBannerType.Realm;
 						if (args.Length > 2)
 						{
 							switch (args[2].ToLower())
 							{
-									case "realm": bannerType = GameKeepBanner.eBannerType.Realm; break;
-									case "guild": bannerType = GameKeepBanner.eBannerType.Guild; break;
+									case "realm": bannerType = GameKeepBanner.EBannerType.Realm; break;
+									case "guild": bannerType = GameKeepBanner.EBannerType.Guild; break;
 									default: return;
 							}
 						}
@@ -2436,11 +2436,11 @@ namespace DOL.GS.Commands
 						GameKeepComponent component = client.Player.TargetObject as GameKeepComponent;
 						if (component != null)
 						{
-							DbKeepPosition pos = PositionMgr.CreatePosition(typeof(GameKeepBanner), 0, client.Player, Guid.NewGuid().ToString(), component);
+							DbKeepPosition pos = GuardPositionMgr.CreatePosition(typeof(GameKeepBanner), 0, client.Player, Guid.NewGuid().ToString(), component);
 							pos.TemplateType = (int)bannerType;
 							GameServer.Database.SaveObject(pos);
-							PositionMgr.AddPosition(pos);
-							PositionMgr.FillPositions();
+							GuardPositionMgr.AddPosition(pos);
+							GuardPositionMgr.FillPositions();
 						}
 						else
 						{
@@ -2457,7 +2457,7 @@ namespace DOL.GS.Commands
 							{
 								if (area is KeepArea)
 								{
-									AbstractGameKeep keep = (area as KeepArea).Keep;
+									AGameKeep keep = (area as KeepArea).Keep;
 									banner.Component = new GameKeepComponent();
 									banner.Component.Keep = keep;
 									banner.Component.Keep.Banners.Add(banner.InternalID, banner);

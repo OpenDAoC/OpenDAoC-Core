@@ -8,7 +8,7 @@ namespace DOL.GS.Quests
 {
 	public class RaizeMission : AbstractMission
 	{
-		private AbstractGameKeep m_keep = null;
+		private AGameKeep m_keep = null;
 
 		public RaizeMission(object owner)
 			: base(owner)
@@ -21,14 +21,14 @@ namespace DOL.GS.Quests
 
 			ArrayList list = new ArrayList();
 
-			ICollection<AbstractGameKeep> keeps;
+			ICollection<AGameKeep> keeps;
 			if (owner is GroupUtil)
 				keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
 			else if (owner is GamePlayer)
 				keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
-			else keeps = new List<AbstractGameKeep>();
+			else keeps = new List<AGameKeep>();
 
-			foreach (AbstractGameKeep keep in keeps)
+			foreach (AGameKeep keep in keeps)
 			{
 				if (keep.IsPortalKeep)
 					continue;
@@ -37,7 +37,7 @@ namespace DOL.GS.Quests
 			}
 
 			if (list.Count > 0)
-				m_keep = list[Util.Random(list.Count - 1)] as AbstractGameKeep;
+				m_keep = list[Util.Random(list.Count - 1)] as AGameKeep;
 
 			GameEventMgr.AddHandler(KeepEvent.TowerRaized, new CoreEventHandler(Notify));
 		}

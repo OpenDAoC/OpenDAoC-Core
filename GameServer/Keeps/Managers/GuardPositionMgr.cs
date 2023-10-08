@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +11,7 @@ namespace DOL.GS.Keeps
 	/// <summary>
 	/// Class to manage the guards Positions
 	/// </summary>
-	public class PositionMgr
+	public class GuardPositionMgr
 	{
 		/// <summary>
 		/// Gets the most usable position directly from the database
@@ -224,7 +205,7 @@ namespace DOL.GS.Keeps
 		/// <param name="component">The component object</param>
 		/// <param name="player">The player object</param>
 		/// <returns>The position object</returns>
-		public static DbKeepPosition CreatePatrolPosition(string guardID, GameKeepComponent component, GamePlayer player, AbstractGameKeep.eKeepType keepType)
+		public static DbKeepPosition CreatePatrolPosition(string guardID, GameKeepComponent component, GamePlayer player, AGameKeep.eKeepType keepType)
 		{
 			DbKeepPosition pos = CreatePosition(guardID, component, player);
 			pos.Height = 0;
@@ -261,7 +242,7 @@ namespace DOL.GS.Keeps
 
 		public static void AddPosition(DbKeepPosition position)
 		{
-			foreach (AbstractGameKeep keep in GameServer.KeepManager.GetAllKeeps())
+			foreach (AGameKeep keep in GameServer.KeepManager.GetAllKeeps())
 			{
 				foreach (GameKeepComponent component in keep.KeepComponents)
 				{
@@ -279,7 +260,7 @@ namespace DOL.GS.Keeps
 
 		public static void RemovePosition(DbKeepPosition position)
 		{
-			foreach (AbstractGameKeep keep in GameServer.KeepManager.GetAllKeeps())
+			foreach (AGameKeep keep in GameServer.KeepManager.GetAllKeeps())
 			{
 				foreach (GameKeepComponent component in keep.KeepComponents)
 				{
@@ -298,7 +279,7 @@ namespace DOL.GS.Keeps
 
 		public static void FillPositions()
 		{
-			foreach (AbstractGameKeep keep in GameServer.KeepManager.GetAllKeeps())
+			foreach (AGameKeep keep in GameServer.KeepManager.GetAllKeeps())
 			{
 				foreach (GameKeepComponent component in keep.KeepComponents)
 				{
@@ -412,7 +393,7 @@ namespace DOL.GS.Keeps
 			int componentID = (doorID / 100) % 100;
 			int doorIndex = doorID % 10;
 
-			AbstractGameKeep keep = GameServer.KeepManager.GetKeepByID(keepID);
+			AGameKeep keep = GameServer.KeepManager.GetKeepByID(keepID);
 			if (keep == null)
 			{
 				player.Out.SendMessage("Cannot create door as keep is null!", eChatType.CT_System, eChatLoc.CL_SystemWindow);

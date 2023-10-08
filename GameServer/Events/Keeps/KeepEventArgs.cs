@@ -13,7 +13,7 @@ public class KeepEventArgs : EventArgs
 	/// <summary>
 	/// The keep
 	/// </summary>
-	private AbstractGameKeep m_keep;
+	private AGameKeep m_keep;
 
 	/// <summary>
 	/// The realm
@@ -23,12 +23,12 @@ public class KeepEventArgs : EventArgs
 	/// <summary>
 	/// Constructs a new KeepEventArgs
 	/// </summary>
-	public KeepEventArgs(AbstractGameKeep keep)
+	public KeepEventArgs(AGameKeep keep)
 	{
 		this.m_keep = keep;
 	}
 
-	public KeepEventArgs(AbstractGameKeep keep, ERealm realm)
+	public KeepEventArgs(AGameKeep keep, ERealm realm)
 	{
 		this.m_keep = keep;
 		this.m_realm = realm;
@@ -37,7 +37,7 @@ public class KeepEventArgs : EventArgs
 	/// <summary>
 	/// Gets the Keep
 	/// </summary>
-	public AbstractGameKeep Keep
+	public AGameKeep Keep
 	{
 		get { return m_keep; }
 	}

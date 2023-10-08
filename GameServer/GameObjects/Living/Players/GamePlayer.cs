@@ -979,7 +979,7 @@ namespace DOL.GS
 
         private void CheckIfNearEnemyKeepAndAddToRvRLinkDeathListIfNecessary()
         {
-            AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(this.CurrentRegionID, this, WorldMgr.VISIBILITY_DISTANCE);
+            AGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(this.CurrentRegionID, this, WorldMgr.VISIBILITY_DISTANCE);
             if(keep != null && this.Client.Account.PrivLevel == 1 && (GameServer.KeepManager.IsEnemy(keep, this) || keep.IsRelic))
             {
                 if(WorldMgr.RvRLinkDeadPlayers.ContainsKey(this.m_InternalID))
@@ -1629,7 +1629,7 @@ namespace DOL.GS
                         break;
                     }
 
-                    foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
+                    foreach (AGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
                     {
                         if (keep.IsPortalKeep && keep.OriginalRealm == Realm)
                         {
@@ -1700,7 +1700,7 @@ namespace DOL.GS
                         {
                             //get the bg cap
                             byte cap = 50;
-                            foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
+                            foreach (AGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
                             {
                                 if (keep.DBKeep.BaseLevel < cap)
                                 {
@@ -1709,7 +1709,7 @@ namespace DOL.GS
                                 }
                             }
                             //get the portal location
-                            foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
+                            foreach (AGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
                             {
                                 if (keep.DBKeep.BaseLevel > 50 && keep.Realm == Realm)
                                 {

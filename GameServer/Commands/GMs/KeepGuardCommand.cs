@@ -143,13 +143,13 @@ namespace DOL.GS.Commands
 										return;
 									}
 
-									AbstractGameKeep.eKeepType keepType = AbstractGameKeep.eKeepType.Any;
+									AGameKeep.eKeepType keepType = AGameKeep.eKeepType.Any;
 
 									if (args.Length < 5)
 									{
 										DisplayMessage(client, "You need to provide the type of keep this patrol works with.");
 										int i = 0;
-										foreach (string str in Enum.GetNames(typeof(Keeps.AbstractGameKeep.eKeepType)))
+										foreach (string str in Enum.GetNames(typeof(Keeps.AGameKeep.eKeepType)))
 										{
 											DisplayMessage(client, "#" + i + ": " + str);
 											i++;
@@ -159,7 +159,7 @@ namespace DOL.GS.Commands
 
 									try
 									{
-										keepType = (AbstractGameKeep.eKeepType)Convert.ToInt32(args[4]);
+										keepType = (AGameKeep.eKeepType)Convert.ToInt32(args[4]);
 									}
 									catch
 									{
@@ -174,13 +174,13 @@ namespace DOL.GS.Commands
 										return;
 									}
 									GameKeepComponent c = client.Player.TargetObject as GameKeepComponent;;
-									Patrol p = new Patrol(c);
+									KeepGuardPatrol p = new KeepGuardPatrol(c);
 									p.PatrolID = args[3];
 									p.KeepType = keepType;
-									p.SpawnPosition = PositionMgr.CreatePatrolPosition(p.PatrolID, c, client.Player, keepType);
+									p.SpawnPosition = GuardPositionMgr.CreatePatrolPosition(p.PatrolID, c, client.Player, keepType);
 									p.PatrolID = p.SpawnPosition.TemplateID;
 									p.InitialiseGuards();
-									DisplayMessage(client, "Patrol created for Keep Type " + Enum.GetName(typeof(AbstractGameKeep.eKeepType), keepType));
+									DisplayMessage(client, "Patrol created for Keep Type " + Enum.GetName(typeof(AGameKeep.eKeepType), keepType));
 									return;
 								}
 							#endregion Patrol
@@ -218,7 +218,7 @@ namespace DOL.GS.Commands
 							if (args.Length > 4)
 								int.TryParse(args[4], out height);
 
-							DbKeepPosition pos = PositionMgr.CreatePosition(guard.GetType(), height, client.Player, Guid.NewGuid().ToString(), component);
+							DbKeepPosition pos = GuardPositionMgr.CreatePosition(guard.GetType(), height, client.Player, Guid.NewGuid().ToString(), component);
 							//PositionMgr.AddPosition(pos);
 							//PositionMgr.FillPositions();
 							DbKeepPosition[] list = component.Positions[pos.TemplateID] as DbKeepPosition[];
@@ -247,7 +247,7 @@ namespace DOL.GS.Commands
 							{
 								if (area is KeepArea)
 								{
-									AbstractGameKeep keep = (area as KeepArea).Keep;
+									AGameKeep keep = (area as KeepArea).Keep;
 									guard.Component = new GameKeepComponent();
 									guard.Component.Keep = keep;
 									break;
@@ -261,7 +261,7 @@ namespace DOL.GS.Commands
 								guard.Component.Keep.Guards.Add(DOL.Database.UniqueID.IdGenerator.GenerateID(), guard);
 						}
 
-						PositionMgr.FillPositions();
+						GuardPositionMgr.FillPositions();
 
 						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Create.GuardAdded"));
 						break;
@@ -291,15 +291,15 @@ namespace DOL.GS.Commands
 									//height = KeepMgr.GetHeightFromLevel(height);
 									GameKeepGuard guard = client.Player.TargetObject as GameKeepGuard;
 									
-									if (PositionMgr.GetPosition(guard) != null)
+									if (GuardPositionMgr.GetPosition(guard) != null)
 									{
 										DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Position.PAlreadyAss", height));
 										return;
 									}
 
-									DbKeepPosition pos = PositionMgr.CreatePosition(guard.GetType(), height, client.Player, guard.TemplateID, guard.Component);
-									PositionMgr.AddPosition(pos);
-									PositionMgr.FillPositions();
+									DbKeepPosition pos = GuardPositionMgr.CreatePosition(guard.GetType(), height, client.Player, guard.TemplateID, guard.Component);
+									GuardPositionMgr.AddPosition(pos);
+									GuardPositionMgr.FillPositions();
 
 									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Position.GuardPAdded"));
 									break;
@@ -318,7 +318,7 @@ namespace DOL.GS.Commands
 									DbKeepPosition pos = guard.Position;
 									if (pos != null)
 									{
-										PositionMgr.RemovePosition(pos);
+										GuardPositionMgr.RemovePosition(pos);
 
 										if (guard.LoadedFromScript)
 										{
@@ -336,7 +336,7 @@ namespace DOL.GS.Commands
 										}
 									}
 
-									PositionMgr.FillPositions();
+									GuardPositionMgr.FillPositions();
 
 									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Position.GuardRemoved"));
 									break;
@@ -431,12 +431,12 @@ namespace DOL.GS.Commands
 									}
 
 									path.Type = EPathType.Loop;
-									PositionMgr.SavePatrolPath(guard.TemplateID, path, guard.Component);
+									GuardPositionMgr.SavePatrolPath(guard.TemplateID, path, guard.Component);
 									DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.Saved"));
 									RemoveAllTempPathObjects(client);
 									guard.PatrolGroup.InitialiseGuards();
 
-									PositionMgr.FillPositions();
+									GuardPositionMgr.FillPositions();
 
 									DisplayMessage(client, "Patrol groups initialized!");
 

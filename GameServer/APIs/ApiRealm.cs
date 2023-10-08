@@ -69,7 +69,7 @@ public class ApiRealm
 
         if (cache == null)
         {
-            ICollection<AbstractGameKeep> keepList;
+            ICollection<AGameKeep> keepList;
 
             switch (realm)
             {
@@ -216,7 +216,7 @@ public class ApiRealm
 
         if (cache == null)
         {
-            ICollection<AbstractGameKeep> keepList;
+            ICollection<AGameKeep> keepList;
 
             ushort[] bgRegions = {253, 252, 251, 250};
 

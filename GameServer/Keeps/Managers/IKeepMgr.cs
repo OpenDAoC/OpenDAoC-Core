@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,7 +23,7 @@ namespace DOL.GS.Keeps
 	/// DefaultKeepManager and only override what you want to change.  In order to use your keep manager you must also add
 	/// the KeepManagerAttribute above ->  [KeepManager]
 	/// </summary>
-	public interface IKeepManager
+	public interface IKeepMgr
 	{
 		log4net.ILog Log { get; }
 		Hashtable Keeps { get; }
@@ -50,23 +31,23 @@ namespace DOL.GS.Keeps
 
 		bool Load();
 		bool IsNewKeepComponent(int skin);
-		void RegisterKeep(int keepID, AbstractGameKeep keep);
-		AbstractGameKeep GetKeepByID(int id);
+		void RegisterKeep(int keepID, AGameKeep keep);
+		AGameKeep GetKeepByID(int id);
 		IEnumerable GetKeepsCloseToSpot(ushort regionid, IPoint3D point3d, int radius);
-		AbstractGameKeep GetKeepCloseToSpot(ushort regionid, IPoint3D point3d, int radius);
+		AGameKeep GetKeepCloseToSpot(ushort regionid, IPoint3D point3d, int radius);
 		ICollection<IGameKeep> GetKeepsByRealmMap(int map);
-		AbstractGameKeep GetBGPK(GamePlayer player);
-		ICollection<AbstractGameKeep> GetFrontierKeeps();
-		ICollection<AbstractGameKeep> GetKeepsOfRegion(ushort region);
-		ICollection<AbstractGameKeep> GetKeepsCloseToSpot(ushort regionid, int x, int y, int z, int radius);
-		AbstractGameKeep GetKeepCloseToSpot(ushort regionid, int x, int y, int z, int radius);
+		AGameKeep GetBGPK(GamePlayer player);
+		ICollection<AGameKeep> GetFrontierKeeps();
+		ICollection<AGameKeep> GetKeepsOfRegion(ushort region);
+		ICollection<AGameKeep> GetKeepsCloseToSpot(ushort regionid, int x, int y, int z, int radius);
+		AGameKeep GetKeepCloseToSpot(ushort regionid, int x, int y, int z, int radius);
 		int GetTowerCountByRealm(ERealm realm);
 		Dictionary<ERealm, int> GetTowerCountAllRealm();
 		Dictionary<ERealm, int> GetTowerCountFromZones(List<int> zones);
 		int GetKeepCountByRealm(ERealm realm);
-		ICollection<AbstractGameKeep> GetAllKeeps();
-		bool IsEnemy(AbstractGameKeep keep, GamePlayer target, bool checkGroup);
-		bool IsEnemy(AbstractGameKeep keep, GamePlayer target);
+		ICollection<AGameKeep> GetAllKeeps();
+		bool IsEnemy(AGameKeep keep, GamePlayer target, bool checkGroup);
+		bool IsEnemy(AGameKeep keep, GamePlayer target);
 		bool IsEnemy(GameKeepGuard checker, GamePlayer target);
 		bool IsEnemy(GameKeepGuard checker, GamePlayer target, bool checkGroup);
 		bool IsEnemy(GameKeepDoor checker, GamePlayer target);
@@ -78,6 +59,6 @@ namespace DOL.GS.Keeps
 		void UpdateBaseLevels();
 		DbBattleground GetBattleground(ushort region);
 		void ExitBattleground(GamePlayer player);
-		AbstractGameKeep GetKeepByShortName(string keepname);
+		AGameKeep GetKeepByShortName(string keepname);
 	}
 }

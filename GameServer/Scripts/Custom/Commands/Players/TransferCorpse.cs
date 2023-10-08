@@ -71,7 +71,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            AbstractGameKeep keep = GameServer.KeepManager.GetKeepByShortName(keepname);
+            AGameKeep keep = GameServer.KeepManager.GetKeepByShortName(keepname);
 
             if (keep == null)
             {

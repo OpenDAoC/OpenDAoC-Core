@@ -347,7 +347,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		long GetExperienceForKeep(AbstractGameKeep keep);
+		long GetExperienceForKeep(AGameKeep keep);
 
 
 		/// <summary>
@@ -357,28 +357,28 @@ namespace DOL.GS.ServerRules
 		/// etc
 		/// </summary>
 		/// <returns></returns>
-		double GetExperienceCapForKeep(AbstractGameKeep keep);
+		double GetExperienceCapForKeep(AGameKeep keep);
 
 		/// <summary>
 		/// Realm points a keep is worth when captured
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		int GetRealmPointsForKeep(AbstractGameKeep keep);
+		int GetRealmPointsForKeep(AGameKeep keep);
 
 		/// <summary>
 		/// Bounty points a keep is worth when captured
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		int GetBountyPointsForKeep(AbstractGameKeep keep);
+		int GetBountyPointsForKeep(AGameKeep keep);
 
 		/// <summary>
 		/// How much money does this keep reward when captured
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		long GetMoneyValueForKeep(AbstractGameKeep keep);
+		long GetMoneyValueForKeep(AGameKeep keep);
 
 		/// <summary>
 		/// Is the player allowed to generate news

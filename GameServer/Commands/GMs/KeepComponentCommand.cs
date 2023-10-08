@@ -30,7 +30,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			AbstractGameKeep myKeep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player, WorldMgr.OBJ_UPDATE_DISTANCE);
+			AGameKeep myKeep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player, WorldMgr.OBJ_UPDATE_DISTANCE);
 
 			if (myKeep == null)
 			{
@@ -308,7 +308,7 @@ namespace DOL.GS.Commands
 			}
 		}
 
-        public int CalcCX(GamePlayer player, AbstractGameKeep myKeep, double angle)
+        public int CalcCX(GamePlayer player, AGameKeep myKeep, double angle)
         {
             if (Math.Abs(Math.Sin(angle)) < 0.0001) //for approximations, == 0 wont work.
             {
@@ -321,7 +321,7 @@ namespace DOL.GS.Commands
             }
         }
 
-        public int CalcCY(GamePlayer player, AbstractGameKeep myKeep, double angle)
+        public int CalcCY(GamePlayer player, AGameKeep myKeep, double angle)
         {
             if (Math.Abs(Math.Sin(angle)) < 0.0001)
             {

@@ -7,9 +7,6 @@ using log4net;
 
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// keep door in world
-	/// </summary>
 	public class GameKeepDoor : GameDoorBase, IKeepItem
 	{
 		private const int DOOR_CLOSE_THRESHOLD = 15;
@@ -685,7 +682,7 @@ namespace DOL.GS.Keeps
 			m_templateID = pos.TemplateID;
 			m_component = component;
 
-			PositionMgr.LoadKeepItemPosition(pos, this);
+			GuardPositionMgr.LoadKeepItemPosition(pos, this);
 			component.Keep.Doors[m_templateID] = this;
 
 			m_oldMaxHealth = MaxHealth;

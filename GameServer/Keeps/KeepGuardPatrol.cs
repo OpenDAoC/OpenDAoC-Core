@@ -6,14 +6,11 @@ using DOL.GS.Movement;
 
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// Class for a Guard Patrol
-	/// </summary>
-	public class Patrol
+	public class KeepGuardPatrol
 	{
 		public const int PATROL_SPEED = 250;
 
-		public Patrol(GameKeepComponent component)
+		public KeepGuardPatrol(GameKeepComponent component)
 		{
 			m_component = component;
 		}
@@ -41,8 +38,8 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// What type of keep should this patrol spawn at?
 		/// </summary>
-		AbstractGameKeep.eKeepType m_keepType = AbstractGameKeep.eKeepType.Any;
-		public AbstractGameKeep.eKeepType KeepType
+		AGameKeep.eKeepType m_keepType = AGameKeep.eKeepType.Any;
+		public AGameKeep.eKeepType KeepType
 		{
 			get { return m_keepType; }
 			set { m_keepType = value; }
@@ -80,7 +77,7 @@ namespace DOL.GS.Keeps
 			Component.Keep.Patrols.Add(PatrolID, this);
 
 			//need this here becuase it's checked in add to world
-			PatrolPath = PositionMgr.LoadPatrolPath(PatrolID, Component);
+			PatrolPath = GuardPositionMgr.LoadPatrolPath(PatrolID, Component);
 
 			int guardsOnPatrol = 1;
 
@@ -103,7 +100,7 @@ namespace DOL.GS.Keeps
 			// tolakram - this might be redundant
 			foreach (GameKeepGuard guard in PatrolGuards)
 			{
-				PositionMgr.LoadGuardPosition(SpawnPosition, guard);
+				GuardPositionMgr.LoadGuardPosition(SpawnPosition, guard);
 			}
 
 			ChangePatrolLevel();
@@ -120,7 +117,7 @@ namespace DOL.GS.Keeps
 			guard.TemplateID = PatrolID;
 			guard.Component = Component;
 			guard.PatrolGroup = this;
-			PositionMgr.LoadGuardPosition(SpawnPosition, guard);
+			GuardPositionMgr.LoadGuardPosition(SpawnPosition, guard);
 			guard.RefreshTemplate();
 			PatrolGuards.Add(guard);
 			Component.Keep.Guards.Add(Database.UniqueID.IdGenerator.GenerateID(), guard);
@@ -162,7 +159,7 @@ namespace DOL.GS.Keeps
 					guardsToPatrol++;
 			}
 
-			PatrolPath = PositionMgr.LoadPatrolPath(PatrolID, Component);
+			PatrolPath = GuardPositionMgr.LoadPatrolPath(PatrolID, Component);
 
 			// Console.WriteLine(PatrolID + " guardstopatrol = " + guardsToPatrol + ", count = " + PatrolGuards.Count);
 
@@ -223,7 +220,7 @@ namespace DOL.GS.Keeps
 		public void StartPatrol()
 		{
 			if (PatrolPath == null)
-				PatrolPath = PositionMgr.LoadPatrolPath(PatrolID, Component);
+				PatrolPath = GuardPositionMgr.LoadPatrolPath(PatrolID, Component);
 
 			foreach (GameKeepGuard guard in PatrolGuards)
 			{

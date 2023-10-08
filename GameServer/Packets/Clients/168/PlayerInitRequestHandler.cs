@@ -221,10 +221,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				if (player.Client.Account.PrivLevel == 1 && player.CurrentRegion.IsRvR && player.CurrentRegionID != 163)
 				{
-					ICollection<AbstractGameKeep> list = GameServer.KeepManager.GetKeepsOfRegion(player.CurrentRegionID);
+					ICollection<AGameKeep> list = GameServer.KeepManager.GetKeepsOfRegion(player.CurrentRegionID);
 
 
-					foreach (AbstractGameKeep k in list)
+					foreach (AGameKeep k in list)
 					{
 						if (k.BaseLevel >= 50)
 							continue;
@@ -255,7 +255,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				int gracePeriodInMinutes = 0;
 				Int32.TryParse(ServerProperties.Properties.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out gracePeriodInMinutes);
-				AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
+				AGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
 				if (keep != null && player.Client.Account.PrivLevel == 1 && GameServer.KeepManager.IsEnemy(keep, player))
 				{
 					if (WorldMgr.RvRLinkDeadPlayers.ContainsKey(player.InternalID))
@@ -287,7 +287,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				int gracePeriodInMinutes = 0;
 				Int32.TryParse(ServerProperties.Properties.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out gracePeriodInMinutes);
-				AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
+				AGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
 				if (keep != null && keep.InCombat && player.Client.Account.PrivLevel == 1 && !GameServer.KeepManager.IsEnemy(keep, player))
 				{
 					if (WorldMgr.RvRLinkDeadPlayers.ContainsKey(player.InternalID))

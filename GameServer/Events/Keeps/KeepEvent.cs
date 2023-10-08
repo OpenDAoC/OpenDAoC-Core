@@ -19,7 +19,7 @@ public class KeepEvent : CoreEvent
 	/// <returns>true if valid, false if not</returns>
 	public override bool IsValidFor(object o)
 	{
-		return o is AbstractGameKeep;
+		return o is AGameKeep;
 	}
 
 	/// <summary>

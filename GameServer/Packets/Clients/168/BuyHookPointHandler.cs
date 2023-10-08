@@ -36,7 +36,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			packet.ReadByte();
 
 
-			AbstractGameKeep keep = GameServer.KeepManager.GetKeepByID(keepId);
+			AGameKeep keep = GameServer.KeepManager.GetKeepByID(keepId);
 			if (keep == null)
 				return;
 			GameKeepComponent component = keep.KeepComponents[wallId] as GameKeepComponent;

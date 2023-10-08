@@ -8,7 +8,7 @@ namespace DOL.GS.Quests
 {
 	public class CaptureMission : AbstractMission
 	{
-		private AbstractGameKeep m_keep = null;
+		private AGameKeep m_keep = null;
 
 		public enum eCaptureType : int
 		{ 
@@ -31,14 +31,14 @@ namespace DOL.GS.Quests
 			{
 				case eCaptureType.Tower:
 					{
-						ICollection<AbstractGameKeep> keeps;
+						ICollection<AGameKeep> keeps;
 						if (owner is GroupUtil)
 							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
 						else if (owner is GamePlayer)
 							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
-						else keeps = new List<AbstractGameKeep>();
+						else keeps = new List<AGameKeep>();
 
-						foreach (AbstractGameKeep keep in keeps)
+						foreach (AGameKeep keep in keeps)
 						{
 							if (keep.IsPortalKeep)
 								continue;
@@ -49,14 +49,14 @@ namespace DOL.GS.Quests
 					}
 				case eCaptureType.Keep:
 					{
-						ICollection<AbstractGameKeep> keeps;
+						ICollection<AGameKeep> keeps;
 						if (owner is GroupUtil)
 							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
 						else if (owner is GamePlayer)
 							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
-						else keeps = new List<AbstractGameKeep>();
+						else keeps = new List<AGameKeep>();
 
-						foreach (AbstractGameKeep keep in keeps)
+						foreach (AGameKeep keep in keeps)
 						{
 							if (keep.IsPortalKeep)
 								continue;
@@ -71,7 +71,7 @@ namespace DOL.GS.Quests
 			{
 				if (hint != "")
 				{
-					foreach (AbstractGameKeep keep in list)
+					foreach (AGameKeep keep in list)
 					{
 						if (keep.Name.ToLower().Contains(hint))
 						{
@@ -82,7 +82,7 @@ namespace DOL.GS.Quests
 				}
 
 				if (m_keep == null)
-					m_keep = list[Util.Random(list.Count - 1)] as AbstractGameKeep;
+					m_keep = list[Util.Random(list.Count - 1)] as AGameKeep;
 			}
 
 			GameEventMgr.AddHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));

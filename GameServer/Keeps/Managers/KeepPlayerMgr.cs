@@ -6,25 +6,6 @@ using log4net;
 namespace DOL.GS.Keeps
 {
 	/// <summary>
-	/// The type of interaction we check for to handle lord permission checks
-	/// </summary>
-	public enum eInteractType
-	{ 
-		/// <summary>
-		/// Claim the Area
-		/// </summary>
-		Claim,
-		/// <summary>
-		/// Release the Area
-		/// </summary>
-		Release,
-		/// <summary>
-		/// Change the level of the Area
-		/// </summary>
-		ChangeLevel,
-	}
-
-	/// <summary>
 	/// Class to manage all the dealings with Players
 	/// </summary>
 	public class PlayerMgr
@@ -35,7 +16,7 @@ namespace DOL.GS.Keeps
 		/// Sends a message to all players to notify them of the keep capture
 		/// </summary>
 		/// <param name="keep">The keep object</param>
-		public static void BroadcastCapture(AbstractGameKeep keep)
+		public static void BroadcastCapture(AGameKeep keep)
 		{
 			string message = "";
 			if (keep.Realm != ERealm.None)
@@ -78,7 +59,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="keep">The keep object</param>
 		/// <param name="realm">The raizing realm</param>
-		public static void BroadcastRaize(AbstractGameKeep keep, ERealm realm)
+		public static void BroadcastRaize(AGameKeep keep, ERealm realm)
 		{
 			string message = string.Format(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PlayerManager.BroadcastRaize.Razed", keep.Name, GlobalConstants.RealmToName(realm)));
 			BroadcastMessage(message, ERealm.None);
@@ -89,7 +70,7 @@ namespace DOL.GS.Keeps
 		/// Sends a message to all players of a realm, to notify them of a claim
 		/// </summary>
 		/// <param name="keep">The keep object</param>
-		public static void BroadcastClaim(AbstractGameKeep keep)
+		public static void BroadcastClaim(AGameKeep keep)
 		{
 
 			string claimMessage = string.Format(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,
@@ -107,7 +88,7 @@ namespace DOL.GS.Keeps
 		/// Sends a message to all players of a realm, to notify them of a release
 		/// </summary>
 		/// <param name="keep">The keep object</param>
-		public static void BroadcastRelease(AbstractGameKeep keep)
+		public static void BroadcastRelease(AGameKeep keep)
 		{
 			string lostClaimMessage = string.Format(LanguageMgr.GetTranslation(
 				ServerProperties.Properties.SERV_LANGUAGE, "PlayerManager.BroadcastRelease.LostControl",
@@ -228,7 +209,7 @@ namespace DOL.GS.Keeps
 		/// <param name="keep">The area object</param>
 		/// <param name="type">The type of interaction</param>
 		/// <returns></returns>
-		public static bool IsAllowedToInteract(GamePlayer player, AbstractGameKeep keep, eInteractType type)
+		public static bool IsAllowedToInteract(GamePlayer player, AGameKeep keep, EKeepInteractType type)
 		{
 			if (player.Client.Account.PrivLevel > 1)
 				return true;
@@ -245,11 +226,11 @@ namespace DOL.GS.Keeps
 
 			switch (type)
 			{
-				case eInteractType.Claim:
+				case EKeepInteractType.Claim:
 					{
 						if (keep.Guild != null)
 							return false;
-						foreach (AbstractGameKeep k in GameServer.KeepManager.GetAllKeeps())
+						foreach (AGameKeep k in GameServer.KeepManager.GetAllKeeps())
 						{
 							if (k.Guild == player.Guild)
 								return false;
@@ -264,7 +245,7 @@ namespace DOL.GS.Keeps
 							return false;
 						break;
 					}
-				case eInteractType.Release:
+				case EKeepInteractType.Release:
 					{
 						if (keep.Guild == null)
 							return false;
@@ -274,7 +255,7 @@ namespace DOL.GS.Keeps
 							return false;
 						break;
 					}
-				case eInteractType.ChangeLevel:
+				case EKeepInteractType.ChangeLevel:
 					{
 						if (keep.Guild == null)
 							return false;

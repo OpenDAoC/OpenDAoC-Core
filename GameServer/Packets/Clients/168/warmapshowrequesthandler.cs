@@ -71,7 +71,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							return;
 						}
 
-						AbstractGameKeep keep = null;
+						AGameKeep keep = null;
 
 						if (keepId > 6)
 						{

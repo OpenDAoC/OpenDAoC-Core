@@ -54,12 +54,12 @@ public class RealmCommand : ACommandHandler, ICommandHandler
 		string albKeeps = "";
 		string midKeeps = "";
 		string hibKeeps = "";
-		ICollection<AbstractGameKeep> keepList = GameServer.KeepManager.GetFrontierKeeps();
-		ICollection<AbstractGameKeep> albKeepList = GameServer.KeepManager.GetKeepsOfRegion(1);
-		ICollection<AbstractGameKeep> midKeepList = GameServer.KeepManager.GetKeepsOfRegion(100);
-		ICollection<AbstractGameKeep> hibKeepList = GameServer.KeepManager.GetKeepsOfRegion(200);
+		ICollection<AGameKeep> keepList = GameServer.KeepManager.GetFrontierKeeps();
+		ICollection<AGameKeep> albKeepList = GameServer.KeepManager.GetKeepsOfRegion(1);
+		ICollection<AGameKeep> midKeepList = GameServer.KeepManager.GetKeepsOfRegion(100);
+		ICollection<AGameKeep> hibKeepList = GameServer.KeepManager.GetKeepsOfRegion(200);
 
-		foreach (AbstractGameKeep keep in albKeepList)
+		foreach (AGameKeep keep in albKeepList)
 		{
 			if (keep.Name.ToLower().Contains("myrddin") || keep.Name.ToLower().Contains("excalibur"))
 				continue;
@@ -71,7 +71,7 @@ public class RealmCommand : ACommandHandler, ICommandHandler
 				
 		}
 
-		foreach (AbstractGameKeep keep in midKeepList)
+		foreach (AGameKeep keep in midKeepList)
 		{
 			if (keep.Name.ToLower().Contains("grallarhorn") || keep.Name.ToLower().Contains("mjollner"))
 				continue;
@@ -82,7 +82,7 @@ public class RealmCommand : ACommandHandler, ICommandHandler
 				
 		}
 		
-		foreach (AbstractGameKeep keep in hibKeepList)
+		foreach (AGameKeep keep in hibKeepList)
 		{
 			if (keep.Name.ToLower().Contains("dagda") || keep.Name.ToLower().Contains("lamfhota"))
 				continue;
@@ -149,7 +149,7 @@ public class RealmCommand : ACommandHandler, ICommandHandler
 		client.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.Title"), realmInfo);
 	}
 
-	private string KeepStringBuilder(AbstractGameKeep keep)
+	private string KeepStringBuilder(AGameKeep keep)
 	{
 		string buffer = "";
 		buffer += keep.Name + ": " + GlobalConstants.RealmToName(keep.Realm);

@@ -314,7 +314,7 @@ namespace DOL.GS.Keeps
             {
                 case "Claim Keep":
                     {
-                        if (PlayerMgr.IsAllowedToInteract(player, Component.Keep, eInteractType.Claim))
+                        if (PlayerMgr.IsAllowedToInteract(player, Component.Keep, EKeepInteractType.Claim))
                         {
                             player.Out.SendDialogBox(eDialogCode.KeepClaim, (ushort)player.ObjectID, 0, 0, 0, eDialogType.YesNo, false, "Do you wish to claim\n" + Component.Keep.Name + "?");
                             return true;
@@ -323,7 +323,7 @@ namespace DOL.GS.Keeps
                     }
                 case "Release Keep":
                     {
-                        if (PlayerMgr.IsAllowedToInteract(player, Component.Keep, eInteractType.Release))
+                        if (PlayerMgr.IsAllowedToInteract(player, Component.Keep, EKeepInteractType.Release))
                         {
                             flag += 4;
                         }

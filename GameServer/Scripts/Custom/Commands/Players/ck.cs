@@ -19,9 +19,9 @@ namespace DOL.GS.Commands
 			
 			if (GameServer.KeepManager.GetBattleground(client.Player.CurrentRegionID) != null)
 			{
-				ICollection<AbstractGameKeep> keepList =
+				ICollection<AGameKeep> keepList =
 					GameServer.KeepManager.GetKeepsOfRegion(client.Player.CurrentRegionID);
-				foreach (AbstractGameKeep keep in keepList)
+				foreach (AGameKeep keep in keepList)
 				{
 					ChatUtil.SendSystemMessage(client, KeepStringBuilder(keep));
 				}
@@ -31,7 +31,7 @@ namespace DOL.GS.Commands
 				client.Out.SendMessage("You need to be in a battleground to use this command.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 		}
-		private string KeepStringBuilder(AbstractGameKeep keep)
+		private string KeepStringBuilder(AGameKeep keep)
 		{
 			string buffer = "";
 			buffer += keep.Name + ": " + GlobalConstants.RealmToName(keep.Realm);

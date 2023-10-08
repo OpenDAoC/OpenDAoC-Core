@@ -86,7 +86,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     RenaCE.Component = new GameKeepComponent();
                     RenaCE.Component.Keep = popkeep;
                     break;
@@ -107,7 +107,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     HurbuCM.Component = new GameKeepComponent();
                     HurbuCM.Component.Keep = popkeep;
                     break;
@@ -128,7 +128,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BercCE.Component = new GameKeepComponent();
                     BercCE.Component.Keep = popkeep;
                     break;
@@ -149,7 +149,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BercCM.Component = new GameKeepComponent();
                     BercCM.Component.Keep = popkeep;
                     break;
@@ -170,7 +170,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     SursCE.Component = new GameKeepComponent();
                     SursCE.Component.Keep = popkeep;
                     break;
@@ -191,7 +191,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     SursCM.Component = new GameKeepComponent();
                     SursCM.Component.Keep = popkeep;
                     break;
@@ -212,7 +212,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BoldCE.Component = new GameKeepComponent();
                     BoldCE.Component.Keep = popkeep;
                     break;
@@ -233,7 +233,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BoldCM.Component = new GameKeepComponent();
                     BoldCM.Component.Keep = popkeep;
                     break;
@@ -254,7 +254,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     ErasCE.Component = new GameKeepComponent();
                     ErasCE.Component.Keep = popkeep;
                     break;
@@ -275,7 +275,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     ErasCM.Component = new GameKeepComponent();
                     ErasCM.Component.Keep = popkeep;
                     break;
@@ -296,7 +296,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BenoCE.Component = new GameKeepComponent();
                     BenoCE.Component.Keep = popkeep;
                     break;
@@ -317,7 +317,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BenoCM.Component = new GameKeepComponent();
                     BenoCM.Component.Keep = popkeep;
                     break;
@@ -338,7 +338,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     FensMF.Component = new GameKeepComponent();
                     FensMF.Component.Keep = popkeep;
                     break;
@@ -359,7 +359,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     ArvaGF.Component = new GameKeepComponent();
                     ArvaGF.Component.Keep = popkeep;
                     break;
@@ -380,7 +380,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     GlenGF.Component = new GameKeepComponent();
                     GlenGF.Component.Keep = popkeep;
                     break;
@@ -401,7 +401,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     GlenMF.Component = new GameKeepComponent();
                     GlenMF.Component.Keep = popkeep;
                     break;
@@ -422,7 +422,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BlendGF.Component = new GameKeepComponent();
                     BlendGF.Component.Keep = popkeep;
                     break;
@@ -443,7 +443,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BlendMF.Component = new GameKeepComponent();
                     BlendMF.Component.Keep = popkeep;
                     break;
@@ -464,7 +464,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     HlidGF.Component = new GameKeepComponent();
                     HlidGF.Component.Keep = popkeep;
                     break;
@@ -485,7 +485,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     HlidMF.Component = new GameKeepComponent();
                     HlidMF.Component.Keep = popkeep;
                     break;
@@ -506,7 +506,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     NottGF.Component = new GameKeepComponent();
                     NottGF.Component.Keep = popkeep;
                     break;
@@ -526,7 +526,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     NottMF.Component = new GameKeepComponent();
                     NottMF.Component.Keep = popkeep;
                     break;
@@ -547,7 +547,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BledGF.Component = new GameKeepComponent();
                     BledGF.Component.Keep = popkeep;
                     break;
@@ -568,7 +568,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BledMF.Component = new GameKeepComponent();
                     BledMF.Component.Keep = popkeep;
                     break;
@@ -589,7 +589,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     AiliDL.Component = new GameKeepComponent();
                     AiliDL.Component.Keep = popkeep;
                     break;
@@ -610,7 +610,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     ScatDL.Component = new GameKeepComponent();
                     ScatDL.Component.Keep = popkeep;
                     break;
@@ -631,7 +631,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     nGedDL.Component = new GameKeepComponent();
                     nGedDL.Component.Keep = popkeep;
                     break;
@@ -652,7 +652,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     nGedDD.Component = new GameKeepComponent();
                     nGedDD.Component.Keep = popkeep;
                     break;
@@ -673,7 +673,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BolgDL.Component = new GameKeepComponent();
                     BolgDL.Component.Keep = popkeep;
                     break;
@@ -694,7 +694,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BolgDD.Component = new GameKeepComponent();
                     BolgDD.Component.Keep = popkeep;
                     break;
@@ -715,7 +715,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BehnDL.Component = new GameKeepComponent();
                     BehnDL.Component.Keep = popkeep;
                     break;
@@ -736,7 +736,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     BehnDD.Component = new GameKeepComponent();
                     BehnDD.Component.Keep = popkeep;
                     break;
@@ -757,7 +757,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     CrimDL.Component = new GameKeepComponent();
                     CrimDL.Component.Keep = popkeep;
                     break;
@@ -778,7 +778,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     CrimDD.Component = new GameKeepComponent();
                     CrimDD.Component.Keep = popkeep;
                     break;
@@ -799,7 +799,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     CrauDL.Component = new GameKeepComponent();
                     CrauDL.Component.Keep = popkeep;
                     break;
@@ -820,7 +820,7 @@ namespace DOL.GS.GameEvents
             {
                 if (area is KeepArea)
                 {
-                    AbstractGameKeep popkeep = (area as KeepArea).Keep;
+                    AGameKeep popkeep = (area as KeepArea).Keep;
                     CrauDD.Component = new GameKeepComponent();
                     CrauDD.Component.Keep = popkeep;
                     break;
@@ -885,7 +885,7 @@ namespace DOL.GS.GameEvents
             log.Debug("midMaxGuards= " + midMaxGuards);
             log.Debug("hibMaxGuards= " + hibMaxGuards);
             //int Albguardpercentkeep = 0;
-            AbstractGameKeep keep = null;
+            AGameKeep keep = null;
             //foreach (AbstractGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
             //{
 

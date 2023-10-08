@@ -71,7 +71,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Stores claimed keeps (unique)
 		/// </summary>
-		protected List<AbstractGameKeep> m_claimedKeeps = new List<AbstractGameKeep>();
+		protected List<AGameKeep> m_claimedKeeps = new List<AGameKeep>();
 
 		public ERealm Realm
 		{
@@ -445,7 +445,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the guild claimed keep
 		/// </summary>
-		public List<AbstractGameKeep> ClaimedKeeps
+		public List<AGameKeep> ClaimedKeeps
 		{
 			get { return m_claimedKeeps; }
 			set { m_claimedKeeps = value; }

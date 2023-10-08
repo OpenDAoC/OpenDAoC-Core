@@ -1449,7 +1449,7 @@ namespace DOL.GS.ServerRules
 
 			if (player != null)
 			{
-				AbstractGameKeep keep =
+				AGameKeep keep =
 					GameServer.KeepManager.GetKeepCloseToSpot(living.CurrentRegionID, living, 16000);
 				if (keep != null)
 				{
@@ -1465,9 +1465,9 @@ namespace DOL.GS.ServerRules
 
 				//FIXME: [WARN] this is a guess, I do not know the real way this is applied
 				//apply the keep bonus for experience
-				if (Keeps.KeepBonusMgr.RealmHasBonus(eKeepBonusType.Experience_5, living.Realm))
+				if (Keeps.KeepBonusMgr.RealmHasBonus(EKeepBonusType.Experience_5, living.Realm))
 					outpostXP += (xpReward / 100) * 5;
-				else if (Keeps.KeepBonusMgr.RealmHasBonus(eKeepBonusType.Experience_3, living.Realm))
+				else if (Keeps.KeepBonusMgr.RealmHasBonus(EKeepBonusType.Experience_3, living.Realm))
 					outpostXP += (xpReward / 100) * 3;
 			}
 
@@ -1791,7 +1791,7 @@ namespace DOL.GS.ServerRules
 			bool BG = false;
 			if (!ServerProperties.Properties.ALLOW_BPS_IN_BGS)
 			{
-				foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(killedPlayer.CurrentRegionID))
+				foreach (AGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(killedPlayer.CurrentRegionID))
 				{
 					if (keep.DBKeep.BaseLevel < 50)
 					{
@@ -1957,9 +1957,9 @@ namespace DOL.GS.ServerRules
 				//apply the keep bonus for bounty points
 				if (killer != null)
 				{
-					if (Keeps.KeepBonusMgr.RealmHasBonus(eKeepBonusType.Bounty_Points_5, (ERealm)killer.Realm))
+					if (Keeps.KeepBonusMgr.RealmHasBonus(EKeepBonusType.Bounty_Points_5, (ERealm)killer.Realm))
 						bountyPoints += (bountyPoints / 100) * 5;
-					else if (Keeps.KeepBonusMgr.RealmHasBonus(eKeepBonusType.Bounty_Points_3, (ERealm)killer.Realm))
+					else if (Keeps.KeepBonusMgr.RealmHasBonus(EKeepBonusType.Bounty_Points_3, (ERealm)killer.Realm))
 						bountyPoints += (bountyPoints / 100) * 3;
 				}
 
@@ -2004,7 +2004,7 @@ namespace DOL.GS.ServerRules
 
 				if (!BG && living is GamePlayer)
 				{
-					AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(living.CurrentRegionID, living, 16000);
+					AGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(living.CurrentRegionID, living, 16000);
 					if (keep != null)
 					{
 						byte bonus = 0;
@@ -2517,12 +2517,12 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		public virtual long GetExperienceForKeep(AbstractGameKeep keep)
+		public virtual long GetExperienceForKeep(AGameKeep keep)
 		{
 			return 0;
 		}
 
-		public virtual double GetExperienceCapForKeep(AbstractGameKeep keep)
+		public virtual double GetExperienceCapForKeep(AGameKeep keep)
 		{
 			return 1.0;
 		}
@@ -2532,7 +2532,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		public virtual int GetRealmPointsForKeep(AbstractGameKeep keep)
+		public virtual int GetRealmPointsForKeep(AGameKeep keep)
 		{
 			int value = 0;
 			
@@ -2551,7 +2551,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		public virtual int GetBountyPointsForKeep(AbstractGameKeep keep)
+		public virtual int GetBountyPointsForKeep(AGameKeep keep)
 		{
 			return 0;
 		}
@@ -2562,7 +2562,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		public virtual long GetMoneyValueForKeep(AbstractGameKeep keep)
+		public virtual long GetMoneyValueForKeep(AGameKeep keep)
 		{
 			return 0;
 		}

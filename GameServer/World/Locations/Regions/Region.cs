@@ -577,7 +577,7 @@ namespace DOL.GS
         /// Create a keep for this region
         /// </summary>
         /// <returns></returns>
-        public virtual AbstractGameKeep CreateGameKeep()
+        public virtual AGameKeep CreateGameKeep()
         {
             return new GameKeep();
         }
@@ -586,7 +586,7 @@ namespace DOL.GS
         /// Create a new Relic keep for this region
         /// </summary>
         /// <returns></returns>
-        public virtual AbstractGameKeep CreateRelicGameKeep()
+        public virtual AGameKeep CreateRelicGameKeep()
         {
             return new RelicGameKeep();
         }
@@ -595,7 +595,7 @@ namespace DOL.GS
         /// Create the appropriate GameKeepTower for this region
         /// </summary>
         /// <returns></returns>
-        public virtual AbstractGameKeep CreateGameKeepTower()
+        public virtual AGameKeep CreateGameKeepTower()
         {
             return new GameKeepTower();
         }

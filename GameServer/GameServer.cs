@@ -92,7 +92,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the instance of the current keep manager
 		/// </summary>
-		protected IKeepManager m_keepManager;
+		protected IKeepMgr m_keepManager;
 
 		/// <summary>
 		/// Holds the startSystemTick when server is up.
@@ -206,7 +206,7 @@ namespace DOL.GS
 		/// </summary>
 		public static IServerRules ServerRules => m_instance.ServerRulesImpl;
 
-		public static IKeepManager KeepManager
+		public static IKeepMgr KeepManager
 		{
 			get
 			{
@@ -1090,7 +1090,7 @@ namespace DOL.GS
 			{
 				try
 				{
-					IKeepManager manager = Activator.CreateInstance(keepManager, null) as IKeepManager;
+					IKeepMgr manager = Activator.CreateInstance(keepManager, null) as IKeepMgr;
 
 					if (log.IsInfoEnabled)
 						log.Info("Found KeepManager " + manager.GetType().FullName);
@@ -1106,7 +1106,7 @@ namespace DOL.GS
 
 			if (m_keepManager == null)
 			{
-				m_keepManager = new DefaultKeepManager();
+				m_keepManager = new KeepMgr();
 
 				if (m_keepManager != null)
 				{

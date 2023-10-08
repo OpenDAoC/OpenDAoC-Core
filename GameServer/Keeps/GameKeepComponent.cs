@@ -11,9 +11,6 @@ using log4net;
 namespace DOL.GS.Keeps
 {
 	//TODO : find all skin of keep door to load it from here
-	/// <summary>
-	/// A keepComponent
-	/// </summary>
 	public class GameKeepComponent : GameLiving, IComparable, IGameKeepComponent
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -51,13 +48,13 @@ namespace DOL.GS.Keeps
 
 		#region properties
 		[Obsolete("Use Keep instead")]
-		public AbstractGameKeep AbstractKeep
+		public AGameKeep AbstractKeep
 		{
 			get { return Keep; }
 			set { Keep = value; }
 		}
 
-		public AbstractGameKeep Keep { get; set; }
+		public AGameKeep Keep { get; set; }
 
 		public override EGameObjectType GameObjectType => EGameObjectType.KEEP_COMPONENT;
 
@@ -178,7 +175,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// load component from db object
 		/// </summary>
-		public virtual void LoadFromDatabase(DbKeepComponent component, AbstractGameKeep keep)
+		public virtual void LoadFromDatabase(DbKeepComponent component, AGameKeep keep)
 		{
 			Region myregion = WorldMgr.GetRegion((ushort)keep.Region);
 			if (myregion == null)
@@ -284,10 +281,10 @@ namespace DOL.GS.Keeps
 									create = true;
 								break;
 							case "DOL.GS.Keeps.Patrol":
-								if ((position.KeepType == (int)AbstractGameKeep.eKeepType.Any || position.KeepType == (int)Keep.KeepType)
+								if ((position.KeepType == (int)AGameKeep.eKeepType.Any || position.KeepType == (int)Keep.KeepType)
 									&& Keep.Patrols.ContainsKey(sKey) == false)
 								{
-									Patrol p = new Patrol(this);
+									KeepGuardPatrol p = new KeepGuardPatrol(this);
 									p.SpawnPosition = position;
 									p.PatrolID = position.TemplateID;
 									p.InitialiseGuards();
