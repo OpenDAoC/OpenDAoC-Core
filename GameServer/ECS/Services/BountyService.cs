@@ -6,7 +6,7 @@ namespace DOL.GS
     {
         private const string SERVICE_NAME = "BountyService";
 
-        private static BountyManager BountyManager = new();
+        private static BountyMgr BountyManager = new();
 
         // private static long _updateInterval = 10000; // 10secs
         private static long _updateInterval = ServerProperties.Properties.BOUNTY_CHECK_INTERVAL * 1000;
@@ -21,7 +21,7 @@ namespace DOL.GS
             if (tick - _lastUpdate > _updateInterval)
             {
                 _lastUpdate = tick;
-                BountyManager.CheckExpiringBounty(tick);
+                BountyMgr.CheckExpiringBounty(tick);
             }
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);

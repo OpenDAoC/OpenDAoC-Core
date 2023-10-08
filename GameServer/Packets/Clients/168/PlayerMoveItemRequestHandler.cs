@@ -108,7 +108,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					// if a player to a GM and item is not dropable then don't allow trade???? This seems wrong.
 					if (client.Account.PrivLevel == (uint)EPrivLevel.Player && tradeTarget != null && tradeTarget.Client.Account.PrivLevel != (uint)EPrivLevel.Player)
 					{
-						if (!item.IsDropable && !(obj is GameNPC && (obj is Blacksmith || obj is Recharger || (obj as GameNPC).CanTradeAnyItem)))
+						if (!item.IsDropable && !(obj is GameNPC && (obj is Blacksmith || obj is RechargerNpc || (obj as GameNPC).CanTradeAnyItem)))
 						{
 							client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });
 							client.Out.SendMessage("You can not remove this item!", EChatType.CT_System, EChatLoc.CL_SystemWindow);

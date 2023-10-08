@@ -1,0 +1,360 @@
+using System;
+using System.Reflection;
+using DOL.Database;
+using DOL.Events;
+using DOL.GS.PacketHandler;
+using DOL.GS.Quests;
+using log4net;
+
+namespace DOL.GS.DailyQuest.Hibernia
+{
+	public class DailyCaptureKeepLvl50HibQuest : Quests.DailyQuest
+	{
+		/// <summary>
+		/// Defines a logger for this class.
+		/// </summary>
+		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+		private const string questTitle = "[Daily] Frontier Conquerer";
+		private const int minimumLevel = 50;
+		private const int maximumLevel = 50;
+
+		// Capture Goal
+		private const int MAX_CAPTURED = 1;
+		
+		private static GameNPC Cola = null; // Start NPC
+
+		private int _isCaptured = 0;
+
+		// Constructors
+		public DailyCaptureKeepLvl50HibQuest() : base()
+		{
+		}
+
+		public DailyCaptureKeepLvl50HibQuest(GamePlayer questingPlayer) : base(questingPlayer, 1)
+		{
+		}
+
+		public DailyCaptureKeepLvl50HibQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		{
+		}
+
+		public DailyCaptureKeepLvl50HibQuest(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
+		{
+		}
+		
+		public override int Level
+		{
+			get
+			{
+				// Quest Level
+				return minimumLevel;
+			}
+		}
+
+		[ScriptLoadedEvent]
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
+		{
+			if (!ServerProperties.Properties.LOAD_QUESTS)
+				return;
+			
+
+			#region defineNPCs
+
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", ERealm.Hibernia);
+
+			if (npcs.Length > 0)
+				foreach (GameNPC npc in npcs)
+					if (npc.CurrentRegionID == 200 && npc.X == 334793 && npc.Y == 420805)
+					{
+						Cola = npc;
+						break;
+					}
+
+			if (Cola == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Cola , creating it ...");
+				Cola = new GameNPC();
+				Cola.Model = 583;
+				Cola.Name = "Cola";
+				Cola.GuildName = "Realm Logistics";
+				Cola.Realm = ERealm.Hibernia;
+				//Druim Ligen Location
+				Cola.CurrentRegionID = 200;
+				Cola.Size = 50;
+				Cola.Level = 59;
+				Cola.X = 334793;
+				Cola.Y = 420805;
+				Cola.Z = 5184;
+				Cola.Heading = 1586;
+				Cola.AddToWorld();
+				if (SAVE_INTO_DATABASE)
+				{
+					Cola.SaveIntoDatabase();
+				}
+			}
+
+			#endregion
+
+			#region defineItems
+			#endregion
+
+			#region defineObject
+			#endregion
+
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
+
+			GameEventMgr.AddHandler(Cola, GameObjectEvent.Interact, new CoreEventHandler(TalkToCola));
+			GameEventMgr.AddHandler(Cola, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToCola));
+
+			/* Now we bring to Cola the possibility to give this quest to players */
+			Cola.AddQuestToGive(typeof (DailyCaptureKeepLvl50HibQuest));
+
+			if (log.IsInfoEnabled)
+				log.Info("Quest \"" + questTitle + "\" initialized");
+		}
+
+		[ScriptUnloadedEvent]
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
+		{
+			//if not loaded, don't worry
+			if (Cola == null)
+				return;
+			// remove handlers
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
+
+			GameEventMgr.RemoveHandler(Cola, GameObjectEvent.Interact, new CoreEventHandler(TalkToCola));
+			GameEventMgr.RemoveHandler(Cola, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToCola));
+
+			/* Now we remove to Cola the possibility to give this quest to players */
+			Cola.RemoveQuestToGive(typeof (DailyCaptureKeepLvl50HibQuest));
+		}
+
+		private static void TalkToCola(CoreEvent e, object sender, EventArgs args)
+		{
+			//We get the player from the event arguments and check if he qualifies		
+			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+			if (player == null)
+				return;
+
+			if(Cola.CanGiveQuest(typeof (DailyCaptureKeepLvl50HibQuest), player)  <= 0)
+				return;
+
+			//We also check if the player is already doing the quest
+			DailyCaptureKeepLvl50HibQuest quest = player.IsDoingQuest(typeof (DailyCaptureKeepLvl50HibQuest)) as DailyCaptureKeepLvl50HibQuest;
+
+			if (e == GameObjectEvent.Interact)
+			{
+				if (quest != null)
+				{
+					switch (quest.Step)
+					{
+						case 1:
+							Cola.SayTo(player, "Find an enemy occupied keep and capture it. If you succeed come back for your reward.");
+							break;
+						case 2:
+							Cola.SayTo(player, "Hello " + player.Name + ", did you [capture] a keep?");
+							break;
+					}
+				}
+				else
+				{
+					Cola.SayTo(player, "Hello "+ player.Name +", I am Cola. I serve the realm and its interests. \n"+
+					                     "Our armies will be pushing the frontier border soon, and I need your assistance in [securing a foothold] for them.");
+				}
+			}
+				// The player whispered to the NPC
+			else if (e == GameLivingEvent.WhisperReceive)
+			{
+				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+				if (quest == null)
+				{
+					switch (wArgs.Text)
+					{
+						case "securing a foothold":
+							player.Out.SendQuestSubscribeCommand(Cola, QuestMgr.GetIDForQuestType(typeof(DailyCaptureKeepLvl50HibQuest)), "Will you help Cola "+questTitle+"");
+							break;
+					}
+				}
+				else
+				{
+					switch (wArgs.Text)
+					{
+						case "capture":
+							if (quest.Step == 2)
+							{
+								player.Out.SendMessage("Thank you for your contribution!", EChatType.CT_Chat, EChatLoc.CL_PopupWindow);
+								quest.FinishQuest();
+							}
+							break;
+						case "abort":
+							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
+							break;
+					}
+				}
+			}
+		}
+		
+		public override bool CheckQuestQualification(GamePlayer player)
+		{
+			// if the player is already doing the quest his level is no longer of relevance
+			if (player.IsDoingQuest(typeof (DailyCaptureKeepLvl50HibQuest)) != null)
+				return true;
+
+			// This checks below are only performed is player isn't doing quest already
+
+			//if (player.HasFinishedQuest(typeof(Academy_47)) == 0) return false;
+
+			//if (!CheckPartAccessible(player,typeof(CityOfCamelot)))
+			//	return false;
+
+			if (player.Level < minimumLevel || player.Level > maximumLevel)
+				return false;
+
+			return true;
+		}
+
+		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+		{
+			DailyCaptureKeepLvl50HibQuest quest = player.IsDoingQuest(typeof (DailyCaptureKeepLvl50HibQuest)) as DailyCaptureKeepLvl50HibQuest;
+
+			if (quest == null)
+				return;
+
+			if (response == 0x00)
+			{
+				SendSystemMessage(player, "Good, now go out there and find us a keep.");
+			}
+			else
+			{
+				SendSystemMessage(player, "Aborting Quest " + questTitle + ". You can start over again if you want.");
+				quest.AbortQuest();
+			}
+		}
+
+		private static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
+		{
+			QuestEventArgs qargs = args as QuestEventArgs;
+			if (qargs == null)
+				return;
+
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(DailyCaptureKeepLvl50HibQuest)))
+				return;
+
+			if (e == GamePlayerEvent.AcceptQuest)
+				CheckPlayerAcceptQuest(qargs.Player, 0x01);
+			else if (e == GamePlayerEvent.DeclineQuest)
+				CheckPlayerAcceptQuest(qargs.Player, 0x00);
+		}
+
+		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
+		{
+			if(Cola.CanGiveQuest(typeof (DailyCaptureKeepLvl50HibQuest), player)  <= 0)
+				return;
+
+			if (player.IsDoingQuest(typeof (DailyCaptureKeepLvl50HibQuest)) != null)
+				return;
+
+			if (response == 0x00)
+			{
+				player.Out.SendMessage("Thank you for helping Hibernia.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+			}
+			else
+			{
+				//Check if we can add the quest!
+				if (!Cola.GiveQuest(typeof (DailyCaptureKeepLvl50HibQuest), player, 1))
+					return;
+
+				Cola.SayTo(player, "Thank you "+player.Name+", you are a true soldier of Hibernia!");
+
+			}
+		}
+
+		//Set quest name
+		public override string Name
+		{
+			get { return questTitle; }
+		}
+
+		// Define Steps
+		public override string Description
+		{
+			get
+			{
+				switch (Step)
+				{
+					case 1:
+						return "Go to the battlefield and conquer a keep. \nCaptured: Keep ("+ _isCaptured +" | 1)";
+					case 2:
+						return "Return to Cola for your Reward.";
+				}
+				return base.Description;
+			}
+		}
+
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
+		{
+			GamePlayer player = sender as GamePlayer;
+
+			if (player?.IsDoingQuest(typeof(DailyCaptureKeepLvl50HibQuest)) == null)
+				return;
+			
+			if (sender != m_questPlayer)
+				return;
+
+			if (Step != 1 || e != GamePlayerEvent.CapturedKeepsChanged) return;
+			_isCaptured = 1;
+			player.Out.SendMessage("[Daily] Captured Keep: ("+_isCaptured+" | "+MAX_CAPTURED+")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
+			player.Out.SendQuestUpdate(this);
+					
+			if (_isCaptured >= MAX_CAPTURED)
+			{
+				// FinishQuest or go back to Dean
+				Step = 2;
+			}
+
+		}
+		
+		public override string QuestPropertyKey
+		{
+			get => "CaptureKeepQuestHib";
+			set { ; }
+		}
+		public override void LoadQuestParameters()
+		{
+			
+		}
+
+		public override void SaveQuestParameters()
+		{
+			
+		}
+
+		public override void AbortQuest()
+		{
+			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+		}
+
+		public override void FinishQuest()
+		{
+			int reward = ServerProperties.Properties.DAILY_RVR_REWARD;
+			
+			m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5);
+			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,m_questPlayer.Level*2,0,Util.Random(50)), "You receive {0} as a reward.");
+			CoreRoGMgr.GenerateReward(m_questPlayer, 250);
+			CoreRoGMgr.GenerateJewel(m_questPlayer, (byte)(m_questPlayer.Level + 1), m_questPlayer.Level + Util.Random(5, 11));
+			_isCaptured = 0;
+
+			if (reward > 0)
+			{
+				m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Daily Quest.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+				m_questPlayer.GainRealmPoints(reward, false);
+				m_questPlayer.Out.SendUpdatePlayer();
+			}
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+		}
+	}
+}

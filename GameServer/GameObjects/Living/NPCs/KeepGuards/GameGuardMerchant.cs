@@ -729,7 +729,7 @@ namespace DOL.GS
 			return false;
 		}
 	}
-	public class GameAtlasGuardMerchant : GameItemCurrencyGuardMerchant
+	public class GameServerGuardMerchant : GameItemCurrencyGuardMerchant
 	{
 		//Atlas Orbs itemtemplate = token_many
 		public override string MoneyKey { get; } = ServerProperties.Properties.ALT_CURRENCY_ID; // remember to set this in server properties

@@ -7125,9 +7125,9 @@ namespace DOL.GS
 
             IsSwimming = false;
 
-            if (PredatorManager.PlayerIsActive(this))
+            if (PredatorMgr.PlayerIsActive(this))
             {
-                PredatorManager.RemoveActivePlayer(this);
+                PredatorMgr.RemoveActivePlayer(this);
             }
 
             if (HCFlag)
@@ -12006,16 +12006,16 @@ namespace DOL.GS
                     if (quest is Quests.MonthlyQuest mq)
                         mq.SaveQuestParameters();
 
-                    if (quest is LaunchQuestAlb lqa)
+                    if (quest is LaunchLvl1QuestAlb lqa)
                         lqa.SaveQuestParameters();
 
-                    if (quest is LaunchQuestHib lqh)
+                    if (quest is LaunchLvl1HibQuest lqh)
                         lqh.SaveQuestParameters();
 
-                    if (quest is LaunchQuestMid lqm)
+                    if (quest is LaunchLvl1MidQuest lqm)
                         lqm.SaveQuestParameters();
 
-                    if (quest is Quests.AtlasQuest aq)
+                    if (quest is Quests.CoreQuest aq)
                         aq.SaveQuestParameters();
                 }
 
@@ -12632,16 +12632,16 @@ namespace DOL.GS
                 if (quest is Quests.MonthlyQuest mq)
                     mq.LoadQuestParameters();
 
-                if (quest is LaunchQuestAlb lqa)
+                if (quest is LaunchLvl1QuestAlb lqa)
                     lqa.LoadQuestParameters();
 
-                if (quest is LaunchQuestHib lqh)
+                if (quest is LaunchLvl1HibQuest lqh)
                     lqh.LoadQuestParameters();
 
-                if (quest is LaunchQuestMid lqm)
+                if (quest is LaunchLvl1MidQuest lqm)
                     lqm.LoadQuestParameters();
 
-                if (quest is Quests.AtlasQuest aq)
+                if (quest is Quests.CoreQuest aq)
                     aq.LoadQuestParameters();
             }
 

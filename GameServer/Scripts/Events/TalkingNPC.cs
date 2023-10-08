@@ -1,31 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-/*
- * Author:	SmallHorse
- * Date:	15.10.2003
- * This is a really simple example of game events
- * This script creates a NPC that stands around and
- * talks to you if you rightclick on it. This
- * demonstrates a way you can use to make npcs talk
- * to players.
- */
-
 using System;
 using System.Reflection;
 using DOL.Events;
@@ -35,7 +7,7 @@ using log4net;
 namespace DOL.GS.GameEvents
 {
 	//First, declare our Event and have it implement the IGameEvent interface
-	public class TalkingNPCEvent
+	public class TalkingNpcEvent
 	{
 		/// <summary>
 		/// Defines a logger for this class.

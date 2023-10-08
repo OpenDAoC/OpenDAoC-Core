@@ -1843,9 +1843,9 @@ namespace DOL.GS.ServerRules
 						ConquestService.ConquestManager.AddContributor(lp);
 				}
 
-				if (PredatorManager.PlayerIsActive(killedPlayer))
+				if (PredatorMgr.PlayerIsActive(killedPlayer))
 				{
-					var reward = PredatorManager.CheckForPredatorEffort(killedPlayer, expGainPlayer);
+					var reward = PredatorMgr.CheckForPredatorEffort(killedPlayer, expGainPlayer);
 					if (reward > 0)
 					{
 						killedPlayer.Out.SendMessage($"Your hunt fails, but your prey did not escape unharmed.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);

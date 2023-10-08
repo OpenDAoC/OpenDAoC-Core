@@ -5,7 +5,6 @@ namespace DOL.GS {
     {
         private GamePlayer m_displayedPlayer;
         
-        
         public DisplayModel(GamePlayer player, DbInventoryItem item)
         {
             m_displayedPlayer = player;

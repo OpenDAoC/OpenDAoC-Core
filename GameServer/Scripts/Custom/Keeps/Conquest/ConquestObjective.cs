@@ -13,10 +13,10 @@ public class ConquestObjective
 
     private int _realmPointTickAward = ServerProperties.Properties.SUBTICK_RP_AWARD;
 
-    public SubObjective ObjectiveOne;
-    public SubObjective ObjectiveTwo;
-    public SubObjective ObjectiveThree;
-    public SubObjective ObjectiveFour;
+    public ConquestSubObjective ObjectiveOne;
+    public ConquestSubObjective ObjectiveTwo;
+    public ConquestSubObjective ObjectiveThree;
+    public ConquestSubObjective ObjectiveFour;
 
     public bool ActiveFlags => ObjectiveOne != null && ObjectiveTwo != null && ObjectiveThree != null && ObjectiveFour != null;
 
@@ -35,10 +35,10 @@ public class ConquestObjective
     private void InitializeFlags(AGameKeep keep)
     {
         var locs = GetFlagLocsForKeep(keep);
-        ObjectiveOne = new SubObjective(locs[0].X, locs[0].Y, locs[0].Z, keep, 1);
-        ObjectiveTwo = new SubObjective(locs[1].X, locs[1].Y, locs[1].Z, keep, 2);
-        ObjectiveThree = new SubObjective(locs[2].X, locs[2].Y, locs[2].Z, keep, 3);
-        ObjectiveFour = new SubObjective(locs[3].X, locs[3].Y, locs[3].Z, keep, 4);
+        ObjectiveOne = new ConquestSubObjective(locs[0].X, locs[0].Y, locs[0].Z, keep, 1);
+        ObjectiveTwo = new ConquestSubObjective(locs[1].X, locs[1].Y, locs[1].Z, keep, 2);
+        ObjectiveThree = new ConquestSubObjective(locs[2].X, locs[2].Y, locs[2].Z, keep, 3);
+        ObjectiveFour = new ConquestSubObjective(locs[3].X, locs[3].Y, locs[3].Z, keep, 4);
     }
 
     private List<Point3D> GetFlagLocsForKeep(AGameKeep keep)
@@ -301,7 +301,7 @@ public class ConquestObjective
         ObjectiveFour?.CheckNearbyPlayers();
     }
 
-    public SubObjective GetObjective(int objectiveNumber)
+    public ConquestSubObjective GetObjective(int objectiveNumber)
     {
         switch (objectiveNumber)
         {

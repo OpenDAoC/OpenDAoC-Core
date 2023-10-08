@@ -238,7 +238,7 @@ namespace DOL.GS.Spells
                         isCharmable = false;
                     if (charmMob is Enchanter) // Item enchanter NPCs
                         isCharmable = false;
-                    if (charmMob is Recharger) // Item recharge NPCs
+                    if (charmMob is RechargerNpc) // Item recharge NPCs
                         isCharmable = false;
                     if (charmMob is GameEpicBoss or GameEpicNPC) // Any epic mobs or bosses
                         isCharmable = false;
