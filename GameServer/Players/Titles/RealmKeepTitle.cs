@@ -28,7 +28,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class FrontierChallengerTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.CapturedKeepsChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.CapturedKeepsChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Claim.Frontier.FrontierChallenger", "Titles.Claim.Frontier.FrontierChallenger"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.CapturedKeeps >= 10 && player.CapturedKeeps < 50; }}
 	}
@@ -37,7 +37,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class FrontierVindicatorTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.CapturedKeepsChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.CapturedKeepsChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Claim.Frontier.FrontierVindicator", "Titles.Claim.Frontier.FrontierVindicator"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.CapturedKeeps >= 50 && player.CapturedKeeps < 500; }}
 	}
@@ -46,7 +46,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class FrontierProtectorTitle : NoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.CapturedKeepsChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.CapturedKeepsChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Frontier Protector", "Frontier Protector"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.CapturedKeeps >= 500; }}
 	}
@@ -57,7 +57,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class StrongholdSoldierTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.CapturedTowersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.CapturedTowersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Claim.Stronghold.StrongholdSoldier", "Titles.Claim.Stronghold.StrongholdSoldier"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.CapturedTowers >= 100 && player.CapturedTowers < 1000; }}
 	}
@@ -66,7 +66,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class StrongholdChiefTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.CapturedTowersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.CapturedTowersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Claim.Stronghold.StrongholdChief", "Titles.Claim.Stronghold.StrongholdChief"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.CapturedTowers >= 1000; }}
 	}

@@ -340,7 +340,7 @@ namespace DOL.GS.Quests
 			return regions[Util.Random(0, regions.Length - 1)];
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			if (e != GameLivingEvent.EnemyKilled)
 				return;

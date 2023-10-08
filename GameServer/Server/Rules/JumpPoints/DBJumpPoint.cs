@@ -145,7 +145,7 @@ namespace DOL.Database
         }        
 
         [ScriptLoadedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
         {           
         	GameServer.Database.RegisterDataObject(typeof (DBJumpPoint));                
                                

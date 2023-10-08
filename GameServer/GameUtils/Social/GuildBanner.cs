@@ -141,25 +141,25 @@ namespace DOL.GS
 
         protected virtual void AddHandlers()
         {
-			GameEventMgr.AddHandler(m_player, GamePlayerEvent.LeaveGroup, new DOLEventHandler(PlayerLoseBanner));
-			GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLoseBanner));
-            GameEventMgr.AddHandler(m_player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(PlayerLoseBanner));
-            GameEventMgr.AddHandler(m_player, GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerLoseBanner));
-			GameEventMgr.AddHandler(m_player, GamePlayerEvent.RegionChanging, new DOLEventHandler(PlayerLoseBanner));
-			GameEventMgr.AddHandler(m_player, GamePlayerEvent.Dying, new DOLEventHandler(PlayerDied));
+			GameEventMgr.AddHandler(m_player, GamePlayerEvent.LeaveGroup, new CoreEventHandler(PlayerLoseBanner));
+			GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLoseBanner));
+            GameEventMgr.AddHandler(m_player, GamePlayerEvent.StealthStateChanged, new CoreEventHandler(PlayerLoseBanner));
+            GameEventMgr.AddHandler(m_player, GamePlayerEvent.Linkdeath, new CoreEventHandler(PlayerLoseBanner));
+			GameEventMgr.AddHandler(m_player, GamePlayerEvent.RegionChanging, new CoreEventHandler(PlayerLoseBanner));
+			GameEventMgr.AddHandler(m_player, GamePlayerEvent.Dying, new CoreEventHandler(PlayerDied));
         }
 
 		protected virtual void RemoveHandlers()
 		{
-			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.LeaveGroup, new DOLEventHandler(PlayerLoseBanner));
-			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLoseBanner));
-			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(PlayerLoseBanner));
-			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerLoseBanner));
-			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.RegionChanging, new DOLEventHandler(PlayerLoseBanner));
-			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Dying, new DOLEventHandler(PlayerDied));
+			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.LeaveGroup, new CoreEventHandler(PlayerLoseBanner));
+			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLoseBanner));
+			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.StealthStateChanged, new CoreEventHandler(PlayerLoseBanner));
+			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Linkdeath, new CoreEventHandler(PlayerLoseBanner));
+			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.RegionChanging, new CoreEventHandler(PlayerLoseBanner));
+			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Dying, new CoreEventHandler(PlayerDied));
 		}
 
-		protected void PlayerLoseBanner(DOLEvent e, object sender, EventArgs args)
+		protected void PlayerLoseBanner(CoreEvent e, object sender, EventArgs args)
         {
 			Stop();
 			m_player.GuildBanner = null;
@@ -167,7 +167,7 @@ namespace DOL.GS
 			m_player = null;
         }
 
-        protected void PlayerDied(DOLEvent e, object sender, EventArgs args)
+        protected void PlayerDied(CoreEvent e, object sender, EventArgs args)
         {
             DyingEventArgs arg = args as DyingEventArgs;
             if (arg == null) return;

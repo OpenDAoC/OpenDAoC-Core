@@ -12,7 +12,7 @@ namespace DOL.GS.Commands
     public class SummonMerchantCommand : ACommandHandler, ICommandHandler
     {
         [ScriptLoadedEvent]
-        public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             Spell load;
             load = MerchantSpell;

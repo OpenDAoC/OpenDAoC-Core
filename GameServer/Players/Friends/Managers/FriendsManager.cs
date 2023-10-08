@@ -313,7 +313,7 @@ namespace DOL.GS.Friends
 		/// <summary>
 		/// Trigger Player Friend List Update on World Enter
 		/// </summary>
-		private void OnClientStateChanged(DOLEvent e, object sender, EventArgs arguments)
+		private void OnClientStateChanged(CoreEvent e, object sender, EventArgs arguments)
 		{
 			var client = sender as GameClient;
 			if (client == null)
@@ -330,7 +330,7 @@ namespace DOL.GS.Friends
 		/// <summary>
 		/// Trigger Player's Friends Notice on Game Enter
 		/// </summary>
-		private void OnPlayerGameEntered(DOLEvent e, object sender, EventArgs arguments)
+		private void OnPlayerGameEntered(CoreEvent e, object sender, EventArgs arguments)
 		{
 			var player = sender as GamePlayer;
 			if (player == null)
@@ -343,7 +343,7 @@ namespace DOL.GS.Friends
 		/// <summary>
 		/// Trigger Player's Friends Notice on Game Leave, And Cleanup Player Friend List
 		/// </summary>
-		private void OnPlayerQuit(DOLEvent e, object sender, EventArgs arguments)
+		private void OnPlayerQuit(CoreEvent e, object sender, EventArgs arguments)
 		{
 			var player = sender as GamePlayer;
 			if (player == null)
@@ -357,7 +357,7 @@ namespace DOL.GS.Friends
 		/// <summary>
 		/// Trigger Player's Friends Notice on Anonymous State Change
 		/// </summary>
-		private void OnPlayerChangeAnonymous(DOLEvent e, object sender, EventArgs arguments)
+		private void OnPlayerChangeAnonymous(CoreEvent e, object sender, EventArgs arguments)
 		{
 			var player = sender as GamePlayer;
 			if (player == null)

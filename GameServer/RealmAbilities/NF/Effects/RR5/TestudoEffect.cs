@@ -32,8 +32,8 @@ namespace DOL.GS.Effects
 			}
 
 			target.attackComponent.StopAttack();
-			GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-			GameEventMgr.AddHandler(target, GameLivingEvent.AttackFinished, new DOLEventHandler(attackEventHandler));
+			GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
+			GameEventMgr.AddHandler(target, GameLivingEvent.AttackFinished, new CoreEventHandler(attackEventHandler));
 			if (player != null)
 			{
 				player.Out.SendUpdateMaxSpeed();
@@ -44,7 +44,7 @@ namespace DOL.GS.Effects
 			}
 		}
 
-		private void OnAttack(DOLEvent e, object sender, EventArgs arguments)
+		private void OnAttack(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GameLiving living = sender as GameLiving;
 			if (living == null) return;
@@ -80,7 +80,7 @@ namespace DOL.GS.Effects
 
 		}
 
-		protected void attackEventHandler(DOLEvent e, object sender, EventArgs args)
+		protected void attackEventHandler(CoreEvent e, object sender, EventArgs args)
 		{
 			if (args == null) return;
 			AttackFinishedEventArgs ag = args as AttackFinishedEventArgs;
@@ -102,8 +102,8 @@ namespace DOL.GS.Effects
 
 		public override void Stop()
 		{
-			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackFinished, new DOLEventHandler(attackEventHandler));
+			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
+			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackFinished, new CoreEventHandler(attackEventHandler));
 			base.Stop();
 			GamePlayer player = owner as GamePlayer;
 			if (player != null)

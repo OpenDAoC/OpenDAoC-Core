@@ -340,14 +340,14 @@ namespace DOL.GS.GameEvents
             if (HANDLERS_LOADED == false)
             {
                 HANDLERS_LOADED = true;
-                GameEventMgr.AddHandler(GameLivingEvent.GainedRealmPoints, new DOLEventHandler(GainedRealmPointsCallback));
-                GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(DyingCallback));
-                GameEventMgr.AddHandler(GameLivingEvent.CastFinished, new DOLEventHandler(FinishCastSpellCallback));
-                GameEventMgr.AddHandler(GameLivingEvent.HealthChanged, new DOLEventHandler(HealthChangedCallback));
+                GameEventMgr.AddHandler(GameLivingEvent.GainedRealmPoints, new CoreEventHandler(GainedRealmPointsCallback));
+                GameEventMgr.AddHandler(GameLivingEvent.Dying, new CoreEventHandler(DyingCallback));
+                GameEventMgr.AddHandler(GameLivingEvent.CastFinished, new CoreEventHandler(FinishCastSpellCallback));
+                GameEventMgr.AddHandler(GameLivingEvent.HealthChanged, new CoreEventHandler(HealthChangedCallback));
             }
         }
 
-        public static void GainedRealmPointsCallback(DOLEvent e, object sender, EventArgs args)
+        public static void GainedRealmPointsCallback(CoreEvent e, object sender, EventArgs args)
         {
             if (sender is not GamePlayer player || args is not GainedRealmPointsEventArgs gargs)
                 return;
@@ -358,7 +358,7 @@ namespace DOL.GS.GameEvents
             stats.TotalRP += (uint) gargs.RealmPoints;
         }
 
-        public static void DyingCallback(DOLEvent e, object sender, EventArgs args)
+        public static void DyingCallback(CoreEvent e, object sender, EventArgs args)
         {
             if (sender is not GamePlayer dyingPlayer || args is not DyingEventArgs dargs)
                 return;
@@ -395,7 +395,7 @@ namespace DOL.GS.GameEvents
             dyingPlayerStats.Deaths++;
         }
 
-        public static void FinishCastSpellCallback(DOLEvent e, object sender, EventArgs args)
+        public static void FinishCastSpellCallback(CoreEvent e, object sender, EventArgs args)
         {
             if (sender is not GamePlayer caster || args is not CastingEventArgs fargs)
                 return;
@@ -407,7 +407,7 @@ namespace DOL.GS.GameEvents
             }
         }
 
-        public static void HealthChangedCallback(DOLEvent e, object sender, EventArgs args)
+        public static void HealthChangedCallback(CoreEvent e, object sender, EventArgs args)
         {
             HealthChangedEventArgs hargs = args as HealthChangedEventArgs;
 

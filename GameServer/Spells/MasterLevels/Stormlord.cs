@@ -449,7 +449,7 @@ namespace DOL.GS.Spells
                 GameStorm targetStorm = effect.Owner as GameStorm;
                 targetStorm.Movable = false;
                 MessageToCaster("Now the vortex of this storm is locked!", eChatType.CT_YouWereHit);
-                GameEventMgr.AddHandler(m_caster, GameLivingEvent.Moving, new DOLEventHandler(LivingMoves));
+                GameEventMgr.AddHandler(m_caster, GameLivingEvent.Moving, new CoreEventHandler(LivingMoves));
             }
         }
 
@@ -459,12 +459,12 @@ namespace DOL.GS.Spells
             {
                 GameStorm targetStorm = effect.Owner as GameStorm;
                 targetStorm.Movable = true;
-                GameEventMgr.RemoveHandler(m_caster, GameLivingEvent.Moving, new DOLEventHandler(LivingMoves));
+                GameEventMgr.RemoveHandler(m_caster, GameLivingEvent.Moving, new CoreEventHandler(LivingMoves));
             }
             return base.OnEffectExpires(effect, noMessages);
         }
 
-        public void LivingMoves(DOLEvent e, object sender, EventArgs args)
+        public void LivingMoves(CoreEvent e, object sender, EventArgs args)
         {
             GameLiving player = sender as GameLiving;
             if (player == null) return;

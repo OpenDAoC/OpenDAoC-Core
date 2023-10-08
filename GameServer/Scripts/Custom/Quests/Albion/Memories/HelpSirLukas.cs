@@ -66,7 +66,7 @@ namespace DOL.GS.Quests.Albion
 
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -275,14 +275,14 @@ namespace DOL.GS.Quests.Albion
 
 			#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(SirLukas, GameObjectEvent.Interact, new DOLEventHandler(TalkToSirLukas));
-			GameEventMgr.AddHandler(SirLukas, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSirLukas));
+			GameEventMgr.AddHandler(SirLukas, GameObjectEvent.Interact, new CoreEventHandler(TalkToSirLukas));
+			GameEventMgr.AddHandler(SirLukas, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToSirLukas));
 			
-			GameEventMgr.AddHandler(EllynWeyland, GameObjectEvent.Interact, new DOLEventHandler(TalkToEllynWeyland));
-			GameEventMgr.AddHandler(EllynWeyland, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToEllynWeyland));
+			GameEventMgr.AddHandler(EllynWeyland, GameObjectEvent.Interact, new CoreEventHandler(TalkToEllynWeyland));
+			GameEventMgr.AddHandler(EllynWeyland, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToEllynWeyland));
 
 			/* Now we bring to Sir Lukas the possibility to give this quest to players */
 			SirLukas.AddQuestToGive(typeof (HelpSirLukas));
@@ -292,26 +292,26 @@ namespace DOL.GS.Quests.Albion
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (SirLukas == null)
 				return;
 			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(SirLukas, GameObjectEvent.Interact, new DOLEventHandler(TalkToSirLukas));
-			GameEventMgr.RemoveHandler(SirLukas, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToSirLukas));
+			GameEventMgr.RemoveHandler(SirLukas, GameObjectEvent.Interact, new CoreEventHandler(TalkToSirLukas));
+			GameEventMgr.RemoveHandler(SirLukas, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToSirLukas));
 			
-			GameEventMgr.RemoveHandler(EllynWeyland, GameObjectEvent.Interact, new DOLEventHandler(TalkToEllynWeyland));
-			GameEventMgr.RemoveHandler(EllynWeyland, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToEllynWeyland));
+			GameEventMgr.RemoveHandler(EllynWeyland, GameObjectEvent.Interact, new CoreEventHandler(TalkToEllynWeyland));
+			GameEventMgr.RemoveHandler(EllynWeyland, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToEllynWeyland));
 
 			/* Now we remove to Sir Lukas the possibility to give this quest to players */
 			SirLukas.RemoveQuestToGive(typeof (HelpSirLukas));
 		}
 
-		protected static void TalkToSirLukas(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToSirLukas(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -416,7 +416,7 @@ namespace DOL.GS.Quests.Albion
 			}
 		}
 		
-		protected static void TalkToEllynWeyland(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToEllynWeyland(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -484,7 +484,7 @@ namespace DOL.GS.Quests.Albion
 			}
 		}
 
-		protected static void TalkToLukas(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToLukas(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -567,7 +567,7 @@ namespace DOL.GS.Quests.Albion
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -633,7 +633,7 @@ namespace DOL.GS.Quests.Albion
 			}
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 
@@ -708,7 +708,7 @@ namespace DOL.GS.Quests.Albion
         /// <summary>
         /// The event to hook.
         /// </summary>
-        public override DOLEvent Event
+        public override CoreEvent Event
         {
             get { return GamePlayerEvent.GameEntered; }
         }
@@ -729,7 +729,7 @@ namespace DOL.GS.Quests.Albion
         /// <param name="e">The event fired.</param>
         /// <param name="sender">The event sender.</param>
         /// <param name="arguments">The event arguments.</param>
-        protected override void EventCallback(DOLEvent e, object sender, EventArgs arguments)
+        protected override void EventCallback(CoreEvent e, object sender, EventArgs arguments)
         {
             GamePlayer p = sender as GamePlayer;
             if (p != null && p.Titles.Contains(this))

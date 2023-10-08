@@ -30,12 +30,12 @@ namespace DOL.GS
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		[ScriptLoadedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.AddHandler(GamePlayerEvent.KillsTotalDeathBlowsChanged, new DOLEventHandler(AssassinsAbilities));
+			GameEventMgr.AddHandler(GamePlayerEvent.KillsTotalDeathBlowsChanged, new CoreEventHandler(AssassinsAbilities));
 		}
 		
-		private static void AssassinsAbilities(DOLEvent e, object sender, EventArgs arguments)
+		private static void AssassinsAbilities(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GamePlayer player = sender as GamePlayer;
 			

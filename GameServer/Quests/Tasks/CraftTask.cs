@@ -119,7 +119,7 @@ namespace DOL.GS.Quests
 		/// <param name="e">The event type</param>
 		/// <param name="sender">The sender of the event</param>
 		/// <param name="args">The event arguments</param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			// Filter only the events from task owner
 			if (sender != m_taskPlayer)

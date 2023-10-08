@@ -63,7 +63,7 @@ namespace DOL.GS.Quests.Midgard
 
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -200,14 +200,14 @@ namespace DOL.GS.Quests.Midgard
 			
 			#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(VikingDextz, GameObjectEvent.Interact, new DOLEventHandler(TalkToVikingDextz));
-			GameEventMgr.AddHandler(VikingDextz, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToVikingDextz));
+			GameEventMgr.AddHandler(VikingDextz, GameObjectEvent.Interact, new CoreEventHandler(TalkToVikingDextz));
+			GameEventMgr.AddHandler(VikingDextz, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToVikingDextz));
 			
-			GameEventMgr.AddHandler(Freeya, GameObjectEvent.Interact, new DOLEventHandler(TalkToFreeya));
-			GameEventMgr.AddHandler(Freeya, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToFreeya));
+			GameEventMgr.AddHandler(Freeya, GameObjectEvent.Interact, new CoreEventHandler(TalkToFreeya));
+			GameEventMgr.AddHandler(Freeya, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToFreeya));
 			
 			/* Now we bring to NPC_Name the possibility to give this quest to players */
 			VikingDextz.AddQuestToGive(typeof (PlayTheLastSong));
@@ -217,27 +217,27 @@ namespace DOL.GS.Quests.Midgard
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (VikingDextz == null)
 				return;
 			
 			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 			
-			GameEventMgr.RemoveHandler(VikingDextz, GameObjectEvent.Interact, new DOLEventHandler(TalkToVikingDextz));
-			GameEventMgr.RemoveHandler(VikingDextz, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToVikingDextz));
+			GameEventMgr.RemoveHandler(VikingDextz, GameObjectEvent.Interact, new CoreEventHandler(TalkToVikingDextz));
+			GameEventMgr.RemoveHandler(VikingDextz, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToVikingDextz));
 			
-			GameEventMgr.RemoveHandler(Freeya, GameObjectEvent.Interact, new DOLEventHandler(TalkToFreeya));
-			GameEventMgr.RemoveHandler(Freeya, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToFreeya));
+			GameEventMgr.RemoveHandler(Freeya, GameObjectEvent.Interact, new CoreEventHandler(TalkToFreeya));
+			GameEventMgr.RemoveHandler(Freeya, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToFreeya));
 
 			/* Now we remove to NPC_Name the possibility to give this quest to players */
 			VikingDextz.RemoveQuestToGive(typeof (PlayTheLastSong));
 		}
 
-		protected static void TalkToVikingDextz(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToVikingDextz(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -330,7 +330,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 		
-		private static void TalkToFreeya(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToFreeya(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -721,7 +721,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -786,7 +786,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 
@@ -811,13 +811,13 @@ namespace DOL.GS.Quests.Midgard
 			}
 			if (e == GameObjectEvent.AddToWorld)
 			{
-				GameEventMgr.AddHandler(Freeya, GameObjectEvent.Interact, new DOLEventHandler(TalkToFreeya));
-				GameEventMgr.AddHandler(Freeya, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToFreeya));
+				GameEventMgr.AddHandler(Freeya, GameObjectEvent.Interact, new CoreEventHandler(TalkToFreeya));
+				GameEventMgr.AddHandler(Freeya, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToFreeya));
 			}
 			if (e == GameLivingEvent.Dying)
 			{
-				GameEventMgr.RemoveHandler(Freeya, GameObjectEvent.Interact, new DOLEventHandler(TalkToFreeya));
-				GameEventMgr.RemoveHandler(Freeya, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToFreeya));
+				GameEventMgr.RemoveHandler(Freeya, GameObjectEvent.Interact, new CoreEventHandler(TalkToFreeya));
+				GameEventMgr.RemoveHandler(Freeya, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToFreeya));
 			}
 		}
 		
@@ -825,8 +825,8 @@ namespace DOL.GS.Quests.Midgard
 		{
 			Freeya.Say(
 				"And with that... the horn has sounded. Valhalla is calling me and it's time I must go. Walk in Strength.\nHa det, my friend.");
-			GameEventMgr.RemoveHandler(Freeya, GameObjectEvent.Interact, new DOLEventHandler(TalkToFreeya));
-			GameEventMgr.RemoveHandler(Freeya, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToFreeya));
+			GameEventMgr.RemoveHandler(Freeya, GameObjectEvent.Interact, new CoreEventHandler(TalkToFreeya));
+			GameEventMgr.RemoveHandler(Freeya, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToFreeya));
 			Freeya.Die(Freeya);
 			return 0;
 		}
@@ -857,7 +857,7 @@ namespace DOL.GS.Quests.Midgard
 	        /// <summary>
 	        /// The event to hook.
 	        /// </summary>
-	        public override DOLEvent Event
+	        public override CoreEvent Event
 	        {
 	            get { return GamePlayerEvent.GameEntered; }
 	        }
@@ -878,7 +878,7 @@ namespace DOL.GS.Quests.Midgard
 	        /// <param name="e">The event fired.</param>
 	        /// <param name="sender">The event sender.</param>
 	        /// <param name="arguments">The event arguments.</param>
-	        protected override void EventCallback(DOLEvent e, object sender, EventArgs arguments)
+	        protected override void EventCallback(CoreEvent e, object sender, EventArgs arguments)
 	        {
 	            GamePlayer p = sender as GamePlayer;
 	            if (p != null && p.Titles.Contains(this))

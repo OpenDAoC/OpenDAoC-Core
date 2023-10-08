@@ -68,7 +68,7 @@ namespace DOL.GS.Quests.Hibernia
 			minimumLevel;
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -245,8 +245,8 @@ namespace DOL.GS.Quests.Hibernia
 			region.AddArea(treantArea);
 			treantArea.RegisterPlayerEnter(PlayerEnterTreantArea);
 			
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 			
 			GameEventMgr.AddHandler(Terod, GameObjectEvent.Interact, TalkToTerod);
 			GameEventMgr.AddHandler(Terod, GameLivingEvent.WhisperReceive, TalkToTerod);
@@ -268,7 +268,7 @@ namespace DOL.GS.Quests.Hibernia
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (Terod == null)
@@ -278,8 +278,8 @@ namespace DOL.GS.Quests.Hibernia
 			treantArea.UnRegisterPlayerEnter(PlayerEnterTreantArea);
 			WorldMgr.GetRegion(treantLocation.RegionID).RemoveArea(treantArea);
 			
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 			
 			GameEventMgr.RemoveHandler(Terod, GameObjectEvent.Interact, TalkToTerod);
 			GameEventMgr.RemoveHandler(Terod, GameLivingEvent.WhisperReceive, TalkToTerod);
@@ -333,7 +333,7 @@ namespace DOL.GS.Quests.Hibernia
 			
 			GameEventMgr.AddHandler(Feairna_Athar,GameLivingEvent.Dying, FaeiarnaAtharDying);
 		}
-		private void FaeiarnaAtharDying(DOLEvent e, object sender, EventArgs arguments)
+		private void FaeiarnaAtharDying(CoreEvent e, object sender, EventArgs arguments)
 		{
 			var args = (DyingEventArgs) arguments;
         
@@ -368,7 +368,7 @@ namespace DOL.GS.Quests.Hibernia
 			GiveItem(player, glowing_red_jewel);
 			quest.Step = 6;
 		}
-		private static void PlayerEnterTreantArea(DOLEvent e, object sender, EventArgs args)
+		private static void PlayerEnterTreantArea(CoreEvent e, object sender, EventArgs args)
 		{
 			var aargs = args as AreaEventArgs;
 			var player = aargs?.GameObject as GamePlayer;
@@ -408,7 +408,7 @@ namespace DOL.GS.Quests.Hibernia
 
 		static object spawnLock = new object();
 
-		protected static void TalkToTerod(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToTerod(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -510,7 +510,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 		
-		protected static void TalkToKredril(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToKredril(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -597,7 +597,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 		
-		protected static void TalkToEmolia(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToEmolia(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -676,7 +676,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 		
-		protected static void TalkToJandros(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToJandros(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -818,7 +818,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)

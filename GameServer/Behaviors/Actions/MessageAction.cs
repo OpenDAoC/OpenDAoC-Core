@@ -13,7 +13,7 @@ namespace DOL.GS.Behaviour.Actions
 
         public MessageAction(GameNPC defaultNPC, string message, eTextType messageType) : this(defaultNPC, message, (object)messageType) { }
 
-        public override void Perform(DOLEvent e, object sender, EventArgs args)
+        public override void Perform(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
             string message = BehaviourUtils.GetPersonalizedMessage(P, player);

@@ -58,10 +58,10 @@ namespace DOL.GS.GameEvents
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		[ScriptLoadedEvent]
-		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			InitStarterEquipment();
-			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
+			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(OnCharacterCreation));
 		}
 		
 		/// <summary>
@@ -114,9 +114,9 @@ namespace DOL.GS.GameEvents
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
+			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(OnCharacterCreation));
 		}
 		
 		/// <summary>
@@ -125,7 +125,7 @@ namespace DOL.GS.GameEvents
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public static void OnCharacterCreation(DOLEvent e, object sender, EventArgs args)
+		public static void OnCharacterCreation(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ENABLE_FREE_STARTER_EQUIPMENT)
 				return;

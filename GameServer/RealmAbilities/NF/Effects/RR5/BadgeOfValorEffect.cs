@@ -27,7 +27,7 @@ namespace DOL.GS.Effects
         public override void Start(GameLiving living)
         {
 			base.Start(living);
-            GameEventMgr.AddHandler(m_owner, GamePlayerEvent.AttackFinished, new DOLEventHandler(AttackFinished));
+            GameEventMgr.AddHandler(m_owner, GamePlayerEvent.AttackFinished, new CoreEventHandler(AttackFinished));
         }
 
 
@@ -38,7 +38,7 @@ namespace DOL.GS.Effects
         /// <param name="e">The event which was raised</param>
         /// <param name="sender">Sender of the event</param>
         /// <param name="args">EventArgs associated with the event</param>
-        private void AttackFinished(DOLEvent e, object sender, EventArgs args)
+        private void AttackFinished(CoreEvent e, object sender, EventArgs args)
         {
             AttackFinishedEventArgs afea = (AttackFinishedEventArgs)args;
             
@@ -68,7 +68,7 @@ namespace DOL.GS.Effects
         public override void Stop()
         {
 			base.Stop();
-            GameEventMgr.RemoveHandler(m_owner, GamePlayerEvent.AttackFinished, new DOLEventHandler(AttackFinished));
+            GameEventMgr.RemoveHandler(m_owner, GamePlayerEvent.AttackFinished, new CoreEventHandler(AttackFinished));
         }
 
 

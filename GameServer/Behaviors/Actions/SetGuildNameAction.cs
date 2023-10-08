@@ -34,7 +34,7 @@ namespace DOL.GS.Behaviour.Actions
         public SetGuildNameAction(GameNPC defaultNPC, string guildName, GameNPC npc)
             : this(defaultNPC, (object)guildName, (object)npc) { }
 
-        public override void Perform(DOLEvent e, object sender, EventArgs args)
+        public override void Perform(CoreEvent e, object sender, EventArgs args)
         {            
             Q.GuildName = P;
         }

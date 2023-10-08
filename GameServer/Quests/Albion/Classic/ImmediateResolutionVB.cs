@@ -47,7 +47,7 @@ namespace DOL.GS.Quests.Albion
         public ImmediateResolutionVB(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest) { }
 
 
-        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
 
@@ -135,7 +135,7 @@ namespace DOL.GS.Quests.Albion
         }
 
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             if (!ServerProperties.Properties.LOAD_QUESTS)
                 return;
@@ -181,12 +181,12 @@ namespace DOL.GS.Quests.Albion
                 GameServer.Database.AddObject(waxSealedNote);
             }
 
-            GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-            GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
-            GameEventMgr.AddHandler(_stewardWillie, GameLivingEvent.Interact, new DOLEventHandler(TalkToStewardWillie));
-            GameEventMgr.AddHandler(_stewardWillie, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToStewardWillie));
-            GameEventMgr.AddHandler(_masterTor, GameLivingEvent.Interact, new DOLEventHandler(TalkToMasterTor));
-            GameEventMgr.AddHandler(_masterTor, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToMasterTor));
+            GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+            GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
+            GameEventMgr.AddHandler(_stewardWillie, GameLivingEvent.Interact, new CoreEventHandler(TalkToStewardWillie));
+            GameEventMgr.AddHandler(_stewardWillie, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToStewardWillie));
+            GameEventMgr.AddHandler(_masterTor, GameLivingEvent.Interact, new CoreEventHandler(TalkToMasterTor));
+            GameEventMgr.AddHandler(_masterTor, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMasterTor));
 
             _masterTor.AddQuestToGive(typeof(ImmediateResolutionVB));
 
@@ -195,21 +195,21 @@ namespace DOL.GS.Quests.Albion
         }        
 
         [ScriptUnloadedEvent]
-        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-            GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+            GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+            GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-            GameEventMgr.RemoveHandler(_stewardWillie, GameObjectEvent.Interact, new DOLEventHandler(TalkToStewardWillie));
-            GameEventMgr.RemoveHandler(_stewardWillie, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToStewardWillie));
+            GameEventMgr.RemoveHandler(_stewardWillie, GameObjectEvent.Interact, new CoreEventHandler(TalkToStewardWillie));
+            GameEventMgr.RemoveHandler(_stewardWillie, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToStewardWillie));
 
-            GameEventMgr.RemoveHandler(_masterTor, GameLivingEvent.Interact, new DOLEventHandler(TalkToMasterTor));
-            GameEventMgr.RemoveHandler(_masterTor, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToMasterTor));
+            GameEventMgr.RemoveHandler(_masterTor, GameLivingEvent.Interact, new CoreEventHandler(TalkToMasterTor));
+            GameEventMgr.RemoveHandler(_masterTor, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMasterTor));
 
             _masterTor.RemoveQuestToGive(typeof(ImmediateResolutionVB));
         }
 
-        protected static void TalkToStewardWillie(DOLEvent e, object sender, EventArgs args)
+        protected static void TalkToStewardWillie(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = ((SourceEventArgs)args).Source as GamePlayer;
             if (player == null)
@@ -260,7 +260,7 @@ namespace DOL.GS.Quests.Albion
             }
         }
 
-        protected static void TalkToMasterTor(DOLEvent e, object sender, EventArgs args)
+        protected static void TalkToMasterTor(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = ((SourceEventArgs)args).Source as GamePlayer;
             if (player == null)
@@ -324,7 +324,7 @@ namespace DOL.GS.Quests.Albion
             }
         }
 
-        protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+        protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
         {
             QuestEventArgs qargs = args as QuestEventArgs;
             if (qargs == null)

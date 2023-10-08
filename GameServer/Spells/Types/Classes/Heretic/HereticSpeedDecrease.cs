@@ -167,7 +167,7 @@ namespace DOL.GS.Spells
 		}
 
 
-		protected virtual void OnAttacked(DOLEvent e, object sender, EventArgs arguments)
+		protected virtual void OnAttacked(CoreEvent e, object sender, EventArgs arguments)
 		{
 			AttackedByEnemyEventArgs attackArgs = arguments as AttackedByEnemyEventArgs;
 			GameLiving living = sender as GameLiving;

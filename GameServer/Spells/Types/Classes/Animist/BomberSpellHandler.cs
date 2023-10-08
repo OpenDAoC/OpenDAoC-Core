@@ -69,7 +69,7 @@ namespace DOL.GS.Spells
 
         protected override void SetBrainToOwner(IControlledBrain brain) { }
 
-        protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments) { }
+        protected override void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments) { }
 
         public override void CastSubSpells(GameLiving target) { }
     }

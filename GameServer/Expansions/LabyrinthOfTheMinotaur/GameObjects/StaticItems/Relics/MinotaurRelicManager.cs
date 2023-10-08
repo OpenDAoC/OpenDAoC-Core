@@ -35,7 +35,7 @@ namespace DOL.GS
         public const double XP_LOSS_PER_TICK = 10;
         
         [ScriptLoadedEvent]
-        public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
         {
             if (ServerProperties.Properties.ENABLE_MINOTAUR_RELICS)
             {

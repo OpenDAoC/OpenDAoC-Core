@@ -110,10 +110,10 @@ namespace DOL.GS.Spells
             player.BaseBuffBonusCategory[(int)EProperty.ArmorAbsorption] += (int)Spell.LifeDrainReturn;
 			player.Out.SendCharStatsUpdate();
 			player.Health = player.MaxHealth;
-			GameEventMgr.AddHandler(player, GameLivingEvent.Dying, new DOLEventHandler(EventRaised));
-			GameEventMgr.AddHandler(player, GamePlayerEvent.Linkdeath, new DOLEventHandler(EventRaised));
-			GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new DOLEventHandler(EventRaised));
-			GameEventMgr.AddHandler(player, GamePlayerEvent.RegionChanged, new DOLEventHandler(EventRaised));
+			GameEventMgr.AddHandler(player, GameLivingEvent.Dying, new CoreEventHandler(EventRaised));
+			GameEventMgr.AddHandler(player, GamePlayerEvent.Linkdeath, new CoreEventHandler(EventRaised));
+			GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new CoreEventHandler(EventRaised));
+			GameEventMgr.AddHandler(player, GamePlayerEvent.RegionChanged, new CoreEventHandler(EventRaised));
 
 			base.OnEffectStart(effect);
 		}
@@ -147,15 +147,15 @@ namespace DOL.GS.Spells
 			int leftHealth = Convert.ToInt32(player.MaxHealth * 0.10);
 			player.Health = leftHealth;
 
-			GameEventMgr.RemoveHandler(player, GameLivingEvent.Dying, new DOLEventHandler(EventRaised));
-			GameEventMgr.RemoveHandler(player, GamePlayerEvent.Linkdeath, new DOLEventHandler(EventRaised));
-			GameEventMgr.RemoveHandler(player, GamePlayerEvent.Quit, new DOLEventHandler(EventRaised));
-			GameEventMgr.RemoveHandler(player, GamePlayerEvent.RegionChanged, new DOLEventHandler(EventRaised));
+			GameEventMgr.RemoveHandler(player, GameLivingEvent.Dying, new CoreEventHandler(EventRaised));
+			GameEventMgr.RemoveHandler(player, GamePlayerEvent.Linkdeath, new CoreEventHandler(EventRaised));
+			GameEventMgr.RemoveHandler(player, GamePlayerEvent.Quit, new CoreEventHandler(EventRaised));
+			GameEventMgr.RemoveHandler(player, GamePlayerEvent.RegionChanged, new CoreEventHandler(EventRaised));
 
 			return base.OnEffectExpires(effect, noMessages);
 		}
 
-		public void EventRaised(DOLEvent e, object sender, EventArgs arguments)
+		public void EventRaised(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GamePlayer player = sender as GamePlayer; //attacker
 			if (player == null) return;

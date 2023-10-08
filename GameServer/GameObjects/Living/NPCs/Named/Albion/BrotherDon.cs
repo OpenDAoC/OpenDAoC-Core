@@ -13,7 +13,7 @@ namespace DOL.GS.Scripts
             _wolfPeltCloak = GameServer.Database.FindObjectByKey<DbItemTemplate>(wolfPeltCloak);
         }
 
-        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
             if (e == GamePlayerEvent.ReceiveItem)
             {

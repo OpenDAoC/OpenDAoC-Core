@@ -105,7 +105,7 @@ namespace DOL.GS
         }
 
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Steinvor", 160, (ERealm)0);
@@ -421,7 +421,7 @@ namespace DOL.GS
         }
 
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Skuf", 160, (ERealm)0);

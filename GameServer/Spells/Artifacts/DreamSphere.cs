@@ -107,18 +107,18 @@ namespace DOL.GS.Spells
             }
             if(player == null) return;
             //GameEventMgr.AddHandler(player, GamePlayerEvent.TakeDamage, new DOLEventHandler(LivingTakeDamage));
-			GameEventMgr.AddHandler(player, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(LivingTakeDamage));
+			GameEventMgr.AddHandler(player, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(LivingTakeDamage));
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
             GamePlayer player = effect.Owner as GamePlayer;
             if(player == null) return base.OnEffectExpires(effect, noMessages);
             //GameEventMgr.RemoveHandler(player, GamePlayerEvent.TakeDamage, new DOLEventHandler(LivingTakeDamage));
-			GameEventMgr.RemoveHandler(player, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(LivingTakeDamage));
+			GameEventMgr.RemoveHandler(player, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(LivingTakeDamage));
             return base.OnEffectExpires(effect, noMessages);
         }
         // Event : player takes damage, effect cancels
-        private void LivingTakeDamage(DOLEvent e, object sender, EventArgs args)
+        private void LivingTakeDamage(CoreEvent e, object sender, EventArgs args)
         {
             OnEffectExpires(m_effect, true);
         }

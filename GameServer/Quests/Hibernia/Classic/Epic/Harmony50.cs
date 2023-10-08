@@ -103,7 +103,7 @@ namespace DOL.GS.Quests.Hibernia
 		}
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -2055,11 +2055,11 @@ namespace DOL.GS.Quests.Hibernia
 
 			#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Revelin, GameObjectEvent.Interact, new DOLEventHandler(TalkToRevelin));
-			GameEventMgr.AddHandler(Revelin, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRevelin));
+			GameEventMgr.AddHandler(Revelin, GameObjectEvent.Interact, new CoreEventHandler(TalkToRevelin));
+			GameEventMgr.AddHandler(Revelin, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToRevelin));
 
 			/* Now we bring to Revelin the possibility to give this quest to players */
 			Revelin.AddQuestToGive(typeof(Harmony_50));
@@ -2069,23 +2069,23 @@ namespace DOL.GS.Quests.Hibernia
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (Revelin == null)
 				return;
 			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Revelin, GameObjectEvent.Interact, new DOLEventHandler(TalkToRevelin));
-			GameEventMgr.RemoveHandler(Revelin, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRevelin));
+			GameEventMgr.RemoveHandler(Revelin, GameObjectEvent.Interact, new CoreEventHandler(TalkToRevelin));
+			GameEventMgr.RemoveHandler(Revelin, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToRevelin));
 
 			/* Now we remove to Revelin the possibility to give this quest to players */
 			Revelin.RemoveQuestToGive(typeof(Harmony_50));
 		}
 
-		protected static void TalkToRevelin(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToRevelin(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs)args).Source as GamePlayer;
@@ -2224,7 +2224,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -2282,7 +2282,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 

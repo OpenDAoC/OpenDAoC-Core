@@ -30,7 +30,7 @@ namespace DOL.GS.RealmAbilities
 			base.Start(living);
 
 			if (living is GamePlayer)
-				GameEventMgr.AddHandler(living, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+				GameEventMgr.AddHandler(living, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
 			living.AbilityBonus[(int)EProperty.MeleeDamage] += m_value;
 		}
 
@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
 		/// <param name="e">The event which was raised</param>
 		/// <param name="sender">Sender of the event</param>
 		/// <param name="args">EventArgs associated with the event</param>
-		private static void PlayerLeftWorld(DOLEvent e, object sender, EventArgs args)
+		private static void PlayerLeftWorld(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = (GamePlayer)sender;
 
@@ -56,7 +56,7 @@ namespace DOL.GS.RealmAbilities
 			base.Stop();
 			m_owner.AbilityBonus[(int)EProperty.MeleeDamage] -= m_value;
 			if (m_owner is GamePlayer)
-				GameEventMgr.RemoveHandler(m_owner, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+				GameEventMgr.RemoveHandler(m_owner, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
 		}
 
 		/// <summary>

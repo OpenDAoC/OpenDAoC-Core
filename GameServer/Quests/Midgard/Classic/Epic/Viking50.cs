@@ -121,7 +121,7 @@ namespace DOL.GS.Quests.Midgard
 		}
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -1877,14 +1877,14 @@ namespace DOL.GS.Quests.Midgard
 
 			#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Lynnleigh, GameObjectEvent.Interact, new DOLEventHandler(TalkToLynnleigh));
-			GameEventMgr.AddHandler(Lynnleigh, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToLynnleigh));
+			GameEventMgr.AddHandler(Lynnleigh, GameObjectEvent.Interact, new CoreEventHandler(TalkToLynnleigh));
+			GameEventMgr.AddHandler(Lynnleigh, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToLynnleigh));
 
-			GameEventMgr.AddHandler(Elizabeth, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToElizabeth));
-			GameEventMgr.AddHandler(Elizabeth, GameLivingEvent.Interact, new DOLEventHandler(TalkToElizabeth));
+			GameEventMgr.AddHandler(Elizabeth, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToElizabeth));
+			GameEventMgr.AddHandler(Elizabeth, GameLivingEvent.Interact, new CoreEventHandler(TalkToElizabeth));
 
 			/* Now we bring to Lynnleigh the possibility to give this quest to players */
 			Lynnleigh.AddQuestToGive(typeof (Viking_50));
@@ -1894,26 +1894,26 @@ namespace DOL.GS.Quests.Midgard
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (Lynnleigh == null)
 				return;
 			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Lynnleigh, GameObjectEvent.Interact, new DOLEventHandler(TalkToLynnleigh));
-			GameEventMgr.RemoveHandler(Lynnleigh, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToLynnleigh));
+			GameEventMgr.RemoveHandler(Lynnleigh, GameObjectEvent.Interact, new CoreEventHandler(TalkToLynnleigh));
+			GameEventMgr.RemoveHandler(Lynnleigh, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToLynnleigh));
 
-			GameEventMgr.RemoveHandler(Elizabeth, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToElizabeth));
-			GameEventMgr.RemoveHandler(Elizabeth, GameLivingEvent.Interact, new DOLEventHandler(TalkToElizabeth));
+			GameEventMgr.RemoveHandler(Elizabeth, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToElizabeth));
+			GameEventMgr.RemoveHandler(Elizabeth, GameLivingEvent.Interact, new CoreEventHandler(TalkToElizabeth));
 		
 			/* Now we remove to Lynnleigh the possibility to give this quest to players */
 			Lynnleigh.RemoveQuestToGive(typeof (Viking_50));
 		}
 
-		protected static void TalkToLynnleigh(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToLynnleigh(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -2015,7 +2015,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 
-		protected static void TalkToElizabeth(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToElizabeth(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -2150,7 +2150,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -2213,7 +2213,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 

@@ -280,7 +280,7 @@ namespace DOL.GS.Spells
 		}
 
 
-        private static void OnPlayerReleased(DOLEvent e, object sender, EventArgs arguments)
+        private static void OnPlayerReleased(CoreEvent e, object sender, EventArgs arguments)
         {
             if (!(sender is GamePlayer))
                 return;
@@ -316,7 +316,7 @@ namespace DOL.GS.Spells
 		}
         
 
-		private static void OnPlayerLeft(DOLEvent e, object sender, EventArgs arguments)
+		private static void OnPlayerLeft(CoreEvent e, object sender, EventArgs arguments)
 		{
 			if (!(sender is GamePlayer))
 				return;

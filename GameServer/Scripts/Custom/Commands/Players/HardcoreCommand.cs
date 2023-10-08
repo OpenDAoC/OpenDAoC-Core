@@ -17,18 +17,18 @@ namespace DOL.GS.GameEvents
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         
         [GameServerStartedEvent]
-        public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)
+        public static void OnServerStart(CoreEvent e, object sender, EventArgs arguments)
         {
-            GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(HCPlayerEntered));
+            GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(HCPlayerEntered));
         }
 
         /// <summary>
         /// Event handler fired when server is stopped
         /// </summary>
         [GameServerStoppedEvent]
-        public static void OnServerStop(DOLEvent e, object sender, EventArgs arguments)
+        public static void OnServerStop(CoreEvent e, object sender, EventArgs arguments)
         {
-            GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(HCPlayerEntered));
+            GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(HCPlayerEntered));
         }
         
         /// <summary>
@@ -37,7 +37,7 @@ namespace DOL.GS.GameEvents
         /// <param name="e"></param>
         /// <param name="sender"></param>
         /// <param name="arguments"></param>
-        private static void HCPlayerEntered(DOLEvent e, object sender, EventArgs arguments)
+        private static void HCPlayerEntered(CoreEvent e, object sender, EventArgs arguments)
         {
             GamePlayer player = sender as GamePlayer;
             if (player == null) return;

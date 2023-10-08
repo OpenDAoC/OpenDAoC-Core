@@ -29,7 +29,7 @@ namespace DOL.GS.Effects
 
             StartTimers();
 
-            GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+            GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
             m_player.AbilityBonus[(int)EProperty.EvadeChance] += m_value;
 
             m_player.EffectList.Add(this);
@@ -41,7 +41,7 @@ namespace DOL.GS.Effects
         /// <param name="e">The event which was raised</param>
         /// <param name="sender">Sender of the event</param>
         /// <param name="args">EventArgs associated with the event</param>
-        private static void PlayerLeftWorld(DOLEvent e, object sender, EventArgs args)
+        private static void PlayerLeftWorld(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = (GamePlayer)sender;
 
@@ -61,7 +61,7 @@ namespace DOL.GS.Effects
             StopTimers();
             m_player.AbilityBonus[(int)EProperty.EvadeChance] -= m_value;
             m_player.EffectList.Remove(this);
-            GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+            GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
         }
 
         /// <summary>

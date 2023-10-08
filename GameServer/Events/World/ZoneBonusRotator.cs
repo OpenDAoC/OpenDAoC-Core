@@ -74,21 +74,21 @@ namespace DOL.GS.Scripts
         private static int PvETickTime = 7200;
 
         [GameServerStartedEvent]
-        public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)
+        public static void OnServerStart(CoreEvent e, object sender, EventArgs arguments)
         {
             Initialize();
-            GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
+            GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEntered));
             
         }
 
         [GameServerStoppedEvent]
-        public static void OnServerStopped(DOLEvent e, object sender, EventArgs arguments)
+        public static void OnServerStopped(CoreEvent e, object sender, EventArgs arguments)
         {
             // Should be changed to keep data saved in DB for restart
             ClearPvEZones();
             ClearRvRZones();
 
-            GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
+            GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEntered));
         }
 
         public static void Initialize()
@@ -150,7 +150,7 @@ namespace DOL.GS.Scripts
             }
         }
 
-        public static void PlayerEntered(DOLEvent e, object sender, EventArgs arguments)
+        public static void PlayerEntered(CoreEvent e, object sender, EventArgs arguments)
         {
             TellPlayer(sender as GamePlayer);
         }

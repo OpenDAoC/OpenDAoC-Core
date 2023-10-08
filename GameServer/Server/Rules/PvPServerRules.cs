@@ -66,7 +66,7 @@ namespace DOL.GS.ServerRules
 				killedPlayer.TempProperties.RemoveProperty(KILLED_BY_PLAYER_PROP);
 		}
 
-		public override void OnReleased(DOLEvent e, object sender, EventArgs args)
+		public override void OnReleased(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = (GamePlayer)sender;
 			if (player.TempProperties.GetProperty<string>(KILLED_BY_PLAYER_PROP, null) != null)

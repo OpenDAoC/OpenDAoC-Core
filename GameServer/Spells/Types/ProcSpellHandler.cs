@@ -41,7 +41,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>
-		protected abstract DOLEvent EventType { get; }
+		protected abstract CoreEvent EventType { get; }
 
 		/// <summary>
 		/// The spell line name of the proc spell
@@ -51,7 +51,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event handler of given event type
 		/// </summary>
-		protected abstract void EventHandler(DOLEvent e, object sender, EventArgs arguments);
+		protected abstract void EventHandler(CoreEvent e, object sender, EventArgs arguments);
 
 		/// <summary>
 		/// Holds the proc spell
@@ -190,7 +190,7 @@ namespace DOL.GS.Spells
         /// </summary>        
         public override void OnEffectRestored(GameSpellEffect effect, int[] vars)
         {
-            GameEventMgr.AddHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
+            GameEventMgr.AddHandler(effect.Owner, EventType, new CoreEventHandler(EventHandler));
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace DOL.GS.Spells
         /// </summary>        
         public override int OnRestoredEffectExpires(GameSpellEffect effect, int[] vars, bool noMessages)
         {
-            GameEventMgr.RemoveHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
+            GameEventMgr.RemoveHandler(effect.Owner, EventType, new CoreEventHandler(EventHandler));
             if (!noMessages && Spell.Pulse == 0)
             {
                 MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
@@ -287,7 +287,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>
-		protected override DOLEvent EventType
+		protected override CoreEvent EventType
 		{
 			get { return GameLivingEvent.AttackFinished; }
 		}
@@ -306,7 +306,7 @@ namespace DOL.GS.Spells
         ///// <param name="e"></param>
         ///// <param name="sender"></param>
         ///// <param name="arguments"></param>
-        protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments) { }
+        protected override void EventHandler(CoreEvent e, object sender, EventArgs arguments) { }
 
         public  void EventHandler(AttackData ad)
         {
@@ -365,7 +365,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>
-		protected override DOLEvent EventType
+		protected override CoreEvent EventType
 		{
 			get { return GameLivingEvent.AttackedByEnemy; }
 		}
@@ -384,7 +384,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments) { }
+		protected override void EventHandler(CoreEvent e, object sender, EventArgs arguments) { }
 
 		public void EventHandler(AttackData ad)
 		{
@@ -440,7 +440,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void EventHandler( DOLEvent e, object sender, EventArgs arguments )
+		protected override void EventHandler( CoreEvent e, object sender, EventArgs arguments )
 		{
 			AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
 			if (args == null || args.AttackData == null)

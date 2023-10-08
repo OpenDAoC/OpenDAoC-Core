@@ -47,10 +47,10 @@ namespace DOL.GS.ServerRules
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		[ScriptLoadedEvent]
-		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			CheckDFOwner();
-			GameEventMgr.AddHandler(KeepEvent.KeepTaken,new DOLEventHandler(OnKeepTaken));
+			GameEventMgr.AddHandler(KeepEvent.KeepTaken,new CoreEventHandler(OnKeepTaken));
 		}
 
 		/// <summary>
@@ -86,7 +86,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		public static void OnKeepTaken(DOLEvent e, object sender, EventArgs arguments)
+		public static void OnKeepTaken(CoreEvent e, object sender, EventArgs arguments)
 		{
 			KeepEventArgs args = arguments as KeepEventArgs;
 			ERealm realm = (ERealm) args.Keep.Realm ;

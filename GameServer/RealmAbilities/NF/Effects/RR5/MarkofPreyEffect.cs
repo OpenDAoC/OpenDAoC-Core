@@ -56,10 +56,10 @@ namespace DOL.GS.Effects
 			{
 				p.Out.SendSpellEffectAnimation(EffectCaster, EffectOwner, 7090, 0, false, 1);
 			}
-			GameEventMgr.AddHandler(EffectOwner, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.AddHandler(EffectOwner, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
 			if (m_playerGroup != null)
-				GameEventMgr.AddHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
-			GameEventMgr.AddHandler(EffectOwner, GamePlayerEvent.AttackFinished, new DOLEventHandler(AttackFinished));
+				GameEventMgr.AddHandler(m_playerGroup, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback));
+			GameEventMgr.AddHandler(EffectOwner, GamePlayerEvent.AttackFinished, new CoreEventHandler(AttackFinished));
 			EffectOwner.Out.SendMessage("Your weapon begins channeling the strength of the vampiir!", DOL.GS.PacketHandler.eChatType.CT_Spell, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
 			base.Start(CasterTarget);
 		}
@@ -69,9 +69,9 @@ namespace DOL.GS.Effects
 			if (EffectOwner != null)
 			{
 				if (m_playerGroup != null)
-					GameEventMgr.RemoveHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
-				GameEventMgr.RemoveHandler(EffectOwner, GamePlayerEvent.AttackFinished, new DOLEventHandler(AttackFinished));
-				GameEventMgr.RemoveHandler(EffectOwner, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+					GameEventMgr.RemoveHandler(m_playerGroup, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback));
+				GameEventMgr.RemoveHandler(EffectOwner, GamePlayerEvent.AttackFinished, new CoreEventHandler(AttackFinished));
+				GameEventMgr.RemoveHandler(EffectOwner, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
 				m_playerGroup = null;
 			}
 			EffectOwner.Out.SendMessage("Your weapon returns to normal.", DOL.GS.PacketHandler.eChatType.CT_SpellExpires, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
@@ -84,7 +84,7 @@ namespace DOL.GS.Effects
 		/// <param name="e">The event which was raised</param>
 		/// <param name="sender">Sender of the event</param>
 		/// <param name="args">EventArgs associated with the event</param>
-		private void AttackFinished(DOLEvent e, object sender, EventArgs args)
+		private void AttackFinished(CoreEvent e, object sender, EventArgs args)
 		{
 			AttackFinishedEventArgs atkArgs = args as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
@@ -127,7 +127,7 @@ namespace DOL.GS.Effects
 		/// <param name="e"></param>
 		/// <param name="sender">The group</param>
 		/// <param name="args"></param>
-		protected void GroupDisbandCallback(DOLEvent e, object sender, EventArgs args)
+		protected void GroupDisbandCallback(CoreEvent e, object sender, EventArgs args)
 		{
 			MemberDisbandedEventArgs eArgs = args as MemberDisbandedEventArgs;
 			if (eArgs == null) return;
@@ -142,7 +142,7 @@ namespace DOL.GS.Effects
 		/// <param name="e">The event which was raised</param>
 		/// <param name="sender">Sender of the event</param>
 		/// <param name="args">EventArgs associated with the event</param>
-		protected void PlayerLeftWorld(DOLEvent e, object sender, EventArgs args)
+		protected void PlayerLeftWorld(CoreEvent e, object sender, EventArgs args)
 		{
 			Cancel(false);
 		}

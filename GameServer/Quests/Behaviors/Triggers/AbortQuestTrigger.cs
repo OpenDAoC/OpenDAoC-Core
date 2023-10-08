@@ -43,7 +43,7 @@ namespace DOL.GS.Quests.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public AbortQuestTrigger(GameNPC defaultNPC, DOLEventHandler notifyHandler, Object k, Object i)
+        public AbortQuestTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, Object k, Object i)
             : base(defaultNPC,notifyHandler, eTriggerType.AbortQuest, k, i)
         { }
 
@@ -53,7 +53,7 @@ namespace DOL.GS.Quests.Triggers
         /// <param name="defaultNPC"></param>
         /// <param name="notifyHandler"></param>
         /// <param name="questType"></param>
-        public AbortQuestTrigger(GameNPC defaultNPC, DOLEventHandler notifyHandler, Type questType)
+        public AbortQuestTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, Type questType)
             : this(defaultNPC,notifyHandler, (object)null,(object) questType)
         { }
 
@@ -65,7 +65,7 @@ namespace DOL.GS.Quests.Triggers
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public override bool Check(DOLEvent e, object sender, EventArgs args)
+        public override bool Check(CoreEvent e, object sender, EventArgs args)
         {
             bool result = false;
             

@@ -19,14 +19,14 @@ namespace DOL.GS.Scripts
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		[ScriptLoadedEvent]
-		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//Uncomment the following line to enable the WebUI
 			//Start();
 		}
 
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//Uncomment the following line to enable the WebUI
 			//Stop();

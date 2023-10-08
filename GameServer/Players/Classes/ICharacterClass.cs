@@ -140,7 +140,7 @@ namespace DOL.GS
 		void Shade(bool state);
 		bool RemoveFromWorld();
 		void Die(GameObject killer);
-		void Notify(DOLEvent e, object sender, EventArgs args);
+		void Notify(CoreEvent e, object sender, EventArgs args);
 		bool CanChangeCastingSpeed(SpellLine line, Spell spell);
 		GameTrainer.eChampionTrainerType ChampionTrainerType();
 		List<PlayerRace> EligibleRaces { get; }

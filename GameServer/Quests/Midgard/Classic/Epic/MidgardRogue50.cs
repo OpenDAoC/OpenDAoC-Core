@@ -91,7 +91,7 @@ namespace DOL.GS.Quests.Midgard
 		}
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -778,14 +778,14 @@ namespace DOL.GS.Quests.Midgard
 
 			#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Masrim, GameObjectEvent.Interact, new DOLEventHandler(TalkToMasrim));
-			GameEventMgr.AddHandler(Masrim, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToMasrim));
+			GameEventMgr.AddHandler(Masrim, GameObjectEvent.Interact, new CoreEventHandler(TalkToMasrim));
+			GameEventMgr.AddHandler(Masrim, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMasrim));
 
-			GameEventMgr.AddHandler(MorlinCaan, GameObjectEvent.Interact, new DOLEventHandler(TalkToMorlinCaan));
-			GameEventMgr.AddHandler(MorlinCaan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToMorlinCaan));
+			GameEventMgr.AddHandler(MorlinCaan, GameObjectEvent.Interact, new CoreEventHandler(TalkToMorlinCaan));
+			GameEventMgr.AddHandler(MorlinCaan, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMorlinCaan));
 
 			/* Now we bring to Masrim the possibility to give this quest to players */
 			Masrim.AddQuestToGive(typeof (Rogue_50));
@@ -795,26 +795,26 @@ namespace DOL.GS.Quests.Midgard
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (Masrim == null || MorlinCaan == null)
 				return;
 			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Masrim, GameObjectEvent.Interact, new DOLEventHandler(TalkToMasrim));
-			GameEventMgr.RemoveHandler(Masrim, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToMasrim));
+			GameEventMgr.RemoveHandler(Masrim, GameObjectEvent.Interact, new CoreEventHandler(TalkToMasrim));
+			GameEventMgr.RemoveHandler(Masrim, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMasrim));
 
-			GameEventMgr.RemoveHandler(MorlinCaan, GameObjectEvent.Interact, new DOLEventHandler(TalkToMorlinCaan));
-			GameEventMgr.RemoveHandler(MorlinCaan, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToMorlinCaan));
+			GameEventMgr.RemoveHandler(MorlinCaan, GameObjectEvent.Interact, new CoreEventHandler(TalkToMorlinCaan));
+			GameEventMgr.RemoveHandler(MorlinCaan, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMorlinCaan));
 
 			/* Now we remove to Masrim the possibility to give this quest to players */
 			Masrim.RemoveQuestToGive(typeof (Rogue_50));
 		}
 
-		protected static void TalkToMasrim(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToMasrim(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -896,7 +896,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 
-		protected static void TalkToMorlinCaan(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToMorlinCaan(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -1012,7 +1012,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -1073,7 +1073,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 

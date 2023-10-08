@@ -34,7 +34,7 @@ namespace DOL.GS.Behaviour.Actions
 		public MoveToAction(GameNPC defaultNPC, GameLocation location, GameLiving npc)
 			: this(defaultNPC, (object)location,(object) npc) { }
 		
-		public override void Perform(DOLEvent e, object sender, EventArgs args)
+		public override void Perform(CoreEvent e, object sender, EventArgs args)
 		{
 			GameLiving npc = Q;
 

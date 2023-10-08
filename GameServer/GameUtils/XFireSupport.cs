@@ -8,20 +8,20 @@ namespace DOL.GS.GameEvents
 		private const string XFire_Property_Flag = "XFire_Property_Flag";
 
 		[GameServerStartedEvent]
-		public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)
+		public static void OnServerStart(CoreEvent e, object sender, EventArgs arguments)
 		{
-			GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
-			GameEventMgr.AddHandler(GamePlayerEvent.Quit, new DOLEventHandler(PlayerQuit));
+			GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEntered));
+			GameEventMgr.AddHandler(GamePlayerEvent.Quit, new CoreEventHandler(PlayerQuit));
 		}
 
 		[GameServerStoppedEvent]
-		public static void OnServerStop(DOLEvent e, object sender, EventArgs arguments)
+		public static void OnServerStop(CoreEvent e, object sender, EventArgs arguments)
 		{
-			GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.Quit, new DOLEventHandler(PlayerQuit));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEntered));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.Quit, new CoreEventHandler(PlayerQuit));
 		}
 
-		private static void PlayerEntered(DOLEvent e, object sender, EventArgs arguments)
+		private static void PlayerEntered(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GamePlayer player = sender as GamePlayer;
 			if (player == null) return;
@@ -32,7 +32,7 @@ namespace DOL.GS.GameEvents
 			player.Out.SendXFireInfo(flag);
 		}
 
-		private static void PlayerQuit(DOLEvent e, object sender, EventArgs arguments)
+		private static void PlayerQuit(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GamePlayer player = sender as GamePlayer;
 			if (player == null) return;

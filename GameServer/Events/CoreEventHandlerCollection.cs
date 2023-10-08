@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -27,7 +8,7 @@ namespace DOL.Events
 	/// The callback method for DOLEvents
 	/// </summary>
 	/// <remarks>Override the EventArgs class to give custom parameters</remarks>
-	public delegate void DOLEventHandler(DOLEvent e, object sender, EventArgs arguments);
+	public delegate void CoreEventHandler(CoreEvent e, object sender, EventArgs arguments);
 
 	/// <summary>
 	/// This class represents a collection of event handlers. You can add and remove
@@ -36,7 +17,7 @@ namespace DOL.Events
 	/// </summary>
 	/// <remarks>This class is lazy initialized, meaning as long as you don't add any
 	/// handlers, the memory usage will be very low!</remarks>
-	public sealed class DOLEventHandlerCollection
+	public sealed class CoreEventHandlerCollection
 	{
 		/// <summary>
 		/// How long to wait for a lock acquisition before failing.
@@ -46,9 +27,9 @@ namespace DOL.Events
 		/// <summary>
 		/// Holds a mapping of any delegates bound to any DOLEvent
 		/// </summary>
-		private readonly Dictionary<DOLEvent, WeakMulticastDelegate> _events;
+		private readonly Dictionary<CoreEvent, WeakMulticastDelegate> _events;
 
-		public WeakMulticastDelegate GetEventDelegate(DOLEvent e)
+		public WeakMulticastDelegate GetEventDelegate(CoreEvent e)
 		{
 			if (_events.ContainsKey(e))
 				return _events[e];
@@ -69,10 +50,10 @@ namespace DOL.Events
 		/// <summary>
 		/// Constructs a new DOLEventHandler collection
 		/// </summary>
-		public DOLEventHandlerCollection()
+		public CoreEventHandlerCollection()
 		{
 			_lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-			_events = new Dictionary<DOLEvent, WeakMulticastDelegate>();
+			_events = new Dictionary<CoreEvent, WeakMulticastDelegate>();
 		}
 
 		/// <summary>
@@ -80,7 +61,7 @@ namespace DOL.Events
 		/// </summary>
 		/// <param name="e">The event from which we add a handler</param>
 		/// <param name="del">The callback method</param>
-		public void AddHandler(DOLEvent e, DOLEventHandler del)
+		public void AddHandler(CoreEvent e, CoreEventHandler del)
 		{
 			if(_lock.TryEnterWriteLock(LOCK_TIMEOUT))
 			{
@@ -109,7 +90,7 @@ namespace DOL.Events
 		/// </summary>
 		/// <param name="e">The event from which we add a handler</param>
 		/// <param name="del">The callback method</param>
-		public void AddHandlerUnique(DOLEvent e, DOLEventHandler del)
+		public void AddHandlerUnique(CoreEvent e, CoreEventHandler del)
 		{
 			if(_lock.TryEnterWriteLock(LOCK_TIMEOUT))
 			{
@@ -138,7 +119,7 @@ namespace DOL.Events
 		/// </summary>
 		/// <param name="e">The event from which to remove the handler</param>
 		/// <param name="del">The callback method to remove</param>
-		public void RemoveHandler(DOLEvent e, DOLEventHandler del)
+		public void RemoveHandler(CoreEvent e, CoreEventHandler del)
 		{
 			if(_lock.TryEnterWriteLock(LOCK_TIMEOUT))
 			{
@@ -171,7 +152,7 @@ namespace DOL.Events
 		/// Removes all callback handlers for a given event
 		/// </summary>
 		/// <param name="e">The event from which to remove all handlers</param>
-		public void RemoveAllHandlers(DOLEvent e)
+		public void RemoveAllHandlers(CoreEvent e)
 		{
 			if(_lock.TryEnterWriteLock(LOCK_TIMEOUT))
 			{
@@ -208,7 +189,7 @@ namespace DOL.Events
 		/// Notifies all registered event handlers of the occurance of an event!
 		/// </summary>
 		/// <param name="e">The event that occured</param>
-		public void Notify(DOLEvent e)
+		public void Notify(CoreEvent e)
 		{
 			Notify(e, null, null);
 		}
@@ -219,7 +200,7 @@ namespace DOL.Events
 		/// </summary>
 		/// <param name="e">The event that occured</param>
 		/// <param name="sender">The sender of this event</param>
-		public void Notify(DOLEvent e, object sender)
+		public void Notify(CoreEvent e, object sender)
 		{
 			Notify(e, sender, null);
 		}
@@ -229,7 +210,7 @@ namespace DOL.Events
 		/// </summary>
 		/// <param name="e">The event that occured</param>
 		/// <param name="args">The event arguments</param>
-		public void Notify(DOLEvent e, EventArgs args)
+		public void Notify(CoreEvent e, EventArgs args)
 		{
 			Notify(e, null, args);
 		}
@@ -241,7 +222,7 @@ namespace DOL.Events
 		/// <param name="sender">The sender of this event</param>
 		/// <param name="eArgs">The event arguments</param>
 		/// <remarks>Overwrite the EventArgs class to set own arguments</remarks>
-		public void Notify(DOLEvent e, object sender, EventArgs eArgs)
+		public void Notify(CoreEvent e, object sender, EventArgs eArgs)
 		{
 			WeakMulticastDelegate eventDelegate = null;
 

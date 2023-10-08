@@ -205,7 +205,7 @@ namespace DOL.GS.RealmAbilities
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected virtual void OnAttacked(DOLEvent e, object sender, EventArgs arguments)
+		protected virtual void OnAttacked(CoreEvent e, object sender, EventArgs arguments)
 		{
 			AttackedByEnemyEventArgs attackArgs = arguments as AttackedByEnemyEventArgs;
 			GameLiving living = sender as GameLiving;

@@ -76,7 +76,7 @@ namespace DOL.GS.Scripts
 					eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 			}
 		[ScriptLoadedEvent]
-        public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
         {
             log.Info("\tTeleporter initialized: true");
         }	

@@ -31,7 +31,7 @@ namespace DOL.GS.Appeal
 
 		#region Initialisation/Unloading
 		[ScriptLoadedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.DISABLE_APPEALSYSTEM)
 			{
@@ -39,21 +39,21 @@ namespace DOL.GS.Appeal
 				//Register and load the DB.
 				//Obsolete with GSS Table Registering in SVN : 3337
 				//GameServer.Database.RegisterDataObject(typeof(DBAppeal));
-				GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEnter));
-				GameEventMgr.AddHandler(GamePlayerEvent.Quit, new DOLEventHandler(PlayerQuit));
-				GameEventMgr.AddHandler(GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerQuit));
+				GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEnter));
+				GameEventMgr.AddHandler(GamePlayerEvent.Quit, new CoreEventHandler(PlayerQuit));
+				GameEventMgr.AddHandler(GamePlayerEvent.Linkdeath, new CoreEventHandler(PlayerQuit));
 				m_timer = new Timer(new TimerCallback(RunTask), m_timer, 0, m_CallbackFrequency);
 			}
 		}
 
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.DISABLE_APPEALSYSTEM)
 			{
-				GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEnter));
-				GameEventMgr.RemoveHandler(GamePlayerEvent.Quit, new DOLEventHandler(PlayerQuit));
-				GameEventMgr.RemoveHandler(GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerQuit));
+				GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEnter));
+				GameEventMgr.RemoveHandler(GamePlayerEvent.Quit, new CoreEventHandler(PlayerQuit));
+				GameEventMgr.RemoveHandler(GamePlayerEvent.Linkdeath, new CoreEventHandler(PlayerQuit));
 				RunTask(null);
 			}
 		}
@@ -296,7 +296,7 @@ namespace DOL.GS.Appeal
 
 		#region Player enter
 
-		public static void PlayerEnter(DOLEvent e, object sender, EventArgs args)
+		public static void PlayerEnter(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 			if (player == null) { return; }
@@ -335,7 +335,7 @@ namespace DOL.GS.Appeal
 		#endregion
 
 		#region Player quit
-		public static void PlayerQuit(DOLEvent e, object sender, EventArgs args)
+		public static void PlayerQuit(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 			if (player == null)

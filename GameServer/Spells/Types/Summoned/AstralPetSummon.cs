@@ -40,14 +40,14 @@ namespace DOL.GS.Spells
         protected override IControlledBrain GetPetBrain(GameLiving owner) { return new ProcPetBrain(owner); }
         protected override void SetBrainToOwner(IControlledBrain brain) {}
 
-        protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
+        protected override void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments)
         {
             if (!(sender is GameNPC) || !((sender as GameNPC).Brain is IControlledBrain))
                 return;
             GameNPC pet = sender as GameNPC;
             IControlledBrain brain = pet.Brain as IControlledBrain;
 
-            GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
+            GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new CoreEventHandler(OnNpcReleaseCommand));
 
             DOL.GS.Effects.GameSpellEffect effect = FindEffectOnTarget(pet, this);
             if (effect != null)

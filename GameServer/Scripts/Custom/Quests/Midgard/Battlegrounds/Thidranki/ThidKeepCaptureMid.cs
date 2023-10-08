@@ -53,7 +53,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		}
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -107,11 +107,11 @@ namespace DOL.GS.DailyQuest.Midgard
 			#region defineObject
 			#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(PazzMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-			GameEventMgr.AddHandler(PazzMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+			GameEventMgr.AddHandler(PazzMid, GameObjectEvent.Interact, new CoreEventHandler(TalkToHerou));
+			GameEventMgr.AddHandler(PazzMid, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToHerou));
 
 			/* Now we bring to Herou the possibility to give this quest to players */
 			PazzMid.AddQuestToGive(typeof (ThidKeepCaptureMid));
@@ -121,23 +121,23 @@ namespace DOL.GS.DailyQuest.Midgard
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (PazzMid == null)
 				return;
 			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(PazzMid, GameObjectEvent.Interact, new DOLEventHandler(TalkToHerou));
-			GameEventMgr.RemoveHandler(PazzMid, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHerou));
+			GameEventMgr.RemoveHandler(PazzMid, GameObjectEvent.Interact, new CoreEventHandler(TalkToHerou));
+			GameEventMgr.RemoveHandler(PazzMid, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToHerou));
 
 			/* Now we remove to Herou the possibility to give this quest to players */
 			PazzMid.RemoveQuestToGive(typeof (ThidKeepCaptureMid));
 		}
 
-		private static void TalkToHerou(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToHerou(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -239,7 +239,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			}
 		}
 
-		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -299,7 +299,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			}
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 

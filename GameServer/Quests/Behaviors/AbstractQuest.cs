@@ -213,7 +213,7 @@ namespace DOL.GS.Quests
             m_questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.AbortQuest"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
 
-        public abstract void Notify(DOLEvent e, object sender, EventArgs args);
+        public abstract void Notify(CoreEvent e, object sender, EventArgs args);
 
         public virtual void OnQuestAssigned(GamePlayer player)
         {
@@ -296,9 +296,9 @@ namespace DOL.GS.Quests
         {
             if (player != null)
             {
-                GameEventMgr.AddHandler(player, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(InterruptAction));
-                GameEventMgr.AddHandler(player, GameLivingEvent.Dying, new DOLEventHandler(InterruptAction));
-                GameEventMgr.AddHandler(player, GameLivingEvent.AttackFinished, new DOLEventHandler(InterruptAction));
+                GameEventMgr.AddHandler(player, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(InterruptAction));
+                GameEventMgr.AddHandler(player, GameLivingEvent.Dying, new CoreEventHandler(InterruptAction));
+                GameEventMgr.AddHandler(player, GameLivingEvent.AttackFinished, new CoreEventHandler(InterruptAction));
             }
         }
 
@@ -306,13 +306,13 @@ namespace DOL.GS.Quests
         {
             if (player != null)
             {
-                GameEventMgr.RemoveHandler(player, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(InterruptAction));
-                GameEventMgr.RemoveHandler(player, GameLivingEvent.Dying, new DOLEventHandler(InterruptAction));
-                GameEventMgr.RemoveHandler(player, GameLivingEvent.AttackFinished, new DOLEventHandler(InterruptAction));
+                GameEventMgr.RemoveHandler(player, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(InterruptAction));
+                GameEventMgr.RemoveHandler(player, GameLivingEvent.Dying, new CoreEventHandler(InterruptAction));
+                GameEventMgr.RemoveHandler(player, GameLivingEvent.AttackFinished, new CoreEventHandler(InterruptAction));
             }
         }
 
-        protected void InterruptAction(DOLEvent e, object sender, EventArgs args)
+        protected void InterruptAction(CoreEvent e, object sender, EventArgs args)
         {
             if (sender is GamePlayer player)
             {

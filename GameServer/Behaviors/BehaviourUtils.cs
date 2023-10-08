@@ -174,7 +174,7 @@ namespace DOL.GS.Behaviour
             return message;
         }
 
-        public static GamePlayer GuessGamePlayerFromNotify(DOLEvent e, object sender, EventArgs args)
+        public static GamePlayer GuessGamePlayerFromNotify(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = null;
             if (sender is GamePlayer)

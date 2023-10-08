@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -47,16 +28,16 @@ namespace DOL.Events
 		/// <summary>
 		/// Holds a list of event handler collections for single gameobjects
 		/// </summary>
-		protected static Dictionary<object, DOLEventHandlerCollection> m_gameObjectEventCollections;
+		protected static Dictionary<object, CoreEventHandlerCollection> m_gameObjectEventCollections;
 
 		public static int NumObjectHandlers
 		{
 			get
 			{
 				int numHandlers = 0;
-				Dictionary<object, DOLEventHandlerCollection> cloneGameObjectEventCollections = new Dictionary<object,DOLEventHandlerCollection>(m_gameObjectEventCollections);
+				Dictionary<object, CoreEventHandlerCollection> cloneGameObjectEventCollections = new Dictionary<object,CoreEventHandlerCollection>(m_gameObjectEventCollections);
 
-				foreach (DOLEventHandlerCollection handler in cloneGameObjectEventCollections.Values)
+				foreach (CoreEventHandlerCollection handler in cloneGameObjectEventCollections.Values)
 				{
 					numHandlers += handler.Count;
 				}
@@ -65,9 +46,9 @@ namespace DOL.Events
 			}
 		}
 
-		private readonly DOLEventHandlerCollection m_globalHandlerCollection;
+		private readonly CoreEventHandlerCollection m_globalHandlerCollection;
 
-		public static DOLEventHandlerCollection GlobalHandlerCollection => soleInstance.m_globalHandlerCollection;
+		public static CoreEventHandlerCollection GlobalHandlerCollection => soleInstance.m_globalHandlerCollection;
 
 		/// <summary>
 		/// Get the number of global event handlers
@@ -87,8 +68,8 @@ namespace DOL.Events
 		protected GameEventMgr()
 		{
 			m_lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-			m_gameObjectEventCollections = new Dictionary<object, DOLEventHandlerCollection>();
-			m_globalHandlerCollection = new DOLEventHandlerCollection();
+			m_gameObjectEventCollections = new Dictionary<object, CoreEventHandlerCollection>();
+			m_globalHandlerCollection = new CoreEventHandlerCollection();
 		}
 
 		/// <summary>
@@ -98,7 +79,7 @@ namespace DOL.Events
 		/// <param name="attribute">The custom attribute to search for</param>
 		/// <param name="e">The event to register in case the custom attribute is found</param>
 		/// <exception cref="ArgumentNullException">If one of the parameters is null</exception>
-		public static void RegisterGlobalEvents(Assembly asm, Type attribute, DOLEvent e)
+		public static void RegisterGlobalEvents(Assembly asm, Type attribute, CoreEvent e)
 		{
 			if(asm == null)
 				throw new ArgumentNullException("asm", "No assembly given to search for global event handlers!");
@@ -119,7 +100,7 @@ namespace DOL.Events
 					{
 						try
 						{
-							GlobalHandlerCollection.AddHandler(e, (DOLEventHandler) Delegate.CreateDelegate(typeof(DOLEventHandler), mInfo));
+							GlobalHandlerCollection.AddHandler(e, (CoreEventHandler) Delegate.CreateDelegate(typeof(CoreEventHandler), mInfo));
 						}
 						catch(Exception ex)
 						{
@@ -140,7 +121,7 @@ namespace DOL.Events
 		/// <param name="e">The event type to register for</param>
 		/// <param name="del">The event handler to register for this event type</param>
 		/// <exception cref="ArgumentNullException">If one of the parameters is null</exception>
-		public static void AddHandler(DOLEvent e, DOLEventHandler del)
+		public static void AddHandler(CoreEvent e, CoreEventHandler del)
 		{
 			AddHandler(e, del, false);
 		}
@@ -155,7 +136,7 @@ namespace DOL.Events
 		/// <param name="e">The event type to register for</param>
 		/// <param name="del">The event handler to register for this event type</param>
 		/// <exception cref="ArgumentNullException">If one of the parameters is null</exception>
-		public static void AddHandlerUnique(DOLEvent e, DOLEventHandler del)
+		public static void AddHandlerUnique(CoreEvent e, CoreEventHandler del)
 		{
 			AddHandler(e, del, true);
 		}
@@ -170,7 +151,7 @@ namespace DOL.Events
 		/// <param name="e">The event type to register for</param>
 		/// <param name="del">The event handler to register for this event type</param>
 		/// <exception cref="ArgumentNullException">If one of the parameters is null</exception>
-		public static void AddHandlerUnique(object obj, DOLEvent e, DOLEventHandler del)
+		public static void AddHandlerUnique(object obj, CoreEvent e, CoreEventHandler del)
 		{
 			AddHandler(obj, e, del, true);
 		}
@@ -185,7 +166,7 @@ namespace DOL.Events
 		/// <param name="del">The event handler to register for this event type</param>
 		/// <param name="unique">Flag wether event shall be added unique or not</param>
 		/// <exception cref="ArgumentNullException">If one of the parameters is null</exception>
-		private static void AddHandler(DOLEvent e, DOLEventHandler del, bool unique)
+		private static void AddHandler(CoreEvent e, CoreEventHandler del, bool unique)
 		{
 			if(e == null)
 				throw new ArgumentNullException("e", "No event type given!");
@@ -219,7 +200,7 @@ namespace DOL.Events
 		/// <param name="e">The event type to register for</param>
 		/// <param name="del">The event handler to register for this event type</param>
 		/// <exception cref="ArgumentNullException">If one of the parameters is null</exception>
-		public static void AddHandler(object obj, DOLEvent e, DOLEventHandler del)
+		public static void AddHandler(object obj, CoreEvent e, CoreEventHandler del)
 		{
 			AddHandler(obj, e, del, false);
 		}
@@ -241,7 +222,7 @@ namespace DOL.Events
 		/// <param name="del">The event handler to register for this event type</param>
 		/// <param name="unique">Flag wether event shall be added unique or not</param>
 		/// <exception cref="ArgumentNullException">If one of the parameters is null</exception>
-		private static void AddHandler(object obj, DOLEvent e, DOLEventHandler del, bool unique)
+		private static void AddHandler(object obj, CoreEvent e, CoreEventHandler del, bool unique)
 		{
 			if(obj == null)
 				throw new ArgumentNullException("obj", "No object given!");
@@ -259,11 +240,11 @@ namespace DOL.Events
 			{
 				try
 				{
-					DOLEventHandlerCollection col;
+					CoreEventHandlerCollection col;
 
 					if(!m_gameObjectEventCollections.TryGetValue(obj, out col))
 					{
-						col = new DOLEventHandlerCollection();
+						col = new CoreEventHandlerCollection();
 
 						if (Lock.TryEnterWriteLock(LOCK_TIMEOUT))
 						{
@@ -305,7 +286,7 @@ namespace DOL.Events
 		/// <param name="e">The event type from which to deregister</param>
 		/// <param name="del">The event handler to deregister for this event type</param>
 		/// <exception cref="ArgumentNullException">If one of the parameters is null</exception>
-		public static void RemoveHandler(DOLEvent e, DOLEventHandler del)
+		public static void RemoveHandler(CoreEvent e, CoreEventHandler del)
 		{
 			if(e == null)
 				throw new ArgumentNullException("e", "No event type given!");
@@ -325,7 +306,7 @@ namespace DOL.Events
 		/// <param name="e">The event type from which to deregister</param>
 		/// <param name="del">The event handler to deregister for this event type</param>
 		/// <exception cref="ArgumentNullException">If one of the parameters is null</exception>
-		public static void RemoveHandler(object obj, DOLEvent e, DOLEventHandler del)
+		public static void RemoveHandler(object obj, CoreEvent e, CoreEventHandler del)
 		{
 			if(obj == null)
 				throw new ArgumentNullException("obj", "No object given!");
@@ -336,7 +317,7 @@ namespace DOL.Events
 			if(del == null)
 				throw new ArgumentNullException("del", "No event handler given!");
 
-			DOLEventHandlerCollection col = null;
+			CoreEventHandlerCollection col = null;
 
 			if (Lock.TryEnterReadLock(LOCK_TIMEOUT))
 			{
@@ -367,7 +348,7 @@ namespace DOL.Events
 				throw new ArgumentNullException("obj", "No object given!");
 			}
 
-			DOLEventHandlerCollection col = null;
+			CoreEventHandlerCollection col = null;
 
 			if (Lock.TryEnterReadLock(LOCK_TIMEOUT))
 			{
@@ -442,7 +423,7 @@ namespace DOL.Events
 		/// </summary>
 		/// <param name="e">The event type that occured</param>
 		/// <exception cref="ArgumentNullException">If no event type given</exception>
-		public static void Notify(DOLEvent e)
+		public static void Notify(CoreEvent e)
 		{
 			Notify(e, null, null);
 		}
@@ -454,7 +435,7 @@ namespace DOL.Events
 		/// <param name="e">The event type that occured</param>
 		/// <param name="sender">The sender of this event</param>
 		/// <exception cref="ArgumentNullException">If no event type given</exception>
-		public static void Notify(DOLEvent e, object sender)
+		public static void Notify(CoreEvent e, object sender)
 		{
 			Notify(e, sender, null);
 		}
@@ -466,7 +447,7 @@ namespace DOL.Events
 		/// <param name="e">The event type that occured</param>
 		/// <param name="args">The event arguments</param>
 		/// <exception cref="ArgumentNullException">If no event type given</exception>
-		public static void Notify(DOLEvent e, EventArgs args)
+		public static void Notify(CoreEvent e, EventArgs args)
 		{
 			Notify(e, null, args);
 		}
@@ -480,7 +461,7 @@ namespace DOL.Events
 		/// <param name="eArgs">The event arguments</param>
 		/// <exception cref="ArgumentNullException">If no event type given</exception>
 		/// <remarks>Overwrite the EventArgs class to set own arguments</remarks>
-		public static void Notify(DOLEvent e, object sender, EventArgs eArgs)
+		public static void Notify(CoreEvent e, object sender, EventArgs eArgs)
 		{
 			if(e == null)
 				throw new ArgumentNullException("e", "No event type given!");
@@ -491,7 +472,7 @@ namespace DOL.Events
 			// notify handlers bounded specifically to the sender
 			if (sender != null)
 			{
-				DOLEventHandlerCollection col;
+				CoreEventHandlerCollection col;
 
 				if(Lock.TryEnterReadLock(LOCK_TIMEOUT))
 				{

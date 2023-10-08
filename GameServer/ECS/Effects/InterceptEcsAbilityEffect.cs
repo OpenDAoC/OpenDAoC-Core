@@ -102,7 +102,7 @@ namespace DOL.GS
 			{
 				m_group = ((GamePlayer)InterceptSource).Group;
 				if (m_group == null) return;
-				GameEventMgr.AddHandler(m_group, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
+				GameEventMgr.AddHandler(m_group, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback));
 			}
 			//m_interceptSource = interceptor;
 			//m_owner = m_interceptSource;
@@ -137,7 +137,7 @@ namespace DOL.GS
 			if (InterceptSource is GamePlayer && InterceptTarget is GamePlayer)
 			{
 				if (m_group != null)
-					GameEventMgr.RemoveHandler(m_group, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
+					GameEventMgr.RemoveHandler(m_group, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback));
 				m_group = null;
 			}
 
@@ -162,7 +162,7 @@ namespace DOL.GS
 		/// <param name="e"></param>
 		/// <param name="sender">The group</param>
 		/// <param name="args"></param>
-		protected void GroupDisbandCallback(DOLEvent e, object sender, EventArgs args)
+		protected void GroupDisbandCallback(CoreEvent e, object sender, EventArgs args)
 		{
 			MemberDisbandedEventArgs eArgs = args as MemberDisbandedEventArgs;
 			if (eArgs == null) return;

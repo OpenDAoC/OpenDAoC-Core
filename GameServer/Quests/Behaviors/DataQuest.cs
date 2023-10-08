@@ -336,10 +336,10 @@ namespace DOL.GS.Quests
 		}
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(RewardQuestNotify));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(RewardQuestNotify));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(RewardQuestNotify));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(RewardQuestNotify));
 		}
 
 
@@ -1771,7 +1771,7 @@ namespace DOL.GS.Quests
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			// log.DebugFormat("DataQuest: Notify {0}, m_questPlayer {1}", e.Name, m_questPlayer == null ? "null" : m_questPlayer.Name);
 
@@ -1924,7 +1924,7 @@ namespace DOL.GS.Quests
             }
 		}
 
-		public static void RewardQuestNotify(DOLEvent e, object sender, EventArgs args)
+		public static void RewardQuestNotify(CoreEvent e, object sender, EventArgs args)
 		{
 			// Reward Quest accept
 			if (e == GamePlayerEvent.AcceptQuest)

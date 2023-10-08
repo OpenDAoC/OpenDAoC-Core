@@ -227,6 +227,6 @@ namespace DOL.GS.Behaviour
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        bool Check(DOLEvent e, object sender, EventArgs args);
+        bool Check(CoreEvent e, object sender, EventArgs args);
     }
 }

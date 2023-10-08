@@ -84,7 +84,7 @@ namespace DOL.GS.Commands
         private static byte[] slots = { 0x15, 0x16, 0x1C, 0x19, 0x1B, 0x17, 0x1A, 0x0A, 0x0B, 0x0C, 0x0D };
 
         [ScriptLoadedEvent]
-        public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
         {
             IList<DbItemTemplate> temp; 
             int[] ot = { 32, 33, 34, 35, 38, 36 };

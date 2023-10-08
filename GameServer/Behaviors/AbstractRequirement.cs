@@ -167,7 +167,7 @@ namespace DOL.GS.Behaviour
             return true;
         }
 
-        public abstract bool Check(DOLEvent e, object sender, EventArgs args);
+        public abstract bool Check(CoreEvent e, object sender, EventArgs args);
 
         /// <summary>
         /// Compares value1 with value2 

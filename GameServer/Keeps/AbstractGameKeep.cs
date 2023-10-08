@@ -443,7 +443,7 @@ namespace DOL.GS.Keeps
 			CurrentRegion = WorldMgr.GetRegion((ushort)keep.Region);
 			InitialiseTimers();
 			LoadFromDatabase(keep);
-			GameEventMgr.AddHandler(CurrentRegion, RegionEvent.PlayerEnter, new DOLEventHandler(SendKeepInit));
+			GameEventMgr.AddHandler(CurrentRegion, RegionEvent.PlayerEnter, new CoreEventHandler(SendKeepInit));
 			KeepArea area = null;
 			//see if any keep areas for this keep have already been added via DBArea
 			foreach (AbstractArea a in CurrentRegion.GetAreasOfSpot(keep.X, keep.Y, keep.Z))
@@ -508,7 +508,7 @@ namespace DOL.GS.Keeps
 			}
 
 			UnloadTimers();
-			GameEventMgr.RemoveHandler(CurrentRegion, RegionEvent.PlayerEnter, new DOLEventHandler(SendKeepInit));
+			GameEventMgr.RemoveHandler(CurrentRegion, RegionEvent.PlayerEnter, new CoreEventHandler(SendKeepInit));
 			if (area != null)
 			{
 				CurrentRegion.RemoveArea(area);
@@ -1186,7 +1186,7 @@ namespace DOL.GS.Keeps
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		protected void SendKeepInit(DOLEvent e, object sender, EventArgs args)
+		protected void SendKeepInit(CoreEvent e, object sender, EventArgs args)
 		{
 			RegionPlayerEventArgs regionPlayerEventArgs = args as RegionPlayerEventArgs;
 			GamePlayer player = regionPlayerEventArgs.Player;

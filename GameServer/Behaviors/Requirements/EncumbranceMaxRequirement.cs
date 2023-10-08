@@ -66,7 +66,7 @@ namespace DOL.GS.Behaviour.Requirements
         /// <param name="sender">GamePlayer this call is related to, can be null</param>
         /// <param name="args">EventArgs of notify call</param>
         /// <returns>true if all Requirements fordefaultNPC where fullfilled, else false</returns>
-		public override bool Check(DOLEvent e, object sender, EventArgs args)
+		public override bool Check(CoreEvent e, object sender, EventArgs args)
 		{
 			bool result = true;
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);

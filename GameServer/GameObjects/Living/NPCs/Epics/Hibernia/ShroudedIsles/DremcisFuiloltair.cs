@@ -11,7 +11,7 @@ namespace DOL.GS
 		public DremcisFuiloltair() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Dremcis Fuiloltair Initializing...");
@@ -202,7 +202,7 @@ namespace DOL.GS
 		public Beomarbhan() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Beomarbhan Initializing...");

@@ -4651,7 +4651,7 @@ namespace DOL.GS
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			if (e == GameLivingEvent.Interrupted && args != null)
 			{

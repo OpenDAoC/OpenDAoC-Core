@@ -277,6 +277,6 @@ namespace DOL.GS.Behaviour
         /// <param name="e">DolEvent of notify call</param>
         /// <param name="sender">Sender of notify call</param>
         /// <param name="args">EventArgs of notify call</param>        
-        void Perform(DOLEvent e, object sender, EventArgs args);
+        void Perform(CoreEvent e, object sender, EventArgs args);
     }
 }

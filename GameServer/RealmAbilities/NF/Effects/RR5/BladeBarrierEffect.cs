@@ -25,14 +25,14 @@ namespace DOL.GS.Effects
 			}
             //Commented out for removal: Parry Chance for BladeBarrier is hardcoded in GameLiving.cs in the CalculateEnemyAttackResult method
 			//m_owner.BuffBonusCategory4[(int)eProperty.ParryChance] += 90;
-			GameEventMgr.AddHandler(target, GameLivingEvent.AttackFinished, new DOLEventHandler(attackEventHandler));
-            GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(TakeDamage));
+			GameEventMgr.AddHandler(target, GameLivingEvent.AttackFinished, new CoreEventHandler(attackEventHandler));
+            GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(TakeDamage));
 
 		}
 
         //[StephenxPimentel]
         //1.108 All Damage Recieved while this effect is active is reduced by 25%.
-        public void TakeDamage(DOLEvent e, object sender, EventArgs args)
+        public void TakeDamage(CoreEvent e, object sender, EventArgs args)
         {
             if (sender is GameLiving)
             {
@@ -50,7 +50,7 @@ namespace DOL.GS.Effects
                 eDmg.AttackData.StyleDamage -= ((eDmg.AttackData.StyleDamage * 25) / 100);
             }
         }
-		protected void attackEventHandler(DOLEvent e, object sender, EventArgs args)
+		protected void attackEventHandler(CoreEvent e, object sender, EventArgs args)
 		{
 			if (args == null) return;
 			AttackFinishedEventArgs ag = args as AttackFinishedEventArgs;

@@ -43,18 +43,18 @@ namespace DOL.GS.GameEvents
 		public static string GIVE_DOL_RESPEC_AT_LEVEL;
 		
 		[ScriptLoadedEvent]
-		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.AddHandler(GamePlayerEvent.LevelUp, new DOLEventHandler(OnLevelUp));
+			GameEventMgr.AddHandler(GamePlayerEvent.LevelUp, new CoreEventHandler(OnLevelUp));
 			
 			if (log.IsInfoEnabled)
 				log.Info("Level Up Respec Gift initialized");
 		}
 
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.RemoveHandler(GamePlayerEvent.LevelUp, new DOLEventHandler(OnLevelUp));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.LevelUp, new CoreEventHandler(OnLevelUp));
 		}
 		
 		/// <summary>
@@ -63,7 +63,7 @@ namespace DOL.GS.GameEvents
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public static void OnLevelUp(DOLEvent e, object sender, EventArgs args)
+		public static void OnLevelUp(CoreEvent e, object sender, EventArgs args)
 		{
 			var player = sender as GamePlayer;
 			

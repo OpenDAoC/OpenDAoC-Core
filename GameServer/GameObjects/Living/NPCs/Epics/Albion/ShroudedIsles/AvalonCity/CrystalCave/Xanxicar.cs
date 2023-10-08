@@ -17,7 +17,7 @@ namespace DOL.GS
 				"A glowing light begins to form on the mound that served as {0}'s lair." };
 		}
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Xanxicar Initializing...");

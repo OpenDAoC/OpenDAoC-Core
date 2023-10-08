@@ -73,16 +73,16 @@ namespace DOL.GS.Spells
 				player.Out.SendUpdateWeaponAndArmorStats();
 				player.Out.SendCharResistsUpdate();
 				
-				GameEventMgr.AddHandler(player,GamePlayerEvent.Linkdeath, new DOLEventHandler(EventAction));
-				GameEventMgr.AddHandler(player,GamePlayerEvent.Quit, new DOLEventHandler(EventAction));
-				GameEventMgr.AddHandler(player,GamePlayerEvent.RegionChanged, new DOLEventHandler(EventAction));
-				GameEventMgr.AddHandler(player,GameLivingEvent.Dying, new DOLEventHandler(EventAction));
+				GameEventMgr.AddHandler(player,GamePlayerEvent.Linkdeath, new CoreEventHandler(EventAction));
+				GameEventMgr.AddHandler(player,GamePlayerEvent.Quit, new CoreEventHandler(EventAction));
+				GameEventMgr.AddHandler(player,GamePlayerEvent.RegionChanged, new CoreEventHandler(EventAction));
+				GameEventMgr.AddHandler(player,GameLivingEvent.Dying, new CoreEventHandler(EventAction));
 			}
 
 			base.OnEffectStart(effect);
 		}
 		
-		public void EventAction(DOLEvent e, object sender, EventArgs arguments)
+		public void EventAction(CoreEvent e, object sender, EventArgs arguments)
 		{
             if(player== null) return;
 			RemoveEffect();
@@ -111,10 +111,10 @@ namespace DOL.GS.Spells
 			player.Out.SendUpdateWeaponAndArmorStats();
 			player.Out.SendCharResistsUpdate();
 			
-			GameEventMgr.RemoveHandler(player,GamePlayerEvent.Linkdeath, new DOLEventHandler(EventAction));
-			GameEventMgr.RemoveHandler(player,GamePlayerEvent.Quit, new DOLEventHandler(EventAction));
-			GameEventMgr.RemoveHandler(player,GamePlayerEvent.RegionChanged, new DOLEventHandler(EventAction));
-			GameEventMgr.RemoveHandler(player,GameLivingEvent.Dying, new DOLEventHandler(EventAction));
+			GameEventMgr.RemoveHandler(player,GamePlayerEvent.Linkdeath, new CoreEventHandler(EventAction));
+			GameEventMgr.RemoveHandler(player,GamePlayerEvent.Quit, new CoreEventHandler(EventAction));
+			GameEventMgr.RemoveHandler(player,GamePlayerEvent.RegionChanged, new CoreEventHandler(EventAction));
+			GameEventMgr.RemoveHandler(player,GameLivingEvent.Dying, new CoreEventHandler(EventAction));
 
 		}
 		

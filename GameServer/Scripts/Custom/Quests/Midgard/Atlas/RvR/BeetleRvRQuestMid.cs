@@ -67,7 +67,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 		}
 		
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -200,11 +200,11 @@ namespace DOL.GS.AtlasQuest.Midgard
 			#region defineObject
 			#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Rengahr, GameObjectEvent.Interact, new DOLEventHandler(TalkToHarris));
-			GameEventMgr.AddHandler(Rengahr, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHarris));
+			GameEventMgr.AddHandler(Rengahr, GameObjectEvent.Interact, new CoreEventHandler(TalkToHarris));
+			GameEventMgr.AddHandler(Rengahr, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToHarris));
 			
 			Rengahr.AddQuestToGive(typeof (BeetleRvRQuestMid));
 
@@ -213,22 +213,22 @@ namespace DOL.GS.AtlasQuest.Midgard
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (Rengahr == null)
 				return;
 			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Rengahr, GameObjectEvent.Interact, new DOLEventHandler(TalkToHarris));
-			GameEventMgr.RemoveHandler(Rengahr, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHarris));
+			GameEventMgr.RemoveHandler(Rengahr, GameObjectEvent.Interact, new CoreEventHandler(TalkToHarris));
+			GameEventMgr.RemoveHandler(Rengahr, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToHarris));
 
 			Rengahr.RemoveQuestToGive(typeof (BeetleRvRQuestMid));
 		}
 
-		private static void TalkToHarris(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToHarris(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -481,7 +481,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 			}
 		}
 
-		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -546,7 +546,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 			}
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 

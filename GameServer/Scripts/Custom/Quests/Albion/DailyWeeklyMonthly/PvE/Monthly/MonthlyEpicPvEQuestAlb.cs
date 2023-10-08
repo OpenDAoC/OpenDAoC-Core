@@ -58,7 +58,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 		}
 		
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -113,11 +113,11 @@ namespace DOL.GS.MonthlyQuest.Albion
 			#region defineObject
 			#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(James, GameObjectEvent.Interact, new DOLEventHandler(TalkToJames));
-			GameEventMgr.AddHandler(James, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJames));
+			GameEventMgr.AddHandler(James, GameObjectEvent.Interact, new CoreEventHandler(TalkToJames));
+			GameEventMgr.AddHandler(James, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToJames));
 			
 			James.AddQuestToGive(typeof (MonthlyEpicPvEQuestAlb));
 
@@ -126,22 +126,22 @@ namespace DOL.GS.MonthlyQuest.Albion
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (James == null)
 				return;
 			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(James, GameObjectEvent.Interact, new DOLEventHandler(TalkToJames));
-			GameEventMgr.RemoveHandler(James, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToJames));
+			GameEventMgr.RemoveHandler(James, GameObjectEvent.Interact, new CoreEventHandler(TalkToJames));
+			GameEventMgr.RemoveHandler(James, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToJames));
 
 			James.RemoveQuestToGive(typeof (MonthlyEpicPvEQuestAlb));
 		}
 
-		private static void TalkToJames(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToJames(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -244,7 +244,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 			}
 		}
 
-		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -306,7 +306,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 			}
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 

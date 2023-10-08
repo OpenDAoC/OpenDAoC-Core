@@ -182,7 +182,7 @@ namespace DOL.GS.Spells
         /// <param name="e"></param>
         /// <param name="sender"></param>
         /// <param name="arguments"></param>
-        protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+        protected override void EventHandler(CoreEvent e, object sender, EventArgs arguments)
         {
             AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
             if (args == null || args.AttackData == null)

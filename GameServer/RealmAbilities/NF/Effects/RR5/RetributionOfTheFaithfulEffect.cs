@@ -103,10 +103,10 @@ namespace DOL.GS.Effects
                 }
             }
 
-            GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+            GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
         }
 
-        private void OnAttack(DOLEvent e, object sender, EventArgs arguments)
+        private void OnAttack(CoreEvent e, object sender, EventArgs arguments)
         {
             if (arguments == null) return;
             AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
@@ -130,7 +130,7 @@ namespace DOL.GS.Effects
 
         public override void Stop()
         {
-            GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+            GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
             base.Stop();
         }
 

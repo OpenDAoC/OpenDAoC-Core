@@ -11,7 +11,7 @@ namespace DOL.GS
 		public DraargusMighty() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Dra'argus the Mighty Initializing...");
@@ -169,7 +169,7 @@ namespace DOL.GS
 		public DraugynSphere() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Drau'gyn Sphere Initializing...");

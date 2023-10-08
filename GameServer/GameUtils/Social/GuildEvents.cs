@@ -49,30 +49,30 @@ namespace DOL.GS
 		private static Timer m_timer;
 
 		[ScriptLoadedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.AddHandler(GamePlayerEvent.NextCraftingTierReached, new DOLEventHandler(OnNextCraftingTierReached));
+			GameEventMgr.AddHandler(GamePlayerEvent.NextCraftingTierReached, new CoreEventHandler(OnNextCraftingTierReached));
 			// GameEventMgr.AddHandler(GamePlayerEvent.GainedExperience, new DOLEventHandler(XPGain));
-			GameEventMgr.AddHandler(GamePlayerEvent.GainedRealmPoints, new DOLEventHandler(RealmPointsGain));
-			GameEventMgr.AddHandler(GamePlayerEvent.GainedBountyPoints, new DOLEventHandler(BountyPointsGain));
-			GameEventMgr.AddHandler(GamePlayerEvent.RRLevelUp, new DOLEventHandler(RealmRankUp));
-			GameEventMgr.AddHandler(GamePlayerEvent.RLLevelUp, new DOLEventHandler(RealmRankUp));
-			GameEventMgr.AddHandler(GamePlayerEvent.LevelUp, new DOLEventHandler(LevelUp));
+			GameEventMgr.AddHandler(GamePlayerEvent.GainedRealmPoints, new CoreEventHandler(RealmPointsGain));
+			GameEventMgr.AddHandler(GamePlayerEvent.GainedBountyPoints, new CoreEventHandler(BountyPointsGain));
+			GameEventMgr.AddHandler(GamePlayerEvent.RRLevelUp, new CoreEventHandler(RealmRankUp));
+			GameEventMgr.AddHandler(GamePlayerEvent.RLLevelUp, new CoreEventHandler(RealmRankUp));
+			GameEventMgr.AddHandler(GamePlayerEvent.LevelUp, new CoreEventHandler(LevelUp));
 
 			// Guild Buff Check
 			m_timer = new Timer(new TimerCallback(StartCheck), m_timer, 0, BUFFCHECK_INTERVAL);
 		}
 
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.RemoveHandler(GamePlayerEvent.NextCraftingTierReached, new DOLEventHandler(OnNextCraftingTierReached));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.GainedRealmPoints, new DOLEventHandler(RealmPointsGain));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.GainedBountyPoints, new DOLEventHandler(BountyPointsGain));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.NextCraftingTierReached, new CoreEventHandler(OnNextCraftingTierReached));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.GainedRealmPoints, new CoreEventHandler(RealmPointsGain));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.GainedBountyPoints, new CoreEventHandler(BountyPointsGain));
 			// GameEventMgr.RemoveHandler(GamePlayerEvent.GainedExperience, new DOLEventHandler(XPGain));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.RRLevelUp, new DOLEventHandler(RealmRankUp));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.RLLevelUp, new DOLEventHandler(RealmRankUp));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.LevelUp, new DOLEventHandler(LevelUp));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.RRLevelUp, new CoreEventHandler(RealmRankUp));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.RLLevelUp, new CoreEventHandler(RealmRankUp));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.LevelUp, new CoreEventHandler(LevelUp));
 
 			if (m_timer != null)
 			{
@@ -83,7 +83,7 @@ namespace DOL.GS
 
 		#region Crafting Tier
 
-		public static void OnNextCraftingTierReached(DOLEvent e, object sender, EventArgs args)
+		public static void OnNextCraftingTierReached(CoreEvent e, object sender, EventArgs args)
 		{
 			NextCraftingTierReachedEventArgs cea = args as NextCraftingTierReachedEventArgs;
 			GamePlayer player = sender as GamePlayer;
@@ -122,7 +122,7 @@ namespace DOL.GS
 
 		#region LevelUp
 
-		public static void LevelUp(DOLEvent e, object sender, EventArgs args)
+		public static void LevelUp(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 
@@ -140,7 +140,7 @@ namespace DOL.GS
 
 		#region RealmRankUp
 
-		public static void RealmRankUp(DOLEvent e, object sender, EventArgs args)
+		public static void RealmRankUp(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 
@@ -198,7 +198,7 @@ namespace DOL.GS
 
 		#region XP Gain
 
-		public static void XPGain(DOLEvent e, object sender, EventArgs args)
+		public static void XPGain(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 
@@ -229,7 +229,7 @@ namespace DOL.GS
 
 		#region RealmPointsGain
 
-		public static void RealmPointsGain(DOLEvent e, object sender, EventArgs args)
+		public static void RealmPointsGain(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 
@@ -264,7 +264,7 @@ namespace DOL.GS
 
 		#region Bounty Points Gained
 
-		public static void BountyPointsGain(DOLEvent e, object sender, EventArgs args)
+		public static void BountyPointsGain(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 

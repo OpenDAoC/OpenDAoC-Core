@@ -80,14 +80,14 @@ namespace DOL.GS.Spells
 		public override void  OnEffectStart(GameSpellEffect effect)
 		{
 			//Add the handler for when the target is attacked and we should reduce the damage
-			GameEventMgr.AddHandler(FSTarget, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
+			GameEventMgr.AddHandler(FSTarget, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttacked));
 
 			//Add handlers for the target attacking, casting, etc
 			//Don't need to add the handlers twice
 			if (FSTarget != Caster)
 			{
-				GameEventMgr.AddHandler(FSTarget, GameLivingEvent.AttackFinished, new DOLEventHandler(CancelSpell));
-				GameEventMgr.AddHandler(FSTarget, GameLivingEvent.CastStarting, new DOLEventHandler(CancelSpell));
+				GameEventMgr.AddHandler(FSTarget, GameLivingEvent.AttackFinished, new CoreEventHandler(CancelSpell));
+				GameEventMgr.AddHandler(FSTarget, GameLivingEvent.CastStarting, new CoreEventHandler(CancelSpell));
 			}
 			
 
@@ -100,12 +100,12 @@ namespace DOL.GS.Spells
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
 			//Remove our handler
-			GameEventMgr.RemoveHandler(FSTarget, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
+			GameEventMgr.RemoveHandler(FSTarget, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttacked));
 
 			if (FSTarget != Caster)
 			{
-				GameEventMgr.RemoveHandler(FSTarget, GameLivingEvent.AttackFinished, new DOLEventHandler(CancelSpell));
-				GameEventMgr.RemoveHandler(FSTarget, GameLivingEvent.CastStarting, new DOLEventHandler(CancelSpell));
+				GameEventMgr.RemoveHandler(FSTarget, GameLivingEvent.AttackFinished, new CoreEventHandler(CancelSpell));
+				GameEventMgr.RemoveHandler(FSTarget, GameLivingEvent.CastStarting, new CoreEventHandler(CancelSpell));
 			}
 
 			timer.Stop();
@@ -113,13 +113,13 @@ namespace DOL.GS.Spells
 			return base.OnEffectExpires(effect, noMessages);
 		}
 
-		private void CancelSpell(DOLEvent e, object sender, EventArgs args)
+		private void CancelSpell(CoreEvent e, object sender, EventArgs args)
 		{
 			//Send the cancel signal, we need to use the faster as the sender!
 			FocusSpellAction(/*null, Caster, null*/);
 		}
 			
-		private void OnAttacked(DOLEvent e, object sender, EventArgs args)
+		private void OnAttacked(CoreEvent e, object sender, EventArgs args)
 		{
 			AttackedByEnemyEventArgs attackArgs = args as AttackedByEnemyEventArgs;
 			if (attackArgs == null || attackArgs.AttackData == null)

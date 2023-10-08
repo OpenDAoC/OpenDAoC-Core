@@ -46,7 +46,7 @@ namespace DOL.GS.Spells
 			return base.CheckBeginCast(selectedTarget);
 		}
 
-		protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
+		protected override void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments)
 		{
 			if (!(sender is CommanderPet))
 				return;

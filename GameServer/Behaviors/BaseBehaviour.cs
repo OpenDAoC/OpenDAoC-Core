@@ -58,7 +58,7 @@ namespace DOL.GS.Behaviour
         private List<IBehaviourAction> actions;        
         private List<IBehaviourTrigger> triggers;       
 
-        private DOLEventHandler eventHandler;
+        private CoreEventHandler eventHandler;
 
         private int id;               
 
@@ -108,7 +108,7 @@ namespace DOL.GS.Behaviour
             get { return requirements; }
         }
 
-        public DOLEventHandler NotifyHandler
+        public CoreEventHandler NotifyHandler
 	    {
 		    get { return eventHandler;}
 		    set { eventHandler = value;}
@@ -123,7 +123,7 @@ namespace DOL.GS.Behaviour
         public BaseBehaviour(GameNPC npc)
         {            
             this.NPC = npc;
-            NotifyHandler = new DOLEventHandler(this.Notify);
+            NotifyHandler = new CoreEventHandler(this.Notify);
         }
 
         #region Triggers
@@ -195,7 +195,7 @@ namespace DOL.GS.Behaviour
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        protected virtual bool CheckTriggers(DOLEvent e, object sender, EventArgs args)
+        protected virtual bool CheckTriggers(CoreEvent e, object sender, EventArgs args)
         {            
             if (triggers != null)
             {
@@ -340,7 +340,7 @@ namespace DOL.GS.Behaviour
         /// <param name="sender">Sender of notify call</param>
         /// <param name="args">EventArgs of notify call</param>        
         /// <returns>true if all Requirements forQuestPart where fullfilled, else false</returns>
-        protected virtual bool CheckRequirements(DOLEvent e, object sender, EventArgs args)
+        protected virtual bool CheckRequirements(CoreEvent e, object sender, EventArgs args)
         {			
             if (requirements != null)
             {
@@ -362,7 +362,7 @@ namespace DOL.GS.Behaviour
         /// <param name="e">DolEvent of notify call</param>
         /// <param name="sender">Sender of notify call</param>
         /// <param name="args">EventArgs of notify call</param>
-        public virtual void Notify(DOLEvent e, object sender, EventArgs args)
+        public virtual void Notify(CoreEvent e, object sender, EventArgs args)
         {
             if (CheckTriggers(e, sender, args) && CheckRequirements(e, sender, args))
             {

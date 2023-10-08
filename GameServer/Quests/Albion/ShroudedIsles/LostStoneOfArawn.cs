@@ -84,7 +84,7 @@ public class LostStoneofArawn : BaseQuest
     }
 
     [ScriptLoadedEvent]
-    public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+    public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
     {
         if (!ServerProperties.Properties.LOAD_QUESTS)
             return;
@@ -281,7 +281,7 @@ public class LostStoneofArawn : BaseQuest
     }
 
     [ScriptUnloadedEvent]
-    public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+    public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
     {
         //if not loaded, don't worry
         if (Honaytrt == null)
@@ -338,7 +338,7 @@ public class LostStoneofArawn : BaseQuest
         
         GameEventMgr.AddHandler(Nyaegha, GameLivingEvent.Dying, NyaeghaDying);
     }
-    private void NyaeghaDying(DOLEvent e, object sender, EventArgs arguments)
+    private void NyaeghaDying(CoreEvent e, object sender, EventArgs arguments)
     {
         var args = (DyingEventArgs) arguments;
         
@@ -374,7 +374,7 @@ public class LostStoneofArawn : BaseQuest
         quest.Step = 5;
     }
 
-    private static void PlayerEnterDemonArea(DOLEvent e, object sender, EventArgs args)
+    private static void PlayerEnterDemonArea(CoreEvent e, object sender, EventArgs args)
     {
         var aargs = args as AreaEventArgs;
         var player = aargs?.GameObject as GamePlayer;
@@ -413,7 +413,7 @@ public class LostStoneofArawn : BaseQuest
     }
 
     static object spawnLock = new object();
-    private static void TalkToHonaytrt(DOLEvent e, object sender, EventArgs args)
+    private static void TalkToHonaytrt(CoreEvent e, object sender, EventArgs args)
     {
         //We get the player from the event arguments and check if he qualifies		
         var player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -512,7 +512,7 @@ public class LostStoneofArawn : BaseQuest
         }
     }
 
-    private static void TalkToNchever(DOLEvent e, object sender, EventArgs args)
+    private static void TalkToNchever(CoreEvent e, object sender, EventArgs args)
     {
         //We get the player from the event arguments and check if he qualifies		
         var player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -584,7 +584,7 @@ public class LostStoneofArawn : BaseQuest
         }
     }
 
-    private static void TalkToOhonat(DOLEvent e, object sender, EventArgs args)
+    private static void TalkToOhonat(CoreEvent e, object sender, EventArgs args)
     {
         //We get the player from the event arguments and check if he qualifies		
         var player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -729,7 +729,7 @@ public class LostStoneofArawn : BaseQuest
         }
     }
 
-    private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+    private static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
     {
         var qargs = args as QuestEventArgs;
         if (qargs == null)

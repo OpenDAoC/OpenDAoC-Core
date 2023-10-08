@@ -24,7 +24,7 @@ namespace DOL.GS
         }
 
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Beliathan Initializator", 249, (ERealm) 0);
@@ -142,15 +142,15 @@ namespace DOL.GS
     public class Beliathan : GameEpicBoss
     {
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledByBeliathan));
+            GameEventMgr.AddHandler(GameLivingEvent.Dying, new CoreEventHandler(PlayerKilledByBeliathan));
             if (log.IsInfoEnabled)
                 log.Info("Beliathan initialized..");
         }
 
         [ScriptUnloadedEvent]
-        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
         {
         }
         public override double AttackDamage(DbInventoryItem weapon)
@@ -232,7 +232,7 @@ namespace DOL.GS
                 }
             }
         }
-        private static void PlayerKilledByBeliathan(DOLEvent e, object sender, EventArgs args)
+        private static void PlayerKilledByBeliathan(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
 

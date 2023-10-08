@@ -431,7 +431,7 @@ namespace DOL.GS
 		{
 		}
 
-		public virtual void Notify(DOLEvent e, object sender, EventArgs args)
+		public virtual void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 		}
 

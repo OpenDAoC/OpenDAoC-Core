@@ -38,7 +38,7 @@ namespace DOL.GS.Behaviour.Actions
         
 
 
-        public override void Perform(DOLEvent e, object sender, EventArgs args)
+        public override void Perform(CoreEvent e, object sender, EventArgs args)
         {
             P.RemoveFromWorld();
         }

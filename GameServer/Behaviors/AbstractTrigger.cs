@@ -38,7 +38,7 @@ namespace DOL.GS.Behaviour
         private TypeI i;        
         private eTriggerType triggerType; // t## : trigger type, see following description (NONE:no trigger)        
 		private GameLiving defaultNPC;
-		private DOLEventHandler notifyHandler;		
+		private CoreEventHandler notifyHandler;		
 
         /// <summary>
         /// Trigger Keyword
@@ -76,7 +76,7 @@ namespace DOL.GS.Behaviour
             set { defaultNPC = value; }
         }
 
-		public DOLEventHandler NotifyHandler
+		public CoreEventHandler NotifyHandler
 		{
 			get { return notifyHandler; }
             set { notifyHandler = value; }
@@ -88,7 +88,7 @@ namespace DOL.GS.Behaviour
  	    /// <param name="defaultNPC"></param>
  	    /// <param name="notifyHandler"></param>
  	    /// <param name="type"></param>
-        public AbstractTrigger(GameLiving defaultNPC, DOLEventHandler notifyHandler, eTriggerType type)
+        public AbstractTrigger(GameLiving defaultNPC, CoreEventHandler notifyHandler, eTriggerType type)
         {
             this.defaultNPC = defaultNPC;
             this.notifyHandler = notifyHandler;
@@ -103,7 +103,7 @@ namespace DOL.GS.Behaviour
 		/// <param name="type">Triggertype</param>
 		/// <param name="k">keyword (K), meaning depends on triggertype</param>
 		/// <param name="i">variable (I), meaning depends on triggertype</param>
-		public AbstractTrigger(GameLiving defaultNPC,DOLEventHandler notifyHandler, eTriggerType type, object k, object i) : this(defaultNPC,notifyHandler,type)
+		public AbstractTrigger(GameLiving defaultNPC,CoreEventHandler notifyHandler, eTriggerType type, object k, object i) : this(defaultNPC,notifyHandler,type)
 		{
             TriggerAttribute attr = BehaviourMgr.getTriggerAttribute(this.GetType());
 
@@ -180,7 +180,7 @@ namespace DOL.GS.Behaviour
         /// <param name="sender">Sender of notify call</param>
         /// <param name="args">EventArgs of notify call</param>        
         /// <returns>true if QuestPart should be executes, else false</returns>
-        public abstract bool Check(DOLEvent e, object sender, EventArgs args);
+        public abstract bool Check(CoreEvent e, object sender, EventArgs args);
 
 		/// <summary>
 		/// Registers the needed EventHandler for this Trigger

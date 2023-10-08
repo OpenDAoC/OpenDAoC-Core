@@ -55,7 +55,7 @@ namespace DOL.GS.RealmAbilities
                 player.Out.SendMessage("You do not have enough inventory space to place this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}			
 
-			GameEventMgr.AddHandler(player,GamePlayerEvent.Quit, new DOLEventHandler(PlayerQuit));	
+			GameEventMgr.AddHandler(player,GamePlayerEvent.Quit, new CoreEventHandler(PlayerQuit));	
             DisableSkill(living);	
 		}
         public override int GetReUseDelay(int level)
@@ -68,7 +68,7 @@ namespace DOL.GS.RealmAbilities
             }
             return 600;
         }
-		public void PlayerQuit(DOLEvent e, object sender, EventArgs arguments)
+		public void PlayerQuit(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GamePlayer player = sender as GamePlayer;
 			if (player == null) return;		
@@ -95,7 +95,7 @@ namespace DOL.GS.RealmAbilities
 			}
 		}
 		[ScriptLoadedEvent]
-		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
             if (!ServerProperties.Properties.LOAD_ARROW_SUMMONING)
                 return;            

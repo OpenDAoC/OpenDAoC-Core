@@ -13,13 +13,13 @@ namespace DOL.GS
         private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             if (log.IsInfoEnabled)
                 log.Info("Prince Abdin initialized..");
         }
         [ScriptUnloadedEvent]
-        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
         {
         }
         public PrinceAbdin() : base()

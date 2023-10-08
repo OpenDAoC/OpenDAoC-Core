@@ -68,7 +68,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		/// <returns></returns>
-		public override bool Check(DOLEvent e, object sender, EventArgs args)
+		public override bool Check(CoreEvent e, object sender, EventArgs args)
 		{
 			bool result = true;
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);

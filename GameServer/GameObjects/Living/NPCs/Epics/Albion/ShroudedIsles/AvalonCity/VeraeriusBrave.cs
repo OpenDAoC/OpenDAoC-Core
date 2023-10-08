@@ -12,7 +12,7 @@ namespace DOL.GS
 		public VeraeriusBrave() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Vera'erius the Brave Initializing...");

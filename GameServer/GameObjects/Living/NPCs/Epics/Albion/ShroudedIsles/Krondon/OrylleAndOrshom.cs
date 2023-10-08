@@ -13,7 +13,7 @@ namespace DOL.GS
 		public Orylle() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Orylle Initializing...");
@@ -192,7 +192,7 @@ namespace DOL.GS
 		public Orshom() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Orshom Brong Initializing...");
@@ -361,7 +361,7 @@ namespace DOL.GS
 		public OrshomFire() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Orshom's Fire Initializing...");

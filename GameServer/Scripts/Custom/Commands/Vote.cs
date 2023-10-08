@@ -397,13 +397,13 @@ namespace DOL.GS.GameEvents
     public class VotingEvents
     {
         [ScriptLoadedEvent]
-        public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
 
         }
 
         [ScriptUnloadedEvent]
-        public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
         {
         }
     }

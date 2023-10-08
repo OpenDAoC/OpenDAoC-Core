@@ -300,10 +300,10 @@ namespace DOL.GS.Spells
 				GamePlayer casterPlayer = effect.Owner as GamePlayer;
 				if (casterPlayer.GroundTarget != null && casterPlayer.GroundTargetInView)
 				{
-					GameEventMgr.AddHandler(casterPlayer, GamePlayerEvent.Moving, new DOLEventHandler(PlayerMoves));
-					GameEventMgr.AddHandler(warder, GameLivingEvent.Dying, new DOLEventHandler(BattleWarderDie));
-					GameEventMgr.AddHandler(casterPlayer, GamePlayerEvent.CastStarting, new DOLEventHandler(PlayerMoves));
-					GameEventMgr.AddHandler(casterPlayer, GamePlayerEvent.AttackFinished, new DOLEventHandler(PlayerMoves));
+					GameEventMgr.AddHandler(casterPlayer, GamePlayerEvent.Moving, new CoreEventHandler(PlayerMoves));
+					GameEventMgr.AddHandler(warder, GameLivingEvent.Dying, new CoreEventHandler(BattleWarderDie));
+					GameEventMgr.AddHandler(casterPlayer, GamePlayerEvent.CastStarting, new CoreEventHandler(PlayerMoves));
+					GameEventMgr.AddHandler(casterPlayer, GamePlayerEvent.AttackFinished, new CoreEventHandler(PlayerMoves));
 					warder.X = casterPlayer.GroundTarget.X;
 					warder.Y = casterPlayer.GroundTarget.Y;
 					warder.Z = casterPlayer.GroundTarget.Z;
@@ -321,7 +321,7 @@ namespace DOL.GS.Spells
 		{
 			if (warder != null)
 			{
-				GameEventMgr.RemoveHandler(warder, GameLivingEvent.Dying, new DOLEventHandler(BattleWarderDie));
+				GameEventMgr.RemoveHandler(warder, GameLivingEvent.Dying, new CoreEventHandler(BattleWarderDie));
 				warder.RemoveBrain(warder.Brain);
 				warder.Health = 0;
 				warder.Delete();
@@ -329,16 +329,16 @@ namespace DOL.GS.Spells
 			if ((effect.Owner is GamePlayer))
 			{
 				GamePlayer casterPlayer = effect.Owner as GamePlayer;
-				GameEventMgr.RemoveHandler(casterPlayer, GamePlayerEvent.Moving, new DOLEventHandler(PlayerMoves));
-				GameEventMgr.RemoveHandler(casterPlayer, GamePlayerEvent.CastStarting, new DOLEventHandler(PlayerMoves));
-				GameEventMgr.RemoveHandler(casterPlayer, GamePlayerEvent.AttackFinished, new DOLEventHandler(PlayerMoves));
+				GameEventMgr.RemoveHandler(casterPlayer, GamePlayerEvent.Moving, new CoreEventHandler(PlayerMoves));
+				GameEventMgr.RemoveHandler(casterPlayer, GamePlayerEvent.CastStarting, new CoreEventHandler(PlayerMoves));
+				GameEventMgr.RemoveHandler(casterPlayer, GamePlayerEvent.AttackFinished, new CoreEventHandler(PlayerMoves));
 			}
 			effect.Owner.EffectList.Remove(effect);
 			return base.OnEffectExpires(effect, noMessages);
 		}
 
 		// Event : player moves, lose focus
-		public void PlayerMoves(DOLEvent e, object sender, EventArgs args)
+		public void PlayerMoves(CoreEvent e, object sender, EventArgs args)
 		{
 			GameLiving player = sender as GameLiving;
 			if (player == null) return;
@@ -351,7 +351,7 @@ namespace DOL.GS.Spells
 		}
 
 		// Event : Battle warder has died
-		private void BattleWarderDie(DOLEvent e, object sender, EventArgs args)
+		private void BattleWarderDie(CoreEvent e, object sender, EventArgs args)
 		{
 			GameNPC kWarder = sender as GameNPC;
 			if (kWarder == null) return;
@@ -501,16 +501,16 @@ namespace DOL.GS.Spells
 				summoned.Size = 10;
 				summoned.AddToWorld();
 				controlledBrain.AggressionState = EAggressionState.Passive;
-				GameEventMgr.AddHandler(summoned, GameLivingEvent.Dying, new DOLEventHandler(GuardDie));
+				GameEventMgr.AddHandler(summoned, GameLivingEvent.Dying, new CoreEventHandler(GuardDie));
 				beffect.Start(Caster);
 			}
 		}
-		private void GuardDie(DOLEvent e, object sender, EventArgs args)
+		private void GuardDie(CoreEvent e, object sender, EventArgs args)
 		{
 			GameNPC bguard = sender as GameNPC;
 			if(bguard==summoned)
 			{
-				GameEventMgr.RemoveHandler(summoned, GameLivingEvent.Dying, new DOLEventHandler(GuardDie));
+				GameEventMgr.RemoveHandler(summoned, GameLivingEvent.Dying, new CoreEventHandler(GuardDie));
 				beffect.Cancel(false);
 			}
 		}

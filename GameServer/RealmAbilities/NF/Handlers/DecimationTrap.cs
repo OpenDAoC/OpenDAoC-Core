@@ -95,7 +95,7 @@ namespace DOL.GS.RealmAbilities
 			owner.CurrentRegion.AddArea(traparea);
 			region = owner.CurrentRegionID;
 
-			GameEventMgr.AddHandler(traparea, AreaEvent.PlayerEnter, new DOLEventHandler(EventHandler));
+			GameEventMgr.AddHandler(traparea, AreaEvent.PlayerEnter, new CoreEventHandler(EventHandler));
 			ticktimer = new ECSGameTimer(owner);
 			ticktimer.Callback = new ECSGameTimer.ECSTimerCallback(onTick);
 			ticktimer.Start(600000);
@@ -111,7 +111,7 @@ namespace DOL.GS.RealmAbilities
 			return 0;
 		}
 
-		protected void EventHandler(DOLEvent e, Object sender, EventArgs arguments)
+		protected void EventHandler(CoreEvent e, Object sender, EventArgs arguments)
 		{
 			AreaEventArgs args = arguments as AreaEventArgs;
 			if (args == null)
@@ -128,7 +128,7 @@ namespace DOL.GS.RealmAbilities
 		private void removeHandlers()
 		{
 			owner.CurrentRegion.RemoveArea(traparea);
-			GameEventMgr.RemoveHandler(traparea, AreaEvent.PlayerEnter, new DOLEventHandler(EventHandler));
+			GameEventMgr.RemoveHandler(traparea, AreaEvent.PlayerEnter, new CoreEventHandler(EventHandler));
 		}
 
 

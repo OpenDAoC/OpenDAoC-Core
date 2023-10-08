@@ -44,7 +44,7 @@ namespace DOL.GS
         /// Processes events coming from the timer.
         /// </summary>
         /// <param name="e"></param>
-        public override void Notify(DOLEvent e)
+        public override void Notify(CoreEvent e)
         {
             if (e is EmoteEvent)
             {

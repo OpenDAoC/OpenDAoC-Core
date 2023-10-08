@@ -563,29 +563,29 @@ namespace DOL.GS
 		{
 			if (start)
 			{
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.GainedRealmPoints, new DOLEventHandler(RealmPointGain));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.RegionChanged, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.RegionChanging, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.AcceptGroup, new DOLEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.Dying, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.Linkdeath, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.GainedRealmPoints, new CoreEventHandler(RealmPointGain));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.RegionChanged, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.RegionChanging, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.AcceptGroup, new CoreEventHandler(PlayerAbsence));
 			}
 			else
 			{
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.GainedRealmPoints, new DOLEventHandler(RealmPointGain));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.RegionChanged, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.RegionChanging, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.AcceptGroup, new DOLEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Linkdeath, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.GainedRealmPoints, new CoreEventHandler(RealmPointGain));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.RegionChanged, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.RegionChanging, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.AcceptGroup, new CoreEventHandler(PlayerAbsence));
 			}
 		}
 
-		protected void RealmPointGain(DOLEvent e, object sender, EventArgs args)
+		protected void RealmPointGain(CoreEvent e, object sender, EventArgs args)
 		{
 			if (sender is GamePlayer && args is GainedRealmPointsEventArgs)
 			{
@@ -599,7 +599,7 @@ namespace DOL.GS
 			}
 		}
 
-		protected void PlayerAbsence(DOLEvent e, object sender, EventArgs args)
+		protected void PlayerAbsence(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!(sender is GamePlayer)) return;
 			GamePlayer player = sender as GamePlayer;

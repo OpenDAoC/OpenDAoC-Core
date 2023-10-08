@@ -28,10 +28,10 @@ namespace DOL.GS.Effects
 					p.Out.SendSpellEffectAnimation(player, player, Icon, 0, false, 1);
 				}
 			}
-			GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+			GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
 		}
 
-		private void OnAttack(DOLEvent e, object sender, EventArgs arguments)
+		private void OnAttack(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GameLiving living = sender as GameLiving;
 			if (living == null) return;
@@ -58,7 +58,7 @@ namespace DOL.GS.Effects
 
 		public override void Stop()
 		{
-			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
 
 			base.Stop();
 		}

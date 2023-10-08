@@ -37,7 +37,7 @@ namespace DOL.GS.Behaviour.Actions
         public MonsterSpawnAction(GameNPC defaultNPC,  GameLiving npcToSpawn)
             : this(defaultNPC,  (object)npcToSpawn, (object)null) { }
 
-        public override void Perform(DOLEvent e, object sender, EventArgs args)
+        public override void Perform(CoreEvent e, object sender, EventArgs args)
         {            
             if (P.AddToWorld())
             {

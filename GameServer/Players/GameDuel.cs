@@ -70,11 +70,11 @@ namespace DOL.GS
 			Started = true;
 			
 			Target.DuelStart(Starter);
-			GameEventMgr.AddHandler(Starter, GamePlayerEvent.Quit, new DOLEventHandler(DuelOnPlayerQuit));
-			GameEventMgr.AddHandler(Starter, GamePlayerEvent.Linkdeath, new DOLEventHandler(DuelOnPlayerQuit));
-			GameEventMgr.AddHandler(Starter, GamePlayerEvent.RegionChanged, new DOLEventHandler(DuelOnPlayerQuit));
-			GameEventMgr.AddHandler(Starter, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(DuelOnAttack));
-			GameEventMgr.AddHandler(Starter, GameLivingEvent.AttackFinished, new DOLEventHandler(DuelOnAttack));
+			GameEventMgr.AddHandler(Starter, GamePlayerEvent.Quit, new CoreEventHandler(DuelOnPlayerQuit));
+			GameEventMgr.AddHandler(Starter, GamePlayerEvent.Linkdeath, new CoreEventHandler(DuelOnPlayerQuit));
+			GameEventMgr.AddHandler(Starter, GamePlayerEvent.RegionChanged, new CoreEventHandler(DuelOnPlayerQuit));
+			GameEventMgr.AddHandler(Starter, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(DuelOnAttack));
+			GameEventMgr.AddHandler(Starter, GameLivingEvent.AttackFinished, new CoreEventHandler(DuelOnAttack));
 		}
 		
 		/// <summary>
@@ -99,11 +99,11 @@ namespace DOL.GS
 			Target?.DuelStop();
 			Target = null;
 
-			GameEventMgr.RemoveHandler(Starter, GamePlayerEvent.Quit, new DOLEventHandler(DuelOnPlayerQuit));
-			GameEventMgr.RemoveHandler(Starter, GamePlayerEvent.Linkdeath, new DOLEventHandler(DuelOnPlayerQuit));
-			GameEventMgr.RemoveHandler(Starter, GamePlayerEvent.RegionChanged, new DOLEventHandler(DuelOnPlayerQuit));
-			GameEventMgr.RemoveHandler(Starter, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(DuelOnAttack));
-			GameEventMgr.RemoveHandler(Starter, GameLivingEvent.AttackFinished, new DOLEventHandler(DuelOnAttack));
+			GameEventMgr.RemoveHandler(Starter, GamePlayerEvent.Quit, new CoreEventHandler(DuelOnPlayerQuit));
+			GameEventMgr.RemoveHandler(Starter, GamePlayerEvent.Linkdeath, new CoreEventHandler(DuelOnPlayerQuit));
+			GameEventMgr.RemoveHandler(Starter, GamePlayerEvent.RegionChanged, new CoreEventHandler(DuelOnPlayerQuit));
+			GameEventMgr.RemoveHandler(Starter, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(DuelOnAttack));
+			GameEventMgr.RemoveHandler(Starter, GameLivingEvent.AttackFinished, new CoreEventHandler(DuelOnAttack));
 			
 			lock (Starter.XPGainers.SyncRoot)
 			{
@@ -119,7 +119,7 @@ namespace DOL.GS
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected virtual void DuelOnAttack(DOLEvent e, object sender, EventArgs arguments)
+		protected virtual void DuelOnAttack(CoreEvent e, object sender, EventArgs arguments)
 		{
 			AttackData ad = null;
 			GameLiving target = null;
@@ -163,7 +163,7 @@ namespace DOL.GS
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected virtual void DuelOnPlayerQuit(DOLEvent e, object sender, EventArgs arguments)
+		protected virtual void DuelOnPlayerQuit(CoreEvent e, object sender, EventArgs arguments)
 		{
 			Stop();
 		}

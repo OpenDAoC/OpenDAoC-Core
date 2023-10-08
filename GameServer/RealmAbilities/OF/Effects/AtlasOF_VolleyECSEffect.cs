@@ -53,8 +53,8 @@ namespace DOL.GS.Effects
             OwnerPlayer.attackComponent.StopAttack();
             OwnerPlayer.StopCurrentSpellcast();
             OwnerPlayer.rangeAttackComponent.RangedAttackType = ERangedAttackType.Volley; // Used by 'RangeAttackComponent' to calculate endurance cost.
-            GameEventMgr.AddHandler(OwnerPlayer, GamePlayerEvent.Quit, new DOLEventHandler(OnPlayerLeftWorld));
-            GameEventMgr.AddHandler(OwnerPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
+            GameEventMgr.AddHandler(OwnerPlayer, GamePlayerEvent.Quit, new CoreEventHandler(OnPlayerLeftWorld));
+            GameEventMgr.AddHandler(OwnerPlayer, GamePlayerEvent.UseSlot, new CoreEventHandler(PlayerUseVolley));
             PrepareBow(true);
         }
 
@@ -76,8 +76,8 @@ namespace DOL.GS.Effects
                 OwnerPlayer.TempProperties.RemoveProperty("volley_tiredTimer");
             }
 
-            GameEventMgr.RemoveHandler(OwnerPlayer, GamePlayerEvent.Quit, new DOLEventHandler(OnPlayerLeftWorld));
-            GameEventMgr.RemoveHandler(OwnerPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
+            GameEventMgr.RemoveHandler(OwnerPlayer, GamePlayerEvent.Quit, new CoreEventHandler(OnPlayerLeftWorld));
+            GameEventMgr.RemoveHandler(OwnerPlayer, GamePlayerEvent.UseSlot, new CoreEventHandler(PlayerUseVolley));
             OwnerPlayer.rangeAttackComponent.RangedAttackType = ERangedAttackType.Normal;
             base.OnStopEffect();
         }
@@ -278,7 +278,7 @@ namespace DOL.GS.Effects
             mob.AddToWorld();
         }
 
-        private void PlayerUseVolley(DOLEvent e, object sender, EventArgs args)
+        private void PlayerUseVolley(CoreEvent e, object sender, EventArgs args)
         {
             UseSlotEventArgs useArgs = args as UseSlotEventArgs;
 
@@ -342,7 +342,7 @@ namespace DOL.GS.Effects
             return 0;
         }
 
-        private void OnPlayerLeftWorld(DOLEvent e, object sender, EventArgs arguments)
+        private void OnPlayerLeftWorld(CoreEvent e, object sender, EventArgs arguments)
         {
             Cancel(false);
         }

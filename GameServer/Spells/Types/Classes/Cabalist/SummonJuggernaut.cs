@@ -19,7 +19,7 @@ namespace DOL.GS.Spells
 			return new JuggernautBrain(owner);
 		}
 		
-		protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
+		protected override void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments)
 		{
 			if (e != GameLivingEvent.PetReleased || sender is not GameNPC gameNpc)
 				return;

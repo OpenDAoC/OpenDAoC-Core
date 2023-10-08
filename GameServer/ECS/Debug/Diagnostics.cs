@@ -134,7 +134,7 @@ namespace ECS.Debug
             GameEventMgrNotifyStopwatch = Stopwatch.StartNew();
         }
 
-        public static void EndGameEventMgrNotify(DOLEvent e)
+        public static void EndGameEventMgrNotify(CoreEvent e)
         {
             if (!GameEventMgrNotifyProfilingEnabled)
                 return;

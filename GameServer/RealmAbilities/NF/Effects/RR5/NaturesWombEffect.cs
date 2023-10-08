@@ -33,7 +33,7 @@ namespace DOL.GS.Effects
 				}
 			}
 
-            GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+            GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
 
             //[StephenxPimentel]
             //1.108 updates this so it no longer stuns, but silences.
@@ -54,7 +54,7 @@ namespace DOL.GS.Effects
 			//}
 		}
 
-		private void OnAttack(DOLEvent e, object sender, EventArgs arguments)
+		private void OnAttack(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GameLiving living = sender as GameLiving;
 			if (living == null) return;
@@ -88,7 +88,7 @@ namespace DOL.GS.Effects
 
 		public override void Stop()
 		{
-			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
 			owner.IsStunned = false;
 			owner.DisableTurning(false);
 			GamePlayer player = owner as GamePlayer;

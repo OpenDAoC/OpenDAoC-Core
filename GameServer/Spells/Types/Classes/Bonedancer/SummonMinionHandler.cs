@@ -152,13 +152,13 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
+		protected override void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GameNPC pet = sender as GameNPC;
 			if (pet == null)
 				return;
 
-			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
+			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new CoreEventHandler(OnNpcReleaseCommand));
 
 			//GameSpellEffect effect = FindEffectOnTarget(pet, this);
 			//if (effect != null)

@@ -20,8 +20,8 @@ namespace DOL.GS.Spells
 		{
             if (Spell.Pulse != 0)
             {
-                GameEventMgr.AddHandler(Caster, GamePlayerEvent.Moving, new DOLEventHandler(EventAction));
-                GameEventMgr.AddHandler(Caster, GamePlayerEvent.Dying, new DOLEventHandler(EventAction));
+                GameEventMgr.AddHandler(Caster, GamePlayerEvent.Moving, new CoreEventHandler(EventAction));
+                GameEventMgr.AddHandler(Caster, GamePlayerEvent.Dying, new CoreEventHandler(EventAction));
             }
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);
@@ -38,15 +38,15 @@ namespace DOL.GS.Spells
                     if (effect.SpellHandler.Spell.SpellType == spellType)
                     {
                         effect.Cancel(false);
-                        GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Moving, new DOLEventHandler(EventAction));
-                        GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Dying, new DOLEventHandler(EventAction));
+                        GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Moving, new CoreEventHandler(EventAction));
+                        GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Dying, new CoreEventHandler(EventAction));
                         return true;
                     }
                 }
             }
             return false;
         }
-        public void EventAction(DOLEvent e, object sender, EventArgs args)
+        public void EventAction(CoreEvent e, object sender, EventArgs args)
         {
             GameLiving player = sender as GameLiving;
 

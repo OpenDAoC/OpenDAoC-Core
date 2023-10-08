@@ -61,14 +61,14 @@ namespace DOL.GS.GameEvents
         #endregion Hibernia
 
         [GameServerStartedEvent]
-        public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs arguments)
+        public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs arguments)
         {
             InitGuards();
             Init();
 
-            GameEventMgr.AddHandler(KeepEvent.KeepTaken, new DOLEventHandler(Notify));
-            GameEventMgr.AddHandler(RelicPadEvent.RelicMounted, new DOLEventHandler(NotifyRelic));
-            GameEventMgr.AddHandler(RelicPadEvent.RelicStolen, new DOLEventHandler(NotifyRelic));
+            GameEventMgr.AddHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
+            GameEventMgr.AddHandler(RelicPadEvent.RelicMounted, new CoreEventHandler(NotifyRelic));
+            GameEventMgr.AddHandler(RelicPadEvent.RelicStolen, new CoreEventHandler(NotifyRelic));
             log.Info("Relic Guards System initialized");
         }
 
@@ -2862,7 +2862,7 @@ namespace DOL.GS.GameEvents
             firstrun = false;
         }
 
-        public static void NotifyRelic(DOLEvent e, object sender, EventArgs args)
+        public static void NotifyRelic(CoreEvent e, object sender, EventArgs args)
         {
             if (e == RelicPadEvent.RelicStolen || e == RelicPadEvent.RelicMounted)
             {
@@ -2872,7 +2872,7 @@ namespace DOL.GS.GameEvents
             }
         }
 
-        public static void Notify(DOLEvent e, object sender, EventArgs args)
+        public static void Notify(CoreEvent e, object sender, EventArgs args)
         {
             if (e == KeepEvent.KeepTaken)
             {
@@ -2887,7 +2887,7 @@ namespace DOL.GS.GameEvents
         }
 
         [ScriptUnloadedEvent]
-        public static void OnScriptUnload(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptUnload(CoreEvent e, object sender, EventArgs args)
         {
             #region Albion
 

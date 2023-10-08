@@ -80,14 +80,14 @@ namespace DOL.GS.Effects
                 pet = target as GameNPC;
                 pbaoe = ScriptMgr.CreateSpellHandler(EffectOwner, petSpell, petSpellLine);
                 pulseTimer = new ECSGameTimer(EffectOwner, new ECSGameTimer.ECSTimerCallback(PulseTimer), 1000);
-                GameEventMgr.AddHandler(EffectOwner, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+                GameEventMgr.AddHandler(EffectOwner, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
             }
         }
         public override void Stop()
         {
             if (pulseTimer != null) { pulseTimer.Stop(); pulseTimer = null; }
             if (EffectOwner != null)
-                GameEventMgr.RemoveHandler(EffectOwner, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+                GameEventMgr.RemoveHandler(EffectOwner, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
 
             base.Stop();
         }
@@ -120,7 +120,7 @@ namespace DOL.GS.Effects
         /// <param name="e">The event which was raised</param>
         /// <param name="sender">Sender of the event</param>
         /// <param name="args">EventArgs associated with the event</param>
-        private static void PlayerLeftWorld(DOLEvent e, object sender, EventArgs args)
+        private static void PlayerLeftWorld(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
             if (player != null && player.ControlledBrain != null && player.ControlledBrain.Body != null)

@@ -66,17 +66,17 @@ namespace DOL.GS.Spells
             base.OnEffectStart(effect);
             GamePlayer player = effect.Owner as GamePlayer;
             if (player == null) return;
-            GameEventMgr.AddHandler((GamePlayer)effect.Owner, GamePlayerEvent.SwimmingStatus, new DOLEventHandler(SwimmingStatusChange));
+            GameEventMgr.AddHandler((GamePlayer)effect.Owner, GamePlayerEvent.SwimmingStatus, new CoreEventHandler(SwimmingStatusChange));
 
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
             GamePlayer player = effect.Owner as GamePlayer;
             if (player == null) return base.OnEffectExpires(effect, noMessages);
-            GameEventMgr.RemoveHandler((GamePlayer)effect.Owner, GamePlayerEvent.SwimmingStatus, new DOLEventHandler(SwimmingStatusChange));  
+            GameEventMgr.RemoveHandler((GamePlayer)effect.Owner, GamePlayerEvent.SwimmingStatus, new CoreEventHandler(SwimmingStatusChange));  
             return base.OnEffectExpires(effect, noMessages);
         }        
-        private void SwimmingStatusChange(DOLEvent e, object sender, EventArgs args)
+        private void SwimmingStatusChange(CoreEvent e, object sender, EventArgs args)
         {
             OnEffectExpires(m_effect, true);
         }        

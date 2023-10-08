@@ -50,9 +50,9 @@ namespace DOL.GS.GameEvents
 		/// <param name="sender">The sender</param>
 		/// <param name="args">The arguments</param>
 		[ScriptLoadedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 		{
-            GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(AddNewbieToStarterGuild));
+            GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(AddNewbieToStarterGuild));
 
             if (!STARTING_GUILD)
                 return;
@@ -82,9 +82,9 @@ namespace DOL.GS.GameEvents
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(AddNewbieToStarterGuild));
+			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(AddNewbieToStarterGuild));
 		}
 		
 		/// <summary>
@@ -93,7 +93,7 @@ namespace DOL.GS.GameEvents
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public static void AddNewbieToStarterGuild(DOLEvent e, object sender, EventArgs args)
+		public static void AddNewbieToStarterGuild(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!STARTING_GUILD)
 				return;

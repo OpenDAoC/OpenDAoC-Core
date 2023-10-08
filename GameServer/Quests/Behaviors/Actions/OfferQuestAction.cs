@@ -37,7 +37,7 @@ namespace DOL.GS.Quests.Actions
             : this(defaultNPC, eActionType.OfferQuest, (object)questType, (object)offerMessage) { }
         
 
-        public override void Perform(DOLEvent e, object sender, EventArgs args)
+        public override void Perform(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
             string message = BehaviourUtils.GetPersonalizedMessage(Q, player);

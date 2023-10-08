@@ -47,7 +47,7 @@ namespace DOL.GS.Spells
 
 		public override void OnEffectStart(GameSpellEffect effect)
 		{			
-			GameEventMgr.AddHandler(effect.Owner, GamePlayerEvent.Moving, new DOLEventHandler(OnMove));
+			GameEventMgr.AddHandler(effect.Owner, GamePlayerEvent.Moving, new CoreEventHandler(OnMove));
 			SendEffectAnimation(effect.Owner, 0, false, 1);			
 		}
 
@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 			if(effect.Owner is GamePlayer && !noMessages)
 				((GamePlayer)effect.Owner).Out.SendMessage("You modification spell effect has expired.", eChatType.CT_SpellExpires, eChatLoc.CL_SystemWindow);
 
-			GameEventMgr.RemoveHandler(effect.Owner, GamePlayerEvent.Moving, new DOLEventHandler(OnMove));
+			GameEventMgr.RemoveHandler(effect.Owner, GamePlayerEvent.Moving, new CoreEventHandler(OnMove));
 
 			return base.OnEffectExpires (effect, false);
 		}
@@ -68,7 +68,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		private void OnMove(DOLEvent e, object sender, EventArgs arguments)
+		private void OnMove(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GameLiving living = sender as GameLiving;
 			if (living == null) return;

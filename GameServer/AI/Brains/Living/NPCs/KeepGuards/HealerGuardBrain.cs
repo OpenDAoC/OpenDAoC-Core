@@ -33,7 +33,7 @@ namespace DOL.AI.Brain
 		/// <param name="e">The event</param>
 		/// <param name="sender">The sender</param>
 		/// <param name="args">The arguments</param>
-		public override void Notify(DOLEvent e, object sender, System.EventArgs args)
+		public override void Notify(CoreEvent e, object sender, System.EventArgs args)
 		{
 			if (e == GameLivingEvent.EnemyHealed)
 				return;

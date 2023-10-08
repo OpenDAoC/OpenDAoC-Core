@@ -79,7 +79,7 @@ namespace DOL.GS {
         protected static Dictionary<EProperty, string> hPropertyToMagicPrefix = new Dictionary<EProperty, string>();
 
         [ScriptLoadedEvent]
-        public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
         { 
             InitializeHashtables();
         }

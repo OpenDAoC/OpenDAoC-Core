@@ -66,11 +66,11 @@ namespace DOL.GS.Spells
 				{
 					player.Model = (ushort)effect.Spell.Value;
 				}
-				GameEventMgr.AddHandler(effect.Owner, GamePlayerEvent.RegionChanged, new DOLEventHandler(OnZone));
+				GameEventMgr.AddHandler(effect.Owner, GamePlayerEvent.RegionChanged, new CoreEventHandler(OnZone));
 			}
 		}
 
-		private void OnZone(DOLEvent e, object sender, EventArgs arguments)
+		private void OnZone(CoreEvent e, object sender, EventArgs arguments)
 		{
 			if (sender is GamePlayer)
 			{
@@ -102,7 +102,7 @@ namespace DOL.GS.Spells
 				effect.Cancel(false);
 				player.Model = player.CreationModel;
 
-				GameEventMgr.RemoveHandler((GamePlayer)effect.Owner, GamePlayerEvent.RegionChanged, new DOLEventHandler(OnZone));
+				GameEventMgr.RemoveHandler((GamePlayer)effect.Owner, GamePlayerEvent.RegionChanged, new CoreEventHandler(OnZone));
 			}
 			return 0;
 

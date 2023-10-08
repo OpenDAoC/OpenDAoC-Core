@@ -18,7 +18,7 @@ namespace DOL.GS.Quests
 			m_desc = desc;
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			if (e != GameLivingEvent.EnemyKilled)
 				return;

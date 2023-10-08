@@ -33,13 +33,13 @@ namespace DOL.GS.Spells
         }
         protected virtual void BeginEffect()
         {
-            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.AttackFinished, new DOLEventHandler(EventAction));
-            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.CastStarting, new DOLEventHandler(EventAction));
-            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.Moving, new DOLEventHandler(EventAction));
-            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.Dying, new DOLEventHandler(EventAction));
-            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(EventAction));
+            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.AttackFinished, new CoreEventHandler(EventAction));
+            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.CastStarting, new CoreEventHandler(EventAction));
+            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.Moving, new CoreEventHandler(EventAction));
+            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.Dying, new CoreEventHandler(EventAction));
+            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(EventAction));
         }
-        public void EventAction(DOLEvent e, object sender, EventArgs args)
+        public void EventAction(CoreEvent e, object sender, EventArgs args)
         {
             GameLiving player = sender as GameLiving;
 
@@ -65,11 +65,11 @@ namespace DOL.GS.Spells
             if (Spell.Pulse != 0 && Spell.Frequency > 0)
                 CancelPulsingSpell(Caster, Spell.SpellType);
 
-            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.AttackFinished, new DOLEventHandler(EventAction));
-            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.CastStarting, new DOLEventHandler(EventAction));
-            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.Moving, new DOLEventHandler(EventAction));
-            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.Dying, new DOLEventHandler(EventAction));
-            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(EventAction));
+            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.AttackFinished, new CoreEventHandler(EventAction));
+            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.CastStarting, new CoreEventHandler(EventAction));
+            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.Moving, new CoreEventHandler(EventAction));
+            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.Dying, new CoreEventHandler(EventAction));
+            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(EventAction));
             foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.Out.SendInterruptAnimation(m_caster);

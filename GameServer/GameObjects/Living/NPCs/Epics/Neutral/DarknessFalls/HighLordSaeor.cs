@@ -14,17 +14,17 @@ namespace DOL.GS
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledBySaeor));
+            GameEventMgr.AddHandler(GameLivingEvent.Dying, new CoreEventHandler(PlayerKilledBySaeor));
 
             if (log.IsInfoEnabled)
                 log.Info("High Lord Saeor initialized..");
         }
         [ScriptUnloadedEvent]
-        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameEventMgr.RemoveHandler(GameLivingEvent.Dying, new DOLEventHandler(PlayerKilledBySaeor));
+            GameEventMgr.RemoveHandler(GameLivingEvent.Dying, new CoreEventHandler(PlayerKilledBySaeor));
         }
         public HighLordSaeor()
             : base()
@@ -94,7 +94,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        private static void PlayerKilledBySaeor(DOLEvent e, object sender, EventArgs args)
+        private static void PlayerKilledBySaeor(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
 

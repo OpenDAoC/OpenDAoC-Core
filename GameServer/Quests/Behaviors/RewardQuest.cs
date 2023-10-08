@@ -187,7 +187,7 @@ namespace DOL.GS.Quests
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			base.Notify(e, sender, args);
 			if (e == GamePlayerEvent.QuestRewardChosen)

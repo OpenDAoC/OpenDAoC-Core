@@ -14,20 +14,20 @@ namespace DOL.GS.GameEvents
 		/// Event handler fired when server is started
 		/// </summary>
 		[GameServerStartedEvent]
-		public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)
+		public static void OnServerStart(CoreEvent e, object sender, EventArgs arguments)
 		{
-			GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
-			GameEventMgr.AddHandler(GamePlayerEvent.Quit, new DOLEventHandler(PlayerQuit));
+			GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEntered));
+			GameEventMgr.AddHandler(GamePlayerEvent.Quit, new CoreEventHandler(PlayerQuit));
 		}
 
 		/// <summary>
 		/// Event handler fired when server is stopped
 		/// </summary>
 		[GameServerStoppedEvent]
-		public static void OnServerStop(DOLEvent e, object sender, EventArgs arguments)
+		public static void OnServerStop(CoreEvent e, object sender, EventArgs arguments)
 		{
-			GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.Quit, new DOLEventHandler(PlayerQuit));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEntered));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.Quit, new CoreEventHandler(PlayerQuit));
 		}
 
 		/// <summary>
@@ -36,7 +36,7 @@ namespace DOL.GS.GameEvents
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		private static void PlayerEntered(DOLEvent e, object sender, EventArgs arguments)
+		private static void PlayerEntered(CoreEvent e, object sender, EventArgs arguments)
 		{
 			if (!ServerProperties.Properties.SHOW_LOGINS || sender is not GamePlayer player || player.IsAnonymous)
 				return;
@@ -77,7 +77,7 @@ namespace DOL.GS.GameEvents
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		private static void PlayerQuit(DOLEvent e, object sender, EventArgs arguments)
+		private static void PlayerQuit(CoreEvent e, object sender, EventArgs arguments)
 		{
 			if (ServerProperties.Properties.SHOW_LOGINS == false)
 				return;

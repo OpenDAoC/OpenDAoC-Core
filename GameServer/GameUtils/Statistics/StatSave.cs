@@ -21,7 +21,7 @@ namespace DOL.GS.GameEvents
         private static object _lock  = new();
 
         [GameServerStartedEvent]
-        public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
         {
             if (ServerProperties.Properties.STATSAVE_INTERVAL <= 0)
                 return;
@@ -34,7 +34,7 @@ namespace DOL.GS.GameEvents
         }
 
         [ScriptUnloadedEvent]
-        public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
         {
             lock (_lock)
             {

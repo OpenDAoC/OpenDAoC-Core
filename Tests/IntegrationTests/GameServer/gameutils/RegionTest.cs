@@ -95,7 +95,7 @@ namespace DOL.Tests.Integration.Server
 
 			GamePlayer player = CreateMockGamePlayer();
 			
-			insertArea.RegisterPlayerEnter(new DOLEventHandler(NotifyTest));
+			insertArea.RegisterPlayerEnter(new CoreEventHandler(NotifyTest));
 			insertArea.OnPlayerEnter(player);
 
 			Assert.IsTrue(notified);
@@ -107,7 +107,7 @@ namespace DOL.Tests.Integration.Server
 
 		}
 
-		public static void NotifyTest(DOLEvent e, object sender, EventArgs args)
+		public static void NotifyTest(CoreEvent e, object sender, EventArgs args)
 		{
 			Console.WriteLine("notified");
 			notified = true;

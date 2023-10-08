@@ -153,7 +153,7 @@ namespace DOL.GS.Behaviour
         /// <param name="sender">Sender of notify call</param>
         /// <param name="args">EventArgs of notify call</param>        
         /// <returns>true if QuestPart should be executes, else false</returns>
-        bool Check(DOLEvent e, object sender, EventArgs args);
+        bool Check(CoreEvent e, object sender, EventArgs args);
 
         /// <summary>
         /// Registers the trigger within dol to be notified if possible trigger event occurs        

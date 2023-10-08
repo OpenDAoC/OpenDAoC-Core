@@ -101,7 +101,7 @@ namespace DOL.GS.Spells
 
 		protected virtual void AddHandlers()
 		{
-			GameEventMgr.AddHandler(m_pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
+			GameEventMgr.AddHandler(m_pet, GameLivingEvent.PetReleased, new CoreEventHandler(OnNpcReleaseCommand));
 		}
 
 		#endregion
@@ -206,7 +206,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected virtual void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
+		protected virtual void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments)
 		{
 			if (sender is not GameNPC pet || pet.Brain is not IControlledBrain petBrain)
 				return;
@@ -222,7 +222,7 @@ namespace DOL.GS.Spells
 					interceptEffect.Cancel(false);
 			}
 
-			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
+			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new CoreEventHandler(OnNpcReleaseCommand));
 			
 			if (pet.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(Spell), out var petEffect))
 				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());

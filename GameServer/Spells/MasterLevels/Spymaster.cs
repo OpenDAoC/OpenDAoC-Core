@@ -64,11 +64,11 @@ namespace DOL.GS.Spells
             m_effect = effect;
             if (effect.Owner == null || !effect.Owner.IsAlive)
                 return;
-            GameEventMgr.AddHandler(decoy, GameLivingEvent.Dying, new DOLEventHandler(DecoyDied));
+            GameEventMgr.AddHandler(decoy, GameLivingEvent.Dying, new CoreEventHandler(DecoyDied));
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            GameEventMgr.RemoveHandler(decoy, GameLivingEvent.Dying, new DOLEventHandler(DecoyDied));
+            GameEventMgr.RemoveHandler(decoy, GameLivingEvent.Dying, new CoreEventHandler(DecoyDied));
             if (decoy != null)
             {
                 decoy.Health = 0;
@@ -76,7 +76,7 @@ namespace DOL.GS.Spells
             }
             return base.OnEffectExpires(effect, noMessages);
         }
-        private void DecoyDied(DOLEvent e, object sender, EventArgs args)
+        private void DecoyDied(CoreEvent e, object sender, EventArgs args)
         {
             GameNPC kDecoy = sender as GameNPC;
             if (kDecoy == null) return;
@@ -287,8 +287,8 @@ namespace DOL.GS.Spells
             if (m_target == null) return;
             if (!m_target.IsAlive || m_target.ObjectState != GameLiving.eObjectState.Active || !m_target.IsSitting) return;
             Caster.BaseBuffBonusCategory[(int)EProperty.Skill_Stealth] += 100;
-            GameEventMgr.AddHandler(m_target, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
-            GameEventMgr.AddHandler(Caster, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
+            GameEventMgr.AddHandler(m_target, GamePlayerEvent.Moving, new CoreEventHandler(PlayerAction));
+            GameEventMgr.AddHandler(Caster, GamePlayerEvent.Moving, new CoreEventHandler(PlayerAction));
             new LoockoutOwner().Start(Caster);
             base.OnEffectStart(effect);
         }
@@ -296,12 +296,12 @@ namespace DOL.GS.Spells
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
             Caster.BaseBuffBonusCategory[(int)EProperty.Skill_Stealth] -= 100;
-            GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
-            GameEventMgr.RemoveHandler(m_target, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
+            GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Moving, new CoreEventHandler(PlayerAction));
+            GameEventMgr.RemoveHandler(m_target, GamePlayerEvent.Moving, new CoreEventHandler(PlayerAction));
             return base.OnEffectExpires(effect, noMessages);
         }
 
-        private void PlayerAction(DOLEvent e, object sender, EventArgs args)
+        private void PlayerAction(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = (GamePlayer)sender;
             if (player == null) return;
@@ -435,10 +435,10 @@ namespace DOL.GS.Spells
                     if (effect.Owner != Caster)
                     {
                         //effect.Owner.BuffBonusCategory1[(int)eProperty.Skill_Stealth] += 80;
-                        GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
-                        GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.AttackFinished, new DOLEventHandler(PlayerAction));
-                        GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.CastStarting, new DOLEventHandler(PlayerAction));
-                        GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.Dying, new DOLEventHandler(PlayerAction));
+                        GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.Moving, new CoreEventHandler(PlayerAction));
+                        GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.AttackFinished, new CoreEventHandler(PlayerAction));
+                        GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.CastStarting, new CoreEventHandler(PlayerAction));
+                        GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.Dying, new CoreEventHandler(PlayerAction));
                     }
                 }
             }
@@ -456,15 +456,15 @@ namespace DOL.GS.Spells
                 {
                     //effect.Owner.BuffBonusCategory1[(int)eProperty.Skill_Stealth] -= 80;
                     GamePlayer playerTarget = effect.Owner as GamePlayer;
-                    GameEventMgr.RemoveHandler(playerTarget, GamePlayerEvent.AttackFinished, new DOLEventHandler(PlayerAction));
-                    GameEventMgr.RemoveHandler(playerTarget, GamePlayerEvent.CastStarting, new DOLEventHandler(PlayerAction));
-                    GameEventMgr.RemoveHandler(playerTarget, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
-                    GameEventMgr.RemoveHandler(playerTarget, GamePlayerEvent.Dying, new DOLEventHandler(PlayerAction));
+                    GameEventMgr.RemoveHandler(playerTarget, GamePlayerEvent.AttackFinished, new CoreEventHandler(PlayerAction));
+                    GameEventMgr.RemoveHandler(playerTarget, GamePlayerEvent.CastStarting, new CoreEventHandler(PlayerAction));
+                    GameEventMgr.RemoveHandler(playerTarget, GamePlayerEvent.Moving, new CoreEventHandler(PlayerAction));
+                    GameEventMgr.RemoveHandler(playerTarget, GamePlayerEvent.Dying, new CoreEventHandler(PlayerAction));
                     playerTarget.Stealth(false);
                 }
                 return base.OnEffectExpires(effect, noMessages);
             }
-            private void PlayerAction(DOLEvent e, object sender, EventArgs args)
+            private void PlayerAction(CoreEvent e, object sender, EventArgs args)
             {
                 GamePlayer player = (GamePlayer)sender;
                 if (player == null) return;

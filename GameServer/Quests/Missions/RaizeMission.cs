@@ -39,10 +39,10 @@ namespace DOL.GS.Quests
 			if (list.Count > 0)
 				m_keep = list[Util.Random(list.Count - 1)] as AbstractGameKeep;
 
-			GameEventMgr.AddHandler(KeepEvent.TowerRaized, new DOLEventHandler(Notify));
+			GameEventMgr.AddHandler(KeepEvent.TowerRaized, new CoreEventHandler(Notify));
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			if (e != KeepEvent.TowerRaized)
 				return;
@@ -58,13 +58,13 @@ namespace DOL.GS.Quests
 		public override void FinishMission()
 		{
 			base.FinishMission();
-			GameEventMgr.RemoveHandler(KeepEvent.TowerRaized, new DOLEventHandler(Notify));
+			GameEventMgr.RemoveHandler(KeepEvent.TowerRaized, new CoreEventHandler(Notify));
 		}
 
 		public override void ExpireMission()
 		{
 			base.ExpireMission();
-			GameEventMgr.RemoveHandler(KeepEvent.TowerRaized, new DOLEventHandler(Notify));
+			GameEventMgr.RemoveHandler(KeepEvent.TowerRaized, new CoreEventHandler(Notify));
 		}
 
 		public override string Description

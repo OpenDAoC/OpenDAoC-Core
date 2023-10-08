@@ -44,7 +44,7 @@ namespace DOL.GS.RealmAbilities
 
 			if (living is GamePlayer)
 			{
-				GameEventMgr.AddHandler(living, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+				GameEventMgr.AddHandler(living, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
 				(living as GamePlayer).Out.SendCharResistsUpdate();
 			}
 			living.TempProperties.SetProperty(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb, true);
@@ -56,7 +56,7 @@ namespace DOL.GS.RealmAbilities
 		/// <param name="e">The event which was raised</param>
 		/// <param name="sender">Sender of the event</param>
 		/// <param name="args">EventArgs associated with the event</param>
-		private static void PlayerLeftWorld(DOLEvent e, object sender, EventArgs args)
+		private static void PlayerLeftWorld(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = (GamePlayer)sender;
 
@@ -80,7 +80,7 @@ namespace DOL.GS.RealmAbilities
 			if (m_owner is GamePlayer)
 			{
 				(m_owner as GamePlayer).Out.SendCharResistsUpdate();
-				GameEventMgr.RemoveHandler(m_owner, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+				GameEventMgr.RemoveHandler(m_owner, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
 			}
 			m_owner.TempProperties.RemoveProperty(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb);
 		}

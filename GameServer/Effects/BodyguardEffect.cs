@@ -66,7 +66,7 @@ namespace DOL.GS.Effects
             m_guardTarget = guardTarget;
 			m_owner = m_guardSource;
 
-            GameEventMgr.AddHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback1));
+            GameEventMgr.AddHandler(m_playerGroup, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback1));
 
             m_guardSource.EffectList.Add(this);
             m_guardTarget.EffectList.Add(this);
@@ -89,7 +89,7 @@ namespace DOL.GS.Effects
         /// <param name="e"></param>
         /// <param name="sender">The group</param>
         /// <param name="args"></param>
-        protected void GroupDisbandCallback1(DOLEvent e, object sender, EventArgs args)
+        protected void GroupDisbandCallback1(CoreEvent e, object sender, EventArgs args)
         {
             MemberDisbandedEventArgs eArgs = args as MemberDisbandedEventArgs;
             if (eArgs == null) return;
@@ -105,7 +105,7 @@ namespace DOL.GS.Effects
 		/// <param name="playerCancel"></param>
         public override void Cancel(bool playerCancel)
         {
-            GameEventMgr.RemoveHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback1));
+            GameEventMgr.RemoveHandler(m_playerGroup, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback1));
             m_guardSource.EffectList.Remove(this);
             m_guardTarget.EffectList.Remove(this);
 

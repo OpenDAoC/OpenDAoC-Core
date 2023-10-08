@@ -60,7 +60,7 @@ namespace DOL.GS.Spells
         protected override void SetBrainToOwner(IControlledBrain brain) { }
         protected override void AddHandlers() { GameEventMgr.AddHandler(m_pet, GameLivingEvent.AttackFinished, EventHandler); }
 
-        protected void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+        protected void EventHandler(CoreEvent e, object sender, EventArgs arguments)
         {
             AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
             if (args == null || args.AttackData == null)

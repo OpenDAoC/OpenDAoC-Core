@@ -70,7 +70,7 @@ namespace DOL.GS.Effects
 			base.Start(target);
 			target.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
 			owner = target;
-			GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
+			GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttacked));
 			GamePlayer player = owner as GamePlayer;
 			if (player != null)
 			{
@@ -86,7 +86,7 @@ namespace DOL.GS.Effects
 		public override void Stop()
 		{
 			owner.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, this);
-			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
+			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttacked));
 			GamePlayer player = owner as GamePlayer;
 			if (player != null)
 			{
@@ -99,7 +99,7 @@ namespace DOL.GS.Effects
 			base.Stop();
 		}
 
-		protected virtual void OnAttacked(DOLEvent e, object sender, EventArgs arguments)
+		protected virtual void OnAttacked(CoreEvent e, object sender, EventArgs arguments)
 		{
 			AttackedByEnemyEventArgs attackArgs = arguments as AttackedByEnemyEventArgs;
 			if (attackArgs == null) return;

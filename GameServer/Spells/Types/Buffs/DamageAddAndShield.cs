@@ -43,7 +43,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>
-		protected override DOLEvent EventType { get { return GameLivingEvent.AttackFinished; } }
+		protected override CoreEvent EventType { get { return GameLivingEvent.AttackFinished; } }
 
 		public virtual double DPSCap(int Level)
 		{
@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		public void EventHandler(DOLEvent e, object sender, EventArgs arguments, double effectiveness)
+		public void EventHandler(CoreEvent e, object sender, EventArgs arguments, double effectiveness)
 		{
 			AttackFinishedEventArgs atkArgs = arguments as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
@@ -145,7 +145,7 @@ namespace DOL.GS.Spells
 			}
 		}
 
-        public override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+        public override void EventHandler(CoreEvent e, object sender, EventArgs arguments)
         {
             throw new NotImplementedException();
         }
@@ -169,7 +169,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>
-		protected override DOLEvent EventType { get { return GameLivingEvent.AttackedByEnemy; } }
+		protected override CoreEvent EventType { get { return GameLivingEvent.AttackedByEnemy; } }
 
 		/// <summary>
 		/// Handler fired whenever effect target is attacked
@@ -177,7 +177,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		public override void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+		public override void EventHandler(CoreEvent e, object sender, EventArgs arguments)
 		{
 			AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
 			if (args == null) return;
@@ -273,12 +273,12 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>
-		protected abstract DOLEvent EventType { get; }
+		protected abstract CoreEvent EventType { get; }
 
 		/// <summary>
 		/// The event handler of given event type
 		/// </summary>
-		public abstract void EventHandler(DOLEvent e, object sender, EventArgs arguments);
+		public abstract void EventHandler(CoreEvent e, object sender, EventArgs arguments);
 
 		/// <summary>
 		/// Holds min damage spread based on spec level caster
@@ -355,7 +355,7 @@ namespace DOL.GS.Spells
 			MessageToLiving(effect.Owner, Spell.Message1, chatType);
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, 
 				effect.Owner.GetName(0, upperCase)), chatType, effect.Owner);
-			GameEventMgr.AddHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
+			GameEventMgr.AddHandler(effect.Owner, EventType, new CoreEventHandler(EventHandler));
 		}
 
 		/// <summary>
@@ -376,13 +376,13 @@ namespace DOL.GS.Spells
 				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, 
 					effect.Owner.GetName(0, upperCase)), eChatType.CT_SpellExpires, effect.Owner);
 			}
-			GameEventMgr.RemoveHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
+			GameEventMgr.RemoveHandler(effect.Owner, EventType, new CoreEventHandler(EventHandler));
 			return 0;
 		}
 
 		public override void OnEffectRestored(GameSpellEffect effect, int[] vars)
 		{
-			GameEventMgr.AddHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
+			GameEventMgr.AddHandler(effect.Owner, EventType, new CoreEventHandler(EventHandler));
 		}
 
 		public override int OnRestoredEffectExpires(GameSpellEffect effect, int[] vars, bool noMessages)

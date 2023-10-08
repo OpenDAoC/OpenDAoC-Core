@@ -502,7 +502,7 @@ namespace DOL.Tests.Unit.Gameserver
 
         private class FakePlayerSpy : FakePlayer
         {
-            public DOLEvent lastNotifiedEvent;
+            public CoreEvent lastNotifiedEvent;
             public EventArgs lastNotifiedEventArgs;
 
             public FakePlayerSpy() : base()
@@ -511,7 +511,7 @@ namespace DOL.Tests.Unit.Gameserver
                 fakeRegion.FakeElapsedTime = 0;
             }
 
-            public override void Notify(DOLEvent e, object sender, EventArgs args)
+            public override void Notify(CoreEvent e, object sender, EventArgs args)
             {
                 lastNotifiedEvent = e;
                 lastNotifiedEventArgs = args;
@@ -521,7 +521,7 @@ namespace DOL.Tests.Unit.Gameserver
 
         private class GameEventMgrSpy : GameEventMgr
         {
-            public System.Collections.Generic.Dictionary<object, DOLEventHandlerCollection> GameObjectEventCollection => m_gameObjectEventCollections;
+            public System.Collections.Generic.Dictionary<object, CoreEventHandlerCollection> GameObjectEventCollection => m_gameObjectEventCollections;
         
             public static GameEventMgrSpy LoadAndReturn()
             {

@@ -202,7 +202,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		private void OnAttack(DOLEvent e, object sender, EventArgs arguments)
+		private void OnAttack(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GameLiving living = sender as GameLiving;
 			if (living == null) return;
@@ -256,7 +256,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		private void OnStealthStateChanged(DOLEvent e, object sender, EventArgs arguments)
+		private void OnStealthStateChanged(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GamePlayer player = (GamePlayer)sender;
 			if (player.IsStealthed)

@@ -12,7 +12,7 @@ namespace DOL.GS
 		public BeranSupplyMaster() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Beran the Supply Master Initializing...");

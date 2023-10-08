@@ -106,7 +106,7 @@ namespace DOL.GS.Spells
     [SpellHandler("Powershield")]
     public class Powershield : SpellHandler
     {
-        public void AttackedEvent(DOLEvent e, object sender, EventArgs arguments)
+        public void AttackedEvent(CoreEvent e, object sender, EventArgs arguments)
         {
             GamePlayer player = (GamePlayer)sender;
             AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
@@ -133,11 +133,11 @@ namespace DOL.GS.Spells
         }
         public override void OnEffectStart(GameSpellEffect effect)
         {
-            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(AttackedEvent));
+            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(AttackedEvent));
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(AttackedEvent));
+            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(AttackedEvent));
             return 0;
         }
         #region Devle Info

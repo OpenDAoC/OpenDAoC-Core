@@ -24,7 +24,7 @@ namespace DOL.GS.Spells
             }
             MessageToLiving(effect.Owner, Spell.Message1, chatType);
             Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), chatType, effect.Owner);
-            GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackFinished, new DOLEventHandler(EventHandler));
+            GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackFinished, new CoreEventHandler(EventHandler));
         }
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
@@ -34,11 +34,11 @@ namespace DOL.GS.Spells
                 MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
                 Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
             }
-            GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackFinished, new DOLEventHandler(EventHandler));
+            GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackFinished, new CoreEventHandler(EventHandler));
             return 0;
         }
 
-        public void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+        public void EventHandler(CoreEvent e, object sender, EventArgs arguments)
         {
             AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
             if (args == null || args.AttackData == null)

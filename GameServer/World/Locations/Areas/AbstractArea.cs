@@ -124,22 +124,22 @@ namespace DOL.GS
 
 		#region Event handling
 
-		public void UnRegisterPlayerEnter(DOLEventHandler callback)
+		public void UnRegisterPlayerEnter(CoreEventHandler callback)
 		{
 			GameEventMgr.RemoveHandler(this, AreaEvent.PlayerEnter, callback);
 		}
 
-		public void UnRegisterPlayerLeave(DOLEventHandler callback)
+		public void UnRegisterPlayerLeave(CoreEventHandler callback)
 		{
 			GameEventMgr.RemoveHandler(this, AreaEvent.PlayerLeave, callback);
 		}
 
-		public void RegisterPlayerEnter(DOLEventHandler callback)
+		public void RegisterPlayerEnter(CoreEventHandler callback)
 		{
 			GameEventMgr.AddHandler(this, AreaEvent.PlayerEnter, callback);
 		}
 
-		public void RegisterPlayerLeave(DOLEventHandler callback)
+		public void RegisterPlayerLeave(CoreEventHandler callback)
 		{
 			GameEventMgr.AddHandler(this, AreaEvent.PlayerLeave, callback);
 		}

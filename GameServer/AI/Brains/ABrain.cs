@@ -55,7 +55,7 @@ public abstract class ABrain : IManagedEntity
     /// <param name="e">The event received</param>
     /// <param name="sender">The event sender</param>
     /// <param name="args">The event arguments</param>
-    public virtual void Notify(DOLEvent e, object sender, EventArgs args) { }
+    public virtual void Notify(CoreEvent e, object sender, EventArgs args) { }
 
     /// <summary>
     /// This method is called whenever the brain does some thinking

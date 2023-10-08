@@ -47,7 +47,7 @@ namespace DOL.GS.Quests.Hibernia
         public WildWilderness(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest) { }
 
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             if (!ServerProperties.Properties.LOAD_QUESTS)
                 return;
@@ -143,14 +143,14 @@ namespace DOL.GS.Quests.Hibernia
             }
             #endregion
             
-            GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-            GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+            GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+            GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-            GameEventMgr.AddHandler(_miach, GameObjectEvent.Interact, new DOLEventHandler(TalkToMiach));
-            GameEventMgr.AddHandler(_miach, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToMiach));
+            GameEventMgr.AddHandler(_miach, GameObjectEvent.Interact, new CoreEventHandler(TalkToMiach));
+            GameEventMgr.AddHandler(_miach, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMiach));
             
-            GameEventMgr.AddHandler(_resalg, GameObjectEvent.Interact, new DOLEventHandler(TalkToResalg));
-            GameEventMgr.AddHandler(_resalg, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToResalg));
+            GameEventMgr.AddHandler(_resalg, GameObjectEvent.Interact, new CoreEventHandler(TalkToResalg));
+            GameEventMgr.AddHandler(_resalg, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToResalg));
             
             _miach.AddQuestToGive(typeof(WildWilderness));
             if (log.IsInfoEnabled)
@@ -160,22 +160,22 @@ namespace DOL.GS.Quests.Hibernia
         }
 
         [ScriptUnloadedEvent]
-        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
         {
             if (_miach == null) return;
 
-            GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-            GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+            GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+            GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
             
-            GameEventMgr.RemoveHandler(_miach, GameObjectEvent.Interact, new DOLEventHandler(TalkToMiach));
-            GameEventMgr.RemoveHandler(_miach, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToMiach));
+            GameEventMgr.RemoveHandler(_miach, GameObjectEvent.Interact, new CoreEventHandler(TalkToMiach));
+            GameEventMgr.RemoveHandler(_miach, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMiach));
             
-            GameEventMgr.RemoveHandler(_resalg, GameObjectEvent.Interact, new DOLEventHandler(TalkToResalg));
-            GameEventMgr.RemoveHandler(_resalg, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToResalg));
+            GameEventMgr.RemoveHandler(_resalg, GameObjectEvent.Interact, new CoreEventHandler(TalkToResalg));
+            GameEventMgr.RemoveHandler(_resalg, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToResalg));
             _miach.RemoveQuestToGive(typeof(WildWilderness));
         }
 
-        protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+        protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
         {
             QuestEventArgs qargs = args as QuestEventArgs;
             if (qargs == null)
@@ -196,7 +196,7 @@ namespace DOL.GS.Quests.Hibernia
             }
         }
 
-        private static void TalkToMiach(DOLEvent e, object sender, EventArgs args)
+        private static void TalkToMiach(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = ((SourceEventArgs)args).Source as GamePlayer;
             if (player == null)
@@ -262,7 +262,7 @@ namespace DOL.GS.Quests.Hibernia
             }
         }
         
-          private static void TalkToResalg(DOLEvent e, object sender, EventArgs args)
+          private static void TalkToResalg(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = ((SourceEventArgs)args).Source as GamePlayer;
             if (player == null)
@@ -326,7 +326,7 @@ namespace DOL.GS.Quests.Hibernia
             
         }
 
-        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
             if (player?.IsDoingQuest(typeof(WildWilderness)) == null)

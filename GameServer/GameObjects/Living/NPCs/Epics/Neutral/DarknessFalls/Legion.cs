@@ -20,7 +20,7 @@ namespace DOL.GS.Scripts
         private static IArea legionArea = null;
 
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             const int radius = 650;
             Region region = WorldMgr.GetRegion(249);
@@ -35,7 +35,7 @@ namespace DOL.GS.Scripts
         }
 
         [ScriptUnloadedEvent]
-        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
         {
             //legionArea.UnRegisterPlayerEnter(new DOLEventHandler(PlayerEnterLegionArea));
             WorldMgr.GetRegion(249).RemoveArea(legionArea);

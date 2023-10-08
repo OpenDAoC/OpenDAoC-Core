@@ -1981,7 +1981,7 @@ namespace DOL.GS
         /// <summary>
         /// Called when player revive
         /// </summary>
-        public virtual void OnRevive(DOLEvent e, object sender, EventArgs args)
+        public virtual void OnRevive(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = (GamePlayer)sender;
             //effectListComponent.CancelAll();
@@ -2023,7 +2023,7 @@ namespace DOL.GS
                         break;
                 }
 
-            GameEventMgr.RemoveHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
+            GameEventMgr.RemoveHandler(this, GamePlayerEvent.Revive, new CoreEventHandler(OnRevive));
             m_deathtype = EDeathType.None;
             LastDeathPvP = false;
             UpdatePlayerStatus();
@@ -7089,7 +7089,7 @@ namespace DOL.GS
                     if (realmDeath)
                         LastDeathPvP = true;
                 }
-                GameEventMgr.AddHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
+                GameEventMgr.AddHandler(this, GamePlayerEvent.Revive, new CoreEventHandler(OnRevive));
             }
 
             if (this.ControlledBrain != null)
@@ -10292,7 +10292,7 @@ namespace DOL.GS
         /// <param name="e"></param>
         /// <param name="sender">inventory</param>
         /// <param name="arguments"></param>
-        protected virtual void OnItemEquipped(DOLEvent e, object sender, EventArgs arguments)
+        protected virtual void OnItemEquipped(CoreEvent e, object sender, EventArgs arguments)
         {
             if (arguments is ItemEquippedArgs == false) return;
             DbInventoryItem item = ((ItemEquippedArgs)arguments).Item;
@@ -10508,7 +10508,7 @@ namespace DOL.GS
         /// <param name="e"></param>
         /// <param name="sender">inventory</param>
         /// <param name="arguments"></param>
-        protected virtual void OnItemUnequipped(DOLEvent e, object sender, EventArgs arguments)
+        protected virtual void OnItemUnequipped(CoreEvent e, object sender, EventArgs arguments)
         {
             if (arguments is ItemUnequippedArgs == false) return;
             DbInventoryItem item = ((ItemUnequippedArgs)arguments).Item;
@@ -10793,7 +10793,7 @@ namespace DOL.GS
         /// <param name="e"></param>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        protected virtual void OnItemBonusChanged(DOLEvent e, object sender, EventArgs args)
+        protected virtual void OnItemBonusChanged(CoreEvent e, object sender, EventArgs args)
         {
             ItemBonusChangedEventArgs changeArgs = args as ItemBonusChangedEventArgs;
             if (changeArgs == null || changeArgs.BonusType == 0 || changeArgs.BonusAmount == 0)
@@ -12235,7 +12235,7 @@ namespace DOL.GS
             get { return effectListComponent.ContainsEffectForEffectType(EEffect.Stealth); }
         }
 
-        public static void Unstealth(DOLEvent ev, object sender, EventArgs args)
+        public static void Unstealth(CoreEvent ev, object sender, EventArgs args)
         {
             AttackedByEnemyEventArgs atkArgs = args as AttackedByEnemyEventArgs;
             GamePlayer player = sender as GamePlayer;
@@ -12834,7 +12834,7 @@ namespace DOL.GS
         #endregion
 
         #region Notify
-        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
             CharacterClass.Notify(e, sender, args);
             base.Notify(e, sender, args);
@@ -12857,17 +12857,17 @@ namespace DOL.GS
             //Realm mission will be handled on the capture event args
         }
 
-        public override void Notify(DOLEvent e, object sender)
+        public override void Notify(CoreEvent e, object sender)
         {
             Notify(e, sender, null);
         }
 
-        public override void Notify(DOLEvent e)
+        public override void Notify(CoreEvent e)
         {
             Notify(e, null, null);
         }
 
-        public override void Notify(DOLEvent e, EventArgs args)
+        public override void Notify(CoreEvent e, EventArgs args)
         {
             Notify(e, null, args);
         }
@@ -15054,9 +15054,9 @@ namespace DOL.GS
             m_canFly = false;
 
             CreateInventory();
-            GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemEquipped, new DOLEventHandler(OnItemEquipped));
-            GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemUnequipped, new DOLEventHandler(OnItemUnequipped));
-            GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemBonusChanged, new DOLEventHandler(OnItemBonusChanged));
+            GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemEquipped, new CoreEventHandler(OnItemEquipped));
+            GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemUnequipped, new CoreEventHandler(OnItemUnequipped));
+            GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemBonusChanged, new CoreEventHandler(OnItemBonusChanged));
 
             m_enteredGame = false;
             m_customDialogCallback = null;

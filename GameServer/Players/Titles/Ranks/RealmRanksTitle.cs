@@ -79,7 +79,7 @@ namespace GameServerScripts.Titles
 		/// <summary>
 		/// The event to hook.
 		/// </summary>
-		public override DOLEvent Event { get { return GamePlayerEvent.RRLevelUp; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.RRLevelUp; }}
 
 		/// <summary>
 		/// Get Description for this Title

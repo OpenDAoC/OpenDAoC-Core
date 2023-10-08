@@ -55,7 +55,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 		}
 		
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -107,11 +107,11 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 			#region defineObject
 			#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(ReyHib, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
-			GameEventMgr.AddHandler(ReyHib, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(ReyHib, GameObjectEvent.Interact, new CoreEventHandler(TalkToRey));
+			GameEventMgr.AddHandler(ReyHib, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToRey));
 
 			/* Now we bring to Rey the possibility to give this quest to players */
 			ReyHib.AddQuestToGive(typeof (PlayerKillWeeklyQuestHib));
@@ -121,23 +121,23 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (ReyHib == null)
 				return;
 			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(ReyHib, GameObjectEvent.Interact, new DOLEventHandler(TalkToRey));
-			GameEventMgr.RemoveHandler(ReyHib, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(ReyHib, GameObjectEvent.Interact, new CoreEventHandler(TalkToRey));
+			GameEventMgr.RemoveHandler(ReyHib, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToRey));
 
 			/* Now we remove to Rey the possibility to give this quest to players */
 			ReyHib.RemoveQuestToGive(typeof (PlayerKillWeeklyQuestHib));
 		}
 
-		private static void TalkToRey(DOLEvent e, object sender, EventArgs args)
+		private static void TalkToRey(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -240,7 +240,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 			}
 		}
 
-		private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		private static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -300,7 +300,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 			}
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 

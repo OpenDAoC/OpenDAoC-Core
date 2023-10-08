@@ -13,14 +13,14 @@ namespace DOL.GS.Spells
         public override void OnEffectStart(GameSpellEffect effect)
         {
             base.OnEffectStart(effect);
-            GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
+            GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttacked));
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
+            GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttacked));
             return base.OnEffectExpires(effect, noMessages);
         }
-        protected virtual void OnAttacked(DOLEvent e, object sender, EventArgs arguments)
+        protected virtual void OnAttacked(CoreEvent e, object sender, EventArgs arguments)
         {
             AttackedByEnemyEventArgs attackArgs = arguments as AttackedByEnemyEventArgs;
             GameLiving living = sender as GameLiving;

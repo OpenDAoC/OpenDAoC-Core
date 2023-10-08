@@ -56,7 +56,7 @@ public class PredatorManager
     private static string TimeoutTickKey = "TimeoutStartTick";
 
     [ScriptLoadedEvent]
-    public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+    public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
     {
         //GameEventMgr.AddHandler(GameLivingEvent.Dying, GreyPlayerKilled);
         //GameEventMgr.AddHandler(GameLivingEvent.Dying, BountyKilled);
@@ -528,7 +528,7 @@ public class PredatorManager
         return temp;
     }
 
-    private static void PreyKilled(DOLEvent e, object sender, EventArgs args)
+    private static void PreyKilled(CoreEvent e, object sender, EventArgs args)
     {
         GamePlayer killedPlayer = sender as GamePlayer;
 
@@ -578,7 +578,7 @@ public class PredatorManager
             player.Out.SendMessage($"A primal roar echoes nearby as a predator claims its prey.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
     }
 
-    private static void JoinedGroup(DOLEvent dolEvent, object sender, EventArgs arguments)
+    private static void JoinedGroup(CoreEvent coreEvent, object sender, EventArgs arguments)
     {
         if (sender is Group g)
         {
@@ -590,7 +590,7 @@ public class PredatorManager
         }
     }
     
-    private static void StartCooldownOnQuit(DOLEvent e, object sender, EventArgs arguments)
+    private static void StartCooldownOnQuit(CoreEvent e, object sender, EventArgs arguments)
     {
         if(sender is GamePlayer p && PlayerIsActive(p))
             DisqualifyPlayer(p);

@@ -53,7 +53,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
         }
 
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             if (!ServerProperties.Properties.LOAD_QUESTS)
                 return;
@@ -110,11 +110,11 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 
             #endregion
 
-            GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-            GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+            GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+            GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-            GameEventMgr.AddHandler(Anthony, GameObjectEvent.Interact, new DOLEventHandler(TalkToAnthony));
-            GameEventMgr.AddHandler(Anthony, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToAnthony));
+            GameEventMgr.AddHandler(Anthony, GameObjectEvent.Interact, new CoreEventHandler(TalkToAnthony));
+            GameEventMgr.AddHandler(Anthony, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToAnthony));
 
             Anthony.AddQuestToGive(typeof(GalladoriaBossQuestHib));
 
@@ -123,22 +123,22 @@ namespace DOL.GS.WeeklyQuest.Hibernia
         }
 
         [ScriptUnloadedEvent]
-        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
         {
             //if not loaded, don't worry
             if (Anthony == null)
                 return;
             // remove handlers
-            GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-            GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+            GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+            GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-            GameEventMgr.RemoveHandler(Anthony, GameObjectEvent.Interact, new DOLEventHandler(TalkToAnthony));
-            GameEventMgr.RemoveHandler(Anthony, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToAnthony));
+            GameEventMgr.RemoveHandler(Anthony, GameObjectEvent.Interact, new CoreEventHandler(TalkToAnthony));
+            GameEventMgr.RemoveHandler(Anthony, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToAnthony));
 
             Anthony.RemoveQuestToGive(typeof(GalladoriaBossQuestHib));
         }
 
-        private static void TalkToAnthony(DOLEvent e, object sender, EventArgs args)
+        private static void TalkToAnthony(CoreEvent e, object sender, EventArgs args)
         {
             //We get the player from the event arguments and check if he qualifies		
             GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -248,7 +248,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
             }
         }
 
-        private static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+        private static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
         {
             QuestEventArgs qargs = args as QuestEventArgs;
             if (qargs == null)
@@ -309,7 +309,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
             }
         }
 
-        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = sender as GamePlayer;
 

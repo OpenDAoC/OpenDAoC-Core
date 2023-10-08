@@ -30,7 +30,7 @@ namespace DOL.GS.GameEvents
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		[ScriptLoadedEvent]
-		public static void OnScriptsCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptsCompiled(CoreEvent e, object sender, EventArgs args)
 		{
 
 			// What npctemplate should we use for the zonepoint ?

@@ -36,7 +36,7 @@ namespace DOL.GS.Quests.Actions
             : this(defaultNPC, (object)questType, (object)questGiver) { }
         
 
-        public override void Perform(DOLEvent e, object sender, EventArgs args)
+        public override void Perform(CoreEvent e, object sender, EventArgs args)
         {
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
             QuestMgr.GiveQuestToPlayer(P, player, Q);            

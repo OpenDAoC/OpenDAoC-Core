@@ -385,7 +385,7 @@ namespace DOL.GS
 
 
 		[ScriptLoadedEvent]
-		private static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		private static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			Init();
 		}

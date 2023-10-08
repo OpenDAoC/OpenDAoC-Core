@@ -70,7 +70,7 @@ namespace DOL.GS.Quests.Hibernia
 			minimumLevel;
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -272,8 +272,8 @@ namespace DOL.GS.Quests.Hibernia
 			region.AddArea(keeperArea);
 			keeperArea.RegisterPlayerEnter(PlayerEnterKeeperArea);
 			
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 			
 			GameEventMgr.AddHandler(OtaYrling, GameObjectEvent.Interact, TalkToOtaYrling);
 			GameEventMgr.AddHandler(OtaYrling, GameLivingEvent.WhisperReceive, TalkToOtaYrling);
@@ -295,7 +295,7 @@ namespace DOL.GS.Quests.Hibernia
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (OtaYrling == null)
@@ -305,8 +305,8 @@ namespace DOL.GS.Quests.Hibernia
 			keeperArea.UnRegisterPlayerEnter(PlayerEnterKeeperArea);
 			WorldMgr.GetRegion(keeperLocation.RegionID).RemoveArea(keeperArea);
 			
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 			
 			GameEventMgr.RemoveHandler(OtaYrling, GameObjectEvent.Interact, TalkToOtaYrling);
 			GameEventMgr.RemoveHandler(OtaYrling, GameLivingEvent.WhisperReceive, TalkToOtaYrling);
@@ -359,7 +359,7 @@ namespace DOL.GS.Quests.Hibernia
 			
 			GameEventMgr.AddHandler(AncestralKeeper, GameLivingEvent.Dying, AncestralKeeperDying);
 		}
-		private void AncestralKeeperDying(DOLEvent e, object sender, EventArgs arguments)
+		private void AncestralKeeperDying(CoreEvent e, object sender, EventArgs arguments)
 		{
 			var args = (DyingEventArgs) arguments;
         
@@ -419,7 +419,7 @@ namespace DOL.GS.Quests.Hibernia
 			quest.Step = 5;
 		}
 		
-		private static void PlayerEnterKeeperArea(DOLEvent e, object sender, EventArgs args)
+		private static void PlayerEnterKeeperArea(CoreEvent e, object sender, EventArgs args)
 		{
 			var aargs = args as AreaEventArgs;
 			var player = aargs?.GameObject as GamePlayer;
@@ -460,7 +460,7 @@ namespace DOL.GS.Quests.Hibernia
 
 		static object spawnLock = new object();
 
-		protected static void TalkToOtaYrling(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToOtaYrling(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -598,7 +598,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 		
-		protected static void TalkToJaklyr(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToJaklyr(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -715,7 +715,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 		
-		protected static void TalkToLongbeard(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToLongbeard(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -804,7 +804,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 		
-		protected static void TalkToStyr(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToStyr(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -904,7 +904,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)

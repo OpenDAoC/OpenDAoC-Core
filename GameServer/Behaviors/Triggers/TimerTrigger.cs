@@ -42,7 +42,7 @@ namespace DOL.GS.Behaviour.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public TimerTrigger(GameNPC defaultNPC, DOLEventHandler notifyHandler,  Object k, Object i)
+        public TimerTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
             : base(defaultNPC, notifyHandler, eTriggerType.Timer, k, i)
         { }
 
@@ -52,7 +52,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="defaultNPC"></param>
         /// <param name="notifyHandler"></param>
         /// <param name="k"></param>
-        public TimerTrigger(GameNPC defaultNPC, DOLEventHandler notifyHandler, string k)
+        public TimerTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, string k)
             : this(defaultNPC,notifyHandler,  (object)k, (object) null)
         { }
 
@@ -64,7 +64,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public override bool Check(DOLEvent e, object sender, EventArgs args)
+        public override bool Check(CoreEvent e, object sender, EventArgs args)
         {
             bool result = false;
             

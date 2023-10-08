@@ -446,25 +446,25 @@ namespace DOL.GS
 		{
 			if (activate)
 			{
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, PlayerInventoryEvent.ItemDropped, new DOLEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.Dying, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.Linkdeath, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, PlayerInventoryEvent.ItemDropped, new CoreEventHandler(PlayerAbsence));
 
 			}
 			else
 			{
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, PlayerInventoryEvent.ItemDropped, new DOLEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Linkdeath, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, PlayerInventoryEvent.ItemDropped, new CoreEventHandler(PlayerAbsence));
 			}
 
 
 		}
-		protected void PlayerAbsence(DOLEvent e, object sender, EventArgs args)
+		protected void PlayerAbsence(CoreEvent e, object sender, EventArgs args)
 		{
 			Realm=0;
 			if (e == PlayerInventoryEvent.ItemDropped)

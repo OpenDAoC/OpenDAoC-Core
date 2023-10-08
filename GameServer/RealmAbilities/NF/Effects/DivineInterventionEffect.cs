@@ -43,8 +43,8 @@ namespace DOL.GS.RealmAbilities
 			base.Start(living);
 
 			m_playerOwner.Out.SendMessage("You group is protected by a pool of healing!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-			GameEventMgr.AddHandler(m_group, GroupEvent.MemberJoined, new DOLEventHandler(PlayerJoinedGroup));
-			GameEventMgr.AddHandler(m_group, GroupEvent.MemberDisbanded, new DOLEventHandler(PlayerDisbandedGroup));
+			GameEventMgr.AddHandler(m_group, GroupEvent.MemberJoined, new CoreEventHandler(PlayerJoinedGroup));
+			GameEventMgr.AddHandler(m_group, GroupEvent.MemberDisbanded, new CoreEventHandler(PlayerDisbandedGroup));
 
 			foreach (GamePlayer gp in m_group.GetPlayersInTheGroup())
 			{
@@ -59,24 +59,24 @@ namespace DOL.GS.RealmAbilities
 
 				gp.Out.SendMessage("You are protected by a pool of healing!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 				m_affected.Add(gp);
-				GameEventMgr.AddHandler(gp, GamePlayerEvent.TakeDamage, new DOLEventHandler(TakeDamage));
+				GameEventMgr.AddHandler(gp, GamePlayerEvent.TakeDamage, new CoreEventHandler(TakeDamage));
                 if (gp.CharacterClass.ID == (int)ECharacterClass.Necromancer)
                 {
                     if (gp.ControlledBrain != null)
                     {
                         m_affected.Add(gp.ControlledBrain.Body);
-                        GameEventMgr.AddHandler(gp.ControlledBrain.Body, GameLivingEvent.TakeDamage, new DOLEventHandler(TakeDamageNPC));
+                        GameEventMgr.AddHandler(gp.ControlledBrain.Body, GameLivingEvent.TakeDamage, new CoreEventHandler(TakeDamageNPC));
                     }
                 }
 			}
 		}
 
-		protected void PlayerJoinedGroup(DOLEvent e, object sender, EventArgs args)
+		protected void PlayerJoinedGroup(CoreEvent e, object sender, EventArgs args)
 		{
 			MemberJoinedEventArgs pjargs = args as MemberJoinedEventArgs;
 			if (pjargs == null) return;
 			m_affected.Add(pjargs.Member);
-			GameEventMgr.AddHandler(pjargs.Member, GamePlayerEvent.TakeDamage, new DOLEventHandler(TakeDamage));
+			GameEventMgr.AddHandler(pjargs.Member, GamePlayerEvent.TakeDamage, new CoreEventHandler(TakeDamage));
 
             if (pjargs.Member is GamePlayer)
             {
@@ -86,18 +86,18 @@ namespace DOL.GS.RealmAbilities
                     if (((GamePlayer)pjargs.Member).ControlledBrain != null)
                     {
                         m_affected.Add(((GamePlayer)pjargs.Member).ControlledBrain.Body);
-                        GameEventMgr.AddHandler(((GamePlayer)pjargs.Member).ControlledBrain.Body, GameLivingEvent.TakeDamage, new DOLEventHandler(TakeDamageNPC));
+                        GameEventMgr.AddHandler(((GamePlayer)pjargs.Member).ControlledBrain.Body, GameLivingEvent.TakeDamage, new CoreEventHandler(TakeDamageNPC));
                     }
                 }
             }
 		}
 
-		protected void PlayerDisbandedGroup(DOLEvent e, object sender, EventArgs args)
+		protected void PlayerDisbandedGroup(CoreEvent e, object sender, EventArgs args)
 		{
 			MemberDisbandedEventArgs pdargs = args as MemberDisbandedEventArgs;
 			if (pdargs == null) return;
 			m_affected.Remove(pdargs.Member);
-			GameEventMgr.RemoveHandler(pdargs.Member, GamePlayerEvent.TakeDamage, new DOLEventHandler(TakeDamage));
+			GameEventMgr.RemoveHandler(pdargs.Member, GamePlayerEvent.TakeDamage, new CoreEventHandler(TakeDamage));
             if (pdargs.Member is GamePlayer)
             {
                 ((GamePlayer)pdargs.Member).Out.SendMessage("You are no longer protected by a pool of healing!", eChatType.CT_SpellExpires, eChatLoc.CL_SystemWindow);
@@ -106,7 +106,7 @@ namespace DOL.GS.RealmAbilities
                     if (((GamePlayer)pdargs.Member).ControlledBrain != null)
                     {
                         m_affected.Remove(((GamePlayer)pdargs.Member).ControlledBrain.Body);
-                        GameEventMgr.RemoveHandler(((GamePlayer)pdargs.Member).ControlledBrain.Body, GameLivingEvent.TakeDamage, new DOLEventHandler(TakeDamageNPC));
+                        GameEventMgr.RemoveHandler(((GamePlayer)pdargs.Member).ControlledBrain.Body, GameLivingEvent.TakeDamage, new CoreEventHandler(TakeDamageNPC));
                     }
                 }
             }
@@ -115,7 +115,7 @@ namespace DOL.GS.RealmAbilities
 				Cancel(false);
 		}
 
-        protected void TakeDamageNPC(DOLEvent e, object sender, EventArgs args)
+        protected void TakeDamageNPC(CoreEvent e, object sender, EventArgs args)
         {
             TakeDamageEventArgs targs = args as TakeDamageEventArgs;
             GameNPC npc = sender as GameNPC;
@@ -162,7 +162,7 @@ namespace DOL.GS.RealmAbilities
                 Cancel(false);
         }
 
-		protected void TakeDamage(DOLEvent e, object sender, EventArgs args)
+		protected void TakeDamage(CoreEvent e, object sender, EventArgs args)
 		{
 			TakeDamageEventArgs targs = args as TakeDamageEventArgs;
 			GamePlayer player = sender as GamePlayer;
@@ -214,19 +214,19 @@ namespace DOL.GS.RealmAbilities
 			base.Stop();
 			if (m_group != null)
 			{
-				GameEventMgr.RemoveHandler(m_group, GroupEvent.MemberDisbanded, new DOLEventHandler(PlayerDisbandedGroup));
-				GameEventMgr.RemoveHandler(m_group, GroupEvent.MemberJoined, new DOLEventHandler(PlayerJoinedGroup));
+				GameEventMgr.RemoveHandler(m_group, GroupEvent.MemberDisbanded, new CoreEventHandler(PlayerDisbandedGroup));
+				GameEventMgr.RemoveHandler(m_group, GroupEvent.MemberJoined, new CoreEventHandler(PlayerJoinedGroup));
 			}
 			foreach (GameLiving l in m_affected)
 			{
 				if (l is GamePlayer)
 				{
 					(l as GamePlayer).Out.SendMessage("You are no longer protected by a pool of healing!", eChatType.CT_SpellExpires, eChatLoc.CL_SystemWindow);
-					GameEventMgr.RemoveHandler(l, GamePlayerEvent.TakeDamage, new DOLEventHandler(TakeDamage));
+					GameEventMgr.RemoveHandler(l, GamePlayerEvent.TakeDamage, new CoreEventHandler(TakeDamage));
 				}
 				else
 				{
-					GameEventMgr.RemoveHandler(l, GameLivingEvent.TakeDamage, new DOLEventHandler(TakeDamageNPC));
+					GameEventMgr.RemoveHandler(l, GameLivingEvent.TakeDamage, new CoreEventHandler(TakeDamageNPC));
 				}
 			}
 			m_affected.Clear();

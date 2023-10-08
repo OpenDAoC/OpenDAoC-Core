@@ -1051,22 +1051,22 @@ namespace DOL.GS
 
 		#region Notify
 
-		public virtual void Notify(DOLEvent e, object sender, EventArgs args)
+		public virtual void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GameEventMgr.Notify(e, sender, args);
 		}
 
-		public virtual void Notify(DOLEvent e, object sender)
+		public virtual void Notify(CoreEvent e, object sender)
 		{
 			Notify(e, sender, null);
 		}
 
-		public virtual void Notify(DOLEvent e)
+		public virtual void Notify(CoreEvent e)
 		{
 			Notify(e, null, null);
 		}
 
-		public virtual void Notify(DOLEvent e, EventArgs args)
+		public virtual void Notify(CoreEvent e, EventArgs args)
 		{
 			Notify(e, null, args);
 		}

@@ -1213,7 +1213,7 @@ namespace DOL.GS.Items
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         [GameServerStartedEvent]
-        public static void OnServerStartup(DOLEvent e, object sender, EventArgs args)
+        public static void OnServerStartup(CoreEvent e, object sender, EventArgs args)
         {
             if (!ServerProperties.Properties.LOAD_BUFF_TOKENS)
                 return;
@@ -1456,7 +1456,7 @@ namespace DOL.GS.Items
     {
 
         [GameServerStartedEvent]
-        public static void OnServerStartup(DOLEvent e, object sender, EventArgs args)
+        public static void OnServerStartup(CoreEvent e, object sender, EventArgs args)
         {
             DbItemTemplate[] buffMerchEvent = CoreDb<DbItemTemplate>.SelectObjects(DB.Column("PackageID").IsLike("BuffTokens")).OrderBy(it => it.Item_Type).ToArray();
             DbMerchantItem m_item = null;

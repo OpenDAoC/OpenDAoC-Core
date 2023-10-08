@@ -162,7 +162,7 @@ namespace DOL.GS.Behaviour
         /// <param name="e"></param>
         /// <param name="sender"></param>
         /// <param name="args"></param>
-        public abstract void Perform(DOLEvent e, object sender, EventArgs args);
+        public abstract void Perform(CoreEvent e, object sender, EventArgs args);
         
     }
 }

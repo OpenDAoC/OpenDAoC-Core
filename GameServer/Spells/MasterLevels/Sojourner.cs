@@ -228,7 +228,7 @@ namespace DOL.GS.Spells
             m_target.IsStunned = false;
 			m_target.DismountSteed(true);
             m_target.DebuffCategory[(int)EProperty.SpellFumbleChance]-=100;
-            GameEventMgr.RemoveHandler(m_target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+            GameEventMgr.RemoveHandler(m_target, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
             m_npc.StopMoving();
             m_npc.RemoveFromWorld();
 			//sometimes player can't move after zephyr :
@@ -245,7 +245,7 @@ namespace DOL.GS.Spells
             }
         }
 
-        private void OnAttack(DOLEvent e, object sender, EventArgs arguments)
+        private void OnAttack(CoreEvent e, object sender, EventArgs arguments)
         {
             GameLiving living = sender as GameLiving;
             if (living == null) return;
@@ -277,7 +277,7 @@ namespace DOL.GS.Spells
             playerTarget.attackComponent.StopAttack();
             playerTarget.StopCurrentSpellcast();
             playerTarget.MountSteed(zephyr, true);
-            GameEventMgr.AddHandler(playerTarget, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+            GameEventMgr.AddHandler(playerTarget, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
             playerTarget.Out.SendMessage("You are picked up by a forceful zephyr!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             zephyr.StopMoving();
 
@@ -338,11 +338,11 @@ namespace DOL.GS.Spells
         public override void OnEffectStart(GameSpellEffect effect)
         {
             base.OnEffectStart(effect);
-            GameEventMgr.AddHandler(Caster, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+            GameEventMgr.AddHandler(Caster, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
             Caster.Endurance -= endurance;
         }
 
-        private void OnAttack(DOLEvent e, object sender, EventArgs arguments)
+        private void OnAttack(CoreEvent e, object sender, EventArgs arguments)
         {
             GameLiving living = sender as GameLiving;
             if (living == null) return;
@@ -362,7 +362,7 @@ namespace DOL.GS.Spells
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
+            GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
             return base.OnEffectExpires(effect, noMessages);
         }
 

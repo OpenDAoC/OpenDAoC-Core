@@ -29,10 +29,10 @@ namespace DOL.GS.GameEvents
 		private const int TUTORIAL_REGIONID = 27;
 		
 		[ScriptLoadedEvent]
-		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(CharacterCreation));
-			GameEventMgr.AddHandler(DatabaseEvent.CharacterSelected, new DOLEventHandler(CharacterSelection));
+			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(CharacterCreation));
+			GameEventMgr.AddHandler(DatabaseEvent.CharacterSelected, new CoreEventHandler(CharacterSelection));
 			
 			InitStartupLocation();
 			
@@ -41,10 +41,10 @@ namespace DOL.GS.GameEvents
 		}
 
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(CharacterCreation));
-			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterSelected, new DOLEventHandler(CharacterSelection));
+			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(CharacterCreation));
+			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterSelected, new CoreEventHandler(CharacterSelection));
 		}
 		
 		/// <summary>
@@ -62,7 +62,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Change location on character creation
 		/// </summary>
-		public static void CharacterCreation(DOLEvent ev, object sender, EventArgs args)
+		public static void CharacterCreation(CoreEvent ev, object sender, EventArgs args)
 		{
 			// Check Args
 			var chArgs = args as CharacterEventArgs;
@@ -114,7 +114,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Change location on character selection if it has any wrong values...
 		/// </summary>
-		public static void CharacterSelection(DOLEvent ev, object sender, EventArgs args)
+		public static void CharacterSelection(CoreEvent ev, object sender, EventArgs args)
 		{
 			// Check Args
 			var chArgs = args as CharacterEventArgs;

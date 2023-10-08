@@ -1714,7 +1714,7 @@ namespace DOL.AI.Brain
         public static bool dontattack = false;
         public static bool lowhealth1 = false;
         public static bool message = false;
-        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
             if (e == GameObjectEvent.AddToWorld)
             {

@@ -33,9 +33,9 @@ namespace DOL.GS.ServerRules
 		/// <param name="args"></param>
 		public virtual void Initialize()
 		{
-			GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(OnGameEntered));
-			GameEventMgr.AddHandler(GamePlayerEvent.RegionChanged, new DOLEventHandler(OnRegionChanged));
-			GameEventMgr.AddHandler(GamePlayerEvent.Released, new DOLEventHandler(OnReleased));
+			GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(OnGameEntered));
+			GameEventMgr.AddHandler(GamePlayerEvent.RegionChanged, new CoreEventHandler(OnRegionChanged));
+			GameEventMgr.AddHandler(GamePlayerEvent.Released, new CoreEventHandler(OnReleased));
 			m_invExpiredCallback = new GamePlayer.InvulnerabilityExpiredCallback(ImmunityExpiredCallback);
 		}
 
@@ -215,7 +215,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="e">event</param>
 		/// <param name="sender">GamePlayer object that has entered the game</param>
 		/// <param name="args"></param>
-		public virtual void OnGameEntered(DOLEvent e, object sender, EventArgs args)
+		public virtual void OnGameEntered(CoreEvent e, object sender, EventArgs args)
 		{
 			StartImmunityTimer((GamePlayer)sender, ServerProperties.Properties.TIMER_GAME_ENTERED * 1000);
 		}
@@ -226,7 +226,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="e">event</param>
 		/// <param name="sender">GamePlayer object that has changed the region</param>
 		/// <param name="args"></param>
-		public virtual void OnRegionChanged(DOLEvent e, object sender, EventArgs args)
+		public virtual void OnRegionChanged(CoreEvent e, object sender, EventArgs args)
 		{
 			StartImmunityTimer((GamePlayer)sender, ServerProperties.Properties.TIMER_REGION_CHANGED * 1000);
 		}
@@ -237,7 +237,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="e">event</param>
 		/// <param name="sender">GamePlayer that has released</param>
 		/// <param name="args"></param>
-		public virtual void OnReleased(DOLEvent e, object sender, EventArgs args)
+		public virtual void OnReleased(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = (GamePlayer)sender;
 			StartImmunityTimer(player, ServerProperties.Properties.TIMER_KILLED_BY_MOB * 1000);//When Killed by a Mob

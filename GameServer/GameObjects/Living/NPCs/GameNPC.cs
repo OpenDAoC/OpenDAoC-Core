@@ -4146,7 +4146,7 @@ namespace DOL.GS
 		/// <param name="e">The event</param>
 		/// <param name="sender">The sender</param>
 		/// <param name="args">The arguements</param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			base.Notify(e, sender, args);
 

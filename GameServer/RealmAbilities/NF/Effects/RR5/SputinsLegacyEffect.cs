@@ -33,14 +33,14 @@ namespace DOL.GS.Effects
         {
             base.Start(target);
 			m_player = target as GamePlayer;
-			GameEventMgr.AddHandler(m_player, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
-            GameEventMgr.AddHandler(m_player, GameLivingEvent.Dying, new DOLEventHandler(OnRemove));
-			GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(OnRemove));
-			GameEventMgr.AddHandler(m_player, GamePlayerEvent.Linkdeath, new DOLEventHandler(OnRemove));
-			GameEventMgr.AddHandler(m_player, GamePlayerEvent.RegionChanged, new DOLEventHandler(OnRemove));
+			GameEventMgr.AddHandler(m_player, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttacked));
+            GameEventMgr.AddHandler(m_player, GameLivingEvent.Dying, new CoreEventHandler(OnRemove));
+			GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new CoreEventHandler(OnRemove));
+			GameEventMgr.AddHandler(m_player, GamePlayerEvent.Linkdeath, new CoreEventHandler(OnRemove));
+			GameEventMgr.AddHandler(m_player, GamePlayerEvent.RegionChanged, new CoreEventHandler(OnRemove));
         }
 
-        private void OnAttacked(DOLEvent e, object sender, EventArgs args)
+        private void OnAttacked(CoreEvent e, object sender, EventArgs args)
         {
             AttackedByEnemyEventArgs attackArgs = args as AttackedByEnemyEventArgs;
 			if (attackArgs == null) return;			
@@ -53,7 +53,7 @@ namespace DOL.GS.Effects
 
         }
 
-        private void OnRemove(DOLEvent e, object sender, EventArgs args)
+        private void OnRemove(CoreEvent e, object sender, EventArgs args)
         {
             //((GamePlayer)Owner).Out.SendMessage("Sputins Legacy grants you a damage immunity!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 			
@@ -63,11 +63,11 @@ namespace DOL.GS.Effects
         public override void Stop()
         {
 			if (m_player.EffectList.GetOfType<SputinsLegacyEffect>() != null) m_player.EffectList.Remove(this);
-			GameEventMgr.RemoveHandler(m_player, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
-            GameEventMgr.RemoveHandler(m_player, GameLivingEvent.Dying, new DOLEventHandler(OnRemove));
-			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(OnRemove));
-			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Linkdeath, new DOLEventHandler(OnRemove));
-			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.RegionChanged, new DOLEventHandler(OnRemove));
+			GameEventMgr.RemoveHandler(m_player, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttacked));
+            GameEventMgr.RemoveHandler(m_player, GameLivingEvent.Dying, new CoreEventHandler(OnRemove));
+			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new CoreEventHandler(OnRemove));
+			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Linkdeath, new CoreEventHandler(OnRemove));
+			GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.RegionChanged, new CoreEventHandler(OnRemove));
             base.Stop();
         }
 		

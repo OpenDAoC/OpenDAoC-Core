@@ -85,10 +85,10 @@ namespace DOL.GS.Quests
 					m_keep = list[Util.Random(list.Count - 1)] as AbstractGameKeep;
 			}
 
-			GameEventMgr.AddHandler(KeepEvent.KeepTaken, new DOLEventHandler(Notify));
+			GameEventMgr.AddHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			if (e != KeepEvent.KeepTaken)
 				return;
@@ -121,13 +121,13 @@ namespace DOL.GS.Quests
 		public override void FinishMission()
 		{
 			base.FinishMission();
-			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new DOLEventHandler(Notify));
+			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
 		}
 
 		public override void ExpireMission()
 		{
 			base.ExpireMission();
-			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new DOLEventHandler(Notify));
+			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
 		}
 
 		public override string Description

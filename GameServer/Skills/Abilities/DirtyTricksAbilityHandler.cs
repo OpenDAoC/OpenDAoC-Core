@@ -114,15 +114,15 @@ namespace DOL.GS.Effects
 			//	    p.Out.SendSpellEffectAnimation(player, player, Icon, 0, false, 1);
 			//	    p.Out.SendSpellCastAnimation(player, Icon, 0);
 			//   }
-			GameEventMgr.AddHandler(player, GameLivingEvent.AttackFinished, new DOLEventHandler(EventHandler));
+			GameEventMgr.AddHandler(player, GameLivingEvent.AttackFinished, new CoreEventHandler(EventHandler));
 		}
 		public override void Stop()
 		{
 			base.Stop();
 			GamePlayer player = Owner as GamePlayer;
-			GameEventMgr.RemoveHandler(player, GameLivingEvent.AttackFinished, new DOLEventHandler(EventHandler));
+			GameEventMgr.RemoveHandler(player, GameLivingEvent.AttackFinished, new CoreEventHandler(EventHandler));
 		}
-		protected void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+		protected void EventHandler(CoreEvent e, object sender, EventArgs arguments)
 		{
 			AttackFinishedEventArgs atkArgs = arguments as AttackFinishedEventArgs;
 			if (atkArgs == null) return;

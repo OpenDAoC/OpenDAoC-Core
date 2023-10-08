@@ -154,7 +154,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
             base.Notify(e, sender, args);
 

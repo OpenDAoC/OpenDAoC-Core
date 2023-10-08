@@ -59,7 +59,7 @@ namespace DOL.GS.DailyQuest.Albion
 		}
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_QUESTS)
 				return;
@@ -109,11 +109,11 @@ namespace DOL.GS.DailyQuest.Albion
 			#region defineObject
 			#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
-			GameEventMgr.AddHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
+			GameEventMgr.AddHandler(Hector, GameObjectEvent.Interact, new CoreEventHandler(TalkToHector));
+			GameEventMgr.AddHandler(Hector, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToHector));
 
 			/* Now we bring to Hector the possibility to give this quest to players */
 			Hector.AddQuestToGive(typeof (TeamBuildingAlb));
@@ -123,23 +123,23 @@ namespace DOL.GS.DailyQuest.Albion
 		}
 
 		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			//if not loaded, don't worry
 			if (Hector == null)
 				return;
 			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.RemoveHandler(Hector, GameObjectEvent.Interact, new DOLEventHandler(TalkToHector));
-			GameEventMgr.RemoveHandler(Hector, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToHector));
+			GameEventMgr.RemoveHandler(Hector, GameObjectEvent.Interact, new CoreEventHandler(TalkToHector));
+			GameEventMgr.RemoveHandler(Hector, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToHector));
 
 			/* Now we remove to Hector the possibility to give this quest to players */
 			Hector.RemoveQuestToGive(typeof (TeamBuildingAlb));
 		}
 
-		protected static void TalkToHector(DOLEvent e, object sender, EventArgs args)
+		protected static void TalkToHector(CoreEvent e, object sender, EventArgs args)
 		{
 			//We get the player from the event arguments and check if he qualifies		
 			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
@@ -253,7 +253,7 @@ namespace DOL.GS.DailyQuest.Albion
 			}
 		}
 
-		protected static void SubscribeQuest(DOLEvent e, object sender, EventArgs args)
+		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
 		{
 			QuestEventArgs qargs = args as QuestEventArgs;
 			if (qargs == null)
@@ -332,7 +332,7 @@ namespace DOL.GS.DailyQuest.Albion
 			}
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = sender as GamePlayer;
 

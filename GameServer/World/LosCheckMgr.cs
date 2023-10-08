@@ -108,12 +108,12 @@ namespace DOL.GS
 		/// <summary>
 		/// Dictionary holding a list of object needing Notify
 		/// </summary>
-		private Dictionary<Tuple<GameObject, GameObject>, List<IDOLEventHandler>> m_registeredLosEvents = new Dictionary<Tuple<GameObject, GameObject>, List<IDOLEventHandler>>();
+		private Dictionary<Tuple<GameObject, GameObject>, List<ICoreEventHandler>> m_registeredLosEvents = new Dictionary<Tuple<GameObject, GameObject>, List<ICoreEventHandler>>();
 		
 		/// <summary>
 		/// Dictionary holding a list of object needing Notify
 		/// </summary>
-		private Dictionary<Tuple<GameObject, GameObject>, List<IDOLEventHandler>> RegisteredLosEvents
+		private Dictionary<Tuple<GameObject, GameObject>, List<ICoreEventHandler>> RegisteredLosEvents
 		{
 			get
 			{
@@ -402,7 +402,7 @@ namespace DOL.GS
 		/// <param name="notifier">GameObject to Notify when Check is made</param>
 		/// <param name="cached">Use a cached result</param>
 		/// <param name="timeout">Cache Timeout, 0 = default</param>
-		public void LosCheck(GamePlayer player, GameObject source, GameObject target, IDOLEventHandler notifier, bool cached = true, int timeout = 0)
+		public void LosCheck(GamePlayer player, GameObject source, GameObject target, ICoreEventHandler notifier, bool cached = true, int timeout = 0)
 		{			
 			if(player == null || source == null || target == null)
 				throw new LosUnavailableException();
@@ -510,7 +510,7 @@ namespace DOL.GS
 		/// <param name="notifier">GameObject to Notify when Check is made</param>
 		/// <param name="cached">Use a cached result</param>
 		/// <param name="timeout">Cache Timeout, 0 = default</param>
-		public void LosCheckVincinity(GameObject source, GameObject target, IDOLEventHandler notifier, bool cached = true, int timeout = 0) 
+		public void LosCheckVincinity(GameObject source, GameObject target, ICoreEventHandler notifier, bool cached = true, int timeout = 0) 
 		{			
 			// FIXME debug
 			if(LOSMGR_DEBUG_LEVEL >= LOSMGR_DEBUG_WARN)
@@ -761,12 +761,12 @@ namespace DOL.GS
 		/// <param name="notifiers">Enumerable of Registered Object</param>
 		/// <param name="player">player who made the check</param>
 		/// <param name="data">Check data for Args</param>
-		private static void NotifyObjects(IList<IDOLEventHandler> notifiers, GamePlayer player, LosCheckData data) 
+		private static void NotifyObjects(IList<ICoreEventHandler> notifiers, GamePlayer player, LosCheckData data) 
 		{
 			// Lock notifiers list.
 			lock(((ICollection)notifiers).SyncRoot)
 			{
-				foreach(IDOLEventHandler notifier in notifiers)
+				foreach(ICoreEventHandler notifier in notifiers)
 				{
 					notifier.Notify(GameObjectEvent.FinishedLosCheck, player, data);
 				}
@@ -781,13 +781,13 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="key">Key to Register to</param>
 		/// <param name="notifier">Event handler Object</param>
-		private void AddRegisteredEvent(Tuple<GameObject, GameObject> key, IDOLEventHandler notifier)
+		private void AddRegisteredEvent(Tuple<GameObject, GameObject> key, ICoreEventHandler notifier)
 		{
 			lock(((ICollection)RegisteredLosEvents).SyncRoot)
 			{
 				if(!RegisteredLosEvents.ContainsKey(key) || RegisteredLosEvents[key] == null) 
 				{
-					RegisteredLosEvents[key] = new List<IDOLEventHandler>();
+					RegisteredLosEvents[key] = new List<ICoreEventHandler>();
 				}
 
 				RegisteredLosEvents[key].Add(notifier);
@@ -1420,7 +1420,7 @@ namespace DOL.GS
 	/// <summary>
 	/// Default Class implementing IDOLEventHandler with a callback to replace old Los Check callbacks.
 	/// </summary>
-	public class LosMgrResponseHandler : IDOLEventHandler
+	public class LosMgrResponseHandler : ICoreEventHandler
 	{
 		private readonly LosMgrResponse m_delegate;
 		
@@ -1442,7 +1442,7 @@ namespace DOL.GS
 			m_delegate = deleg;
 		}
 		
-		public void Notify(DOLEvent e, object sender, EventArgs args)
+		public void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			m_delegate((GamePlayer)sender, ((LosCheckData)args).SourceObject, ((LosCheckData)args).TargetObject, ((LosCheckData)args).LosOK, args, TempProperties);
 		}

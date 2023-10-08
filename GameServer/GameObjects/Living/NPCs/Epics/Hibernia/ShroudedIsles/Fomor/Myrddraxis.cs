@@ -102,7 +102,7 @@ namespace DOL.GS
 		}
 		#endregion
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Myrddraxis Initializing...");
@@ -835,7 +835,7 @@ namespace DOL.GS
 		public MyrddraxisSecondHead() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Second Head of Myrddraxis Initializing...");
@@ -1051,7 +1051,7 @@ namespace DOL.GS
 		public MyrddraxisThirdHead() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Third Head of Myrddraxis Initializing...");
@@ -1268,7 +1268,7 @@ namespace DOL.GS
 		public MyrddraxisFourthHead() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Fourth Head of Myrddraxis Initializing...");
@@ -1485,7 +1485,7 @@ namespace DOL.GS
 		public MyrddraxisFifthHead() : base() { }
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Fifth Head of Myrddraxis Initializing...");

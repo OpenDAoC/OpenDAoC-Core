@@ -35,10 +35,10 @@ namespace DOL.GS
 		/// </summary>
 		ushort ID{ get; set;}		
 
-		void UnRegisterPlayerEnter(DOLEventHandler callback);
-		void UnRegisterPlayerLeave(DOLEventHandler callback);
-		void RegisterPlayerEnter(DOLEventHandler callback);
-		void RegisterPlayerLeave(DOLEventHandler callback);
+		void UnRegisterPlayerEnter(CoreEventHandler callback);
+		void UnRegisterPlayerLeave(CoreEventHandler callback);
+		void RegisterPlayerEnter(CoreEventHandler callback);
+		void RegisterPlayerLeave(CoreEventHandler callback);
 
 		/// <summary>
 		/// Checks wether is intersects with given zone.

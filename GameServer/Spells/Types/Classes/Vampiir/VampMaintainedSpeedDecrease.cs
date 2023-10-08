@@ -94,7 +94,7 @@ namespace DOL.GS.Spells
 		}
 
 
-        protected override void OnAttacked(DOLEvent e, object sender, EventArgs arguments)
+        protected override void OnAttacked(CoreEvent e, object sender, EventArgs arguments)
         {
             // Spell can be used in combat, do nothing
         }

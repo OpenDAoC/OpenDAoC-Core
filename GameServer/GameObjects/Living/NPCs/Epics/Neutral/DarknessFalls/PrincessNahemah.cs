@@ -9,14 +9,14 @@ namespace DOL.GS
     public class PrincessNahemah : GameEpicBoss
     {
         [ScriptLoadedEvent]
-        public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             if (log.IsInfoEnabled)
                 log.Info("Princess Nahemah initialized..");
         }
 
         [ScriptUnloadedEvent]
-        public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+        public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
         {
         }
         public override int GetResist(EDamageType damageType)

@@ -104,7 +104,7 @@ namespace DOL.GS.Scripts
 			base.OnAttackEnemy(ad);
 		}		
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (log.IsInfoEnabled)
 				log.Info("Gudlaugr NPC Initializing...");
@@ -142,7 +142,7 @@ namespace DOL.GS.Scripts
 			/// <param name="e">The event that occured.</param>
 			/// <param name="sender">The source of the event.</param>
 			/// <param name="args">The event details.</param>
-			public override void Notify(DOLEvent e, object sender, EventArgs args)
+			public override void Notify(CoreEvent e, object sender, EventArgs args)
 			{
 				base.Notify(e, sender, args);
 			}

@@ -36,7 +36,7 @@ namespace DOL.GS.Keeps
 		/// <param name="sender">the object sender</param>
 		/// <param name="args">the event arguments</param>
 		[GameServerStartedEvent]
-		public static void OnServerStarted(DOLEvent e, object sender, EventArgs args)
+		public static void OnServerStarted(CoreEvent e, object sender, EventArgs args)
 		{
 			if (ServerProperties.Properties.LOAD_HOOKPOINTS)
 			{
