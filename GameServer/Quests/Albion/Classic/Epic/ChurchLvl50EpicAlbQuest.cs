@@ -1,0 +1,1049 @@
+using System;
+using System.Reflection;
+using DOL.Database;
+using DOL.Events;
+using DOL.GS.PacketHandler;
+using log4net;
+
+namespace DOL.GS.Quests.Albion
+{
+	public class ChurchLvl50EpicAlbQuest : BaseQuest
+	{
+		/// <summary>
+		/// Defines a logger for this class.
+		/// </summary>
+		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+		protected const string questTitle = "Passage to Eternity";
+		protected const int minimumLevel = 50;
+		protected const int maximumLevel = 50;
+
+		private static GameNPC Roben = null; // Start NPC
+		private static SisterBlythe Blythe = null; // Mob to kill
+
+		private static DbItemTemplate statue_of_arawn = null; //sealed pouch
+		private static DbItemTemplate ClericEpicBoots = null; //Shadow Shrouded Boots 
+		private static DbItemTemplate ClericEpicHelm = null; //Shadow Shrouded Coif 
+		private static DbItemTemplate ClericEpicGloves = null; //Shadow Shrouded Gloves 
+		private static DbItemTemplate ClericEpicVest = null; //Shadow Shrouded Hauberk 
+		private static DbItemTemplate ClericEpicLegs = null; //Shadow Shrouded Legs 
+		private static DbItemTemplate ClericEpicArms = null; //Shadow Shrouded Sleeves 
+		private static DbItemTemplate PaladinEpicBoots = null; //Valhalla Touched Boots 
+		private static DbItemTemplate PaladinEpicHelm = null; //Valhalla Touched Coif 
+		private static DbItemTemplate PaladinEpicGloves = null; //Valhalla Touched Gloves 
+		private static DbItemTemplate PaladinEpicVest = null; //Valhalla Touched Hauberk 
+		private static DbItemTemplate PaladinEpicLegs = null; //Valhalla Touched Legs 
+		private static DbItemTemplate PaladinEpicArms = null; //Valhalla Touched Sleeves
+
+		// Constructors
+		public ChurchLvl50EpicAlbQuest() : base()
+		{
+		}
+
+		public ChurchLvl50EpicAlbQuest(GamePlayer questingPlayer) : base(questingPlayer)
+		{
+		}
+
+		public ChurchLvl50EpicAlbQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+		{
+		}
+
+		public ChurchLvl50EpicAlbQuest(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
+		{
+		}
+
+		[ScriptLoadedEvent]
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
+		{
+			if (!ServerProperties.Properties.LOAD_QUESTS)
+				return;
+			
+
+			#region defineNPCs
+
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Roben Fraomar", ERealm.Albion);
+
+			if (npcs.Length > 0)
+				foreach (GameNPC npc in npcs)
+					if (npc.CurrentRegionID == 1 && npc.X == 408557 && npc.Y == 651675)
+					{
+						Roben = npc;
+						break;
+					}
+
+			if (Roben == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Roben , creating it ...");
+				Roben = new GameNPC();
+				Roben.Model = 36;
+				Roben.Name = "Roben Fraomar";
+				Roben.GuildName = "";
+				Roben.Realm = ERealm.Albion;
+				Roben.CurrentRegionID = 1;
+				Roben.Size = 52;
+				Roben.Level = 50;
+				Roben.X = 408557;
+				Roben.Y = 651675;
+				Roben.Z = 5200;
+				Roben.Heading = 3049;
+				Roben.AddToWorld();
+
+				if (SAVE_INTO_DATABASE)
+					Roben.SaveIntoDatabase();
+			}
+			// end npc
+
+			npcs = WorldMgr.GetNPCsByName("Sister Blythe", ERealm.None);
+
+			if (npcs.Length > 0)
+				foreach (GameNPC npc in npcs)
+					if (npc.CurrentRegionID == 1 && npc.X == 322231 && npc.Y == 671546)
+					{
+						Blythe = npc as SisterBlythe;
+						break;
+					}
+
+			if (Blythe == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Blythe , creating it ...");
+				Blythe = new SisterBlythe();
+				Blythe.Model = 67;
+				Blythe.Name = "Sister Blythe";
+				Blythe.GuildName = "";
+				Blythe.Realm = ERealm.None;
+				Blythe.CurrentRegionID = 1;
+				Blythe.Size = 50;
+				Blythe.Level = 69;
+				Blythe.X = 322231;
+				Blythe.Y = 671546;
+				Blythe.Z = 2762;
+				Blythe.Heading = 1683;
+				Blythe.AddToWorld();
+
+				if (SAVE_INTO_DATABASE)
+					Blythe.SaveIntoDatabase();
+			}
+			// end npc
+
+			#endregion
+
+			#region defineItems
+
+			statue_of_arawn = GameServer.Database.FindObjectByKey<DbItemTemplate>("statue_of_arawn");
+			if (statue_of_arawn == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Statue of Arawn, creating it ...");
+				statue_of_arawn = new DbItemTemplate();
+				statue_of_arawn.Id_nb = "statue_of_arawn";
+				statue_of_arawn.Name = "Statue of Arawn";
+				statue_of_arawn.Level = 8;
+				statue_of_arawn.Item_Type = 29;
+				statue_of_arawn.Model = 593;
+				statue_of_arawn.IsDropable = false;
+				statue_of_arawn.IsPickable = false;
+				statue_of_arawn.DPS_AF = 0;
+				statue_of_arawn.SPD_ABS = 0;
+				statue_of_arawn.Object_Type = 41;
+				statue_of_arawn.Hand = 0;
+				statue_of_arawn.Type_Damage = 0;
+				statue_of_arawn.Quality = 100;
+				statue_of_arawn.Weight = 12;
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(statue_of_arawn);
+				}
+
+			}
+// end item
+			DbItemTemplate i = null;
+			ClericEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("ClericEpicBoots");
+			if (ClericEpicBoots == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Clerics Epic Boots , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "ClericEpicBoots";
+				i.Name = "Boots of Defiant Soul";
+				i.Level = 50;
+				i.Item_Type = 23;
+				i.Model = 717;
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 27;
+				i.Object_Type = 35;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 13;
+				i.Bonus1Type = (int) EStat.CON;
+
+				i.Bonus2 = 13;
+				i.Bonus2Type = (int) EStat.DEX;
+
+				i.Bonus3 = 13;
+				i.Bonus3Type = (int) EStat.QUI;
+
+				i.Bonus4 = 8;
+				i.Bonus4Type = (int) EResist.Spirit;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+				ClericEpicBoots = i;
+
+			}
+//end item
+			//of the Defiant Soul  Coif 
+			ClericEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("ClericEpicHelm");
+			if (ClericEpicHelm == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Clerics Epic Helm , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "ClericEpicHelm";
+				i.Name = "Coif of Defiant Soul";
+				i.Level = 50;
+				i.Item_Type = 21;
+				i.Model = 1290; //NEED TO WORK ON..
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 27;
+				i.Object_Type = 35;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 4;
+				i.Bonus1Type = (int) EProperty.Focus_Enchantments;
+
+				i.Bonus2 = 12;
+				i.Bonus2Type = (int) EStat.CON;
+
+				i.Bonus3 = 19;
+				i.Bonus3Type = (int) EStat.PIE;
+
+				i.Bonus4 = 8;
+				i.Bonus4Type = (int) EResist.Energy;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+
+				ClericEpicHelm = i;
+
+			}
+//end item
+			//of the Defiant Soul  Gloves 
+			ClericEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("ClericEpicGloves");
+			if (ClericEpicGloves == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Clerics Epic Gloves , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "ClericEpicGloves";
+				i.Name = "Gauntlets of Defiant Soul";
+				i.Level = 50;
+				i.Item_Type = 22;
+				i.Model = 716;
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 27;
+				i.Object_Type = 35;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 4;
+				i.Bonus1Type = (int) EProperty.Skill_Smiting;
+
+				i.Bonus2 = 22;
+				i.Bonus2Type = (int) EStat.PIE;
+
+				i.Bonus3 = 8;
+				i.Bonus3Type = (int) EResist.Crush;
+
+				i.Bonus4 = 8;
+				i.Bonus4Type = (int) EResist.Matter;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+
+				ClericEpicGloves = i;
+
+			}
+			//of the Defiant Soul  Hauberk 
+			ClericEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("ClericEpicVest");
+			if (ClericEpicVest == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Clerics Epic Vest , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "ClericEpicVest";
+				i.Name = "Habergeon of Defiant Soul";
+				i.Level = 50;
+				i.Item_Type = 25;
+				i.Model = 713;
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 27;
+				i.Object_Type = 35;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 4;
+				i.Bonus1Type = (int) EResist.Crush;
+
+				i.Bonus2 = 4;
+				i.Bonus2Type = (int) EResist.Spirit;
+
+				i.Bonus3 = 12;
+				i.Bonus3Type = (int) EProperty.PowerRegenerationRate;
+
+				i.Bonus4 = 27;
+				i.Bonus4Type = (int) EProperty.MaxHealth;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+				ClericEpicVest = i;
+
+			}
+			//of the Defiant Soul  Legs 
+			ClericEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("ClericEpicLegs");
+			if (ClericEpicLegs == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Clerics Epic Legs , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "ClericEpicLegs";
+				i.Name = "Chaussess of Defiant Soul";
+				i.Level = 50;
+				i.Item_Type = 27;
+				i.Model = 714;
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 27;
+				i.Object_Type = 35;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 4;
+				i.Bonus1Type = (int) EProperty.Skill_Rejuvenation;
+
+				i.Bonus2 = 22;
+				i.Bonus2Type = (int) EStat.CON;
+
+				i.Bonus3 = 8;
+				i.Bonus3Type = (int) EResist.Slash;
+
+				i.Bonus4 = 8;
+				i.Bonus4Type = (int) EResist.Cold;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+
+				ClericEpicLegs = i;
+
+			}
+			//of the Defiant Soul  Sleeves 
+			ClericEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("ClericEpicArms");
+			if (ClericEpicArms == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Cleric Epic Arms , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "ClericEpicArms";
+				i.Name = "Sleeves of Defiant Soul";
+				i.Level = 50;
+				i.Item_Type = 28;
+				i.Model = 715;
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 27;
+				i.Object_Type = 35;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 16;
+				i.Bonus1Type = (int) EStat.STR;
+
+				i.Bonus2 = 18;
+				i.Bonus2Type = (int) EStat.PIE;
+
+				i.Bonus3 = 8;
+				i.Bonus3Type = (int) EResist.Thrust;
+
+				i.Bonus4 = 8;
+				i.Bonus4Type = (int) EResist.Heat;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+
+				ClericEpicArms = i;
+			}
+
+			PaladinEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("PaladinEpicBoots");
+			if (PaladinEpicBoots == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Paladin Epic Boots , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "PaladinEpicBoots";
+				i.Name = "Sabaton of the Iron Will";
+				i.Level = 50;
+				i.Item_Type = 23;
+				i.Model = 697;
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 34;
+				i.Object_Type = 36;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 18;
+				i.Bonus1Type = (int) EStat.STR;
+
+				i.Bonus2 = 19;
+				i.Bonus2Type = (int) EStat.QUI;
+
+				i.Bonus3 = 6;
+				i.Bonus3Type = (int) EResist.Slash;
+
+				i.Bonus4 = 6;
+				i.Bonus4Type = (int) EResist.Energy;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+
+				PaladinEpicBoots = i;
+
+			}
+//end item
+			//of the Iron Will Coif 
+			PaladinEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("PaladinEpicHelm");
+			if (PaladinEpicHelm == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Paladin Epic Helm , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "PaladinEpicHelm";
+				i.Name = "Hounskull of the Iron Will";
+				i.Level = 50;
+				i.Item_Type = 21;
+				i.Model = 1290; //NEED TO WORK ON..
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 34;
+				i.Object_Type = 36;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 18;
+				i.Bonus1Type = (int) EStat.CON;
+
+				i.Bonus2 = 19;
+				i.Bonus2Type = (int) EStat.DEX;
+
+				i.Bonus3 = 6;
+				i.Bonus3Type = (int) EResist.Crush;
+
+				i.Bonus4 = 6;
+				i.Bonus4Type = (int) EResist.Matter;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+
+				PaladinEpicHelm = i;
+
+			}
+//end item
+			//of the Iron Will Gloves 
+			PaladinEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("PaladinEpicGloves");
+			if (PaladinEpicGloves == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Paladin Epic Gloves , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "PaladinEpicGloves";
+				i.Name = "Gauntlets of the Iron Will";
+				i.Level = 50;
+				i.Item_Type = 22;
+				i.Model = 696;
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 34;
+				i.Object_Type = 36;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 19;
+				i.Bonus1Type = (int) EStat.STR;
+
+				i.Bonus2 = 18;
+				i.Bonus2Type = (int) EStat.QUI;
+
+				i.Bonus3 = 6;
+				i.Bonus3Type = (int) EResist.Crush;
+
+				i.Bonus4 = 6;
+				i.Bonus4Type = (int) EResist.Heat;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+
+				PaladinEpicGloves = i;
+
+			}
+			//of the Iron Will Hauberk 
+			PaladinEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("PaladinEpicVest");
+			if (PaladinEpicVest == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Paladin Epic Vest , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "PaladinEpicVest";
+				i.Name = "Curiass of the Iron Will";
+				i.Level = 50;
+				i.Item_Type = 25;
+				i.Model = 693;
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 34;
+				i.Object_Type = 36;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 15;
+				i.Bonus1Type = (int) EStat.STR;
+
+				i.Bonus2 = 6;
+				i.Bonus2Type = (int) EResist.Body;
+
+				i.Bonus3 = 6;
+				i.Bonus3Type = (int) EResist.Spirit;
+
+				i.Bonus4 = 24;
+				i.Bonus4Type = (int) EProperty.MaxHealth;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+
+				PaladinEpicVest = i;
+
+			}
+			//of the Iron Will Legs 
+			PaladinEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("PaladinEpicLegs");
+			if (PaladinEpicLegs == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Paladin Epic Legs , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "PaladinEpicLegs";
+				i.Name = "Greaves of the Iron Will";
+				i.Level = 50;
+				i.Item_Type = 27;
+				i.Model = 694;
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 34;
+				i.Object_Type = 36;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 22;
+				i.Bonus1Type = (int) EStat.CON;
+
+				i.Bonus2 = 15;
+				i.Bonus2Type = (int) EStat.DEX;
+
+				i.Bonus3 = 6;
+				i.Bonus3Type = (int) EResist.Crush;
+
+				i.Bonus4 = 6;
+				i.Bonus4Type = (int) EResist.Cold;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+
+				PaladinEpicLegs = i;
+
+			}
+			//of the Iron Will Sleeves 
+			PaladinEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("PaladinEpicArms");
+			if (PaladinEpicArms == null)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Could not find Paladin Epic Arms , creating it ...");
+				i = new DbItemTemplate();
+				i.Id_nb = "PaladinEpicArms";
+				i.Name = "Spaulders of the Iron Will";
+				i.Level = 50;
+				i.Item_Type = 28;
+				i.Model = 695;
+				i.IsDropable = true;
+				i.IsPickable = true;
+				i.DPS_AF = 100;
+				i.SPD_ABS = 34;
+				i.Object_Type = 36;
+				i.Quality = 100;
+				i.Weight = 22;
+				i.Bonus = 35;
+				i.MaxCondition = 50000;
+				i.MaxDurability = 50000;
+				i.Condition = 50000;
+				i.Durability = 50000;
+
+				i.Bonus1 = 19;
+				i.Bonus1Type = (int) EStat.CON;
+
+				i.Bonus2 = 15;
+				i.Bonus2Type = (int) EStat.DEX;
+
+				i.Bonus3 = 9;
+				i.Bonus3Type = (int) EStat.QUI;
+
+				i.Bonus4 = 6;
+				i.Bonus4Type = (int) EResist.Spirit;
+
+				if (SAVE_INTO_DATABASE)
+				{
+					GameServer.Database.AddObject(i);
+				}
+
+				PaladinEpicArms = i;
+			}
+
+			#endregion
+
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
+
+			GameEventMgr.AddHandler(Roben, GameObjectEvent.Interact, new CoreEventHandler(TalkToRoben));
+			GameEventMgr.AddHandler(Roben, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToRoben));
+
+			/* Now we bring to Roben the possibility to give this quest to players */
+			Roben.AddQuestToGive(typeof (ChurchLvl50EpicAlbQuest));
+
+			if (log.IsInfoEnabled)
+				log.Info("Quest \"" + questTitle + "\" initialized");
+
+		}
+
+		[ScriptUnloadedEvent]
+		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
+		{
+			if (!ServerProperties.Properties.LOAD_QUESTS)
+				return;
+			//if not loaded, don't worry
+			if (Roben == null)
+				return;
+			// remove handlers
+			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
+
+			GameEventMgr.RemoveHandler(Roben, GameObjectEvent.Interact, new CoreEventHandler(TalkToRoben));
+			GameEventMgr.RemoveHandler(Roben, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToRoben));
+
+			/* Now we remove to Roben the possibility to give this quest to players */
+			Roben.RemoveQuestToGive(typeof (ChurchLvl50EpicAlbQuest));
+		}
+
+		protected static void TalkToRoben(CoreEvent e, object sender, EventArgs args)
+		{
+			//We get the player from the event arguments and check if he qualifies		
+			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+			if (player == null)
+				return;
+
+			if(Roben.CanGiveQuest(typeof (ChurchLvl50EpicAlbQuest), player)  <= 0)
+				return;
+
+			//We also check if the player is already doing the quest
+			ChurchLvl50EpicAlbQuest quest = player.IsDoingQuest(typeof (ChurchLvl50EpicAlbQuest)) as ChurchLvl50EpicAlbQuest;
+
+			Roben.TurnTo(player);
+			if (e == GameObjectEvent.Interact)
+			{
+				// Nag to finish quest
+				if (quest == null)
+				{
+					Roben.SayTo(player, "It appears that those present when the glyph was made whole received a [vision].");
+				}
+				else
+				{
+					switch (quest.Step)
+					{
+						case 1:
+							Roben.SayTo(player, "You must not let this occur " + player.GetName(0, false) + "! I am familar with [Lyonesse]. I suggest that you gather a strong group of adventurers in order to succeed in this endeavor!");
+							break;
+						case 2:
+							Roben.SayTo(player, "Were you able to [defeat] the cult of the dark lord Arawn?");
+							break;
+					}
+				}
+			}
+				// The player whispered to the NPC
+			else if (e == GameLivingEvent.WhisperReceive)
+			{
+				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+				//Check player is already doing quest
+				if (quest == null)
+				{
+					switch (wArgs.Text)
+					{
+						case "vision":
+							Roben.SayTo(player, "They speak of a broken cathedral located within the borders of Lyonesse. The glyph was able to show the new [occupants] of this cathedral.");
+							break;
+						case "occupants":
+							Roben.SayTo(player, "Occupants that worship not the church of Albion, but the dark lord Arawn! Magess Axton requests that you gather a group and destroy the leader of these dark disciples. She believes these worshippers of Arawan strive to [break the light of camelot] and establish their own religion within our realm.");
+							break;
+						case "break the light of camelot":
+							player.Out.SendQuestSubscribeCommand(Roben, QuestMgr.GetIDForQuestType(typeof(ChurchLvl50EpicAlbQuest)), "Will you help Roben [Church Level 50 Epic]?");
+							break;
+					}
+				}
+				else
+				{
+					switch (wArgs.Text)
+					{
+						case "Lyonesse":
+							Roben.SayTo(player, "The cathedral that Axton speaks of lies deep at the heart of that land, behind the Pikeman, across from the Trees. Its remaining walls can be seen at great distances during the day so you should not miss it. I would travel with thee, but my services are required elswhere. Fare thee well " + player.PlayerClass.Name + ".");
+							break;
+						case "defeat":
+							if (quest.Step == 2)
+							{
+								RemoveItem(player, statue_of_arawn);
+								if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+									    EInventorySlot.LastBackpack))
+								{
+									Roben.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+									quest.FinishQuest();
+								}
+								else
+									player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+							}
+							break;
+
+						case "abort":
+							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
+							break;
+					}
+				}
+			}
+			else if (e == GameObjectEvent.ReceiveItem)
+			{
+				var rArgs = (ReceiveItemEventArgs) args;
+				if (quest != null)
+					if (rArgs.Item.Id_nb == statue_of_arawn.Id_nb && quest.Step == 2)
+					{
+						if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+							    EInventorySlot.LastBackpack))
+						{
+							Roben.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+							quest.FinishQuest();
+						}
+						else
+							player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+					}
+			}
+		}
+
+		public override bool CheckQuestQualification(GamePlayer player)
+		{
+			// if the player is already doing the quest his level is no longer of relevance
+			if (player.IsDoingQuest(typeof (ChurchLvl50EpicAlbQuest)) != null)
+				return true;
+
+			if (player.PlayerClass.ID != (byte) EPlayerClass.Cleric &&
+				player.PlayerClass.ID != (byte) EPlayerClass.Paladin)
+				return false;
+
+			// This checks below are only performed is player isn't doing quest already
+
+			//if (player.HasFinishedQuest(typeof(Academy_47)) == 0) return false;
+
+			//if (!CheckPartAccessible(player,typeof(CityOfCamelot)))
+			//	return false;
+
+			if (player.Level < minimumLevel || player.Level > maximumLevel)
+				return false;
+
+			return true;
+		}
+
+		/* This is our callback hook that will be called when the player clicks
+		 * on any button in the quest offer dialog. We check if he accepts or
+		 * declines here...
+		 */
+
+		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+		{
+			ChurchLvl50EpicAlbQuest quest = player.IsDoingQuest(typeof (ChurchLvl50EpicAlbQuest)) as ChurchLvl50EpicAlbQuest;
+
+			if (quest == null)
+				return;
+
+			if (response == 0x00)
+			{
+				SendSystemMessage(player, "Good, no go out there and finish your work!");
+			}
+			else
+			{
+				SendSystemMessage(player, "Aborting Quest " + questTitle + ". You can start over again if you want.");
+				quest.AbortQuest();
+			}
+		}
+
+
+		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
+		{
+			QuestEventArgs qargs = args as QuestEventArgs;
+			if (qargs == null)
+				return;
+
+			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(ChurchLvl50EpicAlbQuest)))
+				return;
+
+			if (e == GamePlayerEvent.AcceptQuest)
+				CheckPlayerAcceptQuest(qargs.Player, 0x01);
+			else if (e == GamePlayerEvent.DeclineQuest)
+				CheckPlayerAcceptQuest(qargs.Player, 0x00);
+		}
+
+		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
+		{
+			if(Roben.CanGiveQuest(typeof (ChurchLvl50EpicAlbQuest), player)  <= 0)
+				return;
+
+			if (player.IsDoingQuest(typeof (ChurchLvl50EpicAlbQuest)) != null)
+				return;
+
+			if (response == 0x00)
+			{
+				player.Out.SendMessage("Our God forgives your laziness, just look out for stray lightning bolts.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+			}
+			else
+			{
+				// Check to see if we can add quest
+				if (!Roben.GiveQuest(typeof (ChurchLvl50EpicAlbQuest), player, 1))
+					return;;
+
+				Roben.SayTo(player, "You must not let this occur " + player.GetName(0, false) + "! I am familar with [Lyonesse]. I suggest that you gather a strong group of adventurers in order to succeed in this endeavor!");
+			}
+		}
+
+		//Set quest name
+		public override string Name
+		{
+			get { return "Passage to Eternity (Level 50 Church Epic)"; }
+		}
+
+		// Define Steps
+		public override string Description
+		{
+			get
+			{
+				switch (Step)
+				{
+					case 1:
+						return "Gather a strong group of adventures and travel to the ancient temple of Arawn. This temple can be found within Lyonesse, surrounded by the dark one's priests. Only by slaying their leader can this evil be stopped!";
+					case 2:
+						return "Return the statue of Arawn to Roben Fraomar for your reward!";
+				}
+				return base.Description;
+			}
+		}
+
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
+		{
+			GamePlayer player = sender as GamePlayer;
+
+			if (player==null || player.IsDoingQuest(typeof (ChurchLvl50EpicAlbQuest)) == null)
+				return;
+
+			if (sender != m_questPlayer)
+				return;
+			
+			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+			{
+				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+				if (gArgs != null && gArgs.Target != null && Blythe != null)
+				{
+					if (gArgs.Target.Name == Blythe.Name)
+					{
+						m_questPlayer.Out.SendMessage("As you search the dead body of sister Blythe, you find a sacred " + statue_of_arawn.Name + ", bring it to " + Roben.Name + " has proof of your success.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+						GiveItem(player, statue_of_arawn);
+						Step = 2;
+					}
+				}
+			}
+			if (Step == 2 && e == GamePlayerEvent.GiveItem)
+			{
+				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+				if (gArgs.Target.Name == Roben.Name && gArgs.Item.Id_nb == statue_of_arawn.Id_nb)
+				{
+					if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+						    EInventorySlot.LastBackpack))
+					{
+						Roben.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+						FinishQuest();
+					}
+					else
+						player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+				}
+			}
+		}
+
+		public override void AbortQuest()
+		{
+			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+			RemoveItem(m_questPlayer, statue_of_arawn, false);
+		}
+
+		public override void FinishQuest()
+		{
+			RemoveItem(m_questPlayer, statue_of_arawn, true);
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+			if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Cleric)
+			{
+				GiveItem(m_questPlayer, ClericEpicBoots);
+				GiveItem(m_questPlayer, ClericEpicArms);
+				GiveItem(m_questPlayer, ClericEpicGloves);
+				GiveItem(m_questPlayer, ClericEpicHelm);
+				GiveItem(m_questPlayer, ClericEpicVest);
+				GiveItem(m_questPlayer, ClericEpicLegs);
+			}
+			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Paladin)
+			{
+				GiveItem(m_questPlayer, PaladinEpicBoots);
+				GiveItem(m_questPlayer, PaladinEpicArms);
+				GiveItem(m_questPlayer, PaladinEpicGloves);
+				GiveItem(m_questPlayer, PaladinEpicHelm);
+				GiveItem(m_questPlayer, PaladinEpicVest);
+				GiveItem(m_questPlayer, PaladinEpicLegs);
+			}
+
+			m_questPlayer.GainExperience(EXpSource.Quest, 1937768448, true);
+			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+		}
+
+		#region Allakhazam Epic Source
+
+		/*
+        *#25 talk to Roben
+        *#26 seek out Loken in Raumarik Loc 47k, 25k, 4k, and kill him purp and 2 blue adds 
+        *#27 return to Roben 
+        *#28 give her the ball of flame
+        *#29 talk with Roben about Loken�s demise
+        *#30 go to MorlinCaan in Jordheim 
+        *#31 give her the sealed pouch
+        *#32 you get your epic armor as a reward
+        */
+
+		/*
+            *Bernor's Numinous Boots 
+            *Bernor's Numinous Coif
+            *Bernor's Numinous Gloves
+            *Bernor's Numinous Hauberk
+            *Bernor's Numinous Legs
+            *Bernor's Numinous Sleeves
+            *Shadow Shrouded Boots
+            *Shadow Shrouded Coif
+            *Shadow Shrouded Gloves
+            *Shadow Shrouded Hauberk
+            *Shadow Shrouded Legs
+            *Shadow Shrouded Sleeves
+        */
+
+		#endregion
+	}
+}

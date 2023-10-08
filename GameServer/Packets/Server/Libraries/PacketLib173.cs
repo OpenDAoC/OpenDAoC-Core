@@ -559,7 +559,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendQuestUpdate(AbstractQuest quest)
+		public override void SendQuestUpdate(AQuest quest)
 		{
 			if (m_gameClient.Player.QuestList.TryGetValue(quest, out byte index))
 				SendQuestPacket(quest, (byte) (index + 1));
@@ -587,7 +587,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, byte index)
+		protected override void SendQuestPacket(AQuest quest, byte index)
 		{
 			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 			{

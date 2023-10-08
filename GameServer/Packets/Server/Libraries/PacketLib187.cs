@@ -192,7 +192,7 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(template.Name);
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, byte index)
+		protected override void SendQuestPacket(AQuest quest, byte index)
 		{
 			if (quest == null || quest is not RewardQuest)
 			{

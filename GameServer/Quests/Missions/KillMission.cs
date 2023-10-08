@@ -3,7 +3,7 @@ using DOL.Events;
 
 namespace DOL.GS.Quests
 {
-	public class KillMission : AbstractMission
+	public class KillMission : AMission
 	{
 		private Type m_targetType = null;
 		private int m_total = 0;
@@ -34,7 +34,7 @@ namespace DOL.GS.Quests
 				return;
 
 			//we dont allow events triggered by non group leaders
-			if (MissionType == eMissionType.Group && sender is GamePlayer)
+			if (MissionType == EMissionType.Group && sender is GamePlayer)
 			{
 				GamePlayer player = sender as GamePlayer;
 
@@ -46,7 +46,7 @@ namespace DOL.GS.Quests
 			}
 
 			//we don't want group events to trigger personal mission updates
-			if (MissionType == eMissionType.Personal && sender is GamePlayer)
+			if (MissionType == EMissionType.Personal && sender is GamePlayer)
 			{
 				GamePlayer player = sender as GamePlayer;
 

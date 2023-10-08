@@ -1540,7 +1540,7 @@ namespace DOL.GS
 			{
 				if (HasQuest(questType) == null)
 				{
-					AbstractQuest newQuest = (AbstractQuest)Activator.CreateInstance(questType);
+					AQuest newQuest = (AQuest)Activator.CreateInstance(questType);
 					if (newQuest != null) m_questListToGive.Add(newQuest);
 				}
 			}
@@ -1555,7 +1555,7 @@ namespace DOL.GS
 		{
 			lock (m_questListToGive.SyncRoot)
 			{
-				foreach (AbstractQuest q in m_questListToGive)
+				foreach (AQuest q in m_questListToGive)
 				{
 					if (q.GetType().Equals(questType))
 					{
@@ -1578,7 +1578,7 @@ namespace DOL.GS
 		{
 			lock (m_questListToGive.SyncRoot)
 			{
-				foreach (AbstractQuest q in m_questListToGive)
+				foreach (AQuest q in m_questListToGive)
 				{
 					if (q.GetType().Equals(questType) && q.CheckQuestQualification(player) && player.HasFinishedQuest(questType) < q.MaxQuestCount)
 					{
@@ -1645,7 +1645,7 @@ namespace DOL.GS
 			// Scripted quests
 			lock (m_questListToGive.SyncRoot)
 			{
-				foreach (AbstractQuest q in m_questListToGive)
+				foreach (AQuest q in m_questListToGive)
 				{
 					Type questType = q.GetType();
 					int doingQuest = (player.IsDoingQuest(questType) != null ? 1 : 0);
@@ -1678,7 +1678,7 @@ namespace DOL.GS
 		/// <returns>true if this npc is the last step of one quest, false otherwise</returns>
 		public bool CanFinishOneQuest(GamePlayer player)
 		{
-			foreach (AbstractQuest quest in player.QuestList.Keys)
+			foreach (AQuest quest in player.QuestList.Keys)
 			{
 				// Handle Data Quest here.
 				if (quest is DataQuest dataQuest && dataQuest.TargetName == Name && (dataQuest.TargetRegion == 0 || dataQuest.TargetRegion == CurrentRegionID))
@@ -1720,10 +1720,10 @@ namespace DOL.GS
 		/// <returns>true if added, false if the player do already the quest!</returns>
 		public bool GiveQuest(Type questType, GamePlayer player, int startStep)
 		{
-			AbstractQuest quest = HasQuest(questType);
+			AQuest quest = HasQuest(questType);
 			if (quest != null)
 			{
-				AbstractQuest newQuest = (AbstractQuest)Activator.CreateInstance(questType, new object[] { player, startStep });
+				AQuest newQuest = (AQuest)Activator.CreateInstance(questType, new object[] { player, startStep });
 				if (newQuest != null && player.AddQuest(newQuest))
 				{
 					player.Out.SendNPCsQuestEffect(this, GetQuestIndicator(player));
@@ -1739,11 +1739,11 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="questType">The quest type</param>
 		/// <returns>the quest if the npc have the quest or null if not</returns>
-		protected AbstractQuest HasQuest(Type questType)
+		protected AQuest HasQuest(Type questType)
 		{
 			lock (m_questListToGive.SyncRoot)
 			{
-				foreach (AbstractQuest q in m_questListToGive)
+				foreach (AQuest q in m_questListToGive)
 				{
 					if (q.GetType().Equals(questType))
 						return q;

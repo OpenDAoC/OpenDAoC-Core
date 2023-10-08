@@ -1623,7 +1623,7 @@ namespace DOL.GS.Commands
 			{
 				client.Out.SendMessage("Scripted Quests: ------------------------", EChatType.CT_System, EChatLoc.CL_PopupWindow);
 
-				foreach (AbstractQuest quest in targetMob.QuestListToGive)
+				foreach (AQuest quest in targetMob.QuestListToGive)
 					client.Out.SendMessage("Quest Name: [" + quest.Name + "]", EChatType.CT_System, EChatLoc.CL_PopupWindow);
 
 				client.Out.SendMessage("Data Quests: ----------------------------", EChatType.CT_System, EChatLoc.CL_PopupWindow);

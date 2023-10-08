@@ -1,30 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-/*
- * Author:		Gandulf Kohlweiss
- * Date:
- * Directory: /scripts/quests/
- *
- * Description:
- *  Brief Walkthrough:
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,15 +9,6 @@ using DOL.GS.PacketHandler;
 using DOL.Language;
 using log4net;
 
-/* I suggest you declare yourself some namespaces for your quests
- * Like: DOL.GS.Quests.Albion
- *       DOL.GS.Quests.Midgard
- *       DOL.GS.Quests.Hibernia
- * Also this is the name that will show up in the database as QuestName
- * so setting good values here will result in easier to read and cleaner
- * Database Code
- */
-
 namespace DOL.GS.Quests
 {
 
@@ -52,7 +16,7 @@ namespace DOL.GS.Quests
 	/// BaseQuest provides some helper classes for writing quests and
 	/// integrates a new QuestPart Based QuestSystem.
 	/// </summary>
-	public abstract class BaseQuest : AbstractQuest
+	public abstract class BaseQuest : AQuest
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -130,7 +94,7 @@ namespace DOL.GS.Quests
 			{
 				for (int i = questParts.Count - 1; i >= 0; i--)
 				{
-					RemoveBehaviour((QuestBehaviour)questParts[i]);
+					RemoveBehaviour((QuestBehavior)questParts[i]);
 				}
 			}
 			questParts = null;
@@ -143,12 +107,12 @@ namespace DOL.GS.Quests
 		/// this will not remove the questPart from the quest.
 		/// </summary>
 		/// <param name="questPart">QuestPart to remove handlers from</param>
-		protected static void UnRegisterBehaviour(QuestBehaviour questPart)
+		protected static void UnRegisterBehaviour(QuestBehavior questPart)
 		{
 			if (questPart.Triggers == null)
 				return;
 
-			foreach (IBehaviourTrigger trigger in questPart.Triggers)
+			foreach (IBehaviorTrigger trigger in questPart.Triggers)
 			{
 				trigger.Unregister();
 			}
@@ -158,7 +122,7 @@ namespace DOL.GS.Quests
 		/// be added as InteractQuestPart as NotifyQuestPart or both and also register the needed event handler.
 		/// </summary>
 		/// <param name="questPart">QuestPart to be added</param>
-		public static void AddBehaviour(QuestBehaviour questPart)
+		public static void AddBehaviour(QuestBehavior questPart)
 		{
 			if (questParts == null)
 				questParts = new ArrayList();
@@ -173,7 +137,7 @@ namespace DOL.GS.Quests
 		/// Remove the given questpart from the quest and also unregister the handlers
 		/// </summary>
 		/// <param name="questPart">QuestPart to be removed</param>
-		public static void RemoveBehaviour(QuestBehaviour questPart)
+		public static void RemoveBehaviour(QuestBehavior questPart)
 		{
 			if (questParts == null)
 				return;
@@ -203,7 +167,7 @@ namespace DOL.GS.Quests
 			if (questParts == null)
 				return;
 
-			foreach (QuestBehaviour questPart in questParts)
+			foreach (QuestBehavior questPart in questParts)
 			{
 				questPart.Notify(e, sender, args);
 			}

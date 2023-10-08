@@ -17,8 +17,8 @@ public class QuestCommand : ACommandHandler, ICommandHandler
             return;
 
         string message = "";
-        List<AbstractQuest> activeQuests = client.Player.QuestList.Keys.ToList();
-        List<AbstractQuest> finishedQuests = client.Player.GetFinishedQuests();
+        List<AQuest> activeQuests = client.Player.QuestList.Keys.ToList();
+        List<AQuest> finishedQuests = client.Player.GetFinishedQuests();
 
         if (activeQuests.Count == 0)
             message += "You have no pending quests currently.";
@@ -28,7 +28,7 @@ public class QuestCommand : ACommandHandler, ICommandHandler
             {
                 message += $"You are currently working on {activeQuests.Count} quest(s), including:";
 
-                foreach (AbstractQuest quest in activeQuests)
+                foreach (AQuest quest in activeQuests)
                 {
                     // Need to protect from too long a list
                     // We'll do an easy sloppy chop at 1500 characters (packet limit is 2048)
@@ -50,7 +50,7 @@ public class QuestCommand : ACommandHandler, ICommandHandler
             {
                 message += "\nYou have completed the following quest(s):";
 
-                foreach (AbstractQuest quest in finishedQuests)
+                foreach (AQuest quest in finishedQuests)
                 {
                     // Need to protect from too long a list
                     // We'll do an easy sloppy chop at 1500 characters (packet limit is 2048)

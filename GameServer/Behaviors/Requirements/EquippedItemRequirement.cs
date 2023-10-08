@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Database;
@@ -26,14 +7,13 @@ using log4net;
 
 namespace DOL.GS.Behaviour.Requirements
 {
-
 	/// <summary>
 	/// Requirements describe what must be true to allow a QuestAction to fire.
 	/// Level of player, Step of Quest, Class of Player, etc... There are also some variables to add
 	/// additional parameters. To fire a QuestAction ALL requirements must be fulfilled.         
 	/// </summary>
-    [Requirement(RequirementType=eRequirementType.EquippedItem)]
-	public class EquippedItemRequirement : AbstractRequirement<DbItemTemplate,Unused>
+    [Requirement(RequirementType=ERequirementType.EquippedItem)]
+	public class EquippedItemRequirement : ARequirement<DbItemTemplate,Unused>
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -44,8 +24,8 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public EquippedItemRequirement(GameNPC defaultNPC,  Object n, Object v, eComparator comp)
-            : base(defaultNPC, eRequirementType.EquippedItem, n, v, comp)
+        public EquippedItemRequirement(GameNPC defaultNPC,  Object n, Object v, EComparator comp)
+            : base(defaultNPC, ERequirementType.EquippedItem, n, v, comp)
 		{   			
 		}
 
@@ -55,7 +35,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="defaultNPC">Parent defaultNPC of this Requirement</param>		
 		/// <param name="n">First Requirement Variable, meaning depends on RequirementType</param>				
         public EquippedItemRequirement(GameNPC defaultNPC, DbItemTemplate n )
-            : this(defaultNPC,  (object)n, (object)null, eComparator.None)
+            : this(defaultNPC,  (object)n, (object)null, EComparator.None)
 		{   			
 		}
 
@@ -69,7 +49,7 @@ namespace DOL.GS.Behaviour.Requirements
 		public override bool Check(CoreEvent e, object sender, EventArgs args)
 		{
 			bool result = true;
-            GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
+            GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
 
             result = player.Inventory.GetFirstItemByName(N.Name, EInventorySlot.Min_Inv, EInventorySlot.FirstBackpack - 1) != null;
 

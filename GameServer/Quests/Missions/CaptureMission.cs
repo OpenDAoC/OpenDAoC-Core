@@ -6,17 +6,11 @@ using DOL.GS.Keeps;
 
 namespace DOL.GS.Quests
 {
-	public class CaptureMission : AbstractMission
+	public class CaptureMission : AMission
 	{
 		private AGameKeep m_keep = null;
 
-		public enum eCaptureType : int
-		{ 
-			Tower = 1,
-			Keep = 2,
-		}
-
-		public CaptureMission(eCaptureType type, object owner, string hint)
+		public CaptureMission(ECaptureType type, object owner, string hint)
 			: base(owner)
 		{
 			ERealm realm = ERealm.None;
@@ -29,7 +23,7 @@ namespace DOL.GS.Quests
 
 			switch (type)
 			{
-				case eCaptureType.Tower:
+				case ECaptureType.Tower:
 					{
 						ICollection<AGameKeep> keeps;
 						if (owner is GroupUtil)
@@ -47,7 +41,7 @@ namespace DOL.GS.Quests
 						}
 						break;
 					}
-				case eCaptureType.Keep:
+				case ECaptureType.Keep:
 					{
 						ICollection<AGameKeep> keeps;
 						if (owner is GroupUtil)

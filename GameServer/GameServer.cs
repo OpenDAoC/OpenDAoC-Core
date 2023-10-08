@@ -767,7 +767,7 @@ namespace DOL.GS
 
 				//---------------------------------------------------------------
 				//Load behaviour manager
-				if (!InitComponent(BehaviourMgr.Init(), "Behaviour Manager"))
+				if (!InitComponent(BehaviorMgr.Init(), "Behaviour Manager"))
 					return false;
 
 				//Load the quest managers if enabled

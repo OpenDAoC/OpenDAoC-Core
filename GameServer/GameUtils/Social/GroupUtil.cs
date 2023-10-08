@@ -67,12 +67,12 @@ namespace DOL.GS
 		/// <summary>
 		/// This Group Mission.
 		/// </summary>
-		private Quests.AbstractMission m_mission = null;
+		private Quests.AMission m_mission = null;
 		
 		/// <summary>
 		/// Group Mission
 		/// </summary>
-		public Quests.AbstractMission Mission
+		public Quests.AMission Mission
 		{
 			get { return m_mission; }
 			set

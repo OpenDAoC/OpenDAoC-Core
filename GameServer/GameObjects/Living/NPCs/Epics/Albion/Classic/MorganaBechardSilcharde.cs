@@ -91,7 +91,7 @@ namespace DOL.AI.Brain
 				{
 					if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
 					{
-						GS.Quests.Albion.Academy_50 quest = player.IsDoingQuest(typeof(GS.Quests.Albion.Academy_50)) as GS.Quests.Albion.Academy_50;
+						GS.Quests.Albion.AcademyLvl50EpicAlbQuest quest = player.IsDoingQuest(typeof(GS.Quests.Albion.AcademyLvl50EpicAlbQuest)) as GS.Quests.Albion.AcademyLvl50EpicAlbQuest;
 						if (quest != null && quest.Step == 1)
 						{
 							SpawnDemons = true;

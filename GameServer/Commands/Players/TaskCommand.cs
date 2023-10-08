@@ -27,7 +27,7 @@ public class TaskCommand : ACommandHandler, ICommandHandler
 			if (player.Task != null)
 				player.Task.CheckTaskExpired();
 			
-			AbstractTask task = player.Task;
+			ATask task = player.Task;
 			
 			if (task != null && task.TaskActive)
 			{
@@ -36,10 +36,10 @@ public class TaskCommand : ACommandHandler, ICommandHandler
 				messages.Add("What to do: " + task.Description);
 				messages.Add(" ");
 				messages.Add("Task will expire at " + task.TimeOut.ToShortTimeString());
-				messages.Add("You have done " + task.TasksDone + " tasks out of " + AbstractTask.MaxTasksDone(player.Level) + " until now.");
+				messages.Add("You have done " + task.TasksDone + " tasks out of " + ATask.MaxTasksDone(player.Level) + " until now.");
 				player.Out.SendCustomTextWindow("Tasks (Snapshot)", messages);
 			}
-			else if (task != null && task.TasksDone >= AbstractTask.MaxTasksDone(player.Level))
+			else if (task != null && task.TasksDone >= ATask.MaxTasksDone(player.Level))
 			{
 				player.Out.SendMessage("You can do no more tasks at your current level", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}

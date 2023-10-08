@@ -1555,7 +1555,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendQuestUpdate(AbstractQuest quest)
+		public virtual void SendQuestUpdate(AQuest quest)
 		{
 			if (m_gameClient.Player.QuestList.TryGetValue(quest, out byte index))
 				SendQuestPacket(quest, index);
@@ -3872,7 +3872,7 @@ namespace DOL.GS.PacketHandler
 			return 0; // ??
 		}
 
-		protected virtual void SendQuestPacket(AbstractQuest quest, byte index)
+		protected virtual void SendQuestPacket(AQuest quest, byte index)
 		{
 			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 			{
@@ -3920,14 +3920,14 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return "";
 
-			AbstractTask task = m_gameClient.Player.Task;
-			AbstractMission pMission = m_gameClient.Player.Mission;
+			ATask task = m_gameClient.Player.Task;
+			AMission pMission = m_gameClient.Player.Mission;
 
-			AbstractMission gMission = null;
+			AMission gMission = null;
 			if (m_gameClient.Player.Group != null)
 				gMission = m_gameClient.Player.Group.Mission;
 
-			AbstractMission rMission = null;
+			AMission rMission = null;
 
 			//all the task info is sent in name field
 

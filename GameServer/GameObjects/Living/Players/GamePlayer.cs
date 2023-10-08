@@ -11835,7 +11835,7 @@ namespace DOL.GS
             var tasks = CoreDb<DbTask>.SelectObjects(DB.Column("Character_ID").IsEqualTo(InternalID));
             if (tasks.Count == 1)
             {
-                m_task = AbstractTask.LoadFromDatabase(this, tasks[0]);
+                m_task = ATask.LoadFromDatabase(this, tasks[0]);
             }
             else if (tasks.Count > 1)
             {
@@ -11995,7 +11995,7 @@ namespace DOL.GS
                 if (cachedCharacter != null)
                     cachedCharacter = DBCharacter;
 
-                foreach (AbstractQuest quest in QuestList.Keys)
+                foreach (AQuest quest in QuestList.Keys)
                 {
                     if (quest is Quests.DailyQuest dq)
                         dq.SaveQuestParameters();
@@ -12555,12 +12555,12 @@ namespace DOL.GS
         /// <summary>
         /// Holding tasks of player
         /// </summary>
-        AbstractTask m_task = null;
+        ATask m_task = null;
 
         /// <summary>
         /// Gets the tasklist of this player
         /// </summary>
-        public AbstractTask Task
+        public ATask Task
         {
             get { return m_task; }
             set { m_task = value; }
@@ -12570,12 +12570,12 @@ namespace DOL.GS
 
         #region Mission
 
-        private AbstractMission m_mission = null;
+        private AMission m_mission = null;
 
         /// <summary>
         /// Gets the personal mission
         /// </summary>
-        public AbstractMission Mission
+        public AMission Mission
         {
             get { return m_mission; }
             set
@@ -12613,7 +12613,7 @@ namespace DOL.GS
 
             foreach (DbQuest dbquest in quests)
             {
-                AbstractQuest quest = AbstractQuest.LoadFromDatabase(this, dbquest);
+                AQuest quest = AQuest.LoadFromDatabase(this, dbquest);
 
                 if (quest == null)
                     continue;
@@ -12663,12 +12663,12 @@ namespace DOL.GS
             }
         }
 
-        private List<AbstractQuest> _questListFinished = new();
-        public virtual ConcurrentDictionary<AbstractQuest, byte> QuestList { get; private set; } = new(); // Value is the index to send to clients.
+        private List<AQuest> _questListFinished = new();
+        public virtual ConcurrentDictionary<AQuest, byte> QuestList { get; private set; } = new(); // Value is the index to send to clients.
         public ConcurrentQueue<byte> AvailableQuestIndexes { get; private set; } = new(); // If empty, 'QuestList.Count' will be used when adding a quest to 'QuestList'
         public ECSGameTimer QuestActionTimer;
 
-        public List<AbstractQuest> GetFinishedQuests()
+        public List<AQuest> GetFinishedQuests()
         {
             lock (_questListFinished)
             {
@@ -12688,7 +12688,7 @@ namespace DOL.GS
 
             lock (_questListFinished)
             {
-                foreach (AbstractQuest quest in _questListFinished)
+                foreach (AQuest quest in _questListFinished)
                 {
                     if (quest is not DataQuest)
                     {
@@ -12701,7 +12701,7 @@ namespace DOL.GS
             return counter;
         }
 
-        public bool HasFinishedQuest(AbstractQuest quest)
+        public bool HasFinishedQuest(AQuest quest)
         {
             lock (_questListFinished)
             {
@@ -12713,7 +12713,7 @@ namespace DOL.GS
         /// Add a quest to the players finished list
         /// </summary>
         /// <param name="quest"></param>
-        public void AddFinishedQuest(AbstractQuest quest)
+        public void AddFinishedQuest(AQuest quest)
         {
             lock (_questListFinished)
             {
@@ -12721,7 +12721,7 @@ namespace DOL.GS
             }
         }
 
-        public void RemoveFinishedQuest(AbstractQuest quest)
+        public void RemoveFinishedQuest(AQuest quest)
         {
             lock (_questListFinished)
             {
@@ -12729,13 +12729,13 @@ namespace DOL.GS
             }
         }
 
-        public void RemoveFinishedQuests(Predicate<AbstractQuest> match)
+        public void RemoveFinishedQuests(Predicate<AQuest> match)
         {
             lock (_questListFinished)
             {
                 for (int i = _questListFinished.Count - 1; i >= 0; i--)
                 {
-                    AbstractQuest quest = _questListFinished[i];
+                    AQuest quest = _questListFinished[i];
 
                     if (match(quest))
                     {
@@ -12761,7 +12761,7 @@ namespace DOL.GS
             {
                 for (int i = _questListFinished.Count - 1; i >= 0; i--)
                 {
-                    AbstractQuest quest = _questListFinished[i];
+                    AQuest quest = _questListFinished[i];
 
                     if (quest is not DataQuest && quest.GetType().Equals(questType) && quest.Step == -1)
                     {
@@ -12781,7 +12781,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="quest">The quest to add</param>
         /// <returns>true if added, false if player is already doing the quest!</returns>
-        public bool AddQuest(AbstractQuest quest)
+        public bool AddQuest(AQuest quest)
         {
             if (IsDoingQuest(quest) != null)
                 return false;
@@ -12800,9 +12800,9 @@ namespace DOL.GS
         /// Can be used by scripted and data quests
         /// </summary>
         /// <returns>the quest if player is doing the quest or null if not</returns>
-        public AbstractQuest IsDoingQuest(AbstractQuest quest)
+        public AQuest IsDoingQuest(AQuest quest)
         {
-            foreach (AbstractQuest questInList in QuestList.Keys)
+            foreach (AQuest questInList in QuestList.Keys)
             {
                 if (questInList.GetType().Equals(quest.GetType()) && questInList.IsDoingQuest())
                     return questInList;
@@ -12817,9 +12817,9 @@ namespace DOL.GS
         /// </summary>
         /// <param name="questType">The quest type</param>
         /// <returns>the quest if player is doing the quest or null if not</returns>
-        public AbstractQuest IsDoingQuest(Type questType)
+        public AQuest IsDoingQuest(Type questType)
         {
-            foreach (AbstractQuest quest in QuestList.Keys)
+            foreach (AQuest quest in QuestList.Keys)
             {
                 if (quest is not DataQuest)
                 {
@@ -12839,7 +12839,7 @@ namespace DOL.GS
             PlayerClass.Notify(e, sender, args);
             base.Notify(e, sender, args);
 
-            foreach (AbstractQuest quest in QuestList.Keys)
+            foreach (AQuest quest in QuestList.Keys)
             {
                 // player forwards every single notify message to all active quests
                 quest.Notify(e, sender, args);

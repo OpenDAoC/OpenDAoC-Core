@@ -6,58 +6,58 @@ using DOL.Language;
 
 namespace DOL.GS.Behaviour.Actions
 {
-    [Action(ActionType = eActionType.Message)]
-    public class MessageAction : AbstractAction<string, eTextType>
+    [Action(ActionType = EActionType.Message)]
+    public class MessageAction : AAction<string, ETextType>
     {
-        public MessageAction(GameNPC defaultNPC, object p, object q) : base(defaultNPC, eActionType.Message, p, q) { }
+        public MessageAction(GameNPC defaultNPC, object p, object q) : base(defaultNPC, EActionType.Message, p, q) { }
 
-        public MessageAction(GameNPC defaultNPC, string message, eTextType messageType) : this(defaultNPC, message, (object)messageType) { }
+        public MessageAction(GameNPC defaultNPC, string message, ETextType messageType) : this(defaultNPC, message, (object)messageType) { }
 
         public override void Perform(CoreEvent e, object sender, EventArgs args)
         {
-            GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
-            string message = BehaviourUtils.GetPersonalizedMessage(P, player);
+            GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
+            string message = BehaviorUtil.GetPersonalizedMessage(P, player);
 
             switch (Q)
             {
-                case eTextType.Dialog:
+                case ETextType.Dialog:
                 {
                     player.Out.SendCustomDialog(message, null);
                     break;
                 }
-                case eTextType.Emote:
+                case ETextType.Emote:
                 {
                     player.Out.SendMessage(message, EChatType.CT_Emote, EChatLoc.CL_ChatWindow);
                     break;
                 }
-                case eTextType.Say:
+                case ETextType.Say:
                 {
                     player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                     break;
                 }
-                case eTextType.SayTo:
+                case ETextType.SayTo:
                 {
                     player.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_PopupWindow);
                     break;
                 }
-                case eTextType.Yell:
+                case ETextType.Yell:
                 {
                     player.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
                     break;
                 }
-                case eTextType.Broadcast:
+                case ETextType.Broadcast:
                 {
                     foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
                         otherPlayer.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 
                     break;
                 }
-                case eTextType.Read:
+                case ETextType.Read:
                 {
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.MessageAction.ReadMessage", message), EChatType.CT_Emote, EChatLoc.CL_PopupWindow);
                     break;
                 }
-                case eTextType.None:
+                case ETextType.None:
                     break;
             }
         }

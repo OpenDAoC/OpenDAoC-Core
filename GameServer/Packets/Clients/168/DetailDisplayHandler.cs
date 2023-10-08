@@ -333,7 +333,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							
 							if (questID <= DataQuest.DATAQUEST_CLIENTOFFSET)
 							{
-								AbstractQuest q = client.Player.IsDoingQuest(QuestMgr.GetQuestTypeForID(questID));
+								AQuest q = client.Player.IsDoingQuest(QuestMgr.GetQuestTypeForID(questID));
 
 								if (q == null)
 								{
@@ -342,7 +342,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									{
 										try
 										{
-											q = (AbstractQuest)Activator.CreateInstance(QuestMgr.GetQuestTypeForID(questID), client.Player, 1);
+											q = (AQuest)Activator.CreateInstance(QuestMgr.GetQuestTypeForID(questID), client.Player, 1);
 										}
 										catch
 										{

@@ -462,7 +462,7 @@ namespace DOL.GS
 			}
 		}
 
-		public Quests.AbstractMission Mission = null;
+		public Quests.AMission Mission = null;
 
 		/// <summary>
 		/// Adds a player to the guild

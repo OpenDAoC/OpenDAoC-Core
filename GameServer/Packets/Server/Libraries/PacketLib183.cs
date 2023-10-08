@@ -20,7 +20,7 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, byte index)
+		protected override void SendQuestPacket(AQuest quest, byte index)
 		{
 			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 			{

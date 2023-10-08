@@ -1,25 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-// Tolakram, July 2010 - This represents a data driven quest that can be added and removed at runtime.  
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.AI.Brain;
@@ -129,7 +108,7 @@ namespace DOL.GS.Quests
 	/// additional data to be used by the custom step.  Example:  DOL.Storm.MyCustomStep|some_additonal_data
 	/// 
 	/// </summary>
-	public class DataQuest : AbstractQuest
+	public class DataQuest : AQuest
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -785,7 +764,7 @@ namespace DOL.GS.Quests
 		{
 			get 
             {
-                return BehaviourUtils.GetPersonalizedMessage(m_dataQuest.FinishText, m_questPlayer);
+                return BehaviorUtil.GetPersonalizedMessage(m_dataQuest.FinishText, m_questPlayer);
             }
 		}
 
@@ -900,12 +879,12 @@ namespace DOL.GS.Quests
 					}
 					else
 					{
-                        return BehaviourUtils.GetPersonalizedMessage(m_dataQuest.Description, m_questPlayer);
+                        return BehaviorUtil.GetPersonalizedMessage(m_dataQuest.Description, m_questPlayer);
 					}
 				}
 				else
 				{
-                    return BehaviourUtils.GetPersonalizedMessage(StepText, m_questPlayer);
+                    return BehaviorUtil.GetPersonalizedMessage(StepText, m_questPlayer);
 				}
 			}
 		}
@@ -1009,7 +988,7 @@ namespace DOL.GS.Quests
 				}
 			}
 
-			if (ExecuteCustomQuestStep(player, 0, eStepCheckType.Qualification) == false)
+			if (ExecuteCustomQuestStep(player, 0, EStepCheckType.Qualification) == false)
 				return false;
 
 			if (StartType == eStartType.Collection)
@@ -1023,15 +1002,15 @@ namespace DOL.GS.Quests
 				return true;
 			}
 
-			foreach (AbstractQuest quest in player.QuestList.Keys)
+			foreach (AQuest quest in player.QuestList.Keys)
 			{
 				if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 					return false; // player is currently doing this quest
 			}
 
-			List<AbstractQuest> finishedQuests = player.GetFinishedQuests();
+			List<AQuest> finishedQuests = player.GetFinishedQuests();
 
-			foreach (AbstractQuest quest in finishedQuests)
+			foreach (AQuest quest in finishedQuests)
 			{
 				if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 				{
@@ -1047,7 +1026,7 @@ namespace DOL.GS.Quests
 
 				foreach (string str in m_questDependencies)
 				{
-					foreach (AbstractQuest quest in finishedQuests)
+					foreach (AQuest quest in finishedQuests)
 					{
 						if (quest is DataQuest dataQuest && dataQuest.Name.ToLower() == str.ToLower())
 						{
@@ -1069,7 +1048,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns></returns>
-		public bool IsDoingQuest(AbstractQuest checkQuest)
+		public bool IsDoingQuest(AQuest checkQuest)
 		{
 			if (checkQuest is DataQuest dataQuest && dataQuest.ID == ID)
 				return Step > 0;
@@ -1498,7 +1477,7 @@ namespace DOL.GS.Quests
             return (int)((m_rewardXPs[0] * 100) / experienceToLevel);
         }
         
-		protected virtual bool ExecuteCustomQuestStep(GamePlayer player, int step, eStepCheckType stepCheckType)
+		protected virtual bool ExecuteCustomQuestStep(GamePlayer player, int step, EStepCheckType stepCheckType)
 		{
 			bool canContinue = true;
 
@@ -1570,7 +1549,7 @@ namespace DOL.GS.Quests
 				eStepType nextStepType = m_stepTypes[Step];
 				bool advance = false;
 
-				if (ExecuteCustomQuestStep(QuestPlayer, Step, eStepCheckType.Step))
+				if (ExecuteCustomQuestStep(QuestPlayer, Step, EStepCheckType.Step))
 				{
 					if (RewardXP > 0 && m_questPlayer.GainXP == false)
 					{
@@ -1897,7 +1876,7 @@ namespace DOL.GS.Quests
 					m_optionalRewardChoice.Clear();
 					m_rewardItemsChosen = rewardArgs.ItemsChosen;
 
-					if (ExecuteCustomQuestStep(QuestPlayer, 0, eStepCheckType.RewardsChosen))
+					if (ExecuteCustomQuestStep(QuestPlayer, 0, EStepCheckType.RewardsChosen))
 					{
 						if (OptionalRewards.Count > 0)
 						{
@@ -1984,7 +1963,7 @@ namespace DOL.GS.Quests
 					{
 						TryTurnTo(obj, player);
 
-						if (ExecuteCustomQuestStep(player, 0, eStepCheckType.Finish))
+						if (ExecuteCustomQuestStep(player, 0, EStepCheckType.Finish))
 						{
 							if (Description.Trim() != "")
 							{
@@ -2044,7 +2023,7 @@ namespace DOL.GS.Quests
 
 							bool add = true;
 
-							foreach (AbstractQuest quest in player.GetFinishedQuests())
+							foreach (AQuest quest in player.GetFinishedQuests())
 							{
 								if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 								{
@@ -2154,7 +2133,7 @@ namespace DOL.GS.Quests
 						TryTurnTo(obj, player);
 
 						// Note: If the offer is handled by the custom step then it should return false to prevent a double offer
-						if (ExecuteCustomQuestStep(player, 0, eStepCheckType.Offer))
+						if (ExecuteCustomQuestStep(player, 0, EStepCheckType.Offer))
 						{
 							player.Out.SendQuestOfferWindow(offerNPC, player, this);
 						}
@@ -2396,7 +2375,7 @@ namespace DOL.GS.Quests
 									TryTurnTo(obj, player);
 
 									// Custom step can modify rewards here.  Should return false if it sends the reward window
-									if (ExecuteCustomQuestStep(player, 0, eStepCheckType.Finish))
+									if (ExecuteCustomQuestStep(player, 0, EStepCheckType.Finish))
 									{
 										player.Out.SendQuestRewardWindow(finishNPC, player, this);
 									}
@@ -2444,7 +2423,7 @@ namespace DOL.GS.Quests
 				if (m_collectItems.Count >= Step &&
 					!string.IsNullOrEmpty(m_collectItems[Step - 1]) &&
 					item.Id_nb.ToLower().Contains(m_collectItems[Step - 1].ToLower()) &&
-					ExecuteCustomQuestStep(player, Step, eStepCheckType.GiveItem))
+					ExecuteCustomQuestStep(player, Step, EStepCheckType.GiveItem))
 				{
 					switch (StepType)
 					{
@@ -2487,7 +2466,7 @@ namespace DOL.GS.Quests
 				else if (m_stepItemTemplates.Count >= Step &&
 					!string.IsNullOrEmpty(m_stepItemTemplates[Step - 1]) &&
 					item.Id_nb.ToLower().Contains(m_stepItemTemplates[Step - 1].ToLower()) &&
-					ExecuteCustomQuestStep(player, Step, eStepCheckType.GiveItem))
+					ExecuteCustomQuestStep(player, Step, EStepCheckType.GiveItem))
 				{
 					// Current step must be a delivery so take the item and advance the quest
 					if (StepType == eStepType.Deliver)
@@ -2644,7 +2623,7 @@ namespace DOL.GS.Quests
 
 						if (charQuest.Count < MaxQuestCount)
 						{
-							if (ExecuteCustomQuestStep(player, 0, eStepCheckType.Finish))
+							if (ExecuteCustomQuestStep(player, 0, EStepCheckType.Finish))
 							{
 								if (Description.Trim() != "")
 								{
@@ -2704,7 +2683,7 @@ namespace DOL.GS.Quests
 
 								bool add = true;
 
-								foreach (AbstractQuest quest in player.GetFinishedQuests())
+								foreach (AQuest quest in player.GetFinishedQuests())
 								{
 									if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 									{
@@ -2772,12 +2751,12 @@ namespace DOL.GS.Quests
         /// <param name="command"></param>
         /// <param name="area"></param>
         /// <returns></returns>
-        public override bool Command(GamePlayer player, AbstractQuest.eQuestCommand command, AbstractArea area)
+        public override bool Command(GamePlayer player, EQuestCommand command, AbstractArea area)
         {
-            if (player == null || command == eQuestCommand.NONE)
+            if (player == null || command == EQuestCommand.NONE)
                 return false;
 
-            if (command == eQuestCommand.SEARCH)
+            if (command == EQuestCommand.SEARCH)
             {
                 // every active quest in the players quest list is sent this command.  Respond if we have an active search
 
@@ -2799,7 +2778,7 @@ namespace DOL.GS.Quests
                 }
             }
 
-            if (command == eQuestCommand.SEARCH_START && area != null)
+            if (command == EQuestCommand.SEARCH_START && area != null)
             {
                 // If player can start this quest then do search action
 
@@ -2817,9 +2796,9 @@ namespace DOL.GS.Quests
         /// A quest command like /search is completed, so do something
         /// </summary>
         /// <param name="command"></param>
-        protected override void QuestCommandCompleted(AbstractQuest.eQuestCommand command, GamePlayer player)
+        protected override void QuestCommandCompleted(EQuestCommand command, GamePlayer player)
         {
-            if (command == eQuestCommand.SEARCH && QuestPlayer == player)
+            if (command == EQuestCommand.SEARCH && QuestPlayer == player)
             {
                 if (StepType == eStepType.Search)
                 {
@@ -2834,7 +2813,7 @@ namespace DOL.GS.Quests
                 }
             }
 
-            if (command == eQuestCommand.SEARCH_START)
+            if (command == EQuestCommand.SEARCH_START)
             {
                 CheckOfferQuest(player, null);
             }
@@ -2862,7 +2841,7 @@ namespace DOL.GS.Quests
 
 			TryTurnTo(obj, m_questPlayer);
 
-			if (checkCustomStep && ExecuteCustomQuestStep(QuestPlayer, Step, eStepCheckType.Finish) == false)
+			if (checkCustomStep && ExecuteCustomQuestStep(QuestPlayer, Step, EStepCheckType.Finish) == false)
 				return false;
 
 			// try rewards first
@@ -3058,7 +3037,7 @@ namespace DOL.GS.Quests
 			GameServer.Database.SaveObject(m_charQuest);
 
 			// Now that quest is finished do any post finished custom steps
-			ExecuteCustomQuestStep(QuestPlayer, Step, eStepCheckType.PostFinish);
+			ExecuteCustomQuestStep(QuestPlayer, Step, EStepCheckType.PostFinish);
 
 			m_questPlayer.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 			m_questPlayer.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
@@ -3071,7 +3050,7 @@ namespace DOL.GS.Quests
 
 			bool add = true;
 
-			foreach (AbstractQuest quest in m_questPlayer.GetFinishedQuests())
+			foreach (AQuest quest in m_questPlayer.GetFinishedQuests())
 			{
 				if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 				{

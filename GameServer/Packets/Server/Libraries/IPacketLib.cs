@@ -191,7 +191,7 @@ namespace DOL.GS.PacketHandler
 		void SendObjectDelete(ushort oid);
 		void SendObjectUpdate(GameObject obj);
 		void SendQuestListUpdate();
-		void SendQuestUpdate(AbstractQuest quest);
+		void SendQuestUpdate(AQuest quest);
 		void SendQuestRemove(byte index);
 		void SendConcentrationList();
 		void SendUpdateCraftingSkills();

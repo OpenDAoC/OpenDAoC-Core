@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Events;
@@ -31,8 +12,8 @@ namespace DOL.GS.Quests.Triggers
     /// This can be eTriggerAction.Interact, eTriggerAction.GiveItem, eTriggerAction.Attack, etc...
     /// Additional there are two variables to add the needed parameters for the triggertype (Item to give for GiveItem, NPC to interact for Interact, etc...). To fire a QuestAction at least one of the added triggers must be fulfilled. 
     /// </summary>
-    [Trigger(TriggerType=eTriggerType.AbortQuest)]
-    public class AbortQuestTrigger : AbstractTrigger<Unused,Type>
+    [Trigger(TriggerType=ETriggerType.AbortQuest)]
+    public class AbortQuestTrigger : ATrigger<Unused,Type>
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -44,7 +25,7 @@ namespace DOL.GS.Quests.Triggers
 		/// <param name="k"></param>
 		/// <param name="i"></param>
         public AbortQuestTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, Object k, Object i)
-            : base(defaultNPC,notifyHandler, eTriggerType.AbortQuest, k, i)
+            : base(defaultNPC,notifyHandler, ETriggerType.AbortQuest, k, i)
         { }
 
         /// <summary>
@@ -71,7 +52,7 @@ namespace DOL.GS.Quests.Triggers
             
             if (e == GamePlayerEvent.AbortQuest)
             {
-                GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
+                GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
                 QuestEventArgs qArgs = (QuestEventArgs)args;
                 result = (qArgs.Player.ObjectID == player.ObjectID && QuestMgr.GetQuestTypeForID(qArgs.QuestID).Equals(I));
             }

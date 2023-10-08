@@ -472,7 +472,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, byte index)
+		protected override void SendQuestPacket(AQuest quest, byte index)
 		{
 			if (quest == null)
 			{

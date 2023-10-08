@@ -352,9 +352,9 @@ namespace DOL.Tests.Unit.Gameserver
 
         private class FakeQuestPlayer : FakePlayer
         {
-            public ConcurrentDictionary<AbstractQuest, byte> fakeQuestList = new();
+            public ConcurrentDictionary<AQuest, byte> fakeQuestList = new();
 
-            public override ConcurrentDictionary<AbstractQuest, byte> QuestList => fakeQuestList;
+            public override ConcurrentDictionary<AQuest, byte> QuestList => fakeQuestList;
         }
 
         private class DataQuestSpy : DataQuest

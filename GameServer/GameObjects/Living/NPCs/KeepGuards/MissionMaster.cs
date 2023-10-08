@@ -71,7 +71,7 @@ namespace DOL.GS.Keeps
 					if (player.Group.Mission != null)
 						player.Group.Mission.ExpireMission();
 
-					player.Group.Mission = new CaptureMission(CaptureMission.eCaptureType.Tower, player.Group, str.ToLower().Replace("tower capture", "").Trim());
+					player.Group.Mission = new CaptureMission(CaptureMission.ECaptureType.Tower, player.Group, str.ToLower().Replace("tower capture", "").Trim());
 				}
 			}
 			else if (str.ToLower().StartsWith("keep capture"))
@@ -89,7 +89,7 @@ namespace DOL.GS.Keeps
 					if (player.Group.Mission != null)
 						player.Group.Mission.ExpireMission();
 
-					player.Group.Mission = new CaptureMission(CaptureMission.eCaptureType.Keep, player.Group, str.ToLower().Replace("keep capture", "").Trim());
+					player.Group.Mission = new CaptureMission(CaptureMission.ECaptureType.Keep, player.Group, str.ToLower().Replace("keep capture", "").Trim());
 				}
 			}
 			else
@@ -164,7 +164,7 @@ namespace DOL.GS.Keeps
 								SayTo(player, "You are not the leader of your group!");
 								break;
 							}
-							player.Group.Mission = new RaizeMission(player.Group);
+							player.Group.Mission = new RazeMission(player.Group);
 							break;
 						}
 					case "tower capture":

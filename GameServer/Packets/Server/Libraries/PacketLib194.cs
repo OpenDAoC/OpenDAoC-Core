@@ -45,7 +45,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x01); // Wrap
 				pak.WritePascalString(quest.Name);
 
-				string personalizedSummary = BehaviourUtils.GetPersonalizedMessage(quest.Description, player);
+				string personalizedSummary = BehaviorUtil.GetPersonalizedMessage(quest.Description, player);
 				if (personalizedSummary.Length > 255)
 				{
 					pak.WritePascalString(personalizedSummary.Substring(0, 255)); // Summary is max 255 bytes or client will crash !
@@ -57,7 +57,7 @@ namespace DOL.GS.PacketHandler
 
 				if (offer)
 				{
-					string personalizedStory = BehaviourUtils.GetPersonalizedMessage(quest.Story, player);
+					string personalizedStory = BehaviorUtil.GetPersonalizedMessage(quest.Story, player);
 
 					if (personalizedStory.Length > MAX_STORY_LENGTH)
 					{
@@ -131,7 +131,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x01); // Wrap
 				pak.WritePascalString(quest.Name);
 
-				string personalizedSummary = BehaviourUtils.GetPersonalizedMessage(quest.Summary, player);
+				string personalizedSummary = BehaviorUtil.GetPersonalizedMessage(quest.Summary, player);
 				if (personalizedSummary.Length > 255)
 					pak.WritePascalString(personalizedSummary.Substring(0, 255)); // Summary is max 255 bytes !
 				else
@@ -139,7 +139,7 @@ namespace DOL.GS.PacketHandler
 
 				if (offer)
 				{
-					string personalizedStory = BehaviourUtils.GetPersonalizedMessage(quest.Story, player);
+					string personalizedStory = BehaviorUtil.GetPersonalizedMessage(quest.Story, player);
 
 					if (personalizedStory.Length > ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
 					{

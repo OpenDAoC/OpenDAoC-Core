@@ -153,7 +153,7 @@ namespace DOLGameServerConsole
 		public void SendObjectRemove(GameObject obj) { }
 		public void SendObjectCreate(GameObject obj) { }
 		public void SendQuestListUpdate() { }
-		public void SendQuestUpdate(AbstractQuest quest) { }
+		public void SendQuestUpdate(AQuest quest) { }
 		public void SendQuestRemove(byte index) { }
 		public void SendConcentrationList() { }
 		public void SendUpdateCraftingSkills() { }

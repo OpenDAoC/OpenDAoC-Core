@@ -608,8 +608,8 @@ namespace DOL.Tests
 		{
 			if (SendQuestListUpdateMethod != null) SendQuestListUpdateMethod(this);
 		}
-		public Action<TestPacketLib, AbstractQuest> SendQuestUpdateMethod { get; set; }
-		public void SendQuestUpdate(AbstractQuest quest)
+		public Action<TestPacketLib, AQuest> SendQuestUpdateMethod { get; set; }
+		public void SendQuestUpdate(AQuest quest)
 		{
 			if (SendQuestUpdateMethod != null) SendQuestUpdateMethod(this, quest);
 		}

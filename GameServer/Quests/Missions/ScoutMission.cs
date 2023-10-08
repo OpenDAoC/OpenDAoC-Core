@@ -6,7 +6,7 @@ using DOL.GS.Keeps;
 
 namespace DOL.GS.Quests
 {
-	public class ScoutMission : AbstractMission
+	public class ScoutMission : AMission
 	{
 		private AGameKeep m_keep = null;
 

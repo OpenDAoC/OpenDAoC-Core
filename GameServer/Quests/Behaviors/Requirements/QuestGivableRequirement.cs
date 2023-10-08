@@ -32,8 +32,8 @@ namespace DOL.GS.Quests.Requirements
 	/// Level of player, Step of Quest, Class of Player, etc... There are also some variables to add
 	/// additional parameters. To fire a QuestAction ALL requirements must be fulfilled.         
 	/// </summary>
-    [Requirement(RequirementType=eRequirementType.QuestGivable,DefaultValueV=eDefaultValueConstants.NPC)]
-	public class QuestGivableRequirement : AbstractRequirement<Type,GameNPC>
+    [Requirement(RequirementType=ERequirementType.QuestGivable,DefaultValueV=EDefaultValueConstants.NPC)]
+	public class QuestGivableRequirement : ARequirement<Type,GameNPC>
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -44,8 +44,8 @@ namespace DOL.GS.Quests.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public QuestGivableRequirement(GameNPC defaultNPC, Object n, Object v, eComparator comp)
-            : base(defaultNPC, eRequirementType.QuestGivable, n, v, comp)
+        public QuestGivableRequirement(GameNPC defaultNPC, Object n, Object v, EComparator comp)
+            : base(defaultNPC, ERequirementType.QuestGivable, n, v, comp)
 		{
 		}
 
@@ -56,7 +56,7 @@ namespace DOL.GS.Quests.Requirements
         /// <param name="questType"></param>
         /// <param name="v"></param>
         /// <param name="comp"></param>
-        public QuestGivableRequirement(GameNPC defaultNPC, Type questType, GameNPC v, eComparator comp)
+        public QuestGivableRequirement(GameNPC defaultNPC, Type questType, GameNPC v, EComparator comp)
             : this(defaultNPC, (object)questType, (object)v, comp)
 		{   			
 		}
@@ -71,9 +71,9 @@ namespace DOL.GS.Quests.Requirements
 		public override bool Check(CoreEvent e, object sender, EventArgs args)
 		{
 			bool result = true;
-            GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
+            GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
 
-            if (Comparator == eComparator.Not)
+            if (Comparator == EComparator.Not)
                 result = QuestMgr.CanGiveQuest(N, player, V) <= 0;
             else
                 result = QuestMgr.CanGiveQuest(N, player, V) > 0;

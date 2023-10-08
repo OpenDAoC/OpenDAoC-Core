@@ -21,9 +21,9 @@ public class QuestSearchCommand : ACommandHandler, ICommandHandler
 
 		bool searched = false;
 
-		foreach (AbstractQuest quest in player.QuestList.Keys)
+		foreach (AQuest quest in player.QuestList.Keys)
 		{
-			if (quest.Command(player, AbstractQuest.eQuestCommand.SEARCH))
+			if (quest.Command(player, AQuest.EQuestCommand.SEARCH))
 			{
 				searched = true;
 			}
@@ -37,7 +37,7 @@ public class QuestSearchCommand : ACommandHandler, ICommandHandler
             {
                 if (area is QuestSearchArea && (area as QuestSearchArea).DataQuest != null && (area as QuestSearchArea).Step == 0)
                 {
-                    if ((area as QuestSearchArea).DataQuest.Command(player, AbstractQuest.eQuestCommand.SEARCH_START, area))
+                    if ((area as QuestSearchArea).DataQuest.Command(player, AQuest.EQuestCommand.SEARCH_START, area))
                     {
                         searched = true;
                     }
