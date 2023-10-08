@@ -54,7 +54,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles pet command actions
 		/// </summary>
-		protected class HandlePetCommandAction : ECSGameTimerWrapperBase
+		protected class HandlePetCommandAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The pet aggro state
@@ -89,7 +89,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 

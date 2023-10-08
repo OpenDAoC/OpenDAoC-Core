@@ -256,7 +256,7 @@ namespace DOL.AI.Brain
                 }
                 if(!Spawn_Souls)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnSouls), Util.Random(10000, 15000));
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnSouls), Util.Random(10000, 15000));
                     Spawn_Souls = true;
                 }
                 if (BafMobs == false)
@@ -278,7 +278,7 @@ namespace DOL.AI.Brain
         }
         #region Spawn Soul
         public static bool Spawn_Souls = false;
-        private int SpawnSouls(ECSGameTimer timer)
+        private int SpawnSouls(EcsGameTimer timer)
         {
             if (Body.IsAlive && HasAggro)
             {
@@ -293,10 +293,10 @@ namespace DOL.AI.Brain
                     Add.AddToWorld();
                 }
             }
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetRespawnSouls), Util.Random(60000, 70000));
+            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetRespawnSouls), Util.Random(60000, 70000));
             return 0;
         }
-        private int ResetRespawnSouls(ECSGameTimer timer)
+        private int ResetRespawnSouls(EcsGameTimer timer)
         {
             Spawn_Souls = false;
             return 0;

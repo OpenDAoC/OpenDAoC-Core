@@ -221,7 +221,7 @@ namespace DOL.AI.Brain
         public static bool CanWalk = false;
         public static bool Stage2 = false;
         public static bool Reset_Gildas = false;
-        public int ResetGildas(ECSGameTimer timer)
+        public int ResetGildas(EcsGameTimer timer)
         {
             Reset_Gildas = false;
             return 0;
@@ -270,7 +270,7 @@ namespace DOL.AI.Brain
                     Body.BlockChance = npcTemplate.BlockChance;
                     Stage2 = false;
                     Body.styleComponent.NextCombatStyle = LordGildas.taunt;
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGildas), 7000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetGildas), 7000);
                     Reset_Gildas = true;
                 }
             }
@@ -315,7 +315,7 @@ namespace DOL.AI.Brain
                         {
                             if (CanWalk == false)
                             {
-                                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
+                                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
                                 CanWalk = true;
                             }
                         }
@@ -360,7 +360,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public int WalkBack(ECSGameTimer timer)
+        public int WalkBack(EcsGameTimer timer)
         {
             if (Body.InCombat && HasAggro && Body.TargetObject != null && Stage2==false)
             {

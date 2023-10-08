@@ -152,7 +152,7 @@ namespace DOL.GS.Spells
 		{
 			base.OnEffectExpires(effect,noMessages);
 
-			ECSGameTimer timer = effect.Owner.TempProperties.GetProperty<ECSGameTimer>(EFFECT_PROPERTY, null);
+			EcsGameTimer timer = effect.Owner.TempProperties.GetProperty<EcsGameTimer>(EFFECT_PROPERTY, null);
 			effect.Owner.TempProperties.RemoveProperty(EFFECT_PROPERTY);
 			timer.Stop();
 
@@ -219,7 +219,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Slowly restores the livings speed
 		/// </summary>
-		private sealed class RestoreSpeedTimer : ECSGameTimerWrapperBase
+		private sealed class RestoreSpeedTimer : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The speed changing effect
@@ -238,7 +238,7 @@ namespace DOL.GS.Spells
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GameSpellEffect effect = m_effect;
 

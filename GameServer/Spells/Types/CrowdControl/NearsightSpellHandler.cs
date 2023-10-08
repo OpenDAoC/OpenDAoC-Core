@@ -69,9 +69,9 @@ namespace DOL.GS.Spells
         public override int CalculateSpellResistChance(GameLiving target)
         {
             //Bonedancer rr5
-            if (target.EffectList.GetOfType<AllureofDeathEffect>() != null)
+            if (target.EffectList.GetOfType<NfRaAllureOfDeathEffect>() != null)
             {
-                return AllureofDeathEffect.nschance;
+                return NfRaAllureOfDeathEffect.nschance;
             }
             return base.CalculateSpellResistChance(target);
 

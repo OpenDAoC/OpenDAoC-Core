@@ -87,7 +87,7 @@ namespace DOL.AI.Brain
 				
 				if (!CanDD && DD_Enemys.Count > 0)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareDD), 3000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PrepareDD), 3000);
 					CanDD = true;
 				}
 			}
@@ -204,7 +204,7 @@ namespace DOL.AI.Brain
 			}
 		}
 
-		private int PrepareDD(ECSGameTimer timer)
+		private int PrepareDD(EcsGameTimer timer)
         {
 			if (DD_Enemys.Count > 0)
 			{
@@ -214,10 +214,10 @@ namespace DOL.AI.Brain
 						DamageTarget(targets, Body);
 				}
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDD), 2000);
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetDD), 2000);
 			return 0;
         }
-		private int ResetDD(ECSGameTimer timer)
+		private int ResetDD(EcsGameTimer timer)
         {
 			CanDD = false;
 			return 0;

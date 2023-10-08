@@ -289,7 +289,7 @@ namespace DOL.GS.AtlasQuest.Albion
 						case "friendly beetle":
 							if (quest.Step == 2)
 							{
-								new ECSGameTimer(Laura, new ECSGameTimer.ECSTimerCallback(CreateEffect), 1000);
+								new EcsGameTimer(Laura, new EcsGameTimer.EcsTimerCallback(CreateEffect), 1000);
 								quest.Step = 3;
 								Laura.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
 							}
@@ -318,7 +318,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			}
 		}
 		
-		private static int CreateBeetle(ECSGameTimer timer)
+		private static int CreateBeetle(EcsGameTimer timer)
         {
 	        Beetle = new GameNPC();
             Beetle.Model = 669;
@@ -340,7 +340,7 @@ namespace DOL.GS.AtlasQuest.Albion
             return 0;
         }
 		
-		private static int CreateEffect(ECSGameTimer timer)
+		private static int CreateEffect(EcsGameTimer timer)
 		{
 			MobEffect = new GameNPC();
 			MobEffect.Model = 1822;
@@ -363,13 +363,13 @@ namespace DOL.GS.AtlasQuest.Albion
 			
 			MobEffect.AddToWorld();
 			
-			new ECSGameTimer(Laura, new ECSGameTimer.ECSTimerCallback(RemoveEffectMob), 1000);
-			new ECSGameTimer(Laura, new ECSGameTimer.ECSTimerCallback(CreateBeetle), 1000);
-			new ECSGameTimer(Laura, new ECSGameTimer.ECSTimerCallback(RemoveBeetle), 2000);
+			new EcsGameTimer(Laura, new EcsGameTimer.EcsTimerCallback(RemoveEffectMob), 1000);
+			new EcsGameTimer(Laura, new EcsGameTimer.EcsTimerCallback(CreateBeetle), 1000);
+			new EcsGameTimer(Laura, new EcsGameTimer.EcsTimerCallback(RemoveBeetle), 2000);
 			return 0;
 		}
 		
-		private static int RemoveEffectMob(ECSGameTimer timer)
+		private static int RemoveEffectMob(EcsGameTimer timer)
 		{
 			foreach (GameNPC effect in Laura.GetNPCsInRadius(600))
 			{
@@ -380,7 +380,7 @@ namespace DOL.GS.AtlasQuest.Albion
 			return 0;
 		}
 		
-		private static int RemoveBeetle(ECSGameTimer timer)
+		private static int RemoveBeetle(EcsGameTimer timer)
 		{
 			foreach (GameNPC effect in Laura.GetNPCsInRadius(600))
 			{

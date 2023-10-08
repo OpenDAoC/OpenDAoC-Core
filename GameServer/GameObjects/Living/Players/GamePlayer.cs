@@ -55,18 +55,18 @@ namespace DOL.GS
         public long LastWorldUpdate { get; set; }
         public ChainedActions ChainedActions { get; private set; }
 
-        public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
-        public ECSGameTimer PredatorTimeoutTimer
+        public EcsGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
+        public EcsGameTimer PredatorTimeoutTimer
         {
             get
             {
-                if (m_predatortimer == null) m_predatortimer = new ECSGameTimer(this);
+                if (m_predatortimer == null) m_predatortimer = new EcsGameTimer(this);
                 return m_predatortimer;
             }
             set { m_predatortimer = value; }
         }
 
-        protected ECSGameTimer m_predatortimer;
+        protected EcsGameTimer m_predatortimer;
         private PlayerDeck _randomNumberDeck;
 
         #region Client/Character/VariousFlags
@@ -1269,7 +1269,7 @@ namespace DOL.GS
         /// <summary>
         /// Combat Timer
         /// </summary>
-        private ECSGameTimer m_combatTimer;
+        private EcsGameTimer m_combatTimer;
 
         /// <summary>
         /// Reset and Restart Combat Timer
@@ -1437,7 +1437,7 @@ namespace DOL.GS
         /// <summary>
         /// The release timer for this player
         /// </summary>
-        protected ECSGameTimer m_releaseTimer;
+        protected EcsGameTimer m_releaseTimer;
 
         /// <summary>
         /// Stops release timer and closes timer window
@@ -1936,7 +1936,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer"></param>
         /// <returns></returns>
-        protected virtual int ReleaseTimerCallback(ECSGameTimer callingTimer)
+        protected virtual int ReleaseTimerCallback(EcsGameTimer callingTimer)
         {
             if (IsAlive)
                 return 0;
@@ -2044,7 +2044,7 @@ namespace DOL.GS
         /// <summary>
         /// The timer that will be started when the player wants to pray
         /// </summary>
-        private ECSGameTimer m_prayAction;
+        private EcsGameTimer m_prayAction;
 
         /// <summary>
         /// Gets the praying-state of this living
@@ -2080,7 +2080,7 @@ namespace DOL.GS
                 return;
             }
 
-            m_prayAction = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
+            m_prayAction = new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(_ =>
             {
                 if (gravestone.XPValue > 0)
                 {
@@ -2498,8 +2498,8 @@ namespace DOL.GS
 
             if (m_healthRegenerationTimer == null)
             {
-                m_healthRegenerationTimer = new ECSGameTimer(this);
-                m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
+                m_healthRegenerationTimer = new EcsGameTimer(this);
+                m_healthRegenerationTimer.Callback = new EcsGameTimer.EcsTimerCallback(HealthRegenerationTimerCallback);
             }
             else if (m_healthRegenerationTimer.IsAlive)
             {
@@ -2518,8 +2518,8 @@ namespace DOL.GS
             if (m_powerRegenerationTimer is {IsAlive: true}) return;
             if (m_powerRegenerationTimer == null)
             {
-                m_powerRegenerationTimer = new ECSGameTimer(this);
-                m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
+                m_powerRegenerationTimer = new EcsGameTimer(this);
+                m_powerRegenerationTimer.Callback = new EcsGameTimer.EcsTimerCallback(PowerRegenerationTimerCallback);
             }
 
             PowerRegenStackingBonus = 0;
@@ -2535,9 +2535,9 @@ namespace DOL.GS
             if (m_enduRegenerationTimer is {IsAlive: true}) return;
             if (m_enduRegenerationTimer == null)
             {
-                m_enduRegenerationTimer = new ECSGameTimer(this);
+                m_enduRegenerationTimer = new EcsGameTimer(this);
                 m_enduRegenerationTimer.Callback =
-                    new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
+                    new EcsGameTimer.EcsTimerCallback(EnduranceRegenerationTimerCallback);
             }
 
             m_enduRegenerationTimer.Start(m_enduranceRegenerationPeriod);
@@ -2577,7 +2577,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="callingTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
+        protected override int HealthRegenerationTimerCallback(EcsGameTimer callingTimer)
         {
             // I'm not sure what the point of this is.
             if (Client.ClientState != GameClient.eClientState.Playing)
@@ -2642,7 +2642,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="selfRegenerationTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+        protected override int PowerRegenerationTimerCallback(EcsGameTimer selfRegenerationTimer)
         {
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return PowerRegenerationPeriod;
@@ -2661,7 +2661,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="selfRegenerationTimer">the timer</param>
         /// <returns>the new time</returns>
-        protected override int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+        protected override int EnduranceRegenerationTimerCallback(EcsGameTimer selfRegenerationTimer)
         {
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return EnduranceRegenerationPeriod;
@@ -2686,7 +2686,7 @@ namespace DOL.GS
                     {
                         #region Calculation : AtlasOF_LongWind
                         // --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
-                        AtlasOF_LongWindAbility raLongWind = GetAbility<AtlasOF_LongWindAbility>();
+                        OfRaLongWindAbility raLongWind = GetAbility<OfRaLongWindAbility>();
                         if (raLongWind != null)
                         {
                             longwind -= (raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100);
@@ -2835,7 +2835,7 @@ namespace DOL.GS
 
             #region Calculation : AtlasOF_EtheralBond
             // --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
-            AtlasOF_EtherealBondAbility raEtherealBond = GetAbility<AtlasOF_EtherealBondAbility>();
+            OfRaEtherealBondAbility raEtherealBond = GetAbility<OfRaEtherealBondAbility>();
             if (raEtherealBond != null)
             {
                 if (raEtherealBond.Level > 0)
@@ -4183,7 +4183,7 @@ namespace DOL.GS
         public virtual int RealmSpecialtyPoints
         {
             get { return GameServer.ServerRules.GetPlayerRealmPointsTotal(this) 
-                         - GetRealmAbilities().Where(ab => !(ab is RR5RealmAbility))
+                         - GetRealmAbilities().Where(ab => !(ab is Rr5RealmAbility))
                              .Sum(ab => Enumerable.Range(0, ab.Level).Sum(i => ab.CostForUpgrade(i))); }
         }
 
@@ -6002,7 +6002,7 @@ namespace DOL.GS
 
             if (effectListComponent.ContainsEffectForEffectType(EEffect.Volley))
             {
-                AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, EEffect.Volley);
+                OfRaVolleyEcsEffect volley = (OfRaVolleyEcsEffect)EffectListService.GetEffectOnTarget(this, EEffect.Volley);
 
                 if (volley != null)
                     volley.OnPlayerSwitchedWeapon();
@@ -7002,8 +7002,8 @@ namespace DOL.GS
                 m_deathTick = GameLoop.GameLoopTime; // we use realtime, because timer window is realtime
 
                 Out.SendTimerWindow(LanguageMgr.GetTranslation(Client.Account.Language, "System.ReleaseTimer"), (m_automaticRelease ? RELEASE_MINIMUM_WAIT : RELEASE_TIME));
-                m_releaseTimer = new ECSGameTimer(this);
-                m_releaseTimer.Callback = new ECSGameTimer.ECSTimerCallback(ReleaseTimerCallback);
+                m_releaseTimer = new EcsGameTimer(this);
+                m_releaseTimer.Callback = new EcsGameTimer.EcsTimerCallback(ReleaseTimerCallback);
                 m_releaseTimer.Start(1000);
 
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.ReleaseToReturn"), EChatType.CT_YouDied, EChatLoc.CL_SystemWindow);
@@ -7428,12 +7428,12 @@ namespace DOL.GS
         /// <summary>
         /// This is the timer used to count time when a player casts a RA
         /// </summary>
-        private ECSGameTimer m_realmAbilityCastTimer;
+        private EcsGameTimer m_realmAbilityCastTimer;
 
         /// <summary>
         /// Get and set the RA cast timer
         /// </summary>
-        public ECSGameTimer RealmAbilityCastTimer
+        public EcsGameTimer RealmAbilityCastTimer
         {
             get { return m_realmAbilityCastTimer; }
             set { m_realmAbilityCastTimer = value; }
@@ -7829,7 +7829,7 @@ namespace DOL.GS
                                 EffectService.RequestImmediateCancelEffect(effect);
 
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), EChatType.CT_Emote, EChatLoc.CL_SystemWindow);
-                            m_whistleMountTimer = new(this, new ECSGameTimer.ECSTimerCallback(WhistleMountTimerCallback), 5000);
+                            m_whistleMountTimer = new(this, new EcsGameTimer.EcsTimerCallback(WhistleMountTimerCallback), 5000);
                         }
 
                         break;
@@ -8996,13 +8996,13 @@ namespace DOL.GS
 
             IsJumping = false;
             m_invulnerabilityTick = 0;
-            m_healthRegenerationTimer = new ECSGameTimer(this);
-            m_powerRegenerationTimer = new ECSGameTimer(this);
-            m_enduRegenerationTimer = new ECSGameTimer(this);
+            m_healthRegenerationTimer = new EcsGameTimer(this);
+            m_powerRegenerationTimer = new EcsGameTimer(this);
+            m_enduRegenerationTimer = new EcsGameTimer(this);
             craftComponent = new CraftComponent(this);
-            m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
-            m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
-            m_enduRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
+            m_healthRegenerationTimer.Callback = new EcsGameTimer.EcsTimerCallback(HealthRegenerationTimerCallback);
+            m_powerRegenerationTimer.Callback = new EcsGameTimer.EcsTimerCallback(PowerRegenerationTimerCallback);
+            m_enduRegenerationTimer.Callback = new EcsGameTimer.EcsTimerCallback(EnduranceRegenerationTimerCallback);
 
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
@@ -9699,8 +9699,8 @@ namespace DOL.GS
                 {
                     if (m_lavaBurningTimer == null)
                     {
-                        m_lavaBurningTimer = new ECSGameTimer(this);
-                        m_lavaBurningTimer.Callback = new ECSGameTimer.ECSTimerCallback(LavaBurnTimerCallback);
+                        m_lavaBurningTimer = new EcsGameTimer(this);
+                        m_lavaBurningTimer.Callback = new EcsGameTimer.EcsTimerCallback(LavaBurnTimerCallback);
                         m_lavaBurningTimer.Interval = 2000;
                         m_lavaBurningTimer.Start(1);
                     }
@@ -9734,7 +9734,7 @@ namespace DOL.GS
         protected long m_beginDrowningTick;
         protected EWaterBreath m_currentWaterBreathState;
 
-        protected int DrowningTimerCallback(ECSGameTimer callingTimer)
+        protected int DrowningTimerCallback(EcsGameTimer callingTimer)
         {
             if (!IsAlive)
             {
@@ -9760,9 +9760,9 @@ namespace DOL.GS
             return 1000;
         }
 
-        protected ECSGameTimer m_drowningTimer;
-        protected ECSGameTimer m_holdBreathTimer;
-        protected ECSGameTimer m_lavaBurningTimer;
+        protected EcsGameTimer m_drowningTimer;
+        protected EcsGameTimer m_holdBreathTimer;
+        protected EcsGameTimer m_lavaBurningTimer;
         /// <summary>
         /// The diving state of this player
         /// </summary>
@@ -9870,7 +9870,7 @@ namespace DOL.GS
             m_currentWaterBreathState = state;
         }
 
-        protected int LavaBurnTimerCallback(ECSGameTimer callingTimer)
+        protected int LavaBurnTimerCallback(EcsGameTimer callingTimer)
         {
             if (!IsAlive || ObjectState != eObjectState.Active || !IsSwimming)
                 return 0;
@@ -10040,7 +10040,7 @@ namespace DOL.GS
 
             if (effectListComponent.ContainsEffectForEffectType(EEffect.Volley))
             {
-                AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, EEffect.Volley);
+                OfRaVolleyEcsEffect volley = (OfRaVolleyEcsEffect)EffectListService.GetEffectOnTarget(this, EEffect.Volley);
 
                 if (volley != null)
                     volley.OnPlayerMoved();
@@ -10183,7 +10183,7 @@ namespace DOL.GS
             get
             {
                 double enc = (double)Strength;
-                RAPropertyEnhancer ab = GetAbility<AtlasOF_LifterAbility>();
+                RaPropertyEnhancer ab = GetAbility<OfRaLifterAbility>();
                 if (ab != null)
                     enc *= 1 + ((double)ab.Amount / 100);
 
@@ -12316,7 +12316,7 @@ namespace DOL.GS
         /// <summary>
         /// Uncovers the player if a mob is too close
         /// </summary>
-        protected class UncoverStealthAction : ECSGameTimerWrapperBase
+        protected class UncoverStealthAction : EcsGameTimerWrapperBase
         {
             /// <summary>
             /// Constructs a new uncover stealth action
@@ -12327,7 +12327,7 @@ namespace DOL.GS
             /// <summary>
             /// Called on every timer tick
             /// </summary>
-            protected override int OnTick(ECSGameTimer timer)
+            protected override int OnTick(EcsGameTimer timer)
             {
                 GamePlayer player = (GamePlayer) timer.Owner;
 
@@ -12429,7 +12429,7 @@ namespace DOL.GS
                 return false;
             if (!IsAlive)
                 return false;
-            if (enemy.EffectList.GetOfType<VanishEffect>() != null)
+            if (enemy.EffectList.GetOfType<NfRaVanishEffect>() != null)
                 return false;
             if (this.Client.Account.PrivLevel > 1)
                 return true;
@@ -12439,7 +12439,7 @@ namespace DOL.GS
             if (this.effectListComponent.ContainsEffectForEffectType(EEffect.TrueSight))
                 return true;
 
-            if (HasAbilityType(typeof(AtlasOF_SeeHidden)) 
+            if (HasAbilityType(typeof(OfRaSeeHiddenAbility)) 
                 && ( enemy.PlayerClass is ClassMinstrel 
                      || enemy.PlayerClass is ClassRanger
                      || enemy.PlayerClass is ClassHunter
@@ -12666,7 +12666,7 @@ namespace DOL.GS
         private List<AQuest> _questListFinished = new();
         public virtual ConcurrentDictionary<AQuest, byte> QuestList { get; private set; } = new(); // Value is the index to send to clients.
         public ConcurrentQueue<byte> AvailableQuestIndexes { get; private set; } = new(); // If empty, 'QuestList.Count' will be used when adding a quest to 'QuestList'
-        public ECSGameTimer QuestActionTimer;
+        public EcsGameTimer QuestActionTimer;
 
         public List<AQuest> GetFinishedQuests()
         {
@@ -13096,12 +13096,12 @@ namespace DOL.GS
         /// <summary>
         /// This is the timer used to count time when a player craft
         /// </summary>
-        private ECSGameTimer m_crafttimer;
+        private EcsGameTimer m_crafttimer;
 
         /// <summary>
         /// Get and set the craft timer
         /// </summary>
-        public ECSGameTimer CraftTimer
+        public EcsGameTimer CraftTimer
         {
             get { return m_crafttimer; }
             set { m_crafttimer = value; }
@@ -13808,7 +13808,7 @@ namespace DOL.GS
         /// <summary>
         /// The timer to call invulnerability expired callbacks
         /// </summary>
-        protected class InvulnerabilityTimer : ECSGameTimerWrapperBase
+        protected class InvulnerabilityTimer : EcsGameTimerWrapperBase
         {
             /// <summary>
             /// Defines a logger for this class.
@@ -13835,7 +13835,7 @@ namespace DOL.GS
             /// <summary>
             /// Called on every timer tick
             /// </summary>
-            protected override int OnTick(ECSGameTimer timer)
+            protected override int OnTick(EcsGameTimer timer)
             {
                 try
                 {
@@ -14234,7 +14234,7 @@ namespace DOL.GS
 
         #region Controlled Mount
 
-        protected ECSGameTimer m_whistleMountTimer;
+        protected EcsGameTimer m_whistleMountTimer;
         protected ControlledHorse m_controlledHorse;
 
         public bool HasHorse
@@ -14287,7 +14287,7 @@ namespace DOL.GS
             m_whistleMountTimer = null;
         }
 
-        protected int WhistleMountTimerCallback(ECSGameTimer callingTimer)
+        protected int WhistleMountTimerCallback(EcsGameTimer callingTimer)
         {
             StopWhistleTimers();
             IsOnHorse = true;
@@ -15069,19 +15069,19 @@ namespace DOL.GS
             LoadFromDatabase(dbChar);
             CreateStatistics();
 
-            m_combatTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
+            m_combatTimer = new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(_ =>
             {
                 Out.SendUpdateMaxSpeed();
                 return 0;
             }));
 
-            m_holdBreathTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
+            m_holdBreathTimer = new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(_ =>
             {
                 UpdateWaterBreathState(EWaterBreath.Drowning);
                 return 0;
             }));
 
-            m_drowningTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DrowningTimerCallback));
+            m_drowningTimer = new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DrowningTimerCallback));
             ChainedActions = new(this);
         }
 
@@ -15170,7 +15170,7 @@ namespace DOL.GS
             //	evade = SpellHandler.FindEffectOnTarget(this, "SavageEvadeBuff");
             EcsGameEffect evade = EffectListService.GetEffectOnTarget(this, EEffect.SavageBuff, ESpellType.SavageEvadeBuff);
 
-            if (HasAbility(Abilities.Advanced_Evade) || HasAbility(Abilities.Enhanced_Evade) || EffectList.GetOfType<CombatAwarenessEffect>() != null || EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
+            if (HasAbility(Abilities.Advanced_Evade) || HasAbility(Abilities.Enhanced_Evade) || EffectList.GetOfType<NfRaCombatAwarenessEffect>() != null || EffectList.GetOfType<NfRaRuneOfUtterAgilityEffect>() != null)
                 evadeChance = GetModified(EProperty.EvadeChance);
             else if (evade != null || HasAbility(Abilities.Evade))
             {
@@ -15228,7 +15228,7 @@ namespace DOL.GS
 
             if ((HasSpecialization(Specs.Parry) || parry != null) && (ActiveWeapon != null))
                 parryChance = GetModified(EProperty.ParryChance);
-            else if (EffectList.GetOfType<BladeBarrierEffect>() != null)
+            else if (EffectList.GetOfType<NfRaBladeBarrierEffect>() != null)
                 parryChance = GetModified(EProperty.ParryChance);
 
             if (parryChance > 0)

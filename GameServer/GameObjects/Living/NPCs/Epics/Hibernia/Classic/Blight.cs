@@ -100,12 +100,12 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
 			}
 			return success;
 		}
 
-		protected int Show_Effect(ECSGameTimer timer)
+		protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{
@@ -121,10 +121,10 @@ namespace DOL.GS
 		public override void Die(GameObject killer)
         {
 			int respawnTime = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;
-			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnFireBlight), respawnTime);
+			new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(SpawnFireBlight), respawnTime);
             base.Die(killer);
         }
-		private int SpawnFireBlight(ECSGameTimer timer)
+		private int SpawnFireBlight(EcsGameTimer timer)
         {
 			BlightControllerBrain.CreateLateBlight = false;
 			BlightControllerBrain.CreateFleshBlight = false;
@@ -291,12 +291,12 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
 			}
 			return success;
 		}
 		#region Show Effects
-		private protected int Show_Effect(ECSGameTimer timer)
+		private protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{
@@ -401,12 +401,12 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
 			}
 			return success;
 		}
 		#region Show Effects
-		private protected int Show_Effect(ECSGameTimer timer)
+		private protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{
@@ -510,12 +510,12 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
 			}
 			return success;
 		}
 		#region Show Effects
-		private protected int Show_Effect(ECSGameTimer timer)
+		private protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{

@@ -225,13 +225,13 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			var despawnGiantCaithorTimer2 = TempProperties.GetProperty<ECSGameTimer>("giantcaithor_despawn2");
+			var despawnGiantCaithorTimer2 = TempProperties.GetProperty<EcsGameTimer>("giantcaithor_despawn2");
 			if (despawnGiantCaithorTimer2 != null)
 			{
 				despawnGiantCaithorTimer2.Stop();
 				TempProperties.RemoveProperty("giantcaithor_despawn2");
 			}
-			var despawnGiantCaithorTimer = TempProperties.GetProperty<ECSGameTimer>("giantcaithor_despawn");
+			var despawnGiantCaithorTimer = TempProperties.GetProperty<EcsGameTimer>("giantcaithor_despawn");
 			if (despawnGiantCaithorTimer != null)
 			{
 				despawnGiantCaithorTimer.Stop();
@@ -298,18 +298,18 @@ namespace DOL.AI.Brain
 			}
 			if (!Body.InCombatInLast(30000) && !despawnGiantCaithor && Body.Model == 339)//5min
             {
-				ECSGameTimer _despawnTimer2 = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DespawnGiantCaithor), 300000);//5min to despawn
+				EcsGameTimer _despawnTimer2 = new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DespawnGiantCaithor), 300000);//5min to despawn
 				Body.TempProperties.SetProperty("giantcaithor_despawn2", _despawnTimer2);
 				despawnGiantCaithor = true;
             }
 			base.Think();
 		}
 		
-		private int DespawnGiantCaithor(ECSGameTimer timer)
+		private int DespawnGiantCaithor(EcsGameTimer timer)
 		{
 			if (!HasAggro)
 			{
-				var despawnGiantCaithorTimer = Body.TempProperties.GetProperty<ECSGameTimer>("giantcaithor_despawn");
+				var despawnGiantCaithorTimer = Body.TempProperties.GetProperty<EcsGameTimer>("giantcaithor_despawn");
 				if (despawnGiantCaithorTimer != null)
 				{
 					despawnGiantCaithorTimer.Stop();

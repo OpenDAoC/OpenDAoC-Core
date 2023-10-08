@@ -21,10 +21,10 @@ namespace DOL.GS
 		GameRelicPad m_currentRelicPad = null;
 		GameRelicPad m_returnRelicPad = null;
 		DateTime m_lastCapturedDate = DateTime.Now;
-		ECSGameTimer m_currentCarrierTimer;
+		EcsGameTimer m_currentCarrierTimer;
 		DbRelic m_dbRelic;
 		ERelicType m_relicType;
-		ECSGameTimer m_returnRelicTimer;
+		EcsGameTimer m_returnRelicTimer;
 		long m_timeRelicOnGround = 0;
 
 		protected int ReturnRelicInterval
@@ -317,7 +317,7 @@ namespace DOL.GS
 			{
 				// launch the reset timer if this relic is not dropped on a pad
 				m_timeRelicOnGround = GameLoop.GameLoopTime;
-				m_returnRelicTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(ReturnRelicTick), RelicEffectInterval);
+				m_returnRelicTimer = new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(ReturnRelicTick), RelicEffectInterval);
 				log.DebugFormat("{0} dropped, return timer for relic set to {1} seconds.", Name, ReturnRelicInterval / 1000);
 				Console.WriteLine($"Starting return relic timer {m_returnRelicTimer}");
 
@@ -331,7 +331,7 @@ namespace DOL.GS
 		/// <summary>
 		/// when the relic is lost and ReturnRelicInterval is elapsed
 		/// </summary>
-		protected virtual int ReturnRelicTick(ECSGameTimer timer)
+		protected virtual int ReturnRelicTick(EcsGameTimer timer)
 		{
 			if (GameLoop.GameLoopTime - m_timeRelicOnGround < ReturnRelicInterval)
 			{
@@ -376,7 +376,7 @@ namespace DOL.GS
 					m_currentCarrierTimer.Stop();
 					m_currentCarrierTimer = null;
 				}
-				m_currentCarrierTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(CarrierTimerTick));
+				m_currentCarrierTimer = new EcsGameTimer(player, new EcsGameTimer.EcsTimerCallback(CarrierTimerTick));
 				m_currentCarrierTimer.Start(RelicEffectInterval);
 
 			}
@@ -396,7 +396,7 @@ namespace DOL.GS
 		/// The callback for the pulsing spelleffect
 		/// </summary>
 		/// <param name="timer">The ObjectTimerCallback object</param>
-		private int CarrierTimerTick(ECSGameTimer timer)
+		private int CarrierTimerTick(EcsGameTimer timer)
 		{
 			//update the relic position
 			Update();

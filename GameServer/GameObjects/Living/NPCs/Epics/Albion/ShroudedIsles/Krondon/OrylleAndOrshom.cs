@@ -113,7 +113,7 @@ namespace DOL.AI.Brain
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		public int ThrowPlayer(ECSGameTimer timer)
+		public int ThrowPlayer(EcsGameTimer timer)
 		{
 			if (Body.IsAlive)
 			{
@@ -161,7 +161,7 @@ namespace DOL.AI.Brain
 			{
 				if (IsTargetPicked == false && OrshomFire.FireCount > 0)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(15000, 20000));//timer to port and pick player
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ThrowPlayer), Util.Random(15000, 20000));//timer to port and pick player
 					IsTargetPicked = true;
 				}
 				if(IsPulled==false)
@@ -453,12 +453,12 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
 			}
 			return success;
 		}
 
-		protected int Show_Effect(ECSGameTimer timer)
+		protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{

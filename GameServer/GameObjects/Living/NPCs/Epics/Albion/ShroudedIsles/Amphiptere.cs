@@ -153,12 +153,12 @@ namespace DOL.AI.Brain
 			if(ad != null && ad.Damage > 0 && ad.Attacker != null && CanSpawnAdds == false && Util.Chance(20))
             {
 				BroadcastMessage(String.Format("A blow knocks one of " + Body.Name + "'s tooths to the ground."));
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdd), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnAdd), 5000);
 				CanSpawnAdds = true;
 			}
 			base.OnAttackedByEnemy(ad);
 		}
-		private int SpawnAdd(ECSGameTimer timer)
+		private int SpawnAdd(EcsGameTimer timer)
         {
 			if (HasAggro && Body.IsAlive)
 			{
@@ -170,10 +170,10 @@ namespace DOL.AI.Brain
 				add.CurrentRegion = Body.CurrentRegion;
 				add.AddToWorld();
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetSpawnAdd), Util.Random(25000, 35000));
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetSpawnAdd), Util.Random(25000, 35000));
 			return 0;
         }
-		private int ResetSpawnAdd(ECSGameTimer timer)
+		private int ResetSpawnAdd(EcsGameTimer timer)
         {
 			CanSpawnAdds = false;
 			return 0;

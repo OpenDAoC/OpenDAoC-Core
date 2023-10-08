@@ -23,7 +23,7 @@ public class DotCriticalHitChanceCalculator : PropertyCalculator
 		int chance = living.AbilityBonus[(int)property];
 
 		if (living is NecromancerPet necroPet && necroPet.Brain is IControlledBrain necroBrain && necroBrain.GetPlayerOwner() is GamePlayer playerOwner)
-			chance += playerOwner.GetAbility<RealmAbilities.AtlasOF_WildArcanaAbility>()?.Amount ?? 0;
+			chance += playerOwner.GetAbility<RealmAbilities.OfRaWildArcanaAbility>()?.Amount ?? 0;
 
 		return Math.Min(chance, 50);
 	}

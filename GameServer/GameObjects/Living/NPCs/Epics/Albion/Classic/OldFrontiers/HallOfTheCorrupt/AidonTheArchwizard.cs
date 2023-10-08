@@ -267,18 +267,18 @@ namespace DOL.AI.Brain
                 }
                 if (CanCast == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), Util.Random(10000, 15000));
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDD), Util.Random(10000, 15000));
                     CanCast = true;
                 }
                 if (SpawnCopiesAgain == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMoreCopies), Util.Random(30000, 45000));
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnMoreCopies), Util.Random(30000, 45000));
                     SpawnCopiesAgain = true;
                 }
             }
             base.Think();
         }
-        public int CastDD(ECSGameTimer Timer)
+        public int CastDD(EcsGameTimer Timer)
         {
             if (Body.IsAlive)
                 Body.CastSpell(AidonBoss_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -286,7 +286,7 @@ namespace DOL.AI.Brain
             CanCast = false;
             return 0;
         }
-        private int SpawnMoreCopies(ECSGameTimer timer)
+        private int SpawnMoreCopies(EcsGameTimer timer)
         {
             if (HasAggro && AidonCopyFire.CopyCountFire == 0 && AidonCopyIce.CopyCountIce == 0 && AidonCopyAir.CopyCountAir == 0 && AidonCopyEarth.CopyCountEarth == 0)
             {

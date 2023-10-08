@@ -2222,7 +2222,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static Ability GetClassRR5Ability(int charclass)
 		{
-			return GetClassRealmAbilities(charclass).Where(ab => ab is RR5RealmAbility).FirstOrDefault();
+			return GetClassRealmAbilities(charclass).Where(ab => ab is Rr5RealmAbility).FirstOrDefault();
 		}
 
 		/// <summary>

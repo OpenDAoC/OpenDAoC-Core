@@ -319,7 +319,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Handles how the form changes. If not in base form, change to base, otherwise randomly change to another of three forms: Treant, Saiyan, Granidon.
         /// </summary>
-        public int ChangeForm(ECSGameTimer timer)
+        public int ChangeForm(EcsGameTimer timer)
         {
             if (Body.InCombat && HasAggro)
             {
@@ -338,7 +338,7 @@ namespace DOL.AI.Brain
                         if (IsGranidonForm == false)
                         {
                             BroadcastMessage(String.Format("Hurionthex casts a spell!"));
-                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Change_Granidon), 2000);
+                            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Change_Granidon), 2000);
                             IsGranidonForm = true;
                         }
                     }
@@ -348,7 +348,7 @@ namespace DOL.AI.Brain
                         if (IsTreantForm == false)
                         {
                             BroadcastMessage(String.Format("Hurionthex casts a spell!"));
-                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Change_Treant), 2000);
+                            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Change_Treant), 2000);
                             IsTreantForm = true;
                         }
                     }
@@ -358,7 +358,7 @@ namespace DOL.AI.Brain
                         if (IsSaiyanForm == false)
                         {
                             BroadcastMessage(String.Format("Hurionthex casts a spell!"));
-                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Change_Saiyan), 2000);
+                            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Change_Saiyan), 2000);
                             IsSaiyanForm = true;
                         }
                     }
@@ -368,7 +368,7 @@ namespace DOL.AI.Brain
                         if (IsBaseForm == false)
                         {
                             BroadcastMessage(String.Format("Hurionthex casts a spell!"));
-                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Change_Base), 2000);
+                            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Change_Base), 2000);
                             IsBaseForm = true;
                         }
                     }
@@ -379,7 +379,7 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public int Change_Base(ECSGameTimer timer)
+        public int Change_Base(EcsGameTimer timer)
         {
             if (IsBaseForm == true && BaseFormCheck == false)
             {
@@ -390,14 +390,14 @@ namespace DOL.AI.Brain
 
                 BroadcastMessage(String.Format("Hurionthex returns to his natural form."));
                 FormBase();
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FormDuration), 2000);
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(FormDuration), 2000);
                 BaseFormCheck = true;
             }
 
             return 0;
         }
 
-        public int Change_Granidon(ECSGameTimer timer)
+        public int Change_Granidon(EcsGameTimer timer)
         {
             if (IsGranidonForm == true && GranidonFormCheck == false)
             {
@@ -408,14 +408,14 @@ namespace DOL.AI.Brain
 
                 BroadcastMessage(String.Format("A ring of magical energy emanates from Hurionthex."));
                 FormGranidon();
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FormDuration), 2000);
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(FormDuration), 2000);
                 GranidonFormCheck = true;
             }
 
             return 0;
         }
 
-        public int Change_Treant(ECSGameTimer timer)
+        public int Change_Treant(EcsGameTimer timer)
         {
             if (IsTreantForm == true && TreantFormCheck == false)
             {
@@ -426,14 +426,14 @@ namespace DOL.AI.Brain
 
                 BroadcastMessage(String.Format("A ring of magical energy emanates from Hurionthex."));
                 FormTreant();
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FormDuration), 2000);
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(FormDuration), 2000);
                 TreantFormCheck = true;
             }
 
             return 0;
         }
 
-        public int Change_Saiyan(ECSGameTimer timer)
+        public int Change_Saiyan(EcsGameTimer timer)
         {
             if (IsSaiyanForm == true && SaiyanFormCheck == false)
             {
@@ -444,21 +444,21 @@ namespace DOL.AI.Brain
 
                 BroadcastMessage(String.Format("A ring of magical energy emanates from Hurionthex."));
                 FormSaiyan();
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(FormDuration), 2000);
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(FormDuration), 2000);
                 SaiyanFormCheck = true;
             }
 
             return 0;
         }
 
-        public int FormDuration(ECSGameTimer timer)
+        public int FormDuration(EcsGameTimer timer)
         {
             if (SwitchForm == false)
             {
                 if (BaseFormCheck == true || GranidonFormCheck == true || TreantFormCheck == true ||
                     SaiyanFormCheck == true)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetChecks), 2000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetChecks), 2000);
                     SwitchForm = true;
                 }
             }
@@ -468,11 +468,11 @@ namespace DOL.AI.Brain
 
         public static bool reset_checks = false;
 
-        public int ResetChecks(ECSGameTimer timer)
+        public int ResetChecks(EcsGameTimer timer)
         {
             if (SwitchForm == true && reset_checks == false)
             {
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeForm), 18000);
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ChangeForm), 18000);
 
                 IsBaseForm = false;
                 IsGranidonForm = false;
@@ -484,21 +484,21 @@ namespace DOL.AI.Brain
             return 0;
         }
 
-        public int CastBlackPlague(ECSGameTimer timer)
+        public int CastBlackPlague(EcsGameTimer timer)
         {
             Body.CastSpell(BlackPlague, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             cast_disease = false;
             return 0;
         }
 
-        public int CastDamageAdd(ECSGameTimer timer)
+        public int CastDamageAdd(EcsGameTimer timer)
         {
             Body.CastSpell(DamageAdd, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             cast_DA = false;
             return 0;
         }
 
-        public int CastDamageShield(ECSGameTimer timer)
+        public int CastDamageShield(EcsGameTimer timer)
         {
             Body.CastSpell(DamageShield, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             cast_DS = false;
@@ -556,7 +556,7 @@ namespace DOL.AI.Brain
                     //todo = Change switch case to form, make it dependent on timer trigger
                     if (StartForms == false)
                     {
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeForm), 2000);
+                        new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ChangeForm), 2000);
                         StartForms = true;
                     }
                 }
@@ -573,7 +573,7 @@ namespace DOL.AI.Brain
                         {
                             if (cast_disease == false)
                             {
-                                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBlackPlague), 2000);
+                                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastBlackPlague), 2000);
                                 cast_disease = true;
                             }
                         }
@@ -588,7 +588,7 @@ namespace DOL.AI.Brain
                         {
                             if (cast_DA == false)
                             {
-                                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDamageAdd), 2000);
+                                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDamageAdd), 2000);
                                 cast_DA = true;
                             }
                         }
@@ -603,7 +603,7 @@ namespace DOL.AI.Brain
                         {
                             if (cast_DS == false)
                             {
-                                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDamageShield), 2000);
+                                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDamageShield), 2000);
                                 cast_DS = true;
                             }
                         }

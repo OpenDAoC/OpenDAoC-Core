@@ -135,12 +135,12 @@ namespace DOL.AI.Brain
 				RemoveAdds = false;
 				if (BringAdds == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Minions), Util.Random(15000, 35000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Minions), Util.Random(15000, 35000));
 					BringAdds = true;
 				}
 				if(CanPort == false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(25000, 45000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ThrowPlayer), Util.Random(25000, 45000));
 					CanPort = true;
                 }
 			}
@@ -154,7 +154,7 @@ namespace DOL.AI.Brain
 			}
 		}
 		private List<GamePlayer> Port_Enemys = new List<GamePlayer>();
-		private int ThrowPlayer(ECSGameTimer timer)
+		private int ThrowPlayer(EcsGameTimer timer)
         {
 			if (HasAggro)
             {
@@ -183,7 +183,7 @@ namespace DOL.AI.Brain
             }
 			return 0;
         }
-		public int Minions(ECSGameTimer timer)
+		public int Minions(EcsGameTimer timer)
 		{
 			if (HasAggro)
 			{

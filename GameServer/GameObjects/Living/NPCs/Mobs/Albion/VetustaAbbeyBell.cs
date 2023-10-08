@@ -38,17 +38,17 @@ namespace DOL.AI.Brain
 		{
 			ThinkInterval = 1000;
 		}
-		private int RingBell(ECSGameTimer timer)
+		private int RingBell(EcsGameTimer timer)
         {
 			foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
 			{
 				if (player != null)
 					player.Out.SendSoundEffect(12, 0, 0, 0, 0, 0);
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetRingBell), 10000);//reset ring bell after 10s to avoid double ding dong ^^
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetRingBell), 10000);//reset ring bell after 10s to avoid double ding dong ^^
 			return 0;
         }
-		private int ResetRingBell(ECSGameTimer timer)
+		private int ResetRingBell(EcsGameTimer timer)
         {
 			runtimer = false;
 			return 0;
@@ -88,7 +88,7 @@ namespace DOL.AI.Brain
                     {
 						if(!runtimer)
                         {
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RingBell), 500);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(RingBell), 500);
 							runtimer = true;
                         }
 					}

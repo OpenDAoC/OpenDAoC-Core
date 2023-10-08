@@ -147,13 +147,13 @@ namespace DOL.AI.Brain
 				RemoveAdds = false;
 				if(!CanSpawnShard)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnShards), Util.Random(15000, 35000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnShards), Util.Random(15000, 35000));
 					CanSpawnShard = true;
                 }
 			}
 			base.Think();
 		}
-		private int SpawnShards(ECSGameTimer timer)
+		private int SpawnShards(EcsGameTimer timer)
         {
 			if (HasAggro && Body.TargetObject != null)
 			{

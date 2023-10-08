@@ -32,7 +32,7 @@ namespace DOL.GS.Spells.Atlantis
         /// <summary>
         /// The timer that will cancel the effect
         /// </summary>
-        protected ECSGameTimer m_expireTimer;
+        protected EcsGameTimer m_expireTimer;
         public override void OnEffectStart(GameSpellEffect effect)
         {
         	base.OnEffectStart(effect);
@@ -128,7 +128,7 @@ namespace DOL.GS.Spells.Atlantis
         protected virtual void StartTimers()
         {
             StopTimers();
-            m_expireTimer = new ECSGameTimer(playertarget, new ECSGameTimer.ECSTimerCallback(ExpiredCallback), 10000);
+            m_expireTimer = new EcsGameTimer(playertarget, new EcsGameTimer.EcsTimerCallback(ExpiredCallback), 10000);
         }
         protected virtual void StopTimers()
         {
@@ -138,7 +138,7 @@ namespace DOL.GS.Spells.Atlantis
                 m_expireTimer = null;
             }
         }
-        protected virtual int ExpiredCallback(ECSGameTimer callingTimer)
+        protected virtual int ExpiredCallback(EcsGameTimer callingTimer)
         {
             Stop();
             return 0;

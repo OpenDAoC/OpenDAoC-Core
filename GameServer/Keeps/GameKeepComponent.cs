@@ -151,8 +151,8 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public override void StartHealthRegeneration()
 		{
-			m_repairTimer = new ECSGameTimer(this);
-			m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
+			m_repairTimer = new EcsGameTimer(this);
+			m_repairTimer.Callback = new EcsGameTimer.EcsTimerCallback(RepairTimerCallback);
 			m_repairTimer.Interval = repairInterval;
 			m_repairTimer.Start(1);
 		}
@@ -642,10 +642,10 @@ namespace DOL.GS.Keeps
 
 		public int RepairedHealth = 0;
 
-		protected ECSGameTimer m_repairTimer;
+		protected EcsGameTimer m_repairTimer;
 		protected static int repairInterval = 30 * 60 * 1000;
 
-		public virtual int RepairTimerCallback(ECSGameTimer timer)
+		public virtual int RepairTimerCallback(EcsGameTimer timer)
 		{
 			if (HealthPercent == 100 || Keep.InCombat)
 				return repairInterval;

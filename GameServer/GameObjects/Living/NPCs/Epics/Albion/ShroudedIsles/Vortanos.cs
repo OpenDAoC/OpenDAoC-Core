@@ -196,20 +196,20 @@ namespace DOL.AI.Brain
         {
 			if(ad != null && ad.Damage > 0 && !SpamMess1 && Util.Chance(25))
             {
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpamMessage), 1000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpamMessage), 1000);
 				SpamMess1=true;
             }
             base.OnAttackedByEnemy(ad);
         }
-		private int SpamMessage(ECSGameTimer timer)
+		private int SpamMessage(EcsGameTimer timer)
         {
 			if(HasAggro)
 				BroadcastMessage(Body.Name + " says, \"The living can never conquer the eternal darkness of death incarnate!\"");
 
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetSpamMessage), Util.Random(25000,45000));
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetSpamMessage), Util.Random(25000,45000));
 			return 0;
         }
-		private int ResetSpamMessage(ECSGameTimer timer)
+		private int ResetSpamMessage(EcsGameTimer timer)
 		{
 			SpamMess1 = false;
 			return 0;

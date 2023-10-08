@@ -136,10 +136,10 @@ namespace DOL.GS
 					
 					if ((Brain as IControlledBrain).GetLivingOwner() is GamePlayer playerOwner)
 					{
-						conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(AtlasRAHelpers.GetAugConLevel(playerOwner));
+						conFromRa = OfRaHelpers.GetStatEnhancerAmountForLevel(OfRaHelpers.GetAugConLevel(playerOwner));
 						conFromItems = playerOwner.GetModifiedFromItems(EProperty.Constitution);
 						maxHealthFromItems = playerOwner.ItemBonus[(int) EProperty.MaxHealth];
-						AtlasOF_ToughnessAbility toughness = playerOwner.GetAbility<AtlasOF_ToughnessAbility>();
+						OfRaToughnessAbility toughness = playerOwner.GetAbility<OfRaToughnessAbility>();
 
 						if (toughness != null)
 							toughnessMod = 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01;

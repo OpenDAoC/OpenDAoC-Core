@@ -127,7 +127,7 @@ namespace DOL.GS.Scripts
 						}
 						if (!CanCastSpell)
 						{
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastMjollnir), 2000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastMjollnir), 2000);
 							CanCastSpell = true;
 						}
 						if (Body.IsCasting)
@@ -162,13 +162,13 @@ namespace DOL.GS.Scripts
 			/// </summary>
 			/// <param name="timer">The timer that started this cast.</param>
 			/// <returns></returns>
-			private int CastMjollnir(ECSGameTimer timer)
+			private int CastMjollnir(EcsGameTimer timer)
 			{
 				Body.CastSpell(Mjollnir, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetMjollnir), 30000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetMjollnir), 30000);
 				return 0;
 			}	
-			private int ResetMjollnir(ECSGameTimer timer)
+			private int ResetMjollnir(EcsGameTimer timer)
             {				
 				CanCastSpell = false;
 				return 0;

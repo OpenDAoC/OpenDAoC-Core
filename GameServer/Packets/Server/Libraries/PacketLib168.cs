@@ -2724,7 +2724,7 @@ namespace DOL.GS.PacketHandler
 
 
 			// send RA usable by this class
-			var raList = SkillBase.GetClassRealmAbilities(m_gameClient.Player.PlayerClass.ID).Where(ra => !(ra is RR5RealmAbility));
+			var raList = SkillBase.GetClassRealmAbilities(m_gameClient.Player.PlayerClass.ID).Where(ra => !(ra is Rr5RealmAbility));
 			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.TrainerWindow)))
 			{
 				pak.WriteByte((byte) raList.Count());

@@ -173,13 +173,13 @@ namespace DOL.AI.Brain
 				RemoveAdds = false;
 				if (SpawnAdd==false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(MouthAdds), Util.Random(20000, 35000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(MouthAdds), Util.Random(20000, 35000));
 					SpawnAdd = true;
                 }
 			}
 			base.Think();
 		}
-		private int MouthAdds(ECSGameTimer timer)
+		private int MouthAdds(EcsGameTimer timer)
         {
 			if (HasAggro && Body.IsAlive)
 			{

@@ -22,7 +22,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (code != 0)
 				log.Warn($"bonuses button: code is other than zero ({code})");
 
-			new ECSGameTimer(client.Player, new ECSGameTimer.ECSTimerCallback(_ =>
+			new EcsGameTimer(client.Player, new EcsGameTimer.EcsTimerCallback(_ =>
 			{
 				client.Player.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Bonuses"), client.Player.GetBonuses().ToList());
 				return 0;

@@ -304,7 +304,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Automated Closing Timer for Instances
 		/// </summary>
-		protected class AutoCloseRegionTimer : ECSGameTimerWrapperBase
+		protected class AutoCloseRegionTimer : EcsGameTimerWrapperBase
         {
             public AutoCloseRegionTimer(GameObject target, BaseInstance i) : base(target)
             {
@@ -316,7 +316,7 @@ namespace DOL.GS
 
             //When the timer ticks, it means there are no players in the region.
             //This, we remove the instance.
-            protected override int OnTick(ECSGameTimer timer)
+            protected override int OnTick(EcsGameTimer timer)
             {
                 if (m_instance == null)
                 {
@@ -347,7 +347,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Delay Closing Timer for Instances
 		/// </summary>
-		protected class DelayCloseRegionTimer : ECSGameTimerWrapperBase
+		protected class DelayCloseRegionTimer : EcsGameTimerWrapperBase
 		{
 			public DelayCloseRegionTimer(GameObject target, BaseInstance i) : base(target)
 			{
@@ -357,7 +357,7 @@ namespace DOL.GS
 			//The instance to remove...
 			BaseInstance m_instance;
 
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				if (m_instance == null)
 				{

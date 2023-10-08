@@ -37,7 +37,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (target.EffectList.GetOfType<ChargeEffect>() != null || target.TempProperties.GetProperty("Charging", false))
+            if (target.EffectList.GetOfType<NfRaChargeEffect>() != null || target.TempProperties.GetProperty("Charging", false))
             {
                 MessageToCaster(target.Name + " is moving too fast for this spell to have any effect!", EChatType.CT_SpellResisted);
                 return;
@@ -121,8 +121,8 @@ namespace DOL.GS.Spells
             }*/
 
             // Bonedancer RR5.
-            if (target.EffectList.GetOfType<AllureofDeathEffect>() != null)
-                return AllureofDeathEffect.ccchance;
+            if (target.EffectList.GetOfType<NfRaAllureOfDeathEffect>() != null)
+                return NfRaAllureOfDeathEffect.ccchance;
 
             if (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
                 return 0;

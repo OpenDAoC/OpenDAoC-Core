@@ -254,11 +254,11 @@ namespace DOL.GS.Quests
                     label = Enum.GetName(typeof(EQuestCommand), command);
 
                 player.Out.SendTimerWindow(label, seconds);
-                player.QuestActionTimer = new(player, new ECSGameTimer.ECSTimerCallback(QuestActionCallback), seconds * 1000);
+                player.QuestActionTimer = new(player, new EcsGameTimer.EcsTimerCallback(QuestActionCallback), seconds * 1000);
             }
         }
 
-        protected virtual int QuestActionCallback(ECSGameTimer timer)
+        protected virtual int QuestActionCallback(EcsGameTimer timer)
         {
             if (timer.Owner is GamePlayer player)
             {
@@ -445,7 +445,7 @@ namespace DOL.GS.Quests
         public static Queue m_sayChatTypeQueue = new();
         public static Queue m_sayChatLocQueue = new();
 
-        protected static int MakeSaySequence(ECSGameTimer callingTimer)
+        protected static int MakeSaySequence(EcsGameTimer callingTimer)
         {
             m_sayTimerQueue.Dequeue();
             GamePlayer player = (GamePlayer) m_sayObjectQueue.Dequeue();
@@ -503,7 +503,7 @@ namespace DOL.GS.Quests
                 m_sayObjectQueue.Enqueue(player);
                 m_sayChatLocQueue.Enqueue(chatLoc);
                 m_sayChatTypeQueue.Enqueue(chatType);
-                m_sayTimerQueue.Enqueue(new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(MakeSaySequence), (int) delay * 100));
+                m_sayTimerQueue.Enqueue(new EcsGameTimer(player, new EcsGameTimer.EcsTimerCallback(MakeSaySequence), (int) delay * 100));
             }
         }
 

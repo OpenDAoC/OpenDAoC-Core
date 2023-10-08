@@ -138,7 +138,7 @@ namespace DOL.GS.Scripts
 			{
 				if (this.HealthPercent < 90)
 				{
-					new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(timer => CastShroud(timer, player)), 1000);
+					new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(timer => CastShroud(timer, player)), 1000);
 					
 				}
 			}
@@ -146,7 +146,7 @@ namespace DOL.GS.Scripts
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 		}
 
-		private int CastShroud(ECSGameTimer timer, GamePlayer player)
+		private int CastShroud(EcsGameTimer timer, GamePlayer player)
 		{
 			Spawn(player);
 			return 0;

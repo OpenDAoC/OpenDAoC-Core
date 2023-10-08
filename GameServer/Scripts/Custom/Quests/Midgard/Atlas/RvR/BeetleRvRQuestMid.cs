@@ -291,7 +291,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 						case "friendly beetle":
 							if (quest.Step == 2)
 							{
-								new ECSGameTimer(Rengahr, new ECSGameTimer.ECSTimerCallback(CreateEffect), 1000);
+								new EcsGameTimer(Rengahr, new EcsGameTimer.EcsTimerCallback(CreateEffect), 1000);
 								quest.Step = 3;
 								Rengahr.SayTo(player, "The friendly beetle gave me two rewards for you. You can [choose], which one you need the most!");
 							}
@@ -320,7 +320,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 			}
 		}
 		
-		private static int CreateBeetle(ECSGameTimer timer)
+		private static int CreateBeetle(EcsGameTimer timer)
         {
 	        Beetle = new GameNPC();
             Beetle.Model = 670;
@@ -342,7 +342,7 @@ namespace DOL.GS.AtlasQuest.Midgard
             return 0;
         }
 		
-		private static int CreateEffect(ECSGameTimer timer)
+		private static int CreateEffect(EcsGameTimer timer)
 		{
 			MobEffect = new GameNPC();
 			MobEffect.Model = 1822;
@@ -365,13 +365,13 @@ namespace DOL.GS.AtlasQuest.Midgard
 			
 			MobEffect.AddToWorld();
 			
-			new ECSGameTimer(Rengahr, new ECSGameTimer.ECSTimerCallback(RemoveEffectMob), 1000);
-			new ECSGameTimer(Rengahr, new ECSGameTimer.ECSTimerCallback(CreateBeetle), 1000);
-			new ECSGameTimer(Rengahr, new ECSGameTimer.ECSTimerCallback(RemoveBeetle), 2000);
+			new EcsGameTimer(Rengahr, new EcsGameTimer.EcsTimerCallback(RemoveEffectMob), 1000);
+			new EcsGameTimer(Rengahr, new EcsGameTimer.EcsTimerCallback(CreateBeetle), 1000);
+			new EcsGameTimer(Rengahr, new EcsGameTimer.EcsTimerCallback(RemoveBeetle), 2000);
 			return 0;
 		}
 		
-		private static int RemoveEffectMob(ECSGameTimer timer)
+		private static int RemoveEffectMob(EcsGameTimer timer)
 		{
 			foreach (GameNPC effect in Rengahr.GetNPCsInRadius(600))
 			{
@@ -382,7 +382,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 			return 0;
 		}
 		
-		private static int RemoveBeetle(ECSGameTimer timer)
+		private static int RemoveBeetle(EcsGameTimer timer)
 		{
 			foreach (GameNPC effect in Rengahr.GetNPCsInRadius(600))
 			{

@@ -147,7 +147,7 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
 			}
 			return success;
 		}
@@ -213,7 +213,7 @@ namespace DOL.GS
             base.Die(killer);
         }
         #region Effects
-        protected int Show_Effect(ECSGameTimer timer)
+        protected int Show_Effect(EcsGameTimer timer)
 		{
             #region Lough Derg
             if (IsAlive && ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg")
@@ -223,10 +223,10 @@ namespace DOL.GS
 					if (player != null)
 						player.Out.SendSpellCastAnimation(this, 2909, 1);
 				}
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoCast), 1500);
 			}
 			if (IsAlive && !ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoEndCast), 100);
             #endregion
             #region Connacht
             if (IsAlive && ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht")
@@ -236,10 +236,10 @@ namespace DOL.GS
 					if (player != null)
 						player.Out.SendSpellCastAnimation(this, 2909, 1);
 				}
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoCast), 1500);
 			}
 			if (IsAlive && !ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoEndCast), 100);
 
 			//2nd farm
 			if (IsAlive && ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2")
@@ -249,10 +249,10 @@ namespace DOL.GS
 					if (player != null)
 						player.Out.SendSpellCastAnimation(this, 2909, 1);
 				}
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoCast), 1500);
 			}
 			if (IsAlive && !ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoEndCast), 100);
 			#endregion
 			#region Lough Gur
 			if (IsAlive && ParthananFarmController3Brain.SacrificeParthanan3 && PackageID == "ParthananBossLoughGur")
@@ -262,10 +262,10 @@ namespace DOL.GS
 					if (player != null)
 						player.Out.SendSpellCastAnimation(this, 2909, 1);
 				}
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoCast), 1500);
 			}
 			if (IsAlive && !ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossLoughGur")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoEndCast), 100);
 
 			//2nd farm
 			if (IsAlive && ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2")
@@ -275,48 +275,48 @@ namespace DOL.GS
 					if (player != null)
 						player.Out.SendSpellCastAnimation(this, 2909, 1);
 				}
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 1500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoCast), 1500);
 			}
 			if (IsAlive && !ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoEndCast), 100);
 			#endregion
 			return 0;
 		}
-		protected int DoCast(ECSGameTimer timer)
+		protected int DoCast(EcsGameTimer timer)
 		{
             #region Lough Derg
             if (IsAlive && ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 1500);
 			if(IsAlive && !ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoEndCast), 100);
             #endregion
             #region Connacht
             if (IsAlive && ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 1500);
 			if (IsAlive && !ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoEndCast), 100);
 
 			//2nd farm
 			if (IsAlive && ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 1500);
 			if (IsAlive && !ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoEndCast), 100);
 			#endregion
 			#region Lough Gur
 			if (IsAlive && ParthananFarmController3Brain.SacrificeParthanan3 && PackageID == "ParthananBossLoughGur")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 1500);
 			if (IsAlive && !ParthananFarmController3Brain.SacrificeParthanan3 && PackageID == "ParthananBossLoughGur")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoEndCast), 100);
 
 			//2nd farm
 			if (IsAlive && ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 1500);
 			if (IsAlive && !ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2")
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoEndCast), 100);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoEndCast), 100);
 			#endregion
 			return 0;
 		}
-		protected int DoEndCast(ECSGameTimer timer)
+		protected int DoEndCast(EcsGameTimer timer)
 		{
             #region Lough Derg
             if (IsAlive && !ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg")

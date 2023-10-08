@@ -319,7 +319,7 @@ namespace DOL.AI.Brain
             set { randomtarget = value; }
         }
         List<GamePlayer> healer = new List<GamePlayer>();
-        public int PickHeal(ECSGameTimer timer)
+        public int PickHeal(EcsGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -383,7 +383,7 @@ namespace DOL.AI.Brain
         #endregion
         #region GK Teleport/Walk method
         public static bool PickPortPoint = false;
-        public int GkTeleport(ECSGameTimer timer)
+        public int GkTeleport(EcsGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -454,7 +454,7 @@ namespace DOL.AI.Brain
         public static bool CanHeal2 = false;
         public static bool CanHeal3 = false;
         public static bool CanHeal4 = false;
-        public int StartHeal(ECSGameTimer timer)
+        public int StartHeal(EcsGameTimer timer)
         {
             IsWalking = false;
             return 0;
@@ -474,7 +474,7 @@ namespace DOL.AI.Brain
                 #region GK walking and healing
                 if (Body.IsWithinRadius(point1, 40) && CanHeal1 == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartHeal), 4000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(StartHeal), 4000);
                     Body.TargetObject = Body;
                     if (Util.Chance(100))
                         Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
@@ -489,7 +489,7 @@ namespace DOL.AI.Brain
                 }
                 if (Body.IsWithinRadius(point2, 40) && CanHeal2 == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartHeal), 4000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(StartHeal), 4000);
                     Body.TargetObject = Body;
                     if (Util.Chance(100))
                         Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
@@ -503,7 +503,7 @@ namespace DOL.AI.Brain
                 }
                 if (Body.IsWithinRadius(point3, 40) && CanHeal3 == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartHeal), 4000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(StartHeal), 4000);
                     Body.TargetObject = Body;
                     if (Util.Chance(100))
                         Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
@@ -517,7 +517,7 @@ namespace DOL.AI.Brain
                 }
                 if (Body.IsWithinRadius(point4, 40) && CanHeal4 == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartHeal), 4000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(StartHeal), 4000);
                     Body.TargetObject = Body;
                     if(Util.Chance(100))
                         Body.CastSpell(GreenKnightHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
@@ -531,58 +531,58 @@ namespace DOL.AI.Brain
                 }
                 if (Body.HealthPercent <= 90 && walk1 == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(GkTeleport), 1000);
                     walk1 = true;
                 }
                 else if (Body.HealthPercent <= 80 && walk2 == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(GkTeleport), 1000);
                     walk2 = true;
                 }
                 else if (Body.HealthPercent <= 70 && walk3 == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(GkTeleport), 1000);
                     walk3 = true;
                 }
                 else if (Body.HealthPercent <= 60 && walk4 == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(GkTeleport), 1000);
                     walk4 = true;
                 }
                 else if (Body.HealthPercent <= 50 && walk5 == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(GkTeleport), 1000);
                     walk5 = true;
                 }
                 else if (Body.HealthPercent <= 40 && walk6 == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(GkTeleport), 1000);
                     walk6 = true;
                 }
                 else if (Body.HealthPercent <= 30 && walk7 == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(GkTeleport), 1000);
                     walk7 = true;
                 }
                 else if (Body.HealthPercent <= 20 && walk8 == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(GkTeleport), 1000);
                     walk8 = true;
                 }
                 else if (Body.HealthPercent <= 10 && walk9 == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GkTeleport), 1000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(GkTeleport), 1000);
                     walk9 = true;
                 }
                 #endregion
                 if (Pick_healer == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickHeal), Util.Random(40000, 60000)); //40s-60s will try pick heal class
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickHeal), Util.Random(40000, 60000)); //40s-60s will try pick heal class
                     Pick_healer = true;
                 }
                 if (IsSpawningTrees == false && HasAggro)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnTrees),Util.Random(25000, 35000)); //25s-35s will spawn trees
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnTrees),Util.Random(25000, 35000)); //25s-35s will spawn trees
                     IsSpawningTrees = true;
                 }
                 if (Body.TargetObject != null && HasAggro)
@@ -620,7 +620,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        public int SpawnTrees(ECSGameTimer timer) // We define here adds
+        public int SpawnTrees(EcsGameTimer timer) // We define here adds
         {
             if (Body.IsAlive && Body.InCombat && HasAggro)
             {

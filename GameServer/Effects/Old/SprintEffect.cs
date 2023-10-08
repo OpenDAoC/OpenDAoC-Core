@@ -8,7 +8,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// The timer that reduce the endurance every interval
 		/// </summary>
-		ECSGameTimer m_tickTimer;
+		EcsGameTimer m_tickTimer;
 
 		/// <summary>
 		/// The amount of timer ticks player was not moving
@@ -26,8 +26,8 @@ namespace DOL.GS.Effects
 				m_tickTimer.Stop();
 				m_tickTimer = null;
 			}
-			m_tickTimer = new ECSGameTimer(target);
-			m_tickTimer.Callback = new ECSGameTimer.ECSTimerCallback(PulseCallback);
+			m_tickTimer = new EcsGameTimer(target);
+			m_tickTimer.Callback = new EcsGameTimer.EcsTimerCallback(PulseCallback);
 			m_tickTimer.Start(1);
             target.StartEnduranceRegeneration();
 		}
@@ -50,7 +50,7 @@ namespace DOL.GS.Effects
 		/// </summary>
 		/// <param name="callingTimer"></param>
 		/// <returns></returns>
-		public int PulseCallback(ECSGameTimer callingTimer)
+		public int PulseCallback(EcsGameTimer callingTimer)
 		{
 			int nextInterval;
 
@@ -70,7 +70,7 @@ namespace DOL.GS.Effects
 				{
 					int amount = 5;
 
-					AtlasOF_LongWindAbility ra = m_owner.GetAbility<AtlasOF_LongWindAbility>();
+					OfRaLongWindAbility ra = m_owner.GetAbility<OfRaLongWindAbility>();
 					if (ra != null)
 						amount = 5 - ra.GetAmountForLevel(ra.Level);
 

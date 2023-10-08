@@ -103,12 +103,12 @@ namespace DOL.AI.Brain
             {
 				if(!CanCastSpear && !Body.IsCasting)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSpears), Util.Random(10000, 15000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastSpears), Util.Random(10000, 15000));
 					CanCastSpear=true;
                 }
 				if(!StartCastNS && !Body.IsCasting)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), Util.Random(20000, 25000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickRandomTarget), Util.Random(20000, 25000));
 					StartCastNS = true;
 				}
 				if(!Body.IsCasting && CanCast)
@@ -135,7 +135,7 @@ namespace DOL.AI.Brain
 		}
         #region Spear
 		private bool CanCastSpear = false;
-		private int CastSpears(ECSGameTimer timer)
+		private int CastSpears(EcsGameTimer timer)
         {
 			if (HasAggro && !Body.IsCasting)
 			{
@@ -164,7 +164,7 @@ namespace DOL.AI.Brain
 		public static bool CanCast = false;
 		public static bool StartCastNS = false;
 		List<GamePlayer> Enemys_To_NS = new List<GamePlayer>();
-		private int PickRandomTarget(ECSGameTimer timer)
+		private int PickRandomTarget(EcsGameTimer timer)
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
 			{
@@ -186,7 +186,7 @@ namespace DOL.AI.Brain
 					GamePlayer Target = Enemys_To_NS[Util.Random(0, Enemys_To_NS.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
 					BroadcastMessage(RandomTarget.Name + " can no longer see properly in the vicinity!");
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDot), 2000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetDot), 2000);
 					CanCast = true;
 				}
 			}
@@ -194,7 +194,7 @@ namespace DOL.AI.Brain
 				StartCastNS = false;
 			return 0;
 		}
-		public int ResetDot(ECSGameTimer timer)//reset here so boss can start dot again
+		public int ResetDot(EcsGameTimer timer)//reset here so boss can start dot again
 		{
 			if(RandomTarget != null && Enemys_To_NS.Contains(RandomTarget) && RandomTarget.effectListComponent.ContainsEffectForEffectType(EEffect.Nearsight))
 				Enemys_To_NS.Remove(RandomTarget);

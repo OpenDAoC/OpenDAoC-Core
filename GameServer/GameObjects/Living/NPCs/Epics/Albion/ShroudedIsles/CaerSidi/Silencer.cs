@@ -66,7 +66,7 @@ namespace DOL.GS
                     if (resist_timer == false)
                     {
                         BroadcastMessage(String.Format(this.Name + " becomes almost immune to any damage for short time!"));
-                        new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(ResistTime), 2000);
+                        new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(ResistTime), 2000);
                         resist_timer = true;
                     }
                 }
@@ -103,7 +103,7 @@ namespace DOL.GS
         public static bool resist_timer_end = false;
         public static bool spam1 = false;
 
-        public int ResistTime(ECSGameTimer timer)
+        public int ResistTime(EcsGameTimer timer)
         {
             get_resist = true;
             spam1 = false;
@@ -113,12 +113,12 @@ namespace DOL.GS
                 {
                     player.Out.SendSpellEffectAnimation(this, this, 9103, 0, false, 0x01);
                 }
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(ResistTimeEnd), 20000); //20s resist 99%
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(ResistTimeEnd), 20000); //20s resist 99%
                 resist_timer_end = true;
             }
             return 0;
         }
-        public int ResistTimeEnd(ECSGameTimer timer)
+        public int ResistTimeEnd(EcsGameTimer timer)
         {
             get_resist = false;
             resist_timer = false;

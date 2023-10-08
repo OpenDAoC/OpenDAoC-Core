@@ -1083,7 +1083,7 @@ namespace DOL.GS
 					CheckRangedAttackInterrupt(attacker, attackType);
 				else if (effectListComponent.ContainsEffectForEffectType(EEffect.Volley))
 				{
-					AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, EEffect.Volley);
+					OfRaVolleyEcsEffect volley = (OfRaVolleyEcsEffect)EffectListService.GetEffectOnTarget(this, EEffect.Volley);
 
 					if (volley != null)
 						volley.OnAttacked();
@@ -1251,7 +1251,7 @@ namespace DOL.GS
 
 			if (weapon.PoisonSpellID != 0)
 			{
-				if (ad.Target.EffectList.GetOfType<RemedyEffect>() != null)
+				if (ad.Target.EffectList.GetOfType<NfRaRemedyEffect>() != null)
 				{
 					if (this is GamePlayer)
 						(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GameLiving.CheckWeaponMagicalEffect.Protected"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
@@ -1381,8 +1381,8 @@ namespace DOL.GS
 			{
 				if (player.HasAbility(Abilities.Advanced_Evade) ||
 					player.HasAbility(Abilities.Enhanced_Evade) ||
-					player.EffectList.GetOfType<CombatAwarenessEffect>() != null ||
-					player.EffectList.GetOfType<RuneOfUtterAgilityEffect>() != null)
+					player.EffectList.GetOfType<NfRaCombatAwarenessEffect>() != null ||
+					player.EffectList.GetOfType<NfRaRuneOfUtterAgilityEffect>() != null)
 					evadeChance = GetModified(EProperty.EvadeChance);
 				else if (IsObjectInFront(ad.Attacker, 180) && (evadeBuff != null || player.HasAbility(Abilities.Evade)))
 					evadeChance = Math.Max(GetModified(EProperty.EvadeChance), 0);
@@ -1432,10 +1432,10 @@ namespace DOL.GS
 			// Infiltrator RR5.
 			if (ad.Attacker is GamePlayer playerAttacker)
 			{
-				OverwhelmEffect Overwhelm = playerAttacker.EffectList.GetOfType<OverwhelmEffect>();
+				NfRaOverwhelmEffect Overwhelm = playerAttacker.EffectList.GetOfType<NfRaOverwhelmEffect>();
 
 				if (Overwhelm != null)
-					evadeChance = Math.Max(evadeChance - OverwhelmAbility.BONUS, 0);
+					evadeChance = Math.Max(evadeChance - NfRaOverwhelmAbility.BONUS, 0);
 			}
 
 			return evadeChance;
@@ -1463,14 +1463,14 @@ namespace DOL.GS
 
 			if (ad.IsMeleeAttack)
 			{
-				BladeBarrierEffect BladeBarrier = null;
+				NfRaBladeBarrierEffect BladeBarrier = null;
 				EcsGameEffect parryBuff = EffectListService.GetEffectOnTarget(this, EEffect.SavageBuff, ESpellType.SavageParryBuff);
 
 				if (this is GamePlayer player)
 				{
 					// BladeBarrier overwrites all parrying, 90% chance to parry any attack, does not consider other bonuses to parry.
 					// They still need an active weapon to parry with BladeBarrier
-					BladeBarrier = player.EffectList.GetOfType<BladeBarrierEffect>();
+					BladeBarrier = player.EffectList.GetOfType<NfRaBladeBarrierEffect>();
 					
 					if (BladeBarrier != null && ActiveWeapon != null)
 						parryChance = 0.90;
@@ -1524,10 +1524,10 @@ namespace DOL.GS
 			// Infiltrator RR5.
 			if (ad.Attacker is GamePlayer attackerPlayer)
 			{
-				OverwhelmEffect Overwhelm = attackerPlayer.EffectList.GetOfType<OverwhelmEffect>();
+				NfRaOverwhelmEffect Overwhelm = attackerPlayer.EffectList.GetOfType<NfRaOverwhelmEffect>();
 
 				if (Overwhelm != null)
-					parryChance = Math.Max(parryChance - OverwhelmAbility.BONUS, 0);
+					parryChance = Math.Max(parryChance - NfRaOverwhelmAbility.BONUS, 0);
 			}
 
 			return parryChance;
@@ -1634,10 +1634,10 @@ namespace DOL.GS
 			// Infiltrator RR5.
 			if (player != null)
 			{
-				OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
+				NfRaOverwhelmEffect Overwhelm = player.EffectList.GetOfType<NfRaOverwhelmEffect>();
 
 				if (Overwhelm != null)
-					blockChance = Math.Max(blockChance - OverwhelmAbility.BONUS, 0);
+					blockChance = Math.Max(blockChance - NfRaOverwhelmAbility.BONUS, 0);
 			}
 
 			return blockChance;
@@ -1723,7 +1723,7 @@ namespace DOL.GS
 			if (attackerPlayer != null && attackerPlayer != this)
 			{
 				// Apply Mauler RA5L
-				GiftOfPerizorEffect GiftOfPerizor = EffectList.GetOfType<GiftOfPerizorEffect>();
+				NfRaGiftOfPerizorEffect GiftOfPerizor = EffectList.GetOfType<NfRaGiftOfPerizorEffect>();
 				if (GiftOfPerizor != null)
 				{
 					int difference = (int)(0.25 * damageDealt); // RA absorb 25% damage
@@ -2965,15 +2965,15 @@ namespace DOL.GS
 		/// <summary>
 		/// GameTimer used for restoring hp
 		/// </summary>
-		protected ECSGameTimer m_healthRegenerationTimer;
+		protected EcsGameTimer m_healthRegenerationTimer;
 		/// <summary>
 		/// GameTimer used for restoring mana
 		/// </summary>
-		protected ECSGameTimer m_powerRegenerationTimer;
+		protected EcsGameTimer m_powerRegenerationTimer;
 		/// <summary>
 		/// GameTimer used for restoring endurance
 		/// </summary>
-		protected ECSGameTimer m_enduRegenerationTimer;
+		protected EcsGameTimer m_enduRegenerationTimer;
 
 		/// <summary>
 		/// The default frequency of regenerating health in milliseconds
@@ -3030,8 +3030,8 @@ namespace DOL.GS
 			{
 				if (m_healthRegenerationTimer == null)
 				{
-					m_healthRegenerationTimer = new ECSGameTimer(this);
-					m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
+					m_healthRegenerationTimer = new EcsGameTimer(this);
+					m_healthRegenerationTimer.Callback = new EcsGameTimer.EcsTimerCallback(HealthRegenerationTimerCallback);
 				}
 				else if (m_healthRegenerationTimer.IsAlive)
 				{
@@ -3053,8 +3053,8 @@ namespace DOL.GS
 			{
 				if (m_powerRegenerationTimer == null)
 				{
-					m_powerRegenerationTimer = new ECSGameTimer(this);
-					m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
+					m_powerRegenerationTimer = new EcsGameTimer(this);
+					m_powerRegenerationTimer.Callback = new EcsGameTimer.EcsTimerCallback(PowerRegenerationTimerCallback);
 				}
 				else if (m_powerRegenerationTimer.IsAlive)
 				{
@@ -3075,8 +3075,8 @@ namespace DOL.GS
 			{
 				if (m_enduRegenerationTimer == null)
 				{
-					m_enduRegenerationTimer = new ECSGameTimer(this);
-					m_enduRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
+					m_enduRegenerationTimer = new EcsGameTimer(this);
+					m_enduRegenerationTimer.Callback = new EcsGameTimer.EcsTimerCallback(EnduranceRegenerationTimerCallback);
 				}
 				else if (m_enduRegenerationTimer.IsAlive)
 				{
@@ -3128,7 +3128,7 @@ namespace DOL.GS
 		/// Timer callback for the hp regeneration
 		/// </summary>
 		/// <param name="callingTimer">timer calling this function</param>
-		protected virtual int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
+		protected virtual int HealthRegenerationTimerCallback(EcsGameTimer callingTimer)
 		{
 			if (Health < MaxHealth)
 			{
@@ -3191,7 +3191,7 @@ namespace DOL.GS
 		/// Callback for the power regenerationTimer
 		/// </summary>
 		/// <param name="selfRegenerationTimer">timer calling this function</param>
-		protected virtual int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+		protected virtual int PowerRegenerationTimerCallback(EcsGameTimer selfRegenerationTimer)
 		{
 			
 			if (this is GamePlayer &&
@@ -3250,7 +3250,7 @@ namespace DOL.GS
 			
 			#region Calculation : AtlasOF_Serenity
 			// --- [START] --- AtlasOF_Serenity -----------------------------------------------------------
-			AtlasOF_SerenityAbility raSerenity = GetAbility<AtlasOF_SerenityAbility>();
+			OfRaSerenityAbility raSerenity = GetAbility<OfRaSerenityAbility>();
 			if (raSerenity != null)
 			{
 				if (raSerenity.Level > 0)
@@ -3268,7 +3268,7 @@ namespace DOL.GS
 		/// Callback for the endurance regenerationTimer
 		/// </summary>
 		/// <param name="selfRegenerationTimer">timer calling this function</param>
-		protected virtual int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
+		protected virtual int EnduranceRegenerationTimerCallback(EcsGameTimer selfRegenerationTimer)
 		{
 			if (Endurance < MaxEndurance)
 			{

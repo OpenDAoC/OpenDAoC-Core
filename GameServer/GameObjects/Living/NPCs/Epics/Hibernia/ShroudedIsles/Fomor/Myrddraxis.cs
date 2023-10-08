@@ -346,7 +346,7 @@ namespace DOL.AI.Brain
 			set { randomtarget2 = value; }
 		}
 		List<GamePlayer> Enemys_To_DOT = new List<GamePlayer>();
-		public int PickRandomTarget2(ECSGameTimer timer)
+		public int PickRandomTarget2(EcsGameTimer timer)
 		{
 			if (HasAggro)
 			{
@@ -367,14 +367,14 @@ namespace DOL.AI.Brain
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DOT[Util.Random(0, Enemys_To_DOT.Count - 1)];//pick random target from list
 						RandomTarget2 = Target;//set random target to static RandomTarget
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDOT), 2000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDOT), 2000);
 						CanCast2 = true;
 					}
 				}
 			}
 			return 0;
 		}
-		public int CastDOT(ECSGameTimer timer)
+		public int CastDOT(EcsGameTimer timer)
 		{
 			if (HasAggro && RandomTarget2 != null)
 			{
@@ -386,11 +386,11 @@ namespace DOL.AI.Brain
 					Body.CastSpell(Hydra_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDOT), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetDOT), 5000);
 			}
 			return 0;
 		}
-		public int ResetDOT(ECSGameTimer timer)
+		public int ResetDOT(EcsGameTimer timer)
 		{
 			RandomTarget2 = null;
 			CanCast2 = false;
@@ -406,7 +406,7 @@ namespace DOL.AI.Brain
 			set { randomtarget = value; }
 		}
 		List<GamePlayer> Enemys_To_DD = new List<GamePlayer>();
-		public int PickRandomTarget(ECSGameTimer timer)
+		public int PickRandomTarget(EcsGameTimer timer)
 		{
 			if (HasAggro)
 			{
@@ -427,7 +427,7 @@ namespace DOL.AI.Brain
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 						RandomTarget = Target;//set random target to static RandomTarget
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), 5000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDD), 5000);
 						BroadcastMessage(String.Format(Body.Name + " taking a big flame breath at " + RandomTarget.Name + "."));
 						CanCast = true;
 					}
@@ -435,7 +435,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastDD(ECSGameTimer timer)
+		public int CastDD(EcsGameTimer timer)
 		{
 			if (HasAggro && RandomTarget != null)
 			{
@@ -447,11 +447,11 @@ namespace DOL.AI.Brain
 					Body.CastSpell(Hydra_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDD), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetDD), 5000);
 			}
 			return 0;
 		}
-		public int ResetDD(ECSGameTimer timer)
+		public int ResetDD(EcsGameTimer timer)
 		{
 			RandomTarget = null;
 			CanCast = false;
@@ -460,7 +460,7 @@ namespace DOL.AI.Brain
 		}
         #endregion
         #region Hydra Stun
-		public int HydraStun(ECSGameTimer timer)
+		public int HydraStun(EcsGameTimer timer)
         {
 			if(HasAggro && Body.IsAlive)
 				Body.CastSpell(Hydra_Stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -468,7 +468,7 @@ namespace DOL.AI.Brain
         }
 		#endregion
 		#region Hydra PBAOE
-		public int HydraPBAOE(ECSGameTimer timer)
+		public int HydraPBAOE(EcsGameTimer timer)
 		{
 			if (HasAggro && Body.IsAlive)
 				Body.CastSpell(Hydra_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -563,12 +563,12 @@ namespace DOL.AI.Brain
 				RemoveAdds = false;
 				if(StartCastDD==false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), Util.Random(35000, 45000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickRandomTarget), Util.Random(35000, 45000));
 					StartCastDD = true;
 				}
 				if (StartCastDOT == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget2), Util.Random(35000, 45000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickRandomTarget2), Util.Random(35000, 45000));
 					StartCastDOT = true;
 				}
 				if (IsPulled == false)
@@ -623,25 +623,25 @@ namespace DOL.AI.Brain
 				#region Hydra Stun
 				if (Body.HealthPercent <= 80 && CanCastStun1==false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraStun), 5000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(HydraStun), 5000);
 					BroadcastMessage(String.Format(Body.Name + " prepares stunning breath."));
 					CanCastStun1 = true;
                 }
 				else if (Body.HealthPercent <= 60 && CanCastStun2 == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraStun), 5000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(HydraStun), 5000);
 					BroadcastMessage(String.Format(Body.Name + " prepares stunning breath."));
 					CanCastStun2 = true;
 				}
 				else if (Body.HealthPercent <= 40 && CanCastStun3 == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraStun), 5000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(HydraStun), 5000);
 					BroadcastMessage(String.Format(Body.Name + " prepares stunning breath."));
 					CanCastStun3 = true;
 				}
 				else if (Body.HealthPercent <= 20 && CanCastStun4 == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraStun), 5000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(HydraStun), 5000);
 					BroadcastMessage(String.Format(Body.Name + " prepares stunning breath."));
 					CanCastStun4 = true;
 				}
@@ -649,19 +649,19 @@ namespace DOL.AI.Brain
 				#region Hydra PBAOE
 				if (Body.HealthPercent <= 75 && CanCastPBAOE1 == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraPBAOE), 6000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(HydraPBAOE), 6000);
 					BroadcastMessage(String.Format(Body.Name + " taking a massive breath of flames to annihilate enemys."));
 					CanCastPBAOE1 = true;
 				}
 				else if (Body.HealthPercent <= 50 && CanCastPBAOE2 == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraPBAOE), 6000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(HydraPBAOE), 6000);
 					BroadcastMessage(String.Format(Body.Name + " taking a massive breath of flames to annihilate enemys."));
 					CanCastPBAOE2 = true;
 				}
 				else if (Body.HealthPercent <= 25 && CanCastPBAOE3 == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(HydraPBAOE), 6000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(HydraPBAOE), 6000);
 					BroadcastMessage(String.Format(Body.Name + " taking a massive breath of flames to annihilate enemys."));
 					CanCastPBAOE3 = true;
 				}

@@ -325,11 +325,11 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Despawn), 120000);//2min before it will despawn
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Despawn), 120000);//2min before it will despawn
 			}
 			return success;
 		}
-		protected int Despawn(ECSGameTimer timer)
+		protected int Despawn(EcsGameTimer timer)
 		{
 			if (IsAlive && !InCombat)
 				RemoveFromWorld();

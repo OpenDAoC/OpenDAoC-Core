@@ -92,7 +92,7 @@ namespace DOL.AI.Brain
 		public static bool IsSmall = false;
 		public static bool IsChangingSize = false;
 		public static bool IsInCombat = false;
-		public int ChangeSizeToBig(ECSGameTimer timer)
+		public int ChangeSizeToBig(EcsGameTimer timer)
 		{
 			if (HasAggro && Body.IsAlive)
 			{
@@ -101,11 +101,11 @@ namespace DOL.AI.Brain
 				Body.Size = 200;
 				Body.Strength = 400;
 				Body.Quickness = 50;
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToSmall), 30000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ChangeSizeToSmall), 30000);
 			}
 			return 0;
 		}
-		public int ChangeSizeToSmall(ECSGameTimer timer)
+		public int ChangeSizeToSmall(EcsGameTimer timer)
         {
 			if (HasAggro && Body.IsAlive)
 			{
@@ -116,7 +116,7 @@ namespace DOL.AI.Brain
 				Body.Size = 100;
 				Body.Strength = npcTemplate.Strength;
 				Body.Quickness = npcTemplate.Quickness;
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToBig), 30000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ChangeSizeToBig), 30000);
 			}
 			return 0;
         }
@@ -163,7 +163,7 @@ namespace DOL.AI.Brain
                 }
 				if(IsChangingSize==false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ChangeSizeToBig), 5000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ChangeSizeToBig), 5000);
 					IsChangingSize = true;
                 }
 				if(IsSmall)

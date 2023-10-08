@@ -15,7 +15,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles change attack mode requests
 		/// </summary>
-		protected class AttackRequestHandler : ECSGameTimerWrapperBase
+		protected class AttackRequestHandler : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// True if attack should be started
@@ -42,7 +42,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 

@@ -29,7 +29,7 @@ namespace DOL.GS.PlayerClass
 		/// <summary>
 		/// Timer Action for Reseting Wraith Form
 		/// </summary>
-		protected ECSGameTimer m_wraithTimerAction;
+		protected EcsGameTimer m_wraithTimerAction;
 		
 		/// <summary>
 		/// Event Trigger When Player Zoning Out to Force Reset Form
@@ -44,7 +44,7 @@ namespace DOL.GS.PlayerClass
 		{
 			base.Init(player);
 
-			m_wraithTimerAction = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(_ =>
+			m_wraithTimerAction = new EcsGameTimer(player, new EcsGameTimer.EcsTimerCallback(_ =>
 			{
 				if (player.PlayerClass is ClassBainshee bainshee)
 					bainshee.TurnOutOfWraith();

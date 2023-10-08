@@ -86,7 +86,7 @@ namespace DOL.AI.Brain
             {
 				if (NotInCombat == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
 					NotInCombat = true;
 				}
 			}
@@ -96,7 +96,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 		#region Show Effects
-		protected int Show_Effect(ECSGameTimer timer)
+		protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (Body.IsAlive && !HasAggro)
 			{

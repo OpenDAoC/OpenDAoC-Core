@@ -217,13 +217,13 @@ namespace DOL.AI.Brain
 				}
 				if(CanSpawnMoreGhouls == false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(25000, 35000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnAdds), Util.Random(25000, 35000));
 					CanSpawnMoreGhouls = true;
                 }
 			}
 			base.Think();
 		}
-		private int SpawnAdds(ECSGameTimer timer)
+		private int SpawnAdds(EcsGameTimer timer)
 		{
 			if (Body.IsAlive && HasAggro && ValnirMordethAdd.EssenceGhoulCount == 0)
 			{

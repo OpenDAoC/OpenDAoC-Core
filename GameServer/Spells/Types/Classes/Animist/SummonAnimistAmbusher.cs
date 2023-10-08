@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 		
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			AtlasOF_ForestheartAmbusherECSEffect effect = (AtlasOF_ForestheartAmbusherECSEffect)EffectListService.GetEffectOnTarget(target, EEffect.ForestheartAmbusher);
+			OfRaForestheartAmbusherEcsEffect effect = (OfRaForestheartAmbusherEcsEffect)EffectListService.GetEffectOnTarget(target, EEffect.ForestheartAmbusher);
 
 			// The effect may have been cancelled already, in which case we shouldn't spawn the pet.
 			// This could happen if the player dies before this method is called by the casting service.
@@ -61,7 +61,7 @@ namespace DOL.GS.Spells
 			if (player == null)
 				return;
 
-			AtlasOF_ForestheartAmbusherECSEffect effect = (AtlasOF_ForestheartAmbusherECSEffect)EffectListService.GetEffectOnTarget(player, EEffect.ForestheartAmbusher);
+			OfRaForestheartAmbusherEcsEffect effect = (OfRaForestheartAmbusherEcsEffect)EffectListService.GetEffectOnTarget(player, EEffect.ForestheartAmbusher);
 			effect?.Cancel(false);
 
 			base.OnNpcReleaseCommand(e, sender, arguments);

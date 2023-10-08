@@ -38,7 +38,7 @@ public class MeleeSubPetBrain : SubPetBrain
 					case Abilities.ChargeAbility:
 						if (Body.TargetObject != null && !Body.IsWithinRadius(Body.TargetObject, 500 ))
 						{
-							ChargeAbility charge = Body.GetAbility<ChargeAbility>();
+							NfRaChargeAbility charge = Body.GetAbility<NfRaChargeAbility>();
 							if (charge != null && Body.GetSkillDisabledDuration(charge) <= 0)
 							{
 								charge.Execute(Body);

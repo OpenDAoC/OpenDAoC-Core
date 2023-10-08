@@ -418,23 +418,23 @@ namespace DOL.GS.Quests.Midgard
 								IsSinging = true;
 
 								//cast Health Song
-								new ECSGameTimer(Freeya, new ECSGameTimer.ECSTimerCallback(CastHealthRegen), 3000);
+								new EcsGameTimer(Freeya, new EcsGameTimer.EcsTimerCallback(CastHealthRegen), 3000);
 
 								//cast Speed Song
-								new ECSGameTimer(Freeya, new ECSGameTimer.ECSTimerCallback(CastSpeed), 8000);
+								new EcsGameTimer(Freeya, new EcsGameTimer.EcsTimerCallback(CastSpeed), 8000);
 								
 								//cast Damage Add Song
-								new ECSGameTimer(Freeya, new ECSGameTimer.ECSTimerCallback(CastDamageAdd), 13000);
+								new EcsGameTimer(Freeya, new EcsGameTimer.EcsTimerCallback(CastDamageAdd), 13000);
 								
 								
-								new ECSGameTimer(Freeya, new ECSGameTimer.ECSTimerCallback(timer => FinishSinging(timer, player)), 18000);
+								new EcsGameTimer(Freeya, new EcsGameTimer.EcsTimerCallback(timer => FinishSinging(timer, player)), 18000);
 								
 								if (quest.Step == 4 && !IsSinging)
 								{
 									quest.Step = 5;
 								}
 								
-								new ECSGameTimer(Freeya, new ECSGameTimer.ECSTimerCallback(DelayedDeath), 23000);
+								new EcsGameTimer(Freeya, new EcsGameTimer.EcsTimerCallback(DelayedDeath), 23000);
 							}
 
 							break;
@@ -451,7 +451,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 		
-		private static int FinishSinging(ECSGameTimer timer, GamePlayer player)
+		private static int FinishSinging(EcsGameTimer timer, GamePlayer player)
 		{
 			PlayTheLastSong quest = player.IsDoingQuest(typeof(PlayTheLastSong)) as PlayTheLastSong;
 			if (quest == null)
@@ -476,7 +476,7 @@ namespace DOL.GS.Quests.Midgard
 		/// </summary>
 		/// <param name="timer">The timer that started this cast.</param>
 		/// <returns></returns>
-		private static int CastHealthRegen(ECSGameTimer timer)
+		private static int CastHealthRegen(EcsGameTimer timer)
 		{
 			Freeya.Say("Dextz, my friend, I will use the last of my power and play my final songs for you!\n" +
 			           " I will protect you wherever you are!");
@@ -532,7 +532,7 @@ namespace DOL.GS.Quests.Midgard
 		/// </summary>
 		/// <param name="timer">The timer that started this cast.</param>
 		/// <returns></returns>
-		private static int CastSpeed(ECSGameTimer timer)
+		private static int CastSpeed(EcsGameTimer timer)
 		{
 			Freeya.Say("Thor Boyaux, you were my family and forever shall be! \n" +
 			           "I will protect you wherever you are!");
@@ -588,7 +588,7 @@ namespace DOL.GS.Quests.Midgard
 		/// </summary>
 		/// <param name="timer">The timer that started this cast.</param>
 		/// <returns></returns>
-		private static int CastDamageAdd(ECSGameTimer timer)
+		private static int CastDamageAdd(EcsGameTimer timer)
 		{
 			Freeya.Say("Exiled Vaettir, you accepted and supported me. For that, I am very grateful to you! \n" +
 			           "I will protect you wherever you are!");
@@ -798,14 +798,14 @@ namespace DOL.GS.Quests.Midgard
 				InteractEventArgs gArgs = (InteractEventArgs) args;
 				if (gArgs.Source.Name == Freeya.Name)
 				{
-					new ECSGameTimer(Freeya, new ECSGameTimer.ECSTimerCallback(timer => FinishSinging(timer, player)), 3000);
+					new EcsGameTimer(Freeya, new EcsGameTimer.EcsTimerCallback(timer => FinishSinging(timer, player)), 3000);
 								
 					if (Step == 4 && !IsSinging)
 					{
 						Step = 5;
 					}
 								
-					new ECSGameTimer(Freeya, new ECSGameTimer.ECSTimerCallback(DelayedDeath), 8000);
+					new EcsGameTimer(Freeya, new EcsGameTimer.EcsTimerCallback(DelayedDeath), 8000);
 					FinishQuest();
 				}
 			}
@@ -821,7 +821,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 		}
 		
-		private static int DelayedDeath(ECSGameTimer timer)
+		private static int DelayedDeath(EcsGameTimer timer)
 		{
 			Freeya.Say(
 				"And with that... the horn has sounded. Valhalla is calling me and it's time I must go. Walk in Strength.\nHa det, my friend.");

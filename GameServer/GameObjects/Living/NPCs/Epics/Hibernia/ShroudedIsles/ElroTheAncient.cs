@@ -169,19 +169,19 @@ namespace DOL.GS.Scripts
 			{
 				if (this.HealthPercent < 95 && this.HealthPercent > 90)
 				{
-					new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(timer => CastTreant(timer, player)), 1000);
+					new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(timer => CastTreant(timer, player)), 1000);
 					
 				}
 				
 				else if (this.HealthPercent < 60 && this.HealthPercent > 55)
 				{
-					new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(timer => CastTreant(timer, player)), 1000);
+					new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(timer => CastTreant(timer, player)), 1000);
 					
 				}
 				
 				else if (this.HealthPercent < 25 && this.HealthPercent > 30)
 				{
-					new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(timer => CastTreant(timer, player)), 1000);
+					new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(timer => CastTreant(timer, player)), 1000);
 					
 				}
 			}
@@ -189,7 +189,7 @@ namespace DOL.GS.Scripts
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 		}
 
-		private int CastTreant(ECSGameTimer timer, GamePlayer player)
+		private int CastTreant(EcsGameTimer timer, GamePlayer player)
 		{
 			foreach (GamePlayer enemy in this.GetPlayersInRadius(2500))
 			{

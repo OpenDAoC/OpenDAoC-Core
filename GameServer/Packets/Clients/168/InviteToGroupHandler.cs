@@ -11,7 +11,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles group invlite actions
 		/// </summary>
-		protected class HandleGroupInviteAction : ECSGameTimerWrapperBase
+		protected class HandleGroupInviteAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// constructs a new HandleGroupInviteAction
@@ -22,7 +22,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 

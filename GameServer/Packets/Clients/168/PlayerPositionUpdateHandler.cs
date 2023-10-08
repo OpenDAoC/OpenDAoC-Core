@@ -77,7 +77,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if ((speedData & 0x200) != 0)
 				speed = -speed;
 
-			if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+			if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(OfRaSpeedOfSoundEcsEffect)) == null)
 				// Nidel: updating client.Player.CurrentSpeed instead of speed
 				client.Player.CurrentSpeed = 0;
 			else
@@ -819,7 +819,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			//int speed = (newPlayerSpeed & 0x1FF);
 			//Flags1 = (eFlags1)playerState;
 			//Flags2 = (eFlags2)playerAction;                        
-			if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+			if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(OfRaSpeedOfSoundEcsEffect)) == null)
 				client.Player.CurrentSpeed = 0;
 			else
             {

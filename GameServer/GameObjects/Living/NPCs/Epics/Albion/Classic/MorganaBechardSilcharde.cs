@@ -120,7 +120,7 @@ namespace DOL.AI.Brain
 							if (player != null)
 								player.Out.SendSpellCastAnimation(Body, 9103, 3);
 						}
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(MorganaCast), 2000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(MorganaCast), 2000);
 						Morganacast = true;
                     }
                 }
@@ -154,7 +154,7 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		private int MorganaCast(ECSGameTimer timer)
+		private int MorganaCast(EcsGameTimer timer)
         {
 			foreach (GamePlayer player in Body.GetPlayersInRadius(5000))
 			{
@@ -163,10 +163,10 @@ namespace DOL.AI.Brain
 			}
 			CanRemoveMorgana = true;
 			int resetTimer = Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1h to reset encounter
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RestartMorgana), resetTimer);//reset whole encounter here
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(RestartMorgana), resetTimer);//reset whole encounter here
 			return 0;
         }
-		private int RestartMorgana(ECSGameTimer timer)//here we reset whole encounter
+		private int RestartMorgana(EcsGameTimer timer)//here we reset whole encounter
 		{
 			Message = false;
 			PlayerAreaCheck = false;

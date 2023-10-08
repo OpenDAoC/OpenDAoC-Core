@@ -151,7 +151,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Since the focus spell isn't a pulsing spell we need our own mini-timer
 		/// </summary>
-		private class FSTimer : ECSGameTimerWrapperBase
+		private class FSTimer : EcsGameTimerWrapperBase
 		{
 			//The handler for this timer
 			FocusShellHandler m_handler;
@@ -162,7 +162,7 @@ namespace DOL.GS.Spells
 				Interval = handler.Spell.Frequency;
 			}
 
-			protected override int OnTick(ECSGameTimer ecsGameTimer)
+			protected override int OnTick(EcsGameTimer ecsGameTimer)
 			{
 				//If the target is still in range
 				if (m_handler.Caster.Mana >= m_handler.Spell.PulsePower && m_handler.Caster.IsWithinRadius(m_handler.FSTarget, m_handler.Spell.Range))

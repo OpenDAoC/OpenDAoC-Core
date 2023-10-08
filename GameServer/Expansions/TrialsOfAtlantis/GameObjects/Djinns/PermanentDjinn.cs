@@ -83,7 +83,7 @@ namespace DOL.GS
         /// <summary>
         /// Provides a timer for djinn emotes.
         /// </summary>
-        private class EmoteTimer : ECSGameTimerWrapperBase
+        private class EmoteTimer : EcsGameTimerWrapperBase
         {
             private GameObject m_owner;
 
@@ -100,7 +100,7 @@ namespace DOL.GS
             /// <summary>
             /// Called on every timer tick.
             /// </summary>
-            protected override int OnTick(ECSGameTimer timer)
+            protected override int OnTick(EcsGameTimer timer)
             {
                 m_owner.Notify(new EmoteEvent());
                 return Interval;

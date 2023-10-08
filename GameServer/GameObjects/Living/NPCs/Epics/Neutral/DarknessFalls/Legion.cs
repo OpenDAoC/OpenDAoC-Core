@@ -139,14 +139,14 @@ namespace DOL.GS.Scripts
                     canReportNews = false;
             }
 
-            var throwPlayer = TempProperties.GetProperty<ECSGameTimer>("legion_throw");//cancel teleport
+            var throwPlayer = TempProperties.GetProperty<EcsGameTimer>("legion_throw");//cancel teleport
             if (throwPlayer != null)
             {
                 throwPlayer.Stop();
                 TempProperties.RemoveProperty("legion_throw");
             }
 
-            var castaoe = TempProperties.GetProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
+            var castaoe = TempProperties.GetProperty<EcsGameTimer>("legion_castaoe");//cancel cast aoe
             if (castaoe != null)
             {
                 castaoe.Stop();
@@ -376,13 +376,13 @@ namespace DOL.AI.Brain
                 if (randomlyPickedPlayers.Count > 0)//clear randomly picked players
                     randomlyPickedPlayers.Clear();
 
-                var throwPlayer = Body.TempProperties.GetProperty<ECSGameTimer>("legion_throw");//cancel teleport
+                var throwPlayer = Body.TempProperties.GetProperty<EcsGameTimer>("legion_throw");//cancel teleport
                 if (throwPlayer != null)
                 {
                     throwPlayer.Stop();
                     Body.TempProperties.RemoveProperty("legion_throw");
                 }
-                var castaoe = Body.TempProperties.GetProperty<ECSGameTimer>("legion_castaoe");//cancel cast aoe
+                var castaoe = Body.TempProperties.GetProperty<EcsGameTimer>("legion_castaoe");//cancel cast aoe
                 if (castaoe != null)
                 {
                     castaoe.Stop();
@@ -409,7 +409,7 @@ namespace DOL.AI.Brain
                 if(bladeturnConsumed >= 5 && !CanPbaoe)
                 {
                     ReleaseAoeLifetap();
-                    ECSGameTimer castAoe = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetAoe), 10000);
+                    EcsGameTimer castAoe = new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetAoe), 10000);
                     Body.TempProperties.SetProperty("legion_castaoe", castAoe);
                     CanPbaoe = true;
                 }
@@ -550,7 +550,7 @@ namespace DOL.AI.Brain
                 #endregion
                 if (!CanThrow)
                 {
-                    ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(40000, 65000));//throw players
+                    EcsGameTimer throwPlayer = new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ThrowPlayer), Util.Random(40000, 65000));//throw players
                     Body.TempProperties.SetProperty("legion_throw", throwPlayer);
                     CanThrow = true;
                 }
@@ -595,7 +595,7 @@ namespace DOL.AI.Brain
             }
             bladeturnConsumed = 0;
         }
-        private int ResetAoe(ECSGameTimer timer)
+        private int ResetAoe(EcsGameTimer timer)
         {
             CanPbaoe = false;
             return 0;
@@ -652,7 +652,7 @@ namespace DOL.AI.Brain
         }
         private static int topPlayersToIngore = 5;//we determine here how many players from top aggro table will be ignored in teleporting
         private static Random random = new Random();
-        private int ThrowPlayer(ECSGameTimer timer)
+        private int ThrowPlayer(EcsGameTimer timer)
         {
             if (Body.IsAlive && HasAggro)
             {

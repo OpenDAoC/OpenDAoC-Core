@@ -178,14 +178,14 @@ public class RepairCommand : ACommandHandler, ICommandHandler
 	public void StartRepair(GamePlayer player, GameLiving obj)
 	{
 		player.Out.SendTimerWindow("Repairing: " + obj.Name, repairDuration);
-		player.CraftTimer = new ECSGameTimer(player);
-		player.CraftTimer.Callback = new ECSGameTimer.ECSTimerCallback(Proceed);
+		player.CraftTimer = new EcsGameTimer(player);
+		player.CraftTimer.Callback = new EcsGameTimer.EcsTimerCallback(Proceed);
 		player.CraftTimer.Properties.SetProperty("repair_player", player);
 		player.CraftTimer.Properties.SetProperty("repair_target", obj);
 		player.CraftTimer.Start(repairDuration * 1000);
 	}
 
-	private int Proceed(ECSGameTimer timer)
+	private int Proceed(EcsGameTimer timer)
 	{
 		GamePlayer player = timer.Properties.GetProperty<GamePlayer>("repair_player", null);
 		GameLiving obj = timer.Properties.GetProperty<GameLiving>("repair_target", null);

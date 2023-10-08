@@ -75,13 +75,13 @@ namespace DOL.AI.Brain
         public static List<GamePlayer> PlayersInGalla = new List<GamePlayer>();
         public static bool Pick_randomly_Target = false;
         private bool allowTimer = false;
-        private int TimerDoStuff(ECSGameTimer timer)
+        private int TimerDoStuff(EcsGameTimer timer)
         {
             PickPlayer();
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EndTimerDoStuff), 5000);
+            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(EndTimerDoStuff), 5000);
             return 0;
         }
-        private int EndTimerDoStuff(ECSGameTimer timer)
+        private int EndTimerDoStuff(EcsGameTimer timer)
         {
             allowTimer = false;
             return 0;
@@ -135,7 +135,7 @@ namespace DOL.AI.Brain
                 DoStuff();
             if (!allowTimer)
             {
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TimerDoStuff), Util.Random(25000, 45000));
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(TimerDoStuff), Util.Random(25000, 45000));
                 allowTimer = true;
             }
         }
@@ -177,11 +177,11 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
             }
             return success;
         }
-        protected int Show_Effect(ECSGameTimer timer)
+        protected int Show_Effect(EcsGameTimer timer)
         {
             if (IsAlive)
             {
@@ -190,11 +190,11 @@ namespace DOL.GS
                     if (player != null)
                         player.Out.SendSpellEffectAnimation(this, this, 6177, 0, false, 0x01);
                 }
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveMob), 5000);
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(RemoveMob), 5000);
             }
             return 0;
         }
-        public int RemoveMob(ECSGameTimer timer)
+        public int RemoveMob(EcsGameTimer timer)
         {
             if (IsAlive)
                 RemoveFromWorld();

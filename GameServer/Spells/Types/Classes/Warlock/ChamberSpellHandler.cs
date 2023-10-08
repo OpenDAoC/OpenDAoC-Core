@@ -89,7 +89,7 @@ namespace DOL.GS.Spells
 				ISpellHandler spellhandler2 = null;
 				ChamberSpellHandler chamber = (ChamberSpellHandler)effect.SpellHandler;
 				GameSpellEffect PhaseShift = SpellHandler.FindEffectOnTarget(Target, "Phaseshift");
-				SelectiveBlindnessEffect SelectiveBlindness = Caster.EffectList.GetOfType<SelectiveBlindnessEffect>();
+				NfRaSelectiveBlindnessEffect SelectiveBlindness = Caster.EffectList.GetOfType<NfRaSelectiveBlindnessEffect>();
 				spellhandler = ScriptMgr.CreateSpellHandler(caster, chamber.PrimarySpell, chamber.PrimarySpellLine);
 
 				#region Pre-checks

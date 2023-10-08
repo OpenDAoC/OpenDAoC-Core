@@ -671,7 +671,7 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
                             GiveItem(player, scroll_wearyall_loststone);
                             RemoveItem(player, lost_stone_of_arawn);
                             player.Out.SendSpellEffectAnimation(Ohonat, player, 4310, 0, false, 1);
-                            new ECSGameTimer(player, timer => TeleportToWearyall(timer, player), 3000);
+                            new EcsGameTimer(player, timer => TeleportToWearyall(timer, player), 3000);
                             quest.Step = 6;
                             Ohonat.SayTo(player, "I know Honayt\'rt will be very happy. Bring her the speech!");
                         }
@@ -692,7 +692,7 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
         }
     }
 
-    private static int TeleportToWearyall(ECSGameTimer timer, GamePlayer player)
+    private static int TeleportToWearyall(EcsGameTimer timer, GamePlayer player)
     {
         //teleport to wearyall village
         player.MoveTo(51, 435868, 493994, 3088, 3587);

@@ -145,7 +145,7 @@ namespace DOL.AI.Brain
                 if (Body.TargetObject != null && Body.InCombat && Body.Health != Body.MaxHealth && HasAggro)
                 {
                     if (Util.Chance(3))
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHeal), 1000);
+                        new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastHeal), 1000);
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace DOL.AI.Brain
         /// </summary>
         /// <param name="timer">The timer that started this cast.</param>
         /// <returns></returns>
-        private int CastHeal(ECSGameTimer timer)
+        private int CastHeal(EcsGameTimer timer)
         {
             //BroadcastMessage(String.Format(m_HealAnnounce, Body.Name));
             Body.CastSpell(Heal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));

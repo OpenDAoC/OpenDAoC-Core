@@ -180,13 +180,13 @@ namespace DOL.AI.Brain
                 Body.CastSpell(BlueLady_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 if ((BlueLadySwordAdd.SwordCount < 10 || BlueLadyAxeAdd.AxeCount < 10) && CanSpawnAdds == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(25000, 45000));
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnAdds), Util.Random(25000, 45000));
                     CanSpawnAdds = true;
                 }
             }
             base.Think();
         }
-        private int SpawnAdds(ECSGameTimer timer)
+        private int SpawnAdds(EcsGameTimer timer)
         {
             for (int i = 0; i < 10; i++)
             {

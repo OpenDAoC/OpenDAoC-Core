@@ -134,7 +134,7 @@ namespace DOL.GS
 					}
 				}
 
-				var spawnMessengers = TempProperties.GetProperty<ECSGameTimer>("cuuldurach_messengers");
+				var spawnMessengers = TempProperties.GetProperty<EcsGameTimer>("cuuldurach_messengers");
 				if (spawnMessengers != null)
 				{
 					spawnMessengers.Stop();
@@ -363,25 +363,25 @@ namespace DOL.AI.Brain
 					if (randomlyPickedPlayers.Count > 0)//clear randomly picked players
 						randomlyPickedPlayers.Clear();
 
-					var prepareGlare = Body.TempProperties.GetProperty<ECSGameTimer>("cuuldurach_glare");
+					var prepareGlare = Body.TempProperties.GetProperty<EcsGameTimer>("cuuldurach_glare");
 					if(prepareGlare != null)
                     {
 						prepareGlare.Stop();
 						Body.TempProperties.RemoveProperty("cuuldurach_glare");
                     }
-					var prepareStun = Body.TempProperties.GetProperty<ECSGameTimer>("cuuldurach_stun");
+					var prepareStun = Body.TempProperties.GetProperty<EcsGameTimer>("cuuldurach_stun");
 					if (prepareStun != null)
 					{
 						prepareStun.Stop();
 						Body.TempProperties.RemoveProperty("cuuldurach_stun");
 					}
-					var throwPlayer = Body.TempProperties.GetProperty<ECSGameTimer>("cuuldurach_throw");
+					var throwPlayer = Body.TempProperties.GetProperty<EcsGameTimer>("cuuldurach_throw");
 					if (throwPlayer != null)
 					{
 						throwPlayer.Stop();
 						Body.TempProperties.RemoveProperty("cuuldurach_throw");
 					}
-					var spawnMessengers = Body.TempProperties.GetProperty<ECSGameTimer>("cuuldurach_messengers");
+					var spawnMessengers = Body.TempProperties.GetProperty<EcsGameTimer>("cuuldurach_messengers");
 					if (spawnMessengers != null)
 					{
 						spawnMessengers.Stop();
@@ -459,7 +459,7 @@ namespace DOL.AI.Brain
 			{
 				if (!CanGlare2 && !Body.IsCasting)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareGlareRoam), Util.Random(5000, 8000));//Glare at target every 5-10s
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PrepareGlareRoam), Util.Random(5000, 8000));//Glare at target every 5-10s
 					CanGlare2 = true;
 				}
 			}
@@ -470,25 +470,25 @@ namespace DOL.AI.Brain
 				DragonBreath();//Method that handle dragon kabooom breaths
 				if (CanThrow == false && !IsRestless)
 				{
-					ECSGameTimer throwPlayer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(60000, 80000));//Teleport 2-5 Players every 60-80s
+					EcsGameTimer throwPlayer = new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ThrowPlayer), Util.Random(60000, 80000));//Teleport 2-5 Players every 60-80s
 					Body.TempProperties.SetProperty("cuuldurach_throw", throwPlayer);
 					CanThrow = true;
 				}
 				if (CanGlare == false && !Body.IsCasting && !IsRestless)
 				{
-					ECSGameTimer prepareGlare = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareGlare), Util.Random(40000, 60000));//Glare at target every 40-60s
+					EcsGameTimer prepareGlare = new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PrepareGlare), Util.Random(40000, 60000));//Glare at target every 40-60s
 					Body.TempProperties.SetProperty("cuuldurach_glare", prepareGlare);
 					CanGlare = true;
 				}
 				if (CanStun == false && !Body.IsCasting && !IsRestless)
 				{
-					ECSGameTimer prepareStun = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareStun), Util.Random(120000, 180000));//prepare Stun every 120s-180s
+					EcsGameTimer prepareStun = new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PrepareStun), Util.Random(120000, 180000));//prepare Stun every 120s-180s
 					Body.TempProperties.SetProperty("cuuldurach_stun", prepareStun);
 					CanStun = true;
 				}
 				if (Body.HealthPercent <= 50 && CanSpawnMessengers == false && !IsRestless)
 				{
-					ECSGameTimer spawnMessengers = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMssengers), Util.Random(80000, 90000));//spawn messengers at 50% hp every 80/90s
+					EcsGameTimer spawnMessengers = new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnMssengers), Util.Random(80000, 90000));//spawn messengers at 50% hp every 80/90s
 					Body.TempProperties.SetProperty("cuuldurach_messengers", spawnMessengers);
 					CanSpawnMessengers = true;
 				}
@@ -528,7 +528,7 @@ namespace DOL.AI.Brain
 		{
 			return list.OrderBy(x => Guid.NewGuid()).Take(elementsCount).ToList();
 		}
-		private int ThrowPlayer(ECSGameTimer timer)
+		private int ThrowPlayer(EcsGameTimer timer)
 		{
 			if (Body.IsAlive && HasAggro)
 			{
@@ -591,7 +591,7 @@ namespace DOL.AI.Brain
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		private int PrepareGlare(ECSGameTimer timer)
+		private int PrepareGlare(EcsGameTimer timer)
 		{
 			if (!IsRestless && HasAggro && Body.IsAlive)
 			{
@@ -611,17 +611,17 @@ namespace DOL.AI.Brain
 					if (RandomTarget != null && RandomTarget.IsAlive && RandomTarget.IsWithinRadius(Body, Dragon_DD.Range))
 					{
 						BroadcastMessage(String.Format("{0} stares at {1} and prepares a massive attack.", Body.Name, RandomTarget.Name));
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastGlare), 6000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastGlare), 6000);
 					}
 					else
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGlare), 2000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetGlare), 2000);
 				}
 				else
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGlare), 2000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetGlare), 2000);
 			}
 			return 0;
 		}
-		private int CastGlare(ECSGameTimer timer)
+		private int CastGlare(EcsGameTimer timer)
 		{
 			if (!IsRestless && HasAggro && Body.IsAlive && RandomTarget != null && RandomTarget.IsAlive && RandomTarget.IsWithinRadius(Body, Dragon_DD.Range) && !Body.IsCasting)
 			{
@@ -631,10 +631,10 @@ namespace DOL.AI.Brain
 				string glaretext = glare_text[Util.Random(0, glare_text.Count - 1)];
 				RandomTarget.Out.SendMessage(String.Format(glaretext, Body.Name, RandomTarget.PlayerClass.Name), EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGlare), 2000);
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetGlare), 2000);
 			return 0;
 		}
-		private int ResetGlare(ECSGameTimer timer)
+		private int ResetGlare(EcsGameTimer timer)
 		{
 			if (Glare_Enemys.Count > 0)
 				Glare_Enemys.Clear();
@@ -660,7 +660,7 @@ namespace DOL.AI.Brain
 			get { return randomtarget2; }
 			set { randomtarget2 = value; }
 		}
-		private int PrepareGlareRoam(ECSGameTimer timer)
+		private int PrepareGlareRoam(EcsGameTimer timer)
 		{
 			if (IsRestless && Body.IsAlive)
 			{
@@ -686,17 +686,17 @@ namespace DOL.AI.Brain
 							if (player != null)
 								player.Out.SendMessage(String.Format("{0} stares at {1} and prepares a massive attack.", Body.Name, RandomTarget2.Name), EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 						}
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastGlareRoam), 3000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastGlareRoam), 3000);
 					}
 					else
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGlareRoam), 2000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetGlareRoam), 2000);
 				}
 				else
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGlareRoam), 2000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetGlareRoam), 2000);
 			}
 			return 0;
 		}
-		private int CastGlareRoam(ECSGameTimer timer)
+		private int CastGlareRoam(EcsGameTimer timer)
 		{
 			if (IsRestless && Body.IsAlive && RandomTarget2 != null && RandomTarget2.IsAlive && RandomTarget2.IsWithinRadius(Body, Dragon_DD2.Range) && !Body.IsCasting)
 			{
@@ -706,10 +706,10 @@ namespace DOL.AI.Brain
 				string glaretextroam = glareroam_text[Util.Random(0, glareroam_text.Count - 1)];
 				RandomTarget2.Out.SendMessage(String.Format(glaretextroam, Body.Name, RandomTarget2.PlayerClass.Name), EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGlareRoam), 2000);
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetGlareRoam), 2000);
 			return 0;
 		}
-		private int ResetGlareRoam(ECSGameTimer timer)
+		private int ResetGlareRoam(EcsGameTimer timer)
 		{
 			if (GlareRoam_Enemys.Count > 0)
 				GlareRoam_Enemys.Clear();
@@ -725,16 +725,16 @@ namespace DOL.AI.Brain
 		#endregion
 
 		#region Stun
-		private int PrepareStun(ECSGameTimer timer)
+		private int PrepareStun(EcsGameTimer timer)
 		{
 			if (!IsRestless && HasAggro && Body.IsAlive)
 			{
 				BroadcastMessage(String.Format("{0} roars horrifyingly!", Body.Name));
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStun), 6000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastStun), 6000);
 			}
 			return 0;
 		}
-		private int CastStun(ECSGameTimer timer)
+		private int CastStun(EcsGameTimer timer)
 		{
 			if (!IsRestless && HasAggro && Body.IsAlive)
 				Body.CastSpell(Dragon_Stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -769,67 +769,67 @@ namespace DOL.AI.Brain
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom1 = true;
 			}
 			if (Body.HealthPercent <= 80 && DragonKaboom2 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom2 = true;
 			}
 			if (Body.HealthPercent <= 70 && DragonKaboom3 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom3 = true;
 			}
 			if (Body.HealthPercent <= 60 && DragonKaboom4 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom4 = true;
 			}
 			if (Body.HealthPercent <= 50 && DragonKaboom5 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom5 = true;
 			}
 			if (Body.HealthPercent <= 40 && DragonKaboom6 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom6 = true;
 			}
 			if (Body.HealthPercent <= 30 && DragonKaboom7 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom7 = true;
 			}
 			if (Body.HealthPercent <= 20 && DragonKaboom8 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom8 = true;
 			}
 			if (Body.HealthPercent <= 10 && DragonKaboom9 == false && !Body.IsCasting && !IsRestless)
 			{
 				BroadcastMessage(String.Format(message, Body.Name));
 				Body.CastSpell(Dragon_PBAOE, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DragonCastDebuff), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DragonCastDebuff), 5000);
 				DragonKaboom9 = true;
 			}
 		}
-		private int DragonCastDebuff(ECSGameTimer timer) 
+		private int DragonCastDebuff(EcsGameTimer timer) 
 		{
 			Body.CastSpell(Dragon_Debuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 			return 0;
@@ -837,7 +837,7 @@ namespace DOL.AI.Brain
 		#endregion
 
 		#region Messengers
-		private int SpawnMssengers(ECSGameTimer timer)
+		private int SpawnMssengers(EcsGameTimer timer)
 		{
 			for (int i = 0; i <= Util.Random(3, 5); i++)
 			{
@@ -1164,7 +1164,7 @@ namespace DOL.AI.Brain
 						if (CanSpawnGlimmers == false)
 						{
 							SpawnGlimmers();
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RemoveMessenger), 1000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(RemoveMessenger), 1000);
 							CanSpawnGlimmers = true;
 						}
 					}
@@ -1205,7 +1205,7 @@ namespace DOL.AI.Brain
 						if (CanSpawnGlimmers == false)
 						{
 							SpawnGlimmers();
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RemoveMessenger), 1000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(RemoveMessenger), 1000);
 							CanSpawnGlimmers = true;
 						}
 					}
@@ -1246,7 +1246,7 @@ namespace DOL.AI.Brain
 						if (CanSpawnGlimmers == false)
 						{
 							SpawnGlimmers();
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RemoveMessenger), 1000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(RemoveMessenger), 1000);
 							CanSpawnGlimmers = true;
 						}
 					}
@@ -1287,7 +1287,7 @@ namespace DOL.AI.Brain
 						if (CanSpawnGlimmers == false)
 						{
 							SpawnGlimmers();
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RemoveMessenger), 1000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(RemoveMessenger), 1000);
 							CanSpawnGlimmers = true;
 						}
 					}
@@ -1297,7 +1297,7 @@ namespace DOL.AI.Brain
 		#endregion
 
 		#endregion
-		private protected int RemoveMessenger(ECSGameTimer timer)
+		private protected int RemoveMessenger(EcsGameTimer timer)
 		{
 			if (Body.IsAlive)
 			{

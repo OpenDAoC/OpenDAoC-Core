@@ -225,21 +225,21 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Explode),30000); //30 seconds until this will explode and deal heavy 
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Explode),30000); //30 seconds until this will explode and deal heavy 
 			}
 			return success;
 		}
-		private int Explode(ECSGameTimer timer)
+		private int Explode(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{
 				SetGroundTarget(X, Y, Z);
 				CastSpell(KrevoAddBomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(KillBomb), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(KillBomb), 500);
 			}
 			return 0;
 		}
-		private int KillBomb(ECSGameTimer timer)
+		private int KillBomb(EcsGameTimer timer)
 		{
 			if (IsAlive)
 				Die(this);

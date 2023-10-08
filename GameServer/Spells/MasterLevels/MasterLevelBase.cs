@@ -410,7 +410,7 @@ namespace DOL.GS.Spells
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            ECSGameTimer timer = effect.Owner.TempProperties.GetProperty<ECSGameTimer>(EFFECT_PROPERTY, null);
+            EcsGameTimer timer = effect.Owner.TempProperties.GetProperty<EcsGameTimer>(EFFECT_PROPERTY, null);
             effect.Owner.TempProperties.RemoveProperty(EFFECT_PROPERTY);
             timer.Stop();
 

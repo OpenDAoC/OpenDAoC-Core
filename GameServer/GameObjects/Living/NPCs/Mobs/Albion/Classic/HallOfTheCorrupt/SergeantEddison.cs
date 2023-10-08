@@ -24,15 +24,15 @@ namespace DOL.GS
         {
             base.OnAttackedByEnemy(ad);
         }
-        public int Range(ECSGameTimer timer)
+        public int Range(EcsGameTimer timer)
         {
             this.Strength = 250;
             this.SwitchToRanged(this.TargetObject);
-            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RangeEnd), 9500);
+            new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(RangeEnd), 9500);
             IsRanged = true;
             return 0;
         }
-        public int RangeEnd(ECSGameTimer timer)
+        public int RangeEnd(EcsGameTimer timer)
         {
             IsRanged = false;
             return 0;
@@ -61,7 +61,7 @@ namespace DOL.GS
                 if (IsRanged == false)
                 {
                     this.styleComponent.NextCombatStyle = null;
-                    new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Range), 200);
+                    new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Range), 200);
                 }
             }
             if(IsRanged)

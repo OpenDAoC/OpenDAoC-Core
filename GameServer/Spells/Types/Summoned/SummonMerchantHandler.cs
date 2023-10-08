@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
     public class SummonMerchantSpellHandler : SpellHandler
     {
         protected GameMerchant Npc;
-        protected ECSGameTimer timer;
+        protected EcsGameTimer timer;
 
         //private long SummonedTick;
         //private long EndTick;
@@ -90,11 +90,11 @@ namespace DOL.GS.Spells
            // SummonedTick = GameLoop.GameLoopTime;
             //EndTick = GameLoop.GameLoopTime + Spell.Duration * 1000;
             //Console.WriteLine($"Summoned merchant summon {SummonedTick} end {EndTick} duration {Spell.Duration}");
-            timer = new ECSGameTimer(Npc, new ECSGameTimer.ECSTimerCallback(OnEffectExpires), Spell.Duration);
+            timer = new EcsGameTimer(Npc, new EcsGameTimer.EcsTimerCallback(OnEffectExpires), Spell.Duration);
             timer.Start();
         }
 
-        public int OnEffectExpires(ECSGameTimer timer)
+        public int OnEffectExpires(EcsGameTimer timer)
         {
             Npc?.Delete();
             //timer.Stop();

@@ -159,13 +159,13 @@ namespace DOL.GS
 			set { m_timesrepaired = value; }
 		}
 
-		protected ECSGameTimer m_decayTimer;
+		protected EcsGameTimer m_decayTimer;
 		/// <summary>
 		/// The lock object for lazy regen timers initialization
 		/// </summary>
 		protected readonly object m_decayTimerLock = new object();
 
-		protected ECSGameTimer m_controlRangeTimer;
+		protected EcsGameTimer m_controlRangeTimer;
 		/// <summary>
 		/// The lock object for controlcheck timers initialization
 		/// </summary>
@@ -426,14 +426,14 @@ namespace DOL.GS
 				return;
 			}
 
-			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(MakeDelayedDamage), GetActionDelay(SiegeTimer.eAction.Fire));
+			new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(MakeDelayedDamage), GetActionDelay(SiegeTimer.eAction.Fire));
 			BroadcastFireAnimation(GetActionDelay(SiegeTimer.eAction.Fire));
 			if (Owner != null)
 				Owner.Out.SendMessage("You fire " + GetName(0, false) + "!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			Arm();
 		}
 
-		private int MakeDelayedDamage(ECSGameTimer callingTimer)
+		private int MakeDelayedDamage(EcsGameTimer callingTimer)
 		{
 			DoDamage();
 			return 0;
@@ -607,8 +607,8 @@ namespace DOL.GS
 			{
 				if (m_controlRangeTimer == null)
 				{
-					m_controlRangeTimer = new ECSGameTimer(this);
-					m_controlRangeTimer.Callback = new ECSGameTimer.ECSTimerCallback(ControlRangeTimerCallback);
+					m_controlRangeTimer = new EcsGameTimer(this);
+					m_controlRangeTimer.Callback = new EcsGameTimer.EcsTimerCallback(ControlRangeTimerCallback);
 				}
 				else if (m_controlRangeTimer.IsAlive)
 					return;
@@ -627,7 +627,7 @@ namespace DOL.GS
 			}
 		}
 
-		private int ControlRangeTimerCallback(ECSGameTimer callingTimer)
+		private int ControlRangeTimerCallback(EcsGameTimer callingTimer)
 		{
 			if(Owner==null)
 			{
@@ -716,8 +716,8 @@ namespace DOL.GS
 			{
 				if (m_decayTimer == null)
 				{
-					m_decayTimer = new ECSGameTimer(this);
-					m_decayTimer.Callback = new ECSGameTimer.ECSTimerCallback(DecayTimerCallback);
+					m_decayTimer = new EcsGameTimer(this);
+					m_decayTimer.Callback = new EcsGameTimer.EcsTimerCallback(DecayTimerCallback);
 				}
 				else if (m_decayTimer.IsAlive)
 					return;
@@ -736,7 +736,7 @@ namespace DOL.GS
 			}
 		}
 
-		private int DecayTimerCallback(ECSGameTimer callingTimer)
+		private int DecayTimerCallback(EcsGameTimer callingTimer)
 		{
 			TakeDamage(this, EDamageType.Natural, DecayDeductHp, 0);
 			return DECAYPERIOD;
@@ -758,7 +758,7 @@ namespace DOL.GS
 	}
 	#endregion
 	#region siegeTimer
-	public class SiegeTimer : ECSGameTimerWrapperBase
+	public class SiegeTimer : EcsGameTimerWrapperBase
 	{
 		public enum eAction : byte
 		{
@@ -793,7 +793,7 @@ namespace DOL.GS
 			set { m_siegeWeapon = value; }
 		}
 
-		protected override int OnTick(ECSGameTimer timer)
+		protected override int OnTick(EcsGameTimer timer)
 		{
 			if (SiegeWeapon.Owner == null)
 				return 0;

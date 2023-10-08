@@ -701,7 +701,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								int clientclassID = client.Player.PlayerClass.ID;
 								int sub = 50;
-								var ra_list = SkillBase.GetClassRealmAbilities(clientclassID).Where(ra => !(ra is RR5RealmAbility));
+								var ra_list = SkillBase.GetClassRealmAbilities(clientclassID).Where(ra => !(ra is Rr5RealmAbility));
 								
 								RealmAbility ab = ra_list.ElementAtOrDefault(objectId - sub);
 								

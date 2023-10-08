@@ -144,7 +144,7 @@ namespace DOL.AI.Brain
 					Body.Flags = GameNPC.eFlags.FLYING;
 				if (NotInCombat == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
 					NotInCombat = true;
 				}
 				if (!RemoveAdds)
@@ -176,7 +176,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 
-		protected int Show_Effect(ECSGameTimer timer)
+		protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (Body.IsAlive && !HasAggro)
 			{

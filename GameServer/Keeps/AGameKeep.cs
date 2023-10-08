@@ -39,7 +39,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Timer to remove bounty point and add realm point to guild which own keep
 		/// </summary>
-		protected ECSGameTimer m_claimTimer;
+		protected EcsGameTimer m_claimTimer;
 
 		/// <summary>
 		/// Timerto upgrade the keep level
@@ -735,7 +735,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="timer"></param>
 		/// <returns></returns>
-		public int ClaimCallBack(ECSGameTimer timer)
+		public int ClaimCallBack(EcsGameTimer timer)
 		{
 			if (Guild == null)
 				return 0;

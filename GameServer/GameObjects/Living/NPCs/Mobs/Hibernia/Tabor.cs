@@ -469,12 +469,12 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 1000);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 1000);
 			}
 			return success;
 		}
 		#region Show Effects
-		protected int Show_Effect(ECSGameTimer timer)
+		protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{
@@ -483,17 +483,17 @@ namespace DOL.GS
 					if (player != null)
 						player.Out.SendSpellEffectAnimation(this, this, 6072, 0, false, 0x01);
 				}
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnGhostTabor), 1000);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(SpawnGhostTabor), 1000);
 			}
 			return 0;
 		}
-		protected int RemoveMob(ECSGameTimer timer)
+		protected int RemoveMob(EcsGameTimer timer)
 		{
 			if (IsAlive)
 				RemoveFromWorld();
 			return 0;
 		}
-		private int SpawnGhostTabor(ECSGameTimer timer)
+		private int SpawnGhostTabor(EcsGameTimer timer)
         {
 			SpawnGhostOfTabor();
 			return 0;
@@ -512,7 +512,7 @@ namespace DOL.GS
 			npc.Heading = Heading;
 			npc.CurrentRegion = CurrentRegion;
 			npc.AddToWorld();
-			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveMob), 500);
+			new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(RemoveMob), 500);
 		}
 		#endregion
 	}

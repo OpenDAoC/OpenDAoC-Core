@@ -322,7 +322,7 @@ namespace DOL.GS
             return;
         }
 
-        public int Execute(ECSGameTimer timer)
+        public int Execute(EcsGameTimer timer)
         {
             Execute();
             return 0;

@@ -129,27 +129,27 @@ namespace DOL.AI.Brain
 				{
 					if (LivingHasEffect(Body.TargetObject as GameLiving, Droom_SC_Debuff) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), 3000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastSCDebuff), 3000);
 					}
 				}
 				if (Util.Chance(15) && Body.TargetObject != null)
 				{
 					if (LivingHasEffect(Body.TargetObject as GameLiving, Droom_Haste_Debuff) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), 3000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastHasteDebuff), 3000);
 					}
 				}
 				if (Util.Chance(15) && Body.TargetObject != null)
 				{
 					if (LivingHasEffect(Body.TargetObject as GameLiving, DroomDisease) == false && Body.TargetObject.IsVisibleTo(Body))
 					{
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 3000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDisease), 3000);
 					}
 				}
 			}
 			base.Think();
 		}
-		public int CastSCDebuff(ECSGameTimer timer)
+		public int CastSCDebuff(EcsGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
@@ -157,7 +157,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastHasteDebuff(ECSGameTimer timer)
+		public int CastHasteDebuff(EcsGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
@@ -165,7 +165,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastDisease(ECSGameTimer timer)
+		public int CastDisease(EcsGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{

@@ -147,7 +147,7 @@ namespace DOL.AI.Brain
 					Body.CastSpell(MortufoghusDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
 				if (IsTargetPicked == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(25000, 35000));//timer to port and pick player
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ThrowPlayer), Util.Random(25000, 35000));//timer to port and pick player
 					IsTargetPicked = true;
 				}
 			}
@@ -162,7 +162,7 @@ namespace DOL.AI.Brain
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		public int ThrowPlayer(ECSGameTimer timer)
+		public int ThrowPlayer(EcsGameTimer timer)
 		{
 			if (Body.IsAlive && HasAggro)
 			{

@@ -5,7 +5,7 @@ using DOL.GS.Behaviour.Attributes;
 namespace DOL.GS.Behaviour.Actions
 {
     [Action(ActionType = EActionType.CustomTimer)]
-    public class CustomTimerAction : AAction<ECSGameTimer,int>
+    public class CustomTimerAction : AAction<EcsGameTimer,int>
     {
 
         public CustomTimerAction(GameNPC defaultNPC,  Object p, Object q)
@@ -15,14 +15,14 @@ namespace DOL.GS.Behaviour.Actions
         }
 
 
-        public CustomTimerAction(GameNPC defaultNPC, ECSGameTimer gameTimer, int delay)
+        public CustomTimerAction(GameNPC defaultNPC, EcsGameTimer gameTimer, int delay)
             : this(defaultNPC, (object) gameTimer,(object) delay) { }
         
 
 
         public override void Perform(CoreEvent e, object sender, EventArgs args)
         {
-            var timer = (ECSGameTimer)P;
+            var timer = (EcsGameTimer)P;
             timer.Start(Q);
         }
     }

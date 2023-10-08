@@ -30,7 +30,7 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(PrepareTeleport), 1000);			
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(PrepareTeleport), 1000);			
 			}
 			return success;
 		}
@@ -41,7 +41,7 @@ namespace DOL.GS
 				player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 			}
 		}
-		private protected int PrepareTeleport(ECSGameTimer timer)
+		private protected int PrepareTeleport(EcsGameTimer timer)
         {
 			BroadcastMessage(String.Format("The {0} says, \"Ahh, I feel the power of the stone... through the living rock I send you!\"",Name));
 			foreach (GamePlayer player in GetPlayersInRadius(2000))
@@ -50,10 +50,10 @@ namespace DOL.GS
 					player.Out.SendSpellCastAnimation(this, 2803, 3);
 			}
 
-			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(TeleportPlayers), 3000);
+			new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(TeleportPlayers), 3000);
 			return 0;
         }
-		private protected int TeleportPlayers(ECSGameTimer timer)
+		private protected int TeleportPlayers(EcsGameTimer timer)
         {
 			//region 224
 			//1st teleports

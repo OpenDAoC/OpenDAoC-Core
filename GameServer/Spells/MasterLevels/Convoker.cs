@@ -546,7 +546,7 @@ namespace DOL.GS.Spells
 
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			foreach (JuggernautEffect jg in target.EffectList.GetAllOfType<JuggernautEffect>())
+			foreach (NfRaJuggernautEffect jg in target.EffectList.GetAllOfType<NfRaJuggernautEffect>())
 			{
 				if (jg != null)
 				{
@@ -605,7 +605,7 @@ namespace DOL.GS.Spells
 
 		private int x, y, z;
 		GameNPC summoned = null;
-		ECSGameTimer m_growTimer;
+		EcsGameTimer m_growTimer;
 		private const int C_GROWTIMER = 2000;
 		
 		public Convoker10SpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -665,11 +665,11 @@ namespace DOL.GS.Spells
 			summoned.AddToWorld();
 			controlledBrain.AggressionState = EAggressionState.Aggressive;
 			effect.Start(summoned);
-			m_growTimer = new ECSGameTimer((GameObject)m_caster, new ECSGameTimer.ECSTimerCallback(TitanGrows), C_GROWTIMER);
+			m_growTimer = new EcsGameTimer((GameObject)m_caster, new EcsGameTimer.EcsTimerCallback(TitanGrows), C_GROWTIMER);
 		}
 		
 		// Make titan growing, and activate it on completition
-		private int TitanGrows(ECSGameTimer timer)
+		private int TitanGrows(EcsGameTimer timer)
 		{
 			if(summoned != null && summoned.Size != 60)
 			{

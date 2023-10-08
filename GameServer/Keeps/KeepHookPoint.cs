@@ -102,7 +102,7 @@ namespace DOL.GS.Keeps
 		}
 	}
 
-	public class HookpointTimer : ECSGameTimerWrapperBase
+	public class HookpointTimer : EcsGameTimerWrapperBase
 	{
 		private GameKeepHookPoint m_hookpoint;
 
@@ -112,7 +112,7 @@ namespace DOL.GS.Keeps
 			m_hookpoint = hookpoint;
 		}
 
-		protected override int OnTick(ECSGameTimer timer)
+		protected override int OnTick(EcsGameTimer timer)
 		{
 			if (m_hookpoint.Object is GameSiegeWeapon)
 				(m_hookpoint.Object as GameSiegeWeapon).ReleaseControl();

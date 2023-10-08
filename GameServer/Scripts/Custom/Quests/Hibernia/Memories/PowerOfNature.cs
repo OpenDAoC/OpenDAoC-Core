@@ -338,7 +338,7 @@ namespace DOL.GS.Quests.Hibernia
                                 Theresa.SayTo(player,
                                 "Father imbued this doll with magic, and I can feel his presence within it. I am confident he will return soon, and I can go with peace now. Thank you so much for bringing my father back to me, and to all of us in Tir na Nog. ");
                                 Theresa.Emote(EEmote.Cheer);
-                                new ECSGameTimer(Theresa, new ECSGameTimer.ECSTimerCallback(StartTheresaEffect), 2000);
+                                new EcsGameTimer(Theresa, new EcsGameTimer.EcsTimerCallback(StartTheresaEffect), 2000);
                                 Theresa.SayTo(player,
                                     "I can feel the power of nature!");
                                 quest.FinishQuest();
@@ -434,9 +434,9 @@ namespace DOL.GS.Quests.Hibernia
                         case "begin":
                             if (quest.Step == 3)
                             {
-                                new ECSGameTimer(Karl, new ECSGameTimer.ECSTimerCallback(CreateEffect), 3000);
+                                new EcsGameTimer(Karl, new EcsGameTimer.EcsTimerCallback(CreateEffect), 3000);
                                 
-                                new ECSGameTimer(Karl, new ECSGameTimer.ECSTimerCallback(timer => StartEffectPlayer(timer, player)), 1000);
+                                new EcsGameTimer(Karl, new EcsGameTimer.EcsTimerCallback(timer => StartEffectPlayer(timer, player)), 1000);
                                 quest.Step = 4;
                                 GiveItem(player, magical_theresas_doll);
                                 Karl.SayTo(player,
@@ -450,7 +450,7 @@ namespace DOL.GS.Quests.Hibernia
             }
         }
 
-        private static int CreateEffect(ECSGameTimer timer)
+        private static int CreateEffect(EcsGameTimer timer)
         {
             // dont change it
             int effectCount = 5;
@@ -517,14 +517,14 @@ namespace DOL.GS.Quests.Hibernia
                 MobEffect.AddToWorld();
             }
 
-            new ECSGameTimer(Karl, new ECSGameTimer.ECSTimerCallback(StartEffect), 1000);
+            new EcsGameTimer(Karl, new EcsGameTimer.EcsTimerCallback(StartEffect), 1000);
             
-            new ECSGameTimer(Karl, new ECSGameTimer.ECSTimerCallback(StartEffect), 1000);
+            new EcsGameTimer(Karl, new EcsGameTimer.EcsTimerCallback(StartEffect), 1000);
             
             return 0;
         }
 
-        private static int StartEffect(ECSGameTimer timer)
+        private static int StartEffect(EcsGameTimer timer)
         {
             foreach (GameNPC effect in Karl.GetNPCsInRadius(600))
             {
@@ -536,13 +536,13 @@ namespace DOL.GS.Quests.Hibernia
             return 0;
         }
 
-        private static int StartTheresaEffect(ECSGameTimer timer)
+        private static int StartTheresaEffect(EcsGameTimer timer)
         {
             Theresa.CastSpell(EffectSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
         }
 
-        private static int StartEffectPlayer(ECSGameTimer timer, GamePlayer player)
+        private static int StartEffectPlayer(EcsGameTimer timer, GamePlayer player)
         {
             player.Out.SendSpellEffectAnimation(player, player, 5005, 0, false, 1);
             

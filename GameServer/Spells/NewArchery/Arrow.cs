@@ -84,7 +84,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Delayed action when arrow reach the target
 		/// </summary>
-		protected class ArrowOnTargetAction : ECSGameTimerWrapperBase
+		protected class ArrowOnTargetAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The arrow target
@@ -113,7 +113,7 @@ namespace DOL.GS.Spells
 				m_handler = spellHandler;
 			}
 
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GameLiving target = m_arrowTarget;
 				GameLiving caster = (GameLiving) timer.Owner;

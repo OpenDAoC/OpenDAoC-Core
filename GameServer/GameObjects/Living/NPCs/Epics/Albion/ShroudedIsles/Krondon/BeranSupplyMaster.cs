@@ -130,18 +130,18 @@ namespace DOL.AI.Brain
 				RemoveAdds = false;
 				if(Ignite_Barrel == false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(IgniteBarrel), Util.Random(15000, 35000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(IgniteBarrel), Util.Random(15000, 35000));
 					Ignite_Barrel = true;
                 }
 				if (BringAdds == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CallForHelp), Util.Random(35000, 65000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CallForHelp), Util.Random(35000, 65000));
 					BringAdds = true;
 				}
 			}
 			base.Think();
 		}
-		public int CallForHelp(ECSGameTimer timer)
+		public int CallForHelp(EcsGameTimer timer)
         {
 			if (HasAggro)
 			{
@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
 				player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
 			}
 		}
-		public int IgniteBarrel(ECSGameTimer timer)
+		public int IgniteBarrel(EcsGameTimer timer)
         {
 			if (HasAggro)
 			{
@@ -263,13 +263,13 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Explode), 8000); //8 seconds until this will explode and deal heavy heat dmg
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Explode), 8000); //8 seconds until this will explode and deal heavy heat dmg
 			}
 			return success;
 		}
 
-		protected int Show_Effect(ECSGameTimer timer)
+		protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{
@@ -282,17 +282,17 @@ namespace DOL.GS
 			return 0;
 		}
 		
-		protected int Explode(ECSGameTimer timer)
+		protected int Explode(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{
 				SetGroundTarget(X, Y, Z);			
 				CastSpell(Barrel_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(KillBomb), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(KillBomb), 500);
 			}
 			return 0;
 		}
-		public int KillBomb(ECSGameTimer timer)
+		public int KillBomb(EcsGameTimer timer)
 		{
 			if (IsAlive)
 				RemoveFromWorld();

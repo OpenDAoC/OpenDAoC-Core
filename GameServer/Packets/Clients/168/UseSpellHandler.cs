@@ -131,7 +131,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player use spell actions
 		/// </summary>
-		protected class UseSpellAction : ECSGameTimerWrapperBase
+		protected class UseSpellAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Defines a logger for this class.
@@ -171,7 +171,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 

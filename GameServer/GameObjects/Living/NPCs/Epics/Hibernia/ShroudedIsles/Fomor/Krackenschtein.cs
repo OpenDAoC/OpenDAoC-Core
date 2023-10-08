@@ -143,11 +143,11 @@ namespace DOL.AI.Brain
 			{
 				GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 				RandomTarget = Target;//set random target to static RandomTarget
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBolt), 1000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastBolt), 1000);
 				CanCast = true;
 			}
 		}
-		public int CastBolt(ECSGameTimer timer)
+		public int CastBolt(EcsGameTimer timer)
 		{
 			GameLiving oldTarget = Body.TargetObject as GameLiving;//old target
 			if (RandomTarget != null && RandomTarget.IsAlive && !Body.IsCasting)
@@ -157,10 +157,10 @@ namespace DOL.AI.Brain
 				Body.CastSpell(Boss_Bolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBolt), Util.Random(15000, 20000));
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetBolt), Util.Random(15000, 20000));
 			return 0;
 		}
-		public int ResetBolt(ECSGameTimer timer)//reset here so boss can start dot again
+		public int ResetBolt(EcsGameTimer timer)//reset here so boss can start dot again
 		{
 			RandomTarget = null;
 			CanCast = false;
@@ -200,11 +200,11 @@ namespace DOL.AI.Brain
 					case 3: TeleportTarget.MoveTo(180, 31727, 37401, 16465, 3225); break;
 					case 4: TeleportTarget.MoveTo(180, 32159, 36387, 16465, 3618); break;
 				}
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), Util.Random(25000, 35000));
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetPort), Util.Random(25000, 35000));
 				CanPort = true;			
 			}
 		}
-		public int ResetPort(ECSGameTimer timer)//reset here so boss can start dot again
+		public int ResetPort(EcsGameTimer timer)//reset here so boss can start dot again
 		{
 			TeleportTarget = null;
 			CanPort = false;

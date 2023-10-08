@@ -188,7 +188,7 @@ namespace DOL.AI.Brain
                 }
 				if(!TorchOfLight_Enabled)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetLights), 5000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetLights), 5000);
 					TorchOfLight_Enabled = true;
                 }
 				if(!AggroMessage)
@@ -265,7 +265,7 @@ namespace DOL.AI.Brain
 			}
 		}
 		#endregion
-		private int ResetLights(ECSGameTimer timer)
+		private int ResetLights(EcsGameTimer timer)
         {
 			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
 			{

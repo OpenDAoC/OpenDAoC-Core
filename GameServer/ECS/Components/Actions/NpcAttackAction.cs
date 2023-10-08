@@ -28,7 +28,7 @@ namespace DOL.GS
             if (Properties.ALWAYS_CHECK_PET_LOS && npcOwner.Brain is IControlledBrain npcOwnerBrain)
             {
                 _npcOwnerOwner = npcOwnerBrain.GetPlayerOwner();
-                new ECSGameTimer(_npcOwner, new ECSGameTimer.ECSTimerCallback(CheckLos), 1);
+                new EcsGameTimer(_npcOwner, new EcsGameTimer.EcsTimerCallback(CheckLos), 1);
             }
             else
                 _hasLos = true;
@@ -165,7 +165,7 @@ namespace DOL.GS
             base.CleanUp();
         }
 
-        private int CheckLos(ECSGameTimer timer)
+        private int CheckLos(EcsGameTimer timer)
         {
             if (_target == null)
                 _hasLos = false;

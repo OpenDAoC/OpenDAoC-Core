@@ -95,7 +95,7 @@ namespace DOL.AI.Brain
                     if (ad.Attacker.IsAlive)
                     {
                         Body.CastSpell(BaneOfHope_Aoe_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportEnemy), 4500);
+                        new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(TeleportEnemy), 4500);
                         CanPoison = true;
                     }
                     if (oldTarget != null) Body.TargetObject = oldTarget;
@@ -103,7 +103,7 @@ namespace DOL.AI.Brain
             }
             base.OnAttackedByEnemy(ad);
         }
-        public int TeleportEnemy(ECSGameTimer timer)
+        public int TeleportEnemy(EcsGameTimer timer)
         {
             if (TeleportTarget != null && HasAggro)
             {
@@ -114,10 +114,10 @@ namespace DOL.AI.Brain
                     case 3: TeleportTarget.MoveTo(Body.CurrentRegionID, 38292, 31794, 13940, 986); break;
                 }
             }
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetTeleport), Util.Random(12000,18000));
+            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetTeleport), Util.Random(12000,18000));
             return 0;
         }
-        private int ResetTeleport(ECSGameTimer timer)
+        private int ResetTeleport(EcsGameTimer timer)
         {
             CanPoison = false;
             TeleportTarget = null;

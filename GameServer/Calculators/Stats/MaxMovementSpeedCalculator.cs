@@ -24,7 +24,7 @@ namespace DOL.GS.PropertyCalc
 
         public override int CalcValue(GameLiving living, EProperty property)
         {
-            if ((living.IsMezzed || living.IsStunned) && living.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+            if ((living.IsMezzed || living.IsStunned) && living.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(OfRaSpeedOfSoundEcsEffect)) == null)
                 return 0;
 
             double speed = living.BuffBonusMultCategory1.Get((int)property);
@@ -69,7 +69,7 @@ namespace DOL.GS.PropertyCalc
                 }
                 if (player.IsStealthed)
                 {
-                    AtlasOF_MasteryOfStealth mos = player.GetAbility<AtlasOF_MasteryOfStealth>();
+                    OfRaMasteryOfStealthAbility mos = player.GetAbility<OfRaMasteryOfStealthAbility>();
                     //GameSpellEffect bloodrage = SpellHandler.FindEffectOnTarget(player, "BloodRage");
                     //VanishEffect vanish = player.EffectList.GetOfType<VanishEffect>();
                     double stealthSpec = player.GetModifiedSpecLevel(Specs.Stealth);

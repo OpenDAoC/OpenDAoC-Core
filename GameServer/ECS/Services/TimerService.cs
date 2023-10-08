@@ -30,11 +30,11 @@ namespace DOL.GS
                 _nullTimerCount = 0;
             }
 
-            List<ECSGameTimer> list = EntityManager.UpdateAndGetAll<ECSGameTimer>(EEntityType.Timer, out int lastValidIndex);
+            List<EcsGameTimer> list = EntityManager.UpdateAndGetAll<EcsGameTimer>(EEntityType.Timer, out int lastValidIndex);
 
             Parallel.For(0, lastValidIndex + 1, i =>
             {
-                ECSGameTimer timer = list[i];
+                EcsGameTimer timer = list[i];
 
                 if (timer?.EntityManagerId.IsSet != true)
                 {
@@ -76,12 +76,12 @@ namespace DOL.GS
         }
     }
 
-    public class ECSGameTimer : IManagedEntity
+    public class EcsGameTimer : IManagedEntity
     {
-        public delegate int ECSTimerCallback(ECSGameTimer timer);
+        public delegate int EcsTimerCallback(EcsGameTimer timer);
 
         public GameObject Owner { get; set; }
-        public ECSTimerCallback Callback { get; set; }
+        public EcsTimerCallback Callback { get; set; }
         public int Interval { get; set; }
         public long StartTick { get; set; }
         public long NextTick => StartTick + Interval;
@@ -90,18 +90,18 @@ namespace DOL.GS
         public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.Timer, false);
         private PropertyCollection _properties;
 
-        public ECSGameTimer(GameObject timerOwner)
+        public EcsGameTimer(GameObject timerOwner)
         {
             Owner = timerOwner;
         }
 
-        public ECSGameTimer(GameObject timerOwner, ECSTimerCallback callback)
+        public EcsGameTimer(GameObject timerOwner, EcsTimerCallback callback)
         {
             Owner = timerOwner;
             Callback = callback;
         }
 
-        public ECSGameTimer(GameObject timerOwner, ECSTimerCallback callback, int interval)
+        public EcsGameTimer(GameObject timerOwner, EcsTimerCallback callback, int interval)
         {
             Owner = timerOwner;
             Callback = callback;
@@ -163,14 +163,14 @@ namespace DOL.GS
         }
     }
 
-    public abstract class ECSGameTimerWrapperBase : ECSGameTimer
+    public abstract class EcsGameTimerWrapperBase : EcsGameTimer
     {
-        public ECSGameTimerWrapperBase(GameObject owner) : base(owner)
+        public EcsGameTimerWrapperBase(GameObject owner) : base(owner)
         {
             Owner = owner;
-            Callback = new ECSTimerCallback(OnTick);
+            Callback = new EcsTimerCallback(OnTick);
         }
 
-        protected abstract int OnTick(ECSGameTimer timer);
+        protected abstract int OnTick(EcsGameTimer timer);
     }
 }

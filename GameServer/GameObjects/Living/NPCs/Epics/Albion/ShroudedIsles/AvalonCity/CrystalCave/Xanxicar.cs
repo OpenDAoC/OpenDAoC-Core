@@ -213,7 +213,7 @@ namespace DOL.AI.Brain
         #endregion
 
         #region Throw player
-        public int ThrowPlayer(ECSGameTimer timer)
+        public int ThrowPlayer(EcsGameTimer timer)
 		{
 			if (Body.IsAlive)
 			{
@@ -250,7 +250,7 @@ namespace DOL.AI.Brain
         #endregion
 
         #region Pick Glare Target
-        public int GlarePlayer(ECSGameTimer timer)
+        public int GlarePlayer(EcsGameTimer timer)
 		{
 			if (Body.IsAlive)
 			{
@@ -272,13 +272,13 @@ namespace DOL.AI.Brain
 					if (RandomTarget2.IsAlive && RandomTarget2 != null && HasAggro)
 					{
 						BroadcastMessage("Xanxicar preparing glare at "+ RandomTarget2.Name +"!");
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoGlare), 5000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DoGlare), 5000);
 					}
 				}
 			}
 			return 0;
 		}
-		public int DoGlare(ECSGameTimer timer)
+		public int DoGlare(EcsGameTimer timer)
 		{
 			GameObject oldTarget = Body.TargetObject;
 			Body.TargetObject = RandomTarget2;
@@ -294,7 +294,7 @@ namespace DOL.AI.Brain
         #endregion
 
         #region PBAOE
-        public int BombAnnounce(ECSGameTimer timer)
+        public int BombAnnounce(EcsGameTimer timer)
 		{
 			BroadcastMessage(String.Format("Xanxicar bellows in rage and prepares massive stomp at all of the creatures attacking him."));
 			if (Body.IsAlive && HasAggro)
@@ -343,32 +343,32 @@ namespace DOL.AI.Brain
 				RemoveAdds = false;
 				if (IsTargetPicked == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(20000, 40000));//timer to port and pick player
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ThrowPlayer), Util.Random(20000, 40000));//timer to port and pick player
 					IsTargetPicked = true;
 				}
 				if (IsTargetPicked2 == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(GlarePlayer), Util.Random(35000, 45000));//timer to glare at player
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(GlarePlayer), Util.Random(35000, 45000));//timer to glare at player
 					IsTargetPicked2 = true;
 				}
 				if(Body.HealthPercent <= 80 && Bomb1 == false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), 1000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(BombAnnounce), 1000);
 					Bomb1 = true;
 				}
 				if (Body.HealthPercent <= 60 && Bomb2 == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), 1000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(BombAnnounce), 1000);
 					Bomb2 = true;
 				}
 				if (Body.HealthPercent <= 40 && Bomb3 == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), 1000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(BombAnnounce), 1000);
 					Bomb3 = true;
 				}
 				if (Body.HealthPercent <= 20 && Bomb4 == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BombAnnounce), 1000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(BombAnnounce), 1000);
 					Bomb4 = true;
 				}
 				if(Body.HealthPercent<=50)
@@ -380,7 +380,7 @@ namespace DOL.AI.Brain
                     }
 					if(SpawnAddsOnce && CheckForSingleAdd==false && XanxicarianChampion.XanxicarianChampionCount == 0)
                     {
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMoreAdds), Util.Random(15000, 25000));//spawn 1 add every 25-35s
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnMoreAdds), Util.Random(15000, 25000));//spawn 1 add every 25-35s
 						CheckForSingleAdd = true;
                     }
                 }
@@ -406,7 +406,7 @@ namespace DOL.AI.Brain
 				Add.AddToWorld();
 			}
 		}
-		public int SpawnMoreAdds(ECSGameTimer timer)
+		public int SpawnMoreAdds(EcsGameTimer timer)
         {
 			if (XanxicarianChampion.XanxicarianChampionCount == 0 && HasAggro)
 			{

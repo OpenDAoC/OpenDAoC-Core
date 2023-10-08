@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
                         // chance to teleport a random player to another mob camp 
                         if (Util.Chance(5) && Body.HealthPercent <= 50)
                         {
-                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayerAway), 5000);
+                            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(TeleportPlayerAway), 5000);
                         }
                     }
                 }
@@ -162,7 +162,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        public int TeleportPlayerAway(ECSGameTimer timer)
+        public int TeleportPlayerAway(EcsGameTimer timer)
         {
             string gender;
             foreach (GamePlayer player in Body.GetPlayersInRadius(2000))

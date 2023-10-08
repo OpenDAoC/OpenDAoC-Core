@@ -56,7 +56,7 @@ namespace DOL.AI.Brain
 						if (player != null)
 							player.Out.SendMessage("Ruckus begins saving energy for a stunning blow.\nRuckus attacks begin to stun his opponent with next blow.", EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
                     }
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStun), 2000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastStun), 2000);
 					PrepareStun = true;
                 }
 				if (!Body.effectListComponent.ContainsEffectForEffectType(EEffect.DamageAdd) && !Body.IsCasting)
@@ -64,14 +64,14 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		private int CastStun(ECSGameTimer timer)
+		private int CastStun(EcsGameTimer timer)
         {
 			if (HasAggro && Body.TargetObject != null)		
 				Body.CastSpell(Ruckus_stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetStun), 20000);
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetStun), 20000);
 			return 0;
         }
-		private int ResetStun(ECSGameTimer timer)
+		private int ResetStun(EcsGameTimer timer)
 		{
 			PrepareStun = false;
 			return 0;

@@ -131,12 +131,12 @@ namespace DOL.AI.Brain
 				{
 					GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 					RandomTarget = Target;//set random target to static RandomTarget
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetTarget), 4500);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetTarget), 4500);
 					CanCast = true;
 				}
 			}
 		}
-		public int ResetTarget(ECSGameTimer timer)//reset here so boss can start dot again
+		public int ResetTarget(EcsGameTimer timer)//reset here so boss can start dot again
 		{
 			RandomTarget = null;
 			CanCast = false;

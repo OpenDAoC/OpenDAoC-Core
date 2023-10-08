@@ -118,13 +118,13 @@ namespace DOL.AI.Brain
 				}
 				if (!CanSpawnAdd)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CreateAdd), Util.Random(60000, 120000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CreateAdd), Util.Random(60000, 120000));
 					CanSpawnAdd = true;
 				}
 			}
 			base.Think();
 		}
-		private int CreateAdd(ECSGameTimer timer)
+		private int CreateAdd(EcsGameTimer timer)
 		{
 			if (HasAggro)
 				SpawnAdd();

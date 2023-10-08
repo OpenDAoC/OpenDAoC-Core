@@ -205,7 +205,7 @@ namespace DOL.AI.Brain
 									Body.CastSpell(Aros_Bomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 								else if (Body.GetSkillDisabledDuration(Aros_Debuff) == 0)
 								{
-									new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickDebuffTarget), 200);
+									new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickDebuffTarget), 200);
 									if (DebuffTarget != null && CanCastDebuff)
 									{
 										Body.TargetObject = DebuffTarget;
@@ -251,7 +251,7 @@ namespace DOL.AI.Brain
 			get { return debufftarget; }
 			set { debufftarget = value; }
 		}
-		public int PickDebuffTarget(ECSGameTimer timer)
+		public int PickDebuffTarget(EcsGameTimer timer)
 		{
 			if (HasAggro)
 			{
@@ -269,14 +269,14 @@ namespace DOL.AI.Brain
 					{
 						GamePlayer Target = Enemys_To_Debuff[Util.Random(0, Enemys_To_Debuff.Count - 1)];//pick random target from list
 						DebuffTarget = Target;//set random target to static RandomTarget
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDebuff), 5000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetDebuff), 5000);
 						CanCastDebuff = true;
 					}
 				}
 			}
 			return 0;
 		}
-		public int ResetDebuff(ECSGameTimer timer)
+		public int ResetDebuff(EcsGameTimer timer)
 		{
 			DebuffTarget = null;
 			CanCastDebuff = false;

@@ -69,7 +69,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			var throwPlayer = TempProperties.GetProperty<ECSGameTimer>("ydenia_teleport");//cancel teleport
+			var throwPlayer = TempProperties.GetProperty<EcsGameTimer>("ydenia_teleport");//cancel teleport
 			if (throwPlayer != null)
 			{
 				throwPlayer.Stop();
@@ -114,7 +114,7 @@ namespace DOL.AI.Brain
 				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				canPort = false;
-				var throwPlayer = Body.TempProperties.GetProperty<ECSGameTimer>("ydenia_teleport");//cancel teleport
+				var throwPlayer = Body.TempProperties.GetProperty<EcsGameTimer>("ydenia_teleport");//cancel teleport
 				if (throwPlayer != null)
 				{
 					throwPlayer.Stop();
@@ -144,14 +144,14 @@ namespace DOL.AI.Brain
 				}
 				if(Util.Chance(35) && !canPort)
                 {
-					ECSGameTimer portTimer = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(InitiatePort), Util.Random(25000, 35000));
+					EcsGameTimer portTimer = new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(InitiatePort), Util.Random(25000, 35000));
 					Body.TempProperties.SetProperty("ydenia_teleport", portTimer);
 					canPort = true;
                 }				
 			}
 			base.Think();
 		}
-		private int InitiatePort(ECSGameTimer timer)
+		private int InitiatePort(EcsGameTimer timer)
         {
 			GameLiving target = Body.TargetObject as GameLiving;
 			BroadcastMessage(String.Format("{0} says, \"Feel the power of the Seithkona, fool!\"", Body.Name));

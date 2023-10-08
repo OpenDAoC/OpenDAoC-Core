@@ -408,7 +408,7 @@ namespace DOL.AI.Brain
 			set { randomtarget2 = value; }
 		}
 		List<GamePlayer> Enemys_To_DOT = new List<GamePlayer>();
-		public int PickRandomTarget2(ECSGameTimer timer)
+		public int PickRandomTarget2(EcsGameTimer timer)
 		{
 			if (HasAggro)
 			{
@@ -431,14 +431,14 @@ namespace DOL.AI.Brain
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DOT[Util.Random(0, Enemys_To_DOT.Count - 1)];//pick random target from list
 						RandomTarget2 = Target;//set random target to static RandomTarget
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDOT), 2000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDOT), 2000);
 						CanCast2 = true;
 					}
 				}
 			}
 			return 0;
 		}
-		public int CastDOT(ECSGameTimer timer)
+		public int CastDOT(EcsGameTimer timer)
 		{
 			if (HasAggro && RandomTarget2 != null)
 			{
@@ -450,11 +450,11 @@ namespace DOL.AI.Brain
 					Body.CastSpell(NosdodenDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDOT), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetDOT), 5000);
 			}
 			return 0;
 		}
-		public int ResetDOT(ECSGameTimer timer)
+		public int ResetDOT(EcsGameTimer timer)
 		{
 			Enemys_To_DOT.Clear();
 			RandomTarget2 = null;
@@ -473,7 +473,7 @@ namespace DOL.AI.Brain
 			set { randomtarget = value; }
 		}
 		List<GamePlayer> Enemys_To_DD = new List<GamePlayer>();
-		public int PickRandomTarget(ECSGameTimer timer)
+		public int PickRandomTarget(EcsGameTimer timer)
 		{
 			if (HasAggro)
 			{
@@ -496,7 +496,7 @@ namespace DOL.AI.Brain
 					{
 						GamePlayer Target = (GamePlayer)Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 						RandomTarget = Target;//set random target to static RandomTarget
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDD), 5000);
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDD), 5000);
 						BroadcastMessage(String.Format(Body.Name + " starts casting void magic at " + RandomTarget.Name + "."));
 						CanCast = true;
 					}
@@ -504,7 +504,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastDD(ECSGameTimer timer)
+		public int CastDD(EcsGameTimer timer)
 		{
 			if (HasAggro && RandomTarget != null)
 			{
@@ -516,11 +516,11 @@ namespace DOL.AI.Brain
 					Body.CastSpell(NosdodenDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDD), 5000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetDD), 5000);
 			}
 			return 0;
 		}
-		public int ResetDD(ECSGameTimer timer)
+		public int ResetDD(EcsGameTimer timer)
 		{
 			Enemys_To_DD.Clear();
 			RandomTarget = null;
@@ -637,12 +637,12 @@ namespace DOL.AI.Brain
                 #endregion
                 if (StartCastDOT == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget2), Util.Random(20000, 30000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickRandomTarget2), Util.Random(20000, 30000));
 					StartCastDOT = true;
 				}
 				if (StartCastDD == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), Util.Random(35000, 45000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickRandomTarget), Util.Random(35000, 45000));
 					StartCastDD = true;
 				}
 
@@ -665,14 +665,14 @@ namespace DOL.AI.Brain
 				}
 				if(CanKillSpirit == false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(KillSpirit), 2000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(KillSpirit), 2000);
 					CanKillSpirit = true;
                 }
 			}
 			base.Think();
 		}
 		private bool CanKillSpirit = false;
-		private int KillSpirit(ECSGameTimer timer)
+		private int KillSpirit(EcsGameTimer timer)
 		{
 			if (Body.IsAlive && SpiritMob != null && SpiritMob.IsAlive && PlayerRezzed != null && PlayerRezzed.IsAlive)
 			{
@@ -839,7 +839,7 @@ namespace DOL.AI.Brain
 						{
 							if (CanWalkBerserker == false)
 							{
-								new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
+								new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
 								CanWalkBerserker = true;
 							}
 						}
@@ -947,7 +947,7 @@ namespace DOL.AI.Brain
 						{
 							if (CanWalkWarrior == false)
 							{
-								new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
+								new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
 								CanWalkWarrior = true;
 							}
 						}
@@ -1148,7 +1148,7 @@ namespace DOL.AI.Brain
 						{
 							if (CanWalkThane == false)
 							{
-								new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
+								new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
 								CanWalkThane = true;
 							}
 						}
@@ -1404,7 +1404,7 @@ namespace DOL.AI.Brain
 						{
 							if (CanWalkShadowblade == false)
 							{
-								new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
+								new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(WalkBack), 500);//if target got stun then start timer to run behind it
 								CanWalkShadowblade = true;
 							}
 						}
@@ -1794,7 +1794,7 @@ namespace DOL.AI.Brain
             }
 			base.Think();
 		}
-        public int WalkBack(ECSGameTimer timer)
+        public int WalkBack(EcsGameTimer timer)
 		{
 			if (Body.InCombat && HasAggro && Body.TargetObject != null)
 			{

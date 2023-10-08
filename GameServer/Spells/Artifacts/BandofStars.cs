@@ -64,7 +64,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
         
-        protected class BoltOnTargetAction : ECSGameTimerWrapperBase
+        protected class BoltOnTargetAction : EcsGameTimerWrapperBase
         {
             protected readonly GameLiving m_boltTarget;
             protected readonly StarsProc m_handler;
@@ -79,7 +79,7 @@ namespace DOL.GS.Spells
                 m_handler = spellHandler;
             }
 
-            protected override int OnTick(ECSGameTimer timer)
+            protected override int OnTick(EcsGameTimer timer)
             {
                 GameLiving target = m_boltTarget;
                 GameLiving caster = (GameLiving) timer.Owner;

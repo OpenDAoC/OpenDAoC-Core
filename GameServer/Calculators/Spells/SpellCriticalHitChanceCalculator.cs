@@ -36,7 +36,7 @@ public class SpellCriticalHitChanceCalculator : PropertyCalculator
         else if (living is GameNPC npc && ServerProperties.Properties.EXPAND_WILD_MINION)
         {
             if (npc.Brain is IControlledBrain petBrain && petBrain.GetPlayerOwner() is GamePlayer playerOwner)
-                chance += playerOwner.GetAbility<RealmAbilities.AtlasOF_WildMinionAbility>()?.Amount ?? 0;
+                chance += playerOwner.GetAbility<RealmAbilities.OfRaWildMinionAbility>()?.Amount ?? 0;
         }
 
 		return Math.Min(chance, 50);

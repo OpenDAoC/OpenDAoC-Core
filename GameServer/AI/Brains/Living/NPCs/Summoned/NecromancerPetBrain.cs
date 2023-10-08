@@ -420,7 +420,7 @@ namespace DOL.AI.Brain
                 {
                     // Pet just went out of range, start the timer.
                     m_tetherTimer = new TetherTimer(Body as NecromancerPet);
-                    m_tetherTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowCallback);
+                    m_tetherTimer.Callback = new EcsGameTimer.EcsTimerCallback(FollowCallback);
                     m_tetherTimer.Start(1);
                     followSeconds = 10;
                 }
@@ -440,7 +440,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Timer for pet out of tether range.
         /// </summary>
-        private class TetherTimer : ECSGameTimer
+        private class TetherTimer : EcsGameTimer
         {
             private NecromancerPet m_pet;
             private int m_seconds = 10;
@@ -466,7 +466,7 @@ namespace DOL.AI.Brain
 
         private int followSeconds = 10;
 
-        private int FollowCallback(ECSGameTimer timer)
+        private int FollowCallback(EcsGameTimer timer)
         {
             if (followSeconds > 0)
             {

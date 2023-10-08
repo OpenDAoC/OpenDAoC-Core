@@ -115,7 +115,7 @@ namespace DOL.AI.Brain
             get { return randomtarget; }
             set { randomtarget = value; }
         }
-        public int PickPlayer(ECSGameTimer timer)
+        public int PickPlayer(EcsGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -240,7 +240,7 @@ namespace DOL.AI.Brain
                 }
                 if (IsTargetPicked == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), Util.Random(15000, 20000));
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickPlayer), Util.Random(15000, 20000));
                     IsTargetPicked = true;
                 }
                 if(!Body.IsCasting)
@@ -520,7 +520,7 @@ namespace DOL.AI.Brain
         }
         List<GamePlayer> Enemys_To_Root = new List<GamePlayer>();
 
-        public int PickRandomTarget(ECSGameTimer timer)
+        public int PickRandomTarget(EcsGameTimer timer)
         {
             if (HasAggro)
             {
@@ -538,14 +538,14 @@ namespace DOL.AI.Brain
                     {
                         GamePlayer Target = (GamePlayer)Enemys_To_Root[Util.Random(0, Enemys_To_Root.Count - 1)];//pick random target from list
                         RandomTarget2 = Target;//set random target to static RandomTarget
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastRoot), 1000);
+                        new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastRoot), 1000);
                         CanCast = true;
                     }
                 }
             }
             return 0;
         }
-        public int CastRoot(ECSGameTimer timer)
+        public int CastRoot(EcsGameTimer timer)
         {
             if (HasAggro && RandomTarget2 != null)
             {
@@ -558,11 +558,11 @@ namespace DOL.AI.Brain
                     Body.CastSpell(DebuffDQ, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
                 }
                 if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetRoot), 5000);
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetRoot), 5000);
             }
             return 0;
         }
-        public int ResetRoot(ECSGameTimer timer)
+        public int ResetRoot(EcsGameTimer timer)
         {
             Enemys_To_Root.Clear();
             RandomTarget2 = null;
@@ -634,7 +634,7 @@ namespace DOL.AI.Brain
                 RemoveAdds = false;
                 if(!StartCastRoot)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomTarget), Util.Random(35000, 45000));
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickRandomTarget), Util.Random(35000, 45000));
                     StartCastRoot = true;
                 }
                 foreach (GamePlayer player in Body.GetPlayersInRadius(4500))
@@ -653,7 +653,7 @@ namespace DOL.AI.Brain
                         GamePlayer ptarget = PlayersToDD[Util.Random(0, PlayersToDD.Count - 1)];
                         RandomTarget = ptarget;
                     }
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnBombTimer), Util.Random(35000, 60000)); //spawn frozen bomb every 35s-60s
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnBombTimer), Util.Random(35000, 60000)); //spawn frozen bomb every 35s-60s
                     IsBombUp = true;
                 }
                 if (message1 == false)
@@ -669,15 +669,15 @@ namespace DOL.AI.Brain
         }
 
         #region Spawn Frost Bomb
-        public int SpawnBombTimer(ECSGameTimer timer)
+        public int SpawnBombTimer(EcsGameTimer timer)
         {
             if (FrozenBomb.FrozenBombCount == 0)
                 SpawnFrozenBomb();
 
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBomb), 5000);
+            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetBomb), 5000);
             return 0;
         }
-        public int ResetBomb(ECSGameTimer timer)
+        public int ResetBomb(EcsGameTimer timer)
         {
             RandomTarget = null;
             IsBombUp = false;
@@ -835,7 +835,7 @@ namespace DOL.GS
             return base.HasAbility(keyName);
         }
 
-        protected int Show_Effect(ECSGameTimer timer)
+        protected int Show_Effect(EcsGameTimer timer)
         {
             if (IsAlive)
             {
@@ -848,17 +848,17 @@ namespace DOL.GS
             return 0;
         }
 
-        protected int Explode(ECSGameTimer timer)
+        protected int Explode(EcsGameTimer timer)
         {
             if (IsAlive && TargetObject != null)
             {
                 //SetGroundTarget(X, Y, Z);
                 CastSpell(GuthlacIceSpike_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(KillBomb), 1000);
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(KillBomb), 1000);
             }
             return 0;
         }
-        public int KillBomb(ECSGameTimer timer)
+        public int KillBomb(EcsGameTimer timer)
         {
             if (IsAlive)
                 Die(this);
@@ -902,8 +902,8 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Explode), 25000); //25 seconds until this will explode and deal heavy cold dmg
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Explode), 25000); //25 seconds until this will explode and deal heavy cold dmg
             }
             return success;
         }

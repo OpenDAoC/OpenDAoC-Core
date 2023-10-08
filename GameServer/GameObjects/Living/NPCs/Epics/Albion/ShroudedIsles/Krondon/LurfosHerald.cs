@@ -176,7 +176,7 @@ namespace DOL.AI.Brain
 		public static bool IsHeatWeapon = false;
 		public static bool IsNormalWeapon = false;
 		public static bool StartSwitchWeapons = false;
-		public int SwitchToCold(ECSGameTimer timer)
+		public int SwitchToCold(EcsGameTimer timer)
         {
 			if (HasAggro)
 			{
@@ -191,11 +191,11 @@ namespace DOL.AI.Brain
 				template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 7, 0, 27);
 				Body.Inventory = template.CloseTemplate();
 				Body.BroadcastLivingEquipmentUpdate();
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SwitchToHeat), Util.Random(30000, 50000));
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SwitchToHeat), Util.Random(30000, 50000));
 			}
 			return 0;
         }
-		public int SwitchToHeat(ECSGameTimer timer)
+		public int SwitchToHeat(EcsGameTimer timer)
 		{
 			if (HasAggro)
 			{
@@ -210,11 +210,11 @@ namespace DOL.AI.Brain
 				template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 7, 0, 21);
 				Body.Inventory = template.CloseTemplate();
 				Body.BroadcastLivingEquipmentUpdate();
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SwitchToCold), Util.Random(30000, 50000));
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SwitchToCold), Util.Random(30000, 50000));
 			}
 			return 0;
 		}
-		public int SwitchToNormal(ECSGameTimer timer)
+		public int SwitchToNormal(EcsGameTimer timer)
 		{
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 7, 0, 0);
@@ -234,7 +234,7 @@ namespace DOL.AI.Brain
 				StartSwitchWeapons = false;
 				if (IsNormalWeapon==false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SwitchToNormal), 1000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SwitchToNormal), 1000);
 					IsNormalWeapon = true;
                 }
 			}
@@ -245,8 +245,8 @@ namespace DOL.AI.Brain
                 {
 					switch(Util.Random(1,2))
                     {
-						case 1: new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SwitchToCold), 1000); break;
-						case 2: new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SwitchToHeat), 1000); break;
+						case 1: new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SwitchToCold), 1000); break;
+						case 2: new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SwitchToHeat), 1000); break;
 					}					
 					StartSwitchWeapons =true;
                 }

@@ -97,7 +97,7 @@ namespace DOL.GS
             {
                 BroadcastMessage(String.Format(this.Name + " comes back to life as Lich Lord Sanguis!"));
                 SpawnMages();
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(SpawnLich), 6000);
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(SpawnLich), 6000);
                 Spawn_Lich_Lord = true;
             }
 
@@ -106,7 +106,7 @@ namespace DOL.GS
 
         public static bool Spawn_Lich_Lord = false;
 
-        public int SpawnLich(ECSGameTimer timer)
+        public int SpawnLich(EcsGameTimer timer)
         {
             LichLordSanguis Add = new LichLordSanguis();
             Add.X = X;

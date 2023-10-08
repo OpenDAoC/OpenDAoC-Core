@@ -108,7 +108,7 @@ namespace DOL.AI.Brain
 			{
 				if (IsTargetTeleported == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
 					IsTargetTeleported = true;
 				}
 				GameLiving target = Body.TargetObject as GameLiving;
@@ -126,7 +126,7 @@ namespace DOL.AI.Brain
 			set { teleporttarget = value; }
 		}
 		List<GamePlayer> Port_Enemys = new List<GamePlayer>();
-		public int PickTeleportPlayer(ECSGameTimer timer)
+		public int PickTeleportPlayer(EcsGameTimer timer)
 		{
 			if (Body.IsAlive && HasAggro)
 			{
@@ -156,13 +156,13 @@ namespace DOL.AI.Brain
 						GamePlayer Target = Port_Enemys[Util.Random(0, Port_Enemys.Count - 1)];
 						TeleportTarget = Target;
 						if (TeleportTarget.IsAlive && TeleportTarget != null)
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), 3000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(TeleportPlayer), 3000);
 					}
 				}
 			}
 			return 0;
 		}
-		public int TeleportPlayer(ECSGameTimer timer)
+		public int TeleportPlayer(EcsGameTimer timer)
 		{
 			if (TeleportTarget.IsAlive && TeleportTarget != null && HasAggro)
 			{

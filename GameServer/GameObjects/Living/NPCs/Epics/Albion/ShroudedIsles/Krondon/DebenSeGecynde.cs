@@ -143,13 +143,13 @@ namespace DOL.AI.Brain
                 }
 				if (spawnadds == false)
 				{
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(45000, 70000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnAdds), Util.Random(45000, 70000));
 					spawnadds = true;
 				}
 			}
 			base.Think();
 		}
-		public int SpawnAdds(ECSGameTimer timer)
+		public int SpawnAdds(EcsGameTimer timer)
         {
 			if (HasAggro)
 			{

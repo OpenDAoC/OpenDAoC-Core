@@ -88,7 +88,7 @@ namespace DOL.GS
 				{
 					players.Out.SendSpellCastAnimation(this,EFFECT_ID,CAST_TIME);
 				}
-				new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(EndCastCallback), CAST_TIME);
+				new EcsGameTimer(player, new EcsGameTimer.EcsTimerCallback(EndCastCallback), CAST_TIME);
 			
 				SayTo(player, EChatLoc.CL_PopupWindow, "There it is done! Now, you must leave this world for a short time for the magic to work. (You must log out to change your appearance.)");
 				player.CustomisationStep = 3;
@@ -101,7 +101,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="callingTimer"></param>
 		/// <returns>new delay in milliseconds</returns>
-		protected virtual int EndCastCallback(ECSGameTimer callingTimer)
+		protected virtual int EndCastCallback(EcsGameTimer callingTimer)
 		{
 			foreach(GamePlayer players in this.GetPlayersInRadius( WorldMgr.VISIBILITY_DISTANCE)) 
 			{

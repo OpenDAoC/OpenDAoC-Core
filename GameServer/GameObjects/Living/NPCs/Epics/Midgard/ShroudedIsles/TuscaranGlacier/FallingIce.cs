@@ -109,18 +109,18 @@ namespace DOL.AI.Brain
             }
             if(Announcetext && !CanCast)
             {
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DealIceDD), 200);
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DealIceDD), 200);
                 CanCast = true;
             }
             base.Think();
         }
-        private int DealIceDD(ECSGameTimer timer)
+        private int DealIceDD(EcsGameTimer timer)
         {
             Body.CastSpell(FallingIceDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(KillIce), 500);//enable ice every 30-50s
+            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(KillIce), 500);//enable ice every 30-50s
             return 0;
         }
-        private int KillIce(ECSGameTimer timer)
+        private int KillIce(EcsGameTimer timer)
         {
             if (Body.IsAlive)
                 Body.Die(Body);

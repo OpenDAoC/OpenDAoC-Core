@@ -288,7 +288,7 @@ namespace DOL.GS
 
 				foreach (GamePlayer player in CurrentRiders)
 				{
-					RealmAbilities.RAPropertyEnhancer ab = player.GetAbility<RealmAbilities.AtlasOF_LifterAbility>();
+					RealmAbilities.RaPropertyEnhancer ab = player.GetAbility<RealmAbilities.OfRaLifterAbility>();
 
 					if (ab != null)
 						speed *= 1 + ab.Amount / 100;

@@ -166,7 +166,7 @@ namespace DOL.AI.Brain
 
         public static bool IsBerserker = false;
 
-        public int BerserkerPhase(ECSGameTimer timer)
+        public int BerserkerPhase(EcsGameTimer timer)
         {
             if (Body.IsAlive && IsBerserker == true && Body.InCombat && HasAggro)
             {
@@ -175,12 +175,12 @@ namespace DOL.AI.Brain
                 Body.Strength = 850;
                 Body.MaxSpeedBase = 200; //slow under zerk mode
                 Body.Size = 75;
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EndBerserkerPhase),Util.Random(10000, 20000)); //10-20s in berserk stance
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(EndBerserkerPhase),Util.Random(10000, 20000)); //10-20s in berserk stance
             }
             return 0;
         }
 
-        public int EndBerserkerPhase(ECSGameTimer timer)
+        public int EndBerserkerPhase(EcsGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -210,7 +210,7 @@ namespace DOL.AI.Brain
                 }
                 if(message2 && !message1)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Announce), 200);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Announce), 200);
                     message1 = true;
                 }
             }
@@ -243,7 +243,7 @@ namespace DOL.AI.Brain
                 }
                 if (IsBerserker == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(BerserkerPhase), Util.Random(20000, 35000));
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(BerserkerPhase), Util.Random(20000, 35000));
                     IsBerserker = true;
                 }
             }
@@ -254,7 +254,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        private int Announce(ECSGameTimer timer)
+        private int Announce(EcsGameTimer timer)
         {
             BroadcastMessage("An otherworldly howling sound suddenly becomes perceptible. The sound quickly grows louder but it is not accompanied by a word. Moments after it begins, the howling sound is gone, replace by the familiar noises of the slowly shifting glacier.");
             return 0;
@@ -470,7 +470,7 @@ namespace DOL.AI.Brain
                 }
                 if (message2 && !message1)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Announce), 200);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Announce), 200);
                     message1 = true;
                 }
             }
@@ -541,7 +541,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        private int Announce(ECSGameTimer timer)
+        private int Announce(EcsGameTimer timer)
         {
             BroadcastMessage("An otherworldly howling sound suddenly becomes perceptible. The sound quickly grows louder but it is not accompanied by a word. Moments after it begins, the howling sound is gone, replace by the familiar noises of the slowly shifting glacier.");
             return 0;
@@ -574,7 +574,7 @@ namespace DOL.GS
             return base.AttackDamage(weapon) * Strength / 50 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
 
-        protected int Show_Effect(ECSGameTimer timer)
+        protected int Show_Effect(EcsGameTimer timer)
         {
             if (IsAlive)
             {
@@ -622,7 +622,7 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
             }
             return success;
         }
@@ -777,7 +777,7 @@ namespace DOL.AI.Brain
                     if (!Spawn_Boss)
                     {
                         //log.Warn("Trying to respawn Suttung or Hjalmar");
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnBoss), respawn);
+                        new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnBoss), respawn);
                         Spawn_Boss = true;
                     }
                 }
@@ -789,7 +789,7 @@ namespace DOL.AI.Brain
             
         }
 
-        private int SpawnBoss(ECSGameTimer timer)
+        private int SpawnBoss(EcsGameTimer timer)
         {
             switch(Util.Random(1,2))
             {

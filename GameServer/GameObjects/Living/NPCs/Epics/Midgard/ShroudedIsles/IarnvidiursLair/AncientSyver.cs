@@ -165,28 +165,28 @@ namespace DOL.AI.Brain
 						GameLiving target = Body.TargetObject as GameLiving;
 						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
 						{
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 1000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDisease), 1000);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (LivingHasEffect(Body.TargetObject as GameLiving, Syver_Str_Debuff) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStrengthDebuff), 1000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastStrengthDebuff), 1000);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (!Body.effectListComponent.ContainsEffectForEffectType(EEffect.MeleeHasteBuff))
 						{
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteBuff), 1000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastHasteBuff), 1000);
 						}
 					}
 				}
 			}
 			base.Think();
 		}
-		public int CastStrengthDebuff(ECSGameTimer timer)
+		public int CastStrengthDebuff(EcsGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
@@ -194,7 +194,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastDisease(ECSGameTimer timer)
+		public int CastDisease(EcsGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
@@ -202,7 +202,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastHasteBuff(ECSGameTimer timer)
+		public int CastHasteBuff(EcsGameTimer timer)
 		{
 			if (HasAggro && Body.IsAlive)
 			{

@@ -209,7 +209,7 @@ namespace DOL.AI.Brain
 						Teleported_Players.Add(RandomTarget);
 						if (Clear_List == false)
 						{
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ListCleanTimer), 45000);//clear list of teleported players, so it will not pick instantly already teleported target
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ListCleanTimer), 45000);//clear list of teleported players, so it will not pick instantly already teleported target
 							Clear_List = true;
 						}
 					}					
@@ -218,7 +218,7 @@ namespace DOL.AI.Brain
 			}
 		}
 		public static bool Clear_List = false;
-		public int ListCleanTimer(ECSGameTimer timer)
+		public int ListCleanTimer(EcsGameTimer timer)
         {
 			if (Body.IsAlive && Body.InCombat && HasAggro && Teleported_Players.Count > 0)
 			{

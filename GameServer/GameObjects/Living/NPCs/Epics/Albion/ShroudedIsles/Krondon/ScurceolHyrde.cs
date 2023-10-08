@@ -284,13 +284,13 @@ namespace DOL.AI.Brain
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		private protected int ResetPort(ECSGameTimer timer)
+		private protected int ResetPort(EcsGameTimer timer)
 		{
 			RandomTarget = null;//reset random target to null
 			IsTargetPicked = false;
 			return 0;
 		}
-		private protected int TeleportPlayer(ECSGameTimer timer)
+		private protected int TeleportPlayer(EcsGameTimer timer)
 		{
 			if (RandomTarget.IsAlive && RandomTarget != null)
 			{
@@ -304,7 +304,7 @@ namespace DOL.AI.Brain
 				RandomTarget.TakeDamage(RandomTarget, EDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
 				RandomTarget.Out.SendMessage("You take falling damage!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetPort), 1500);
 			return 0;
 		}
 		public override void OnAttackedByEnemy(AttackData ad)
@@ -312,7 +312,7 @@ namespace DOL.AI.Brain
 			if (ad != null && Util.Chance(25) && IsTargetPicked == false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
 			{
 				RandomTarget = ad.Attacker as GamePlayer;
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
 				IsTargetPicked = true;
 			}
 			base.OnAttackedByEnemy(ad);
@@ -414,13 +414,13 @@ namespace DOL.AI.Brain
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		private protected int ResetPort(ECSGameTimer timer)
+		private protected int ResetPort(EcsGameTimer timer)
 		{
 			RandomTarget = null;//reset random target to null
 			IsTargetPicked = false;
 			return 0;
 		}
-		private protected int TeleportPlayer(ECSGameTimer timer)
+		private protected int TeleportPlayer(EcsGameTimer timer)
 		{
 			if (RandomTarget.IsAlive && RandomTarget != null)
 			{
@@ -434,7 +434,7 @@ namespace DOL.AI.Brain
 				RandomTarget.TakeDamage(RandomTarget, EDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
 				RandomTarget.Out.SendMessage("You take falling damage!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetPort), 1500);
 			return 0;
 		}
 		public override void OnAttackedByEnemy(AttackData ad)
@@ -442,7 +442,7 @@ namespace DOL.AI.Brain
 			if (ad != null && Util.Chance(25) && IsTargetPicked == false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
 			{
 				RandomTarget = ad.Attacker as GamePlayer;
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
 				IsTargetPicked = true;
 			}
 			base.OnAttackedByEnemy(ad);
@@ -544,13 +544,13 @@ namespace DOL.AI.Brain
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		private protected int ResetPort(ECSGameTimer timer)
+		private protected int ResetPort(EcsGameTimer timer)
 		{
 			RandomTarget = null;//reset random target to null
 			IsTargetPicked = false;
 			return 0;
 		}
-		private protected int TeleportPlayer(ECSGameTimer timer)
+		private protected int TeleportPlayer(EcsGameTimer timer)
 		{
 			if (RandomTarget.IsAlive && RandomTarget != null)
 			{
@@ -564,7 +564,7 @@ namespace DOL.AI.Brain
 				RandomTarget.TakeDamage(RandomTarget, EDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
 				RandomTarget.Out.SendMessage("You take falling damage!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetPort), 1500);
 			return 0;
 		}
 		public override void OnAttackedByEnemy(AttackData ad)
@@ -572,7 +572,7 @@ namespace DOL.AI.Brain
 			if (ad != null && Util.Chance(25) && IsTargetPicked == false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
 			{
 				RandomTarget = ad.Attacker as GamePlayer;
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
 				IsTargetPicked = true;
 			}
 			base.OnAttackedByEnemy(ad);
@@ -674,13 +674,13 @@ namespace DOL.AI.Brain
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		private protected int ResetPort(ECSGameTimer timer)
+		private protected int ResetPort(EcsGameTimer timer)
 		{
 			RandomTarget = null;//reset random target to null
 			IsTargetPicked = false;
 			return 0;
 		}
-		private protected int TeleportPlayer(ECSGameTimer timer)
+		private protected int TeleportPlayer(EcsGameTimer timer)
 		{
 			if (RandomTarget.IsAlive && RandomTarget != null)
 			{
@@ -694,7 +694,7 @@ namespace DOL.AI.Brain
 				RandomTarget.TakeDamage(RandomTarget, EDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
 				RandomTarget.Out.SendMessage("You take falling damage!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetPort), 1500);
 			return 0;
 		}
 		public override void OnAttackedByEnemy(AttackData ad)
@@ -702,7 +702,7 @@ namespace DOL.AI.Brain
 			if (ad != null && Util.Chance(25) && IsTargetPicked == false && ad.Attacker.IsAlive && ad.Attacker != null && ad.Attacker is GamePlayer)
 			{
 				RandomTarget = ad.Attacker as GamePlayer;
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(TeleportPlayer), Util.Random(8000, 15000));
 				IsTargetPicked = true;
 			}
 			base.OnAttackedByEnemy(ad);

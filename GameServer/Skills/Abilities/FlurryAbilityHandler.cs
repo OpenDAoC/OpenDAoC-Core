@@ -111,7 +111,7 @@ namespace DOL.GS.SkillHandler
 			}*/
 			if(player.TargetObject is GamePlayer)
 			{
-				SputinsLegacyEffect SputinLegacy = (player.TargetObject as GamePlayer).EffectList.GetOfType<SputinsLegacyEffect>();
+				NfRaSputinsLegacyEffect SputinLegacy = (player.TargetObject as GamePlayer).EffectList.GetOfType<NfRaSputinsLegacyEffect>();
 				if(SputinLegacy != null)
 				{
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.TargetIsUnderSputinLegacy", player.TargetObject.Name), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);

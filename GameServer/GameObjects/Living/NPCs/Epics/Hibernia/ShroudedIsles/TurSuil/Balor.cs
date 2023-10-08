@@ -256,10 +256,10 @@ namespace DOL.AI.Brain
 			{
 				GamePlayer Target = Enemys_To_DD[Util.Random(0, Enemys_To_DD.Count - 1)];//pick random target from list
 				RandomTarget = Target;//set random target to static RandomTarget
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartCast), 3000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(StartCast), 3000);
 			}
 		}
-		public int StartCast(ECSGameTimer timer)
+		public int StartCast(EcsGameTimer timer)
         {
 			Cancast = true;
 			return 0;
@@ -341,11 +341,11 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RemoveEye),18200); //mob will be removed after this time
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(RemoveEye),18200); //mob will be removed after this time
 			}
 			return success;
 		}
-		protected int RemoveEye(ECSGameTimer timer)
+		protected int RemoveEye(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{

@@ -152,7 +152,7 @@ namespace DOL.GS
         /// <summary>
         /// Provides a timer for summoning.
         /// </summary>
-        private class SummonTimer : ECSGameTimerWrapperBase
+        private class SummonTimer : EcsGameTimerWrapperBase
         {
             private GameObject m_owner;
             private int m_maxTicks = 0;
@@ -213,7 +213,7 @@ namespace DOL.GS
             /// <summary>
             /// Called on every timer tick.
             /// </summary>
-            protected override int OnTick(ECSGameTimer timer)
+            protected override int OnTick(EcsGameTimer timer)
             {
                 m_ticks++;
 

@@ -302,7 +302,7 @@ namespace DOL.GS
             // A positive ticksToTarget means the effects of our attack will be delayed. Typically used for ranged attacks.
             if (_ticksToTarget > 0)
             {
-                new ECSGameTimer(_owner, new ECSGameTimer.ECSTimerCallback(_attackComponent.weaponAction.Execute), _ticksToTarget);
+                new EcsGameTimer(_owner, new EcsGameTimer.EcsTimerCallback(_attackComponent.weaponAction.Execute), _ticksToTarget);
 
                 // This is done in weaponAction.Execute(), but we musn't wait for the attack to reach our target.
                 _attackComponent.weaponAction.AttackFinished = true;

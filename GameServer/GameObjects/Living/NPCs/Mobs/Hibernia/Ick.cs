@@ -86,7 +86,7 @@ namespace DOL.AI.Brain
             {
 				if(!InitlifeLeechForm)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(LifeLeech), 20000);
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(LifeLeech), 20000);
 					InitlifeLeechForm = true;
                 }
 				if(lifeLeechForm && !Body.IsCasting)
@@ -96,7 +96,7 @@ namespace DOL.AI.Brain
             }
 			base.Think();
 		}
-		private int LifeLeech(ECSGameTimer timer)
+		private int LifeLeech(EcsGameTimer timer)
         {
 			if (HasAggro && Body.TargetObject != null)
 			{
@@ -104,15 +104,15 @@ namespace DOL.AI.Brain
 				lifeLeechForm = true;
 				Body.Size = 50;				
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EndLifeLeech), 20000);
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(EndLifeLeech), 20000);
 			return 0;
         }
-		private int EndLifeLeech(ECSGameTimer timer)
+		private int EndLifeLeech(EcsGameTimer timer)
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162371);
 			BroadcastMessage(String.Format("{0}'s stolen life energy fades and he returns to normal.",Body.Name));
 			if (HasAggro && Body.TargetObject != null)
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(LifeLeech), 20000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(LifeLeech), 20000);
 			Body.Size = 20;
 			lifeLeechForm = false;
 			return 0;

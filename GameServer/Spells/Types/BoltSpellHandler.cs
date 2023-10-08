@@ -172,10 +172,10 @@ namespace DOL.GS.Spells
             {
                 _target = target;
                 _spellHandler = spellHandler;
-                new ECSGameTimer(_spellHandler.Caster, new ECSGameTimer.ECSTimerCallback(Tick), ticksToTarget);
+                new EcsGameTimer(_spellHandler.Caster, new EcsGameTimer.EcsTimerCallback(Tick), ticksToTarget);
             }
 
-            private int Tick(ECSGameTimer timer)
+            private int Tick(EcsGameTimer timer)
             {
                 _spellHandler.BaseStartSpell(_target);
                 return 0;

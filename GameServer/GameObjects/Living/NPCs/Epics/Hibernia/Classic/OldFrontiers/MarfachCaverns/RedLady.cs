@@ -142,7 +142,7 @@ namespace DOL.AI.Brain
             AggroRange = 400;
         }
         private bool CanSpawnAdds = false;
-        private int SpawnAdd(ECSGameTimer timer)
+        private int SpawnAdd(EcsGameTimer timer)
         {
             for (int i = 0; i < 8; i++)
             {
@@ -187,7 +187,7 @@ namespace DOL.AI.Brain
                 RemoveAdds = false;
                 if(SpecialInnocent.InnocentCount<9 && CanSpawnAdds == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdd), Util.Random(20000, 30000));
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnAdd), Util.Random(20000, 30000));
                     CanSpawnAdds=true;
                 }
                 foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))

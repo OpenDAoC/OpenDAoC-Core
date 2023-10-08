@@ -33,7 +33,7 @@ namespace DOL.GS
         /// </summary>
         public ConcurrentDictionary<GameLiving, long> Attackers { get; private set; } = new();
 
-        private ECSGameTimer _attackersCheckTimer;
+        private EcsGameTimer _attackersCheckTimer;
         private object _attackersCheckTimerLock = new();
 
         public void AddAttacker(GameLiving target)
@@ -54,7 +54,7 @@ namespace DOL.GS
             Attackers.AddOrUpdate(target, until, (key, oldValue) => until);
         }
 
-        private int CheckAttackers(ECSGameTimer timer)
+        private int CheckAttackers(EcsGameTimer timer)
         {
             foreach (var pair in Attackers)
             {
@@ -610,7 +610,7 @@ namespace DOL.GS
                     return;
                 }
 
-                long vanishTimeout = player.TempProperties.GetProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
+                long vanishTimeout = player.TempProperties.GetProperty<long>(NfRaVanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
                 if (vanishTimeout > 0 && vanishTimeout > GameLoop.GameLoopTime)
                 {
                     player.Out.SendMessage(
@@ -620,7 +620,7 @@ namespace DOL.GS
                     return;
                 }
 
-                long VanishTick = player.TempProperties.GetProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
+                long VanishTick = player.TempProperties.GetProperty<long>(NfRaVanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
                 long changeTime = GameLoop.GameLoopTime - VanishTick;
                 if (changeTime < 30000 && VanishTick > 0)
                 {
@@ -1188,7 +1188,7 @@ namespace DOL.GS
                 effectiveness *= 2;
 
             // Apply Mentalist RA5L.
-            SelectiveBlindnessEffect SelectiveBlindness = owner.EffectList.GetOfType<SelectiveBlindnessEffect>();
+            NfRaSelectiveBlindnessEffect SelectiveBlindness = owner.EffectList.GetOfType<NfRaSelectiveBlindnessEffect>();
             if (SelectiveBlindness != null)
             {
                 GameLiving EffectOwner = SelectiveBlindness.EffectSource;
@@ -1523,7 +1523,7 @@ namespace DOL.GS
             if (ad.Attacker is GamePlayer)
             {
                 GamePlayer attacker = ad.Attacker as GamePlayer;
-                if (attacker.HasAbilityType(typeof(AtlasOF_PreventFlight)) && Util.Chance(35))
+                if (attacker.HasAbilityType(typeof(OfRaPreventFlightAbility)) && Util.Chance(35))
                 {
                     if (owner.IsObjectInFront(ad.Target, 120) && ad.Target.IsMoving)
                     {
@@ -1973,7 +1973,7 @@ namespace DOL.GS
             // Not implemented.
             result = EAttackResult.Any;
             return false;
-            DashingDefenseEffect dashing = null;
+            NfRaDashingDefenseEffect dashing = null;
 
             if (dashing == null ||
                 dashing.GuardSource.ObjectState != GameObject.eObjectState.Active ||
@@ -1984,7 +1984,7 @@ namespace DOL.GS
                 stealthStyle)
                 return false;
 
-            if (!dashing.GuardSource.IsWithinRadius(dashing.GuardTarget, DashingDefenseEffect.GUARD_DISTANCE))
+            if (!dashing.GuardSource.IsWithinRadius(dashing.GuardTarget, NfRaDashingDefenseEffect.GUARD_DISTANCE))
                 return false;
 
             DbInventoryItem leftHand = dashing.GuardSource.Inventory.GetItem(EInventorySlot.LeftHandWeapon);

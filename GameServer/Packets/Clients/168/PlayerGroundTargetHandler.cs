@@ -17,7 +17,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles ground target changes
 		/// </summary>
-		protected class ChangeGroundTargetHandler : ECSGameTimerWrapperBase
+		protected class ChangeGroundTargetHandler : EcsGameTimerWrapperBase
 		{
 			protected readonly ushort m_flag;
 
@@ -55,7 +55,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 				player.GroundTargetInView = ((m_flag & 0x100) != 0);

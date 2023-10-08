@@ -120,7 +120,7 @@ namespace DOL.AI.Brain
         }
         private bool RemoveAdds = false;
         private bool CanPopMinions = false;
-        private int SpawnMinion(ECSGameTimer timer)
+        private int SpawnMinion(EcsGameTimer timer)
         {
             for (int i = 0; i < Util.Random(8, 12); i++)
             {
@@ -160,7 +160,7 @@ namespace DOL.AI.Brain
                 RemoveAdds = false;
                 if (!CanPopMinions)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMinion), Util.Random(20000, 35000));
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnMinion), Util.Random(20000, 35000));
                     CanPopMinions = true;
                 }
             }

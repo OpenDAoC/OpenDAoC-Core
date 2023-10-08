@@ -248,7 +248,7 @@ namespace DOL.AI.Brain
 		public static bool IsTargetPicked = false;
 		public static bool IsPulled = false;
 		List<GamePlayer> Port_Enemys = new List<GamePlayer>();
-		public int ThrowPlayer(ECSGameTimer timer)
+		public int ThrowPlayer(EcsGameTimer timer)
 		{
 			if (Body.IsAlive)
 			{
@@ -298,7 +298,7 @@ namespace DOL.AI.Brain
 			{
 				if (IsTargetPicked == false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ThrowPlayer), Util.Random(10000, 15000));//timer to port and pick player
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ThrowPlayer), Util.Random(10000, 15000));//timer to port and pick player
 					IsTargetPicked = true;
                 }
 				if (IsPulled == false)

@@ -42,7 +42,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles the LOS check response
 		/// </summary>
-		protected class HandleCheckAction : ECSGameTimerWrapperBase
+		protected class HandleCheckAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The LOS source OID
@@ -76,7 +76,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				// Check for Old Callback first
 				GamePlayer player = (GamePlayer) timer.Owner;

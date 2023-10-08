@@ -42,4 +42,3 @@ namespace DOL.GS.RealmAbilities.Statics
 		}
 	}
 }
-

@@ -21,7 +21,7 @@ namespace DOL.GS
             { EEntityType.CraftComponent, new EntityArray<CraftComponent>(100) },
             { EEntityType.ObjectChangingSubZone, new EntityArray<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) },
             { EEntityType.LivingBeingKilled, new EntityArray<LivingBeingKilled>(200) },
-            { EEntityType.Timer, new EntityArray<ECSGameTimer>(500) },
+            { EEntityType.Timer, new EntityArray<EcsGameTimer>(500) },
             { EEntityType.AuxTimer, new EntityArray<AuxECSGameTimer>(500) }
         };
 

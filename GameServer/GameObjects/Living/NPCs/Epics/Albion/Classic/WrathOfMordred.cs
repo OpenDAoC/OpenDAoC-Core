@@ -198,7 +198,7 @@ namespace DOL.AI.Brain
 							Body.styleComponent.NextCombatBackupStyle = null;
 							Body.styleComponent.NextCombatBackupStyle = WrathOfMordred.Side2H;
 							Body.styleComponent.NextCombatStyle = WrathOfMordred.SideFollowUP;
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkSide), 300);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(WalkSide), 300);
 							CanWalk = true;
 						}
 					}
@@ -206,7 +206,7 @@ namespace DOL.AI.Brain
 			}
 			base.Think();
 		}
-		private int WalkSide(ECSGameTimer timer)
+		private int WalkSide(EcsGameTimer timer)
 		{
 			if (Body.IsAlive && HasAggro && Body.TargetObject != null && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange))
 			{
@@ -223,10 +223,10 @@ namespace DOL.AI.Brain
 					Body.Heading = 1250;
 				}
 			}
-			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetWalkSide), Util.Random(15000,25000));
+			new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetWalkSide), Util.Random(15000,25000));
 			return 0;
 		}
-		private int ResetWalkSide(ECSGameTimer timer)
+		private int ResetWalkSide(EcsGameTimer timer)
         {
 			CanWalk = false;
 			return 0;

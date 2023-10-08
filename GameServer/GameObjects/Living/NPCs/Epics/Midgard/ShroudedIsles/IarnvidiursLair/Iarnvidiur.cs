@@ -106,7 +106,7 @@ namespace DOL.AI.Brain
 			set { teleporttarget = value; }
 		}
 		List<GamePlayer> Port_Enemys = new List<GamePlayer>();
-		public int PickTeleportPlayer(ECSGameTimer timer)
+		public int PickTeleportPlayer(EcsGameTimer timer)
 		{
 			if (Body.IsAlive)
 			{
@@ -141,14 +141,14 @@ namespace DOL.AI.Brain
 							Body.TurnTo(TeleportTarget,4000);
 							if(!Body.IsCasting && Body.GetSkillDisabledDuration(Iarnvidiur_Bolt) == 0)
 								Body.CastSpell(Iarnvidiur_Bolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(TeleportPlayer), 3000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(TeleportPlayer), 3000);
 						}
 					}
 				}
 			}
 			return 0;
 		}
-		public int TeleportPlayer(ECSGameTimer timer)
+		public int TeleportPlayer(EcsGameTimer timer)
         {
 			GamePlayer oldTarget = (GamePlayer)Body.TargetObject; //old target
 			if (TeleportTarget.IsAlive && TeleportTarget != null)
@@ -177,7 +177,7 @@ namespace DOL.AI.Brain
 			get { return randomtarget; }
 			set { randomtarget = value; }
 		}
-		public int PickPlayerToDD(ECSGameTimer timer)
+		public int PickPlayerToDD(EcsGameTimer timer)
 		{
 			if (Body.IsAlive && HasAggro)
 			{
@@ -232,14 +232,14 @@ namespace DOL.AI.Brain
 								case 2: Body.CastSpell(IarnvidiurDD,SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells)); break; //dd
 							}							
 							if (oldTarget != null) Body.TargetObject = oldTarget; //return to old target
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDD), 3000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetDD), 3000);
 						}
 					}
 				}
 			}
 			return 0;
 		}
-		public int ResetDD(ECSGameTimer timer)
+		public int ResetDD(EcsGameTimer timer)
         {
 			RandomTarget = null; //reset random target to null
 			IsTargetPicked = false;
@@ -265,14 +265,14 @@ namespace DOL.AI.Brain
 						GameLiving target = Body.TargetObject as GameLiving;
 						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
 						{
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 1000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDisease), 1000);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (IsTargetPicked==false)
 						{
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayerToDD), Util.Random(15000, 25000));
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickPlayerToDD), Util.Random(15000, 25000));
 							IsTargetPicked = true;
 						}
 					}
@@ -281,14 +281,14 @@ namespace DOL.AI.Brain
                 {
 					if (IsTargetTeleported == false)
 					{
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickTeleportPlayer), Util.Random(25000, 45000));
 						IsTargetTeleported = true;
 					}
 				}
 			}
 			base.Think();
 		}
-		public int CastDisease(ECSGameTimer timer)
+		public int CastDisease(EcsGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{

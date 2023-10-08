@@ -32,12 +32,12 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
 			}
 			return success;
 		}
 
-		protected int Show_Effect(ECSGameTimer timer)
+		protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{
@@ -159,12 +159,12 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
 			{
-				new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+				new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
 			}
 			return success;
 		}
 
-		private protected int Show_Effect(ECSGameTimer timer)
+		private protected int Show_Effect(EcsGameTimer timer)
 		{
 			if (IsAlive)
 			{

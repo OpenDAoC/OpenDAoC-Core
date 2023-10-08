@@ -43,7 +43,7 @@ namespace DOL.GS.PropertyCalc
 
 				int abilityBonus = living.AbilityBonus[(int)property];
 			
-				AtlasOF_ToughnessAbility toughness = player.GetAbility<AtlasOF_ToughnessAbility>();
+				OfRaToughnessAbility toughness = player.GetAbility<OfRaToughnessAbility>();
 				double toughnessMod = toughness != null ? 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01 : 1;
 
 				return Math.Max((int)(hpBase * toughnessMod) + itemBonus + buffBonus + abilityBonus, 1);

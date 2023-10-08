@@ -1003,7 +1003,7 @@ namespace DOL.GS
                 return;
             }
 
-            m_timer.Enqueue(new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Effect), duration));
+            m_timer.Enqueue(new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Effect), duration));
             castplayer.Enqueue(player);
 
             player.Inventory.RemoveItem(item);
@@ -1105,7 +1105,7 @@ namespace DOL.GS
                 return;
             }
 
-            m_timer.Enqueue(new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Effect), duration));
+            m_timer.Enqueue(new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Effect), duration));
             castplayer.Enqueue(player);
 
 
@@ -1150,7 +1150,7 @@ namespace DOL.GS
         }
         #endregion seteffect
 
-        public int Effect(ECSGameTimer timer)
+        public int Effect(EcsGameTimer timer)
         {
             m_timer.Dequeue();
             GamePlayer player = (GamePlayer)castplayer.Dequeue();

@@ -123,21 +123,21 @@ namespace DOL.AI.Brain
 					{
 						if (LivingHasEffect(Body.TargetObject as GameLiving, Stanga_SC_Debuff) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), 1000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastSCDebuff), 1000);
 						}
 					}
 					if (Util.Chance(15))
 					{
 						if (LivingHasEffect(Body.TargetObject as GameLiving, StangaDisease) == false && Body.TargetObject.IsVisibleTo(Body))
 						{
-							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 1000);
+							new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDisease), 1000);
 						}
 					}
 				}
 			}
 			base.Think();
 		}
-		public int CastSCDebuff(ECSGameTimer timer)
+		public int CastSCDebuff(EcsGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{
@@ -145,7 +145,7 @@ namespace DOL.AI.Brain
 			}
 			return 0;
 		}
-		public int CastDisease(ECSGameTimer timer)
+		public int CastDisease(EcsGameTimer timer)
 		{
 			if (Body.TargetObject != null && HasAggro && Body.IsAlive)
 			{

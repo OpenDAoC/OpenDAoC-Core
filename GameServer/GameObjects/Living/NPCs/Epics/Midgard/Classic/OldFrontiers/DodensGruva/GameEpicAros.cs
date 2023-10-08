@@ -343,7 +343,7 @@ namespace DOL.GS.Scripts
             WalkTo(BombTarget, 250);
             int messageNo = Util.Random(1, m_BombAnnounce.Length) - 1;
             BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
-            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastBomb), 5000);
+            new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(CastBomb), 5000);
         }
         /// <summary>
         /// Check whether or not to cast Bomb.
@@ -370,7 +370,7 @@ namespace DOL.GS.Scripts
             HealthPercentOld = HealthPercent;
             int messageNo = Util.Random(1, m_BombAnnounce.Length) - 1;
             BroadcastMessage(String.Format(m_BombAnnounce[messageNo], Name));
-            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastBomb), 5000);
+            new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(CastBomb), 5000);
         }
         /// <summary>
         /// Announce the Big Bomb and start the 5 second timer.
@@ -379,14 +379,14 @@ namespace DOL.GS.Scripts
         {
             HealthPercentOld = HealthPercent;
             BroadcastMessage(String.Format(m_BigBombAnnounce, Name));
-            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastBigBomb), 5000);
+            new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(CastBigBomb), 5000);
         }
         /// <summary>
         /// Cast Breath on the raid (AoE damage and AoE resist debuff).
         /// </summary>
         /// <param name="timer">The timer that started this cast.</param>
         /// <returns></returns>
-        private int CastBomb(ECSGameTimer timer)
+        private int CastBomb(EcsGameTimer timer)
         {
             CastSpell(Bomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
@@ -396,7 +396,7 @@ namespace DOL.GS.Scripts
         /// </summary>
         /// <param name="timer">The timer that started this cast.</param>
         /// <returns></returns>
-        private int CastBigBomb(ECSGameTimer timer)
+        private int CastBigBomb(EcsGameTimer timer)
         {
             CastSpell(BigBomb, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             return 0;
@@ -452,14 +452,14 @@ namespace DOL.GS.Scripts
             if (DebuffTarget == null) return;
             TurnTo(DebuffTarget);
             BroadcastMessage(String.Format(m_DebuffAnnounce, Name, DebuffTarget.Name));
-            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastDebuff), 1000);
+            new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(CastDebuff), 1000);
         }
         /// <summary>
         /// Cast Debuff on the target.
         /// </summary>
         /// <param name="timer">The timer that started this cast.</param>
         /// <returns></returns>
-        private int CastDebuff(ECSGameTimer timer)
+        private int CastDebuff(EcsGameTimer timer)
         {
             // Turn around to the target and cast Debuff, then go back to the original
             // target, if one exists.
@@ -519,14 +519,14 @@ namespace DOL.GS.Scripts
         {
             HealthPercentOld = HealthPercent;
             BroadcastMessage(String.Format(m_SummonAnnounce, Name));
-            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CastSummon), 2000);
+            new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(CastSummon), 2000);
         }
         /// <summary>
         /// Cast Summon.
         /// </summary>
         /// <param name="timer">The timer that started this cast.</param>
         /// <returns></returns>
-        private int CastSummon(ECSGameTimer timer)
+        private int CastSummon(EcsGameTimer timer)
         {
             CastSpell(Summon, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             GameLiving target = null;

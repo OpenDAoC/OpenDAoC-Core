@@ -52,7 +52,7 @@ namespace DOL.GS.Spells
 			text.Add("----------------------------------------------------");
 			IList abilities = player.GetAllAbilities();
 			foreach(Ability ab in abilities)
-				if(ab is RealmAbility && ab is RR5RealmAbility == false)
+				if(ab is RealmAbility && ab is Rr5RealmAbility == false)
 					text.Add(((RealmAbility)ab).Name);
 
 			(m_caster as GamePlayer).Out.SendCustomTextWindow("Realm Lore [ "+player.Name+" ]",text);

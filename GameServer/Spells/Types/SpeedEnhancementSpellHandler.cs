@@ -109,16 +109,16 @@ namespace DOL.GS.Spells
 
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			if (target.EffectList.GetOfType<ChargeEffect>() != null)
+			if (target.EffectList.GetOfType<NfRaChargeEffect>() != null)
 				return;
 
 			if (target.TempProperties.GetProperty("Charging", false))
 				return;
 
-			if (target.EffectList.GetOfType<ArmsLengthEffect>() != null)
+			if (target.EffectList.GetOfType<NfRaArmsLengthEffect>() != null)
 				return;
 
-			if (target.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) != null)
+			if (target.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(OfRaSpeedOfSoundEcsEffect)) != null)
 				return;
 
 			if (target is GamePlayer && (target as GamePlayer).IsRiding)
@@ -240,7 +240,7 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-			if (living.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) != null)
+			if (living.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(OfRaSpeedOfSoundEcsEffect)) != null)
 				return;
 			
 			//GameSpellEffect speed = SpellHandler.FindEffectOnTarget(living, this);

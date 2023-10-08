@@ -529,7 +529,7 @@ namespace DOL.GS.Spells
 		}
 	}
 
-	public class BuffCheckAction : ECSGameTimerWrapperBase
+	public class BuffCheckAction : EcsGameTimerWrapperBase
 	{
 		public const int BUFFCHECKINTERVAL = 60000;//60 seconds
 
@@ -548,7 +548,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Called on every timer tick
 		/// </summary>
-		protected override int OnTick(ECSGameTimer timer)
+		protected override int OnTick(EcsGameTimer timer)
 		{
 			if (m_caster == null ||
 			    m_owner == null ||

@@ -165,9 +165,9 @@ public class PredatorManager
     public static void StartTimeoutCountdownFor(GamePlayer player)
     {
         if (player.PredatorTimeoutTimer.IsAlive) return;
-        player.PredatorTimeoutTimer = new ECSGameTimer(player);
+        player.PredatorTimeoutTimer = new EcsGameTimer(player);
         player.PredatorTimeoutTimer.Properties.SetProperty(TimeoutTickKey, GameLoop.GameLoopTime);
-        player.PredatorTimeoutTimer.Callback = new ECSGameTimer.ECSTimerCallback(TimeoutTimerCallback);
+        player.PredatorTimeoutTimer.Callback = new EcsGameTimer.EcsTimerCallback(TimeoutTimerCallback);
         player.PredatorTimeoutTimer.Start(1000);
         
         player.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {Properties.OUT_OF_BOUNDS_TIMEOUT} seconds.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
@@ -596,7 +596,7 @@ public class PredatorManager
             DisqualifyPlayer(p);
     }
 
-    private static int TimeoutTimerCallback(ECSGameTimer timer)
+    private static int TimeoutTimerCallback(EcsGameTimer timer)
     {
         if (timer.Owner is GamePlayer pl)
         {

@@ -115,7 +115,7 @@ namespace DOL.GS
                 if(player != null)
                     BroadcastMessage(String.Format("my kind will avenge me! You won't make out of here alive " + player.PlayerClass.Name+ "!"));
             }
-            var prepareMezz = TempProperties.GetProperty<ECSGameTimer>("kvasir_prepareMezz");//cancel message
+            var prepareMezz = TempProperties.GetProperty<EcsGameTimer>("kvasir_prepareMezz");//cancel message
             if (prepareMezz != null)
             {
                 prepareMezz.Stop();
@@ -206,7 +206,7 @@ namespace DOL.AI.Brain
                 IsPulled = false;
                 StartMezz = false;
                 AggroText = false;
-                var prepareMezz = Body.TempProperties.GetProperty<ECSGameTimer>("kvasir_prepareMezz");//cancel message
+                var prepareMezz = Body.TempProperties.GetProperty<EcsGameTimer>("kvasir_prepareMezz");//cancel message
                 if (prepareMezz != null)
                 {
                     prepareMezz.Stop();
@@ -227,7 +227,7 @@ namespace DOL.AI.Brain
             {
                 if (!StartMezz)
                 {
-                   ECSGameTimer prepareMezz = new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PrepareMezz), Util.Random(45000, 60000));
+                   EcsGameTimer prepareMezz = new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PrepareMezz), Util.Random(45000, 60000));
                     Body.TempProperties.SetProperty("kvasir_prepareMezz", prepareMezz);
                     StartMezz = true;
                 }
@@ -236,13 +236,13 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        private int PrepareMezz(ECSGameTimer timer)
+        private int PrepareMezz(EcsGameTimer timer)
         {
             BroadcastMessage(String.Format("{0} lets loose a primal scream so intense that it resonates in the surrounding ice for several seconds. Many in the immediate vicinite are stunned by the sound!", Body.Name));
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastMezz), 2000);
+            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastMezz), 2000);
             return 0;
         }
-        private int CastMezz(ECSGameTimer timer)
+        private int CastMezz(EcsGameTimer timer)
         {
             if (HasAggro && Body.TargetObject != null)
                 Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -382,20 +382,20 @@ namespace DOL.AI.Brain
                 }
                 if (message2 && !message1)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(Announce), 200);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Announce), 200);
                     message1 = true;
                 }
             }
             base.Think();
         }
-        private int Announce(ECSGameTimer timer)
+        private int Announce(EcsGameTimer timer)
         {
             BroadcastMessage("A low rumble echoes throughout the Tuscarian Glacier! Icicles resonating with the sound break off from the ceiling and shatter on the floors!" +
                             "The rumble grows louder causing small cracks to form in the walls! It sounds as though there is a swarm of giants on the move somewhere in the glacier!");
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RemoveMob), 300);
+            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(RemoveMob), 300);
             return 0;
         }
-        private int RemoveMob(ECSGameTimer timer)
+        private int RemoveMob(EcsGameTimer timer)
         {
             if (Body.IsAlive)
                 Body.RemoveFromWorld();

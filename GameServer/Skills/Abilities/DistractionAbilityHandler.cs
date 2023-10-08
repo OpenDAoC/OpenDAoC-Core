@@ -117,14 +117,14 @@ namespace DOL.GS.SkillHandler
 				distractedNpC.TurnTo(GameLoc.X, GameLoc.Y);
 			}
 			
-			var DistractTimer = new ECSGameTimer(player, TurnBackToNormal, DURATION);
+			var DistractTimer = new EcsGameTimer(player, TurnBackToNormal, DURATION);
 			DistractTimer.Start();
 
 			player.DisableSkill(ab, REUSE_TIMER);
 			//new DirtyTricksECSGameEffect(new ECSGameEffectInitParams(player, DURATION * 1000, 1));
 		}
 		
-		protected virtual int TurnBackToNormal(ECSGameTimer timer)
+		protected virtual int TurnBackToNormal(EcsGameTimer timer)
 		{
 			foreach (var mDistractedNpC in m_distractedNPCs)
 			{

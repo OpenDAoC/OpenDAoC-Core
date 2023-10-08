@@ -107,8 +107,8 @@ namespace DOL.GS.Scripts
         private DbSpell m_buffSpell;
         private Spell m_portSpell;
 
-        private ECSGameTimer castTimer;
-        private ECSGameTimer followupTimer;
+        private EcsGameTimer castTimer;
+        private EcsGameTimer followupTimer;
 
         private Spell PortSpell
         {
@@ -132,7 +132,7 @@ namespace DOL.GS.Scripts
         public void StartTeleporting()
         {
             if (castTimer is null)
-                castTimer = new ECSGameTimer(this);
+                castTimer = new EcsGameTimer(this);
 
             bool cast = CastSpell(PortSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             if (GetSkillDisabledDuration(PortSpell) > 0)
@@ -190,9 +190,9 @@ namespace DOL.GS.Scripts
                 }
 
                 castTimer.Interval = PortSpell.CastTime;
-                castTimer.Callback += new ECSGameTimer.ECSTimerCallback(CastTimerCallback);
+                castTimer.Callback += new EcsGameTimer.EcsTimerCallback(CastTimerCallback);
                 castTimer.Start(PortSpell.CastTime);
-                followupTimer = new ECSGameTimer(this, CastTimerCallback);
+                followupTimer = new EcsGameTimer(this, CastTimerCallback);
                 followupTimer.Interval = m_portSpell.CastTime + 10000; //10s after
                 followupTimer.Callback = CastTimerCallback;
                 followupTimer.Start(followupTimer.Interval);
@@ -203,7 +203,7 @@ namespace DOL.GS.Scripts
             }
         }
 
-        private int CastTimerCallback(ECSGameTimer selfRegenerationTimer)
+        private int CastTimerCallback(EcsGameTimer selfRegenerationTimer)
         {
             if (selfRegenerationTimer == castTimer)
             {

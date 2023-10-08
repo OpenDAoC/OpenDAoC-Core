@@ -127,7 +127,7 @@ namespace DOL.GS
 
         #region Respawn Timer and method
 
-        public int RespawnTime(ECSGameTimer timer)
+        public int RespawnTime(EcsGameTimer timer)
         {
             Spawnhost = false;
             return 0;
@@ -136,7 +136,7 @@ namespace DOL.GS
         public void RespawnChecker()
         {
             int time = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000miliseconds        
-            new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RespawnTime), time);
+            new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(RespawnTime), time);
         }
 
         #endregion

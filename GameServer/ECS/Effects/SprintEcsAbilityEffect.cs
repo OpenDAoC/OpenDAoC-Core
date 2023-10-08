@@ -68,7 +68,7 @@ namespace DOL.GS
 				{
 					int amount = 5;
 
-					AtlasOF_LongWindAbility ra = Owner.GetAbility<AtlasOF_LongWindAbility>();
+					OfRaLongWindAbility ra = Owner.GetAbility<OfRaLongWindAbility>();
 					if (ra != null)
 						amount = 5 - ra.GetAmountForLevel(ra.Level);
 

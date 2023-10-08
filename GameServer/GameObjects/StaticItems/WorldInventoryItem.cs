@@ -205,7 +205,7 @@ namespace DOL.GS
 		}
 
 		#region PickUpTimer
-		private ECSGameTimer m_pickup;
+		private EcsGameTimer m_pickup;
 
 		/// <summary>
 		/// Starts a new pickuptimer with the given time (in seconds)
@@ -218,10 +218,10 @@ namespace DOL.GS
 				m_pickup.Stop();
 				m_pickup = null;
 			}
-			m_pickup = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CallBack), time * 1000);
+			m_pickup = new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(CallBack), time * 1000);
 		}
 
-		private int CallBack(ECSGameTimer timer)
+		private int CallBack(EcsGameTimer timer)
 		{
 			m_pickup.Stop();
 			m_pickup = null;

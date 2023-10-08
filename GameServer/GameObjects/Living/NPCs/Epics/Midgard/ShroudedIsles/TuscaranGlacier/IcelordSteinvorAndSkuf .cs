@@ -221,7 +221,7 @@ namespace DOL.AI.Brain
                 RemoveAdds = false;
                 if (PickedTarget == false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), 1000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickPlayer), 1000);
                     PickedTarget = true;
                 }
             }
@@ -239,7 +239,7 @@ namespace DOL.AI.Brain
         public static int PlayerY = 0;
         public static int PlayerZ = 0;
 
-        public int PickPlayer(ECSGameTimer timer)
+        public int PickPlayer(EcsGameTimer timer)
         {
             if (Body.IsAlive)
             {
@@ -284,7 +284,7 @@ namespace DOL.AI.Brain
                         PlayerZ = RandomTarget.Z;
                         SpawnEffectMob();
                         BroadcastMessage(String.Format(Body.Name + " says, '" + RandomTarget.Name +" you are not going anywhere'"));
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EffectTimer), 8000);
+                        new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(EffectTimer), 8000);
                     }
                 }
             }
@@ -298,7 +298,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
-        public int EffectTimer(ECSGameTimer timer) //pick and remove effect mob
+        public int EffectTimer(EcsGameTimer timer) //pick and remove effect mob
         {
             if (Body.IsAlive)
             {
@@ -310,12 +310,12 @@ namespace DOL.AI.Brain
                             npc.RemoveFromWorld();
                     }
                 }
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(RestartEffectTimer), Util.Random(10000, 15000));
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(RestartEffectTimer), Util.Random(10000, 15000));
             }
             return 0;
         }
 
-        public int RestartEffectTimer(ECSGameTimer timer) //reset timer so boss can repeat it again
+        public int RestartEffectTimer(EcsGameTimer timer) //reset timer so boss can repeat it again
         {
             if (Body.IsAlive)
             {
@@ -651,7 +651,7 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
         }
-        public int Show_Effect(ECSGameTimer timer)
+        public int Show_Effect(EcsGameTimer timer)
         {
             if (IsAlive)
             {
@@ -660,12 +660,12 @@ namespace DOL.GS
                     if (player != null)
                         player.Out.SendSpellEffectAnimation(this, this, 177, 0, false, 0x01);
                 }
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(DoCast), 500);
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoCast), 500);
             }
             return 0;
         }
 
-        public int DoCast(ECSGameTimer timer)
+        public int DoCast(EcsGameTimer timer)
         {
             if (IsAlive)
             {
@@ -698,7 +698,7 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 3000);
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 3000);
             }
             return success;
         }

@@ -96,7 +96,7 @@ namespace DOL.GS.Spells
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
 			// Cannot apply if the effect owner has a charging effect
-			if (effect.Owner.EffectList.GetOfType<ChargeEffect>() != null || effect.Owner.effectListComponent.Effects.ContainsKey(EEffect.SpeedOfSound) || effect.Owner.TempProperties.GetProperty("Charging", false))
+			if (effect.Owner.EffectList.GetOfType<NfRaChargeEffect>() != null || effect.Owner.effectListComponent.Effects.ContainsKey(EEffect.SpeedOfSound) || effect.Owner.TempProperties.GetProperty("Charging", false))
 			{
 				MessageToCaster(effect.Owner.Name + " is moving too fast for this spell to have any effect!", EChatType.CT_SpellResisted);
 				return;

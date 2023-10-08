@@ -175,7 +175,7 @@ namespace DOL.GS.Quests
 
 
 		//timer callbacks
-		protected virtual int MakeAnimSpellSequence(ECSGameTimer callingTimer)
+		protected virtual int MakeAnimSpellSequence(EcsGameTimer callingTimer)
 		{
 			if (m_animSpellTeleportTimerQueue.Count > 0)
 			{
@@ -189,7 +189,7 @@ namespace DOL.GS.Quests
 			return 0;
 		}
 
-		protected virtual int MakeAnimEmoteSequence(ECSGameTimer callingTimer)
+		protected virtual int MakeAnimEmoteSequence(EcsGameTimer callingTimer)
 		{
 			if (m_animEmoteTeleportTimerQueue.Count > 0)
 			{
@@ -219,10 +219,10 @@ namespace DOL.GS.Quests
 			if (delay <= 0)
 				delay = 1;
 			m_animSpellObjectQueue.Enqueue(caster);
-			m_animSpellTeleportTimerQueue.Enqueue(new ECSGameTimer(caster, new ECSGameTimer.ECSTimerCallback(MakeAnimSpellSequence), (int)delay));
+			m_animSpellTeleportTimerQueue.Enqueue(new EcsGameTimer(caster, new EcsGameTimer.EcsTimerCallback(MakeAnimSpellSequence), (int)delay));
 
 			m_animEmoteObjectQueue.Enqueue(target);
-			m_animEmoteTeleportTimerQueue.Enqueue(new ECSGameTimer(target, new ECSGameTimer.ECSTimerCallback(MakeAnimEmoteSequence), (int)delay + 2000));
+			m_animEmoteTeleportTimerQueue.Enqueue(new EcsGameTimer(target, new EcsGameTimer.EcsTimerCallback(MakeAnimEmoteSequence), (int)delay + 2000));
 
 			m_portObjectQueue.Enqueue(target);
 
@@ -230,7 +230,7 @@ namespace DOL.GS.Quests
 			location.Y += Util.Random(0 - fuzzyLocation, fuzzyLocation);
 
 			m_portDestinationQueue.Enqueue(location);
-			m_portTeleportTimerQueue.Enqueue(new ECSGameTimer(target, new ECSGameTimer.ECSTimerCallback(MakePortSequence), (int)delay + 3000));
+			m_portTeleportTimerQueue.Enqueue(new EcsGameTimer(target, new EcsGameTimer.EcsTimerCallback(MakePortSequence), (int)delay + 3000));
 
 			if (location.Name != null)
 			{
@@ -239,7 +239,7 @@ namespace DOL.GS.Quests
 
 		}
 
-		protected virtual int MakePortSequence(ECSGameTimer callingTimer)
+		protected virtual int MakePortSequence(EcsGameTimer callingTimer)
 		{
 			if (m_portTeleportTimerQueue.Count > 0)
 			{

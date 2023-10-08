@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
     public class SummonVaultkeeperSpellHandler : SpellHandler
     {
         protected GameVaultKeeper Npc;
-        protected ECSGameTimer timer;
+        protected EcsGameTimer timer;
 
         public SummonVaultkeeperSpellHandler(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line)
@@ -80,10 +80,10 @@ namespace DOL.GS.Spells
             }
             Npc.SetOwnBrain(new BlankBrain());
             Npc.AddToWorld();
-            timer = new ECSGameTimer(Npc, new ECSGameTimer.ECSTimerCallback(OnEffectExpires), Spell.Duration);
+            timer = new EcsGameTimer(Npc, new EcsGameTimer.EcsTimerCallback(OnEffectExpires), Spell.Duration);
         }
 
-        public int OnEffectExpires(ECSGameTimer timer)
+        public int OnEffectExpires(EcsGameTimer timer)
         {
             Npc?.Delete();
             timer.Stop();

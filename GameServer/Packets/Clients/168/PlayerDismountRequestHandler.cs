@@ -11,7 +11,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player dismount requests
 		/// </summary>
-		protected class DismountRequestHandler : ECSGameTimerWrapperBase
+		protected class DismountRequestHandler : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Constructs a new DismountRequestHandler
@@ -24,7 +24,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 

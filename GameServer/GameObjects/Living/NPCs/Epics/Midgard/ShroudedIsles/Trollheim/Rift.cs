@@ -192,7 +192,7 @@ namespace DOL.AI.Brain
 					Body.CastSpell(RiftDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					if (SpawnMoreAdds == false)
 					{
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnAdds), Util.Random(10000, 20000));//10-20s spawn add
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnAdds), Util.Random(10000, 20000));//10-20s spawn add
 						SpawnMoreAdds = true;
 					}
 				}
@@ -200,7 +200,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 		public static bool SpawnMoreAdds = false;
-		public int SpawnAdds(ECSGameTimer timer)
+		public int SpawnAdds(EcsGameTimer timer)
         {
 			if (Body.IsAlive && HasAggro && IsRift)
 			{

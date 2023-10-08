@@ -174,12 +174,12 @@ namespace DOL.AI.Brain
             }
             base.AttackMostWanted();
         }
-        private int StartWalk(ECSGameTimer timer)
+        private int StartWalk(EcsGameTimer timer)
         {
             dontattack = true;
             return 0;
         }
-        private int EndWalk(ECSGameTimer timer)
+        private int EndWalk(EcsGameTimer timer)
         {
             restphase = false;
             healBoss = false;
@@ -192,7 +192,7 @@ namespace DOL.AI.Brain
             if (Body.HealthPercent <= 30 && !restphase)
             {
                 ClearAggroList();
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(StartWalk), 100);
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(StartWalk), 100);
                 BroadcastMessage(String.Format("{0} is retreating to waterfall!",Body.Name));
                 restphase = true;
             }
@@ -209,7 +209,7 @@ namespace DOL.AI.Brain
                 if(Body.HealthPercent <= 30)
                     Body.Health += Body.MaxHealth / 8;
 
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(EndWalk), Util.Random(50000,80000));
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(EndWalk), Util.Random(50000,80000));
                 dontattack = false;
                 healBoss = true;
             }

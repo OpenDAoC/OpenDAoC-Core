@@ -50,7 +50,7 @@ namespace DOL.GS.Spells
 				OnSpellResisted(target);
 				return;
 			}
-			if (target.EffectList.GetOfType<ChargeEffect>() != null)
+			if (target.EffectList.GetOfType<NfRaChargeEffect>() != null)
 			{
 				MessageToCaster(target.Name + " is moving to fast for this spell to have any effect!", EChatType.CT_SpellResisted);
 				return;
@@ -153,7 +153,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Slowly restores the livings speed
 		/// </summary>
-		public sealed class RestoreSpeedTimer : ECSGameTimerWrapperBase
+		public sealed class RestoreSpeedTimer : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The speed changing effect
@@ -172,7 +172,7 @@ namespace DOL.GS.Spells
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GameSpellEffect effect = m_effect;
 

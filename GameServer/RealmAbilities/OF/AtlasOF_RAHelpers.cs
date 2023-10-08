@@ -1,6 +1,6 @@
 namespace DOL.GS.RealmAbilities
 {
-    public static class AtlasRAHelpers
+    public static class OfRaHelpers
     {
         /// <summary>
         /// 6 stat points per level (Augmented Str, Dex, etc).
@@ -89,7 +89,7 @@ namespace DOL.GS.RealmAbilities
 
         public static int GetAugDexLevel(GamePlayer player)
         {
-            AtlasOF_RADexterityEnhancer augDex = player.GetAbility<AtlasOF_RADexterityEnhancer>();
+            OfRaDexterityEnhancerAbility augDex = player.GetAbility<OfRaDexterityEnhancerAbility>();
             if (augDex == null)
                 return 0;
 
@@ -98,7 +98,7 @@ namespace DOL.GS.RealmAbilities
 
         public static int GetAugStrLevel(GamePlayer player)
         {
-            AtlasOF_RAStrengthEnhancer augStr = player.GetAbility<AtlasOF_RAStrengthEnhancer>();
+            OfRaStrengthEnhancerAbility augStr = player.GetAbility<OfRaStrengthEnhancerAbility>();
             if (augStr == null)
                 return 0;
 
@@ -107,7 +107,7 @@ namespace DOL.GS.RealmAbilities
 
         public static int GetAugConLevel(GamePlayer player)
         {
-            AtlasOF_RAConstitutionEnhancer augCon = player.GetAbility<AtlasOF_RAConstitutionEnhancer>();
+            OfRaConstitutionEnhancerAbility augCon = player.GetAbility<OfRaConstitutionEnhancerAbility>();
             if (augCon == null)
                 return 0;
 
@@ -116,7 +116,7 @@ namespace DOL.GS.RealmAbilities
 
         public static int GetAugAcuityLevel(GamePlayer player)
         {
-            AtlasOF_RAAcuityEnhancer augAcuity = player.GetAbility<AtlasOF_RAAcuityEnhancer>();
+            OfRaAcuityEnhancerAbility augAcuity = player.GetAbility<OfRaAcuityEnhancerAbility>();
 
             if (augAcuity == null)
                 return 0;
@@ -126,7 +126,7 @@ namespace DOL.GS.RealmAbilities
 
         public static int GetAugQuiLevel(GamePlayer player)
         {
-            AtlasOF_RAQuicknessEnhancer augQui = player.GetAbility<AtlasOF_RAQuicknessEnhancer>();
+            OfRaQuicknessEnhancerAbility augQui = player.GetAbility<OfRaQuicknessEnhancerAbility>();
 
             if (augQui == null)
                 return 0;
@@ -136,7 +136,7 @@ namespace DOL.GS.RealmAbilities
 
         public static int GetSerenityLevel(GamePlayer player)
         {
-            AtlasOF_SerenityAbility raSerenity = player.GetAbility<AtlasOF_SerenityAbility>();
+            OfRaSerenityAbility raSerenity = player.GetAbility<OfRaSerenityAbility>();
 
             if (raSerenity == null)
                 return 0;
@@ -146,7 +146,7 @@ namespace DOL.GS.RealmAbilities
 
         public static int GetFirstAidLevel(GamePlayer player)
         {
-            AtlasOF_FirstAid raFirstAid = player.GetAbility<AtlasOF_FirstAid>();
+            OfRaFirstAidAbility raFirstAid = player.GetAbility<OfRaFirstAidAbility>();
 
             if (raFirstAid == null)
                 return 0;
@@ -156,7 +156,7 @@ namespace DOL.GS.RealmAbilities
 
         public static int GetLongshotLevel(GamePlayer player)
         {
-            AtlasOF_Longshot raLongshot = player.GetAbility<AtlasOF_Longshot>();
+            OfRaLongshotAbility raLongshot = player.GetAbility<OfRaLongshotAbility>();
 
             if (raLongshot == null)
                 return 0;

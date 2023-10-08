@@ -38,8 +38,8 @@ namespace DOL.GS.Spells
 			else
 			{
 				targetPlayer.TempProperties.SetProperty(RESURRECT_CASTER_PROPERTY, m_caster);
-				ECSGameTimer resurrectExpiredTimer = new ECSGameTimer(targetPlayer);
-				resurrectExpiredTimer.Callback = new ECSGameTimer.ECSTimerCallback(ResurrectExpiredCallback);
+				EcsGameTimer resurrectExpiredTimer = new EcsGameTimer(targetPlayer);
+				resurrectExpiredTimer.Callback = new EcsGameTimer.EcsTimerCallback(ResurrectExpiredCallback);
 				resurrectExpiredTimer.Properties.SetProperty("targetPlayer", targetPlayer);
 				resurrectExpiredTimer.Start(15000);
 				lock (m_resTimersByLiving.SyncRoot)
@@ -76,10 +76,10 @@ namespace DOL.GS.Spells
 		protected virtual void ResurrectResponceHandler(GamePlayer player, byte response)
 		{
 			//DOLConsole.WriteLine("resurrect responce: " + response);
-			ECSGameTimer resurrectExpiredTimer = null;
+			EcsGameTimer resurrectExpiredTimer = null;
 			lock (m_resTimersByLiving.SyncRoot)
 			{
-				resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[player];
+				resurrectExpiredTimer = (EcsGameTimer)m_resTimersByLiving[player];
 				m_resTimersByLiving.Remove(player);
 			}
 			if (resurrectExpiredTimer != null)
@@ -109,7 +109,7 @@ namespace DOL.GS.Spells
 						// Reset PR cooldown if it wasnt accepted.
 						if (IsPerfectRecovery() && Ability != null)
                         {
-							AtlasOF_PerfectRecovery PRAbility = Ability as AtlasOF_PerfectRecovery;
+							OfRaPerfectRecoveryAbility PRAbility = Ability as OfRaPerfectRecoveryAbility;
 							PRAbility.OnRezDeclined(Caster as GamePlayer);
 						}
 					}
@@ -162,10 +162,10 @@ namespace DOL.GS.Spells
 
 			living.MoveTo(m_caster.CurrentRegionID, m_caster.X, m_caster.Y, m_caster.Z, m_caster.Heading);
 
-			ECSGameTimer resurrectExpiredTimer = null;
+			EcsGameTimer resurrectExpiredTimer = null;
 			lock (m_resTimersByLiving.SyncRoot)
 			{
-				resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[living];
+				resurrectExpiredTimer = (EcsGameTimer)m_resTimersByLiving[living];
 				m_resTimersByLiving.Remove(living);
 			}
 			if (resurrectExpiredTimer != null)
@@ -182,7 +182,7 @@ namespace DOL.GS.Spells
 				//player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
 
 				//Lifeflight add this should make it so players who have been ressurected don't take damage for 5 seconds
-				RezDmgImmunityEffect rezImmune = new RezDmgImmunityEffect();
+				NfRaRezDmgImmunityEffect rezImmune = new NfRaRezDmgImmunityEffect();
 				rezImmune.Start(player);
 
 				foreach (GameObject attacker in player.attackComponent.Attackers.Keys)
@@ -211,7 +211,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="callingTimer"></param>
 		/// <returns></returns>
-		protected virtual int ResurrectExpiredCallback(ECSGameTimer callingTimer)
+		protected virtual int ResurrectExpiredCallback(EcsGameTimer callingTimer)
 		{
 			GamePlayer player = callingTimer.Properties.GetProperty<GamePlayer>("targetPlayer", null);
 			if (player == null) return 0;

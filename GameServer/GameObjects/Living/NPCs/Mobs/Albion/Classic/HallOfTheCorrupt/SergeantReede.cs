@@ -230,7 +230,7 @@ namespace DOL.AI.Brain
                     {
                         if(CanWalk==false)
                         {
-                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(WalkSide), 500);
+                            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(WalkSide), 500);
                             CanWalk = true;
                         }
                     }
@@ -252,7 +252,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        public int WalkSide(ECSGameTimer timer)
+        public int WalkSide(EcsGameTimer timer)
         {
             if (Body.InCombat && HasAggro && Body.TargetObject != null)
             {

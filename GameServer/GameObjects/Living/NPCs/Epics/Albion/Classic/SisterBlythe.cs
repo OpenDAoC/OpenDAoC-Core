@@ -191,14 +191,14 @@ namespace DOL.AI.Brain
                 {
 					if (!Message2)
 					{
-						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SisterSummonEffect), Util.Random(6000,10000));
+						new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SisterSummonEffect), Util.Random(6000,10000));
 						Message2 = true;
 					}
 				}
 			}
 			base.Think();
 		}
-		private int SisterSummonEffect(ECSGameTimer timer)
+		private int SisterSummonEffect(EcsGameTimer timer)
 		{
 			if (Body.IsAlive && HasAggro)
 			{
@@ -208,11 +208,11 @@ namespace DOL.AI.Brain
 						player.Out.SendSpellEffectAnimation(Body, Body, 6040, 0, false, 0x01);
 				}
 				BroadcastMessage("Sister Blythe says, \"Witness the power of Lord Arawn!\"");
-				new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnMoreExecutioners), 3000);
+				new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnMoreExecutioners), 3000);
 			}
 			return 0;
 		}
-		private int SpawnMoreExecutioners(ECSGameTimer timer)
+		private int SpawnMoreExecutioners(EcsGameTimer timer)
         {
 			if (Body.IsAlive && HasAggro)
 			{

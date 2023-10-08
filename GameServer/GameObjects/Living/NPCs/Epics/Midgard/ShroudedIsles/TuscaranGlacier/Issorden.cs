@@ -135,7 +135,7 @@ namespace DOL.AI.Brain
                 }
                 if(!PrepareBolt)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickPlayer), Util.Random(25000,35000));
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickPlayer), Util.Random(25000,35000));
                     PrepareBolt = true;
                 }
             }
@@ -150,7 +150,7 @@ namespace DOL.AI.Brain
         }
         #region Random Bolt Player
         public List<GameLiving> damage_enemies = new List<GameLiving>();
-        public int PickPlayer(ECSGameTimer timer)
+        public int PickPlayer(EcsGameTimer timer)
         {
             if (HasAggro)
             {
@@ -170,12 +170,12 @@ namespace DOL.AI.Brain
                     GamePlayer Target = (GamePlayer)damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
                     RandomTarget = Target; //randomly picked target is now RandomTarget
                     BroadcastMessage(Body.Name + " turns his frosty stare on " + RandomTarget.Name + "! " + Body.Name + "'s hands begin to glow while a blue mist crawls from small cracks in the ice at his feet.");
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastBolt), 2000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastBolt), 2000);
                 }           
             }
             return 0;
         }
-        private int CastBolt(ECSGameTimer timer)
+        private int CastBolt(EcsGameTimer timer)
         {
             if (HasAggro && RandomTarget != null && RandomTarget.IsAlive)
             {
@@ -185,10 +185,10 @@ namespace DOL.AI.Brain
                 if(!Body.IsCasting)
                     Body.CastSpell(Isso_Bolt, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false); //bolt    
             }
-            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetBolt), 3000);
+            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetBolt), 3000);
             return 0;
         }
-        private int ResetBolt(ECSGameTimer timer)
+        private int ResetBolt(EcsGameTimer timer)
         {
             PrepareBolt = false;
             RandomTarget = null; //reset random target to null

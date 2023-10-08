@@ -213,7 +213,7 @@ namespace DOL.AI.Brain
                     {
                         if (spawnfairy == false)
                         {
-                            new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DoSpawn), Util.Random(10000, 20000));
+                            new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DoSpawn), Util.Random(10000, 20000));
                             spawnfairy = true;
                         }
                     }
@@ -235,7 +235,7 @@ namespace DOL.AI.Brain
             }
             base.Think();
         }
-        private int DoSpawn(ECSGameTimer timer)
+        private int DoSpawn(EcsGameTimer timer)
         {
             Spawn();
             spawnfairy = false;

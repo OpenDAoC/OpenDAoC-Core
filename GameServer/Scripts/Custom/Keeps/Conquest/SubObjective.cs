@@ -15,7 +15,7 @@ public class SubObjective
     private int ObjectiveNumber = 0;
     
     public GameStaticItemTimed FlagObject;
-    private ECSGameTimer CaptureTimer = null;
+    private EcsGameTimer CaptureTimer = null;
     private int CaptureSeconds = FlagCaptureTime;
 
     private HashSet<GamePlayer> RecentCaps = new HashSet<GamePlayer>();
@@ -53,7 +53,7 @@ public class SubObjective
         {
             CaptureSeconds = FlagCaptureTime;
             CapturingRealm = capturingRealm;
-            CaptureTimer = new ECSGameTimer(FlagObject, CaptureCallback);
+            CaptureTimer = new EcsGameTimer(FlagObject, CaptureCallback);
             CaptureTimer.Start(1000);
         }
     }
@@ -64,7 +64,7 @@ public class SubObjective
         CaptureTimer = null;
     }
     
-    private int CaptureCallback(ECSGameTimer timer)
+    private int CaptureCallback(EcsGameTimer timer)
     {
         if (CaptureSeconds > 0)
         {

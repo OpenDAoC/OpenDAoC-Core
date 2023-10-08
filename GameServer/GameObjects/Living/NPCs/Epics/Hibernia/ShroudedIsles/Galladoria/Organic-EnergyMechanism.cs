@@ -88,14 +88,14 @@ namespace DOL.GS
             bool success = base.AddToWorld();
             if (success)
             {
-                new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(Show_Effect), 500);
+                new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
             }
             SaveIntoDatabase();
             LoadedFromScript = false;
             return success;
         }
 
-        protected int Show_Effect(ECSGameTimer timer)
+        protected int Show_Effect(EcsGameTimer timer)
         {
             if (IsAlive)
             {
@@ -139,7 +139,7 @@ namespace DOL.AI.Brain
             set { randomtarget = value; }
         }
         List<GamePlayer> Enemys_To_DOT = new List<GamePlayer>();
-        public int PickRandomTarget(ECSGameTimer timer)
+        public int PickRandomTarget(EcsGameTimer timer)
         {
             if (HasAggro)
             {
@@ -163,14 +163,14 @@ namespace DOL.AI.Brain
                         GamePlayer Target = (GamePlayer)Enemys_To_DOT[Util.Random(0, Enemys_To_DOT.Count - 1)];//pick random target from list
                         RandomTarget = Target;//set random target to static RandomTarget
                         BroadcastMessage(String.Format(Body.Name + "looks sickly... powerfull magic essense will errupt on " + RandomTarget.Name + "!"));
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDOT), 5000);
+                        new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastDOT), 5000);
                         CanCast = true;
                     }
                 }
             }
             return 0;
         }
-        public int CastDOT(ECSGameTimer timer)
+        public int CastDOT(EcsGameTimer timer)
         {
             if (HasAggro && RandomTarget != null)
             {
@@ -182,11 +182,11 @@ namespace DOL.AI.Brain
                     Body.CastSpell(OEMpoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
                 if (oldTarget != null) Body.TargetObject = oldTarget;//return to old target
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetDOT), 5000);
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetDOT), 5000);
             }
             return 0;
         }
-        public int ResetDOT(ECSGameTimer timer)
+        public int ResetDOT(EcsGameTimer timer)
         {
             RandomTarget = null;
             CanCast = false;
@@ -248,14 +248,14 @@ namespace DOL.AI.Brain
 
                 if (SpawnFeeder==false)
                 {
-                    new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(SpawnFeeders), 10000);
+                    new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnFeeders), 10000);
                     SpawnFeeder = true;
                 }
             }
             base.Think();
         }
         public static bool SpawnFeeder = false;
-        public int SpawnFeeders(ECSGameTimer timer) // We define here adds
+        public int SpawnFeeders(EcsGameTimer timer) // We define here adds
         {
             if (Body.IsAlive && HasAggro)
             {
@@ -269,11 +269,11 @@ namespace DOL.AI.Brain
                     Add.Heading = Body.Heading;
                     Add.AddToWorld();
                 }
-                new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetSpawnFeeders), Util.Random(15000,25000));
+                new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(ResetSpawnFeeders), Util.Random(15000,25000));
             }
             return 0;
         }
-        public int ResetSpawnFeeders(ECSGameTimer timer)
+        public int ResetSpawnFeeders(EcsGameTimer timer)
         {
             SpawnFeeder = false;
             return 0;
@@ -485,14 +485,14 @@ namespace DOL.AI.Brain
                 {
                     if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.StrConDebuff))
                     {
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), 3000);
+                        new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastSCDebuff), 3000);
                     }
                 }
                 if (Util.Chance(15) && Body.TargetObject != null)
                 {
                     if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.MeleeHasteDebuff))
                     {
-                        new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), 3000);
+                        new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastHasteDebuff), 3000);
                     }
                 }
                 if (Util.Chance(15) && Body.TargetObject != null)
@@ -507,7 +507,7 @@ namespace DOL.AI.Brain
             base.Think();
         }
 
-        public int CastSCDebuff(ECSGameTimer timer)
+        public int CastSCDebuff(EcsGameTimer timer)
         {
             if (Body.TargetObject != null)
             {
@@ -515,7 +515,7 @@ namespace DOL.AI.Brain
             }
             return 0;
         }
-        public int CastHasteDebuff(ECSGameTimer timer)
+        public int CastHasteDebuff(EcsGameTimer timer)
         {
             if (Body.TargetObject != null)
             {

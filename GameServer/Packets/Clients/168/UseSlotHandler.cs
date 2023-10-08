@@ -26,7 +26,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player use slot actions
 		/// </summary>
-		protected class UseSlotAction : ECSGameTimerWrapperBase
+		protected class UseSlotAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The speed and flags data
@@ -60,7 +60,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 

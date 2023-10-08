@@ -183,7 +183,7 @@ namespace DOL.AI.Brain
                 }
 			}
         }
-		public int PickRandomMob(ECSGameTimer timer)
+		public int PickRandomMob(EcsGameTimer timer)
         {
 			if(HasAggro)
 				BringHelp();
@@ -210,7 +210,7 @@ namespace DOL.AI.Brain
 
 				if (canbringhelp==false)
                 {
-					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PickRandomMob), Util.Random(15000, 30000));
+					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(PickRandomMob), Util.Random(15000, 30000));
 					canbringhelp=true;
                 }
 			}

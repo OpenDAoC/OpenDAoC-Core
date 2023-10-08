@@ -64,7 +64,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override int CalculateCastingTime()
         {
-            return Caster.EffectList.GetOfType<CallOfDarknessEffect>() != null ? 3000 : base.CalculateCastingTime();
+            return Caster.EffectList.GetOfType<NfRaCallOfDarknessEffect>() != null ? 3000 : base.CalculateCastingTime();
         }
 
         public override void ApplyEffectOnTarget(GameLiving target)
@@ -75,7 +75,7 @@ namespace DOL.GS.Spells
                 playerCaster.Shade(true);
 
             // Cancel RR5 Call of Darkness if on caster.
-            FindStaticEffectOnTarget(Caster, typeof(CallOfDarknessEffect))?.Cancel(false);
+            FindStaticEffectOnTarget(Caster, typeof(NfRaCallOfDarknessEffect))?.Cancel(false);
         }
 
         /// <summary>

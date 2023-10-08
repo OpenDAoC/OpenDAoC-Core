@@ -20,7 +20,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles players cancel effect actions
 		/// </summary>
-		protected class CancelEffectHandler : ECSGameTimerWrapperBase
+		protected class CancelEffectHandler : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The effect Id
@@ -40,7 +40,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 
@@ -65,7 +65,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles players cancel effect actions
 		/// </summary>
-		protected class CancelEffectHandler1110 : ECSGameTimerWrapperBase
+		protected class CancelEffectHandler1110 : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The effect Id
@@ -85,7 +85,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 				EffectListComponent effectListComponent = player.effectListComponent;
