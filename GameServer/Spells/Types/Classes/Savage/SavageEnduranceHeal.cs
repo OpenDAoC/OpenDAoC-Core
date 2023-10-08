@@ -51,7 +51,7 @@ namespace DOL.GS.Spells
 			int cost = PowerCost(Caster);
 			if (Caster.Health < cost)
 			{
-                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SavageEnduranceHeal.CheckBeginCast.InsuffiscientHealth"), eChatType.CT_SpellResisted);
+                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SavageEnduranceHeal.CheckBeginCast.InsuffiscientHealth"), EChatType.CT_SpellResisted);
                 return false;
 			}
 			return base.CheckBeginCast(Caster);

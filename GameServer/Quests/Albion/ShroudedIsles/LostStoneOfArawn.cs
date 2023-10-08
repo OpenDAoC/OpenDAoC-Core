@@ -369,7 +369,7 @@ public class LostStoneofArawn : BaseQuest
         if (!player.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
             player.Out.SendMessage(
                 "You dont have enough room for " + lost_stone_of_arawn.Name + " and drops on the ground.",
-                eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                EChatType.CT_Important, EChatLoc.CL_SystemWindow);
         GiveItem(player, lost_stone_of_arawn);
         quest.Step = 5;
     }
@@ -398,7 +398,7 @@ public class LostStoneofArawn : BaseQuest
                 // player near demon           
                 SendSystemMessage(player,
                     "This is Marw Gwlad. The ground beneath your feet is cracked and burned, and the air holds a faint scent of brimstone.");
-                player.Out.SendMessage("Nyaegha ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Nyaegha ambushes you!", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
                 quest.CreateNyaegha(player);
             }
             finally
@@ -660,7 +660,7 @@ public class LostStoneofArawn : BaseQuest
                         {
                             Ohonat.SayTo(player,
                                 $"Thanks {player.Name}. Now take this scroll and bring it to Honayt\'rt, she needs to read it as soon as possible!\n[Farewell], hero of Albion!");
-                            Ohonat.Emote(eEmote.Cheer);
+                            Ohonat.Emote(EEmote.Cheer);
                         }
 
                         break;
@@ -687,7 +687,7 @@ public class LostStoneofArawn : BaseQuest
                 {
                     Ohonat.SayTo(player,
                         $"Thanks {player.Name}. Now take this scroll and bring it to Honayt\'rt, she needs to read it as soon as possible!\n[Farewell], hero of Albion!");
-                    Ohonat.Emote(eEmote.Cheer);
+                    Ohonat.Emote(EEmote.Cheer);
                 }
         }
     }
@@ -754,8 +754,8 @@ public class LostStoneofArawn : BaseQuest
 
         if (response == 0x00)
         {
-            player.Out.SendMessage("Come back if you are ready to help us in our mission.", eChatType.CT_Say,
-                eChatLoc.CL_PopupWindow);
+            player.Out.SendMessage("Come back if you are ready to help us in our mission.", EChatType.CT_Say,
+                EChatLoc.CL_PopupWindow);
         }
         else
         {
@@ -795,7 +795,7 @@ public class LostStoneofArawn : BaseQuest
         else
         {
             m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!",
-                eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                EChatType.CT_Important, EChatLoc.CL_SystemWindow);
         }
     }
 }

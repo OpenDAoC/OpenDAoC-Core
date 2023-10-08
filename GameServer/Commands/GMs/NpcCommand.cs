@@ -32,7 +32,7 @@ namespace DOL.GS.Commands
 
 			if (!(client.Player.TargetObject is GameNPC))
 			{
-				client.Out.SendMessage("You must target an NPC.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("You must target an NPC.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -44,7 +44,7 @@ namespace DOL.GS.Commands
 					{
 						if (args.Length < 3)
 						{
-							client.Player.Out.SendMessage("Usage: /npc say <message>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("Usage: /npc say <message>", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						string message = string.Join(" ", args, 2, args.Length - 2);
@@ -55,7 +55,7 @@ namespace DOL.GS.Commands
 					{
 						if (args.Length < 3)
 						{
-							client.Player.Out.SendMessage("Usage: /npc yell <message>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("Usage: /npc yell <message>", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						string message = string.Join(" ", args, 2, args.Length - 2);
@@ -66,14 +66,14 @@ namespace DOL.GS.Commands
 					{
 						if (args.Length < 3)
 						{
-							client.Player.Out.SendMessage("Usage: /npc action <action message>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("Usage: /npc action <action message>", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						string action = string.Join(" ", args, 2, args.Length - 2);
 						action = "<" + npc.Name + " " + action + " >";
 						foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.SAY_DISTANCE))
 						{
-							player.Out.SendMessage(action, eChatType.CT_Emote, eChatLoc.CL_ChatWindow);
+							player.Out.SendMessage(action, EChatType.CT_Emote, EChatLoc.CL_ChatWindow);
 						}
 						break;
 					}
@@ -81,82 +81,82 @@ namespace DOL.GS.Commands
 					{
 						if (args.Length != 3)
 						{
-							client.Player.Out.SendMessage("Usage: /npc emote <emote>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("Usage: /npc emote <emote>", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
-						eEmote emoteID;
+						EEmote emoteID;
 						switch (args[2].ToLower())
 						{
-							case "angry": emoteID = eEmote.Angry; break;
-							case "bang": emoteID = eEmote.BangOnShield; break;
-							case "beckon": emoteID = eEmote.Beckon; break;
-							case "beg": emoteID = eEmote.Beg; break;
-							case "bindalb": emoteID = eEmote.BindAlb; break;
-							case "bindhib": emoteID = eEmote.BindHib; break;
-							case "bindmid": emoteID = eEmote.BindMid; break;
-							case "blush": emoteID = eEmote.Blush; break;
-							case "bow": emoteID = eEmote.Bow; break;
-							case "charge": emoteID = eEmote.LetsGo; break;
-							case "cheer": emoteID = eEmote.Cheer; break;
-							case "clap": emoteID = eEmote.Clap; break;
-							case "confuse": emoteID = eEmote.Confused; break;
-							case "cry": emoteID = eEmote.Cry; break;
-							case "curtsey": emoteID = eEmote.Curtsey; break;
-							case "dance": emoteID = eEmote.Dance; break;
-							case "dismiss": emoteID = eEmote.Dismiss; break;
-							case "distract": emoteID = eEmote.Distract; break;
-							case "drink": emoteID = eEmote.Drink; break;
-							case "flex": emoteID = eEmote.Flex; break;
-							case "horsecourbette": emoteID = eEmote.Horse_Courbette; break;
-							case "horsegraze": emoteID = eEmote.Horse_Graze; break;
-							case "horsenod": emoteID = eEmote.Horse_Nod; break;
-							case "horserear": emoteID = eEmote.Horse_rear; break;
-							case "horsestartle": emoteID = eEmote.Horse_Startle; break;
-							case "horsewhistle": emoteID = eEmote.Horse_whistle; break;
-							case "hug": emoteID = eEmote.Hug; break;
-							case "induct": emoteID = eEmote.Induct; break;
-							case "knock": emoteID = eEmote.Knock; break;
-							case "kiss": emoteID = eEmote.BlowKiss; break;
-							case "laugh": emoteID = eEmote.Laugh; break;
-							case "levelup": emoteID = eEmote.LvlUp; break;
-							case "meditate": emoteID = eEmote.Meditate; break;
-							case "mememe": emoteID = eEmote.Mememe; break;
-							case "berzerkerfrenzy": emoteID = eEmote.MidgardFrenzy; break;
-							case "military": emoteID = eEmote.Military; break;
-							case "no": emoteID = eEmote.No; break;
-							case "listen": emoteID = eEmote.PlayerListen; break;
-							case "pickup": emoteID = eEmote.PlayerPickup; break;
-							case "prepare": emoteID = eEmote.PlayerPrepare; break;
-							case "point": emoteID = eEmote.Point; break;
-							case "ponder": emoteID = eEmote.Ponder; break;
-							case "pray": emoteID = eEmote.Pray; break;
-							case "present": emoteID = eEmote.Present; break;
-							case "raise": emoteID = eEmote.Raise; break;
-							case "riderhalt": emoteID = eEmote.Rider_Halt; break;
-							case "riderlook": emoteID = eEmote.Rider_LookFar; break;
-							case "riderstench": emoteID = eEmote.Rider_Stench; break;
-							case "riderpet": emoteID = eEmote.Rider_pet; break;
-							case "ridertrick": emoteID = eEmote.Rider_Trick; break;
-							case "roar": emoteID = eEmote.Roar; break;
-							case "rofl": emoteID = eEmote.Rofl; break;
-							case "rude": emoteID = eEmote.Rude; break;
-							case "salute": emoteID = eEmote.Salute; break;
-							case "shrug": emoteID = eEmote.Shrug; break;
-							case "slap": emoteID = eEmote.Slap; break;
-							case "slit": emoteID = eEmote.Slit; break;
-							case "smile": emoteID = eEmote.Smile; break;
-							case "boom": emoteID = eEmote.SpellGoBoom; break;
-							case "herofrenzy": emoteID = eEmote.StagFrenzy; break;
-							case "stagger": emoteID = eEmote.Stagger; break;
-							case "surrender": emoteID = eEmote.Surrender; break;
-							case "taunt": emoteID = eEmote.Taunt; break;
-							case "throwdirt": emoteID = eEmote.ThrowDirt; break;
-							case "victory": emoteID = eEmote.Victory; break;
-							case "wave": emoteID = eEmote.Wave; break;
-							case "worship": emoteID = eEmote.Worship; break;
-							case "yawn": emoteID = eEmote.Yawn; break;
-							case "yes": emoteID = eEmote.Yes; break;
+							case "angry": emoteID = EEmote.Angry; break;
+							case "bang": emoteID = EEmote.BangOnShield; break;
+							case "beckon": emoteID = EEmote.Beckon; break;
+							case "beg": emoteID = EEmote.Beg; break;
+							case "bindalb": emoteID = EEmote.BindAlb; break;
+							case "bindhib": emoteID = EEmote.BindHib; break;
+							case "bindmid": emoteID = EEmote.BindMid; break;
+							case "blush": emoteID = EEmote.Blush; break;
+							case "bow": emoteID = EEmote.Bow; break;
+							case "charge": emoteID = EEmote.LetsGo; break;
+							case "cheer": emoteID = EEmote.Cheer; break;
+							case "clap": emoteID = EEmote.Clap; break;
+							case "confuse": emoteID = EEmote.Confused; break;
+							case "cry": emoteID = EEmote.Cry; break;
+							case "curtsey": emoteID = EEmote.Curtsey; break;
+							case "dance": emoteID = EEmote.Dance; break;
+							case "dismiss": emoteID = EEmote.Dismiss; break;
+							case "distract": emoteID = EEmote.Distract; break;
+							case "drink": emoteID = EEmote.Drink; break;
+							case "flex": emoteID = EEmote.Flex; break;
+							case "horsecourbette": emoteID = EEmote.Horse_Courbette; break;
+							case "horsegraze": emoteID = EEmote.Horse_Graze; break;
+							case "horsenod": emoteID = EEmote.Horse_Nod; break;
+							case "horserear": emoteID = EEmote.Horse_rear; break;
+							case "horsestartle": emoteID = EEmote.Horse_Startle; break;
+							case "horsewhistle": emoteID = EEmote.Horse_whistle; break;
+							case "hug": emoteID = EEmote.Hug; break;
+							case "induct": emoteID = EEmote.Induct; break;
+							case "knock": emoteID = EEmote.Knock; break;
+							case "kiss": emoteID = EEmote.BlowKiss; break;
+							case "laugh": emoteID = EEmote.Laugh; break;
+							case "levelup": emoteID = EEmote.LvlUp; break;
+							case "meditate": emoteID = EEmote.Meditate; break;
+							case "mememe": emoteID = EEmote.Mememe; break;
+							case "berzerkerfrenzy": emoteID = EEmote.MidgardFrenzy; break;
+							case "military": emoteID = EEmote.Military; break;
+							case "no": emoteID = EEmote.No; break;
+							case "listen": emoteID = EEmote.PlayerListen; break;
+							case "pickup": emoteID = EEmote.PlayerPickup; break;
+							case "prepare": emoteID = EEmote.PlayerPrepare; break;
+							case "point": emoteID = EEmote.Point; break;
+							case "ponder": emoteID = EEmote.Ponder; break;
+							case "pray": emoteID = EEmote.Pray; break;
+							case "present": emoteID = EEmote.Present; break;
+							case "raise": emoteID = EEmote.Raise; break;
+							case "riderhalt": emoteID = EEmote.Rider_Halt; break;
+							case "riderlook": emoteID = EEmote.Rider_LookFar; break;
+							case "riderstench": emoteID = EEmote.Rider_Stench; break;
+							case "riderpet": emoteID = EEmote.Rider_pet; break;
+							case "ridertrick": emoteID = EEmote.Rider_Trick; break;
+							case "roar": emoteID = EEmote.Roar; break;
+							case "rofl": emoteID = EEmote.Rofl; break;
+							case "rude": emoteID = EEmote.Rude; break;
+							case "salute": emoteID = EEmote.Salute; break;
+							case "shrug": emoteID = EEmote.Shrug; break;
+							case "slap": emoteID = EEmote.Slap; break;
+							case "slit": emoteID = EEmote.Slit; break;
+							case "smile": emoteID = EEmote.Smile; break;
+							case "boom": emoteID = EEmote.SpellGoBoom; break;
+							case "herofrenzy": emoteID = EEmote.StagFrenzy; break;
+							case "stagger": emoteID = EEmote.Stagger; break;
+							case "surrender": emoteID = EEmote.Surrender; break;
+							case "taunt": emoteID = EEmote.Taunt; break;
+							case "throwdirt": emoteID = EEmote.ThrowDirt; break;
+							case "victory": emoteID = EEmote.Victory; break;
+							case "wave": emoteID = EEmote.Wave; break;
+							case "worship": emoteID = EEmote.Worship; break;
+							case "yawn": emoteID = EEmote.Yawn; break;
+							case "yes": emoteID = EEmote.Yes; break;
 							default: return;
 						}
 
@@ -167,7 +167,7 @@ namespace DOL.GS.Commands
 					{
 						if (args.Length < 3 || args.Length > 4)
 						{
-							client.Out.SendMessage("Usage: /npc walkto <targetname> [speed]", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage("Usage: /npc walkto <targetname> [speed]", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
@@ -220,19 +220,19 @@ namespace DOL.GS.Commands
 
 						if (X == 0 && Y == 0 && Z == 0)
 						{
-							client.Out.SendMessage("Can't find name " + args[2].ToLower() + " near your target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage("Can't find name " + args[2].ToLower() + " near your target.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
 						npc.WalkTo(new Point3D(X, Y, Z), speed);
-						client.Out.SendMessage("Your target is walking to your location!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage("Your target is walking to your location!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						break;
 					}
 				case "face":
 					{
 						if (args.Length != 3)
 						{
-							client.Player.Out.SendMessage("Usage: /npc face <targetname>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("Usage: /npc face <targetname>", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
@@ -271,7 +271,7 @@ namespace DOL.GS.Commands
 
 						if (target == null)
 						{
-							client.Out.SendMessage("Can't find name " + args[2].ToLower() + " near your target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage("Can't find name " + args[2].ToLower() + " near your target.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
@@ -282,7 +282,7 @@ namespace DOL.GS.Commands
 					{
 						if (args.Length != 3)
 						{
-							client.Player.Out.SendMessage("Usage: /npc follow <targetname>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("Usage: /npc follow <targetname>", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
@@ -321,7 +321,7 @@ namespace DOL.GS.Commands
 
 						if (target == null)
 						{
-							client.Out.SendMessage("Can't find name " + args[2].ToLower() + " near your target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage("Can't find name " + args[2].ToLower() + " near your target.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
@@ -332,7 +332,7 @@ namespace DOL.GS.Commands
 					{
 						if (args.Length != 2)
 						{
-							client.Player.Out.SendMessage("Usage: /npc stopfollow", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("Usage: /npc stopfollow", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
@@ -343,7 +343,7 @@ namespace DOL.GS.Commands
 					{
 						if (args.Length != 3)
 						{
-							client.Player.Out.SendMessage("Usage: /npc target <targetName>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("Usage: /npc target <targetName>", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
@@ -388,12 +388,12 @@ namespace DOL.GS.Commands
 
 						if (target == null)
 						{
-							client.Out.SendMessage("Can't find name " + args[2].ToLower() + " near your target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage("Can't find name " + args[2].ToLower() + " near your target.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
 						npc.TargetObject = target;
-						client.Out.SendMessage(npc.Name + " now target " + target.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage(npc.Name + " now target " + target.Name + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						break;
 					}
 
@@ -402,8 +402,8 @@ namespace DOL.GS.Commands
 					{
 						if (args.Length != 4)
 						{
-							client.Player.Out.SendMessage("Usage: /npc cast <spellLine> <spellID>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							client.Player.Out.SendMessage("(Be sure the npc target something to be able to cast)", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("Usage: /npc cast <spellLine> <spellID>", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("(Be sure the npc target something to be able to cast)", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
@@ -411,7 +411,7 @@ namespace DOL.GS.Commands
 						List<Spell> spells = SkillBase.GetSpellList(line.KeyName);
 						if (spells.Count <= 0)
 						{
-							client.Out.SendMessage("No spells found in line " + args[2] + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage("No spells found in line " + args[2] + "!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
@@ -427,7 +427,7 @@ namespace DOL.GS.Commands
 							}
 						}
 
-						client.Out.SendMessage("Spell with id " + Convert.ToInt16(args[3]) + " not found in db!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage("Spell with id " + Convert.ToInt16(args[3]) + " not found in db!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 						break;
 					}
@@ -435,25 +435,25 @@ namespace DOL.GS.Commands
 					{
 						if (args.Length != 3)
 						{
-							client.Player.Out.SendMessage("Usage: /npc weapon <activeWeaponSlot>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("Usage: /npc weapon <activeWeaponSlot>", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
 						if (Convert.ToInt16(args[2]) < 0 || Convert.ToInt16(args[2]) > 2)
 						{
-							client.Player.Out.SendMessage("The activeWeaponSlot must be between 0 and 2.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage("The activeWeaponSlot must be between 0 and 2.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 
 						EActiveWeaponSlot slot = (EActiveWeaponSlot)Convert.ToInt16(args[2]);
 						npc.SwitchWeapon(slot);
-						client.Player.Out.SendMessage(npc.Name + " will now use its " + Enum.GetName(typeof(EActiveWeaponSlot), slot) + " weapon to attack.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Player.Out.SendMessage(npc.Name + " will now use its " + Enum.GetName(typeof(EActiveWeaponSlot), slot) + " weapon to attack.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 						break;
 					}
 				default:
 					{
-						client.Out.SendMessage("Type /npc for command overview.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage("Type /npc for command overview.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 					break;
 			}

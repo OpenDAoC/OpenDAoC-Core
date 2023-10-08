@@ -19,7 +19,7 @@ namespace DOL.GS.Effects
 			GamePlayer player = target as GamePlayer;
 			if (player != null)
 			{
-				player.Out.SendMessage("You prepare a Trueshot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You prepare a Trueshot!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 

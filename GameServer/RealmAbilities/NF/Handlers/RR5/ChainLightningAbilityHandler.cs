@@ -50,18 +50,18 @@ namespace DOL.GS.RealmAbilities
             GamePlayer target = living.TargetObject as GamePlayer;
             if (player.TargetObject == null || target == null)
             {
-                player.Out.SendMessage("You must target a player to launch this spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You must target a player to launch this spell!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                 return;
             }
             if (!GameServer.ServerRules.IsAllowedToAttack(living, target, true))
             {
-                player.Out.SendMessage("You must select an enemy target!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You must select an enemy target!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                 return;
             }
 
             if (!living.IsWithinRadius( target, (int)(1500 * living.GetModified(EProperty.SpellRange) * 0.01)))
             {
-                MessageUtil.ChatToOthers(living, "You are too far away from your target to use this ability!", eChatType.CT_SpellResisted);
+                MessageUtil.ChatToOthers(living, "You are too far away from your target to use this ability!", EChatType.CT_SpellResisted);
                 return;
             }
             SendCasterSpellEffectAndCastMessage(living, 3505, true);
@@ -99,7 +99,7 @@ namespace DOL.GS.RealmAbilities
 
             GamePlayer player = caster as GamePlayer;
             if (player != null)
-                player.Out.SendMessage("You hit " + target.Name + " for " + damage + "(" + resist + ") points of damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You hit " + target.Name + " for " + damage + "(" + resist + ") points of damage!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 
             GamePlayer targetPlayer = target as GamePlayer;
             if (targetPlayer != null)

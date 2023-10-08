@@ -42,7 +42,7 @@ namespace DOL.GS.Commands
         {
             if (args.Length != 3)
             {
-                client.Out.SendMessage("Usage : /jp add <name>", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("Usage : /jp add <name>", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
             
@@ -124,7 +124,7 @@ namespace DOL.GS.Commands
 
         private void SendSystemMessage(GameClient client, string msg)
         {
-            client.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(msg, EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 
         private bool CheckExpansion(GameClient clientJumper, GameClient clientJumpee, ushort RegionID)
@@ -133,7 +133,7 @@ namespace DOL.GS.Commands
             
             if (reg != null && reg.Expansion > (int)clientJumpee.ClientType)
             {
-                clientJumper.Out.SendMessage(clientJumpee.Player.Name + " cannot jump to Destination region (" + reg.Description + ") because it is not supported by your client type.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                clientJumper.Out.SendMessage(clientJumpee.Player.Name + " cannot jump to Destination region (" + reg.Description + ") because it is not supported by your client type.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return false;
             }
             return true;

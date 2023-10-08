@@ -143,7 +143,7 @@ namespace DOL.GS.Spells
             if (charmMob == null)
             {
                 // Message: You must select a target for this spell!
-                MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.Target.Spell.SelectATarget"), eChatType.CT_SpellResisted);
+                MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.Target.Spell.SelectATarget"), EChatType.CT_SpellResisted);
                 return false;
             }
 
@@ -153,7 +153,7 @@ namespace DOL.GS.Spells
             if (Caster is GamePlayer && casterPlayer.ControlledBrain != null && casterPlayer.ControlledBrain != charmMob.Brain)
             {
                 // Message: You already have a charmed creature, release it first!
-                MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.AlreadyOwnCharmed"), eChatType.CT_SpellResisted);
+                MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.AlreadyOwnCharmed"), EChatType.CT_SpellResisted);
                 return false;
             }
 
@@ -165,7 +165,7 @@ namespace DOL.GS.Spells
                 if(charmMob.Brain != null && charmMob.Brain is IControlledBrain && (((IControlledBrain)(charmMob).Brain).Owner as GamePlayer) != Caster)
                 {
                     // Message: {0} is currently being controlled.
-                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CurrentlyControlled", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CurrentlyControlled", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);
                     return false;
                 }
 
@@ -173,7 +173,7 @@ namespace DOL.GS.Spells
                 if (Caster.ControlledBrain != null)
                 {
                     // Message: You already have a charmed creature, release it first!
-                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.AlreadyOwnCharmed"), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.AlreadyOwnCharmed"), EChatType.CT_SpellResisted);
                     return false;
                 }
 
@@ -181,7 +181,7 @@ namespace DOL.GS.Spells
                 if (!charmMob.IsAlive)
                 {
                     // Message: {0} is dead!
-                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.Target.Fail.IsDead", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.Target.Fail.IsDead", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);
                     return false;
                 }
 
@@ -195,7 +195,7 @@ namespace DOL.GS.Spells
                 if (charmMob.Realm != 0)
                 {
                     // Message: {0) can't be charmed!
-                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);
                     return false;
                 }
 
@@ -203,7 +203,7 @@ namespace DOL.GS.Spells
                 if (charmMob.BodyType is < 1 or > 11)
                 {
                     // Message: {0) can't be charmed!
-                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);
                     return false;
                 }
 
@@ -247,7 +247,7 @@ namespace DOL.GS.Spells
                     if (isCharmable == false)
                     {
                         // Message: {0) can't be charmed!
-                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);
                         return false;
                     }
                 }
@@ -256,7 +256,7 @@ namespace DOL.GS.Spells
                 if (ServerProperties.Properties.SPELL_CHARM_NAMED_CHECK != 0 && char.IsUpper(charmMob.Name[0]))
                 {
                     // Message: {0) can't be charmed!
-                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);
                     return false;
                 }
 
@@ -323,7 +323,7 @@ namespace DOL.GS.Spells
                     if (!isCharmable)
                     {
                         // Message: This spell does not charm that type of monster!
-                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.WrongType"), eChatType.CT_SpellResisted);
+                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.WrongType"), EChatType.CT_SpellResisted);
                         return false;
                     }
                 }
@@ -341,14 +341,14 @@ namespace DOL.GS.Spells
                     if (charmMob.Level > Spell.Value)
                     {
                         // Message: {0} is too strong for you to charm!
-                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.TooStrong", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.TooStrong", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);
                         return false;
                     }
                     // If the target mob's level surpasses 110% of the Caster's modified skill
                     if (charmMob.Level > casterPlayer.GetModifiedSpecLevel(m_spellLine.Spec) * 1.1)
                     {
                         // Message: {0} is too strong for you to charm!
-                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.TooStrong", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.TooStrong", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);
                         return false;
                     }
                 }
@@ -368,7 +368,7 @@ namespace DOL.GS.Spells
                     if (charmMob.Level > Caster.Level)
                     {
                         // Message: {0} is too strong for you to charm!
-                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.TooStrong", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.TooStrong", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);
                         return false;
                     }
 
@@ -378,7 +378,7 @@ namespace DOL.GS.Spells
                     if (charmMob.Level > Spell.Value)
                     {
                         // Message: {0} is too strong for you to charm!
-                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.TooStrong", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
+                        MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.TooStrong", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);
                         return false;
                     }
 
@@ -387,7 +387,7 @@ namespace DOL.GS.Spells
                     {
                         // Message: You can't charm {0} while {1} is in combat!
                         MessageToCaster(
-                            LanguageMgr.GetTranslation(casterPlayer.Client, "SpellEffect.Charm.Err.InCombat", selectedTarget.GetName(0, false), selectedTarget.GetPronoun(1, false)), eChatType.CT_SpellResisted);
+                            LanguageMgr.GetTranslation(casterPlayer.Client, "SpellEffect.Charm.Err.InCombat", selectedTarget.GetName(0, false), selectedTarget.GetPronoun(1, false)), EChatType.CT_SpellResisted);
                         return false;
                     }
                 }
@@ -455,12 +455,12 @@ namespace DOL.GS.Spells
                 if (target.IsWithinRadius(playerCaster, 2000))
                 {
                     if (playerCaster.Client.Account.PrivLevel > 1)
-                        MessageToCaster("Resist Chance=" + resistString + "; Roll=" + rollString, eChatType.CT_SpellResisted);
+                        MessageToCaster("Resist Chance=" + resistString + "; Roll=" + rollString, EChatType.CT_SpellResisted);
 
                     if (resistResult <= spellResistChance)
                     {
                         // Message: {0} resists the charm! ({1}%)
-                        MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "GamePlayer.StartCharm.Fail.Resist", target.GetName(0, true), resistString), eChatType.CT_SpellResisted);
+                        MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "GamePlayer.StartCharm.Fail.Resist", target.GetName(0, true), resistString), EChatType.CT_SpellResisted);
                         SendEffectAnimation(Target, 0, false, 0);
                         return;
                     }
@@ -471,7 +471,7 @@ namespace DOL.GS.Spells
                 if (!target.IsWithinRadius(Caster, 2000))
                 {
                     // Message: Your controlled creature is too far away!
-                    MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "GamePlayer.GamePet.Movement.TooFarAway"), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "GamePlayer.GamePet.Movement.TooFarAway"), EChatType.CT_SpellResisted);
                     return;
                 }
             }

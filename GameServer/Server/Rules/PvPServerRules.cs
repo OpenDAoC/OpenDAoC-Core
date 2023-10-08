@@ -39,9 +39,9 @@ namespace DOL.GS.ServerRules
 			if (player.Client.IsPlaying == false) return;
 
 			if (player.Level < m_safetyLevel && player.SafetyFlag)
-				player.Out.SendMessage("Your temporary invulnerability timer has expired, but your /safety flag is still on.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Your temporary invulnerability timer has expired, but your /safety flag is still on.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			else
-				player.Out.SendMessage("Your temporary invulnerability timer has expired.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Your temporary invulnerability timer has expired.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			return;
 		}
@@ -303,7 +303,7 @@ namespace DOL.GS.ServerRules
 					// PBAE/GTAE doesn't need a target so we check spell type as well
 					if (caster != target || spell.Target == ESpellTarget.AREA || spell.Target == ESpellTarget.ENEMY || (spell.Target == ESpellTarget.GROUP && spell.SpellType != ESpellType.SpeedEnhancement))
 					{
-						MessageToLiving(caster, "You can only cast spells on yourself until your PvP invulnerability timer wears off!", eChatType.CT_Important);
+						MessageToLiving(caster, "You can only cast spells on yourself until your PvP invulnerability timer wears off!", EChatType.CT_Important);
 						return false;
 					}
 				}

@@ -75,7 +75,7 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
+				MessageToCaster("You do not have enough power and your spell was canceled.", EChatType.CT_SpellExpires);
 				FocusSpellAction(/*null, Caster, null*/);
 				effect.Cancel(false);
 			}
@@ -99,7 +99,7 @@ namespace DOL.GS.Spells
 			if (IsInCastingPhase && Stage < 2)
 			{
 				Caster.LastInterruptMessage = attacker.GetName(0, true) + " attacks you and your spell is interrupted!";
-				MessageToLiving(Caster, Caster.LastInterruptMessage, eChatType.CT_SpellResisted);
+				MessageToLiving(Caster, Caster.LastInterruptMessage, EChatType.CT_SpellResisted);
 				InterruptCasting(); // always interrupt at the moment
 				return true;
 			}

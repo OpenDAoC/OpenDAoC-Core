@@ -51,11 +51,11 @@ namespace DOL.GS.Behaviour.Actions
 
                 if (!player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, inventoryItem))
                 {
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.GiveItemAction.GiveButInventFull", inventoryItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);                    
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.GiveItemAction.GiveButInventFull", inventoryItem.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);                    
                 }
                 else
                 {
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.GiveItemAction.YouReceiveItem", inventoryItem.GetName(0, false)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.GiveItemAction.YouReceiveItem", inventoryItem.GetName(0, false)), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
                     InventoryLogging.LogInventoryAction(Q, player, EInventoryActionType.Quest, inventoryItem.Template, inventoryItem.Count);
                 }
             }

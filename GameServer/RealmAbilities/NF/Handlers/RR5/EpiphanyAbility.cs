@@ -57,11 +57,11 @@ namespace DOL.GS.RealmAbilities
 			if (modheal > mana)
 				modheal = mana;
 			if (target is GamePlayer && target != owner)
-				((GamePlayer)target).Out.SendMessage(owner.Name + " restores you " + modheal + " points of mana, and 50% of your endurance.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				((GamePlayer)target).Out.SendMessage(owner.Name + " restores you " + modheal + " points of mana, and 50% of your endurance.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 			if (target != owner)
-				owner.Out.SendMessage("You restore" + target.Name + " " + modheal + " points of mana, and 50% of their endurance.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				owner.Out.SendMessage("You restore" + target.Name + " " + modheal + " points of mana, and 50% of their endurance.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 			if (target == owner)
-				owner.Out.SendMessage("You restore yourself " + modheal + " points of mana, and 50% of your endurance.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				owner.Out.SendMessage("You restore yourself " + modheal + " points of mana, and 50% of your endurance.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 			
             target.Mana += modheal;
 

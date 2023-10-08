@@ -26,12 +26,12 @@ public class ViewReportsCommand : ACommandHandler, ICommandHandler
 					{
 						if (client.Account.PrivLevel < 2)
 						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.NoPriv"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.NoPriv"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						if (args[2] == "")
 						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Help.Close"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Help.Close"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							break;
 						}
 
@@ -39,7 +39,7 @@ public class ViewReportsCommand : ACommandHandler, ICommandHandler
 						DbBugReport report = GameServer.Database.FindObjectByKey<DbBugReport>(repor);
 						if (report == null)
 						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.InvalidReport"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.InvalidReport"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							break;
 						}
 						report.ClosedBy = client.Player.Name;
@@ -51,19 +51,19 @@ public class ViewReportsCommand : ACommandHandler, ICommandHandler
 					{
 						if (client.Account.PrivLevel < 2)
 						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.NoPriv"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.NoPriv"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						if (args[2] == "")
 						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Help.Delete"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Help.Delete"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							break;
 						}
 						int repor = int.Parse(args[2]);
 						DbBugReport report = GameServer.Database.FindObjectByKey<DbBugReport>(repor);
 						if (report == null)
 						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.InvalidReport"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.InvalidReport"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							break;
 						}
 						// Create a counter to keep track of our BugReport ID
@@ -78,12 +78,12 @@ public class ViewReportsCommand : ACommandHandler, ICommandHandler
 							GameServer.Database.SaveObject(curReport);
 							count++;
 						}
-						client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.ReportDeleted", report.ID), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.ReportDeleted", report.ID), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						break;
 					}
 				default:
 					{
-						client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.UnknownCommand"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.UnknownCommand"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						DisplayHelp(client);
 					}
 					break;
@@ -111,7 +111,7 @@ public class ViewReportsCommand : ACommandHandler, ICommandHandler
 				Reports += "Report: " + repo.Message + "\n";
 				Reports += "Closed By: " + repo.ClosedBy + "\n";
 				Reports += "Date Closed: " + repo.DateClosed + "\n\n";
-				client.Out.SendMessage(Reports, eChatType.CT_Important, eChatLoc.CL_PopupWindow);
+				client.Out.SendMessage(Reports, EChatType.CT_Important, EChatLoc.CL_PopupWindow);
 				Reports = "";
 			}
 		}
@@ -119,8 +119,8 @@ public class ViewReportsCommand : ACommandHandler, ICommandHandler
 
 	public void DisplayHelp(GameClient client)
 	{
-		client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Usage"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-		client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Help.Close"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-		client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Help.Delete"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+		client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Usage"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+		client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Help.Close"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+		client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Help.Delete"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 	}
 }

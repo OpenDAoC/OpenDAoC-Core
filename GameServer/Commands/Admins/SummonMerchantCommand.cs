@@ -31,7 +31,7 @@ namespace DOL.GS.Commands
             {
                 player.Out.SendMessage(
                     "You must wait " + ((30000 - changeTime)/1000) + " more second to attempt to use this command!",
-                    eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    EChatType.CT_System, EChatLoc.CL_ChatWindow);
                 return;
             }
             player.TempProperties.SetProperty(SummonMerch, GameLoop.GameLoopTime);
@@ -44,8 +44,8 @@ namespace DOL.GS.Commands
             var spellHandler = ScriptMgr.CreateSpellHandler(client.Player, MerchantSpell, line);
             if (spellHandler != null)
                 spellHandler.StartSpell(client.Player);
-            client.Player.Out.SendMessage("You have summoned a merchant!", eChatType.CT_Important,
-                eChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage("You have summoned a merchant!", EChatType.CT_Important,
+                EChatLoc.CL_SystemWindow);
 
             #endregion command spell loader
         }

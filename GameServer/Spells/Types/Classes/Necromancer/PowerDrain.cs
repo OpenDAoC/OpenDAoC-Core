@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="chatType"></param>
-		protected override void MessageToOwner(String message, eChatType chatType)
+		protected override void MessageToOwner(String message, EChatType chatType)
 		{
 			GameNPC npc = Caster as GameNPC;
 			if (npc != null)
@@ -55,7 +55,7 @@ namespace DOL.GS.Spells
 				{
 					GamePlayer owner = brain.Owner as GamePlayer;
 					if (owner != null)
-						owner.Out.SendMessage(message, chatType, eChatLoc.CL_SystemWindow);
+						owner.Out.SendMessage(message, chatType, EChatLoc.CL_SystemWindow);
 				}
 			}
 		}

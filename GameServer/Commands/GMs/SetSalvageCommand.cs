@@ -21,7 +21,7 @@ public class SetSalvageCommand : ACommandHandler, ICommandHandler
 
         if (item == null)
         {
-            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.Count.NoItemInSlot", slot), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return;
         }
         

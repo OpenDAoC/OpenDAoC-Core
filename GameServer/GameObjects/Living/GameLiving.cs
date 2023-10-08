@@ -1254,7 +1254,7 @@ namespace DOL.GS
 				if (ad.Target.EffectList.GetOfType<RemedyEffect>() != null)
 				{
 					if (this is GamePlayer)
-						(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GameLiving.CheckWeaponMagicalEffect.Protected"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GameLiving.CheckWeaponMagicalEffect.Protected"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					return;
 				}
 
@@ -1305,7 +1305,7 @@ namespace DOL.GS
 							{
 								if (this is GamePlayer)
 								{
-									(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GameLiving.StartWeaponMagicalEffect.NotPowerful"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+									(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GameLiving.StartWeaponMagicalEffect.NotPowerful"), EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 								}
 								return;
 							}
@@ -1613,13 +1613,13 @@ namespace DOL.GS
 					if (engage != null && attackComponent.AttackState && engage.EngageTarget == ad.Attacker)
 					{
 						if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
-							player?.Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player?.Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						else if (Endurance < EngageAbilityHandler.ENGAGE_ENDURANCE_COST)
 							engage.Cancel(false, true);
 						else
 						{
 							Endurance -= EngageAbilityHandler.ENGAGE_ENDURANCE_COST;
-							player?.Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+							player?.Out.SendMessage("You concentrate on blocking the blow!", EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
 
 							if (blockChance < 0.95)
 								blockChance = 0.95;
@@ -1998,10 +1998,10 @@ namespace DOL.GS
 						(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
 
 						if (ad.Target is GamePlayer)
-							(ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+							(ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 
 						if (ad.Attacker is GamePlayer)
-							(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+							(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 
 						if (ablativeHp <= 0)
 							EffectService.RequestImmediateCancelEffect(effect);
@@ -3921,7 +3921,7 @@ namespace DOL.GS
 		/// Makes this living do an emote-animation
 		/// </summary>
 		/// <param name="emote">the emote animation to show</param>
-		public virtual void Emote(eEmote emote)
+		public virtual void Emote(EEmote emote)
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
@@ -3934,7 +3934,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="type"></param>
-		public virtual void MessageToSelf(string message, eChatType chatType)
+		public virtual void MessageToSelf(string message, EChatType chatType)
 		{
 			// livings can't talk to themselves
 		}
@@ -3965,7 +3965,7 @@ namespace DOL.GS
 			{
 				if (source is GamePlayer)
 				{
-					((GamePlayer)source).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)source).Client.Account.Language, "GameLiving.ReceiveItem", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)source).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)source).Client.Account.Language, "GameLiving.ReceiveItem", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 
 				return false;
@@ -3988,7 +3988,7 @@ namespace DOL.GS
 			Notify(GameLivingEvent.ReceiveMoney, this, new ReceiveMoneyEventArgs(source, this, money));
 
 			if (source is GamePlayer)
-				((GamePlayer)source).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)source).Client.Account.Language, "GameLiving.ReceiveMoney", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				((GamePlayer)source).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)source).Client.Account.Language, "GameLiving.ReceiveMoney", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			//call base
 			return base.ReceiveMoney(source, money);
@@ -4116,7 +4116,7 @@ namespace DOL.GS
 				
 				if (sendUpdates && (isNewAbility && (this is GamePlayer)))
 				{
-					(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GamePlayer.AddAbility.YouLearn", ability.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GamePlayer.AddAbility.YouLearn", ability.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 			}
 		}
@@ -4141,7 +4141,7 @@ namespace DOL.GS
 			}
 			
 			if (this is GamePlayer)
-				(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GamePlayer.RemoveAbility.YouLose", ability.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GamePlayer.RemoveAbility.YouLose", ability.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return true;
 		}
 

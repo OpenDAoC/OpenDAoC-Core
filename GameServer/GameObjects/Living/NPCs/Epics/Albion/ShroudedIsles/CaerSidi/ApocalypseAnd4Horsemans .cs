@@ -45,7 +45,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public int Message_timer(ECSGameTimer timer)
@@ -250,7 +250,7 @@ namespace DOL.GS
                                 if(player.IsWithinRadius(point1,150) && player.Client.Account.PrivLevel == 1)//only players will be ported back
                                 {
                                     player.MoveTo(60, 29469, 25244, 19490, 2014);
-                                    player.Out.SendMessage("Magic energy moves you to the center of room!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                                    player.Out.SendMessage("Magic energy moves you to the center of room!", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
                                 }
                             }
                         }
@@ -321,7 +321,7 @@ namespace DOL.GS
 
                     player.Out.SendMessage("Fames says, Well? Do you challenge fate itself?\n" +
                         "Say [no] and walk away...\n" +
-                        "Say [yes] and prepare yourselves.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        "Say [yes] and prepare yourselves.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
                 }
             }
             if (ApocInitializator.OthersCanInteract == true)
@@ -332,7 +332,7 @@ namespace DOL.GS
 
                     player.Out.SendMessage("Fames says, Well? Do you challenge fate itself?\n" +
                         "Say [no] and walk away...\n" +
-                        "Say [yes] and prepare yourselves.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                        "Say [yes] and prepare yourselves.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
                 }
             }
             return true;
@@ -351,7 +351,7 @@ namespace DOL.GS
                     {
                         case "no":
                             {
-                                t.Out.SendMessage("Then be gone and continue on with what you were meant to do.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                                t.Out.SendMessage("Then be gone and continue on with what you were meant to do.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
                             }
                             break;
                         case "yes":
@@ -362,7 +362,7 @@ namespace DOL.GS
                                     {
                                         player.Out.SendMessage("Fames says, 'Done. You are brave " + t.CharacterClass.Name + " ... or foolish. While it is most certain that your" +
                                             " actions will have little chance to alter the course of fate, you and your companions are granted a few grains of time," +
-                                            " two minutes in your terms, to prepare.", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                                            " two minutes in your terms, to prepare.", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
                                         new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(StartFamesTimer), 120000);//2min
                                         CanInteract = true;
                                     }
@@ -414,7 +414,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         private bool prepareBellum = false;
@@ -607,7 +607,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         private bool prepareMorbus = false;
@@ -1363,7 +1363,7 @@ namespace DOL.GS
                         else
                             truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to any damage!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
 
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
@@ -1408,7 +1408,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public override void Die(GameObject killer)//on kill generate orbs
@@ -1554,7 +1554,7 @@ namespace DOL.AI.Brain
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public override void Think()
@@ -1905,7 +1905,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in GetPlayersInRadius(4000))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
@@ -1921,7 +1921,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    truc.Out.SendMessage(Name + " absorbs all your damage to heal iself!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    truc.Out.SendMessage(Name + " absorbs all your damage to heal iself!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                     BroadcastMessage(String.Format("Funus takes damage from " + source.Name + " and restoring it's whole health."));
                     Health += MaxHealth;
                     base.TakeDamage(source, damageType, 0, 0);
@@ -1932,7 +1932,7 @@ namespace DOL.GS
             {
                 GameSummonedPet truc = source as GameSummonedPet;
                 GamePlayer pet_owner = truc.Owner as GamePlayer;
-                pet_owner.Out.SendMessage(Name + " absorbs all your damage to heal iself!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                pet_owner.Out.SendMessage(Name + " absorbs all your damage to heal iself!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                 BroadcastMessage(String.Format("Funus takes damage from " + pet_owner.Name + " and restoring it's whole health."));
                 Health += MaxHealth;
                 base.TakeDamage(source, damageType, 0, 0);
@@ -2138,7 +2138,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public override int GetResist(EDamageType damageType)
@@ -2377,7 +2377,7 @@ namespace DOL.AI.Brain
                             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
                             {
                                 if (player != null)
-                                    player.Out.SendMessage("Apocalypse says, 'Is it power? Fame? Fortune? Perhaps it is all three.'", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                                    player.Out.SendMessage("Apocalypse says, 'Is it power? Fame? Fortune? Perhaps it is all three.'", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
                             }
                             ApocAggro = true;
                         }
@@ -2423,7 +2423,7 @@ namespace DOL.AI.Brain
                             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
                             {
                                 if (player != null)
-                                    player.Out.SendMessage("Apocalypse says, 'I wonder, also, about the motivation that drives one to such an audacious move.'", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                                    player.Out.SendMessage("Apocalypse says, 'I wonder, also, about the motivation that drives one to such an audacious move.'", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
                             }
                            fly_phase1 = true;
                         }
@@ -2481,7 +2481,7 @@ namespace DOL.AI.Brain
                 {
                     if (player != null)
                     {
-                        player.Out.SendMessage("Apocalypse says, 'One has to wonder what kind of power lay behind that feat, for my harbingers of fate were no small adversaries.'", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                        player.Out.SendMessage("Apocalypse says, 'One has to wonder what kind of power lay behind that feat, for my harbingers of fate were no small adversaries.'", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
                     }
                 }
                 for (int i = 0; i < 2; i++)
@@ -2506,7 +2506,7 @@ namespace DOL.AI.Brain
                     {
                         player.Out.SendMessage("Apocalypse says, 'In all of this, however, it would seem that you have overlooked " +
                             "the small matter of price for your actions. I am not the vengeful sort, so do not take this the wrong way," +
-                            " but good harbingers are hard to come by. And, thanks to you, they will need to be replaced.'", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                            " but good harbingers are hard to come by. And, thanks to you, they will need to be replaced.'", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
                     }
                 }
                 for (int i = 0; i < 2; i++)

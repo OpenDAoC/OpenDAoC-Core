@@ -70,7 +70,7 @@ namespace DOL.GS.Spells
 
             else
             {
-                MessageToCaster("The powers of the Belt of Moon, can only be Summon under the Moon light!", eChatType.CT_SpellResisted);
+                MessageToCaster("The powers of the Belt of Moon, can only be Summon under the Moon light!", EChatType.CT_SpellResisted);
                 return;
             }
         }
@@ -309,7 +309,7 @@ namespace DOL.GS.Spells
                     if (invItem.Id_nb.Equals("Moon_Staff"))
                         player.Inventory.RemoveItem(invItem);
                     
-                    player.Out.SendMessage("The Power of Belt of Moon, has left you!",eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("The Power of Belt of Moon, has left you!",EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 }
 			}
             GameEventMgr.RemoveHandler(sender, GamePlayerEvent.Released, OnPlayerReleased);

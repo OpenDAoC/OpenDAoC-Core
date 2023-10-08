@@ -232,7 +232,7 @@ namespace DOL.GS.Spells
         {
             if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.StunImmunity))
             {
-                MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+                MessageToCaster(target.Name + " is immune to this effect!", EChatType.CT_SpellResisted);
                 return;
             }
 
@@ -248,9 +248,9 @@ namespace DOL.GS.Spells
 
             SendEffectAnimation(effect.Owner, 0, false, 1);
 
-            MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
-            MessageToCaster(Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), eChatType.CT_Spell);
-            MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner, m_caster);
+            MessageToLiving(effect.Owner, Spell.Message1, EChatType.CT_Spell);
+            MessageToCaster(Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), EChatType.CT_Spell);
+            MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), EChatType.CT_Spell, effect.Owner, m_caster);
 
             GamePlayer player = effect.Owner as GamePlayer;
             if (player != null)

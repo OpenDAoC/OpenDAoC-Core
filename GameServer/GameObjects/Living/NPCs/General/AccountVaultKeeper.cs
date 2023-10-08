@@ -40,12 +40,12 @@ namespace DOL.GS
             message += "I am happy to offer you my services.\n\n";
 
             message += "You can browse the [first] or [second] page of your Account Vault.";
-            player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 
             DbItemTemplate vaultItem = GetDummyVaultItem(player);
             AccountVault vault = new AccountVault(player, this, player.Client.Account.Name + "_" + player.Realm.ToString(), 0, vaultItem);
             player.ActiveInventoryObject = vault;
-            player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), eInventoryWindowType.HouseVault);
+            player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), EInventoryWindowType.HouseVault);
             return true;
         }
 
@@ -63,13 +63,13 @@ namespace DOL.GS
             {
                 AccountVault vault = new AccountVault(player, this, player.Client.Account.Name + "_" + player.Realm.ToString(), 0, GetDummyVaultItem(player));
                 player.ActiveInventoryObject = vault;
-                player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), eInventoryWindowType.HouseVault);
+                player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), EInventoryWindowType.HouseVault);
             }
             else if (text == "second")
             {
                 AccountVault vault = new AccountVault(player, this, player.Client.Account.Name + "_" + player.Realm.ToString(), 1, GetDummyVaultItem(player));
                 player.ActiveInventoryObject = vault;
-                player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), eInventoryWindowType.HouseVault);
+                player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), EInventoryWindowType.HouseVault);
             }
 
             return true;
@@ -144,7 +144,7 @@ namespace DOL.GS
         {
             if (!CanView(player))
             {
-                player.Out.SendMessage("You don't have permission to view this vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You don't have permission to view this vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return false;
             }
 
@@ -162,7 +162,7 @@ namespace DOL.GS
             }
 
             player.ActiveInventoryObject = this;
-            player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.HouseVault);
+            player.Out.SendInventoryItemsUpdate(GetClientInventory(player), EInventoryWindowType.HouseVault);
             return true;
         }
 
@@ -247,7 +247,7 @@ namespace DOL.GS
             GameVault gameVault = player.ActiveInventoryObject as GameVault;
             if (gameVault == null)
             {
-                player.Out.SendMessage("You are not actively viewing a vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You are not actively viewing a vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 player.Out.SendInventoryItemsUpdate(null);
                 return false;
             }
@@ -259,20 +259,20 @@ namespace DOL.GS
                 {
                     if (gameVault.CanRemoveItems(player) == false)
                     {
-                        player.Out.SendMessage("You don't have permission to remove items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage("You don't have permission to remove items!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         return false;
                     }
                 }
                 if (gameVault.CanAddItems(player) == false)
                 {
-                    player.Out.SendMessage("You don't have permission to add items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("You don't have permission to add items!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return false;
                 }
             }
 
             if (fromAccountVault && gameVault.CanRemoveItems(player) == false)
             {
-                player.Out.SendMessage("You don't have permission to remove items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You don't have permission to remove items!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return false;
             }
 
@@ -282,7 +282,7 @@ namespace DOL.GS
             // Check for a swap to get around not allowing non-tradables in a housing vault - Tolakram
             if (fromAccountVault && itemInToSlot != null && itemInToSlot.IsTradable == false)
             {
-                player.Out.SendMessage("You cannot swap with an untradable item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You cannot swap with an untradable item!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 //log.DebugFormat("GameVault: {0} attempted to swap untradable item {2} with {1}", player.Name, itemInFromSlot.Name, itemInToSlot.Name);
                 player.Out.SendInventoryItemsUpdate(null);
                 return false;
@@ -294,7 +294,7 @@ namespace DOL.GS
             {
                 if (itemInFromSlot.Id_nb != ServerProperties.Properties.ALT_CURRENCY_ID)
                 {
-                    player.Out.SendMessage("You can not put this item into an Account Vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("You can not put this item into an Account Vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     player.Out.SendInventoryItemsUpdate(null);
                     return false;
                 }

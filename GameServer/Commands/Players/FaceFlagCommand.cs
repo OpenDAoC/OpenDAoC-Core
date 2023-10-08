@@ -26,8 +26,8 @@ public class FaceFlagCommand : ACommandHandler,ICommandHandler
 			client.Out.SendMessage
 				(
 				"Please enter flag number.",
-				eChatType.CT_System,
-				eChatLoc.CL_SystemWindow
+				EChatType.CT_System,
+				EChatLoc.CL_SystemWindow
 				);
 			return;
 		}
@@ -39,7 +39,7 @@ public class FaceFlagCommand : ACommandHandler,ICommandHandler
 		}
 		catch
 		{
-			client.Out.SendMessage("Please enter a valid flag number.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Please enter a valid flag number.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
@@ -48,13 +48,13 @@ public class FaceFlagCommand : ACommandHandler,ICommandHandler
 
 		if (flag == null)
 		{
-			client.Out.SendMessage("Please enter a valid flag number.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Please enter a valid flag number.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		} 
 
 		if (client.Player.CurrentRegionID != flag.FlagObject.CurrentRegionID)
 		{
-			client.Out.SendMessage("You must be in the same zone as the flag.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("You must be in the same zone as the flag.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 		

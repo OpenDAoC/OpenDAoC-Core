@@ -113,16 +113,16 @@ namespace DOL.GS
 				if (!InterceptSource.IsWithinRadius(InterceptTarget, InterceptAbilityHandler.INTERCEPT_DISTANCE))
 				{
 					if (InterceptSource is GamePlayer)
-						((GamePlayer)InterceptSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptSource).Client, "Effects.InterceptEffect.YouAttemtInterceptYBut", InterceptTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						((GamePlayer)InterceptSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptSource).Client, "Effects.InterceptEffect.YouAttemtInterceptYBut", InterceptTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					if (InterceptTarget is GamePlayer && InterceptSource is GamePlayer)
-						((GamePlayer)InterceptTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptTarget).Client, "Effects.InterceptEffect.XAttemtInterceptYouBut", InterceptSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						((GamePlayer)InterceptTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptTarget).Client, "Effects.InterceptEffect.XAttemtInterceptYouBut", InterceptSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				else
 				{
 					if (InterceptSource is GamePlayer)
-						((GamePlayer)InterceptSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptSource).Client, "Effects.InterceptEffect.YouAttemtInterceptY", InterceptTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						((GamePlayer)InterceptSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptSource).Client, "Effects.InterceptEffect.YouAttemtInterceptY", InterceptTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					if (InterceptTarget is GamePlayer && InterceptSource is GamePlayer)
-						((GamePlayer)InterceptTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptTarget).Client, "Effects.InterceptEffect.XAttemptInterceptYou", InterceptSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						((GamePlayer)InterceptTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptTarget).Client, "Effects.InterceptEffect.XAttemptInterceptYou", InterceptSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				new InterceptEcsAbilityEffect(new EcsGameEffectInitParams(InterceptTarget, 0, 1), InterceptSource, InterceptTarget);
 			}
@@ -151,9 +151,9 @@ namespace DOL.GS
 			if (playerCancel)
 			{
 				if (InterceptSource is GamePlayer)
-					((GamePlayer)InterceptSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptSource).Client, "Effects.InterceptEffect.YouNoAttemtInterceptY", InterceptTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)InterceptSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptSource).Client, "Effects.InterceptEffect.YouNoAttemtInterceptY", InterceptTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				if (InterceptTarget is GamePlayer && InterceptSource is GamePlayer)
-					((GamePlayer)InterceptTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptTarget).Client, "Effects.InterceptEffect.XNoAttemptInterceptYou", InterceptSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)InterceptTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptTarget).Client, "Effects.InterceptEffect.XNoAttemptInterceptYou", InterceptSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 		/// <summary>

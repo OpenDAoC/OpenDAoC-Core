@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -47,7 +28,7 @@ namespace DOL.GS.PacketHandler
 			if (text == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.DetailWindow)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.DetailWindow)))
 			{
 				pak.WriteByte(0); // new in 1.75
 				if (caption == null)
@@ -67,7 +48,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendPlayerTitles()
 		{
 			var titles = m_gameClient.Player.Titles;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.DetailWindow)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.DetailWindow)))
 			{
 				pak.WriteByte(1); // new in 1.75
 				pak.WritePascalString("Player Statistics"); //window caption
@@ -103,7 +84,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendPlayerTitleUpdate(GamePlayer player)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VisualEffect)))
 			{
 				pak.WriteShort((ushort) player.ObjectID);
 				pak.WriteByte(0x0B); // subcode
@@ -131,7 +112,7 @@ namespace DOL.GS.PacketHandler
 			if (player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x03); //subcode
 				pak.WriteByte(0x0e); //number of entry
@@ -260,7 +241,7 @@ namespace DOL.GS.PacketHandler
 				itemCaps[i] = Math.Min(cap, itemCap + bonusCap);
 			}
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.StatsUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.StatsUpdate)))
 			{
 				// base
 				for (int i = 0; i < updateStats.Length; i++)
@@ -390,7 +371,7 @@ namespace DOL.GS.PacketHandler
 				caps[i] = cap;
 			}
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.StatsUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.StatsUpdate)))
 			{
 
 				// racial resists
@@ -456,7 +437,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || playerToCreate.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PlayerCreate172)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PlayerCreate172)))
 			{
 				pak.WriteShort((ushort)playerToCreate.Client.SessionID);
 				pak.WriteShort((ushort)playerToCreate.ObjectID);
@@ -501,7 +482,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLoginGranted(byte color)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.LoginGranted)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.LoginGranted)))
 			{
 				pak.WriteByte(0x01); //isSI
 				pak.WriteByte(ParseVersion((int)m_gameClient.Version, true));

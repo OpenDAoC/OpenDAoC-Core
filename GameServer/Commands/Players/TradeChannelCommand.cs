@@ -24,7 +24,7 @@ public class TradeChannelCommand : ACommandHandler, ICommandHandler
 
         if (client.Player.IsMuted)
         {
-            client.Player.Out.SendMessage("You have been muted. You cannot broadcast.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage("You have been muted. You cannot broadcast.", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -45,10 +45,10 @@ public class TradeChannelCommand : ACommandHandler, ICommandHandler
     private static void Broadcast(GamePlayer player, string message)
     {
         foreach (GamePlayer otherPlayer in ClientService.GetPlayersForRealmWideChatMessage(player))
-            otherPlayer.Out.SendMessage($"[Trade] {player.Name}: {message}", eChatType.CT_Trade, eChatLoc.CL_ChatWindow);
+            otherPlayer.Out.SendMessage($"[Trade] {player.Name}: {message}", EChatType.CT_Trade, EChatLoc.CL_ChatWindow);
 
         if (Properties.DISCORD_ACTIVE)
-            WebhookMessage.LogChatMessage(player, eChatType.CT_Trade, message);
+            WebhookMessage.LogChatMessage(player, EChatType.CT_Trade, message);
 
         if (player.Client.Account.PrivLevel == 1)
             player.Client.Player.TempProperties.SetProperty(tradeTimeoutString, GameLoop.GameLoopTime);

@@ -13,7 +13,7 @@ namespace DOL.GS.Effects
 		{
 			base.Start(living);
 			if (living is GamePlayer)
-				(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.RapidFireEffect.YouSwitchRFMode"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.RapidFireEffect.YouSwitchRFMode"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>

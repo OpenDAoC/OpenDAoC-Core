@@ -28,7 +28,7 @@ namespace DOL.GS.Commands
 			}
 			else
 			{
-				client.Out.SendMessage("You need to be in a battleground to use this command.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("You need to be in a battleground to use this command.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 		private string KeepStringBuilder(AGameKeep keep)

@@ -29,7 +29,7 @@ namespace DOL.GS.Spells
 		{
 			if (Caster.InCombat == true)
 			{
-				MessageToCaster("You cannot cast this spell in combat!", eChatType.CT_SpellResisted);
+				MessageToCaster("You cannot cast this spell in combat!", EChatType.CT_SpellResisted);
 				return false;
 			}
 			return base.CheckBeginCast(selectedTarget);
@@ -60,7 +60,7 @@ namespace DOL.GS.Spells
 		{
 			if (target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent)
 			{
-				MessageToCaster("Your spell has no effect on the keep component!", eChatType.CT_SpellResisted);
+				MessageToCaster("Your spell has no effect on the keep component!", EChatType.CT_SpellResisted);
 				return;
 			}
 			base.FinishSpellCast(target);
@@ -106,16 +106,16 @@ namespace DOL.GS.Spells
 					if (target is GamePlayer)
 					{
 						target.Mana -= power;
-						((GamePlayer)target).Out.SendMessage(caster.Name + " takes " + power + " power!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+						((GamePlayer)target).Out.SendMessage(caster.Name + " takes " + power + " power!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
 					}
 
 					if (caster is GamePlayer)
 					{
-						((GamePlayer)caster).Out.SendMessage("You receive " + power + " power from " + target.Name + "!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+						((GamePlayer)caster).Out.SendMessage("You receive " + power + " power from " + target.Name + "!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 					}
 				}
 				else
-					((GamePlayer)caster).Out.SendMessage("You did not receive any power from " + target.Name + "!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					((GamePlayer)caster).Out.SendMessage("You did not receive any power from " + target.Name + "!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 
 				//Place the caster in combat
 				if (target is GamePlayer)

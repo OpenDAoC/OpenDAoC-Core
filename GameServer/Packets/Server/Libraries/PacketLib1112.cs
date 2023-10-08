@@ -38,7 +38,7 @@ namespace DOL.GS.PacketHandler
 			{
 				int packetEntry = 0; // needed to tell client how much skill we send
 									 // using pak
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate)))
 				{
 					// Write header
 					pak.WriteByte(0x01); //subcode for skill
@@ -202,7 +202,7 @@ namespace DOL.GS.PacketHandler
 			foreach (var spXsl in spellsXLines)
 			{
 				// Prepare packet
-				using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+				using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate)))
 				{
 					// Add Line Header
 					pak.WriteByte(0x02); //subcode
@@ -249,7 +249,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Footer packet
-			using (GSTCPPacketOut pak3 = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+			using (GsTcpPacketOut pak3 = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate)))
 			{
 				pak3.WriteByte(0x02); //subcode
 				pak3.WriteByte(0x00);
@@ -262,7 +262,7 @@ namespace DOL.GS.PacketHandler
 				SendForceTooltipUpdate(spellsXLines.SelectMany(e => e.Item2));
 		}
 
-		protected override void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)
+		protected override void WriteTemplateData(GsTcpPacketOut pak, DbItemTemplate template, int count)
 		{
 			if (template == null)
 			{
@@ -350,7 +350,7 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(template.Name);
 		}
 
-		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
+		protected override void WriteItemData(GsTcpPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{
@@ -540,7 +540,7 @@ namespace DOL.GS.PacketHandler
 		/// <param name="player"></param>
 		public override void SendPlayerForgedPosition(GamePlayer player)
 		{
-			using (GSUDPPacketOut pak = new GSUDPPacketOut(GetPacketCode(eServerPackets.PlayerPosition)))
+			using (GsUdpPacketOut pak = new GsUdpPacketOut(GetPacketCode(EServerPackets.PlayerPosition)))
 			{
 				// PID
 				pak.WriteShort((ushort)player.Client.SessionID);

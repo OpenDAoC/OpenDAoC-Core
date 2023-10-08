@@ -54,8 +54,8 @@ public class Alchemy : AdvancedCraftingSkill
             (int)EObjectType.AlchemyTincture)
 		{
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, 
-                "Alchemy.IsAllowedToCombine.AlchemyTinctures"), PacketHandler.eChatType.CT_System, 
-                PacketHandler.eChatLoc.CL_SystemWindow);
+                "Alchemy.IsAllowedToCombine.AlchemyTinctures"), PacketHandler.EChatType.CT_System, 
+                PacketHandler.EChatLoc.CL_SystemWindow);
 			
             return false;
 		}
@@ -63,8 +63,8 @@ public class Alchemy : AdvancedCraftingSkill
 		if (player.TradeWindow.ItemsCount > 1)
 		{
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
-                "Alchemy.IsAllowedToCombine.OneTincture"), PacketHandler.eChatType.CT_System, 
-                PacketHandler.eChatLoc.CL_SystemWindow);
+                "Alchemy.IsAllowedToCombine.OneTincture"), PacketHandler.EChatType.CT_System, 
+                PacketHandler.EChatLoc.CL_SystemWindow);
 
 			return false;
 		}
@@ -73,7 +73,7 @@ public class Alchemy : AdvancedCraftingSkill
 		{
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, 
                 "Alchemy.IsAllowedToCombine.AlreadyImbued", item.Name), 
-                PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+                PacketHandler.EChatType.CT_System, PacketHandler.EChatLoc.CL_SystemWindow);
 
 			return false;
 		}

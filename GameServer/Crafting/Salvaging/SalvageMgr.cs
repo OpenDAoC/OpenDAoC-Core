@@ -84,7 +84,7 @@ namespace DOL.GS
    
 					if (material == null)
 					{
-						player.Out.SendMessage("Can't find material (" + material.Id_nb + ") needed to salvage this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("Can't find material (" + material.Id_nb + ") needed to salvage this item!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 						log.ErrorFormat("Salvage Error for ID: {0}:  Material not found: {1}", salvageYield.ID, material.Id_nb);
 					}
 				}
@@ -93,12 +93,12 @@ namespace DOL.GS
 				{
 					if (salvageYield == null && item.SalvageYieldID > 0)
 					{
-						player.Out.SendMessage("This items salvage recipe (" + item.SalvageYieldID + ") not implemented yet.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("This items salvage recipe (" + item.SalvageYieldID + ") not implemented yet.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 						log.ErrorFormat("SalvageYield ID {0} not found for item: {1}", item.SalvageYieldID, item.Name);
 					}
 					else if (salvageYield == null)
 					{
-						player.Out.SendMessage("Salvage recipe not found for this item.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("Salvage recipe not found for this item.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						log.ErrorFormat("Salvage Lookup Error: ObjectType: {0}, Item: {1}", item.Object_Type, item.Name);
 					}
 					return 0;
@@ -111,14 +111,14 @@ namespace DOL.GS
 				// }
 				if (string.IsNullOrEmpty(salvageYield.MaterialId_nb))
 				{
-					player.Out.SendMessage("MaterialId_nb is null for (" + item.Name + ") salvageYield ID!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("MaterialId_nb is null for (" + item.Name + ") salvageYield ID!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					log.ErrorFormat("Salvage Error for item: {0}:  MaterialId_nb is null", salvageYield.ID);
 					return 0;
 				}
 				material = GameServer.Database.FindObjectByKey<DbItemTemplate>(salvageYield.MaterialId_nb);
 				if (material == null)
 				{
-					player.Out.SendMessage("Can't find material (" + salvageYield.MaterialId_nb + ") needed to salvage this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Can't find material (" + salvageYield.MaterialId_nb + ") needed to salvage this item!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					log.ErrorFormat("Salvage Error for ID: {0}:  Material not found", salvageYield.ID);
 					return 0;
 				}
@@ -138,7 +138,7 @@ namespace DOL.GS
 
 			if (salvageYield.MaterialId_nb == "")
 			{
-				player.Out.SendMessage("No material set for this item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("No material set for this item", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return 0;
 			}
 			
@@ -147,7 +147,7 @@ namespace DOL.GS
 
 			if (player.IsMoving || player.IsStrafing)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.InterruptSalvage"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.InterruptSalvage"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return 0;
 			}
 
@@ -156,11 +156,11 @@ namespace DOL.GS
 				player.Stealth(false);
 			}
 
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.BeginSalvage", item.Template.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.BeginSalvage", item.Template.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			if (salvageYield.Count < 1)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Template.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Template.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return 0;
 			}
 			
@@ -253,7 +253,7 @@ namespace DOL.GS
 
 			if (recipe == null)
             {
-				player.Out.SendMessage("Error retrieving salvage data!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Error retrieving salvage data!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				log.Error("Salvage Siege Error: DBCraftedItem is null for" + siegeWeapon.ItemId);
 				return 1;
             }
@@ -262,14 +262,14 @@ namespace DOL.GS
 
 			if (rawMaterials == null || rawMaterials.Count == 0)
             {
-				player.Out.SendMessage("No raw materials provided for this siege weapon!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("No raw materials provided for this siege weapon!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				log.Error("Salvage Siege Error: No Raw Materials found for " + siegeWeapon.ItemId);
 				return 1;
             }
 
             if (player.IsCrafting || player.IsSalvagingOrRepairing)
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return 0;
             }
 			DbInventoryItem item;
@@ -280,7 +280,7 @@ namespace DOL.GS
 
 				if (template == null)
 				{
-					player.Out.SendMessage("Missing raw material " + material.IngredientId_nb + "!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Missing raw material " + material.IngredientId_nb + "!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					log.Error("Salvage Siege Error: Raw Material not found " + material.IngredientId_nb);
 					return 1;
 				}
@@ -296,7 +296,7 @@ namespace DOL.GS
 			}
 
 			if (error)
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoRoom"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoRoom"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			return 1;
 		}
@@ -316,7 +316,7 @@ namespace DOL.GS
 
 			if (player == null || itemToSalvage == null || yield == null || materialCount == 0)
 			{
-				player.Out.SendMessage("Error retrieving salvage data for this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Error retrieving salvage data for this item!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				log.Error("Salvage: There was a problem getting back salvage info from the craft timer.");
 				return 0;
 			}
@@ -330,7 +330,7 @@ namespace DOL.GS
 
 			if (rawMaterial == null)
 			{
-				player.Out.SendMessage("Error finding the raw material needed to salvage this item!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Error finding the raw material needed to salvage this item!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				log.Error("Salvage: Error finding raw material " + yield.MaterialId_nb);
 				return 0;
 			}
@@ -340,7 +340,7 @@ namespace DOL.GS
 
 			if (!player.Inventory.RemoveItem(itemToSalvage)) // clean the free of the item to salvage
 			{
-				player.Out.SendMessage("Error finding the item to salvage!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Error finding the item to salvage!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				return 0;
 			}
 
@@ -402,7 +402,7 @@ namespace DOL.GS
 			}
 
 			player.Inventory.CommitChanges();
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.Proceed.GetBackMaterial", materialCount, rawMaterial.Name, itemToSalvage.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.Proceed.GetBackMaterial", materialCount, rawMaterial.Name, itemToSalvage.Name), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
 			if (itemList == null) return 0;
 			player.CraftTimer?.Stop();
@@ -431,21 +431,21 @@ namespace DOL.GS
 			if (player.InCombat && !player.IsSitting)
 			{
 				if (!mute)
-					player.Out.SendMessage("You can't salvage while in combat.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You can't salvage while in combat.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (item.IsNotLosingDur || item.IsIndestructible)
 			{
 				if (!mute)
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  This item is indestructible"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  This item is indestructible"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (item.Level < 1)
 			{
 				if (!mute)
-					player.Out.SendMessage("This item cannot be salvaged.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("This item cannot be salvaged.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -453,14 +453,14 @@ namespace DOL.GS
 			if (item.SalvageYieldID < 0)
 			{
 				if (!mute)
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Salvage.BeginWork.NoSalvage", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Salvage.BeginWork.NoSalvage", item.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 			
 			if(item.SlotPosition < (int)EInventorySlot.FirstBackpack || item.SlotPosition > (int)EInventorySlot.LastBackpack)
 			{
 				if (!mute)
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.BackpackItems"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.BackpackItems"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -468,21 +468,21 @@ namespace DOL.GS
 			if(skill == ECraftingSkill.NoCrafting)
 			{
 				if (!mute)
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  You do not have the required secondary skill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  You do not have the required secondary skill"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (player.IsCrafting || player.IsSalvagingOrRepairing)
 			{
 				if (!mute)
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (player.GetCraftingSkillValue(skill) < (0.75 * CraftingMgr.GetItemCraftLevel(item)))
 			{
 				if (!mute)
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.NotEnoughSkill", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.NotEnoughSkill", item.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -493,45 +493,45 @@ namespace DOL.GS
 		{
 			if (player.InCombat)
 			{
-				player.Out.SendMessage("You can't salvage while in combat.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You can't salvage while in combat.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (item.IsNotLosingDur || item.IsIndestructible)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  This item is indestructible"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  This item is indestructible"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			// using negative numbers to indicate item cannot be salvaged
 			if (item.SalvageYieldID < 0)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Salvage.BeginWork.NoSalvage", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Salvage.BeginWork.NoSalvage", item.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 			
 			if(item.SlotPosition < (int)EInventorySlot.FirstBackpack || item.SlotPosition > (int)EInventorySlot.LastBackpack)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.BackpackItems"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.BackpackItems"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			ECraftingSkill skill = CraftingMgr.GetSecondaryCraftingSkillToWorkOnItem(item);
 			if(skill == ECraftingSkill.NoCrafting)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  You do not have the required secondary skill"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.BeginWork.NoSalvage", item.Name + ".  You do not have the required secondary skill"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (player.IsCrafting || player.IsSalvagingOrRepairing)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.EndCurrentAction"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (player.GetCraftingSkillValue(skill) < (0.75 * CraftingMgr.GetItemCraftLevel(item)))
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.NotEnoughSkill", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Salvage.IsAllowedToBeginWork.NotEnoughSkill", item.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 

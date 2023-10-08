@@ -195,7 +195,7 @@ namespace DOL.GS
 								LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Harm"),
 								LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Empower"),
 								LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Combat")),
-								eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+								EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 							break;
 						case eCommanderType.DreadLich:
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadLich",
@@ -203,21 +203,21 @@ namespace DOL.GS
 								LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spells"),
 								LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Empower"),
 								LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Combat")),
-								eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+								EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 							break;
 						case eCommanderType.DreadArcher:
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadArcher",
 								Name,
 								LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Empower"),
 								LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Combat")),
-								eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+								EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 							break;
 						default:
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.XCommander",
 								Name,
 								LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Weapons"),
 								LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Combat")),
-								eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+								EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 							break;
 					}
 				}
@@ -228,13 +228,13 @@ namespace DOL.GS
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.CombatNoMinions",
 							Name,
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Taunt")),
-							eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 					else
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Combat",
 							Name,
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Assist"),
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Taunt")),
-							eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				} 
 
 				else if (curStr == LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Assist").ToUpper())
@@ -244,9 +244,9 @@ namespace DOL.GS
 						MinionsAssisting = !MinionsAssisting;
 
 						if (MinionsAssisting)
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Assist.On"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Assist.On"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 						else
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Assist.Off"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Assist.Off"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 
 						// Refresh minion aggression state
 						if (Brain is IControlledBrain commBrain)
@@ -260,9 +260,9 @@ namespace DOL.GS
 					Taunting = !Taunting;
 
 					if (Taunting)
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.CommStartTaunt"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.CommStartTaunt"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 					else
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.CommNoTaunt"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.CommNoTaunt"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 				}
 
 				else if (curStr == LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Weapons").ToUpper())
@@ -278,21 +278,21 @@ namespace DOL.GS
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.2HandedAxe"),
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.2HandedHammer"),
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.2HandedSword")),
-							eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 					else if (oneHand)
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Weapons.Limited",
 							Name,
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.1HandedAxe"),
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.1HandedHammer"),
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.1HandedSword")),
-							eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 					else if (twoHand)
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Weapons.Limited",
 							Name,
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.2HandedAxe"),
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.2HandedHammer"),
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.2HandedSword")),
-							eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				}
 
 				else if (curStr == LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spells").ToUpper())
@@ -303,7 +303,7 @@ namespace DOL.GS
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Snares"),
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Debilitating"),
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Damage")),
-							eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				}
 
 				else if (curStr == LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Empower").ToUpper())
@@ -339,11 +339,11 @@ namespace DOL.GS
 					if (CommanderType == eCommanderType.DreadLich)
 					{
 						if (CommSpellOther == null)
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spell.NotAvailable", Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spell.NotAvailable", Name), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 						else
 						{
 							PreferredSpell = eCommanderPreferredSpell.Other;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadLich.Snare", Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadLich.Snare", Name), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 						}
 					}
 				}
@@ -353,11 +353,11 @@ namespace DOL.GS
 					if (CommanderType == eCommanderType.DreadLich)
 					{
 						if (CommSpellDebuff == null)
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spell.NotAvailable", Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spell.NotAvailable", Name), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 						else
 						{
 							PreferredSpell = eCommanderPreferredSpell.Debuff;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadLich.Debilitating", Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadLich.Debilitating", Name), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 						}
 					}
 				}
@@ -369,10 +369,10 @@ namespace DOL.GS
 						if (CommSpellDamageDebuff != null || CommSpellDamage != null)
 						{
 							PreferredSpell = eCommanderPreferredSpell.Damage;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadLich.Damage", Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadLich.Damage", Name), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 						}
 						else
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spell.NotAvailable", Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spell.NotAvailable", Name), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 					}
 				}
 
@@ -415,7 +415,7 @@ namespace DOL.GS
 							Name,
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Drain"),
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Suppress")),
-							eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				}
 
 				else if (curStr == LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Drain").ToUpper())
@@ -423,11 +423,11 @@ namespace DOL.GS
 					if (CommanderType == eCommanderType.DreadGuardian)
 					{
 						if (CommSpellOther == null)
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spell.NotAvailable", Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spell.NotAvailable", Name), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 						else
 						{
 							PreferredSpell = eCommanderPreferredSpell.Other;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadGuardian.Drain", Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadGuardian.Drain", Name), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 						}
 					}
 				}
@@ -439,10 +439,10 @@ namespace DOL.GS
 						if (CommSpellDamageDebuff != null || CommSpellDamage != null)
 						{
 							PreferredSpell = eCommanderPreferredSpell.Damage;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadGuardian.Suppress", Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.DreadGuardian.Suppress", Name), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 						}
 						else
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spell.NotAvailable", Name), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObjects.CommanderPet.WR.Const.Spell.NotAvailable", Name), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 					}
 				}
 			}

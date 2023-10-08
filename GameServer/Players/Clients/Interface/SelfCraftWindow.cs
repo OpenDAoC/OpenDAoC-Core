@@ -157,7 +157,7 @@ namespace DOL.GS
 			get { return false; }
 			set 
 			{
-				m_owner.Out.SendMessage("You cannot repair while self-crafting!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				m_owner.Out.SendMessage("You cannot repair while self-crafting!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -169,7 +169,7 @@ namespace DOL.GS
 			get { return true; }
 			set 
 			{
-				m_owner.Out.SendMessage("Combine flag is autoset while self-crafting!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				m_owner.Out.SendMessage("Combine flag is autoset while self-crafting!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 

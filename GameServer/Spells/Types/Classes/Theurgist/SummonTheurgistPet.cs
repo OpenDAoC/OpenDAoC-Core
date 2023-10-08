@@ -66,7 +66,7 @@ namespace DOL.GS.Spells
 		{
 			if (Caster.PetCount >= ServerProperties.Properties.THEURGIST_PET_CAP)
 			{
-				MessageToCaster("You have too many controlled creatures!", eChatType.CT_SpellResisted);
+				MessageToCaster("You have too many controlled creatures!", EChatType.CT_SpellResisted);
 				return false;
 			}
 

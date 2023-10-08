@@ -438,10 +438,10 @@ namespace DOL.GS
                                             TimeSpan.FromMilliseconds(timeDifference).Hours + "h " +
                                             TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " +
                                             TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item",
-                                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                     else
                                         player.Out.SendMessage("XP item will drop after your next kill!",
-                                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                 }
                             }
                         }
@@ -590,10 +590,10 @@ namespace DOL.GS
                                     TimeSpan.FromMilliseconds(timeDifference).Hours + "h " +
                                     TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " +
                                     TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item",
-                                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
                             else
-                                player.Out.SendMessage("XP item will drop after your next kill!", eChatType.CT_System,
-                                    eChatLoc.CL_SystemWindow);
+                                player.Out.SendMessage("XP item will drop after your next kill!", EChatType.CT_System,
+                                    EChatLoc.CL_SystemWindow);
                         }
                     }
                 }

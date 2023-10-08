@@ -38,7 +38,7 @@ namespace DOL.GS.Spells
         {
             if (Spell.SubSpellID == 0)
             {
-                MessageToCaster("SPELL NOT IMPLEMENTED: CONTACT GM", eChatType.CT_Important);
+                MessageToCaster("SPELL NOT IMPLEMENTED: CONTACT GM", EChatType.CT_Important);
                 return false;
             }
 

@@ -63,15 +63,15 @@ namespace DOL.GS.Behaviour
             {
                 result = Convert.ToInt64(obj);
             }
-            else if (destinationType == typeof(eEmote))
+            else if (destinationType == typeof(EEmote))
             {
-                if (obj is eEmote)
+                if (obj is EEmote)
                 {
-                    result = (eEmote)obj;
+                    result = (EEmote)obj;
                 }
                 else
                 {
-                    result = (eEmote)Enum.Parse(typeof(eEmote), Convert.ToString(obj), true);
+                    result = (EEmote)Enum.Parse(typeof(EEmote), Convert.ToString(obj), true);
                 }
             }
             else if (destinationType == typeof(GameLiving))

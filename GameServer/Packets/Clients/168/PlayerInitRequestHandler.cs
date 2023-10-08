@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +11,7 @@ using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.PlayerInitRequest, "Region Entering Init Request", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerInitRequest, "Region Entering Init Request", EClientStatus.PlayerInGame)]
 	public class PlayerInitRequestHandler : IPacketHandler
 	{
 		/// <summary>
@@ -38,7 +19,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			new PlayerInitRequestAction(client.Player).Start(100);
 		}
@@ -119,7 +100,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				SendHouseRentRemindersToPlayer(player);
 				if (player.Level > 1 && ServerProperties.Properties.MOTD != "")
 				{
-					player.Out.SendMessage(ServerProperties.Properties.MOTD, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(ServerProperties.Properties.MOTD, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				else if (player.Level == 1)
 				{
@@ -130,7 +111,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 
 				if (ServerProperties.Properties.ENABLE_DEBUG)
-					player.Out.SendMessage("Server is running in DEBUG mode!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Server is running in DEBUG mode!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 				// player.Out.SendPlayerFreeLevelUpdate();
 				// if (player.FreeLevelState == 2)
@@ -232,7 +213,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (player.Level > k.BaseLevel)
 						{
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.LevelCap"),
-							                       eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+							                       EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
 							player.MoveTo((ushort) player.BindRegion, player.BindXpos,
 							              player.BindYpos, player.BindZpos,
 							              (ushort) player.BindHeading);
@@ -308,7 +289,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			private static void SendMessageAndMoveToSafeLocation(GamePlayer player)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.SaferLocation"),
-				                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				                       EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				player.MoveTo((ushort) player.BindRegion, player.BindXpos,
 				              player.BindYpos, player.BindZpos,
 				              (ushort) player.BindHeading);
@@ -356,20 +337,20 @@ namespace DOL.GS.PacketHandler.Client.v168
 					if (player.GuildRank.GcHear && player.Guild.Motd != "")
 					{
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.GuildMessage"),
-						                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						player.Out.SendMessage(player.Guild.Motd, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						                       EChatType.CT_System, EChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(player.Guild.Motd, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 					if (player.GuildRank.OcHear && player.Guild.Omotd != "")
 					{
 						player.Out.SendMessage(
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.OfficerMessage", player.Guild.Omotd),
-							eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 					if (player.Guild.alliance != null && player.GuildRank.AcHear && player.Guild.alliance.Dballiance.Motd != "")
 					{
 						player.Out.SendMessage(
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.AllianceMessage",
-							                           player.Guild.alliance.Dballiance.Motd), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							                           player.Guild.alliance.Dballiance.Motd), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 				}
 				catch (Exception ex)
@@ -379,7 +360,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						player.Out.SendMessage(
 							"There was an error sending motd for your guild. Guild ranks may be missing or corrupted.",
-							eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					}
 				}
 			}

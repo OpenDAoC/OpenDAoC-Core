@@ -32,7 +32,7 @@ public class GroupChatCommand : ACommandHandler, ICommandHandler
 				msg += args[i] + " ";
 			}
 
-			client.Player.Group.SendMessageToGroupMembers(client.Player, msg, eChatType.CT_Group, eChatLoc.CL_ChatWindow);
+			client.Player.Group.SendMessageToGroupMembers(client.Player, msg, EChatType.CT_Group, EChatLoc.CL_ChatWindow);
 		}
 		else
 		{

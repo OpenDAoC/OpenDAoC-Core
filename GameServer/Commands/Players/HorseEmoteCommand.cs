@@ -16,7 +16,7 @@ public class HorseEmoteCommand : ACommandHandler, ICommandHandler
 
 		if (!client.Player.IsOnHorse)
 		{
-			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "HorseEmote.MustBeOnMount"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "HorseEmote.MustBeOnMount"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
@@ -31,33 +31,33 @@ public class HorseEmoteCommand : ACommandHandler, ICommandHandler
 				target = null;
 		}
 
-		eEmote emoteID;
+		EEmote emoteID;
 
 		switch (args[1])
 		{
 			case "halt":
-				emoteID = eEmote.Rider_Halt;
+				emoteID = EEmote.Rider_Halt;
 				break;
 			case "pet":
-				emoteID = eEmote.Rider_pet;
+				emoteID = EEmote.Rider_pet;
 				break;
 			case "trick":
-				emoteID = eEmote.Rider_Trick;
+				emoteID = EEmote.Rider_Trick;
 				break;
 			case "courbette":
-				emoteID = eEmote.Horse_Courbette;
+				emoteID = EEmote.Horse_Courbette;
 				break;
 			case "startle":
-				emoteID = eEmote.Horse_Startle;
+				emoteID = EEmote.Horse_Startle;
 				break;
 			case "nod":
-				emoteID = eEmote.Horse_Nod;
+				emoteID = EEmote.Horse_Nod;
 				break;
 			case "graze":
-				emoteID = eEmote.Horse_Graze;
+				emoteID = EEmote.Horse_Graze;
 				break;
 			case "rear":
-				emoteID = eEmote.Horse_rear;
+				emoteID = EEmote.Horse_rear;
 				break;
 			default:
 				return;
@@ -67,7 +67,7 @@ public class HorseEmoteCommand : ACommandHandler, ICommandHandler
 	}
 
 
-	private void SendEmote(GameClient client, GameObject targetObject, eEmote emoteID, string emoteType)
+	private void SendEmote(GameClient client, GameObject targetObject, EEmote emoteID, string emoteType)
 	{
 		string messageToSource = null;
 		string messageToTarget = null;
@@ -122,6 +122,6 @@ public class HorseEmoteCommand : ACommandHandler, ICommandHandler
 
 	private void SendEmoteMessage(GamePlayer player, string message)
 	{
-		player.Out.SendMessage(message, eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
+		player.Out.SendMessage(message, EChatType.CT_Emote, EChatLoc.CL_SystemWindow);
 	}
 }

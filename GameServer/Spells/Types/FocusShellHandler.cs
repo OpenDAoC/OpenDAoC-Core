@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
 				//This spell doesn't work on pets or monsters
 				if (selectedTarget is GameNPC)
 				{
-					MessageToCaster("This spell may not be cast on pets!", eChatType.CT_SpellResisted);
+					MessageToCaster("This spell may not be cast on pets!", EChatType.CT_SpellResisted);
 					return false;
 				}
 
@@ -70,7 +70,7 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				MessageToCaster("This spell only works on members of your realm!", eChatType.CT_SpellResisted);
+				MessageToCaster("This spell only works on members of your realm!", EChatType.CT_SpellResisted);
 				return false;
 			}
 

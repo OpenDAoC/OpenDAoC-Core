@@ -80,7 +80,7 @@ namespace DOL.GS
 				{
 					int meritpoints = cea.Points - 600;
 					player.Guild.GainMeritPoints(meritpoints);
-					player.Out.SendMessage("You have earned " + meritpoints + " merit points for your guild!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You have earned " + meritpoints + " merit points for your guild!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 			}
 		}
@@ -94,7 +94,7 @@ namespace DOL.GS
 			if (player.IsEligibleToGiveMeritPoints)
 			{
 				player.Guild.GainMeritPoints(meritPoints);
-				player.Out.SendMessage("You have earned " + meritPoints + " merit points for your guild!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You have earned " + meritPoints + " merit points for your guild!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 
 		}
@@ -113,7 +113,7 @@ namespace DOL.GS
 				// ... These scale from 6 at level 2 to 253 at level 50.
 				int meritPoints = (int)((double)player.Level * (3.0 + ((double)player.Level / 25.0)));
 				player.Guild.GainMeritPoints(meritPoints);
-				player.Out.SendMessage("You have earned " + meritPoints + " merit points for your guild!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You have earned " + meritPoints + " merit points for your guild!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -143,7 +143,7 @@ namespace DOL.GS
 				{
 					int a = (int)Math.Pow((3 * (newRR - 1)), 2);
 					player.Guild.GainMeritPoints(a);
-					player.Out.SendMessage("Your guild is awarded " + (int)Math.Pow((3 * (newRR - 1)), 2) + " merit points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Your guild is awarded " + (int)Math.Pow((3 * (newRR - 1)), 2) + " merit points!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 			}
 			else if (player.RealmLevel > 60)
@@ -154,7 +154,7 @@ namespace DOL.GS
 				{
 					int a = (int)Math.Pow((3 * (RRHigh - 1)), 2);
 					player.Guild.GainMeritPoints(a);
-					player.Out.SendMessage("Your guild is awarded " + (int)Math.Pow((3 * (RRHigh - 1)), 2) + " merit points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Your guild is awarded " + (int)Math.Pow((3 * (RRHigh - 1)), 2) + " merit points!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 			}
 			else
@@ -166,7 +166,7 @@ namespace DOL.GS
 						int RRHigh = ((int)Math.Floor(player.RealmLevel * 0.1) + 1);
 						int a = (int)Math.Pow((3 * (RRHigh - 1)), 2);
 						player.Guild.GainMeritPoints(a);
-						player.Out.SendMessage("Your guild is awarded " + (int)Math.Pow((3 * (RRHigh - 1)), 2) + " merit points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("Your guild is awarded " + (int)Math.Pow((3 * (RRHigh - 1)), 2) + " merit points!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					}
 				}
 			}
@@ -192,7 +192,7 @@ namespace DOL.GS
 				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 100);
 
 				player.GainExperience(EXpSource.Other, bonusXP, 0, 0, 0, false);
-				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your guild's buff!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				// player.Guild.UpdateGuildWindow();
 			}
 			
@@ -201,7 +201,7 @@ namespace DOL.GS
 				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 200);
 
 				player.GainExperience(EXpSource.Other, bonusXP, 0, 0, 0, false);
-				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your starting guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your starting guild's buff!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				// player.Guild.UpdateGuildWindow();
 			}
 		}
@@ -226,7 +226,7 @@ namespace DOL.GS
 					long bonusRealmPoints = (long)Math.Ceiling((double)rpsArgs.RealmPoints * ServerProperties.Properties.GUILD_BUFF_RP / 100);
 
 					player.GainRealmPoints(bonusRealmPoints, false, false, false);
-					player.Out.SendMessage("You get an additional " + bonusRealmPoints + " realm points due to your guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You get an additional " + bonusRealmPoints + " realm points due to your guild's buff!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
 					if ((oldGuildRealmPoints < 100000000) && (player.Guild.RealmPoints > 100000000))
 					{
@@ -260,7 +260,7 @@ namespace DOL.GS
 					long bonusBountyPoints = (long)Math.Ceiling((double)bpsArgs.BountyPoints * ServerProperties.Properties.GUILD_BUFF_BP / 100);
 					player.GainBountyPoints(bonusBountyPoints, false, false, false);
 					player.Guild.BountyPoints += bonusBountyPoints;
-					player.Out.SendMessage("You get an additional " + bonusBountyPoints + " bounty points due to your guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You get an additional " + bonusBountyPoints + " bounty points due to your guild's buff!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 			}
 
@@ -295,7 +295,7 @@ namespace DOL.GS
 						string message = "[Guild Buff] Your guild buff has now worn off!";
 						foreach (GamePlayer player in checkGuild.GetListOfOnlineMembers())
 						{
-							player.Out.SendMessage(message, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);
+							player.Out.SendMessage(message, EChatType.CT_Guild, EChatLoc.CL_ChatWindow);
 						}
 					}
 				}

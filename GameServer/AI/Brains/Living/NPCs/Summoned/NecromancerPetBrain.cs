@@ -46,7 +46,7 @@ namespace DOL.AI.Brain
 
             if (!m_spellQueue.IsEmpty)
             {
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.CastSpellAfterAction", Body.Name), eChatType.CT_System, Owner as GamePlayer);
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.CastSpellAfterAction", Body.Name), EChatType.CT_System, Owner as GamePlayer);
                 hadQueuedSpells = true;
             }
 
@@ -80,7 +80,7 @@ namespace DOL.AI.Brain
             if (spellLine.Name != NecromancerPet.PetInstaSpellLine)
             {
                 Owner.Notify(GameLivingEvent.CastStarting, Body, new CastingEventArgs(Body.CurrentSpellHandler));
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.PetCastingSpell", Body.Name), eChatType.CT_System, Owner as GamePlayer);
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.PetCastingSpell", Body.Name), EChatType.CT_System, Owner as GamePlayer);
             }
         }
 
@@ -133,18 +133,18 @@ namespace DOL.AI.Brain
                 {
                     case CastFailedEventArgs.Reasons.TargetTooFarAway:
                         MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, 
-                            "AI.Brain.Necromancer.ServantFarAwayToCast"), eChatType.CT_SpellResisted, Owner as GamePlayer);
+                            "AI.Brain.Necromancer.ServantFarAwayToCast"), EChatType.CT_SpellResisted, Owner as GamePlayer);
                         break;
 
                     case CastFailedEventArgs.Reasons.TargetNotInView:
                         MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, 
-                            "AI.Brain.Necromancer.PetCantSeeTarget", Body.Name), eChatType.CT_SpellResisted, Owner as GamePlayer);
+                            "AI.Brain.Necromancer.PetCantSeeTarget", Body.Name), EChatType.CT_SpellResisted, Owner as GamePlayer);
                         break;
 
                     case CastFailedEventArgs.Reasons.NotEnoughPower:
                         RemoveSpellFromQueue();
                         MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                            "AI.Brain.Necromancer.NoPower", Body.Name), eChatType.CT_SpellResisted, Owner as GamePlayer);
+                            "AI.Brain.Necromancer.NoPower", Body.Name), EChatType.CT_SpellResisted, Owner as GamePlayer);
                         break;
                 }
             }
@@ -368,7 +368,7 @@ namespace DOL.AI.Brain
                 m_spellQueue.TryDequeue(out spellQueueEntry);
 
             if (spellQueueEntry != null)
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.SpellNoLongerInQueue", spellQueueEntry.Spell.Name, Body.Name), eChatType.CT_Spell, Owner as GamePlayer);
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.SpellNoLongerInQueue", spellQueueEntry.Spell.Name, Body.Name), EChatType.CT_Spell, Owner as GamePlayer);
 
             DebugMessageToOwner(string.Format("Adding spell '{0}' to the end of the queue", spell.Name));
             m_spellQueue.Enqueue(new SpellQueueEntry(spell, spellLine, target));
@@ -389,7 +389,7 @@ namespace DOL.AI.Brain
                 m_attackSpellQueue.TryDequeue(out spellQueueEntry);
 
             if (spellQueueEntry != null)
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.SpellNoLongerInQueue", spellQueueEntry.Spell.Name, Body.Name), eChatType.CT_Spell, Owner as GamePlayer);
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.SpellNoLongerInQueue", spellQueueEntry.Spell.Name, Body.Name), EChatType.CT_Spell, Owner as GamePlayer);
 
             DebugMessageToOwner(string.Format("Adding spell '{0}' to the end of the queue", spell.Name));
             m_attackSpellQueue.Enqueue(new SpellQueueEntry(spell, spellLine, target));
@@ -477,7 +477,7 @@ namespace DOL.AI.Brain
             {
                 Stop();
                 MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                    "AI.Brain.Necromancer.HaveLostBondToPet"), eChatType.CT_System, Owner as GamePlayer);
+                    "AI.Brain.Necromancer.HaveLostBondToPet"), EChatType.CT_System, Owner as GamePlayer);
                 (Body as NecromancerPet)?.CutTether();
                 return 0;
             }
@@ -492,19 +492,19 @@ namespace DOL.AI.Brain
 
             if (secondsRemaining == 10)
                 MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                    "AI.Brain.Necromancer.PetTooFarBeLostSecIm", secondsRemaining), eChatType.CT_System, Owner as GamePlayer);
+                    "AI.Brain.Necromancer.PetTooFarBeLostSecIm", secondsRemaining), EChatType.CT_System, Owner as GamePlayer);
             else if (secondsRemaining == 5)
                 MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                    "AI.Brain.Necromancer.PetTooFarBeLostSec", secondsRemaining), eChatType.CT_System, Owner as GamePlayer);
+                    "AI.Brain.Necromancer.PetTooFarBeLostSec", secondsRemaining), EChatType.CT_System, Owner as GamePlayer);
         }
 
         /// <summary>
         /// Send a message to the shade.
         /// </summary>
-        public static void MessageToOwner(string message, eChatType chatType, GamePlayer owner)
+        public static void MessageToOwner(string message, EChatType chatType, GamePlayer owner)
         {
             if ((owner != null) && (message.Length > 0))
-                owner.Out.SendMessage(message, chatType, eChatLoc.CL_SystemWindow);
+                owner.Out.SendMessage(message, chatType, EChatLoc.CL_SystemWindow);
         }
 
         /// <summary>
@@ -518,7 +518,7 @@ namespace DOL.AI.Brain
                 long seconds = tick / 1000;
                 long minutes = seconds / 60;
 
-                MessageToOwner(string.Format("[{0:00}:{1:00}.{2:000}] {3}", minutes % 60, seconds % 60, tick % 1000, message), eChatType.CT_Staff, Owner as GamePlayer);
+                MessageToOwner(string.Format("[{0:00}:{1:00}.{2:000}] {3}", minutes % 60, seconds % 60, tick % 1000, message), EChatType.CT_Staff, Owner as GamePlayer);
             }
         }
 

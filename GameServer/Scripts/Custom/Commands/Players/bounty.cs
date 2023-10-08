@@ -51,8 +51,8 @@ namespace DOL.GS.Scripts
             {
                 if (client.Player.Level > 35)
                 {
-                    client.Out.SendMessage("You are too high level to call a bounty!", eChatType.CT_Important,
-                        eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("You are too high level to call a bounty!", EChatType.CT_Important,
+                        EChatLoc.CL_SystemWindow);
                     return;
                 }
 
@@ -60,8 +60,8 @@ namespace DOL.GS.Scripts
 
                 if (playerLoyalty < minLoyalty)
                 {
-                    client.Out.SendMessage($"You need to have at least {minLoyalty} days of Realm Loyalty to post a bounty.", eChatType.CT_Important,
-                        eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage($"You need to have at least {minLoyalty} days of Realm Loyalty to post a bounty.", EChatType.CT_Important,
+                        EChatLoc.CL_SystemWindow);
                     return;
                 }
 
@@ -78,30 +78,30 @@ namespace DOL.GS.Scripts
 
                     if (amount < minBountyReward)
                     {
-                        client.Out.SendMessage("The minimum Bounty amount is 50g", eChatType.CT_Important,
-                            eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage("The minimum Bounty amount is 50g", EChatType.CT_Important,
+                            EChatLoc.CL_SystemWindow);
                         amount = minBountyReward;
                     }
 
                     if (amount > maxBountyReward)
                     {
-                        client.Out.SendMessage("The maximum Bounty amount is 1000g", eChatType.CT_Important,
-                            eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage("The maximum Bounty amount is 1000g", EChatType.CT_Important,
+                            EChatLoc.CL_SystemWindow);
                         amount = maxBountyReward;
                     }
                 }
 
                 if (killerPlayer == null)
                 {
-                    client.Out.SendMessage("You have not been ganked ..yet!", eChatType.CT_Important,
-                        eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("You have not been ganked ..yet!", EChatType.CT_Important,
+                        EChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (killerPlayer.Client.Account.PrivLevel > 1)
                 {
-                    client.Out.SendMessage("You can't set a bounty on a GM!", eChatType.CT_Important,
-                        eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("You can't set a bounty on a GM!", EChatType.CT_Important,
+                        EChatLoc.CL_SystemWindow);
                     return;
                 }
 
@@ -122,8 +122,8 @@ namespace DOL.GS.Scripts
                 if (!player.RemoveMoney(amount * 100 * 100,
                         $"You have posted a Bounty Hunt on {killerPlayer.Name} for {amount} gold."))
                 {
-                    player.Out.SendMessage("You dont have enough money!", eChatType.CT_Merchant,
-                        eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("You dont have enough money!", EChatType.CT_Merchant,
+                        EChatLoc.CL_SystemWindow);
                     return;
                 }
 
@@ -131,8 +131,8 @@ namespace DOL.GS.Scripts
             }
             else
             {
-                player.Out.SendMessage("Use the command again if you change your mind.", eChatType.CT_Important,
-                    eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Use the command again if you change your mind.", EChatType.CT_Important,
+                    EChatLoc.CL_SystemWindow);
             }
         }
     }

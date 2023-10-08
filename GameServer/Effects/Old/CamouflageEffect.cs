@@ -11,14 +11,14 @@ namespace DOL.GS.Effects
 		{
 			base.Start(target);
 			if (target is GamePlayer)
-				(target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((target as GamePlayer).Client, "Effects.CamouflageEffect.YouAreCamouflaged"), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				(target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((target as GamePlayer).Client, "Effects.CamouflageEffect.YouAreCamouflaged"), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 		}
 
 		public override void Stop()
 		{
 			base.Stop();
 			if (m_owner is GamePlayer)
-				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.CamouflageEffect.YourCFIsGone"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.CamouflageEffect.YourCFIsGone"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 		
 		public override string Name

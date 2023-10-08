@@ -187,7 +187,7 @@ namespace DOL.GS.DailyQuest
 						case "another sunrise":
 							if (oranges.Step == 2)
 							{
-								player.Out.SendMessage("Enjoy your meal. With luck, it shall not be your last.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Enjoy your meal. With luck, it shall not be your last.", EChatType.CT_Chat, EChatLoc.CL_PopupWindow);
 								oranges.FinishQuest();
 							}
 							break;
@@ -259,7 +259,7 @@ namespace DOL.GS.DailyQuest
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Watch your back.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Watch your back.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -342,7 +342,7 @@ namespace DOL.GS.DailyQuest
 				}
 			}
 			FrontierMobsKilled++;
-			player.Out.SendMessage("[Hardcore] Monster Killed: ("+FrontierMobsKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("[Hardcore] Monster Killed: ("+FrontierMobsKilled+" | "+MAX_KillGoal+")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
 					
 			if (FrontierMobsKilled >= MAX_KillGoal)
@@ -382,7 +382,7 @@ namespace DOL.GS.DailyQuest
 
 		private void FailQuest()
 		{
-			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
+			m_questPlayer.Out.SendMessage(questTitle + " failed.", EChatType.CT_ScreenCenter_And_CT_System, EChatLoc.CL_SystemWindow);
 			FrontierMobsKilled = 0;
 			Step = -1;
 

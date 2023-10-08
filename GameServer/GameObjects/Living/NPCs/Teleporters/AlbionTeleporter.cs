@@ -124,8 +124,8 @@ namespace DOL.GS
 
 			if (region == null || region.IsDisabled)
 			{
-				player.Out.SendMessage("This destination is not available.", eChatType.CT_System,
-					eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("This destination is not available.", EChatType.CT_System,
+					EChatLoc.CL_SystemWindow);
 				return;
 			}
 			

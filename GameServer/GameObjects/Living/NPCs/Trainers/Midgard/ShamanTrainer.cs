@@ -51,7 +51,7 @@ namespace DOL.GS.Trainer
 				// perhaps player can be promoted
 				if (CanPromotePlayer(player))
 				{
-					player.Out.SendMessage(this.Name + " says, \"Do you desire to [join the House of Ymir] and defend our realm as a Shaman?\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+					player.Out.SendMessage(this.Name + " says, \"Do you desire to [join the House of Ymir] and defend our realm as a Shaman?\"",EChatType.CT_Say,EChatLoc.CL_PopupWindow);
 					if (!player.IsLevelRespecUsed)
 					{
 						OfferRespecialize(player);

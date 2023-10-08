@@ -838,7 +838,7 @@ namespace DOL.GS.Quests.Albion
 									quest.FinishQuest();
 								}
 								else
-									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+									player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 							}
 							break;
 
@@ -861,7 +861,7 @@ namespace DOL.GS.Quests.Albion
 							quest.FinishQuest();
 						}
 						else
-							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					}
 			}
 		}
@@ -938,7 +938,7 @@ namespace DOL.GS.Quests.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Our God forgives your laziness, just look out for stray lightning bolts.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Our God forgives your laziness, just look out for stray lightning bolts.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -989,7 +989,7 @@ namespace DOL.GS.Quests.Albion
 				{
 					if (gArgs.Target.Name == Blythe.Name)
 					{
-						m_questPlayer.Out.SendMessage("As you search the dead body of sister Blythe, you find a sacred " + statue_of_arawn.Name + ", bring it to " + Roben.Name + " has proof of your success.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						m_questPlayer.Out.SendMessage("As you search the dead body of sister Blythe, you find a sacred " + statue_of_arawn.Name + ", bring it to " + Roben.Name + " has proof of your success.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						GiveItem(player, statue_of_arawn);
 						Step = 2;
 					}
@@ -1007,7 +1007,7 @@ namespace DOL.GS.Quests.Albion
 						FinishQuest();
 					}
 					else
-						player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 			}
 		}

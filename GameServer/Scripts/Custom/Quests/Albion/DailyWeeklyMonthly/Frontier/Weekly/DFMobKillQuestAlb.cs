@@ -194,7 +194,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 						case "slay monsters":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Thank you for your contribution!", EChatType.CT_Chat, EChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -278,7 +278,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Albion.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping Albion.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -340,7 +340,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 					_mobsKilled++;
 				else
 				{
-					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
@@ -350,12 +350,12 @@ namespace DOL.GS.WeeklyQuest.Albion
 					_mobsKilled++;	
 				else
 				{
-					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls - needs a higher level monster to count", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
 					
-			player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("[Weekly] Monsters Killed in Darkness Falls: ("+_mobsKilled+" | "+MAX_KILLED+")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
 					
 			if (_mobsKilled >= MAX_KILLED)

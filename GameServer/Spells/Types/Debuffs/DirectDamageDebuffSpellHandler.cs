@@ -105,7 +105,7 @@ namespace DOL.GS.Spells
 
 			if (target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent)
 			{
-				MessageToCaster("Your spell has no effect on the keep component!", eChatType.CT_SpellResisted);
+				MessageToCaster("Your spell has no effect on the keep component!", EChatType.CT_SpellResisted);
 				return;
 			}
 			// calc damage

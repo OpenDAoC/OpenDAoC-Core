@@ -188,7 +188,7 @@ namespace DOL.GS.DailyQuest.Albion
 						case "capture":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Thank you for your contribution!", EChatType.CT_Chat, EChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -262,7 +262,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping me out.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping me out.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -309,7 +309,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 			if (Step != 1 || e != GamePlayerEvent.CapturedKeepsChanged) return;
 			_isCaptured = 1;
-			player.Out.SendMessage("[Daily] Captured Keep: ("+_isCaptured+" | "+MAX_CAPTURED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("[Daily] Captured Keep: ("+_isCaptured+" | "+MAX_CAPTURED+")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
 					
 			if (_isCaptured >= MAX_CAPTURED)
@@ -354,7 +354,7 @@ namespace DOL.GS.DailyQuest.Albion
 			}
 			else
 			{
-				m_questPlayer.Out.SendMessage("Clear one slot of your inventory for your reward", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				m_questPlayer.Out.SendMessage("Clear one slot of your inventory for your reward", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 	}

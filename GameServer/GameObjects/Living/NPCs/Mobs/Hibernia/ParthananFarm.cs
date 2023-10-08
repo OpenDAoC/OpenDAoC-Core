@@ -27,7 +27,7 @@ namespace DOL.GS
 					else
 						truc = ((source as GameSummonedPet).Owner as GamePlayer);
 					if (truc != null)
-						truc.Out.SendMessage(Name + " is immune to this form of attack!", eChatType.CT_SpellResisted, eChatLoc.CL_ChatWindow);
+						truc.Out.SendMessage(Name + " is immune to this form of attack!", EChatType.CT_SpellResisted, EChatLoc.CL_ChatWindow);
 					base.TakeDamage(source, damageType, 0, 0);
 					return;
 				}

@@ -41,11 +41,11 @@ public class TaskCommand : ACommandHandler, ICommandHandler
 			}
 			else if (task != null && task.TasksDone >= AbstractTask.MaxTasksDone(player.Level))
 			{
-				player.Out.SendMessage("You can do no more tasks at your current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You can do no more tasks at your current level", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else
 			{
-				player.Out.SendMessage("You have currently no pending task", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You have currently no pending task", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 	}

@@ -67,7 +67,7 @@ public class AchievementReskinVendor : GameNPC
         if (GetDistanceTo(t) > WorldMgr.INTERACT_DISTANCE)
         {
             t.Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".",
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return false;
         }
         StringBuilder sb = new StringBuilder();
@@ -406,7 +406,7 @@ public class AchievementReskinVendor : GameNPC
 
     public void SendReply(GamePlayer player, string msg)
     {
-        player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+        player.Out.SendMessage(msg, EChatType.CT_System, EChatLoc.CL_PopupWindow);
     }
 
     private GameNPC CreateDisplayNPC(GamePlayer player, DbInventoryItem item)

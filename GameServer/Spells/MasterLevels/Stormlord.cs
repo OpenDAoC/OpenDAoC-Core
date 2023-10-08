@@ -85,7 +85,7 @@ namespace DOL.GS.Spells
             neweffect.Start(target);
 
             if (target is GamePlayer)
-                ((GamePlayer)target).Out.SendMessage("You're harder to hit!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+                ((GamePlayer)target).Out.SendMessage("You're harder to hit!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
 
         }
 
@@ -224,8 +224,8 @@ namespace DOL.GS.Spells
             target.ChangeEndurance(target, EEnduranceChangeType.Spell, (-end));
 
             if (target is GamePlayer)
-                ((GamePlayer)target).Out.SendMessage(" You lose " + end + " endurance!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
-            (m_caster as GamePlayer).Out.SendMessage("" + target.Name + " loses " + end + " endurance!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+                ((GamePlayer)target).Out.SendMessage(" You lose " + end + " endurance!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
+            (m_caster as GamePlayer).Out.SendMessage("" + target.Name + " loses " + end + " endurance!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
         }
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
@@ -304,7 +304,7 @@ namespace DOL.GS.Spells
             neweffect.Start(target);
 
             if (target is GamePlayer)
-                ((GamePlayer)target).Out.SendMessage("Your dexterity and quickness decreased!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+                ((GamePlayer)target).Out.SendMessage("Your dexterity and quickness decreased!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
 
         }
 
@@ -392,7 +392,7 @@ namespace DOL.GS.Spells
 
             if (target is GamePlayer)
             {
-                ((GamePlayer)target).Out.SendMessage(m_caster.Name + " steals you " + mana + " points of power!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+                ((GamePlayer)target).Out.SendMessage(m_caster.Name + " steals you " + mana + " points of power!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
             }
 
             StealMana(target, mana);
@@ -411,10 +411,10 @@ namespace DOL.GS.Spells
 
         public virtual void SendCasterMessage(GameLiving target, int mana)
         {
-            MessageToCaster(string.Format("You steal {0} for {1} power!", target.Name, mana), eChatType.CT_YouHit);
+            MessageToCaster(string.Format("You steal {0} for {1} power!", target.Name, mana), EChatType.CT_YouHit);
             if (mana > 0)
             {
-                MessageToCaster("You steal " + mana + " power points" + (mana == 1 ? "." : "s."), eChatType.CT_Spell);
+                MessageToCaster("You steal " + mana + " power points" + (mana == 1 ? "." : "s."), EChatType.CT_Spell);
             }
             //else
             //{
@@ -448,7 +448,7 @@ namespace DOL.GS.Spells
             {
                 GameStorm targetStorm = effect.Owner as GameStorm;
                 targetStorm.Movable = false;
-                MessageToCaster("Now the vortex of this storm is locked!", eChatType.CT_YouWereHit);
+                MessageToCaster("Now the vortex of this storm is locked!", EChatType.CT_YouWereHit);
                 GameEventMgr.AddHandler(m_caster, GameLivingEvent.Moving, new CoreEventHandler(LivingMoves));
             }
         }
@@ -470,7 +470,7 @@ namespace DOL.GS.Spells
             if (player == null) return;
             if (e == GameLivingEvent.Moving)
             {
-                MessageToCaster("You are moving. Your concentration fades", eChatType.CT_SpellExpires);
+                MessageToCaster("You are moving. Your concentration fades", EChatType.CT_SpellExpires);
                 OnEffectExpires(m_effect, true);
                 return;
             }
@@ -541,7 +541,7 @@ namespace DOL.GS.Spells
             neweffect.Start(target);
 
             if (target is GamePlayer)
-                ((GamePlayer)target).Out.SendMessage("Your strenght and constitution decreased!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+                ((GamePlayer)target).Out.SendMessage("Your strenght and constitution decreased!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
 
         }
 
@@ -635,7 +635,7 @@ namespace DOL.GS.Spells
             neweffect.Start(target);
 
             if (target is GamePlayer)
-                ((GamePlayer)target).Out.SendMessage("Your acuity decreased!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+                ((GamePlayer)target).Out.SendMessage("Your acuity decreased!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
 
         }
 

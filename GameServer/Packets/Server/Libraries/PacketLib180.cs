@@ -27,7 +27,7 @@ namespace DOL.GS.PacketHandler
 			if (player == null || player.ObjectState != GameObject.eObjectState.Active)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ControlledHorse)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.ControlledHorse)))
 			{
 				if (player.HasHorse)
 				{
@@ -65,7 +65,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (player == null || player.ObjectState != GameObject.eObjectState.Active)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ControlledHorse)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.ControlledHorse)))
 			{
 				if (!flag || !player.HasHorse)
 				{
@@ -130,7 +130,7 @@ namespace DOL.GS.PacketHandler
 			if (playerToCreate.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PlayerCreate172)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PlayerCreate172)))
 			{
 
 				pak.WriteShort((ushort)playerToCreate.Client.SessionID);
@@ -200,7 +200,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void CheckLengthHybridSkillsPacket(ref GSTCPPacketOut pak, ref int maxSkills, ref int first)
+		public override void CheckLengthHybridSkillsPacket(ref GsTcpPacketOut pak, ref int maxSkills, ref int first)
 		{
 			if (pak.Length > 1500)
 			{
@@ -209,7 +209,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte)(first == 0 ? 99 : 0x03)); //subtype
 				pak.WriteByte((byte)first);
 				SendTCP(pak);
-				pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate));
+				pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate));
 				pak.WriteByte(0x01); //subcode
 				pak.WriteByte((byte)maxSkills); //number of entry
 				pak.WriteByte(0x03); //subtype
@@ -236,7 +236,7 @@ namespace DOL.GS.PacketHandler
 			{
 				int packetEntry = 0; // needed to tell client how much skill we send
 				// using pak
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate)))
 				{
 					// Write header
 					pak.WriteByte(0x01); //subcode for skill

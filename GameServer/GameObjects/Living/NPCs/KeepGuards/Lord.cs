@@ -228,14 +228,14 @@ namespace DOL.GS.Keeps
 
             if (InCombat || Component.Keep.InCombat)
             {
-                player.Out.SendMessage("You can't talk to the lord while under siege.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You can't talk to the lord while under siege.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 log.DebugFormat("KEEPWARNING: {0} attempted to interact with {1} of {2} while keep or lord in combat.", player.Name, Name, Component.Keep.Name);
                 return false;
             }
 
             if (GameServer.ServerRules.IsAllowedToClaim(player, CurrentRegion))
             {
-                player.Out.SendMessage("Would you like to [Claim Keep] now? Or maybe [Release Keep]?", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                player.Out.SendMessage("Would you like to [Claim Keep] now? Or maybe [Release Keep]?", EChatType.CT_System, EChatLoc.CL_PopupWindow);
             }
 
             return true;
@@ -283,7 +283,7 @@ namespace DOL.GS.Keeps
             if ((attacker != null && IsWithinRadius(attacker, distance) == false) || IsWithinRadius(source, distance) == false)
             {
                 if (attacker != null)
-                    attacker.Out.SendMessage(this.Name + " is immune to damage from this range", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                    attacker.Out.SendMessage(this.Name + " is immune to damage from this range", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -316,7 +316,7 @@ namespace DOL.GS.Keeps
                     {
                         if (PlayerMgr.IsAllowedToInteract(player, Component.Keep, EKeepInteractType.Claim))
                         {
-                            player.Out.SendDialogBox(eDialogCode.KeepClaim, (ushort)player.ObjectID, 0, 0, 0, eDialogType.YesNo, false, "Do you wish to claim\n" + Component.Keep.Name + "?");
+                            player.Out.SendDialogBox(EDialogCode.KeepClaim, (ushort)player.ObjectID, 0, 0, 0, EDialogType.YesNo, false, "Do you wish to claim\n" + Component.Keep.Name + "?");
                             return true;
                         }
                         break;

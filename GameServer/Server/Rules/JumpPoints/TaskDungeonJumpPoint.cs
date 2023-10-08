@@ -69,7 +69,7 @@ namespace DOL.GS.ServerRules
                 return true;
             }
 
-            player.Out.SendMessage("You need to have a proper mission before entering this area!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("You need to have a proper mission before entering this area!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return false;
         }
 	}

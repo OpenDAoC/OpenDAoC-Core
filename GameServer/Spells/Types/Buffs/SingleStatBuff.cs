@@ -53,7 +53,7 @@ namespace DOL.GS.Spells
                         Effectiveness *= 1.0 + m_caster.GetModified(EProperty.DebuffEffectivness) * 0.01;
 
                         if (playerCaster.UseDetailedCombatLog && m_caster.GetModified(EProperty.DebuffEffectivness) > 0)
-                            playerCaster.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(EProperty.DebuffEffectivness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                            playerCaster.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(EProperty.DebuffEffectivness)}", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
                     }
                     else
                     {
@@ -76,7 +76,7 @@ namespace DOL.GS.Spells
                     Effectiveness *= 1 + target.GetArmorAbsorb(EArmorSlot.TORSO);
 
                 if (playerOwner.UseDetailedCombatLog && m_caster.GetModified(EProperty.DebuffEffectivness) > 0)
-                    playerOwner.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(EProperty.DebuffEffectivness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage($"debuff effectiveness: {m_caster.GetModified(EProperty.DebuffEffectivness)}", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
             }
             else
                 Effectiveness = 1.0;
@@ -86,7 +86,7 @@ namespace DOL.GS.Spells
                 Effectiveness *= 1.0 + m_caster.GetModified(EProperty.BuffEffectiveness) * 0.01;
 
                 if (Caster is GamePlayer gamePlayer && gamePlayer.UseDetailedCombatLog && m_caster.GetModified(EProperty.BuffEffectiveness) > 0 )
-                    gamePlayer.Out.SendMessage($"buff effectiveness: {m_caster.GetModified(EProperty.BuffEffectiveness)}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    gamePlayer.Out.SendMessage($"buff effectiveness: {m_caster.GetModified(EProperty.BuffEffectiveness)}", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
             }
             else
                 Effectiveness *= GetCritBonus();
@@ -127,12 +127,12 @@ namespace DOL.GS.Spells
             GamePlayer playerCaster = Caster as GamePlayer;
 
             if (playerCaster?.UseDetailedCombatLog == true && critChance > 0)
-                playerCaster.Out.SendMessage($"Debuff crit chance: {Caster.DotCriticalChance}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                playerCaster.Out.SendMessage($"Debuff crit chance: {Caster.DotCriticalChance}", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
 
             if (Util.Chance(critChance))
             {
                 critMod *= 1 + Util.Random(1, 10) * 0.1;
-                playerCaster?.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(critMod - 1,3) * 100}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                playerCaster?.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(critMod - 1,3) * 100}% additional effect!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
             }
 
             return critMod;
@@ -152,7 +152,7 @@ namespace DOL.GS.Spells
         {
             if (target.HasAbility(Abilities.VampiirStrength))
             {
-                MessageToCaster("Your target already has an effect of that type!", eChatType.CT_Spell);
+                MessageToCaster("Your target already has an effect of that type!", EChatType.CT_Spell);
                 return;
             }
             base.ApplyEffectOnTarget(target);
@@ -173,7 +173,7 @@ namespace DOL.GS.Spells
         {
             if (target.HasAbility(Abilities.VampiirDexterity))
             {
-                MessageToCaster("Your target already has an effect of that type!", eChatType.CT_Spell);
+                MessageToCaster("Your target already has an effect of that type!", EChatType.CT_Spell);
                 return;
             }
             base.ApplyEffectOnTarget(target);
@@ -194,7 +194,7 @@ namespace DOL.GS.Spells
         {
             if (target.HasAbility(Abilities.VampiirConstitution))
             {
-                MessageToCaster("Your target already has an effect of that type!", eChatType.CT_Spell);
+                MessageToCaster("Your target already has an effect of that type!", EChatType.CT_Spell);
                 return;
             }
             base.ApplyEffectOnTarget(target);

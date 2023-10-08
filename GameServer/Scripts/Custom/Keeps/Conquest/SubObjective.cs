@@ -95,7 +95,7 @@ public class SubObjective
             if(!RecentCaps.Contains(player) && player.Realm == CapturingRealm)
                 player.GainRealmPoints(50, false);
             else
-                player.Out.SendMessage($"You've recently captured this flag and are awarded no realm points.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage($"You've recently captured this flag and are awarded no realm points.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
             RecentCaps.Add(player);
         }
@@ -111,8 +111,8 @@ public class SubObjective
         foreach (GamePlayer player in FlagObject.GetPlayersInRadius(750))
         {
             if(secondsLeft%5 == 0)
-                player.Out.SendMessage($"{secondsLeft} seconds until capture", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-            player.Out.SendMessage($"{secondsLeft} seconds until capture", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage($"{secondsLeft} seconds until capture", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
+            player.Out.SendMessage($"{secondsLeft} seconds until capture", EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
         
         if(secondsLeft%5 == 0)
@@ -140,9 +140,9 @@ public class SubObjective
         foreach (GamePlayer player in FlagObject.GetPlayersInRadius(50000))
         {
             if (player.Realm == CapturingRealm)
-                player.Out.SendMessage($"An ally has captured flag {ObjectiveNumber}!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage($"An ally has captured flag {ObjectiveNumber}!", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
             else
-                player.Out.SendMessage($"An enemy has captured flag {ObjectiveNumber}!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage($"An enemy has captured flag {ObjectiveNumber}!", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
         }
     }
 

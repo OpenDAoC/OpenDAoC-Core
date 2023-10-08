@@ -35,11 +35,11 @@ namespace DOL.GS
 			
 			if(alreadyReset == null)
 			{
-				SayTo(player, eChatLoc.CL_PopupWindow, $"Hello {player.CharacterClass.Name}, I can grant you a [stats respec] if you need one." );
+				SayTo(player, EChatLoc.CL_PopupWindow, $"Hello {player.CharacterClass.Name}, I can grant you a [stats respec] if you need one." );
 			}
 			else
 			{
-				SayTo(player, eChatLoc.CL_PopupWindow, "You have already been granted a reset.\n If you haven't used it yet, logout to customise your stats.");
+				SayTo(player, EChatLoc.CL_PopupWindow, "You have already been granted a reset.\n If you haven't used it yet, logout to customise your stats.");
 			}
 
 			return true;
@@ -65,7 +65,7 @@ namespace DOL.GS
 
 			if (alreadyReset == null && text == "stats respec")
 			{
-				SayTo(player, eChatLoc.CL_PopupWindow, "There it is done! Now, you must leave this world for a short time for the magic to work. (You must log out to change your appearance.)");
+				SayTo(player, EChatLoc.CL_PopupWindow, "There it is done! Now, you must leave this world for a short time for the magic to work. (You must log out to change your appearance.)");
 				player.CustomisationStep = 3;
 				
 				DbCoreCharacterXCustomParam statsReset = new DbCoreCharacterXCustomParam();

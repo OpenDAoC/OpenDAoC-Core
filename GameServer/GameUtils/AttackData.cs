@@ -271,7 +271,7 @@ namespace DOL.GS
 					fumbleRoll = Util.CryptoNextDouble();
 
 				if (playerAttacker?.UseDetailedCombatLog == true)
-					playerAttacker.Out.SendMessage($"Your chance to fumble: {fumbleChance * 100:0.##}% rand: {fumbleRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerAttacker.Out.SendMessage($"Your chance to fumble: {fumbleChance * 100:0.##}% rand: {fumbleRoll * 100:0.##}", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
 
 				return IsMeleeAttack && fumbleChance > fumbleRoll;
 			}

@@ -14,7 +14,7 @@ namespace DOL.GS
             if (sendMessage)
             {
                 foreach (GamePlayer player in ClientService.GetPlayersOfRealm(realm))
-                    player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
 
             if (ServerProperties.Properties.RECORD_NEWS)
@@ -53,7 +53,7 @@ namespace DOL.GS
                 {
                     n--;
                     DbNews news = newsList[n];
-                    client.Out.SendMessage(string.Format("N,{0},{1},{2},\"{3}\"", news.Type, index++, RetElapsedTime(news.CreationDate), news.Text), eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage(string.Format("N,{0},{1},{2},\"{3}\"", news.Type, index++, RetElapsedTime(news.CreationDate), news.Text), EChatType.CT_SocialInterface, EChatLoc.CL_SystemWindow);
                 }
             }
         }

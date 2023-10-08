@@ -81,7 +81,7 @@ namespace DOL.GS.Commands
                                 string message = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.RandMessage" + Util.Random(4), targetPlayer.Name);
                                 client.Player.TempProperties.SetProperty("AppealAssist", targetPlayer);
                                 client.Player.SendPrivateMessage(targetPlayer, message);
-                                targetPlayer.Out.SendPlaySound(eSoundType.Craft, 0x04);
+                                targetPlayer.Out.SendPlaySound(ESoundType.Craft, 0x04);
                                 return;
                             }
                             else
@@ -375,7 +375,7 @@ namespace DOL.GS.Commands
                             {
                                 //cleaning up the player since he really was online.
                                 AppealMgr.MessageToClient(targetPlayer.Client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.StaffClosedYourAppeal", client.Player.Name));
-                                targetPlayer.Out.SendPlaySound(eSoundType.Craft, 0x02);
+                                targetPlayer.Out.SendPlaySound(ESoundType.Craft, 0x02);
                                 targetPlayer.TempProperties.SetProperty("HasPendingAppeal", false);
                                 break;
                             }

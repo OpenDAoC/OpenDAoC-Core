@@ -57,11 +57,11 @@ namespace DOL.GS
 
             if (freeRR > 0)
             {
-                player.Out.SendMessage("Greetings, " + player.Name + ", during the alpha test I can give you free [Realmrank " + freeRR + "]!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                player.Out.SendMessage("Greetings, " + player.Name + ", during the alpha test I can give you free [Realmrank " + freeRR + "]!", EChatType.CT_System, EChatLoc.CL_PopupWindow);
             }
             if (freeRR == 0)
             {
-                player.Out.SendMessage("I'm sorry, " + player.Name + " I've been told not to grant free realmranks anymore!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                player.Out.SendMessage("I'm sorry, " + player.Name + " I've been told not to grant free realmranks anymore!", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
             }
 
             #endregion
@@ -82,7 +82,7 @@ namespace DOL.GS
                 "[10L0]\n" +
                 "[11L0]\n" +
                 "[12L0]\n" +
-                "[13L0]\n", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                "[13L0]\n", EChatType.CT_System, EChatLoc.CL_PopupWindow);
             }
             if (player.Client.Account.PrivLevel == 3)
             {
@@ -99,7 +99,7 @@ namespace DOL.GS
                 "[10L0]\n" +
                 "[11L0]\n" +
                 "[12L0]\n" +
-                "[13L0]\n", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                "[13L0]\n", EChatType.CT_System, EChatLoc.CL_PopupWindow);
             }
 
             #endregion
@@ -415,7 +415,7 @@ namespace DOL.GS
         }
         private void SendReply(GamePlayer target, string msg)
         {
-            target.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            target.Out.SendMessage(msg, EChatType.CT_System, EChatLoc.CL_PopupWindow);
         }
     }
 }

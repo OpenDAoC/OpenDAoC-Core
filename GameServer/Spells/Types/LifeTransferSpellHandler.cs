@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
 			{
 				if (target.IsDiseased)
 				{
-					MessageToCaster("Your target is diseased!", eChatType.CT_SpellResisted);
+					MessageToCaster("Your target is diseased!", EChatType.CT_SpellResisted);
 					healed |= HealTarget(healTarget, ( transferHeal >>= 1 ));	
 				}
 
@@ -97,19 +97,19 @@ namespace DOL.GS.Spells
 
 			if (!target.IsAlive) 
 			{
-				MessageToCaster(target.GetName(0, true) + " is dead!", eChatType.CT_SpellResisted);
+				MessageToCaster(target.GetName(0, true) + " is dead!", EChatType.CT_SpellResisted);
 				return false;
 			}
 
 			if (m_caster == target)
 			{
-				MessageToCaster("You cannot transfer life to yourself.", eChatType.CT_SpellResisted);
+				MessageToCaster("You cannot transfer life to yourself.", EChatType.CT_SpellResisted);
 				return false;
 			}
 			
 			if (amount <= 0) //Player does not have enough health to transfer
 			{
-				MessageToCaster("You do not have enough health to transfer.", eChatType.CT_SpellResisted);
+				MessageToCaster("You do not have enough health to transfer.", EChatType.CT_SpellResisted);
 				return false;  
 			}
 
@@ -154,7 +154,7 @@ namespace DOL.GS.Spells
                     }
 
                     joueur_a_considerer.GainRealmPoints(Bonus_RP_Soin, false);
-                    joueur_a_considerer.Out.SendMessage("You gain " + Bonus_RP_Soin.ToString() + " realmpoints for healing a member of your Realm", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    joueur_a_considerer.Out.SendMessage("You gain " + Bonus_RP_Soin.ToString() + " realmpoints for healing a member of your Realm", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 }
             }
 
@@ -164,17 +164,17 @@ namespace DOL.GS.Spells
 			{
 				if (Spell.Pulse == 0)
 				{
-					MessageToCaster(target.GetName(0, true)+" is fully healed.", eChatType.CT_SpellResisted);
+					MessageToCaster(target.GetName(0, true)+" is fully healed.", EChatType.CT_SpellResisted);
 				}
 
 				return false;
 			}
 
 			
-			MessageToCaster("You heal " + target.GetName(0, false) + " for " + heal + " hit points!", eChatType.CT_Spell);
-			MessageToLiving(target, "You are healed by " + m_caster.GetName(0, false) + " for " + heal + " hit points.", eChatType.CT_Spell);
+			MessageToCaster("You heal " + target.GetName(0, false) + " for " + heal + " hit points!", EChatType.CT_Spell);
+			MessageToLiving(target, "You are healed by " + m_caster.GetName(0, false) + " for " + heal + " hit points.", EChatType.CT_Spell);
 			if(heal < amount)
-					MessageToCaster(target.GetName(0, true)+" is fully healed.", eChatType.CT_Spell);
+					MessageToCaster(target.GetName(0, true)+" is fully healed.", EChatType.CT_Spell);
 
 			return true;
 		}

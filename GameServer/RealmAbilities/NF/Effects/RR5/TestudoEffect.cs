@@ -74,9 +74,9 @@ namespace DOL.GS.Effects
 			ad.Damage -= absorb;
 			ad.CriticalDamage -= critic;
 			if (living is GamePlayer)
-				((GamePlayer)living).Out.SendMessage("Your Testudo Stance reduces the damage by " + (absorb+critic) + " points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				((GamePlayer)living).Out.SendMessage("Your Testudo Stance reduces the damage by " + (absorb+critic) + " points", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 			if (ad.Attacker is GamePlayer)
-				((GamePlayer)ad.Attacker).Out.SendMessage(living.Name + "'s Testudo Stance reducec your damage by " + (absorb+critic) + " points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				((GamePlayer)ad.Attacker).Out.SendMessage(living.Name + "'s Testudo Stance reducec your damage by " + (absorb+critic) + " points", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 
 		}
 

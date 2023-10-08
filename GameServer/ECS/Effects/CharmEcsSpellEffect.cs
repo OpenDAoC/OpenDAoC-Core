@@ -38,13 +38,13 @@ namespace DOL.GS
             {
                 // Message: "{0}The slough serpent} is now enthralled!"
                 if (!string.IsNullOrEmpty(SpellHandler.Spell.Message1))
-                    MessageUtil.SystemToArea(charmMob, Util.MakeSentence(SpellHandler.Spell.Message1, charmMob.GetName(0, true)), eChatType.CT_System, charmMob, casterPlayer);
+                    MessageUtil.SystemToArea(charmMob, Util.MakeSentence(SpellHandler.Spell.Message1, charmMob.GetName(0, true)), EChatType.CT_System, charmMob, casterPlayer);
 
                 // Message: {0} is now under your control.
                 if (!string.IsNullOrEmpty(SpellHandler.Spell.Message2))
-                    charmSpellHandler.MessageToCaster(Util.MakeSentence(SpellHandler.Spell.Message2, charmMob.GetName(0, true)), eChatType.CT_Spell);
+                    charmSpellHandler.MessageToCaster(Util.MakeSentence(SpellHandler.Spell.Message2, charmMob.GetName(0, true)), EChatType.CT_Spell);
                 else
-                    charmSpellHandler.MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.GamePet.StartSpell.UnderControl", charmMob.GetName(0, true)), eChatType.CT_Spell);
+                    charmSpellHandler.MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.GamePet.StartSpell.UnderControl", charmMob.GetName(0, true)), EChatType.CT_Spell);
 
                 casterPlayer.SetControlledBrain(charmSpellHandler.m_controlledBrain);
 

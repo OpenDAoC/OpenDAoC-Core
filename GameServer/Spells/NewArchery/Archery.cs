@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
 			if (m_caster.ObjectState != GameLiving.eObjectState.Active)	return false;
 			if (!m_caster.IsAlive)
 			{
-				MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
+				MessageToCaster("You are dead and can't cast!", EChatType.CT_System);
 				return false;
 			}
 			
@@ -41,7 +41,7 @@ namespace DOL.GS.Spells
 			GameSpellEffect Phaseshift = SpellHandler.FindEffectOnTarget(Caster, "Phaseshift");
 			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == ESpellType.Mesmerize))
 			{
-				MessageToCaster("You're phaseshifted and can't cast a spell", eChatType.CT_System);
+				MessageToCaster("You're phaseshifted and can't cast a spell", EChatType.CT_System);
 				return false;
 			}
 
@@ -49,7 +49,7 @@ namespace DOL.GS.Spells
 			ShieldTripDisarmEffect shieldDisarm = Caster.EffectList.GetOfType<ShieldTripDisarmEffect>();
 			if (shieldDisarm != null)
 			{
-				MessageToCaster("You're disarmed and can't cast a spell", eChatType.CT_System);
+				MessageToCaster("You're disarmed and can't cast a spell", EChatType.CT_System);
 				return false;
 			}
 
@@ -61,7 +61,7 @@ namespace DOL.GS.Spells
 				if(EffectOwner==selectedTarget)
 				{
 					if (m_caster is GamePlayer)
-						((GamePlayer)m_caster).Out.SendMessage(string.Format("{0} is invisible to you!", selectedTarget.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+						((GamePlayer)m_caster).Out.SendMessage(string.Format("{0} is invisible to you!", selectedTarget.GetName(0, true)), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
 					
 					return false;
 				}
@@ -70,13 +70,13 @@ namespace DOL.GS.Spells
 			// Is immune ?
 			if (selectedTarget!=null&&selectedTarget.HasAbility("DamageImmunity"))
 			{
-				MessageToCaster(selectedTarget.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+				MessageToCaster(selectedTarget.Name + " is immune to this effect!", EChatType.CT_SpellResisted);
 				return false;
 			}
 			
 			if (m_caster.IsSitting)
 			{
-				MessageToCaster("You can't cast while sitting!", eChatType.CT_SpellResisted);
+				MessageToCaster("You can't cast while sitting!", EChatType.CT_SpellResisted);
 				return false;
 			}
 			if (m_spell.RecastDelay > 0)
@@ -84,7 +84,7 @@ namespace DOL.GS.Spells
 				int left = m_caster.GetSkillDisabledDuration(m_spell);
 				if (left > 0)
 				{
-					MessageToCaster("You must wait " + (left / 1000 + 1).ToString() + " seconds to use this spell!", eChatType.CT_System);
+					MessageToCaster("You must wait " + (left / 1000 + 1).ToString() + " seconds to use this spell!", EChatType.CT_System);
 					return false;
                 }
             }
@@ -95,7 +95,7 @@ namespace DOL.GS.Spells
 				{
 					if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
 					{
-						MessageToCaster("Your area target is out of range.  Select a closer target.", eChatType.CT_SpellResisted);
+						MessageToCaster("Your area target is out of range.  Select a closer target.", EChatType.CT_SpellResisted);
 						return false;
 					}
 
@@ -105,14 +105,14 @@ namespace DOL.GS.Spells
 				{
 					if (m_caster.IsObjectInFront(selectedTarget, 180) == false)
 					{
-						MessageToCaster("Your target is not in view!", eChatType.CT_SpellResisted);
+						MessageToCaster("Your target is not in view!", EChatType.CT_SpellResisted);
 						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
 						return false;
 					}
 
 					if (m_caster.TargetInView == false)
 					{
-						MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
+						MessageToCaster("Your target is not visible!", EChatType.CT_SpellResisted);
 						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
 						return false;
 					}
@@ -125,7 +125,7 @@ namespace DOL.GS.Spells
 			{
 				if (Spell.LifeDrainReturn == (int)eShotType.Critical && (!(Caster.IsStealthed)))
 				{
-					MessageToCaster("You must be stealthed and wielding a bow to use this ability!", eChatType.CT_SpellResisted);
+					MessageToCaster("You must be stealthed and wielding a bow to use this ability!", EChatType.CT_SpellResisted);
 					return false;
 				}
 
@@ -135,18 +135,18 @@ namespace DOL.GS.Spells
 			{
 				if (Spell.LifeDrainReturn == (int)eShotType.Critical)
 				{
-					MessageToCaster("You must be stealthed and wielding a bow to use this ability!", eChatType.CT_SpellResisted);
+					MessageToCaster("You must be stealthed and wielding a bow to use this ability!", EChatType.CT_SpellResisted);
 					return false;
 				}
 
-				MessageToCaster("You must be wielding a bow to use this ability!", eChatType.CT_SpellResisted);
+				MessageToCaster("You must be wielding a bow to use this ability!", EChatType.CT_SpellResisted);
 				return false;
 			}
 		}
 		
 		public override void SendSpellMessages()
 		{
-			MessageToCaster("You prepare a " + Spell.Name, eChatType.CT_YouHit);
+			MessageToCaster("You prepare a " + Spell.Name, EChatType.CT_YouHit);
 		}
 
 
@@ -211,7 +211,7 @@ namespace DOL.GS.Spells
 							if (target is GamePlayer)
 							{
 								player = target as GamePlayer;
-								player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage("A shot penetrated your magic barrier!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 							}
 							ad.AttackResult = EAttackResult.HitUnstyled;
 						}
@@ -220,7 +220,7 @@ namespace DOL.GS.Spells
 					case (int)eShotType.Power:
 						{
 							player = target as GamePlayer;
-							player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("A shot penetrated your magic barrier!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 							ad.AttackResult = EAttackResult.HitUnstyled;
                             EffectService.RequestImmediateCancelEffect(bladeturn.FirstOrDefault());
                         }
@@ -232,12 +232,12 @@ namespace DOL.GS.Spells
 							if (Caster is GamePlayer)
 							{
 								player = Caster as GamePlayer;
-								player.Out.SendMessage("Your strike was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage("Your strike was absorbed by a magical barrier!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 							}
 							if (target is GamePlayer)
 							{
 								player = target as GamePlayer;
-								player.Out.SendMessage("The blow was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage("The blow was absorbed by a magical barrier!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 								ad.AttackResult = EAttackResult.Missed;
 								EffectService.RequestImmediateCancelEffect(bladeturn.FirstOrDefault());
 							}
@@ -422,7 +422,7 @@ namespace DOL.GS.Spells
 				if (Util.Chance((int)chance))
 				{
 					Caster.TempProperties.SetProperty(INTERRUPT_TIMEOUT_PROPERTY, GameLoop.GameLoopTime + Caster.SpellInterruptDuration);
-					MessageToLiving(Caster, attacker.GetName(0, true) + " attacks you and your shot is interrupted!", eChatType.CT_SpellResisted);
+					MessageToLiving(Caster, attacker.GetName(0, true) + " attacks you and your shot is interrupted!", EChatType.CT_SpellResisted);
 					InterruptCasting();
 					return true;
 				}

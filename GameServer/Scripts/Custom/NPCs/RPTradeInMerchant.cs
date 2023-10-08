@@ -40,7 +40,7 @@ namespace DOL.GS.Scripts
             if (!base.Interact(player)) return false;
             TurnTo(player, 100);
 
-            player.Out.SendMessage("Greetings, " + player.Name + ". I'd be happy to take some realm points off your hands. The process can feel a bit painful, but weathering the trial is not without [prestige].", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            player.Out.SendMessage("Greetings, " + player.Name + ". I'd be happy to take some realm points off your hands. The process can feel a bit painful, but weathering the trial is not without [prestige].", EChatType.CT_System, EChatLoc.CL_PopupWindow);
             
             return true;
         }

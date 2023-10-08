@@ -19,50 +19,50 @@ namespace DOL.GS.Commands
 		{
 			if (client.Player != null)
 			{
-				client.Out.SendMessage("\n  ===== [[[ Command Reload ]]] ===== \n", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage(" Reload given element.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("\n  ===== [[[ Command Reload ]]] ===== \n", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(" Reload given element.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 		private static void SendSystemMessageMob(GameClient client)
 		{
 			if (client.Player != null)
 			{
-				client.Out.SendMessage(" /reload mob ' reload all mob in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage(" /reload mob ' realm <0/1/2/3>' reload all mob with specifique realm in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage(" /reload mob ' name <name_you_want>' reload all mob with specifique name in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage(" /reload mob ' model <model_ID>' reload all mob with specifique model in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(" /reload mob ' reload all mob in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(" /reload mob ' realm <0/1/2/3>' reload all mob with specifique realm in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(" /reload mob ' name <name_you_want>' reload all mob with specifique name in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(" /reload mob ' model <model_ID>' reload all mob with specifique model in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 		private static void SendSystemMessageObject(GameClient client)
 		{
 			if (client.Player != null)
 			{
-				client.Out.SendMessage(" /reload object ' reload all static object in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage(" /reload object ' realm <0/1/2/3>' reload all static object with specifique realm in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage(" /reload object ' name <name_you_want>' reload all static object with specifique name in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage(" /reload object ' model <model_ID>' reload all static object with specifique model in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(" /reload object ' reload all static object in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(" /reload object ' realm <0/1/2/3>' reload all static object with specifique realm in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(" /reload object ' name <name_you_want>' reload all static object with specifique name in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(" /reload object ' model <model_ID>' reload all static object with specifique model in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 		private static void SendSystemMessageRealm(GameClient client)
 		{
 			if (client.Player != null)
 			{
-				client.Out.SendMessage("\n /reload <object/mob> realm <0/1/2/3>' reload all element with specifique realm in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage(" can use 0/1/2/3 or n/a/m/h or no/alb/mid/hib....", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("\n /reload <object/mob> realm <0/1/2/3>' reload all element with specifique realm in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(" can use 0/1/2/3 or n/a/m/h or no/alb/mid/hib....", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 		private static void SendSystemMessageName(GameClient client)
 		{
 			if (client.Player != null)
 			{
-				client.Out.SendMessage("\n /reload <object/mob>  name <name_you_want>' reload all element with specified name in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("\n /reload <object/mob>  name <name_you_want>' reload all element with specified name in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 		private static void SendSystemMessageModel(GameClient client)
 		{
 			if (client.Player != null)
 			{
-				client.Out.SendMessage("\n /reload <object/mob>  model <model_ID>' reload all element with specified model_ID in region.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("\n /reload <object/mob>  model <model_ID>' reload all element with specified model_ID in region.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -81,10 +81,10 @@ namespace DOL.GS.Commands
 					SendSystemMessageBase(client);
 					SendSystemMessageMob(client);
 					SendSystemMessageObject(client);
-					client.Out.SendMessage(" /reload specs - reload all specializations.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					client.Out.SendMessage(" /reload spells - reload a spells and spelllines, checking db for changed and new spells.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					client.Out.SendMessage(" /reload teleports - reload all teleport locations", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					client.Out.SendMessage(" /reload npctemplates - reload all NPCTemplates", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					client.Out.SendMessage(" /reload specs - reload all specializations.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					client.Out.SendMessage(" /reload spells - reload a spells and spelllines, checking db for changed and new spells.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					client.Out.SendMessage(" /reload teleports - reload all teleport locations", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					client.Out.SendMessage(" /reload npctemplates - reload all NPCTemplates", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				log.Info("/reload command failed, review parameters.");
 				return;
@@ -174,7 +174,7 @@ namespace DOL.GS.Commands
 			if (args[1].ToLower() == "specs")
 			{
 				int count = SkillBase.LoadSpecializations();
-				if (client != null) client.Out.SendMessage(string.Format("{0} specializations loaded.", count), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				if (client != null) client.Out.SendMessage(string.Format("{0} specializations loaded.", count), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				log.Info(string.Format("{0} specializations loaded.", count));
 				return;
 			}
@@ -182,7 +182,7 @@ namespace DOL.GS.Commands
 			if (args[1].ToLower() == "teleports")
 			{
 				WorldMgr.LoadTeleports();
-				if (client != null) client.Out.SendMessage("Teleport locations reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				if (client != null) client.Out.SendMessage("Teleport locations reloaded.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				log.Info("Teleport locations reloaded.");
 				return;
 			}
@@ -190,7 +190,7 @@ namespace DOL.GS.Commands
 			if (args[1].ToLower() == "npctemplates")
 			{
 				NpcTemplateMgr.Reload();
-				if (client != null) client.Out.SendMessage("NPC templates reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				if (client != null) client.Out.SendMessage("NPC templates reloaded.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				log.Info("NPC templates reloaded.");
 				return;
 			}
@@ -198,7 +198,7 @@ namespace DOL.GS.Commands
 			if (args[1].ToLower() == "doors")
 			{
 				DoorMgr.Init();
-				if (client != null) client.Out.SendMessage("Doors reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				if (client != null) client.Out.SendMessage("Doors reloaded.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				log.Info("Doors reloaded.");
 				return;
 			}

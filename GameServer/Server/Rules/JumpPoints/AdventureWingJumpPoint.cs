@@ -96,7 +96,7 @@ namespace DOL.GS.ServerRules
             		if(previousInstance.NumPlayers > 0) 
             		{
             			//We can't jump !
-            			player.Out.SendMessage("You have another instance (" + previousInstance.Description + ") running with people in it !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            			player.Out.SendMessage("You have another instance (" + previousInstance.Description + ") running with people in it !", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             			return false;
             		}
             		else 
@@ -204,7 +204,7 @@ namespace DOL.GS.ServerRules
                 return false;
             }
 
-            player.Out.SendMessage("Something went Wrong when creating Instance !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("Something went Wrong when creating Instance !", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return false;
         }
 	}

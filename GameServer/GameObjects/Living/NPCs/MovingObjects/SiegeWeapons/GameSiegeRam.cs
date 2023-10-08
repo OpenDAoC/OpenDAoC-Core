@@ -90,14 +90,14 @@ namespace DOL.GS
 			//Only allow rams to attack keep or relic doors 
 			if (!(Owner.TargetObject is GameKeepDoor) && !(Owner.TargetObject is GameRelicDoor))
 			{
-				Owner.Out.SendMessage("Rams can only attack doors!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Owner.Out.SendMessage("Rams can only attack doors!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			//Range Check
 			if (!this.IsWithinRadius(Owner.TargetObject, AttackRange))
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("You are too far away to attack " + Owner.TargetObject.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("You are too far away to attack " + Owner.TargetObject.Name, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			//Limit 2 Rams aimed at door at a time
@@ -117,7 +117,7 @@ namespace DOL.GS
 			if (ramsAimedAtTarget >= MAX_RAMS_ATTACKING_TARGET)
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("Too many rams already attacking   " + TargetObject?.Name, eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("Too many rams already attacking   " + TargetObject?.Name, EChatType.CT_System,EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -132,7 +132,7 @@ namespace DOL.GS
 			{
 
 				if(Owner != null)
-					Owner.Out.SendMessage(target.Name + " is already destroyed!" , eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage(target.Name + " is already destroyed!" , EChatType.CT_System,EChatLoc.CL_SystemWindow);
 				return;
 			}
 			
@@ -146,7 +146,7 @@ namespace DOL.GS
 			if (target == null)
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("Select a target first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("Select a target first.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -154,7 +154,7 @@ namespace DOL.GS
 			if (!(target is GameKeepDoor) && !(target is GameRelicDoor))
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("Rams can only attack doors!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("Rams can only attack doors!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -162,7 +162,7 @@ namespace DOL.GS
 			if (!this.IsWithinRadius(target, AttackRange))
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("You are too far away to attack " + target.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("You are too far away to attack " + target.Name, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -182,8 +182,8 @@ namespace DOL.GS
 			if(Owner != null)
 			{
 				Owner.OnAttackEnemy(ad);
-				Owner.Out.SendMessage("The " + this.Name + " hits " + target.Name + " for " + damageAmount + " damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-				MessageUtil.SystemToArea(this, GetName(0, false) + " hits " + target.GetName(0, true), eChatType.CT_OthersCombat, Owner);
+				Owner.Out.SendMessage("The " + this.Name + " hits " + target.Name + " for " + damageAmount + " damage!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
+				MessageUtil.SystemToArea(this, GetName(0, false) + " hits " + target.GetName(0, true), EChatType.CT_OthersCombat, Owner);
 			}
 			base.DoDamage();
 		}

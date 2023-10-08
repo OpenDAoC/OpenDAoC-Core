@@ -38,7 +38,7 @@ namespace DOL.GS.Scripts
         public override bool Interact(GamePlayer player)
         {
             TradeItems = new MerchantTradeItems("potion_merchant");
-            player.Out.SendMerchantWindow(TradeItems, eMerchantWindowType.Normal);
+            player.Out.SendMerchantWindow(TradeItems, EMerchantWindowType.Normal);
             return true;
         }
     }  

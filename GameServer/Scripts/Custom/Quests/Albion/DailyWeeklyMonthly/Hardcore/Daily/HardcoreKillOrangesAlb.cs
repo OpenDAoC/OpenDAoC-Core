@@ -188,7 +188,7 @@ namespace DOL.GS.DailyQuest
 						case "another sunrise":
 							if (oranges.Step == 2)
 							{
-								player.Out.SendMessage("From dust we are born, and to dust we return. Your time will come eventually.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("From dust we are born, and to dust we return. Your time will come eventually.", EChatType.CT_Chat, EChatLoc.CL_PopupWindow);
 								oranges.FinishQuest();
 							}
 							break;
@@ -257,7 +257,7 @@ namespace DOL.GS.DailyQuest
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("The titans shall tremble.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("The titans shall tremble.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -341,7 +341,7 @@ namespace DOL.GS.DailyQuest
 				}
 			}
 			OrangeConKilled++;
-			player.Out.SendMessage("[Hardcore] Monster Killed: ("+OrangeConKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("[Hardcore] Monster Killed: ("+OrangeConKilled+" | "+MAX_KillGoal+")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
 					
 			if (OrangeConKilled >= MAX_KillGoal)
@@ -382,7 +382,7 @@ namespace DOL.GS.DailyQuest
 		private void FailQuest()
 		{
 			OrangeConKilled = 0;
-			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
+			m_questPlayer.Out.SendMessage(questTitle + " failed.", EChatType.CT_ScreenCenter_And_CT_System, EChatLoc.CL_SystemWindow);
 			Step = -1;
 
 			if (m_questPlayer.QuestList.TryRemove(this, out byte value))

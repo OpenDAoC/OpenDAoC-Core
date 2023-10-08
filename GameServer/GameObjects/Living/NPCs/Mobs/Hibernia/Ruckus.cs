@@ -54,7 +54,7 @@ namespace DOL.AI.Brain
 					foreach(GamePlayer player in Body.GetPlayersInRadius(1500))
                     {
 						if (player != null)
-							player.Out.SendMessage("Ruckus begins saving energy for a stunning blow.\nRuckus attacks begin to stun his opponent with next blow.", eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("Ruckus begins saving energy for a stunning blow.\nRuckus attacks begin to stun his opponent with next blow.", EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
                     }
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStun), 2000);
 					PrepareStun = true;

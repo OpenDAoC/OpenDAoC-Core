@@ -106,7 +106,7 @@ namespace DOL.GS
                                 }
                                 else
                                 {
-                                    ((SpellHandler)effect.SpellHandler).MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
+                                    ((SpellHandler)effect.SpellHandler).MessageToCaster("You do not have enough power and your spell was canceled.", EChatType.CT_SpellExpires);
                                     EffectService.RequestCancelConcEffect(effect);
                                     continue;
                                 }

@@ -9,10 +9,10 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
-            eChatType chatType = eChatType.CT_SpellPulse;
+            EChatType chatType = EChatType.CT_SpellPulse;
             if (SpellHandler.Spell.Pulse == 0)
             {
-                chatType = eChatType.CT_Spell;
+                chatType = EChatType.CT_Spell;
             }
             
             // "A crystal shield covers you."

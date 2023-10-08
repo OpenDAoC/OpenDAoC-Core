@@ -24,7 +24,7 @@ namespace DOL.GS.Commands
 						{
 							pet.RemoveFromWorld();
 							client.Player.TempProperties.RemoveProperty(NoveltyPetBrain.HAS_PET);
-							client.Player.MessageToSelf("You have dismissed your companion pet.",eChatType.CT_Spell);
+							client.Player.MessageToSelf("You have dismissed your companion pet.",EChatType.CT_Spell);
 						}
 		
 					}
@@ -32,7 +32,7 @@ namespace DOL.GS.Commands
 			}
 			else
 			{
-				client.Player.MessageToSelf("You have no companion pet.",eChatType.CT_SpellResisted);
+				client.Player.MessageToSelf("You have no companion pet.",EChatType.CT_SpellResisted);
 			}
 		}
 

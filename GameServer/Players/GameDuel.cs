@@ -110,7 +110,7 @@ namespace DOL.GS
 				Starter.XPGainers.Clear();
 			}
 			
-			Starter.Out.SendMessage(LanguageMgr.GetTranslation(Starter.Client, "GamePlayer.DuelStop.DuelEnds"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
+			Starter.Out.SendMessage(LanguageMgr.GetTranslation(Starter.Client, "GamePlayer.DuelStop.DuelEnds"), EChatType.CT_Emote, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>

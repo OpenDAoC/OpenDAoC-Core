@@ -29,7 +29,7 @@ public class AnnounceCommand : ACommandHandler, ICommandHandler
             case "log":
             {
                 foreach (GamePlayer player in ClientService.GetPlayers())
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.LogAnnounce", message), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.LogAnnounce", message), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
                 break;
             }
@@ -48,21 +48,21 @@ public class AnnounceCommand : ACommandHandler, ICommandHandler
             case "send":
             {
                 foreach (GamePlayer player in ClientService.GetPlayers())
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.SendAnnounce", message), eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.SendAnnounce", message), EChatType.CT_Send, EChatLoc.CL_ChatWindow);
 
                 break;
             }
             case "center":
             {
                 foreach (GamePlayer player in ClientService.GetPlayers())
-                    player.Out.SendMessage(message, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(message, EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 
                 break;
             }
             case "confirm":
             {
                 foreach (GamePlayer player in ClientService.GetPlayers())
-                    player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.ConfirmAnnounce", client.Player.Name, message));
+                    player.Out.SendDialogBox(EDialogCode.SimpleWarning, 0, 0, 0, 0, EDialogType.Ok, true, LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.ConfirmAnnounce", client.Player.Name, message));
 
                 break;
             }

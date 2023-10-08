@@ -25,14 +25,14 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Behaviour.Actions
 {
     [Action(ActionType = eActionType.Animation, IsNullableQ = true)]
-    public class AnimationAction : AbstractAction<eEmote,GameLiving>
+    public class AnimationAction : AbstractAction<EEmote,GameLiving>
     {               
 
         public AnimationAction(GameNPC defaultNPC, Object p, Object q)
             : base(defaultNPC, eActionType.Animation, p, q) { }
         
 
-        public AnimationAction(GameNPC defaultNPC, eEmote emote, GameLiving actor)
+        public AnimationAction(GameNPC defaultNPC, EEmote emote, GameLiving actor)
             : this(defaultNPC, (object) emote, (object)actor) { }
         
 

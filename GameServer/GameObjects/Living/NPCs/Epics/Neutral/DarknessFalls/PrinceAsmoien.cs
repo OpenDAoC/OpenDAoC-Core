@@ -123,7 +123,7 @@ namespace DOL.AI.Brain
                 {
                     if (pet.Brain is not IControlledBrain) continue;
                     Body.Health += pet.MaxHealth;
-                    pet.Emote(eEmote.SpellGoBoom);
+                    pet.Emote(EEmote.SpellGoBoom);
                     pet.Die(Body);
                 }
             }

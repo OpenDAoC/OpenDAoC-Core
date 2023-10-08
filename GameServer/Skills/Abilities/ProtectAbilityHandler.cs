@@ -58,7 +58,7 @@ namespace DOL.GS.SkillHandler
 					if (protect.ProtectSource == player)
 						protect.Cancel(false);
 				}
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CancelTargetNull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CancelTargetNull"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 
@@ -66,7 +66,7 @@ namespace DOL.GS.SkillHandler
 			GamePlayer protectTarget = player.TargetObject as GamePlayer;
 			if (protectTarget == player)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.CantProtectYourself"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.CantProtectYourself"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -75,7 +75,7 @@ namespace DOL.GS.SkillHandler
 			GroupUtil group = player.Group;
 			if (protectTarget == null || group == null || !group.IsInTheGroup(protectTarget))
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.NotInGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.NotInGroup"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -89,7 +89,7 @@ namespace DOL.GS.SkillHandler
 					protect.Cancel(false);
 					return;
 				}
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.ProtectTargetAlreadyProtectEffect", protect.ProtectSource.GetName(0, true), protect.ProtectTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.ProtectTargetAlreadyProtectEffect", protect.ProtectSource.GetName(0, true), protect.ProtectTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 

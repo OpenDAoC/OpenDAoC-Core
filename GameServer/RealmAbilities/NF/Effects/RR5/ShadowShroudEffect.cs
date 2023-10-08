@@ -106,8 +106,8 @@ namespace DOL.GS.Effects
             {
                 ad.Damage -= damageAbsorbed;
                 //TODO correct messages
-                MessageToLiving(ad.Target, string.Format("Shadow Shroud Ability absorbs {0} damage!", damageAbsorbed), eChatType.CT_Spell);
-                MessageToLiving(ad.Attacker, string.Format("A barrier absorbs {0} damage of your attack!", damageAbsorbed), eChatType.CT_Spell);
+                MessageToLiving(ad.Target, string.Format("Shadow Shroud Ability absorbs {0} damage!", damageAbsorbed), EChatType.CT_Spell);
+                MessageToLiving(ad.Attacker, string.Format("A barrier absorbs {0} damage of your attack!", damageAbsorbed), EChatType.CT_Spell);
             }
         }
 
@@ -117,7 +117,7 @@ namespace DOL.GS.Effects
         /// <param name="living"></param>
         /// <param name="message"></param>
         /// <param name="type"></param>
-        public void MessageToLiving(GameLiving living, string message, eChatType type)
+        public void MessageToLiving(GameLiving living, string message, EChatType type)
         {
             if (living is GamePlayer && message != null && message.Length > 0)
             {

@@ -161,19 +161,19 @@ namespace DOL.GS.Spells
             if (Spell.Name.StartsWith("Proc"))
             {
                 MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YouHitFor",
-                    ad.Target.GetName(0, false), ad.Damage)), eChatType.CT_YouHit);
+                    ad.Target.GetName(0, false), ad.Damage)), EChatType.CT_YouHit);
             }
             else
             {
                 MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YourHitsFor",
-                    Spell.Name, ad.Target.GetName(0, false), ad.Damage)), eChatType.CT_YouHit);
+                    Spell.Name, ad.Target.GetName(0, false), ad.Damage)), EChatType.CT_YouHit);
             }
             //if (ad.CriticalDamage > 0)
             //    MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YourCriticallyHits",
             //        Spell.Name, ad.Target.GetName(0, false), ad.CriticalDamage)) + " (" + (ad.Attacker.SpellCriticalChance - 10) + "%)", eChatType.CT_YouHit);
 
 			if (this.CriticalDamage > 0)
-				MessageToCaster("You critically hit for an additional " + this.CriticalDamage + " damage!" + " (" + m_caster.DotCriticalChance + "%)", eChatType.CT_YouHit);
+				MessageToCaster("You critically hit for an additional " + this.CriticalDamage + " damage!" + " (" + m_caster.DotCriticalChance + "%)", EChatType.CT_YouHit);
 
 			//			if (ad.Damage > 0)
 			//			{
@@ -244,9 +244,9 @@ namespace DOL.GS.Spells
 			if (effect.Owner.IsAlive)
 			{
 				// An acidic cloud surrounds you!
-				MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
+				MessageToLiving(effect.Owner, Spell.Message1, EChatType.CT_Spell);
 				// {0} is surrounded by an acidic cloud!
-				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), EChatType.CT_YouHit, effect.Owner);
 				OnDirectEffect(effect.Owner);
 			}
 		}
@@ -264,9 +264,9 @@ namespace DOL.GS.Spells
 			if (!noMessages)
 			{
 				// The acidic mist around you dissipates.
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
+				MessageToLiving(effect.Owner, Spell.Message3, EChatType.CT_SpellExpires);
 				// The acidic mist around {0} dissipates.
-				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), EChatType.CT_SpellExpires, effect.Owner);
 			}
 			return 0;
 		}
@@ -353,7 +353,7 @@ namespace DOL.GS.Spells
 			int critCap = Math.Min(50, criticalChance);
 
 			if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
-				spellCaster.Out.SendMessage($"dot crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				spellCaster.Out.SendMessage($"dot crit chance: {critCap} random: {randNum}", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
 
 			if (critCap > randNum && (ad.Damage >= 1))
 			{

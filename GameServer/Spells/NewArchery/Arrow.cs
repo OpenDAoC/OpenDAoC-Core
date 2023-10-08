@@ -145,8 +145,8 @@ namespace DOL.GS.Spells
 				if (Util.Chance(missrate))
 				{
 					ad.AttackResult = EAttackResult.Missed;
-					m_handler.MessageToCaster("You miss!", eChatType.CT_YouHit);
-					m_handler.MessageToLiving(target, caster.GetName(0, false) + " missed!", eChatType.CT_Missed);
+					m_handler.MessageToCaster("You miss!", EChatType.CT_YouHit);
+					m_handler.MessageToLiving(target, caster.GetName(0, false) + " missed!", EChatType.CT_Missed);
 					target.OnAttackedByEnemy(ad);
 					target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, caster);
 					if (target is GameNPC)
@@ -188,7 +188,7 @@ namespace DOL.GS.Spells
 									if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
 									{
 										if (engage.Owner is GamePlayer)
-											(engage.Owner as GamePlayer).Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+											(engage.Owner as GamePlayer).Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									}  // Check if player has enough endurance left to engage
 									else if (engage.Owner.Endurance < EngageAbilityHandler.ENGAGE_ENDURANCE_COST)
 									{
@@ -198,7 +198,7 @@ namespace DOL.GS.Spells
 									{
 										engage.Owner.Endurance -= EngageAbilityHandler.ENGAGE_ENDURANCE_COST;
 										if (engage.Owner is GamePlayer)
-											(engage.Owner as GamePlayer).Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+											(engage.Owner as GamePlayer).Out.SendMessage("You concentrate on blocking the blow!", EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
 
 										if (blockchance < 95)
 											blockchance = 95;
@@ -209,11 +209,11 @@ namespace DOL.GS.Spells
 							if (blockchance >= Util.Random(1, 100))
 							{
 								arrowBlock = true;
-								m_handler.MessageToLiving(player, "You block " + caster.GetName(0, false) + "'s arrow!", eChatType.CT_System);
+								m_handler.MessageToLiving(player, "You block " + caster.GetName(0, false) + "'s arrow!", EChatType.CT_System);
 
 								if (m_handler.Spell.Target != ESpellTarget.AREA)
 								{
-									m_handler.MessageToCaster(player.GetName(0, true) + " blocks your arrow!", eChatType.CT_System);
+									m_handler.MessageToCaster(player.GetName(0, true) + " blocks your arrow!", EChatType.CT_System);
 									m_handler.DamageTarget(ad, false, 0x02);
 								}
 							}

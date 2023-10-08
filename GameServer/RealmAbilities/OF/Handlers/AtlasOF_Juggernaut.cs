@@ -52,7 +52,7 @@ namespace DOL.GS.RealmAbilities
 
             if (_caster.ControlledBrain != null)
             {
-                _caster.Out.SendMessage(LanguageMgr.GetTranslation(_caster.Client, "Summon.CheckBeginCast.AlreadyHaveaPet"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                _caster.Out.SendMessage(LanguageMgr.GetTranslation(_caster.Client, "Summon.CheckBeginCast.AlreadyHaveaPet"), EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                 return;
             }
 

@@ -55,7 +55,7 @@ namespace DOL.GS.Trainer
 				// perhaps player can be promoted
 				if (CanPromotePlayer(player))
 				{
-					player.Out.SendMessage(this.Name + " says, \"Do you desire to [join the House of Kelgor] and defend our realm as a Savage?\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+					player.Out.SendMessage(this.Name + " says, \"Do you desire to [join the House of Kelgor] and defend our realm as a Savage?\"",EChatType.CT_Say,EChatLoc.CL_PopupWindow);
 					if (!player.IsLevelRespecUsed)
 					{
 						OfferRespecialize(player);

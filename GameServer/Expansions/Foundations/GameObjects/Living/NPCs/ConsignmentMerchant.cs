@@ -111,7 +111,7 @@ namespace DOL.GS
 
             if (!player.IsWithinRadius(this, 500))
             {
-                ((GamePlayer)source).Out.SendMessage("You are to far away to give anything to " + this.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                ((GamePlayer)source).Out.SendMessage("You are to far away to give anything to " + this.Name + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return false;
             }
 
@@ -276,7 +276,7 @@ namespace DOL.GS
 
 						if (toItem != null)
 						{
-							player.Client.Out.SendMessage("You can only move an item to an empty slot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Client.Out.SendMessage("You can only move an item to an empty slot!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return false;
 						}
 
@@ -293,7 +293,7 @@ namespace DOL.GS
 						}
 						else
 						{
-							player.Client.Out.SendMessage("You can't buy items from yourself!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Client.Out.SendMessage("You can't buy items from yourself!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return false;
 						}
 					}
@@ -308,7 +308,7 @@ namespace DOL.GS
 						if (toItem != null)
 						{
 							// in most clients this is actually handled ON the client, but just in case...
-							player.Client.Out.SendMessage("You can only move an item to an empty slot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Client.Out.SendMessage("You can only move an item to an empty slot!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return false;
 						}
 
@@ -394,7 +394,7 @@ namespace DOL.GS
 				item.OwnerID = conMerchant.GetOwner(player);
 				GameServer.Database.SaveObject(item);
 				ChatUtil.SendDebugMessage(player, item.Name + " SellPrice=" + price + ", OwnerLot=" + item.OwnerLot + ", OwnerID=" + item.OwnerID);
-				player.Out.SendMessage("Price set!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Price set!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
 				{
@@ -650,12 +650,12 @@ namespace DOL.GS
                     continue;
                 }
 
-                observer.Client.Out.SendInventoryItemsUpdate(updateItems, eInventoryWindowType.Update);
+                observer.Client.Out.SendInventoryItemsUpdate(updateItems, EInventoryWindowType.Update);
 
 				// The above code is suspect, it seems to work 80% of the time, so let's make sure we update the player doing the move - Tolakram
 				if (hasUpdatedPlayer == false)
 				{
-					player.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.eInventoryWindowType.Update);
+					player.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.EInventoryWindowType.Update);
 				}
 			}
 
@@ -694,19 +694,19 @@ namespace DOL.GS
 
             if (house.CanUseConsignmentMerchant(player, EConsignmentPermissions.Any))
             {
-				player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.ConsignmentOwner);
+				player.Out.SendInventoryItemsUpdate(GetClientInventory(player), EInventoryWindowType.ConsignmentOwner);
 
                 long amount = m_totalMoney;
                 player.Out.SendConsignmentMerchantMoney(amount);
 
 				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
                 {
-                    player.Out.SendMessage("Your merchant currently holds " + amount + " BountyPoints.", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage("Your merchant currently holds " + amount + " BountyPoints.", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
                 }
             }
             else
             {
-				player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.ConsignmentViewer);
+				player.Out.SendInventoryItemsUpdate(GetClientInventory(player), EInventoryWindowType.ConsignmentViewer);
             }
 
             return true;

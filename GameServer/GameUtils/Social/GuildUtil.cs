@@ -188,22 +188,22 @@ namespace DOL.GS
 
 			if (amount < 0)
 			{
-				donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositInvalid"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositInvalid"), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			else if ((donating.Guild.GetGuildBank() + amount) >= 1000000001)
 			{
-				donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositFull"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositFull"), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
             if (!donating.RemoveMoney(long.Parse(amount.ToString())))
             {
-                donating.Out.SendMessage("You don't have this amount of money !", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                donating.Out.SendMessage("You don't have this amount of money !", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 return;
             }
 
-			donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositAmount", MoneyMgr.GetString(long.Parse(amount.ToString()))), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+			donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositAmount", MoneyMgr.GetString(long.Parse(amount.ToString()))), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
 
 			donating.Guild.UpdateGuildWindow();
 			m_DBguild.Bank += amount;
@@ -217,16 +217,16 @@ namespace DOL.GS
 		{
             if (amount < 0)
 			{
-				withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawInvalid"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawInvalid"), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			else if ((withdraw.Guild.GetGuildBank() - amount) < 0)
 			{
-				withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawTooMuch"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawTooMuch"), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
-            withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.Withdrawamount", MoneyMgr.GetString(long.Parse(amount.ToString()))), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+            withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.Withdrawamount", MoneyMgr.GetString(long.Parse(amount.ToString()))), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 			withdraw.Guild.UpdateGuildWindow();
 			m_DBguild.Bank -= amount;
 
@@ -493,7 +493,7 @@ namespace DOL.GS
 			{
 				if (player == member) continue;
 				if (player.ShowGuildLogins)
-					player.Out.SendMessage("Guild member " + member.Name + " has logged in!", DOL.GS.PacketHandler.eChatType.CT_System, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Guild member " + member.Name + " has logged in!", DOL.GS.PacketHandler.EChatType.CT_System, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -585,9 +585,9 @@ namespace DOL.GS
 				addPlayer.Guild = this;
 				addPlayer.SaveIntoDatabase();
 				GuildMgr.AddPlayerToAllGuildPlayersList(addPlayer);
-				addPlayer.Out.SendMessage("You have agreed to join " + this.Name + "!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
-				addPlayer.Out.SendMessage("Your current rank is " + addPlayer.GuildRank.Title + "!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
-				SendMessageToGuildMembers(addPlayer.Name + " has joined the guild!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
+				addPlayer.Out.SendMessage("You have agreed to join " + this.Name + "!", EChatType.CT_Group, EChatLoc.CL_SystemWindow);
+				addPlayer.Out.SendMessage("Your current rank is " + addPlayer.GuildRank.Title + "!", EChatType.CT_Group, EChatLoc.CL_SystemWindow);
+				SendMessageToGuildMembers(addPlayer.Name + " has joined the guild!", EChatType.CT_Group, EChatLoc.CL_SystemWindow);
 			}
 			catch (Exception e)
 			{
@@ -621,9 +621,9 @@ namespace DOL.GS
 				member.Out.SendObjectGuildID(member, member.Guild);
 				// Send message to removerClient about successful removal
 				if (removername == member.Name)
-					member.Out.SendMessage("You leave the guild.", DOL.GS.PacketHandler.eChatType.CT_System, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
+					member.Out.SendMessage("You leave the guild.", DOL.GS.PacketHandler.EChatType.CT_System, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
 				else
-					member.Out.SendMessage(removername + " removed you from " + this.Name, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+					member.Out.SendMessage(removername + " removed you from " + this.Name, PacketHandler.EChatType.CT_System, PacketHandler.EChatLoc.CL_SystemWindow);
 			}
 			catch (Exception e)
 			{
@@ -803,7 +803,7 @@ namespace DOL.GS
 		/// <param name="msg">message string</param>
 		/// <param name="type">message type</param>
 		/// <param name="loc">message location</param>
-		public void SendMessageToGuildMembers(string msg, PacketHandler.eChatType type, PacketHandler.eChatLoc loc)
+		public void SendMessageToGuildMembers(string msg, PacketHandler.EChatType type, PacketHandler.EChatLoc loc)
 		{
 			List<GamePlayer> guildPlayers = new List<GamePlayer>();
 			lock (m_memberListLock)
@@ -1006,7 +1006,7 @@ namespace DOL.GS
 			mes += ',' + player.Guild.GuildBannerStatus(player); //"Banner available for purchase", "Missing banner buying permissions"
 			mes += ",\"" + player.Guild.Motd + '\"'; // Guild Motd
 			mes += ",\"" + player.Guild.Omotd + '\"'; // Guild oMotd
-			player.Out.SendMessage(mes, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(mes, EChatType.CT_SocialInterface, EChatLoc.CL_SystemWindow);
 		}
 
 		public void UpdateGuildWindow()

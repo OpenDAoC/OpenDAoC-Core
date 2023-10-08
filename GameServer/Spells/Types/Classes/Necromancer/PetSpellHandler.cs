@@ -59,7 +59,7 @@ namespace DOL.GS.Spells
 
             if (Caster.ControlledBrain == null)
             {
-                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "PetSpellHandler.CheckBeginCast.NoControlledBrainForCast"), eChatType.CT_SpellResisted);
+                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "PetSpellHandler.CheckBeginCast.NoControlledBrainForCast"), EChatType.CT_SpellResisted);
                 return false;
             }
 

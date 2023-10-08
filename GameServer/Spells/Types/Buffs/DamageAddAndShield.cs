@@ -112,7 +112,7 @@ namespace DOL.GS.Spells
 					GamePlayer owner = brain.GetPlayerOwner();
 					if (owner != null)
 					{
-                        MessageToLiving(owner, String.Format(LanguageMgr.GetTranslation( owner.Client, "DamageAddAndShield.EventHandlerDA.YourHitFor" ), ad.Attacker.Name, target.GetName(0, false), ad.Damage ), eChatType.CT_Spell);
+                        MessageToLiving(owner, String.Format(LanguageMgr.GetTranslation( owner.Client, "DamageAddAndShield.EventHandlerDA.YourHitFor" ), ad.Attacker.Name, target.GetName(0, false), ad.Damage ), EChatType.CT_Spell);
                     }
 				}
 			}
@@ -123,7 +123,7 @@ namespace DOL.GS.Spells
 
 				if ( attackerClient != null )
 				{
-					MessageToLiving( attacker, String.Format( LanguageMgr.GetTranslation( attackerClient, "DamageAddAndShield.EventHandlerDA.YouHitExtra" ), target.GetName( 0, false ), ad.Damage ), eChatType.CT_Spell );
+					MessageToLiving( attacker, String.Format( LanguageMgr.GetTranslation( attackerClient, "DamageAddAndShield.EventHandlerDA.YouHitExtra" ), target.GetName( 0, false ), ad.Damage ), EChatType.CT_Spell );
 				}
             }
 
@@ -132,7 +132,7 @@ namespace DOL.GS.Spells
 
 			if ( targetClient != null )
 			{
-				MessageToLiving( target, String.Format( LanguageMgr.GetTranslation( targetClient, "DamageAddAndShield.EventHandlerDA.DamageToYou" ), attacker.GetName( 0, false ), ad.Damage ), eChatType.CT_Spell );
+				MessageToLiving( target, String.Format( LanguageMgr.GetTranslation( targetClient, "DamageAddAndShield.EventHandlerDA.DamageToYou" ), attacker.GetName( 0, false ), ad.Damage ), EChatType.CT_Spell );
 			}
 
             target.OnAttackedByEnemy(ad);
@@ -234,13 +234,13 @@ namespace DOL.GS.Spells
 					owner = brain.GetPlayerOwner();
 					if (owner != null && owner.ControlledBrain != null && ad.Attacker == owner.ControlledBrain.Body)
 					{
-                        MessageToLiving(owner, String.Format(LanguageMgr.GetTranslation( owner.Client, "DamageAddAndShield.EventHandlerDS.YourHitFor" ), ad.Attacker.Name, target.GetName(0, false), ad.Damage ), eChatType.CT_Spell);
+                        MessageToLiving(owner, String.Format(LanguageMgr.GetTranslation( owner.Client, "DamageAddAndShield.EventHandlerDS.YourHitFor" ), ad.Attacker.Name, target.GetName(0, false), ad.Damage ), EChatType.CT_Spell);
                     }
 				}
 			}
 			else if( attackerClient != null )
 			{
-                MessageToLiving(attacker, String.Format(LanguageMgr.GetTranslation( attackerClient, "DamageAddAndShield.EventHandlerDS.YouHitFor" ), target.GetName(0, false), ad.Damage ), eChatType.CT_Spell);
+                MessageToLiving(attacker, String.Format(LanguageMgr.GetTranslation( attackerClient, "DamageAddAndShield.EventHandlerDS.YouHitFor" ), target.GetName(0, false), ad.Damage ), EChatType.CT_Spell);
             }
 
 			GameClient targetClient = null;
@@ -346,10 +346,10 @@ namespace DOL.GS.Spells
 			base.OnEffectStart(effect);
 			// "Your weapon is blessed by the gods!"
 			// "{0}'s weapon glows with the power of the gods!"
-			eChatType chatType = eChatType.CT_SpellPulse;
+			EChatType chatType = EChatType.CT_SpellPulse;
 			if (Spell.Pulse == 0)
 			{
-				chatType = eChatType.CT_Spell;
+				chatType = EChatType.CT_Spell;
 			}
 			bool upperCase = Spell.Message2.StartsWith("{0}");
 			MessageToLiving(effect.Owner, Spell.Message1, chatType);
@@ -372,9 +372,9 @@ namespace DOL.GS.Spells
 				// "Your weapon returns to normal."
 				// "{0}'s weapon returns to normal."
 				bool upperCase = Spell.Message4.StartsWith("{0}");
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
+				MessageToLiving(effect.Owner, Spell.Message3, EChatType.CT_SpellExpires);
 				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, 
-					effect.Owner.GetName(0, upperCase)), eChatType.CT_SpellExpires, effect.Owner);
+					effect.Owner.GetName(0, upperCase)), EChatType.CT_SpellExpires, effect.Owner);
 			}
 			GameEventMgr.RemoveHandler(effect.Owner, EventType, new CoreEventHandler(EventHandler));
 			return 0;

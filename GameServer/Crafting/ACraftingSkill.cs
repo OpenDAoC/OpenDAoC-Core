@@ -115,7 +115,7 @@ namespace DOL.GS
 			int craftingTime = GetCraftingTime(player, recipe);
 
 			var chanceToMakeItem = CalculateChanceToMakeItem(player, recipe.Level);
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.BeginWork", recipe.Product.Name, chanceToMakeItem.ToString()), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.BeginWork", recipe.Product.Name, chanceToMakeItem.ToString()), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
 			player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), craftingTime);
 
 			player.Stealth(false);
@@ -137,7 +137,7 @@ namespace DOL.GS
 		{
 			//player.CraftTimer.Stop();
 			player.craftComponent.StopCraft();
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.StopWork", itemToCraft.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.StopWork", itemToCraft.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		protected virtual bool CanPlayerStartToCraftItem(GamePlayer player, RecipeMgr recipe)
@@ -167,19 +167,19 @@ namespace DOL.GS
 
 			if (player.IsMoving || player.IsStrafing)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.MoveAndInterrupt"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.MoveAndInterrupt"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (player.InCombat)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CantCraftInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CantCraftInCombat"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 			
 			if (player.IsCasting)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CantCraftCasting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CantCraftCasting"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 			
@@ -214,7 +214,7 @@ namespace DOL.GS
 						{
 							if (player.GetCraftingSkillValue(ECraftingSkill.ClothWorking) < minimumLevel)
 							{
-								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoClothworkingSkill", minimumLevel, material.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoClothworkingSkill", minimumLevel, material.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return false;
 							}
 							break;
@@ -224,7 +224,7 @@ namespace DOL.GS
 						{
 							if (player.GetCraftingSkillValue(ECraftingSkill.LeatherCrafting) < minimumLevel)
 							{
-								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoLeathercraftingSkill", minimumLevel, material.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoLeathercraftingSkill", minimumLevel, material.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return false;
 							}
 							break;
@@ -234,7 +234,7 @@ namespace DOL.GS
 						{
 							if (player.GetCraftingSkillValue(ECraftingSkill.MetalWorking) < minimumLevel)
 							{
-								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoMetalworkingSkill", minimumLevel, material.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoMetalworkingSkill", minimumLevel, material.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return false;
 							}
 							break;
@@ -244,7 +244,7 @@ namespace DOL.GS
 						{
 							if (player.GetCraftingSkillValue(ECraftingSkill.WoodWorking) < minimumLevel)
 							{
-								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoWoodworkingSkill", minimumLevel, material.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckSecondCraftingSkillRequirement.NoWoodworkingSkill", minimumLevel, material.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return false;
 							}
 							break;
@@ -299,11 +299,11 @@ namespace DOL.GS
 
 				if (missingMaterials != null)
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckRawMaterial.NoIngredients", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckRawMaterial.YouAreMissing", recipe.Product.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckRawMaterial.NoIngredients", recipe.Product.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CheckRawMaterial.YouAreMissing", recipe.Product.Name), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					foreach (string materialName in missingMaterials)
 					{
-						player.Out.SendMessage(materialName, eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+						player.Out.SendMessage(materialName, EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 					}
 
 					if (player.Client.Account.PrivLevel == (uint)EPrivLevel.Player) return false;
@@ -530,22 +530,22 @@ namespace DOL.GS
 				else					// Create new item on the ground
 				{
 					player.CreateItemOnTheGround(newItem);
-					player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.BackpackFull", product.Name));
+					player.Out.SendDialogBox(EDialogCode.SimpleWarning, 0, 0, 0, 0, EDialogType.Ok, true, LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.BackpackFull", product.Name));
 				}
 			}
 
 			player.Inventory.CommitChanges();
 
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.Successfully", product.Name, newItem.Quality), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.Successfully", product.Name, newItem.Quality), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
 
 			if (recipe.IsForUniqueProduct && newItem.Quality == 100)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.Masterpiece"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				player.Out.SendPlaySound(eSoundType.Craft, 0x04);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.BuildCraftedItem.Masterpiece"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+				player.Out.SendPlaySound(ESoundType.Craft, 0x04);
 			}
 			else
 			{
-				player.Out.SendPlaySound(eSoundType.Craft, 0x03);
+				player.Out.SendPlaySound(ESoundType.Craft, 0x03);
 			}
 			
 		}
@@ -702,7 +702,7 @@ namespace DOL.GS
 			
 			if (player.Client.Account.PrivLevel > 1)
 			{
-				player.Out.SendMessage($"[DEBUG] Crafting time: {craftingTime}s", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage($"[DEBUG] Crafting time: {craftingTime}s", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			return craftingTime;
 		}

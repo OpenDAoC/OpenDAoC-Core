@@ -18,14 +18,14 @@ namespace DOL.GS.RealmAbilities
 
 			if (m_caster.TargetObject == null)
 			{
-				m_caster.Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				m_caster.Out.SendMessage("You need a target for this ability!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				m_caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
 
 			if ( !m_caster.IsWithinRadius( m_caster.TargetObject, (int)( 1500 * m_caster.GetModified(EProperty.SpellRange) * 0.01 ) ) )
 			{
-				m_caster.Out.SendMessage(m_caster.TargetObject + " is too far away.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				m_caster.Out.SendMessage(m_caster.TargetObject + " is too far away.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -56,11 +56,11 @@ namespace DOL.GS.RealmAbilities
 			{
 				if (i_player == m_caster)
 				{
-					i_player.MessageToSelf("You cast " + this.Name + "!", eChatType.CT_Spell);
+					i_player.MessageToSelf("You cast " + this.Name + "!", EChatType.CT_Spell);
 				}
 				else
 				{
-					i_player.MessageFromArea(m_caster, m_caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					i_player.MessageFromArea(m_caster, m_caster.Name + " casts a spell!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				}
 
 				i_player.Out.SendSpellCastAnimation(m_caster, 7025, 20);
@@ -70,7 +70,7 @@ namespace DOL.GS.RealmAbilities
 			{
 				m_caster.RealmAbilityCastTimer.Stop();
 				m_caster.RealmAbilityCastTimer = null;
-				m_caster.Out.SendMessage("You cancel your Spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				m_caster.Out.SendMessage("You cancel your Spell!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 			}
 
 			m_caster.RealmAbilityCastTimer = new ECSGameTimer(m_caster);
@@ -82,14 +82,14 @@ namespace DOL.GS.RealmAbilities
 		{
 			if (m_caster.TargetObject == null)
 			{
-				m_caster.Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				m_caster.Out.SendMessage("You need a target for this ability!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				m_caster.DisableSkill(this, 3 * 1000);
 				return 0;
 			}
 
             if ( !m_caster.IsWithinRadius( m_caster.TargetObject, (int)( 1500 * m_caster.GetModified( EProperty.SpellRange ) * 0.01 ) ) )
 			{
-				m_caster.Out.SendMessage(m_caster.TargetObject + " is too far away.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				m_caster.Out.SendMessage(m_caster.TargetObject + " is too far away.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				return 0;
 			}
 
@@ -104,7 +104,7 @@ namespace DOL.GS.RealmAbilities
 					continue;
 
 				mob.TakeDamage(m_caster, EDamageType.Heat, m_dmgValue, 0);
-				m_caster.Out.SendMessage("You hit the " + mob.Name + " for " + m_dmgValue + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				m_caster.Out.SendMessage("You hit the " + mob.Name + " for " + m_dmgValue + " damage.", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 				foreach (GamePlayer player2 in m_caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
 					player2.Out.SendSpellEffectAnimation(m_caster, mob, 7025, 0, false, 1);
@@ -117,8 +117,8 @@ namespace DOL.GS.RealmAbilities
 					continue;
 
 				aeplayer.TakeDamage(m_caster, EDamageType.Heat, m_dmgValue, 0);
-				m_caster.Out.SendMessage("You hit " + aeplayer.Name + " for " + m_dmgValue + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-				aeplayer.Out.SendMessage(m_caster.Name + " hits you for " + m_dmgValue + " damage.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow); 
+				m_caster.Out.SendMessage("You hit " + aeplayer.Name + " for " + m_dmgValue + " damage.", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
+				aeplayer.Out.SendMessage(m_caster.Name + " hits you for " + m_dmgValue + " damage.", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow); 
 				foreach (GamePlayer player3 in m_caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
 					player3.Out.SendSpellEffectAnimation(m_caster, aeplayer, 7025, 0, false, 1);

@@ -337,7 +337,7 @@ namespace DOL.GS.Quests.Hibernia
                                 RemoveItem(player, magical_theresas_doll);
                                 Theresa.SayTo(player,
                                 "Father imbued this doll with magic, and I can feel his presence within it. I am confident he will return soon, and I can go with peace now. Thank you so much for bringing my father back to me, and to all of us in Tir na Nog. ");
-                                Theresa.Emote(eEmote.Cheer);
+                                Theresa.Emote(EEmote.Cheer);
                                 new ECSGameTimer(Theresa, new ECSGameTimer.ECSTimerCallback(StartTheresaEffect), 2000);
                                 Theresa.SayTo(player,
                                     "I can feel the power of nature!");

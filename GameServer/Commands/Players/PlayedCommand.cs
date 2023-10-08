@@ -35,7 +35,7 @@ public class PlayedCommand : ACommandHandler, ICommandHandler
                 //    daysPlayed -= monthsPlayed * 30;
                 //}
 
-                client.Out.SendMessage("You have played for " /*+ yearsPlayed + " Years, " + monthsPlayed + " Months, "*/ + daysPlayed + " Days, " + showPlayed.Hours + " Hours and " + showPlayed.Minutes + " Minutes this level.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("You have played for " /*+ yearsPlayed + " Years, " + monthsPlayed + " Months, "*/ + daysPlayed + " Days, " + showPlayed.Hours + " Hours and " + showPlayed.Minutes + " Minutes this level.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
         }
         else
@@ -58,7 +58,7 @@ public class PlayedCommand : ACommandHandler, ICommandHandler
             //    daysPlayed -= monthsPlayed * 30;
             //}
 
-            client.Out.SendMessage("You have played for " /*+ yearsPlayed + " Years, " + monthsPlayed + " Months, "*/ + daysPlayed + " Days, " + showPlayed.Hours + " Hours and " + showPlayed.Minutes + " Minutes.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage("You have played for " /*+ yearsPlayed + " Years, " + monthsPlayed + " Months, "*/ + daysPlayed + " Days, " + showPlayed.Hours + " Hours and " + showPlayed.Minutes + " Minutes.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 	}
 }

@@ -96,7 +96,7 @@ namespace DOL.GS
 			int numDestinations = 0;
 			foreach (DbTeleport destination in m_destinations)
 			{
-				player.Out.SendMessage(String.Format("[{0}]", destination.TeleportID), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage(String.Format("[{0}]", destination.TeleportID), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				numDestinations++;
 			}
 

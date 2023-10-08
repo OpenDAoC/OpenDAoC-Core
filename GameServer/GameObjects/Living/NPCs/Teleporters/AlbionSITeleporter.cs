@@ -85,7 +85,7 @@ namespace DOL.GS
 			foreach (String destination in m_destination)
 				if (!playerAreaList.Contains(destination))
 					player.Out.SendMessage(String.Format("[{0}]", destination),
-						eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+						EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 
 			return true;
 		}

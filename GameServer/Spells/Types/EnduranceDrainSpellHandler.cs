@@ -25,7 +25,7 @@ namespace DOL.GS.Spells
 
 			if (target is GamePlayer)
 			{
-				((GamePlayer)target).Out.SendMessage(m_caster.Name + " steal you for " + end + " endurance!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+				((GamePlayer)target).Out.SendMessage(m_caster.Name + " steal you for " + end + " endurance!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
 			}
 
 			StealEndurance(target,end);
@@ -44,14 +44,14 @@ namespace DOL.GS.Spells
 		
 		public virtual void SendCasterMessage(GameLiving target,int end)
 		{
-			MessageToCaster(string.Format("You steal {0} for {1} endurance!", target.Name, end), eChatType.CT_YouHit);
+			MessageToCaster(string.Format("You steal {0} for {1} endurance!", target.Name, end), EChatType.CT_YouHit);
 			if(end > 0) 
 			{
-				MessageToCaster("You steal " + end + " endurance point" + (end==1?".":"s."), eChatType.CT_Spell);
+				MessageToCaster("You steal " + end + " endurance point" + (end==1?".":"s."), EChatType.CT_Spell);
 			}
 			else 
 			{
-				MessageToCaster("You cannot absorb any more endurance.", eChatType.CT_SpellResisted);
+				MessageToCaster("You cannot absorb any more endurance.", EChatType.CT_SpellResisted);
 			}
 		}
 

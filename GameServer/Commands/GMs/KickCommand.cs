@@ -78,8 +78,8 @@ public class KickCommand : ACommandHandler, ICommandHandler
 				message = LanguageMgr.GetTranslation(clientc, "GMCommands.Kick.RemovedFromServer");
 			}
 
-			clientc.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-			clientc.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+			clientc.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_SystemWindow);
+			clientc.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 		}
 
 		clientc.Out.SendPlayerQuit(true);

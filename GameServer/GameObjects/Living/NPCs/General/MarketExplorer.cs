@@ -35,7 +35,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				player.Out.SendMessage("Sorry, the market is not available at this time.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Sorry, the market is not available at this time.", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 			}
             return true;
         }
@@ -160,7 +160,7 @@ namespace DOL.GS
 				
 				if ((int)searchData.page == 0)
 				{
-					player.Out.SendMessage("Items returned: " + items.Count + ".", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Items returned: " + items.Count + ".", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 
 				if (items.Count == 0)	// No items returned, let the client know
@@ -169,7 +169,7 @@ namespace DOL.GS
 				}
 				else if ((int)searchData.page <= (int)maxPages)	//Don't let us tell the client about any more than the max pages
 				{
-					player.Out.SendMessage("Moving to page " + ((int)(searchData.page + 1)) + ".", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Moving to page " + ((int)(searchData.page + 1)) + ".", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					player.Out.SendMarketExplorerWindow(list, searchData.page, maxPages);
 				}
 
@@ -272,7 +272,7 @@ namespace DOL.GS
 
 			if (cm == null)
 			{
-				player.Out.SendMessage("I can't find the consigmnent merchant for this item!", eChatType.CT_Merchant, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage("I can't find the consigmnent merchant for this item!", EChatType.CT_Merchant, EChatLoc.CL_ChatWindow);
 				log.ErrorFormat("ME: Error finding consignment merchant for lot {0}; {1}:{2} trying to buy {3}", item.OwnerLot, player.Name, player.Client.Account.Name, item.Name);
 				return;
 			}
@@ -283,7 +283,7 @@ namespace DOL.GS
 			}
 
 			player.ActiveInventoryObject = cm; // activate the target con merchant
-			player.Out.SendInventoryItemsUpdate(cm.GetClientInventory(player), eInventoryWindowType.ConsignmentViewer);
+			player.Out.SendInventoryItemsUpdate(cm.GetClientInventory(player), EInventoryWindowType.ConsignmentViewer);
 			cm.AddObserver(player);
 		}
 

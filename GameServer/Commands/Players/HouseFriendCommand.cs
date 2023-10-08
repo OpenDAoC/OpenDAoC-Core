@@ -23,7 +23,7 @@ public class HouseFriendCommand : ACommandHandler, ICommandHandler
 
         if (!client.Player.InHouse)
         {
-            client.Out.SendMessage("You need to be in your House to use this command", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage("You need to be in your House to use this command", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -41,12 +41,12 @@ public class HouseFriendCommand : ACommandHandler, ICommandHandler
 
                 if (result is ClientService.PlayerGuessResult.NOT_FOUND or ClientService.PlayerGuessResult.FOUND_MULTIPLE)
                 {
-                    client.Out.SendMessage("No players online with that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("No players online with that name.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (client.Player.CurrentHouse.AddPermission(targetPlayer, EPermissionType.Player, HousingConstants.MinPermissionLevel))
-                    client.Out.SendMessage($"You added {targetPlayer.Name}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage($"You added {targetPlayer.Name}.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                 break;
             }
@@ -62,12 +62,12 @@ public class HouseFriendCommand : ACommandHandler, ICommandHandler
 
                 if (result is ClientService.PlayerGuessResult.NOT_FOUND or ClientService.PlayerGuessResult.FOUND_MULTIPLE)
                 {
-                    client.Out.SendMessage("No players online with that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("No players online with that name.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (client.Player.CurrentHouse.AddPermission(targetPlayer, EPermissionType.Account, HousingConstants.MinPermissionLevel))
-                    client.Out.SendMessage($"You added {targetPlayer.Name}'s account.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage($"You added {targetPlayer.Name}'s account.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                 break;
             }
@@ -80,19 +80,19 @@ public class HouseFriendCommand : ACommandHandler, ICommandHandler
 
                 if (targetGuild == null)
                 {
-                    client.Out.SendMessage("A guild with that name was not found. Don't forget to put longer names in quotes eg: \"My Guild\".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("A guild with that name was not found. Don't forget to put longer names in quotes eg: \"My Guild\".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (client.Player.CurrentHouse.AddPermission(targetGuild.Name, EPermissionType.Guild, HousingConstants.MinPermissionLevel))
-                    client.Out.SendMessage($"You added {targetGuild.Name}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage($"You added {targetGuild.Name}.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                 break;
             }
             case "all":
             {
                 if (client.Player.CurrentHouse.AddPermission("All", EPermissionType.All, HousingConstants.MinPermissionLevel))
-                    client.Out.SendMessage("You added everybody!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("You added everybody!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                 break;
             }

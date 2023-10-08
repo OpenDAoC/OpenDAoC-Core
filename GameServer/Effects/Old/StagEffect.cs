@@ -73,12 +73,12 @@ namespace DOL.GS.Effects
 			living.Health += (int)(living.GetModified(EProperty.MaxHealth) * m_amountPercent);
 			if (living.Health > living.MaxHealth) living.Health = living.MaxHealth;
 
-			living.Emote(eEmote.StagFrenzy);
+			living.Emote(EEmote.StagFrenzy);
 
 			if (living is GamePlayer)
 			{
 				(living as GamePlayer).Out.SendUpdatePlayer();
-				(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.StagEffect.HuntsSpiritChannel"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.StagEffect.HuntsSpiritChannel"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -97,7 +97,7 @@ namespace DOL.GS.Effects
 			{
 				(m_owner as GamePlayer).Out.SendUpdatePlayer();
 				// there is no animation on end of the effect
-				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.StagEffect.YourHuntsSpiritEnds"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.StagEffect.YourHuntsSpiritEnds"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 			}
 		}
 

@@ -41,7 +41,7 @@ namespace DOL.GS.Spells
 
             if (!targetPlayer.IsUnderwater)
             {
-                MessageToCaster("You must be under water to use this ability.", eChatType.CT_SpellResisted);
+                MessageToCaster("You must be under water to use this ability.", EChatType.CT_SpellResisted);
                 return;
             }
             foreach (GameSpellEffect Effect in targetPlayer.EffectList.GetAllOfType<GameSpellEffect>())
@@ -54,7 +54,7 @@ namespace DOL.GS.Spells
                     Effect.SpellHandler.Spell.SpellType.Equals("MaddeningScalars") ||
                     Effect.SpellHandler.Spell.SpellType.Equals("AtlantisTabletMorph"))
                 {
-                    targetPlayer.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.eChatType.CT_SpellResisted, DOL.GS.PacketHandler.eChatLoc.CL_ChatWindow);
+                    targetPlayer.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.EChatType.CT_SpellResisted, DOL.GS.PacketHandler.EChatLoc.CL_ChatWindow);
                     return;
                 }
             }

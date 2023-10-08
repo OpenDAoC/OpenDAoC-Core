@@ -414,7 +414,7 @@ namespace DOL.GS.Quests.Hibernia
 			var quest = player.IsDoingQuest(typeof(AncestralSecrets)) as AncestralSecrets;
 			if (quest is not {Step: 4}) return;
 			RemoveItem(player, quest_pendant);
-			SendMessage(player,"You feel the curse lift and the pendant turn into a powerful chain.", 0, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			SendMessage(player,"You feel the curse lift and the pendant turn into a powerful chain.", 0, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			GiveItem(player, stone_pendant);
 			quest.Step = 5;
 		}
@@ -444,7 +444,7 @@ namespace DOL.GS.Quests.Hibernia
 					// player near ancestral keeper           
 					SendSystemMessage(player,
 						"The Crystal Breaks and The Ancestral Keeper comes alive!");
-					player.Out.SendMessage("Ancestral Keeper ambushes you!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Ancestral Keeper ambushes you!", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 					quest.CreateAncestralKeeper(player);
 				}
 				finally
@@ -491,31 +491,31 @@ namespace DOL.GS.Quests.Hibernia
 							switch (random)
 							{
 								case 0:
-									Longbeard.Emote(eEmote.Laugh);
+									Longbeard.Emote(EEmote.Laugh);
 									Longbeard.TurnTo(player);
-									Styr.Emote(eEmote.Laugh);
+									Styr.Emote(EEmote.Laugh);
 									message = "Longbeard yells, \"Haha, another idiot trying to help Ota Yrling\".";
 									break;
 								case 1: 
-									Longbeard.Emote(eEmote.Rofl);
+									Longbeard.Emote(EEmote.Rofl);
 									Longbeard.TurnTo(player);
-									Styr.Emote(eEmote.Laugh);
+									Styr.Emote(EEmote.Laugh);
 									message = $"Longbeard yells, \"Haha, Styr look at this \"{player.CharacterClass.Name}\"";
 									break;
 								case 2: 
-									Longbeard.Emote(eEmote.Laugh);
+									Longbeard.Emote(EEmote.Laugh);
 									Styr.TurnTo(player);
-									Styr.Emote(eEmote.Rofl);
+									Styr.Emote(EEmote.Rofl);
 									message = $"Styr yells, \"Haha, Longbeard look at this \"{player.CharacterClass.Name}\"";
 									break;
 								case 3: 
-									Longbeard.Emote(eEmote.Laugh);
+									Longbeard.Emote(EEmote.Laugh);
 									Styr.TurnTo(player);
-									Styr.Emote(eEmote.Laugh);
+									Styr.Emote(EEmote.Laugh);
 									message = "Styr yells, \"Haha, another idiot trying to help Ota Yrling\".";
 									break;
 							}
-							SendMessage(player, message, 0,eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+							SendMessage(player, message, 0,EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 							break;
 						case 3:
 							OtaYrling.SayTo(player, "Hey "+player.Name+", please visit Jaklyr in Bjarken and tell him that I sent you, he will understand.");
@@ -564,8 +564,8 @@ namespace DOL.GS.Quests.Hibernia
 							{
 								OtaYrling.SayTo(player, "Please visit Jaklyr in Bjarken and tell him that I se... Oh no Longbeard and his friend Styr...");
 								Longbeard.Yell("Haha, you need help from this "+player.CharacterClass.Name+" Ota Yrling?");
-								Longbeard.Emote(eEmote.Laugh);
-								Styr.Emote(eEmote.Laugh);
+								Longbeard.Emote(EEmote.Laugh);
+								Styr.Emote(EEmote.Laugh);
 								quest.Step = 2;
 							}
 							break;
@@ -573,8 +573,8 @@ namespace DOL.GS.Quests.Hibernia
 							if (quest.Step == 6)
 							{
 								Longbeard.Yell("Hey "+player.Name+", thank you for your help in Delling Crater!");
-								Longbeard.Emote(eEmote.Clap);
-								Styr.Emote(eEmote.Cheer);
+								Longbeard.Emote(EEmote.Clap);
+								Styr.Emote(EEmote.Cheer);
 								quest.FinishQuest();
 							}
 							break;
@@ -687,7 +687,7 @@ namespace DOL.GS.Quests.Hibernia
 						case "pendant":
 							RemoveItem(player, stone_pendant);
 							Jaklyr.SayTo(player, "I knew it, the Ancestral Keeper has lost its magic and is now [trapped] in this pendant.");
-							Jaklyr.Emote(eEmote.Cheer);
+							Jaklyr.Emote(EEmote.Cheer);
 							break;
 						case "trapped":
 							if (quest.Step == 5)
@@ -709,7 +709,7 @@ namespace DOL.GS.Quests.Hibernia
 						if (quest.Step == 5)
 						{
 							Jaklyr.SayTo(player, "I knew it, the Ancestral Keeper has lost its magic and is now [trapped] in this pendant.");
-							Jaklyr.Emote(eEmote.Cheer);
+							Jaklyr.Emote(EEmote.Cheer);
 						}
 					}
 			}
@@ -781,13 +781,13 @@ namespace DOL.GS.Quests.Hibernia
 							Longbeard.SayTo(player, "Yeah a crater, many years ago a meteorite fell from the sky. It's right next to Dellingstad, that's why its called Delling Crater." +
 							                        "Everyone in Dellingstad started to get weird. They hardly ate anymore and they began hunting certain creatures. Styr and I fled." +
 							                        "If you are intelligent enough, then you shouldn't accept this [challenge].");
-							Longbeard.Emote(eEmote.Induct);
+							Longbeard.Emote(EEmote.Induct);
 							break;
 						case "challenge":
 							if (quest.Step == 2)
 							{
 								Longbeard.SayTo(player, "Okay Adventurer, I warned you, but if you need help, then visit Jaklyr in Bjarken, he knows as much as I do about this event.\nHa det!");
-								Longbeard.Emote(eEmote.Wave);
+								Longbeard.Emote(EEmote.Wave);
 								quest.Step = 3;
 							}
 							break;
@@ -1000,7 +1000,7 @@ namespace DOL.GS.Quests.Hibernia
 			else
 			{
 				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!",
-					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 	}

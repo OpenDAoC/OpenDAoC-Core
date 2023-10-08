@@ -125,7 +125,7 @@ namespace DOL.GS.ServerRules
 		public static void BroadcastMessage(string message, ERealm realm)
 		{
 			foreach (GamePlayer player in ClientService.GetPlayersOfRealm(realm))
-				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			
 			if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID))
 			{
@@ -164,10 +164,10 @@ namespace DOL.GS.ServerRules
 				}
 
 				DarknessFallOwner = NewDFOwner;
-				p.Out.SendMessage(string.Format("New DF Owner set to {0}", GlobalConstants.RealmToName(NewDFOwner)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				p.Out.SendMessage(string.Format("New DF Owner set to {0}", GlobalConstants.RealmToName(NewDFOwner)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else
-				p.Out.SendMessage(string.Format("DF Owner is already set to {0}", GlobalConstants.RealmToName(NewDFOwner)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				p.Out.SendMessage(string.Format("DF Owner is already set to {0}", GlobalConstants.RealmToName(NewDFOwner)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 	}
 }

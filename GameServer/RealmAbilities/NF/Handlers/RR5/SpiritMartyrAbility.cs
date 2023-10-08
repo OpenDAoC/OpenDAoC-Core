@@ -59,7 +59,7 @@ namespace DOL.GS.RealmAbilities
 
 			if (targets.Count == 0)
 			{
-				player.Out.SendMessage(((player.Group != null) ? "Your group is" : "You are") + " fully healed!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(((player.Group != null) ? "Your group is" : "You are") + " fully healed!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				return;
 			}
 

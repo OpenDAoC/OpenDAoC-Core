@@ -164,7 +164,7 @@ namespace DOL.GS.Scripts
         {
             foreach (GamePlayer player in GetPlayersInRadius(3000))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public override void EnemyKilled(GameLiving enemy)
@@ -258,8 +258,8 @@ namespace DOL.GS.Scripts
                     else
                         truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
-                        truc.Out.SendMessage(Name + " is not attackable from this range and is immune to your damage!", eChatType.CT_System,
-                            eChatLoc.CL_ChatWindow);
+                        truc.Out.SendMessage(Name + " is not attackable from this range and is immune to your damage!", EChatType.CT_System,
+                            EChatLoc.CL_ChatWindow);
 
                     base.TakeDamage(source, damageType, 0, 0);
                 }
@@ -576,7 +576,7 @@ namespace DOL.AI.Brain
                             if(target is GamePlayer player)
                             {
                                 if (player != null && player.IsAlive)
-                                    player.Out.SendMessage("Legion consume your bladeturn effect!", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                                    player.Out.SendMessage("Legion consume your bladeturn effect!", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                             }
                         }
                     }
@@ -643,7 +643,7 @@ namespace DOL.AI.Brain
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
             }
         }
         public static List<t> GetRandomElements<t>(IEnumerable<t> list, int elementsCount)//pick X elements from list

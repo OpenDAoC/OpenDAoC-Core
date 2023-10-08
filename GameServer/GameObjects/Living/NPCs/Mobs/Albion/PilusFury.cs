@@ -34,7 +34,7 @@ namespace DOL.GS
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
 			}
 		}
 		public override void StartAttack(GameObject target)
@@ -121,7 +121,7 @@ namespace DOL.AI.Brain
 						{
 							DD_Enemys.Add(player);
 							player.Out.SendMessage("Smoke seeps up through the cracks in the hall's floor.",
-								eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+								EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 						}
 					}
 				}

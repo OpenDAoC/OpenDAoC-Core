@@ -14,8 +14,8 @@ namespace DOL.GS.Commands
         {
             if (!ServerProperties.Properties.ENABLE_CORPSESUMONNER)
             {
-                client.Player.Out.SendMessage("This command is currently disable!", eChatType.CT_System,
-                    eChatLoc.CL_ChatWindow);
+                client.Player.Out.SendMessage("This command is currently disable!", EChatType.CT_System,
+                    EChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -46,28 +46,28 @@ namespace DOL.GS.Commands
             {
                 client.Player.Out.SendMessage(
                     "You must be dead to use this command, and you must be same region as your keep!",
-                    eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    EChatType.CT_System, EChatLoc.CL_ChatWindow);
                 return;
             }
 
             if (!client.Player.CurrentZone.IsOF)
             {
-                client.Player.Out.SendMessage("You must be dead in frontiers to use this command!", eChatType.CT_System,
-                    eChatLoc.CL_ChatWindow);
+                client.Player.Out.SendMessage("You must be dead in frontiers to use this command!", EChatType.CT_System,
+                    EChatLoc.CL_ChatWindow);
                 return;
             }
 
             if (!client.Player.LastDeathPvP)
             {
                 client.Player.Out.SendMessage("You must be dead for your realm to use this command!",
-                    eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    EChatType.CT_System, EChatLoc.CL_ChatWindow);
                 return;
             }
 
             if (client.Player.WasMovedByCorpseSummoner)
             {
                 client.Player.Out.SendMessage("You cannot use this command more than one time by death!",
-                    eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    EChatType.CT_System, EChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -75,15 +75,15 @@ namespace DOL.GS.Commands
 
             if (keep == null)
             {
-                client.Player.Out.SendMessage("You must provide a valid keep name!", eChatType.CT_System,
-                    eChatLoc.CL_ChatWindow);
+                client.Player.Out.SendMessage("You must provide a valid keep name!", EChatType.CT_System,
+                    EChatLoc.CL_ChatWindow);
                 return;
             }
 
             if (keep.Realm != client.Player.Realm)
             {
                 client.Player.Out.SendMessage("Your realm must own this keep for being able to use this functions!",
-                    eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    EChatType.CT_System, EChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -96,8 +96,8 @@ namespace DOL.GS.Commands
                         if (!guard.IsAlive || guard.ObjectState != GameObject.eObjectState.Active || guard.IsRespawning)
                         {
                             client.Player.Out.SendMessage(
-                                "The Corpse Summoner of this keep is actually dead or inactive!", eChatType.CT_System,
-                                eChatLoc.CL_ChatWindow);
+                                "The Corpse Summoner of this keep is actually dead or inactive!", EChatType.CT_System,
+                                EChatLoc.CL_ChatWindow);
                             break;
                         }
                         else
@@ -114,7 +114,7 @@ namespace DOL.GS.Commands
                     else
                     {
                         client.Player.Out.SendMessage("You need to be in the same zone than the requested keep!",
-                            eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            EChatType.CT_System, EChatLoc.CL_ChatWindow);
                         break;
                     }
                 }

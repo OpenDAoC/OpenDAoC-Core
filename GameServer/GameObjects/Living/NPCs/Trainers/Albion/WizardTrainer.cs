@@ -57,7 +57,7 @@ namespace DOL.GS.Trainer
 				// perhaps player can be promoted
 				if (CanPromotePlayer(player)) 
 				{
-					player.Out.SendMessage(this.Name + " says, \"Do you desire to [join the Academy] and summon the power of the elements as a Wizard?\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+					player.Out.SendMessage(this.Name + " says, \"Do you desire to [join the Academy] and summon the power of the elements as a Wizard?\"",EChatType.CT_Say,EChatLoc.CL_PopupWindow);
 					if (!player.IsLevelRespecUsed)
 					{
 						OfferRespecialize(player);

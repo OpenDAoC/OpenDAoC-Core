@@ -207,7 +207,7 @@ namespace DOL.GS
 					if (player.SkillSpecialtyPoints > specPoints)
 					{
 						player.styleComponent.RemoveAllStyles(); // Kill styles
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Interact.RegainPoints", (player.SkillSpecialtyPoints - specPoints)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Interact.RegainPoints", (player.SkillSpecialtyPoints - specPoints)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 					player.RefreshSpecDependantSkills(false);
 					// Notify Player of points
@@ -234,7 +234,7 @@ namespace DOL.GS
 		{
 			player.Out.SendMessage(String.Format(LanguageMgr.GetTranslation
 			                                     (player.Client, "GameTrainer.Interact.Respecialize", this.Name, player.Name)),
-			                       eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			                       EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 		}
 
 		/// <summary>
@@ -252,12 +252,12 @@ namespace DOL.GS
 						if (player.Inventory.IsSlotsFree(item.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) == true)
 					{
 						player.Inventory.MoveItem((EInventorySlot)item.SlotPosition, player.Inventory.FindFirstEmptySlot(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack), item.Count);
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.CheckAbilityToUseItem.Text1", item.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.CheckAbilityToUseItem.Text1", item.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 					else
 					{
 						player.Inventory.MoveItem((EInventorySlot)item.SlotPosition, EInventorySlot.Ground, item.Count);
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.CheckAbilityToUseItem.Text1", item.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.CheckAbilityToUseItem.Text1", item.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 				}
 			}
@@ -283,7 +283,7 @@ namespace DOL.GS
 							player.Inventory.RemoveCountFromStack(item, 1);
 							InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
 							player.RespecAmountSingleSkill++;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecSingle"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecSingle"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							return true;
 						}
 					case "respec_full":
@@ -291,7 +291,7 @@ namespace DOL.GS
 							player.Inventory.RemoveCountFromStack(item, 1);
 							InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
 							player.RespecAmountAllSkill++;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecFull", item.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecFull", item.Name), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							return true;
 						}
 					case "respec_realm":
@@ -299,7 +299,7 @@ namespace DOL.GS
 							player.Inventory.RemoveCountFromStack(item, 1);
 							InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
 							player.RespecAmountRealmSkill++;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecRealm"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecRealm"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							return true;
 						}
 				}
@@ -359,8 +359,8 @@ namespace DOL.GS
 				player.RemoveAllSpellLines();
 
 				if (messageToPlayer != "")
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Says", this.Name, messageToPlayer), eChatType.CT_System, eChatLoc.CL_PopupWindow);
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Upgraded", player.CharacterClass.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Says", this.Name, messageToPlayer), EChatType.CT_System, EChatLoc.CL_PopupWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Upgraded", player.CharacterClass.Name), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
 				player.CharacterClass.OnLevelUp(player, player.Level);
 				player.RefreshSpecDependantSkills(true);
@@ -380,7 +380,7 @@ namespace DOL.GS
 				}
 
 				// after gifts
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Accepted", player.CharacterClass.Profession), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Accepted", player.CharacterClass.Profession), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				player.SaveIntoDatabase();
 				return true;
 			}
@@ -401,7 +401,7 @@ namespace DOL.GS
 			{
 				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(temp), 1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.AddGift.NotEnoughSpace"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.AddGift.NotEnoughSpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return false;
 				}
 				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Other, temp);
@@ -421,7 +421,7 @@ namespace DOL.GS
 				var triggers = GameServer.Instance.NpcManager.AmbientBehaviour[base.Name];
 				// If the NPC has no ambient trigger message assigned, then return this message
 				if (triggers == null || triggers.Length == 0)
-					SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.SeekElsewhere"));
+					SayTo(player, EChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.SeekElsewhere"));
 			}
 		}
 
@@ -431,7 +431,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		protected virtual void OfferTraining(GamePlayer player)
 		{
-			SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.WouldYouLikeTo"));
+			SayTo(player, EChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.WouldYouLikeTo"));
 		}
 		
 		/// <summary>

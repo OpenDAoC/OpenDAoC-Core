@@ -35,11 +35,11 @@ namespace DOL.GS.Effects
 
 				player.Out.SendSpellEffectAnimation(target, target, 1073, 0, false, 1);
 
-				eChatType chatType = (player != null && player == petOwner)
-					? eChatType.CT_Spell
-					: eChatType.CT_System;
+				EChatType chatType = (player != null && player == petOwner)
+					? EChatType.CT_Spell
+					: EChatType.CT_System;
 
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Effects.Necro.TauntEffect.SeemsChange", target.GetName(0, true)), chatType, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Effects.Necro.TauntEffect.SeemsChange", target.GetName(0, true)), chatType, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -59,11 +59,11 @@ namespace DOL.GS.Effects
 				if (player == null)
 					continue;
 
-				eChatType chatType = (player == petOwner)
-					? eChatType.CT_SpellExpires
-					: eChatType.CT_System;
+				EChatType chatType = (player == petOwner)
+					? EChatType.CT_SpellExpires
+					: EChatType.CT_System;
 
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Effects.Necro.TauntEffect.SeemsLessAgg", Owner.GetName(0, true)), chatType, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Effects.Necro.TauntEffect.SeemsLessAgg", Owner.GetName(0, true)), chatType, EChatLoc.CL_SystemWindow);
 			}
 		}
 	}

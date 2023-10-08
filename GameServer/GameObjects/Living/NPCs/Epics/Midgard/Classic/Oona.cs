@@ -36,7 +36,7 @@ namespace DOL.GS
 						else
 							truc = ((source as GameSummonedPet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(Name + " is immune to damage form this distance!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " is immune to damage form this distance!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}
@@ -115,7 +115,7 @@ namespace DOL.GS
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(4500))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 		}
 		public override void EnemyKilled(GameLiving enemy)

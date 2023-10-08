@@ -25,7 +25,7 @@ public class WalkStopCommand : ACommandHandler, ICommandHandler
 		{
 			if (targetNPC == null)
 			{
-				client.Out.SendMessage("Type /stop to stop your target npc from moving", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Type /stop to stop your target npc from moving", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			targetNPC.StopMoving();
@@ -33,14 +33,14 @@ public class WalkStopCommand : ACommandHandler, ICommandHandler
 		}
 		if (args.Length < 4)
 		{
-			client.Out.SendMessage("Usage:", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			client.Out.SendMessage("'/walk <xoff> <yoff> <zoff> <speed>'", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Usage:", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("'/walk <xoff> <yoff> <zoff> <speed>'", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
 		if (targetNPC == null)
 		{
-			client.Out.SendMessage("Type /walk for command overview", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Type /walk for command overview", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 		int xoff = 0;
@@ -57,7 +57,7 @@ public class WalkStopCommand : ACommandHandler, ICommandHandler
 		}
 		catch (Exception)
 		{
-			client.Out.SendMessage("Type /walk for command overview", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Type /walk for command overview", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 

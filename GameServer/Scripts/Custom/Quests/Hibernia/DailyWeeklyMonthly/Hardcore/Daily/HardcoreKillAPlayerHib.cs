@@ -188,7 +188,7 @@ namespace DOL.GS.DailyQuest
 						case "another sunrise":
 							if (oranges.Step == 2)
 							{
-								player.Out.SendMessage("Enjoy your meal. With luck, it shall not be your last.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Enjoy your meal. With luck, it shall not be your last.", EChatType.CT_Chat, EChatLoc.CL_PopupWindow);
 								oranges.FinishQuest();
 							}
 							break;
@@ -260,7 +260,7 @@ namespace DOL.GS.DailyQuest
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Look them in the eye.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Look them in the eye.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -325,7 +325,7 @@ namespace DOL.GS.DailyQuest
 			if (!(player.GetConLevel(gArgs.Target) > -3) || gArgs.Target is not GamePlayer enemyPlayer ||
 			    enemyPlayer.Realm == 0 || player.Realm == enemyPlayer.Realm) return;
 			PlayerKilled = 1;
-			player.Out.SendMessage("[Hardcore] Enemy Killed: ("+PlayerKilled+" | "+MAX_KillGoal+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("[Hardcore] Enemy Killed: ("+PlayerKilled+" | "+MAX_KillGoal+")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
 			// FinishQuest or go back to npc
 			Step = 2;
@@ -365,7 +365,7 @@ namespace DOL.GS.DailyQuest
 			
 			if (reward > 0)
 			{
-				m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Hardcore Quest.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Hardcore Quest.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				m_questPlayer.GainRealmPoints(reward, false);
 				m_questPlayer.Out.SendUpdatePlayer();
 			}
@@ -375,7 +375,7 @@ namespace DOL.GS.DailyQuest
 
 		private void FailQuest()
 		{
-			m_questPlayer.Out.SendMessage(questTitle + " failed.", eChatType.CT_ScreenCenter_And_CT_System, eChatLoc.CL_SystemWindow);
+			m_questPlayer.Out.SendMessage(questTitle + " failed.", EChatType.CT_ScreenCenter_And_CT_System, EChatLoc.CL_SystemWindow);
 			PlayerKilled = 0;
 			Step = -1;
 

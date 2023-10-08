@@ -85,7 +85,7 @@ namespace DOL.GS.Housing
 				log.Info("[Housing] Loaded " + houses + " houses and " + lotmarkers + " lotmarkers in " + regions + " regions!");
 
 			if (client != null)
-				client.Out.SendMessage("Loaded " + houses + " houses and " + lotmarkers + " lotmarkers in " + regions + " regions!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Loaded " + houses + " houses and " + lotmarkers + " lotmarkers in " + regions + " regions!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			if (CheckRentTimer == null)
 			{
@@ -707,7 +707,7 @@ namespace DOL.GS.Housing
 			// notify guild members of the guild house acquisition
 			player.Guild.SendMessageToGuildMembers(
 				LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Housing.GuildNowOwns", player.Guild.Name, player.Name),
-				eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 
 			// save the guild and broadcast updates
 			player.Guild.SaveIntoDatabase();
@@ -818,12 +818,12 @@ namespace DOL.GS.Housing
 		}
 
 
-		public static void SendHousingMerchantWindow(GamePlayer player, eMerchantWindowType merchantType)
+		public static void SendHousingMerchantWindow(GamePlayer player, EMerchantWindowType merchantType)
 		{
 			GameServer.ServerRules.SendHousingMerchantWindow(player, merchantType);
 		}
 
-		public static void BuyHousingItem(GamePlayer player, ushort slot, byte count, eMerchantWindowType merchantType)
+		public static void BuyHousingItem(GamePlayer player, ushort slot, byte count, EMerchantWindowType merchantType)
 		{
 			GameServer.ServerRules.BuyHousingItem(player, slot, count, merchantType);
 		}

@@ -187,7 +187,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 						case "tidy the realm":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Thank you for your contribution!", EChatType.CT_Chat, EChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -272,7 +272,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping our realm.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping our realm.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -327,7 +327,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			if (!(player.GetConLevel(gArgs.Target) > -1) || !gArgs.Target.CurrentZone.IsRvR ||
 			    !player.CurrentZone.IsRvR) return;
 			FrontierMobsKilled++;
-			player.Out.SendMessage("[Daily] Monster Killed: (" + FrontierMobsKilled + " | " + MAX_KILLED + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("[Daily] Monster Killed: (" + FrontierMobsKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
 					
 			if (FrontierMobsKilled >= MAX_KILLED)

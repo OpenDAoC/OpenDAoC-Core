@@ -19,7 +19,7 @@ namespace DOL.GS.Commands
 			GamePlayer target = client.Player.TargetObject as GamePlayer;
 			if (target == null)
 			{
-				client.Out.SendMessage("You must target a player to change his titles!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("You must target a player to change his titles!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -28,7 +28,7 @@ namespace DOL.GS.Commands
 				IPlayerTitle title = PlayerTitleMgr.GetTitleByTypeName(args[2]);
 				if (title == null)
 				{
-					client.Out.SendMessage("Title '" + args[2] + "' not found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					client.Out.SendMessage("Title '" + args[2] + "' not found.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 

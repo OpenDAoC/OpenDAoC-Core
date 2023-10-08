@@ -59,7 +59,7 @@ namespace DOL.GS.RealmAbilities
             }
             else
             {
-                player.Out.SendMessage("You need a group for this Ability!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You need a group for this Ability!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                 return;
             }
 			DisableSkill(living);

@@ -16,11 +16,11 @@ namespace DOL.GS.RealmAbilities
 			{
 				if (t_player == living && living is GamePlayer)
 				{
-					(living as GamePlayer).Out.SendMessage("You clear your mind and become more resistant to magic damage!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					(living as GamePlayer).Out.SendMessage("You clear your mind and become more resistant to magic damage!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				}
 				else
 				{
-					t_player.Out.SendMessage(living.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					t_player.Out.SendMessage(living.Name + " casts a spell!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				}
 			}
 

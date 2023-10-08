@@ -312,7 +312,7 @@ namespace DOL.GS.Spells
 				}
 				else
 				{
-					MessageToCaster("Your area target is out of range.  Set a closer ground position.", eChatType.CT_SpellResisted);
+					MessageToCaster("Your area target is out of range.  Set a closer ground position.", EChatType.CT_SpellResisted);
 					effect.Cancel(false);
 				}
 			}
@@ -344,7 +344,7 @@ namespace DOL.GS.Spells
 			if (player == null) return;
 			if (e == GamePlayerEvent.Moving)
 			{
-				MessageToCaster("Your concentration fades", eChatType.CT_SpellExpires);
+				MessageToCaster("Your concentration fades", EChatType.CT_SpellExpires);
 				OnEffectExpires(m_effect, true);
 				return;
 			}
@@ -357,7 +357,7 @@ namespace DOL.GS.Spells
 			if (kWarder == null) return;
 			if (e == GameLivingEvent.Dying)
 			{
-				MessageToCaster("Your Battle Warder has fallen!", eChatType.CT_SpellExpires);
+				MessageToCaster("Your Battle Warder has fallen!", EChatType.CT_SpellExpires);
 				OnEffectExpires(m_effect, true);
 				return;
 			}
@@ -367,7 +367,7 @@ namespace DOL.GS.Spells
 			if (!base.CheckBeginCast(selectedTarget)) return false;
 			if (!(m_caster.GroundTarget != null && m_caster.GroundTargetInView))
 			{
-				MessageToCaster("Your area target is out of range.  Set a closer ground position.", eChatType.CT_SpellResisted);
+				MessageToCaster("Your area target is out of range.  Set a closer ground position.", EChatType.CT_SpellResisted);
 				return false;
 			}
 			return true;
@@ -477,7 +477,7 @@ namespace DOL.GS.Spells
 			{
 				if (log.IsWarnEnabled)
 					log.WarnFormat("NPC template {0} not found! Spell: {1}", Spell.LifeDrainReturn, Spell.ToString());
-				MessageToCaster("NPC template " + Spell.LifeDrainReturn + " not found!", eChatType.CT_System);
+				MessageToCaster("NPC template " + Spell.LifeDrainReturn + " not found!", EChatType.CT_System);
 				return;
 			}
 
@@ -550,7 +550,7 @@ namespace DOL.GS.Spells
 			{
 				if (jg != null)
 				{
-					MessageToCaster("Your Pet already has an ability of this type active", eChatType.CT_SpellResisted);
+					MessageToCaster("Your Pet already has an ability of this type active", EChatType.CT_SpellResisted);
 					return;
 				}
 			}
@@ -562,7 +562,7 @@ namespace DOL.GS.Spells
 				NecromancerPet necroPet = target as NecromancerPet;
 				if (necroPet == null || necroPet.Owner == m_player)
 				{ // Caster is a Nekro and his Target is his Own Pet
-					MessageToCaster("You cant use this ability on your own Pet", eChatType.CT_SpellResisted);
+					MessageToCaster("You cant use this ability on your own Pet", EChatType.CT_SpellResisted);
 					return;
 				}
 			}
@@ -639,7 +639,7 @@ namespace DOL.GS.Spells
 			{
 				if (log.IsWarnEnabled)
 					log.WarnFormat("NPC template {0} not found! Spell: {1}", Spell.LifeDrainReturn, Spell.ToString());
-				MessageToCaster("NPC template " + Spell.LifeDrainReturn + " not found!", eChatType.CT_System);
+				MessageToCaster("NPC template " + Spell.LifeDrainReturn + " not found!", EChatType.CT_System);
 				return;
 			}
 			GameSpellEffect effect = CreateSpellEffect(target, Effectiveness);
@@ -702,12 +702,12 @@ namespace DOL.GS.Spells
 				{
 					if (Caster.GroundTarget == null)
 					{
-						MessageToCaster("You must set a groundtarget!", eChatType.CT_SpellResisted);
+						MessageToCaster("You must set a groundtarget!", EChatType.CT_SpellResisted);
 						return false;
 					}
 					else
 					{
-						MessageToCaster("Your area target is not in view.", eChatType.CT_SpellResisted);
+						MessageToCaster("Your area target is not in view.", EChatType.CT_SpellResisted);
 						return false;
 					}
 				}

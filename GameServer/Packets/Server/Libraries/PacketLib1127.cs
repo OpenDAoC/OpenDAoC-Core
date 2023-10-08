@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System.Reflection;
+﻿using System.Reflection;
 using log4net;
 
 namespace DOL.GS.PacketHandler
@@ -48,7 +29,7 @@ namespace DOL.GS.PacketHandler
 		{
 			// work around for character screen bugs when server type sent as 00 but player doesnt have a realm
 			// 0x07 allows for characters in all realms
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.LoginGranted)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.LoginGranted)))
 			{
 				pak.WritePascalString(m_gameClient.Account.Name);
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
@@ -60,18 +41,18 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendMessage(string msg, eChatType type, eChatLoc loc)
+		public override void SendMessage(string msg, EChatType type, EChatLoc loc)
 		{
 			if (m_gameClient.ClientState == GameClient.eClientState.CharScreen)
 				return;
 
-			GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Message));
+			GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Message));
 			pak.WriteByte((byte) type);
 
 			string str;
-			if (loc == eChatLoc.CL_ChatWindow)
+			if (loc == EChatLoc.CL_ChatWindow)
 				str = "@@";
-			else if (loc == eChatLoc.CL_PopupWindow)
+			else if (loc == EChatLoc.CL_PopupWindow)
 				str = "##";
 			else
 				str = "";
@@ -106,7 +87,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendPlayerForgedPosition(GamePlayer player)
 		{
-			using (GSUDPPacketOut pak = new GSUDPPacketOut(GetPacketCode(eServerPackets.PlayerPosition)))
+			using (GsUdpPacketOut pak = new GsUdpPacketOut(GetPacketCode(EServerPackets.PlayerPosition)))
 			{
 				ushort newHeading = player.Heading;
 				ushort steedSeatPosition = 0;

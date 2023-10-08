@@ -24,7 +24,7 @@ namespace DOL.GS.RealmAbilities
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
             if (player.TempProperties.GetProperty(Dashing, false))
             {
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DashingDefenseAbility.Execute.AlreadyEffect"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DashingDefenseAbility.Execute.AlreadyEffect"), EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				return;
             }
 			
@@ -56,7 +56,7 @@ namespace DOL.GS.RealmAbilities
             ArrayList targets = new ArrayList();
             if (player.Group == null)
                 {
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DashingDefenseAbility.Execute.MustInGroup"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DashingDefenseAbility.Execute.MustInGroup"), EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 					return;
                 }
             else foreach (GamePlayer grpMate in player.Group.GetPlayersInTheGroup())

@@ -56,7 +56,7 @@ namespace DOL.GS
             if (translatableObject == null)
                 return;
 
-            MessageUtil.MessageToArea(this, $"{Name} says, \"{LanguageMgr.GetTranslation(LanguageMgr.DefaultLanguage, translatableObject)}\"", eChatType.CT_Say, eChatLoc.CL_ChatWindow, 512, null);
+            MessageUtil.MessageToArea(this, $"{Name} says, \"{LanguageMgr.GetTranslation(LanguageMgr.DefaultLanguage, translatableObject)}\"", EChatType.CT_Say, EChatLoc.CL_ChatWindow, 512, null);
         }
     }
 }

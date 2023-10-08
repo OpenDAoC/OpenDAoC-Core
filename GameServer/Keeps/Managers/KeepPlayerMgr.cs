@@ -112,7 +112,7 @@ namespace DOL.GS.Keeps
 		public static void BroadcastMessage(string message, ERealm realm)
 		{
 			foreach (GamePlayer player in ClientService.GetPlayersOfRealm(realm))
-				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>
@@ -125,8 +125,8 @@ namespace DOL.GS.Keeps
 		{
 			foreach (GamePlayer player in ClientService.GetPlayers())
 			{
-				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				player.Out.SendMessage(message, eChatType.CT_ScreenCenter,  eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_ScreenCenter,  EChatLoc.CL_SystemWindow);
 				
 				switch (capturingrealm)
 				{
@@ -198,8 +198,8 @@ namespace DOL.GS.Keeps
 			/*
 			 * Blood of the Realm has claimed this outpost.
 			 */
-			player.Out.SendMessage(message + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			player.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(message + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(message, EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>

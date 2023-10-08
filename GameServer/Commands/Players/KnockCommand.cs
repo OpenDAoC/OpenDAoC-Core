@@ -27,27 +27,27 @@ public class KnockCommand : ACommandHandler, ICommandHandler
 		long changeTime = client.Player.CurrentRegion.Time - KnockTick;
 		if (changeTime < 30000 && KnockTick > 0)
 		{
-			client.Player.Out.SendMessage("You must wait " + ((30000 - changeTime) / 1000).ToString() + " more seconds before knocking again!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Player.Out.SendMessage("You must wait " + ((30000 - changeTime) / 1000).ToString() + " more seconds before knocking again!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
 		bool done = false;
 		foreach (House house in HouseMgr.GetHousesCloseToSpot(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, 650))
 		{
-			client.Player.Emote(eEmote.Knock);
+			client.Player.Emote(EEmote.Knock);
 			foreach (GamePlayer player in house.GetAllPlayersInHouse())
 			{
 				string message = client.Player.Name + " is at your door";
-				player.Out.SendMessage(message + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message + "!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			done = true;
 		}
 
 		if (done)
 		{
-			client.Out.SendMessage("You knock on the door.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("You knock on the door.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			client.Player.TempProperties.SetProperty(PLAYER_KNOCKED, client.Player.CurrentRegion.Time);
 		}
-		else client.Out.SendMessage("You must go to the house you wish to knock on!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+		else client.Out.SendMessage("You must go to the house you wish to knock on!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 	}
 }

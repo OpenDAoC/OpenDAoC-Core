@@ -67,7 +67,7 @@ namespace DOL.AI.Brain
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(3000))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 		}
 		public override void Think()

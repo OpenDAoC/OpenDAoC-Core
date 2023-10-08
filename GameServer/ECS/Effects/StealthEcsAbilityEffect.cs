@@ -23,7 +23,7 @@ namespace DOL.GS
             OwnerPlayer.StartStealthUncoverAction();
 
             if (OwnerPlayer.ObjectState == GameObject.eObjectState.Active)
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Stealth.NowHidden"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Stealth.NowHidden"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             OwnerPlayer.Out.SendPlayerModelTypeChange(OwnerPlayer, 3);
 
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedBuff))
@@ -62,7 +62,7 @@ namespace DOL.GS
             OwnerPlayer.StopStealthUncoverAction();
 
             if (OwnerPlayer.ObjectState == GameObject.eObjectState.Active)
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Stealth.NoLongerHidden"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Stealth.NoLongerHidden"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
             OwnerPlayer.Out.SendPlayerModelTypeChange(OwnerPlayer, 2);
 

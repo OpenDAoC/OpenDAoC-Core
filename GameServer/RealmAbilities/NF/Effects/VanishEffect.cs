@@ -61,7 +61,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			if (m_countdown > 0)
 			{
-				((GamePlayer)Owner).Out.SendMessage("You are hidden for " + m_countdown + " more seconds!", eChatType.CT_SpellPulse, eChatLoc.CL_SystemWindow);
+				((GamePlayer)Owner).Out.SendMessage("You are hidden for " + m_countdown + " more seconds!", EChatType.CT_SpellPulse, EChatLoc.CL_SystemWindow);
 				m_countdown--;
 				return 1000;
 			}

@@ -162,11 +162,11 @@ public class SellCommand : ACommandHandler, ICommandHandler
 	            }
             }
 			else
-				client.Out.SendMessage("You must target a merchant.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("You must target a merchant.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 		else
 		{
-			client.Out.SendMessage("Use: /sell <bag>, /sell <bag1-bag2>, /sell all", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Use: /sell <bag>, /sell <bag1-bag2>, /sell all", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 	}
 }

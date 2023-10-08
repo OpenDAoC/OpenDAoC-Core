@@ -396,7 +396,7 @@ namespace DOL.GS.Keeps
 			AGameKeep keep = GameServer.KeepManager.GetKeepByID(keepID);
 			if (keep == null)
 			{
-				player.Out.SendMessage("Cannot create door as keep is null!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Cannot create door as keep is null!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			GameKeepComponent component = null;
@@ -410,7 +410,7 @@ namespace DOL.GS.Keeps
 			}
 			if (component == null)
 			{
-				player.Out.SendMessage("Cannot create door as component is null!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Cannot create door as component is null!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			DbKeepPosition pos = new DbKeepPosition();
@@ -431,7 +431,7 @@ namespace DOL.GS.Keeps
 
 			GameServer.Database.AddObject(pos);
 
-			player.Out.SendMessage("Added door as a position to keep.  A server restart will be required to load this position.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("Added door as a position to keep.  A server restart will be required to load this position.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 	}
 }

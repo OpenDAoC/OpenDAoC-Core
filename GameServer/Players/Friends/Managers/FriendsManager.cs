@@ -228,7 +228,7 @@ namespace DOL.GS.Friends
 				throw new ArgumentNullException(nameof(Player));
 
 			// "TF" - clear friend list in social
-			Player.Out.SendMessage("TF", eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+			Player.Out.SendMessage("TF", EChatType.CT_SocialInterface, EChatLoc.CL_SystemWindow);
 
 			var offlineFriends = this[Player].ToList();
 			var index = 0;
@@ -242,7 +242,7 @@ namespace DOL.GS.Friends
 					friend.Level,
 					friend.CharacterClass.ID,
 					friend.CurrentZone == null ? string.Empty : friend.CurrentZone.Description),
-					eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+					EChatType.CT_SocialInterface, EChatLoc.CL_SystemWindow);
 			}
 
 			// Query Offline Characters
@@ -258,7 +258,7 @@ namespace DOL.GS.Friends
 						friend.Level,
 						friend.ClassID,
 						friend.LastPlayed),
-						eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+						EChatType.CT_SocialInterface, EChatLoc.CL_SystemWindow);
 				}
 			}
 		}

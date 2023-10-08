@@ -50,14 +50,14 @@ namespace DOL.GS.Trainer
 			// check if class matches.
 			if (player.CharacterClass.ID == (int) TrainedClass)
 			{
-				player.Out.SendMessage(this.Name + " says, \"I'm glad to see you taking an interest in your training, " + player.Name + ". There is always room to grow and learn!\"", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage(this.Name + " says, \"I'm glad to see you taking an interest in your training, " + player.Name + ". There is always room to grow and learn!\"", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 			else
 			{
 				// perhaps player can be promoted
 				if (CanPromotePlayer(player))
 				{
-					player.Out.SendMessage(this.Name + " says, \"Champions follow the Path of Essence. Choose now to become a [Champion], and I will train you in our ways, and the ways of the Path we follow.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					player.Out.SendMessage(this.Name + " says, \"Champions follow the Path of Essence. Choose now to become a [Champion], and I will train you in our ways, and the ways of the Path we follow.\"", EChatType.CT_System, EChatLoc.CL_PopupWindow);
 					if (!player.IsLevelRespecUsed)
 					{
 						OfferRespecialize(player);

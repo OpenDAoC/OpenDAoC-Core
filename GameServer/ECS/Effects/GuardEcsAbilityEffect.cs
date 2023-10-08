@@ -83,13 +83,13 @@ namespace DOL.GS
             {
                 if (!GuardSource.IsWithinRadius(GuardTarget, GuardAbilityHandler.GUARD_DISTANCE))
                 {
-                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YouAreNowGuardingYBut", GuardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XIsNowGuardingYouBut", GuardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YouAreNowGuardingYBut", GuardTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+                    playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XIsNowGuardingYouBut", GuardSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 }
                 else
                 {
-                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YouAreNowGuardingY", GuardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XIsNowGuardingYou", GuardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YouAreNowGuardingY", GuardTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+                    playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XIsNowGuardingYou", GuardSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 }
 
                 new GuardEcsAbilityEffect(new EcsGameEffectInitParams(GuardTarget, 0, 1, null), GuardSource, GuardTarget);
@@ -130,8 +130,8 @@ namespace DOL.GS
                 GamePlayer playerSource = GuardSource as GamePlayer;
                 GamePlayer playerTarget = GuardTarget as GamePlayer;
 
-                playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YourNoLongerGuardingY", m_guardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XNoLongerGuardingYoy", m_guardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YourNoLongerGuardingY", m_guardTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+                playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XNoLongerGuardingYoy", m_guardSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
 
             base.OnStopEffect();

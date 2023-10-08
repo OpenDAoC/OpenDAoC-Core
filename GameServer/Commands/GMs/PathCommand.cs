@@ -87,7 +87,7 @@ namespace DOL.GS.Commands
 			PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, 1000, EPathType.Once);
 			client.Player.TempProperties.SetProperty(TEMP_PATH_FIRST, startpoint);
 			client.Player.TempProperties.SetProperty(TEMP_PATH_LAST, startpoint);
-			client.Player.Out.SendMessage("Path creation started! You can add new pathpoints via /path add now!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Player.Out.SendMessage("Path creation started! You can add new pathpoints via /path add now!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			CreatePathPointObject(client, startpoint, 1);
 		}
 

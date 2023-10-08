@@ -17,7 +17,7 @@ public class FaceGlocCommand : ACommandHandler, ICommandHandler
 
 		if (args.Length < 3)
 		{
-			client.Out.SendMessage("Please enter X and Y coordinates.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Please enter X and Y coordinates.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
@@ -29,7 +29,7 @@ public class FaceGlocCommand : ACommandHandler, ICommandHandler
 		}
 		catch (Exception)
 		{
-			client.Out.SendMessage("Please enter X and Y coordinates.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Please enter X and Y coordinates.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 

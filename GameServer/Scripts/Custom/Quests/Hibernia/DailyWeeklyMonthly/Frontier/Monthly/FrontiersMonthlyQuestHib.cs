@@ -204,7 +204,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 						case "capturing keeps and killing enemies":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your help! Hibernia will thank you for your contribution.", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Thank you for your help! Hibernia will thank you for your contribution.", EChatType.CT_Chat, EChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -271,7 +271,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you that you decide to help.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you that you decide to help.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -327,17 +327,17 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 				if (gArgs.Target.CurrentRegionID != 100 && gArgs.Target.CurrentRegionID != 200 &&
 				    gArgs.Target.CurrentRegionID != 1)
 				{
-					player.Out.SendMessage("[Monthly] You need to find enemies in the old frontiers.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("[Monthly] You need to find enemies in the old frontiers.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 				PlayersKilled++;
-				player.Out.SendMessage("[Monthly] Enemies Killed: ("+PlayersKilled+" | "+MAX_KILLING_GOAL+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("[Monthly] Enemies Killed: ("+PlayersKilled+" | "+MAX_KILLING_GOAL+")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
 			else if (e == GamePlayerEvent.CapturedKeepsChanged && Step == 1 && CapturedKeeps < MAX_CAPTURED_KEEPS_GOAL)
 			{
 				CapturedKeeps++;
-				player.Out.SendMessage("[Monthly] Captured Keeps: ("+CapturedKeeps+" | "+MAX_CAPTURED_KEEPS_GOAL+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("[Monthly] Captured Keeps: ("+CapturedKeeps+" | "+MAX_CAPTURED_KEEPS_GOAL+")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
 
@@ -382,7 +382,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 				
 				if (reward > 0)
 				{
-					m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Monthly Quest.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Monthly Quest.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					m_questPlayer.GainRealmPoints(reward, false);
 					m_questPlayer.Out.SendUpdatePlayer();
 				}
@@ -390,7 +390,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 			}
 			else
 			{
-				m_questPlayer.Out.SendMessage("Clear three slots of your inventory for your reward", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				m_questPlayer.Out.SendMessage("Clear three slots of your inventory for your reward", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 	}

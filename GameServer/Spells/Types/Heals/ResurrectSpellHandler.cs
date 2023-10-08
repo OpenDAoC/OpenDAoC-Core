@@ -92,7 +92,7 @@ namespace DOL.GS.Spells
 			{
 				if (rezzer == null)
 				{
-					player.Out.SendMessage("No one is currently trying to resurrect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("No one is currently trying to resurrect you.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				else
 				{
@@ -102,7 +102,7 @@ namespace DOL.GS.Spells
 					}
 					else
 					{
-						player.Out.SendMessage("You decline to be resurrected.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("You decline to be resurrected.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						//refund mana
 						m_caster.Mana += PowerCost(player);
 
@@ -178,7 +178,7 @@ namespace DOL.GS.Spells
 				player.StopReleaseTimer();
 				player.Out.SendPlayerRevive(player);
 				player.UpdatePlayerStatus();
-				player.Out.SendMessage("You have been resurrected by " + m_caster.GetName(0, false) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You have been resurrected by " + m_caster.GetName(0, false) + "!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				//player.Notify(GamePlayerEvent.Revive, player, new RevivedEventArgs(Caster, Spell));
 
 				//Lifeflight add this should make it so players who have been ressurected don't take damage for 5 seconds
@@ -199,8 +199,8 @@ namespace DOL.GS.Spells
 						playerCaster.GainRealmPoints(rezRps);
 					else
 					{
-						playerCaster.Out.SendMessage("The player you resurrected was not worth realm points on death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-						playerCaster.Out.SendMessage("You thus get no realm points for the resurrect.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						playerCaster.Out.SendMessage("The player you resurrected was not worth realm points on death.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+						playerCaster.Out.SendMessage("You thus get no realm points for the resurrect.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					}
 				}
 			}
@@ -216,7 +216,7 @@ namespace DOL.GS.Spells
 			GamePlayer player = callingTimer.Properties.GetProperty<GamePlayer>("targetPlayer", null);
 			if (player == null) return 0;
 			player.TempProperties.RemoveProperty(RESURRECT_CASTER_PROPERTY);
-			player.Out.SendMessage("Your resurrection spell has expired.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("Your resurrection spell has expired.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return 0;
 		}
 
@@ -234,7 +234,7 @@ namespace DOL.GS.Spells
             //so I added another check here.
             if (m_caster.Mana < PowerCost(target))
             {
-                MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
+                MessageToCaster("You don't have enough power to cast that!", EChatType.CT_SpellResisted);
 				return false;
             }
 
@@ -242,7 +242,7 @@ namespace DOL.GS.Spells
 			if (resurrectionCaster != null)
 			{
 				//already considering resurrection - do nothing
-				MessageToCaster("Your target is already considering a resurrection!", eChatType.CT_SpellResisted);
+				MessageToCaster("Your target is already considering a resurrection!", EChatType.CT_SpellResisted);
 				return false;
 			}
 
@@ -260,7 +260,7 @@ namespace DOL.GS.Spells
 			if (resurrectionCaster != null)
 			{
 				//already considering resurrection - do nothing
-				MessageToCaster("Your target is already considering a resurrection!", eChatType.CT_SpellResisted);
+				MessageToCaster("Your target is already considering a resurrection!", EChatType.CT_SpellResisted);
 				return false;
 			}
 			return base.CheckEndCast(target);

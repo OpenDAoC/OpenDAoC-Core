@@ -82,7 +82,7 @@ namespace DOL.GS.Spells
             if (kDecoy == null) return;
             if (e == GameLivingEvent.Dying)
             {
-                MessageToCaster("Your Decoy has fallen!", eChatType.CT_SpellExpires);
+                MessageToCaster("Your Decoy has fallen!", EChatType.CT_SpellExpires);
                 OnEffectExpires(m_effect, true);
                 return;
             }
@@ -147,7 +147,7 @@ namespace DOL.GS.Spells
             {
                 GameFont targetFont = target as GameFont;
                 targetFont.Delete();
-                MessageToCaster("Selected ward has been saboted!", eChatType.CT_SpellResisted);
+                MessageToCaster("Selected ward has been saboted!", EChatType.CT_SpellResisted);
             }
         }
 
@@ -277,7 +277,7 @@ namespace DOL.GS.Spells
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
             if (!(selectedTarget is GamePlayer)) return false;
-            if (!selectedTarget.IsSitting) { MessageToCaster("Target must be sitting!", eChatType.CT_System); return false; }
+            if (!selectedTarget.IsSitting) { MessageToCaster("Target must be sitting!", EChatType.CT_System); return false; }
             return base.CheckBeginCast(selectedTarget);
         }
 
@@ -305,7 +305,7 @@ namespace DOL.GS.Spells
         {
             GamePlayer player = (GamePlayer)sender;
             if (player == null) return;
-            MessageToLiving((GameLiving)player, "You are moving. Your concentration fades!", eChatType.CT_SpellResisted);
+            MessageToLiving((GameLiving)player, "You are moving. Your concentration fades!", EChatType.CT_SpellResisted);
             GameSpellEffect effect = SpellHandler.FindEffectOnTarget(m_target, "Loockout");
             if (effect != null) effect.Cancel(false);
             IGameEffect effect2 = SpellHandler.FindStaticEffectOnTarget(Caster, typeof(LoockoutOwner));
@@ -470,7 +470,7 @@ namespace DOL.GS.Spells
                 if (player == null) return;
                 if (args is AttackFinishedEventArgs)
                 {
-                    MessageToLiving((GameLiving)player, "You are attacking. Your camouflage fades!", eChatType.CT_SpellResisted);
+                    MessageToLiving((GameLiving)player, "You are attacking. Your camouflage fades!", EChatType.CT_SpellResisted);
                     OnEffectExpires(m_effect, true);
                     return;
                 }
@@ -483,13 +483,13 @@ namespace DOL.GS.Spells
                 {
                     if ((args as CastingEventArgs).SpellHandler.Caster != Caster)
                         return;
-                    MessageToLiving((GameLiving)player, "You are casting a spell. Your camouflage fades!", eChatType.CT_SpellResisted);
+                    MessageToLiving((GameLiving)player, "You are casting a spell. Your camouflage fades!", EChatType.CT_SpellResisted);
                     OnEffectExpires(m_effect, true);
                     return;
                 }
                 if (e == GamePlayerEvent.Moving)
                 {
-                    MessageToLiving((GameLiving)player, "You are moving. Your camouflage fades!", eChatType.CT_SpellResisted);
+                    MessageToLiving((GameLiving)player, "You are moving. Your camouflage fades!", EChatType.CT_SpellResisted);
                     OnEffectExpires(m_effect, true);
                     return;
                 }

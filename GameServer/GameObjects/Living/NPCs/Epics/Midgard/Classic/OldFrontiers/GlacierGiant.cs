@@ -202,7 +202,7 @@ namespace DOL.AI.Brain
 					foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
 					{
 						if (player != null)
-							player.Out.SendMessage("Glacier Giant kick away " + RandomTarget.Name + "!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+							player.Out.SendMessage("Glacier Giant kick away " + RandomTarget.Name + "!", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 					}					
 					if (RandomTarget != null && RandomTarget.IsAlive && !Teleported_Players.Contains(RandomTarget))
 					{

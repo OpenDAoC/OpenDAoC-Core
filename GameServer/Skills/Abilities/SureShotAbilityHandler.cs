@@ -39,7 +39,7 @@ namespace DOL.GS.SkillHandler
 
 			if (!player.IsAlive)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.SureShot.CannotUseDead"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.SureShot.CannotUseDead"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 

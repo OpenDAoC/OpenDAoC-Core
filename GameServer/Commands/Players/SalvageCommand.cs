@@ -35,7 +35,7 @@ public class SalvageCommand : ACommandHandler, ICommandHandler
 
 				if (firstBag > lastBag)
 				{
-					client.Player.Out.SendMessage("Invalid bag numbers. the first number can't be higher than the last.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					client.Player.Out.SendMessage("Invalid bag numbers. the first number can't be higher than the last.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 
@@ -57,7 +57,7 @@ public class SalvageCommand : ACommandHandler, ICommandHandler
 						firstItem = 33;
 						break;
 					default:
-						client.Player.Out.SendMessage("Invalid first bag number. It should be between 1 and 5.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Player.Out.SendMessage("Invalid first bag number. It should be between 1 and 5.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						return;
 				}
 
@@ -79,7 +79,7 @@ public class SalvageCommand : ACommandHandler, ICommandHandler
 						lastItem = 40;
 						break;
 					default:
-						client.Player.Out.SendMessage("Invalid last bag number. It should be between 1 and 5.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Player.Out.SendMessage("Invalid last bag number. It should be between 1 and 5.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						return;
 				}
 			} 
@@ -108,7 +108,7 @@ public class SalvageCommand : ACommandHandler, ICommandHandler
 						lastItem = 40;
 						break;
 					default:
-						client.Player.Out.SendMessage("Invalid bag number. It should be between 1 and 5.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Player.Out.SendMessage("Invalid bag number. It should be between 1 and 5.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						return;
 				}
 			}
@@ -126,13 +126,13 @@ public class SalvageCommand : ACommandHandler, ICommandHandler
 
 				if (!uint.TryParse(quality, out qualityInt))
 				{
-					client.Player.Out.SendMessage("Invalid quality filter. Use \"Qxx\" where \"xx\" is a number.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					client.Player.Out.SendMessage("Invalid quality filter. Use \"Qxx\" where \"xx\" is a number.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 
 				if (qualityInt > 100)
 				{
-					client.Player.Out.SendMessage("Invalid quality filter. Quality can't be higher than 100.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					client.Player.Out.SendMessage("Invalid quality filter. Quality can't be higher than 100.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 			}

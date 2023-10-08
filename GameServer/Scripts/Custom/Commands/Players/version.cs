@@ -32,7 +32,7 @@ namespace DOL.GS.Commands
 		public void OnCommand(GameClient client, string[] args)
 		{
 			AssemblyName an = Assembly.GetAssembly(typeof(GameServer)).GetName();
-			client.Out.SendMessage("Dawn of Light " + an.Name + " Version: " + an.Version, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Dawn of Light " + an.Name + " Version: " + an.Version, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 	}
 }

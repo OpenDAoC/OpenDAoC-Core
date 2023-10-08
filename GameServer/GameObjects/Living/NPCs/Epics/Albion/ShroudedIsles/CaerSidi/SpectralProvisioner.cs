@@ -34,7 +34,7 @@ namespace DOL.GS.Scripts
 					else
 						truc = ((source as GameSummonedPet).Owner as GamePlayer);
 					if (truc != null)
-						truc.Out.SendMessage("The Spectral Provisioner is immune to this form of attack.", eChatType.CT_System,eChatLoc.CL_ChatWindow);
+						truc.Out.SendMessage("The Spectral Provisioner is immune to this form of attack.", EChatType.CT_System,EChatLoc.CL_ChatWindow);
 
 					base.TakeDamage(source, damageType, 0, 0);
 					return;

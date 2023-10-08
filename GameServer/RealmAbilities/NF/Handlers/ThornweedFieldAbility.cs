@@ -20,18 +20,18 @@ namespace DOL.GS.RealmAbilities
 
 			if (caster.IsMoving)
 			{
-				caster.Out.SendMessage("You must be standing still to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You must be standing still to use this ability!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
 			if (caster.GroundTarget == null )
             {
-                caster.Out.SendMessage( "You must set a ground target to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow );
+                caster.Out.SendMessage( "You must set a ground target to use this ability!", EChatType.CT_System, EChatLoc.CL_SystemWindow );
                 return;
             }
             else if(!caster.IsWithinRadius( caster.GroundTarget, 1500 ))
 			{
-				caster.Out.SendMessage("Your ground target is too far away to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("Your ground target is too far away to use this ability!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -73,11 +73,11 @@ namespace DOL.GS.RealmAbilities
 			{
 				if (i_player == caster)
 				{
-					i_player.MessageToSelf("You cast " + this.Name + "!", eChatType.CT_Spell);
+					i_player.MessageToSelf("You cast " + this.Name + "!", EChatType.CT_Spell);
 				}
 				else
 				{
-					i_player.MessageFromArea(caster, caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					i_player.MessageFromArea(caster, caster.Name + " casts a spell!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				}
 
 				i_player.Out.SendSpellCastAnimation(caster, 7028, 0);
@@ -87,7 +87,7 @@ namespace DOL.GS.RealmAbilities
 			{
 				caster.RealmAbilityCastTimer.Stop();
 				caster.RealmAbilityCastTimer = null;
-				caster.Out.SendMessage("You cancel your Spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You cancel your Spell!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 			}
 
 			caster.RealmAbilityCastTimer = new ECSGameTimer(caster);

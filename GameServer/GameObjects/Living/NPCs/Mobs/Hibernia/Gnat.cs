@@ -60,8 +60,8 @@ namespace DOL.AI.Brain
                         spawnants = false; //we check here to avoid spawning adds multiple times
                         foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
                         {
-                            player.Out.SendMessage("Lets loose a high pitch whistle.", eChatType.CT_Say,
-                                eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage("Lets loose a high pitch whistle.", EChatType.CT_Say,
+                                EChatLoc.CL_SystemWindow);
                         }
                     }
 

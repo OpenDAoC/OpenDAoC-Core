@@ -453,7 +453,7 @@ namespace DOL.GS.Scripts
 
         private static void TellPlayer(GamePlayer player)
         {
-            player.Out.SendMessage("Bonus zones updated.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("Bonus zones updated.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
         }
 
         private static string GetLevelRange(int zoneID)

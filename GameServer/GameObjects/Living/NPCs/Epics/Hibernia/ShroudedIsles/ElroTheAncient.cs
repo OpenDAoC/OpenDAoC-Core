@@ -201,7 +201,7 @@ namespace DOL.GS.Scripts
 
 		public void SendReply(GamePlayer player, string msg)
 		{
-			player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage(msg, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 		}
 		
 	}

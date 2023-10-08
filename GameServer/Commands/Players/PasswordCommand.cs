@@ -20,7 +20,7 @@ public class PasswordCommand : ACommandHandler, ICommandHandler
 
 		if (args.Length < 3)
 		{
-			client.Out.SendMessage(usage, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage(usage, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 		try
@@ -37,7 +37,7 @@ public class PasswordCommand : ACommandHandler, ICommandHandler
 			}
 			else
 			{
-				client.Out.SendMessage("Your current password was incorrect.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Your current password was incorrect.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
 				if (log.IsInfoEnabled)
 					log.Info(client.Player.Name + " (" + client.Account.Name + ") attempted to change password but failed!");
@@ -47,7 +47,7 @@ public class PasswordCommand : ACommandHandler, ICommandHandler
 		}
 		catch (Exception)
 		{
-			client.Out.SendMessage(usage, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage(usage, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 	}
 
@@ -63,7 +63,7 @@ public class PasswordCommand : ACommandHandler, ICommandHandler
 			return;
 
 		player.TempProperties.RemoveProperty(PASSWORD_PROPERTY);
-		player.Out.SendMessage("Your password has been changed.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		player.Out.SendMessage("Your password has been changed.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		player.Client.Account.Password = LoginRequestHandler.CryptPassword(newPassword);
 
 		GameServer.Database.SaveObject(player.Client.Account);

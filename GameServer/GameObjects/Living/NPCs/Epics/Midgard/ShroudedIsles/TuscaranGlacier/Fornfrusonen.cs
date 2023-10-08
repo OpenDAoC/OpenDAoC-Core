@@ -54,7 +54,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public override void Die(GameObject killer) //on kill generate orbs
@@ -125,8 +125,8 @@ namespace DOL.GS
                     else
                         truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to your damage!", eChatType.CT_System,
-                            eChatLoc.CL_ChatWindow);
+                        truc.Out.SendMessage(Name + " is immune to your damage!", EChatType.CT_System,
+                            EChatLoc.CL_ChatWindow);
 
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
@@ -158,7 +158,7 @@ namespace DOL.AI.Brain
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         private bool SpamMessage = false;
@@ -255,8 +255,8 @@ namespace DOL.GS
                     else
                         truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to your damage!", eChatType.CT_System,
-                            eChatLoc.CL_ChatWindow);
+                        truc.Out.SendMessage(Name + " is immune to your damage!", EChatType.CT_System,
+                            EChatLoc.CL_ChatWindow);
 
                     base.TakeDamage(source, damageType, 0, 0);
                     return;

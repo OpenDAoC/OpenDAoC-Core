@@ -75,7 +75,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				Player.Out.SendMessage("You cannot enter combat while in shade form!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				Player.Out.SendMessage("You cannot enter combat while in shade form!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 		}

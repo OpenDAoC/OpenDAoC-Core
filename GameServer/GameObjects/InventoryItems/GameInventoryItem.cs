@@ -284,11 +284,11 @@ namespace DOL.GS
                     if (ConditionPercent != oldPercent)
                     {
                         if (ConditionPercent == 90)
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.CouldRepair", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.CouldRepair", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         else if (ConditionPercent == 80)
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedRepair", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedRepair", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         else if (ConditionPercent == 70)
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedRepairDire", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedRepairDire", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         player.Out.SendUpdateWeaponAndArmorStats();
                         player.Out.SendInventorySlotsUpdate(new int[] { SlotPosition });
@@ -328,11 +328,11 @@ namespace DOL.GS
                     if (ConditionPercent != oldPercent)
                     {
                         if (ConditionPercent == 90)
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.CouldRepair", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.CouldRepair", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         else if (ConditionPercent == 80)
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedRepair", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedRepair", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         else if (ConditionPercent == 70)
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedRepairDire", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedRepairDire", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         player.Out.SendUpdateWeaponAndArmorStats();
                         player.Out.SendInventorySlotsUpdate(new int[] { SlotPosition });

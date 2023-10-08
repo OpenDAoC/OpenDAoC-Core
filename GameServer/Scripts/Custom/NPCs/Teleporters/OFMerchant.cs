@@ -118,7 +118,7 @@ namespace DOL.GS.Scripts
 
         public override bool Interact(GamePlayer player)
         {
-            player.Out.SendMerchantWindow(TradeItems, eMerchantWindowType.Normal);
+            player.Out.SendMerchantWindow(TradeItems, EMerchantWindowType.Normal);
             return true;
         }
     }  

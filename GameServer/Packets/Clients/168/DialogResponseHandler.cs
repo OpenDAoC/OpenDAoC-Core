@@ -4,12 +4,12 @@ using DOL.GS.Keeps;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.DialogResponse, "Response Packet from a Question Dialog", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.DialogResponse, "Response Packet from a Question Dialog", EClientStatus.PlayerInGame)]
 	public class DialogResponseHandler : IPacketHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			ushort data1 = packet.ReadShort();
 			ushort data2 = packet.ReadShort();
@@ -78,9 +78,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				// log.DebugFormat("Dialog - response: {0}, messageType: {1}, data1: {2}, data2: {3}, data3: {4}", m_response, m_messageType, m_data1, m_data2, m_data3);
 
-				switch ((eDialogCode) m_messageType)
+				switch ((EDialogCode) m_messageType)
 				{
-					case eDialogCode.CustomDialog:
+					case EDialogCode.CustomDialog:
 						{
 							if (m_data2 == 0x01)
 							{
@@ -99,7 +99,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							Interval = 0;
 							break;
 						}
-					case eDialogCode.GuildInvite:
+					case EDialogCode.GuildInvite:
 					{
 						GamePlayer guildLeader = null;
 							foreach (var region in WorldMgr.GetAllRegions())
@@ -114,19 +114,19 @@ namespace DOL.GS.PacketHandler.Client.v168
 								if (guildLeader == null)
 								{
 									player.Out.SendMessage("You need to be in the same region as the guild leader to accept an invitation.",
-									                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									                       EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									return 0;
 								}
 								if (!ServerProperties.Properties.ALLOW_GUILD_INVITE_IN_RVR && (guildLeader.CurrentZone.IsRvR || player.CurrentZone.IsRvR))
 								{
 									player.Out.SendMessage("You can't join a guild while in a RvR zone.",
-										eChatType.CT_System, eChatLoc.CL_SystemWindow);
+										EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									return 0;
 								}
 								if (player.Guild != null)
 								{
-									player.Out.SendMessage("You are still in a guild, you'll have to leave it first.", eChatType.CT_System,
-									                       eChatLoc.CL_SystemWindow);
+									player.Out.SendMessage("You are still in a guild, you'll have to leave it first.", EChatType.CT_System,
+									                       EChatLoc.CL_SystemWindow);
 									return 0;
 								}
 								if (guildLeader.Guild != null)
@@ -135,25 +135,25 @@ namespace DOL.GS.PacketHandler.Client.v168
 									return 0;
 								}
 
-								player.Out.SendMessage("Player doing the invite is not in a guild!", eChatType.CT_System,
-								                       eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage("Player doing the invite is not in a guild!", EChatType.CT_System,
+								                       EChatLoc.CL_SystemWindow);
 								return 0;
 							}
 
 							if (guildLeader != null)
 							{
-								guildLeader.Out.SendMessage(player.Name + " declined your invite.", eChatType.CT_System,
-								                            eChatLoc.CL_SystemWindow);
+								guildLeader.Out.SendMessage(player.Name + " declined your invite.", EChatType.CT_System,
+								                            EChatLoc.CL_SystemWindow);
 							}
 							return 0;
 						}
-					case eDialogCode.GuildLeave:
+					case EDialogCode.GuildLeave:
 						{
 							if (m_response == 0x01) //accepte
 							{
 								if (player.Guild == null)
 								{
-									player.Out.SendMessage("You are not in a guild.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									player.Out.SendMessage("You are not in a guild.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									return 0;
 								}
 
@@ -161,13 +161,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 							}
 							else
 							{
-								player.Out.SendMessage("You decline to quit your guild.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage("You decline to quit your guild.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return 0;
 							}
 							Interval = 0;
 							break;
 						}
-					case eDialogCode.QuestSubscribe:
+					case EDialogCode.QuestSubscribe:
 						{
 							var questNPC = (GameLiving)WorldMgr.GetObjectByIDFromRegion(player.CurrentRegionID, (ushort) m_data2);
 							if (questNPC == null)
@@ -185,7 +185,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							player.Notify(m_data3 == 0x01 ? GamePlayerEvent.ContinueQuest : GamePlayerEvent.DeclineQuest, player, args);
 							return 0;
 						}
-					case eDialogCode.GroupInvite:
+					case EDialogCode.GroupInvite:
 						{
 							if (m_response == 0x01)
 							{
@@ -199,7 +199,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								if (player.Group != null)
 								{
-									player.Out.SendMessage("You are still in a group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									player.Out.SendMessage("You are still in a group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									return 0;
 								}
 								if (!GameServer.ServerRules.IsAllowedToGroup(groupLeader, player, false))
@@ -208,7 +208,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								}
 								if (player.InCombatPvE)
 								{
-									player.Out.SendMessage("You can't join a group while in combat!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									player.Out.SendMessage("You can't join a group while in combat!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									return 0;
 								}
 								if (groupLeader.Group != null)
@@ -216,7 +216,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									if (groupLeader.Group.Leader != groupLeader) return 0;
                                     if (groupLeader.Group.MemberCount >= ServerProperties.Properties.GROUP_MAX_MEMBER)
 									{
-										player.Out.SendMessage("The group is full.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+										player.Out.SendMessage("The group is full.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 										return 0;
 									}
 									groupLeader.Group.AddMember(player);
@@ -237,22 +237,22 @@ namespace DOL.GS.PacketHandler.Client.v168
 							Interval = 0;
 							break;
 						}
-					case eDialogCode.KeepClaim:
+					case EDialogCode.KeepClaim:
 						{
 							if (m_response == 0x01)
 							{
 								if (player.Guild == null)
 								{
 									player.Out.SendMessage("You have to be a member of a guild, before you can use any of the commands!",
-									                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									                       EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									return 0;
 								}
 
 								AGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
 								if (keep == null)
 								{
-									player.Out.SendMessage("You have to be near the keep to claim it.", eChatType.CT_System,
-									                       eChatLoc.CL_SystemWindow);
+									player.Out.SendMessage("You have to be near the keep to claim it.", EChatType.CT_System,
+									                       EChatLoc.CL_SystemWindow);
 									return 0;
 								}
 
@@ -265,7 +265,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							Interval = 0;
 							break;
 						}
-					case eDialogCode.HousePayRent:
+					case EDialogCode.HousePayRent:
 						{
 							if (m_response == 0x00)
 							{
@@ -308,11 +308,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 								player.SaveIntoDatabase();
 
 								// notify the player of what we took and how long they are prepaid for
-								player.Out.SendMessage("You deposit " + MoneyMgr.GetString(moneyToAdd) + " in the lockbox.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage("You deposit " + MoneyMgr.GetString(moneyToAdd) + " in the lockbox.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								player.Out.SendMessage("The lockbox now has " + MoneyMgr.GetString(house.KeptMoney) + " in it.  The weekly payment is " +
-									MoneyMgr.GetString(HouseMgr.GetRentByModel(house.Model)) + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									MoneyMgr.GetString(HouseMgr.GetRentByModel(house.Model)) + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								player.Out.SendMessage("The house is now prepaid for the next " + (house.KeptMoney/HouseMgr.GetRentByModel(house.Model)) +
-									" payments.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									" payments.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 								// clean up
 								player.TempProperties.RemoveProperty(HousingConstants.MoneyForHouseRent);
@@ -333,11 +333,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 								player.SaveIntoDatabase();
 
 								// notify the player of what we took and how long they are prepaid for
-								player.Out.SendMessage("You deposit " + MoneyMgr.GetString(bpsToMoney) + " in the lockbox.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage("You deposit " + MoneyMgr.GetString(bpsToMoney) + " in the lockbox.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								player.Out.SendMessage("The lockbox now has " + MoneyMgr.GetString(house.KeptMoney) + " in it.  The weekly payment is " +
-									MoneyMgr.GetString(HouseMgr.GetRentByModel(house.Model)) + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									MoneyMgr.GetString(HouseMgr.GetRentByModel(house.Model)) + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								player.Out.SendMessage("The house is now prepaid for the next " + (house.KeptMoney/HouseMgr.GetRentByModel(house.Model)) +
-									" payments.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									" payments.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 								// clean up
 								player.TempProperties.RemoveProperty(HousingConstants.BPsForHouseRent);
@@ -348,7 +348,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							Interval = 0;
 							break;
 						}
-					case eDialogCode.MasterLevelWindow:
+					case EDialogCode.MasterLevelWindow:
 						{
 							player.Out.SendMasterLevelWindow(m_response);
 							Interval = 0;

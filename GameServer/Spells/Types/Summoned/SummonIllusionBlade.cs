@@ -20,7 +20,7 @@ namespace DOL.GS.Spells
             {
                 if (log.IsWarnEnabled)
                     log.WarnFormat("NPC template {0} not found! Spell: {1}", Spell.LifeDrainReturn, Spell.ToString());
-                MessageToCaster("NPC template " + (ushort)Spell.LifeDrainReturn + " not found!", eChatType.CT_System);
+                MessageToCaster("NPC template " + (ushort)Spell.LifeDrainReturn + " not found!", EChatType.CT_System);
                 return;
             }
 

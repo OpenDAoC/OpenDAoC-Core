@@ -1,28 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
-
 using System.Reflection;
 using DOL.Database;
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.CharacterOverviewRequest, "Handles account realm info and sending char overview", eClientStatus.LoggedIn)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.CharacterOverviewRequest, "Handles account realm info and sending char overview", EClientStatus.LoggedIn)]
 	public class CharacterOverviewRequestHandler : IPacketHandler
 	{
 		/// <summary>
@@ -30,7 +12,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			// This actually prevents 1124 from entering the game. Should it be > instead of >=?
 			if (client.Version >= GameClient.eClientVersion.Version1124) // 1124 support
@@ -133,7 +115,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 		}
 
-		private void _HandlePacket1124(GameClient client, GSPacketIn packet)
+		private void _HandlePacket1124(GameClient client, GsPacketIn packet)
 		{
 			client.ClientState = GameClient.eClientState.CharScreen;
 

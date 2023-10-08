@@ -94,7 +94,7 @@ public class AdviceCommand : ACommandHandler, ICommandHandler
         }
 
         if (Properties.DISCORD_ACTIVE)
-            WebhookMessage.LogChatMessage(client.Player, eChatType.CT_Advise, msg);
+            WebhookMessage.LogChatMessage(client.Player, EChatType.CT_Advise, msg);
 
         if (client.Account.PrivLevel == 1)
             client.Player.TempProperties.SetProperty(advTimeoutString, GameLoop.GameLoopTime);

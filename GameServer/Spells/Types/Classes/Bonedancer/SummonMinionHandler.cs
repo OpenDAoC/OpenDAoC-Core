@@ -63,13 +63,13 @@ namespace DOL.GS.Spells
 		{
 			if (Caster is GamePlayer && ((GamePlayer)Caster).ControlledBrain == null)
 			{
-                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonMinionHandler.CheckBeginCast.Text1"), eChatType.CT_SpellResisted);
+                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonMinionHandler.CheckBeginCast.Text1"), EChatType.CT_SpellResisted);
                 return false;
 			}
 
 			if (Caster is GamePlayer && (((GamePlayer)Caster).ControlledBrain.Body.ControlledNpcList == null || ((GamePlayer)Caster).ControlledBrain.Body.PetCount >= ((GamePlayer)Caster).ControlledBrain.Body.ControlledNpcList.Length))
 			{
-                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonMinionHandler.CheckBeginCast.Text2"), eChatType.CT_SpellResisted);
+                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonMinionHandler.CheckBeginCast.Text2"), EChatType.CT_SpellResisted);
 
                 return false;
 			}
@@ -89,7 +89,7 @@ namespace DOL.GS.Spells
 
 				if (cumulativeLevel + newpetlevel > 75)
 				{
-					MessageToCaster("Your commander is not powerful enough to control a subpet of this level.", eChatType.CT_SpellResisted);
+					MessageToCaster("Your commander is not powerful enough to control a subpet of this level.", EChatType.CT_SpellResisted);
 					return false;
 				}
 			}

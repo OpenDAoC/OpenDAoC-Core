@@ -197,8 +197,8 @@ namespace DOL.GS.DailyQuest.Midgard
                         case "succeed":
                             if (quest.Step == 2)
                             {
-                                player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat,
-                                    eChatLoc.CL_PopupWindow);
+                                player.Out.SendMessage("Thank you for your contribution!", EChatType.CT_Chat,
+                                    EChatLoc.CL_PopupWindow);
                                 quest.FinishQuest();
                             }
 
@@ -275,7 +275,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
             if (response == 0x00)
             {
-                player.Out.SendMessage("Thank you for helping the king.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                player.Out.SendMessage("Thank you for helping the king.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
             }
             else
             {
@@ -334,7 +334,7 @@ namespace DOL.GS.DailyQuest.Midgard
                 _deadTuscaMob++;
                 player.Out.SendMessage(
                     "[Daily] Monsters killed in Tuscaran Glacier: (" + _deadTuscaMob + " | " + MAX_KILLGOAL + ")",
-                    eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                    EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
                 player.Out.SendQuestUpdate(this);
 
                 if (_deadTuscaMob >= MAX_KILLGOAL)

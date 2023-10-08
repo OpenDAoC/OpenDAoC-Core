@@ -124,7 +124,7 @@ namespace DOL.GS
             //if they've cached a style and then respecced to no longer have access, remove it
             if (AutomaticBackupStyle != null && _owner is GamePlayer player && player.WeaponBaseSpecLevel(weapon) < AutomaticBackupStyle.SpecLevelRequirement)
             {
-                player.Out.SendMessage($"{AutomaticBackupStyle.Name} is no longer a valid backup style for your spec level and has been cleared.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage($"{AutomaticBackupStyle.Name} is no longer a valid backup style for your spec level and has been cleared.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 AutomaticBackupStyle = null;
             }
            
@@ -249,7 +249,7 @@ namespace DOL.GS
                     if (notify)
                     {
                         Style style = st;
-                        p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.YouLearn", style.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.YouLearn", style.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         string message = null;
 
@@ -314,7 +314,7 @@ namespace DOL.GS
                         }
 
                         if (!string.IsNullOrEmpty(message))
-                            p.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            p.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     }
                 }
             }

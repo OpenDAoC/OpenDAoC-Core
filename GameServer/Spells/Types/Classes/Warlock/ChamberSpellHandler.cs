@@ -96,70 +96,70 @@ namespace DOL.GS.Spells
 				int duration = caster.GetSkillDisabledDuration(m_spell);
 				if (duration > 0)
 				{
-					MessageToCaster("You must wait " + (duration / 1000 + 1) + " seconds to use this spell!", eChatType.CT_System);
+					MessageToCaster("You must wait " + (duration / 1000 + 1) + " seconds to use this spell!", EChatType.CT_System);
 					return false;
 				}
 				if (caster.IsMoving || caster.IsStrafing)
 				{
-					MessageToCaster("You must be standing still to cast this spell!", eChatType.CT_System);
+					MessageToCaster("You must be standing still to cast this spell!", EChatType.CT_System);
 					return false;
 				}
 				if (caster.IsSitting)
 				{
-					MessageToCaster("You can't cast this spell while sitting!", eChatType.CT_System);
+					MessageToCaster("You can't cast this spell while sitting!", EChatType.CT_System);
 					return false;
 				}
 				if (Target == null)
 				{
-					MessageToCaster("You must have a target!", eChatType.CT_SpellResisted);
+					MessageToCaster("You must have a target!", EChatType.CT_SpellResisted);
 					return false;
 				}
 				if (!caster.IsAlive)
 				{
-					MessageToCaster("You cannot cast this dead!", eChatType.CT_SpellResisted);
+					MessageToCaster("You cannot cast this dead!", EChatType.CT_SpellResisted);
 					return false;
 				}
 				if (!Target.IsAlive)
 				{
-					MessageToCaster("You cannot cast this on the dead!", eChatType.CT_SpellResisted);
+					MessageToCaster("You cannot cast this on the dead!", EChatType.CT_SpellResisted);
 					return false;
 				}
 				if (caster.IsMezzed || caster.IsStunned || caster.IsSilenced)
 				{
-					MessageToCaster("You can't use that in your state.", eChatType.CT_System);
+					MessageToCaster("You can't use that in your state.", EChatType.CT_System);
 					return false;
 				}
 				if (!caster.TargetInView)
 				{
-					MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
+					MessageToCaster("Your target is not visible!", EChatType.CT_SpellResisted);
 					return false;
 				}
 				if (caster.IsObjectInFront(Target, 180) == false)
 				{
-					MessageToCaster("Your target is not in view!", eChatType.CT_SpellResisted);
+					MessageToCaster("Your target is not in view!", EChatType.CT_SpellResisted);
 					return false;
 				}
 				if (caster.IsInvulnerableToAttack)
 				{
-					MessageToCaster("Your invunerable at the momment and cannot use that spell!", eChatType.CT_System);
+					MessageToCaster("Your invunerable at the momment and cannot use that spell!", EChatType.CT_System);
 					return false;
 				}
 				if (Target is GamePlayer)
 				{
 					if ((Target as GamePlayer).IsInvulnerableToAttack)
 					{
-						MessageToCaster("Your target is invunerable at the momment and cannot be attacked!", eChatType.CT_System);
+						MessageToCaster("Your target is invunerable at the momment and cannot be attacked!", EChatType.CT_System);
 						return false;
 					}
 				}
 				if (!caster.IsWithinRadius(Target, ((SpellHandler)spellhandler).CalculateSpellRange()))
 				{
-					MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
+					MessageToCaster("That target is too far away!", EChatType.CT_SpellResisted);
 					return false;
 				}
 				if (PhaseShift != null)
 				{
-					MessageToCaster(Target.Name + " is Phaseshifted and can't be attacked!", eChatType.CT_System); return false;
+					MessageToCaster(Target.Name + " is Phaseshifted and can't be attacked!", EChatType.CT_System); return false;
 				}
 				if (SelectiveBlindness != null)
 				{
@@ -167,24 +167,24 @@ namespace DOL.GS.Spells
 					if (EffectOwner == Target)
 					{
 						if (m_caster is GamePlayer)
-							((GamePlayer)m_caster).Out.SendMessage(string.Format("{0} is invisible to you!", Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+							((GamePlayer)m_caster).Out.SendMessage(string.Format("{0} is invisible to you!", Target.GetName(0, true)), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
 
 						return false;
 					}
 				}
 				if (Target.HasAbility(Abilities.DamageImmunity))
 				{
-					MessageToCaster(Target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+					MessageToCaster(Target.Name + " is immune to this effect!", EChatType.CT_SpellResisted);
 					return false;
 				}
 				if (GameServer.ServerRules.IsAllowedToAttack(Caster, Target, true) && chamber.PrimarySpell.Target == ESpellTarget.REALM)
 				{
-					MessageToCaster("This spell only works on friendly targets!", eChatType.CT_System);
+					MessageToCaster("This spell only works on friendly targets!", EChatType.CT_System);
 					return false;
 				}
 				if (!GameServer.ServerRules.IsAllowedToAttack(Caster, Target, true) && chamber.PrimarySpell.Target != ESpellTarget.REALM)
 				{
-					MessageToCaster("That target isn't attackable at this time!", eChatType.CT_System);
+					MessageToCaster("That target isn't attackable at this time!", EChatType.CT_System);
 					return false;
 				}
 				spellhandler.StartSpell(Target);
@@ -213,7 +213,7 @@ namespace DOL.GS.Spells
 				base.StartSpell(Target);
 				int duration = caster.GetSkillDisabledDuration(m_spell);
 				if(Caster is GamePlayer && duration == 0)
-					((GamePlayer)Caster).Out.SendMessage("Select the first spell for your " + Spell.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)Caster).Out.SendMessage("Select the first spell for your " + Spell.Name + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			return true;
 		}
@@ -235,11 +235,11 @@ namespace DOL.GS.Spells
 			{
 				if(SecondarySpell == null && PrimarySpell == null)
 				{
-					MessageToCaster("No spells were loaded into " + m_spell.Name + ".", eChatType.CT_Spell);
+					MessageToCaster("No spells were loaded into " + m_spell.Name + ".", EChatType.CT_Spell);
 				}
 				else
 				{
-					MessageToCaster("Your " + m_spell.Name + " is ready for use.", eChatType.CT_Spell);
+					MessageToCaster("Your " + m_spell.Name + " is ready for use.", EChatType.CT_Spell);
 					//StartSpell(target); // and action
 					GameSpellEffect neweffect = CreateSpellEffect(target, 1);
 					neweffect.Start(m_caster);
@@ -250,7 +250,7 @@ namespace DOL.GS.Spells
 				foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 				{
 					if (player != m_caster)
-						player.MessageFromArea(m_caster, m_caster.GetName(0, true) + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+						player.MessageFromArea(m_caster, m_caster.GetName(0, true) + " casts a spell!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				}
 			}
 

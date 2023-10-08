@@ -162,7 +162,7 @@ namespace DOL.GS
 
 			if (!CanView(player))
 			{
-				player.Out.SendMessage("You don't have permission to view this vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You don't have permission to view this vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -172,7 +172,7 @@ namespace DOL.GS
 			}
 
 			player.ActiveInventoryObject = this;
-			player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.HouseVault);
+			player.Out.SendInventoryItemsUpdate(GetClientInventory(player), EInventoryWindowType.HouseVault);
 
 			return true;
 		}
@@ -236,20 +236,20 @@ namespace DOL.GS
 			GameVault gameVault = player.ActiveInventoryObject as GameVault;
 			if (gameVault == null)
 			{
-				player.Out.SendMessage("You are not actively viewing a vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You are not actively viewing a vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				player.Out.SendInventoryItemsUpdate(null);
 				return false;
 			}
 
 			if (toHousing && gameVault.CanAddItems(player) == false)
 			{
-				player.Out.SendMessage("You don't have permission to add items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You don't have permission to add items!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (fromHousing && gameVault.CanRemoveItems(player) == false)
 			{
-				player.Out.SendMessage("You don't have permission to remove items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You don't have permission to remove items!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -259,7 +259,7 @@ namespace DOL.GS
 			// Check for a swap to get around not allowing non-tradables in a housing vault - Tolakram
 			if (fromHousing && itemInToSlot != null && itemInToSlot.IsTradable == false && !(this is AccountVault))
 			{
-				player.Out.SendMessage("You cannot swap with an untradable item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot swap with an untradable item!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				log.DebugFormat("GameVault: {0} attempted to swap untradable item {2} with {1}", player.Name, itemInFromSlot.Name, itemInToSlot.Name);
 				player.Out.SendInventoryItemsUpdate(null);
 				return false;
@@ -269,7 +269,7 @@ namespace DOL.GS
 			// block placing untradables into housing vaults from any source - Tolakram
 			if (toHousing && itemInFromSlot != null && itemInFromSlot.IsTradable == false && !(this is AccountVault))
 			{
-				player.Out.SendMessage("You can not put this item into a House Vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You can not put this item into a House Vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				player.Out.SendInventoryItemsUpdate(null);
 				return false;
 			}
@@ -331,7 +331,7 @@ namespace DOL.GS
 		/// <param name="updateItems"></param>
 		protected virtual void NotifyObservers(GamePlayer player, IDictionary<int, DbInventoryItem> updateItems)
 		{
-			player.Client.Out.SendInventoryItemsUpdate(updateItems, eInventoryWindowType.Update);
+			player.Client.Out.SendInventoryItemsUpdate(updateItems, EInventoryWindowType.Update);
 		}
 
 		/// <summary>

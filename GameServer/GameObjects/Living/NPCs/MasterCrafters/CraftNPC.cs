@@ -47,7 +47,7 @@ namespace DOL.GS
 			if (playerSkills >= 1)
 			{
 				player.CraftingPrimarySkill = TheCraftingSkill;
-				SayTo(player, eChatLoc.CL_PopupWindow, "Hello, " + player.CraftTitle.GetDescription(player) + "! Because you are already a member of our order, you do not need to join. I have changed your primary crafting skill to " + player.CraftingPrimarySkill + ". Please speak to myself or another craft master if you wish to change your primary crafting skill again.");
+				SayTo(player, EChatLoc.CL_PopupWindow, "Hello, " + player.CraftTitle.GetDescription(player) + "! Because you are already a member of our order, you do not need to join. I have changed your primary crafting skill to " + player.CraftingPrimarySkill + ". Please speak to myself or another craft master if you wish to change your primary crafting skill again.");
 				player.Out.SendUpdatePlayer();
 				player.Out.SendUpdateCraftingSkills();
 				return true;
@@ -56,7 +56,7 @@ namespace DOL.GS
 			// Dunnerholl : Basic Crafting Master does not give the option to rejoin this craft
 			if (InitialEntersentence != null)
 			{
-				SayTo(player, eChatLoc.CL_PopupWindow, InitialEntersentence);
+				SayTo(player, EChatLoc.CL_PopupWindow, InitialEntersentence);
 			}
             
             		
@@ -89,7 +89,7 @@ namespace DOL.GS
 
 			player.CraftingPrimarySkill = TheCraftingSkill;
 
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftNPC.CraftNpcDialogResponse.Accepted", ACCEPTED_BY_ORDER_NAME), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftNPC.CraftNpcDialogResponse.Accepted", ACCEPTED_BY_ORDER_NAME), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				
 			foreach (ECraftingSkill skill in TrainedSkills)
 			{

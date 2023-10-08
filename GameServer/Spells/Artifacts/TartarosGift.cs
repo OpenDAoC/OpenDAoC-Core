@@ -42,40 +42,40 @@ namespace DOL.GS.Spells
 
             if (Caster.IsDiseased)
             {
-                MessageToCaster("You are diseased!", eChatType.CT_SpellResisted);
+                MessageToCaster("You are diseased!", EChatType.CT_SpellResisted);
                 heal >>= 1;
             }
             if (heal <= 0) return;            
             heal = Caster.ChangeHealth(Caster, EHealthChangeType.Spell, heal);
             if (heal > 0)
             {
-                MessageToCaster("You drain " + heal + " hit point" + (heal == 1 ? "." : "s."), eChatType.CT_Spell);
+                MessageToCaster("You drain " + heal + " hit point" + (heal == 1 ? "." : "s."), EChatType.CT_Spell);
             }
             else
             {
-                MessageToCaster("You cannot absorb any more life.", eChatType.CT_SpellResisted);
+                MessageToCaster("You cannot absorb any more life.", EChatType.CT_SpellResisted);
             }
             
             if (mana <=0) return;
             mana = Caster.ChangeMana(Caster,EPowerChangeType.Spell,mana);
             if (mana > 0)
             {
-                MessageToCaster("You drain " + mana + " power point" + (mana == 1 ? "." : "s."), eChatType.CT_Spell);
+                MessageToCaster("You drain " + mana + " power point" + (mana == 1 ? "." : "s."), EChatType.CT_Spell);
             }
             else
             {
-                MessageToCaster("You cannot absorb any more power.", eChatType.CT_SpellResisted);
+                MessageToCaster("You cannot absorb any more power.", EChatType.CT_SpellResisted);
             }     
             
             if (endu <=0) return;
             endu = Caster.ChangeEndurance(Caster,EEnduranceChangeType.Spell,endu);            
             if (heal > 0)
             {
-                MessageToCaster("You drain " + endu + " endurance point" + (endu == 1 ? "." : "s."), eChatType.CT_Spell);
+                MessageToCaster("You drain " + endu + " endurance point" + (endu == 1 ? "." : "s."), EChatType.CT_Spell);
             }
             else
             {
-                MessageToCaster("You cannot absorb any more endurance.", eChatType.CT_SpellResisted);
+                MessageToCaster("You cannot absorb any more endurance.", EChatType.CT_SpellResisted);
             }
         }
 

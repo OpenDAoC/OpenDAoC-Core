@@ -48,10 +48,10 @@ namespace DOL.GS.RealmAbilities
 
 			if (player != null)
 			{
-				if (healed > 0) player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "FirstAidAbility.Execute.HealYourself", healed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				if (healed > 0) player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "FirstAidAbility.Execute.HealYourself", healed), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				if (healAmount > healed)
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "FirstAidAbility.Execute.FullyHealed"), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "FirstAidAbility.Execute.FullyHealed"), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				}
 			}
 			if (healed > 0) DisableSkill(living);

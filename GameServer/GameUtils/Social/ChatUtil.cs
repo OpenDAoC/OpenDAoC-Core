@@ -7,50 +7,50 @@ namespace DOL.GS
 	{
 		public static void SendSystemMessage(GamePlayer target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		public static void SendSystemMessage(GamePlayer target, string translationID, params object[] args)
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 
-			target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		public static void SendSystemMessage(GameClient target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		public static void SendSystemMessage(GameClient target, string translationID, params object[] args)
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 
-			target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		public static void SendMerchantMessage(GamePlayer target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 		}
 
 		public static void SendMerchantMessage(GamePlayer target, string translationID, params object[] args)
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 		}
 
 		public static void SendMerchantMessage(GameClient target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 		}
 
 		public static void SendMerchantMessage(GameClient target, string translationID, params object[] args)
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -63,7 +63,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 
-			target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 		}
 
 		/// <summary>
@@ -76,7 +76,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 		}
 		
 		/// <summary>
@@ -89,7 +89,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 		}
 		
 		/// <summary>
@@ -102,7 +102,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -112,7 +112,7 @@ namespace DOL.GS
 		/// <param name="message">The message itself (translation IDs recommended instead)</param>
 		public static void SendCommMessage(GameClient target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -125,7 +125,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -135,7 +135,7 @@ namespace DOL.GS
 		/// <param name="message">The message itself (translation IDs recommended instead)</param>
 		public static void SendSyntaxMessage(GameClient target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(message, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -148,7 +148,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>
@@ -158,12 +158,12 @@ namespace DOL.GS
 		/// <param name="message">The message itself (translation IDs recommended instead)</param>
 		public static void SendHeaderMessage(GameClient target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(message, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 		
 		public static void SendHelpMessage(GamePlayer target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 		}
 
 		/// <summary>
@@ -176,12 +176,12 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 		}
 
 		public static void SendHelpMessage(GameClient target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 		}
 
 		/// <summary>
@@ -194,7 +194,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 		}
 		
 		/// <summary>
@@ -207,7 +207,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -220,7 +220,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -233,7 +233,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -246,7 +246,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 
 		public static void SendErrorMessage(GamePlayer target, string message)
@@ -256,7 +256,7 @@ namespace DOL.GS
 
 		public static void SendErrorMessage(GameClient target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(message, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -269,7 +269,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Send, EChatLoc.CL_ChatWindow);
 		}
 		
 		/// <summary>
@@ -282,7 +282,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Send, EChatLoc.CL_ChatWindow);
 		}
 
 		/// <summary>
@@ -302,7 +302,7 @@ namespace DOL.GS
 		/// <param name="message">The message string (e.g., "This is a message.")</param>
 		public static void SendSendMessage(GameClient target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_Send, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(message, EChatType.CT_Send, EChatLoc.CL_ChatWindow);
 		}
 		
 		/// <summary>
@@ -315,7 +315,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Advise, EChatLoc.CL_ChatWindow);
 		}
 		
 		/// <summary>
@@ -328,7 +328,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Advise, EChatLoc.CL_ChatWindow);
 		}
 
 		/// <summary>
@@ -348,7 +348,7 @@ namespace DOL.GS
 		/// <param name="message">The message string (e.g., "This is a message.")</param>
 		public static void SendAdviceMessage(GameClient target, string message)
 		{
-			target.Out.SendMessage(message, eChatType.CT_Advise, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(message, EChatType.CT_Advise, EChatLoc.CL_ChatWindow);
 		}
 		
 		/// <summary>
@@ -361,7 +361,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Staff, EChatLoc.CL_ChatWindow);
 		}
 		
 		/// <summary>
@@ -374,7 +374,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Help, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -387,7 +387,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target.Client, translationID, args);
 			
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Staff, EChatLoc.CL_ChatWindow);
 		}
 
 		public static void SendDebugMessage(GamePlayer target, string message)
@@ -398,7 +398,7 @@ namespace DOL.GS
 		public static void SendDebugMessage(GameClient target, string message)
 		{
 			if (target.Account.PrivLevel > (int)EPrivLevel.Player)
-				target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+				target.Out.SendMessage(message, EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -412,7 +412,7 @@ namespace DOL.GS
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
 			if (target.Account.PrivLevel > (int)EPrivLevel.Player)
-				target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+				target.Out.SendMessage(translatedMsg, EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>
@@ -425,7 +425,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 
-			target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_ChatWindow);
+			target.Out.SendMessage(translatedMsg, EChatType.CT_Staff, EChatLoc.CL_ChatWindow);
 		}
 	}
 }

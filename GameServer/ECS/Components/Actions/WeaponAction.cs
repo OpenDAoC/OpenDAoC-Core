@@ -384,7 +384,7 @@ namespace DOL.GS
                     if (ReflexAttackAD.AttackResult == EAttackResult.HitUnstyled)
                     {
                         GamePlayer playerAttacker = attacker as GamePlayer;
-                        playerAttacker?.Out.SendMessage(target.Name + " counter-attacks you for " + ReflexAttackAD.Damage + " damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                        playerAttacker?.Out.SendMessage(target.Name + " counter-attacks you for " + ReflexAttackAD.Damage + " damage.", EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
                     }
 
                     break;

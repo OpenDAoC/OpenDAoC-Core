@@ -34,7 +34,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepInfo)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepInfo)))
 			{
 				pak.WriteShort((ushort)keep.KeepID);
 				pak.WriteShort(0);
@@ -53,7 +53,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLivingEquipmentUpdate(GameLiving living)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.EquipmentUpdate)))
 			{
 				ICollection<DbInventoryItem> items = null;
 				if (living.Inventory != null)
@@ -108,7 +108,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLoginGranted(byte color)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.LoginGranted)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.LoginGranted)))
 			{
 				pak.WritePascalString(m_gameClient.Account.Name);
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
@@ -140,7 +140,7 @@ namespace DOL.GS.PacketHandler
 			}
 			else
 			{
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.NPCCreate)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.NPCCreate)))
 				{
 					short speed = 0;
 					ushort speedZ = 0;
@@ -348,7 +348,7 @@ namespace DOL.GS.PacketHandler
 			if (playerToCreate.Steed != null)
 				m_gameClient.Out.SendNPCCreate(playerToCreate.Steed);
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PlayerCreate172)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PlayerCreate172)))
 			{
 				pak.WriteFloatLowEndian(playerToCreate.X);
 				pak.WriteFloatLowEndian(playerToCreate.Y);
@@ -431,7 +431,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PositionAndObjectID)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PositionAndObjectID)))
 			{
 				pak.WriteFloatLowEndian(m_gameClient.Player.X);
 				pak.WriteFloatLowEndian(m_gameClient.Player.Y);
@@ -476,7 +476,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (quest == null)
 			{
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 				{
 					pak.WriteByte(index);
 					pak.WriteByte(0);
@@ -491,7 +491,7 @@ namespace DOL.GS.PacketHandler
 			else if (quest is RewardQuest)
 			{
 				RewardQuest rewardQuest = quest as RewardQuest;
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 				{
 					pak.WriteByte((byte)index);
 					pak.WriteByte((byte)rewardQuest.Name.Length);
@@ -533,7 +533,7 @@ namespace DOL.GS.PacketHandler
 			}
 			else
 			{
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 				{
 					pak.WriteByte((byte)index);
 
@@ -574,7 +574,7 @@ namespace DOL.GS.PacketHandler
 			Region region = WorldMgr.GetRegion(regionId);
 			if (region == null)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ClientRegion)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.ClientRegion)))
 			{
 				//				pak.WriteByte((byte)((region.Expansion + 1) << 4)); // Must be expansion
 				pak.WriteByte(0); // but this packet sended when client in old region. but this field must show expanstion for jump destanation region
@@ -596,7 +596,7 @@ namespace DOL.GS.PacketHandler
 			if (siegeWeapon == null)
 				return;
 			byte[] siegeID = new byte[siegeWeapon.ObjectID]; // test
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SiegeWeaponAnimation)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.SiegeWeaponAnimation)))
 			{
 				pak.WriteInt((uint)siegeWeapon.ObjectID);
 				pak.WriteInt(
@@ -651,7 +651,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (siegeWeapon == null)
 				return;
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SiegeWeaponAnimation)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.SiegeWeaponAnimation)))
 			{
 				pak.WriteInt((uint)siegeWeapon.ObjectID);
 				pak.WriteInt((uint)(siegeWeapon.TargetObject == null ? siegeWeapon.GroundTarget.X : siegeWeapon.TargetObject.X));
@@ -671,7 +671,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendSiegeWeaponInterface(GameSiegeWeapon siegeWeapon, int time)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SiegeWeaponInterface)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.SiegeWeaponInterface)))
 			{
 				ushort flag = (ushort)((siegeWeapon.EnableToMove ? 1 : 0) | siegeWeapon.AmmoType << 8);
 				pak.WriteShort(flag); //byte Ammo,  byte SiegeMoving(1/0)
@@ -739,7 +739,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CryptKey)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CryptKey)))
 			{
 				pak.WriteByte((byte)m_gameClient.ClientType);
 
@@ -760,7 +760,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected virtual void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
+		protected virtual void WriteGroupMemberUpdate(GsTcpPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
 		{
 			pak.WriteByte((byte)(living.GroupIndex + 1)); // From 1 to 8
 			if (living.CurrentRegion != m_gameClient.Player.CurrentRegion)
@@ -829,7 +829,7 @@ namespace DOL.GS.PacketHandler
 				WriteGroupMemberMapUpdate(pak, living);
 		}
 
-		protected override void WriteGroupMemberMapUpdate(GSTCPPacketOut pak, GameLiving living)
+		protected override void WriteGroupMemberMapUpdate(GsTcpPacketOut pak, GameLiving living)
 		{
 			if (living.CurrentSpeed != 0)
 			{
@@ -844,7 +844,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
+		protected override void WriteItemData(GsTcpPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{
@@ -1012,7 +1012,7 @@ namespace DOL.GS.PacketHandler
 			pak.WritePascalString(name);
 		}
 
-		protected override void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)
+		protected override void WriteTemplateData(GsTcpPacketOut pak, DbItemTemplate template, int count)
 		{
 			if (template == null)
 			{
@@ -1107,7 +1107,7 @@ namespace DOL.GS.PacketHandler
 				return;
 
 			var group = m_gameClient.Player.Group;
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.GroupMemberUpdate)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.GroupMemberUpdate)))
 			{
 				if (living.Group != group)
 					return;
@@ -1122,7 +1122,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player?.Group == null)
 				return;
 
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.GroupMemberUpdate)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.GroupMemberUpdate)))
 			{
 				foreach (var living in m_gameClient.Player.Group.GetMembersInTheGroup())
 					WriteGroupMemberUpdate(pak, updateIcons, updateMap, living);

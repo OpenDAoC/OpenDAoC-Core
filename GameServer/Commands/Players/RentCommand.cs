@@ -17,7 +17,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
 		if (args.Length < 2)
 		{
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.CmdUsage"),
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			return;
 		}
@@ -25,7 +25,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
         if (args.Length < 3)
         {
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.CorrectFormat"),
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -37,7 +37,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
         catch
         {
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.CorrectFormat"),
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
             return;
         }
@@ -52,7 +52,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                     if (house == null)
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.NoHouse"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         return;
                     }
@@ -60,7 +60,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                     if (!house.CanPayRent(client.Player))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.NoPayRentPerm"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         return;
                     }
@@ -68,7 +68,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                     if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.AlreadyMaxMoney"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         return;
                     }
@@ -76,7 +76,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                     if (house.KeptMoney + goldToAdd > (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.TooMuchMoney"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         return;
                     }
@@ -84,7 +84,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                     if(!client.Player.RemoveMoney(goldToAdd))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.NotEnoughMoney"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         return;
                     }
@@ -96,7 +96,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
 
                     client.Out.SendUpdatePoints();
                     client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.YouSpend", amount),
-                        eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				} break;
 			case "guild":
 				{
@@ -105,7 +105,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                     if (house == null)
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.NoGuildHouse"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         return;
                     }
@@ -117,14 +117,14 @@ public class RentCommand : ACommandHandler, ICommandHandler
                             if (client.Player.Guild.GetGuildBank() - goldToAdd <= 0)
                             {
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.NotEnoughGuildMoney"),
-                                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                 return;
                             }
 
                             if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
                             {
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.AlreadyMaxMoney"),
-                                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                                 return;
                             }
@@ -132,7 +132,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                             if (house.KeptMoney + goldToAdd > (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
                             {
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.TooMuchMoney"),
-                                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                                 return;
                             }
@@ -145,13 +145,13 @@ public class RentCommand : ACommandHandler, ICommandHandler
 
                             var message = $"{client.Player.Name} withdrew {amount} gold to pay the guild house's rent.";
                             
-                            client.Player.Guild.SendMessageToGuildMembers(message, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);
+                            client.Player.Guild.SendMessageToGuildMembers(message, EChatType.CT_Guild, EChatLoc.CL_ChatWindow);
 
                             return;
                         }
                         
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.NoPayRentPerm"),
-                                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                             return;
                         

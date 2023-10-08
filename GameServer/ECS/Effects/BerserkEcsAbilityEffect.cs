@@ -25,11 +25,11 @@ namespace DOL.GS
             if (OwnerPlayer != null)
             {
                 // "You go into a berserker frenzy!"
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.BerserkEffect.StartFrenzy"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.BerserkEffect.StartFrenzy"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 // "{0} goes into a berserker frenzy!"
-                MessageUtil.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.BerserkEffect.AreaStartFrenzy",OwnerPlayer.GetName(0, true)), eChatType.CT_System, OwnerPlayer);
+                MessageUtil.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.BerserkEffect.AreaStartFrenzy",OwnerPlayer.GetName(0, true)), EChatType.CT_System, OwnerPlayer);
 
-                OwnerPlayer.Emote(eEmote.MidgardFrenzy);
+                OwnerPlayer.Emote(EEmote.MidgardFrenzy);
                 //TODO differentiate model between Dwarves and other races
                 if (OwnerPlayer.Race == (int)ERace.Dwarf)
                 {
@@ -50,9 +50,9 @@ namespace DOL.GS
             if (OwnerPlayer != null)
             {
                 // "Your berserker frenzy ends."
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.BerserkEffect.EndFrenzy"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.BerserkEffect.EndFrenzy"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 // "{0}'s berserker frenzy ends."
-                MessageUtil.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.BerserkEffect.AreaEndFrenzy", OwnerPlayer.GetName(0, true)), eChatType.CT_System, OwnerPlayer);
+                MessageUtil.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.BerserkEffect.AreaEndFrenzy", OwnerPlayer.GetName(0, true)), EChatType.CT_System, OwnerPlayer);
             }
 
         }

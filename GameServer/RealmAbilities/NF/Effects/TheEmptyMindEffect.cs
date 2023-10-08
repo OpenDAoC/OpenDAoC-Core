@@ -80,7 +80,7 @@ namespace DOL.GS.Effects
 			if (m_owner is GamePlayer)
 			{
 				(m_owner as GamePlayer).Out.SendCharResistsUpdate();
-				(m_owner as GamePlayer).Out.SendMessage("Your clearheaded state leaves you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				(m_owner as GamePlayer).Out.SendMessage("Your clearheaded state leaves you.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 
 			base.Stop();

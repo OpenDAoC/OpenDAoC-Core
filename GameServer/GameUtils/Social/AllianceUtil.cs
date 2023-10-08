@@ -50,7 +50,7 @@ namespace DOL.GS
 				GameServer.Database.FillObjectRelations(m_dballiance);
 				//sirru 23.12.06 save changes to db for each guild
 				SaveIntoDatabase();
-				SendMessageToAllianceMembers(myguild.Name + " has joined the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+				SendMessageToAllianceMembers(myguild.Name + " has joined the alliance of " + m_dballiance.AllianceName, PacketHandler.EChatType.CT_System, PacketHandler.EChatLoc.CL_SystemWindow);
 			}
 		}
 		public void RemoveGuild(GuildUtil myguild)
@@ -62,7 +62,7 @@ namespace DOL.GS
                 Guilds.Remove(myguild);
                 if (myguild.GuildID == m_dballiance.DBguildleader.GuildID)
                 {
-                    SendMessageToAllianceMembers(myguild.Name + " has disbanded the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+                    SendMessageToAllianceMembers(myguild.Name + " has disbanded the alliance of " + m_dballiance.AllianceName, PacketHandler.EChatType.CT_System, PacketHandler.EChatLoc.CL_SystemWindow);
                     ArrayList mgl = new ArrayList(Guilds);
                     foreach (GuildUtil mg in mgl)
                     {
@@ -84,8 +84,8 @@ namespace DOL.GS
                 }
 				//sirru 23.12.06 save changes to db for each guild
 				myguild.SaveIntoDatabase();
-                myguild.SendMessageToGuildMembers(myguild.Name + " has left the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
-                SendMessageToAllianceMembers(myguild.Name + " has left the alliance of " + m_dballiance.AllianceName, PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+                myguild.SendMessageToGuildMembers(myguild.Name + " has left the alliance of " + m_dballiance.AllianceName, PacketHandler.EChatType.CT_System, PacketHandler.EChatLoc.CL_SystemWindow);
+                SendMessageToAllianceMembers(myguild.Name + " has left the alliance of " + m_dballiance.AllianceName, PacketHandler.EChatType.CT_System, PacketHandler.EChatLoc.CL_SystemWindow);
 			}
 		}
 		
@@ -101,7 +101,7 @@ namespace DOL.GS
 				GameServer.Database.SaveObject(m_dballiance);
 				// GameServer.Database.FillObjectRelations(m_dballiance);
 				
-				SendMessageToAllianceMembers(myguild.Name + " is the new leader of the alliance", PacketHandler.eChatType.CT_Alliance, PacketHandler.eChatLoc.CL_SystemWindow);
+				SendMessageToAllianceMembers(myguild.Name + " is the new leader of the alliance", PacketHandler.EChatType.CT_Alliance, PacketHandler.EChatLoc.CL_SystemWindow);
 			}
 		}
 		
@@ -132,7 +132,7 @@ namespace DOL.GS
 		/// <summary>
 		/// send message to all member of alliance
 		/// </summary>
-		public void SendMessageToAllianceMembers(string msg, PacketHandler.eChatType type, PacketHandler.eChatLoc loc)
+		public void SendMessageToAllianceMembers(string msg, PacketHandler.EChatType type, PacketHandler.EChatLoc loc)
 		{
 			lock (Guilds.SyncRoot)
 			{

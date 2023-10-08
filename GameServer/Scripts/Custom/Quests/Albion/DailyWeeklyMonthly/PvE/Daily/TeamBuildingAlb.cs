@@ -193,7 +193,7 @@ namespace DOL.GS.DailyQuest.Albion
 						case "forge the bonds of unity":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("I can feel our realm growing more cohesive every day!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("I can feel our realm growing more cohesive every day!", EChatType.CT_Chat, EChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -278,7 +278,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping our realm prosper.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping our realm prosper.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -385,7 +385,7 @@ namespace DOL.GS.DailyQuest.Albion
 			TeamBuildMobsKilled++;
 			player.Out.SendMessage(
 				"[Group Daily] Monster killed: (" + TeamBuildMobsKilled + " | " + MAX_KILLED + ")",
-				eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+				EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
 					
 			if (TeamBuildMobsKilled >= MAX_KILLED)

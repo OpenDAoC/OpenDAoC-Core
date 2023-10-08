@@ -57,8 +57,8 @@ namespace DOL.GS.Spells
 				}
 			
 
-				MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
-				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner);
+				MessageToLiving(effect.Owner, Spell.Message1, EChatType.CT_Spell);
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), EChatType.CT_Spell, effect.Owner);
 
 				// Added to fix?
 				player.Out.SendUpdateWeaponAndArmorStats();
@@ -75,8 +75,8 @@ namespace DOL.GS.Spells
 				GamePlayer player = effect.Owner as GamePlayer;
 				player.Effectiveness = player.TempProperties.GetProperty<double>("PreEffectivenessDebuff");
 				player.TempProperties.RemoveProperty("PreEffectivenessDebuff");
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_Spell);
-				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner);
+				MessageToLiving(effect.Owner, Spell.Message3, EChatType.CT_Spell);
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), EChatType.CT_Spell, effect.Owner);
 
 				// Added to fix?
 				player.Out.SendUpdateWeaponAndArmorStats();

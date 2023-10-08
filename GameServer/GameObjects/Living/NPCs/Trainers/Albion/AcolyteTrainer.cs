@@ -55,7 +55,7 @@ namespace DOL.GS.Trainer
 				// player can be promoted
 				if (player.Level >= 5)
 				{
-					player.Out.SendMessage(this.Name + " says, \"You must now seek your training elsewhere. Which path would you like to follow? [Cleric], [Heretic], or [Friar]?\"", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+					player.Out.SendMessage(this.Name + " says, \"You must now seek your training elsewhere. Which path would you like to follow? [Cleric], [Heretic], or [Friar]?\"", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				}
 				else
 				{
@@ -65,11 +65,11 @@ namespace DOL.GS.Trainer
 				// ask for basic equipment if player doesnt own it
 				if (player.Inventory.GetFirstItemByID(PRACTICE_WEAPON_ID, EInventorySlot.MinEquipable, EInventorySlot.LastBackpack) == null)
 				{
-					player.Out.SendMessage(this.Name + " says, \"Do you require a [practice weapon]?\"", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+					player.Out.SendMessage(this.Name + " says, \"Do you require a [practice weapon]?\"", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				}
 				if (player.Inventory.GetFirstItemByID(PRACTICE_SHIELD_ID, EInventorySlot.MinEquipable, EInventorySlot.LastBackpack) == null)
 				{
-					player.Out.SendMessage(this.Name + " says, \"Do you require a [training shield]?\"", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+					player.Out.SendMessage(this.Name + " says, \"Do you require a [training shield]?\"", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				}
 			}
 			else

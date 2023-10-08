@@ -89,7 +89,7 @@ namespace DOL.GS
             if (OwnerPlayer != null)
             {
                 // Message: "{0} flings a cloud of dirt in your eyes!"
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.EffectStart"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.EffectStart"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 
                 //todo Identify the player triggering the effect as well as the effect owner
                 // Message: "{0} throws dirt in {1}'s eyes!"
@@ -104,9 +104,9 @@ namespace DOL.GS
             if (OwnerPlayer != null)
             {
                 // Message: "You can see clearly again."
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.EffectCancel"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.EffectCancel"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 // Message: "{0} can see clearly again."
-                MessageUtil.SystemToArea(Owner, LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.AreaEffectCancel", Owner.GetName(0, true)), eChatType.CT_System);
+                MessageUtil.SystemToArea(Owner, LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "Effects.DirtyTricks.AreaEffectCancel", Owner.GetName(0, true)), EChatType.CT_System);
             }
 
         }

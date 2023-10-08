@@ -23,8 +23,8 @@ namespace DOL.GS.Commands
                     if (newRealm < 0 || newRealm > 3)
                     {
                         if (client != null && player != null) 
-                            client.Out.SendMessage(player.Name + "'s realm can only be set to numbers 0-3!", eChatType.CT_Important,
-                                eChatLoc.CL_SystemWindow);
+                            client.Out.SendMessage(player.Name + "'s realm can only be set to numbers 0-3!", EChatType.CT_Important,
+                                EChatLoc.CL_SystemWindow);
                         return;
                     }
                     DFEnterJumpPoint.SetDFOwner(player, (ERealm)newRealm);

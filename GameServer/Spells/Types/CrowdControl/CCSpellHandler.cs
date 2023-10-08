@@ -33,13 +33,13 @@ namespace DOL.GS.Spells
         {
             if (target.HasAbility(Abilities.CCImmunity))
             {
-                MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+                MessageToCaster(target.Name + " is immune to this effect!", EChatType.CT_SpellResisted);
                 return;
             }
 
             if (target.EffectList.GetOfType<ChargeEffect>() != null || target.TempProperties.GetProperty("Charging", false))
             {
-                MessageToCaster(target.Name + " is moving too fast for this spell to have any effect!", eChatType.CT_SpellResisted);
+                MessageToCaster(target.Name + " is moving too fast for this spell to have any effect!", EChatType.CT_SpellResisted);
                 return;
             }
 
@@ -183,7 +183,7 @@ namespace DOL.GS.Spells
                     {
                         EffectService.RequestImmediateCancelEffect(effect);
                         EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster, Spell));
-                        MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
+                        MessageToCaster("You stop playing your song.", EChatType.CT_Spell);
                     }
                     return;
                 }
@@ -202,18 +202,18 @@ namespace DOL.GS.Spells
 
             if (mezz != null)
             {
-                MessageToCaster("Your target is already mezzed!!!", eChatType.CT_SpellResisted);
+                MessageToCaster("Your target is already mezzed!!!", EChatType.CT_SpellResisted);
                 return;
             }
 
             if (EffectListService.GetEffectOnTarget(target, EEffect.MezImmunity) is EcsImmunityEffect immunity)
             {
-                MessageToCaster(immunity.Owner.GetName(0, true) + " can't have that effect again yet!!!", eChatType.CT_SpellPulse);
+                MessageToCaster(immunity.Owner.GetName(0, true) + " can't have that effect again yet!!!", EChatType.CT_SpellPulse);
                 return;
             }
 
             SendEffectAnimation(target, 0, false, 0);
-            MessageToCaster(target.GetName(0, true) + " resists the effect!" + " (" + CalculateSpellResistChance(target).ToString("0.0") + "%)", eChatType.CT_SpellResisted);
+            MessageToCaster(target.GetName(0, true) + " resists the effect!" + " (" + CalculateSpellResistChance(target).ToString("0.0") + "%)", EChatType.CT_SpellResisted);
             target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
         }
 
@@ -225,7 +225,7 @@ namespace DOL.GS.Spells
                 if (Caster.IsWithinRadius(target, this.Spell.Range * 5) == false)
                 {
                     CancelPulsingSpell(Caster, this.Spell.SpellType);
-                    MessageToCaster("You are far away from the target. You stop playing your song.", eChatType.CT_Spell);
+                    MessageToCaster("You are far away from the target. You stop playing your song.", EChatType.CT_Spell);
                     return;
                 }
 
@@ -237,7 +237,7 @@ namespace DOL.GS.Spells
                     {
                         EffectService.RequestImmediateCancelEffect(effect);
                         EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(effect.SpellHandler.Caster, Spell));
-                        MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
+                        MessageToCaster("You stop playing your song.", EChatType.CT_Spell);
                     }
 
                     return;
@@ -252,7 +252,7 @@ namespace DOL.GS.Spells
 
             if (target.effectListComponent.Effects.ContainsKey(EEffect.MezImmunity) || target.HasAbility(Abilities.MezzImmunity))
             {
-                MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+                MessageToCaster(target.Name + " is immune to this effect!", EChatType.CT_SpellResisted);
                 SendEffectAnimation(target, 0, false, 0);
                 target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
                 return;
@@ -260,7 +260,7 @@ namespace DOL.GS.Spells
 
             if (FindStaticEffectOnTarget(target, typeof(MezzRootImmunityEffect)) != null)
             {
-                MessageToCaster("Your target is immune!", eChatType.CT_System);
+                MessageToCaster("Your target is immune!", EChatType.CT_System);
                 SendEffectAnimation(target, 0, false, 0);
                 target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
                 return;
@@ -268,7 +268,7 @@ namespace DOL.GS.Spells
 
             if(target is GameNPC && target.HealthPercent < 75)
             {
-                MessageToCaster("Your target is enraged and resists the spell!", eChatType.CT_System);
+                MessageToCaster("Your target is enraged and resists the spell!", EChatType.CT_System);
                 SendEffectAnimation(target, 0, false, 0);
                 target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
                 return;
@@ -279,7 +279,7 @@ namespace DOL.GS.Spells
 
             if (mezz != null)
             {
-                MessageToCaster("Your target is already mezzed!", eChatType.CT_SpellResisted);
+                MessageToCaster("Your target is already mezzed!", EChatType.CT_SpellResisted);
                 return;
             }
 
@@ -377,7 +377,7 @@ namespace DOL.GS.Spells
         {
             if ((target.effectListComponent.Effects.ContainsKey(EEffect.StunImmunity) && this is not UnresistableStunSpellHandler) || (EffectListService.GetEffectOnTarget(target, EEffect.Stun) != null && !(Caster is GameSummonedPet)))//target.HasAbility(Abilities.StunImmunity))
             {
-                MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+                MessageToCaster(target.Name + " is immune to this effect!", EChatType.CT_SpellResisted);
                 target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
                 base.OnSpellResisted(target);
                 return;

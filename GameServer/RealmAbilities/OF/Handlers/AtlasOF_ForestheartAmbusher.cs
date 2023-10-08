@@ -54,19 +54,19 @@ namespace DOL.GS.RealmAbilities
             
             if (rgn?.GetZone(_caster.GroundTarget.X, _caster.GroundTarget.Y) == null)
             {
-                _caster.MessageToSelf(LanguageMgr.GetTranslation(_caster.Client, "SummonAnimistFnF.CheckBeginCast.NoGroundTarget"), eChatType.CT_SpellResisted);
+                _caster.MessageToSelf(LanguageMgr.GetTranslation(_caster.Client, "SummonAnimistFnF.CheckBeginCast.NoGroundTarget"), EChatType.CT_SpellResisted);
                 return;
             }
 
             if (!_caster.GroundTargetInView)
             {
-				_caster.MessageToSelf(LanguageMgr.GetTranslation(_caster.Client, "SummonAnimistPet.CheckBeginCast.GroundTargetNotInView"), eChatType.CT_SpellResisted);
+				_caster.MessageToSelf(LanguageMgr.GetTranslation(_caster.Client, "SummonAnimistPet.CheckBeginCast.GroundTargetNotInView"), EChatType.CT_SpellResisted);
 				return;
             }
 
             if (!_caster.IsWithinRadius(_caster.GroundTarget, 2000))
             {
-				_caster.MessageToSelf(LanguageMgr.GetTranslation(_caster.Client, "SummonAnimistPet.CheckBeginCast.GroundTargetNotInSpellRange"), eChatType.CT_SpellResisted);
+				_caster.MessageToSelf(LanguageMgr.GetTranslation(_caster.Client, "SummonAnimistPet.CheckBeginCast.GroundTargetNotInSpellRange"), EChatType.CT_SpellResisted);
 				return;
             }
 

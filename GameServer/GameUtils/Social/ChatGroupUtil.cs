@@ -56,10 +56,10 @@ namespace DOL.GS
 				if (m_chatgroupMembers.Contains(player))
 					return false;
 				player.TempProperties.SetProperty(CHATGROUP_PROPERTY, this);
-				player.Out.SendMessage("You join the chat group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You join the chat group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				foreach(GamePlayer member in Members.Keys)
 				{
-					member.Out.SendMessage(player.Name+" has joined the chat group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					member.Out.SendMessage(player.Name+" has joined the chat group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				m_chatgroupMembers.Add(player,leader);
 			}
@@ -80,10 +80,10 @@ namespace DOL.GS
 					return false;
 				m_chatgroupMembers.Remove(player);
 				player.TempProperties.RemoveProperty(CHATGROUP_PROPERTY);
-				player.Out.SendMessage("You leave the chat group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You leave the chat group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				foreach(GamePlayer member in Members.Keys)
 				{
-					member.Out.SendMessage(player.Name+" has left the chat group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					member.Out.SendMessage(player.Name+" has left the chat group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				if (m_chatgroupMembers.Count == 1)
 				{

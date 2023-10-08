@@ -37,7 +37,7 @@ namespace DOL.GS
 			if (destination != null)
 				OnTeleport(player, destination);
 			else
-				player.Out.SendMessage("This destination is not available : "+String.Format("{0}:{1}", this.GetType(), this.Description)+".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("This destination is not available : "+String.Format("{0}:{1}", this.GetType(), this.Description)+".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 		
 		/// <summary>

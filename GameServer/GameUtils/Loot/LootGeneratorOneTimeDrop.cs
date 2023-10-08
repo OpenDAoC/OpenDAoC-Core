@@ -193,13 +193,13 @@ namespace DOL.GS
 													charXDrop.ItemTemplateID = drop.ItemTemplateID;
 													GameServer.Database.AddObject(charXDrop);
 
-													player.Out.SendMessage(string.Format("You receive {0} from {1}!", item.GetName(1, false), mob.GetName(1, false)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+													player.Out.SendMessage(string.Format("You receive {0} from {1}!", item.GetName(1, false), mob.GetName(1, false)), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
 													InventoryLogging.LogInventoryAction(mob, player, EInventoryActionType.Loot, item);
 												}
 												else
 												{
 													// do not drop, player will have to try again
-													player.Out.SendMessage("Your inventory is full and a one time drop cannot be added!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+													player.Out.SendMessage("Your inventory is full and a one time drop cannot be added!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 													log.DebugFormat("OTD Failed, Inventory full: {0} from mob {1} for player {2}.", drop.ItemTemplateID, drop.MobName, player.Name);
 													break;
 												}

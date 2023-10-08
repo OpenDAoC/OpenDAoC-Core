@@ -51,7 +51,7 @@ namespace DOL.GS.Trainer
 				// perhaps player can be promoted
 				if (CanPromotePlayer(player))
 				{
-					player.Out.SendMessage(this.Name + " says, \"You have come far to find us! Is it your wish to [join the Guild of Shadows] and become our dagger of the night? An Infiltrator!\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+					player.Out.SendMessage(this.Name + " says, \"You have come far to find us! Is it your wish to [join the Guild of Shadows] and become our dagger of the night? An Infiltrator!\"",EChatType.CT_Say,EChatLoc.CL_PopupWindow);
 					if (!player.IsLevelRespecUsed)
 					{
 						OfferRespecialize(player);

@@ -18,7 +18,7 @@ namespace DOL.GS.Spells
 
 			if (selectedTarget is GameNPC)
 			{
-				MessageToCaster("This spell works only on players.", eChatType.CT_SpellResisted); return false;
+				MessageToCaster("This spell works only on players.", EChatType.CT_SpellResisted); return false;
 			}
 
 			if(selectedTarget as GamePlayer==null) 
@@ -26,7 +26,7 @@ namespace DOL.GS.Spells
 
 			if(!m_caster.IsWithinRadius(selectedTarget, Spell.Range))
 			{
-				MessageToCaster("Your target is too far away.", eChatType.CT_SpellResisted); return false;
+				MessageToCaster("Your target is too far away.", EChatType.CT_SpellResisted); return false;
 			}
 
             return true;
@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 					text.Add(((RealmAbility)ab).Name);
 
 			(m_caster as GamePlayer).Out.SendCustomTextWindow("Realm Lore [ "+player.Name+" ]",text);
-			(m_caster as GamePlayer).Out.SendMessage("Realm Lore [ "+player.Name+" ]\n"+text,eChatType.CT_System,eChatLoc.CL_SystemWindow);
+			(m_caster as GamePlayer).Out.SendMessage("Realm Lore [ "+player.Name+" ]\n"+text,EChatType.CT_System,EChatLoc.CL_SystemWindow);
 		}
 		public RealmLore(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
     }

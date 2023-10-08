@@ -16,7 +16,7 @@ namespace DOL.GS.Spells
 
             if ((target is GameKeepDoor || target is GameKeepComponent) && Spell.SpellType != ESpellType.SiegeArrow && Spell.SpellType != ESpellType.SiegeDirectDamage)
             {
-                MessageToCaster($"Your spell has no effect on the {target.Name}!", eChatType.CT_SpellResisted);
+                MessageToCaster($"Your spell has no effect on the {target.Name}!", EChatType.CT_SpellResisted);
                 return;
             }
 
@@ -50,8 +50,8 @@ namespace DOL.GS.Spells
             AttackData ad = CalculateDamageToTarget(target);
 
             SendDamageMessages(ad);
-            MessageToLiving(target, Spell.Message1, eChatType.CT_Spell); // "A bolt of runic energy hits you!"
-            MessageUtil.SystemToArea(target, Util.MakeSentence(Spell.Message2, target.GetName(0, true)), eChatType.CT_System, target, Caster); // "{0} is hit by a bolt of runic energy!"
+            MessageToLiving(target, Spell.Message1, EChatType.CT_Spell); // "A bolt of runic energy hits you!"
+            MessageUtil.SystemToArea(target, Util.MakeSentence(Spell.Message2, target.GetName(0, true)), EChatType.CT_System, target, Caster); // "{0} is hit by a bolt of runic energy!"
 
             DamageTarget(ad, false, ad.AttackResult == EAttackResult.Blocked ? 0x02 : 0x14);
             target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
@@ -78,8 +78,8 @@ namespace DOL.GS.Spells
             else
             {
                 ad.AttackResult = EAttackResult.Blocked;
-                MessageToLiving(ad.Target, "You partially block " + Caster.GetName(0, false) + "'s spell!", eChatType.CT_Missed);
-                MessageToCaster(ad.Target.GetName(0, true) + " blocks!", eChatType.CT_YouHit);
+                MessageToLiving(ad.Target, "You partially block " + Caster.GetName(0, false) + "'s spell!", EChatType.CT_Missed);
+                MessageToCaster(ad.Target.GetName(0, true) + " blocks!", EChatType.CT_YouHit);
             }
 
             return damage;
@@ -126,13 +126,13 @@ namespace DOL.GS.Spells
         {
             if (_combatBlock)
             {
-                MessageToCaster($"{target.Name} is in combat and your bolt misses!", eChatType.CT_YouHit);
+                MessageToCaster($"{target.Name} is in combat and your bolt misses!", EChatType.CT_YouHit);
                 _combatBlock = false; // One spell handler can launch multiple bolts, so it needs to be reset (checked one at a time).
             }
             else
-                MessageToCaster($"You miss!", eChatType.CT_YouHit);
+                MessageToCaster($"You miss!", EChatType.CT_YouHit);
 
-            MessageToLiving(target, Caster.GetName(0, false) + " missed!", eChatType.CT_Missed);
+            MessageToLiving(target, Caster.GetName(0, false) + " missed!", EChatType.CT_Missed);
         }
 
         public void BaseStartSpell(GameLiving target)

@@ -1387,7 +1387,7 @@ namespace DOL.GS.Quests.Midgard
 									quest.FinishQuest();
 								}
 								else
-									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+									player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 							}
 							break;
 						case "totem":
@@ -1489,7 +1489,7 @@ namespace DOL.GS.Quests.Midgard
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Our God forgives your laziness, just look out for stray lightning bolts.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Our God forgives your laziness, just look out for stray lightning bolts.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -1547,7 +1547,7 @@ namespace DOL.GS.Quests.Midgard
 				{
 					Step = 2;
 					GiveItem(player, kelics_totem);
-					m_questPlayer.Out.SendMessage("Kelic drops his Totem and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					m_questPlayer.Out.SendMessage("Kelic drops his Totem and you pick it up!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 			}
 			if (Step == 2 && e == GamePlayerEvent.GiveItem)

@@ -1,35 +1,9 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using log4net;
 
 namespace DOL.GS.PacketHandler
 {
-	public enum eClientStatus
-	{
-		None = 0,
-		LoggedIn = 1,
-		PlayerInGame = 2
-	}
-
 	/// <summary>
 	/// Handles preprocessing for incoming game packets.
 	/// </summary>
@@ -50,15 +24,15 @@ namespace DOL.GS.PacketHandler
 		private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		
 		private readonly Dictionary<int, int> _packetIdToPreprocessMap;
-		private readonly Dictionary<int, Func<GameClient, GSPacketIn, bool>> _preprocessors;
+		private readonly Dictionary<int, Func<GameClient, GsPacketIn, bool>> _preprocessors;
 
 		public PacketPreprocessing()
 		{
 			_packetIdToPreprocessMap = new Dictionary<int, int>();
-			_preprocessors = new Dictionary<int, Func<GameClient, GSPacketIn, bool>>();
+			_preprocessors = new Dictionary<int, Func<GameClient, GsPacketIn, bool>>();
 
-			RegisterPreprocessors((int)eClientStatus.LoggedIn, (client, packet) => client.Account != null);		// player must be logged into an account
-			RegisterPreprocessors((int)eClientStatus.PlayerInGame, (client, player) => client.Player != null);	// player must be logged into a character
+			RegisterPreprocessors((int)EClientStatus.LoggedIn, (client, packet) => client.Account != null);		// player must be logged into an account
+			RegisterPreprocessors((int)EClientStatus.PlayerInGame, (client, player) => client.Player != null);	// player must be logged into a character
 		}
 
 		/// <summary>
@@ -85,7 +59,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="preprocessorId">the ID for the preprocessor</param>
 		/// <param name="preprocessorFunc">the preprocessor delegate to use</param>
-		public void RegisterPreprocessors(int preprocessorId, Func<GameClient, GSPacketIn, bool> preprocessorFunc)
+		public void RegisterPreprocessors(int preprocessorId, Func<GameClient, GsPacketIn, bool> preprocessorFunc)
 		{
 			_preprocessors.Add(preprocessorId, preprocessorFunc);
 		}
@@ -96,7 +70,7 @@ namespace DOL.GS.PacketHandler
 		/// <param name="client">the client that sent the packet</param>
 		/// <param name="packet">the packet in question</param>
 		/// <returns>true if the packet passes all preprocessor checks; false otherwise</returns>
-		public bool CanProcessPacket(GameClient client, GSPacketIn packet)
+		public bool CanProcessPacket(GameClient client, GsPacketIn packet)
 		{
 			int preprocessorId;
 			if(!_packetIdToPreprocessMap.TryGetValue(packet.ID, out preprocessorId))
@@ -108,7 +82,7 @@ namespace DOL.GS.PacketHandler
 				return true;
 			}
 
-			Func<GameClient, GSPacketIn, bool> preprocessor;
+			Func<GameClient, GsPacketIn, bool> preprocessor;
 			if(!_preprocessors.TryGetValue(preprocessorId, out preprocessor))
 				return false;
 

@@ -510,7 +510,7 @@ namespace DOL.GS
 				}
 
 				eClientVersion ver;
-				IPacketLib lib = AbstractPacketLib.CreatePacketLibForVersion(version, this, out ver);
+				IPacketLib lib = APacketLib.CreatePacketLibForVersion(version, this, out ver);
 
 				if (lib == null)
 				{

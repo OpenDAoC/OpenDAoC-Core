@@ -46,7 +46,7 @@ namespace DOL.GS.Spells
 			if (rgn == null || rgn.GetZone(Caster.GroundTarget.X, Caster.GroundTarget.Y) == null)
 			{
                 if (Caster is GamePlayer)
-                    MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.NoGroundTarget"), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.NoGroundTarget"), EChatType.CT_SpellResisted);
                 return false;
 			}
 
@@ -58,7 +58,7 @@ namespace DOL.GS.Spells
 					if (Caster.GroundTarget.Z - Caster.Z > 200)
 					{
 						if (Caster is GamePlayer)
-                    		MessageToCaster("Cannot summon a turret this high near a keep!", eChatType.CT_SpellResisted);
+                    		MessageToCaster("Cannot summon a turret this high near a keep!", EChatType.CT_SpellResisted);
 						return false;
 					}
 					
@@ -74,14 +74,14 @@ namespace DOL.GS.Spells
 			if (nCount >= Properties.TURRET_AREA_CAP_COUNT)
 			{
                 if (Caster is GamePlayer)
-                    MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.TurretAreaCap"), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.TurretAreaCap"), EChatType.CT_SpellResisted);
                 return false;
 			}
 
 			if (Caster.PetCount >= Properties.TURRET_PLAYER_CAP_COUNT)
 			{
                 if (Caster is GamePlayer)
-                    MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.TurretPlayerCap"), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.TurretPlayerCap"), EChatType.CT_SpellResisted);
                 return false;
 			}
 
@@ -129,7 +129,7 @@ namespace DOL.GS.Spells
 
 			if (Caster.ControlledBrain == null)
 			{
-				((GamePlayer)Caster).Out.SendPetWindow(null, ePetWindowAction.Close, 0, 0);
+				((GamePlayer)Caster).Out.SendPetWindow(null, EPetWindowAction.Close, 0, 0);
 			}
 
 			GameEventMgr.RemoveHandler(m_pet, GameLivingEvent.PetReleased, OnNpcReleaseCommand);

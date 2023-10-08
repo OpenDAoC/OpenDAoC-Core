@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -46,7 +27,7 @@ namespace DOL.GS.PacketHandler
 		{
 			base.SendNonHybridSpellLines();
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x02); //subcode
 				pak.WriteByte(0x00);
@@ -61,7 +42,7 @@ namespace DOL.GS.PacketHandler
 			if (text == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.DetailWindow)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.DetailWindow)))
 			{
 				pak.WriteByte(0); // new in 1.75
 				pak.WriteByte(0); // new in 1.81
@@ -82,7 +63,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendPlayerTitles()
 		{
 			var titles = m_gameClient.Player.Titles;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.DetailWindow)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.DetailWindow)))
 			{
 				pak.WriteByte(1); // new in 1.75
 				pak.WriteByte(0); // new in 1.81
@@ -117,19 +98,19 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, EAggressionState aggroState, EWalkState walkState)
+		public override void SendPetWindow(GameLiving pet, EPetWindowAction windowAction, EAggressionState aggroState, EWalkState walkState)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PetWindow)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PetWindow)))
 			{
 				pak.WriteShort((ushort)(pet == null ? 0 : pet.ObjectID));
 				pak.WriteByte(0x00); //unused
 				pak.WriteByte(0x00); //unused
 				switch (windowAction) //0-released, 1-normal, 2-just charmed? | Roach: 0-close window, 1-update window, 2-create window
 				{
-					case ePetWindowAction.Open:
+					case EPetWindowAction.Open:
 						pak.WriteByte(2);
 						break;
-					case ePetWindowAction.Update:
+					case EPetWindowAction.Update:
 						pak.WriteByte(1);
 						break;
 					default: pak.WriteByte(0);

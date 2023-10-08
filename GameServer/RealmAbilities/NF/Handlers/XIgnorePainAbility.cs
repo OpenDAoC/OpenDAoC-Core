@@ -49,10 +49,10 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer player = living as GamePlayer;
 			if (player != null)
 			{
-				if (healed > 0) player.Out.SendMessage("You heal yourself for " + healed + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				if (healed > 0) player.Out.SendMessage("You heal yourself for " + healed + " hit points.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				if (heal > healed)
 				{
-					player.Out.SendMessage("You are fully healed.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You are fully healed.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				}
 			}
 			if (healed > 0) DisableSkill(living);

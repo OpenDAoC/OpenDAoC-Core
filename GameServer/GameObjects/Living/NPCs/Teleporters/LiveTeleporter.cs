@@ -456,14 +456,14 @@ namespace DOL.GS.Scripts
 
             if (region == null || region.IsDisabled)
             {
-                player.Out.SendMessage("This destination is not available.", eChatType.CT_System,
-                    eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("This destination is not available.", EChatType.CT_System,
+                    EChatLoc.CL_SystemWindow);
                 return;
             }
             
             var message = $"{Name} says, \"I'm now teleporting you to {destination.TeleportID}.\"";
             
-            player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+            player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
             
             OnTeleportSpell(player, destination);
         }
@@ -501,7 +501,7 @@ namespace DOL.GS.Scripts
 
             if (player.Client.Account.PrivLevel > 1)
                 player.Out.SendMessage("Uni-Portal spell not found.",
-                    eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+                    EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
 
 
             this.OnTeleport(player, destination);

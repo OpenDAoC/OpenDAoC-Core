@@ -487,7 +487,7 @@ namespace DOL.GS.Effects
 				{
 					GamePlayer player = Owner as GamePlayer;
 					if (player != null)
-						player.Out.SendMessage(LanguageMgr.GetTranslation((Owner as GamePlayer).Client, "Effects.GameSpellEffect.CantRemoveEffect"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(LanguageMgr.GetTranslation((Owner as GamePlayer).Client, "Effects.GameSpellEffect.CantRemoveEffect"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 	
 					return;
 				}

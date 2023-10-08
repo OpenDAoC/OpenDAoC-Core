@@ -33,7 +33,7 @@ namespace DOL.GS
 					else
 						truc = ((source as GameSummonedPet).Owner as GamePlayer);
 					if (truc != null)
-						truc.Out.SendMessage(Name + " is immune to magic damage!", eChatType.CT_System,eChatLoc.CL_ChatWindow);
+						truc.Out.SendMessage(Name + " is immune to magic damage!", EChatType.CT_System,EChatLoc.CL_ChatWindow);
 					base.TakeDamage(source, damageType, 0, 0);
 					return;
 				}

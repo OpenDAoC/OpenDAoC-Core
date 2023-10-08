@@ -160,7 +160,7 @@ namespace DOL.AI.Brain
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
 
@@ -171,7 +171,7 @@ namespace DOL.AI.Brain
             if (Body.IsAlive && IsBerserker == true && Body.InCombat && HasAggro)
             {
                 BroadcastMessage(String.Format(Body.Name + " goes into berserker stance!"));
-                Body.Emote(eEmote.MidgardFrenzy);
+                Body.Emote(EEmote.MidgardFrenzy);
                 Body.Strength = 850;
                 Body.MaxSpeedBase = 200; //slow under zerk mode
                 Body.Size = 75;
@@ -413,7 +413,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public void SpawnAdds()
@@ -450,7 +450,7 @@ namespace DOL.AI.Brain
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
 

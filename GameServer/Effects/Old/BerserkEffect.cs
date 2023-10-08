@@ -26,8 +26,8 @@ namespace DOL.GS.Effects
 
 			if(living is GamePlayer)
 			{
-				(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.BerserkEffect.GoBerserkerFrenzy"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				living.Emote(eEmote.MidgardFrenzy);
+				(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.BerserkEffect.GoBerserkerFrenzy"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				living.Emote(EEmote.MidgardFrenzy);
 				//TODO differentiate model between Dwarves and other races
 				if ((living as GamePlayer).Race == (int)ERace.Dwarf)
 				{
@@ -47,7 +47,7 @@ namespace DOL.GS.Effects
 
 			// there is no animation on end of the effect
 			if(m_owner is GamePlayer)
-				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.BerserkEffect.BerserkerFrenzyEnds"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.BerserkEffect.BerserkerFrenzyEnds"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>

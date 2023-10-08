@@ -24,7 +24,7 @@ public class BattleGroupChatCommand : ACommandHandler, ICommandHandler
         BattleGroupUtil mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
         if (mybattlegroup == null)
         {
-            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -32,12 +32,12 @@ public class BattleGroupChatCommand : ACommandHandler, ICommandHandler
         var isModerator = mybattlegroup.IsBGModerator(client.Player);
         if (mybattlegroup.Listen && !isLeader && !isModerator)
         {
-            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.OnlyModerator"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.OnlyModerator"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return;
         }
         if (args.Length < 2)
         {
-            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Usage"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.Usage"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -56,20 +56,20 @@ public class BattleGroupChatCommand : ACommandHandler, ICommandHandler
         var message = text.ToString();
         foreach (GamePlayer ply in mybattlegroup.Members.Keys)
         {
-            eChatType type;
+            EChatType type;
 
             if (isLeader || isModerator)
             {
-                type = eChatType.CT_BattleGroupLeader;
+                type = EChatType.CT_BattleGroupLeader;
             }
             else
             {
-                type = eChatType.CT_BattleGroup;
+                type = EChatType.CT_BattleGroup;
             }
 
             if (ply.IgnoreList.Contains(client.Player)) continue;
             
-            ply.Out.SendMessage(message,type, eChatLoc.CL_ChatWindow);
+            ply.Out.SendMessage(message,type, EChatLoc.CL_ChatWindow);
         }
     }
 }

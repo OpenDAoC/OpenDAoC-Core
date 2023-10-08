@@ -12,10 +12,7 @@ using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-    /// <summary>
-    /// delve button shift+i = detail of spell object...
-    /// </summary>
-    [PacketHandler(PacketHandlerType.TCP, eClientPackets.DetailRequest, "Handles detail display", eClientStatus.PlayerInGame)]
+    [PacketHandler(EPacketHandlerType.TCP, EClientPackets.DetailRequest, "Handles detail display", EClientStatus.PlayerInGame)]
 	public class DetailDisplayHandler : IPacketHandler
 	{
 		/// <summary>
@@ -23,7 +20,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			if (client?.Player == null) 
 				return;
@@ -731,10 +728,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 						string str = LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.Item", client.Player.Name, GetShortItemInfo(invItem, client));
 						if (client.Player.Group == null)
 						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.NoGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.NoGroup"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
-						client.Player.Group.SendMessageToGroupMembers(str, eChatType.CT_Group, eChatLoc.CL_ChatWindow);
+						client.Player.Group.SendMessageToGroupMembers(str, EChatType.CT_Group, EChatLoc.CL_ChatWindow);
 						return;
 					}
 					#endregion
@@ -747,19 +744,19 @@ namespace DOL.GS.PacketHandler.Client.v168
 						string str = LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.GuildItem", client.Player.Name, GetShortItemInfo(invItem, client));
 						if (client.Player.Guild == null)
 						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.DontBelongGuild"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.DontBelongGuild"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						if (!client.Player.Guild.HasRank(client.Player, EGuildRank.GcSpeak))
 						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.NoPermissionToSpeak"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.NoPermissionToSpeak"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						foreach (GamePlayer ply in client.Player.Guild.GetListOfOnlineMembers())
 						{
 							if (!client.Player.Guild.HasRank(ply, EGuildRank.GcHear))
 								continue;
-							ply.Out.SendMessage(str, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);
+							ply.Out.SendMessage(str, EChatType.CT_Guild, EChatLoc.CL_ChatWindow);
 						}
 						return;
 					}
@@ -774,18 +771,18 @@ namespace DOL.GS.PacketHandler.Client.v168
 						ChatGroupUtil mychatgroup = client.Player.TempProperties.GetProperty<ChatGroupUtil>(ChatGroupUtil.CHATGROUP_PROPERTY, null);
 						if (mychatgroup == null)
 						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.MustBeInChatGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.MustBeInChatGroup"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						if (mychatgroup.Listen == true && (((bool)mychatgroup.Members[client.Player]) == false))
 						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.OnlyModerator"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.OnlyModerator"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						string str = LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.ChatItem", client.Player.Name, GetShortItemInfo(invItem, client));
 						foreach (GamePlayer ply in mychatgroup.Members.Keys)
 						{
-							ply.Out.SendMessage(str, eChatType.CT_Chat, eChatLoc.CL_ChatWindow);
+							ply.Out.SendMessage(str, EChatType.CT_Chat, EChatLoc.CL_ChatWindow);
 						}
 						return;
 					}
@@ -848,7 +845,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (invItem != null)
 							client.Player.RepairItem(invItem);
 						else
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.VeryStrange"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.VeryStrange"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						return;
 					}
 				case 101: // selfcraft
@@ -857,7 +854,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (invItem != null)
 							client.Player.OpenSelfCraft(invItem);
 						else
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.VeryStrange"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.VeryStrange"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						return;
 					}
 				case 102: // salvage
@@ -866,7 +863,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (invItem != null)
 							client.Player.SalvageItem(invItem);
 						else
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.VeryStrange"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.VeryStrange"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						return;
 					}
 					#endregion
@@ -879,19 +876,19 @@ namespace DOL.GS.PacketHandler.Client.v168
 						BattleGroupUtil mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 						if (mybattlegroup == null)
 						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.MustBeInBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.MustBeInBattleGroup"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						if (mybattlegroup.Listen == true && (((bool)mybattlegroup.Members[client.Player]) == false))
 						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.OnlyModerator"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.OnlyModerator"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						string str = $"[BattleGroup] {client.Player.Name}/Item: {GetShortItemInfo(invItem, client)}";
 						
 						foreach (GamePlayer ply in mybattlegroup.Members.Keys)
 						{
-							ply.Out.SendMessage(str, mybattlegroup.IsBGLeader(client.Player) ? eChatType.CT_BattleGroupLeader : eChatType.CT_BattleGroup, eChatLoc.CL_ChatWindow);
+							ply.Out.SendMessage(str, mybattlegroup.IsBGLeader(client.Player) ? EChatType.CT_BattleGroupLeader : EChatType.CT_BattleGroup, EChatLoc.CL_ChatWindow);
 						}
 						return;
 					}

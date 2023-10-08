@@ -68,7 +68,7 @@ namespace DOL.GS.Commands
 							}
 							catch (Exception e)
 							{
-								client.Out.SendMessage(e.ToString(), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+								client.Out.SendMessage(e.ToString(), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							}
 						}
 						if (merchant == null)
@@ -389,7 +389,7 @@ namespace DOL.GS.Commands
 							}
 							catch (Exception e)
 							{
-								client.Out.SendMessage(e.ToString(), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+								client.Out.SendMessage(e.ToString(), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							}
 						}
 						if (merchant == null)

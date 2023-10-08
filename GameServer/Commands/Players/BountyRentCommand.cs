@@ -18,7 +18,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
 		if (args.Length < 2)
 		{
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.CmdUsage", bpWorth),
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			return;
 		}
@@ -26,7 +26,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
         if (args.Length < 3)
         {
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.CorrectFormat"),
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
             return;
         }
@@ -35,7 +35,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
 		if (house == null)
 		{
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.RangeOfAHouse"),
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			return;
 		}
@@ -48,7 +48,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
         catch
         {
             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.CorrectFormat"),
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
             return;
         }
@@ -60,7 +60,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
                     if (!house.CanPayRent(client.Player))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.NoPayRentPerm"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         return;
                     }
@@ -68,7 +68,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
 					if ((client.Player.BountyPoints -= BPsToAdd) < 0)
 					{
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.NotEnoughBp"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 						return;
 					}
@@ -76,7 +76,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
                     if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.AlreadyMaxMoney"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         return;
                     }
@@ -84,7 +84,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
                     if ((house.KeptMoney + (BPsToAdd * bpWorth)) > (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.ToManyMoney"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         return;
                     }
@@ -97,7 +97,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
 
                     client.Out.SendUpdatePoints();
                     client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.YouSpend", BPsToAdd, ((BPsToAdd * bpWorth) / bpWorth)),
-                        eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				} break;
 			case "guild":
 				{
@@ -108,14 +108,14 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
                             if ((client.Player.Guild.BountyPoints -= BPsToAdd) < 0)
                             {
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.NotEnoughGuildBp"),
-                                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                 return;
                             }
 
                             if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
                             {
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.AlreadyMaxMoney"),
-                                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                                 return;
                             }
@@ -123,7 +123,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
                             if ((house.KeptMoney + (BPsToAdd * bpWorth)) > (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
                             {
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.ToManyMoney"),
-                                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                                 return;
                             }
@@ -135,14 +135,14 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
                             client.Player.Guild.SaveIntoDatabase();
 
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.YouSpendGuild", BPsToAdd, ((BPsToAdd * bpWorth) / bpWorth)),
-                                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                             return;
                         }
                         else
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.NoPayRentPerm"),
-                                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                             return;
                         }

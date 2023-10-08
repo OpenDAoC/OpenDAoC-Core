@@ -81,7 +81,7 @@ namespace DOL.GS.RealmAbilities
 
             if (caster.IsCasting)
             {
-                caster.Out.SendMessage("You are already casting an ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                caster.Out.SendMessage("You are already casting an ability.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -104,9 +104,9 @@ namespace DOL.GS.RealmAbilities
             foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
             {
                 if (player == caster)
-                    player.MessageToSelf("You cast " + Name + "!", eChatType.CT_Spell);
+                    player.MessageToSelf("You cast " + Name + "!", EChatType.CT_Spell);
                 else
-                    player.MessageFromArea(caster, caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    player.MessageFromArea(caster, caster.Name + " casts a spell!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 
                 ClientService.CreateObjectForPlayer(player, trap);
             }

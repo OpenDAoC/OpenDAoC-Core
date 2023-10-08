@@ -43,7 +43,7 @@ namespace DOL.GS.Commands
 
 			if (targetObject == null && args[1] != "create" && args[1] != "fastcreate" && args[1] != "target" && args[1] != "quests")
 			{
-				client.Out.SendMessage("Type /object for command overview", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Type /object for command overview", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -326,7 +326,7 @@ namespace DOL.GS.Commands
 								}
 							}
 
-							client.Out.SendMessage(targetObject.DataQuestList.Count + " Data Quests loaded for this object.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage(targetObject.DataQuestList.Count + " Data Quests loaded for this object.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						}
 						catch (Exception)
 						{
@@ -372,7 +372,7 @@ namespace DOL.GS.Commands
 
 			if (obj == null)
 			{
-				client.Out.SendMessage( "There was an error creating an instance of " + itemClassName + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow );
+				client.Out.SendMessage( "There was an error creating an instance of " + itemClassName + "!", EChatType.CT_System, EChatLoc.CL_SystemWindow );
 				return null;
 			}
 

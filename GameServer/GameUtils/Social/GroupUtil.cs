@@ -82,7 +82,7 @@ namespace DOL.GS
 				{
 					player.Out.SendQuestListUpdate();
 					if (value != null)
-						player.Out.SendMessage(m_mission.Description, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(m_mission.Description, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 			}
 		}
@@ -191,7 +191,7 @@ namespace DOL.GS
 			if (player != null)
 				player.Out.SendGroupMembersUpdate(true, true);
 
-			SendMessageToGroupMembers(string.Format("{0} has joined the group.", living.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			SendMessageToGroupMembers(string.Format("{0} has joined the group.", living.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			GameEventMgr.Notify(GroupEvent.MemberJoined, this, new MemberJoinedEventArgs(living));
 
 
@@ -323,12 +323,12 @@ namespace DOL.GS
 						player.Out.SendObjectGuildID(player, playerGuild ?? GuildUtil.DummyGuild);
 				}
 
-				player.Out.SendMessage("You leave your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You leave your group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				player.Notify(GamePlayerEvent.LeaveGroup, player);
 			}
 
 			UpdateGroupWindow();
-			SendMessageToGroupMembers(string.Format("{0} has left the group.", living.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			SendMessageToGroupMembers(string.Format("{0} has left the group.", living.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			// only one member left?
 			if (MemberCount == 1)
@@ -345,7 +345,7 @@ namespace DOL.GS
 				if (newLeader != null)
 				{
 					LivingLeader = newLeader;
-					SendMessageToGroupMembers(string.Format("{0} is the new group leader.", Leader.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					SendMessageToGroupMembers(string.Format("{0} is the new group leader.", Leader.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				else
 				{
@@ -424,7 +424,7 @@ namespace DOL.GS
 			{
 				// all went ok
 				UpdateGroupWindow();
-				SendMessageToGroupMembers(string.Format("{0} is the new group leader.", Leader.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				SendMessageToGroupMembers(string.Format("{0} is the new group leader.", Leader.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 
 			return allOk;
@@ -458,7 +458,7 @@ namespace DOL.GS
 			{
 				// all went ok
 				UpdateGroupWindow();
-				SendMessageToGroupMembers(string.Format("Switched group member {0} with {1}", source.Name, target.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				SendMessageToGroupMembers(string.Format("Switched group member {0} with {1}", source.Name, target.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 
 			return allOk;
@@ -494,7 +494,7 @@ namespace DOL.GS
 		/// <param name="msg">message string</param>
 		/// <param name="type">message type</param>
 		/// <param name="loc">message location</param>
-		public virtual void SendMessageToGroupMembers(GameLiving from, string msg, eChatType type, eChatLoc loc)
+		public virtual void SendMessageToGroupMembers(GameLiving from, string msg, EChatType type, EChatLoc loc)
 		{
 			string message;
 			if (from != null)
@@ -515,7 +515,7 @@ namespace DOL.GS
 		/// <param name="msg">message string</param>
 		/// <param name="type">message type</param>
 		/// <param name="loc">message location</param>
-		public virtual void SendMessageToGroupMembers(string msg, eChatType type, eChatLoc loc)
+		public virtual void SendMessageToGroupMembers(string msg, EChatType type, EChatLoc loc)
 		{
 			foreach (GamePlayer player in GetPlayersInTheGroup())
 				player.Out.SendMessage(msg, type, loc);

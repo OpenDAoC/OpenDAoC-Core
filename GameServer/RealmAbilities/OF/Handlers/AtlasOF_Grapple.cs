@@ -86,7 +86,7 @@ namespace DOL.GS.RealmAbilities
 	        if (target.IsAlive && m_spell != null)
 	        {
 		        ISpellHandler dd = ScriptMgr.CreateSpellHandler(caster, m_spell, m_spellline);
-		        if(caster is GamePlayer p) p.Out.SendMessage($"You grapple {target.Name} and they are slowed!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+		        if(caster is GamePlayer p) p.Out.SendMessage($"You grapple {target.Name} and they are slowed!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 		        dd.StartSpell(target);
 	        }
         }

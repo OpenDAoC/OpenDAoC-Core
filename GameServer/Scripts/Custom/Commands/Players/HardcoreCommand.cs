@@ -78,7 +78,7 @@ namespace DOL.GS.Commands
                 return;
             
             if (client.Player.HCFlag){
-                client.Out.SendMessage("Your Hardcore flag is ON! Death will result in the character deletion.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("Your Hardcore flag is ON! Death will result in the character deletion.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 return;
             }
             
@@ -92,7 +92,7 @@ namespace DOL.GS.Commands
             {
                 if (client.Player.Level != 1)
                 {
-                    client.Out.SendMessage("You must be level 1 to activate Hardcore.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("You must be level 1 to activate Hardcore.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                     return;
                 }
                 client.Out.SendCustomDialog("Do you really want to activate the Hardcore flag? Death will be permanent.", new CustomDialogResponse(HardcoreResponseHandler));
@@ -105,13 +105,13 @@ namespace DOL.GS.Commands
             {
                 if (player.Level > 1)
                 {
-                    player.Out.SendMessage("You must be level 1 to activate Hardcore.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("You must be level 1 to activate Hardcore.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                     return;
                 }
                 
-                player.Emote(eEmote.StagFrenzy);
+                player.Emote(EEmote.StagFrenzy);
                 player.HCFlag = true;
-                player.Out.SendMessage("Your HARDCORE flag is ON. Your character will be deleted at death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Your HARDCORE flag is ON. Your character will be deleted at death.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 
                 NoHelpCommand.NoHelpActivate(player);
 
@@ -127,7 +127,7 @@ namespace DOL.GS.Commands
             }
             else
             {
-                player.Out.SendMessage("Use the command again if you change your mind.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Use the command again if you change your mind.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
             }
         }
     }
@@ -243,7 +243,7 @@ namespace DOL.GS.PlayerTitles
         
         public override void OnTitleGained(GamePlayer player)
         {
-            player.Out.SendMessage("You have gained the Hardcore title!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("You have gained the Hardcore title!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
         }
 
         public override bool IsSuitable(GamePlayer player)
@@ -267,7 +267,7 @@ namespace DOL.GS.PlayerTitles
         
         public override void OnTitleGained(GamePlayer player)
         {
-            player.Out.SendMessage("You have gained the Hardcore Solo Beetle title!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("You have gained the Hardcore Solo Beetle title!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
         }
 
         public override bool IsSuitable(GamePlayer player)

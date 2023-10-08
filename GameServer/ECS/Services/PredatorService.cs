@@ -57,10 +57,10 @@ public class PredatorService
                 {
                     if (!activePreds.Predator.InCombat)
                         activePreds.Predator.Out.SendMessage($"Your prey is within sight.",
-                            eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_ScreenCenterSmaller_And_CT_System, EChatLoc.CL_SystemWindow);
                     if (!activePreds.Prey.InCombat)
                         activePreds.Prey.Out.SendMessage($"Your senses tingle. A hunter is near.",
-                            eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_ScreenCenterSmaller_And_CT_System, EChatLoc.CL_SystemWindow);
                 }
                 else
                 {

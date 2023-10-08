@@ -45,8 +45,8 @@ namespace DOL.GS.Effects
                     int heal = m_heal;
                     if (p.Health + heal > p.MaxHealth) heal = p.MaxHealth - p.Health;
                     p.ChangeHealth(OwnerPlayer, EHealthChangeType.Regenerate, heal);
-                    OwnerPlayer.Out.SendMessage("Your Ameliorating Melodies heal " + p.Name + " for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-                    p.Out.SendMessage(OwnerPlayer.Name + "'s Ameliorating Melodies heals you for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    OwnerPlayer.Out.SendMessage("Your Ameliorating Melodies heal " + p.Name + " for " + heal.ToString() + " hit points.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+                    p.Out.SendMessage(OwnerPlayer.Name + "'s Ameliorating Melodies heals you for " + heal.ToString() + " hit points.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
                 }
             }
 

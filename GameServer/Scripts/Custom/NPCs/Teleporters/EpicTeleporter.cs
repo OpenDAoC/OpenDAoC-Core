@@ -40,7 +40,7 @@ namespace DOL.GS.Scripts
 		{
 			if (!base.Interact(player)) return false;
 			//TurnTo(player.X,player.Y);
-			player.Out.SendMessage("Hello "+player.Name+"! I can teleport you to [Celestius]", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage("Hello "+player.Name+"! I can teleport you to [Celestius]", EChatType.CT_Say,EChatLoc.CL_PopupWindow);
 			return true;
 		}
 		public override bool WhisperReceive(GameLiving source, string str)
@@ -73,7 +73,7 @@ namespace DOL.GS.Scripts
 			{
 				target.Client.Out.SendMessage(
 					msg,
-					eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+					EChatType.CT_Say,EChatLoc.CL_PopupWindow);
 			}
 		[ScriptLoadedEvent]
         public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)

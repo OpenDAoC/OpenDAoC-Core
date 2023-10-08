@@ -47,7 +47,7 @@ public class QuestSearchCommand : ACommandHandler, ICommandHandler
 
 		if (searched == false)
 		{
-			player.Out.SendMessage("You can't do that here!", DOL.GS.PacketHandler.eChatType.CT_Important, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("You can't do that here!", DOL.GS.PacketHandler.EChatType.CT_Important, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
 		}
 	}
 }

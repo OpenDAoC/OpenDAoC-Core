@@ -20,7 +20,7 @@ public class NoHelpCommand : ACommandHandler, ICommandHandler
 		{
 			if (client.Player.RealmPoints > 0)
 			{
-				client.Player.Out.SendMessage("You have already received help and cannot join this challenge.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				client.Player.Out.SendMessage("You have already received help and cannot join this challenge.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				return;
 			}
 		
@@ -39,7 +39,7 @@ public class NoHelpCommand : ACommandHandler, ICommandHandler
 			else
 			{
 				client.Player.Out.SendMessage("You have already received help and cannot join this challenge.",
-					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -49,7 +49,7 @@ public class NoHelpCommand : ACommandHandler, ICommandHandler
 			if (client.Player.HCFlag)
 			{
 				client.Player.Out.SendMessage("You cannot leave this challenge while you are in a Hardcore game.",
-					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			client.Out.SendCustomDialog(
@@ -66,7 +66,7 @@ public class NoHelpCommand : ACommandHandler, ICommandHandler
 			if (player.Level > 1)
 			{
 				player.Out.SendMessage("You have already received help and cannot join this challenge.",
-					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			
@@ -74,18 +74,18 @@ public class NoHelpCommand : ACommandHandler, ICommandHandler
 		}
 		else
 		{
-			player.Out.SendMessage("Use the command again if you change your mind.", eChatType.CT_Important,
-				eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("Use the command again if you change your mind.", EChatType.CT_Important,
+				EChatLoc.CL_SystemWindow);
 		}
 	}
 
 	public static void NoHelpActivate(GamePlayer player)
 	{
-		player.Emote(eEmote.Rude);
+		player.Emote(EEmote.Rude);
 		player.NoHelp = true;
 		player.Out.SendMessage(
 			"You have chosen the path of solitude and will no longer receive any help from members of your Realm.",
-			eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
 		if (player.HCFlag)
 			player.CurrentTitle = new HardCoreSoloTitle();
@@ -98,10 +98,10 @@ public class NoHelpCommand : ACommandHandler, ICommandHandler
 		if (response == 1 && player.Level < 50)
 		{
 			{
-				player.Emote(eEmote.Surrender);
+				player.Emote(EEmote.Surrender);
 				player.NoHelp = false;
 				player.Out.SendMessage("You have chickened out. You can now run back to your ...friends.",
-					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				const string customKey = "grouped_char";
 				var hasGrouped = CoreDb<DbCoreCharacterXCustomParam>.SelectObject(DB.Column("DOLCharactersObjectId")
 					.IsEqualTo(player.ObjectId).And(DB.Column("KeyName").IsEqualTo(customKey)));
@@ -119,8 +119,8 @@ public class NoHelpCommand : ACommandHandler, ICommandHandler
 		}
 		else
 		{
-			player.Out.SendMessage("Use the command again if get scared once more.", eChatType.CT_Important,
-				eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("Use the command again if get scared once more.", EChatType.CT_Important,
+				EChatLoc.CL_SystemWindow);
 		}
 	}
 }

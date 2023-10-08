@@ -337,7 +337,7 @@ namespace DOL.GS.Quests.Albion
 							SirLukas.SayTo(player, "Hey "+ player.Name +", good to see you. Do you have Ellyn Weylands [delivery]?");
 							break;
 						case 3:
-							SirLukas.Emote(eEmote.No);
+							SirLukas.Emote(EEmote.No);
 							SirLukas.SayTo(player, "Thank you, " + player.Name + ". This bow... marks a terrible loss for our realm." +
 												   "\n\nFlitzitina is my mother. She was a strong and protective scout; her bow and arrows perfectly crafted. " +
 							                       "Her eyes were as sharp as a falcon's and she never missed her mark. I am proud to be the son of such an incredible woman." +
@@ -592,7 +592,7 @@ namespace DOL.GS.Quests.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Each arrow leaves a memory in your heart and the sum of those memories will make you shoot better every time.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Each arrow leaves a memory in your heart and the sum of those memories will make you shoot better every time.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -753,7 +753,7 @@ namespace DOL.GS.Quests.Albion
 			Lukas.SayTo(m_questPlayer, "You helped me preserve the history of this heroine of Albion, and I will follow in her steps and make her proud. " +
 			                           "Thank you again, " + m_questPlayer.Name + ", it means more than you know.");
 			Lukas.TurnTo(m_questPlayer);
-			Lukas.Emote(eEmote.Curtsey);
+			Lukas.Emote(EEmote.Curtsey);
 			Lukas.TurnTo(Lukas.SpawnHeading);
 
 			m_questPlayer.GainExperience(EXpSource.Quest, 20, false);

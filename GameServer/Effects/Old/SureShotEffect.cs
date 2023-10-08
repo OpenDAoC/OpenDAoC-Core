@@ -19,7 +19,7 @@ namespace DOL.GS.Effects
 		{
 			m_player = player;
 			m_player.EffectList.Add(this);
-			m_player.Out.SendMessage(LanguageMgr.GetTranslation(m_player.Client, "Effects.SureShotEffect.YouSwitchToSSMode"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			m_player.Out.SendMessage(LanguageMgr.GetTranslation(m_player.Client, "Effects.SureShotEffect.YouSwitchToSSMode"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>

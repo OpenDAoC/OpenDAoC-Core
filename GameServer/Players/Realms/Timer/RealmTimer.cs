@@ -85,7 +85,7 @@ public class RealmTimer
         {
             player.Out.SendMessage(
 							"Your realm timer is set for another realm. You are unable to PvP for this realm until it expires! Please use /realmtimer to check the current realm timer status",
-							eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							EChatType.CT_System, EChatLoc.CL_SystemWindow);
             player.MoveToBind();
         }
 

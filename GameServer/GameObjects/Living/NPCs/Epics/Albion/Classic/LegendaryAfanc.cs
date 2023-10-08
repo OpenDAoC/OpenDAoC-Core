@@ -150,7 +150,7 @@ namespace DOL.AI.Brain
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
 			}
 		}
 		private List<GamePlayer> Port_Enemys = new List<GamePlayer>();
@@ -175,7 +175,7 @@ namespace DOL.AI.Brain
 						if(Target.CharacterClass.ID != (int)ECharacterClass.Necromancer)
                         {
 							Target.TakeDamage(Target, EDamageType.Falling, Target.MaxHealth / 5, 0);
-							Target.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+							Target.Out.SendMessage("You take falling damage!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 						}
                     }
 					CanPort = false;

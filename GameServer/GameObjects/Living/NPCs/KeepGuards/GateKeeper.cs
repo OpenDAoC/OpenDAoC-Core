@@ -140,7 +140,7 @@ namespace DOL.GS.Keeps
         /// <param name="target"></param>
         /// <param name="loc">chat location of the message</param>
         /// <param name="message"></param>
-        public override void SayTo(GamePlayer target, eChatLoc loc, string message, bool announce = true)
+        public override void SayTo(GamePlayer target, EChatLoc loc, string message, bool announce = true)
         {
             if (target == null)
                 return;
@@ -148,18 +148,18 @@ namespace DOL.GS.Keeps
             string resultText = LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.Says", GetName(0, true), message);
             switch (loc)
             {
-                case eChatLoc.CL_PopupWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                case EChatLoc.CL_PopupWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_System, EChatLoc.CL_PopupWindow);
                     if (announce)
                     {
-                        MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
+                        MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), EChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
                     }
                     break;
-                case eChatLoc.CL_ChatWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                case EChatLoc.CL_ChatWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                     break;
-                case eChatLoc.CL_SystemWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                case EChatLoc.CL_SystemWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
             }
         }
@@ -335,7 +335,7 @@ namespace DOL.GS.Keeps
         /// <param name="target"></param>
         /// <param name="loc">chat location of the message</param>
         /// <param name="message"></param>
-        public override void SayTo(GamePlayer target, eChatLoc loc, string message, bool announce = true)
+        public override void SayTo(GamePlayer target, EChatLoc loc, string message, bool announce = true)
         {
             if (target == null)
                 return;
@@ -343,18 +343,18 @@ namespace DOL.GS.Keeps
             string resultText = LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.Says", GetName(0, true), message);
             switch (loc)
             {
-                case eChatLoc.CL_PopupWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                case EChatLoc.CL_PopupWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_System, EChatLoc.CL_PopupWindow);
                     if (announce)
                     {
-                        MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
+                        MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), EChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
                     }
                     break;
-                case eChatLoc.CL_ChatWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                case EChatLoc.CL_ChatWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                     break;
-                case eChatLoc.CL_SystemWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                case EChatLoc.CL_SystemWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
             }
         }

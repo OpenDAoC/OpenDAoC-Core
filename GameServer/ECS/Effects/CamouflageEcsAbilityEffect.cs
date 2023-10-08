@@ -19,12 +19,12 @@ namespace DOL.GS
         public override void OnStartEffect()
         {
             if (OwnerPlayer != null)
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.CamouflageEffect.YouAreCamouflaged"), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.CamouflageEffect.YouAreCamouflaged"), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
         }
         public override void OnStopEffect()
         {
             if (OwnerPlayer != null)
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.CamouflageEffect.YourCFIsGone"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.CamouflageEffect.YourCFIsGone"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
     }
 }

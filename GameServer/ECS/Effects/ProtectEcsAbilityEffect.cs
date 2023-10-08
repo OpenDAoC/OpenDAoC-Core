@@ -77,13 +77,13 @@ namespace DOL.GS
 			{
 				if (!ProtectSource.IsWithinRadius(ProtectTarget, ProtectAbilityHandler.PROTECT_DISTANCE))
 				{
-					ProtectSource.Out.SendMessage(LanguageMgr.GetTranslation(ProtectSource.Client, "Effects.ProtectEffect.YouProtectingYBut", ProtectTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					ProtectTarget.Out.SendMessage(LanguageMgr.GetTranslation(ProtectTarget.Client, "Effects.ProtectEffect.XProtectingYouBut", ProtectSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					ProtectSource.Out.SendMessage(LanguageMgr.GetTranslation(ProtectSource.Client, "Effects.ProtectEffect.YouProtectingYBut", ProtectTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					ProtectTarget.Out.SendMessage(LanguageMgr.GetTranslation(ProtectTarget.Client, "Effects.ProtectEffect.XProtectingYouBut", ProtectSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				else
 				{
-					ProtectSource.Out.SendMessage(LanguageMgr.GetTranslation(ProtectSource.Client, "Effects.ProtectEffect.YouProtectingY", ProtectTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					ProtectTarget.Out.SendMessage(LanguageMgr.GetTranslation(ProtectTarget.Client, "Effects.ProtectEffect.XProtectingYou", ProtectSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					ProtectSource.Out.SendMessage(LanguageMgr.GetTranslation(ProtectSource.Client, "Effects.ProtectEffect.YouProtectingY", ProtectTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					ProtectTarget.Out.SendMessage(LanguageMgr.GetTranslation(ProtectTarget.Client, "Effects.ProtectEffect.XProtectingYou", ProtectSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				new ProtectEcsAbilityEffect(new EcsGameEffectInitParams(ProtectTarget, 0, 1), ProtectSource, ProtectTarget);
 			}
@@ -104,8 +104,8 @@ namespace DOL.GS
 			if (protectTargetEffect != null)
 				EffectService.RequestImmediateCancelEffect(protectTargetEffect);
 
-			m_protectSource.Out.SendMessage(LanguageMgr.GetTranslation(m_protectSource.Client, "Effects.ProtectEffect.YouNoProtectY", m_protectTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			m_protectTarget.Out.SendMessage(LanguageMgr.GetTranslation(m_protectTarget.Client, "Effects.ProtectEffect.XNoProtectYou", m_protectSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			m_protectSource.Out.SendMessage(LanguageMgr.GetTranslation(m_protectSource.Client, "Effects.ProtectEffect.YouNoProtectY", m_protectTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			m_protectTarget.Out.SendMessage(LanguageMgr.GetTranslation(m_protectTarget.Client, "Effects.ProtectEffect.XNoProtectYou", m_protectSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			m_playerGroup = null;
 		}

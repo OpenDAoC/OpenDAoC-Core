@@ -50,7 +50,7 @@ namespace DOL.GS.RealmAbilities
 
 			GamePlayer player = caster as GamePlayer;
 			if (player != null)
-				player.Out.SendMessage("You hit " + target.Name + " for " + damage + " points of damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You hit " + target.Name + " for " + damage + " points of damage!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 
 			GamePlayer targetPlayer = target as GamePlayer;
 			if (targetPlayer != null)

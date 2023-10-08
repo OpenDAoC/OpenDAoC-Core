@@ -299,11 +299,11 @@ namespace DOL.GS
 			if (controlledBrain == Player.ControlledBrain) return;
 			if (controlledBrain == null)
 			{
-				Player.Out.SendPetWindow(null, ePetWindowAction.Close, 0, 0);
+				Player.Out.SendPetWindow(null, EPetWindowAction.Close, 0, 0);
 				// Message: You lose control of {0}!
-				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.GamePet.SpellEnd.YouLoseControl", Player.ControlledBrain.Body.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.GamePet.SpellEnd.YouLoseControl", Player.ControlledBrain.Body.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				// Message: You release control of your controlled target.
-				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.GamePet.SpellEnd.YouReleaseControl"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.GamePet.SpellEnd.YouReleaseControl"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else
 			{
@@ -311,7 +311,7 @@ namespace DOL.GS
 					throw new ArgumentException("ControlledNpc with wrong owner is set (player=" + Player.Name + ", owner=" + controlledBrain.Owner.Name + ")", "controlledNpc");
 				if (Player.ControlledBrain == null)
 					Player.InitControlledBrainArray(1);
-				Player.Out.SendPetWindow(controlledBrain.Body, ePetWindowAction.Open, controlledBrain.AggressionState, controlledBrain.WalkState);
+				Player.Out.SendPetWindow(controlledBrain.Body, EPetWindowAction.Open, controlledBrain.AggressionState, controlledBrain.WalkState);
 				if (controlledBrain.Body != null)
 				{
 					Player.Out.SendNPCCreate(controlledBrain.Body); // after open pet window again send creation NPC packet
@@ -390,7 +390,7 @@ namespace DOL.GS
 			if (Player.IsShade == makeShade)
 			{
 				if (makeShade && (Player.ObjectState == GameObject.eObjectState.Active))
-					Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.Shade.AlreadyShade"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.Shade.AlreadyShade"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -410,7 +410,7 @@ namespace DOL.GS
 				}
 				// Drop shade form.
 				Player.Model = Player.CreationModel;
-				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.Shade.NoLongerShade"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.Shade.NoLongerShade"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 

@@ -61,7 +61,7 @@ namespace DOL.GS.Commands
             if (response == 1)
             {
                 {
-                    player.Emote(eEmote.SpellGoBoom);
+                    player.Emote(EEmote.SpellGoBoom);
                     player.TakeDamage(player, EDamageType.Natural, player.MaxHealth, 0);
                 }
             }

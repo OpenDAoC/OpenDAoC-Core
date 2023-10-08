@@ -242,7 +242,7 @@ namespace DOL.GS.Commands
                             Point2D loc = client.Player.GetPointFromHeading(h, 250);
                             spawnsetupmob(client, setupmobs[i], realm, loc.X, loc.Y, h);
                         }
-                        client.Out.SendMessage(setupmobs.Count + " setup mob spawned!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage(setupmobs.Count + " setup mob spawned!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
                         #endregion create
                     }
@@ -274,7 +274,7 @@ namespace DOL.GS.Commands
 
                             if (targetMob == null)
                             {
-                                client.Out.SendMessage("You must have a mob targeted to copy.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                client.Out.SendMessage("You must have a mob targeted to copy.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                 return;
                             }
 
@@ -288,7 +288,7 @@ namespace DOL.GS.Commands
 
                             if (mob == null)
                             {
-                                client.Out.SendMessage("There was an error creating an instance of " + targetMob.GetType().FullName + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                client.Out.SendMessage("There was an error creating an instance of " + targetMob.GetType().FullName + "!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                 return;
                             }
                             // Load NPCTemplate before overriding NPCTemplate's variables
@@ -350,7 +350,7 @@ namespace DOL.GS.Commands
 
                             if (brain == null)
                             {
-                                client.Out.SendMessage("Cannot create brain, standard brain being applied", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                client.Out.SendMessage("Cannot create brain, standard brain being applied", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                 mob.SetOwnBrain(new StandardMobBrain());
                             }
                             else if (brain is StandardMobBrain)
@@ -368,11 +368,11 @@ namespace DOL.GS.Commands
                             mob.AddToWorld();
                             mob.LoadedFromScript = false;
                             mob.SaveIntoDatabase();
-                            client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, EChatType.CT_System, EChatLoc.CL_SystemWindow);
                             if ((mob.Flags & GameNPC.eFlags.PEACE) != 0)
                             {
                                 // because copying 100 mobs with their peace flag set is not fun
-                                client.Out.SendMessage("This mobs PEACE flag is set!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                client.Out.SendMessage("This mobs PEACE flag is set!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                             }
                             #endregion old
                         }
@@ -543,7 +543,7 @@ namespace DOL.GS.Commands
             mob.AddToWorld();
             mob.LoadedFromScript = false; // allow saving
             mob.SaveIntoDatabase();
-            client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 
         private void copy(GameClient client,GameNPC targetMob,ushort radius)
@@ -552,7 +552,7 @@ namespace DOL.GS.Commands
 
                 if (targetMob == null)
                 {
-                    client.Out.SendMessage("You must have a mob targeted to copy.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("You must have a mob targeted to copy.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
 
@@ -566,7 +566,7 @@ namespace DOL.GS.Commands
 
                 if (mob == null)
                 {
-                    client.Out.SendMessage("There was an error creating an instance of " + targetMob.GetType().FullName + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("There was an error creating an instance of " + targetMob.GetType().FullName + "!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
                 // Load NPCTemplate before overriding NPCTemplate's variables
@@ -628,7 +628,7 @@ namespace DOL.GS.Commands
 
                 if (brain == null)
                 {
-                    client.Out.SendMessage("Cannot create brain, standard brain being applied", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("Cannot create brain, standard brain being applied", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     mob.SetOwnBrain(new StandardMobBrain());
                 }
                 else if (brain is StandardMobBrain)
@@ -646,11 +646,11 @@ namespace DOL.GS.Commands
                 mob.AddToWorld();
                 mob.LoadedFromScript = false;
                 mob.SaveIntoDatabase();
-                client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 if ((mob.Flags & GameNPC.eFlags.PEACE) != 0)
                 {
                     // because copying 100 mobs with their peace flag set is not fun
-                    client.Out.SendMessage("This mobs PEACE flag is set!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("This mobs PEACE flag is set!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 }
         }
 

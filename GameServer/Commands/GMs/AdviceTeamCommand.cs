@@ -33,7 +33,7 @@ public class AdviceTeamCommand : ACommandHandler, ICommandHandler
         }
 
         if (Properties.DISCORD_ACTIVE)
-            WebhookMessage.LogChatMessage(client.Player, eChatType.CT_Advise, msg);
+            WebhookMessage.LogChatMessage(client.Player, EChatType.CT_Advise, msg);
     }
 
     private static string GetRealmString(ERealm Realm)

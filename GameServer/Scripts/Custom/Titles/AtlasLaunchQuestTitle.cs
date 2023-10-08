@@ -22,7 +22,7 @@ namespace DOL.GS.PlayerTitles
         
         public override void OnTitleGained(GamePlayer player)
         {
-            player.Out.SendMessage("You have gained the Launch Quest title!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("You have gained the Launch Quest title!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
         }
 
         public override bool IsSuitable(GamePlayer player)
@@ -45,7 +45,7 @@ namespace DOL.GS.PlayerTitles
         
         public override void OnTitleGained(GamePlayer player)
         {
-            player.Out.SendMessage("You have gained the Launch Day title!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("You have gained the Launch Day title!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
         }
 
         public override bool IsSuitable(GamePlayer player)

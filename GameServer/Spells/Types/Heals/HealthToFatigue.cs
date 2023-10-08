@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
 		{
 			if (m_caster.Endurance == m_caster.MaxEndurance)
 			{
-				MessageToCaster("You already have full endurance!", eChatType.CT_Spell);
+				MessageToCaster("You already have full endurance!", EChatType.CT_Spell);
 				return false;
 			}
 
@@ -62,7 +62,7 @@ namespace DOL.GS.Spells
 				amount = target.MaxEndurance - target.Endurance;
 
 			target.ChangeEndurance(target, EEnduranceChangeType.Spell, amount);
-			MessageToCaster("You transfer " + amount + " life to Endurance!", eChatType.CT_Spell);
+			MessageToCaster("You transfer " + amount + " life to Endurance!", EChatType.CT_Spell);
 		}
 
 		// constructor

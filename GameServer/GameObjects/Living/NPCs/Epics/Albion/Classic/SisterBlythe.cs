@@ -35,7 +35,7 @@ namespace DOL.GS
 						else
 							truc = ((source as GameSummonedPet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(Name + " can't be attacked from this distance!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " can't be attacked from this distance!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}
@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(5000))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 		}
 		public static int FallenExecutionerCount = 0;

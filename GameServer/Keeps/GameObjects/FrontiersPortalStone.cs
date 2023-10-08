@@ -85,15 +85,15 @@ namespace DOL.GS.Keeps
 
 				// open up the warmap window
 
-				eDialogCode code = eDialogCode.WarmapWindowAlbion;
+				EDialogCode code = EDialogCode.WarmapWindowAlbion;
 				switch (player.Realm)
 				{
-					case ERealm.Albion: code = eDialogCode.WarmapWindowAlbion; break;
-					case ERealm.Midgard: code = eDialogCode.WarmapWindowMidgard; break;
-					case ERealm.Hibernia: code = eDialogCode.WarmapWindowHibernia; break;
+					case ERealm.Albion: code = EDialogCode.WarmapWindowAlbion; break;
+					case ERealm.Midgard: code = EDialogCode.WarmapWindowMidgard; break;
+					case ERealm.Hibernia: code = EDialogCode.WarmapWindowHibernia; break;
 				}
 
-				player.Out.SendDialogBox(code, 0, 0, 0, 0, eDialogType.Warmap, false, "");
+				player.Out.SendDialogBox(code, 0, 0, 0, 0, EDialogType.Warmap, false, "");
 			}
 
 			//if no component assigned, teleport to the border keep

@@ -63,7 +63,7 @@ namespace DOL.GS
 
             if (player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, newNeck)) return true;
             player.CreateItemOnTheGround(newNeck);
-            player.Out.SendMessage($"Your inventory is full, your {newNeck.Name}s have been placed on the ground.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage($"Your inventory is full, your {newNeck.Name}s have been placed on the ground.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
             return true;
             

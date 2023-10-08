@@ -24,11 +24,11 @@ namespace DOL.GS.Effects
             {
                 if (t_player == OwnerPlayer)
                 {
-                    OwnerPlayer.Out.SendMessage("You begin automatically counter-attacking melee attacks!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    OwnerPlayer.Out.SendMessage("You begin automatically counter-attacking melee attacks!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
                 }
                 else
                 {
-                    t_player.Out.SendMessage(OwnerPlayer.Name + " starts automatically counter-attacking melee attacks!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    t_player.Out.SendMessage(OwnerPlayer.Name + " starts automatically counter-attacking melee attacks!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
                 }
                 t_player.Out.SendSpellEffectAnimation(OwnerPlayer, OwnerPlayer, 7012, 0, false, 1);
             }
@@ -43,11 +43,11 @@ namespace DOL.GS.Effects
             {
                 if (t_player == OwnerPlayer)
                 {
-                    OwnerPlayer.Out.SendMessage("You stop automatically counter-attacking melee attacks!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    OwnerPlayer.Out.SendMessage("You stop automatically counter-attacking melee attacks!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
                 }
                 else
                 {
-                    t_player.Out.SendMessage(OwnerPlayer.Name + " stops automatically counter-attacking melee attacks!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    t_player.Out.SendMessage(OwnerPlayer.Name + " stops automatically counter-attacking melee attacks!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
                 }
             }
         }

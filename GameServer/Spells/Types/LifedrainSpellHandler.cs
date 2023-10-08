@@ -34,7 +34,7 @@ namespace DOL.GS.Spells
 			// calc damage and healing
 			AttackData ad = CalculateDamageToTarget(target);
 			// "Your life energy is stolen!"
-			MessageToLiving(target, Spell.Message1, eChatType.CT_Spell);
+			MessageToLiving(target, Spell.Message1, EChatType.CT_Spell);
 			SendDamageMessages(ad);
 			DamageTarget(ad, true);
 			StealLife(ad);
@@ -67,11 +67,11 @@ namespace DOL.GS.Spells
 
             if (heal > 0)
             {
-                MessageToCaster("You steal " + heal + " hit point" + (heal == 1 ? "." : "s."), eChatType.CT_Spell);
+                MessageToCaster("You steal " + heal + " hit point" + (heal == 1 ? "." : "s."), EChatType.CT_Spell);
             }
             else
             {
-                MessageToCaster("You cannot absorb any more life.", eChatType.CT_SpellResisted);
+                MessageToCaster("You cannot absorb any more life.", EChatType.CT_SpellResisted);
             }
         }
 

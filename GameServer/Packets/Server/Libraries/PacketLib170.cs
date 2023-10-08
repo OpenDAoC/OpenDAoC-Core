@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -47,7 +28,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepInfo(IGameKeep keep)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepInfo)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepInfo)))
 			{
 
 				pak.WriteShort((ushort)keep.KeepID);
@@ -66,7 +47,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepRealmUpdate(IGameKeep keep)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepRealmUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepRealmUpdate)))
 			{
 
 				pak.WriteShort((ushort)keep.KeepID);
@@ -78,7 +59,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepRemove(IGameKeep keep)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepRemove)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepRemove)))
 			{
 				pak.WriteShort((ushort)keep.KeepID);
 				SendTCP(pak);
@@ -87,7 +68,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentInfo(IGameKeepComponent keepComponent)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentInfo)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentInfo)))
 			{
 				pak.WriteShort((ushort)keepComponent.Keep.KeepID);
 				pak.WriteShort((ushort)keepComponent.ID);
@@ -111,7 +92,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentDetailUpdate(IGameKeepComponent keepComponent)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentDetailUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentDetailUpdate)))
 			{
 				pak.WriteShort((ushort)keepComponent.Keep.KeepID);
 				pak.WriteShort((ushort)keepComponent.ID);
@@ -133,7 +114,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentRemove(IGameKeepComponent keepComponent)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentRemove)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentRemove)))
 			{
 				pak.WriteShort((ushort)keepComponent.Keep.KeepID);
 				pak.WriteShort((ushort)keepComponent.ID);
@@ -143,7 +124,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentUpdate(IGameKeep keep, bool LevelUp)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentUpdate)))
 			{
 				pak.WriteShort((ushort)keep.KeepID);
 				pak.WriteByte((byte)keep.Realm);
@@ -174,7 +155,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || keep == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepClaim)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepClaim)))
 			{
 
 				pak.WriteShort((ushort)keep.KeepID);
@@ -188,7 +169,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentInteract(IGameKeepComponent component)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentInteractResponse)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentInteractResponse)))
 			{
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteByte((byte)component.Keep.Realm);
@@ -210,7 +191,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentHookpointUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentHookpointUpdate)))
 			{
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteShort((ushort)component.ID);
@@ -231,7 +212,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendClearKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentHookpointUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentHookpointUpdate)))
 			{
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteShort((ushort)component.ID);
@@ -243,7 +224,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendHookPointStore(GameKeepHookPoint hookPoint)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentHookpointStore)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentHookpointStore)))
 			{
 				pak.WriteShort((ushort)hookPoint.Component.Keep.KeepID);
 				pak.WriteShort((ushort)hookPoint.Component.ID);
@@ -290,7 +271,7 @@ namespace DOL.GS.PacketHandler
 
 		protected override void SendQuestPacket(AbstractQuest quest, byte index)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 			{
 				pak.WriteByte(index);
 				if (quest.Step <= 0)
@@ -327,7 +308,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.WarMapClaimedKeeps)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.WarMapClaimedKeeps)))
 			{
 				int KeepCount = 0;
 				int TowerCount = 0;
@@ -411,14 +392,14 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte((byte)((map << 6) | (index << 3) | tower));
 					if (guild != null)
 					{
-						flag |= (byte)eRealmWarmapKeepFlags.Claimed;
+						flag |= (byte)ERealmWarmapKeepFlags.Claimed;
 						name = guild.Name;
 					}
 
 					//Teleport
 					if (m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player)
 					{
-						flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+						flag |= (byte)ERealmWarmapKeepFlags.Teleportable;
 					}
 					else
 					{
@@ -429,7 +410,7 @@ namespace DOL.GS.PacketHandler
 							{
 								if (theKeep.OwnsAllTowers && !theKeep.InCombat)
 								{
-									flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+									flag |= (byte)ERealmWarmapKeepFlags.Teleportable;
 								}
 							}
 						}
@@ -437,7 +418,7 @@ namespace DOL.GS.PacketHandler
 
 					if (keep.InCombat)
 					{
-						flag |= (byte)eRealmWarmapKeepFlags.UnderSiege;
+						flag |= (byte)ERealmWarmapKeepFlags.UnderSiege;
 					}
 
 					pak.WriteByte((byte)flag);
@@ -519,7 +500,7 @@ namespace DOL.GS.PacketHandler
 					break;
 			}
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.WarmapBonuses)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.WarmapBonuses)))
 			{
 				pak.WriteByte((byte)RealmKeeps);
 				int magic = RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Magic);
@@ -533,7 +514,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendWarmapDetailUpdate(List<List<byte>> fights, List<List<byte>> groups)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.WarMapDetailUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.WarMapDetailUpdate)))
 			{
 				pak.WriteByte((byte)fights.Count);// count - Fights (Byte)
 				pak.WriteByte((byte)groups.Count);// count - Groups (Byte)

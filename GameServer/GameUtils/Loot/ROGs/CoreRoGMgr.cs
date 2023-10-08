@@ -63,7 +63,7 @@ namespace DOL.GS
                 DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
                 player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
             }
         }
 
@@ -84,7 +84,7 @@ namespace DOL.GS
                 DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
                 player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet", invitem.Name), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
             }
         }
 
@@ -113,7 +113,7 @@ namespace DOL.GS
                 player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
                 player.Out.SendMessage(
                     LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGet",
-                        invitem.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                        invitem.Name), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
             }
         }
 
@@ -154,9 +154,9 @@ namespace DOL.GS
                 player.GainBountyPoints(totBPs, false);
                 
                 if (loyaltyBonus > 0)
-                    player.Out.SendMessage($"You gained an additional {Convert.ToInt32(loyaltyBonus)} BPs due to your realm loyalty!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"You gained an additional {Convert.ToInt32(loyaltyBonus)} BPs due to your realm loyalty!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 if (relicBonus > 0)
-                    player.Out.SendMessage($"You gained an additional {Convert.ToInt32(relicBonus)} BPs due to your realm's relic ownership!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"You gained an additional {Convert.ToInt32(relicBonus)} BPs due to your realm's relic ownership!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
             }
             
@@ -173,7 +173,7 @@ namespace DOL.GS
                 
                 if (orbs == null)
                 {
-                    player.Out.SendMessage("Error: Currency ID not found!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("Error: Currency ID not found!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
 
@@ -194,12 +194,12 @@ namespace DOL.GS
 
                 item.OwnerID = player.InternalID;
 
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
                 
                 if (loyaltyBonus > 0)
-                    player.Out.SendMessage($"You gained an additional {Convert.ToInt32(loyaltyBonus)} orb(s) due to your realm loyalty!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"You gained an additional {Convert.ToInt32(loyaltyBonus)} orb(s) due to your realm loyalty!", EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
                 if (relicOrbBonus > 0)
-                    player.Out.SendMessage($"You gained an additional {Convert.ToInt32(relicOrbBonus)} orb(s) due to your realm's relic ownership!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"You gained an additional {Convert.ToInt32(relicOrbBonus)} orb(s) due to your realm's relic ownership!", EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
 
                 if (!player.Inventory.AddCountToStack(item,totOrbs))
                 {
@@ -207,7 +207,7 @@ namespace DOL.GS
                     {
                         item.Count = totOrbs;
                         player.CreateItemOnTheGround(item);
-                        player.Out.SendMessage($"Your inventory is full, your {item.Name}s have been placed on the ground.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage($"Your inventory is full, your {item.Name}s have been placed on the ground.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                     }
 
                 }
@@ -233,7 +233,7 @@ namespace DOL.GS
                 DbInventoryItem item = GameInventoryItem.Create(token);
                 item.OwnerID = player.InternalID;
 
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
 
                 if (!player.Inventory.AddCountToStack(item,amount))
                 {
@@ -241,7 +241,7 @@ namespace DOL.GS
                     {
                         item.Count = amount;
                         player.CreateItemOnTheGround(item);
-                        player.Out.SendMessage($"Your inventory is full, your {item.Name}s have been placed on the ground.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage($"Your inventory is full, your {item.Name}s have been placed on the ground.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                     }
 
                 }
@@ -260,7 +260,7 @@ namespace DOL.GS
                 
                 item.OwnerID = player.InternalID;
 
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.YouGetAmount", amount ,item.Name), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
 
                 if (!player.Inventory.AddCountToStack(item,amount))
                 {
@@ -268,7 +268,7 @@ namespace DOL.GS
                     {
                         item.Count = amount;
                         player.CreateItemOnTheGround(item);
-                        player.Out.SendMessage($"Your inventory is full, your {item.Name}s have been placed on the ground.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage($"Your inventory is full, your {item.Name}s have been placed on the ground.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                     }
 
                 }

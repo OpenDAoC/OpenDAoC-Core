@@ -23,7 +23,7 @@ public class ApiCommand : ACommandHandler, ICommandHandler
 		if (args[1].ToLower() == "specs")
 		{
 			client.Player.HideSpecializationAPI = !client.Player.HideSpecializationAPI;
-			client.Out.SendMessage("API specialization details: " + (client.Player.HideSpecializationAPI ? "hidden" : "shown"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("API specialization details: " + (client.Player.HideSpecializationAPI ? "hidden" : "shown"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			GameServer.Database.SaveObject(client.Player.DBCharacter); // using this instead of SaveIntoDatabase() because we don't want to display it to the player to avoid save abuse
 		}
 	}

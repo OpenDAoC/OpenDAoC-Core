@@ -21,8 +21,8 @@ public class EmailCommand : ACommandHandler, ICommandHandler
 		if (args.Length == 1)
 		{
 			client.Out.SendMessage("Usage: /email <address>",
-			                       eChatType.CT_System,
-			                       eChatLoc.CL_SystemWindow);
+			                       EChatType.CT_System,
+			                       EChatLoc.CL_SystemWindow);
 			return;
 		}
 		EmailSyntaxValidator emailsyntaxvalidator; // validate mail
@@ -31,8 +31,8 @@ public class EmailCommand : ACommandHandler, ICommandHandler
 		if (!emailsyntaxvalidator.IsValid)
 		{
 			client.Out.SendMessage("Please enter a valid e-mail address.",
-			                       eChatType.CT_System,
-			                       eChatLoc.CL_SystemWindow);
+			                       EChatType.CT_System,
+			                       EChatLoc.CL_SystemWindow);
 			return;
 		}
 
@@ -53,13 +53,13 @@ public class EmailCommand : ACommandHandler, ICommandHandler
 
 				client.Out.SendMessage("Contact e-mail address set to " +
 				                       obj.Client.Account.Mail + ". Thanks!",
-				                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				                       EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 		catch (Exception)
 		{
 			client.Out.SendMessage("Error - Usage: /email <address>",
-			                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			                       EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 	}
 

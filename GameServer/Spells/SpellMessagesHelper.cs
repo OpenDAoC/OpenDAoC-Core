@@ -35,7 +35,7 @@ namespace DOL.GS.Spells
 		/// <param name="type"></param>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
-		public static void MessageToCaster(this SpellHandler handler, eChatType type, string format, params object[] args)
+		public static void MessageToCaster(this SpellHandler handler, EChatType type, string format, params object[] args)
 		{
 			handler.MessageToCaster(string.Format(format, args), type);
 		}
@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
 		/// <param name="type"></param>
 		/// <param name="format"></param>
 		/// <param name="args"></param>
-		public static void MessageToLiving(this SpellHandler handler, GameLiving living, eChatType type, string format, params object[] args)
+		public static void MessageToLiving(this SpellHandler handler, GameLiving living, EChatType type, string format, params object[] args)
 		{
 			handler.MessageToLiving(living, string.Format(format, args), type);
 		}

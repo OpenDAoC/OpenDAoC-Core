@@ -220,7 +220,7 @@ namespace DOL.GS
 				SendWeatherUpdate(weather, player);
 				
 				if (player.X > weatherCurrentPosition - weather.Width && player.X < weatherCurrentPosition)
-					player.Out.SendMessage("The sky clears up again as the storm clouds disperse!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("The sky clears up again as the storm clouds disperse!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 		

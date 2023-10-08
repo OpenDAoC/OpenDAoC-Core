@@ -21,17 +21,17 @@ public class ChatGroupChatCommand : ACommandHandler, ICommandHandler
 		ChatGroupUtil mychatgroup = client.Player.TempProperties.GetProperty<ChatGroupUtil>(ChatGroupUtil.CHATGROUP_PROPERTY, null);
 		if (mychatgroup == null)
 		{
-			client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.InChatGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.InChatGroup"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 		if (mychatgroup.Listen == true && (((bool)mychatgroup.Members[client.Player]) == false))
 		{
-			client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.OnlyModerator"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.OnlyModerator"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 		if (args.Length < 2)
 		{
-			client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.Usage"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.Usage"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
@@ -49,7 +49,7 @@ public class ChatGroupChatCommand : ACommandHandler, ICommandHandler
 		string message = text.ToString();
 		foreach (GamePlayer ply in mychatgroup.Members.Keys)
 		{
-			ply.Out.SendMessage(message, eChatType.CT_Chat, eChatLoc.CL_ChatWindow);
+			ply.Out.SendMessage(message, EChatType.CT_Chat, EChatLoc.CL_ChatWindow);
 		}
 	}
 }

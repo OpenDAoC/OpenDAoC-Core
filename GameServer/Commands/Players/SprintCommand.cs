@@ -17,7 +17,7 @@ public class SprintCommand : ACommandHandler, ICommandHandler
 		}
 		else
 		{
-			client.Out.SendMessage("You do not have a sprint ability.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("You do not have a sprint ability.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 	}
 }

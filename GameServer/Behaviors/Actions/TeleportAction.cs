@@ -48,7 +48,7 @@ namespace DOL.GS.Behaviour.Actions
 
             if (location.Name != null)
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.TeleportAction.TeleportedToLoc", player, location.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.TeleportAction.TeleportedToLoc", player, location.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
 
             location.X += Util.Random(-radius, radius);

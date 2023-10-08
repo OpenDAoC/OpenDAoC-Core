@@ -24,7 +24,7 @@ public class BroadcastCommand : ACommandHandler, ICommandHandler
 
         if (client.Player.IsMuted)
         {
-            client.Player.Out.SendMessage("You have been muted. You cannot broadcast.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage("You have been muted. You cannot broadcast.", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -38,7 +38,7 @@ public class BroadcastCommand : ACommandHandler, ICommandHandler
 
         if (changeTime < 800 && BroadTick > 0)
         {
-            client.Player.Out.SendMessage("Slow down! Think before you say each word!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage("Slow down! Think before you say each word!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             client.Player.TempProperties.SetProperty(BROAD_TICK, client.Player.CurrentRegion.Time);
             return;
         }
@@ -50,7 +50,7 @@ public class BroadcastCommand : ACommandHandler, ICommandHandler
     private void Broadcast(GamePlayer player, string message)
     {
         foreach (GamePlayer otherPlayer in GetTargets(player))
-            otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Broadcast.Message", player.Name, message), eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+            otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Broadcast.Message", player.Name, message), EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
     }
 
     private List<GamePlayer> GetTargets(GamePlayer player)
@@ -79,7 +79,7 @@ public class BroadcastCommand : ACommandHandler, ICommandHandler
                 }
 
                 if (!found)
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Broadcast.NoHere"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Broadcast.NoHere"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                 break;
             }

@@ -1,29 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Reflection;
 using DOL.GS.Housing;
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.BuyRequest, "Handles player buy", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.BuyRequest, "Handles player buy", EClientStatus.PlayerInGame)]
 	public class PlayerBuyRequestHandler : IPacketHandler
 	{
 		/// <summary>
@@ -31,7 +12,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			if (client.Player == null)
 				return;
@@ -43,17 +24,17 @@ namespace DOL.GS.PacketHandler.Client.v168
 			byte item_count = (byte)packet.ReadByte();
 			byte menu_id = (byte)packet.ReadByte();
 
-			switch ((eMerchantWindowType)menu_id)
+			switch ((EMerchantWindowType)menu_id)
 			{
-				case eMerchantWindowType.HousingInsideShop:
-				case eMerchantWindowType.HousingOutsideShop:
-				case eMerchantWindowType.HousingBindstoneHookpoint:
-				case eMerchantWindowType.HousingCraftingHookpoint:
-				case eMerchantWindowType.HousingNPCHookpoint:
-				case eMerchantWindowType.HousingVaultHookpoint:
-				case eMerchantWindowType.HousingDeedMenu:
+				case EMerchantWindowType.HousingInsideShop:
+				case EMerchantWindowType.HousingOutsideShop:
+				case EMerchantWindowType.HousingBindstoneHookpoint:
+				case EMerchantWindowType.HousingCraftingHookpoint:
+				case EMerchantWindowType.HousingNPCHookpoint:
+				case EMerchantWindowType.HousingVaultHookpoint:
+				case EMerchantWindowType.HousingDeedMenu:
 					{
-						HouseMgr.BuyHousingItem(client.Player, item_slot, item_count, (eMerchantWindowType)menu_id);
+						HouseMgr.BuyHousingItem(client.Player, item_slot, item_count, (EMerchantWindowType)menu_id);
 						break;
 					}
 				default:

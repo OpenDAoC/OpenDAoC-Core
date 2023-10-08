@@ -53,8 +53,8 @@ namespace DOL.GS.Spells
 				player.Out.SendUpdateMaxSpeed();
 			}
 
-			eChatType toLiving = (Spell.Pulse == 0) ? eChatType.CT_Spell : eChatType.CT_SpellPulse;
-			eChatType toOther = (Spell.Pulse == 0) ? eChatType.CT_System : eChatType.CT_SpellPulse;
+			EChatType toLiving = (Spell.Pulse == 0) ? EChatType.CT_Spell : EChatType.CT_SpellPulse;
+			EChatType toOther = (Spell.Pulse == 0) ? EChatType.CT_System : EChatType.CT_SpellPulse;
 			if (Spell.Message2 != "")
 				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
 			MessageToLiving(effect.Owner, Spell.Message1 == "" ? "You find yourself able to move freely and breathe water like air!" : Spell.Message1, toLiving);
@@ -76,7 +76,7 @@ namespace DOL.GS.Spells
 				player.BaseBuffBonusCategory[(int)EProperty.WaterSpeed] -= (int)Spell.Value;
 				player.Out.SendUpdateMaxSpeed();
 				if (player.IsDiving & player.CanBreathUnderWater == false)
-					MessageToLiving(effect.Owner, "With a gulp and a gasp you realize that you are unable to breathe underwater any longer!", eChatType.CT_SpellExpires);
+					MessageToLiving(effect.Owner, "With a gulp and a gasp you realize that you are unable to breathe underwater any longer!", EChatType.CT_SpellExpires);
 			}
 			return base.OnEffectExpires(effect, noMessages);
 		}

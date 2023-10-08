@@ -36,7 +36,7 @@ namespace DOL.GS
 				OwnerPlayer.Endurance += cost;
 
 				OwnerPlayer.Out.SendUpdateMaxSpeed();
-				OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Sprint.PrepareSprint"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Sprint.PrepareSprint"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				Owner.StartEnduranceRegeneration();
 			}
 		}
@@ -45,7 +45,7 @@ namespace DOL.GS
 			if (OwnerPlayer != null)
 			{
 				OwnerPlayer.Out.SendUpdateMaxSpeed();
-				OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Sprint.NoLongerReady"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Sprint.NoLongerReady"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
         public override void OnEffectPulse()

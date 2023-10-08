@@ -31,9 +31,9 @@ namespace DOL.GS
             if (OwnerPlayer != null)
             {
                 // "You begin to charge wildly!"
-                OwnerPlayer.Out.SendMessage($"You are now charging {OwnerPlayer.TargetObject?.Name}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage($"You are now charging {OwnerPlayer.TargetObject?.Name}!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 // "{0} begins charging wildly!"
-                MessageUtil.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.AreaStartCharge",OwnerPlayer.GetName(0, true)), eChatType.CT_System, OwnerPlayer);
+                MessageUtil.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.AreaStartCharge",OwnerPlayer.GetName(0, true)), EChatType.CT_System, OwnerPlayer);
             }
             else if (Owner is GameNPC)
             {
@@ -44,7 +44,7 @@ namespace DOL.GS
 
                     if (playerowner != null)
                     {
-                        playerowner.Out.SendMessage("The " + icb.Body.Name + " charges its prey!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        playerowner.Out.SendMessage("The " + icb.Body.Name + " charges its prey!", EChatType.CT_Say, EChatLoc.CL_SystemWindow);
                     }
                 }
             }
@@ -95,9 +95,9 @@ namespace DOL.GS
                 //player.Out.SendUpdateMaxSpeed();
                 
                 // "You no longer seem so crazy!"
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.EndCharge"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.EndCharge"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 // "{0} ceases their charge!"
-                MessageUtil.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.AreaEndCharge", OwnerPlayer.GetName(0, true)), eChatType.CT_System, OwnerPlayer);
+                MessageUtil.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.AreaEndCharge", OwnerPlayer.GetName(0, true)), EChatType.CT_System, OwnerPlayer);
             }
             else if (Owner is GameNPC)
             {
@@ -108,7 +108,7 @@ namespace DOL.GS
 
                     if (playerowner != null)
                     {
-                        playerowner.Out.SendMessage("The " + icb.Body.Name + " ceases its charge!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        playerowner.Out.SendMessage("The " + icb.Body.Name + " ceases its charge!", EChatType.CT_Say, EChatLoc.CL_SystemWindow);
                     }
                 }
             }

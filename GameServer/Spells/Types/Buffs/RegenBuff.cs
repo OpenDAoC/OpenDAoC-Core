@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
             if (target is GamePlayer && (((GamePlayer)target).CharacterClass.ID == (int)ECharacterClass.Vampiir
                 || ((GamePlayer)target).CharacterClass.ID == (int)ECharacterClass.MaulerAlb
                 || ((GamePlayer)target).CharacterClass.ID == (int)ECharacterClass.MaulerMid
-                || ((GamePlayer)target).CharacterClass.ID == (int)ECharacterClass.MaulerHib)) { MessageToCaster("This spell has no effect on this class!", eChatType.CT_Spell); return; }
+                || ((GamePlayer)target).CharacterClass.ID == (int)ECharacterClass.MaulerHib)) { MessageToCaster("This spell has no effect on this class!", EChatType.CT_Spell); return; }
 			base.ApplyEffectOnTarget(target);
 		}
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }

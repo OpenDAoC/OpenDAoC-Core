@@ -113,7 +113,7 @@ namespace DOL.GS.Effects
                 if (living.Health < living.MaxHealth)
                 {
                     //TODO correct messages
-                    MessageToLiving(living, string.Format("Blooddrinking ability is healing you for {0} health points!", healAbsorbed), eChatType.CT_Spell);
+                    MessageToLiving(living, string.Format("Blooddrinking ability is healing you for {0} health points!", healAbsorbed), EChatType.CT_Spell);
                     foreach (GamePlayer p in EffectOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     {
                         //heal effect
@@ -122,7 +122,7 @@ namespace DOL.GS.Effects
                     living.Health = living.Health + healAbsorbed;
                 }
                 else
-                    MessageToLiving(living, string.Format("You are already fully healed!"), eChatType.CT_Spell);
+                    MessageToLiving(living, string.Format("You are already fully healed!"), EChatType.CT_Spell);
             }
         }
 
@@ -144,7 +144,7 @@ namespace DOL.GS.Effects
         /// <param name="living"></param>
         /// <param name="message"></param>
         /// <param name="type"></param>
-        public void MessageToLiving(GameLiving living, string message, eChatType type)
+        public void MessageToLiving(GameLiving living, string message, EChatType type)
         {
             if (living is GamePlayer && message != null && message.Length > 0)
             {

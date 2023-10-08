@@ -260,11 +260,11 @@ namespace DOL.GS
 			if (tauntEffect != null)
 			{
 				tauntEffect.Stop();
-				owner.Out.SendMessage(string.Format("{0} seems to be less aggressive than before.", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				owner.Out.SendMessage(string.Format("{0} seems to be less aggressive than before.", GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else
 			{
-				owner.Out.SendMessage(string.Format("{0} enters an aggressive stance.", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				owner.Out.SendMessage(string.Format("{0} enters an aggressive stance.", GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				new PetTauntEffect().Start(this);
 			}
 		}
@@ -294,10 +294,10 @@ namespace DOL.GS
 				else if (ad.Modifier < 0)
 					modmessage = " (" + ad.Modifier + ")";
 
-				player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modmessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modmessage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 
 				if (ad.CriticalDamage > 0)
-					player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 			}
 
 			base.OnAttackedByEnemy(ad);
@@ -452,14 +452,14 @@ namespace DOL.GS
 					if (item != null)
 					{
 						item.ProcSpellID = (int)Procs.Disease;
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+						SayTo(owner, EChatLoc.CL_SystemWindow, "As you command.");
 					}
 
 					return true;
 				}
 				case "empower":
 				{
-					SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+					SayTo(owner, EChatLoc.CL_SystemWindow, "As you command.");
 					Empower();
 					return true;
 				}
@@ -470,7 +470,7 @@ namespace DOL.GS
 					if (item != null)
 					{
 						item.ProcSpellID = (int)Procs.Poison;
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+						SayTo(owner, EChatLoc.CL_SystemWindow, "As you command.");
 					}
 
 					return true;
@@ -501,7 +501,7 @@ namespace DOL.GS
 					string templateID = string.Format("{0}_{1}", Name, text.Replace(" ", "_"));
 
 					if (LoadEquipmentTemplate(templateID))
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+						SayTo(owner, EChatLoc.CL_SystemWindow, "As you command.");
 
 					return true;
 				}

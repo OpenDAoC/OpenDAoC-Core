@@ -336,7 +336,7 @@ namespace DOL.GS
 
         public void SendReply(GamePlayer player, string msg)
         {
-            player.Out.SendMessage(msg, eChatType.CT_Merchant, eChatLoc.CL_PopupWindow);
+            player.Out.SendMessage(msg, EChatType.CT_Merchant, EChatLoc.CL_PopupWindow);
         }
 
         private DbInventoryItem GenerateItemNameModel(DbInventoryItem item)

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using log4net;
@@ -34,12 +15,12 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		protected eEncryptionState m_encryptionState;
+		protected EEncryptionState m_encryptionState;
 		protected byte[] _sbox = null;
 
 		public PacketEncoding168()
 		{
-			m_encryptionState = eEncryptionState.NotEncrypted;
+			m_encryptionState = EEncryptionState.NotEncrypted;
 			_sbox = new byte[256];
 		}
 
@@ -55,7 +36,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// Gets or sets the Encryption State of this encoding
 		/// </summary>
-		public eEncryptionState EncryptionState
+		public EEncryptionState EncryptionState
 		{
 			get { return m_encryptionState; }
 			set { m_encryptionState = value; }
@@ -71,7 +52,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (buf == null)
 				return null;
-			if (_sbox == null || m_encryptionState == eEncryptionState.NotEncrypted)
+			if (_sbox == null || m_encryptionState == EEncryptionState.NotEncrypted)
 				return buf;
 			byte[] tmpsbox = new byte[_sbox.Length];
 			Array.Copy(_sbox, 0, tmpsbox, 0, _sbox.Length);
@@ -116,7 +97,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (buf == null)
 				return null;
-			if (_sbox == null || m_encryptionState == eEncryptionState.NotEncrypted)
+			if (_sbox == null || m_encryptionState == EEncryptionState.NotEncrypted)
 				return buf;
 			byte[] tmpsbox = new byte[_sbox.Length];
 			Array.Copy(_sbox, 0, tmpsbox, 0, _sbox.Length);

@@ -121,7 +121,7 @@ namespace DOL.GS.Behaviour.Actions
             playerInventory.CommitChanges();
 
 
-            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.DestroyItemAction.Destroyed", itemToDestroy.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.DestroyItemAction.Destroyed", itemToDestroy.Name), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
         }
     }
 }

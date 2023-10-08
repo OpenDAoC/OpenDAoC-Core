@@ -60,7 +60,7 @@ namespace DOL.GS.Effects
 			if (m_playerGroup != null)
 				GameEventMgr.AddHandler(m_playerGroup, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback));
 			GameEventMgr.AddHandler(EffectOwner, GamePlayerEvent.AttackFinished, new CoreEventHandler(AttackFinished));
-			EffectOwner.Out.SendMessage("Your weapon begins channeling the strength of the vampiir!", DOL.GS.PacketHandler.eChatType.CT_Spell, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
+			EffectOwner.Out.SendMessage("Your weapon begins channeling the strength of the vampiir!", DOL.GS.PacketHandler.EChatType.CT_Spell, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
 			base.Start(CasterTarget);
 		}
 
@@ -74,7 +74,7 @@ namespace DOL.GS.Effects
 				GameEventMgr.RemoveHandler(EffectOwner, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
 				m_playerGroup = null;
 			}
-			EffectOwner.Out.SendMessage("Your weapon returns to normal.", DOL.GS.PacketHandler.eChatType.CT_SpellExpires, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
+			EffectOwner.Out.SendMessage("Your weapon returns to normal.", DOL.GS.PacketHandler.EChatType.CT_SpellExpires, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
 			base.Stop();
 		}
 
@@ -117,7 +117,7 @@ namespace DOL.GS.Effects
 			target.OnAttackedByEnemy(ad);
 			EffectCaster.ChangeMana(EffectOwner, EPowerChangeType.Spell, (int)ad.Damage);
 			if (attacker is GamePlayer)
-				(attacker as GamePlayer).Out.SendMessage(string.Format("You hit {0} for {1} extra damage!", target.Name, ad.Damage), DOL.GS.PacketHandler.eChatType.CT_Spell, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
+				(attacker as GamePlayer).Out.SendMessage(string.Format("You hit {0} for {1} extra damage!", target.Name, ad.Damage), DOL.GS.PacketHandler.EChatType.CT_Spell, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
 			attacker.DealDamage(ad);
 		}
 

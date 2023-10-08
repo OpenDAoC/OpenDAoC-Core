@@ -72,13 +72,13 @@ namespace DOL.GS.Effects
 			GamePlayer player = living as GamePlayer;
 			GamePlayer attackplayer = ad.Attacker as GamePlayer;
 			if (attackplayer != null)
-				attackplayer.Out.SendMessage(living.Name + "'s druidic powers absorb your attack!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				attackplayer.Out.SendMessage(living.Name + "'s druidic powers absorb your attack!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 			int modheal = living.MaxHealth - living.Health;
 			if (modheal > heal)
 				modheal = heal;
 			living.Health += modheal;
 			if (player != null)
-				player.Out.SendMessage("Your druidic powers convert your enemies attack and heal you for " + modheal + "!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Your druidic powers convert your enemies attack and heal you for " + modheal + "!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 
 		}
 

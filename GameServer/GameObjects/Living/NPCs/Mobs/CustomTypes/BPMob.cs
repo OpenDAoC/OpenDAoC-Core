@@ -66,7 +66,7 @@ public class BPMob : GameNPC
 
                     if (player2.RealmPoints >= 1755250)
                     {
-                        player2.Out.SendMessage("You are RR7 or higher, you will not be rewarded here anymore!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        player2.Out.SendMessage("You are RR7 or higher, you will not be rewarded here anymore!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                         player2.MoveTo(79, 32401, 12245, 17413, 1902);
 
                     }
@@ -74,15 +74,15 @@ public class BPMob : GameNPC
                     {
                         if ((player2.Client.Account.PrivLevel == 1) && (player2.CurrentRegionID == 249))
                         {
-                            player2.Out.SendMessage("There are " + playersonline + " players online and your in the farmzone, why don't you go play with them!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                            player2.Out.SendMessage("There are " + playersonline + " players online and your in the farmzone, why don't you go play with them!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                             player2.MoveTo(79, 32401, 12245, 17413, 1902);
                         }
                     }
 
                     if (player2.CurrentRegionID == 249) { player2.BountyPoints += rewardbp; }
-                    if (isjackpot) { player2.Out.SendMessage("JACKPOT!!!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow); player2.Out.SendPlaySound(eSoundType.Craft, 0x04); player2.Out.SendMessage("You just got " + multiplier + "x multiplier bonus points!  Woot!", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow); }
-                    player2.Out.SendMessage("You Get " + rewardbp + " bounty points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    player2.Out.SendMessage("You Get " + rewardbp + " bounty points!", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+                    if (isjackpot) { player2.Out.SendMessage("JACKPOT!!!", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow); player2.Out.SendPlaySound(ESoundType.Craft, 0x04); player2.Out.SendMessage("You just got " + multiplier + "x multiplier bonus points!  Woot!", EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow); }
+                    player2.Out.SendMessage("You Get " + rewardbp + " bounty points!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+                    player2.Out.SendMessage("You Get " + rewardbp + " bounty points!", EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow);
 
                 }
 
@@ -93,7 +93,7 @@ public class BPMob : GameNPC
             {
                 if (player.RealmPoints >= 1755250)
                 {
-                    player.Out.SendMessage("You are RR7 or higher, you will not be rewarded here anymore!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("You are RR7 or higher, you will not be rewarded here anymore!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                     player.MoveTo(79, 32401, 12245, 17413, 1902);
 
                 }
@@ -103,15 +103,15 @@ public class BPMob : GameNPC
                     {
                         if ((player.Client.Account.PrivLevel == 1) && (player.CurrentRegionID == 249))
                         {
-                            player.Out.SendMessage("There are " + playersonline + " players online and your in the farmzone, why don't you go play with them!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage("There are " + playersonline + " players online and your in the farmzone, why don't you go play with them!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                             player.MoveTo(79, 32401, 12245, 17413, 1902);
                         }
                     }
 
                     if (player.CurrentRegionID == 249) { player.BountyPoints += rewardbp; }
-                    if (isjackpot) { player.Out.SendMessage("JACKPOT!!!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow); player.Out.SendPlaySound(eSoundType.Craft, 0x04); player.Out.SendMessage("You just got " + multiplier + "x multiplier bonus points!  Woot!", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow); }
-                    player.Out.SendMessage("You Get " + rewardbp + " bounty points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    player.Out.SendMessage("You Get " + rewardbp + " bounty points!", eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+                    if (isjackpot) { player.Out.SendMessage("JACKPOT!!!", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow); player.Out.SendPlaySound(ESoundType.Craft, 0x04); player.Out.SendMessage("You just got " + multiplier + "x multiplier bonus points!  Woot!", EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow); }
+                    player.Out.SendMessage("You Get " + rewardbp + " bounty points!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("You Get " + rewardbp + " bounty points!", EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow);
 
                 }
             }

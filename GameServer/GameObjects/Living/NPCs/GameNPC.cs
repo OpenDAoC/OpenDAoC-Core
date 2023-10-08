@@ -2518,7 +2518,7 @@ namespace DOL.GS
 			if (!GameServer.ServerRules.IsSameRealm(this, player, true) && Faction != null && Faction.GetAggroToFaction(player) > 50)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Interact.DirtyLook",
-					GetName(0, true, player.Client.Account.Language, this)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					GetName(0, true, player.Client.Account.Language, this)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 				Notify(GameObjectEvent.InteractFailed, this, new InteractEventArgs(player));
 				return false;
@@ -2533,20 +2533,20 @@ namespace DOL.GS
 
 				if (this is GameSiegeRam && player.Realm != this.Realm)
 				{
-					player.Out.SendMessage($"This siege equipment is owned by an enemy realm!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage($"This siege equipment is owned by an enemy realm!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return false;
 				}
 				
 
 				if (RiderSlot(player) != -1)
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Interact.AlreadyRiding", name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Interact.AlreadyRiding", name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return false;
 				}
 
 				if (GetFreeArrayLocation() == -1)
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Interact.IsFull", name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Interact.IsFull", name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return false;
 				}
 
@@ -2625,7 +2625,7 @@ namespace DOL.GS
 		/// <param name="message"></param>
 		public virtual void SayTo(GamePlayer target, string message, bool announce = true)
 		{
-			SayTo(target, eChatLoc.CL_PopupWindow, message, announce);
+			SayTo(target, EChatLoc.CL_PopupWindow, message, announce);
 		}
 
 		/// <summary>
@@ -2634,7 +2634,7 @@ namespace DOL.GS
 		/// <param name="target"></param>
 		/// <param name="loc">chat location of the message</param>
 		/// <param name="message"></param>
-		public virtual void SayTo(GamePlayer target, eChatLoc loc, string message, bool announce = true)
+		public virtual void SayTo(GamePlayer target, EChatLoc loc, string message, bool announce = true)
 		{
 			if (target == null)
 				return;
@@ -2644,18 +2644,18 @@ namespace DOL.GS
 
 			switch (loc)
 			{
-				case eChatLoc.CL_PopupWindow:
-					target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				case EChatLoc.CL_PopupWindow:
+					target.Out.SendMessage(resultText, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 					if (announce)
 					{
-						MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true, target.Client.Account.Language, this), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
+						MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true, target.Client.Account.Language, this), target.GetName(0, false)), EChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
 					}
 					break;
-				case eChatLoc.CL_ChatWindow:
-					target.Out.SendMessage(resultText, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+				case EChatLoc.CL_ChatWindow:
+					target.Out.SendMessage(resultText, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 					break;
-				case eChatLoc.CL_SystemWindow:
-					target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				case EChatLoc.CL_SystemWindow:
+					target.Out.SendMessage(resultText, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					break;
 			}
 		}
@@ -2846,10 +2846,10 @@ namespace DOL.GS
 					Diagnostics.StopPerfCounter($"ReaperService-NPC-ProcessDeath-DropLoot-NPC({hashCode})");
 					Diagnostics.StartPerfCounter($"ReaperService-NPC-ProcessDeath-AreaMessages-NPC({hashCode})");
 
-					MessageUtil.SystemToArea(this, GetName(0, true) + " dies!", eChatType.CT_PlayerDied, killer);
+					MessageUtil.SystemToArea(this, GetName(0, true) + " dies!", EChatType.CT_PlayerDied, killer);
 
 					if (killer is GamePlayer player)
-						player.Out.SendMessage(GetName(0, true) + " dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(GetName(0, true) + " dies!", EChatType.CT_PlayerDied, EChatLoc.CL_SystemWindow);
 
 					Diagnostics.StopPerfCounter($"ReaperService-NPC-ProcessDeath-AreaMessages-NPC({hashCode})");
 				}
@@ -3338,7 +3338,7 @@ namespace DOL.GS
 							long amount = (long)(zoneBonus * ServerProperties.Properties.MONEY_DROP);
 							killerPlayer.AddMoney(amount,
 												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperties.Properties.MONEY_DROP), ZoneBonus.eZoneBonusType.COIN),
-												  eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+												  EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 							InventoryLogging.LogInventoryAction(this, killerPlayer, EInventoryActionType.Loot, amount);
 						}
 					}
@@ -3353,7 +3353,7 @@ namespace DOL.GS
 					{
 						GamePlayer killerPlayer = killer as GamePlayer;
 						if (killerPlayer != null)
-							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client, "GameNPC.DropLoot.AdditionalMoney", MoneyMgr.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client, "GameNPC.DropLoot.AdditionalMoney", MoneyMgr.GetString(value - lootTemplate.Price)), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
 					}
 
 					//Mythical Coin bonus property (Can be used for any equipped item, bonus 235)
@@ -3364,7 +3364,7 @@ namespace DOL.GS
 						{
 							value += (value * killerPlayer.GetModified(EProperty.MythicalCoin)) / 100;
 							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client,
-																					"GameNPC.DropLoot.ItemAdditionalMoney", MoneyMgr.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+																					"GameNPC.DropLoot.ItemAdditionalMoney", MoneyMgr.GetString(value - lootTemplate.Price)), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
 						}
 					}
 
@@ -4210,7 +4210,7 @@ namespace DOL.GS
 
 			if (chosen.Emote != 0)
 			{
-				Emote((eEmote)chosen.Emote);
+				Emote((EEmote)chosen.Emote);
 			}
 			
 			// Replace trigger keywords
@@ -4241,7 +4241,7 @@ namespace DOL.GS
 				{
 					foreach (GamePlayer player in GetPlayersInRadius(25000))
 					{
-					  player.Out.SendMessage(text, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+					  player.Out.SendMessage(text, EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 					}
 					return;
 				}
@@ -4252,18 +4252,18 @@ namespace DOL.GS
 				}
 				case "s": // Return custom System message in System/Combat window to all players within range
 				{
-					MessageUtil.MessageToArea(Brain.Body, text, eChatType.CT_System, eChatLoc.CL_SystemWindow, 512, null);
+					MessageUtil.MessageToArea(Brain.Body, text, EChatType.CT_System, EChatLoc.CL_SystemWindow, 512, null);
 					return;
 				}
 				case "c": // Return custom Say message in Chat window to all players within range, without "{0} says," string start
 				{
-					MessageUtil.MessageToArea(Brain.Body, text, eChatType.CT_Say, eChatLoc.CL_ChatWindow, 512, null);
+					MessageUtil.MessageToArea(Brain.Body, text, EChatType.CT_Say, EChatLoc.CL_ChatWindow, 512, null);
 					return;
 				}
 				case "p": // Return custom System message in popup dialog only to player interating with the NPC
 					// For interact triggers
 				{
-					((GamePlayer) living).Out.SendMessage(text, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					((GamePlayer) living).Out.SendMessage(text, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 					return;
 				}
 				default: // Return Say message with "{0} says," string start included (contrary to parameter description)
@@ -4376,7 +4376,7 @@ namespace DOL.GS
 						if (str != lastloot)
 						{
 							player.Out.SendMessage(String.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.DropLoot.Drops",
-								GetName(0, true, player.Client.Account.Language, this), str)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+								GetName(0, true, player.Client.Account.Language, this), str)), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
 							lastloot = str;
 						}
 					}

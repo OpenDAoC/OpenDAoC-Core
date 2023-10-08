@@ -168,7 +168,7 @@ namespace DOL.GS
             //Now we turn the npc into the direction of the person it is
             //speaking to.
             TurnTo(player.X, player.Y);
-            this.Emote(eEmote.Salute);
+            this.Emote(EEmote.Salute);
             //We send a message to player and make it appear in a popup
             //window. Text inside the [brackets] is clickable in popup
             //windows and will generate a /whis text command!
@@ -176,7 +176,7 @@ namespace DOL.GS
                 "You are wise to speak with me " + player.CharacterClass.Name +
                 "! My forest is a delicate beast that can easily turn against you. " +
                 "Should you wake the beast within, I must then rise to [defend it].",
-                eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                EChatType.CT_System, EChatLoc.CL_PopupWindow);
             return true;
         }
 
@@ -248,7 +248,7 @@ namespace DOL.GS
         //everytime we want to send some reply!
         public void SendReply(GamePlayer target, string msg)
         {
-            target.Out.SendMessage(msg,eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            target.Out.SendMessage(msg,EChatType.CT_System, EChatLoc.CL_PopupWindow);
         }
         #region Heat DD Spell
         private Spell m_HeatDDSpell;

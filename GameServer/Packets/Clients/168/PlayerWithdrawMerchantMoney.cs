@@ -1,29 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Reflection;
 using DOL.GS.Housing;
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-    [PacketHandler(PacketHandlerType.TCP, eClientPackets.WithDrawMerchantMoney, "Withdraw GameConsignmentMerchant Merchant Money", eClientStatus.PlayerInGame)]
+    [PacketHandler(EPacketHandlerType.TCP, EClientPackets.WithDrawMerchantMoney, "Withdraw GameConsignmentMerchant Merchant Money", EClientStatus.PlayerInGame)]
     public class PlayerWithdrawMerchantMoney : IPacketHandler
     {
         /// <summary>
@@ -31,7 +12,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        public void HandlePacket(GameClient client, GsPacketIn packet)
         {
 			// player is null, return
             if (client.Player == null)
@@ -50,7 +31,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			// make sure player has permissions to withdraw from the consignment merchant
             if (!house.CanUseConsignmentMerchant(client.Player, EConsignmentPermissions.Withdraw))
             {
-                client.Player.Out.SendMessage("You don't have permission to withdraw money from this merchant!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+                client.Player.Out.SendMessage("You don't have permission to withdraw money from this merchant!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
                 return;
             }
 
@@ -62,7 +43,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 					{
-						client.Player.Out.SendMessage("You withdraw " + totalConMoney.ToString() + " BountyPoints from your Merchant.", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+						client.Player.Out.SendMessage("You withdraw " + totalConMoney.ToString() + " BountyPoints from your Merchant.", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 						client.Player.BountyPoints += totalConMoney;
 						client.Player.Out.SendUpdatePoints();
 					}

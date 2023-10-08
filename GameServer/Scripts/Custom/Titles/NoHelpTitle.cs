@@ -18,8 +18,8 @@ namespace DOL.GS.PlayerTitles
 
         public override void OnTitleGained(GamePlayer player)
         {
-            player.Out.SendMessage("You have gained the Solo Beetle title!", eChatType.CT_Important,
-                eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("You have gained the Solo Beetle title!", EChatType.CT_Important,
+                EChatLoc.CL_SystemWindow);
         }
 
         public override bool IsSuitable(GamePlayer player)

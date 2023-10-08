@@ -339,21 +339,21 @@ namespace DOL.GS
                 case "hesperos":
                     {
                         player.Out.SendMessage(String.Format(teleportInfo, Name, "Oceanus"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         base.OnTeleport(player, destination);
                         return;
                     }
                 case "delta":
                     {
                         player.Out.SendMessage(String.Format(teleportInfo, Name, "Stygia"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         base.OnTeleport(player, destination);
                         return;
                     }
                 case "green glades":
                     {
                         player.Out.SendMessage(String.Format(teleportInfo, Name, "Aerus"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         base.OnTeleport(player, destination);
                         return;
                     }
@@ -370,7 +370,7 @@ namespace DOL.GS
         protected override void OnTeleport(GamePlayer player, DbTeleport destination)
         {
             player.Out.SendMessage("There is an odd distortion in the air around you...", 
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
             base.OnTeleport(player, destination);
         }
@@ -384,7 +384,7 @@ namespace DOL.GS
         {
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.SAY_DISTANCE))
 			{
-				player.Out.SendMessage(String.Format("The {0} says, \"{1}\"", this.Name, message), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(String.Format("The {0} says, \"{1}\"", this.Name, message), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 
             return true;

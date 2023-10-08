@@ -246,12 +246,12 @@ namespace DOL.GS
             {
                 if (!_openDead && Realm != ERealm.Door)
                 {
-                    attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     Health -= damageAmount + criticalAmount;
 
                     if (!IsAlive)
                     {
-                        attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         Die(source);
                         _openDead = true;
 
@@ -263,7 +263,7 @@ namespace DOL.GS
                         if (attackerGroup != null)
                         {
                             foreach (GameLiving living in attackerGroup.GetMembersInTheGroup())
-                                ((GamePlayer) living)?.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                ((GamePlayer) living)?.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         }
                     }
                 }

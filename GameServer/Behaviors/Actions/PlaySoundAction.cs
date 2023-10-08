@@ -25,19 +25,19 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Behaviour.Actions
 {
 	[Action(ActionType = eActionType.PlaySound, IsNullableQ=true)]
-	public class PlaySoundAction : AbstractAction<ushort, eSoundType>
+	public class PlaySoundAction : AbstractAction<ushort, ESoundType>
 	{
 
 		public PlaySoundAction(GameNPC defaultNPC, Object p, Object q)
 			: base(defaultNPC, eActionType.PlaySound, p, q) { }
 
 
-		public PlaySoundAction(GameNPC defaultNPC, ushort id, eSoundType type)
+		public PlaySoundAction(GameNPC defaultNPC, ushort id, ESoundType type)
 			: this(defaultNPC, (object)id, (object)type) { }
 
 
 		public PlaySoundAction(GameNPC defaultNPC, ushort id)
-			: this(defaultNPC, (object)id, (object)eSoundType.Divers) { }
+			: this(defaultNPC, (object)id, (object)ESoundType.Divers) { }
 
 
 		public override void Perform(CoreEvent e, object sender, EventArgs args)

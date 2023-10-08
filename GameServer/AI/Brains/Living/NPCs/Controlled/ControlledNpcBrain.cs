@@ -325,7 +325,7 @@ namespace DOL.AI.Brain
 		public virtual void UpdatePetWindow()
 		{
 			if (m_owner is GamePlayer)
-				((GamePlayer)m_owner).Out.SendPetWindow(Body, ePetWindowAction.Update, m_aggressionState, m_walkState);
+				((GamePlayer)m_owner).Out.SendPetWindow(Body, EPetWindowAction.Update, m_aggressionState, m_walkState);
 		}
 
 		/// <summary>

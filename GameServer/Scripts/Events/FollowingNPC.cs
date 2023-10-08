@@ -80,7 +80,7 @@ namespace DOL.GS.GameEvents
 				//We set the player we will follow
 				m_playerToFollow = player;
 				//We send some nice message to the player we will follow
-				player.Out.SendMessage(Name + " will follow you now!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(Name + " will follow you now!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				//We make the mob say some stupid stuff :-)
 				Say("Ha ha ha! I will follow " + player.Name + " now!!!!");
 				return true;

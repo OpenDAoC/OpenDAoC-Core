@@ -73,7 +73,7 @@ namespace DOL.GS
                         else
                             truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to any damage!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
                     }
@@ -97,7 +97,7 @@ namespace DOL.GS
                                 {
                                     npc.Health += damageAmount + criticalAmount;
                                     if (truc != null)
-                                        truc.Out.SendMessage("Your damage is healing King Tuscar!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                                        truc.Out.SendMessage("Your damage is healing King Tuscar!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                                 }
                             }
                         }
@@ -141,7 +141,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public static int QueenKulaCount = 0;
@@ -273,7 +273,7 @@ namespace DOL.AI.Brain
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         #region Teleport Player & PlayerInCenter()
@@ -580,7 +580,7 @@ namespace DOL.GS
                         else
                             truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(Name + " is immune to any damage!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
                     }
@@ -603,7 +603,7 @@ namespace DOL.GS
                                 {
                                     npc.Health += damageAmount + criticalAmount;
                                     if (truc != null)
-                                        truc.Out.SendMessage("Your damage is healing Queen Kula!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                                        truc.Out.SendMessage("Your damage is healing Queen Kula!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                                 }
                             }
                         }
@@ -917,7 +917,7 @@ namespace DOL.AI.Brain
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public static bool message2 = false;

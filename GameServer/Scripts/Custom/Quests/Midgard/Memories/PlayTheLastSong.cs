@@ -299,7 +299,7 @@ namespace DOL.GS.Quests.Midgard
 							                          "Our borders need constant reinforcements, and we have heard of a growing threat in the north. ");
 							if (quest.Step == 1)
 							{
-								VikingDextz.Emote(eEmote.Cry);
+								VikingDextz.Emote(EEmote.Cry);
 								VikingDextz.SayTo(player, "We buried her in Uppland on the hill, north west of Svasud Faste. " +
 								                          "It has been a month or two since I visited her resting place. Could you please [help me] and check on Freeya\'s grave? " +
 								                          "\n\nIt would bring me peace of mind to know it is fine and not broken. " +
@@ -350,18 +350,18 @@ namespace DOL.GS.Quests.Midgard
 							Freeya.SayTo(player, "Hello Adventurer, do you know Dextz? He is a good friend, please visit him!");
 							break;
 						case 2:
-							player.Emote(eEmote.Shiver);
+							player.Emote(EEmote.Shiver);
 							Freeya.TurnTo(player, 500);
 							if (player.Name.Contains("Dextz") || (player.Guild != null && player.Guild.Name.Contains("Thor Boyaux")))
 							{
-								Freeya.Emote(eEmote.Hug);
+								Freeya.Emote(EEmote.Hug);
 								Freeya.SayTo(player, player.CharacterClass.Name + "... It is good to see you here again, my friend. " +
 								                     "I know you are protecting the realm in my stead. Fight with confidence knowing that I am watching from Odin's halls and lending you my strength! " +
 								                     "Would you join me in singing my [last songs for Midgard]?");
 							}
 							else
 							{
-								Freeya.Emote(eEmote.Hug);
+								Freeya.Emote(EEmote.Hug);
 								Freeya.SayTo(player, "God dag " + player.CharacterClass.Name + ". I could sense you were coming. Please don't be scared, I promise I am friendly! " +
 								                     "My friend Dextz use to visit me very often, it must be something special that he has chosen you to check on me! " +
 								                     "I really wished to see him once again, but maybe you can help me to play my [last songs for Midgard]?");	
@@ -405,7 +405,7 @@ namespace DOL.GS.Quests.Midgard
 						case "last songs for Midgard":
 							if (quest.Step == 2)
 							{
-								Freeya.Emote(eEmote.Induct);
+								Freeya.Emote(EEmote.Induct);
 								Freeya.SayTo(player, player.Name + ", I will begin the ceremony at your word.");
 								quest.Step = 3;
 							}
@@ -461,7 +461,7 @@ namespace DOL.GS.Quests.Midgard
 			Freeya.Say("And this song is for you, " + player.Name + ". You are very brave to come here in service of Midgard. " +
 			           "I'll play a resistance song for you, and all of Midgard, so the realm can continue to prosper.");
 			Freeya.TurnTo(player, 500);
-			Freeya.Emote(eEmote.Military);
+			Freeya.Emote(EEmote.Military);
 			CastResistance();
 			IsSinging = false;
 			quest.FinishQuest();
@@ -480,7 +480,7 @@ namespace DOL.GS.Quests.Midgard
 		{
 			Freeya.Say("Dextz, my friend, I will use the last of my power and play my final songs for you!\n" +
 			           " I will protect you wherever you are!");
-			Freeya.Emote(eEmote.Military);
+			Freeya.Emote(EEmote.Military);
 			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
 			{
 				Freeya.TargetObject = player;
@@ -536,7 +536,7 @@ namespace DOL.GS.Quests.Midgard
 		{
 			Freeya.Say("Thor Boyaux, you were my family and forever shall be! \n" +
 			           "I will protect you wherever you are!");
-			Freeya.Emote(eEmote.Military);
+			Freeya.Emote(EEmote.Military);
 			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
 			{
 				Freeya.TargetObject = player;
@@ -592,7 +592,7 @@ namespace DOL.GS.Quests.Midgard
 		{
 			Freeya.Say("Exiled Vaettir, you accepted and supported me. For that, I am very grateful to you! \n" +
 			           "I will protect you wherever you are!");
-			Freeya.Emote(eEmote.Military);
+			Freeya.Emote(EEmote.Military);
 			foreach (GamePlayer player in Freeya.GetPlayersInRadius(500))
 			{
 				Freeya.TargetObject = player;

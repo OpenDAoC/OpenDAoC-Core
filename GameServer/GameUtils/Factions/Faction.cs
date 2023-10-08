@@ -117,7 +117,7 @@ namespace DOL.GS
                 AggroToPlayers[player.ObjectId] = newAggro;
 
             string message = $"Your relationship with {Name} has {(amount > 0 ? "decreased" : "increased")}";
-            player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 
         public int GetAggroToFaction(GamePlayer player)

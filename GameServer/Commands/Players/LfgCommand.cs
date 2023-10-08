@@ -24,7 +24,7 @@ public class LfgCommand : ACommandHandler, ICommandHandler
 
         if (client.Player.IsMuted)
         {
-            client.Player.Out.SendMessage("You have been muted. You cannot broadcast.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage("You have been muted. You cannot broadcast.", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -45,10 +45,10 @@ public class LfgCommand : ACommandHandler, ICommandHandler
     private static void Broadcast(GamePlayer player, string message)
     {
         foreach (GamePlayer otherPlayer in ClientService.GetPlayersForRealmWideChatMessage(player))
-            otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.LFG.Message", $"{player.Name} ({player.Level}, {player.CharacterClass.Name})", message), eChatType.CT_LFG, eChatLoc.CL_ChatWindow);
+            otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.LFG.Message", $"{player.Name} ({player.Level}, {player.CharacterClass.Name})", message), EChatType.CT_LFG, EChatLoc.CL_ChatWindow);
 
         if (Properties.DISCORD_ACTIVE)
-            WebhookMessage.LogChatMessage(player, eChatType.CT_LFG, message);
+            WebhookMessage.LogChatMessage(player, EChatType.CT_LFG, message);
 
         if (player.Client.Account.PrivLevel == 1)
             player.Client.Player.TempProperties.SetProperty(LFG_TIMEOUT_KEY, GameLoop.GameLoopTime);

@@ -19,7 +19,7 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
-            OwnerPlayer?.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer?.Client, "Effects.SureShotEffect.YouSwitchToSSMode"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            OwnerPlayer?.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer?.Client, "Effects.SureShotEffect.YouSwitchToSSMode"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
         public override void OnStopEffect()
         {

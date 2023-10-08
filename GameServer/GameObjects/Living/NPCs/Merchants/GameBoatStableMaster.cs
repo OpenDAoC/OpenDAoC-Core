@@ -62,13 +62,13 @@ namespace DOL.GS
 
 				if (player.GetCurrentMoney() < totalValue)
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 
 				if (!player.Inventory.AddTemplate(item, amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
@@ -80,7 +80,7 @@ namespace DOL.GS
 					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), MoneyMgr.GetString(totalValue));
 
 				// Check if player has enough money and subtract the money
-				if (!player.RemoveMoney(totalValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
+				if (!player.RemoveMoney(totalValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
 				{
 					throw new Exception("Money amount changed while adding items.");
 				}
@@ -117,7 +117,7 @@ namespace DOL.GS
 					{
 						if (npc is GameTaxiBoat)
 						{
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameBoatStableMaster.ReceiveItem.Departed", this.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameBoatStableMaster.ReceiveItem.Departed", this.Name), EChatType.CT_System, EChatLoc.CL_PopupWindow);
                             return false;
 						}
 					}
@@ -144,12 +144,12 @@ namespace DOL.GS
 						//new MountHorseAction(player, boat).Start(400);
 						new HorseRideAction(boat).Start(30 * 1000);
 
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameBoatStableMaster.ReceiveItem.SummonedBoat", this.Name, destination), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameBoatStableMaster.ReceiveItem.SummonedBoat", this.Name, destination), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         return true;
 					}
 					else
 					{
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameBoatStableMaster.ReceiveItem.UnknownWay", this.Name, destination), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameBoatStableMaster.ReceiveItem.UnknownWay", this.Name, destination), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 				}
 			}

@@ -99,7 +99,7 @@ namespace DOL.GS.Spells
 			{
 				//all are healed, 1/2 power
 				SendEffectAnimation(target, 0, false, 0);
-				MessageToCaster("Your group is already fully healed!", eChatType.CT_SpellResisted);
+				MessageToCaster("Your group is already fully healed!", EChatType.CT_SpellResisted);
 				return false;
 			}
 

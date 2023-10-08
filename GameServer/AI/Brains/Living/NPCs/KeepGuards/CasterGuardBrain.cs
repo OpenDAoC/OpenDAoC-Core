@@ -51,7 +51,7 @@ namespace DOL.AI.Brain
                 player.Out.SendSpellEffectAnimation(Body, Body, 4321, 0, false, 1);
 
                 if (Body.IsWithinRadius(player, WorldMgr.INFO_DISTANCE))
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GuardCaster.SkinsHardens", Body.Name), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GuardCaster.SkinsHardens", Body.Name), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
             }
 
             return 0;

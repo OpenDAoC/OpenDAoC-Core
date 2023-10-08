@@ -74,7 +74,7 @@ namespace DOL.AI.Brain
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
 
@@ -381,7 +381,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
             }
         }
         protected void ReportNews(GameObject killer)
@@ -618,7 +618,7 @@ namespace DOL.AI.Brain
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         public int WakeUpBoss(ECSGameTimer timer)
@@ -788,7 +788,7 @@ namespace DOL.AI.Brain
                                 if (TeleportTarget.IsAlive && TeleportTarget != null && !ported_player.Contains(TeleportTarget))
                                 {
                                     TeleportTarget.MoveTo(Body.CurrentRegionID, 38399, 60893, 12242, 3548);
-                                    TeleportTarget.Client.Out.SendMessage(Body.Name + " throws you away...", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    TeleportTarget.Client.Out.SendMessage(Body.Name + " throws you away...", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                                     if (!ported_player.Contains(TeleportTarget))
                                         ported_player.Add(TeleportTarget);
                                 }
@@ -799,7 +799,7 @@ namespace DOL.AI.Brain
                                 if (TeleportTarget.IsAlive && TeleportTarget != null && !ported_player.Contains(TeleportTarget))
                                 {
                                     TeleportTarget.MoveTo(Body.CurrentRegionID, 38564, 64161, 12242, 2382);
-                                    TeleportTarget.Client.Out.SendMessage(Body.Name + " throws you away...", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    TeleportTarget.Client.Out.SendMessage(Body.Name + " throws you away...", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                                     if (!ported_player.Contains(TeleportTarget))
                                         ported_player.Add(TeleportTarget);
                                 }
@@ -811,7 +811,7 @@ namespace DOL.AI.Brain
                                 if (TeleportTarget.IsAlive && TeleportTarget != null && !ported_player.Contains(TeleportTarget))
                                 {
                                     TeleportTarget.MoveTo(Body.CurrentRegionID, 41580, 62325, 12242, 890);
-                                    TeleportTarget.Client.Out.SendMessage(Body.Name + " throws you away...", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                    TeleportTarget.Client.Out.SendMessage(Body.Name + " throws you away...", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                                     if (!ported_player.Contains(TeleportTarget))
                                         ported_player.Add(TeleportTarget);
                                 }
@@ -926,7 +926,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
             }
         }
         protected void ReportNews(GameObject killer)
@@ -1651,7 +1651,7 @@ namespace DOL.GS
                         else
                             truc = ((source as GameSummonedPet).Owner as GamePlayer);
                         if (truc != null)
-                            truc.Out.SendMessage(this.Name + " is under waterfall effect!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            truc.Out.SendMessage(this.Name + " is under waterfall effect!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                         base.TakeDamage(source, damageType, 0, 0);
                         return;
                     }
@@ -2544,7 +2544,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    truc.Out.SendMessage(Name + " is immune to your damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    truc.Out.SendMessage(Name + " is immune to your damage!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
                 }
@@ -2755,7 +2755,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    truc.Out.SendMessage(Name + " is immune to your damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    truc.Out.SendMessage(Name + " is immune to your damage!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
                 }
@@ -2963,7 +2963,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    truc.Out.SendMessage(Name + " is immune to your damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    truc.Out.SendMessage(Name + " is immune to your damage!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
                 }
@@ -3171,7 +3171,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    truc.Out.SendMessage(Name + " is immune to your damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    truc.Out.SendMessage(Name + " is immune to your damage!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
                 }
@@ -3362,7 +3362,7 @@ namespace DOL.GS
                     else
                         truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        truc.Out.SendMessage(Name + " is immune to any damage!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
 
                     base.TakeDamage(source, damageType, 0, 0);
                     return;

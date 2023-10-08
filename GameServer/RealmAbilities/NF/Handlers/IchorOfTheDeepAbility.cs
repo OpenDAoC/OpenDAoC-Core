@@ -27,7 +27,7 @@ namespace DOL.GS.RealmAbilities
 			// Player must have a target
 			if (caster.TargetObject == null)
 			{
-				caster.Out.SendMessage("You must select a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You must select a target for this ability!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
@@ -37,7 +37,7 @@ namespace DOL.GS.RealmAbilities
 			// So they can't use Admins or objects as a target
 			if (target == null || !GameServer.ServerRules.IsAllowedToAttack(caster, target, true))
 			{
-				caster.Out.SendMessage("You have an invalid target!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You have an invalid target!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
@@ -45,7 +45,7 @@ namespace DOL.GS.RealmAbilities
 			// Can't target self
 			if (caster == target)
 			{
-				caster.Out.SendMessage("You can't attack yourself!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You can't attack yourself!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
@@ -53,7 +53,7 @@ namespace DOL.GS.RealmAbilities
 			// Target must be in front of the Player
 			if (!caster.IsObjectInFront(target, 150))
 			{
-				caster.Out.SendMessage(target.Name + " is not in view!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage(target.Name + " is not in view!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
@@ -61,7 +61,7 @@ namespace DOL.GS.RealmAbilities
 			// Target must be alive
 			if (!target.IsAlive)
 			{
-				caster.Out.SendMessage(target.Name + " is dead!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage(target.Name + " is dead!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
@@ -69,7 +69,7 @@ namespace DOL.GS.RealmAbilities
 			// Target must be within range
 			if (!caster.IsWithinRadius(caster.TargetObject, 1875))
 			{
-				caster.Out.SendMessage(caster.TargetObject.Name + " is too far away!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage(caster.TargetObject.Name + " is too far away!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
@@ -77,7 +77,7 @@ namespace DOL.GS.RealmAbilities
 			// Target cannot be an ally or friendly
 			if (caster != target && caster.Realm == target.Realm)
 			{
-				caster.Out.SendMessage("You can't attack a member of your realm!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You can't attack a member of your realm!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
@@ -85,7 +85,7 @@ namespace DOL.GS.RealmAbilities
 			// Cannot use ability if timer is not expired
 			if (m_expireTimerID != null && m_expireTimerID.IsAlive)
 			{
-				caster.Out.SendMessage("You must wait" + m_expireTimerID.TimeUntilElapsed / 1000 + " seconds to recast this type of ability!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You must wait" + m_expireTimerID.TimeUntilElapsed / 1000 + " seconds to recast this type of ability!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				caster.DisableSkill(this, 3 * 1000);
 				return;
 			}
@@ -126,9 +126,9 @@ namespace DOL.GS.RealmAbilities
 			foreach (GamePlayer i_player in caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 			{
 				if (i_player == caster)
-					i_player.MessageToSelf("You cast " + this.Name + "!", eChatType.CT_Spell);
+					i_player.MessageToSelf("You cast " + this.Name + "!", EChatType.CT_Spell);
 				else
-					i_player.Out.SendMessage(caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					i_player.Out.SendMessage(caster.Name + " casts a spell!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 			}
 
 			/*if (living = caster && living.Realm != caster.Realm)
@@ -278,10 +278,10 @@ namespace DOL.GS.RealmAbilities
 			target.StartInterruptTimer(3000, AttackData.EAttackType.Spell, caster);
 
 			// Spell damage messages
-			caster.Out.SendMessage("You hit " + target.GetName(0, false) + " for " + dmgWithFalloff + " damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+			caster.Out.SendMessage("You hit " + target.GetName(0, false) + " for " + dmgWithFalloff + " damage!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 			// Display damage message to target if any damage is actually caused
 			if (dmgWithFalloff > 0 && target is GamePlayer gpTarget)
-				gpTarget.Out.SendMessage(caster.Name + " hits you for " + dmgWithFalloff + " damage!", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				gpTarget.Out.SendMessage(caster.Name + " hits you for " + dmgWithFalloff + " damage!", EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 
 			// Make sure they're not using SoS (needs fixing), Charge, or in Shade form
 			var targetCharge = EffectListService.GetEffectOnTarget(target, EEffect.Charge);

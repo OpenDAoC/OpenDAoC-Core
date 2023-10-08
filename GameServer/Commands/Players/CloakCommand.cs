@@ -36,7 +36,7 @@ public class CloakCommand : ACommandHandler, ICommandHandler
 			}
 			else
 			{
-				client.Out.SendMessage("Your cloak is already visible.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Your cloak is already visible.", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
 				return;
 			}
 		}
@@ -45,7 +45,7 @@ public class CloakCommand : ACommandHandler, ICommandHandler
 		{
 			if (client.Player.IsCloakInvisible)
 			{
-				client.Out.SendMessage("Your cloak is already invisible.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Your cloak is already invisible.", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			else

@@ -233,7 +233,7 @@ namespace DOL.GS.Quests
 				GameLiving animObject = (GameLiving)m_animEmoteObjectQueue.Dequeue();
 				foreach (GamePlayer player in animObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
-					player.Out.SendEmoteAnimation(animObject, eEmote.Bind);
+					player.Out.SendEmoteAnimation(animObject, EEmote.Bind);
 				}
 			}
 			return 0;
@@ -270,7 +270,7 @@ namespace DOL.GS.Quests
 
 			if (location.Name != null)
 			{
-                m_questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(m_questPlayer.Client, "BaseQuest.TeleportTo.Text1", target.Name, location.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                m_questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(m_questPlayer.Client, "BaseQuest.TeleportTo.Text1", target.Name, location.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
 
 		}
@@ -343,7 +343,7 @@ namespace DOL.GS.Quests
 					{
 						if (GiveItem(player, info.itemResult, false))
 						{
-							player.Out.SendMessage(info.interactText, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage(info.interactText, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							staticItem.RemoveFromWorld(INTERACT_ITEM_RESPAWN_SECONDS);
 							OnObjectInteract(info);
 						}

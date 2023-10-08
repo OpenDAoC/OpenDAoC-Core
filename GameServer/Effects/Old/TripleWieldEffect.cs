@@ -80,10 +80,10 @@ namespace DOL.GS.Effects
 
 			GamePlayer owner = attacker as GamePlayer;
 			if (owner != null) {
-				owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client, "Effects.TripleWieldEffect.MBHitsExtraDamage", target.GetName(0, false), ad.Damage), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client, "Effects.TripleWieldEffect.MBHitsExtraDamage", target.GetName(0, false), ad.Damage), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				GamePlayer playerTarget = target as GamePlayer;
 				if (playerTarget != null) {
-                    playerTarget.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.TripleWieldEffect.XMBExtraDamageToYou", attacker.GetName(0, false), ad.Damage), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    playerTarget.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.TripleWieldEffect.XMBExtraDamageToYou", attacker.GetName(0, false), ad.Damage), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				}
 			}
 			

@@ -207,7 +207,7 @@ namespace DOL.GS.Scripts
                             player.Inventory.RemoveCountFromStack(item, 1);
                             InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
                             player.RespecAmountSingleSkill++;
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecSingle"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecSingle"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
                             return true;
                         }
                     case "respec_full":
@@ -215,7 +215,7 @@ namespace DOL.GS.Scripts
                             player.Inventory.RemoveCountFromStack(item, 1);
                             InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
                             player.RespecAmountAllSkill++;
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecFull", item.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecFull", item.Name), EChatType.CT_System, EChatLoc.CL_PopupWindow);
                             return true;
                         }
                     case "respec_realm":
@@ -223,7 +223,7 @@ namespace DOL.GS.Scripts
                             player.Inventory.RemoveCountFromStack(item, 1);
                             InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
                             player.RespecAmountRealmSkill++;
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecRealm"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecRealm"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
                             return true;
                         }
                 }

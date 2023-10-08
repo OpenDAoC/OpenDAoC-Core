@@ -25,25 +25,25 @@ namespace DOL.GS.Scripts.discord
             //TODO: Possibly implement this to have all other discord messages delegate through something like this
         }
         
-        public static void LogChatMessage(GamePlayer player, eChatType chatType, String message)
+        public static void LogChatMessage(GamePlayer player, EChatType chatType, String message)
         {
             // Format message
             String formattedMessage = "";
             switch (chatType)
             {
-                case eChatType.CT_Broadcast:
+                case EChatType.CT_Broadcast:
                     formattedMessage = "**[REGION - " + player.CurrentZone.Description + "] ";
                     break;
-                case eChatType.CT_Help:
+                case EChatType.CT_Help:
                     formattedMessage = "**[HELP] ";
                     break;
-                case eChatType.CT_Advise:
+                case EChatType.CT_Advise:
                     formattedMessage = "**[ADVICE] ";
                     break;
-                case eChatType.CT_LFG:
+                case EChatType.CT_LFG:
                     formattedMessage = "**[LFG] (" + player.CharacterClass.Name + " " + player.Level + ") ";
                     break;
-                case eChatType.CT_Trade:
+                case EChatType.CT_Trade:
                     formattedMessage = "**[TRADE] ";
                     break;
                 default:

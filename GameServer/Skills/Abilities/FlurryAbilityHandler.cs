@@ -60,47 +60,47 @@ namespace DOL.GS.SkillHandler
 			#region precheck
 			if (!player.IsAlive)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseDead"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseDead"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (player.IsMezzed)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseMezzed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseMezzed"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (player.IsStunned)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStunned"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStunned"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (player.IsSitting)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStanding"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStanding"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (player.TargetObject == null)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseNoTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseNoTarget"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (!(player.TargetObject is GamePlayer || player.TargetObject is GameKeepGuard))
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Flurry.TargetNotPlayerOrGuards"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Flurry.TargetNotPlayerOrGuards"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (!GameServer.ServerRules.IsAllowedToAttack(player, (GameLiving)player.TargetObject, true))
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotAttackTarget", player.TargetObject.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotAttackTarget", player.TargetObject.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (!player.IsObjectInFront(player.TargetObject, 180) || !player.TargetInView)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotSeeTarget", player.TargetObject.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotSeeTarget", player.TargetObject.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (!player.IsWithinRadius(player.TargetObject, 135)) //Didn't use AttackRange cause of the fact that player could use a Bow
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.TargetIsWithinRadius"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.TargetIsWithinRadius"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			/*
@@ -114,7 +114,7 @@ namespace DOL.GS.SkillHandler
 				SputinsLegacyEffect SputinLegacy = (player.TargetObject as GamePlayer).EffectList.GetOfType<SputinsLegacyEffect>();
 				if(SputinLegacy != null)
 				{
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.TargetIsUnderSputinLegacy", player.TargetObject.Name), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.TargetIsUnderSputinLegacy", player.TargetObject.Name), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                     return;
 				}
 			}
@@ -160,10 +160,10 @@ namespace DOL.GS.SkillHandler
 			foreach (GamePlayer effPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				effPlayer.Out.SendSpellEffectAnimation(player, target, 7103, 0, false, 0x01);
 
-            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Flurry.YouHit", target.GetName(0, false), damage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Flurry.YouHit", target.GetName(0, false), damage), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                     
             if (target is GamePlayer)
-                (target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((target as GamePlayer).Client, "Skill.Ability.Flurry.HitYou", player.Name, damage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                (target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((target as GamePlayer).Client, "Skill.Ability.Flurry.HitYou", player.Name, damage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 
 			player.LastAttackTickPvP = player.CurrentRegion.Time;
 			target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;

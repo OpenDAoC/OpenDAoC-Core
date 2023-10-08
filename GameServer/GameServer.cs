@@ -411,7 +411,7 @@ namespace DOL.GS
 						{
 							var sender = (IPEndPoint)(tempRemoteEP);
 
-							var pakin = new GSPacketIn(read - GSPacketIn.HDR_SIZE);
+							var pakin = new GsPacketIn(read - GsPacketIn.HDR_SIZE);
 							pakin.Load(server.UDPBuffer, 0, read);
 
 							//Get the next message

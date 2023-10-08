@@ -149,19 +149,19 @@ namespace DOL.GS
 
 			if (!player.IsAlive)
 			{
-				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You are dead!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You are dead!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (IsMounted && player.Realm == Realm)
 			{
-				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". It is owned by your realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". It is owned by your realm.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (IsMounted && !RelicMgr.CanPickupRelicFromShrine(player, this))
 			{
-				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You need to capture your realms " + (Enum.GetName(typeof(ERelicType), RelicType)) + " relic first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You need to capture your realms " + (Enum.GetName(typeof(ERelicType), RelicType)) + " relic first.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -208,18 +208,18 @@ namespace DOL.GS
 		{
 			if (player.TempProperties.GetProperty(PLAYER_CARRY_RELIC_WEAK, false))
 			{
-				player.Out.SendMessage("You are already carrying a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You are already carrying a relic.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			if (player.IsStealthed)
 			{
-				player.Out.SendMessage("You cannot carry a relic while stealthed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot carry a relic while stealthed.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
 			if (!player.IsAlive)
 			{
-				player.Out.SendMessage("You are dead!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You are dead!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -231,7 +231,7 @@ namespace DOL.GS
 				
 				if (m_currentRelicPad.GetEnemiesOnPad() < Properties.RELIC_PLAYERS_REQUIRED_ON_PAD)
 				{
-					player.Out.SendMessage($"You must have {Properties.RELIC_PLAYERS_REQUIRED_ON_PAD} players nearby the pad before taking a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage($"You must have {Properties.RELIC_PLAYERS_REQUIRED_ON_PAD} players nearby the pad before taking a relic.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
@@ -269,7 +269,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				player.Out.SendMessage("You dont have enough space in your backpack to carry this.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You dont have enough space in your backpack to carry this.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 

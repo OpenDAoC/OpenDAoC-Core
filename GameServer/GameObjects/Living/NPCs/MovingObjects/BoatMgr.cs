@@ -117,7 +117,7 @@ namespace DOL.GS
                 if (DoesBoatExist(boat.Name) == true)
                 {
                     if (creator != null)
-                        creator.Out.SendMessage(boat.Name + " already exists!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        creator.Out.SendMessage(boat.Name + " already exists!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return null;
                 }
 

@@ -64,7 +64,7 @@ namespace DOL.GS.spells
 					if (powerRendValue > target.Mana)
 						powerRendValue = target.Mana;
 					target.Mana -= powerRendValue;
-					target.MessageToSelf(string.Format(m_spell.Message2, powerRendValue), eChatType.CT_Spell);
+					target.MessageToSelf(string.Format(m_spell.Message2, powerRendValue), EChatType.CT_Spell);
 				}
 				else
 				{
@@ -72,10 +72,10 @@ namespace DOL.GS.spells
 					if (powerRendValue > necroPet.Owner.Mana)
 						powerRendValue = necroPet.Owner.Mana;
 					necroPet.Owner.Mana -= powerRendValue;
-					necroPet.Owner.MessageToSelf(string.Format(m_spell.Message2, powerRendValue), eChatType.CT_Spell);
+					necroPet.Owner.MessageToSelf(string.Format(m_spell.Message2, powerRendValue), EChatType.CT_Spell);
 				}
 
-				MessageToCaster(string.Format(m_spell.Message1, powerRendValue), eChatType.CT_Spell);
+				MessageToCaster(string.Format(m_spell.Message1, powerRendValue), EChatType.CT_Spell);
 			}
 		}
 		

@@ -395,7 +395,7 @@ namespace DOL.GS.Quests
                 m_taskPlayer.Inventory.CommitChanges();
             }
 
-            m_taskPlayer.Out.SendMessage("You finish the " + Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            m_taskPlayer.Out.SendMessage("You finish the " + Name + "!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             m_dbTask.TaskType = typeof(AbstractTask).ToString();
             m_dbTask.CustomPropertiesString = null;
             lock (m_customProperties)
@@ -428,11 +428,11 @@ namespace DOL.GS.Quests
                 }
 
                 m_taskPlayer.Out.SendMessage("Your task related item has been removed from your inventory.",
-                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
 
-            m_taskPlayer.Out.SendMessage("Your " + Name + " has expired!", eChatType.CT_System,
-                eChatLoc.CL_SystemWindow);
+            m_taskPlayer.Out.SendMessage("Your " + Name + " has expired!", EChatType.CT_System,
+                EChatLoc.CL_SystemWindow);
             m_dbTask.TaskType = typeof(AbstractTask).ToString();
             m_dbTask.CustomPropertiesString = null;
             m_customProperties.Clear();
@@ -533,28 +533,28 @@ namespace DOL.GS.Quests
 
             if (player.Level > 20)
             {
-                player.Out.SendMessage("Tasks are only available to player up to level 20!", eChatType.CT_System,
-                    eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Tasks are only available to player up to level 20!", EChatType.CT_System,
+                    EChatLoc.CL_SystemWindow);
                 return false;
             }
             if (player.Task is {TaskActive: true})
             {
                 player.Out.SendMessage("You already have a Task. Select yourself and type /Task for more Information.",
-                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return false;
             }
             if (player.Task != null && player.Task.TasksDone >= MaxTasksDone(player.Level))
             {
                 player.Out.SendMessage(
                     "You cannot do more than " + MaxTasksDone(player.Level) + " tasks at your level!",
-                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return false;
             }
             if (player.TempProperties.GetProperty<int>(CHECK_TASK_TICK) > GameLoop.GameLoopTime)
             {
                 player.Out.SendMessage(
                     "I have no tasks for you at the moment. Come back sometime later, perhaps then you can help me with something.",
-                    eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                    EChatType.CT_Say, EChatLoc.CL_PopupWindow);
                 return false;
             }
             if (Util.Chance(chanceOfSuccess))
@@ -564,7 +564,7 @@ namespace DOL.GS.Quests
             
             player.Out.SendMessage(
                 "I have no tasks for you at the moment. Come back sometime later, perhaps then you can help me with something.",
-                eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                EChatType.CT_Say, EChatLoc.CL_PopupWindow);
             // stored time of try to disable task for defined time.
             player.TempProperties.SetProperty(CHECK_TASK_TICK, GameLoop.GameLoopTime + CHECK_TASK_DELAY);
             return false;

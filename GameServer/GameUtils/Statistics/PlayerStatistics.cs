@@ -248,37 +248,37 @@ namespace DOL.GS
                 }
                 case "rp":
                 {
-                    client.Player.Out.SendMessage($"Top 20 for Realm Points\n{STATS_RP}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 for Realm Points\n{STATS_RP}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "lrp":
                 {
-                    client.Player.Out.SendMessage($"Top 20 for RP / Hour\n{STATS_LRP}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 for RP / Hour\n{STATS_LRP}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "kills":
                 {
-                    client.Player.Out.SendMessage($"Top 20 Killers\n{STATS_KILL}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 Killers\n{STATS_KILL}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "deathblows":
                 {
-                    client.Player.Out.SendMessage($"Top 20 Deathblows\n{STATS_DEATH}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 Deathblows\n{STATS_DEATH}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "irs":
                 {
-                    client.Player.Out.SendMessage($"Top 20 \"I Remain Standing\"\n{STATS_IRS}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 \"I Remain Standing\"\n{STATS_IRS}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "heal":
                 {
-                    client.Player.Out.SendMessage($"Top 20 Healers\n{STATS_HEAL}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 Healers\n{STATS_HEAL}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "rez":
                 {
-                    client.Player.Out.SendMessage($"Top 20 Resurrectors\n{STATS_RES}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 Resurrectors\n{STATS_RES}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "player":
@@ -287,22 +287,22 @@ namespace DOL.GS
 
                     if (otherPlayer == null)
                     {
-                        client.Player.Out.SendMessage($"No player with name {playerName} found!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        client.Player.Out.SendMessage($"No player with name {playerName} found!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         return;
                     }
 
                     if (otherPlayer.StatsAnonFlag)
                     {
-                        client.Player.Out.SendMessage($"{playerName} doesn't want you to view his stats.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        client.Player.Out.SendMessage($"{playerName} doesn't want you to view his stats.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         return;
                     }
 
-                    client.Player.Out.SendMessage(otherPlayer.Statistics.GetStatisticsMessage(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage(otherPlayer.Statistics.GetStatisticsMessage(), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 default:
                 {
-                    client.Player.Out.SendMessage("Options: /stats [ top | rp | kills | deathblows | irs | heal | rez | player <name|target> ]", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage("Options: /stats [ top | rp | kills | deathblows | irs | heal | rez | player <name|target> ]", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
             }

@@ -43,7 +43,7 @@ namespace DOL.GS
 						else
 							truc = ((source as GameSummonedPet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(Name + " is overpowered and can't take any damage.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " is overpowered and can't take any damage.", EChatType.CT_System, EChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}
@@ -302,7 +302,7 @@ namespace DOL.AI.Brain
 					case 4: RandomTarget.MoveTo(61, 51940, 18968, 16964, 26); break;
 				}
 				RandomTarget.TakeDamage(RandomTarget, EDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
-				RandomTarget.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+				RandomTarget.Out.SendMessage("You take falling damage!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 			}
 			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
 			return 0;
@@ -432,7 +432,7 @@ namespace DOL.AI.Brain
 					case 4: RandomTarget.MoveTo(61, 51940, 18968, 16964, 26); break;
 				}
 				RandomTarget.TakeDamage(RandomTarget, EDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
-				RandomTarget.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+				RandomTarget.Out.SendMessage("You take falling damage!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 			}
 			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
 			return 0;
@@ -562,7 +562,7 @@ namespace DOL.AI.Brain
 					case 4: RandomTarget.MoveTo(61, 51940, 18968, 16964, 26); break;
 				}
 				RandomTarget.TakeDamage(RandomTarget, EDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
-				RandomTarget.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+				RandomTarget.Out.SendMessage("You take falling damage!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 			}
 			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
 			return 0;
@@ -692,7 +692,7 @@ namespace DOL.AI.Brain
 					case 4: RandomTarget.MoveTo(61, 51940, 18968, 16964, 26); break;
 				}
 				RandomTarget.TakeDamage(RandomTarget, EDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
-				RandomTarget.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+				RandomTarget.Out.SendMessage("You take falling damage!", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 			}
 			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetPort), 1500);
 			return 0;

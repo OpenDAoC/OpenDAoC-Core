@@ -49,7 +49,7 @@ namespace DOL.GS.RealmAbilities
 			{
 				if (player.Group == null)
 				{
-					player.Out.SendMessage("You are not in a group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You are not in a group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 
@@ -64,10 +64,10 @@ namespace DOL.GS.RealmAbilities
 					if (healed > 0)
 						used = true;
 
-					if (healed > 0) p.Out.SendMessage(player.Name + " heals your for " + healed + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					if (healed > 0) p.Out.SendMessage(player.Name + " heals your for " + healed + " hit points.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 					if (heal > healed)
 					{
-						p.Out.SendMessage("You are fully healed.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+						p.Out.SendMessage("You are fully healed.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 					}
 				}
 			}

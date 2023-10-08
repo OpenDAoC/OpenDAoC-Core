@@ -185,8 +185,8 @@ namespace DOL.GS.Scripts
 
                 foreach (GamePlayer player in GetPlayersInRadius(500))
                 {
-                    player.Out.SendMessage(this.Name + " says, \"" + portMessage + "\"", eChatType.CT_Say,
-                        eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage(this.Name + " says, \"" + portMessage + "\"", EChatType.CT_Say,
+                        EChatLoc.CL_ChatWindow);
                 }
 
                 castTimer.Interval = PortSpell.CastTime;

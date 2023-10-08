@@ -64,8 +64,8 @@ namespace DOL.GS.Effects
                     if(!HealthPoolRemains) EffectService.RequestImmediateCancelEffect(this);
                     if (m_HealthPool > difference)
                     {
-                        if(currentLiving is GamePlayer ptarg) ptarg.Out.SendMessage($"{this.OwnerName}'s Battery of Life heals you for {difference} health points!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-                        if(Owner is GamePlayer pcaster) pcaster.Out.SendMessage($"Your Battery of Life heals {currentLiving.Name} for {difference} health points!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                        if(currentLiving is GamePlayer ptarg) ptarg.Out.SendMessage($"{this.OwnerName}'s Battery of Life heals you for {difference} health points!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+                        if(Owner is GamePlayer pcaster) pcaster.Out.SendMessage($"Your Battery of Life heals {currentLiving.Name} for {difference} health points!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
                         currentLiving.ChangeHealth(OwnerPlayer, EHealthChangeType.Spell, difference);
                         m_HealthPool -= difference;
                     }

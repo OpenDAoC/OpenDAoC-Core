@@ -22,7 +22,7 @@ namespace DOL.GS
         private string EFFECTNPC_ITEM_WEAK = "DOL.GS.Scripts.EffectNPC_Item_Manipulation";//used to store the item in the player
         private ushort spell = 7215;//The spell which is casted
         private ushort duration = 3000;//3s, the duration the spell is cast
-        private eEmote Emotes = eEmote.Raise;//The Emote the NPC does when Interacted
+        private EEmote Emotes = EEmote.Raise;//The Emote the NPC does when Interacted
         private Queue m_timer = new Queue();//Gametimer for casting some spell at the end of the process
         private Queue castplayer = new Queue();//Used to hold the player who the spell gets cast on
         public string currencyName = "Orbs";
@@ -971,7 +971,7 @@ namespace DOL.GS
 
         public void SendReply(GamePlayer player, string msg)
         {
-            player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            player.Out.SendMessage(msg, EChatType.CT_System, EChatLoc.CL_PopupWindow);
         }
         #region setcolor
         public void SetColor(GamePlayer player, int color, int price)
@@ -983,7 +983,7 @@ namespace DOL.GS
             if (item == null || item.SlotPosition == (int)EInventorySlot.Ground
                 || item.OwnerID == null || item.OwnerID != player.InternalID)
             {
-                player.Out.SendMessage("Invalid item.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Invalid item.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -999,7 +999,7 @@ namespace DOL.GS
 
             if (playerOrbs < price)
             {
-                SayTo(player, eChatLoc.CL_PopupWindow, "I need " + price + " " + currencyName + " to dye that.");
+                SayTo(player, EChatLoc.CL_PopupWindow, "I need " + price + " " + currencyName + " to dye that.");
                 return;
             }
 
@@ -1092,7 +1092,7 @@ namespace DOL.GS
             if (item == null || item.SlotPosition == (int)EInventorySlot.Ground
                 || item.OwnerID == null || item.OwnerID != player.InternalID)
             {
-                player.Out.SendMessage("Invalid item.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Invalid item.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -1101,7 +1101,7 @@ namespace DOL.GS
 
             if (playerOrbs < price)
             {
-                SayTo(player, eChatLoc.CL_PopupWindow, "I need " + price + " " + currencyName + " to enchant that.");
+                SayTo(player, EChatLoc.CL_PopupWindow, "I need " + price + " " + currencyName + " to enchant that.");
                 return;
             }
 

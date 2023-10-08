@@ -83,8 +83,8 @@ namespace DOL.GS.Effects
 							
 						p.ChangeHealth(player, EHealthChangeType.Regenerate, heal);
 						
-						player.Out.SendMessage("You heal " + p.Name + " for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-						p.Out.SendMessage(player.Name + " heals you for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("You heal " + p.Name + " for " + heal.ToString() + " hit points.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+						p.Out.SendMessage(player.Name + " heals you for " + heal.ToString() + " hit points.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 					}
 				}
 				return 3000;

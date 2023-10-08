@@ -25,11 +25,11 @@ namespace DOL.GS {
 
             if ((player.Level < 50 || player.Group == null) && player.Client.Account.PrivLevel == 1)
             {
-                player.Out.SendMessage("You must be level 50 and in a group to use this teleporter.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                player.Out.SendMessage("You must be level 50 and in a group to use this teleporter.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
                 return false;
             }
 
-            player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I can teleport you to our [boss arena] if you think you stand a chance..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I can teleport you to our [boss arena] if you think you stand a chance..", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
             return true;
         }
         public override bool WhisperReceive(GameLiving source, string str)
@@ -67,7 +67,7 @@ namespace DOL.GS {
         {
             target.Client.Out.SendMessage(
                 msg,
-                eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                EChatType.CT_Say, EChatLoc.CL_PopupWindow);
         }
 
     }

@@ -48,7 +48,7 @@ namespace DOL.GS
             if (_owner.IsMoving)
             {
                 CleanupCraftAction();
-                _owner.Out.SendMessage(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "AbstractCraftingSkill.CraftItem.MoveAndInterrupt"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                _owner.Out.SendMessage(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "AbstractCraftingSkill.CraftItem.MoveAndInterrupt"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -78,7 +78,7 @@ namespace DOL.GS
 
             if (player == null || recipe == null || skill == null)
             {
-                player?.Out.SendMessage("Could not find recipe or item to craft!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player?.Out.SendMessage("Could not find recipe or item to craft!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 log.Error("Crafting.MakeItem: Could not retrieve player, recipe, or raw materials to craft from CraftTimer.");
                 return;
             }
@@ -92,7 +92,7 @@ namespace DOL.GS
             {
                 if (!skill.RemoveUsedMaterials(player, recipe))
                 {
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.NotAllMaterials"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.NotAllMaterials"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                     if (player.Client.Account.PrivLevel == 1)
                     {
@@ -106,8 +106,8 @@ namespace DOL.GS
             }
             else
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.LoseNoMaterials", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.Out.SendPlaySound(eSoundType.Craft, 0x02);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.LoseNoMaterials", recipe.Product.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+                player.Out.SendPlaySound(ESoundType.Craft, 0x02);
             }
 
             if (remainingToCraft > 1)

@@ -18,7 +18,7 @@ namespace DOL.GS.Effects
 		{
 			base.Start(living);
 			if (m_owner is GamePlayer)
-				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.QuickCastEffect.YouActivatedQC"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.QuickCastEffect.YouActivatedQC"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			m_owner.TempProperties.RemoveProperty(Spells.SpellHandler.INTERRUPT_TIMEOUT_PROPERTY);
             
 		}
@@ -30,7 +30,7 @@ namespace DOL.GS.Effects
 		{
 			base.Cancel(playerCancel);
 			if (m_owner is GamePlayer)
-				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.QuickCastEffect.YourNextSpellNoQCed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.QuickCastEffect.YourNextSpellNoQCed"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>

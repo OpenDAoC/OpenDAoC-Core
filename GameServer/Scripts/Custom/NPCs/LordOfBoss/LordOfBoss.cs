@@ -38,39 +38,39 @@ namespace DOL.GS {
 
 	        if (player.Group == null && player.Client.Account.PrivLevel == 1)
 	        {
-		        player.Out.SendMessage($"This challenge is too big for a lonely {player.CharacterClass.Name}, assemble a group and come back to me! \n I can port you [back] while you find some companions.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+		        player.Out.SendMessage($"This challenge is too big for a lonely {player.CharacterClass.Name}, assemble a group and come back to me! \n I can port you [back] while you find some companions.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 		        return false;
 	        }
 	        
 	        if (player.Group != null && player.Group.Leader != player)
 	        {
-		        player.Out.SendMessage($"You are not the leader of your group, {player.CharacterClass.Name}. Ask them to come speak with me to start.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+		        player.Out.SendMessage($"You are not the leader of your group, {player.CharacterClass.Name}. Ask them to come speak with me to start.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 		        return false;
 	        }
 	        
 	        if (inFight)
 	        {
-		        player.Out.SendMessage($"There's a battle already going on, {player.CharacterClass.Name}. You can't start a new fight yet. \n\n I can also [reset] the arena.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+		        player.Out.SendMessage($"There's a battle already going on, {player.CharacterClass.Name}. You can't start a new fight yet. \n\n I can also [reset] the arena.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 		        return false;
 	        }
 	        
-	        player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I hope you're up for a challenge.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+	        player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "I hope you're up for a challenge.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 
 	        switch (player.Realm)
 	        {
 		        case ERealm._FirstPlayerRealm:
-			        player.Out.SendMessage("I have some minions from [Caer Sidi] ready for you..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			        player.Out.SendMessage("I have some minions from [Caer Sidi] ready for you..", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			        break;
 		        case ERealm.Midgard:
-			        player.Out.SendMessage("I have some minions from [Tuscaren Glacier] ready for you..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			        player.Out.SendMessage("I have some minions from [Tuscaren Glacier] ready for you..", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			        break;
 		        case ERealm.Hibernia:
-			        player.Out.SendMessage("I have some minions from [Galladoria] ready for you..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			        player.Out.SendMessage("I have some minions from [Galladoria] ready for you..", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			        break;
 	        }
 	        
-	        player.Out.SendMessage("..as well as many demons from [Darkness Falls].", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-	        player.Out.SendMessage("If you're not ready, I can also port you [back].", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+	        player.Out.SendMessage("..as well as many demons from [Darkness Falls].", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+	        player.Out.SendMessage("If you're not ready, I can also port you [back].", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 
 	        
             return true;
@@ -118,7 +118,7 @@ namespace DOL.GS {
 										// "4. [Bane of Hope]\n"
 			,
 
-			eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 					break;
 
 				case "skeletal sacristan":
@@ -180,7 +180,7 @@ namespace DOL.GS {
 					                  "7. [Olcasar Geomancer]\n" +
 					                  "8. [Aroon the Urlamhai]\n" +
 					                  "8. [Hurionthex]\n"
-						, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+						, EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 					break;
 
 				case "easmarach":
@@ -235,7 +235,7 @@ namespace DOL.GS {
 				#region Darkness Falls
 				case "darkness falls":
 					t.Out.SendMessage("Demons are tricky to capture, try again later."
-						, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+						, EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 					break;
 				
 				#endregion
@@ -257,7 +257,7 @@ namespace DOL.GS {
 		{
 			target.Client.Out.SendMessage(
 				msg,
-				eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 		}
 
 		private void SummonBoss(GamePlayer player, string BossClass)
@@ -266,7 +266,7 @@ namespace DOL.GS {
 			{
 				if (npc.Brain is LordOfBossBrain || npc.Name.Contains("Council") || npc.Name.Contains("isolationist") || npc.Name.Contains("muryan"))
 					continue;
-				player.Out.SendMessage("You have already summoned a boss!.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("You have already summoned a boss!.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				return;
 			}
 			

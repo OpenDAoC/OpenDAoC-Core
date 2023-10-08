@@ -48,7 +48,7 @@ namespace DOL.GS.Effects
             {
                 foreach (GamePlayer i_player in Owner.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
                 {
-                    i_player.Out.SendMessage($"{SpellHandler.Caster.Name}'s Rune of Decimation trap detonates!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    i_player.Out.SendMessage($"{SpellHandler.Caster.Name}'s Rune of Decimation trap detonates!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
                 }
                 
                 foreach (var target in DetonateTargets)
@@ -70,12 +70,12 @@ namespace DOL.GS.Effects
                     
                     if (target is GamePlayer pl)
                     {
-                        pl.Out.SendMessage($"You take {ad.Damage}({ad.Modifier}) damage from a Rune of Decimation!", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                        pl.Out.SendMessage($"You take {ad.Damage}({ad.Modifier}) damage from a Rune of Decimation!", EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
                         pl.Out.SendSpellCastAnimation(Owner, 7153, 1);
                     }
 
                     if(SpellHandler.Caster is GamePlayer c)
-                        c.Out.SendMessage($"Your Rune of Decimation deals {ad.Damage}({ad.Modifier}) damage to {target?.Name}!", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                        c.Out.SendMessage($"Your Rune of Decimation deals {ad.Damage}({ad.Modifier}) damage to {target?.Name}!", EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
                     
                     target.DealDamage(ad);
                     //target.TakeDamage(SpellHandler.Caster, SpellHandler.Spell.DamageType, (int) SpellHandler.Spell.Damage, 0);

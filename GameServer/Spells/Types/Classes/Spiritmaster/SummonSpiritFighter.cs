@@ -34,7 +34,7 @@ namespace DOL.GS.Spells
 		{
 			if(Caster is GamePlayer && ((GamePlayer)Caster).ControlledBrain != null)
 			{
-                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "Summon.CheckBeginCast.AlreadyHaveaPet"), eChatType.CT_SpellResisted);
+                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "Summon.CheckBeginCast.AlreadyHaveaPet"), EChatType.CT_SpellResisted);
                 return false;
 			}
 			return base.CheckEndCast(selectedTarget);

@@ -173,7 +173,7 @@ namespace DOL.GS.Spells
         {
             if (target == null)
             {
-                MessageToCaster("You must select a target for this spell!", eChatType.CT_SpellResisted);
+                MessageToCaster("You must select a target for this spell!", EChatType.CT_SpellResisted);
                 return false;
             }
 
@@ -261,8 +261,8 @@ namespace DOL.GS.Spells
             ad.Damage -= damageAbsorbed;
             ad.Damage -= spellAbsorbed;
 
-            MessageToLiving(ad.Target, string.Format("You're in a Zephyr and can't be attacked!"), eChatType.CT_Spell);
-            MessageToLiving(ad.Attacker, string.Format("Your target is in a Zephyr and can't be attacked!"), eChatType.CT_Spell);
+            MessageToLiving(ad.Target, string.Format("You're in a Zephyr and can't be attacked!"), EChatType.CT_Spell);
+            MessageToLiving(ad.Attacker, string.Format("Your target is in a Zephyr and can't be attacked!"), EChatType.CT_Spell);
         }
 
         private void ArriveAtTarget(GameNPC zephyr)
@@ -278,7 +278,7 @@ namespace DOL.GS.Spells
             playerTarget.StopCurrentSpellcast();
             playerTarget.MountSteed(zephyr, true);
             GameEventMgr.AddHandler(playerTarget, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(OnAttack));
-            playerTarget.Out.SendMessage("You are picked up by a forceful zephyr!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            playerTarget.Out.SendMessage("You are picked up by a forceful zephyr!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             zephyr.StopMoving();
 
             if (Caster is GamePlayer playerCaster)
@@ -328,7 +328,7 @@ namespace DOL.GS.Spells
 
             if (Caster.Endurance < endurance)
             {
-                MessageToCaster("You need 50% endurance for this spell!!", eChatType.CT_System);
+                MessageToCaster("You need 50% endurance for this spell!!", EChatType.CT_System);
                 return false;
             }
 
@@ -356,7 +356,7 @@ namespace DOL.GS.Spells
                 ad.Damage = 0;
                 ad.CriticalDamage = 0;
                 GamePlayer player = ad.Attacker as GamePlayer;
-                player.Out.SendMessage(living.Name + " is Phaseshifted and can't be attacked!", eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(living.Name + " is Phaseshifted and can't be attacked!", EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
             }
         }
 
@@ -397,12 +397,12 @@ namespace DOL.GS.Spells
             {
                 if (Caster.CurrentRegionID == 51)
                 {
-                    MessageToCaster("You can't use this Ability here", eChatType.CT_SpellResisted);
+                    MessageToCaster("You can't use this Ability here", EChatType.CT_SpellResisted);
                     return false;
                 }
                 else
                 {
-                    MessageToCaster("Bind in another Region to use this Ability", eChatType.CT_SpellResisted);
+                    MessageToCaster("Bind in another Region to use this Ability", EChatType.CT_SpellResisted);
                     return false;
                 }
             }
@@ -424,7 +424,7 @@ namespace DOL.GS.Spells
             {
                 if (player.Group.IsGroupInCombat())
                 {
-                    player.Out.SendMessage("You can't teleport a group that is in combat!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("You can't teleport a group that is in combat!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
                 else
@@ -441,7 +441,7 @@ namespace DOL.GS.Spells
             }
             else
             {
-                player.Out.SendMessage("You are not a part of a group!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You are not a part of a group!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
         }
     }

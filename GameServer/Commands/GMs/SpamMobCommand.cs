@@ -161,14 +161,14 @@ namespace DOL.GS.Commands
                     }
                     catch (Exception e)
                     {
-                        client.Out.SendMessage(e.ToString(), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                        client.Out.SendMessage(e.ToString(), EChatType.CT_System, EChatLoc.CL_PopupWindow);
                     }
                 }
 
                 if (mob == null)
                 {
                     client.Out.SendMessage("There was an error creating an instance of " + theType + "!",
-                        eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
 

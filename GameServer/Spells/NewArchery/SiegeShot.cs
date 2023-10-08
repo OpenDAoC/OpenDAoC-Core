@@ -20,7 +20,7 @@ namespace DOL.GS.Spells
 			{
 				if (!(selectedTarget is GameKeepComponent || selectedTarget is Keeps.GameKeepDoor))
 				{
-					MessageToCaster("You must have a Keep Component targeted for this spell!", eChatType.CT_Spell);
+					MessageToCaster("You must have a Keep Component targeted for this spell!", EChatType.CT_Spell);
 					return false;
 				}
 				return base.CheckBeginCast(selectedTarget);
@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
 		{
 			if (!(target is GameKeepComponent || target is Keeps.GameKeepDoor))
 			{
-				MessageToCaster("Your target must be a Keep Component!", eChatType.CT_SpellResisted);
+				MessageToCaster("Your target must be a Keep Component!", EChatType.CT_SpellResisted);
 				return;
 			}
 
@@ -43,7 +43,7 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		public override void SendSpellMessages() { MessageToCaster("You prepare " + Spell.Name, eChatType.CT_Spell); }
+		public override void SendSpellMessages() { MessageToCaster("You prepare " + Spell.Name, EChatType.CT_Spell); }
 		public override AttackData CalculateDamageToTarget(GameLiving target)
 		{
 			AttackData ad = base.CalculateDamageToTarget(target);

@@ -101,8 +101,8 @@ public class PredatorManager
     {
         if ((QueuedPlayers != null && QueuedPlayers.Contains(player)) || PlayerIsActive(player))
         {
-            player.Out.SendMessage("You are already registered in the system!", eChatType.CT_System,
-                eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("You are already registered in the system!", EChatType.CT_System,
+                EChatLoc.CL_SystemWindow);
             return;
         }
         
@@ -116,8 +116,8 @@ public class PredatorManager
                 player.Out.SendMessage("You recently abandoned the hunt. " +
                                        "Your body needs " + TimeSpan.FromMilliseconds(timeLeft).Minutes + "m "
                                        + TimeSpan.FromMilliseconds(timeLeft).Seconds + "s" +
-                                       " to recover before you may rejoin.", eChatType.CT_System,
-                    eChatLoc.CL_SystemWindow);
+                                       " to recover before you may rejoin.", EChatType.CT_System,
+                    EChatLoc.CL_SystemWindow);
                 return;
             }
             DisqualifiedPlayers.Remove(player);
@@ -125,11 +125,11 @@ public class PredatorManager
 
         if (!ConquestService.ConquestManager.IsPlayerInConquestArea(player))
         {
-            player.Out.SendMessage($"You must hunt within the active conquest zone. Try again after entering the active frontier.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage($"You must hunt within the active conquest zone. Try again after entering the active frontier.", EChatType.CT_ScreenCenterSmaller_And_CT_System, EChatLoc.CL_SystemWindow);
             return;
         }
         
-        player.Out.SendMessage($"You tune your senses to the pulse of nature. New prey is sure to arrive soon.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+        player.Out.SendMessage($"You tune your senses to the pulse of nature. New prey is sure to arrive soon.", EChatType.CT_ScreenCenterSmaller_And_CT_System, EChatLoc.CL_SystemWindow);
         QueuedPlayers.Add(player);
     }
 
@@ -149,7 +149,7 @@ public class PredatorManager
             PlayerKillTallyDict.Remove(player);
 
         player.Out.SendMessage($"The call of the wild leaves you. You have been removed from the hunt.",
-            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            EChatType.CT_System, EChatLoc.CL_SystemWindow);
     }
 
     public static int CheckForPredatorEffort(GamePlayer killedPlayer, GamePlayer killerPlayer)
@@ -170,13 +170,13 @@ public class PredatorManager
         player.PredatorTimeoutTimer.Callback = new ECSGameTimer.ECSTimerCallback(TimeoutTimerCallback);
         player.PredatorTimeoutTimer.Start(1000);
         
-        player.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {Properties.OUT_OF_BOUNDS_TIMEOUT} seconds.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+        player.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {Properties.OUT_OF_BOUNDS_TIMEOUT} seconds.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
     }
     
     public static void StopTimeoutCountdownFor(GamePlayer player)
     {
         player.PredatorTimeoutTimer.Stop();
-        player.Out.SendMessage($"You are once again inside a valid hunting zone.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+        player.Out.SendMessage($"You are once again inside a valid hunting zone.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
     }
 
     public static void RemoveActivePlayer(GamePlayer player)
@@ -190,7 +190,7 @@ public class PredatorManager
             {
                 PreyBounty.Predator.Out.SendMessage(
                     $"Your prey has been claimed. A new target will be chosen soon.",
-                    eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+                    EChatType.CT_ScreenCenterSmaller_And_CT_System, EChatLoc.CL_SystemWindow);
                 ActiveBounties.Remove(PreyBounty);
                 QueuedPlayers.Add(PreyBounty.Predator);
                 InsertQueuedPlayers();
@@ -479,7 +479,7 @@ public class PredatorManager
 
         if (bounty.Predator != null && bounty.Prey != null)
         {
-            bounty.Predator.Out.SendMessage($"Your primal instincts tingle. New prey has been selected.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+            bounty.Predator.Out.SendMessage($"Your primal instincts tingle. New prey has been selected.", EChatType.CT_ScreenCenterSmaller_And_CT_System, EChatLoc.CL_SystemWindow);
         }
     }
 
@@ -551,7 +551,7 @@ public class PredatorManager
         //Console.WriteLine($"bounty {predatorBounty} pred {predatorBounty.Predator} prey {predatorBounty.Prey} ");
 
         ActiveBounties.Remove(predatorBounty);
-        predatorBounty.Predator.Out.SendMessage($"You unleash a primal roar as the thrill of the hunt overtakes you. A feast of {predatorBounty.Reward} RPs is awarded.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+        predatorBounty.Predator.Out.SendMessage($"You unleash a primal roar as the thrill of the hunt overtakes you. A feast of {predatorBounty.Reward} RPs is awarded.", EChatType.CT_ScreenCenterSmaller_And_CT_System, EChatLoc.CL_SystemWindow);
         BroadcastKill(predatorBounty.Prey);
         killerPlayer.GainRealmPoints(predatorBounty.Reward, false);
         FreshKillers.Add(predatorBounty.Predator);
@@ -575,7 +575,7 @@ public class PredatorManager
     public static void BroadcastKill(GamePlayer deadGuy)
     {
         foreach (GamePlayer player in deadGuy.GetPlayersInRadius(10000))
-            player.Out.SendMessage($"A primal roar echoes nearby as a predator claims its prey.", eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage($"A primal roar echoes nearby as a predator claims its prey.", EChatType.CT_ScreenCenterSmaller_And_CT_System, EChatLoc.CL_SystemWindow);
     }
 
     private static void JoinedGroup(CoreEvent coreEvent, object sender, EventArgs arguments)
@@ -609,7 +609,7 @@ public class PredatorManager
             {
                 if (secondsleft == 120 || secondsleft == 90 || secondsleft == 60 || secondsleft == 30 || secondsleft == 10 || secondsleft < 5)
                 {
-                    pl.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {secondsleft} seconds.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    pl.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {secondsleft} seconds.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 }
 
                 return 1000;

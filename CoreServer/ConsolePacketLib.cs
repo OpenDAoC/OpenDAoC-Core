@@ -23,7 +23,7 @@ namespace DOLGameServerConsole
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void SendMessage(string msg, eChatType type, eChatLoc loc)
+		public void SendMessage(string msg, EChatType type, EChatLoc loc)
 		{
 			if (log.IsDebugEnabled)
 			{
@@ -48,16 +48,16 @@ namespace DOLGameServerConsole
 			}
 		}
 
-		public byte GetPacketCode(eServerPackets packetCode) { return 0; }
-		public void SendTCP(GSTCPPacketOut packet) { }
+		public byte GetPacketCode(EServerPackets packetCode) { return 0; }
+		public void SendTCP(GsTcpPacketOut packet) { }
 		public void SendWarlockChamberEffect(GamePlayer player) { }
 		public void SendTCP(byte[] buf) { }
-		public void SendTCPRaw(GSTCPPacketOut packet) { }
-		public void SendUDP(GSUDPPacketOut packet) { }
+		public void SendTCPRaw(GsTcpPacketOut packet) { }
+		public void SendUDP(GsUdpPacketOut packet) { }
 		public void SendUDP(byte[] buf) { }
-		public void SendUDPRaw(GSUDPPacketOut packet) { }
+		public void SendUDPRaw(GsUdpPacketOut packet) { }
 		public void SendVersionAndCryptKey() { }
-		public void SendLoginDenied(eLoginError et) { }
+		public void SendLoginDenied(ELoginError et) { }
 		public void SendLoginGranted() { }
 		public void SendLoginGranted(byte color) { } // help for rvr AND pvp servers
 		public void SendSessionID() { }
@@ -84,7 +84,7 @@ namespace DOLGameServerConsole
 		public void SendModelChange(GameObject obj, ushort newModel) { }
 		public void SendModelAndSizeChange(GameObject obj, ushort newModel, byte newSize) { }
 		public void SendModelAndSizeChange(ushort objectId, ushort newModel, byte newSize) { }
-		public void SendEmoteAnimation(GameObject obj, eEmote emote) { }
+		public void SendEmoteAnimation(GameObject obj, EEmote emote) { }
 		public void SendNPCCreate(GameNPC npc) { }
 		public void SendLivingEquipmentUpdate(GameLiving living) { }
 		public void SendRegionChanged() { }
@@ -99,7 +99,7 @@ namespace DOLGameServerConsole
 		public void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid, ushort boltTime, bool noSound, byte success) { }
 		public void SendRiding(GameObject rider, GameObject steed, bool dismount) { }
 		public void SendFindGroupWindowUpdate(GamePlayer[] list) { }
-		public void SendDialogBox(eDialogCode code, ushort data1, ushort data2, ushort data3, ushort data4, eDialogType type, bool autoWarpText, string message) { }
+		public void SendDialogBox(EDialogCode code, ushort data1, ushort data2, ushort data3, ushort data4, EDialogType type, bool autoWarpText, string message) { }
 		public void SendGroupInviteCommand(GamePlayer invitingPlayer, string inviteMessage) { }
 		public void SendGuildLeaveCommand(GamePlayer invitingPlayer, string inviteMessage) { }
 		public void SendGuildInviteCommand(GamePlayer invitingPlayer, string inviteMessage) { }
@@ -114,11 +114,11 @@ namespace DOLGameServerConsole
 		public void SendGroupMembersUpdate(bool updateIcons, bool updateMap) { }
 		public void SendInventoryItemsUpdate(ICollection<DbInventoryItem> itemsToUpdate) { }
 		public void SendInventorySlotsUpdate(ICollection<int> slots) { }
-		public void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate) { }
-		public void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, eInventoryWindowType windowType) { }
-		public void SendInventoryItemsPartialUpdate(IDictionary<int, DbInventoryItem> items, eInventoryWindowType windowType) { }
+		public void SendInventoryItemsUpdate(EInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate) { }
+		public void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, EInventoryWindowType windowType) { }
+		public void SendInventoryItemsPartialUpdate(IDictionary<int, DbInventoryItem> items, EInventoryWindowType windowType) { }
 		public void SendDoorState(Region region, GameDoorBase door) { }
-		public void SendMerchantWindow(MerchantTradeItems itemlist, eMerchantWindowType windowType) { }
+		public void SendMerchantWindow(MerchantTradeItems itemlist, EMerchantWindowType windowType) { }
 		public void SendTradeWindow() { }
 		public void SendCloseTradeWindow() { }
 		public void SendPlayerDied(GamePlayer killedPlayer, GameObject killer) { }
@@ -159,7 +159,7 @@ namespace DOLGameServerConsole
 		public void SendUpdateCraftingSkills() { }
 		public void SendChangeTarget(GameObject newTarget) { }
 		public void SendChangeGroundTarget(Point3D newTarget) { }
-		public void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, EAggressionState aggroState, EWalkState walkState) { }
+		public void SendPetWindow(GameLiving pet, EPetWindowAction windowAction, EAggressionState aggroState, EWalkState walkState) { }
 		public void SendKeepInfo(IGameKeep keep) { }
 		public void SendKeepRealmUpdate(IGameKeep keep) { }
 		public void SendKeepRemove(IGameKeep keep) { }
@@ -173,7 +173,7 @@ namespace DOLGameServerConsole
 		public void SendKeepDoorUpdate(GameKeepDoor door) { }
 		public void SendClearKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex) { }
 		public void SendHookPointStore(GameKeepHookPoint hookPoint) { }
-		public void SendPlaySound(eSoundType soundType, ushort soundID) { }
+		public void SendPlaySound(ESoundType soundType, ushort soundID) { }
         public void SendNPCsQuestEffect(GameNPC npc, EQuestIndicator indicator) { }
 		public void SendMasterLevelWindow(byte ml) { }
 		public void SendHexEffect(GamePlayer player, byte effect1, byte effect2, byte effect3, byte effect4, byte effect5) { }
@@ -207,7 +207,7 @@ namespace DOLGameServerConsole
 		public void SendPlayerTitleUpdate(GamePlayer player) { }
 		public void SendSetControlledHorse(GamePlayer player) { }
 		public void SendControlledHorse(GamePlayer player, bool flag) { }
-		public void CheckLengthHybridSkillsPacket(ref GSTCPPacketOut pak, ref int maxSkills, ref int first) { }
+		public void CheckLengthHybridSkillsPacket(ref GsTcpPacketOut pak, ref int maxSkills, ref int first) { }
 		public void SendNonHybridSpellLines() { }
 		public void SendCrash(string str) { }
 		public void SendRvRGuildBanner(GamePlayer player, bool show) { }

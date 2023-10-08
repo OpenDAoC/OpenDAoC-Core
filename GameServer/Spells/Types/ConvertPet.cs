@@ -59,9 +59,9 @@ namespace DOL.GS.Spells
 			if (m_caster is GamePlayer)
 			{
 				if (absorb > 0)
-					MessageToCaster("You absorb " + absorb + " power points.", eChatType.CT_Spell);
+					MessageToCaster("You absorb " + absorb + " power points.", EChatType.CT_Spell);
 				else
-					MessageToCaster("Your power is already full!", eChatType.CT_SpellResisted);
+					MessageToCaster("Your power is already full!", EChatType.CT_SpellResisted);
 				((GamePlayer)m_caster).CommandNpcRelease();
 			}
 

@@ -29,9 +29,9 @@ namespace DOL.GS
 
 				/* Check if level and/or crafting skill let you have a lastname */
 				if (player.Level < LastNameCommand.LASTNAME_MIN_LEVEL && CraftSkill < LastNameCommand.LASTNAME_MIN_CRAFTSKILL)
-					SayTo(player, eChatLoc.CL_SystemWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "NameRegistrar.ReturnToMe", LastNameCommand.LASTNAME_MIN_LEVEL));
+					SayTo(player, EChatLoc.CL_SystemWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "NameRegistrar.ReturnToMe", LastNameCommand.LASTNAME_MIN_LEVEL));
 				else
-                    SayTo(player, eChatLoc.CL_SystemWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "NameRegistrar.LastName"));
+                    SayTo(player, EChatLoc.CL_SystemWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "NameRegistrar.LastName"));
                 return true;
 			}
 			return false;

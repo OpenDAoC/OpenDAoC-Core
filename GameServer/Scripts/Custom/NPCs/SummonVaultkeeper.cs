@@ -31,15 +31,15 @@ namespace DOL.GS.Scripts
             if (!base.Interact(player)) return false;
             if (player.InCombat)
             {
-                player.Out.SendMessage("Vaultkeeper says \"stop your combat if you want me speak with me!\"", eChatType.CT_Say,
-                    eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage("Vaultkeeper says \"stop your combat if you want me speak with me!\"", EChatType.CT_Say,
+                    EChatLoc.CL_ChatWindow);
                 return false;
             }
 
             if (GetDistanceTo(player) > WorldMgr.INTERACT_DISTANCE)
             {
-                player.Out.SendMessage("You are too far away " + GetName(0, false) + ".", eChatType.CT_System,
-                    eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You are too far away " + GetName(0, false) + ".", EChatType.CT_System,
+                    EChatLoc.CL_SystemWindow);
                 return false;
             }
 

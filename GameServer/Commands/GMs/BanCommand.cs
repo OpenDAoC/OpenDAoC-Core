@@ -50,7 +50,7 @@ public class BanCommand : ACommandHandler, ICommandHandler
 		var acc = gc != null ? gc.Account : CoreDb<DbAccount>.SelectObject(DB.Column("Name").IsLike(args[2]));
 		if (acc == null)
 		{
-			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.UnableToFindPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.UnableToFindPlayer"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
@@ -88,12 +88,12 @@ public class BanCommand : ACommandHandler, ICommandHandler
 					var acctBans = CoreDb<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(acc.Name)));
 					if (acctBans.Count > 0)
 					{
-						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.AAlreadyBanned"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.AAlreadyBanned"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 						return;
 					}
 
 					b.Type = "A";
-					client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.ABanned", acc.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.ABanned", acc.Name), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					break;
 					#endregion Account
 					#region IP
@@ -101,12 +101,12 @@ public class BanCommand : ACommandHandler, ICommandHandler
 					var ipBans = CoreDb<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("I").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Ip").IsEqualTo(acc.LastLoginIP)));
 					if (ipBans.Count > 0)
 					{
-						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.IAlreadyBanned"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.IAlreadyBanned"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 						return;
 					}
 
 					b.Type = "I";
-					client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.IBanned", acc.LastLoginIP), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.IBanned", acc.LastLoginIP), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					break;
 					#endregion IP
 					#region Both
@@ -114,12 +114,12 @@ public class BanCommand : ACommandHandler, ICommandHandler
 					var acctIpBans = CoreDb<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("B").And(DB.Column("Account").IsEqualTo(acc.Name)).And(DB.Column("Ip").IsEqualTo(acc.LastLoginIP)));
 					if (acctIpBans.Count > 0)
 					{
-						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.BAlreadyBanned"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.BAlreadyBanned"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 						return;
 					}
 
 					b.Type = "B";
-					client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.BBanned", acc.Name, acc.LastLoginIP), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Ban.BBanned", acc.Name, acc.LastLoginIP), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					break;
 					#endregion Both
 					#region Default

@@ -68,7 +68,7 @@ namespace DOL.Tests.Unit.Gameserver
         }
         public override void StartHealthRegeneration() { }
         public override void StartEnduranceRegeneration() { }
-        public override void MessageToSelf(string message, DOL.GS.PacketHandler.eChatType chatType) { }
+        public override void MessageToSelf(string message, DOL.GS.PacketHandler.EChatType chatType) { }
         protected override void ResetInCombatTimer() { }
 
         public override bool TargetInView { get; set; } = true;

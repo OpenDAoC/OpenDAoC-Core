@@ -54,14 +54,14 @@ namespace DOL.GS.Spells
         {
             if (Caster.CurrentZone.IsRvR)
             {
-                MessageToCaster("You cannot summon your pet here!", PacketHandler.eChatType.CT_SpellResisted);
+                MessageToCaster("You cannot summon your pet here!", PacketHandler.EChatType.CT_SpellResisted);
                 return false;
             }
 
 			if (Caster.TempProperties.GetProperty<bool>(NoveltyPetBrain.HAS_PET, false))
 			{
 				// no message
-				MessageToCaster("You already have a pet by your side!", PacketHandler.eChatType.CT_SpellResisted);
+				MessageToCaster("You already have a pet by your side!", PacketHandler.EChatType.CT_SpellResisted);
 				return false;
 			}
 

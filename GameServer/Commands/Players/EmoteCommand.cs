@@ -84,7 +84,7 @@ namespace DOL.GS.Commands
 
 			if (client.Player.IsMuted)
 			{
-				client.Player.Out.SendMessage("You have been muted and cannot emote!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+				client.Player.Out.SendMessage("You have been muted and cannot emote!", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -108,234 +108,234 @@ namespace DOL.GS.Commands
 			if (changeTime < ServerProperties.Properties.EMOTE_DELAY && Tick > 0)
 			{
 				string message = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Emotes.Message" + Util.Random(1,4).ToString());
-				client.Player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Player.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			client.Player.TempProperties.SetProperty(EMOTE_TICK, client.Player.CurrentRegion.Time);
-			eEmote emoteID;
+			EEmote emoteID;
 			string[] emoteMessages;
 
 			switch (args[0])
 			{
 				case "&angry":
-					emoteID = eEmote.Angry;
+					emoteID = EEmote.Angry;
 					emoteMessages = EMOTE_MESSAGES_ANGRY;
 					break;
 				case "&bang":
-					emoteID = eEmote.BangOnShield;
+					emoteID = EEmote.BangOnShield;
 					emoteMessages = EMOTE_MESSAGES_BANG;
 					break;
 				case "&beckon":
-					emoteID = eEmote.Beckon;
+					emoteID = EEmote.Beckon;
 					emoteMessages = EMOTE_MESSAGES_BECKON;
 					break;
 				case "&beg":
-					emoteID = eEmote.Beg;
+					emoteID = EEmote.Beg;
 					emoteMessages = EMOTE_MESSAGES_BEG;
 					break;
 				case "&blush":
-					emoteID = eEmote.Blush;
+					emoteID = EEmote.Blush;
 					emoteMessages = EMOTE_MESSAGES_BLUSH;
 					break;
 				case "&bow":
-					emoteID = eEmote.Bow;
+					emoteID = EEmote.Bow;
 					emoteMessages = EMOTE_MESSAGES_BOW;
 					break;
 				case "&charge":
-					emoteID = eEmote.LetsGo;
+					emoteID = EEmote.LetsGo;
 					emoteMessages = EMOTE_MESSAGES_CHARGE;
 					break;
 				case "&cheer":
-					emoteID = eEmote.Cheer;
+					emoteID = EEmote.Cheer;
 					emoteMessages = EMOTE_MESSAGES_CHEER;
 					break;
 				case "&clap":
-					emoteID = eEmote.Clap;
+					emoteID = EEmote.Clap;
 					emoteMessages = EMOTE_MESSAGES_CLAP;
 					break;
 				case "&cry":
-					emoteID = eEmote.Cry;
+					emoteID = EEmote.Cry;
 					emoteMessages = EMOTE_MESSAGES_CRY;
 					break;
 				case "&curtsey":
-					emoteID = eEmote.Curtsey;
+					emoteID = EEmote.Curtsey;
 					emoteMessages = EMOTE_MESSAGES_CURTSEY;
 					break;
 				case "&dance":
-					emoteID = eEmote.Dance;
+					emoteID = EEmote.Dance;
 					emoteMessages = EMOTE_MESSAGES_DANCE;
 					break;
 				case "&dismiss":
-					emoteID = eEmote.Dismiss;
+					emoteID = EEmote.Dismiss;
 					emoteMessages = EMOTE_MESSAGES_DISMISS;
 					break;
 				case "&flex":
-					emoteID = eEmote.Flex;
+					emoteID = EEmote.Flex;
 					emoteMessages = EMOTE_MESSAGES_FLEX;
 					break;
 				case "&hug":
-					emoteID = eEmote.Hug;
+					emoteID = EEmote.Hug;
 					emoteMessages = EMOTE_MESSAGES_HUG;
 					break;
 				case "&induct":
-					emoteID = eEmote.Induct;
+					emoteID = EEmote.Induct;
 					emoteMessages = EMOTE_MESSAGES_INDUCT;
 					break;
 				case "&lookfar":
-					emoteID = eEmote.Rider_LookFar;
+					emoteID = EEmote.Rider_LookFar;
 					emoteMessages = EMOTE_MESSAGES_RIDER_LOOKFAR;
 					break;
 				case "&kiss":
-					emoteID = eEmote.BlowKiss;
+					emoteID = EEmote.BlowKiss;
 					emoteMessages = EMOTE_MESSAGES_KISS;
 					break;
 				case "&laugh":
-					emoteID = eEmote.Laugh;
+					emoteID = EEmote.Laugh;
 					emoteMessages = EMOTE_MESSAGES_LAUGH;
 					break;
 				case "&military":
-					emoteID = eEmote.Military;
+					emoteID = EEmote.Military;
 					emoteMessages = EMOTE_MESSAGES_MILITARY;
 					break;
 				case "&no":
-					emoteID = eEmote.No;
+					emoteID = EEmote.No;
 					emoteMessages = EMOTE_MESSAGES_NO;
 					break;
 				case "&point":
-					emoteID = eEmote.Point;
+					emoteID = EEmote.Point;
 					emoteMessages = EMOTE_MESSAGES_POINT;
 					break;
 				case "&ponder":
-					emoteID = eEmote.Ponder;
+					emoteID = EEmote.Ponder;
 					emoteMessages = EMOTE_MESSAGES_PONDER;
 					break;
 				case "&present":
-					emoteID = eEmote.Present;
+					emoteID = EEmote.Present;
 					emoteMessages = EMOTE_MESSAGES_PRESENT;
 					break;
 				case "&raise":
-					emoteID = eEmote.Raise;
+					emoteID = EEmote.Raise;
 					emoteMessages = EMOTE_MESSAGES_RAISE;
 					break;
 				case "&rude":
-					emoteID = eEmote.Rude;
+					emoteID = EEmote.Rude;
 					emoteMessages = EMOTE_MESSAGES_RUDE;
 					break;
 				case "&salute":
-					emoteID = eEmote.Salute;
+					emoteID = EEmote.Salute;
 					emoteMessages = EMOTE_MESSAGES_SALUTE;
 					break;
 				case "&shrug":
-					emoteID = eEmote.Shrug;
+					emoteID = EEmote.Shrug;
 					emoteMessages = EMOTE_MESSAGES_SHRUG;
 					break;
 				case "&slap":
-					emoteID = eEmote.Slap;
+					emoteID = EEmote.Slap;
 					emoteMessages = EMOTE_MESSAGES_SLAP;
 					break;
 				case "&slit":
-					emoteID = eEmote.Slit;
+					emoteID = EEmote.Slit;
 					emoteMessages = EMOTE_MESSAGES_SLIT;
 					break;
 				case "&smile":
-					emoteID = eEmote.Smile;
+					emoteID = EEmote.Smile;
 					emoteMessages = EMOTE_MESSAGES_SMILE;
 					break;
 				case "&stench":
-					emoteID = eEmote.Rider_Stench;
+					emoteID = EEmote.Rider_Stench;
 					emoteMessages = EMOTE_MESSAGES_RIDER_STENCH;
 					break;
 				case "&surrender":
-					emoteID = eEmote.Surrender;
+					emoteID = EEmote.Surrender;
 					emoteMessages = EMOTE_MESSAGES_SURRENDER;
 					break;
 				case "&taunt":
-					emoteID = eEmote.Taunt;
+					emoteID = EEmote.Taunt;
 					emoteMessages = EMOTE_MESSAGES_TAUNT;
 					break;
 				case "&victory":
-					emoteID = eEmote.Victory;
+					emoteID = EEmote.Victory;
 					emoteMessages = EMOTE_MESSAGES_VICTORY;
 					break;
 				case "&wave":
-					emoteID = eEmote.Wave;
+					emoteID = EEmote.Wave;
 					emoteMessages = EMOTE_MESSAGES_WAVE;
 					break;
 				case "&yes":
-					emoteID = eEmote.Yes;
+					emoteID = EEmote.Yes;
 					emoteMessages = EMOTE_MESSAGES_YES;
 					break;
 				case "&sweat":
-					emoteID = eEmote.Sweat;
+					emoteID = EEmote.Sweat;
 					emoteMessages = EMOTE_MESSAGES_SWEAT;
 					break;
 				case "&stagger":
-					emoteID = eEmote.Stagger;
+					emoteID = EEmote.Stagger;
 					emoteMessages = EMOTE_MESSAGES_STAGGER;
 					break;
 				case "&yawn":
-					emoteID = eEmote.Yawn;
+					emoteID = EEmote.Yawn;
 					emoteMessages = EMOTE_MESSAGES_YAWN;
 					break;
 				case "&doh":
-					emoteID = eEmote.Doh;
+					emoteID = EEmote.Doh;
 					emoteMessages = EMOTE_MESSAGES_DOH;
 					break;
 				case "&confuse":
-					emoteID = eEmote.Confused;
+					emoteID = EEmote.Confused;
 					emoteMessages = EMOTE_MESSAGES_CONFUSE;
 					break;
 				case "&shiver":
-					emoteID = eEmote.Shiver;
+					emoteID = EEmote.Shiver;
 					emoteMessages = EMOTE_MESSAGES_SHIVER;
 					break;
 				case "&rofl":
-					emoteID = eEmote.Rofl;
+					emoteID = EEmote.Rofl;
 					emoteMessages = EMOTE_MESSAGES_ROFL;
 					break;
 				case "&mememe":
-					emoteID = eEmote.Mememe;
+					emoteID = EEmote.Mememe;
 					emoteMessages = EMOTE_MESSAGES_MEMEME;
 					break;
 				case "&worship":
-					emoteID = eEmote.Worship;
+					emoteID = EEmote.Worship;
 					emoteMessages = EMOTE_MESSAGES_WORSHIP;
 					break;
 				case "&drink":
-					emoteID = eEmote.Drink;
+					emoteID = EEmote.Drink;
 					emoteMessages = EMOTE_MESSAGES_DRINK;
 					break;
 				// new
                 case "&howl":
-                    emoteID = eEmote.Howl;
+                    emoteID = EEmote.Howl;
                     emoteMessages = EMOTE_MESSAGES_HOWL;
                     break;
                 case "&diabolical":
-                    emoteID = eEmote.Diabolical;
+                    emoteID = EEmote.Diabolical;
                     emoteMessages = EMOTE_MESSAGES_DIABOLICAL;
                     break;
                 case "&brandish":
-                    emoteID = eEmote.Brandish;
+                    emoteID = EEmote.Brandish;
                     emoteMessages = EMOTE_MESSAGES_BRANDISH;
                     break;
                 case "&startled":
-                    emoteID = eEmote.Startled;
+                    emoteID = EEmote.Startled;
                     emoteMessages = EMOTE_MESSAGES_STARTLED;
                     break;
                 case "&talk":
-                    emoteID = eEmote.Talk;
+                    emoteID = EEmote.Talk;
                     emoteMessages = EMOTE_MESSAGES_TALK;
                     break;
                 case "&monty":
-                    emoteID = eEmote.Monty;
+                    emoteID = EEmote.Monty;
                     emoteMessages = EMOTE_MESSAGES_MONTY;
                     break;
                 case "&loco":
-                    emoteID = eEmote.Loco;
+                    emoteID = EEmote.Loco;
                     emoteMessages = EMOTE_MESSAGES_LOCO;
                     break;
                 case "&cower":
-                    emoteID = eEmote.Cower;
+                    emoteID = EEmote.Cower;
                     emoteMessages = EMOTE_MESSAGES_COWER;
                     break;
 				default:
@@ -347,7 +347,7 @@ namespace DOL.GS.Commands
 
 
 		// send emote animation to all visible players and format messages
-		private void SendEmote(GamePlayer sourcePlayer, GameObject targetObject, eEmote emoteID, string[] emoteMessages)
+		private void SendEmote(GamePlayer sourcePlayer, GameObject targetObject, EEmote emoteID, string[] emoteMessages)
 		{
 			string messageToSource = null;
 			string messageToTarget = null;
@@ -399,7 +399,7 @@ namespace DOL.GS.Commands
 		// send emote chat type message to GamePlayer
 		private void SendEmoteMessage(GamePlayer player, string message)
 		{
-			player.Out.SendMessage(message, eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(message, EChatType.CT_Emote, EChatLoc.CL_SystemWindow);
 		}
 
 

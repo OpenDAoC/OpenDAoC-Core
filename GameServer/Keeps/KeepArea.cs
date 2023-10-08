@@ -29,7 +29,7 @@ namespace DOL.GS.Keeps
 			}
 			base.OnPlayerEnter(player);
 			if (Keep.Guild != null)
-				player.Out.SendMessage("Controlled by " + Keep.Guild.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Controlled by " + Keep.Guild.Name + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		public void ChangeRadius(int newRadius)

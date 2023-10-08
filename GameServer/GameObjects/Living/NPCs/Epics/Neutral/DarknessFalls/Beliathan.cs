@@ -128,7 +128,7 @@ namespace DOL.AI.Brain
         public void BroadcastMessage(string message)
         {
             foreach (GamePlayer player in ClientService.GetPlayersOfRegion(Body.CurrentRegion))
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
         }
     }
 }

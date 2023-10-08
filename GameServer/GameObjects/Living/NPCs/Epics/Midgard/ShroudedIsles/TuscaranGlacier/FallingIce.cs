@@ -23,7 +23,7 @@ namespace DOL.GS
                     else
                         truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
-                        truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        truc.Out.SendMessage(Name + " is immune to any damage!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
 
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
@@ -79,7 +79,7 @@ namespace DOL.AI.Brain
         {
             foreach (GamePlayer player in Body.GetPlayersInRadius(2500))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
         private bool Announcetext = false;

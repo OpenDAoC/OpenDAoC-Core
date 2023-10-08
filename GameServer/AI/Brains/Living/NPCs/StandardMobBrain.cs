@@ -353,7 +353,7 @@ namespace DOL.AI.Brain
                     {
                         aggroAmount -= protectAmount;
                         protectSource.Out.SendMessage(LanguageMgr.GetTranslation(protectSource.Client.Account.Language, "AI.Brain.StandardMobBrain.YouProtDist", player.GetName(0, false),
-                                                                                 Body.GetName(0, false, protectSource.Client.Account.Language, Body)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                                                 Body.GetName(0, false, protectSource.Client.Account.Language, Body)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         lock ((AggroTable as ICollection).SyncRoot)
                         {

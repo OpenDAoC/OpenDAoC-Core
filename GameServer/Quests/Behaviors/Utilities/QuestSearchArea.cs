@@ -179,7 +179,7 @@ namespace DOL.GS.Quests
 
             if (showText)
             {
-                player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, m_popupText);
+                player.Out.SendDialogBox(EDialogCode.SimpleWarning, 0, 0, 0, 0, EDialogType.Ok, true, m_popupText);
             }
         }
 

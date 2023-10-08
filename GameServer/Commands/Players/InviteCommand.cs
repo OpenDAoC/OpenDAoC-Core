@@ -12,7 +12,7 @@ public class InviteCommand : ACommandHandler, ICommandHandler
     {
         if (client.Player.Group != null && client.Player.Group.Leader != client.Player)
         {
-            client.Out.SendMessage("You are not the leader of your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage("You are not the leader of your group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -27,13 +27,13 @@ public class InviteCommand : ACommandHandler, ICommandHandler
             // Inviting by target
             if (client.Player.TargetObject == null || client.Player.TargetObject == client.Player)
             {
-                client.Out.SendMessage("You have not selected a valid player as your target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("You have not selected a valid player as your target.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 
             if (client.Player.TargetObject is not GamePlayer targetPlayer)
             {
-                client.Out.SendMessage("You have not selected a valid player as your target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("You have not selected a valid player as your target.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -44,7 +44,7 @@ public class InviteCommand : ACommandHandler, ICommandHandler
 
             if (target.NoHelp)
             {
-                client.Out.SendMessage(target.Name + "has chosen the solo path and can't join your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage(target.Name + "has chosen the solo path and can't join your group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
         }
@@ -57,12 +57,12 @@ public class InviteCommand : ACommandHandler, ICommandHandler
             {
                 case ClientService.PlayerGuessResult.NOT_FOUND:
                 {
-                    client.Out.SendMessage("No players online with that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("No players online with that name.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
                 case ClientService.PlayerGuessResult.FOUND_MULTIPLE:
                 {
-                    client.Out.SendMessage("More than one online player matches that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("More than one online player matches that name.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
                 case ClientService.PlayerGuessResult.FOUND_EXACT:
@@ -70,19 +70,19 @@ public class InviteCommand : ACommandHandler, ICommandHandler
                 {
                     if (!GameServer.ServerRules.IsAllowedToGroup(client.Player, target, true))
                     {
-                        client.Out.SendMessage("No players online with that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage("No players online with that name.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         return;
                     }
 
                     if (target == client.Player)
                     {
-                        client.Out.SendMessage("You can't invite yourself.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage("You can't invite yourself.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         return;
                     }
 
                     if (target.NoHelp)
                     {
-                        client.Out.SendMessage(target.Name + "has chosen the solo path and can't join your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage(target.Name + "has chosen the solo path and can't join your group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         return;
                     }
 
@@ -93,7 +93,7 @@ public class InviteCommand : ACommandHandler, ICommandHandler
 
         if (target.Group != null)
         {
-            client.Out.SendMessage("The player is still in a group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage("The player is still in a group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -109,20 +109,20 @@ public class InviteCommand : ACommandHandler, ICommandHandler
             }
             else if (target.NoHelp)
             {
-                client.Out.SendMessage("Grouping this player would void their SOLO challenge", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("Grouping this player would void their SOLO challenge", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 return;
             }
             else
                 client.Player.Group.AddMember(target);
 
-            client.Out.SendMessage($"(GM) You have added {target.Name} to your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            target.Out.SendMessage($"GM {client.Player.Name} has added you to {client.Player.GetPronoun(1, false)} group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage($"(GM) You have added {target.Name} to your group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+            target.Out.SendMessage($"GM {client.Player.Name} has added you to {client.Player.GetPronoun(1, false)} group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
         else
         {
-            client.Out.SendMessage($"You have invited {target.Name} to join your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage($"You have invited {target.Name} to join your group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             target.Out.SendGroupInviteCommand(client.Player, $"{client.Player.Name} has invited you to join\n{client.Player.GetPronoun(1, false)} group. Do you wish to join?");
-            target.Out.SendMessage($"{client.Player.Name} has invited you to join {client.Player.GetPronoun(1, false)} group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            target.Out.SendMessage($"{client.Player.Name} has invited you to join {client.Player.GetPronoun(1, false)} group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
     }
 }

@@ -54,7 +54,7 @@ namespace DOL.GS.Spells
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
 			if(effect.Owner is GamePlayer && !noMessages)
-				((GamePlayer)effect.Owner).Out.SendMessage("You modification spell effect has expired.", eChatType.CT_SpellExpires, eChatLoc.CL_SystemWindow);
+				((GamePlayer)effect.Owner).Out.SendMessage("You modification spell effect has expired.", EChatType.CT_SpellExpires, EChatLoc.CL_SystemWindow);
 
 			GameEventMgr.RemoveHandler(effect.Owner, GamePlayerEvent.Moving, new CoreEventHandler(OnMove));
 
@@ -79,7 +79,7 @@ namespace DOL.GS.Spells
 				if (effect != null)
 				{
 					effect.Cancel(false);
-					((GamePlayer)living).Out.SendMessage("You move and break your modification spell.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					((GamePlayer)living).Out.SendMessage("You move and break your modification spell.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 			}
 		}

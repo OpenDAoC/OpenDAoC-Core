@@ -59,7 +59,7 @@ namespace DOL.GS.Spells
 		{
 			if (m_originalTarget == null || Caster.ObjectState != GameObject.eObjectState.Active || m_originalTarget.ObjectState != GameObject.eObjectState.Active)
 			{
-				MessageToCaster("Your spell was cancelled.", eChatType.CT_SpellExpires);
+				MessageToCaster("Your spell was cancelled.", EChatType.CT_SpellExpires);
 				effect.Cancel(false);
 				return;
 			}
@@ -71,21 +71,21 @@ namespace DOL.GS.Spells
 				Caster.IsSitting ||
 				(Caster.TargetObject is GameLiving ? m_originalTarget != Caster.TargetObject as GameLiving : true))
 			{
-				MessageToCaster("Your spell was cancelled.", eChatType.CT_SpellExpires);
+				MessageToCaster("Your spell was cancelled.", EChatType.CT_SpellExpires);
 				effect.Cancel(false);
 				return;
 			}
 
 			if (!Caster.IsWithinRadius(m_originalTarget, CalculateSpellRange()))
 			{
-				MessageToCaster("Your target is no longer in range.", eChatType.CT_SpellExpires);
+				MessageToCaster("Your target is no longer in range.", EChatType.CT_SpellExpires);
 				effect.Cancel(false);
 				return;
 			}
 
 			if (!Caster.TargetInView)
 			{
-				MessageToCaster("Your target is no longer in view.", eChatType.CT_SpellExpires);
+				MessageToCaster("Your target is no longer in view.", EChatType.CT_SpellExpires);
 				effect.Cancel(false);
 				return;
 			}

@@ -45,7 +45,7 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 		// Make sure the player is at a trainer.
 		if (!DOL.GS.ServerProperties.Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player && (trainer == null || trainer.CanTrain(client.Player) == false))
 		{
-			client.Out.SendMessage("You have to be at your trainer to use this command.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("You have to be at your trainer to use this command.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
@@ -84,7 +84,7 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 
 		if (spec == null)
 		{
-			client.Out.SendMessage("The provided skill could not be found.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("The provided skill could not be found.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			return;
 		}
@@ -94,15 +94,15 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 
 		if (currentSpecLevel >= client.Player.BaseLevel)
 		{
-			client.Out.SendMessage(CantTrainSpec, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage(CantTrainSpec, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			return;
 		}
 
 		if (level <= currentSpecLevel)
 		{
-			client.Out.SendMessage("You have already trained the skill to this amount!", eChatType.CT_System,
-			                       eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("You have already trained the skill to this amount!", EChatType.CT_System,
+			                       EChatLoc.CL_SystemWindow);
 
 			return;
 		}
@@ -119,7 +119,7 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 		{
 			if (spec.Level + specLevel >= client.Player.BaseLevel)
 			{
-				client.Out.SendMessage(CantTrainSpec, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(CantTrainSpec, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 				break;
 			}
@@ -143,7 +143,7 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 				sb.AppendLine("That specialization costs " + (spec.Level + 1) + " specialization points!");
 				sb.AppendLine(NotEnoughPointsLeft);
 
-				client.Out.SendMessage(sb.ToString(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(sb.ToString(), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				break;
 			}
 		}
@@ -160,7 +160,7 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 				client.Out.SendUpdatePoints();
 				client.Out.SendTrainerWindow();
 
-				client.Out.SendMessage("Training complete!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Training complete!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else
 			{
@@ -168,7 +168,7 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 				sb.AppendLine("That specialization costs " + (spec.Level + 1) + " specialization points!");
 				sb.AppendLine(NotEnoughPointsLeft);
 
-				client.Out.SendMessage(sb.ToString(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(sb.ToString(), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 	}

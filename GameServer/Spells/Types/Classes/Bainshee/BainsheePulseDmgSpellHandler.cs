@@ -53,7 +53,7 @@ namespace DOL.GS.Spells
             if (player == null) return;
             if (Spell.Pulse != 0 && CancelPulsingSpell(Caster, Spell.SpellType))
             {
-                MessageToCaster("You cancel your effect.", eChatType.CT_Spell);
+                MessageToCaster("You cancel your effect.", EChatType.CT_Spell);
                 return;
             }
         }

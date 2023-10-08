@@ -188,7 +188,7 @@ namespace DOL.GS.Quests
         public virtual void FinishQuest()
         {
             Step = -2; // -2 indicates quest finished, -1 indicates aborted quests etc, they won't show up in the list.
-            m_questPlayer.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+            m_questPlayer.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 
             // Move quest from active list to finished list.
             if (m_questPlayer.QuestList.TryRemove(this, out byte value))
@@ -210,14 +210,14 @@ namespace DOL.GS.Quests
 
             DeleteFromDatabase();
             m_questPlayer.Out.SendQuestRemove(value);
-            m_questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.AbortQuest"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            m_questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.AbortQuest"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 
         public abstract void Notify(CoreEvent e, object sender, EventArgs args);
 
         public virtual void OnQuestAssigned(GamePlayer player)
         {
-            player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.OnQuestAssigned.GetQuest", Name)), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+            player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.OnQuestAssigned.GetQuest", Name)), EChatType.CT_System, EChatLoc.CL_ChatWindow);
         }
 
         #region Quest Commands
@@ -324,7 +324,7 @@ namespace DOL.GS.Quests
                         commandName = Enum.GetName(typeof(eQuestCommand), eQuestCommand.SEARCH).ToLower();
                     }
 
-                    player.Out.SendMessage("Your " + commandName + " is interrupted!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("Your " + commandName + " is interrupted!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 }
 
                 RemoveActionHandlers(player);
@@ -339,7 +339,7 @@ namespace DOL.GS.Quests
         {
             // Override this to do whatever needs to be done when the command is completed.
             // Typically this would be when giving the player an item and advancing the step.
-            QuestPlayer.Out.SendMessage("Error, command completed handler not overridden for quest!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            QuestPlayer.Out.SendMessage("Error, command completed handler not overridden for quest!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
         }
 
         #endregion Quest Commands
@@ -387,10 +387,10 @@ namespace DOL.GS.Quests
                     InventoryLogging.LogInventoryAction(player, target, EInventoryActionType.Quest, item.Template, item.Count);
 
                     if (target != null)
-                        player.Out.SendMessage($"You give the {itemTemplate.Name} to {target.GetName(0, false)}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage($"You give the {itemTemplate.Name} to {target.GetName(0, false)}.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 }
                 else if (notify)
-                    player.Out.SendMessage($"You cannot remove the {itemTemplate.Name} because you don't have it.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"You cannot remove the {itemTemplate.Name} because you don't have it.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
         }
 
@@ -410,10 +410,10 @@ namespace DOL.GS.Quests
                     InventoryLogging.LogInventoryAction(player, target, EInventoryActionType.Quest, item.Template, item.Count);
 
                     if (target != null)
-                        player.Out.SendMessage($"You give the {item.Name} to {target.GetName(0, false)}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage($"You give the {item.Name} to {target.GetName(0, false)}.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 }
                 else if (notify)
-                    player.Out.SendMessage($"You cannot remove the {item.Name} because you don't have it.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"You cannot remove the {item.Name} because you don't have it.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
         }
 
@@ -442,13 +442,13 @@ namespace DOL.GS.Quests
                 if (notify)
                 {
                     if (itemsRemoved == 0)
-                        player.Out.SendMessage($"You cannot remove the {itemTemplate.Name} because you don't have it.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage($"You cannot remove the {itemTemplate.Name} because you don't have it.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     else if (target != null)
                     {
                         if (itemTemplate.Name.EndsWith("s"))
-                            player.Out.SendMessage($"You give the {itemTemplate.Name} to {target.Name}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage($"You give the {itemTemplate.Name} to {target.Name}.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         else
-                            player.Out.SendMessage($"You give the {itemTemplate.Name}'s to {target.Name}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage($"You give the {itemTemplate.Name}'s to {target.Name}.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     }
                 }
             }
@@ -469,8 +469,8 @@ namespace DOL.GS.Quests
             m_sayTimerQueue.Dequeue();
             GamePlayer player = (GamePlayer) m_sayObjectQueue.Dequeue();
             string message = (string) m_sayMessageQueue.Dequeue();
-            eChatType chatType = (eChatType) m_sayChatTypeQueue.Dequeue();
-            eChatLoc chatLoc = (eChatLoc) m_sayChatLocQueue.Dequeue();
+            EChatType chatType = (EChatType) m_sayChatTypeQueue.Dequeue();
+            EChatLoc chatLoc = (EChatLoc) m_sayChatLocQueue.Dequeue();
             player.Out.SendMessage(message, chatType, chatLoc);
             return 0;
         }
@@ -492,7 +492,7 @@ namespace DOL.GS.Quests
 
         protected static void SendSystemMessage(GamePlayer player, string msg, uint delay)
         {
-            SendMessage(player, msg, delay, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            SendMessage(player, msg, delay, EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 
         protected static void SendEmoteMessage(GamePlayer player, string msg)
@@ -502,15 +502,15 @@ namespace DOL.GS.Quests
 
         protected static void SendEmoteMessage(GamePlayer player, string msg, uint delay)
         {
-            SendMessage(player, msg, delay, eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
+            SendMessage(player, msg, delay, EChatType.CT_Emote, EChatLoc.CL_SystemWindow);
         }
 
         protected static void SendReply(GamePlayer player, string msg)
         {
-            SendMessage(player, msg, 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            SendMessage(player, msg, 0, EChatType.CT_Say, EChatLoc.CL_PopupWindow);
         }
 
-        protected static void SendMessage(GamePlayer player, string msg, uint delay, eChatType chatType, eChatLoc chatLoc)
+        protected static void SendMessage(GamePlayer player, string msg, uint delay, EChatType chatType, EChatLoc chatLoc)
         {
             msg = BehaviourUtils.GetPersonalizedMessage(msg, player);
 
@@ -568,11 +568,11 @@ namespace DOL.GS.Quests
                 if (canDrop)
                 {
                     player.CreateItemOnTheGround(item);
-                    player.Out.SendMessage(string.Format("Your backpack is full, {0} is dropped on the ground.", itemTemplate.Name), eChatType.CT_Important, eChatLoc.CL_PopupWindow);
+                    player.Out.SendMessage(string.Format("Your backpack is full, {0} is dropped on the ground.", itemTemplate.Name), EChatType.CT_Important, EChatLoc.CL_PopupWindow);
                 }
                 else
                 {
-                    player.Out.SendMessage("Your backpack is full!", eChatType.CT_Important, eChatLoc.CL_PopupWindow);
+                    player.Out.SendMessage("Your backpack is full!", EChatType.CT_Important, EChatLoc.CL_PopupWindow);
                     return false;
                 }
             }

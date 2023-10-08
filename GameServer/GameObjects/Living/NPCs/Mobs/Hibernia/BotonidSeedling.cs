@@ -76,8 +76,8 @@ namespace DOL.GS.Scripts
                     foreach (GamePlayer player in Body.GetPlayersInRadius(400))
                     {
                         player.Out.SendMessage("The lure dissapears and a scourgin jumps out at " + player.Name + ".",
-                            eChatType.CT_Say,
-                            eChatLoc.CL_ChatWindow);
+                            EChatType.CT_Say,
+                            EChatLoc.CL_ChatWindow);
                         Transform(transformed); // scourgin
                         transformed = true;
                     }

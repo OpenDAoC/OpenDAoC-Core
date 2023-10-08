@@ -82,7 +82,7 @@ namespace DOL.GS.GameEvents
 				//windows and will generate a &whis text command!
 				player.Out.SendMessage(
 					"Hello " + player.Name + " do you want to have a little [chat]?",
-					eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					EChatType.CT_System, EChatLoc.CL_PopupWindow);
 				return true;
 			}
 
@@ -151,7 +151,7 @@ namespace DOL.GS.GameEvents
 			{
 				target.Out.SendMessage(
 					msg,
-					eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					EChatType.CT_System, EChatLoc.CL_PopupWindow);
 			}
 		}
 

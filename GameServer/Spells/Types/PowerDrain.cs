@@ -61,9 +61,9 @@ namespace DOL.GS.Spells
 			powerGain = owner.ChangeMana(m_caster, EPowerChangeType.Spell, powerGain);
 
 			if (powerGain > 0)
-				MessageToOwner(String.Format("Your summon channels {0} power to you!", powerGain), eChatType.CT_Spell);
+				MessageToOwner(String.Format("Your summon channels {0} power to you!", powerGain), EChatType.CT_Spell);
 			else
-				MessageToOwner("You cannot absorb any more power.", eChatType.CT_SpellResisted);
+				MessageToOwner("You cannot absorb any more power.", EChatType.CT_SpellResisted);
 		}
 		
 		/// <summary>
@@ -81,7 +81,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="message"></param>
 		/// <param name="chatType"></param>
-		protected virtual void MessageToOwner(String message, eChatType chatType)
+		protected virtual void MessageToOwner(String message, EChatType chatType)
 		{
 			base.MessageToCaster(message, chatType);
 		}

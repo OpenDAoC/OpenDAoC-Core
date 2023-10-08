@@ -48,12 +48,12 @@ namespace DOL.GS
 			Owner.Health += (int)(Owner.GetModified(EProperty.MaxHealth) * m_amountPercent);
 			if (Owner.Health > Owner.MaxHealth) Owner.Health = Owner.MaxHealth;
 
-			Owner.Emote(eEmote.StagFrenzy);
+			Owner.Emote(EEmote.StagFrenzy);
 
 			if (OwnerPlayer != null)
 			{
 				OwnerPlayer.Out.SendUpdatePlayer();
-				OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.StagEffect.HuntsSpiritChannel"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.StagEffect.HuntsSpiritChannel"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 			}
 		}
         public override void OnStopEffect()
@@ -68,7 +68,7 @@ namespace DOL.GS
 			{
 				OwnerPlayer.Out.SendUpdatePlayer();
 				// there is no animation on end of the effect
-				OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.StagEffect.YourHuntsSpiritEnds"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.StagEffect.YourHuntsSpiritEnds"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 			}
 		}
     }

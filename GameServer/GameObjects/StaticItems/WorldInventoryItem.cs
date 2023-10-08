@@ -234,7 +234,7 @@ namespace DOL.GS
 			{
 				if (player.ObjectState == eObjectState.Active)
 				{
-					player.Out.SendMessage("You may now pick up " + Name + "!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You may now pick up " + Name + "!", EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
 				}
 			}
 			m_pickup.Stop();

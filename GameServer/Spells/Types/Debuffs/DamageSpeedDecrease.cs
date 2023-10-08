@@ -77,7 +77,7 @@ namespace DOL.GS.Spells
 			int heal = (ad.Damage + ad.CriticalDamage) * m_spell.LifeDrainReturn/100;
 			if (m_caster.IsDiseased)
 			{
-				MessageToCaster("You are diseased!", eChatType.CT_SpellResisted);
+				MessageToCaster("You are diseased!", EChatType.CT_SpellResisted);
 				heal >>= 1;
 			}
 			if(heal <= 0) return;
@@ -85,11 +85,11 @@ namespace DOL.GS.Spells
 
 			if(heal > 0) 
 			{
-				MessageToCaster("You steal " + heal + " hit point" + (heal==1?".":"s."), eChatType.CT_Spell);
+				MessageToCaster("You steal " + heal + " hit point" + (heal==1?".":"s."), EChatType.CT_Spell);
 			}
 			else 
 			{
-				MessageToCaster("You cannot absorb any more life.", eChatType.CT_SpellResisted);
+				MessageToCaster("You cannot absorb any more life.", EChatType.CT_SpellResisted);
 			}
 		}
 

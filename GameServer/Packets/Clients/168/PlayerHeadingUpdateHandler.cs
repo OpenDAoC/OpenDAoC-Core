@@ -1,28 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Reflection;
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.PlayerHeadingUpdate, "Handles Player Heading Update (Short State)", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerHeadingUpdate, "Handles Player Heading Update (Short State)", EClientStatus.PlayerInGame)]
 	public class PlayerHeadingUpdateHandler : IPacketHandler
 	{
 		/// <summary>
@@ -30,7 +11,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			if (client?.Player == null)
 				return;
@@ -90,7 +71,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (client.Player.IsTorchLighted)
 				flagcontent |= 0x80;
 
-			GSUDPPacketOut outpak190 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerHeading));
+			GsUdpPacketOut outpak190 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerHeading));
 			outpak190.WriteShort((ushort) client.SessionID);
 			outpak190.WriteShort(head);
 			outpak190.WriteByte(unk1); // unknown
@@ -103,7 +84,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak190.WriteByte(client.Player.EndurancePercent);
 			outpak190.WritePacketLength();
 
-			GSUDPPacketOut outpak1124 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerHeading));
+			GsUdpPacketOut outpak1124 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerHeading));
 			outpak1124.WriteShort((ushort)client.SessionID);
 			outpak1124.WriteShort(head);
 			outpak1124.WriteByte(steedSlot);
@@ -116,7 +97,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1124.WriteByte(0); // unknown
 			outpak1124.WritePacketLength();
 
-			GSUDPPacketOut outpak1127 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerHeading));
+			GsUdpPacketOut outpak1127 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerHeading));
 			outpak1127.WriteShort((ushort)client.SessionID);
 			outpak1127.WriteShort(0); // current target
 			outpak1127.WriteShort(head);

@@ -86,7 +86,7 @@ namespace DOL.GS.Keeps
 			if ((attacker != null && IsWithinRadius(attacker, distance) == false) || IsWithinRadius(source, distance) == false)
 			{
 				if (attacker != null)
-					attacker.Out.SendMessage(this.Name + " can't be attacked from this distance.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					attacker.Out.SendMessage(this.Name + " can't be attacked from this distance.", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);

@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +31,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CryptKey)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CryptKey)))
 			{
 				pak.WritePascalStringIntLE((((int)m_gameClient.Version) / 1000) + "." + (((int)m_gameClient.Version) - 1000) + m_gameClient.MinorRev);
 				//// Same as the trailing two bytes sent in first client to server packet
@@ -66,7 +47,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendLoginGranted(byte color)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.LoginGranted)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.LoginGranted)))
 			{
 				pak.WritePascalString(m_gameClient.Account.Name);
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
@@ -82,7 +63,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendRealm(ERealm realm)
 		{
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Realm)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Realm)))
 			{
 				pak.WriteByte((byte)realm);
 				pak.Fill(0, 12);
@@ -102,7 +83,7 @@ namespace DOL.GS.PacketHandler
 
 			int firstSlot = (byte)realm * 100;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CharacterOverview)))
 			{
 				//pak.Fillstring(GameClient.Account.Name, 24);
 				pak.Fill(0, 8);
@@ -391,7 +372,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendUDPInitReply()
 		{
-			using (var pak = new GSUDPPacketOut(GetPacketCode(eServerPackets.UDPInitReply)))
+			using (var pak = new GsUdpPacketOut(GetPacketCode(EServerPackets.UDPInitReply)))
 			{
 
 				if (!m_gameClient.Socket.Connected) // not using RC4, wont accept UDP packets anyway.
@@ -410,7 +391,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x06); // subcode - player group window
 									 // a 06 00 packet is sent when logging in.
@@ -436,7 +417,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
+		protected override void WriteGroupMemberUpdate(GsTcpPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
 		{
 			pak.WriteByte((byte)(0x20 | living.GroupIndex)); // From 1 to 8 // 0x20 is player status code
 			if (living.CurrentRegion != m_gameClient.Player.CurrentRegion)
@@ -521,7 +502,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendMarketExplorerWindow(IList<DbInventoryItem> items, byte page, byte maxpage)
 		{
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.MarketExplorerWindow)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.MarketExplorerWindow)))
 			{
 				pak.WriteByte((byte)items.Count);
 				pak.WriteByte(page);
@@ -638,7 +619,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// 1125d+ Merchant window
 		/// </summary>
-		public override void SendMerchantWindow(MerchantTradeItems tradeItemsList, eMerchantWindowType windowType)
+		public override void SendMerchantWindow(MerchantTradeItems tradeItemsList, EMerchantWindowType windowType)
 		{
 			if (tradeItemsList != null)
 			{
@@ -650,7 +631,7 @@ namespace DOL.GS.PacketHandler
 						continue;
 					}
 
-					using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.MerchantWindow)))
+					using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.MerchantWindow)))
 					{
 						pak.WriteByte((byte)itemsInPage.Count); //Item count on this page
 						pak.WriteByte((byte)windowType);
@@ -753,7 +734,7 @@ namespace DOL.GS.PacketHandler
 			}
 			else
 			{
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.MerchantWindow)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.MerchantWindow)))
 				{
 					pak.WriteByte(0); //Item count on this page
 					pak.WriteByte((byte)windowType); //Unknown 0x00
@@ -768,7 +749,7 @@ namespace DOL.GS.PacketHandler
         /// </summary>
         public override void SendFurniture(House house)
         {
-            using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HousingItem)))
+            using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HousingItem)))
             {
                 pak.WriteShortLowEndian((ushort)house.HouseNumber);
                 pak.WriteByte((byte)house.IndoorItems.Count);
@@ -789,7 +770,7 @@ namespace DOL.GS.PacketHandler
         /// </summary>
         public override void SendFurniture(House house, int i)
         {
-            using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HousingItem)))
+            using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HousingItem)))
             {
                 pak.WriteShortLowEndian((ushort)house.HouseNumber);
                 pak.WriteByte(0x01); //cnt
@@ -803,7 +784,7 @@ namespace DOL.GS.PacketHandler
         /// <summary>
         /// Shorts changed to low endian
         /// </summary>
-        protected override void WriteHouseFurniture(GSTCPPacketOut pak, IndoorItem item, int index)
+        protected override void WriteHouseFurniture(GsTcpPacketOut pak, IndoorItem item, int index)
         {
             pak.WriteByte((byte)index);
             byte type = 0;

@@ -49,7 +49,7 @@ namespace DOL.GS.Spells
         {
             if (caster.CurrentRegion.IsNightTime)
             {
-                MessageToCaster("The powers of the Belt of Sun, can only be Summon under the Sun light!", eChatType.CT_SpellResisted);
+                MessageToCaster("The powers of the Belt of Sun, can only be Summon under the Sun light!", EChatType.CT_SpellResisted);
                 return;
             }
 
@@ -465,7 +465,7 @@ namespace DOL.GS.Spells
 
             else
             {
-                player.Out.SendMessage("" + player.CharacterClass.Name + "'s cant Summon Light!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("" + player.CharacterClass.Name + "'s cant Summon Light!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
         }
@@ -1827,7 +1827,7 @@ namespace DOL.GS.Spells
                         if (invItem.Id_nb.Equals("Sun_Spear"))
                             player.Inventory.RemoveItem(invItem);
 
-                        player.Out.SendMessage("The Power of Belt of Sun, has left you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage("The Power of Belt of Sun, has left you!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     }
                 }
             }

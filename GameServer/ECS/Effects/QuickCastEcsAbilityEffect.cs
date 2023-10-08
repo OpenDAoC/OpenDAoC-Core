@@ -22,7 +22,7 @@ namespace DOL.GS
         public override void OnStartEffect()
         {
             if (Owner is GamePlayer)
-                (Owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Owner as GamePlayer).Client, "Effects.QuickCastEffect.YouActivatedQC"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                (Owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Owner as GamePlayer).Client, "Effects.QuickCastEffect.YouActivatedQC"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             Owner.TempProperties.RemoveProperty(Spells.SpellHandler.INTERRUPT_TIMEOUT_PROPERTY);
         }
         public override void OnStopEffect()
@@ -34,7 +34,7 @@ namespace DOL.GS
             if (playerCancel)
             {
                 if (Owner is GamePlayer)
-                    (Owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Owner as GamePlayer).Client, "Effects.QuickCastEffect.YourNextSpellNoQCed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    (Owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Owner as GamePlayer).Client, "Effects.QuickCastEffect.YourNextSpellNoQCed"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
 
             EffectService.RequestImmediateCancelEffect(this, playerCancel);

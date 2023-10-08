@@ -37,9 +37,9 @@ public class Recharger : GameNPC
         TurnTo(player, 5000);
 
         // Message: "I can recharge weapons or armor for you, Just hand me the item you want recharged and I'll see what I can do, for a small fee."
-        SayTo(player, eChatLoc.CL_PopupWindow,
+        SayTo(player, EChatLoc.CL_PopupWindow,
                 LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Recharger.Interact"));
-        SayTo(player, eChatLoc.CL_PopupWindow,
+        SayTo(player, EChatLoc.CL_PopupWindow,
             $"If you're in a hurry, I can also [recharge all] your items for an additional {RECHARGE_ALL_TAX*100}% fee.");
         
         return true;
@@ -72,8 +72,8 @@ public class Recharger : GameNPC
         {
             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                     "Scripts.Recharger.ReceiveItem.StackedObjects",
-                    GetName(0, false, player.Client.Account.Language, this)), eChatType.CT_System,
-                eChatLoc.CL_SystemWindow);
+                    GetName(0, false, player.Client.Account.Language, this)), EChatType.CT_System,
+                EChatLoc.CL_SystemWindow);
             return false;
         }
 
@@ -131,8 +131,8 @@ public class Recharger : GameNPC
         {
             player.Out.SendMessage(
                 LanguageMgr.GetTranslation(player.Client.Account.Language,
-                    "Scripts.Recharger.RechargerDialogResponse.InvalidItem"), eChatType.CT_System,
-                eChatLoc.CL_SystemWindow);
+                    "Scripts.Recharger.RechargerDialogResponse.InvalidItem"), EChatType.CT_System,
+                EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -140,8 +140,8 @@ public class Recharger : GameNPC
         {
             player.Out.SendMessage(
                 LanguageMgr.GetTranslation(player.Client.Account.Language,
-                    "Scripts.Recharger.RechargerDialogResponse.Decline", item.Name), eChatType.CT_System,
-                eChatLoc.CL_SystemWindow);
+                    "Scripts.Recharger.RechargerDialogResponse.Decline", item.Name), EChatType.CT_System,
+                EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -155,8 +155,8 @@ public class Recharger : GameNPC
         {
             player.Out.SendMessage(
                 LanguageMgr.GetTranslation(player.Client.Account.Language,
-                    "Scripts.Recharger.RechargerDialogResponse.NotMoney"), eChatType.CT_System,
-                eChatLoc.CL_SystemWindow);
+                    "Scripts.Recharger.RechargerDialogResponse.NotMoney"), EChatType.CT_System,
+                EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -165,7 +165,7 @@ public class Recharger : GameNPC
         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                 "Scripts.Recharger.RechargerDialogResponse.GiveMoney",
                 GetName(0, false, player.Client.Account.Language, this), MoneyMgr.GetString(cost)),
-            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            EChatType.CT_System, EChatLoc.CL_SystemWindow);
         item.Charges = item.MaxCharges;
         item.Charges1 = item.MaxCharges1;
 
@@ -194,7 +194,7 @@ public class Recharger : GameNPC
             LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Recharger.ReceiveItem.Cost",
                 MoneyMgr.GetString(TotalCost)), RechargeAll);
         else
-            SayTo(player, eChatLoc.CL_PopupWindow,
+            SayTo(player, EChatLoc.CL_PopupWindow,
                 "All items are fully charged already.");
     }
 
@@ -204,8 +204,8 @@ public class Recharger : GameNPC
         {
             player.Out.SendMessage(
                 LanguageMgr.GetTranslation(player.Client.Account.Language,
-                    "Scripts.Recharger.RechargerDialogResponse.Decline", "inventory"), eChatType.CT_System,
-                eChatLoc.CL_SystemWindow);
+                    "Scripts.Recharger.RechargerDialogResponse.Decline", "inventory"), EChatType.CT_System,
+                EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -218,7 +218,7 @@ public class Recharger : GameNPC
 
         if (!player.RemoveMoney(cost))
         {
-            SayTo(player,eChatLoc.CL_PopupWindow,
+            SayTo(player,EChatLoc.CL_PopupWindow,
                 LanguageMgr.GetTranslation(player.Client.Account.Language,
                     "Scripts.Recharger.RechargerDialogResponse.NotMoney"));
             return;
@@ -229,7 +229,7 @@ public class Recharger : GameNPC
         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                 "Scripts.Recharger.RechargerDialogResponse.GiveMoney",
                 GetName(0, false, player.Client.Account.Language, this), MoneyMgr.GetString(cost)),
-            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
         foreach (var inventoryItem in player.Inventory.AllItems)
         {
@@ -238,7 +238,7 @@ public class Recharger : GameNPC
             player.Out.SendInventoryItemsUpdate(new[] {inventoryItem});
         }
         
-        SayTo(player,eChatLoc.CL_PopupWindow,
+        SayTo(player,EChatLoc.CL_PopupWindow,
             LanguageMgr.GetTranslation(player.Client.Account.Language,
                 "Scripts.Recharger.RechargerDialogResponse.FullyCharged"));
     }

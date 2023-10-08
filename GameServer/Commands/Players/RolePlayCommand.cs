@@ -23,12 +23,12 @@ public class RolePlayCommand : ACommandHandler, ICommandHandler
 		if (args[1].ToLower().Equals("on"))
 		{
 			client.Player.RPFlag = true;
-			client.Out.SendMessage("Your roleplay flag is ON. You will now be flagged as a roleplayer. Use '/roleplay off' to turn the flag off.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Your roleplay flag is ON. You will now be flagged as a roleplayer. Use '/roleplay off' to turn the flag off.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 		else if (args[1].ToLower().Equals("off"))
 		{
 			client.Player.RPFlag = false;
-			client.Out.SendMessage("Your roleplay flag is OFF. You will be flagged as a roleplayer. Use '/roleplay on' to turn the flag back on.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Your roleplay flag is OFF. You will be flagged as a roleplayer. Use '/roleplay on' to turn the flag back on.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 	}
 }

@@ -417,8 +417,8 @@ namespace DOL.GS.Spells
             effect.Owner.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, effect);
 
             SendUpdates(effect.Owner);
-            MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-            MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
+            MessageToLiving(effect.Owner, Spell.Message3, EChatType.CT_SpellExpires);
+            MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), EChatType.CT_SpellExpires, effect.Owner);
 
             return 0;
         }
@@ -696,7 +696,7 @@ namespace DOL.GS.Spells
                     {
 
                         InventoryLogging.LogInventoryAction(Caster, targetPlayer, EInventoryActionType.Other, item.Template, item.Count);
-                        targetPlayer.Out.SendMessage("Item created: " + item.GetName(0, false), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        targetPlayer.Out.SendMessage("Item created: " + item.GetName(0, false), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     }
                 }
             }

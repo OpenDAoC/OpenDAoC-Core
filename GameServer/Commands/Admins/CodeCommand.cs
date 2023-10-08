@@ -27,10 +27,10 @@ namespace DOL.GS.Commands
             {
                 if (client.Player != null)
                 {
-                    client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Code.ErrorCompiling"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                    client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Code.ErrorCompiling"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 
                     foreach (var errorMessage in errorMessages)
-                        client.Out.SendMessage(errorMessage, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                        client.Out.SendMessage(errorMessage, EChatType.CT_System, EChatLoc.CL_PopupWindow);
                 }
                 else
                 {
@@ -47,7 +47,7 @@ namespace DOL.GS.Commands
 
                 if (client.Player != null)
                 {
-                    client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Code.CodeExecuted"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Code.CodeExecuted"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace DOL.GS.Commands
                 {
                     string[] errors = ex.ToString().Split('\n');
                     foreach (string error in errors)
-                        client.Out.SendMessage(error, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                        client.Out.SendMessage(error, EChatType.CT_System, EChatLoc.CL_PopupWindow);
                 }
                 else
                 {

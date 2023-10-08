@@ -59,8 +59,8 @@ namespace DOL.GS
 						else
 							truc = ((source as GameSummonedPet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(Name + " is immune to any damage!", eChatType.CT_System,
-								eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " is immune to any damage!", EChatType.CT_System,
+								EChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}
@@ -75,7 +75,7 @@ namespace DOL.GS
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 			}
 		}
 		/// <summary>
@@ -262,7 +262,7 @@ namespace DOL.GS
 			if (enemy is GamePlayer player)
 			{
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfZone(CurrentZone))
-					otherPlayer.Out.SendMessage($"{Name} shouts, 'Your soul now belongs to me, {player.CharacterClass.Name}!'", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+					otherPlayer.Out.SendMessage($"{Name} shouts, 'Your soul now belongs to me, {player.CharacterClass.Name}!'", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 
 			base.EnemyKilled(enemy);
@@ -428,7 +428,7 @@ namespace DOL.AI.Brain
 				foreach (GamePlayer player in ClientService.GetPlayersOfZone(Body.CurrentZone))
 				{
 					player.Out.SendSoundEffect(2467, 0, 0, 0, 0, 0);//play sound effect for every player in boss currentregion
-					player.Out.SendMessage("A booming voice echoes through the canyons, 'I grow restless. Who has dared to enter my domain? I shall freeze their flesh and grind their bones to dust!'", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+					player.Out.SendMessage("A booming voice echoes through the canyons, 'I grow restless. Who has dared to enter my domain? I shall freeze their flesh and grind their bones to dust!'", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 				}
 
 				Body.Flags = GameNPC.eFlags.FLYING;//make dragon fly mode
@@ -520,7 +520,7 @@ namespace DOL.AI.Brain
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 			}
 		}
 		public static List<t> GetRandomElements<t>(IEnumerable<t> list, int elementsCount)//pick X elements from list
@@ -555,7 +555,7 @@ namespace DOL.AI.Brain
 						{
 							if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && HasAggro && player.IsWithinRadius(Body, 2000))
 							{
-								player.Out.SendMessage(Body.Name + " begins flapping her wings violently. You struggle to hold your footing on the ground!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+								player.Out.SendMessage(Body.Name + " begins flapping her wings violently. You struggle to hold your footing on the ground!", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 								switch (Util.Random(1, 5))
 								{
 									case 1: player.MoveTo(100, 708632, 1021688, 3721, 2499); break;//lair spawn point
@@ -628,7 +628,7 @@ namespace DOL.AI.Brain
 				Body.TurnTo(RandomTarget);
 				Body.CastSpell(Dragon_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				string glaretext = glare_text[Util.Random(0, glare_text.Count - 1)];
-				RandomTarget.Out.SendMessage(glaretext, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+				RandomTarget.Out.SendMessage(glaretext, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGlare), 2000);
 			return 0;
@@ -683,7 +683,7 @@ namespace DOL.AI.Brain
 						foreach (GamePlayer player in Body.GetPlayersInRadius(5000))
 						{
 							if (player != null)
-								player.Out.SendMessage(String.Format("{0} stares at {1} and prepares a massive attack.", Body.Name, RandomTarget2.Name), eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+								player.Out.SendMessage(String.Format("{0} stares at {1} and prepares a massive attack.", Body.Name, RandomTarget2.Name), EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 						}
 						new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastGlareRoam), 3000);
 					}
@@ -703,7 +703,7 @@ namespace DOL.AI.Brain
 				Body.TurnTo(RandomTarget2);
 				Body.CastSpell(Dragon_DD2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);//special roaming glare
 				string glaretextroam = glareroam_text[Util.Random(0, glareroam_text.Count - 1)];
-				RandomTarget2.Out.SendMessage(glaretextroam, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+				RandomTarget2.Out.SendMessage(glaretextroam, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 			new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(ResetGlareRoam), 2000);
 			return 0;

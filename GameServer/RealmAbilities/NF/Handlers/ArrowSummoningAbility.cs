@@ -44,15 +44,15 @@ namespace DOL.GS.RealmAbilities
 
             if(!player.Inventory.AddTemplate(GameInventoryItem.Create(arrow_summoning_1),10,EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
-				player.Out.SendMessage("You do not have enough inventory space to place this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You do not have enough inventory space to place this item!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else if (!player.Inventory.AddTemplate(GameInventoryItem.Create(arrow_summoning_2), 10, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
-                player.Out.SendMessage("You do not have enough inventory space to place this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You do not have enough inventory space to place this item!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else if (!player.Inventory.AddTemplate(GameInventoryItem.Create(arrow_summoning_3), 10, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
-                player.Out.SendMessage("You do not have enough inventory space to place this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You do not have enough inventory space to place this item!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}			
 
 			GameEventMgr.AddHandler(player,GamePlayerEvent.Quit, new CoreEventHandler(PlayerQuit));	

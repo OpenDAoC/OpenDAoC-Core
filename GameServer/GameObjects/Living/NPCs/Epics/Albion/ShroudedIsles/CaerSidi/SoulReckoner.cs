@@ -133,7 +133,7 @@ namespace DOL.GS
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
             {
-                player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
             }
         }
 
@@ -149,7 +149,7 @@ namespace DOL.GS
                     else
                         truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
-                        truc.Out.SendMessage(Name + " brushes off your attack!", eChatType.CT_System,eChatLoc.CL_ChatWindow);
+                        truc.Out.SendMessage(Name + " brushes off your attack!", EChatType.CT_System,EChatLoc.CL_ChatWindow);
 
                     base.TakeDamage(source, damageType, 0, 0);
                     return;
@@ -162,7 +162,7 @@ namespace DOL.GS
                     else
                         truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     if (truc != null)
-                        truc.Out.SendMessage("The " + Name + " flickers briefly", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        truc.Out.SendMessage("The " + Name + " flickers briefly", EChatType.CT_System, EChatLoc.CL_ChatWindow);
 
                     base.TakeDamage(source, damageType, damageAmount, criticalAmount);
                 }

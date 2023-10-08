@@ -1327,7 +1327,7 @@ namespace DOL.GS.Quests.Albion
 									quest.FinishQuest();
 								}
 								else
-									player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+									player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 							}
 							break;
 						case "abort":
@@ -1349,7 +1349,7 @@ namespace DOL.GS.Quests.Albion
 							quest.FinishQuest();
 						}
 						else
-							player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					}
 			}
 
@@ -1429,7 +1429,7 @@ namespace DOL.GS.Quests.Albion
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Our God forgives your laziness, just look out for stray lightning bolts.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Our God forgives your laziness, just look out for stray lightning bolts.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -1437,7 +1437,7 @@ namespace DOL.GS.Quests.Albion
 				if (!Lidmann.GiveQuest(typeof (Defenders_50), player, 1))
 					return;
 
-				player.Out.SendMessage("Kill Cailleach Uragaig in Lyonesse!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Kill Cailleach Uragaig in Lyonesse!", EChatType.CT_System, EChatLoc.CL_PopupWindow);
 			}
 		}
 
@@ -1482,7 +1482,7 @@ namespace DOL.GS.Quests.Albion
 				{
 					if (gArgs.Target.Name == Uragaig.Name)
 					{
-						m_questPlayer.Out.SendMessage("Take the pouch to Lidmann Halsey", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						m_questPlayer.Out.SendMessage("Take the pouch to Lidmann Halsey", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						GiveItem(player, sealed_pouch);
 						Step = 2;
 					}
@@ -1500,7 +1500,7 @@ namespace DOL.GS.Quests.Albion
 						FinishQuest();
 					}
 					else
-						player.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 			}
 		}

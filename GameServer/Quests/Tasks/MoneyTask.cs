@@ -178,7 +178,7 @@ namespace DOL.GS.Quests
 			GameNPC NPC = GetRandomNPC(player);
 			if(NPC == null)
 			{
-				player.Out.SendMessage("I have no task for you, come back some time later.",eChatType.CT_System,eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("I have no task for you, come back some time later.",EChatType.CT_System,EChatLoc.CL_PopupWindow);
 				return false;
 			}
 			else
@@ -191,7 +191,7 @@ namespace DOL.GS.Quests
 				player.Task.ReceiverName = NPC.Name;
 				((MoneyTask)player.Task).RecieverZone = NPC.CurrentZone.Description;
 				
-				player.Out.SendMessage("Bring "+TaskItems.GetName(0,false)+" to "+NPC.Name +" in "+ NPC.CurrentZone.Description, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Bring "+TaskItems.GetName(0,false)+" to "+NPC.Name +" in "+ NPC.CurrentZone.Description, EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				//Player.Out.SendCustomDialog("", new CustomDialogResponse(TaskDialogResponse));
 
 				player.ReceiveItem(source,TaskItems);

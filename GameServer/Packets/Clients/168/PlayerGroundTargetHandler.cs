@@ -1,28 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.PlayerGroundTarget, "Handles Player Ground Target Settings", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerGroundTarget, "Handles Player Ground Target Settings", EClientStatus.PlayerInGame)]
 	public class PlayerGroundTargetHandler : IPacketHandler
 	{
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			var groundX = (int) packet.ReadInt();
 			var groundY = (int) packet.ReadInt();
@@ -81,7 +62,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				player.SetGroundTarget(m_x, m_y, (ushort) m_z);
 
 				if (!player.GroundTargetInView)
-					player.Out.SendMessage("Your ground target is not visible!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Your ground target is not visible!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 				// if (player.SiegeWeapon != null && player.SiegeWeapon.Owner == player)
 				// {
@@ -96,7 +77,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						if (player.Steed.OwnerID == player.InternalID)
 						{
-							player.Out.SendMessage("You usher your boat forward.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("You usher your boat forward.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							player.Steed.WalkTo(player.GroundTarget, player.Steed.MaxSpeed);
 							return 0;
 						}
@@ -105,7 +86,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					if (player.Steed.MAX_PASSENGERS > 8 && player.Steed.CurrentRiders.Length < player.Steed.REQUIRED_PASSENGERS)
 					{
 						player.Out.SendMessage("The " + player.Steed.Name + " does not yet have enough passengers to move!",
-						                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						                       EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						return 0;
 					}
 					player.Steed.WalkTo(player.GroundTarget, player.Steed.MaxSpeed);

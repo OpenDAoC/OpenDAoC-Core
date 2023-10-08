@@ -18,24 +18,24 @@ public class FormationCommand : ACommandHandler, ICommandHandler
 		//No one else needs to use this spell
 		if (player.CharacterClass.ID != (int)ECharacterClass.Bonedancer)
 		{
-			client.Out.SendMessage("Only Bonedancers can use this command!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Only Bonedancers can use this command!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
 		//Help display
 		if (args.Length == 1)
 		{
-			client.Out.SendMessage("Formation commands:", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			client.Out.SendMessage("'/formation triangle' Place the pets in a triangle formation.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			client.Out.SendMessage("'/formation line' Place the pets in a line formation.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			client.Out.SendMessage("'/formation protect' Place the pets in a protect formation that surrounds the commander.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Formation commands:", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("'/formation triangle' Place the pets in a triangle formation.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("'/formation line' Place the pets in a line formation.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("'/formation protect' Place the pets in a protect formation that surrounds the commander.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
 		//Check to see if the BD has a commander and minions
 		if (player.ControlledBrain == null)
 		{
-			client.Out.SendMessage("You don't have a commander!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("You don't have a commander!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 		bool haveminion = false;
@@ -49,7 +49,7 @@ public class FormationCommand : ACommandHandler, ICommandHandler
 		}
 		if (!haveminion)
 		{
-			client.Out.SendMessage("You don't have any minions!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("You don't have any minions!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 
@@ -68,7 +68,7 @@ public class FormationCommand : ACommandHandler, ICommandHandler
 				player.ControlledBrain.Body.Formation = GameNPC.eFormationType.Protect;
 				break;
 			default:
-				client.Out.SendMessage("Unrecognized argument: " + args[1], eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Unrecognized argument: " + args[1], EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				break;
 		}
 	}

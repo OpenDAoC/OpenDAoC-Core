@@ -98,8 +98,8 @@ namespace DOL.GS.Effects
             if (firstShot)
             {
                 speed = OwnerPlayer.ActiveWeapon.SPD_ABS * 100;
-                OwnerPlayer.Out.SendMessage("You prepare to unleash a volley of arrows!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                OwnerPlayer.Out.SendMessage($"You prepare to shoot. ({(double) speed / 1000}s)", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage("You prepare to unleash a volley of arrows!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage($"You prepare to shoot. ({(double) speed / 1000}s)", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
             }
             else
                 speed = 1500;
@@ -124,7 +124,7 @@ namespace DOL.GS.Effects
                 return 0;
 
             Cancel(false);
-            OwnerPlayer.Out.SendMessage("You are too tired to hold your volley any longer!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            OwnerPlayer.Out.SendMessage("You are too tired to hold your volley any longer!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             OwnerPlayer.attackComponent.StopAttack();
             // TODO: Prepare normal attack?
 
@@ -147,7 +147,7 @@ namespace DOL.GS.Effects
             }
 
             _isReadyToShoot = true;
-            OwnerPlayer.Out.SendMessage("You are ready to shoot!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            OwnerPlayer.Out.SendMessage("You are ready to shoot!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
             return 0;
         }
 
@@ -188,7 +188,7 @@ namespace DOL.GS.Effects
 
             if (_remainingShots == 0)
             {
-                OwnerPlayer.Out.SendMessage("Your volley is finished!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage("Your volley is finished!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 Cancel(false);
                 AtlasOF_Volley volley = OwnerPlayer.GetAbility<AtlasOF_Volley>();
                 OwnerPlayer.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
@@ -207,25 +207,25 @@ namespace DOL.GS.Effects
 
             if (player.rangeAttackComponent.UpdateAmmo(player.ActiveWeapon) == null)
             {
-                player.Out.SendMessage("You need arrows to use Volley!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You need arrows to use Volley!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                 return;
             }
 
             if (player.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 return;
             }
 
             if (!player.rangeAttackComponent.IsAmmoCompatible)
             {
-                player.Out.SendMessage("You need arrows to use Volley!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You need arrows to use Volley!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                 return;
             }
 
             if (player.GroundTarget == null)
             {
-                player.Out.SendMessage("You must have a ground target to use Volley!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You must have a ground target to use Volley!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -255,13 +255,13 @@ namespace DOL.GS.Effects
             WeaponActionData weaponActionData = new(player.ActiveWeapon, player.attackComponent.AttackSpeed(player.ActiveWeapon));
             _weaponActionData.TryAdd(timer, weaponActionData);
 
-            player.Out.SendMessage("Your shot arcs into the sky!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("Your shot arcs into the sky!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
             DecideNextShoot();
 
             if (_remainingShots > 0)
             {
-                player.Out.SendMessage("You have " + _remainingShots + " arrows to be drawn!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You have " + _remainingShots + " arrows to be drawn!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 PrepareBow(false);
             }
         }
@@ -298,13 +298,13 @@ namespace DOL.GS.Effects
 
             if (player.IsWithinRadius(player.GroundTarget, AtlasOF_Volley.GetMinAttackRange(player.Realm)))
             {
-                player.Out.SendMessage("You ground target is too close to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You ground target is too close to use Volley!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 
             if (!player.IsWithinRadius(player.GroundTarget, AtlasOF_Volley.GetMaxAttackRange(player.Realm)))
             {
-                player.Out.SendMessage("You ground target is too far away to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You ground target is too far away to use Volley!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -325,7 +325,7 @@ namespace DOL.GS.Effects
 
             if (potentialTargets.Count <= 0)
             {
-                OwnerPlayer.Out.SendMessage("Your shot sails clear of all targets!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage("Your shot sails clear of all targets!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return 0;
             }
 
@@ -352,7 +352,7 @@ namespace DOL.GS.Effects
             Cancel(false);
             AtlasOF_Volley volley = OwnerPlayer.GetAbility<AtlasOF_Volley>();
             OwnerPlayer.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
-            OwnerPlayer.Out.SendMessage("You move and interrupt your volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            OwnerPlayer.Out.SendMessage("You move and interrupt your volley!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 
         public void OnPlayerSwitchedWeapon()
@@ -360,7 +360,7 @@ namespace DOL.GS.Effects
             Cancel(false);
             AtlasOF_Volley volley = OwnerPlayer.GetAbility<AtlasOF_Volley>();
             OwnerPlayer.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
-            OwnerPlayer.Out.SendMessage("You put away your bow and interrupt your volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            OwnerPlayer.Out.SendMessage("You put away your bow and interrupt your volley!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 
         public void OnAttacked()
@@ -368,7 +368,7 @@ namespace DOL.GS.Effects
             Cancel(false);
             AtlasOF_Volley volley = OwnerPlayer.GetAbility<AtlasOF_Volley>();
             OwnerPlayer.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
-            OwnerPlayer.Out.SendMessage("You have been attacked and your volley is interrupted!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            OwnerPlayer.Out.SendMessage("You have been attacked and your volley is interrupted!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
     }
 

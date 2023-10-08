@@ -135,8 +135,8 @@ namespace DOL.GS
                             GameServer.Database.AddObject(item);
                             DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                             client.Player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, invitem);
-                            client.Player.Out.SendMessage("Generated: " + item.Name, eChatType.CT_System,
-                                eChatLoc.CL_SystemWindow);
+                            client.Player.Out.SendMessage("Generated: " + item.Name, EChatType.CT_System,
+                                EChatLoc.CL_SystemWindow);
                         }
                     }
                 }
@@ -165,7 +165,7 @@ namespace DOL.GS
                                  EInventorySlot.LastBackpack))
                         client.Player.Inventory.RemoveItem(item);
 
-                    client.Out.SendMessage("Inventory cleared!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("Inventory cleared!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 }
                 else
                 {

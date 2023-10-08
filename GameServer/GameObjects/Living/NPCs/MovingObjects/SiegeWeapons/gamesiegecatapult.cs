@@ -77,7 +77,7 @@ namespace DOL.GS
 			if (!CanUse()) return;
 			if(SiegeWeaponTimer.IsAlive || this.IsMoving)
 			{
-				Owner.Out.SendMessage(GetName(0, true) +" isn't ready to be aimed yet!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				Owner.Out.SendMessage(GetName(0, true) +" isn't ready to be aimed yet!", EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			
@@ -85,19 +85,19 @@ namespace DOL.GS
 			newGroundTarget = Owner.TargetObject != null ? Owner.TargetObject : Owner.GroundTarget;
 			if (newGroundTarget == null)
 			{
-				Owner.Out.SendMessage("You must have a target!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				Owner.Out.SendMessage("You must have a target!", EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 				return;
 			} 
 			
 			//Range Checks
 			if (MinAttackRange != -1 && this.GetDistanceTo(newGroundTarget) < MinAttackRange)
 			{
-				Owner.Out.SendMessage("The " + GetName(0, false) + "'s target location is too close!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				Owner.Out.SendMessage("The " + GetName(0, false) + "'s target location is too close!", EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			if (MaxAttackRange != -1 && this.GetDistanceTo(newGroundTarget) > MaxAttackRange)
 			{
-				Owner.Out.SendMessage("The " + GetName(0, false) + "'s target is too far away to reach!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				Owner.Out.SendMessage("The " + GetName(0, false) + "'s target is too far away to reach!", EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -110,7 +110,7 @@ namespace DOL.GS
 			PreAction();
 			if (Owner != null)
 			{
-				Owner.Out.SendMessage(GetName(0, true) + " is turning to your target. (" + (GetActionDelay(SiegeTimer.eAction.Aiming) / 1000).ToString("N") + "s)", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Owner.Out.SendMessage(GetName(0, true) + " is turning to your target. (" + (GetActionDelay(SiegeTimer.eAction.Aiming) / 1000).ToString("N") + "s)", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -243,7 +243,7 @@ namespace DOL.GS
 					living.OnAttackedByEnemy(ad);
 	
 					Owner.OnAttackEnemy(ad);
-					Owner.Out.SendMessage("The " + this.Name + " hits " + living.Name + " for " + damageAmount + " damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("The " + this.Name + " hits " + living.Name + " for " + damageAmount + " damage!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 				}
 				else
 				{

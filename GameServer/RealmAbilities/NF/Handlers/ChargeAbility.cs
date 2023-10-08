@@ -32,7 +32,7 @@ namespace DOL.GS.RealmAbilities
 				if (effect != null && effect.SpellHandler.Spell.Value != 99)
                 {
 					GamePlayer player = living as GamePlayer;
-                    if (player != null) player.Out.SendMessage("You may not use this ability while snared!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    if (player != null) player.Out.SendMessage("You may not use this ability while snared!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return true;
                 }
 			}
@@ -46,7 +46,7 @@ namespace DOL.GS.RealmAbilities
 			if (living.TargetObject == null || living.TargetObject is not GamePlayer ||
 			    (living.TargetObject is GamePlayer enemy && enemy.Realm == living.Realm))
 			{
-				if(living is GamePlayer p)p.Out.SendMessage($"You can only charge enemy players.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				if(living is GamePlayer p)p.Out.SendMessage($"You can only charge enemy players.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 

@@ -505,13 +505,13 @@ namespace DOL.GS.Quests
 		{
 			if (m_owner is GamePlayer)
 			{
-				(m_owner as GamePlayer).Out.SendMessage("Mission Complete", eChatType.CT_ScreenCenter, eChatLoc.CL_ChatWindow);
+				(m_owner as GamePlayer).Out.SendMessage("Mission Complete", EChatType.CT_ScreenCenter, EChatLoc.CL_ChatWindow);
 			}
 			else if (m_owner is GroupUtil)
 			{
 				foreach (GamePlayer player in (m_owner as GroupUtil).GetPlayersInTheGroup())
 				{
-					player.Out.SendMessage("Mission Complete", eChatType.CT_ScreenCenter, eChatLoc.CL_ChatWindow);
+					player.Out.SendMessage("Mission Complete", EChatType.CT_ScreenCenter, EChatLoc.CL_ChatWindow);
 				}
 			}
 			base.FinishMission();
@@ -544,8 +544,8 @@ namespace DOL.GS.Quests
             UpdateInstanceLevel();
 
             //The player will not yet be in the instance, so wont receive the relevant text.
-            player.Out.SendMessage("You have entered " + Description + ".", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-            player.Out.SendMessage("This instance is currently level " + m_level + ".", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("You have entered " + Description + ".", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("This instance is currently level " + m_level + ".", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
         }
 
         public override void OnPlayerLeaveInstance(GamePlayer player)
@@ -578,7 +578,7 @@ namespace DOL.GS.Quests
                 }
 
                 foreach (GamePlayer player in ClientService.GetPlayersOfRegion(this))
-                    player.Out.SendMessage($"This instance is now level {m_level}.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"This instance is now level {m_level}.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
             }
         }
 

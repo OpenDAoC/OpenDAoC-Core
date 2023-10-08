@@ -22,7 +22,7 @@ namespace DOL.GS.Commands
 					character = CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(args[1]));
 					if (character == null)
 					{
-						client.Out.SendMessage("Character " + args[1] + " not found", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage("Character " + args[1] + " not found", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 						return;
 					}
 					character.Xpos = 33278;
@@ -32,7 +32,7 @@ namespace DOL.GS.Commands
 					character.Direction = 2056;
 					BindCharacter(character);
 					GameServer.Database.SaveObject(character);
-					client.Out.SendMessage("Character " + args[1].ToUpperInvariant() + " has been moved to Jail", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+					client.Out.SendMessage("Character " + args[1].ToUpperInvariant() + " has been moved to Jail", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 				} 
 				else if (args.Length == 4 && args[2] == "to" && args[3] == "capital")
 				{
@@ -40,7 +40,7 @@ namespace DOL.GS.Commands
 					character = CoreDb<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(args[1]));
 					if (character == null)
 					{
-						client.Out.SendMessage("Character " + args[1] + " not found", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage("Character " + args[1] + " not found", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 						return;
 					}
 					
@@ -77,7 +77,7 @@ namespace DOL.GS.Commands
 					}
 					BindCharacter(character);
 					GameServer.Database.SaveObject(character);
-					client.Out.SendMessage("Character " + args[1].ToUpperInvariant() + " has been moved to their Realm's Capital City", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+					client.Out.SendMessage("Character " + args[1].ToUpperInvariant() + " has been moved to their Realm's Capital City", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 				} 
 				else
 				{

@@ -48,25 +48,25 @@ namespace DOL.GS.Spells
 			if (((player.CurrentZone != null && player.CurrentZone.IsRvR) || (player.CurrentRegion != null && player.CurrentRegion.IsInstance)) && GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvE)
 			{
 				// Actual live message is: You can't use that item!
-				player.Out.SendMessage("You can't use that here!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You can't use that here!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (player.IsMoving)
 			{
-				player.Out.SendMessage("You must be standing still to use this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You must be standing still to use this item!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (player.InCombat || GameRelic.IsPlayerCarryingRelic(player))
 			{
-				player.Out.SendMessage("You have been in combat recently and cannot use this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You have been in combat recently and cannot use this item!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if(player.CurrentRegion.ID == 497 && player.Client.Account.PrivLevel == 1)
 			{
-				player.Out.SendMessage("You can't use Bind Stone in Jail!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You can't use Bind Stone in Jail!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -103,7 +103,7 @@ namespace DOL.GS.Spells
 			InterruptCasting();
 
 			if (Caster is GamePlayer)
-				(Caster as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SpellHandler.CasterMove"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				(Caster as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SpellHandler.CasterMove"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 
 		public override IList<string> DelveInfo

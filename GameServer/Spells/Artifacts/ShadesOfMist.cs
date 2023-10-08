@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
                         Effect.SpellHandler.Spell.SpellType.Equals("AtlantisTabletMorph") ||
                         Effect.SpellHandler.Spell.SpellType.Equals("AlvarusMorph"))
                     {
-                        player.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.eChatType.CT_SpellResisted, DOL.GS.PacketHandler.eChatLoc.CL_ChatWindow);
+                        player.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.EChatType.CT_SpellResisted, DOL.GS.PacketHandler.EChatLoc.CL_ChatWindow);
                         return;
                     }
                 }
@@ -111,8 +111,8 @@ namespace DOL.GS.Spells
                 OnDamageAbsorbed(ad, damageAbsorbed);
 
                 //TODO correct messages
-                MessageToLiving(ad.Target, string.Format("Your ablative absorbs {0} damage!", damageAbsorbed), eChatType.CT_Spell);//since its not always Melee absorbing
-                MessageToLiving(ad.Attacker, string.Format("A barrier absorbs {0} damage of your attack!", damageAbsorbed), eChatType.CT_Spell);  
+                MessageToLiving(ad.Target, string.Format("Your ablative absorbs {0} damage!", damageAbsorbed), EChatType.CT_Spell);//since its not always Melee absorbing
+                MessageToLiving(ad.Attacker, string.Format("A barrier absorbs {0} damage of your attack!", damageAbsorbed), EChatType.CT_Spell);  
             }
             
         }

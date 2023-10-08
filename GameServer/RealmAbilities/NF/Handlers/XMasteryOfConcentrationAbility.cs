@@ -48,7 +48,7 @@ namespace DOL.GS.RealmAbilities
 			ShieldOfImmunityEffect ra5l = caster.EffectList.GetOfType<ShieldOfImmunityEffect>();
 			if (ra5l != null)
 			{
-				caster.Out.SendMessage("You cannot currently use this ability", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				caster.Out.SendMessage("You cannot currently use this ability", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			
@@ -60,13 +60,13 @@ namespace DOL.GS.RealmAbilities
 				{
 					if (player == caster)
 					{
-						player.MessageToSelf("You cast " + this.Name + "!", eChatType.CT_Spell);
-						player.MessageToSelf("You become steadier in your casting abilities!", eChatType.CT_Spell);
+						player.MessageToSelf("You cast " + this.Name + "!", EChatType.CT_Spell);
+						player.MessageToSelf("You become steadier in your casting abilities!", EChatType.CT_Spell);
 					}
 					else
 					{
-						player.MessageFromArea(caster, caster.Name + " casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-						player.Out.SendMessage(caster.Name + "'s castings have perfect poise!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.MessageFromArea(caster, caster.Name + " casts a spell!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(caster.Name + "'s castings have perfect poise!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 				}
 			}

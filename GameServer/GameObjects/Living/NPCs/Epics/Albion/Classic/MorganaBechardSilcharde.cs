@@ -64,14 +64,14 @@ namespace DOL.AI.Brain
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(5000))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 			}
 		}
 		public void BroadcastMessage2(String message)
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(5000))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 			}
 		}
 		ushort oldModel;
@@ -95,7 +95,7 @@ namespace DOL.AI.Brain
 						if (quest != null && quest.Step == 1)
 						{
 							SpawnDemons = true;
-							player.Out.SendMessage("Ha, is this all the forces of Albion have to offer? I expected a whole army leaded by my brother Arthur, but what do they send a little group of adventurers lead by a poor " + player.CharacterClass.Name + "?",eChatType.CT_Say,eChatLoc.CL_ChatWindow);
+							player.Out.SendMessage("Ha, is this all the forces of Albion have to offer? I expected a whole army leaded by my brother Arthur, but what do they send a little group of adventurers lead by a poor " + player.CharacterClass.Name + "?",EChatType.CT_Say,EChatLoc.CL_ChatWindow);
 							PlayerAreaCheck = true;
 						}
 					}
@@ -247,7 +247,7 @@ namespace DOL.GS
 						else
 							truc = ((source as GameSummonedPet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(Name + " can't be attacked from this distance!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " can't be attacked from this distance!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}
@@ -412,7 +412,7 @@ namespace DOL.GS
 						else
 							truc = ((source as GameSummonedPet).Owner as GamePlayer);
 						if (truc != null)
-							truc.Out.SendMessage(Name + " can't be attacked from this distance!", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+							truc.Out.SendMessage(Name + " can't be attacked from this distance!", EChatType.CT_System, EChatLoc.CL_ChatWindow);
 						base.TakeDamage(source, damageType, 0, 0);
 						return;
 					}

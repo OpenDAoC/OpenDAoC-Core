@@ -93,7 +93,7 @@ namespace DOL.GS
 
                 if ((GameLoop.GameLoopTime - attackStart) > MAX_DRAW_DURATION && playerOwner.ActiveWeapon.Object_Type != (int)EObjectType.Crossbow)
                 {
-                    playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooTired"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooTired"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return ECheckRangeAttackStateResult.Stop;
                 }
 
@@ -109,19 +109,19 @@ namespace DOL.GS
                         EcsGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, EEffect.Volley);
 
                         if (volley == null)
-                            playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "System.MustSelectTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "System.MustSelectTarget"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     }
                     else if (!playerOwner.IsWithinRadius(target, playerOwner.attackComponent.AttackRange))
-                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooFarAway", target.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooFarAway", target.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     else if (!playerOwner.TargetInView)  // TODO: Wrong, must be checked with the target parameter and not with the targetObject.
-                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantSeeTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantSeeTarget"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     else if (!playerOwner.IsObjectInFront(target, 90))
-                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.NotInView", target.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.NotInView", target.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     else if (UpdateAmmo(playerOwner.ActiveWeapon) == null)
                         // Another check for ammo just before firing.
-                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.MustSelectQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.MustSelectQuiver"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                     else if (!IsAmmoCompatible)
-                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantUseQuiver"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                     else if (GameServer.ServerRules.IsAllowedToAttack(playerOwner, (GameLiving)target, false))
                     {
                         if (target is GameLiving living &&
@@ -151,7 +151,7 @@ namespace DOL.GS
                              */
 
                             // TODO: More checks?
-                            playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantCritical"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantCritical"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                             RangedAttackType = ERangedAttackType.Normal;
                         }
 
@@ -167,7 +167,7 @@ namespace DOL.GS
                     EcsGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, EEffect.Volley);//volley check to avoid spam
                     if (volley == null)
                     {
-                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.ReadyToFire"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.ReadyToFire"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         RangedAttackState = ERangedAttackState.ReadyToFire;
                         return ECheckRangeAttackStateResult.Hold;
                     }

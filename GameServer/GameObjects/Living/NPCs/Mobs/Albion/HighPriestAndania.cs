@@ -32,7 +32,7 @@ namespace DOL.GS
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(2500))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 			}
 		}
 		public override void Die(GameObject killer)
@@ -63,7 +63,7 @@ namespace DOL.AI.Brain
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius(1500))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
 			}
 		}
 		public override void Think()

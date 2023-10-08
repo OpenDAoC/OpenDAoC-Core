@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
                 if (Npc == null)
                 {
                     MessageToCaster("There was an error creating an instance of " + template.ClassType + "!",
-                        eChatType.CT_System);
+                        EChatType.CT_System);
                     return;
                 }
                 Npc.LoadTemplate(template);

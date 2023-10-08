@@ -76,7 +76,7 @@ namespace DOL.GS
 
 			TurnTo(player, 10000);
 			var items = player.Inventory.GetItemRange(EInventorySlot.FirstVault, EInventorySlot.LastVault);
-			player.Out.SendInventoryItemsUpdate(eInventoryWindowType.PlayerVault, items.Count > 0 ? items : null);
+			player.Out.SendInventoryItemsUpdate(EInventoryWindowType.PlayerVault, items.Count > 0 ? items : null);
 			return true;
 		}
 

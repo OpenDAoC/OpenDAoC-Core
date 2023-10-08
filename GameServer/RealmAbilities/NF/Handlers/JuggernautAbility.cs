@@ -28,44 +28,44 @@ namespace DOL.GS.RealmAbilities
 			if (!(living.IsAlive))
 			{
 				if(player != null)
-					player.Out.SendMessage("You cannot use this ability while dead!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You cannot use this ability while dead!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			if (living.IsMezzed)
 			{
 				if(player != null)
-					player.Out.SendMessage("You cannot use this ability while mesmerized!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You cannot use this ability while mesmerized!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			if (living.IsStunned)
 			{
 				if(player != null)
-					player.Out.SendMessage("You cannot use this ability while stunned!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You cannot use this ability while stunned!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			if (living.IsSitting)
 			{
 				if(player != null)
-					player.Out.SendMessage("You cannot use this ability while sitting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You cannot use this ability while sitting!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			if (living.ControlledBrain == null)
 			{
 				if(player != null)
-					player.Out.SendMessage("You must have a pet controlled to use this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You must have a pet controlled to use this ability!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			if (!living.IsWithinRadius( player.ControlledBrain.Body, m_range ))
 			{
 				if(player != null)
-					player.Out.SendMessage("Your pet is too far away!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Your pet is too far away!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
             GameSpellEffect ml9=SpellHandler.FindEffectOnTarget(living.ControlledBrain.Body,"SummonMastery");
             if (ml9 != null)
             {
 				if(player != null)
-	                player.Out.SendMessage("Your Pet already has an ability of this type active", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+	                player.Out.SendMessage("Your Pet already has an ability of this type active", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                 return;
             }
 

@@ -38,7 +38,7 @@ namespace DOL.GS
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(1000))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 			}
 		}
 		private protected int PrepareTeleport(ECSGameTimer timer)

@@ -23,12 +23,12 @@ public class XpCommand : ACommandHandler, ICommandHandler
 		if (args[1].ToLower().Equals("on"))
 		{
 			client.Player.GainXP = true;
-			client.Out.SendMessage("Your xp flag is ON. You will gain experience points. Use '/xp off' to stop gaining experience points.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Your xp flag is ON. You will gain experience points. Use '/xp off' to stop gaining experience points.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 		else if (args[1].ToLower().Equals("off"))
 		{
 			client.Player.GainXP = false;
-			client.Out.SendMessage("Your xp flag is OFF. You will no longer gain experience points. Use '/xp on' to start gaining experience points again.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("Your xp flag is OFF. You will no longer gain experience points. Use '/xp on' to start gaining experience points again.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 	}
 }

@@ -68,7 +68,7 @@ namespace DOL.GS
                         && Owner.TempProperties.GetProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY) > bleedHandler.Spell.Damage)
                     {
                         if (OwnerPlayer != null)
-                            bleedHandler.MessageToCaster("A stronger bleed effect already exists on your target.", eChatType.CT_SpellResisted);
+                            bleedHandler.MessageToCaster("A stronger bleed effect already exists on your target.", EChatType.CT_SpellResisted);
                         EffectService.RequestCancelEffect(this);
                         return;
                     }
@@ -80,8 +80,8 @@ namespace DOL.GS
 
                     if (OwnerPlayer != null)
                     {
-                        bleedHandler.MessageToLiving(Owner, bleedHandler.Spell.Message1, eChatType.CT_YouWereHit);
-                        MessageUtil.SystemToArea(Owner, Util.MakeSentence(bleedHandler.Spell.Message2, Owner.GetName(0, false)), eChatType.CT_YouHit, Owner);
+                        bleedHandler.MessageToLiving(Owner, bleedHandler.Spell.Message1, EChatType.CT_YouWereHit);
+                        MessageUtil.SystemToArea(Owner, Util.MakeSentence(bleedHandler.Spell.Message2, Owner.GetName(0, false)), EChatType.CT_YouHit, Owner);
                     }
 
                     int bleedValue = Owner.TempProperties.GetProperty<int>(StyleBleeding.BLEED_VALUE_PROPERTY);

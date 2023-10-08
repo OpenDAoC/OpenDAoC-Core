@@ -19,7 +19,7 @@ namespace DOL.GS
         {
             if (OwnerPlayer != null)
             {
-                OwnerPlayer.Out.SendMessage("You prepare a Trueshot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                OwnerPlayer.Out.SendMessage("You prepare a Trueshot!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
         }
         public override void OnStopEffect()

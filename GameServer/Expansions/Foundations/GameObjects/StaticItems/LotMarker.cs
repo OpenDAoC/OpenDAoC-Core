@@ -65,7 +65,7 @@ namespace DOL.GS.Housing
 			{
 				if (HouseMgr.IsOwner(DatabaseItem, player))
 				{
-					player.Out.SendMerchantWindow(HouseTemplateMgr.GetLotMarkerItems(this), eMerchantWindowType.Normal);
+					player.Out.SendMerchantWindow(HouseTemplateMgr.GetLotMarkerItems(this), EMerchantWindowType.Normal);
 				}
 				else
 				{
@@ -94,7 +94,7 @@ namespace DOL.GS.Housing
 
 			    long totalCost = HouseTemplateMgr.GetLotPrice(DatabaseItem);
 				if (player.RemoveMoney(totalCost, "You just bought this lot for {0}.",
-				                       eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
+				                       EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
 				{
                     InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, totalCost);
 					DatabaseItem.LastPaid = DateTime.Now;

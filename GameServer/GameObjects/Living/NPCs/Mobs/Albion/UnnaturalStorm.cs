@@ -57,7 +57,7 @@ namespace DOL.GS
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
 			}
 		}
         public override void StartAttack(GameObject target)
@@ -66,7 +66,7 @@ namespace DOL.GS
 		private void SpawnAdditionalStorms()
         {
 			foreach (GamePlayer player in ClientService.GetPlayersOfZone(CurrentZone))
-				player.Out.SendMessage("An intense supernatural storm explodes in the sky over the northeastern expanse of Lyonesse!", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage("An intense supernatural storm explodes in the sky over the northeastern expanse of Lyonesse!", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 
 			for (int i = 0; i < Util.Random(4, 5); i++)
 			{
@@ -184,7 +184,7 @@ namespace DOL.GS
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
 			}
 		}
 		public override void StartAttack(GameObject target)

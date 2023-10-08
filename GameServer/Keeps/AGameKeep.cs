@@ -578,51 +578,51 @@ namespace DOL.GS.Keeps
 		{
 			if (InCombat)
 			{
-				player.Out.SendMessage(Name + " is under attack and can't be claimed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(Name + " is under attack and can't be claimed.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				log.DebugFormat("KEEPWARNING: {0} attempted to claim {1} while in combat.", player.Name, Name);
 				return false;
 			}
 
 			if(player.Realm != this.Realm)
 			{
-				player.Out.SendMessage("The keep is not owned by your realm.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("The keep is not owned by your realm.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
 				return false;
 			}
 			
 			// Disabled check on DBKeep.BaseLevel to allow claiming of BG keeps
 			if (this.DBKeep.BaseLevel != 50 && !ServerProperties.Properties.ALLOW_BG_CLAIM)
 			{
-			 	player.Out.SendMessage("This keep is not able to be claimed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			 	player.Out.SendMessage("This keep is not able to be claimed.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			 	return false;
 			}
 
 			if (player.Guild == null)
 			{
-				player.Out.SendMessage("You must be in a guild to claim a keep.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You must be in a guild to claim a keep.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
 				return false;
 			}
 			if (!player.Guild.HasRank(player, EGuildRank.Claim))
 			{
-				player.Out.SendMessage("You do not have permission to claim for your guild.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You do not have permission to claim for your guild.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 			if (this.Guild != null)
 			{
-				player.Out.SendMessage("The keep is already claimed.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("The keep is already claimed.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
 				return false;
 			}
 			switch (ServerProperties.Properties.GUILDS_CLAIM_LIMIT)
 			{
 				case 0:
 					{
-						player.Out.SendMessage("Keep claiming is disabled!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("Keep claiming is disabled!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						return false;
 					}
 				case 1:
 					{
 						if (player.Guild.ClaimedKeeps.Count == 1)
 						{
-							player.Out.SendMessage("Your guild already owns a keep.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("Your guild already owns a keep.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return false;
 						}
 						break;
@@ -631,7 +631,7 @@ namespace DOL.GS.Keeps
 					{
 						if (player.Guild.ClaimedKeeps.Count >= ServerProperties.Properties.GUILDS_CLAIM_LIMIT)
 						{
-							player.Out.SendMessage("Your guild already owns the limit of keeps (" + ServerProperties.Properties.GUILDS_CLAIM_LIMIT + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("Your guild already owns the limit of keeps (" + ServerProperties.Properties.GUILDS_CLAIM_LIMIT + ")", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return false;
 						}
 						break;
@@ -655,7 +655,7 @@ namespace DOL.GS.Keeps
 					needed = 0;
 				if (count < needed)
 				{
-					player.Out.SendMessage("Not enough group members are near the keep. You have " + count + "/" + needed + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Not enough group members are near the keep. You have " + count + "/" + needed + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return false;
 				}
 			}
@@ -671,7 +671,7 @@ namespace DOL.GS.Keeps
 			Guild = player.Guild;
 			
 			if (ServerProperties.Properties.GUILDS_CLAIM_LIMIT > 1)
-				player.Guild.SendMessageToGuildMembers("Your guild has currently claimed " + player.Guild.ClaimedKeeps.Count + " keeps of a maximum of " + ServerProperties.Properties.GUILDS_CLAIM_LIMIT, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);
+				player.Guild.SendMessageToGuildMembers("Your guild has currently claimed " + player.Guild.ClaimedKeeps.Count + " keeps of a maximum of " + ServerProperties.Properties.GUILDS_CLAIM_LIMIT, EChatType.CT_Guild, EChatLoc.CL_ChatWindow);
 
 			ChangeLevel((byte)ServerProperties.Properties.STARTING_KEEP_CLAIM_LEVEL);
 
@@ -759,7 +759,7 @@ namespace DOL.GS.Keeps
 		{
 			if (InCombat && player.Client.Account.PrivLevel == 1)
 			{
-				player.Out.SendMessage(Name + " is under attack and can't be released.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(Name + " is under attack and can't be released.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				log.DebugFormat("KEEPWARNING: {0} attempted to release {1} while in combat.", player.Name, Name);
 				return false;
 			}

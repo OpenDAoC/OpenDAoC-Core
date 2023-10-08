@@ -14,13 +14,13 @@ public class MakeLeaderCommand : ICommandHandler
     {
         if (client.Player.Group == null || client.Player.Group.MemberCount < 2)
         {
-            client.Out.SendMessage("You are not part of a group.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage("You are not part of a group.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
             return;
         }
 
         if(client.Player.Group.Leader != client.Player)
         {
-            client.Out.SendMessage("You are not the leader of your group.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage("You are not the leader of your group.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
             return;
         }
 
@@ -30,13 +30,13 @@ public class MakeLeaderCommand : ICommandHandler
         {
             if (client.Player.TargetObject == null || client.Player.TargetObject == client.Player)
             {
-                client.Out.SendMessage("You have not selected a valid player as your target.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("You have not selected a valid player as your target.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
                 return;
             }
 
             if(client.Player.TargetObject is not GamePlayer)
             {
-                client.Out.SendMessage("You have not selected a valid player as your target.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("You have not selected a valid player as your target.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -44,7 +44,7 @@ public class MakeLeaderCommand : ICommandHandler
 
             if(client.Player.Group != target.Group)
             {
-                client.Out.SendMessage("You have not selected a valid player as your target.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("You have not selected a valid player as your target.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
                 return;
             }
         }
@@ -55,13 +55,13 @@ public class MakeLeaderCommand : ICommandHandler
 
             if(target==null || client.Player.Group != target.Group)
             { // Invalid target
-                client.Out.SendMessage("No players in group with that name.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("No players in group with that name.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
                 return;
             }
 
             if(target==client.Player)
             {
-                client.Out.SendMessage("You are the group leader already.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+                client.Out.SendMessage("You are the group leader already.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
                 return;
             }
 

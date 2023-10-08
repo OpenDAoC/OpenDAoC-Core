@@ -53,12 +53,12 @@ namespace DOL.GS.Commands
             {
                 if (client.Player.TargetObject == null)
                 {
-                    client.Player.Out.SendMessage("You need a target to add an achievement.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage("You need a target to add an achievement.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
                 if (client.Player.TargetObject is not GamePlayer targetPlayer)
                 {
-                    client.Player.Out.SendMessage("You need a player target to add an achievement.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage("You need a player target to add an achievement.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
                 targetPlayers.Add(targetPlayer);
@@ -70,7 +70,7 @@ namespace DOL.GS.Commands
 
                 if (bg == null)
                 {
-                    client.Player.Out.SendMessage("You need to join the target battlegroup to add an achievement.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage("You need to join the target battlegroup to add an achievement.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
 
@@ -87,7 +87,7 @@ namespace DOL.GS.Commands
             {
                 if (client.Player.Group == null)
                 {
-                    client.Player.Out.SendMessage("You need to join the target group to add an achievement.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage("You need to join the target group to add an achievement.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
                 
@@ -123,7 +123,7 @@ namespace DOL.GS.Commands
 
                 if (targetPlayers == null || achievementName == null)
                 {
-                    player.Out.SendMessage("Error loading the temp properties", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("Error loading the temp properties", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
                 }
 
@@ -137,11 +137,11 @@ namespace DOL.GS.Commands
                     log.Warn($"ACHIEVEMENT: Manually added credit for {achievementName} to player {p.Name} ({player.Name})");
                 }
                 
-                player.Out.SendMessage($"Achievement {achievementName} added to the selected player(s)", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage($"Achievement {achievementName} added to the selected player(s)", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
             }
             else
             {
-                player.Out.SendMessage("Use the command again if you change your mind.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Use the command again if you change your mind.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
             }
             
             player.TempProperties.RemoveProperty("AchievementName");

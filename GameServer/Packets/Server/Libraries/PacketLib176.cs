@@ -28,7 +28,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.FindGroupUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.FindGroupUpdate)))
 			{
 				if (list != null)
 				{
@@ -78,7 +78,7 @@ namespace DOL.GS.PacketHandler
 			if (obj.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ObjectCreate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.ObjectCreate)))
 			{
 				pak.WriteShort((ushort)obj.ObjectID);
 
@@ -144,9 +144,9 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendInventorySlotsUpdateRange(ICollection<int> slots, eInventoryWindowType windowType)
+		protected override void SendInventorySlotsUpdateRange(ICollection<int> slots, EInventoryWindowType windowType)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.InventoryUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.InventoryUpdate)))
 			{
 				pak.WriteByte((byte)(slots == null ? 0 : slots.Count));
 				pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
@@ -269,7 +269,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || living.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.EquipmentUpdate)))
 			{
 				ICollection<DbInventoryItem> items = null;
 				if (living.Inventory != null)
@@ -342,7 +342,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendHouse(House house)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseCreate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HouseCreate)))
 			{
 				pak.WriteShort((ushort)house.HouseNumber);
 				pak.WriteShort((ushort)house.Z);
@@ -368,7 +368,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendEnterHouse(House house)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseEnter)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HouseEnter)))
 			{
 
 				pak.WriteShort((ushort)house.HouseNumber);
@@ -395,7 +395,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void WriteHouseFurniture(GSTCPPacketOut pak, IndoorItem item, int index)
+		protected override void WriteHouseFurniture(GsTcpPacketOut pak, IndoorItem item, int index)
 		{
 			pak.WriteByte((byte)index);
 			byte type = 0;
@@ -436,7 +436,7 @@ namespace DOL.GS.PacketHandler
 			//cannot show banners for players that have no guild.
 			if (show && player.Guild == null)
 				return;
-			GSTCPPacketOut pak = new GSTCPPacketOut((byte)eServerPackets.VisualEffect);
+			GsTcpPacketOut pak = new GsTcpPacketOut((byte)EServerPackets.VisualEffect);
 			pak.WriteShort((ushort)player.ObjectID);
 			pak.WriteByte(0xC); // show Banner
 			pak.WriteByte((byte)((show) ? 0 : 1)); // 0-enable, 1-disable

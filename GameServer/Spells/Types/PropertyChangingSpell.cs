@@ -127,7 +127,7 @@ namespace DOL.GS.Spells
 					    (Caster as GamePlayer).Group == null ||
 					    (Caster as GamePlayer).Group != (target as GamePlayer).Group)
 					{
-						MessageToCaster("That player does not want assistance", eChatType.CT_SpellResisted);
+						MessageToCaster("That player does not want assistance", EChatType.CT_SpellResisted);
 						return;
 					}
 				}
@@ -145,7 +145,7 @@ namespace DOL.GS.Spells
 						EcsGameEffect Heat = EffectListService.GetEffectOnTarget(player, EEffect.HeatResistBuff);
 						if (Matter != null || Cold != null || Heat != null)
 						{
-							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);
+							MessageToCaster(target.Name + " already has this effect", EChatType.CT_SpellResisted);
 							return;
 						}
 					}
@@ -163,7 +163,7 @@ namespace DOL.GS.Spells
 						EcsGameEffect Energy = EffectListService.GetEffectOnTarget(player, EEffect.EnergyResistBuff);
 						if (Body != null || Spirit != null || Energy != null)
 						{
-							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);
+							MessageToCaster(target.Name + " already has this effect", EChatType.CT_SpellResisted);
 							return;
 						}
 					}
@@ -192,12 +192,12 @@ namespace DOL.GS.Spells
 
 			SendUpdates(effect.Owner);
 
-			eChatType toLiving = eChatType.CT_SpellPulse;
-			eChatType toOther = eChatType.CT_SpellPulse;
+			EChatType toLiving = EChatType.CT_SpellPulse;
+			EChatType toOther = EChatType.CT_SpellPulse;
 			if (Spell.Pulse == 0 || !HasPositiveEffect)
 			{
-				toLiving = eChatType.CT_Spell;
-				toOther = eChatType.CT_System;
+				toLiving = EChatType.CT_Spell;
+				toOther = EChatType.CT_System;
 				SendEffectAnimation(effect.Owner, 0, false, 1);
 			}
 
@@ -243,8 +243,8 @@ namespace DOL.GS.Spells
 		{
 			if (!noMessages && Spell.Pulse == 0)
 			{
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+				MessageToLiving(effect.Owner, Spell.Message3, EChatType.CT_SpellExpires);
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), EChatType.CT_SpellExpires, effect.Owner);
 			}
 
 			ApplyBonus(effect.Owner, BonusCategory1, Property1, (int)(Spell.Value * effect.Effectiveness), true);
@@ -482,8 +482,8 @@ namespace DOL.GS.Spells
 		{
 			if (!noMessages && Spell.Pulse == 0)
 			{
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+				MessageToLiving(effect.Owner, Spell.Message3, EChatType.CT_SpellExpires);
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), EChatType.CT_SpellExpires, effect.Owner);
 			}
 
 			ApplyBonus(effect.Owner, BonusCategory1, Property1, vars[1], true);

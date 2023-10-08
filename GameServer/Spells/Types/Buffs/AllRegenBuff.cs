@@ -62,20 +62,20 @@ namespace DOL.GS.Spells
             if (Caster.CurrentZone.IsRvR)
             {
 				if (Caster is GamePlayer p)
-					p.Out.SendMessage("You cannot use this item in an RvR zone.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					p.Out.SendMessage("You cannot use this item in an RvR zone.", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				return false;
             }
 			if (Caster.Level > 49)
             {
 				if (Caster is GamePlayer p)
-					p.Out.SendMessage("You are too powerful for this item's effects.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					p.Out.SendMessage("You are too powerful for this item's effects.", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if(Caster.ControlledBrain != null && Caster.ControlledBrain is AI.Brain.NecromancerPetBrain necroPet && necroPet.Body.InCombatInLast(5000))
             {
 				if (Caster is GamePlayer p)
-					p.Out.SendMessage("Your pet must be out of combat for 5 seconds to use this.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					p.Out.SendMessage("Your pet must be out of combat for 5 seconds to use this.", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 				

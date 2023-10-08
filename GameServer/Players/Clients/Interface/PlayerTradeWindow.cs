@@ -198,7 +198,7 @@ namespace DOL.GS
 
 				if(!m_recipiant)
 				{
-					m_owner.Out.SendMessage("Only a recipient of a trade can initiate a repair.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("Only a recipient of a trade can initiate a repair.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					m_partnerWindow.m_repair = false;
 					m_repair = false;
 					return;
@@ -206,7 +206,7 @@ namespace DOL.GS
 
 				if(m_partnerWindow.ItemsCount != 1)
 				{
-					m_owner.Out.SendMessage("You can only repair one item at a time!",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("You can only repair one item at a time!",EChatType.CT_System,EChatLoc.CL_SystemWindow);
 					m_partnerWindow.m_repair = false;
 					m_repair = false;
 					return;
@@ -214,7 +214,7 @@ namespace DOL.GS
 
 				if(ItemsCount > 0)
 				{
-					m_owner.Out.SendMessage("Your trade windows side must be empty to repair!",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("Your trade windows side must be empty to repair!",EChatType.CT_System,EChatLoc.CL_SystemWindow);
 					m_partnerWindow.m_repair = false;
 					m_repair = false;
 					return;	
@@ -260,7 +260,7 @@ namespace DOL.GS
 
 				if(!m_recipiant)
 				{
-					m_owner.Out.SendMessage("Only a recipient of a trade can initiate a combine.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("Only a recipient of a trade can initiate a combine.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					m_partnerWindow.m_combine = false;
 					m_combine = false;
 					return;
@@ -268,7 +268,7 @@ namespace DOL.GS
 
 				if(m_partnerWindow.ItemsCount != 1)
 				{
-					m_owner.Out.SendMessage("You can only combine your items into one item!",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("You can only combine your items into one item!",EChatType.CT_System,EChatLoc.CL_SystemWindow);
 					m_partnerWindow.m_combine = false;
 					m_combine = false;
 					return;
@@ -433,7 +433,7 @@ namespace DOL.GS
 				m_tradeAccept = true;
 				GamePlayer partner = m_partnerWindow.Owner;
 
-				partner.Out.SendMessage(m_owner.Name + " has accepted the trade.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				partner.Out.SendMessage(m_owner.Name + " has accepted the trade.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 				// Check if the tradepartner has also agreed to the trade
 				if (!m_partnerWindow.m_tradeAccept) return false;
@@ -459,8 +459,8 @@ namespace DOL.GS
                             InventoryLogging.LogInventoryAction(partner, m_owner, EInventoryActionType.Trade, m_partnerWindow.TradeMoney);
                         }
 
-					    m_owner.Out.SendMessage("You don't have enough money.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-						partner.Out.SendMessage(m_owner.Name + " doesn't have enough money.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+					    m_owner.Out.SendMessage("You don't have enough money.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+						partner.Out.SendMessage(m_owner.Name + " doesn't have enough money.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 					}
 					if (!partnerEnoughMoney)
 					{
@@ -472,8 +472,8 @@ namespace DOL.GS
                             InventoryLogging.LogInventoryAction(m_owner, partner, EInventoryActionType.Trade, TradeMoney);
                         }
 
-					    partner.Out.SendMessage("You don't have enough money.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-						m_owner.Out.SendMessage(partner.Name + " doesn't have enough money.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+					    partner.Out.SendMessage("You don't have enough money.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+						m_owner.Out.SendMessage(partner.Name + " doesn't have enough money.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 					}
 
 					//Update our tradewindow and return
@@ -543,13 +543,13 @@ namespace DOL.GS
 					{
 						if (!enoughSpace)
 						{
-							m_owner.Out.SendMessage("You don't have enough space in your inventory.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-							partner.Out.SendMessage(m_owner.Name + " doesn't have enough space in his inventory.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							m_owner.Out.SendMessage("You don't have enough space in your inventory.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+							partner.Out.SendMessage(m_owner.Name + " doesn't have enough space in his inventory.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 						}
 						if (!partnerEnoughSpace)
 						{
-							partner.Out.SendMessage("You don't have enough space in your inventory.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-							m_owner.Out.SendMessage(partner.Name + " doesn't have enough space in his inventory.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							partner.Out.SendMessage("You don't have enough space in your inventory.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+							m_owner.Out.SendMessage(partner.Name + " doesn't have enough space in his inventory.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 						}
 
 						//Update our tradewindow and return
@@ -698,8 +698,8 @@ namespace DOL.GS
 					m_changesCount--;
 					m_partnerWindow.m_changesCount--;
 
-					m_owner.Out.SendMessage("Trade Completed. " + myTradeItemsCount + " items for " + partnerTradeItemsCount + " items.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					partner.Out.SendMessage("Trade Completed. " + partnerTradeItemsCount + " items for " + myTradeItemsCount + " items.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("Trade Completed. " + myTradeItemsCount + " items for " + partnerTradeItemsCount + " items.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					partner.Out.SendMessage("Trade Completed. " + partnerTradeItemsCount + " items for " + myTradeItemsCount + " items.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 					m_owner.Inventory.SaveIntoDatabase(m_owner.InternalID);
 					partner.Inventory.SaveIntoDatabase(partner.InternalID);

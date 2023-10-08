@@ -199,7 +199,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 						case "capture":
 							if (quest.Step == 2)
 							{
-								player.Out.SendMessage("Thank you for your contribution!", eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+								player.Out.SendMessage("Thank you for your contribution!", EChatType.CT_Chat, EChatLoc.CL_PopupWindow);
 								quest.FinishQuest();
 							}
 							break;
@@ -273,7 +273,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 
 			if (response == 0x00)
 			{
-				player.Out.SendMessage("Thank you for helping Hibernia.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Thank you for helping Hibernia.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			}
 			else
 			{
@@ -320,7 +320,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 
 			if (Step != 1 || e != GamePlayerEvent.CapturedRelicsChanged) return;
 			_isCaptured = 1;
-			player.Out.SendMessage("[Monthly] Captured Relic: ("+_isCaptured+" | "+MAX_CAPTURED+")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("[Monthly] Captured Relic: ("+_isCaptured+" | "+MAX_CAPTURED+")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 			player.Out.SendQuestUpdate(this);
 					
 			if (_isCaptured >= MAX_CAPTURED)
@@ -362,7 +362,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 				
 				if (reward > 0)
 				{
-					m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Monthly Quest.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					m_questPlayer.Out.SendMessage($"You have been rewarded {reward} Realmpoints for finishing Monthly Quest.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					m_questPlayer.GainRealmPoints(reward, false);
 					m_questPlayer.Out.SendUpdatePlayer();
 				}
@@ -370,7 +370,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 			}
 			else
 			{
-				m_questPlayer.Out.SendMessage("Clear three slots of your inventory for your reward", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				m_questPlayer.Out.SendMessage("Clear three slots of your inventory for your reward", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 	}

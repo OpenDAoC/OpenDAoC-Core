@@ -201,7 +201,7 @@ namespace DOL.GS.Keeps
 		{
 			if (!hookpoint.IsFree)
 			{
-				player.Out.SendMessage("The hookpoint is already used!", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("The hookpoint is already used!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			//1=or 2=BP 3=GuildBP 4=contract
@@ -213,7 +213,7 @@ namespace DOL.GS.Keeps
 						if (!player.RemoveMoney(Gold * 100 * 100, "You buy " + this.GetName(1, false) + "."))
 						{
                             InventoryLogging.LogInventoryAction(player, "(keep)", EInventoryActionType.Merchant, Gold * 10000);
-							player.Out.SendMessage("You dont have enough money!", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("You dont have enough money!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 							return;
 						}
 					} break;
@@ -221,7 +221,7 @@ namespace DOL.GS.Keeps
 					{
 						if (!player.RemoveBountyPoints(Gold, "You buy " + this.GetName(1, false) + "."))
 						{
-							player.Out.SendMessage("You dont have enough bounty point!", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("You dont have enough bounty point!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 							return;
 						}
 					} break;
@@ -230,16 +230,16 @@ namespace DOL.GS.Keeps
 						if (player.Guild == null) return;
 						if (!player.Guild.RemoveBountyPoints(Gold))
 						{
-							player.Out.SendMessage("You dont have enough bounty point!", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("You dont have enough bounty point!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						else
-							player.Out.SendMessage("You buy " + this.GetName(1, false) + ".", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("You buy " + this.GetName(1, false) + ".", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 
 					} break;
 				case 4:
 					{
-						player.Out.SendMessage("NOT IMPLEMENTED YET, SORRY", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("NOT IMPLEMENTED YET, SORRY", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 						return;
 					}
 

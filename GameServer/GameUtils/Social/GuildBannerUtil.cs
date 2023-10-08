@@ -75,7 +75,7 @@ namespace DOL.GS
                     }
                     else
                     {
-                        m_player.Out.SendMessage("Someone in your group already has a guild banner active!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                        m_player.Out.SendMessage("Someone in your group already has a guild banner active!", EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
                     }
                 }
                 else
@@ -89,7 +89,7 @@ namespace DOL.GS
             }
             else if (m_player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
             {
-                m_player.Out.SendMessage("You have left the group and your guild banner disappears!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+                m_player.Out.SendMessage("You have left the group and your guild banner disappears!", EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
                 m_player.GuildBanner = null;
                 if (m_timer != null)
                 {
@@ -163,7 +163,7 @@ namespace DOL.GS
         {
 			Stop();
 			m_player.GuildBanner = null;
-			m_player.Guild.SendMessageToGuildMembers(string.Format("{0} has put away the guild banner!", m_player.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+			m_player.Guild.SendMessageToGuildMembers(string.Format("{0} has put away the guild banner!", m_player.Name), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 			m_player = null;
         }
 
@@ -184,7 +184,7 @@ namespace DOL.GS
 			}
 
 			Stop();
-			m_player.Guild.SendMessageToGuildMembers(m_player.Name + " has dropped the guild banner!", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+			m_player.Guild.SendMessageToGuildMembers(m_player.Name + " has dropped the guild banner!", EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 
 			gameItem = new WorldInventoryItem(m_item);
 			Point2D point = m_player.GetPointFromHeading(m_player.Heading, 30);

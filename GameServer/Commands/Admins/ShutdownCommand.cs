@@ -93,7 +93,7 @@ namespace DOL.GS.Commands
 				string msg = $"Automated server restart in {m_counter / 60} mins! (Restart at {date:HH:mm \"GMT\" zzz})";
 
 				foreach (GamePlayer player in ClientService.GetPlayers())
-					player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, msg);
+					player.Out.SendDialogBox(EDialogCode.SimpleWarning, 0, 0, 0, 0, EDialogType.Ok, true, msg);
 
 				log.Warn(msg);
 			}

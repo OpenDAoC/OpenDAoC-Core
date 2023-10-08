@@ -86,10 +86,10 @@ namespace DOL.GS
 				if (m_battlegroupMembers.Contains(player))
 					return false;
 				player.TempProperties.SetProperty(BATTLEGROUP_PROPERTY, this);
-                player.Out.SendMessage("You join the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You join the battle group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				foreach(GamePlayer member in Members.Keys)
 				{
-                    member.Out.SendMessage(player.Name + " has joined the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    member.Out.SendMessage(player.Name + " has joined the battle group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				m_battlegroupMembers.Add(player,leader);
 
@@ -129,7 +129,7 @@ namespace DOL.GS
 	        
 	        foreach (GamePlayer ply in Members.Keys)
 	        {
-		        ply.Out.SendMessage($"{Leader.Name} has initiated the recording. Use /random {maxRoll} now to roll for this item.",eChatType.CT_BattleGroupLeader, eChatLoc.CL_ChatWindow);
+		        ply.Out.SendMessage($"{Leader.Name} has initiated the recording. Use /random {maxRoll} now to roll for this item.",EChatType.CT_BattleGroupLeader, EChatLoc.CL_ChatWindow);
 	        }
 		}
 
@@ -138,7 +138,7 @@ namespace DOL.GS
 	        recordingRolls = false;
 	        foreach (GamePlayer ply in Members.Keys)
 	        {
-		        ply.Out.SendMessage($"{Leader.Name} stopped the recording. Use /bg showrolls to display the results.",eChatType.CT_BattleGroupLeader, eChatLoc.CL_ChatWindow);
+		        ply.Out.SendMessage($"{Leader.Name} stopped the recording. Use /bg showrolls to display the results.",EChatType.CT_BattleGroupLeader, EChatLoc.CL_ChatWindow);
 	        }
         }
         
@@ -159,13 +159,13 @@ namespace DOL.GS
         {
 	        if (recordingRolls)
 	        {
-		        player.Client.Out.SendMessage("Rolls are being recorded. Please wait.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		        player.Client.Out.SendMessage("Rolls are being recorded. Please wait.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		        return;
 	        }
 
 	        if (m_battlegroupRolls == null || m_battlegroupRolls.Count == 0)
 	        {
-		        player.Client.Out.SendMessage("No rolls have been recorded yet.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		        player.Client.Out.SendMessage("No rolls have been recorded yet.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		        return;
 	        }
 	        
@@ -298,7 +298,7 @@ namespace DOL.GS
             }
         }
 
-        public virtual void SendMessageToBattleGroupMembers(string msg, eChatType type, eChatLoc loc)
+        public virtual void SendMessageToBattleGroupMembers(string msg, EChatType type, EChatLoc loc)
         {
             lock (m_battlegroupMembers) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
             {
@@ -329,10 +329,10 @@ namespace DOL.GS
 				m_battlegroupMembers.Remove(player);
 				player.TempProperties.RemoveProperty(BATTLEGROUP_PROPERTY);
 				player.isInBG = false; //Xarik: Player is no more in the BG
-                player.Out.SendMessage("You leave the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("You leave the battle group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				foreach(GamePlayer member in Members.Keys)
 				{
-                    member.Out.SendMessage(player.Name + " has left the battle group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    member.Out.SendMessage(player.Name + " has left the battle group.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				if (m_battlegroupMembers.Count == 1)
 				{
@@ -354,7 +354,7 @@ namespace DOL.GS
 						m_battlegroupMembers[randomPlayer] = true;
 						foreach(GamePlayer member in Members.Keys)
 						{
-							member.Out.SendMessage(randomPlayer.Name + " is the new leader of the battle group.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
+							member.Out.SendMessage(randomPlayer.Name + " is the new leader of the battle group.", EChatType.CT_BattleGroupLeader, EChatLoc.CL_SystemWindow);
 						}
 					}
 				}

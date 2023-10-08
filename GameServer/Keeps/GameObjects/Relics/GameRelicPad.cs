@@ -186,8 +186,8 @@ namespace DOL.GS
 
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
 				{
-					otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(otherPlayer.Client.Account.Language, "GameRelicPad.MountRelic.Captured", GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name), eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
-					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(otherPlayer.Client.Account.Language, "GameRelicPad.MountRelic.Captured", GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name), EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow);
+					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 
 				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, ENewsType.RvRGlobal, false);
@@ -247,7 +247,7 @@ namespace DOL.GS
 				string message = string.Format("The {0} has been returned to {1}.", relic.Name, Name);
 
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
-					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -260,7 +260,7 @@ namespace DOL.GS
 				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.RemoveRelic.Removed", relic.CurrentCarrier.Name, GlobalConstants.RealmToName((ERealm)relic.CurrentCarrier.Realm), relic.Name, Name);
 
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
-					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
 				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, ENewsType.RvRGlobal, false);
 				
@@ -323,7 +323,7 @@ namespace DOL.GS
 				    // || m_parent.MountedRelic != null
 				    )
 				{
-                    player.Client.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameRelicPad.OnPlayerEnter.EmptyRelicPad"), relicOnPlayer.RelicType), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Client.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameRelicPad.OnPlayerEnter.EmptyRelicPad"), relicOnPlayer.RelicType), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					log.DebugFormat("Player {0} needs to find an empty {1} relic pad in order to place {2}.", player.Name, relicOnPlayer.RelicType, relicOnPlayer.Name);
 					return;
 				}

@@ -53,7 +53,7 @@ namespace DOL.GS
 					else
 						truc = ((source as GameSummonedPet).Owner as GamePlayer);
 					if (truc != null)
-						truc.Out.SendMessage("Your damage is absorbed and used to heal " + Name, eChatType.CT_System, eChatLoc.CL_ChatWindow);
+						truc.Out.SendMessage("Your damage is absorbed and used to heal " + Name, EChatType.CT_System, EChatLoc.CL_ChatWindow);
 					Health += damageAmount + criticalAmount;
 					base.TakeDamage(source, damageType, 0, 0);
 					return;

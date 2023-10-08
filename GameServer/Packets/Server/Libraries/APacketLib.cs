@@ -1,29 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using log4net;
 
 namespace DOL.GS.PacketHandler
 {
-	public abstract class AbstractPacketLib
+	public abstract class APacketLib
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -39,7 +20,7 @@ namespace DOL.GS.PacketHandler
 		/// Constructs a new PacketLib
 		/// </summary>
 		/// <param name="client">the gameclient this lib is associated with</param>
-		public AbstractPacketLib(GameClient client)
+		public APacketLib(GameClient client)
 		{
 			m_gameClient = client;
 		}
@@ -49,7 +30,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="packetCode"></param>
 		/// <returns></returns>
-		public virtual byte GetPacketCode(eServerPackets packetCode)
+		public virtual byte GetPacketCode(EServerPackets packetCode)
 		{
 			return (byte)packetCode;
 		}
@@ -58,7 +39,7 @@ namespace DOL.GS.PacketHandler
 		/// Sends a packet via TCP
 		/// </summary>
 		/// <param name="packet">The packet to be sent</param>
-		public void SendTCP(GSTCPPacketOut packet)
+		public void SendTCP(GsTcpPacketOut packet)
 		{
 			m_gameClient.PacketProcessor.SendTCP(packet);
 		}
@@ -76,7 +57,7 @@ namespace DOL.GS.PacketHandler
 		/// Send the packet via TCP without changing any portion of the packet
 		/// </summary>
 		/// <param name="packet">Packet to send</param>
-		public void SendTCPRaw(GSTCPPacketOut packet)
+		public void SendTCPRaw(GsTcpPacketOut packet)
 		{
 			m_gameClient.PacketProcessor.SendTCPRaw(packet);
 		}
@@ -85,7 +66,7 @@ namespace DOL.GS.PacketHandler
 		/// Send the packet via UDP
 		/// </summary>
 		/// <param name="packet">Packet to be sent</param>
-		public virtual void SendUDP(GSUDPPacketOut packet)
+		public virtual void SendUDP(GsUdpPacketOut packet)
 		{
 			SendUDP(packet, false);
 		}
@@ -95,7 +76,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="packet">Packet to be sent</param>
 		/// <param name="isForced">Force UDP packet if <code>true</code>, else packet can be sent over TCP</param>
-		public virtual void SendUDP(GSUDPPacketOut packet, bool isForced)
+		public virtual void SendUDP(GsUdpPacketOut packet, bool isForced)
 		{
 			m_gameClient.PacketProcessor.SendUDP(packet, isForced);
 		}
@@ -113,7 +94,7 @@ namespace DOL.GS.PacketHandler
 		/// Send the UDP packet without changing any portion of the packet
 		/// </summary>
 		/// <param name="packet">Packet to be sent</param>
-		public void SendUDPRaw(GSUDPPacketOut packet)
+		public void SendUDPRaw(GsUdpPacketOut packet)
 		{
 			m_gameClient.PacketProcessor.SendUDPRaw(packet);
 		}

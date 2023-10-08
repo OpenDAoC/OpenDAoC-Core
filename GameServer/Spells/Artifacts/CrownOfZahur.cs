@@ -122,12 +122,12 @@ namespace DOL.GS.Spells
                 {
                     player.Health += player.Mana;
                     player.Mana -= (int)ManaHeal;
-                    player.Out.SendMessage("You convert "+player.Mana+" power into hit points!", eChatType.CT_Spell, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage("You convert "+player.Mana+" power into hit points!", EChatType.CT_Spell, EChatLoc.CL_ChatWindow);
                     return;
                 }
                 player.Health += (int)ManaHeal;
                 player.Mana -= (int)ManaHeal;
-                player.Out.SendMessage("You convert " + ManaHeal + " power into hit points!", eChatType.CT_Spell, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage("You convert " + ManaHeal + " power into hit points!", EChatType.CT_Spell, EChatLoc.CL_ChatWindow);
                 return;
             }
         }

@@ -53,7 +53,7 @@ namespace DOL.GS.SkillHandler
                         EffectService.RequestImmediateCancelEffect(guard);
                 }
 
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CancelTargetNull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CancelTargetNull"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace DOL.GS.SkillHandler
 
             if (guardTarget == player)
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetIsGuardSource"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetIsGuardSource"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -69,7 +69,7 @@ namespace DOL.GS.SkillHandler
 
             if (guardTarget == null || group == null || !group.IsInTheGroup(guardTarget))
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.NotInGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.NotInGroup"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 
@@ -81,7 +81,7 @@ namespace DOL.GS.SkillHandler
 
             if (existingEffectFromAnotherSource != null)
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetAlreadyGuarded", existingEffectFromAnotherSource.GuardSource.GetName(0, true), existingEffectFromAnotherSource.GuardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetAlreadyGuarded", existingEffectFromAnotherSource.GuardSource.GetName(0, true), existingEffectFromAnotherSource.GuardTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 

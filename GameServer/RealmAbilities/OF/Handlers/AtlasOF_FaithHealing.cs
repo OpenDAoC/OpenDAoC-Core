@@ -51,9 +51,9 @@ namespace DOL.GS.RealmAbilities
 						if (didHeal && living is GamePlayer pl)
 						{
 							if(player == pl)
-								pl.Out.SendMessage("You heal yourself for " + healed + " hit points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);	
+								pl.Out.SendMessage("You heal yourself for " + healed + " hit points", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);	
 							else
-								pl.Out.SendMessage("You heal " + player.Name + " for " + healed + " hit points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+								pl.Out.SendMessage("You heal " + player.Name + " for " + healed + " hit points", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 						}
 							
 					}
@@ -66,7 +66,7 @@ namespace DOL.GS.RealmAbilities
 				int healed = living.ChangeHealth(living, EHealthChangeType.Spell, healAmount);
 				if (healed > 0) didHeal = true;
 				SendSpellEffectsToLiving(living, didHeal);
-				if(didHeal && living is GamePlayer pla) pla.Out.SendMessage("You heal yourself for " + healed + " hit points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+				if(didHeal && living is GamePlayer pla) pla.Out.SendMessage("You heal yourself for " + healed + " hit points", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				
 				
 			}

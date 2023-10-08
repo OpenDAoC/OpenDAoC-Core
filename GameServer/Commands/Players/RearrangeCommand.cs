@@ -135,7 +135,7 @@ public class RearrangeCommand : ACommandHandler, ICommandHandler
     #region Messages
     private void EmptySlot(GameClient client, int slot)
     {
-        client.Out.SendMessage("The given source slot (" + slot + ") is empty.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+        client.Out.SendMessage("The given source slot (" + slot + ") is empty.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
     }
 
     private void InvalidSlot(GameClient client, int[] slots)
@@ -150,19 +150,19 @@ public class RearrangeCommand : ACommandHandler, ICommandHandler
                 str += ", " + slot.ToString();
         }
 
-        client.Out.SendMessage("Invalid character slot" + (slots.Length > 1 ? "s" : "") + ": " + str, eChatType.CT_System, eChatLoc.CL_SystemWindow); 
+        client.Out.SendMessage("Invalid character slot" + (slots.Length > 1 ? "s" : "") + ": " + str, EChatType.CT_System, EChatLoc.CL_SystemWindow); 
     }
 
     private void NotSameRealm(GameClient client, int sourceSlot, int targetSlot)
     {
         client.Out.SendMessage("You cannot set a slot to a different realm! (source realm = " + GetRealmBySlotIndex(sourceSlot) +
-                               ", target realm = " + GetRealmBySlotIndex(targetSlot) + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                               ", target realm = " + GetRealmBySlotIndex(targetSlot) + ")", EChatType.CT_System, EChatLoc.CL_SystemWindow);
     }
 
     private void SlotChanged(GameClient client, string name, int oldSlot, int newSlot)
     {
         client.Out.SendMessage("The character slot for " + name + " has been successfully changed. (old slot = " + oldSlot +
-                               ", new slot = " + newSlot + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                               ", new slot = " + newSlot + ")", EChatType.CT_System, EChatLoc.CL_SystemWindow);
     }
     #endregion Messages
 

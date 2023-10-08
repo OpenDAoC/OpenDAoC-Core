@@ -107,7 +107,7 @@ namespace DOL.GS
 			else
 			{
 				if (Owner!=null)
-					Owner.Out.SendMessage("Target is not in view!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("Target is not in view!", EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace DOL.GS
 				target.OnAttackedByEnemy(ad);
 
 				Owner.OnAttackEnemy(ad);
-				Owner.Out.SendMessage("The " + this.Name + " hits " + target.Name + " for " + damageAmount + " damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				Owner.Out.SendMessage("The " + this.Name + " hits " + target.Name + " for " + damageAmount + " damage!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 			}
 			else
 			{

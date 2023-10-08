@@ -27,34 +27,34 @@ namespace DOL.GS.Behaviour.Actions
                 }
                 case eTextType.Emote:
                 {
-                    player.Out.SendMessage(message, eChatType.CT_Emote, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage(message, EChatType.CT_Emote, EChatLoc.CL_ChatWindow);
                     break;
                 }
                 case eTextType.Say:
                 {
-                    player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                     break;
                 }
                 case eTextType.SayTo:
                 {
-                    player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                    player.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_PopupWindow);
                     break;
                 }
                 case eTextType.Yell:
                 {
-                    player.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
                     break;
                 }
                 case eTextType.Broadcast:
                 {
                     foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
-                        otherPlayer.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+                        otherPlayer.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 
                     break;
                 }
                 case eTextType.Read:
                 {
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.MessageAction.ReadMessage", message), eChatType.CT_Emote, eChatLoc.CL_PopupWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.MessageAction.ReadMessage", message), EChatType.CT_Emote, EChatLoc.CL_PopupWindow);
                     break;
                 }
                 case eTextType.None:

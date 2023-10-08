@@ -40,12 +40,12 @@ namespace DOL.GS.RealmAbilities
 			if (living is not GamePlayer player) return;
 			if (player.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (player.IsSitting)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.CriticalShot.MustBeStanding"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.CriticalShot.MustBeStanding"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                 return;
 			}
 
@@ -67,12 +67,12 @@ namespace DOL.GS.RealmAbilities
 			{
 				if (player.rangeAttackComponent.RangedAttackType == ERangedAttackType.Long)
 				{
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CriticalShot.SwitchToRegular"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CriticalShot.SwitchToRegular"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					player.rangeAttackComponent.RangedAttackType = ERangedAttackType.Normal;
 				}
 				else
 				{
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CriticalShot.AlreadyFiring"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CriticalShot.AlreadyFiring"), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 				return;
 			}

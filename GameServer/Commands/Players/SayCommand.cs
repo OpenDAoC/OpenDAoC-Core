@@ -16,7 +16,7 @@ public class SayCommand : ACommandHandler, ICommandHandler
 
 		if (args.Length < 2)
 		{
-			client.Out.SendMessage("You must say something...", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage("You must say something...", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
 		string message = string.Join(" ", args, 1, args.Length - 1);
@@ -30,12 +30,12 @@ public class SayCommand : ACommandHandler, ICommandHandler
 		long changeTime = client.Player.CurrentRegion.Time - SayTick;
 		if (changeTime < 500 && SayTick > 0)
 		{
-			client.Player.Out.SendMessage("Slow down! Think before you say each word!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			client.Player.Out.SendMessage("Slow down! Think before you say each word!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;
 		}
         if (client.Player.IsMuted)
         {
-            client.Player.Out.SendMessage("You have been muted. You cannot talk.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage("You have been muted. You cannot talk.", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
             return;
         }
 

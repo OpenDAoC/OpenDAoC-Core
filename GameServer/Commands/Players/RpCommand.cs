@@ -31,11 +31,11 @@ public class RpCommand : ACommandHandler, ICommandHandler
 		{
 			case "on":
 				client.Player.GainRP = true;
-				client.Out.SendMessage("Your rp flag is ON. You will gain realm points. Use '/rp off' to stop gaining realm points.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Your rp flag is ON. You will gain realm points. Use '/rp off' to stop gaining realm points.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				break;
 			case "off":
 				client.Player.GainRP = false;
-				client.Out.SendMessage("Your rp flag is OFF. You will no longer gain realm points. Use '/rp on' to start gaining realm points again.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Your rp flag is OFF. You will no longer gain realm points. Use '/rp on' to start gaining realm points again.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				break;
 		}
 	}
