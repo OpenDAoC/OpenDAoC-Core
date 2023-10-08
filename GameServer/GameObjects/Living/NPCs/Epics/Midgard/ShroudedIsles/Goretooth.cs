@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Goretooth Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
@@ -42,25 +42,25 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (Util.Chance(35) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+			if (Util.Chance(35) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 					CastSpell(GoretoothPoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
-			if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 			{
-				if (Util.Chance(35) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && ad.Target.IsAlive)
+				if (Util.Chance(35) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && ad.Target.IsAlive)
 					CastSpell(Goretooth_stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
@@ -115,9 +115,9 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11879;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DamageOverTime.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Uninterruptible = true;
 					m_GoretoothPoison = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_GoretoothPoison);
@@ -145,7 +145,7 @@ namespace DOL.GS
 					spell.Range = 400;
 					spell.SpellID = 11880;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Stun.ToString();
+					spell.Type = ESpellType.Stun.ToString();
 					m_Goretooth_stun = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Goretooth_stun);
 				}
@@ -172,7 +172,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			if (HasAggro && Body.TargetObject != null)

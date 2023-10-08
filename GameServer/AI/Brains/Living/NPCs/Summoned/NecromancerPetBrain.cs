@@ -24,7 +24,7 @@ namespace DOL.AI.Brain
             FiniteStateMachine.Add(new NecromancerPetStatePassive(this));
             FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-            FiniteStateMachine.SetCurrentState(eFSMStateType.WAKING_UP);
+            FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
         }
 
         public override int ThinkInterval => 500;
@@ -237,7 +237,7 @@ namespace DOL.AI.Brain
             GameLiving spellTarget = target as GameLiving;
 
             // Target must be alive, or this is a self spell, or this is a pbaoe spell.
-            if ((spellTarget != null && spellTarget.IsAlive) || spell.Target == eSpellTarget.SELF || spell.Range == 0)
+            if ((spellTarget != null && spellTarget.IsAlive) || spell.Target == ESpellTarget.SELF || spell.Range == 0)
             {
                 if (spell.CastTime > 0)
                     Body.attackComponent.StopAttack();

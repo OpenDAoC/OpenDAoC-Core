@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Kontar the Corrupt Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -42,11 +42,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -114,7 +114,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				spawnAdds = false;
 				if (!RemoveAdds)
@@ -162,13 +162,13 @@ namespace DOL.GS
 		public CorruptorBodyguard() : base()
 		{
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 15;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 15;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 15;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 15;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 15;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 15;// dmg reduction for melee dmg
 				default: return 15;// dmg reduction for rest resists
 			}
 		}
@@ -180,11 +180,11 @@ namespace DOL.GS
 		{
 			get { return 2000; }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 200;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.10;
@@ -222,7 +222,7 @@ namespace DOL.GS
 		{
 			if (Util.Chance(25))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 					CastSpell(CorruptorBodyguardDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
@@ -241,13 +241,13 @@ namespace DOL.GS
 					spell.ClientEffect = 4359;
 					spell.Icon = 4359;
 					spell.Damage = 150;
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.Name = "Energy Blast";
 					spell.Range = 500;
 					spell.Radius = 300;
 					spell.SpellID = 11907;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CorruptorBodyguardDD = new Spell(spell, 70);
@@ -308,7 +308,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.SpellID = 11906;
 					spell.Target = "Realm";
-					spell.Type = eSpellType.Heal.ToString();
+					spell.Type = ESpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CorruptorBodyguardHeal = new Spell(spell, 50);

@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Warrior, "Warrior", "Viking")]
+	[CharacterClass((int)ECharacterClass.Warrior, "Warrior", "Viking")]
 	public class ClassWarrior : ClassViking
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Axe, Specs.Hammer, Specs.Sword };
@@ -32,9 +32,9 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.HouseofTyr";
 			m_specializationMultiplier = 20;
-			m_primaryStat = eStat.STR;
-			m_secondaryStat = eStat.CON;
-			m_tertiaryStat = eStat.DEX;
+			m_primaryStat = EStat.STR;
+			m_secondaryStat = EStat.CON;
+			m_tertiaryStat = EStat.DEX;
 			m_wsbase = 460;
 		}
 

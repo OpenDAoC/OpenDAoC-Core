@@ -143,15 +143,15 @@ namespace DOL.AI.Brain
                 Body.Z = Body.SpawnPoint.Z;
                 Body.Heading = Body.SpawnHeading;
                 //remove effects: dots and bleeds
-                if (Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime) && Body.IsAlive)
+                if (Body.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime) && Body.IsAlive)
                 {
-                    var effect = EffectListService.GetEffectOnTarget(Body, eEffect.DamageOverTime);
+                    var effect = EffectListService.GetEffectOnTarget(Body, EEffect.DamageOverTime);
                     if (effect != null)
                         EffectService.RequestImmediateCancelEffect(effect);//remove dot effect
                 }
-                if (Body.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed) && Body.IsAlive)
+                if (Body.effectListComponent.ContainsEffectForEffectType(EEffect.Bleed) && Body.IsAlive)
                 {
-                    var effect2 = EffectListService.GetEffectOnTarget(Body, eEffect.Bleed);
+                    var effect2 = EffectListService.GetEffectOnTarget(Body, EEffect.Bleed);
                     if (effect2 != null)
                         EffectService.RequestImmediateCancelEffect(effect2);//remove dot effect
                 }

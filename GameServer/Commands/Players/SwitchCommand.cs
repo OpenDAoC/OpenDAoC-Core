@@ -2,7 +2,7 @@
 
 namespace DOL.GS.Commands;
 
-[Command("&switch", ePrivLevel.Player,
+[Command("&switch", EPrivLevel.Player,
     "Equip Weapons from bag. (/switch 1h 1, will replace your mainhand weapon with the first slot in your backpack)",
     "/switch 1h <slot>",
     "/switch offhand <slot>",
@@ -58,7 +58,7 @@ public class SwitchCommand : ACommandHandler, ICommandHandler
         {
             DbInventoryItem item = player.Inventory.GetItem(FromSlot);
 
-            if (!GlobalConstants.IsWeapon(item.Object_Type) && item.Object_Type != (int)eObjectType.Instrument)
+            if (!GlobalConstants.IsWeapon(item.Object_Type) && item.Object_Type != (int)EObjectType.Instrument)
             {
                 DisplayMessage(player.Client, "That is not a weapon!");
                 DisplaySyntax(player.Client);

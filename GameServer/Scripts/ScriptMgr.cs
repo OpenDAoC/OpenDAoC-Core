@@ -148,7 +148,7 @@ namespace DOL.GS
 		/// <param name="plvl">plvl of the commands to get</param>
 		/// <param name="addDesc"></param>
 		/// <returns></returns>
-		public static string[] GetCommandList(ePrivLevel plvl, bool addDesc)
+		public static string[] GetCommandList(EPrivLevel plvl, bool addDesc)
 		{
 			return m_gameCommands.Where(kv => kv.Value != null && kv.Key != null && (uint)plvl > kv.Value.m_lvl)
 				.Select(kv => string.Format("/{0}{2}{1}", kv.Key.Remove(0, 1), addDesc ? kv.Value.m_desc : string.Empty, addDesc ? " - " : string.Empty))
@@ -768,7 +768,7 @@ namespace DOL.GS
 		/// <returns>
 		/// all handlers that were found, guildname(string) => classtype(Type)
 		/// </returns>
-		protected static Hashtable FindAllNPCGuildScriptClasses(eRealm realm, Assembly asm)
+		protected static Hashtable FindAllNPCGuildScriptClasses(ERealm realm, Assembly asm)
 		{
 			Hashtable ht = new Hashtable();
 			if (asm != null)
@@ -786,7 +786,7 @@ namespace DOL.GS
 
 						foreach (NPCGuildScriptAttribute attrib in objs)
 						{
-							if (attrib.Realm == eRealm.None || attrib.Realm == realm)
+							if (attrib.Realm == ERealm.None || attrib.Realm == realm)
 							{
 								ht[attrib.GuildName] = type;
 							}
@@ -803,8 +803,8 @@ namespace DOL.GS
 			return ht;
 		}
 
-		protected static Hashtable[] m_gs_guilds = new Hashtable[(int)eRealm._Last + 1];
-		protected static Hashtable[] m_script_guilds = new Hashtable[(int)eRealm._Last + 1];
+		protected static Hashtable[] m_gs_guilds = new Hashtable[(int)ERealm._Last + 1];
+		protected static Hashtable[] m_script_guilds = new Hashtable[(int)ERealm._Last + 1];
 
 		/// <summary>
 		/// searches for a npc guild script
@@ -812,7 +812,7 @@ namespace DOL.GS
 		/// <param name="guild"></param>
 		/// <param name="realm"></param>
 		/// <returns>type of class for searched npc guild or null</returns>
-		public static Type FindNPCGuildScriptClass(string guild, eRealm realm)
+		public static Type FindNPCGuildScriptClass(string guild, ERealm realm)
 		{
 			if (string.IsNullOrEmpty(guild)) return null;
 

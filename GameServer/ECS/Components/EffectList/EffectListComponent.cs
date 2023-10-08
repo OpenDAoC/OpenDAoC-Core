@@ -13,7 +13,7 @@ namespace DOL.GS
 
         public GameLiving Owner { get; private set; }
         public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.EffectListComponent, false);
-        public Dictionary<eEffect, List<EcsGameEffect>> Effects { get; private set; } = new Dictionary<eEffect, List<EcsGameEffect>>();
+        public Dictionary<EEffect, List<EcsGameEffect>> Effects { get; private set; } = new Dictionary<EEffect, List<EcsGameEffect>>();
         public object EffectsLock { get; private set; } = new();
         public List<EcsGameSpellEffect> ConcentrationEffects { get; private set; } = new List<EcsGameSpellEffect>(20);
         public object ConcentrationEffectsLock { get; private set; } = new();
@@ -41,7 +41,7 @@ namespace DOL.GS
                     {
                         if (!Effects.ContainsKey(effect.EffectType))
                             Effects.Add(effect.EffectType, new List<EcsGameEffect> { effect });
-                        else if (effect.EffectType is eEffect.Protect or eEffect.Guard)
+                        else if (effect.EffectType is EEffect.Protect or EEffect.Guard)
                             Effects[effect.EffectType].Add(effect);
 
                         EffectIdToEffect.TryAdd(effect.Icon, effect);
@@ -77,7 +77,7 @@ namespace DOL.GS
                                     || (existingSpell.IsConcentration && existingEffect == newSpellEffect)
                                     || existingSpell.ID == newSpell.ID)
                                 {
-                                    if (newSpell.IsPoisonEffect && newSpellEffect.EffectType == eEffect.DamageOverTime)
+                                    if (newSpell.IsPoisonEffect && newSpellEffect.EffectType == EEffect.DamageOverTime)
                                     {
                                         existingEffect.ExpireTick = newSpellEffect.ExpireTick;
                                         newSpellEffect.IsBuffActive = true; // Why?
@@ -91,7 +91,7 @@ namespace DOL.GS
                                         // It will be restarted in 'EffectService.HandlePropertyModification()'.
                                         // Also needed for movement speed debuffs' since their effect decrease over time.
                                         if (existingEffect.Effectiveness != newSpellEffect.Effectiveness ||
-                                            existingSpell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
+                                            existingSpell.SpellType is ESpellType.SpeedDecrease or ESpellType.UnbreakableSpeedDecrease)
                                             existingEffect.OnStopEffect();
 
                                         newSpellEffect.IsDisabled = existingEffect.IsDisabled;
@@ -105,9 +105,9 @@ namespace DOL.GS
                                 }
                             }
                         }
-                        else if (effect.EffectType is eEffect.SavageBuff or eEffect.ArmorAbsorptionBuff)
+                        else if (effect.EffectType is EEffect.SavageBuff or EEffect.ArmorAbsorptionBuff)
                         {
-                            if (effect.EffectType is eEffect.ArmorAbsorptionBuff)
+                            if (effect.EffectType is EEffect.ArmorAbsorptionBuff)
                             {
                                 for (int i = 0; i < existingEffects.Count; i++)
                                 {
@@ -149,17 +149,17 @@ namespace DOL.GS
                                 Spell existingSpell = existingSpellHandler.Spell;
 
                                 // Check if existingEffect is overwritable by new effect.
-                                if (existingSpellHandler.IsOverwritable(newSpellEffect) || newSpellEffect.EffectType == eEffect.MovementSpeedDebuff)
+                                if (existingSpellHandler.IsOverwritable(newSpellEffect) || newSpellEffect.EffectType == EEffect.MovementSpeedDebuff)
                                 {
                                     foundIsOverwriteableEffect = true;
 
-                                    if (effect.EffectType == eEffect.Bladeturn)
+                                    if (effect.EffectType == EEffect.Bladeturn)
                                     {
                                         // PBT should only replace itself.
                                         if (!newSpell.IsPulsing)
                                         {
                                             // Self cast Bladeturns should never be overwritten.
-                                            if (existingSpell.Target != eSpellTarget.SELF)
+                                            if (existingSpell.Target != ESpellTarget.SELF)
                                             {
                                                 EffectService.RequestCancelEffect(existingEffect);
                                                 addEffect = true;
@@ -174,7 +174,7 @@ namespace DOL.GS
                                         // Special handling for ablative effects.
                                         // We use the remaining amount instead of the spell value. They also can't be added as disabled effects.
                                         // Note: This ignores subclasses of 'AblativeArmorSpellHandler', so right know we only allow one ablative buff regardless of its type.
-                                        if (effect.EffectType == eEffect.AblativeArmor &&
+                                        if (effect.EffectType == EEffect.AblativeArmor &&
                                             existingEffect is AblativeArmorEcsSpellEffect existingAblativeEffect)
                                         {
                                             // 'Damage' represents the absorption% per hit.
@@ -225,7 +225,7 @@ namespace DOL.GS
                             {
                                 Effects[newSpellEffect.EffectType].Add(newSpellEffect);
 
-                                if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
+                                if (effect.EffectType != EEffect.Pulse && effect.Icon != 0)
                                     EffectIdToEffect.TryAdd(newSpellEffect.Icon, newSpellEffect);
 
                                 return true;
@@ -240,7 +240,7 @@ namespace DOL.GS
                     {
                         Effects.Add(effect.EffectType, new List<EcsGameEffect> { effect });
 
-                        if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
+                        if (effect.EffectType != EEffect.Pulse && effect.Icon != 0)
                             EffectIdToEffect.TryAdd(effect.Icon, effect);
                     }
 
@@ -263,7 +263,7 @@ namespace DOL.GS
                 {
                     for (int j = 0; j < effects?.Count; j++)
                     {
-                        if (effects[j].EffectType != eEffect.Pulse)
+                        if (effects[j].EffectType != EEffect.Pulse)
                             temp.Add(effects[j]);
                     }
                 }
@@ -281,7 +281,7 @@ namespace DOL.GS
                 {
                     for (int j = 0; j < effects?.Count; j++)
                     {
-                        if (effects[j].EffectType == eEffect.Pulse)
+                        if (effects[j].EffectType == EEffect.Pulse)
                             temp.Add((EcsPulseEffect)effects[j]);
                     }
                 }
@@ -313,7 +313,7 @@ namespace DOL.GS
             }
         }
 
-        public EcsGameSpellEffect GetBestDisabledSpellEffect(eEffect effectType = eEffect.Unknown)
+        public EcsGameSpellEffect GetBestDisabledSpellEffect(EEffect effectType = EEffect.Unknown)
         {
             lock (EffectsLock)
             {
@@ -321,7 +321,7 @@ namespace DOL.GS
             }
         }
 
-        public List<EcsGameSpellEffect> GetSpellEffects(eEffect effectType = eEffect.Unknown)
+        public List<EcsGameSpellEffect> GetSpellEffects(EEffect effectType = EEffect.Unknown)
         {
             lock (EffectsLock)
             {
@@ -332,7 +332,7 @@ namespace DOL.GS
                     {
                         if (effects[j] is EcsGameSpellEffect)
                         {
-                            if (effectType != eEffect.Unknown)
+                            if (effectType != EEffect.Unknown)
                             {
                                 if (effects[j].EffectType == effectType)
                                     temp.Add(effects[j] as EcsGameSpellEffect);
@@ -416,7 +416,7 @@ namespace DOL.GS
             }
         }
 
-        public bool ContainsEffectForEffectType(eEffect effectType)
+        public bool ContainsEffectForEffectType(EEffect effectType)
         {
             try
             {

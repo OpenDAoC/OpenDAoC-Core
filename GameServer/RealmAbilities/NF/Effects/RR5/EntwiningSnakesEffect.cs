@@ -21,7 +21,7 @@ namespace DOL.GS.Effects
 		public override void Start(GameLiving target)
 		{
 			base.Start(target);
-			target.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 50 * 0.01);
+			target.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, this, 1.0 - 50 * 0.01);
 			owner = target;
 			GamePlayer player = owner as GamePlayer;
 			GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
@@ -38,7 +38,7 @@ namespace DOL.GS.Effects
 
 		public override void Stop()
 		{
-			owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
+			owner.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, this);
 			base.Stop();
 			GamePlayer player = owner as GamePlayer;
 			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
@@ -58,8 +58,8 @@ namespace DOL.GS.Effects
 			if (attackArgs == null) return;
 			switch (attackArgs.AttackData.AttackResult)
 			{
-				case eAttackResult.HitStyle:
-				case eAttackResult.HitUnstyled:
+				case EAttackResult.HitStyle:
+				case EAttackResult.HitUnstyled:
 					Stop();
 					break;
 			}

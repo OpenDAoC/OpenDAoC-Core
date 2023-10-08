@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Cabalist Trainer
 	/// </summary>
-	[NPCGuildScript("Cabalist Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Cabalist Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Cabalist Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Cabalist Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class CabalistTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Cabalist; }
+			get { return ECharacterClass.Cabalist; }
 		}
 
 		public const string WEAPON_ID = "cabalist_item";
@@ -86,7 +86,7 @@ namespace DOL.GS.Trainer
 				case "join the Guild of Shadows":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Cabalist, "Welcome to our guild! You have much to learn, but I see greatness in your future! Here too is your guild weapon, a Staff of Focus!", null);
+						PromotePlayer(player, (int)ECharacterClass.Cabalist, "Welcome to our guild! You have much to learn, but I see greatness in your future! Here too is your guild weapon, a Staff of Focus!", null);
 						player.ReceiveItem(this,WEAPON_ID);
 					}
 					break;

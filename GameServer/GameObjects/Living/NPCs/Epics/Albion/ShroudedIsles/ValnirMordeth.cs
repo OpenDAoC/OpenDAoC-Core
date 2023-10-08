@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Valnir Mordeth Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -42,11 +42,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -111,7 +111,7 @@ namespace DOL.GS
 		{
 			if (Util.Chance(30))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 					CastSpell(ValnirLifeDrain, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
@@ -140,11 +140,11 @@ namespace DOL.GS
 					spell.Name = "Lifedrain";
 					spell.Range = 400;
 					spell.SpellID = 11903;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					m_ValnirLifeDrain = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_ValnirLifeDrain);
 				}
@@ -172,7 +172,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanSpawnMoreGhouls = false;
 				if(spawnAddsAfterCombat == false)
@@ -210,9 +210,9 @@ namespace DOL.AI.Brain
 							Body.StopFollowing();
 					}
 					Body.TurnTo(Body.TargetObject);
-					if (Util.Chance(25) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+					if (Util.Chance(25) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 						Body.CastSpell(Valnir_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-					if (Util.Chance(25) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+					if (Util.Chance(25) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
 						Body.CastSpell(ValnirDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 				}
 				if(CanSpawnMoreGhouls == false)
@@ -285,9 +285,9 @@ namespace DOL.AI.Brain
 					spell.Target = "Enemy";
 					spell.SpellGroup = 1800;
 					spell.EffectGroup = 1500;
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					m_Valnir_Dot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Valnir_Dot);
 				}
@@ -320,7 +320,7 @@ namespace DOL.AI.Brain
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+					spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
 					m_ValnirDisease = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_ValnirDisease);
 				}
@@ -337,13 +337,13 @@ namespace DOL.GS
 	{
 		public ValnirMordethAdd() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
@@ -356,11 +356,11 @@ namespace DOL.GS
 			get { return 350; }
 			set { }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 200;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.10;
@@ -467,11 +467,11 @@ namespace DOL.AI.Brain
 					spell.Name = "Lifedrain";
 					spell.Range = 1800;
 					spell.SpellID = 11902;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					m_ValnirAddLifeDrain = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_ValnirAddLifeDrain);
 				}

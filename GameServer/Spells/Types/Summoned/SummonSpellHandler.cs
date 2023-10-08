@@ -266,7 +266,7 @@ namespace DOL.GS.Spells
 					list.Add("Concentration cost: " + Spell.Concentration);
 				if (Spell.Radius != 0)
 					list.Add("Radius: " + Spell.Radius);
-				if (Spell.DamageType != eDamageType.Natural)
+				if (Spell.DamageType != EDamageType.Natural)
 					list.Add("Damage: " + GlobalConstants.DamageTypeToName(Spell.DamageType));
 
 				return list;

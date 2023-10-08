@@ -14,7 +14,7 @@ using DOL.GS.Quests;
 namespace DOL.GS.Commands
 {
 	[Command("&mob", //command to handle
-	     ePrivLevel.GM, //minimum privelege level
+	     EPrivLevel.GM, //minimum privelege level
 	     "Mob creation and modification commands.", //command description
 	     // usage
 	     "'/mob create [ClassName(DOL.GS.GameNPC)] [eRealm(0)]' to create a new mob.",
@@ -320,7 +320,7 @@ namespace DOL.GS.Commands
 			mob.CurrentRegion = client.Player.CurrentRegion;
 			mob.Heading = client.Player.Heading;
 			mob.Level = 1;
-			mob.Realm = (eRealm)realm;
+			mob.Realm = (ERealm)realm;
 			mob.Name = "New Mob";
 			mob.Model = 408;
 
@@ -467,7 +467,7 @@ namespace DOL.GS.Commands
 				mob.CurrentRegion = client.Player.CurrentRegion;
 				mob.Heading = client.Player.Heading;
 				mob.Level = level;
-				mob.Realm = (eRealm)realm;
+				mob.Realm = (ERealm)realm;
 				mob.Name = name;
 				mob.Model = model;
 
@@ -527,7 +527,7 @@ namespace DOL.GS.Commands
 				mob.CurrentRegion = client.Player.CurrentRegion;
 				mob.Heading = client.Player.Heading;
 				mob.Level = (byte)Util.Random(10, 50);
-				mob.Realm = (eRealm)Util.Random(1, 3);
+				mob.Realm = (ERealm)Util.Random(1, 3);
 				mob.Name = "rand_" + i;
 				mob.Model = (byte)Util.Random(568, 699);
 
@@ -1006,7 +1006,7 @@ namespace DOL.GS.Commands
 		{
 			try
 			{
-				eDamageType damage = (eDamageType)Enum.Parse(typeof(eDamageType), args[2], true);
+				EDamageType damage = (EDamageType)Enum.Parse(typeof(EDamageType), args[2], true);
 				targetMob.MeleeDamageType = damage;
 				targetMob.SaveIntoDatabase();
 				DisplayMessage(client, "Mob damage type changed to: {0}", targetMob.MeleeDamageType);
@@ -1302,13 +1302,13 @@ namespace DOL.GS.Commands
 
 			info.Add(" ");
 			info.Add(" +     STR      /      CON      /      DEX      /      QUI");
-			info.Add(" + " + targetMob.Strength + " (" + targetMob.GetModified(eProperty.Strength) + ")  /  " + targetMob.Constitution + " (" + targetMob.GetModified(eProperty.Constitution) + ")  /  " + targetMob.Dexterity + " (" + targetMob.GetModified(eProperty.Dexterity) + ")  /  " + targetMob.Quickness + " (" + targetMob.GetModified(eProperty.Quickness) + ")");
+			info.Add(" + " + targetMob.Strength + " (" + targetMob.GetModified(EProperty.Strength) + ")  /  " + targetMob.Constitution + " (" + targetMob.GetModified(EProperty.Constitution) + ")  /  " + targetMob.Dexterity + " (" + targetMob.GetModified(EProperty.Dexterity) + ")  /  " + targetMob.Quickness + " (" + targetMob.GetModified(EProperty.Quickness) + ")");
 			info.Add(" +     INT      /     EMP     /     PIE     /     CHR");
-			info.Add(" + " + targetMob.Intelligence + " (" + targetMob.GetModified(eProperty.Intelligence) + ")  /  " + targetMob.Empathy + " (" + targetMob.GetModified(eProperty.Empathy) + ")  /  " + targetMob.Piety + " (" + targetMob.GetModified(eProperty.Piety) + ")  /  " + targetMob.Charisma + " (" + targetMob.GetModified(eProperty.Charisma) + ")");
+			info.Add(" + " + targetMob.Intelligence + " (" + targetMob.GetModified(EProperty.Intelligence) + ")  /  " + targetMob.Empathy + " (" + targetMob.GetModified(EProperty.Empathy) + ")  /  " + targetMob.Piety + " (" + targetMob.GetModified(EProperty.Piety) + ")  /  " + targetMob.Charisma + " (" + targetMob.GetModified(EProperty.Charisma) + ")");
 			info.Add(" + Block / Parry / Evade %:  " + targetMob.BlockChance + " / " + targetMob.ParryChance + " / " + targetMob.EvadeChance);
 			info.Add($"+ Weapon Skill: {targetMob.GetWeaponSkill(targetMob.ActiveWeapon)}");
-			info.Add(" + Attack Speed (Melee Speed Increase %):  " + targetMob.AttackSpeed(targetMob.ActiveWeapon) + " (" + (100 - targetMob.GetModified(eProperty.MeleeSpeed)) + ")");
-			info.Add(" + Casting Speed Increase %:  " + targetMob.GetModified(eProperty.CastingSpeed));
+			info.Add(" + Attack Speed (Melee Speed Increase %):  " + targetMob.AttackSpeed(targetMob.ActiveWeapon) + " (" + (100 - targetMob.GetModified(EProperty.MeleeSpeed)) + ")");
+			info.Add(" + Casting Speed Increase %:  " + targetMob.GetModified(EProperty.CastingSpeed));
 
 			if (targetMob.LeftHandSwingChance > 0)
 				info.Add(" + Left Swing %: " + targetMob.LeftHandSwingChance);
@@ -1336,30 +1336,30 @@ namespace DOL.GS.Commands
 			info.Add(" ");
 
 			info.Add("Race Resists:");
-			info.Add(" +  -- Crush/Slash/Thrust:  " + targetMob.GetDamageResist(eProperty.Resist_Crush)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Slash)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Thrust));
-			info.Add(" +  -- Heat/Cold/Matter:  " + targetMob.GetDamageResist(eProperty.Resist_Heat)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Cold)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Matter));
-			info.Add(" +  -- Body/Spirit/Energy:  " + targetMob.GetDamageResist(eProperty.Resist_Body)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Spirit)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Energy));
-			info.Add(" +  -- Natural:  " + targetMob.GetDamageResist(eProperty.Resist_Natural));
+			info.Add(" +  -- Crush/Slash/Thrust:  " + targetMob.GetDamageResist(EProperty.Resist_Crush)
+			         + " / " + targetMob.GetDamageResist(EProperty.Resist_Slash)
+			         + " / " + targetMob.GetDamageResist(EProperty.Resist_Thrust));
+			info.Add(" +  -- Heat/Cold/Matter:  " + targetMob.GetDamageResist(EProperty.Resist_Heat)
+			         + " / " + targetMob.GetDamageResist(EProperty.Resist_Cold)
+			         + " / " + targetMob.GetDamageResist(EProperty.Resist_Matter));
+			info.Add(" +  -- Body/Spirit/Energy:  " + targetMob.GetDamageResist(EProperty.Resist_Body)
+			         + " / " + targetMob.GetDamageResist(EProperty.Resist_Spirit)
+			         + " / " + targetMob.GetDamageResist(EProperty.Resist_Energy));
+			info.Add(" +  -- Natural:  " + targetMob.GetDamageResist(EProperty.Resist_Natural));
 
 			info.Add(" ");
 
 			info.Add("Current Resists:");
-			info.Add(" +  -- Crush/Slash/Thrust:  " + targetMob.GetModified(eProperty.Resist_Crush)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Slash)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Thrust));
-			info.Add(" +  -- Heat/Cold/Matter:  " + targetMob.GetModified(eProperty.Resist_Heat)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Cold)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Matter));
-			info.Add(" +  -- Body/Spirit/Energy:  " + targetMob.GetModified(eProperty.Resist_Body)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Spirit)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Energy));
-			info.Add(" +  -- Natural:  " + targetMob.GetModified(eProperty.Resist_Natural));
+			info.Add(" +  -- Crush/Slash/Thrust:  " + targetMob.GetModified(EProperty.Resist_Crush)
+			         + " / " + targetMob.GetModified(EProperty.Resist_Slash)
+			         + " / " + targetMob.GetModified(EProperty.Resist_Thrust));
+			info.Add(" +  -- Heat/Cold/Matter:  " + targetMob.GetModified(EProperty.Resist_Heat)
+			         + " / " + targetMob.GetModified(EProperty.Resist_Cold)
+			         + " / " + targetMob.GetModified(EProperty.Resist_Matter));
+			info.Add(" +  -- Body/Spirit/Energy:  " + targetMob.GetModified(EProperty.Resist_Body)
+			         + " / " + targetMob.GetModified(EProperty.Resist_Spirit)
+			         + " / " + targetMob.GetModified(EProperty.Resist_Energy));
+			info.Add(" +  -- Natural:  " + targetMob.GetModified(EProperty.Resist_Natural));
 
 			info.Add(" ");
 
@@ -1423,14 +1423,14 @@ namespace DOL.GS.Commands
 			var info = new List<string>();
 			info.Add("Modified stats:");
 			info.Add("");
-			for (eProperty property = eProperty.Stat_First; property <= eProperty.Stat_Last; ++property)
+			for (EProperty property = EProperty.Stat_First; property <= EProperty.Stat_Last; ++property)
 				info.Add(String.Format("{0}: {1}",
 				                       GlobalConstants.PropertyToName(property),
 				                       targetMob.GetModified(property)));
 			info.Add("");
 			info.Add("Modified resists:");
 			info.Add("");
-			for (eProperty property = eProperty.Resist_First + 1; property <= eProperty.Resist_Last; ++property)
+			for (EProperty property = EProperty.Resist_First + 1; property <= EProperty.Resist_Last; ++property)
 				info.Add(String.Format("{0}: {1}",
 				                       GlobalConstants.PropertyToName(property),
 				                       targetMob.GetModified(property)));
@@ -1438,14 +1438,14 @@ namespace DOL.GS.Commands
 			info.Add("Miscellaneous:");
 			info.Add("");
 
-			if (targetMob.GetModified(eProperty.MeleeDamage) != 0)
-				info.Add($" + Damage Bonus: {targetMob.GetModified(eProperty.MeleeDamage)}");
+			if (targetMob.GetModified(EProperty.MeleeDamage) != 0)
+				info.Add($" + Damage Bonus: {targetMob.GetModified(EProperty.MeleeDamage)}");
 
-			info.Add(" + Attack Speed (Melee Speed Increase %):  " + targetMob.AttackSpeed(targetMob.ActiveWeapon) + " (" + (100 - targetMob.GetModified(eProperty.MeleeSpeed)) + ")");
+			info.Add(" + Attack Speed (Melee Speed Increase %):  " + targetMob.AttackSpeed(targetMob.ActiveWeapon) + " (" + (100 - targetMob.GetModified(EProperty.MeleeSpeed)) + ")");
 
 			info.Add(String.Format("Maximum Health: {0}", targetMob.MaxHealth));
-			info.Add(String.Format("Armor Factor (AF): {0}", targetMob.GetModified(eProperty.ArmorFactor)));
-			info.Add(String.Format("Absorption (ABS): {0}", targetMob.GetModified(eProperty.ArmorAbsorption)));
+			info.Add(String.Format("Armor Factor (AF): {0}", targetMob.GetModified(EProperty.ArmorFactor)));
+			info.Add(String.Format("Absorption (ABS): {0}", targetMob.GetModified(EProperty.ArmorAbsorption)));
 			client.Out.SendCustomTextWindow("[ " + targetMob.Name + " ]", info);
 			return;
 		}
@@ -1457,7 +1457,7 @@ namespace DOL.GS.Commands
 			try
 			{
 				realm = Convert.ToByte(args[2]);
-				targetMob.Realm = (eRealm)realm;
+				targetMob.Realm = (ERealm)realm;
 				targetMob.SaveIntoDatabase();
 				client.Out.SendMessage("Mob realm changed to: " + GlobalConstants.RealmToName(targetMob.Realm), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
@@ -1936,13 +1936,13 @@ namespace DOL.GS.Commands
 				{
 					case "righthand":
 					case "lefthand":
-						targetMob.SwitchWeapon(eActiveWeaponSlot.Standard);
+						targetMob.SwitchWeapon(EActiveWeaponSlot.Standard);
 						break;
 					case "twohanded":
-						targetMob.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+						targetMob.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 						break;
 					case "distance":
-						targetMob.SwitchWeapon(eActiveWeaponSlot.Distance);
+						targetMob.SwitchWeapon(EActiveWeaponSlot.Distance);
 						break;
 
 					default:
@@ -2872,7 +2872,7 @@ namespace DOL.GS.Commands
 					return;
 				}
 
-				targetMob.Gender = (eGender)gender;
+				targetMob.Gender = (EGender)gender;
 				targetMob.SaveIntoDatabase();
 				client.Out.SendMessage(String.Format("Mob gender changed to {0}.",
 				                                     targetMob.Gender.ToString().ToLower()),
@@ -2970,7 +2970,7 @@ namespace DOL.GS.Commands
 			if (args.Length > 2)
 			{
 				// Reload the mob(s)
-				for (eRealm i = eRealm._First; i <= eRealm._Last; i++)
+				for (ERealm i = ERealm._First; i <= ERealm._Last; i++)
 				{
 					mobs.Add(WorldMgr.GetNPCsByName(args[2], i));
 				}

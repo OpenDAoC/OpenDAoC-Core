@@ -56,7 +56,7 @@ namespace DOL.GS.RealmAbilities
 				player.Out.SendMessage("Your target is already considering a resurrection!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return;
 			}
-            if( !player.IsWithinRadius( targetPlayer, (int)( 1500 * player.GetModified(eProperty.SpellRange) * 0.01 ) ) )
+            if( !player.IsWithinRadius( targetPlayer, (int)( 1500 * player.GetModified(EProperty.SpellRange) * 0.01 ) ) )
 
 			{
 				player.Out.SendMessage("You are too far away from your target to use this ability!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);

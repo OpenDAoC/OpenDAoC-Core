@@ -47,7 +47,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			double modifier = 0.5 + (caster.GetModifiedSpecLevel("Soulrending") * 0.01);
 			int basedamage = (int)(250 * modifier);
-			int resist = basedamage * target.GetResist(eDamageType.Spirit) / -100;
+			int resist = basedamage * target.GetResist(EDamageType.Spirit) / -100;
 			int damage = basedamage + resist;
 			int heal = (int)(damage * 0.75);
 			int modheal = caster.MaxHealth - caster.Health;
@@ -76,10 +76,10 @@ namespace DOL.GS.RealmAbilities
 
 			//target.TakeDamage(caster, eDamageType.Spirit, damage, 0);
 			AttackData ad = new AttackData();
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 			ad.Attacker = caster;
 			ad.Target = target;
-			ad.DamageType = eDamageType.Spirit;
+			ad.DamageType = EDamageType.Spirit;
 			ad.Damage = damage;
 			target.OnAttackedByEnemy(ad);
 			caster.DealDamage(ad);

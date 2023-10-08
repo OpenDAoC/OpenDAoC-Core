@@ -71,7 +71,7 @@ namespace DOL.GS.Quests.Midgard
 
 			#region defineNPCs
 			//Freeya
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Freeya", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Freeya", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -90,13 +90,13 @@ namespace DOL.GS.Quests.Midgard
 				Freeya.Model = 165;
 				Freeya.Name = "Freeya";
 				Freeya.GuildName = "Thor Boyaux";
-				Freeya.Realm = eRealm.Midgard;
+				Freeya.Realm = ERealm.Midgard;
 				Freeya.CurrentRegionID = 100;
 				Freeya.Flags += (ushort) GameNPC.eFlags.GHOST + (ushort) GameNPC.eFlags.PEACE + (ushort) GameNPC.eFlags.TORCH;
 				Freeya.Size = 50;
 				Freeya.RespawnInterval = 120000; //2min
 				Freeya.Level = 65;
-				Freeya.Gender = eGender.Female;
+				Freeya.Gender = EGender.Female;
 				Freeya.X = 763734;
 				Freeya.Y = 646142;
 				Freeya.Z = 8687;
@@ -121,7 +121,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 			
 			//Viking Dextz
-			npcs = WorldMgr.GetNPCsByName("Viking Dextz", eRealm.Midgard);
+			npcs = WorldMgr.GetNPCsByName("Viking Dextz", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -140,7 +140,7 @@ namespace DOL.GS.Quests.Midgard
 				VikingDextz.Model = 187;
 				VikingDextz.Name = "Viking Dextz";
 				VikingDextz.GuildName = "Thor Boyaux";
-				VikingDextz.Realm = eRealm.Midgard;
+				VikingDextz.Realm = ERealm.Midgard;
 				VikingDextz.CurrentRegionID = 101;
 				VikingDextz.Flags += (ushort) GameNPC.eFlags.PEACE + (ushort) GameNPC.eFlags.TORCH;
 				VikingDextz.Size = 52;
@@ -374,7 +374,7 @@ namespace DOL.GS.Quests.Midgard
 				}
 				else
 				{
-					if (player.Realm != eRealm.Midgard)
+					if (player.Realm != ERealm.Midgard)
 					{
 						Freeya.SayTo(player, "Hello Adventurer, do you know Dextz? I had a wonderful time with him, once! " +
 						                     "He was the most amazing Healer, I hope you meet him one day.\n" +
@@ -897,7 +897,7 @@ namespace DOL.GS.Quests.Midgard
 
 		public override void FinishQuest()
 		{
-			m_questPlayer.GainExperience(eXPSource.Quest, 20, false);
+			m_questPlayer.GainExperience(EXpSource.Quest, 20, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...

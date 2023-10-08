@@ -16,7 +16,7 @@ namespace DOL.GS.Commands
 	[Command(
 		"&gc",
 		new string[] { "&guildcommand" },
-		ePrivLevel.Player,
+		EPrivLevel.Player,
 		"Guild command (use /gc help for options)",
 		"/gc <option>")]
 	public class GuildCommand : ACommandHandler, ICommandHandler
@@ -190,7 +190,7 @@ namespace DOL.GS.Commands
 						// --------------------------------------------------------------------------------
 					case "create":
 						{
-							if (client.Account.PrivLevel == (uint)ePrivLevel.Player)
+							if (client.Account.PrivLevel == (uint)EPrivLevel.Player)
 								return;
 
 							if (args.Length < 3)
@@ -245,7 +245,7 @@ namespace DOL.GS.Commands
 						// --------------------------------------------------------------------------------
 					case "purge":
 						{
-							if (client.Account.PrivLevel == (uint)ePrivLevel.Player)
+							if (client.Account.PrivLevel == (uint)EPrivLevel.Player)
 								return;
 
 							if (args.Length < 3)
@@ -270,7 +270,7 @@ namespace DOL.GS.Commands
 						// --------------------------------------------------------------------------------
 					case "rename":
 						{
-							if (client.Account.PrivLevel == (uint)ePrivLevel.Player)
+							if (client.Account.PrivLevel == (uint)EPrivLevel.Player)
 								return;
 
 							if (args.Length < 5)
@@ -309,7 +309,7 @@ namespace DOL.GS.Commands
 						// --------------------------------------------------------------------------------
 					case "addplayer":
 						{
-							if (client.Account.PrivLevel == (uint)ePrivLevel.Player)
+							if (client.Account.PrivLevel == (uint)EPrivLevel.Player)
 								return;
 
 							if (args.Length < 5)
@@ -339,7 +339,7 @@ namespace DOL.GS.Commands
 						// --------------------------------------------------------------------------------
 					case "removeplayer":
 						{
-							if (client.Account.PrivLevel == (uint)ePrivLevel.Player)
+							if (client.Account.PrivLevel == (uint)EPrivLevel.Player)
 								return;
 
 							if (args.Length < 5)
@@ -747,7 +747,7 @@ namespace DOL.GS.Commands
 
 							client.Player.Guild.UpdateGuildWindow();
 
-							if (client.Player.Guild.BountyPoints > bannerPrice || client.Account.PrivLevel > (int)ePrivLevel.Player)
+							if (client.Player.Guild.BountyPoints > bannerPrice || client.Account.PrivLevel > (int)EPrivLevel.Player)
 							{
 								client.Out.SendCustomDialog("Are you sure you buy a guild banner for " + bannerPrice + " guild bounty points? ", ConfirmBannerBuy);
 								client.Player.TempProperties.SetProperty(GUILD_BANNER_PRICE, bannerPrice);
@@ -774,7 +774,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.BannerNone"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							if (client.Player.Group == null && client.Account.PrivLevel == (int)ePrivLevel.Player)
+							if (client.Player.Group == null && client.Account.PrivLevel == (int)EPrivLevel.Player)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.BannerNoGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
@@ -993,7 +993,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.BannerNone"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							if (client.Player.Group == null && client.Account.PrivLevel == (int)ePrivLevel.Player)
+							if (client.Player.Group == null && client.Account.PrivLevel == (int)EPrivLevel.Player)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.BannerNoGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
@@ -2580,7 +2580,7 @@ namespace DOL.GS.Commands
 			if (bannerPrice == 0 || player.Guild.GuildBanner)
 				return;
 
-			if (player.Guild.BountyPoints >= bannerPrice || player.Client.Account.PrivLevel > (int)ePrivLevel.Player)
+			if (player.Guild.BountyPoints >= bannerPrice || player.Client.Account.PrivLevel > (int)EPrivLevel.Player)
 			{
 				player.Guild.RemoveBountyPoints(bannerPrice);
 				player.Guild.GuildBanner = true;

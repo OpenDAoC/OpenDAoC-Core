@@ -56,31 +56,31 @@ namespace DOL.GS
                 switch (splitText[0].ToLower())
                 {
                     case "slash":
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Slash, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Slash, double.Parse(splitText[1]), 1, false);
                         break;
                     case "thrust":
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Thrust, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Thrust, double.Parse(splitText[1]), 1, false);
                         break;
                     case "crush":
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Crush, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Crush, double.Parse(splitText[1]), 1, false);
                         break;
                     case "body":
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Body, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Body, double.Parse(splitText[1]), 1, false);
                         break;
                     case "cold":
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Cold, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Cold, double.Parse(splitText[1]), 1, false);
                         break;
                     case "energy":
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Energy, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Energy, double.Parse(splitText[1]), 1, false);
                         break;
                     case "heat":
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Heat, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Heat, double.Parse(splitText[1]), 1, false);
                         break;
                     case "matter":
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Matter, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Matter, double.Parse(splitText[1]), 1, false);
                         break;
                     case "spirit":
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Spirit, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Spirit, double.Parse(splitText[1]), 1, false);
                         break;
                     case "block":
                         BlockChance = byte.Parse(splitText[1]);
@@ -92,15 +92,15 @@ namespace DOL.GS
                         EvadeChance = byte.Parse(splitText[1]);
                         break;
                     case "allresist":
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Slash, double.Parse(splitText[1]), 1, false);
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Thrust, double.Parse(splitText[1]), 1, false);
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Crush, double.Parse(splitText[1]), 1, false);
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Body, double.Parse(splitText[1]), 1, false);
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Cold, double.Parse(splitText[1]), 1, false);
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Energy, double.Parse(splitText[1]), 1, false);
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Heat, double.Parse(splitText[1]), 1, false);
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Matter, double.Parse(splitText[1]), 1, false);
-                        ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Spirit, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Slash, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Thrust, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Crush, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Body, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Cold, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Energy, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Heat, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Matter, double.Parse(splitText[1]), 1, false);
+                        ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Spirit, double.Parse(splitText[1]), 1, false);
                         break;
                     case "alldefense":
                         BlockChance = byte.Parse(splitText[1]);
@@ -127,26 +127,26 @@ namespace DOL.GS
                         break;
                     
                     case "cloth":
-                        CreateArmorSetOfType(eObjectType.Cloth);
+                        CreateArmorSetOfType(EObjectType.Cloth);
                         
                         break;
                     case "leather":
-                        CreateArmorSetOfType(eObjectType.Leather);
+                        CreateArmorSetOfType(EObjectType.Leather);
                         break;
                     case "studded":
-                        CreateArmorSetOfType(eObjectType.Studded);
+                        CreateArmorSetOfType(EObjectType.Studded);
                         break;
                     case "chain":
-                        CreateArmorSetOfType(eObjectType.Chain);
+                        CreateArmorSetOfType(EObjectType.Chain);
                         break;
                     case "plate":
-                        CreateArmorSetOfType(eObjectType.Plate);
+                        CreateArmorSetOfType(EObjectType.Plate);
                         break;
                     case "reinforced":
-                        CreateArmorSetOfType(eObjectType.Reinforced);
+                        CreateArmorSetOfType(EObjectType.Reinforced);
                         break;
                     case "scale":
-                        CreateArmorSetOfType(eObjectType.Scale);
+                        CreateArmorSetOfType(EObjectType.Scale);
                         break;
 
                     case "resistances":
@@ -164,7 +164,7 @@ namespace DOL.GS
             return true;
         }
 
-        private void CreateArmorSetOfType(eObjectType armorType)
+        private void CreateArmorSetOfType(EObjectType armorType)
         {
             
             Inventory.ClearInventory();
@@ -184,29 +184,29 @@ namespace DOL.GS
                 invItem.Object_Type = (int)armorType;
                 invItem = GenerateItemNameModel(invItem);
                 invItem = GenerateArmorStats(invItem);
-                this.ItemBonus[eProperty.ArmorFactor] += invItem.DPS_AF;
+                this.ItemBonus[EProperty.ArmorFactor] += invItem.DPS_AF;
                 //this.ItemBonus[eProperty.ArmorAbsorption] += invItem.SPD_ABS;
                 //Console.WriteLine($"AF item prop{ItemBonus[eProperty.ArmorFactor]}");
-                ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorFactor, invItem.DPS_AF, 1, false);
+                ApplyBonus(this, EBuffBonusCategory.Other, EProperty.ArmorFactor, invItem.DPS_AF, 1, false);
                 //ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorAbsorption, invItem.SPD_ABS, 1, false);
                 Inventory.AddItem((eInventorySlot)slot, invItem);
             }
 
-            this.ItemBonus[eProperty.ArmorAbsorption] += GetAbsorb(armorType);
+            this.ItemBonus[EProperty.ArmorAbsorption] += GetAbsorb(armorType);
             BroadcastLivingEquipmentUpdate();
             ClientService.UpdateObjectForPlayers(this);
         }
 
         private DbInventoryItem GenerateArmorStats(DbInventoryItem item)
         {
-            eObjectType type = (eObjectType)item.Object_Type;
+            EObjectType type = (EObjectType)item.Object_Type;
 
             //set dps_af and spd_abs
-            if ((int)type >= (int)eObjectType._FirstArmor && (int)type <= (int)eObjectType._LastArmor)
+            if ((int)type >= (int)EObjectType._FirstArmor && (int)type <= (int)EObjectType._LastArmor)
             {
-                if (type == eObjectType.GenericArmor)
+                if (type == EObjectType.GenericArmor)
                     item.DPS_AF = 0;
-                else if (type == eObjectType.Cloth)
+                else if (type == EObjectType.Cloth)
                     item.DPS_AF = Level;
                 else item.DPS_AF = Level * 2;
                 item.SPD_ABS = GetAbsorb(type);
@@ -219,91 +219,91 @@ namespace DOL.GS
         private void ClearAFAndABSBuffs()
         {
             //Console.WriteLine($"af {GetModified(eProperty.ArmorFactor)} abs {GetModified(eProperty.ArmorAbsorption)} itemB AF {this.ItemBonus[eProperty.ArmorFactor]} itemb ABS {this.ItemBonus[eProperty.ArmorAbsorption]}");
-            if (GetModified(eProperty.ArmorFactor) > 0)
+            if (GetModified(EProperty.ArmorFactor) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorFactor, ItemBonus[eProperty.ArmorFactor], 1, true);
+                ApplyBonus(this, EBuffBonusCategory.Other, EProperty.ArmorFactor, ItemBonus[EProperty.ArmorFactor], 1, true);
             }
-            if (GetModified(eProperty.ArmorAbsorption) > 0)
+            if (GetModified(EProperty.ArmorAbsorption) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.Other, eProperty.ArmorAbsorption, ItemBonus[eProperty.ArmorAbsorption], 1, true);
+                ApplyBonus(this, EBuffBonusCategory.Other, EProperty.ArmorAbsorption, ItemBonus[EProperty.ArmorAbsorption], 1, true);
             }
-            if (this.ItemBonus[eProperty.ArmorFactor] > 0)
+            if (this.ItemBonus[EProperty.ArmorFactor] > 0)
             {
-                ItemBonus[eProperty.ArmorFactor] = 0;
+                ItemBonus[EProperty.ArmorFactor] = 0;
             }
-            if (this.ItemBonus[eProperty.ArmorAbsorption] > 0)
+            if (this.ItemBonus[EProperty.ArmorAbsorption] > 0)
             {
-                ItemBonus[eProperty.ArmorAbsorption] = 0;
+                ItemBonus[EProperty.ArmorAbsorption] = 0;
             }
         }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return base.GetArmorAF(slot)/6;
         }
 
-        private static int GetAbsorb(eObjectType type)
+        private static int GetAbsorb(EObjectType type)
         {
             switch (type)
             {
-                case eObjectType.Cloth: return 0;
-                case eObjectType.Leather: return 10;
-                case eObjectType.Studded: return 19;
-                case eObjectType.Reinforced: return 19;
-                case eObjectType.Chain: return 27;
-                case eObjectType.Scale: return 27;
-                case eObjectType.Plate: return 34;
+                case EObjectType.Cloth: return 0;
+                case EObjectType.Leather: return 10;
+                case EObjectType.Studded: return 19;
+                case EObjectType.Reinforced: return 19;
+                case EObjectType.Chain: return 27;
+                case EObjectType.Scale: return 27;
+                case EObjectType.Plate: return 34;
                 default: return 0;
             }
         }
 
         private void ResetResists()
         {
-            if (GetResist(eDamageType.Slash) > 0)
+            if (GetResist(EDamageType.Slash) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Slash, GetResist(eDamageType.Slash), 1, true);
+                ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Slash, GetResist(EDamageType.Slash), 1, true);
             }
-            if (GetResist(eDamageType.Crush) > 0)
+            if (GetResist(EDamageType.Crush) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Crush, GetResist(eDamageType.Crush), 1, true);
+                ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Crush, GetResist(EDamageType.Crush), 1, true);
             }
-            if (GetResist(eDamageType.Thrust) > 0)
+            if (GetResist(EDamageType.Thrust) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Thrust, GetResist(eDamageType.Thrust), 1, true);
+                ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Thrust, GetResist(EDamageType.Thrust), 1, true);
             }
-            if (GetResist(eDamageType.Natural) > 0)
+            if (GetResist(EDamageType.Natural) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Natural, GetResist(eDamageType.Natural), 1, true);
+                ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Natural, GetResist(EDamageType.Natural), 1, true);
             }
-            if (GetResist(eDamageType.Body) > 0)
+            if (GetResist(EDamageType.Body) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Body, GetResist(eDamageType.Body), 1, true);
+                ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Body, GetResist(EDamageType.Body), 1, true);
             }
-            if (GetResist(eDamageType.Cold) > 0)
+            if (GetResist(EDamageType.Cold) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Cold, GetResist(eDamageType.Cold), 1, true);
+                ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Cold, GetResist(EDamageType.Cold), 1, true);
             }
-            if (GetResist(eDamageType.Energy) > 0)
+            if (GetResist(EDamageType.Energy) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Energy, GetResist(eDamageType.Energy), 1, true);
+                ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Energy, GetResist(EDamageType.Energy), 1, true);
             }
-            if (GetResist(eDamageType.Heat) > 0)
+            if (GetResist(EDamageType.Heat) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Heat, GetResist(eDamageType.Heat), 1, true);
+                ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Heat, GetResist(EDamageType.Heat), 1, true);
             }
-            if (GetResist(eDamageType.Matter) > 0)
+            if (GetResist(EDamageType.Matter) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Matter, GetResist(eDamageType.Matter), 1, true);
+                ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Matter, GetResist(EDamageType.Matter), 1, true);
             }
-            if (GetResist(eDamageType.Spirit) > 0)
+            if (GetResist(EDamageType.Spirit) > 0)
             {
-                ApplyBonus(this, eBuffBonusCategory.BaseBuff, (eProperty)eResist.Spirit, GetResist(eDamageType.Spirit), 1, true);
+                ApplyBonus(this, EBuffBonusCategory.BaseBuff, (EProperty)EResist.Spirit, GetResist(EDamageType.Spirit), 1, true);
             }
         }
 
         private void ResetArmor()
         {
-            CreateArmorSetOfType(eObjectType.GenericArmor);
+            CreateArmorSetOfType(EObjectType.GenericArmor);
         }
 
         private void ResetArmorAndResists()
@@ -342,15 +342,15 @@ namespace DOL.GS
         private DbInventoryItem GenerateItemNameModel(DbInventoryItem item)
         {
             eInventorySlot slot = (eInventorySlot)item.Item_Type;
-            eDamageType damage = (eDamageType)item.Type_Damage;
-            eRealm realm = (eRealm)this.Realm;
-            eObjectType type = (eObjectType)item.Object_Type;
+            EDamageType damage = (EDamageType)item.Type_Damage;
+            ERealm realm = (ERealm)this.Realm;
+            EObjectType type = (EObjectType)item.Object_Type;
 
             int model = 488;
             switch (type)
             {
                 //armor
-                case eObjectType.Cloth:
+                case EObjectType.Cloth:
                     {
 
                         switch (slot)
@@ -378,7 +378,7 @@ namespace DOL.GS
                         }
                         break;
                     }
-                case eObjectType.Leather:
+                case EObjectType.Leather:
                     {
 
                         switch (slot)
@@ -392,7 +392,7 @@ namespace DOL.GS
                         }
                         break;
                     }
-                case eObjectType.Studded:
+                case EObjectType.Studded:
                     {
                         switch (slot)
                         {
@@ -405,7 +405,7 @@ namespace DOL.GS
                         }
                         break;
                     }
-                case eObjectType.Plate:
+                case EObjectType.Plate:
                     {
                         switch (slot)
                         {
@@ -430,7 +430,7 @@ namespace DOL.GS
 
                         break;
                     }
-                case eObjectType.Chain:
+                case EObjectType.Chain:
                     {
                         switch (slot)
                         {
@@ -443,7 +443,7 @@ namespace DOL.GS
                         }
                         break;
                     }
-                case eObjectType.Reinforced:
+                case EObjectType.Reinforced:
                     {
                         switch (slot)
                         {
@@ -457,7 +457,7 @@ namespace DOL.GS
 
                         break;
                     }
-                case eObjectType.Scale:
+                case EObjectType.Scale:
                     {
                         switch (slot)
                         {

@@ -1696,7 +1696,7 @@ namespace DOL.GS.Quests
 	
 						if (RewardCLXP > 0)
 						{
-							m_questPlayer.GainChampionExperience(RewardCLXP, eXPSource.Quest);
+							m_questPlayer.GainChampionExperience(RewardCLXP, EXpSource.Quest);
 						}
 						
 						if (RewardBP > 0)
@@ -1736,7 +1736,7 @@ namespace DOL.GS.Quests
 
 						if (obj != null)
                         {
-                            if (obj.Realm == eRealm.None)
+                            if (obj.Realm == ERealm.None)
                             {
                                 SendMessage(m_questPlayer, SourceText, 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
                             }
@@ -2020,7 +2020,7 @@ namespace DOL.GS.Quests
 							
 							if (m_rewardCLXPs.Count > 0 && m_rewardCLXPs[0] > 0)
 							{
-								player.GainChampionExperience(m_rewardCLXPs[0], eXPSource.Quest);
+								player.GainChampionExperience(m_rewardCLXPs[0], EXpSource.Quest);
 							}
 							
 							if (m_rewardRPs.Count > 0 && m_rewardRPs[0] > 0)
@@ -2455,7 +2455,7 @@ namespace DOL.GS.Quests
 
 								if (!string.IsNullOrEmpty(TargetText))
 								{
-									if (obj.Realm == eRealm.None)
+									if (obj.Realm == ERealm.None)
 									{
 										// mobs and other non realm objects send chat text and not popup text.
 										SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
@@ -2496,7 +2496,7 @@ namespace DOL.GS.Quests
 
 						if (!string.IsNullOrEmpty(TargetText))
 						{
-							if (obj.Realm == eRealm.None)
+							if (obj.Realm == ERealm.None)
 							{
 								// mobs and other non realm objects send chat text and not popup text.
 								SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
@@ -2680,7 +2680,7 @@ namespace DOL.GS.Quests
 								
 								if (m_rewardCLXPs.Count > 0 && m_rewardCLXPs[0] > 0)
 								{
-									player.GainChampionExperience(m_rewardCLXPs[0], eXPSource.Quest);
+									player.GainChampionExperience(m_rewardCLXPs[0], EXpSource.Quest);
 								}
 								
 								if (m_rewardRPs.Count > 0 && m_rewardRPs[0] > 0)
@@ -2741,7 +2741,7 @@ namespace DOL.GS.Quests
 						{
 							if (!string.IsNullOrEmpty(TargetText))
 							{
-								if (living.Realm == eRealm.None)
+								if (living.Realm == ERealm.None)
 								{
 									// mobs and other non realm objects send chat text and not popup text.
 									SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
@@ -2938,7 +2938,7 @@ namespace DOL.GS.Quests
 							rewardCLXP = m_rewardCLXPs[lastStep - 1];
 							if (rewardCLXP > 0)
 							{
-								m_questPlayer.GainChampionExperience(rewardCLXP, eXPSource.Quest);
+								m_questPlayer.GainChampionExperience(rewardCLXP, EXpSource.Quest);
 							}
 						}
 						
@@ -3022,7 +3022,7 @@ namespace DOL.GS.Quests
 							rewardCLXP = m_rewardCLXPs[0];
 							if (rewardCLXP > 0)
 							{
-								m_questPlayer.GainChampionExperience(rewardCLXP, eXPSource.Quest);
+								m_questPlayer.GainChampionExperience(rewardCLXP, EXpSource.Quest);
 							}
 						}
 						
@@ -3093,7 +3093,7 @@ namespace DOL.GS.Quests
 			}
 			if (!string.IsNullOrEmpty(m_dataQuest.FinishText)) // Give users option to have 'finish' text with rewardquest too
 			{
-				if (obj != null && obj.Realm == eRealm.None)
+				if (obj != null && obj.Realm == ERealm.None)
 				{
 					// mobs and other non realm objects send chat text and not popup text.
 					SendMessage(m_questPlayer, m_dataQuest.FinishText, 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
@@ -3135,7 +3135,7 @@ namespace DOL.GS.Quests
 		{
 			string parsed = idnb;
 
-			parsed = parsed.Replace("%c", ((eCharacterClass)player.CharacterClass.ID).ToString());
+			parsed = parsed.Replace("%c", ((ECharacterClass)player.CharacterClass.ID).ToString());
 
 			return parsed;
 		}

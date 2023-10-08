@@ -59,21 +59,21 @@ namespace DOL.GS.Scripts
 
 			return base.HasAbility(keyName);
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
 				default: return 70; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -403,9 +403,9 @@ namespace DOL.AI.Brain
 					spell.SpellID = 2958;
 					spell.RecastDelay = SpearRecastInterval;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.MoveCast = false;
-					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+					spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
 					m_AoESpell = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AoESpell);
 				}
@@ -440,10 +440,10 @@ namespace DOL.AI.Brain
 					spell.Value = 65;
 					spell.Duration = 45 * MistressDifficulty / 100;
 					spell.Damage = 0;
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.SpellID = 2735;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Nearsight.ToString();
+					spell.Type = ESpellType.Nearsight.ToString();
 					spell.Message1 = "You are blinded!";
 					spell.Message2 = "{0} is blinded!";
 					m_NearsightSpell = new Spell(spell, 60);

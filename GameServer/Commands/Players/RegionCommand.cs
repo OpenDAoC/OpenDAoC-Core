@@ -8,7 +8,7 @@ namespace DOL.GS.Commands;
 [Command(
      "&region",
      new string[] { "&reg" },
-     ePrivLevel.Player,
+     EPrivLevel.Player,
      "Broadcast something to other players in the same region",
      "/region <message>")]
 public class RegionCommand : ACommandHandler, ICommandHandler

@@ -73,7 +73,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the template combat stats
 		/// </summary>
-		eDamageType MeleeDamageType { get; }
+		EDamageType MeleeDamageType { get; }
 		byte ParryChance { get; }
 		byte EvadeChance { get; }
 		byte BlockChance { get; }

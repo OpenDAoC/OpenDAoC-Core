@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Minstrel Trainer
 	/// </summary>	
-	[NPCGuildScript("Minstrel Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Minstrel Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Minstrel Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Minstrel Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class MinstrelTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Minstrel; }
+			get { return ECharacterClass.Minstrel; }
 		}
 
 		/// <summary>
@@ -80,7 +80,7 @@ namespace DOL.GS.Trainer
 			case "join the Academy":
 				// promote player to other class
 				if (CanPromotePlayer(player)) {
-					PromotePlayer(player, (int)eCharacterClass.Minstrel, "Welcome! Stand proud and sing the tales of old so that all may know of our name!", null);	// TODO: gifts
+					PromotePlayer(player, (int)ECharacterClass.Minstrel, "Welcome! Stand proud and sing the tales of old so that all may know of our name!", null);	// TODO: gifts
 				}
 				break;
 			}

@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	 "&duel",
-	 ePrivLevel.Player,
+	 EPrivLevel.Player,
 	 "Duel another player",
 	 "/duel")]
 

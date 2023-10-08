@@ -82,7 +82,7 @@ namespace DOL.GS
 		public NecromancerPet(INpcTemplate npcTemplate) : base(npcTemplate)
 		{
 			// Update max health on summon.
-			GetModified(eProperty.MaxHealth);
+			GetModified(EProperty.MaxHealth);
 			// Set immunities/load equipment/etc.
 			switch (Name.ToLower())
 			{
@@ -119,14 +119,14 @@ namespace DOL.GS
 		/// <summary>
 		/// Get modified bonuses for the pet; some bonuses come from the shade, some come from the pet.
 		/// </summary>
-		public override int GetModified(eProperty property)
+		public override int GetModified(EProperty property)
 		{
 			if (Brain == null || (Brain as IControlledBrain) == null)
 				return base.GetModified(property);
 
 			switch (property)
 			{
-				case eProperty.MaxHealth:
+				case EProperty.MaxHealth:
 				{
 					int hitsCap = MaxHitPointsCalculator.GetItemBonusCap(Owner) + MaxHitPointsCalculator.GetItemBonusCapIncrease(Owner);
 					int conFromRa = 0;
@@ -137,8 +137,8 @@ namespace DOL.GS
 					if ((Brain as IControlledBrain).GetLivingOwner() is GamePlayer playerOwner)
 					{
 						conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(AtlasRAHelpers.GetAugConLevel(playerOwner));
-						conFromItems = playerOwner.GetModifiedFromItems(eProperty.Constitution);
-						maxHealthFromItems = playerOwner.ItemBonus[(int) eProperty.MaxHealth];
+						conFromItems = playerOwner.GetModifiedFromItems(EProperty.Constitution);
+						maxHealthFromItems = playerOwner.ItemBonus[(int) EProperty.MaxHealth];
 						AtlasOF_ToughnessAbility toughness = playerOwner.GetAbility<AtlasOF_ToughnessAbility>();
 
 						if (toughness != null)
@@ -307,7 +307,7 @@ namespace DOL.GS
 		{
 			base.ModifyAttack(attackData);
 
-			if ((Owner as GamePlayer).Client.Account.PrivLevel > (int)ePrivLevel.Player)
+			if ((Owner as GamePlayer).Client.Account.PrivLevel > (int)EPrivLevel.Player)
 			{
 				attackData.Damage = 0;
 				attackData.CriticalDamage = 0;
@@ -340,12 +340,12 @@ namespace DOL.GS
 				{
 					switch (spell.SpellType)
 					{
-						case eSpellType.StrengthBuff:
+						case ESpellType.StrengthBuff:
 						{
 							strBuff = strBuff == null ? spell : (strBuff.Level < spell.Level) ? spell : strBuff;
 							break;
 						}
-						case eSpellType.DexterityBuff:
+						case ESpellType.DexterityBuff:
 						{
 							dexBuff = dexBuff == null ? spell : (dexBuff.Level < spell.Level) ? spell : dexBuff;
 							break;
@@ -384,7 +384,7 @@ namespace DOL.GS
 			// Find the best paladin taunt for this level.
 			foreach (Spell spell in chantsList)
 			{
-				if (spell.SpellType == eSpellType.Taunt && spell.Level <= Level)
+				if (spell.SpellType == ESpellType.Taunt && spell.Level <= Level)
 					tauntSpell = spell;
 			}
 
@@ -510,7 +510,7 @@ namespace DOL.GS
 			}
 		}
 
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			criticalAmount /= 2;
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
@@ -554,7 +554,7 @@ namespace DOL.GS
 							break;
 					}
 
-					SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+					SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 				}
 				else
 				{
@@ -570,7 +570,7 @@ namespace DOL.GS
 						item.SPD_ABS = 37;
 					}
 
-					SwitchWeapon(eActiveWeaponSlot.Standard);
+					SwitchWeapon(EActiveWeaponSlot.Standard);
 				}
 			}
 

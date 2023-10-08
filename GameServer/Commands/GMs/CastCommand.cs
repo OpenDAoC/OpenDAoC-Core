@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&cast",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"GMCommands.Cast.Description",
 	"/cast loadspell <spellid> Load a spell from the DB into the global spell cache",
 	"GMCommands.Cast.Usage")]
@@ -94,12 +94,12 @@ public class CastCommand : ACommandHandler, ICommandHandler
 
 					if (spell != null)
 					{
-						if (target is GamePlayer targetPlayer && targetPlayer != client.Player && spell.Target != eSpellTarget.SELF)
+						if (target is GamePlayer targetPlayer && targetPlayer != client.Player && spell.Target != ESpellTarget.SELF)
 						{
 							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Cast.Spell.CastOnLiving", spell.Name, target.Name));
 							DisplayMessage(targetPlayer.Client, LanguageMgr.GetTranslation(targetPlayer.Client, "GMCommands.Cast.Spell.GMCastOnYou", client.Account.PrivLevel == 2 ? "GM" : "Admin", client.Player.Name, spell.Name));
 						}
-						else if (target == client.Player || spell.Target == eSpellTarget.SELF)
+						else if (target == client.Player || spell.Target == ESpellTarget.SELF)
 							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Cast.Spell.CastOnSelf", spell.Name));
 
 						ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, spell, line);

@@ -30,8 +30,8 @@ namespace DOL.GS {
             if (living != null && living is GamePlayer)
             {
                 GamePlayer player = living as GamePlayer;
-                eRealm realm = player.Realm;
-                eCharacterClass charclass = (eCharacterClass)player.CharacterClass.ID;
+                ERealm realm = player.Realm;
+                ECharacterClass charclass = (ECharacterClass)player.CharacterClass.ID;
 
                 GeneratedUniqueItem item = null;
                 item = new GeneratedUniqueItem(realm, charclass, itemLevel);
@@ -40,18 +40,18 @@ namespace DOL.GS {
 
                 if (UseEventColors)
                 {
-                    eColor color = eColor.White;
+                    EColor color = EColor.White;
 
                     switch (realm)
                     {
-                        case eRealm.Hibernia:
-                            color = eColor.Green_4;
+                        case ERealm.Hibernia:
+                            color = EColor.Green_4;
                             break;
-                        case eRealm.Albion:
-                            color = eColor.Red_4;
+                        case ERealm.Albion:
+                            color = EColor.Red_4;
                             break;
-                        case eRealm.Midgard:
-                            color = eColor.Blue_4;
+                        case ERealm.Midgard:
+                            color = EColor.Blue_4;
                             break;
                     }
 
@@ -71,8 +71,8 @@ namespace DOL.GS {
             if (living != null && living is GamePlayer)
             {
                 GamePlayer player = living as GamePlayer;
-                eRealm realm = player.Realm;
-                eCharacterClass charclass = (eCharacterClass)player.CharacterClass.ID;
+                ERealm realm = player.Realm;
+                ECharacterClass charclass = (ECharacterClass)player.CharacterClass.ID;
 
                 GeneratedUniqueItem item = null;
                 item = new GeneratedUniqueItem(realm, charclass, (byte)(living.Level+1), minimumUtility);
@@ -93,15 +93,15 @@ namespace DOL.GS {
             if (living != null && living is GamePlayer)
             {
                 GamePlayer player = living as GamePlayer;
-                eRealm realm = player.Realm;
-                eCharacterClass charclass = (eCharacterClass) player.CharacterClass.ID;
+                ERealm realm = player.Realm;
+                ECharacterClass charclass = (ECharacterClass) player.CharacterClass.ID;
 
                 GeneratedUniqueItem item = null;
                 
                 if(minimumUtility > 0)
-                    item = new GeneratedUniqueItem(realm, charclass, itemLevel, eObjectType.Magical, minimumUtility);
+                    item = new GeneratedUniqueItem(realm, charclass, itemLevel, EObjectType.Magical, minimumUtility);
                 else
-                    item = new GeneratedUniqueItem(realm, charclass, itemLevel, eObjectType.Magical);
+                    item = new GeneratedUniqueItem(realm, charclass, itemLevel, EObjectType.Magical);
                 
                 item.AllowAdd = true;
                 item.IsTradable = true;
@@ -275,7 +275,7 @@ namespace DOL.GS {
             }
         }
 
-        public static GeneratedUniqueItem GenerateMonsterLootROG(eRealm realm, eCharacterClass charClass, byte level, bool isFrontierKill)
+        public static GeneratedUniqueItem GenerateMonsterLootROG(ERealm realm, ECharacterClass charClass, byte level, bool isFrontierKill)
         {
             GeneratedUniqueItem item = null;
             

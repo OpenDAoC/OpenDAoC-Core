@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
         protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
 			double duration = Spell.Duration;
-			duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
+			duration *= (1.0 + m_caster.GetModified(EProperty.SpellDuration) * 0.01);
 			if (Spell.InstrumentRequirement != 0)
 			{
 				DbInventoryItem instrument = Caster.ActiveWeapon;
@@ -231,7 +231,7 @@ namespace DOL.GS.Spells
 			{
 				return;
 			}
-			else if (sp == null && (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
+			else if (sp == null && (ad.AttackResult != EAttackResult.HitStyle && ad.AttackResult != EAttackResult.HitUnstyled))
 			{
 				return;
 			}
@@ -244,7 +244,7 @@ namespace DOL.GS.Spells
 				return;
 			
 			//GameSpellEffect speed = SpellHandler.FindEffectOnTarget(living, this);
-			EcsGameEffect speed = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedBuff);
+			EcsGameEffect speed = EffectListService.GetEffectOnTarget(living, EEffect.MovementSpeedBuff);
 			if (speed != null)
 				EffectService.RequestImmediateCancelEffect(speed);
 				//speed.Cancel(false);
@@ -260,8 +260,8 @@ namespace DOL.GS.Spells
 		{
 			GamePlayer player = (GamePlayer)sender;
 			if (player.IsStealthed)
-				player.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
-			else player.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, Spell.Value / 100.0);
+				player.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, this);
+			else player.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, this, Spell.Value / 100.0);
 			// max speed update is sent in setalth method
 		}
 

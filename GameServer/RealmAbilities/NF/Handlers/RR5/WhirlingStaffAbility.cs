@@ -46,7 +46,7 @@ namespace DOL.GS.RealmAbilities
 
 		private void DamageTarget(GameLiving target, GameLiving caster)
 		{
-			int resist = 251 * target.GetResist(eDamageType.Crush) / -100;
+			int resist = 251 * target.GetResist(EDamageType.Crush) / -100;
 			int damage = 251 + resist;
 
 			GamePlayer player = caster as GamePlayer;
@@ -68,10 +68,10 @@ namespace DOL.GS.RealmAbilities
 
 			//target.TakeDamage(caster, eDamageType.Spirit, damage, 0);
 			AttackData ad = new AttackData();
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 			ad.Attacker = caster;
 			ad.Target = target;
-			ad.DamageType = eDamageType.Crush;
+			ad.DamageType = EDamageType.Crush;
 			ad.Damage = damage;
 			target.OnAttackedByEnemy(ad);
 			caster.DealDamage(ad);

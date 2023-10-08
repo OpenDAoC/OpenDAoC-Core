@@ -40,9 +40,9 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
-		public override void SendCharacterOverview(eRealm realm)
+		public override void SendCharacterOverview(ERealm realm)
 		{
-			if (realm < eRealm._FirstPlayerRealm || realm > eRealm._LastPlayerRealm)
+			if (realm < ERealm._FirstPlayerRealm || realm > ERealm._LastPlayerRealm)
 			{
 				throw new Exception("CharacterOverview requested for unknown realm " + realm);
 			}
@@ -149,7 +149,7 @@ namespace DOL.GS.PacketHandler
 
 							string classname = "";
 							if (c.Class != 0)
-								classname = ((eCharacterClass)c.Class).ToString();
+								classname = ((ECharacterClass)c.Class).ToString();
 							pak.FillString(classname, 24);
 
 							string racename = m_gameClient.RaceToTranslatedName(c.Race, c.Gender);
@@ -278,12 +278,12 @@ namespace DOL.GS.PacketHandler
 							pak.WriteShortLowEndian((ushort)(twoHandWeapon != null ? twoHandWeapon.Model : 0));
 							pak.WriteShortLowEndian((ushort)(distanceWeapon != null ? distanceWeapon.Model : 0));
 
-							if (c.ActiveWeaponSlot == (byte)DOL.GS.eActiveWeaponSlot.TwoHanded)
+							if (c.ActiveWeaponSlot == (byte)DOL.GS.EActiveWeaponSlot.TwoHanded)
 							{
 								pak.WriteByte(0x02);
 								pak.WriteByte(0x02);
 							}
-							else if (c.ActiveWeaponSlot == (byte)DOL.GS.eActiveWeaponSlot.Distance)
+							else if (c.ActiveWeaponSlot == (byte)DOL.GS.EActiveWeaponSlot.Distance)
 							{
 								pak.WriteByte(0x03);
 								pak.WriteByte(0x03);

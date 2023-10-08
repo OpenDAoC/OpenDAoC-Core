@@ -196,11 +196,11 @@ namespace DOL.GS.PacketHandler
 					if ((npc.Flags & GameNPC.eFlags.STEALTH) > 0)
 						flags2 |= 0x04;
 
-					eQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);
+					EQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);
 
-					if (questIndicator == eQuestIndicator.Available)
+					if (questIndicator == EQuestIndicator.Available)
 						flags2 |= 0x08;//hex 8 - quest available
-					if (questIndicator == eQuestIndicator.Finish)
+					if (questIndicator == EQuestIndicator.Finish)
 						flags2 |= 0x10;//hex 16 - quest finish
 									   //flags2 |= 0x20;//hex 32 - water mob?
 									   //flags2 |= 0x40;//hex 64 - unknown
@@ -210,11 +210,11 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(flags2); // flags 2
 
 					byte flags3 = 0x00;
-					if (questIndicator == eQuestIndicator.Lesson)
+					if (questIndicator == EQuestIndicator.Lesson)
 						flags3 |= 0x01;
-					if (questIndicator == eQuestIndicator.Lore)
+					if (questIndicator == EQuestIndicator.Lore)
 						flags3 |= 0x02;
-					if (questIndicator == eQuestIndicator.Pending) // new? patch 0031
+					if (questIndicator == EQuestIndicator.Pending) // new? patch 0031
 						flags3 |= 0x20;
 					pak.WriteByte(flags3); // new in 1.71 (region instance ID from StoC_0x20) OR flags 3?
 					pak.WriteShort(0x00); // new in 1.71 unknown
@@ -294,7 +294,7 @@ namespace DOL.GS.PacketHandler
 
 			void SendNpcFakeFriendlyGuildID(GameNPC npc)
 			{
-				if (npc.Flags.HasFlag(GameNPC.eFlags.PEACE) || npc.Realm != eRealm.None)
+				if (npc.Flags.HasFlag(GameNPC.eFlags.PEACE) || npc.Realm != ERealm.None)
 				{
 					GamePlayer player = m_gameClient.Player;
 					Guild playerGuild = player.Guild;
@@ -364,16 +364,16 @@ namespace DOL.GS.PacketHandler
 				if (playerToCreate.IsUnderwater) flags |= 0x02; //swimming
 				if (playerToCreate.IsStealthed) flags |= 0x10;
 				if (playerToCreate.IsWireframe) flags |= 0x20;
-				if (playerToCreate.CharacterClass.ID == (int)eCharacterClass.Vampiir) flags |= 0x40; //Vamp fly
+				if (playerToCreate.CharacterClass.ID == (int)ECharacterClass.Vampiir) flags |= 0x40; //Vamp fly
 				pak.WriteByte((byte)flags);
 
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
 
 				pak.WriteByte(0x00); // new in 1.74
 				pak.WriteByte(0x00); //unknown
@@ -793,7 +793,7 @@ namespace DOL.GS.PacketHandler
 				playerStatus |= 0x08;
 			if (player?.Client?.ClientState == GameClient.eClientState.Linkdead)
 				playerStatus |= 0x10;
-			if (living.DebuffCategory[(int)eProperty.SpellRange] != 0 || living.DebuffCategory[(int)eProperty.ArcheryRange] != 0)
+			if (living.DebuffCategory[(int)EProperty.SpellRange] != 0 || living.DebuffCategory[(int)EProperty.ArcheryRange] != 0)
 				playerStatus |= 0x40;
 			pak.WriteByte(playerStatus);
 			// 0x00 = Normal , 0x01 = Dead , 0x02 = Mezzed , 0x04 = Diseased ,
@@ -807,7 +807,7 @@ namespace DOL.GS.PacketHandler
 				{
 					byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();
-					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)eCharacterClass.Necromancer && necro.IsShade)
+					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)ECharacterClass.Necromancer && necro.IsShade)
 						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
 					foreach (var effect in effects)
 					{
@@ -858,39 +858,39 @@ namespace DOL.GS.PacketHandler
 			int value2; // some object types use this field to display count
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.GenericItem:
+				case (int)EObjectType.GenericItem:
 					value1 = item.Count & 0xFF;
 					value2 = (item.Count >> 8) & 0xFF;
 					break;
-				case (int)eObjectType.Arrow:
-				case (int)eObjectType.Bolt:
-				case (int)eObjectType.Poison:
+				case (int)EObjectType.Arrow:
+				case (int)EObjectType.Bolt:
+				case (int)EObjectType.Poison:
 					value1 = item.Count;
 					value2 = item.SPD_ABS;
 					break;
-				case (int)eObjectType.Thrown:
+				case (int)EObjectType.Thrown:
 					value1 = item.DPS_AF;
 					value2 = item.Count;
 					break;
-				case (int)eObjectType.Instrument:
+				case (int)EObjectType.Instrument:
 					value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF);
 					value2 = 0;
 					break; // unused
-				case (int)eObjectType.Shield:
+				case (int)EObjectType.Shield:
 					value1 = item.Type_Damage;
 					value2 = item.DPS_AF;
 					break;
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.SpellcraftGem:
 					value1 = 0;
 					value2 = 0;
 					/*
 					must contain the quality of gem for spell craft and think same for tincture
 					*/
 					break;
-				case (int)eObjectType.HouseWallObject:
-				case (int)eObjectType.HouseFloorObject:
-				case (int)eObjectType.GardenObject:
+				case (int)EObjectType.HouseWallObject:
+				case (int)EObjectType.HouseFloorObject:
+				case (int)EObjectType.GardenObject:
 					value1 = 0;
 					value2 = item.SPD_ABS;
 					/*
@@ -909,7 +909,7 @@ namespace DOL.GS.PacketHandler
 			pak.WriteByte((byte)value1);
 			pak.WriteByte((byte)value2);
 
-			if (item.Object_Type == (int)eObjectType.GardenObject)
+			if (item.Object_Type == (int)EObjectType.GardenObject)
 				pak.WriteByte((byte)(item.DPS_AF));
 			else
 				pak.WriteByte((byte)(item.Hand << 6));
@@ -945,7 +945,7 @@ namespace DOL.GS.PacketHandler
 			ushort icon2 = 0;
 			string spell_name1 = "";
 			string spell_name2 = "";
-			if (item.Object_Type != (int)eObjectType.AlchemyTincture)
+			if (item.Object_Type != (int)EObjectType.AlchemyTincture)
 			{
 				if (item.SpellID > 0/* && item.Charges > 0*/)
 				{
@@ -1027,34 +1027,34 @@ namespace DOL.GS.PacketHandler
 
 			switch (template.Object_Type)
 			{
-				case (int)eObjectType.Arrow:
-				case (int)eObjectType.Bolt:
-				case (int)eObjectType.Poison:
-				case (int)eObjectType.GenericItem:
+				case (int)EObjectType.Arrow:
+				case (int)EObjectType.Bolt:
+				case (int)EObjectType.Poison:
+				case (int)EObjectType.GenericItem:
 					value1 = count; // Count
 					value2 = template.SPD_ABS;
 					break;
-				case (int)eObjectType.Thrown:
+				case (int)EObjectType.Thrown:
 					value1 = template.DPS_AF;
 					value2 = count; // Count
 					break;
-				case (int)eObjectType.Instrument:
+				case (int)EObjectType.Instrument:
 					value1 = (template.DPS_AF == 2 ? 0 : template.DPS_AF);
 					value2 = 0;
 					break;
-				case (int)eObjectType.Shield:
+				case (int)EObjectType.Shield:
 					value1 = template.Type_Damage;
 					value2 = template.DPS_AF;
 					break;
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.SpellcraftGem:
 					value1 = 0;
 					value2 = 0;
 					/*
 					must contain the quality of gem for spell craft and think same for tincture
 					*/
 					break;
-				case (int)eObjectType.GardenObject:
+				case (int)EObjectType.GardenObject:
 					value1 = 0;
 					value2 = template.SPD_ABS;
 					/*
@@ -1073,7 +1073,7 @@ namespace DOL.GS.PacketHandler
 			pak.WriteByte((byte)value1);
 			pak.WriteByte((byte)value2);
 
-			if (template.Object_Type == (int)eObjectType.GardenObject)
+			if (template.Object_Type == (int)EObjectType.GardenObject)
 				pak.WriteByte((byte)(template.DPS_AF));
 			else
 				pak.WriteByte((byte)(template.Hand << 6));

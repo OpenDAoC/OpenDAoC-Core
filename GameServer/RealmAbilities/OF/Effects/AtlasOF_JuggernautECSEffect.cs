@@ -6,7 +6,7 @@ namespace DOL.GS.Effects
     {
         public AtlasOF_JuggernautECSEffect(EcsGameEffectInitParams initParams) : base(initParams)
         {
-            EffectType = eEffect.Juggernaut;
+            EffectType = EEffect.Juggernaut;
             EffectService.RequestStartEffect(this);
         }
 
@@ -28,7 +28,7 @@ namespace DOL.GS.Effects
         public override void OnStopEffect()
         {
             if (Owner.ControlledBrain is JuggernautBrain juggernautBrain)
-                juggernautBrain.Body.TakeDamage(null, eDamageType.Natural, int.MaxValue, 0);
+                juggernautBrain.Body.TakeDamage(null, EDamageType.Natural, int.MaxValue, 0);
 
             base.OnStopEffect();
         }

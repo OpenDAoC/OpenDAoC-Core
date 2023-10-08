@@ -53,13 +53,13 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_MasteryOfArms : RAPropertyEnhancer
     {
-        public AtlasOF_MasteryOfArms(DbAbility dba, int level) : base(dba, level, eProperty.MeleeSpeed) { }
+        public AtlasOF_MasteryOfArms(DbAbility dba, int level) : base(dba, level, EProperty.MeleeSpeed) { }
         protected override string ValueUnit { get { return "%"; } }
 
         public override bool CheckRequirement(GamePlayer player)
         { 
             // Atlas custom change - Friar pre-req is AugDex3 instead of a 100% useless AugStr3.
-            if (player.CharacterClass.ID == (byte)eCharacterClass.Friar)
+            if (player.CharacterClass.ID == (byte)ECharacterClass.Friar)
             {
                 return AtlasRAHelpers.GetAugDexLevel(player) >= 3;
             }
@@ -76,7 +76,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_MasteryOfArchery : RAPropertyEnhancer
     {
-        public AtlasOF_MasteryOfArchery(DbAbility dba, int level) : base(dba, level, eProperty.ArcherySpeed) { }
+        public AtlasOF_MasteryOfArchery(DbAbility dba, int level) : base(dba, level, EProperty.ArcherySpeed) { }
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugDexLevel(player) >= 3; }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
@@ -88,7 +88,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_MasteryOfTheArt : RAPropertyEnhancer
     {
-        public AtlasOF_MasteryOfTheArt(DbAbility dba, int level) : base(dba, level, eProperty.CastingSpeed) { }
+        public AtlasOF_MasteryOfTheArt(DbAbility dba, int level) : base(dba, level, EProperty.CastingSpeed) { }
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 3; }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
@@ -100,7 +100,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_MasteryOfMagery : RAPropertyEnhancer
     {
-        public AtlasOF_MasteryOfMagery(DbAbility dba, int level) : base(dba, level, eProperty.SpellDamage) { }
+        public AtlasOF_MasteryOfMagery(DbAbility dba, int level) : base(dba, level, EProperty.SpellDamage) { }
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 2; }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
@@ -112,7 +112,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_MasteryOfTheArcane : RAPropertyEnhancer
     {
-        public AtlasOF_MasteryOfTheArcane(DbAbility dba, int level) : base(dba, level, eProperty.BuffEffectiveness) { }
+        public AtlasOF_MasteryOfTheArcane(DbAbility dba, int level) : base(dba, level, EProperty.BuffEffectiveness) { }
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 2; }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
@@ -124,7 +124,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_MasteryOfWater : RAPropertyEnhancer
     {
-        public AtlasOF_MasteryOfWater(DbAbility dba, int level) : base(dba, level, eProperty.WaterSpeed) { }
+        public AtlasOF_MasteryOfWater(DbAbility dba, int level) : base(dba, level, EProperty.WaterSpeed) { }
         protected override string ValueUnit { get { return "%"; } }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
@@ -135,7 +135,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_Dodger : RAPropertyEnhancer
     {
-        public AtlasOF_Dodger(DbAbility dba, int level) : base(dba, level, eProperty.EvadeChance) { }
+        public AtlasOF_Dodger(DbAbility dba, int level) : base(dba, level, EProperty.EvadeChance) { }
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugQuiLevel(player) >= 2; }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
@@ -159,7 +159,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_DualistsReflexes : RAPropertyEnhancer
     {
-        public AtlasOF_DualistsReflexes(DbAbility dba, int level) : base(dba, level, eProperty.OffhandDamageAndChance) { }
+        public AtlasOF_DualistsReflexes(DbAbility dba, int level) : base(dba, level, EProperty.OffhandDamageAndChance) { }
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugDexLevel(player) >= 2; }
         public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
@@ -171,7 +171,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_ArrowSalvaging : RAPropertyEnhancer
     {
-        public AtlasOF_ArrowSalvaging(DbAbility dba, int level) : base(dba, level, eProperty.ArrowRecovery) { }
+        public AtlasOF_ArrowSalvaging(DbAbility dba, int level) : base(dba, level, EProperty.ArrowRecovery) { }
         protected override string ValueUnit { get { return "%"; } }
         public override bool CheckRequirement(GamePlayer player) { return true; }
         public override int GetAmountForLevel(int level) { return level * 10; }

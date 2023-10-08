@@ -89,7 +89,7 @@ namespace DOL.GS.Effects
                 foreach (GamePlayer target in Cauldron.GetPlayersInRadius(spellRadius))
                 {
                     if (GameServer.ServerRules.IsAllowedToAttack(EffectOwner, target, true))
-                        target.TakeDamage(EffectOwner, eDamageType.Heat, spellDamage, 0);
+                        target.TakeDamage(EffectOwner, EDamageType.Heat, spellDamage, 0);
                 }
             }
             timer.Stop();

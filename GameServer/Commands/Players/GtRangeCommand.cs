@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&gtrange",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Gives a range to a ground target",
 	"/gtrange")]
 public class GtRangeCommand : ACommandHandler, ICommandHandler

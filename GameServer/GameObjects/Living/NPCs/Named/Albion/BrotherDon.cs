@@ -32,7 +32,7 @@ namespace DOL.GS.Scripts
                         SayTo(player, "Thank you! Your service to the church will been noted!");
                         player.Inventory.RemoveItem(item);
                         SayTo(player, "Well done! You've helped the children get over the harsh winter.");
-                        player.GainExperience(eXPSource.Quest, 200, true);
+                        player.GainExperience(EXpSource.Quest, 200, true);
                         return;
                     }
                 }

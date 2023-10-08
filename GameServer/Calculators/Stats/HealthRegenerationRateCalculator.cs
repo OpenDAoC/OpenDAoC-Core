@@ -11,7 +11,7 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.HealthRegenerationRate)]
+[PropertyCalculator(EProperty.HealthRegenerationRate)]
 public class HealthRegenerationRateCalculator : PropertyCalculator
 {
 	public HealthRegenerationRateCalculator() {}
@@ -22,9 +22,9 @@ public class HealthRegenerationRateCalculator : PropertyCalculator
 	/// <param name="living"></param>
 	/// <param name="property"></param>
 	/// <returns></returns>
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
-		if (living.IsDiseased || living.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed))
+		if (living.IsDiseased || living.effectListComponent.ContainsEffectForEffectType(EEffect.Bleed))
 			return 0; // no HP regen if diseased
 		if (living is GameKeepDoor)
 			return (int)(living.MaxHealth * 0.05); //5% each time for keep door

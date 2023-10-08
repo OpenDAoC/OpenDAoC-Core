@@ -35,10 +35,10 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Icon = 4254;
             m_dbspell.ClientEffect = 7153;
             m_dbspell.Damage = 650;
-            m_dbspell.DamageType = (int)eDamageType.Energy;
+            m_dbspell.DamageType = (int)EDamageType.Energy;
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = 0;
-            m_dbspell.Type = eSpellType.DirectDamage.ToString();
+            m_dbspell.Type = ESpellType.DirectDamage.ToString();
             m_dbspell.Value = 0;
             m_dbspell.Duration = m_duration;
             m_dbspell.Pulse = 0;
@@ -99,7 +99,7 @@ namespace DOL.GS.RealmAbilities
             trap.ObjectState = GameObject.eObjectState.Active;
             trap.AddToWorld();
 
-            SpellHandler tmpHandler = new(m_player, new Spell(m_spell, eSpellType.DirectDamage), m_spellline);
+            SpellHandler tmpHandler = new(m_player, new Spell(m_spell, ESpellType.DirectDamage), m_spellline);
 
             foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
             {

@@ -66,7 +66,7 @@ namespace DOL.AI.Brain
 				GameLiving target = Body.TargetObject as GameLiving;
 				if(target != null && target.IsAlive)
                 {
-					if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) && Util.Chance(25))
+					if(!target.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedDebuff) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.SnareImmunity) && Util.Chance(25))
 						Body.CastSpell(SpriggitRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					if(Util.Chance(30))
 						Body.CastSpell(SpriggitDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -95,12 +95,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 161;
 					spell.Icon = 161;
 					spell.Damage = 90;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Frost Blast";
 					spell.Range = 1500;
 					spell.SpellID = 11941;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_SpriggitDD = new Spell(spell, 20);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpriggitDD);
@@ -125,12 +125,12 @@ namespace DOL.AI.Brain
 					spell.TooltipId = 5204;
 					spell.Duration = 30;
 					spell.Value = 99;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Name = "Root";
 					spell.Range = 1500;
 					spell.SpellID = 11942;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.SpeedDecrease.ToString();
+					spell.Type = ESpellType.SpeedDecrease.ToString();
 					spell.Uninterruptible = true;
 					m_SpriggitRoot = new Spell(spell, 20);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpriggitRoot);

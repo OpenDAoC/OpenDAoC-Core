@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Bonedancer, "Bonedancer", "Mystic")]
+	[CharacterClass((int)ECharacterClass.Bonedancer, "Bonedancer", "Mystic")]
 	public class ClassBonedancer : CharacterClassBoneDancer
 	{
 		public ClassBonedancer()
@@ -31,12 +31,12 @@ namespace DOL.GS.PlayerClass
 			m_specializationMultiplier = 10;
 			m_wsbase = 280;
 			m_baseHP = 560;
-			m_manaStat = eStat.PIE;
+			m_manaStat = EStat.PIE;
 
 			m_profession = "PlayerClass.Profession.HouseofBodgar";
-			m_primaryStat = eStat.PIE;
-			m_secondaryStat = eStat.DEX;
-			m_tertiaryStat = eStat.QUI;
+			m_primaryStat = EStat.PIE;
+			m_secondaryStat = EStat.DEX;
+			m_tertiaryStat = EStat.QUI;
 		}
 
 		public override eClassType ClassType

@@ -50,7 +50,7 @@ namespace DOL.AI.Brain
 						AddAggroListTo(npc.Brain as StandardMobBrain);
 				}
 				GameLiving target = Body.TargetObject as GameLiving;
-				if (Util.Chance(25) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteDebuff))
+				if (Util.Chance(25) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(EEffect.MeleeHasteDebuff))
 					Body.CastSpell(KoalinthElder_HasteDebuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.Think();
@@ -77,8 +77,8 @@ namespace DOL.AI.Brain
 					spell.Value = 17;
 					spell.SpellID = 11971;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.CombatSpeedDebuff.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Type = ESpellType.CombatSpeedDebuff.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					m_KoalinthElder_HasteDebuff = new Spell(spell, 13);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_KoalinthElder_HasteDebuff);
 				}

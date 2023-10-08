@@ -23,7 +23,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = 0;
             m_dbspell.Target = "Group";
             m_dbspell.Radius = 0;
-            m_dbspell.Type = eSpellType.DamageAdd.ToString();
+            m_dbspell.Type = ESpellType.DamageAdd.ToString();
             m_dbspell.Value = 0;
             m_dbspell.Duration = 30;
             m_dbspell.Pulse = 0;

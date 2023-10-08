@@ -61,7 +61,7 @@ namespace DOL.GS.DailyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -81,7 +81,7 @@ namespace DOL.GS.DailyQuest.Albion
 				ReyAlb.Model = 26;
 				ReyAlb.Name = "Rey";
 				ReyAlb.GuildName = "Bone Collector";
-				ReyAlb.Realm = eRealm.Albion;
+				ReyAlb.Realm = ERealm.Albion;
 				//Druim Ligen Location
 				ReyAlb.CurrentRegionID = 1;
 				ReyAlb.Size = 60;

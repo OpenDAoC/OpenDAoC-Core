@@ -17,21 +17,21 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Vera'erius the Brave Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
 				default: return 30; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -41,11 +41,11 @@ namespace DOL.GS
 			get { return 30000; }
 		}
 
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GameSummonedPet)
 			{
-				if (damageType == eDamageType.Spirit || damageType == eDamageType.Body)
+				if (damageType == EDamageType.Spirit || damageType == EDamageType.Body)
 				{
 					GamePlayer truc;
 					if (source is GamePlayer)
@@ -123,7 +123,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
 			}
@@ -169,7 +169,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.SpellID = 11796;
 					spell.Target = "Self";
-					spell.Type = eSpellType.Heal.ToString();
+					spell.Type = ESpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					m_VeraeriusHeal = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VeraeriusHeal);

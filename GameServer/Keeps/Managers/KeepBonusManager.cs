@@ -34,20 +34,20 @@ namespace DOL.GS.Keeps
 		/// <param name="type">the type of bonus</param>
 		/// <param name="realm">the realm</param>
 		/// <returns>true if the realm has the required amount of keeps</returns>
-		public static bool RealmHasBonus(eKeepBonusType type, eRealm realm)
+		public static bool RealmHasBonus(eKeepBonusType type, ERealm realm)
 		{
 			if (!ServerProperties.Properties.USE_LIVE_KEEP_BONUSES)
 				return false;
 
-			if (realm == eRealm.None)
+			if (realm == ERealm.None)
 				return false;
 
 			int count = 0;
 			switch (realm)
 			{
-				case eRealm.Albion: count = albCount; break;
-				case eRealm.Midgard: count = midCount; break;
-				case eRealm.Hibernia: count = hibCount; break;
+				case ERealm.Albion: count = albCount; break;
+				case ERealm.Midgard: count = midCount; break;
+				case ERealm.Hibernia: count = hibCount; break;
 			}
 
 			return count >= (int)type;
@@ -59,9 +59,9 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public static void UpdateCounts()
 		{
-			albCount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Albion);
-			midCount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Midgard);
-			hibCount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Hibernia);
+			albCount = GameServer.KeepManager.GetKeepCountByRealm(ERealm.Albion);
+			midCount = GameServer.KeepManager.GetKeepCountByRealm(ERealm.Midgard);
+			hibCount = GameServer.KeepManager.GetKeepCountByRealm(ERealm.Hibernia);
 		}
 	}
 }

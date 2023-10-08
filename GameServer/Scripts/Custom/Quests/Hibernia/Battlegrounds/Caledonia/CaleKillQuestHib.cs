@@ -61,7 +61,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Pazz", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Pazz", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -81,7 +81,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				PazzHib.Model = 26;
 				PazzHib.Name = "Pazz";
 				PazzHib.GuildName = "Bone Collector";
-				PazzHib.Realm = eRealm.Hibernia;
+				PazzHib.Realm = ERealm.Hibernia;
 				//Druim Ligen Location
 				PazzHib.CurrentRegionID = 250;
 				PazzHib.Size = 40;

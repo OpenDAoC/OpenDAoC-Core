@@ -41,8 +41,8 @@ namespace DOL.GS.Effects
 		{
 			AttackFinishedEventArgs atkArgs = arguments as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
-			if (atkArgs.AttackData.AttackResult != eAttackResult.HitUnstyled
-				&& atkArgs.AttackData.AttackResult != eAttackResult.HitStyle) return;
+			if (atkArgs.AttackData.AttackResult != EAttackResult.HitUnstyled
+				&& atkArgs.AttackData.AttackResult != EAttackResult.HitStyle) return;
 			if (atkArgs.AttackData.Target == null) return;
 			GameLiving target = atkArgs.AttackData.Target;
 			if (target == null) return;
@@ -66,16 +66,16 @@ namespace DOL.GS.Effects
 			modifier = Math.Max(75, modifier);
 			
 			double damage = baseDamage * modifier * 0.001; // attack speed is 10 times higher (2.5spd=25)			
-			double damageResisted = damage * target.GetResist(eDamageType.Body) * -0.01;
+			double damageResisted = damage * target.GetResist(EDamageType.Body) * -0.01;
 			
 			AttackData ad = new AttackData();
 			ad.Attacker = attacker;
 			ad.Target = target;
 			ad.Damage = (int)(damage + damageResisted);
 			ad.Modifier = (int)damageResisted;
-			ad.DamageType = eDamageType.Body;
+			ad.DamageType = EDamageType.Body;
 			ad.AttackType = AttackData.eAttackType.MeleeOneHand;
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
             ad.WeaponSpeed = atkArgs.AttackData.WeaponSpeed; 
 
 			GamePlayer owner = attacker as GamePlayer;

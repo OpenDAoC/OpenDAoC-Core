@@ -58,7 +58,7 @@ namespace DOL.GS.RealmAbilities
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(caster, mob, true) == false) continue;
 
-				mob.TakeDamage(caster, eDamageType.Spirit, dmgValue, 0);
+				mob.TakeDamage(caster, EDamageType.Spirit, dmgValue, 0);
 				caster.Out.SendMessage("You hit the " + mob.Name + " for " + dmgValue + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 				foreach (GamePlayer player2 in caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
@@ -84,7 +84,7 @@ namespace DOL.GS.RealmAbilities
 
 				if (!caster.IsWithinRadius( t_player, 200 ))
 					continue;
-				t_player.TakeDamage(caster, eDamageType.Spirit, dmgValue, 0);
+				t_player.TakeDamage(caster, EDamageType.Spirit, dmgValue, 0);
 
 				// send a message
 				caster.Out.SendMessage("You hit " + t_player.Name + " for " + dmgValue + " damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);

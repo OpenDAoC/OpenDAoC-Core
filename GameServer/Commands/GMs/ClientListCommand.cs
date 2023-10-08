@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
     "&clientlist",
-    ePrivLevel.GM,
+    EPrivLevel.GM,
     "Usage: /clientlist [full] - full option includes IP's and accounts",
     "Show a list of currently playing clients and their ID's")]
 public class ClientListCommand : ACommandHandler, ICommandHandler

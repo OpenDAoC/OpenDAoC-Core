@@ -42,21 +42,21 @@ namespace DOL.GS
         {
             if (IsRanged == false)
             {
-                this.SwitchWeapon(eActiveWeaponSlot.Standard);
+                this.SwitchWeapon(EActiveWeaponSlot.Standard);
                 this.VisibleActiveWeaponSlots = 16;
 
-                if (ad != null && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+                if (ad != null && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
                 {
                     this.Strength = 10;
                     this.styleComponent.NextCombatStyle = slam;
                 }
-                if (ad != null && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+                if (ad != null && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
                 {
                     this.Strength = 10;
                     this.styleComponent.NextCombatStyle = Taunt;
                 }
             }
-            if(ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 228 && ad.Style.ClassID == 2)
+            if(ad.AttackResult == EAttackResult.HitStyle && ad.Style.ID == 228 && ad.Style.ClassID == 2)
             {
                 if (IsRanged == false)
                 {
@@ -71,7 +71,7 @@ namespace DOL.GS
             else
             base.OnAttackEnemy(ad);
         }
-        public override void SwitchWeapon(eActiveWeaponSlot slot)
+        public override void SwitchWeapon(EActiveWeaponSlot slot)
         {
             if (IsRanged)
             {
@@ -82,27 +82,27 @@ namespace DOL.GS
                 base.SwitchWeapon(slot);
             }
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 35; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 35; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 35; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 35; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 35; // dmg reduction for melee dmg
                 default: return 25; // dmg reduction for rest resists
             }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (this.IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+                        damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+                        damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -138,11 +138,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 400;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.25;
@@ -186,7 +186,7 @@ namespace DOL.GS
             {
                 Styles.Add(Taunt);
             }
-            MeleeDamageType = eDamageType.Thrust;
+            MeleeDamageType = EDamageType.Thrust;
             SergeantEddisonBrain sbrain = new SergeantEddisonBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -198,7 +198,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Sergeant Eddison", 277, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Sergeant Eddison", 277, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Sergeant Eddison not found, creating it...");
@@ -249,7 +249,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 this.Body.Health = this.Body.MaxHealth;
                 SergeantEddison.IsRanged = false;
             }

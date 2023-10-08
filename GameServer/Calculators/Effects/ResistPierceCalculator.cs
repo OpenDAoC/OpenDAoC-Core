@@ -11,10 +11,10 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.ResistPierce)]
+[PropertyCalculator(EProperty.ResistPierce)]
 public class ResistPierceCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		// cap at living.level/5
 		return Math.Min(Math.Max(1,living.Level/5),

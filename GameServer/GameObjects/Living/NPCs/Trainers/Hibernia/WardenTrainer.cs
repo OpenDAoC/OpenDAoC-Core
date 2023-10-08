@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Warden Trainer
 	/// </summary>
-	[NPCGuildScript("Warden Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Warden Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Warden Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Warden Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class WardenTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Warden; }
+			get { return ECharacterClass.Warden; }
 		}
 
 		/// <summary>
@@ -86,7 +86,7 @@ namespace DOL.GS.Trainer
 				case "Warden":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Warden, "Good then! Welcome to the ways of the Warden! Here, take this as a gift, to start you on the path of a Warden.", null);	// TODO: gifts
+						PromotePlayer(player, (int)ECharacterClass.Warden, "Good then! Welcome to the ways of the Warden! Here, take this as a gift, to start you on the path of a Warden.", null);	// TODO: gifts
 						player.ReceiveItem(this,ARMOR_ID1);
 					}
 					break;

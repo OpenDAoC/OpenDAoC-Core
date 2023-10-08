@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Eldritch, "Eldritch", "Magician")]
+	[CharacterClass((int)ECharacterClass.Eldritch, "Eldritch", "Magician")]
 	public class ClassEldritch : ClassMagician
 	{
 		public ClassEldritch()
@@ -30,10 +30,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.PathofFocus";
 			m_specializationMultiplier = 10;
-			m_primaryStat = eStat.INT;
-			m_secondaryStat = eStat.DEX;
-			m_tertiaryStat = eStat.QUI;
-			m_manaStat = eStat.INT;
+			m_primaryStat = EStat.INT;
+			m_secondaryStat = EStat.DEX;
+			m_tertiaryStat = EStat.QUI;
+			m_manaStat = EStat.INT;
 		}
 
 		public override bool HasAdvancedFromBaseClass()

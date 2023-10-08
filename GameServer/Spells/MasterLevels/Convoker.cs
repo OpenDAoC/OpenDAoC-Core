@@ -68,7 +68,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = eSpellType.Prescience.ToString();
+			dbs.Type = ESpellType.Prescience.ToString();
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -141,7 +141,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = eSpellType.PowerRend.ToString();
+			dbs.Type = ESpellType.PowerRend.ToString();
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -192,7 +192,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = eSpellType.SpeedWrap.ToString();
+			dbs.Type = ESpellType.SpeedWrap.ToString();
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -422,7 +422,7 @@ namespace DOL.GS.Spells
 			dbs.DamageType = (int)spell.DamageType;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = eSpellType.DirectDamage.ToString();
+			dbs.Type = ESpellType.DirectDamage.ToString();
 			dbs.Value = spell.Value;
 			dbs.Duration = spell.ResurrectHealth;
 			dbs.Frequency = spell.ResurrectMana;
@@ -557,7 +557,7 @@ namespace DOL.GS.Spells
 
 			// Add byNefa 04.02.2011 13:35
 			// Check if Necro try to use ML9 Convoker at own Pet
-			if  (m_player != null && m_player.CharacterClass.ID == (int)eCharacterClass.Necromancer)
+			if  (m_player != null && m_player.CharacterClass.ID == (int)ECharacterClass.Necromancer)
 			{ // Caster is a Necro
 				NecromancerPet necroPet = target as NecromancerPet;
 				if (necroPet == null || necroPet.Owner == m_player)
@@ -573,8 +573,8 @@ namespace DOL.GS.Spells
 		{
 			m_living = m_player.ControlledBrain.Body;
 			m_living.Level += 20;
-			m_living.BaseBuffBonusCategory[(int)eProperty.MeleeDamage] += 275;
-			m_living.BaseBuffBonusCategory[(int)eProperty.ArmorAbsorption] += 75;
+			m_living.BaseBuffBonusCategory[(int)EProperty.MeleeDamage] += 275;
+			m_living.BaseBuffBonusCategory[(int)EProperty.ArmorAbsorption] += 75;
 			m_living.Size += 40;
 			base.OnEffectStart(effect);
 		}
@@ -582,8 +582,8 @@ namespace DOL.GS.Spells
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
 			m_living.Level -= 20;
-			m_living.BaseBuffBonusCategory[(int)eProperty.MeleeDamage] -= 275;
-			m_living.BaseBuffBonusCategory[(int)eProperty.ArmorAbsorption] -= 75;
+			m_living.BaseBuffBonusCategory[(int)EProperty.MeleeDamage] -= 275;
+			m_living.BaseBuffBonusCategory[(int)EProperty.ArmorAbsorption] -= 75;
 			m_living.Size -= 40;
 			return base.OnEffectExpires(effect, noMessages);
 		}
@@ -690,7 +690,7 @@ namespace DOL.GS.Spells
 			x = Caster.X;
 			y = Caster.Y;
 			z = Caster.Z;
-			if (Spell.Target == eSpellTarget.AREA)
+			if (Spell.Target == ESpellTarget.AREA)
 			{
 				if (Caster.GroundTargetInView && Caster.GroundTarget != null)
 				{

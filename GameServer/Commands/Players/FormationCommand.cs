@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&formation",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Change the formation of your pets!", "/formation <type>")]
 public class FormationCommand : ACommandHandler, ICommandHandler
 {
@@ -16,7 +16,7 @@ public class FormationCommand : ACommandHandler, ICommandHandler
 		GamePlayer player = client.Player;
 
 		//No one else needs to use this spell
-		if (player.CharacterClass.ID != (int)eCharacterClass.Bonedancer)
+		if (player.CharacterClass.ID != (int)ECharacterClass.Bonedancer)
 		{
 			client.Out.SendMessage("Only Bonedancers can use this command!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			return;

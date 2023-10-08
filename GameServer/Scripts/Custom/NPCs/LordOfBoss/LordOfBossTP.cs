@@ -48,13 +48,13 @@ namespace DOL.GS {
 
                     switch (t.Realm)
                     {
-                        case eRealm._FirstPlayerRealm:
+                        case ERealm._FirstPlayerRealm:
                             t.MoveTo(90, 34871, 32471, 18850, 10);
                             break;
-                        case eRealm._LastPlayerRealm:
+                        case ERealm._LastPlayerRealm:
                             t.MoveTo(47, 34871, 32471, 18850, 10);
                             break;
-                        case eRealm.Midgard:
+                        case ERealm.Midgard:
                             t.MoveTo(147, 34871, 32471, 18850, 10);
                             break;
                     }

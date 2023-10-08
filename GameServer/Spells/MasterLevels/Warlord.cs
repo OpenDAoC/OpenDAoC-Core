@@ -38,7 +38,7 @@ namespace DOL.GS.Spells
         {
             switch (Spell.DamageType)
             {
-                case (eDamageType)((byte)1):
+                case (EDamageType)((byte)1):
                     {
                         int value = (int)Spell.Value;
                         int life;
@@ -63,7 +63,7 @@ namespace DOL.GS.Spells
                 switch (Spell.DamageType)
                 {
                     //Warlord ML 2
-                    case (eDamageType)((byte)0):
+                    case (EDamageType)((byte)0):
                         {
                             int mana;
                             int health;
@@ -92,16 +92,16 @@ namespace DOL.GS.Spells
                         }
                         break;
                     //warlord ML8
-                    case (eDamageType)((byte)1):
+                    case (EDamageType)((byte)1):
                         {
                             int healvalue = (int)m_spell.Value;
                             int heal;
                                 if (target.IsAlive && !GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
                                 {
-                                    heal = target.ChangeHealth(target, eHealthChangeType.Spell, healvalue);
+                                    heal = target.ChangeHealth(target, EHealthChangeType.Spell, healvalue);
                                     if (heal != 0) player.Out.SendMessage(m_caster.Name + " heal you for " + heal + " hit point!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
                                 }
-                            heal = m_caster.ChangeHealth(Caster, eHealthChangeType.Spell, (int)(-m_caster.Health * 90 / 100));
+                            heal = m_caster.ChangeHealth(Caster, EHealthChangeType.Spell, (int)(-m_caster.Health * 90 / 100));
                             if (heal != 0) MessageToCaster("You lose " + heal + " hit point" + (heal == 1 ? "." : "s."), eChatType.CT_Spell);
 
                             SendEffectAnimation(target, 0, false, 1);
@@ -148,8 +148,8 @@ namespace DOL.GS.Spells
     [SpellHandler("Critical")]
     public class CriticalDamageBuff : MasterlevelDualBuffHandling
     {
-        public override eProperty Property1 { get { return eProperty.CriticalSpellHitChance; } }
-        public override eProperty Property2 { get { return eProperty.CriticalMeleeHitChance; } }
+        public override EProperty Property1 { get { return EProperty.CriticalSpellHitChance; } }
+        public override EProperty Property2 { get { return EProperty.CriticalMeleeHitChance; } }
 
         public CriticalDamageBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
@@ -234,7 +234,7 @@ namespace DOL.GS.Spells
     [SpellHandler("MLABSBuff")]
     public class MLABSBuff : MasterlevelBuffHandling
     {
-        public override eProperty Property1 { get { return eProperty.ArmorAbsorption; } }
+        public override EProperty Property1 { get { return EProperty.ArmorAbsorption; } }
 
         public MLABSBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }

@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&setwho",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Set your class or trade for /who output",
 	"/setwho class | trade")]
 public class SetWhoCommand : ACommandHandler, ICommandHandler

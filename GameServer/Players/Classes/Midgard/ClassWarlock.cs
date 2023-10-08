@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Warlock, "Warlock", "Mystic")]
+	[CharacterClass((int)ECharacterClass.Warlock, "Warlock", "Mystic")]
 	public class ClassWarlock : ClassMystic
 	{
 		public ClassWarlock()
@@ -30,10 +30,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.HouseofHel";
 			m_specializationMultiplier = 10;
-			m_primaryStat = eStat.PIE;
-			m_secondaryStat = eStat.CON;
-			m_tertiaryStat = eStat.DEX;
-			m_manaStat = eStat.PIE;
+			m_primaryStat = EStat.PIE;
+			m_secondaryStat = EStat.CON;
+			m_tertiaryStat = EStat.DEX;
+			m_manaStat = EStat.PIE;
 		}
 
 		public override bool HasAdvancedFromBaseClass()
@@ -49,20 +49,20 @@ namespace DOL.GS.PlayerClass
 		/// <returns></returns>
 		public override bool CanChangeCastingSpeed(SpellLine line, Spell spell)
 		{
-			if (spell.SpellType == eSpellType.Chamber)
+			if (spell.SpellType == ESpellType.Chamber)
 				return false;
 
 			if ((line.KeyName == "Cursing"
 				 || line.KeyName == "Cursing Spec"
 				 || line.KeyName == "Hexing"
 				 || line.KeyName == "Witchcraft")
-				&& (spell.SpellType != eSpellType.ArmorFactorBuff
-					&& spell.SpellType != eSpellType.Bladeturn
-					&& spell.SpellType != eSpellType.ArmorAbsorptionBuff
-					&& spell.SpellType != eSpellType.MatterResistDebuff
-					&& spell.SpellType != eSpellType.Uninterruptable
-					&& spell.SpellType != eSpellType.Powerless
-					&& spell.SpellType != eSpellType.Range
+				&& (spell.SpellType != ESpellType.ArmorFactorBuff
+					&& spell.SpellType != ESpellType.Bladeturn
+					&& spell.SpellType != ESpellType.ArmorAbsorptionBuff
+					&& spell.SpellType != ESpellType.MatterResistDebuff
+					&& spell.SpellType != ESpellType.Uninterruptable
+					&& spell.SpellType != ESpellType.Powerless
+					&& spell.SpellType != ESpellType.Range
 					&& spell.Name != "Lesser Twisting Curse"
 					&& spell.Name != "Twisting Curse"
 					&& spell.Name != "Lesser Winding Curse"

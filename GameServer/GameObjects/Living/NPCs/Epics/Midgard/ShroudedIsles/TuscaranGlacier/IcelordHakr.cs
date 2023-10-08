@@ -14,13 +14,13 @@ namespace DOL.GS
         public Hakr() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
@@ -40,11 +40,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -92,7 +92,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Hakr", 160, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Hakr", 160, (ERealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Icelord Hakr not found, creating it...");
@@ -105,7 +105,7 @@ namespace DOL.GS
                 TG.Level = 82;
                 TG.Size = 70;
                 TG.CurrentRegionID = 160; //tuscaran glacier
-                TG.MeleeDamageType = eDamageType.Crush;
+                TG.MeleeDamageType = EDamageType.Crush;
                 TG.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
@@ -264,7 +264,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
                 spam_message1 = false;
@@ -291,13 +291,13 @@ namespace DOL.GS
         public HakrAdd() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 35; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 35; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 35; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 35; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 35; // dmg reduction for melee dmg
                 default: return 35; // dmg reduction for rest resists
             }
         }
@@ -310,11 +310,11 @@ namespace DOL.GS
             get { return 350; }
             set { }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 300;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -334,7 +334,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 766;
-            MeleeDamageType = eDamageType.Thrust;
+            MeleeDamageType = EDamageType.Thrust;
             Name = "Royal Iceweaver";
             RespawnInterval = -1;
 
@@ -347,7 +347,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             BodyType = 1;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
 
             HakrAddBrain adds = new HakrAddBrain();
             SetOwnBrain(adds);
@@ -395,7 +395,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 IsPulled = false;
             }
             if (HasAggro)
@@ -405,7 +405,7 @@ namespace DOL.AI.Brain
                     if (Body.TargetObject.IsWithinRadius(Body, Body.AttackRange))
                     {
                         GameLiving target = Body.TargetObject as GameLiving;
-                        if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+                        if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
                         {
                             if (Util.Chance(25))
                                 Body.CastSpell(IceweaverPoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -440,10 +440,10 @@ namespace DOL.AI.Brain
                     spell.Range = 400;
                     spell.SpellID = 11746;
                     spell.Target = "Enemy";
-                    spell.Type = eSpellType.DamageOverTime.ToString();
+                    spell.Type = ESpellType.DamageOverTime.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Body;
+                    spell.DamageType = (int) EDamageType.Body;
                     m_IceweaverPoison = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IceweaverPoison);
                 }

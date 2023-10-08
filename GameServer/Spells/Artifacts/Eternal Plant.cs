@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
         }
         public virtual void DamageTarget(AttackData ad)
         {
-            ad.AttackResult = eAttackResult.HitUnstyled;
+            ad.AttackResult = EAttackResult.HitUnstyled;
             ad.Target.OnAttackedByEnemy(ad);
             ad.Attacker.DealDamage(ad);
             foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))

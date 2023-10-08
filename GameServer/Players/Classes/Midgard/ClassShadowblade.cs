@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Shadowblade, "Shadowblade", "MidgardRogue")]
+	[CharacterClass((int)ECharacterClass.Shadowblade, "Shadowblade", "MidgardRogue")]
 	public class ClassShadowblade : ClassMidgardRogue
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Stealth };
@@ -32,9 +32,9 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.Loki";
 			m_specializationMultiplier = 22;
-			m_primaryStat = eStat.DEX;
-			m_secondaryStat = eStat.QUI;
-			m_tertiaryStat = eStat.STR;
+			m_primaryStat = EStat.DEX;
+			m_secondaryStat = EStat.QUI;
+			m_tertiaryStat = EStat.STR;
 			m_baseHP = 760;
 		}
 

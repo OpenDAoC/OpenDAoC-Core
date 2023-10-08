@@ -21,23 +21,23 @@ namespace DOL.GS
 		/// Display teleport destinations for passed realm
 		/// </summary>
 		/// <param name="destRealm">Realm to display destinations for</param>
-		public String DisplayTeleportDestinations(eRealm destRealm)
+		public String DisplayTeleportDestinations(ERealm destRealm)
 		{
 			StringBuilder sRet = new StringBuilder("");
 
 			switch (destRealm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					sRet.Append("Would you like to teleport to?\n[Camelot]\n[Albion Frontiers] or [Battlegrounds]\n[Albion Darkness Falls]\n");
 					sRet.Append("[Albion Mainland]\n[Albion Dungeons]\n[Albion Shrouded Isles]\n[Albion Oceanus]\n");
 					sRet.Append("[Housing]\n[Hibernia] or [Midgard]");
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					sRet.Append("Would you like to teleport to?\n[Jordheim]\n[Midgard Frontiers] or [Battlegrounds]\n[Midgard Darkness Falls]\n");
 					sRet.Append("[Midgard Mainland]\n[Midgard Dungeons]\n[Midgard Shrouded Isles]\n[Midgard Oceanus]\n");
 					sRet.Append("[Housing]\n[Albion] or [Hibernia]");
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					sRet.Append("Would you like to teleport to?\n[Tir na Nog]\n[Hibernia Frontiers] or [Battlegrounds]\n[Hibernia Darkness Falls]\n");
 					sRet.Append("[Hibernia Mainland]\n[Hibernia Dungeons]\n[Hibernia Shrouded Isles]\n[Hibernia Oceanus]\n");
 					sRet.Append("[Housing]\n[Albion] or [Midgard]");
@@ -79,7 +79,7 @@ namespace DOL.GS
 			if (player == null)
 				return false;
 
-			eRealm realmTarget = player.Realm;
+			ERealm realmTarget = player.Realm;
 
 			StringBuilder sRet = new StringBuilder();
 
@@ -87,13 +87,13 @@ namespace DOL.GS
 			{
 				// Realm specific menus
 				case "ALBION":
-					SayTo(player, DisplayTeleportDestinations(eRealm.Albion));
+					SayTo(player, DisplayTeleportDestinations(ERealm.Albion));
 					return true;
 				case "MIDGARD":
-					SayTo(player, DisplayTeleportDestinations(eRealm.Midgard));
+					SayTo(player, DisplayTeleportDestinations(ERealm.Midgard));
 					return true;
 				case "HIBERNIA":
-					SayTo(player, DisplayTeleportDestinations(eRealm.Hibernia));
+					SayTo(player, DisplayTeleportDestinations(ERealm.Hibernia));
 					return true;
 
 				case "ALBION FRONTIERS":
@@ -189,36 +189,36 @@ namespace DOL.GS
 
 				// DF locations
 				case "ALBION DARKNESS FALLS":
-					realmTarget = eRealm.Albion;
+					realmTarget = ERealm.Albion;
 					text = "Darkness Falls";
 					break;
 				case "MIDGARD DARKNESS FALLS":
-					realmTarget = eRealm.Midgard;
+					realmTarget = ERealm.Midgard;
 					text = "Darkness Falls";
 					break;
 				case "HIBERNIA DARKNESS FALLS":
-					realmTarget = eRealm.Hibernia;
+					realmTarget = ERealm.Hibernia;
 					text = "Darkness Falls";
 					break;
 
 				// Agramon
 				case "ALBION AGRAMON":
-					realmTarget = eRealm.Albion;
+					realmTarget = ERealm.Albion;
 					text = "Agramon";
 					break;
 				case "MIDGARD AGRAMON":
-					realmTarget = eRealm.Midgard;
+					realmTarget = ERealm.Midgard;
 					text = "Agramon";
 					break;
 				case "HIBERNIA AGRAMON":
-					realmTarget = eRealm.Hibernia;
+					realmTarget = ERealm.Hibernia;
 					text = "Agramon";
 					break;
 
 				// Albion destinations
 				case "CAMELOT":
 					SayTo(player, "The great city awaits!");
-					realmTarget = eRealm.Albion;
+					realmTarget = ERealm.Albion;
 					break;
 				case "ALBION OCEANUS":
 					if (player.Client.Account.PrivLevel < ServerProperties.Properties.ATLANTIS_TELEPORT_PLVL)
@@ -227,7 +227,7 @@ namespace DOL.GS
 						return true;
 					}
 					SayTo(player, "You will soon arrive in the Haven of Oceanus.");
-					realmTarget = eRealm.Albion;
+					realmTarget = ERealm.Albion;
 					text = "Oceanus";
 					break;
 				// SI cities
@@ -236,7 +236,7 @@ namespace DOL.GS
 				case "GWYNTELL":
 				case "WEARYALL":
 					SayTo(player, "The Shrouded Isles await you.");
-					realmTarget = eRealm.Albion;
+					realmTarget = ERealm.Albion;
 					break;
 				// Mainland destinations
 				case "COTSWOLD VILLAGE":
@@ -262,11 +262,11 @@ namespace DOL.GS
 					sRet.Append(text);
 					sRet.Append(".");
 					SayTo(player, sRet.ToString());
-					realmTarget = eRealm.Albion;
+					realmTarget = ERealm.Albion;
 					break;
 				case "FOREST SAUVAGE":
 					SayTo(player, "Now to the Frontiers for the glory of the realm!");
-					realmTarget = eRealm.Albion;
+					realmTarget = ERealm.Albion;
 					break;
 				case "CASTLE SAUVAGE":
 				case "SNOWDONIA FORTRESS":
@@ -275,7 +275,7 @@ namespace DOL.GS
 					sRet.Append(text);
 					sRet.Append(" is what you shall find.");
 					SayTo(player, sRet.ToString());
-					realmTarget = eRealm.Albion;
+					realmTarget = ERealm.Albion;
 					break;
 				case "INCONNU CRYPT":
 					//if (player.HasFinishedQuest(typeof(InconnuCrypt)) <= 0)
@@ -285,7 +285,7 @@ namespace DOL.GS
 					//	                            "this journey."));
 					//	return;
 					//}
-					realmTarget = eRealm.Albion;
+					realmTarget = ERealm.Albion;
 					break;
 				case "HOLTHAM":
 					if (ServerProperties.Properties.DISABLE_TUTORIAL)
@@ -294,7 +294,7 @@ namespace DOL.GS
 						SayTo(player, "Sorry, you are far too experienced to enjoy this place !");
 					else
 					{
-						realmTarget = eRealm.Albion;
+						realmTarget = ERealm.Albion;
 						break;
 					}
 					return true;
@@ -302,7 +302,7 @@ namespace DOL.GS
 				// Midgard
 				case "JORDHEIM":
 					SayTo(player, "The great city awaits!");
-					realmTarget = eRealm.Midgard;
+					realmTarget = ERealm.Midgard;
 					break;
 				case "MIDGARD OCEANUS":
 					if (player.Client.Account.PrivLevel < ServerProperties.Properties.ATLANTIS_TELEPORT_PLVL)
@@ -311,7 +311,7 @@ namespace DOL.GS
 						return true;
 					}
 					SayTo(player, "You will soon arrive in the Haven of Oceanus.");
-					realmTarget = eRealm.Midgard;
+					realmTarget = ERealm.Midgard;
 					text = "Oceanus";
 					break;
 				// SI cities
@@ -320,7 +320,7 @@ namespace DOL.GS
 				case "HAGALL":
 				case "KNARR":
 					SayTo(player, "The Shrouded Isles await you.");
-					realmTarget = eRealm.Midgard;
+					realmTarget = ERealm.Midgard;
 					break;
 				// Mainland destinations
 				case "MULARN":
@@ -345,7 +345,7 @@ namespace DOL.GS
 					sRet.Append(text);
 					sRet.Append(".");
 					SayTo(player, sRet.ToString());
-					realmTarget = eRealm.Midgard;
+					realmTarget = ERealm.Midgard;
 					break;
 				case "KOBOLD UNDERCITY":
 					//if (player.HasFinishedQuest(typeof(KoboldUndercity)) <= 0)
@@ -355,11 +355,11 @@ namespace DOL.GS
 					//	                            "this journey."));
 					//	return;
 					//}
-					realmTarget = eRealm.Midgard;
+					realmTarget = ERealm.Midgard;
 					break;
 				case "UPPLAND":
 					SayTo(player, "Now to the Frontiers for the glory of the realm!");
-					realmTarget = eRealm.Midgard;
+					realmTarget = ERealm.Midgard;
 					break;
 				case "SVASUD FASTE":
 				case "VINDSAUL FASTE":
@@ -368,7 +368,7 @@ namespace DOL.GS
 					sRet.Append(text);
 					sRet.Append(" is what you shall find.");
 					SayTo(player, sRet.ToString());
-					realmTarget = eRealm.Midgard;
+					realmTarget = ERealm.Midgard;
 					break;
 				case "HAFHEIM":
 					if (ServerProperties.Properties.DISABLE_TUTORIAL)
@@ -377,7 +377,7 @@ namespace DOL.GS
 						SayTo(player, "Sorry, you are far too experienced to enjoy this place !");
 					else
 					{
-						realmTarget = eRealm.Midgard;
+						realmTarget = ERealm.Midgard;
 						break;
 					}
 					return true;
@@ -385,7 +385,7 @@ namespace DOL.GS
 				// Hibernia
 				case "TIR NA NOG":
 					SayTo(player, "The great city awaits!");
-					realmTarget = eRealm.Hibernia;
+					realmTarget = ERealm.Hibernia;
 					break;
 				case "HIBERNIA OCEANUS":
 					if (player.Client.Account.PrivLevel < ServerProperties.Properties.ATLANTIS_TELEPORT_PLVL)
@@ -394,7 +394,7 @@ namespace DOL.GS
 						return true;
 					}
 					SayTo(player, "You will soon arrive in the Haven of Oceanus.");
-					realmTarget = eRealm.Hibernia;
+					realmTarget = ERealm.Hibernia;
 					text = "Oceanus";
 					break;
 				// SI locations
@@ -403,7 +403,7 @@ namespace DOL.GS
 				case "AALID FEIE":
 				case "DROIGHAID":
 					SayTo(player, "The Shrouded Isles await you.");
-					realmTarget = eRealm.Hibernia;
+					realmTarget = ERealm.Hibernia;
 					break;
 				// Mainland locations
 				case "MAG MELL":
@@ -428,11 +428,11 @@ namespace DOL.GS
 					sRet.Append(text);
 					sRet.Append(".");
 					SayTo(player, sRet.ToString());
-					realmTarget = eRealm.Hibernia;
+					realmTarget = ERealm.Hibernia;
 					break;
 				case "CRUACHAN GORGE":
 					SayTo(player, "Now to the Frontiers for the glory of the realm!");
-					realmTarget = eRealm.Hibernia;
+					realmTarget = ERealm.Hibernia;
 					break;
 				case "DRUIM CAIN":
 				case "DRUIM LIGEN":
@@ -441,7 +441,7 @@ namespace DOL.GS
 					sRet.Append(text);
 					sRet.Append(" is what you shall find.");
 					SayTo(player, sRet.ToString());
-					realmTarget = eRealm.Hibernia;
+					realmTarget = ERealm.Hibernia;
 					break;
 				case "SHAR LABYRINTH":
 					//if (player.HasFinishedQuest(typeof(SharLabyrinth)) <= 0)
@@ -451,7 +451,7 @@ namespace DOL.GS
 					//	                            "this journey."));
 					//	return;
 					//}
-					realmTarget = eRealm.Hibernia;
+					realmTarget = ERealm.Hibernia;
 					break;
 				case "FINTAIN":
 					if (ServerProperties.Properties.DISABLE_TUTORIAL)
@@ -461,13 +461,13 @@ namespace DOL.GS
 					else
 					{
 						text = "Fintain";
-						realmTarget = eRealm.Hibernia;
+						realmTarget = ERealm.Hibernia;
 						break;
 					}
 					return true;
 				// All realms
 				case "BATTLEGROUNDS":
-					if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player)
+					if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
 					{
 						SayTo(player, ServerProperties.Properties.BG_ZONES_CLOSED_MESSAGE);
 						return true;
@@ -494,13 +494,13 @@ namespace DOL.GS
 			return true;
 		}
 
-		protected DbTeleport GetTeleportLocation(GamePlayer player, string text, eRealm realm)
+		protected DbTeleport GetTeleportLocation(GamePlayer player, string text, ERealm realm)
 		{
 			// Battlegrounds are specials, as the teleport location depends on
 			// the level of the player, so let's deal with that first.
 			if (text.ToLower() == "battlegrounds")
 			{
-				if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player)
+				if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
 				{
 					SayTo(player, ServerProperties.Properties.BG_ZONES_CLOSED_MESSAGE);
 				}
@@ -521,7 +521,7 @@ namespace DOL.GS
 					}
 					else
 					{
-						if (player.Client.Account.PrivLevel > (uint)ePrivLevel.Player)
+						if (player.Client.Account.PrivLevel > (uint)EPrivLevel.Player)
 						{
 							player.Out.SendMessage("No portal keep found.", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 						}

@@ -4,7 +4,7 @@ namespace DOL.GS.Scripts
 {
     [Command(
        "&realmtask",
-       ePrivLevel.Player,
+       EPrivLevel.Player,
          "Displays the current realm bonuses status.", "/realmtask")]
     public class TaskCommandHandler : ACommandHandler, ICommandHandler
     {

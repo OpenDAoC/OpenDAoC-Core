@@ -68,7 +68,7 @@ namespace DOL.GS.Keeps
 		/// <param name="damageType">The type of the damage</param>
 		/// <param name="damageAmount">The amount of the damage</param>
 		/// <param name="criticalAmount">The critical hit amount of damage</param>
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			int distance = 800;
 

@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Nightshade Trainer
 	/// </summary>	
-	[NPCGuildScript("Nightshade Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Nightshade Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Nightshade Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Nightshade Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class NightshadeTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Nightshade; }
+			get { return ECharacterClass.Nightshade; }
 		}
 
 		public NightshadeTrainer() : base()
@@ -84,7 +84,7 @@ namespace DOL.GS.Trainer
 			case "Nightshade":
 				// promote player to other class
 				if (CanPromotePlayer(player)) {
-					PromotePlayer(player, (int)eCharacterClass.Nightshade, "Some would think you mad, choosing to walk through life as a Nightshade. It is not meant for everyone, but I think it will suit you, " + source.GetName(0, false) + ". Here, from me, a small gift to aid you in your journeys.", null);	// TODO: gifts
+					PromotePlayer(player, (int)ECharacterClass.Nightshade, "Some would think you mad, choosing to walk through life as a Nightshade. It is not meant for everyone, but I think it will suit you, " + source.GetName(0, false) + ". Here, from me, a small gift to aid you in your journeys.", null);	// TODO: gifts
 					//"You receive  Nightshade Initiate Boots from Lierna!"
 				}
 				break;

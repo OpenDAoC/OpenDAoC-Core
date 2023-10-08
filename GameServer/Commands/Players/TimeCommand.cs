@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&time",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"time in game",
 	"/time")]
 public class TimeCommand : ACommandHandler, ICommandHandler
@@ -15,7 +15,7 @@ public class TimeCommand : ACommandHandler, ICommandHandler
 		if (IsSpammingCommand(client.Player, "time", 1000))
 			return;
 
-		if (client.Account.PrivLevel == (int)ePrivLevel.Admin) // admins only
+		if (client.Account.PrivLevel == (int)EPrivLevel.Admin) // admins only
 		{
 			try
 			{

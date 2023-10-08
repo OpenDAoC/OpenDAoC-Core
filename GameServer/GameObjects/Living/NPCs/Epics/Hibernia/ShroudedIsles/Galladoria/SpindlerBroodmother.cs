@@ -16,13 +16,13 @@ namespace DOL.GS
             : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
@@ -51,12 +51,12 @@ namespace DOL.GS
             return base.HasAbility(keyName);
         }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -119,7 +119,7 @@ namespace DOL.GS
         {
             GameNPC[] npcs;
 
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Spindler Broodmother", 191, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Spindler Broodmother", 191, (ERealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Spindler Broodmother not found, creating it...");
@@ -140,7 +140,7 @@ namespace DOL.GS
                 SB.Constitution = 200;
                 SB.Quickness = 125;
                 SB.BodyType = 5;
-                SB.MeleeDamageType = eDamageType.Slash;
+                SB.MeleeDamageType = EDamageType.Slash;
                 SB.Faction = FactionMgr.GetFactionByID(96);
                 SB.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
@@ -204,7 +204,7 @@ namespace DOL.AI.Brain
                 {
                     Enemys_To_Mezz.Clear();
                 }
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 if (!RemoveAdds)
                 {
                     foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
@@ -413,7 +413,7 @@ namespace DOL.AI.Brain
                     spell.Type = "Mesmerize";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Spirit; //Spirit DMG Type
+                    spell.DamageType = (int) EDamageType.Spirit; //Spirit DMG Type
                     m_BossmezSpell = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BossmezSpell);
                 }
@@ -431,21 +431,21 @@ namespace DOL.GS
         public SBAdds() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 30; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 30; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 30; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 30; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 30; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 30; // dmg reduction for melee dmg
                 default: return 30; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.10;
@@ -465,7 +465,7 @@ namespace DOL.GS
         {
             Model = 904;
             Name = "Newly-born spindler";
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             RespawnInterval = -1;
             Size = (byte) Util.Random(50, 60);
             Level = (byte) Util.Random(56, 59);
@@ -539,21 +539,21 @@ namespace DOL.GS
         public SBDeadAdds() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
                 default: return 30; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 300;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -571,7 +571,7 @@ namespace DOL.GS
         {
             Model = 904;
             Name = "underdeveloped spindler";
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             RespawnInterval = -1;
             Strength = 100;
             IsWorthReward = false; //worth no reward

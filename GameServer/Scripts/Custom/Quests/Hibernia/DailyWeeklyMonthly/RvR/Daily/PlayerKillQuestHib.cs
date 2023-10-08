@@ -61,7 +61,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -81,7 +81,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				ReyHib.Model = 26;
 				ReyHib.Name = "Rey";
 				ReyHib.GuildName = "Bone Collector";
-				ReyHib.Realm = eRealm.Hibernia;
+				ReyHib.Realm = ERealm.Hibernia;
 				//Druim Ligen Location
 				ReyHib.CurrentRegionID = 200;
 				ReyHib.Size = 60;

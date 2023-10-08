@@ -55,7 +55,7 @@ namespace DOL.GS.Spells
                     _artefJavelin.MaxDurability = 50000;
                     _artefJavelin.MaxCondition = 50000;
                     _artefJavelin.Quality = 100;
-                    _artefJavelin.Object_Type = (int) eObjectType.Magical;
+                    _artefJavelin.Object_Type = (int) EObjectType.Magical;
                     _artefJavelin.Item_Type = 41;
                     _artefJavelin.Model = 23;
                     _artefJavelin.IsPickable = false;

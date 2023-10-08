@@ -68,7 +68,7 @@ namespace DOL.GS.Spells
 
 			if (player != null)
 			{
-				int strValue = player.GetModified((eProperty)player.Strength);
+				int strValue = player.GetModified((EProperty)player.Strength);
 				spellDamage *= (strValue -player.Level) / 200.0 + 1;
 			}
 

@@ -298,7 +298,7 @@ namespace DOL.GS
 				player.Out.SendQuestListUpdate();
 
 				// Cancel Guard effects.
-				foreach (GuardEcsAbilityEffect guard in living.effectListComponent.GetAbilityEffects().Where(x => x.EffectType == eEffect.Guard))
+				foreach (GuardEcsAbilityEffect guard in living.effectListComponent.GetAbilityEffects().Where(x => x.EffectType == EEffect.Guard))
 				{
 					if (guard.GuardSource is GamePlayer && guard.GuardTarget is GamePlayer)
 						EffectService.RequestImmediateCancelEffect(guard);

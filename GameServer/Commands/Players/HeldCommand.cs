@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&held",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"List the cards in your hand. Use 'held g' to display faceup cards held by group members.",
 	"/held <g>")]
 public class HeldCommand : ACommandHandler, ICommandHandler

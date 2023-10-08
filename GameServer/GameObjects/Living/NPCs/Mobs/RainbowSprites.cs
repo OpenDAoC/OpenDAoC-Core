@@ -304,7 +304,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.SpellID = 11988;
 					spell.Target = "Self";
-					spell.Type = eSpellType.Heal.ToString();
+					spell.Type = ESpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_GreenSpriteHeal = new Spell(spell, 30);

@@ -100,7 +100,7 @@ namespace DOL.GS.Quests.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Inaksha", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Inaksha", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -118,7 +118,7 @@ namespace DOL.GS.Quests.Midgard
 				Inaksha.Model = 193;
 				Inaksha.Name = "Inaksha";
 				Inaksha.GuildName = "";
-				Inaksha.Realm = eRealm.Midgard;
+				Inaksha.Realm = ERealm.Midgard;
 				Inaksha.CurrentRegionID = 100;
 				Inaksha.Size = 50;
 				Inaksha.Level = 41;
@@ -134,7 +134,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Loken", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Loken", ERealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -152,7 +152,7 @@ namespace DOL.GS.Quests.Midgard
 				Loken.Model = 212;
 				Loken.Name = "Loken";
 				Loken.GuildName = "";
-				Loken.Realm = eRealm.None;
+				Loken.Realm = ERealm.None;
 				Loken.CurrentRegionID = 100;
 				Loken.Size = 50;
 				Loken.Level = 65;
@@ -168,7 +168,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Miri", eRealm.Midgard);
+			npcs = WorldMgr.GetNPCsByName("Miri", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -186,7 +186,7 @@ namespace DOL.GS.Quests.Midgard
 				Miri.Model = 220;
 				Miri.Name = "Miri";
 				Miri.GuildName = "";
-				Miri.Realm = eRealm.Midgard;
+				Miri.Realm = ERealm.Midgard;
 				Miri.CurrentRegionID = 101;
 				Miri.Size = 50;
 				Miri.Level = 43;
@@ -286,16 +286,16 @@ namespace DOL.GS.Quests.Midgard
 				HealerEpicBoots.Durability = 50000;
 
 				HealerEpicBoots.Bonus1 = 12;
-				HealerEpicBoots.Bonus1Type = (int) eStat.CON;
+				HealerEpicBoots.Bonus1Type = (int) EStat.CON;
 
 				HealerEpicBoots.Bonus2 = 12;
-				HealerEpicBoots.Bonus2Type = (int) eStat.DEX;
+				HealerEpicBoots.Bonus2Type = (int) EStat.DEX;
 
 				HealerEpicBoots.Bonus3 = 12;
-				HealerEpicBoots.Bonus3Type = (int) eStat.QUI;
+				HealerEpicBoots.Bonus3Type = (int) EStat.QUI;
 
 				HealerEpicBoots.Bonus4 = 21;
-				HealerEpicBoots.Bonus4Type = (int) eProperty.MaxHealth;
+				HealerEpicBoots.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -329,16 +329,16 @@ namespace DOL.GS.Quests.Midgard
 				HealerEpicHelm.Durability = 50000;
 
 				HealerEpicHelm.Bonus1 = 4;
-				HealerEpicHelm.Bonus1Type = (int) eProperty.Skill_Augmentation;
+				HealerEpicHelm.Bonus1Type = (int) EProperty.Skill_Augmentation;
 
 				HealerEpicHelm.Bonus2 = 18;
-				HealerEpicHelm.Bonus2Type = (int) eStat.PIE;
+				HealerEpicHelm.Bonus2Type = (int) EStat.PIE;
 
 				HealerEpicHelm.Bonus3 = 4;
-				HealerEpicHelm.Bonus3Type = (int) eResist.Slash;
+				HealerEpicHelm.Bonus3Type = (int) EResist.Slash;
 
 				HealerEpicHelm.Bonus4 = 6;
-				HealerEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				HealerEpicHelm.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -373,16 +373,16 @@ namespace DOL.GS.Quests.Midgard
 				HealerEpicGloves.Durability = 50000;
 
 				HealerEpicGloves.Bonus1 = 4;
-				HealerEpicGloves.Bonus1Type = (int) eProperty.Skill_Mending;
+				HealerEpicGloves.Bonus1Type = (int) EProperty.Skill_Mending;
 
 				HealerEpicGloves.Bonus2 = 16;
-				HealerEpicGloves.Bonus2Type = (int) eStat.PIE;
+				HealerEpicGloves.Bonus2Type = (int) EStat.PIE;
 
 				HealerEpicGloves.Bonus3 = 4;
-				HealerEpicGloves.Bonus3Type = (int) eResist.Crush;
+				HealerEpicGloves.Bonus3Type = (int) EResist.Crush;
 
 				HealerEpicGloves.Bonus4 = 6;
-				HealerEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				HealerEpicGloves.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -416,16 +416,16 @@ namespace DOL.GS.Quests.Midgard
 				HealerEpicVest.Durability = 50000;
 
 				HealerEpicVest.Bonus1 = 16;
-				HealerEpicVest.Bonus1Type = (int) eStat.CON;
+				HealerEpicVest.Bonus1Type = (int) EStat.CON;
 
 				HealerEpicVest.Bonus2 = 16;
-				HealerEpicVest.Bonus2Type = (int) eStat.PIE;
+				HealerEpicVest.Bonus2Type = (int) EStat.PIE;
 
 				HealerEpicVest.Bonus3 = 8;
-				HealerEpicVest.Bonus3Type = (int) eResist.Cold;
+				HealerEpicVest.Bonus3Type = (int) EResist.Cold;
 
 				HealerEpicVest.Bonus4 = 10;
-				HealerEpicVest.Bonus4Type = (int) eResist.Heat;
+				HealerEpicVest.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -459,16 +459,16 @@ namespace DOL.GS.Quests.Midgard
 				HealerEpicLegs.Durability = 50000;
 
 				HealerEpicLegs.Bonus1 = 15;
-				HealerEpicLegs.Bonus1Type = (int) eStat.STR;
+				HealerEpicLegs.Bonus1Type = (int) EStat.STR;
 
 				HealerEpicLegs.Bonus2 = 16;
-				HealerEpicLegs.Bonus2Type = (int) eStat.CON;
+				HealerEpicLegs.Bonus2Type = (int) EStat.CON;
 
 				HealerEpicLegs.Bonus3 = 10;
-				HealerEpicLegs.Bonus3Type = (int) eResist.Spirit;
+				HealerEpicLegs.Bonus3Type = (int) EResist.Spirit;
 
 				HealerEpicLegs.Bonus4 = 10;
-				HealerEpicLegs.Bonus4Type = (int) eResist.Energy;
+				HealerEpicLegs.Bonus4Type = (int) EResist.Energy;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -502,16 +502,16 @@ namespace DOL.GS.Quests.Midgard
 				HealerEpicArms.Durability = 50000;
 
 				HealerEpicArms.Bonus1 = 4;
-				HealerEpicArms.Bonus1Type = (int) eProperty.Skill_Mending;
+				HealerEpicArms.Bonus1Type = (int) EProperty.Skill_Mending;
 
 				HealerEpicArms.Bonus2 = 13;
-				HealerEpicArms.Bonus2Type = (int) eStat.STR;
+				HealerEpicArms.Bonus2Type = (int) EStat.STR;
 
 				HealerEpicArms.Bonus3 = 15;
-				HealerEpicArms.Bonus3Type = (int) eStat.PIE;
+				HealerEpicArms.Bonus3Type = (int) EStat.PIE;
 
 				HealerEpicArms.Bonus4 = 6;
-				HealerEpicArms.Bonus4Type = (int) eResist.Matter;
+				HealerEpicArms.Bonus4Type = (int) EResist.Matter;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -545,13 +545,13 @@ namespace DOL.GS.Quests.Midgard
 				ShamanEpicBoots.Durability = 50000;
 
 				ShamanEpicBoots.Bonus1 = 13;
-				ShamanEpicBoots.Bonus1Type = (int) eStat.DEX;
+				ShamanEpicBoots.Bonus1Type = (int) EStat.DEX;
 
 				ShamanEpicBoots.Bonus2 = 13;
-				ShamanEpicBoots.Bonus2Type = (int) eStat.QUI;
+				ShamanEpicBoots.Bonus2Type = (int) EStat.QUI;
 
 				ShamanEpicBoots.Bonus3 = 39;
-				ShamanEpicBoots.Bonus3Type = (int) eProperty.MaxHealth;
+				ShamanEpicBoots.Bonus3Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -585,16 +585,16 @@ namespace DOL.GS.Quests.Midgard
 				ShamanEpicHelm.Durability = 50000;
 
 				ShamanEpicHelm.Bonus1 = 4;
-				ShamanEpicHelm.Bonus1Type = (int) eProperty.Skill_Mending;
+				ShamanEpicHelm.Bonus1Type = (int) EProperty.Skill_Mending;
 
 				ShamanEpicHelm.Bonus2 = 18;
-				ShamanEpicHelm.Bonus2Type = (int) eStat.PIE;
+				ShamanEpicHelm.Bonus2Type = (int) EStat.PIE;
 
 				ShamanEpicHelm.Bonus3 = 4;
-				ShamanEpicHelm.Bonus3Type = (int) eResist.Thrust;
+				ShamanEpicHelm.Bonus3Type = (int) EResist.Thrust;
 
 				ShamanEpicHelm.Bonus4 = 6;
-				ShamanEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				ShamanEpicHelm.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -628,16 +628,16 @@ namespace DOL.GS.Quests.Midgard
 				ShamanEpicGloves.Durability = 50000;
 
 				ShamanEpicGloves.Bonus1 = 4;
-				ShamanEpicGloves.Bonus1Type = (int) eProperty.Skill_Subterranean;
+				ShamanEpicGloves.Bonus1Type = (int) EProperty.Skill_Subterranean;
 
 				ShamanEpicGloves.Bonus2 = 18;
-				ShamanEpicGloves.Bonus2Type = (int) eStat.PIE;
+				ShamanEpicGloves.Bonus2Type = (int) EStat.PIE;
 
 				ShamanEpicGloves.Bonus3 = 4;
-				ShamanEpicGloves.Bonus3Type = (int) eResist.Crush;
+				ShamanEpicGloves.Bonus3Type = (int) EResist.Crush;
 
 				ShamanEpicGloves.Bonus4 = 6;
-				ShamanEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				ShamanEpicGloves.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -671,16 +671,16 @@ namespace DOL.GS.Quests.Midgard
 				ShamanEpicVest.Durability = 50000;
 
 				ShamanEpicVest.Bonus1 = 16;
-				ShamanEpicVest.Bonus1Type = (int) eStat.CON;
+				ShamanEpicVest.Bonus1Type = (int) EStat.CON;
 
 				ShamanEpicVest.Bonus2 = 16;
-				ShamanEpicVest.Bonus2Type = (int) eStat.PIE;
+				ShamanEpicVest.Bonus2Type = (int) EStat.PIE;
 
 				ShamanEpicVest.Bonus3 = 10;
-				ShamanEpicVest.Bonus3Type = (int) eResist.Matter;
+				ShamanEpicVest.Bonus3Type = (int) EResist.Matter;
 
 				ShamanEpicVest.Bonus4 = 8;
-				ShamanEpicVest.Bonus4Type = (int) eResist.Heat;
+				ShamanEpicVest.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -714,16 +714,16 @@ namespace DOL.GS.Quests.Midgard
 				ShamanEpicLegs.Durability = 50000;
 
 				ShamanEpicLegs.Bonus1 = 16;
-				ShamanEpicLegs.Bonus1Type = (int) eStat.CON;
+				ShamanEpicLegs.Bonus1Type = (int) EStat.CON;
 
 				ShamanEpicLegs.Bonus2 = 16;
-				ShamanEpicLegs.Bonus2Type = (int) eStat.DEX;
+				ShamanEpicLegs.Bonus2Type = (int) EStat.DEX;
 
 				ShamanEpicLegs.Bonus3 = 8;
-				ShamanEpicLegs.Bonus3Type = (int) eResist.Cold;
+				ShamanEpicLegs.Bonus3Type = (int) EResist.Cold;
 
 				ShamanEpicLegs.Bonus4 = 10;
-				ShamanEpicLegs.Bonus4Type = (int) eResist.Spirit;
+				ShamanEpicLegs.Bonus4Type = (int) EResist.Spirit;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -757,16 +757,16 @@ namespace DOL.GS.Quests.Midgard
 				ShamanEpicArms.Durability = 50000;
 
 				ShamanEpicArms.Bonus1 = 4;
-				ShamanEpicArms.Bonus1Type = (int) eProperty.Skill_Augmentation;
+				ShamanEpicArms.Bonus1Type = (int) EProperty.Skill_Augmentation;
 
 				ShamanEpicArms.Bonus2 = 12;
-				ShamanEpicArms.Bonus2Type = (int) eStat.STR;
+				ShamanEpicArms.Bonus2Type = (int) EStat.STR;
 
 				ShamanEpicArms.Bonus3 = 18;
-				ShamanEpicArms.Bonus3Type = (int) eStat.PIE;
+				ShamanEpicArms.Bonus3Type = (int) EStat.PIE;
 
 				ShamanEpicArms.Bonus4 = 6;
-				ShamanEpicArms.Bonus4Type = (int) eResist.Energy;
+				ShamanEpicArms.Bonus4Type = (int) EResist.Energy;
 
 
 				if (SAVE_INTO_DATABASE)
@@ -988,8 +988,8 @@ namespace DOL.GS.Quests.Midgard
 			if (player.IsDoingQuest(typeof (Seer_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) eCharacterClass.Shaman &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Healer)
+			if (player.CharacterClass.ID != (byte) ECharacterClass.Shaman &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Healer)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -1153,7 +1153,7 @@ namespace DOL.GS.Quests.Midgard
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Shaman)
+			if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Shaman)
 			{
 				GiveItem(m_questPlayer, ShamanEpicArms);
 				GiveItem(m_questPlayer, ShamanEpicBoots);
@@ -1162,7 +1162,7 @@ namespace DOL.GS.Quests.Midgard
 				GiveItem(m_questPlayer, ShamanEpicLegs);
 				GiveItem(m_questPlayer, ShamanEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Healer)
+			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Healer)
 			{
 				GiveItem(m_questPlayer, HealerEpicArms);
 				GiveItem(m_questPlayer, HealerEpicBoots);
@@ -1172,7 +1172,7 @@ namespace DOL.GS.Quests.Midgard
 				GiveItem(m_questPlayer, HealerEpicVest);
 			}
 
-			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			m_questPlayer.GainExperience(EXpSource.Quest, 1937768448, true);
 			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 

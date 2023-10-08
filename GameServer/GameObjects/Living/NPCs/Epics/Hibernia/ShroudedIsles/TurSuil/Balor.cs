@@ -10,21 +10,21 @@ namespace DOL.GS
 	public class Balor : GameEpicBoss
 	{
 		public Balor() : base() { }
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 30; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 30; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 30; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 30; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 30; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 30; // dmg reduction for melee dmg
 				default: return 40; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -33,15 +33,15 @@ namespace DOL.GS
 		{
 			get { return 40000; }
 		}
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				if (IsOutOfTetherRange)
 				{
-					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-						|| damageType == eDamageType.Slash)
+					if (damageType == EDamageType.Body || damageType == EDamageType.Cold || damageType == EDamageType.Energy || damageType == EDamageType.Heat
+						|| damageType == EDamageType.Matter || damageType == EDamageType.Spirit || damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+						|| damageType == EDamageType.Slash)
 					{
 						GamePlayer truc;
 						if (source is GamePlayer)
@@ -97,7 +97,7 @@ namespace DOL.GS
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 841, 0, 0, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
 			VisibleActiveWeaponSlots = 34;
 			BalorBrain sbrain = new BalorBrain();
@@ -152,7 +152,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			if (Body.HealthPercent == 100 && Stage < 10 && !HasAggro)
@@ -279,14 +279,14 @@ namespace DOL.AI.Brain
 					spell.Icon = 4111;
 					spell.TooltipId = 4111;
 					spell.Damage = 1000;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Balor's Eye Light";
 					spell.Range = 1800;
 					spell.SpellID = 11791;
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_EyeDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_EyeDD);
 				}

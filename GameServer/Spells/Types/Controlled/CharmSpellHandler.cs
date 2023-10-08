@@ -335,7 +335,7 @@ namespace DOL.GS.Spells
                 // 2) Caster's modified spec level * 1.1
                 // The second point is based upon the spell limitation where mob level cannot exceed 110% of the Caster's modified spec level.
                 // For example, with a modified spec of 65, the Caster cannot charm a mob above level 71 AT ALL (no 99% resist, just outright return of 'false').
-                if (casterPlayer.CharacterClass.ID is (int)eCharacterClass.Minstrel or (int)eCharacterClass.Mentalist)
+                if (casterPlayer.CharacterClass.ID is (int)ECharacterClass.Minstrel or (int)ECharacterClass.Mentalist)
                 {
                     // If the target mob's level surpasses Spell.Value
                     if (charmMob.Level > Spell.Value)
@@ -361,7 +361,7 @@ namespace DOL.GS.Spells
                 // The main limitation on Sorcerer charms is that the mob level cannot exceed the Spell.Value or the Caster's level, unlike Minstrel/Mentalist charms.
                 // For example, with a Caster level of 50, the Caster cannot charm a mob above level 50 AT ALL (no 99% resist, just outright return of 'false').
                 // For Spell.Value, each charm spell has a maximum level value for Sorc's below level 50, which means lower-level charms cannot be used to save on power or charm same-level mobs of different body types. The highest-level spell should always be used.
-                if (casterPlayer.CharacterClass.ID is (int)eCharacterClass.Hunter or (int)eCharacterClass.Sorcerer)
+                if (casterPlayer.CharacterClass.ID is (int)ECharacterClass.Hunter or (int)ECharacterClass.Sorcerer)
                 {
                     // Check first if the target mob's level surpasses the Caster's level
                     // Mob level cannot exceed the Caster's level
@@ -500,7 +500,7 @@ namespace DOL.GS.Spells
             if (sender is not GameNPC pet || pet.Brain is not IControlledBrain)
                 return;
 
-            if (pet.effectListComponent.Effects.TryGetValue(eEffect.Charm, out List<EcsGameEffect> charms))
+            if (pet.effectListComponent.Effects.TryGetValue(EEffect.Charm, out List<EcsGameEffect> charms))
                 EffectService.RequestImmediateCancelEffect(charms.FirstOrDefault());
         }
 
@@ -617,7 +617,7 @@ namespace DOL.GS.Spells
                     list.Add(LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "DelveInfo.ConcentrationCost", Spell.Concentration));
                 if (Spell.Radius != 0)
                     list.Add(LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "DelveInfo.Radius", Spell.Radius));
-                if (Spell.DamageType != eDamageType.Natural)
+                if (Spell.DamageType != EDamageType.Natural)
                     list.Add(LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
 
                 return list;

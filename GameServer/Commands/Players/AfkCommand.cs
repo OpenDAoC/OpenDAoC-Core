@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&afk",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	// Displays next to the command when '/cmd' is entered
 	"Enables/disables a flag that indicates you are \"away from keyboard,\" and allows you to attach a message that will auto-send to any player that uses '/send' to you (e.g., '/afk Bio break').",
 	// Syntax: '/afk' - Enables/disables a flag that indicates you are "away from keyboard," and allows you to attach a message that will auto-send to any player that uses '/send' to you (e.g., '/afk Bio break').

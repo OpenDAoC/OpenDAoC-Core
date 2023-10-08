@@ -46,7 +46,7 @@ namespace DOL.GS
 		public GameSiegeBallista()
 			: base()
 		{
-			MeleeDamageType = eDamageType.Thrust;
+			MeleeDamageType = EDamageType.Thrust;
 			Name = "field ballista";
 			AmmoType = 0x18;
 			this.Model = 0x0A55;
@@ -122,14 +122,14 @@ namespace DOL.GS
 			AttackData ad = new AttackData();
 			ad.Target = target;
 			ad.AttackType = AttackData.eAttackType.Ranged;
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 			ad.Damage = damageAmount;
 			ad.DamageType = MeleeDamageType;
 
 			if(Owner != null)
 			{
 				ad.Attacker = Owner;
-				target.TakeDamage(Owner, eDamageType.Crush, damageAmount, 0);
+				target.TakeDamage(Owner, EDamageType.Crush, damageAmount, 0);
 				target.OnAttackedByEnemy(ad);
 
 				Owner.OnAttackEnemy(ad);
@@ -138,7 +138,7 @@ namespace DOL.GS
 			else
 			{
 				ad.Attacker = this;
-				target.TakeDamage(this, eDamageType.Crush, damageAmount, 0);
+				target.TakeDamage(this, EDamageType.Crush, damageAmount, 0);
 				target.OnAttackedByEnemy(ad);
 			}
 

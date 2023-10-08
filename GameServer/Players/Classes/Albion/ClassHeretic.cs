@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Heretic, "Heretic", "Acolyte")]
+	[CharacterClass((int)ECharacterClass.Heretic, "Heretic", "Acolyte")]
 	public class ClassHeretic : ClassAcolyte
 	{
 		public ClassHeretic()
@@ -30,10 +30,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.TempleofArawn";
 			m_specializationMultiplier = 20;
-			m_primaryStat = eStat.PIE;
-			m_secondaryStat = eStat.DEX;
-			m_tertiaryStat = eStat.CON;
-			m_manaStat = eStat.PIE;
+			m_primaryStat = EStat.PIE;
+			m_secondaryStat = EStat.DEX;
+			m_tertiaryStat = EStat.CON;
+			m_manaStat = EStat.PIE;
 			m_wsbase = 360;
 			m_baseHP = 720;
 		}

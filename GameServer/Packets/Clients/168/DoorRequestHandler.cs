@@ -46,7 +46,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			string debugText = "";
 
 			// For ToA the client always sends the same ID so we need to construct an id using the current zone
-			if (client.Player.CurrentRegion.Expansion == (int)eClientExpansion.TrialsOfAtlantis)
+			if (client.Player.CurrentRegion.Expansion == (int)EClientExpansion.TrialsOfAtlantis)
 			{
 				debugText = $"ToA DoorID:{doorID} ";
 
@@ -129,7 +129,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						}
 						else
 						{
-							if (client.Player.Realm == (eRealm) door.Realm || door.Realm == 6)
+							if (client.Player.Realm == (ERealm) door.Realm || door.Realm == 6)
 							{
 								new ChangeDoorAction(client.Player, doorID, doorState, radius).Start(1);
 								return;
@@ -299,7 +299,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					door.X = player.X;
 					door.Y = player.Y;
 					door.Z = player.Z;
-					door.Realm = eRealm.Door;
+					door.Realm = ERealm.Door;
 					door.CurrentRegion = player.CurrentRegion;
 					
 					if (player.IsWithinRadius(door, m_radius))

@@ -2,10 +2,10 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.SpellDamage)]
+[PropertyCalculator(EProperty.SpellDamage)]
 public class SpellDamagePercentCalculator : PropertyCalculator
 {
-    public override int CalcValue(GameLiving living, eProperty property)
+    public override int CalcValue(GameLiving living, EProperty property)
     {
         // Hardcap at 10%
         int percent = Math.Min(10, living.BaseBuffBonusCategory[(int)property]

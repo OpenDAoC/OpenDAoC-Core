@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Infiltrator Trainer
 	/// </summary>
-	[NPCGuildScript("Infiltrator Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Infiltrator Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Infiltrator Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Infiltrator Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class InfiltratorTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Infiltrator; }
+			get { return ECharacterClass.Infiltrator; }
 		}
 
 		/// <summary>
@@ -80,7 +80,7 @@ namespace DOL.GS.Trainer
 				case "join the Guild of Shadows":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Infiltrator, "TODO: (correct text) You joined the Guild of Shadows as an Infiltrator.", null);	// TODO: gifts
+						PromotePlayer(player, (int)ECharacterClass.Infiltrator, "TODO: (correct text) You joined the Guild of Shadows as an Infiltrator.", null);	// TODO: gifts
 					}
 					break;
 			}

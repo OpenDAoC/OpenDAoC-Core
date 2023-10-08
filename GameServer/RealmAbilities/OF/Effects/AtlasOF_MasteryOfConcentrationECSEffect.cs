@@ -6,7 +6,7 @@ namespace DOL.GS.Effects
         public MasteryOfConcentrationECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.MasteryOfConcentration;
+            EffectType = EEffect.MasteryOfConcentration;
             EffectService.RequestStartEffect(this);
         }
 

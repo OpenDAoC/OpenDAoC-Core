@@ -8,7 +8,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&checkappeal",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Checks the status of your appeal or cancels it.",
 	"Usage:",
 	"/checkappeal view - View your appeal status.",

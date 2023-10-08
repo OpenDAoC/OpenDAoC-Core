@@ -88,8 +88,8 @@ namespace DOL.GS.Effects
 		{
 			AttackFinishedEventArgs atkArgs = args as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
-			if (atkArgs.AttackData.AttackResult != eAttackResult.HitUnstyled
-				&& atkArgs.AttackData.AttackResult != eAttackResult.HitStyle) return;
+			if (atkArgs.AttackData.AttackResult != EAttackResult.HitUnstyled
+				&& atkArgs.AttackData.AttackResult != EAttackResult.HitStyle) return;
 			if (atkArgs.AttackData.Target == null) return;
 			GameLiving target = atkArgs.AttackData.Target;
 			if (target == null) return;
@@ -104,18 +104,18 @@ namespace DOL.GS.Effects
 
 			double dps = Math.Min(RealmAbilities.MarkOfPreyAbility.VALUE, dpsCap);
 			double damage = dps * atkArgs.AttackData.WeaponSpeed * 0.1;
-			double damageResisted = damage * target.GetResist(eDamageType.Heat) * -0.01;
+			double damageResisted = damage * target.GetResist(EDamageType.Heat) * -0.01;
 
 			AttackData ad = new AttackData();
 			ad.Attacker = attacker;
 			ad.Target = target;
 			ad.Damage = (int)(damage + damageResisted);
 			ad.Modifier = (int)damageResisted;
-			ad.DamageType = eDamageType.Heat;
+			ad.DamageType = EDamageType.Heat;
 			ad.AttackType = AttackData.eAttackType.Spell;
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 			target.OnAttackedByEnemy(ad);
-			EffectCaster.ChangeMana(EffectOwner, eManaChangeType.Spell, (int)ad.Damage);
+			EffectCaster.ChangeMana(EffectOwner, EPowerChangeType.Spell, (int)ad.Damage);
 			if (attacker is GamePlayer)
 				(attacker as GamePlayer).Out.SendMessage(string.Format("You hit {0} for {1} extra damage!", target.Name, ad.Damage), DOL.GS.PacketHandler.eChatType.CT_Spell, DOL.GS.PacketHandler.eChatLoc.CL_SystemWindow);
 			attacker.DealDamage(ad);

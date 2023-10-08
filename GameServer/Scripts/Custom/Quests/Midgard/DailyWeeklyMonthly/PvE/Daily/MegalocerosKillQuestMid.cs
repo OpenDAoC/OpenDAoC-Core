@@ -61,7 +61,7 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Jarek", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Jarek", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -79,7 +79,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				Jarek.Model = 774;
 				Jarek.Name = "Jarek";
 				Jarek.GuildName = "Advisor to the King";
-				Jarek.Realm = eRealm.Midgard;
+				Jarek.Realm = ERealm.Midgard;
 				Jarek.CurrentRegionID = 151;
 				Jarek.Size = 50;
 				Jarek.Level = 59;

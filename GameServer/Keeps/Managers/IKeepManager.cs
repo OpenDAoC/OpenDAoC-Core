@@ -60,10 +60,10 @@ namespace DOL.GS.Keeps
 		ICollection<AbstractGameKeep> GetKeepsOfRegion(ushort region);
 		ICollection<AbstractGameKeep> GetKeepsCloseToSpot(ushort regionid, int x, int y, int z, int radius);
 		AbstractGameKeep GetKeepCloseToSpot(ushort regionid, int x, int y, int z, int radius);
-		int GetTowerCountByRealm(eRealm realm);
-		Dictionary<eRealm, int> GetTowerCountAllRealm();
-		Dictionary<eRealm, int> GetTowerCountFromZones(List<int> zones);
-		int GetKeepCountByRealm(eRealm realm);
+		int GetTowerCountByRealm(ERealm realm);
+		Dictionary<ERealm, int> GetTowerCountAllRealm();
+		Dictionary<ERealm, int> GetTowerCountFromZones(List<int> zones);
+		int GetKeepCountByRealm(ERealm realm);
 		ICollection<AbstractGameKeep> GetAllKeeps();
 		bool IsEnemy(AbstractGameKeep keep, GamePlayer target, bool checkGroup);
 		bool IsEnemy(AbstractGameKeep keep, GamePlayer target);
@@ -73,8 +73,8 @@ namespace DOL.GS.Keeps
 		bool IsEnemy(GameKeepComponent checker, GamePlayer target);
 		byte GetHeightFromLevel(byte level);
 		void GetBorderKeepLocation(int keepid, out int x, out int y, out int z, out ushort heading);
-		int GetRealmKeepBonusLevel(eRealm realm);
-		int GetRealmTowerBonusLevel(eRealm realm);
+		int GetRealmKeepBonusLevel(ERealm realm);
+		int GetRealmTowerBonusLevel(ERealm realm);
 		void UpdateBaseLevels();
 		DbBattleground GetBattleground(ushort region);
 		void ExitBattleground(GamePlayer player);

@@ -16,7 +16,7 @@ public sealed class PropertyIndexer : IPropertyIndexer
         set => m_propDict[index] = value;
     }
 
-    public int this[eProperty index]
+    public int this[EProperty index]
     {
         get => this[(int) index];
         set => this[(int) index] = value;

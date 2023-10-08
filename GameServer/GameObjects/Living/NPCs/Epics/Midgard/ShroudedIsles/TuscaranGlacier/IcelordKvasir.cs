@@ -11,22 +11,22 @@ namespace DOL.GS
         public Kvasir() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
 
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
-                if (damageType == eDamageType.Cold) //take no damage
+                if (damageType == EDamageType.Cold) //take no damage
                 {
                     this.Health += this.MaxHealth / 5; //heal himself if damage is cold
                     BroadcastMessage(String.Format("Icelord Kvasir says, 'aahhhh thank you " + source.Name +" for healing me !'"));
@@ -59,11 +59,11 @@ namespace DOL.GS
             return base.HasAbility(keyName);
         }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -201,7 +201,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
                 StartMezz = false;
@@ -269,11 +269,11 @@ namespace DOL.AI.Brain
                     spell.Radius = 800;
                     spell.SpellID = 11928;
                     spell.Duration = 60;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
                     spell.Type = "Mesmerize";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Spirit; //Spirit DMG Type
+                    spell.DamageType = (int) EDamageType.Spirit; //Spirit DMG Type
                     m_mezSpell = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
                 }
@@ -304,7 +304,7 @@ namespace DOL.AI.Brain
                     spell.Type = "SpeedDecrease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Cold;
+                    spell.DamageType = (int)EDamageType.Cold;
                     m_IssoRoot = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IssoRoot);
                 }

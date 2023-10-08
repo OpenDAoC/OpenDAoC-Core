@@ -27,21 +27,21 @@ namespace DOL.GS
         public static int TauntID = 103;
         public static int TauntClassID = 2; //armsman
         public static Style taunt = SkillBase.GetStyleByID(TauntID, TauntClassID);
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
                 default: return 70; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -90,7 +90,7 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.Cloak, 57, 32, 0, 0);
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 32, 0, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             Styles.Add(taunt);
             MaxSpeedBase = 400;
 
@@ -114,7 +114,7 @@ namespace DOL.GS
 
             Flags = eFlags.PEACE;
             VisibleActiveWeaponSlots = 34;
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             OFGreenKnightBrain sbrain = new OFGreenKnightBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -126,7 +126,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Green Knight", 1, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Green Knight", 1, (ERealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Green Knight not found, creating it...");
@@ -139,7 +139,7 @@ namespace DOL.GS
                 OF.Level = 79;
                 OF.Size = 120;
                 OF.CurrentRegionID = 1; //albion Forest sauvage
-                OF.MeleeDamageType = eDamageType.Slash;
+                OF.MeleeDamageType = EDamageType.Slash;
                 OF.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 OF.Faction = FactionMgr.GetFactionByID(236);
                 OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(236));
@@ -269,13 +269,13 @@ namespace DOL.GS
                     spell.ClientEffect = 360;
                     spell.Icon = 360;
                     spell.Damage = 250;
-                    spell.DamageType = (int) eDamageType.Heat;
+                    spell.DamageType = (int) EDamageType.Heat;
                     spell.Name = "Might of the Forrest";
                     spell.Range = 0;
                     spell.Radius = 350;
                     spell.SpellID = 11755;
                     spell.Target = "Enemy";
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Radius = 500;
                     spell.EffectGroup = 0;
                     m_HeatDDSpell = new Spell(spell, 50);
@@ -693,7 +693,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             if (!CheckProximityAggro())
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 
             base.Think();
         }

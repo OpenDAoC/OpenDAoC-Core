@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
         private const int m_dmgValue = 750; //Unclear what the real OF value was. This forum says ~750 damage: https://forums.freddyshouse.com/threads/wrath-of-champions-ra.39511/
         private const int m_range = 0; // pbaoe
         private const int m_radius = 350; //
-        private const eDamageType m_damageType = eDamageType.Spirit;
+        private const EDamageType m_damageType = EDamageType.Spirit;
 
         private DbSpell m_dbspell;
         private Spell m_spell = null;
@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = (int)m_damageType;
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = m_radius;
-            m_dbspell.Type = eSpellType.DirectDamageNoVariance.ToString();
+            m_dbspell.Type = ESpellType.DirectDamageNoVariance.ToString();
             m_dbspell.Value = 0;
             m_dbspell.Duration = 0;
             m_dbspell.Pulse = 0;

@@ -387,29 +387,29 @@ namespace DOL.GS
                 delve.Add(" ");
             }
 
-            if ((Object_Type >= (int)eObjectType.GenericWeapon) && (Object_Type <= (int)eObjectType._LastWeapon) ||
-                Object_Type == (int)eObjectType.Instrument)
+            if ((Object_Type >= (int)EObjectType.GenericWeapon) && (Object_Type <= (int)EObjectType._LastWeapon) ||
+                Object_Type == (int)EObjectType.Instrument)
             {
                 WriteUsableClasses(delve, player.Client);
                 WriteMagicalBonuses(delve, player.Client, false);
                 DelveWeaponStats(delve, player);
             }
 
-            if (Object_Type >= (int)eObjectType.Cloth && Object_Type <= (int)eObjectType.Scale)
+            if (Object_Type >= (int)EObjectType.Cloth && Object_Type <= (int)EObjectType.Scale)
             {
                 WriteUsableClasses(delve, player.Client);
                 WriteMagicalBonuses(delve, player.Client, false);
                 DelveArmorStats(delve, player);
             }
 
-            if (Object_Type == (int)eObjectType.Shield)
+            if (Object_Type == (int)EObjectType.Shield)
             {
                 WriteUsableClasses(delve, player.Client);
                 WriteMagicalBonuses(delve, player.Client, false);
                 DelveShieldStats(delve, player.Client);
             }
 
-            if (Object_Type == (int)eObjectType.Magical || Object_Type == (int)eObjectType.AlchemyTincture || Object_Type == (int)eObjectType.SpellcraftGem)
+            if (Object_Type == (int)EObjectType.Magical || Object_Type == (int)EObjectType.AlchemyTincture || Object_Type == (int)EObjectType.SpellcraftGem)
             {
                 WriteUsableClasses(delve, player.Client);
                 WriteMagicalBonuses(delve, player.Client, false);
@@ -418,12 +418,12 @@ namespace DOL.GS
             //***********************************
             //shows info for Poison Potions
             //***********************************
-            if (Object_Type == (int)eObjectType.Poison)
+            if (Object_Type == (int)EObjectType.Poison)
             {
                 WritePoisonInfo(delve, player.Client);
             }
 
-            if (Object_Type == (int)eObjectType.Magical && Item_Type == (int)eInventorySlot.FirstBackpack) // potion
+            if (Object_Type == (int)EObjectType.Magical && Item_Type == (int)eInventorySlot.FirstBackpack) // potion
             {
                 switch (SpellID)
                 {
@@ -530,7 +530,7 @@ namespace DOL.GS
                 int classID = -1;
                 if (int.TryParse(allowed, out classID))
                 {
-                    output.Add("- " + ((eCharacterClass)classID).ToString());
+                    output.Add("- " + ((ECharacterClass)classID).ToString());
                 }
                 else
                 {
@@ -596,7 +596,7 @@ namespace DOL.GS
                     }
                 }
 
-                if (Object_Type == (int)eObjectType.Magical && Item_Type == (int)eInventorySlot.FirstBackpack) // potion
+                if (Object_Type == (int)EObjectType.Magical && Item_Type == (int)eInventorySlot.FirstBackpack) // potion
                 {
                     // let WritePotion handle the rest of the display
                     return;
@@ -1301,12 +1301,12 @@ namespace DOL.GS
 
         protected virtual void WriteBonusLine(IList<string> list, GameClient client, int bonusCat, int bonusValue)
         {
-            if (bonusCat != 0 && bonusValue != 0 && !SkillBase.CheckPropertyType((eProperty)bonusCat, ePropertyType.Focus))
+            if (bonusCat != 0 && bonusValue != 0 && !SkillBase.CheckPropertyType((EProperty)bonusCat, EPropertyType.Focus))
             {
-                if (IsPvEBonus((eProperty)bonusCat))
+                if (IsPvEBonus((EProperty)bonusCat))
                 {
                     // Evade: {0}% (PvE Only)
-                    list.Add(string.Format(SkillBase.GetPropertyName((eProperty)bonusCat), bonusValue));
+                    list.Add(string.Format(SkillBase.GetPropertyName((EProperty)bonusCat), bonusValue));
                 }
                 else
                 {
@@ -1322,19 +1322,19 @@ namespace DOL.GS
                     //Power: 6 % of power pool.
                     list.Add(singleUti + string.Format(
                         " | {0}: {1}{2}",
-                        SkillBase.GetPropertyName((eProperty)bonusCat),
+                        SkillBase.GetPropertyName((EProperty)bonusCat),
                         bonusValue.ToString("0 ;-0 ;0 "), //Eden
-                        ((bonusCat == (int)eProperty.PowerPool)
-                         || (bonusCat >= (int)eProperty.Resist_First && bonusCat <= (int)eProperty.Resist_Last)
-                         || (bonusCat >= (int)eProperty.ResCapBonus_First && bonusCat <= (int)eProperty.ResCapBonus_Last)
-                         || bonusCat == (int)eProperty.Conversion
-                         || bonusCat == (int)eProperty.ExtraHP
-                         || bonusCat == (int)eProperty.RealmPoints
-                         || bonusCat == (int)eProperty.StyleAbsorb
-                         || bonusCat == (int)eProperty.ArcaneSyphon
-                         || bonusCat == (int)eProperty.BountyPoints
-                         || bonusCat == (int)eProperty.XpPoints)
-                        ? ((bonusCat == (int)eProperty.PowerPool) ? LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteBonusLine.PowerPool") : "%")
+                        ((bonusCat == (int)EProperty.PowerPool)
+                         || (bonusCat >= (int)EProperty.Resist_First && bonusCat <= (int)EProperty.Resist_Last)
+                         || (bonusCat >= (int)EProperty.ResCapBonus_First && bonusCat <= (int)EProperty.ResCapBonus_Last)
+                         || bonusCat == (int)EProperty.Conversion
+                         || bonusCat == (int)EProperty.ExtraHP
+                         || bonusCat == (int)EProperty.RealmPoints
+                         || bonusCat == (int)EProperty.StyleAbsorb
+                         || bonusCat == (int)EProperty.ArcaneSyphon
+                         || bonusCat == (int)EProperty.BountyPoints
+                         || bonusCat == (int)EProperty.XpPoints)
+                        ? ((bonusCat == (int)EProperty.PowerPool) ? LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteBonusLine.PowerPool") : "%")
                         : LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteBonusLine.Points")
                     ));
                 }
@@ -1343,26 +1343,26 @@ namespace DOL.GS
 
         protected virtual void WriteFocusLine(IList<string> list, int focusCat, int focusLevel)
         {
-            if (SkillBase.CheckPropertyType((eProperty)focusCat, ePropertyType.Focus))
+            if (SkillBase.CheckPropertyType((EProperty)focusCat, EPropertyType.Focus))
             {
                 //- Body Magic: 4 lvls
-                list.Add(string.Format("- {0}: {1} lvls", SkillBase.GetPropertyName((eProperty)focusCat), focusLevel));
+                list.Add(string.Format("- {0}: {1} lvls", SkillBase.GetPropertyName((EProperty)focusCat), focusLevel));
             }
         }
 
 
-        protected virtual bool IsPvEBonus(eProperty property)
+        protected virtual bool IsPvEBonus(EProperty property)
         {
             switch (property)
             {
-                case eProperty.DefensiveBonus:
-                case eProperty.BladeturnReinforcement:
-                case eProperty.NegativeReduction:
-                case eProperty.PieceAblative:
-                case eProperty.ReactionaryStyleDamage:
-                case eProperty.SpellPowerCost:
-                case eProperty.StyleCostReduction:
-                case eProperty.ToHitBonus:
+                case EProperty.DefensiveBonus:
+                case EProperty.BladeturnReinforcement:
+                case EProperty.NegativeReduction:
+                case EProperty.PieceAblative:
+                case EProperty.ReactionaryStyleDamage:
+                case EProperty.SpellPowerCost:
+                case EProperty.StyleCostReduction:
+                case EProperty.ToHitBonus:
                     return true;
 
                 default:
@@ -1654,7 +1654,7 @@ namespace DOL.GS
             {
                 delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.WriteClassicArmorInfos.BaseFactor", DPS_AF));
 
-                if (Object_Type != (int)eObjectType.Cloth)
+                if (Object_Type != (int)EObjectType.Cloth)
                 {
                     afCap *= 2;
                 }
@@ -1754,7 +1754,7 @@ namespace DOL.GS
                 delve.Add("   Absorption: " + SPD_ABS);
                 delve.Add("        Bonus: " + Bonus);
             }
-            else if (Object_Type == (int)eObjectType.Shield)
+            else if (Object_Type == (int)EObjectType.Shield)
             {
                 delve.Add("");
                 delve.Add("Damage/Second: " + (DPS_AF / 10.0f));
@@ -1762,7 +1762,7 @@ namespace DOL.GS
                 delve.Add("  Shield type: " + GlobalConstants.ShieldTypeToName(Type_Damage) + " (" + Type_Damage + ")");
                 delve.Add("        Bonus: " + Bonus);
             }
-            else if (Object_Type == (int)eObjectType.Arrow || Object_Type == (int)eObjectType.Bolt)
+            else if (Object_Type == (int)EObjectType.Arrow || Object_Type == (int)EObjectType.Bolt)
             {
                 delve.Add("");
                 delve.Add(" Ammunition #: " + DPS_AF);
@@ -1771,7 +1771,7 @@ namespace DOL.GS
                 delve.Add("     Accuracy: " + GlobalConstants.AmmunitionTypeToAccuracyName(SPD_ABS));
                 delve.Add("        Bonus: " + Bonus);
             }
-            else if (Object_Type == (int)eObjectType.Instrument)
+            else if (Object_Type == (int)EObjectType.Instrument)
             {
                 delve.Add("");
                 delve.Add("   Instrument: " + GlobalConstants.InstrumentTypeToName(DPS_AF));

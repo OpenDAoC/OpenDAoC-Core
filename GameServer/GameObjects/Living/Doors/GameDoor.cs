@@ -88,7 +88,7 @@ namespace DOL.GS
             m_model = 0xFFFF;
             DoorID = dbDoor.InternalID;
             m_guildName = dbDoor.Guild;
-            Realm = (eRealm) dbDoor.Realm;
+            Realm = (ERealm) dbDoor.Realm;
             m_level = dbDoor.Level;
             m_health = dbDoor.Health;
             Locked = dbDoor.Locked;
@@ -191,7 +191,7 @@ namespace DOL.GS
             }
         }
 
-        public override int MaxHealth => 5 * GetModified(eProperty.MaxHealth);
+        public override int MaxHealth => 5 * GetModified(EProperty.MaxHealth);
 
         public override void Die(GameObject killer)
         {
@@ -233,9 +233,9 @@ namespace DOL.GS
             return REPAIR_INTERVAL;
         }
 
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (!_openDead && Realm != eRealm.Door)
+            if (!_openDead && Realm != ERealm.Door)
             {
                 base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             }
@@ -244,7 +244,7 @@ namespace DOL.GS
 
             if (attackerPlayer != null)
             {
-                if (!_openDead && Realm != eRealm.Door)
+                if (!_openDead && Realm != ERealm.Door)
                 {
                     attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     Health -= damageAmount + criticalAmount;

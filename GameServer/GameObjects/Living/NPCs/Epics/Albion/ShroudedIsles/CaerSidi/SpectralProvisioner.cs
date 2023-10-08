@@ -12,21 +12,21 @@ namespace DOL.GS.Scripts
 	{
 	public SpectralProvisioner()
 		: base() { }
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GameSummonedPet)
 			{
-				if (damageType == eDamageType.Heat || damageType == eDamageType.Spirit || damageType == eDamageType.Cold) //take no damage
+				if (damageType == EDamageType.Heat || damageType == EDamageType.Spirit || damageType == EDamageType.Cold) //take no damage
 				{
 					GamePlayer truc;
 					if (source is GamePlayer)
@@ -45,7 +45,7 @@ namespace DOL.GS.Scripts
 				}
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 	    {
 		    return 350;
 	    }
@@ -61,7 +61,7 @@ namespace DOL.GS.Scripts
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -78,7 +78,7 @@ namespace DOL.GS.Scripts
 		public override bool AddToWorld()
 		{
 			Level = 77;
-			Gender = eGender.Neutral;
+			Gender = EGender.Neutral;
 			BodyType = 11; // undead
 			MaxDistance = 0;
 			TetherRange = 0;
@@ -312,13 +312,13 @@ namespace DOL.AI.Brain
 					spell.Damage = 350;
 					spell.Value = 70;
 					spell.Duration = 30;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.DamageType = (int)EDamageType.Spirit;
 					spell.Description = "Spectral Provisioner strike back attacker and makes him move 70% slower for the spell duration.";
 					spell.Name = "Spectral Strike";
 					spell.Range = 2500;
 					spell.SpellID = 12018;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
+					spell.Type = ESpellType.DamageSpeedDecreaseNoVariance.ToString();
 					m_SpectralDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpectralDD);
 				}

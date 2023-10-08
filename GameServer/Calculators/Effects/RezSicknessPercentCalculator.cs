@@ -2,10 +2,10 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.ResIllnessReduction)]
+[PropertyCalculator(EProperty.ResIllnessReduction)]
 public class RezSicknessPercentCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		return Math.Max(0, living.AbilityBonus[(int)property] - living.DebuffCategory[(int)property]);
 	}

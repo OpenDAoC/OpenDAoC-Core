@@ -19,7 +19,7 @@ namespace DOL.Tests.Unit.Gameserver
             var npc = NewNPC();
             npc.Constitution = 75;
 
-            int actual = npc.GetModified(eProperty.Constitution);
+            int actual = npc.GetModified(EProperty.Constitution);
             
             Assert.AreEqual(75, actual);
         }
@@ -31,7 +31,7 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var npc = NewNPC();
 
-            var actual = npc.GetArmorAbsorb(eArmorSlot.NOTSET);
+            var actual = npc.GetArmorAbsorb(EArmorSlot.NOTSET);
 
             Assert.AreEqual(-0.05, actual, 0.001);
         }
@@ -41,9 +41,9 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var npc = NewNPC();
             npc.Constitution = 60;
-            npc.BaseBuffBonusCategory[eProperty.Constitution] = 120;
+            npc.BaseBuffBonusCategory[EProperty.Constitution] = 120;
 
-            var actual = npc.GetArmorAbsorb(eArmorSlot.NOTSET);
+            var actual = npc.GetArmorAbsorb(EArmorSlot.NOTSET);
 
             Assert.AreEqual(0.30, actual, 0.001);
         }
@@ -55,7 +55,7 @@ namespace DOL.Tests.Unit.Gameserver
             npc.Level = 30;
             npc.Constitution = 60;
 
-            var actual = npc.GetArmorAbsorb(eArmorSlot.NOTSET);
+            var actual = npc.GetArmorAbsorb(EArmorSlot.NOTSET);
 
             Assert.AreEqual(0.27, actual, 0.001);
         }
@@ -65,9 +65,9 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var npc = NewNPC();
             npc.Constitution = 60;
-            npc.DebuffCategory[eProperty.Constitution] = 50;
+            npc.DebuffCategory[EProperty.Constitution] = 50;
 
-            var actual = npc.GetArmorAbsorb(eArmorSlot.NOTSET);
+            var actual = npc.GetArmorAbsorb(EArmorSlot.NOTSET);
 
             Assert.AreEqual(-0.25, actual, 0.001);
         }
@@ -91,7 +91,7 @@ namespace DOL.Tests.Unit.Gameserver
             guard.Level = 30;
             guard.Constitution = 60;
 
-            var actual = guard.GetArmorAbsorb(eArmorSlot.NOTSET);
+            var actual = guard.GetArmorAbsorb(EArmorSlot.NOTSET);
 
             Assert.AreEqual(0.27, actual, 0.001);
         }
@@ -103,7 +103,7 @@ namespace DOL.Tests.Unit.Gameserver
             guard.Level = 30;
             guard.Constitution = 60;
 
-            var actual = guard.GetArmorAbsorb(eArmorSlot.NOTSET);
+            var actual = guard.GetArmorAbsorb(EArmorSlot.NOTSET);
 
             Assert.AreEqual(0.32, actual, 0.001);
         }
@@ -115,7 +115,7 @@ namespace DOL.Tests.Unit.Gameserver
             guard.Level = 30;
             guard.Constitution = 60;
 
-            var actual = guard.GetArmorAbsorb(eArmorSlot.NOTSET);
+            var actual = guard.GetArmorAbsorb(EArmorSlot.NOTSET);
 
             Assert.AreEqual(0.22, actual, 0.001);
         }

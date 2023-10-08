@@ -67,7 +67,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Haszan", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Haszan", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -85,7 +85,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 				Haszan.Model = 51;
 				Haszan.Name = "Haszan";
 				Haszan.GuildName = "Realm Logistics";
-				Haszan.Realm = eRealm.Albion;
+				Haszan.Realm = ERealm.Albion;
 				//Castle Sauvage Location
 				Haszan.CurrentRegionID = 1;
 				Haszan.Size = 50;

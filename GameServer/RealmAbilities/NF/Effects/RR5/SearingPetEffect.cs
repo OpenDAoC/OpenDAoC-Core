@@ -62,9 +62,9 @@ namespace DOL.GS.Effects
             tSpell.Frequency = 0;
             tSpell.Pulse = 0;
             tSpell.Uninterruptible = true;
-            tSpell.Type = eSpellType.DirectDamage.ToString();
+            tSpell.Type = ESpellType.DirectDamage.ToString();
             tSpell.Damage = spellDamage;
-            tSpell.DamageType = (int)eDamageType.Heat;
+            tSpell.DamageType = (int)EDamageType.Heat;
             tSpell.Value = 0;
             tSpell.Icon = 476;			// not official effect
             tSpell.ClientEffect = 476;	// not official effect

@@ -16,21 +16,21 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Mahattava Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
 				default: return 30; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -100,7 +100,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
 			}
@@ -123,7 +123,7 @@ namespace DOL.AI.Brain
 				if(Body.TargetObject != null)
                 {
 					GameLiving target = Body.TargetObject as GameLiving;
-					if (target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+					if (target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 						Body.CastSpell(Mahattava_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					else
 						Body.CastSpell(Mahattava_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -157,9 +157,9 @@ namespace DOL.AI.Brain
 					spell.Frequency = 40;
 					spell.SpellID = 11804;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					m_Mahattava_Dot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Mahattava_Dot);
 				}
@@ -185,9 +185,9 @@ namespace DOL.AI.Brain
 					spell.Damage = 300;
 					spell.SpellID = 11804;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Matter; 
+					spell.DamageType = (int)EDamageType.Matter; 
 					m_Mahattava_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Mahattava_DD);
 				}

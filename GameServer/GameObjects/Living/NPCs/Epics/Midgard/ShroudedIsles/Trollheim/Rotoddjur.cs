@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Rotoddjur Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -35,11 +35,11 @@ namespace DOL.GS
 			get { return 350; }
 			set { }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
@@ -102,7 +102,7 @@ namespace DOL.AI.Brain
 		{
 			if(!CheckProximityAggro())
             {
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
 				if (!RemoveAdds)
@@ -126,7 +126,7 @@ namespace DOL.AI.Brain
 				GameLiving target = Body.TargetObject as GameLiving;
 				if (Util.Chance(25) && target != null)
 				{
-					if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+					if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 					{
 						Body.CastSpell(RotodddjurDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					}
@@ -178,9 +178,9 @@ namespace DOL.AI.Brain
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11855;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DamageOverTime.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Uninterruptible = true;
 					m_RotodddjurDot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RotodddjurDot);
@@ -211,13 +211,13 @@ namespace DOL.GS
 {
 	public class RotoddjurAdd : GameNPC
 	{
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 35; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 35; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 35; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 35; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 35; // dmg reduction for melee dmg
 				default: return 35; // dmg reduction for rest resists
 			}
 		}
@@ -225,11 +225,11 @@ namespace DOL.GS
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.35;

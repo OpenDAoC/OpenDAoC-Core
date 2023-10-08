@@ -59,9 +59,9 @@ namespace DOL.GS
 		// What kind of Champion trainer is this
 		protected eChampionTrainerType m_championTrainerType = eChampionTrainerType.None;
 
-		public virtual eCharacterClass TrainedClass
+		public virtual ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Unknown; }
+			get { return ECharacterClass.Unknown; }
 		}
 		/// <summary>
 		/// Constructs a new GameTrainer
@@ -130,7 +130,7 @@ namespace DOL.GS
 
 		public virtual bool CanTrain(GamePlayer player)
 		{
-			return player.CharacterClass.ID == (int)TrainedClass || TrainedClass == eCharacterClass.Unknown;
+			return player.CharacterClass.ID == (int)TrainedClass || TrainedClass == ECharacterClass.Unknown;
 		}
 
 		/// <summary>
@@ -150,7 +150,7 @@ namespace DOL.GS
 			{
 				player.Out.SendTrainerWindow();
 				
-				player.GainExperience(eXPSource.Other, 0);//levelup
+				player.GainExperience(EXpSource.Other, 0);//levelup
 
 				if (player.FreeLevelState == 2)
 				{
@@ -158,7 +158,7 @@ namespace DOL.GS
 					//long xp = GameServer.ServerRules.GetExperienceForLevel(player.PlayerCharacter.LastFreeLevel + 3) - GameServer.ServerRules.GetExperienceForLevel(player.PlayerCharacter.LastFreeLevel + 2);
 					long xp = player.GetExperienceNeededForLevel(player.LastFreeLevel + 1) - player.GetExperienceNeededForLevel(player.LastFreeLevel);
 					//player.PlayerCharacter.LastFreeLevel = player.Level;
-					player.GainExperience(eXPSource.Other, xp);
+					player.GainExperience(EXpSource.Other, xp);
 					player.LastFreeLeveled = DateTime.Now;
 					player.Out.SendPlayerFreeLevelUpdate();
 				}
@@ -309,7 +309,7 @@ namespace DOL.GS
 
 		public void PromotePlayer(GamePlayer player)
 		{
-			if (TrainedClass != eCharacterClass.Unknown)
+			if (TrainedClass != ECharacterClass.Unknown)
 				PromotePlayer(player, (int)TrainedClass, "", null);
 		}
 		

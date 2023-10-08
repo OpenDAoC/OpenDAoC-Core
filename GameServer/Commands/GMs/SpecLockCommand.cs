@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&speclock",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"Set your SpecMod combat modifier to a designated value <0.01 min>",
 	"/speclock <value> - where value is a decimal input like 1.10 or 0.85", 
 	"/speclock reset - clear value and use normal combat calculations")]

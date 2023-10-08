@@ -11,7 +11,7 @@ namespace DOL.GS.Commands;
 [Command(
     "&battlegroup",
     new string[] { "&bg" },
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "Battle group configuration command.",
     "/bg <option>")]
 public class BattleGroupCommand : ACommandHandler, ICommandHandler

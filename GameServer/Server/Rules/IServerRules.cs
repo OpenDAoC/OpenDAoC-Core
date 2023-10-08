@@ -208,7 +208,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="type1"></param>
 		/// <param name="type2"></param>
 		/// <returns>true if equals</returns>
-		bool IsObjectTypesEqual(eObjectType type1, eObjectType type2);
+		bool IsObjectTypesEqual(EObjectType type1, EObjectType type2);
 
 		/// <summary>
 		/// Get object specialization level based on server type
@@ -216,7 +216,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player">player whom specializations are checked</param>
 		/// <param name="objectType">object type</param>
 		/// <returns>specialization in object or 0</returns>
-		int GetObjectSpecLevel(GamePlayer player, eObjectType objectType);
+		int GetObjectSpecLevel(GamePlayer player, EObjectType objectType);
 
 		/// <summary>
 		/// Get object specialization level based on server type
@@ -224,7 +224,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player">player whom specializations are checked</param>
 		/// <param name="objectType">object type</param>
 		/// <returns>specialization in object or 0</returns>
-		int GetBaseObjectSpecLevel(GamePlayer player, eObjectType objectType);
+		int GetBaseObjectSpecLevel(GamePlayer player, EObjectType objectType);
 
 		/// <summary>
 		/// Invoked on NPC death and deals out

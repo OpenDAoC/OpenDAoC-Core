@@ -92,7 +92,7 @@ public class LostStoneofArawn : BaseQuest
 
         #region defineNPCs
 
-        var npcs = WorldMgr.GetNPCsByName("Honayt\'rt", eRealm.Albion);
+        var npcs = WorldMgr.GetNPCsByName("Honayt\'rt", ERealm.Albion);
 
         if (npcs.Length > 0)
             foreach (var npc in npcs)
@@ -110,7 +110,7 @@ public class LostStoneofArawn : BaseQuest
             Honaytrt.Model = 759;
             Honaytrt.Name = "Honayt\'rt";
             Honaytrt.GuildName = "";
-            Honaytrt.Realm = eRealm.Albion;
+            Honaytrt.Realm = ERealm.Albion;
             Honaytrt.CurrentRegionID = 51;
             Honaytrt.LoadEquipmentTemplateFromDatabase("097fe8c1-7d7e-4b82-a7ca-04a6e192afc1");
             Honaytrt.Size = 51;
@@ -123,7 +123,7 @@ public class LostStoneofArawn : BaseQuest
             if (SAVE_INTO_DATABASE) Honaytrt.SaveIntoDatabase();
         }
 
-        npcs = WorldMgr.GetNPCsByName("N\'chever", eRealm.Albion);
+        npcs = WorldMgr.GetNPCsByName("N\'chever", ERealm.Albion);
 
         if (npcs.Length > 0)
             foreach (var npc in npcs)
@@ -141,7 +141,7 @@ public class LostStoneofArawn : BaseQuest
             Nchever.Model = 752;
             Nchever.Name = "N\'chever";
             Nchever.GuildName = "";
-            Nchever.Realm = eRealm.Albion;
+            Nchever.Realm = ERealm.Albion;
             Nchever.CurrentRegionID = 51;
             Nchever.LoadEquipmentTemplateFromDatabase("a2639e94-f032-4041-ad67-15dfeaf004d2");
             Nchever.Size = 51;
@@ -155,7 +155,7 @@ public class LostStoneofArawn : BaseQuest
         }
         // end npc
 
-        npcs = WorldMgr.GetNPCsByName("O\'honat", eRealm.Albion);
+        npcs = WorldMgr.GetNPCsByName("O\'honat", ERealm.Albion);
 
         if (npcs.Length > 0)
             foreach (var npc in npcs)
@@ -174,7 +174,7 @@ public class LostStoneofArawn : BaseQuest
             Ohonat.Model = 761;
             Ohonat.Name = "O\'honat";
             Ohonat.GuildName = "";
-            Ohonat.Realm = eRealm.Albion;
+            Ohonat.Realm = ERealm.Albion;
             Ohonat.CurrentRegionID = 51;
             Ohonat.Size = 52;
             Ohonat.Level = 50;
@@ -313,7 +313,7 @@ public class LostStoneofArawn : BaseQuest
         Nyaegha.Model = 605;
         Nyaegha.Name = "Nyaegha";
         Nyaegha.GuildName = "";
-        Nyaegha.Realm = eRealm.None;
+        Nyaegha.Realm = ERealm.None;
         Nyaegha.Race = 2001;
         Nyaegha.BodyType = (ushort) NpcTemplateMgr.eBodyType.Demon;
         Nyaegha.CurrentRegionID = 51;
@@ -386,7 +386,7 @@ public class LostStoneofArawn : BaseQuest
 
         if (quest is not {Step: 4}) return;
 
-        var existingCopy = WorldMgr.GetNPCsByName("Nyaegha", eRealm.None);
+        var existingCopy = WorldMgr.GetNPCsByName("Nyaegha", ERealm.None);
 
         if (existingCopy.Length > 0) return;
 
@@ -781,10 +781,10 @@ public class LostStoneofArawn : BaseQuest
         if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
         {
             if (m_questPlayer.Level >= 49)
-                m_questPlayer.GainExperience(eXPSource.Quest,
+                m_questPlayer.GainExperience(EXpSource.Quest,
                     (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 3, false);
             else
-                m_questPlayer.GainExperience(eXPSource.Quest,
+                m_questPlayer.GainExperience(EXpSource.Quest,
                     (m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
             RemoveItem(m_questPlayer, scroll_wearyall_loststone);
             GiveItem(m_questPlayer, ancient_copper_necklace);

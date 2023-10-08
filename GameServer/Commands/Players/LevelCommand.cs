@@ -6,7 +6,7 @@ using DOL.GS.Scripts;
 namespace DOL.GS.Commands;
 
 [Command("&level", //command to handle
-ePrivLevel.Player, //minimum privelege level
+EPrivLevel.Player, //minimum privelege level
 "Allows you to level a character to level 20 instantly if you have reached level 39 during soft launch", "/level - use this command at level 1 while at a trainer", "/level gear - use this command once you are level 20 to receive a full ROG suit")] //usage
 public class LevelCommand : ACommandHandler, ICommandHandler
 {
@@ -133,7 +133,7 @@ public class LevelCommand : ACommandHandler, ICommandHandler
 			if (newXP < 0)
 				newXP = 0;
 
-			player.GainExperience(eXPSource.Other, newXP);
+			player.GainExperience(EXpSource.Other, newXP);
 			player.UsedLevelCommand = true;
 			player.Out.SendMessage($"You have been rewarded enough Experience to reach level {targetLevel}, right click on your trainer to gain levels!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			player.Out.SendMessage($"Use '/level gear' when you have reached {targetLevel} to receive a set of complementary ROGs.", eChatType.CT_System, eChatLoc.CL_SystemWindow);

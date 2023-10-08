@@ -37,7 +37,7 @@ namespace GameServerScripts.Titles
 		/// <summary>
 		/// Define Realm
 		/// </summary>
-		protected abstract eRealm Realm { get; }
+		protected abstract ERealm Realm { get; }
 		
 		/// <summary>
 		/// Tuple of String Description / Name / Female Description / Female Name 
@@ -47,9 +47,9 @@ namespace GameServerScripts.Titles
 			get
 			{
 				string realm = string.Empty;
-				if (Realm == eRealm.Albion)
+				if (Realm == ERealm.Albion)
 					realm = "Albion";
-				else if (Realm == eRealm.Midgard)
+				else if (Realm == ERealm.Midgard)
 					realm = "Midgard";
 				else
 					realm = "Hibernia";
@@ -97,7 +97,7 @@ namespace GameServerScripts.Titles
 	
 	public abstract class AlbionRealmGenericEventPlayerTitle : RealmGenericEventPlayerTitle
 	{
-		protected override eRealm Realm { get { return eRealm.Albion; }}
+		protected override ERealm Realm { get { return ERealm.Albion; }}
 	}
 
 	public class AlbionRR4Title : AlbionRealmGenericEventPlayerTitle
@@ -145,7 +145,7 @@ namespace GameServerScripts.Titles
 	#region Midgard
 	public abstract class MidgardRealmGenericEventPlayerTitle : RealmGenericEventPlayerTitle
 	{
-		protected override eRealm Realm { get { return eRealm.Midgard; }}
+		protected override ERealm Realm { get { return ERealm.Midgard; }}
 	}
 
 	public class MidgardRR4Title : MidgardRealmGenericEventPlayerTitle
@@ -193,7 +193,7 @@ namespace GameServerScripts.Titles
 	#region Hibernia
 	public abstract class HiberniaRealmGenericEventPlayerTitle : RealmGenericEventPlayerTitle
 	{
-		protected override eRealm Realm { get { return eRealm.Hibernia; }}
+		protected override ERealm Realm { get { return ERealm.Hibernia; }}
 	}
 
 	public class HiberniaRR4Title : HiberniaRealmGenericEventPlayerTitle

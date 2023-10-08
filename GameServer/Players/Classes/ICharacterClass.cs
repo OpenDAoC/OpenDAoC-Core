@@ -73,22 +73,22 @@ namespace DOL.GS
 		/// <summary>
 		/// Class Primary Raising Stat
 		/// </summary>
-		eStat PrimaryStat { get; }
+		EStat PrimaryStat { get; }
 
 		/// <summary>
 		/// Class Secondary Raising Stat
 		/// </summary>
-		eStat SecondaryStat { get; }
+		EStat SecondaryStat { get; }
 		
 		/// <summary>
 		/// Class Tertiary Raising Stat
 		/// </summary>
-		eStat TertiaryStat { get; }
+		EStat TertiaryStat { get; }
 		
 		/// <summary>
 		/// Class Mana Stat Used for Spell
 		/// </summary>
-		eStat ManaStat { get; }
+		EStat ManaStat { get; }
 		
 		/// <summary>
 		/// Class Weapon Skill Base

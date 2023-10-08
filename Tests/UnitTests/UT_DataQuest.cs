@@ -192,7 +192,7 @@ namespace DOL.Tests.Unit.Gameserver
             var player = NewFakePlayer();
             player.fakeCharacterClass = new ClassPaladin();
             var dbDataQuest = new DbDataQuest();
-            var clericClassID = (int)eCharacterClass.Cleric;
+            var clericClassID = (int)ECharacterClass.Cleric;
             dbDataQuest.AllowedClasses = clericClassID.ToString();
             var dataQuest = NewDataQuest(dbDataQuest);
 

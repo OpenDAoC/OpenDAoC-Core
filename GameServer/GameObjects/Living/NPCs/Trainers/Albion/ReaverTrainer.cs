@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Reaver Trainer
 	/// </summary>
-	[NPCGuildScript("Reaver Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Reaver Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Reaver Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Reaver Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ReaverTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Reaver; }
+			get { return ECharacterClass.Reaver; }
 		}
 
 		public ReaverTrainer() : base()
@@ -89,7 +89,7 @@ namespace DOL.GS.Trainer
 						//##Melarlian says, "You have come to seek admittance into the [Temple of Arawn] to worship the old god that your ancestors worshipped?"
 						//##Melarlian says, "Very well then. Choose your weapon, and it shall be done. Know that once this choice is made, there is no return. You may choose a flexible [slashing] or a flexible [crushing] weapon?"
 						//##Melarlian says, "Here is your Whip of the Initiate. Welcome to the Temple of Arawn, Calaoron."
-						PromotePlayer(player, (int)eCharacterClass.Reaver, "Welcome to the Temple of Arawn, " + player.Name + ".", null);	// TODO: gifts
+						PromotePlayer(player, (int)ECharacterClass.Reaver, "Welcome to the Temple of Arawn, " + player.Name + ".", null);	// TODO: gifts
 					}
 					break;
 			}

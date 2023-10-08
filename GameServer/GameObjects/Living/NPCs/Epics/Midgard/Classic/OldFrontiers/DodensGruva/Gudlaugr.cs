@@ -61,21 +61,21 @@ namespace DOL.GS.Scripts
 
 			return base.HasAbility(keyName);
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
 				default: return 30; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -91,11 +91,11 @@ namespace DOL.GS.Scripts
 			{
 				if (ad.Target.IsWithinRadius(this, AttackRange))
 				{
-					if (!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed))
+					if (!ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.Bleed))
 					{
 						CastSpell(brain.Bleed, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					}
-					if (!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff))
+					if (!ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedDebuff))
 					{
 						CastSpell(brain.Snare, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					}
@@ -203,7 +203,7 @@ namespace DOL.GS.Scripts
 						spell.SpellID = 20300;
 						spell.Target = "Enemy";
 						spell.MoveCast = true;
-						spell.Type = eSpellType.StyleSpeedDecrease.ToString();
+						spell.Type = ESpellType.StyleSpeedDecrease.ToString();
 						spell.Message1 = "You begin to move more slowly!";
 						spell.Message2 = "{0} begins moving more slowly!";
 						m_Snare = new Spell(spell, 60);
@@ -244,7 +244,7 @@ namespace DOL.GS.Scripts
 						spell.SpellID = 20209;
 						spell.Target = "Enemy";
 						spell.MoveCast = true;
-						spell.Type = eSpellType.StyleBleeding.ToString();
+						spell.Type = ESpellType.StyleBleeding.ToString();
 						spell.Message1 = "You are bleeding! ";
 						spell.Message2 = "{0} is bleeding! ";
 						m_Bleed = new Spell(spell, 60);

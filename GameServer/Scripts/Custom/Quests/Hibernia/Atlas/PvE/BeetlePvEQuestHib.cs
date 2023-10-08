@@ -70,7 +70,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 			
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Harris", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Harris", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -88,7 +88,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 				Harris.Model = 309;
 				Harris.Name = "Harris";
 				Harris.GuildName = "Protector of Beetles";
-				Harris.Realm = eRealm.Hibernia;
+				Harris.Realm = ERealm.Hibernia;
 				Harris.CurrentRegionID = 201;
 				Harris.Size = 50;
 				Harris.Level = 59;
@@ -320,7 +320,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
             Beetle.Model = 668;
             Beetle.Name = "Kevin";
             Beetle.GuildName = "";
-            Beetle.Realm = eRealm.Hibernia;
+            Beetle.Realm = ERealm.Hibernia;
             Beetle.Race = 2007;
             Beetle.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
             Beetle.Size = 40;
@@ -342,7 +342,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 			MobEffect.Model = 1822;
 			MobEffect.Name = "power of the beetle";
 			MobEffect.GuildName = "";
-			MobEffect.Realm = eRealm.Hibernia;
+			MobEffect.Realm = ERealm.Hibernia;
 			MobEffect.Race = 2007;
 			MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
 			MobEffect.Size = 25;

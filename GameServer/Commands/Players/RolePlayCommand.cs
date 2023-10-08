@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&roleplay",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
    "Flags a player with an  tag to indicate the player is a role player.",
    "/roleplay on/off")]
 public class RolePlayCommand : ACommandHandler, ICommandHandler

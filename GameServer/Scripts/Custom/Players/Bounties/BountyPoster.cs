@@ -2,7 +2,7 @@ namespace DOL.GS;
 
 public class BountyPoster
 {
-    public eRealm BountyRealm;
+    public ERealm BountyRealm;
     public GamePlayer Ganked;
     public GamePlayer Target;
     public int Reward;

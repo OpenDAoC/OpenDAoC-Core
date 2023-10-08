@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Seer, "Seer", "Seer")]
+	[CharacterClass((int)ECharacterClass.Seer, "Seer", "Seer")]
 	public class ClassSeer : CharacterClassBase
 	{
 		public ClassSeer()
@@ -31,7 +31,7 @@ namespace DOL.GS.PlayerClass
 			m_specializationMultiplier = 10;
 			m_wsbase = 360;
 			m_baseHP = 720;
-			m_manaStat = eStat.PIE;
+			m_manaStat = EStat.PIE;
 		}
 
 		public override string GetTitle(GamePlayer player, int level)

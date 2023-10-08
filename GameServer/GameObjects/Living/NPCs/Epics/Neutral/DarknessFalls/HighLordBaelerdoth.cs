@@ -21,21 +21,21 @@ namespace DOL.GS
         public HighLordBaelerdoth() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
                 default: return 70; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -89,7 +89,7 @@ namespace DOL.GS
         {
             base.Die(killer);
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (HealthPercent < 25)
             {
@@ -132,7 +132,7 @@ namespace DOL.GS
                     spell.Type = "ArmorAbsorptionDebuff";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Spirit;
+                    spell.DamageType = (int) EDamageType.Spirit;
                     m_absDebuffSpell = new Spell(spell, 50);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_absDebuffSpell);
                 }
@@ -161,7 +161,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
             base.Think();

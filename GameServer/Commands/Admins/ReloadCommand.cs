@@ -7,7 +7,7 @@ using log4net;
 namespace DOL.GS.Commands
 {
 	[Command("&Reload",
-		ePrivLevel.Admin,
+		EPrivLevel.Admin,
 		"Reload various elements",
 		"/reload mob|object|specs|spells|teleports"
 		)]
@@ -237,11 +237,11 @@ namespace DOL.GS.Commands
 
 					if (arg1 == "realm")
 					{
-						eRealm realm = eRealm.None;
-						if (arg2 == "None") realm = eRealm.None;
-						if (arg2 == "Albion") realm = eRealm.Albion;
-						if (arg2 == "Midgard") realm = eRealm.Midgard;
-						if (arg2 == "Hibernia") realm = eRealm.Hibernia;
+						ERealm realm = ERealm.None;
+						if (arg2 == "None") realm = ERealm.None;
+						if (arg2 == "Albion") realm = ERealm.Albion;
+						if (arg2 == "Midgard") realm = ERealm.Midgard;
+						if (arg2 == "Hibernia") realm = ERealm.Hibernia;
 
 						if (mob.Realm == realm)
 						{
@@ -320,11 +320,11 @@ namespace DOL.GS.Commands
 
 					if (arg1 == "realm")
 					{
-						eRealm realm = eRealm.None;
-						if (arg2 == "None") realm = eRealm.None;
-						if (arg2 == "Albion") realm = eRealm.Albion;
-						if (arg2 == "Midgard") realm = eRealm.Midgard;
-						if (arg2 == "Hibernia") realm = eRealm.Hibernia;
+						ERealm realm = ERealm.None;
+						if (arg2 == "None") realm = ERealm.None;
+						if (arg2 == "Albion") realm = ERealm.Albion;
+						if (arg2 == "Midgard") realm = ERealm.Midgard;
+						if (arg2 == "Hibernia") realm = ERealm.Hibernia;
 
 						if (staticItem.Realm == realm)
 						{

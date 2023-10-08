@@ -11,7 +11,7 @@ namespace DOL.GS
         {
             m_guardSource = guardSource;
             m_guardTarget = guardTarget;
-            EffectType = eEffect.Guard;
+            EffectType = EEffect.Guard;
             EffectService.RequestStartEffect(this);
         }
 
@@ -102,7 +102,7 @@ namespace DOL.GS
 
             if (GuardSource == Owner)
             {
-                foreach (GuardEcsAbilityEffect guard in GuardTarget.effectListComponent.GetAllEffects().Where(x => x.EffectType == eEffect.Guard))
+                foreach (GuardEcsAbilityEffect guard in GuardTarget.effectListComponent.GetAllEffects().Where(x => x.EffectType == EEffect.Guard))
                 {
                     if (guard.GuardSource == Owner)
                     {
@@ -113,7 +113,7 @@ namespace DOL.GS
             }
             else if (GuardTarget == Owner)
             {
-                foreach (GuardEcsAbilityEffect guard in GuardSource.effectListComponent.GetAllEffects().Where(x => x.EffectType == eEffect.Guard))
+                foreach (GuardEcsAbilityEffect guard in GuardSource.effectListComponent.GetAllEffects().Where(x => x.EffectType == EEffect.Guard))
                 {
                     if (guard.GuardTarget == Owner)
                     {

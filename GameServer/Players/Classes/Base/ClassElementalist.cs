@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Elementalist, "Elementalist", "Elementalist")]
+	[CharacterClass((int)ECharacterClass.Elementalist, "Elementalist", "Elementalist")]
 	public class ClassElementalist : CharacterClassBase
 	{
 		public ClassElementalist()
@@ -31,7 +31,7 @@ namespace DOL.GS.PlayerClass
 			m_specializationMultiplier = 10;
 			m_wsbase = 280;
 			m_baseHP = 560;
-			m_manaStat = eStat.INT;
+			m_manaStat = EStat.INT;
 		}
 
 		public override string GetTitle(GamePlayer player, int level)

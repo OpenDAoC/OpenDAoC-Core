@@ -77,7 +77,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			#region defineNPCs
 			
-			 var npcs = WorldMgr.GetNPCsByName("Ota Yrling", eRealm.Midgard);
+			 var npcs = WorldMgr.GetNPCsByName("Ota Yrling", ERealm.Midgard);
 
         if (npcs.Length > 0)
             foreach (var npc in npcs)
@@ -95,7 +95,7 @@ namespace DOL.GS.Quests.Hibernia
             OtaYrling.Model = 230;
             OtaYrling.Name = "Ota Yrling";
             OtaYrling.GuildName = "";
-            OtaYrling.Realm = eRealm.Midgard;
+            OtaYrling.Realm = ERealm.Midgard;
             OtaYrling.CurrentRegionID = 151;
             OtaYrling.LoadEquipmentTemplateFromDatabase("95ff9192-4787-4dca-bcbb-7a081d801074");
             OtaYrling.Size = 49;
@@ -108,7 +108,7 @@ namespace DOL.GS.Quests.Hibernia
             if (SAVE_INTO_DATABASE) OtaYrling.SaveIntoDatabase();
         }
 
-        npcs = WorldMgr.GetNPCsByName("Jaklyr", eRealm.Midgard);
+        npcs = WorldMgr.GetNPCsByName("Jaklyr", ERealm.Midgard);
 
         if (npcs.Length > 0)
             foreach (var npc in npcs)
@@ -126,7 +126,7 @@ namespace DOL.GS.Quests.Hibernia
             Jaklyr.Model = 203;
             Jaklyr.Name = "Jaklyr";
             Jaklyr.GuildName = "";
-            Jaklyr.Realm = eRealm.Midgard;
+            Jaklyr.Realm = ERealm.Midgard;
             Jaklyr.CurrentRegionID = 151;
             Jaklyr.LoadEquipmentTemplateFromDatabase("MidTownsperson4");
             Jaklyr.Size = 52;
@@ -140,7 +140,7 @@ namespace DOL.GS.Quests.Hibernia
         }
         // end npc
 
-        npcs = WorldMgr.GetNPCsByName("Longbeard", eRealm.Midgard);
+        npcs = WorldMgr.GetNPCsByName("Longbeard", ERealm.Midgard);
         if (npcs.Length > 0)
             foreach (var npc in npcs)
                 if (npc.CurrentRegionID == 151 && npc.X == 290742 && npc.Y == 355471)
@@ -158,7 +158,7 @@ namespace DOL.GS.Quests.Hibernia
             Longbeard.Model = 232;
             Longbeard.Name = "Longbeard";
             Longbeard.GuildName = "";
-            Longbeard.Realm = eRealm.Midgard;
+            Longbeard.Realm = ERealm.Midgard;
             Longbeard.CurrentRegionID = 151;
             Longbeard.Size = 53;
             Longbeard.Level = 50;
@@ -173,7 +173,7 @@ namespace DOL.GS.Quests.Hibernia
         }
         // end npc
 
-        npcs = WorldMgr.GetNPCsByName("Styr", eRealm.Midgard);
+        npcs = WorldMgr.GetNPCsByName("Styr", ERealm.Midgard);
         if (npcs.Length > 0)
 	        foreach (var npc in npcs)
 		        if (npc.CurrentRegionID == 151 && npc.X == 290643 && npc.Y == 355275)
@@ -191,7 +191,7 @@ namespace DOL.GS.Quests.Hibernia
 	        Styr.Model = 235;
 	        Styr.Name = "Styr";
 	        Styr.GuildName = "";
-	        Styr.Realm = eRealm.Midgard;
+	        Styr.Realm = ERealm.Midgard;
 	        Styr.CurrentRegionID = 151;
 	        Styr.Size = 51;
 	        Styr.Level = 50;
@@ -335,7 +335,7 @@ namespace DOL.GS.Quests.Hibernia
 			AncestralKeeper.Model = 951;
 			AncestralKeeper.Name = "Ancestral Keeper";
 			AncestralKeeper.GuildName = "";
-			AncestralKeeper.Realm = eRealm.None;
+			AncestralKeeper.Realm = ERealm.None;
 			AncestralKeeper.Race = 2003;
 			AncestralKeeper.BodyType = (ushort) NpcTemplateMgr.eBodyType.Elemental;
 			AncestralKeeper.CurrentRegionID = 151;
@@ -431,7 +431,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			if (quest is not {Step: 4}) return;
 			
-			var existingCopy = WorldMgr.GetNPCsByName("Ancestral Keeper", eRealm.None);
+			var existingCopy = WorldMgr.GetNPCsByName("Ancestral Keeper", ERealm.None);
 
 			if (existingCopy.Length > 0) return;
 
@@ -985,10 +985,10 @@ namespace DOL.GS.Quests.Hibernia
 			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
 				if (m_questPlayer.Level >= 49)
-					m_questPlayer.GainExperience(eXPSource.Quest,
+					m_questPlayer.GainExperience(EXpSource.Quest,
 						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 3, false);
 				else
-					m_questPlayer.GainExperience(eXPSource.Quest,
+					m_questPlayer.GainExperience(EXpSource.Quest,
 						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
 				RemoveItem(m_questPlayer, stone_pendant);
 				GiveItem(m_questPlayer, beaded_resisting_stone);

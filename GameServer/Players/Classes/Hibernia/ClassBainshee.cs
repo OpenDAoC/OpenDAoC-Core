@@ -24,17 +24,17 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Bainshee, "Bainshee", "Magician")]
+	[CharacterClass((int)ECharacterClass.Bainshee, "Bainshee", "Magician")]
 	public class ClassBainshee : ClassMagician
 	{
 		public ClassBainshee() : base()
 		{
 			m_profession = "PlayerClass.Profession.PathofAffinity";
 			m_specializationMultiplier = 10;
-			m_primaryStat = eStat.INT;
-			m_secondaryStat = eStat.DEX;
-			m_tertiaryStat = eStat.CON;
-			m_manaStat = eStat.INT;
+			m_primaryStat = EStat.INT;
+			m_secondaryStat = EStat.DEX;
+			m_tertiaryStat = EStat.CON;
+			m_manaStat = EStat.INT;
 		}
 
 		public override bool HasAdvancedFromBaseClass()

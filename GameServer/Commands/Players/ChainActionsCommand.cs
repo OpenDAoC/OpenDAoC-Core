@@ -4,7 +4,7 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS.Commands;
 
-[Command("&chainactions", ePrivLevel.Player, "Chain multiple actions.", "/chainactions <create|save|clear>")]
+[Command("&chainactions", EPrivLevel.Player, "Chain multiple actions.", "/chainactions <create|save|clear>")]
 public class ChainActionsCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)

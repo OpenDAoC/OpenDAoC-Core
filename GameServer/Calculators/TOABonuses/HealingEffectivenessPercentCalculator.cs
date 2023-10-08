@@ -2,10 +2,10 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.HealingEffectiveness)]
+[PropertyCalculator(EProperty.HealingEffectiveness)]
 public class HealingEffectivenessPercentCalculator : PropertyCalculator
 {
-    public override int CalcValue(GameLiving living, eProperty property)
+    public override int CalcValue(GameLiving living, EProperty property)
     {
         // Hardcap at 25%
         int percent = Math.Min(25, living.BaseBuffBonusCategory[(int)property]

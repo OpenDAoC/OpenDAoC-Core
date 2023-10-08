@@ -7,7 +7,7 @@ namespace DOL.GS.Keeps
 
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private eRealm m_lastRealm = eRealm.None;
+        private ERealm m_lastRealm = ERealm.None;
 
 
         /// <summary>

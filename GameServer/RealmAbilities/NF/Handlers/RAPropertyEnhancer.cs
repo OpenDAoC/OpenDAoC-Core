@@ -12,18 +12,18 @@ namespace DOL.GS.RealmAbilities
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		// property to modify
-		eProperty[] m_property;
+		EProperty[] m_property;
 
-		public RAPropertyEnhancer(DbAbility dba, int level, eProperty[] property)
+		public RAPropertyEnhancer(DbAbility dba, int level, EProperty[] property)
 			: base(dba, level)
 		{
 			m_property = property;
 		}
 
-		public RAPropertyEnhancer(DbAbility dba, int level, eProperty property)
+		public RAPropertyEnhancer(DbAbility dba, int level, EProperty property)
 			: base(dba, level)
 		{
-			m_property = new eProperty[] { property };
+			m_property = new EProperty[] { property };
 		}
 
 		public override IList<string> DelveInfo
@@ -79,7 +79,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			if (m_activeLiving == null)
 			{
-				foreach (eProperty property in m_property)
+				foreach (EProperty property in m_property)
 				{
 					living.AbilityBonus[(int)property] += GetAmountForLevel(Level);
 				}
@@ -96,7 +96,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			if (m_activeLiving != null)
 			{
-				foreach (eProperty property in m_property)
+				foreach (EProperty property in m_property)
 				{
 					living.AbilityBonus[(int)property] -= GetAmountForLevel(Level);
 				}
@@ -114,7 +114,7 @@ namespace DOL.GS.RealmAbilities
 			if (newLevel == 0)
 				newLevel = Level;
 
-			foreach (eProperty property in m_property)
+			foreach (EProperty property in m_property)
 			{
 				m_activeLiving.AbilityBonus[(int)property] += GetAmountForLevel(newLevel) - GetAmountForLevel(oldLevel);
 			}
@@ -124,12 +124,12 @@ namespace DOL.GS.RealmAbilities
 
 	public abstract class L3RAPropertyEnhancer : RAPropertyEnhancer
 	{
-		public L3RAPropertyEnhancer(DbAbility dba, int level, eProperty property)
+		public L3RAPropertyEnhancer(DbAbility dba, int level, EProperty property)
 			: base(dba, level, property)
 		{
 		}
 
-		public L3RAPropertyEnhancer(DbAbility dba, int level, eProperty[] properties)
+		public L3RAPropertyEnhancer(DbAbility dba, int level, EProperty[] properties)
 			: base(dba, level, properties)
 		{ 
 		}

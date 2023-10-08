@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Forester Trainer
 	/// </summary>
-	[NPCGuildScript("Forester Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Forester Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Forester Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Forester Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ForesterTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Forester; }
+			get { return ECharacterClass.Forester; }
 		}
 
 		public const string PRACTICE_WEAPON_ID = "training_staff";
@@ -87,7 +87,7 @@ namespace DOL.GS.Trainer
 
 			switch (text) {
 				case "Animist":
-					if(player.Race == (int) eRace.Celt || player.Race == (int) eRace.Firbolg || player.Race == (int) eRace.Sylvan){
+					if(player.Race == (int) ERace.Celt || player.Race == (int) ERace.Firbolg || player.Race == (int) ERace.Sylvan){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
 					else{
@@ -95,7 +95,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Valewalker":
-					if(player.Race == (int) eRace.Celt || player.Race == (int) eRace.Firbolg || player.Race == (int) eRace.Sylvan){
+					if(player.Race == (int) ERace.Celt || player.Race == (int) ERace.Firbolg || player.Race == (int) ERace.Sylvan){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
 					else{

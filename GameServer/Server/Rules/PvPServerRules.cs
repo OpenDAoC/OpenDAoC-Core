@@ -296,12 +296,12 @@ namespace DOL.GS.ServerRules
 				if (casterPlayer.IsInvulnerableToAttack)
 				{
 					// always allow selftargeted spells
-					if (spell.Target == eSpellTarget.SELF)
+					if (spell.Target == ESpellTarget.SELF)
 						return true;
 
 					// only caster can be the target, can't buff/heal other players
 					// PBAE/GTAE doesn't need a target so we check spell type as well
-					if (caster != target || spell.Target == eSpellTarget.AREA || spell.Target == eSpellTarget.ENEMY || (spell.Target == eSpellTarget.GROUP && spell.SpellType != eSpellType.SpeedEnhancement))
+					if (caster != target || spell.Target == ESpellTarget.AREA || spell.Target == ESpellTarget.ENEMY || (spell.Target == ESpellTarget.GROUP && spell.SpellType != ESpellType.SpeedEnhancement))
 					{
 						MessageToLiving(caster, "You can only cast spells on yourself until your PvP invulnerability timer wears off!", eChatType.CT_Important);
 						return false;
@@ -524,15 +524,15 @@ namespace DOL.GS.ServerRules
 		public override void ResetKeep(GuardLord lord, GameObject killer)
 		{
 			base.ResetKeep(lord, killer);
-			eRealm realm = eRealm.None;
+			ERealm realm = ERealm.None;
 
 			//pvp servers, the realm changes to the group leaders realm
 			if (killer is GamePlayer)
 			{
 				Group group = ((killer as GamePlayer).Group);
 				if (group != null)
-					realm = (eRealm)group.Leader.Realm;
-				else realm = (eRealm)killer.Realm;
+					realm = (ERealm)group.Leader.Realm;
+				else realm = (ERealm)killer.Realm;
 			}
 			else if (killer is GameNPC && (killer as GameNPC).Brain is IControlledBrain)
 			{
@@ -541,8 +541,8 @@ namespace DOL.GS.ServerRules
 				if (player != null)
 					group = player.Group;
 				if (group != null)
-					realm = (eRealm)group.Leader.Realm;
-				else realm = (eRealm)killer.Realm;
+					realm = (ERealm)group.Leader.Realm;
+				else realm = (ERealm)killer.Realm;
 			}
 			lord.Component.Keep.Reset(realm);
 		}

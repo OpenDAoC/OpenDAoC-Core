@@ -139,9 +139,9 @@ namespace DOL.GS
                     }
                     
 
-                    if (mob.Guild.Length > 0 && mob.Realm >= 0 && mob.Realm <= (int)eRealm._Last)
+                    if (mob.Guild.Length > 0 && mob.Realm >= 0 && mob.Realm <= (int)ERealm._Last)
                     {
-                        Type type = ScriptMgr.FindNPCGuildScriptClass(mob.Guild, (eRealm)mob.Realm);
+                        Type type = ScriptMgr.FindNPCGuildScriptClass(mob.Guild, (ERealm)mob.Realm);
                         if (type != null)
                         {
                             try

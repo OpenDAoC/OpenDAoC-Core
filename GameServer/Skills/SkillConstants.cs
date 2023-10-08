@@ -390,70 +390,70 @@ namespace DOL.GS
 		
 		public const string StunImmunity = "StunImmunity";
 
-		public static eObjectType AbilityToWeapon( string abilityKeyName )
+		public static EObjectType AbilityToWeapon( string abilityKeyName )
 		{
-			eObjectType type = eObjectType.GenericItem;
+			EObjectType type = EObjectType.GenericItem;
 
 			switch ( abilityKeyName )
 			{
 				case Abilities.Shield:
-					type = eObjectType.Shield; break;
+					type = EObjectType.Shield; break;
 				case Abilities.Weapon_Axes:
-					type = eObjectType.Axe; break;
+					type = EObjectType.Axe; break;
 				case Abilities.Weapon_Blades:
-					type = eObjectType.Blades; break;
+					type = EObjectType.Blades; break;
 				case Abilities.Weapon_Blunt:
-					type = eObjectType.Blunt; break;
+					type = EObjectType.Blunt; break;
 				case Abilities.Weapon_CelticSpear:
-					type = eObjectType.CelticSpear; break;
+					type = EObjectType.CelticSpear; break;
 				case Abilities.Weapon_CompositeBows:
-					type = eObjectType.CompositeBow; break;
+					type = EObjectType.CompositeBow; break;
 				case Abilities.Weapon_Crossbow:
-					type = eObjectType.Crossbow; break;
+					type = EObjectType.Crossbow; break;
 				case Abilities.Weapon_Crushing:
-					type = eObjectType.CrushingWeapon; break;
+					type = EObjectType.CrushingWeapon; break;
 				case Abilities.Weapon_FistWraps:
-					type = eObjectType.FistWraps; break;
+					type = EObjectType.FistWraps; break;
 				case Abilities.Weapon_Flexible:
-					type = eObjectType.Flexible; break;
+					type = EObjectType.Flexible; break;
 				case Abilities.Weapon_Hammers:
-					type = eObjectType.Hammer; break;
+					type = EObjectType.Hammer; break;
 				case Abilities.Weapon_HandToHand:
-					type = eObjectType.HandToHand; break;
+					type = EObjectType.HandToHand; break;
 				case Abilities.Weapon_Instruments:
-					type = eObjectType.Instrument; break;
+					type = EObjectType.Instrument; break;
 				case Abilities.Weapon_LargeWeapons:
-					type = eObjectType.LargeWeapons; break;
+					type = EObjectType.LargeWeapons; break;
 				case Abilities.Weapon_LeftAxes:
-					type = eObjectType.LeftAxe; break;
+					type = EObjectType.LeftAxe; break;
 				case Abilities.Weapon_Longbows:
-					type = eObjectType.Longbow; break;
+					type = EObjectType.Longbow; break;
 				case Abilities.Weapon_MaulerStaff:
-					type = eObjectType.MaulerStaff; break;
+					type = EObjectType.MaulerStaff; break;
 				case Abilities.Weapon_Piercing:
-					type = eObjectType.Piercing; break;
+					type = EObjectType.Piercing; break;
 				case Abilities.Weapon_Polearms:
-					type = eObjectType.PolearmWeapon; break;
+					type = EObjectType.PolearmWeapon; break;
 				case Abilities.Weapon_RecurvedBows:
-					type = eObjectType.RecurvedBow; break;
+					type = EObjectType.RecurvedBow; break;
 				case Abilities.Weapon_Scythe:
-					type = eObjectType.Scythe; break;
+					type = EObjectType.Scythe; break;
 				case Abilities.Weapon_Shortbows:
-					type = eObjectType.Fired; break;
+					type = EObjectType.Fired; break;
 				case Abilities.Weapon_Slashing:
-					type = eObjectType.SlashingWeapon; break;
+					type = EObjectType.SlashingWeapon; break;
 				case Abilities.Weapon_Spears:
-					type = eObjectType.Spear; break;
+					type = EObjectType.Spear; break;
 				case Abilities.Weapon_Staves:
-					type = eObjectType.Staff; break;
+					type = EObjectType.Staff; break;
 				case Abilities.Weapon_Swords:
-					type = eObjectType.Sword; break;
+					type = EObjectType.Sword; break;
 				case Abilities.Weapon_Thrown:
-					type = eObjectType.Thrown; break;
+					type = EObjectType.Thrown; break;
 				case Abilities.Weapon_Thrusting:
-					type = eObjectType.ThrustWeapon; break;
+					type = EObjectType.ThrustWeapon; break;
 				case Abilities.Weapon_TwoHanded:
-					type = eObjectType.TwoHandedWeapon; break;
+					type = EObjectType.TwoHandedWeapon; break;
 			}
 
 			return type;

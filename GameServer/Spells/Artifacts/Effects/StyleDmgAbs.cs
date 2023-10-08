@@ -81,7 +81,7 @@ namespace DOL.GS.Spells
 
             //			Log.DebugFormat("sender:{0} res:{1} IsMelee:{2} Type:{3}", living.Name, ad.AttackResult, ad.IsMeleeAttack, ad.AttackType);
 
-            if (ad == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
+            if (ad == null || (ad.AttackResult != EAttackResult.HitStyle && ad.AttackResult != EAttackResult.HitUnstyled))
                 return;
             if (!ad.IsMeleeAttack && ad.AttackType != AttackData.eAttackType.Ranged)
                 return;

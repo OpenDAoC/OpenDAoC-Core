@@ -3,7 +3,7 @@ using DOL.Language;
 
 namespace DOL.GS.Commands;
 
-[Command("&language", ePrivLevel.Player, "Change your language.",
+[Command("&language", EPrivLevel.Player, "Change your language.",
     "Use '/language current' to see your current used language.",
     "Use '/language set [language]' to set your language.",
     "Use '/language show' to show all available languages and to see your current used language."
@@ -15,7 +15,7 @@ public class LanguageCommand : ACommandHandler, ICommandHandler
         if (IsSpammingCommand(client.Player, "language"))
             return;
 
-        if (client.Account.PrivLevel == (uint)ePrivLevel.Player &&
+        if (client.Account.PrivLevel == (uint)EPrivLevel.Player &&
             !DOL.GS.ServerProperties.Properties.ALLOW_CHANGE_LANGUAGE)
         {
             DisplayMessage(client, "This server does not support changing languages.");

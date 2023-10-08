@@ -75,12 +75,12 @@ namespace DOL.GS.Scripts
             return base.HasAbility(keyName);
         }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -95,7 +95,7 @@ namespace DOL.GS.Scripts
         /// <param name="damageType">The type of damage.</param>
         /// <param name="damageAmount">The amount of damage inflicted.</param>
         /// <param name="criticalAmount">The critical amount of damage inflicted</param>
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             Brain.Notify(GameObjectEvent.TakeDamage, this,
@@ -138,27 +138,27 @@ namespace DOL.AI.Brain
         {
             if (isNotZerked)
             {
-                Body.AbilityBonus[(int) eProperty.Resist_Body] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Heat] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Cold] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Matter] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Energy] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Spirit] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Slash] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Crush] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Thrust] = m_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Body] = m_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Heat] = m_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Cold] = m_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Matter] = m_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Energy] = m_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Spirit] = m_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Slash] = m_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Crush] = m_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Thrust] = m_value;
             }
             else
             {
-                Body.AbilityBonus[(int) eProperty.Resist_Body] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Heat] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Cold] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Matter] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Energy] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Spirit] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Slash] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Crush] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Thrust] = min_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Body] = min_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Heat] = min_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Cold] = min_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Matter] = min_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Energy] = min_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Spirit] = min_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Slash] = min_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Crush] = min_value;
+                Body.AbilityBonus[(int) EProperty.Resist_Thrust] = min_value;
             }
         }
 
@@ -166,15 +166,15 @@ namespace DOL.AI.Brain
         {
             if (weak)
             {
-                Body.AbilityBonus[(int) eProperty.Resist_Body] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Heat] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Cold] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Matter] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Energy] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Spirit] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Slash] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Crush] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Thrust] = min_value - 20;
+                Body.AbilityBonus[(int) EProperty.Resist_Body] = min_value - 20;
+                Body.AbilityBonus[(int) EProperty.Resist_Heat] = min_value - 20;
+                Body.AbilityBonus[(int) EProperty.Resist_Cold] = min_value - 20;
+                Body.AbilityBonus[(int) EProperty.Resist_Matter] = min_value - 20;
+                Body.AbilityBonus[(int) EProperty.Resist_Energy] = min_value - 20;
+                Body.AbilityBonus[(int) EProperty.Resist_Spirit] = min_value - 20;
+                Body.AbilityBonus[(int) EProperty.Resist_Slash] = min_value - 20;
+                Body.AbilityBonus[(int) EProperty.Resist_Crush] = min_value - 20;
+                Body.AbilityBonus[(int) EProperty.Resist_Thrust] = min_value - 20;
             }
         }
 
@@ -183,7 +183,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
             if (Body.TargetObject != null && Body.InCombat && Body.Health != Body.MaxHealth && HasAggro)
@@ -246,7 +246,7 @@ namespace DOL.AI.Brain
                     spell.Type = "Disease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+                    spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
                     m_OzurDisease = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OzurDisease);
                 }

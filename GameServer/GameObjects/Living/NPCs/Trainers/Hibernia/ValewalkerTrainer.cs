@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Valewalker Trainer
 	/// </summary>
-	[NPCGuildScript("Valewalker Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Valewalker Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Valewalker Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Valewalker Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ValewalkerTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Valewalker; }
+			get { return ECharacterClass.Valewalker; }
 		}
 
 		public const string WEAPON_ID1 = "valewalker_item";
@@ -85,7 +85,7 @@ namespace DOL.GS.Trainer
 				case "Path of Affinity":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Valewalker, "Welcome, then, to the Path of Affinity. Here is a gift. Consider it a welcoming gesture. Welcome, " + source.GetName(0, false) + ".", null);
+						PromotePlayer(player, (int)ECharacterClass.Valewalker, "Welcome, then, to the Path of Affinity. Here is a gift. Consider it a welcoming gesture. Welcome, " + source.GetName(0, false) + ".", null);
 						player.ReceiveItem(this,WEAPON_ID1);
 					}
 					break;

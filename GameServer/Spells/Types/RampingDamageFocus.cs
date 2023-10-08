@@ -91,9 +91,9 @@ namespace DOL.GS.Spells
 			if (Spell.Uninterruptible && Caster.GetDistanceTo(attacker) > 200)
 				return false;
 
-            if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration)
-                || Caster.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking)
-                || Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
+            if (Caster.effectListComponent.ContainsEffectForEffectType(EEffect.MasteryOfConcentration)
+                || Caster.effectListComponent.ContainsEffectForEffectType(EEffect.FacilitatePainworking)
+                || Caster.effectListComponent.ContainsEffectForEffectType(EEffect.QuickCast))
                 return false;
            
 			if (IsInCastingPhase && Stage < 2)
@@ -165,7 +165,7 @@ namespace DOL.GS.Spells
 				list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
 				if (Spell.Radius != 0)
 					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Radius", Spell.Radius) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Radius", Spell.Radius));
-				if (Spell.DamageType != eDamageType.Natural)
+				if (Spell.DamageType != EDamageType.Natural)
 					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
 				list.Add(" "); //empty line
 				list.Add("Repeating direct damage spell that starts at " + Spell.Damage + " " + Spell.DamageType + " damage and increase by " + Spell.LifeDrainReturn + "% every tick up to a maximum of " + Spell.AmnesiaChance + "%.");
@@ -182,7 +182,7 @@ namespace DOL.GS.Spells
 			DbSpell dbSpell = new DbSpell();
 			dbSpell.ClientEffect = Spell.ClientEffect;
 			dbSpell.Icon = Spell.Icon;
-			dbSpell.Type = eSpellType.SpeedDecrease.ToString();
+			dbSpell.Type = ESpellType.SpeedDecrease.ToString();
 			dbSpell.Duration = (Spell.Radius == 0) ? 10 : 3;
 			dbSpell.Target = "Enemy";
 			dbSpell.Range = 1500;

@@ -142,7 +142,7 @@ namespace DOL.GS.Quests.Albion
             if (log.IsInfoEnabled)
                 log.Info("Quest \"" + questTitle + "\" initializing ...");
 
-            GameNPC[] gameNpcQuery = WorldMgr.GetNPCsByName(masterTorNpc, eRealm.Albion);
+            GameNPC[] gameNpcQuery = WorldMgr.GetNPCsByName(masterTorNpc, ERealm.Albion);
             if (gameNpcQuery.Length == 0)
             {
                 _logReasonQuestCantBeImplemented(masterTorNpc);
@@ -152,7 +152,7 @@ namespace DOL.GS.Quests.Albion
             {
                 _masterTor = gameNpcQuery[0];
             }
-            gameNpcQuery = WorldMgr.GetNPCsByName(stewardWillieNpcName, eRealm.Albion);
+            gameNpcQuery = WorldMgr.GetNPCsByName(stewardWillieNpcName, ERealm.Albion);
             if (gameNpcQuery.Length == 0)
             {
                 _logReasonQuestCantBeImplemented(stewardWillieNpcName);
@@ -421,7 +421,7 @@ namespace DOL.GS.Quests.Albion
                 Heading = 1883,
                 CurrentRegionID = 1,
                 SaveInDB = false,
-                Realm = eRealm.Albion
+                Realm = ERealm.Albion
             };
             _gaurdsman1.Flags ^= GameNPC.eFlags.GHOST;
             _gaurdsman1.AddToWorld();
@@ -433,7 +433,7 @@ namespace DOL.GS.Quests.Albion
                 Heading = 1860,
                 CurrentRegionID = 1,
                 SaveInDB = false,
-                Realm = eRealm.Albion
+                Realm = ERealm.Albion
             };
             _gaurdsman2.Flags ^= GameNPC.eFlags.GHOST;
             _gaurdsman2.AddToWorld();
@@ -445,7 +445,7 @@ namespace DOL.GS.Quests.Albion
                 Heading = 1995,
                 CurrentRegionID = 1,
                 SaveInDB = false,
-                Realm = eRealm.Albion
+                Realm = ERealm.Albion
             };
             _gaurdsman3.Flags ^= GameNPC.eFlags.GHOST;
             _gaurdsman3.AddToWorld();
@@ -457,7 +457,7 @@ namespace DOL.GS.Quests.Albion
                 Heading = 2371,
                 CurrentRegionID = 1,
                 SaveInDB = false,
-                Realm = eRealm.Albion
+                Realm = ERealm.Albion
             };
             _gaurdsman4.Flags ^= GameNPC.eFlags.GHOST;
             _gaurdsman4.AddToWorld();

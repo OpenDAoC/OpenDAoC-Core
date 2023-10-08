@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
 				DealDamage(targ);
 				targetCount++;
 
-				if (Spell.Target == eSpellTarget.AREA && targetCount >= Spell.Value)
+				if (Spell.Target == ESpellTarget.AREA && targetCount >= Spell.Value)
 				{
 					// Volley is limited to Volley # + 2 targets.  This number is stored in Spell.Value
 					break;
@@ -125,7 +125,7 @@ namespace DOL.GS.Spells
 				// add defence bonus from last executed style if any
 				AttackData targetAD = target.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
 				if (targetAD != null
-				    && targetAD.AttackResult == eAttackResult.HitStyle
+				    && targetAD.AttackResult == EAttackResult.HitStyle
 				    && targetAD.Style != null)
 				{
 					missrate += targetAD.Style.BonusToDefense;
@@ -133,18 +133,18 @@ namespace DOL.GS.Spells
 
 				// half of the damage is magical
 				// subtract any spelldamage bonus and re-calculate after half damage is calculated
-				m_handler.Effectiveness = 0.5 - caster.GetModified(eProperty.SpellDamage) * 0.01;
+				m_handler.Effectiveness = 0.5 - caster.GetModified(EProperty.SpellDamage) * 0.01;
 				AttackData ad = m_handler.CalculateDamageToTarget(target);
 
 				// check for bladeturn miss
-				if (ad.AttackResult == eAttackResult.Missed)
+				if (ad.AttackResult == EAttackResult.Missed)
 				{
 					return 0;
 				}
 
 				if (Util.Chance(missrate))
 				{
-					ad.AttackResult = eAttackResult.Missed;
+					ad.AttackResult = EAttackResult.Missed;
 					m_handler.MessageToCaster("You miss!", eChatType.CT_YouHit);
 					m_handler.MessageToLiving(target, caster.GetName(0, false) + " missed!", eChatType.CT_Missed);
 					target.OnAttackedByEnemy(ad);
@@ -158,7 +158,7 @@ namespace DOL.GS.Spells
 					return 0;
 				}
 
-				ad.Damage = (int)((double)ad.Damage * (1.0 + caster.GetModified(eProperty.SpellDamage) * 0.01));
+				ad.Damage = (int)((double)ad.Damage * (1.0 + caster.GetModified(EProperty.SpellDamage) * 0.01));
 
 				bool arrowBlock = false;
 
@@ -168,7 +168,7 @@ namespace DOL.GS.Spells
 					DbInventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 					if (lefthand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND))
 					{
-						if (target.IsObjectInFront(caster, 180) && lefthand.Object_Type == (int)eObjectType.Shield)
+						if (target.IsObjectInFront(caster, 180) && lefthand.Object_Type == (int)EObjectType.Shield)
 						{
 							// TODO: shield size vs number of attackers not calculated
 							double shield = 0.5 * player.GetModifiedSpecLevel(Specs.Shields);
@@ -180,7 +180,7 @@ namespace DOL.GS.Spells
 
 							if (target.IsEngaging)
 							{
-								EngageEcsAbilityEffect engage = (EngageEcsAbilityEffect)EffectListService.GetEffectOnTarget(target, eEffect.Engage);
+								EngageEcsAbilityEffect engage = (EngageEcsAbilityEffect)EffectListService.GetEffectOnTarget(target, EEffect.Engage);
 								if (engage != null && target.attackComponent.AttackState && engage.EngageTarget == caster)
 								{
 									// Engage raised block change to 85% if attacker is engageTarget and player is in attackstate
@@ -211,7 +211,7 @@ namespace DOL.GS.Spells
 								arrowBlock = true;
 								m_handler.MessageToLiving(player, "You block " + caster.GetName(0, false) + "'s arrow!", eChatType.CT_System);
 
-								if (m_handler.Spell.Target != eSpellTarget.AREA)
+								if (m_handler.Spell.Target != ESpellTarget.AREA)
 								{
 									m_handler.MessageToCaster(player.GetName(0, true) + " blocks your arrow!", eChatType.CT_System);
 									m_handler.DamageTarget(ad, false, 0x02);
@@ -233,7 +233,7 @@ namespace DOL.GS.Spells
 					if (target.Inventory != null)
 						armor = target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
 
-					double ws = (caster.Level * 8 * (1.0 + (caster.GetModified(eProperty.Dexterity) - 50) / 200.0));
+					double ws = (caster.Level * 8 * (1.0 + (caster.GetModified(EProperty.Dexterity) - 50) / 200.0));
 
 					damage *= ((ws + 90.68) / (target.GetArmorAF(ad.ArmorHitLocation) + 20 * 4.67));
 					damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
@@ -241,7 +241,7 @@ namespace DOL.GS.Spells
 					damage += ad.Modifier;
 
 					double effectiveness = caster.Effectiveness;
-					effectiveness += (caster.GetModified(eProperty.SpellDamage) * 0.01);
+					effectiveness += (caster.GetModified(EProperty.SpellDamage) * 0.01);
 					damage = damage * effectiveness;
 
 					damage *= (1.0 + RelicMgr.GetRelicBonusModifier(caster.Realm, eRelicType.Magic));
@@ -279,7 +279,7 @@ namespace DOL.GS.Spells
 
 					if (ad.CriticalDamage > 0)
 					{
-						if (m_handler.Spell.Target == eSpellTarget.AREA)
+						if (m_handler.Spell.Target == ESpellTarget.AREA)
 						{
 							ad.CriticalDamage = 0;
 						}
@@ -312,9 +312,9 @@ namespace DOL.GS.Spells
 					}
 				}
 
-				if (arrowBlock == false && m_handler.Caster.ActiveWeapon != null && GlobalConstants.IsBowWeapon((eObjectType)m_handler.Caster.ActiveWeapon.Object_Type))
+				if (arrowBlock == false && m_handler.Caster.ActiveWeapon != null && GlobalConstants.IsBowWeapon((EObjectType)m_handler.Caster.ActiveWeapon.Object_Type))
 				{
-					if (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle)
+					if (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle)
 					{
 						caster.CheckWeaponMagicalEffect(ad, m_handler.Caster.ActiveWeapon);
 					}

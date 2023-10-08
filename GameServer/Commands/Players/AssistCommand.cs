@@ -4,7 +4,7 @@ using DOL.Language;
 
 namespace DOL.GS.Commands;
 
-[Command("&assist", ePrivLevel.Player, "Assist your target", "/assist [playerName]")]
+[Command("&assist", EPrivLevel.Player, "Assist your target", "/assist [playerName]")]
 public class AssistCommand : ACommandHandler, ICommandHandler
 {
 	public void OnCommand(GameClient client, string[] args)

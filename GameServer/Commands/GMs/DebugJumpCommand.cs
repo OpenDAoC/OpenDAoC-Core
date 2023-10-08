@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"]jump",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"GMCommands.DebugJump.Description",
 	"GMCommands.DebugJump.Usage")]
 public class DebugJumpCommand : ACommandHandler, ICommandHandler

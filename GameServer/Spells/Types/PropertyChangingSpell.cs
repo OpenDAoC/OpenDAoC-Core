@@ -61,7 +61,7 @@ namespace DOL.GS.Spells
 			double duration = Spell.Duration;
 			if (HasPositiveEffect)
 			{	
-				duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
+				duration *= (1.0 + m_caster.GetModified(EProperty.SpellDuration) * 0.01);
 				if (Spell.InstrumentRequirement != 0)
 				{
 					DbInventoryItem instrument = Caster.ActiveWeapon;
@@ -140,9 +140,9 @@ namespace DOL.GS.Spells
 						//GameSpellEffect Matter = FindEffectOnTarget(player, "MatterResistBuff");
 						//GameSpellEffect Cold = FindEffectOnTarget(player, "ColdResistBuff");
 						//GameSpellEffect Heat = FindEffectOnTarget(player, "HeatResistBuff");
-						EcsGameEffect Matter = EffectListService.GetEffectOnTarget(player, eEffect.MatterResistBuff);
-						EcsGameEffect Cold = EffectListService.GetEffectOnTarget(player, eEffect.ColdResistBuff);
-						EcsGameEffect Heat = EffectListService.GetEffectOnTarget(player, eEffect.HeatResistBuff);
+						EcsGameEffect Matter = EffectListService.GetEffectOnTarget(player, EEffect.MatterResistBuff);
+						EcsGameEffect Cold = EffectListService.GetEffectOnTarget(player, EEffect.ColdResistBuff);
+						EcsGameEffect Heat = EffectListService.GetEffectOnTarget(player, EEffect.HeatResistBuff);
 						if (Matter != null || Cold != null || Heat != null)
 						{
 							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);
@@ -158,9 +158,9 @@ namespace DOL.GS.Spells
 						//GameSpellEffect Body = FindEffectOnTarget(player, "BodyResistBuff");
 						//GameSpellEffect Spirit = FindEffectOnTarget(player, "SpiritResistBuff");
 						//GameSpellEffect Energy = FindEffectOnTarget(player, "EnergyResistBuff");
-						EcsGameEffect Body = EffectListService.GetEffectOnTarget(player, eEffect.BodyResistBuff);
-						EcsGameEffect Spirit = EffectListService.GetEffectOnTarget(player, eEffect.SpiritResistBuff);
-						EcsGameEffect Energy = EffectListService.GetEffectOnTarget(player, eEffect.EnergyResistBuff);
+						EcsGameEffect Body = EffectListService.GetEffectOnTarget(player, EEffect.BodyResistBuff);
+						EcsGameEffect Spirit = EffectListService.GetEffectOnTarget(player, EEffect.SpiritResistBuff);
+						EcsGameEffect Energy = EffectListService.GetEffectOnTarget(player, EEffect.EnergyResistBuff);
 						if (Body != null || Spirit != null || Energy != null)
 						{
 							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);
@@ -274,27 +274,27 @@ namespace DOL.GS.Spells
 		{
 		}
 
-		protected IPropertyIndexer GetBonusCategory(GameLiving target, eBuffBonusCategory categoryid)
+		protected IPropertyIndexer GetBonusCategory(GameLiving target, EBuffBonusCategory categoryid)
 		{
 			IPropertyIndexer bonuscat = null;
 			switch (categoryid)
 			{
-				case eBuffBonusCategory.BaseBuff:
+				case EBuffBonusCategory.BaseBuff:
 					bonuscat = target.BaseBuffBonusCategory;
 					break;
-				case eBuffBonusCategory.SpecBuff:
+				case EBuffBonusCategory.SpecBuff:
 					bonuscat = target.SpecBuffBonusCategory;
 					break;
-				case eBuffBonusCategory.Debuff:
+				case EBuffBonusCategory.Debuff:
 					bonuscat = target.DebuffCategory;
 					break;
-				case eBuffBonusCategory.Other:
+				case EBuffBonusCategory.Other:
 					bonuscat = target.BuffBonusCategory4;
 					break;
-				case eBuffBonusCategory.SpecDebuff:
+				case EBuffBonusCategory.SpecDebuff:
 					bonuscat = target.SpecDebuffCategory;
 					break;
-				case eBuffBonusCategory.AbilityBuff:
+				case EBuffBonusCategory.AbilityBuff:
 					bonuscat = target.AbilityBonus;
 					break;
 				default:
@@ -308,157 +308,157 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Property 1 which bonus value has to be changed
 		/// </summary>
-		public abstract eProperty Property1 { get; }
+		public abstract EProperty Property1 { get; }
 
 		/// <summary>
 		/// Property 2 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property2
+		public virtual EProperty Property2
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 3 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property3
+		public virtual EProperty Property3
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 4 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property4
+		public virtual EProperty Property4
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 		/// <summary>
 		/// Property 5 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property5
+		public virtual EProperty Property5
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 6 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property6
+		public virtual EProperty Property6
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 7 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property7
+		public virtual EProperty Property7
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 8 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property8
+		public virtual EProperty Property8
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 9 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property9
+		public virtual EProperty Property9
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 10 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property10
+		public virtual EProperty Property10
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property1
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory1
+		public virtual EBuffBonusCategory BonusCategory1
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property2
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory2
+		public virtual EBuffBonusCategory BonusCategory2
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property3
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory3
+		public virtual EBuffBonusCategory BonusCategory3
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property4
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory4
+		public virtual EBuffBonusCategory BonusCategory4
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property5
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory5
+		public virtual EBuffBonusCategory BonusCategory5
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property6
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory6
+		public virtual EBuffBonusCategory BonusCategory6
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property7
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory7
+		public virtual EBuffBonusCategory BonusCategory7
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property8
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory8
+		public virtual EBuffBonusCategory BonusCategory8
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property9
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory9
+		public virtual EBuffBonusCategory BonusCategory9
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property10
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory10
+		public virtual EBuffBonusCategory BonusCategory10
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		public override void OnEffectRestored(GameSpellEffect effect, int[] vars)
@@ -510,10 +510,10 @@ namespace DOL.GS.Spells
 		/// <param name="Property"></param>
 		/// <param name="Value"></param>
 		/// <param name="IsSubstracted"></param>
-		protected void ApplyBonus(GameLiving owner,  eBuffBonusCategory BonusCat, eProperty Property, int Value, bool IsSubstracted)
+		protected void ApplyBonus(GameLiving owner,  EBuffBonusCategory BonusCat, EProperty Property, int Value, bool IsSubstracted)
 		{
 			IPropertyIndexer tblBonusCat;
-			if (Property != eProperty.Undefined)
+			if (Property != EProperty.Undefined)
 			{
 				tblBonusCat = GetBonusCategory(owner, BonusCat);
 				if (IsSubstracted)

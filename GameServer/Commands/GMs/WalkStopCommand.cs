@@ -5,12 +5,12 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&walk",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"Commands a npc to walk!",
 	"'/walk <xoff> <yoff> <zoff> <speed>' to make the npc walk to x+xoff, y+yoff, z+zoff")]
 [Command(
 	"&stop",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"Stops the npc's movement!",
 	"'/stop' to stop the target mob")]
 public class WalkStopCommand : ACommandHandler, ICommandHandler

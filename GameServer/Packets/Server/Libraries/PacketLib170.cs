@@ -351,7 +351,7 @@ namespace DOL.GS.PacketHandler
 				{
 					switch (relic.OriginalRealm)
 	                {
-	                    case eRealm.Albion:
+	                    case ERealm.Albion:
 							if(relic.RelicType==eRelicType.Strength)
 							{
 								albStr=(byte)relic.Realm;
@@ -361,7 +361,7 @@ namespace DOL.GS.PacketHandler
 								albMagic=(byte)relic.Realm;
 							}
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							if(relic.RelicType==eRelicType.Strength)
 							{
 								hibStr=(byte)relic.Realm;
@@ -371,7 +371,7 @@ namespace DOL.GS.PacketHandler
 								hibMagic=(byte)relic.Realm;
 							}
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							if(relic.RelicType==eRelicType.Strength)
 							{
 								midStr=(byte)relic.Realm;
@@ -416,7 +416,7 @@ namespace DOL.GS.PacketHandler
 					}
 
 					//Teleport
-					if (m_gameClient.Account.PrivLevel > (int)ePrivLevel.Player)
+					if (m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player)
 					{
 						flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
 					}
@@ -457,28 +457,28 @@ namespace DOL.GS.PacketHandler
 			int MidKeeps = 0;
 			int HibKeeps = 0;
 			int OwnerDFTowers = 0;
-			eRealm OwnerDF = eRealm.None;
+			ERealm OwnerDF = ERealm.None;
 
 			foreach (AbstractGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
 			{
 				if (keep is GameKeep)
 				{
-					switch ((eRealm)keep.Realm)
+					switch ((ERealm)keep.Realm)
 					{
-						case eRealm.Albion: AlbKeeps++; break;
-						case eRealm.Midgard: MidKeeps++; break;
-						case eRealm.Hibernia: HibKeeps++; break;
+						case ERealm.Albion: AlbKeeps++; break;
+						case ERealm.Midgard: MidKeeps++; break;
+						case ERealm.Hibernia: HibKeeps++; break;
 						default:
 							break;
 					}
 				}
 				else
 				{
-					switch ((eRealm)keep.Realm)
+					switch ((ERealm)keep.Realm)
 					{
-						case eRealm.Albion: AlbTowers++; break;
-						case eRealm.Midgard: MidTowers++; break;
-						case eRealm.Hibernia: HibTowers++; break;
+						case ERealm.Albion: AlbTowers++; break;
+						case ERealm.Midgard: MidTowers++; break;
+						case ERealm.Hibernia: HibTowers++; break;
 						default:
 							break;
 					}
@@ -486,32 +486,32 @@ namespace DOL.GS.PacketHandler
 			}
 			if (AlbTowers > MidTowers && AlbTowers > HibTowers)
 			{
-				OwnerDF = eRealm.Albion;
+				OwnerDF = ERealm.Albion;
 				OwnerDFTowers = AlbTowers;
 			}
 			else if (MidTowers > AlbTowers && MidTowers > HibTowers)
 			{
-				OwnerDF = eRealm.Midgard;
+				OwnerDF = ERealm.Midgard;
 				OwnerDFTowers = MidTowers;
 			}
 			else if (HibTowers > AlbTowers && HibTowers > MidTowers)
 			{
-				OwnerDF = eRealm.Hibernia;
+				OwnerDF = ERealm.Hibernia;
 				OwnerDFTowers = HibTowers;
 			}
 			int RealmKeeps = 0;
 			int RealmTowers = 0;
-			switch ((eRealm)m_gameClient.Player.Realm)
+			switch ((ERealm)m_gameClient.Player.Realm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					RealmKeeps = AlbKeeps;
 					RealmTowers = AlbTowers;
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					RealmKeeps = MidKeeps;
 					RealmTowers = MidTowers;
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					RealmKeeps = HibKeeps;
 					RealmTowers = HibTowers;
 					break;
@@ -571,19 +571,19 @@ namespace DOL.GS.PacketHandler
 					byte realm = obj[3];
 
 					pak.WriteByte((byte)((realm == 3) ? 0x04 : (realm == 2) ? 0x02 : 0x01));//	color   ( Groups:  0x01 - Alb  , 0x02 - Mid , 0x04 - Hib
-					switch ((eRealm)obj[3])
+					switch ((ERealm)obj[3])
 					{
 						//	type    ( Groups:	Alb:	type	   0x03,0x02,0x01	& 0x03
 						//						Mid:	type << 2  0x0C,0x08,0x04 	& 0x03
 						//						Hib:	type << 4  0x30,0x20,0x10	& 0x03  )
-						case eRealm.Albion:
+						case ERealm.Albion:
 						default:
 							pak.WriteByte(obj[4]);
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							pak.WriteByte((byte)(obj[4] << 2));
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							pak.WriteByte((byte)(obj[4] << 4));
 							break;
 					}

@@ -24,8 +24,8 @@ public class Fletching : AProfession
 
 	protected override bool CheckForTools(GamePlayer player, RecipeMgr recipe)
 	{
-		if (recipe.Product.Object_Type != (int)eObjectType.Arrow &&
-			recipe.Product.Object_Type != (int)eObjectType.Bolt)
+		if (recipe.Product.Object_Type != (int)EObjectType.Arrow &&
+			recipe.Product.Object_Type != (int)EObjectType.Bolt)
 		{
 			foreach (GameStaticItem item in player.GetItemsInRadius(CRAFT_DISTANCE))
 			{
@@ -49,20 +49,20 @@ public class Fletching : AProfession
 	{
 		switch (recipe.Product.Object_Type)
 		{
-			case (int)eObjectType.Fired:  //tested
-			case (int)eObjectType.Longbow: //tested
-			case (int)eObjectType.Crossbow: //tested
-			case (int)eObjectType.Instrument: //tested
-			case (int)eObjectType.RecurvedBow:
-			case (int)eObjectType.CompositeBow:
+			case (int)EObjectType.Fired:  //tested
+			case (int)EObjectType.Longbow: //tested
+			case (int)EObjectType.Crossbow: //tested
+			case (int)EObjectType.Instrument: //tested
+			case (int)EObjectType.RecurvedBow:
+			case (int)EObjectType.CompositeBow:
 				return recipe.Level - 20;
 
-			case (int)eObjectType.Arrow: //tested
-			case (int)eObjectType.Bolt: //tested
-			case (int)eObjectType.Thrown:
+			case (int)EObjectType.Arrow: //tested
+			case (int)EObjectType.Bolt: //tested
+			case (int)EObjectType.Thrown:
 				return recipe.Level - 15;
 
-			case (int)eObjectType.Staff: //tested
+			case (int)EObjectType.Staff: //tested
 				return recipe.Level - 35;
 		}
 

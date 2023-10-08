@@ -18,28 +18,28 @@ namespace DOL.GS
         {
             if (Util.Chance(50))
             {
-                if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+                if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
                 {
                     CastSpell(OakDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
             }
             base.OnAttackEnemy(ad);
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
                 default: return 30; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -48,17 +48,17 @@ namespace DOL.GS
         {
             get { return 40000; }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (this.IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+                        damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+                        damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -116,7 +116,7 @@ namespace DOL.GS
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Plant;
             AncientBlackOakBrain.IsPulled = false;
             OakCount =1;
-            MeleeDamageType = eDamageType.Matter;
+            MeleeDamageType = EDamageType.Matter;
             AncientBlackOakBrain sbrain = new AncientBlackOakBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = true;
@@ -144,11 +144,11 @@ namespace DOL.GS
                     spell.Value = 60;
                     spell.Radius = 800;
                     spell.SpellID = 11790;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DamageSpeedDecreaseNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Body;
+                    spell.DamageType = (int)EDamageType.Body;
                     m_OakDD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OakDD);
                 }
@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
             }

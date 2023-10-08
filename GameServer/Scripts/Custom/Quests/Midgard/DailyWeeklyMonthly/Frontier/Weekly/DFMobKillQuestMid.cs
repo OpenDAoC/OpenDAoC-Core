@@ -61,7 +61,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Patrick", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Patrick", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -79,7 +79,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 				Patrick.Model = 138;
 				Patrick.Name = "Patrick";
 				Patrick.GuildName = "Realm Logistics";
-				Patrick.Realm = eRealm.Midgard;
+				Patrick.Realm = ERealm.Midgard;
 				//Darkness Falls Mid Entrance Location
 				Patrick.CurrentRegionID = 249;
 				Patrick.Size = 50;

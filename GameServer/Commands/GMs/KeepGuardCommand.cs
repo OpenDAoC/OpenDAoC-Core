@@ -13,7 +13,7 @@ namespace DOL.GS.Commands
 	/// </summary>
 	[Command(
 		"&keepguard",
-		ePrivLevel.GM,
+		EPrivLevel.GM,
 		"GMCommands.KeepGuard.Description",
 		"GMCommands.KeepGuard.Information",
 		"GMCommands.KeepGuard.Usage.Create",

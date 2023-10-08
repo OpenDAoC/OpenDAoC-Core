@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&gmrelicpad",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"GMCommands.GMRelicPad.Description",
 	"GMCommands.GMRelicPad.Usage")]
 public class GmRelicPadCommand : ACommandHandler, ICommandHandler
@@ -20,7 +20,7 @@ public class GmRelicPadCommand : ACommandHandler, ICommandHandler
 
 		GameRelicPad pad = new GameRelicPad();
 		pad.Name = args[2];
-		pad.Realm = (eRealm)byte.Parse(args[3]);
+		pad.Realm = (ERealm)byte.Parse(args[3]);
 		pad.Emblem = emblem;
 		pad.CurrentRegionID = client.Player.CurrentRegionID;
 		pad.X = client.Player.X;

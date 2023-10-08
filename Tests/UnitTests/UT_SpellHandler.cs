@@ -53,7 +53,7 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakePlayer();
             var spell = NewFakeSpell();
             spell.fakeIsFocus = true;
-            spell.fakeTarget = eSpellTarget.REALM;
+            spell.fakeTarget = ESpellTarget.REALM;
             spell.Duration = 20;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
@@ -74,7 +74,7 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakeNPC();
             var spell = NewFakeSpell();
             spell.fakeIsFocus = true;
-            spell.fakeTarget = eSpellTarget.ENEMY;
+            spell.fakeTarget = ESpellTarget.ENEMY;
             spell.Duration = 20;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
@@ -96,10 +96,10 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakePlayer();
             var spell = NewFakeSpell();
             spell.fakeIsFocus = true;
-            spell.fakeTarget = eSpellTarget.REALM;
+            spell.fakeTarget = ESpellTarget.REALM;
             spell.Duration = 20;
             spell.fakeFrequency = 20;
-            spell.fakeSpellType = eSpellType.DamageShield;
+            spell.fakeSpellType = ESpellType.DamageShield;
             spell.fakePulse = 1;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
@@ -476,7 +476,7 @@ namespace DOL.Tests.Unit.Gameserver
         #endregion
 
         private static GameLiving NewFakeLiving() => new FakeLiving();
-        private static FakePlayerSpy NewFakePlayer() => new FakePlayerSpy() { Realm = eRealm.Albion };
+        private static FakePlayerSpy NewFakePlayer() => new FakePlayerSpy() { Realm = ERealm.Albion };
         private static FakeNPC NewFakeNPC() => new FakeNPC();
         private static FakeSpell NewFakeSpell() => new FakeSpell();
         private static SpellLine NewSpellLine() => new SpellLine("", "", "", false);
@@ -484,18 +484,18 @@ namespace DOL.Tests.Unit.Gameserver
         private class FakeSpell : Spell
         {
             public bool fakeIsFocus = false;
-            public eSpellTarget fakeTarget = eSpellTarget.SELF;
+            public ESpellTarget fakeTarget = ESpellTarget.SELF;
             public int fakeFrequency = 0;
-            public eSpellType fakeSpellType = 0;
+            public ESpellType fakeSpellType = 0;
             public int fakePulse = 0;
             public int fakeRange = 0;
 
             public FakeSpell() : base(new DbSpell(), 0) { }
 
             public override int Pulse => fakePulse;
-            public override eSpellType SpellType => fakeSpellType;
+            public override ESpellType SpellType => fakeSpellType;
             public override bool IsFocus => fakeIsFocus;
-            public override eSpellTarget Target => fakeTarget;
+            public override ESpellTarget Target => fakeTarget;
             public override int Frequency => fakeFrequency;
             public override int Range => fakeRange;
         }

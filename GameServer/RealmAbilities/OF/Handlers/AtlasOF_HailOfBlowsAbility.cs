@@ -36,7 +36,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = 0;
             m_dbspell.Target = "Self";
             m_dbspell.Radius = 0;
-            m_dbspell.Type = eSpellType.CombatSpeedBuff.ToString();
+            m_dbspell.Type = ESpellType.CombatSpeedBuff.ToString();
             m_dbspell.Value = m_hasteValue;
             m_dbspell.Duration = 60;
             m_dbspell.Pulse = 0;

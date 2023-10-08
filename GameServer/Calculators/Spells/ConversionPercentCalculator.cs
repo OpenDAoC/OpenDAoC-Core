@@ -9,10 +9,10 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.Conversion)]
+[PropertyCalculator(EProperty.Conversion)]
 public class ConversionPercentCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		return living.ItemBonus[(int)property]+living.BaseBuffBonusCategory[(int)property];
 	}

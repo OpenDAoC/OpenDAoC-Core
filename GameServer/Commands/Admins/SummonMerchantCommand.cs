@@ -7,7 +7,7 @@ namespace DOL.GS.Commands
 {
     [Command(
         "&summonmerchant",
-        ePrivLevel.Admin, // Set to player.
+        EPrivLevel.Admin, // Set to player.
         "/summonmerchant - summon a merchant at the cost of 10g")]
     public class SummonMerchantCommand : ACommandHandler, ICommandHandler
     {

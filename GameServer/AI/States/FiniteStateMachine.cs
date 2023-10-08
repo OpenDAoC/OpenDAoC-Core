@@ -5,7 +5,7 @@ namespace DOL.AI;
 
 public class FiniteStateMachine
 {
-    protected Dictionary<eFSMStateType, FsmState> _states = new();
+    protected Dictionary<EFSMStateType, FsmState> _states = new();
     protected FsmState _state;
 
     public FiniteStateMachine() { }
@@ -20,13 +20,13 @@ public class FiniteStateMachine
         _states.Clear();
     }
 
-    public virtual FsmState GetState(eFSMStateType stateType)
+    public virtual FsmState GetState(EFSMStateType stateType)
     {
         _states.TryGetValue(stateType, out FsmState state);
         return state;
     }
 
-    public virtual void SetCurrentState(eFSMStateType stateType)
+    public virtual void SetCurrentState(EFSMStateType stateType)
     {
         if (_state != null)
             _state.Exit();

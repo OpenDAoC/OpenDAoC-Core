@@ -130,13 +130,13 @@ namespace DOL.Tests
 		{
 			if (SendPingReplyMethod != null) SendPingReplyMethod(this, timestamp, sequence);
 		}
-		public Action<TestPacketLib, eRealm> SendRealmMethod { get; set; }
-		public void SendRealm(eRealm realm)
+		public Action<TestPacketLib, ERealm> SendRealmMethod { get; set; }
+		public void SendRealm(ERealm realm)
 		{
 			if (SendRealmMethod != null) SendRealmMethod(this, realm);
 		}
-		public Action<TestPacketLib, eRealm> SendCharacterOverviewMethod { get; set; }
-		public void SendCharacterOverview(eRealm realm)
+		public Action<TestPacketLib, ERealm> SendCharacterOverviewMethod { get; set; }
+		public void SendCharacterOverview(ERealm realm)
 		{
 			if (SendCharacterOverviewMethod != null) SendCharacterOverviewMethod(this, realm);
 		}
@@ -648,8 +648,8 @@ namespace DOL.Tests
 		{
 			if (SendPlaySoundMethod != null) SendPlaySoundMethod(this, soundType, soundID);
 		}
-		public Action<TestPacketLib, GameNPC, eQuestIndicator> SendNPCsQuestEffectMethod { get; set; }
-		public void SendNPCsQuestEffect(GameNPC npc, eQuestIndicator indicator)
+		public Action<TestPacketLib, GameNPC, EQuestIndicator> SendNPCsQuestEffectMethod { get; set; }
+		public void SendNPCsQuestEffect(GameNPC npc, EQuestIndicator indicator)
 		{
 			if (SendNPCsQuestEffectMethod != null) SendNPCsQuestEffectMethod(this, npc, indicator);
 		}

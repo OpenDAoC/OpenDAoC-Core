@@ -66,7 +66,7 @@ namespace DOL.GS.Quests.Hibernia
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Theresa", eRealm.Hibernia);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName("Theresa", ERealm.Hibernia);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
@@ -84,7 +84,7 @@ namespace DOL.GS.Quests.Hibernia
                 Theresa.Model = 310;
                 Theresa.Name = "Theresa";
                 Theresa.GuildName = "";
-                Theresa.Realm = eRealm.Hibernia;
+                Theresa.Realm = ERealm.Hibernia;
                 Theresa.CurrentRegionID = 201;
                 Theresa.LoadEquipmentTemplateFromDatabase("Theresa");
                 Theresa.Size = 48;
@@ -98,7 +98,7 @@ namespace DOL.GS.Quests.Hibernia
                     Theresa.SaveIntoDatabase();
             }
 
-            npcs = WorldMgr.GetNPCsByName("Karl", eRealm.Hibernia);
+            npcs = WorldMgr.GetNPCsByName("Karl", ERealm.Hibernia);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
@@ -116,7 +116,7 @@ namespace DOL.GS.Quests.Hibernia
                 Karl.Model = 956;
                 Karl.Name = "Karl";
                 Karl.GuildName = "";
-                Karl.Realm = eRealm.Hibernia;
+                Karl.Realm = ERealm.Hibernia;
                 Karl.CurrentRegionID = 200;
                 Karl.LoadEquipmentTemplateFromDatabase("Karl");
                 Karl.Size = 50;
@@ -460,7 +460,7 @@ namespace DOL.GS.Quests.Hibernia
                 MobEffect.Model = 1;
                 MobEffect.Name = "power of nature";
                 MobEffect.GuildName = "";
-                MobEffect.Realm = eRealm.Hibernia;
+                MobEffect.Realm = ERealm.Hibernia;
                 MobEffect.Race = 2007;
                 MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
                 MobEffect.Size = 100;
@@ -766,7 +766,7 @@ namespace DOL.GS.Quests.Hibernia
 
         public override void FinishQuest()
         {
-            m_questPlayer.GainExperience(eXPSource.Quest, 20, false);
+            m_questPlayer.GainExperience(EXpSource.Quest, 20, false);
             m_questPlayer.AddMoney(Money.GetMoney(0, 0, 1, 32, Util.Random(50)), "You receive {0} as a reward.");
 
             base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...

@@ -29,7 +29,7 @@ namespace DOL.GS.Effects
 					p.Out.SendSpellEffectAnimation(player, player, Icon, 0, false, 1);
 				}
 			}
-			owner.AbilityBonus[(int)eProperty.FumbleChance] += 25;
+			owner.AbilityBonus[(int)EProperty.FumbleChance] += 25;
 		}
 
 		public override string Name { get { return "Blinding Dust"; } }
@@ -38,7 +38,7 @@ namespace DOL.GS.Effects
 
 		public override void Stop()
 		{
-			owner.AbilityBonus[(int)eProperty.FumbleChance] -= 25;
+			owner.AbilityBonus[(int)EProperty.FumbleChance] -= 25;
 			base.Stop();
 		}
 

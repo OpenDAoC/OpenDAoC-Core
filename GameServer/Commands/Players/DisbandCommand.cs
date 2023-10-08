@@ -6,7 +6,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&disband",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Disband from a group", "/disband")]
 public class DisbandCommand : ACommandHandler, ICommandHandler
 {

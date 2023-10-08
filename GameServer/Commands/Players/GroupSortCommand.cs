@@ -4,7 +4,7 @@ using DOL.Language;
 namespace DOL.GS.Commands;
 
 [Command("&groupsort",
-	 ePrivLevel.Player,
+	 EPrivLevel.Player,
 	 "Sort players in the group",
 	 "'/groupsort switch <#> <#>' - switches two group members.")]
 // "Example: /groupsort manual bard druid druid hero",

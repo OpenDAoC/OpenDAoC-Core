@@ -9,13 +9,13 @@ namespace DOL.GS.Scripts
 {
     public class SkeletalSacristan : GameEpicBoss
     {
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
@@ -36,12 +36,12 @@ namespace DOL.GS.Scripts
             return base.HasAbility(keyName);
         }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -52,7 +52,7 @@ namespace DOL.GS.Scripts
 			Name = "Skeletal Sacristan";
 			Size = 85;
 			Level = 77;
-			Gender = eGender.Neutral;
+			Gender = EGender.Neutral;
 			BodyType = 11; // undead
 			MaxDistance = 0;
 			TetherRange = 0;

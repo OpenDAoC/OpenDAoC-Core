@@ -18,21 +18,21 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Iarnvidiur Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 30; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 30; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 30; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 30; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 30; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 30; // dmg reduction for melee dmg
 				default: return 40; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -251,7 +251,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsTargetPicked = false;
 				RandomTarget = null;
@@ -263,7 +263,7 @@ namespace DOL.AI.Brain
 					if (Util.Chance(15))
 					{
 						GameLiving target = Body.TargetObject as GameLiving;
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
 						{
 							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 1000);
 						}
@@ -323,7 +323,7 @@ namespace DOL.AI.Brain
 					spell.Radius = 700;
 					spell.SpellID = 11828;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
 					m_Iarnvidiur_Dot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Iarnvidiur_Dot);
@@ -358,7 +358,7 @@ namespace DOL.AI.Brain
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+					spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
 					m_IarnvidiurDisease = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IarnvidiurDisease);
 				}
@@ -384,11 +384,11 @@ namespace DOL.AI.Brain
 					spell.Name = "Plague Bolt";
 					spell.Range = 2500;
 					spell.SpellID = 11830;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					m_Iarnvidiur_Bolt = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Iarnvidiur_Bolt);
 				}
@@ -415,10 +415,10 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.SpellID = 11831;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.DamageType = (int)EDamageType.Spirit;
 					m_IarnvidiurDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IarnvidiurDD);
 				}

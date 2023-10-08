@@ -5,7 +5,7 @@ namespace DOL.GS.RealmAbilities
 	public class DualThreatAbility : L3RAPropertyEnhancer
 	{
 		public DualThreatAbility(DbAbility dba, int level)
-			: base(dba, level, new eProperty[] { eProperty.CriticalMeleeHitChance, eProperty.CriticalSpellHitChance, eProperty.CriticalHealHitChance})
+			: base(dba, level, new EProperty[] { EProperty.CriticalMeleeHitChance, EProperty.CriticalSpellHitChance, EProperty.CriticalHealHitChance})
 		{
 		}
 
@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
 	public class XReflexAttackAbility : L3RAPropertyEnhancer
 	{
 		public XReflexAttackAbility(DbAbility dba, int level)
-			: base(dba, level, eProperty.Undefined)
+			: base(dba, level, EProperty.Undefined)
 		{
 		}
 
@@ -76,7 +76,7 @@ namespace DOL.GS.RealmAbilities
 	public class ViperAbility : L3RAPropertyEnhancer
 	{
 		public ViperAbility(DbAbility dba, int level)
-			: base(dba, level, eProperty.Undefined)
+			: base(dba, level, EProperty.Undefined)
 		{
 		}
 

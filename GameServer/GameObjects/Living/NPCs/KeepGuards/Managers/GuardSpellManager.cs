@@ -86,7 +86,7 @@ namespace DOL.GS.Keeps
 		public static void LordCastHealSpell(GameKeepGuard lord)
 		{
 			//decide which healing spell
-			Spell spell = GetLordHealSpell((eRealm)lord.Realm);
+			Spell spell = GetLordHealSpell((ERealm)lord.Realm);
 			//cast the healing spell
 			if (spell != null && !lord.IsStunned && !lord.IsMezzed)
 			{
@@ -104,7 +104,7 @@ namespace DOL.GS.Keeps
 		public static void CastHealSpell(GameNPC guard, GameLiving target)
 		{
 			//decide which healing spell
-			Spell spell = GetGuardHealSmallSpell((eRealm)guard.Realm);
+			Spell spell = GetGuardHealSmallSpell((ERealm)guard.Realm);
 			//cast the healing spell
 			if (spell != null && !guard.IsStunned && !guard.IsMezzed  )
 			{
@@ -114,31 +114,31 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		public static Spell GetLordHealSpell(eRealm realm)
+		public static Spell GetLordHealSpell(ERealm realm)
 		{
 			switch (realm)
 			{
-				case eRealm.None:
-				case eRealm.Albion:
+				case ERealm.None:
+				case ERealm.Albion:
 						return AlbLordHealSpell;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 						return MidLordHealSpell;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 						return HibLordHealSpell;
 			}
 			return null;
 		}
 
-		public static Spell GetGuardHealSmallSpell(eRealm realm)
+		public static Spell GetGuardHealSmallSpell(ERealm realm)
 		{
 			switch (realm)
 			{ 
-				case eRealm.None:
-				case eRealm.Albion:
+				case ERealm.None:
+				case ERealm.Albion:
 					return AlbGuardHealSmallSpell;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					return MidGuardHealSmallSpell;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					return HibGuardHealSmallSpell;
 			}
 			return null;
@@ -339,7 +339,7 @@ namespace DOL.GS.Keeps
                     DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 2;
-                    spell.DamageType = (int)eDamageType.Heat;
+                    spell.DamageType = (int)EDamageType.Heat;
                     spell.ClientEffect = 378;
                     spell.Value = 850;
                     spell.Damage = 850;
@@ -367,7 +367,7 @@ namespace DOL.GS.Keeps
                     DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 2;
-                    spell.DamageType = (int)eDamageType.Matter;
+                    spell.DamageType = (int)EDamageType.Matter;
                     spell.ClientEffect = 2901;
                     spell.Value = 850;
                     spell.Damage = 850;
@@ -395,7 +395,7 @@ namespace DOL.GS.Keeps
                     DbSpell spell = new DbSpell();
                     spell.AllowAdd = false;
                     spell.CastTime = 2;
-                    spell.DamageType = (int)eDamageType.Cold;
+                    spell.DamageType = (int)EDamageType.Cold;
                     spell.ClientEffect = 4559;
                     spell.Value = 850;
                     spell.Damage = 850;

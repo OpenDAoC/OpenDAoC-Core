@@ -31,22 +31,22 @@ namespace DOL.Tests.Unit.Gameserver
         public override Region CurrentRegion { get { return fakeRegion; } set { } }
         public override IPacketLib Out => new FakePacketLib();
         public override GameClient Client => new GameClient(GameServer.Instance) { Account = new DbAccount() };
-        public override int GetBaseStat(eStat stat) => baseStat;
+        public override int GetBaseStat(EStat stat) => baseStat;
         public override int GetModifiedSpecLevel(string keyName) => modifiedSpecLevel;
 
-        public override int GetModified(eProperty property)
+        public override int GetModified(EProperty property)
         {
             switch (property)
             {
-                case eProperty.Intelligence:
+                case EProperty.Intelligence:
                     return modifiedIntelligence;
-                case eProperty.SpellLevel:
+                case EProperty.SpellLevel:
                     return modifiedSpellLevel;
-                case eProperty.ToHitBonus:
+                case EProperty.ToHitBonus:
                     return modifiedToHitBonus;
-                case eProperty.LivingEffectiveLevel:
+                case EProperty.LivingEffectiveLevel:
                     return modifiedEffectiveLevel;
-                case eProperty.SpellDamage:
+                case EProperty.SpellDamage:
                     return modifiedSpellDamage;
                 default:
                     return base.GetModified(property);
@@ -87,15 +87,15 @@ namespace DOL.Tests.Unit.Gameserver
 
         public override Region CurrentRegion { get { return new FakeRegion(); } set { } }
         public override bool IsAlive => true;
-        public override int GetModified(eProperty property)
+        public override int GetModified(EProperty property)
         {
             switch (property)
             {
-                case eProperty.LivingEffectiveLevel:
+                case EProperty.LivingEffectiveLevel:
                     return modifiedEffectiveLevel;
-                case eProperty.MaxHealth:
+                case EProperty.MaxHealth:
                     return 0;
-                case eProperty.Intelligence:
+                case EProperty.Intelligence:
                     return Intelligence;
                 default:
                     return base.GetModified(property);
@@ -110,7 +110,7 @@ namespace DOL.Tests.Unit.Gameserver
 
         public override bool IsAlive => fakeIsAlive;
         public override eObjectState ObjectState => fakeObjectState;
-        public override eGameObjectType GameObjectType => throw new System.NotImplementedException();
+        public override EGameObjectType GameObjectType => throw new System.NotImplementedException();
     }
 
     public class FakeControlledBrain : ABrain, IControlledBrain

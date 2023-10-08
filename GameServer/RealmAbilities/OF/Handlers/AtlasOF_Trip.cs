@@ -14,7 +14,7 @@ namespace DOL.GS.RealmAbilities
 
         private const int m_tauntValue = 0;
 		private const int m_range = 350;
-		private const eDamageType m_damageType = eDamageType.Natural;
+		private const EDamageType m_damageType = EDamageType.Natural;
 
 		private DbSpell m_dbspell;
         private Spell m_spell = null;
@@ -36,7 +36,7 @@ namespace DOL.GS.RealmAbilities
 			m_dbspell.DamageType = (int)m_damageType;
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = 0;
-			m_dbspell.Type = eSpellType.SpeedDecrease.ToString();
+			m_dbspell.Type = ESpellType.SpeedDecrease.ToString();
             m_dbspell.Value = 30;
             m_dbspell.Duration = 15;
             m_dbspell.Pulse = 0;

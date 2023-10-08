@@ -7,7 +7,7 @@ using DOL.Language;
 namespace DOL.GS.Commands
 {
 	[Command("&merchant",
-		 ePrivLevel.GM,
+		 EPrivLevel.GM,
 		 "GMCommands.Merchant.Description",
 		 //Usage
 		 "GMCommands.Merchant.Usage.Create",

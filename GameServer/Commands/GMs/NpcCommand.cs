@@ -6,7 +6,7 @@ namespace DOL.GS.Commands
 {
 	[Command(
 		"&npc",
-		ePrivLevel.GM,
+		EPrivLevel.GM,
 		"Various npc commands",
 		"/npc say <text>",
 		"/npc yell <text>",
@@ -445,9 +445,9 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						eActiveWeaponSlot slot = (eActiveWeaponSlot)Convert.ToInt16(args[2]);
+						EActiveWeaponSlot slot = (EActiveWeaponSlot)Convert.ToInt16(args[2]);
 						npc.SwitchWeapon(slot);
-						client.Player.Out.SendMessage(npc.Name + " will now use its " + Enum.GetName(typeof(eActiveWeaponSlot), slot) + " weapon to attack.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Player.Out.SendMessage(npc.Name + " will now use its " + Enum.GetName(typeof(EActiveWeaponSlot), slot) + " weapon to attack.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 						break;
 					}

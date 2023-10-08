@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Scout Trainer
 	/// </summary>
-	[NPCGuildScript("Scout Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Scout Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Scout Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Scout Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ScoutTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Scout; }
+			get { return ECharacterClass.Scout; }
 		}
 
 		public const string WEAPON_ID1 = "scout_item";
@@ -85,7 +85,7 @@ namespace DOL.GS.Trainer
 				case "join the Defenders of Albion":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Scout, "Welcome young warrior! May your time in Albion's army be rewarding! Here is your Huntsman's Longbow. The bow is your guild weapon! Be sure to carry it with you always.", null);
+						PromotePlayer(player, (int)ECharacterClass.Scout, "Welcome young warrior! May your time in Albion's army be rewarding! Here is your Huntsman's Longbow. The bow is your guild weapon! Be sure to carry it with you always.", null);
 						player.ReceiveItem(this,WEAPON_ID1);
 					}
 					break;

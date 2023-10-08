@@ -8,7 +8,7 @@ namespace DOL.GS
         public CamouflageEcsAbilityEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.Camouflage;
+            EffectType = EEffect.Camouflage;
             EffectService.RequestStartEffect(this);
         }
 

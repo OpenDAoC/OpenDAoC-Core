@@ -26,12 +26,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Valkyrie Trainer
 	/// </summary>
-	[NPCGuildScript("Valkyrie Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Valkyrie Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Valkyrie Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Valkyrie Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ValkyrieTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Valkyrie; }
+			get { return ECharacterClass.Valkyrie; }
 		}
 
 		public const string WEAPON_ID1 = "valkyrie_item_sword";
@@ -89,7 +89,7 @@ namespace DOL.GS.Trainer
 				// promote player to other class
 				if (CanPromotePlayer(player))
 				{
-					PromotePlayer(player, (int)eCharacterClass.Valkyrie, LanguageMgr.GetTranslation(player.Client.Account.Language, "ValkyrieTrainer.WhisperReceive.Text1"), null);
+					PromotePlayer(player, (int)ECharacterClass.Valkyrie, LanguageMgr.GetTranslation(player.Client.Account.Language, "ValkyrieTrainer.WhisperReceive.Text1"), null);
 				}
 			}
 			else if ((player.Inventory.GetFirstItemByID(WEAPON_ID1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null) &&

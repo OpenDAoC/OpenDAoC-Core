@@ -7,12 +7,12 @@ namespace DOL.GS.PropertyCalc;
 /// 
 /// Crit probability is capped to 50%
 /// </summary>
-[PropertyCalculator(eProperty.CriticalHealHitChance)]
+[PropertyCalculator(EProperty.CriticalHealHitChance)]
 public class HealCriticalHitChanceCalculator : PropertyCalculator
 {
     public HealCriticalHitChanceCalculator() { }
 
-    public override int CalcValue(GameLiving living, eProperty property)
+    public override int CalcValue(GameLiving living, EProperty property)
     {
         int percent = living.AbilityBonus[(int)property];
 

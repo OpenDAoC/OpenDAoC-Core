@@ -11,21 +11,21 @@ namespace DOL.GS
 	public class SummonerCunovinda : GameEpicBoss
 	{
 		public SummonerCunovinda() : base() { }
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
 				default: return 70; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -34,15 +34,15 @@ namespace DOL.GS
 		{
 			get { return 100000; }
 		}
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				if (IsOutOfTetherRange)
 				{
-					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-						|| damageType == eDamageType.Slash)
+					if (damageType == EDamageType.Body || damageType == EDamageType.Cold || damageType == EDamageType.Energy || damageType == EDamageType.Heat
+						|| damageType == EDamageType.Matter || damageType == EDamageType.Spirit || damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+						|| damageType == EDamageType.Slash)
 					{
 						GamePlayer truc;
 						if (source is GamePlayer)
@@ -104,7 +104,7 @@ namespace DOL.GS
 			template.AddNPCEquipment(eInventorySlot.Cloak, 57, 54, 0, 0);
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 327, 43, 90, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
 			SummonerCunovindaBrain sbrain = new SummonerCunovindaBrain();
 			SetOwnBrain(sbrain);
@@ -118,7 +118,7 @@ namespace DOL.GS
 		{
 			GameNPC[] npcs;
 
-			npcs = WorldMgr.GetNPCsByNameFromRegion("Summoner Cunovinda", 248, (eRealm)0);
+			npcs = WorldMgr.GetNPCsByNameFromRegion("Summoner Cunovinda", 248, (ERealm)0);
 			if (npcs.Length == 0)
 			{
 				log.Warn("Summoner Cunovinda not found, creating it...");
@@ -140,7 +140,7 @@ namespace DOL.GS
 				OF.Quickness = 80;
 				OF.Empathy = 300;
 				OF.BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
-				OF.MeleeDamageType = eDamageType.Crush;
+				OF.MeleeDamageType = EDamageType.Crush;
 				OF.Faction = FactionMgr.GetFactionByID(187);
 				OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(206));
 
@@ -191,7 +191,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				RandomTarget = null;
 				CanCast = false;
@@ -278,13 +278,13 @@ namespace DOL.AI.Brain
 					spell.Icon = 2970;
 					spell.TooltipId = 2970;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Summoner Bolt";
 					spell.Range = 1800;
 					spell.SpellID = 11761;
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					m_CunovindaBolt = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CunovindaBolt);
 				}

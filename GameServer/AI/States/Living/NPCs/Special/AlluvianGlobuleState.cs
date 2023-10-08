@@ -7,7 +7,7 @@ public class AlluvianGlobuleStateIdle : StandardNpcStateIdle
 {
     public AlluvianGlobuleStateIdle(AlluvianGlobuleBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.IDLE;
+        StateType = EFSMStateType.IDLE;
     }
 
     public override void Enter()
@@ -32,7 +32,7 @@ public class AlluvianGlobuleStateRoaming : StandardNpcStateRoaming
 {
     public AlluvianGlobuleStateRoaming(AlluvianGlobuleBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.ROAMING;
+        StateType = EFSMStateType.ROAMING;
     }
 
     public override void Enter()

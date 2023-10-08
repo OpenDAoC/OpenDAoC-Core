@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Lurfos the Herald Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -42,11 +42,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -78,10 +78,10 @@ namespace DOL.GS
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 0, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
 			VisibleActiveWeaponSlots = 34;
-			MeleeDamageType = eDamageType.Slash;
+			MeleeDamageType = EDamageType.Slash;
 			Faction = FactionMgr.GetFactionByID(8);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
@@ -94,7 +94,7 @@ namespace DOL.GS
 		}
         public override void OnAttackEnemy(AttackData ad)
         {
-			if(ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if(ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
             {
 				if(LurfosHeraldBrain.IsColdWeapon)
 					CastSpell(Weapon_Cold, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -122,9 +122,9 @@ namespace DOL.GS
 					spell.Range = 500;
 					spell.Radius = 300;
 					spell.SpellID = 11885;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
+					spell.DamageType = (int)EDamageType.Heat;
 					m_Weapon_Heat = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Weapon_Heat);
 				}
@@ -150,9 +150,9 @@ namespace DOL.GS
 					spell.Range = 500;
 					spell.Radius = 300;
 					spell.SpellID = 11886;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
+					spell.DamageType = (int)EDamageType.Cold;
 					m_Weapon_Cold = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Weapon_Cold);
 				}
@@ -227,7 +227,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsColdWeapon = false;
 				IsHeatWeapon = false;

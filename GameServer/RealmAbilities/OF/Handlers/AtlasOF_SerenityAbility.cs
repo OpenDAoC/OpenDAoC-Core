@@ -9,7 +9,7 @@ namespace DOL.GS.RealmAbilities
     public class AtlasOF_SerenityAbility : RAPropertyEnhancer
     {
 
-        public AtlasOF_SerenityAbility(DbAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
+        public AtlasOF_SerenityAbility(DbAbility dba, int level) : base(dba, level, EProperty.Undefined) { }
 
         public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 2; }
 

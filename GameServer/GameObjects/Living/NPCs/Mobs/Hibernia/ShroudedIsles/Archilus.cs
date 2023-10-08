@@ -24,7 +24,7 @@ namespace DOL.GS.Scripts
 			this.Model = 817;
 			this.Size = 100;
 			this.Level = 58;
-			this.Realm = eRealm.None;
+			this.Realm = ERealm.None;
 			base.AddToWorld();
 			return true;
 		}
@@ -131,7 +131,7 @@ namespace DOL.GS.Scripts
 			}
 		}
 
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			GamePlayer player = source as GamePlayer;
 			if (player != null)

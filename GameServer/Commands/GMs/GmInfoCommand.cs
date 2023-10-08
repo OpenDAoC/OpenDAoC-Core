@@ -11,7 +11,7 @@ using DOL.Language;
 
 namespace DOL.GS.Commands
 {
-	[Command("&GMinfo", ePrivLevel.GM, "Various Information", "'/GMinfo (select a target or not)")]
+	[Command("&GMinfo", EPrivLevel.GM, "Various Information", "'/GMinfo (select a target or not)")]
 	public class GmInfoCommand : ACommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -188,8 +188,8 @@ namespace DOL.GS.Commands
 						info.Add(" + Left Swing %: " + target.LeftHandSwingChance);
 					if(target.ScalingFactor > 0)
 						info.Add(" + DamageTableScalingFactor: " + target.ScalingFactor);
-					if(target.GetModified(eProperty.MeleeDamage) > 0) 
-						info.Add(" + MeleeDamage bonus %: " + target.GetModified(eProperty.MeleeDamage));
+					if(target.GetModified(EProperty.MeleeDamage) > 0) 
+						info.Add(" + MeleeDamage bonus %: " + target.GetModified(EProperty.MeleeDamage));
 					if (target.GetWeaponSkill(new DbInventoryItem()) > 0)
 						info.Add(" + Calculated Weaponskill: " + target.GetWeaponSkill(new DbInventoryItem()));
 
@@ -210,26 +210,26 @@ namespace DOL.GS.Commands
 					if (target.BodyType > 0)
 						info.Add(" + Body Type:  " + target.BodyType);
 						
-					if (target.GetDamageResist(eProperty.Resist_Crush) > 0)
-				    	info.Add(" + Resist Crush:  " + target.GetDamageResist(eProperty.Resist_Crush));
-					if (target.GetDamageResist(eProperty.Resist_Slash) > 0)
-				    	info.Add(" + Resist Slash:  " + target.GetDamageResist(eProperty.Resist_Slash));
-					if (target.GetDamageResist(eProperty.Resist_Thrust) > 0)
-				    	info.Add(" + Resist Thrust:  " + target.GetDamageResist(eProperty.Resist_Thrust));
-					if (target.GetDamageResist(eProperty.Resist_Heat) > 0)
-				    	info.Add(" + Resist Heat:  " + target.GetDamageResist(eProperty.Resist_Heat));
-					if (target.GetDamageResist(eProperty.Resist_Cold) > 0)
-				    	info.Add(" + Resist Cold:  " + target.GetDamageResist(eProperty.Resist_Cold));
-					if (target.GetDamageResist(eProperty.Resist_Matter) > 0)
-				    	info.Add(" + Resist Matter:  " + target.GetDamageResist(eProperty.Resist_Matter));
-					if (target.GetDamageResist(eProperty.Resist_Natural) > 0)
-				    	info.Add(" + Resist Natural:  " + target.GetDamageResist(eProperty.Resist_Natural));
-					if (target.GetDamageResist(eProperty.Resist_Body) > 0)
-				    	info.Add(" + Resist Body:  " + target.GetDamageResist(eProperty.Resist_Body));
-					if (target.GetDamageResist(eProperty.Resist_Spirit) > 0)
-				    	info.Add(" + Resist Spirit:  " + target.GetDamageResist(eProperty.Resist_Spirit));
-					if (target.GetDamageResist(eProperty.Resist_Energy) > 0)
-				    	info.Add(" + Resist Energy:  " + target.GetDamageResist(eProperty.Resist_Energy));
+					if (target.GetDamageResist(EProperty.Resist_Crush) > 0)
+				    	info.Add(" + Resist Crush:  " + target.GetDamageResist(EProperty.Resist_Crush));
+					if (target.GetDamageResist(EProperty.Resist_Slash) > 0)
+				    	info.Add(" + Resist Slash:  " + target.GetDamageResist(EProperty.Resist_Slash));
+					if (target.GetDamageResist(EProperty.Resist_Thrust) > 0)
+				    	info.Add(" + Resist Thrust:  " + target.GetDamageResist(EProperty.Resist_Thrust));
+					if (target.GetDamageResist(EProperty.Resist_Heat) > 0)
+				    	info.Add(" + Resist Heat:  " + target.GetDamageResist(EProperty.Resist_Heat));
+					if (target.GetDamageResist(EProperty.Resist_Cold) > 0)
+				    	info.Add(" + Resist Cold:  " + target.GetDamageResist(EProperty.Resist_Cold));
+					if (target.GetDamageResist(EProperty.Resist_Matter) > 0)
+				    	info.Add(" + Resist Matter:  " + target.GetDamageResist(EProperty.Resist_Matter));
+					if (target.GetDamageResist(EProperty.Resist_Natural) > 0)
+				    	info.Add(" + Resist Natural:  " + target.GetDamageResist(EProperty.Resist_Natural));
+					if (target.GetDamageResist(EProperty.Resist_Body) > 0)
+				    	info.Add(" + Resist Body:  " + target.GetDamageResist(EProperty.Resist_Body));
+					if (target.GetDamageResist(EProperty.Resist_Spirit) > 0)
+				    	info.Add(" + Resist Spirit:  " + target.GetDamageResist(EProperty.Resist_Spirit));
+					if (target.GetDamageResist(EProperty.Resist_Energy) > 0)
+				    	info.Add(" + Resist Energy:  " + target.GetDamageResist(EProperty.Resist_Energy));
 					info.Add(" + Active weapon slot: " + target.ActiveWeaponSlot);
 					info.Add(" + Visible weapon slot: " + target.VisibleActiveWeaponSlots);
 					
@@ -436,10 +436,10 @@ namespace DOL.GS.Commands
 					info.Add(" ");
 					info.Add("CHARACTER STATS ");
 					info.Add("  - Maximum Health : " + target.MaxHealth);
-					info.Add("  - Current AF : " + target.GetModified(eProperty.ArmorFactor));
-					info.Add("  - Current ABS : " + target.GetModified(eProperty.ArmorAbsorption));
+					info.Add("  - Current AF : " + target.GetModified(EProperty.ArmorFactor));
+					info.Add("  - Current ABS : " + target.GetModified(EProperty.ArmorAbsorption));
 
-					for (eProperty stat = eProperty.Stat_First; stat <= eProperty.Stat_Last; stat++, cnt++)
+					for (EProperty stat = EProperty.Stat_First; stat <= EProperty.Stat_Last; stat++, cnt++)
 					{
 						sTitle += GlobalConstants.PropertyToName(stat);
                         sCurrent += target.GetModified(stat);
@@ -452,7 +452,7 @@ namespace DOL.GS.Commands
 					sCurrent = "";
 					sTitle = "";
 					cnt = 0;
-					for (eProperty res = eProperty.Resist_First; res <= eProperty.Resist_Last; res++, cnt++)
+					for (EProperty res = EProperty.Resist_First; res <= EProperty.Resist_Last; res++, cnt++)
 					{
 						sTitle += GlobalConstants.PropertyToName(res);
                         sCurrent += target.GetModified(res);
@@ -532,19 +532,19 @@ namespace DOL.GS.Commands
 					
 					name = target.Name;
 					
-					if (target.Realm == eRealm.None)
+					if (target.Realm == ERealm.None)
 						Realmname = "None";
 				
-					if (target.Realm == eRealm.Albion)
+					if (target.Realm == ERealm.Albion)
 						Realmname = "Albion";
 						
-					if (target.Realm == eRealm.Midgard)
+					if (target.Realm == ERealm.Midgard)
 						Realmname = "Midgard";
 						
-					if (target.Realm == eRealm.Hibernia)
+					if (target.Realm == ERealm.Hibernia)
 						Realmname = "Hibernia";
 						
-					if (target.Realm == eRealm.Door)
+					if (target.Realm == ERealm.Door)
 						Realmname = "All";
 						
 					if (target.Locked == 1)
@@ -579,19 +579,19 @@ namespace DOL.GS.Commands
 
 					name = target.Name;
 
-					if (target.Realm == eRealm.None)
+					if (target.Realm == ERealm.None)
 						Realmname = "None";
 
-					if (target.Realm == eRealm.Albion)
+					if (target.Realm == ERealm.Albion)
 						Realmname = "Albion";
 
-					if (target.Realm == eRealm.Midgard)
+					if (target.Realm == ERealm.Midgard)
 						Realmname = "Midgard";
 
-					if (target.Realm == eRealm.Hibernia)
+					if (target.Realm == ERealm.Hibernia)
 						Realmname = "Hibernia";
 
-					if (target.Realm == eRealm.Door)
+					if (target.Realm == ERealm.Door)
 						Realmname = "All";
 
 					info.Add("Component: " + target.Component);
@@ -770,11 +770,11 @@ namespace DOL.GS.Commands
 				else // No target and not in a house
 				{
 					string realm = " other realm";
-					if(client.Player.CurrentZone.Realm == eRealm.Albion)
+					if(client.Player.CurrentZone.Realm == ERealm.Albion)
 						realm = " Albion";
-					if(client.Player.CurrentZone.Realm == eRealm.Midgard)
+					if(client.Player.CurrentZone.Realm == ERealm.Midgard)
 						realm = " Midgard";
-					if(client.Player.CurrentZone.Realm == eRealm.Hibernia)
+					if(client.Player.CurrentZone.Realm == ERealm.Hibernia)
 						realm = " Hibernia";
 					
 					info.Add(" Game Time: \t"+ hour.ToString() + ":" + minute.ToString());
@@ -802,19 +802,19 @@ namespace DOL.GS.Commands
                     info.Add(" ");
                     info.Add(" Region Players:");
                     info.Add(" All players: " + ClientService.GetPlayersOfRegion(client.Player.CurrentRegion).Count);
-                    info.Add(" Alb players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Albion).Count);
-                    info.Add(" Hib players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Hibernia).Count);
-                    info.Add(" Mid players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Midgard).Count);
+                    info.Add(" Alb players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, ERealm.Albion).Count);
+                    info.Add(" Hib players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, ERealm.Hibernia).Count);
+                    info.Add(" Mid players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, ERealm.Midgard).Count);
 
 					info.Add(" ");
 					info.Add(" Total objects in region: " + client.Player.CurrentRegion.TotalNumberOfObjects);
 
                     info.Add(" ");
 					info.Add(" NPC in zone:");
-                    info.Add(" Alb : " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.Albion).Count);
-                    info.Add(" Hib : " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.Hibernia).Count);
-                    info.Add(" Mid: " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.Midgard).Count);
-                    info.Add(" None : " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.None).Count);
+                    info.Add(" Alb : " + client.Player.CurrentZone.GetNPCsOfZone(ERealm.Albion).Count);
+                    info.Add(" Hib : " + client.Player.CurrentZone.GetNPCsOfZone(ERealm.Hibernia).Count);
+                    info.Add(" Mid: " + client.Player.CurrentZone.GetNPCsOfZone(ERealm.Midgard).Count);
+                    info.Add(" None : " + client.Player.CurrentZone.GetNPCsOfZone(ERealm.None).Count);
                     info.Add(" ");
 					info.Add(" Total objects in zone: " + client.Player.CurrentZone.ObjectCount);
 					info.Add(" ");
@@ -928,13 +928,13 @@ namespace DOL.GS.Commands
 		}
 		private double GetTotalAFHelper(GameLiving living)
 		{
-			List<eArmorSlot> armorSlots = new List<eArmorSlot>();
-			armorSlots.Add(eArmorSlot.HEAD);
-			armorSlots.Add(eArmorSlot.TORSO);
-			armorSlots.Add(eArmorSlot.LEGS);
-			armorSlots.Add(eArmorSlot.HAND);
-			armorSlots.Add(eArmorSlot.ARMS);
-			armorSlots.Add(eArmorSlot.FEET);
+			List<EArmorSlot> armorSlots = new List<EArmorSlot>();
+			armorSlots.Add(EArmorSlot.HEAD);
+			armorSlots.Add(EArmorSlot.TORSO);
+			armorSlots.Add(EArmorSlot.LEGS);
+			armorSlots.Add(EArmorSlot.HAND);
+			armorSlots.Add(EArmorSlot.ARMS);
+			armorSlots.Add(EArmorSlot.FEET);
 
 			double totalArmor = 0;
 			

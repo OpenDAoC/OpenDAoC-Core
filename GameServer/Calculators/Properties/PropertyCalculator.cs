@@ -30,12 +30,12 @@ namespace DOL.GS.PropertyCalc
 		/// <param name="living"></param>
 		/// <param name="property"></param>
 		/// <returns></returns>
-		public virtual int CalcValue(GameLiving living, eProperty property) 
+		public virtual int CalcValue(GameLiving living, EProperty property) 
 		{
 			return 0;
 		}
 
-		public virtual int CalcValueBase(GameLiving living, eProperty property) 
+		public virtual int CalcValueBase(GameLiving living, EProperty property) 
 		{
 			return 0;
 		}
@@ -46,7 +46,7 @@ namespace DOL.GS.PropertyCalc
         /// <param name="living"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        public virtual int CalcValueFromBuffs(GameLiving living, eProperty property)
+        public virtual int CalcValueFromBuffs(GameLiving living, EProperty property)
         {
             return 0;
         }
@@ -57,7 +57,7 @@ namespace DOL.GS.PropertyCalc
         /// <param name="living"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        public virtual int CalcValueFromItems(GameLiving living, eProperty property)
+        public virtual int CalcValueFromItems(GameLiving living, EProperty property)
         {
             return 0;
         }

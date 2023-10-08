@@ -8,7 +8,7 @@ namespace DOL.GS.Effects
         public AtlasOF_VanishECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.Vanish;
+            EffectType = EEffect.Vanish;
             EffectService.RequestStartEffect(this);
         }
 

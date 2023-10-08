@@ -11,57 +11,57 @@
         int Empathy;
         int Charisma;
 
-        public int GetStat(eStat stat)
+        public int GetStat(EStat stat)
         {
             switch (stat)
             {
-                case eStat.STR:
+                case EStat.STR:
                     return Strength;
-                case eStat.DEX:
+                case EStat.DEX:
                     return Dexterity;
-                case eStat.CON:
+                case EStat.CON:
                     return Constitution;
-                case eStat.QUI:
+                case EStat.QUI:
                     return Quickness;
-                case eStat.INT:
+                case EStat.INT:
                     return Intelligence;
-                case eStat.PIE:
+                case EStat.PIE:
                     return Piety;
-                case eStat.EMP:
+                case EStat.EMP:
                     return Empathy;
-                case eStat.CHR:
+                case EStat.CHR:
                     return Charisma;
                 default:
                     return 0;
             }
         }
 
-        public void SetStat(eStat stat, int value)
+        public void SetStat(EStat stat, int value)
         {
             switch (stat)
             {
-                case eStat.STR:
+                case EStat.STR:
                     this.Strength = value;
                     break;
-                case eStat.DEX:
+                case EStat.DEX:
                     this.Dexterity = value;
                     break;
-                case eStat.CON:
+                case EStat.CON:
                     this.Constitution = value;
                     break;
-                case eStat.QUI:
+                case EStat.QUI:
                     this.Quickness = value;
                     break;
-                case eStat.INT:
+                case EStat.INT:
                     this.Intelligence = value;
                     break;
-                case eStat.PIE:
+                case EStat.PIE:
                     this.Piety = value;
                     break;
-                case eStat.EMP:
+                case EStat.EMP:
                     this.Empathy = value;
                     break;
-                case eStat.CHR:
+                case EStat.CHR:
                     this.Charisma = value;
                     break;
                 default:
@@ -69,32 +69,32 @@
             }
         }
 
-        public int IncreaseStat(eStat stat, int valueToIncreaseBy)
+        public int IncreaseStat(EStat stat, int valueToIncreaseBy)
         {
             switch (stat)
             {
-                case eStat.STR:
+                case EStat.STR:
                     Strength += valueToIncreaseBy;
                     return Strength;
-                case eStat.DEX:
+                case EStat.DEX:
                     Dexterity += valueToIncreaseBy;
                     return Dexterity;
-                case eStat.CON:
+                case EStat.CON:
                     Constitution += valueToIncreaseBy;
                     return Constitution;
-                case eStat.QUI:
+                case EStat.QUI:
                     Quickness += valueToIncreaseBy;
                     return Quickness;
-                case eStat.INT:
+                case EStat.INT:
                     Intelligence += valueToIncreaseBy;
                     return Intelligence;
-                case eStat.PIE:
+                case EStat.PIE:
                     Piety += valueToIncreaseBy;
                     return Piety;
-                case eStat.EMP:
+                case EStat.EMP:
                     Empathy += valueToIncreaseBy;
                     return Empathy;
-                case eStat.CHR:
+                case EStat.CHR:
                     Charisma += valueToIncreaseBy;
                     return Charisma;
                 default:
@@ -102,32 +102,32 @@
             }
         }
 
-        public int DecreaseStat(eStat stat, int valueToDecreaseBy)
+        public int DecreaseStat(EStat stat, int valueToDecreaseBy)
         {
             switch (stat)
             {
-                case eStat.STR:
+                case EStat.STR:
                     Strength -= valueToDecreaseBy;
                     return Strength;
-                case eStat.DEX:
+                case EStat.DEX:
                     Dexterity -= valueToDecreaseBy;
                     return Dexterity;
-                case eStat.CON:
+                case EStat.CON:
                     Constitution -= valueToDecreaseBy;
                     return Constitution;
-                case eStat.QUI:
+                case EStat.QUI:
                     Quickness -= valueToDecreaseBy;
                     return Quickness;
-                case eStat.INT:
+                case EStat.INT:
                     Intelligence -= valueToDecreaseBy;
                     return Intelligence;
-                case eStat.PIE:
+                case EStat.PIE:
                     Piety -= valueToDecreaseBy;
                     return Piety;
-                case eStat.EMP:
+                case EStat.EMP:
                     Empathy -= valueToDecreaseBy;
                     return Empathy;
-                case eStat.CHR:
+                case EStat.CHR:
                     Charisma -= valueToDecreaseBy;
                     return Charisma;
                 default:

@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 
 [Command(
      "&lfg",
-     ePrivLevel.Player,
+     EPrivLevel.Player,
      "Broadcast a LFG message to other players in the same region",
      "/lfg <message>")]
 public class LfgCommand : ACommandHandler, ICommandHandler

@@ -445,7 +445,7 @@ namespace DOL.GS
 
 		public static void SendDebugMessage(GameClient target, string message)
 		{
-			if (target.Account.PrivLevel > (int)ePrivLevel.Player)
+			if (target.Account.PrivLevel > (int)EPrivLevel.Player)
 				target.Out.SendMessage(message, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
 		}
 		
@@ -459,7 +459,7 @@ namespace DOL.GS
 		{
 			var translatedMsg = LanguageMgr.GetTranslation(target, translationID, args);
 			
-			if (target.Account.PrivLevel > (int)ePrivLevel.Player)
+			if (target.Account.PrivLevel > (int)EPrivLevel.Player)
 				target.Out.SendMessage(translatedMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
 		}
 		

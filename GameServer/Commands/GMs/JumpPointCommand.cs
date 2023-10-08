@@ -6,7 +6,7 @@ namespace DOL.GS.Commands
 {
     [Command(
 		"&jp",
-        ePrivLevel.GM,
+        EPrivLevel.GM,
         "Modify or use the jumppoint system",
         //usage
         "/jp add <name>",

@@ -30,7 +30,7 @@ namespace DOL.GS
 		public GameSiegeRam()
 			: base()
 		{
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			Name = "siege ram";
 
 			//AmmoType = 0x3B00;
@@ -172,11 +172,11 @@ namespace DOL.GS
 			ad.Attacker = this;
 			ad.Target = target;
 			ad.AttackType = AttackData.eAttackType.Ranged;
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 			ad.Damage = damageAmount;
 			ad.DamageType = MeleeDamageType;
 			
-			target.TakeDamage(this, eDamageType.Crush, damageAmount, 0);
+			target.TakeDamage(this, EDamageType.Crush, damageAmount, 0);
 			target.OnAttackedByEnemy(ad);
 		
 			if(Owner != null)

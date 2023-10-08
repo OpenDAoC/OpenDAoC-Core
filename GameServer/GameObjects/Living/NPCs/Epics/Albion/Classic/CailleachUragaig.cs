@@ -17,17 +17,17 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Cailleach Uragaig Initializing...");
 		}
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				if (IsOutOfTetherRange)
 				{
-					if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-						damageType == eDamageType.Energy || damageType == eDamageType.Heat
-						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-						damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-						|| damageType == eDamageType.Slash)
+					if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+						damageType == EDamageType.Energy || damageType == EDamageType.Heat
+						|| damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+						damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+						|| damageType == EDamageType.Slash)
 					{
 						GamePlayer truc;
 						if (source is GamePlayer)
@@ -46,13 +46,13 @@ namespace DOL.GS
 				}
 			}
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
@@ -72,11 +72,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -153,7 +153,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				AggroMessage = false;
 				TorchOfLight_Enabled = false;
@@ -224,12 +224,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 378;
 					spell.Icon = 378;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Flame Spear";
 					spell.Range = 1800;
 					spell.SpellID = 11983;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					m_CailleachUragaigDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CailleachUragaigDD);
 				}
@@ -250,14 +250,14 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 378;
 					spell.Icon = 378;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Flame Spear";
 					spell.Range = 1800;
 					spell.SpellID = 11983;
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					m_CailleachUragaigDD2 = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CailleachUragaigDD2);
 				}
@@ -374,14 +374,14 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 378;
 					spell.Icon = 378;
 					spell.Damage = 150;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Flame Spear";
 					spell.Range = 4000;
 					spell.SpellID = 11895;
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					m_Torch_Of_Light_Bolt = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Torch_Of_Light_Bolt);
 				}

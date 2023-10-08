@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&salvage",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"You can salvage one or multiple item(s) when you are a crafter",
 	"/salvage", "/salvage all", "/salvage <bag>", "/salvage <bag-bag>", "Add 'Qxx' to specify the minimum quality of the items to salvage (Q98)")]
 public class SalvageCommand : ACommandHandler, ICommandHandler

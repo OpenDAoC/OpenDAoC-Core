@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Hunter, "Hunter", "MidgardRogue", "Huntress")]
+	[CharacterClass((int)ECharacterClass.Hunter, "Hunter", "MidgardRogue", "Huntress")]
 	public class ClassHunter : ClassMidgardRogue
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Archery, Specs.CompositeBow };
@@ -32,11 +32,11 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.HouseofSkadi";
 			m_specializationMultiplier = 20;
-			m_primaryStat = eStat.DEX;
-			m_secondaryStat = eStat.QUI;
-			m_tertiaryStat = eStat.STR;
+			m_primaryStat = EStat.DEX;
+			m_secondaryStat = EStat.QUI;
+			m_tertiaryStat = EStat.STR;
 			m_wsbase = 380;
-			m_manaStat = eStat.DEX; 
+			m_manaStat = EStat.DEX; 
 		}
 
 		// public override IList<string> GetAutotrainableSkills()

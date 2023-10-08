@@ -29,7 +29,7 @@ namespace DOL.GS.Effects
 				(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.BerserkEffect.GoBerserkerFrenzy"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				living.Emote(eEmote.MidgardFrenzy);
 				//TODO differentiate model between Dwarves and other races
-				if ((living as GamePlayer).Race == (int)eRace.Dwarf)
+				if ((living as GamePlayer).Race == (int)ERace.Dwarf)
 				{
 					living.Model = 12;
 				}

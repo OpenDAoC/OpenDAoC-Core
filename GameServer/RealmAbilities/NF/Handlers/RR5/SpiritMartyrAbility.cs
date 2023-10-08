@@ -96,7 +96,7 @@ namespace DOL.GS.RealmAbilities
 				targets.Remove(mostInjuredPlayer);
 				int healValue = Math.Min(600, (mostInjuredPlayer.MaxHealth - mostInjuredPlayer.Health));
 				healValue = Math.Min(healValue, pool);
-                mostInjuredPlayer.ChangeHealth(player, eHealthChangeType.Spell, healValue);
+                mostInjuredPlayer.ChangeHealth(player, EHealthChangeType.Spell, healValue);
 			}
 
 			DisableSkill(living);

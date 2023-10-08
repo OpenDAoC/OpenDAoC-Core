@@ -16,21 +16,21 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Rift Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
 				default: return 30; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -85,7 +85,7 @@ namespace DOL.GS
 			Empathy = 300;
 			MaxDistance = 3500;
 			TetherRange = 3500;
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(150);
@@ -131,7 +131,7 @@ namespace DOL.AI.Brain
 				Body.Piety = 150;
 				Body.Intelligence = 150;
 				Body.Empathy = 300;
-				Body.MeleeDamageType = eDamageType.Crush;
+				Body.MeleeDamageType = EDamageType.Crush;
 				Body.Flags = 0;
 				IsValkyn = true;
 			}
@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 				Body.Piety = 150;
 				Body.Intelligence = 150;
 				Body.Empathy = 300;
-				Body.MeleeDamageType = eDamageType.Energy;
+				Body.MeleeDamageType = EDamageType.Energy;
 				Body.Flags = GameNPC.eFlags.DONTSHOWNAME;
 				IsRift = true;
             }
@@ -163,7 +163,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
 				IsRift = false;
@@ -234,9 +234,9 @@ namespace DOL.AI.Brain
 					spell.Damage = 300;
 					spell.Range = 1500;
 					spell.SpellID = 11852;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_RiftDD = new Spell(spell, 70);
@@ -268,13 +268,13 @@ namespace DOL.GS
 {
 	public class Morkenhet : GameNPC
 	{
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 35; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 35; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 35; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 35; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 35; // dmg reduction for melee dmg
 				default: return 35; // dmg reduction for rest resists
 			}
 		}
@@ -282,11 +282,11 @@ namespace DOL.GS
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;

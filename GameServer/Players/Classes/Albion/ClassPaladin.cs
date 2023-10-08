@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Paladin, "Paladin", "Fighter")]
+	[CharacterClass((int)ECharacterClass.Paladin, "Paladin", "Fighter")]
 	public class ClassPaladin : ClassFighter
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Slash, Specs.Chants };
@@ -32,10 +32,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.ChurchofAlbion";
 			m_specializationMultiplier = 25; //atlas increased from 20
-			m_primaryStat = eStat.CON;
-			m_secondaryStat = eStat.PIE;
-			m_tertiaryStat = eStat.STR;
-			m_manaStat = eStat.PIE;
+			m_primaryStat = EStat.CON;
+			m_secondaryStat = EStat.PIE;
+			m_tertiaryStat = EStat.STR;
+			m_manaStat = EStat.PIE;
 			m_wsbase = 380;
 			m_baseHP = 760;
 		}

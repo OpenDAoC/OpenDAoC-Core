@@ -84,12 +84,12 @@ namespace DOL.GS
             return true;
         }
 
-        protected static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value, double Effectiveness, bool IsSubstracted)
+        protected static void ApplyBonus(GameLiving owner, EBuffBonusCategory BonusCat, EProperty Property, double Value, double Effectiveness, bool IsSubstracted)
         {
             int effectiveValue = (int)(Value * Effectiveness);
 
             IPropertyIndexer tblBonusCat;
-            if (Property != eProperty.Undefined)
+            if (Property != EProperty.Undefined)
             {
                 tblBonusCat = GetBonusCategory(owner, BonusCat);
                 //Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
@@ -101,27 +101,27 @@ namespace DOL.GS
             }
         }
 
-        private static IPropertyIndexer GetBonusCategory(GameLiving target, eBuffBonusCategory categoryid)
+        private static IPropertyIndexer GetBonusCategory(GameLiving target, EBuffBonusCategory categoryid)
         {
             IPropertyIndexer bonuscat = null;
             switch (categoryid)
             {
-                case eBuffBonusCategory.BaseBuff:
+                case EBuffBonusCategory.BaseBuff:
                     bonuscat = target.BaseBuffBonusCategory;
                     break;
-                case eBuffBonusCategory.SpecBuff:
+                case EBuffBonusCategory.SpecBuff:
                     bonuscat = target.SpecBuffBonusCategory;
                     break;
-                case eBuffBonusCategory.Debuff:
+                case EBuffBonusCategory.Debuff:
                     bonuscat = target.DebuffCategory;
                     break;
-                case eBuffBonusCategory.Other:
+                case EBuffBonusCategory.Other:
                     bonuscat = target.BuffBonusCategory4;
                     break;
-                case eBuffBonusCategory.SpecDebuff:
+                case EBuffBonusCategory.SpecDebuff:
                     bonuscat = target.SpecDebuffCategory;
                     break;
-                case eBuffBonusCategory.AbilityBuff:
+                case EBuffBonusCategory.AbilityBuff:
                     bonuscat = target.AbilityBonus;
                     break;
                 default:

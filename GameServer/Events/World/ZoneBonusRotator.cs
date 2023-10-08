@@ -593,9 +593,9 @@ namespace DOL.GS.Scripts
             return temp;
         }
 
-        public static eRealm GetCurrentBonusRealm()
+        public static ERealm GetCurrentBonusRealm()
         {
-            return (eRealm) currentRvRRealm;
+            return (ERealm) currentRvRRealm;
         }
 
         private static void ClearRvRZones()

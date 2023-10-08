@@ -114,11 +114,11 @@ namespace DOL.GS
 								// bows don't use damage type - no warning needed
 								if (GlobalConstants.IsWeapon(item.Object_Type)
 								    && item.Type_Damage == 0
-								    && item.Object_Type != (int)eObjectType.CompositeBow
-								    && item.Object_Type != (int)eObjectType.Crossbow
-								    && item.Object_Type != (int)eObjectType.Longbow
-								    && item.Object_Type != (int)eObjectType.Fired
-								    && item.Object_Type != (int)eObjectType.RecurvedBow)
+								    && item.Object_Type != (int)EObjectType.CompositeBow
+								    && item.Object_Type != (int)EObjectType.Crossbow
+								    && item.Object_Type != (int)EObjectType.Longbow
+								    && item.Object_Type != (int)EObjectType.Fired
+								    && item.Object_Type != (int)EObjectType.RecurvedBow)
 								{
 									Log.Warn(m_player.Name + ": weapon with damage type 0 is loaded \"" + item.Name + "\" (" + item.ObjectId + ")");
 								}
@@ -420,7 +420,7 @@ namespace DOL.GS
 				// if active weapon was destroyed
 				if (m_player.ActiveWeapon == null)
 				{
-					m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
+					m_player.SwitchWeapon(EActiveWeaponSlot.Standard);
 				}
 				else
 				{
@@ -429,7 +429,7 @@ namespace DOL.GS
 			}
 			else if (oldSlot >= eInventorySlot.FirstQuiver && oldSlot <= eInventorySlot.FourthQuiver)
 			{
-				m_player.SwitchQuiver(eActiveQuiverSlot.None, true);
+				m_player.SwitchQuiver(EActiveQuiverSlot.None, true);
 			}
 			else if (IsEquippedSlot(oldSlot))
 			{
@@ -582,13 +582,13 @@ namespace DOL.GS
 					{
 						case eInventorySlot.RightHandWeapon:
 						case eInventorySlot.LeftHandWeapon:
-							m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
+							m_player.SwitchWeapon(EActiveWeaponSlot.Standard);
 							return false;
 						case eInventorySlot.TwoHandWeapon:
-							m_player.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+							m_player.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 							return false;
 						case eInventorySlot.DistanceWeapon:
-							m_player.SwitchWeapon(eActiveWeaponSlot.Distance);
+							m_player.SwitchWeapon(EActiveWeaponSlot.Distance);
 							return false;
 					}
 				}
@@ -624,7 +624,7 @@ namespace DOL.GS
 				}
 				/***********************************************/
 				
-				if (valid && toItem != null && fromItem.Object_Type == (int) eObjectType.Poison &&
+				if (valid && toItem != null && fromItem.Object_Type == (int) EObjectType.Poison &&
 				    GlobalConstants.IsWeapon(toItem.Object_Type))
 				{
 					m_player.ApplyPoison(fromItem, toItem);
@@ -748,7 +748,7 @@ namespace DOL.GS
 							break;
 							//weapon slots
 						case eInventorySlot.RightHandWeapon:
-							if (fromItem.Object_Type == (int) eObjectType.Shield //shield can't be used in right hand slot
+							if (fromItem.Object_Type == (int) EObjectType.Shield //shield can't be used in right hand slot
 							    ||
 							    (fromItem.Item_Type != (int) eInventorySlot.RightHandWeapon
 							     //right hand weapons can be used in right hand slot
@@ -767,11 +767,11 @@ namespace DOL.GS
 							}
 							break;
 						case eInventorySlot.TwoHandWeapon:
-							if (fromItem.Object_Type == (int) eObjectType.Shield //shield can't be used in 2h slot
+							if (fromItem.Object_Type == (int) EObjectType.Shield //shield can't be used in 2h slot
 							    || (fromItem.Item_Type != (int) eInventorySlot.RightHandWeapon //right hand weapons can be used in 2h slot
 							        && fromItem.Item_Type != (int) eInventorySlot.LeftHandWeapon //left hand weapons can be used in 2h slot
 							        && fromItem.Item_Type != (int) eInventorySlot.TwoHandWeapon //2h weapons can be used in 2h slot
-							        && fromItem.Object_Type != (int) eObjectType.Instrument)) //instruments can be used in 2h slot
+							        && fromItem.Object_Type != (int) EObjectType.Instrument)) //instruments can be used in 2h slot
 							{
 								valid = false;
 								m_player.Out.SendMessage(fromItem.GetName(0, true) + " can't go there!", eChatType.CT_System,
@@ -786,7 +786,7 @@ namespace DOL.GS
 							break;
 						case eInventorySlot.LeftHandWeapon:
 							if (fromItem.Item_Type != (int) toSlot ||
-							    (fromItem.Object_Type != (int) eObjectType.Shield && !m_player.attackComponent.CanUseLefthandedWeapon))
+							    (fromItem.Object_Type != (int) EObjectType.Shield && !m_player.attackComponent.CanUseLefthandedWeapon))
 								//shield can be used only in left hand slot
 							{
 								valid = false;
@@ -802,7 +802,7 @@ namespace DOL.GS
 							break;
 						case eInventorySlot.DistanceWeapon:
 							//m_player.Out.SendDebugMessage("From: {0} to {1} ItemType={2}",fromSlot,toSlot,fromItem.Item_Type);
-							if (fromItem.Item_Type != (int) toSlot && fromItem.Object_Type != (int) eObjectType.Instrument)
+							if (fromItem.Item_Type != (int) toSlot && fromItem.Object_Type != (int) EObjectType.Instrument)
 								//instruments can be used in ranged slot
 							{
 								valid = false;
@@ -871,7 +871,7 @@ namespace DOL.GS
 						case eInventorySlot.SecondQuiver:
 						case eInventorySlot.ThirdQuiver:
 						case eInventorySlot.FourthQuiver:
-							if (fromItem.Object_Type != (int) eObjectType.Arrow && fromItem.Object_Type != (int) eObjectType.Bolt)
+							if (fromItem.Object_Type != (int) EObjectType.Arrow && fromItem.Object_Type != (int) EObjectType.Bolt)
 							{
 								valid = false;
 								m_player.Out.SendMessage("You can't put your " + fromItem.Name + " in your quiver!", eChatType.CT_System,
@@ -941,7 +941,7 @@ namespace DOL.GS
 							break;
 							//weapon slots
 						case eInventorySlot.RightHandWeapon:
-							if (toItem.Object_Type == (int) eObjectType.Shield //shield can't be used in right hand slot
+							if (toItem.Object_Type == (int) EObjectType.Shield //shield can't be used in right hand slot
 							    ||
 							    (toItem.Item_Type != (int) eInventorySlot.RightHandWeapon //right hand weapons can be used in right hand slot
 							     && toItem.Item_Type != (int) eInventorySlot.LeftHandWeapon))
@@ -959,11 +959,11 @@ namespace DOL.GS
 							}
 							break;
 						case eInventorySlot.TwoHandWeapon:
-							if (toItem.Object_Type == (int) eObjectType.Shield //shield can't be used in 2h slot
+							if (toItem.Object_Type == (int) EObjectType.Shield //shield can't be used in 2h slot
 							    || (toItem.Item_Type != (int) eInventorySlot.RightHandWeapon //right hand weapons can be used in 2h slot
 							        && toItem.Item_Type != (int) eInventorySlot.LeftHandWeapon //left hand weapons can be used in 2h slot
 							        && toItem.Item_Type != (int) eInventorySlot.TwoHandWeapon //2h weapons can be used in 2h slot
-							        && toItem.Object_Type != (int) eObjectType.Instrument)) //instruments can be used in 2h slot
+							        && toItem.Object_Type != (int) EObjectType.Instrument)) //instruments can be used in 2h slot
 							{
 								valid = false;
 								m_player.Out.SendMessage(toItem.GetName(0, true) + " can't go there!", eChatType.CT_System,
@@ -978,7 +978,7 @@ namespace DOL.GS
 							break;
 						case eInventorySlot.LeftHandWeapon:
 							if (toItem.Item_Type != (int) fromSlot ||
-							    (toItem.Object_Type != (int) eObjectType.Shield && !m_player.attackComponent.CanUseLefthandedWeapon))
+							    (toItem.Object_Type != (int) EObjectType.Shield && !m_player.attackComponent.CanUseLefthandedWeapon))
 								//shield can be used only in left hand slot
 							{
 								valid = false;
@@ -993,7 +993,7 @@ namespace DOL.GS
 							}
 							break;
 						case eInventorySlot.DistanceWeapon:
-							if (toItem.Item_Type != (int) fromSlot && toItem.Object_Type != (int) eObjectType.Instrument)
+							if (toItem.Item_Type != (int) fromSlot && toItem.Object_Type != (int) EObjectType.Instrument)
 							{
 								valid = false;
 								m_player.Out.SendMessage(toItem.GetName(0, true) + " can't go there!", eChatType.CT_System,
@@ -1061,7 +1061,7 @@ namespace DOL.GS
 						case eInventorySlot.SecondQuiver:
 						case eInventorySlot.ThirdQuiver:
 						case eInventorySlot.FourthQuiver:
-							if (toItem.Object_Type != (int) eObjectType.Arrow && toItem.Object_Type != (int) eObjectType.Bolt)
+							if (toItem.Object_Type != (int) EObjectType.Arrow && toItem.Object_Type != (int) EObjectType.Bolt)
 							{
 								valid = false;
 								m_player.Out.SendMessage("You can't put your " + toItem.Name + " in your quiver!", eChatType.CT_System,
@@ -1102,60 +1102,60 @@ namespace DOL.GS
 				switch (toSlot)
 				{
 					case eInventorySlot.RightHandWeapon:
-						m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
+						m_player.SwitchWeapon(EActiveWeaponSlot.Standard);
 						break;
 					case eInventorySlot.TwoHandWeapon:
-						m_player.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+						m_player.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 						break;
 					case eInventorySlot.DistanceWeapon:
-						m_player.SwitchWeapon(eActiveWeaponSlot.Distance);
+						m_player.SwitchWeapon(EActiveWeaponSlot.Distance);
 						break;
 					case eInventorySlot.LeftHandWeapon:
-						if (m_player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+						if (m_player.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
 							m_player.SwitchWeapon(m_player.ActiveWeaponSlot);
-						else m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
+						else m_player.SwitchWeapon(EActiveWeaponSlot.Standard);
 						break;
 					case eInventorySlot.FirstQuiver:
-						m_player.SwitchQuiver(eActiveQuiverSlot.First, true);
+						m_player.SwitchQuiver(EActiveQuiverSlot.First, true);
 						break;
 					case eInventorySlot.SecondQuiver:
-						m_player.SwitchQuiver(eActiveQuiverSlot.Second, true);
+						m_player.SwitchQuiver(EActiveQuiverSlot.Second, true);
 						break;
 					case eInventorySlot.ThirdQuiver:
-						m_player.SwitchQuiver(eActiveQuiverSlot.Third, true);
+						m_player.SwitchQuiver(EActiveQuiverSlot.Third, true);
 						break;
 					case eInventorySlot.FourthQuiver:
-						m_player.SwitchQuiver(eActiveQuiverSlot.Fourth, true);
+						m_player.SwitchQuiver(EActiveQuiverSlot.Fourth, true);
 						break;
 
 
 					default:
 						// change active weapon if moved from active slot
 						if (fromSlot == eInventorySlot.RightHandWeapon &&
-						    m_player.ActiveWeaponSlot == eActiveWeaponSlot.Standard)
+						    m_player.ActiveWeaponSlot == EActiveWeaponSlot.Standard)
 						{
-							m_player.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+							m_player.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 						}
 						else if (fromSlot == eInventorySlot.TwoHandWeapon &&
-						         m_player.ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded)
+						         m_player.ActiveWeaponSlot == EActiveWeaponSlot.TwoHanded)
 						{
-							m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
+							m_player.SwitchWeapon(EActiveWeaponSlot.Standard);
 						}
 						else if (fromSlot == eInventorySlot.DistanceWeapon &&
-						         m_player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+						         m_player.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
 						{
-							m_player.SwitchWeapon(eActiveWeaponSlot.Standard);
+							m_player.SwitchWeapon(EActiveWeaponSlot.Standard);
 						}
 						else if (fromSlot == eInventorySlot.LeftHandWeapon &&
-						         (m_player.ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded ||
-						          m_player.ActiveWeaponSlot == eActiveWeaponSlot.Standard))
+						         (m_player.ActiveWeaponSlot == EActiveWeaponSlot.TwoHanded ||
+						          m_player.ActiveWeaponSlot == EActiveWeaponSlot.Standard))
 						{
 							m_player.SwitchWeapon(m_player.ActiveWeaponSlot);
 						}
 
 						if (fromSlot >= eInventorySlot.FirstQuiver && fromSlot <= eInventorySlot.FourthQuiver)
 						{
-							m_player.SwitchQuiver(eActiveQuiverSlot.None, true);
+							m_player.SwitchQuiver(EActiveQuiverSlot.None, true);
 						}
 
 						break;

@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&blink",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"Makes the specified UI Part of your target or yourself blinking.",
 	"/blink <id>: type /blink for a list of possible IDs")]
 public class BlinkCommand : ICommandHandler

@@ -18,13 +18,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Drihten Elreden Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -42,7 +42,7 @@ namespace DOL.GS
 
         public override void OnAttackedByEnemy(AttackData ad)
         {
-			if (ad != null && ad.AttackResult == eAttackResult.Evaded)
+			if (ad != null && ad.AttackResult == EAttackResult.Evaded)
 			{
 				styleComponent.NextCombatBackupStyle = AfterEvade;
 				styleComponent.NextCombatStyle = EvadeFollowUP;
@@ -51,12 +51,12 @@ namespace DOL.GS
         }
         public override void OnAttackEnemy(AttackData ad)
         {
-			if(ad != null && ad.AttackResult == eAttackResult.HitUnstyled)
+			if(ad != null && ad.AttackResult == EAttackResult.HitUnstyled)
             {
 				styleComponent.NextCombatBackupStyle = taunt;
 				styleComponent.NextCombatStyle = AfterEvade;
             }
-			if (ad != null && ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 238 && ad.Style.ClassID == 10)
+			if (ad != null && ad.AttackResult == EAttackResult.HitStyle && ad.Style.ID == 238 && ad.Style.ClassID == 10)
 			{
 				styleComponent.NextCombatStyle = EvadeFollowUP;
 			}
@@ -78,11 +78,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -117,10 +117,10 @@ namespace DOL.GS
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 881, 0, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
 			VisibleActiveWeaponSlots = 34;
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			ParryChance = 30;
 			EvadeChance = 50;
 
@@ -195,7 +195,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				canbringhelp=false;
 				if (CallHelp.Count > 0)
@@ -205,7 +205,7 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
-				if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteBuff))
+				if (!Body.effectListComponent.ContainsEffectForEffectType(EEffect.MeleeHasteBuff))
 					Body.CastSpell(Boss_Haste_Buff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
 				if (canbringhelp==false)
@@ -238,7 +238,7 @@ namespace DOL.AI.Brain
 					spell.Value = 38;
 					spell.SpellID = 11888;
 					spell.Target = "Self";
-					spell.Type = eSpellType.CombatSpeedBuff.ToString();
+					spell.Type = ESpellType.CombatSpeedBuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Boss_Haste_Buff = new Spell(spell, 70);

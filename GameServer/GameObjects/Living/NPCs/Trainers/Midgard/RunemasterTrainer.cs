@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Runemaster Trainer
 	/// </summary>
-	[NPCGuildScript("Runemaster Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Runemaster Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Runemaster Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Runemaster Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class RunemasterTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Runemaster; }
+			get { return ECharacterClass.Runemaster; }
 		}
 
 		public const string WEAPON_ID = "runemaster_item";
@@ -86,7 +86,7 @@ namespace DOL.GS.Trainer
 				case "join the House of Odin":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Runemaster, "Welcome young Runemaster! May your time in Midgard army be rewarding!", null);
+						PromotePlayer(player, (int)ECharacterClass.Runemaster, "Welcome young Runemaster! May your time in Midgard army be rewarding!", null);
 						player.ReceiveItem(this, WEAPON_ID);
 					}
 					break;

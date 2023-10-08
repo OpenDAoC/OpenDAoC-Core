@@ -26,12 +26,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Mauler Trainer
 	/// </summary>
-	[NPCGuildScript("Mauler Trainer", eRealm.Hibernia)]
+	[NPCGuildScript("Mauler Trainer", ERealm.Hibernia)]
 	public class HiberniaMaulerTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.MaulerHib; }
+			get { return ECharacterClass.MaulerHib; }
 		}
 
 		public const string WEAPON_ID1 = "maulerhib_item_staff";
@@ -90,7 +90,7 @@ namespace DOL.GS.Trainer
 				if (CanPromotePlayer(player))
 				{
 					// Mauler_Hib = 62
-					PromotePlayer(player, (int)eCharacterClass.MaulerHib, LanguageMgr.GetTranslation(player.Client.Account.Language, "MaulerHibTrainer.WhisperReceive.Text1"), null);
+					PromotePlayer(player, (int)ECharacterClass.MaulerHib, LanguageMgr.GetTranslation(player.Client.Account.Language, "MaulerHibTrainer.WhisperReceive.Text1"), null);
 				}
 			}
 			else if ((player.Inventory.GetFirstItemByID(WEAPON_ID1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null) &&

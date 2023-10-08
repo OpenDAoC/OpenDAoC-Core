@@ -167,7 +167,7 @@ namespace DOL.GS.RealmAbilities
 				mod = 1 - ((double)dist / 350);
 
 			int basedamage = (int)(effectiveness * mod);
-			int resist = (int)(basedamage * target.GetModified(eProperty.Resist_Energy) * -0.01);
+			int resist = (int)(basedamage * target.GetModified(EProperty.Resist_Energy) * -0.01);
 			int damage = basedamage + resist;
 
 
@@ -192,10 +192,10 @@ namespace DOL.GS.RealmAbilities
 
 			//target.TakeDamage(owner, eDamageType.Energy, damage, 0);
 			AttackData ad = new AttackData();
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 			ad.Attacker = owner;
 			ad.Target = target;
-			ad.DamageType = eDamageType.Energy;
+			ad.DamageType = EDamageType.Energy;
 			ad.Damage = damage;
 			target.OnAttackedByEnemy(ad);
 			owner.DealDamage(ad);

@@ -73,7 +73,7 @@ namespace DOL.GS.Spells
         public override void OnDirectEffect(GameLiving target)
         {
             base.OnDirectEffect(target);
-            Caster.ChangeHealth(Caster,eHealthChangeType.Spell,-Spell.ResurrectHealth);
+            Caster.ChangeHealth(Caster,EHealthChangeType.Spell,-Spell.ResurrectHealth);
         }
     }
 
@@ -121,7 +121,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = 10;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.PetLifedrain.ToString();
+            dbs.Type = ESpellType.PetLifedrain.ToString();
             dbs.Damage = 70;
             dbs.LifeDrainReturn = 100;
             dbs.Value = -100;

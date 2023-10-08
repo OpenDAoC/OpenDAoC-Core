@@ -67,12 +67,12 @@ namespace DOL.GS.Scripts
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -86,7 +86,7 @@ namespace DOL.GS.Scripts
         /// <param name="damageType">The type of damage.</param>
         /// <param name="damageAmount">The amount of damage inflicted.</param>
         /// <param name="criticalAmount">The critical amount of damage inflicted</param>
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             Brain.Notify(GameObjectEvent.TakeDamage, this,
@@ -130,7 +130,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
             base.Think();

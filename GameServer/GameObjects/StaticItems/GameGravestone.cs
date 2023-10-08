@@ -48,11 +48,11 @@ namespace DOL.GS
 			CurrentRegionID = player.CurrentRegionID;
 			m_level = 0;
 
-			if (player.Realm == eRealm.Albion)
+			if (player.Realm == ERealm.Albion)
 				m_model = 145; //Albion Gravestone
-			else if (player.Realm == eRealm.Midgard)
+			else if (player.Realm == ERealm.Midgard)
 				m_model = 636; //Midgard Gravestone
-			else if (player.Realm == eRealm.Hibernia)
+			else if (player.Realm == ERealm.Hibernia)
 				m_model = 637; //Hibernia Gravestone
 
 			m_xpValue = xpValue;

@@ -24,7 +24,7 @@ namespace DOL.GS.Commands
 {
 	[Command(
 		"&version",
-		ePrivLevel.Player,
+		EPrivLevel.Player,
 		"Get the version of the GameServer",
 		"/version")]
 	public class VersionCommandHandler : ACommandHandler, ICommandHandler

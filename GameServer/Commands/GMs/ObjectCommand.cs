@@ -6,7 +6,7 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Commands
 {
 	[Command("&object", //command to handle
-	              ePrivLevel.GM, //minimum privelege level
+	              EPrivLevel.GM, //minimum privelege level
 	              "Various Object commands!", //command description
 	              //usage
 	              "'/object info' to get information about the object",
@@ -221,11 +221,11 @@ namespace DOL.GS.Commands
 					}
 				case "realm":
 					{
-						eRealm realm = eRealm.None;
-						if (args[2] == "0") realm = eRealm.None;
-						if (args[2] == "1") realm = eRealm.Albion;
-						if (args[2] == "2") realm = eRealm.Midgard;
-						if (args[2] == "3") realm = eRealm.Hibernia;
+						ERealm realm = ERealm.None;
+						if (args[2] == "0") realm = ERealm.None;
+						if (args[2] == "1") realm = ERealm.Albion;
+						if (args[2] == "2") realm = ERealm.Midgard;
+						if (args[2] == "3") realm = ERealm.Hibernia;
 						targetObject.Realm = realm;
 						targetObject.SaveIntoDatabase();
 						DisplayMessage(client, "Object realm changed to: " + targetObject.Realm);

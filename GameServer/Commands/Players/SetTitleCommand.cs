@@ -6,7 +6,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	 "&settitle",
-	 ePrivLevel.Player,
+	 EPrivLevel.Player,
 	 "Sets the current player title",
 	 "/settitle <index> - to change current title using index in the list")]
 public class SetTitleCommand : ACommandHandler, ICommandHandler

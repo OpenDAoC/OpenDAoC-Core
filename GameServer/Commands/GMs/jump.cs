@@ -7,7 +7,7 @@ using DOL.Language;
 namespace DOL.GS.Commands
 {
 	[Command("&jump",
-		ePrivLevel.GM,
+		EPrivLevel.GM,
 		"GMCommands.Jump.Description",
 		"GMCommands.Jump.Information",
 		"GMCommands.Jump.Usage.ToPlayerName",
@@ -102,7 +102,7 @@ namespace DOL.GS.Commands
 
 					if (targetPlayer == null)
 					{
-						GameNPC[] npcs = WorldMgr.GetNPCsByName(args[2], eRealm.None);
+						GameNPC[] npcs = WorldMgr.GetNPCsByName(args[2], ERealm.None);
 
 						if (npcs.Length > 0)
 						{
@@ -159,7 +159,7 @@ namespace DOL.GS.Commands
 						int realm = 0;
 						int.TryParse(args[3], out realm);
 
-						GameNPC[] npcs = WorldMgr.GetNPCsByName(args[2], (eRealm)realm);
+						GameNPC[] npcs = WorldMgr.GetNPCsByName(args[2], (ERealm)realm);
 
 						if (npcs.Length > 0)
 						{

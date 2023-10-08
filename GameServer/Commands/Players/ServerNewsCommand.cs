@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 [Command(
     "&servernews",
      new string[] { "&sn" },
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "Shows the current Server News",
     "Usage: /servernews")]
 public class ServerNewsCommand : ACommandHandler, ICommandHandler

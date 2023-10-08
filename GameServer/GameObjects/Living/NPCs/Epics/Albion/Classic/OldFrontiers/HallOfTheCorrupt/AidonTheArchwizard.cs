@@ -12,21 +12,21 @@ namespace DOL.GS
         public AidonTheArchwizard() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 30; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 30; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 30; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 30; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 30; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 30; // dmg reduction for melee dmg
                 default: return 40; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -35,17 +35,17 @@ namespace DOL.GS
         {
             get { return 40000; }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (this.IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+                        damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+                        damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -107,12 +107,12 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             AidonTheArchwizardBrain.IsPulled = false;
             AidonTheArchwizardBrain.CanCast = false;
 
             VisibleActiveWeaponSlots = 34;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             AidonTheArchwizardBrain sbrain = new AidonTheArchwizardBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -125,7 +125,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Aidon the Archwizard", 277, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Aidon the Archwizard", 277, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Aidon the Archwizard found, creating it...");
@@ -138,7 +138,7 @@ namespace DOL.GS
                 HOC.Level = 75;
                 HOC.Size = 60;
                 HOC.CurrentRegionID = 277; //hall of the corrupt
-                HOC.MeleeDamageType = eDamageType.Crush;
+                HOC.MeleeDamageType = EDamageType.Crush;
                 HOC.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 HOC.Faction = FactionMgr.GetFactionByID(187);
                 HOC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
@@ -222,7 +222,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
                 spawn_copies = false;
@@ -253,7 +253,7 @@ namespace DOL.AI.Brain
 
             if (Body.TargetObject != null && HasAggro)
             {
-                if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageReturn))
+                if (!Body.effectListComponent.ContainsEffectForEffectType(EEffect.DamageReturn))
                 {
                     GameLiving oldTarget = Body.TargetObject as GameLiving;
                     Body.StopFollowing();
@@ -395,11 +395,11 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 1800;
                     spell.SpellID = 11771;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
+                    spell.DamageType = (int)EDamageType.Heat;
                     m_AidonBoss_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AidonBoss_DD);
                 }
@@ -428,7 +428,7 @@ namespace DOL.AI.Brain
                     spell.Type = "DamageShield";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
+                    spell.DamageType = (int)EDamageType.Heat;
                     m_FireDS = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireDS);
                 }
@@ -454,11 +454,11 @@ namespace DOL.GS
             get { return 350; }
             set { }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -481,7 +481,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 61;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             Name = "Illusion of Aidon the Archwizard";
             RespawnInterval = -1;
             Flags = eFlags.GHOST;
@@ -495,9 +495,9 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             ++CopyCountFire;
 
             Size = 55;
@@ -507,7 +507,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             BodyType = 6;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             AidonCopyFireBrain adds = new AidonCopyFireBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;
@@ -555,11 +555,11 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 2500;
                     spell.SpellID = 11766;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
+                    spell.DamageType = (int)EDamageType.Heat;
                     m_Aidon_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aidon_DD);
                 }
@@ -587,11 +587,11 @@ namespace DOL.GS
             get { return 350; }
             set { }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -614,7 +614,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 61;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             Name = "Illusion of Aidon the Archwizard";
             RespawnInterval = -1;
             Flags = eFlags.GHOST;
@@ -628,9 +628,9 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             ++CopyCountIce;
 
             Size = 55;
@@ -640,7 +640,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             BodyType = 6;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             AidonCopyIceBrain adds = new AidonCopyIceBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;
@@ -690,11 +690,11 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 2500;
                     spell.SpellID = 11767;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DamageSpeedDecreaseNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Cold;
+                    spell.DamageType = (int)EDamageType.Cold;
                     m_Aidon_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aidon_DD);
                 }
@@ -720,11 +720,11 @@ namespace DOL.GS
             get { return 350; }
             set { }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -747,7 +747,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 61;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             Name = "Illusion of Aidon the Archwizard";
             RespawnInterval = -1;
             Flags = eFlags.GHOST;
@@ -761,9 +761,9 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             ++CopyCountAir;
 
             Size = 55;
@@ -773,7 +773,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             BodyType = 6;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             AidonCopyAirBrain adds = new AidonCopyAirBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;
@@ -821,11 +821,11 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 2500;
                     spell.SpellID = 11768;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Spirit;
+                    spell.DamageType = (int)EDamageType.Spirit;
                     m_Aidon_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aidon_DD);
                 }
@@ -851,11 +851,11 @@ namespace DOL.GS
             get { return 350; }
             set { }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -878,7 +878,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 61;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             Name = "Illusion of Aidon the Archwizard";
             RespawnInterval = -1;
             Flags = eFlags.GHOST;
@@ -892,9 +892,9 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.Cloak, 91, 0, 0, 0);
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166, 0, 94);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             ++CopyCountEarth;
 
             Size = 55;
@@ -904,7 +904,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             BodyType = 6;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             AidonCopyEarthBrain adds = new AidonCopyEarthBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;
@@ -951,11 +951,11 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 2500;
                     spell.SpellID = 11769;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Matter;
+                    spell.DamageType = (int)EDamageType.Matter;
                     m_Aidon_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aidon_DD);
                 }

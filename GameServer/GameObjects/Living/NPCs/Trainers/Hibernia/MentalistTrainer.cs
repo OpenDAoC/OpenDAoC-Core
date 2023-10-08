@@ -26,12 +26,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Mentalist Trainer
 	/// </summary>	
-	[NPCGuildScript("Mentalist Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Mentalist Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Mentalist Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Mentalist Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class MentalistTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Mentalist; }
+			get { return ECharacterClass.Mentalist; }
 		}
 
 		public const string WEAPON_ID1 = "mentalist_item";
@@ -90,7 +90,7 @@ namespace DOL.GS.Trainer
                 // promote player to other class
                 if (CanPromotePlayer(player))
                 {
-                    PromotePlayer(player, (int)eCharacterClass.Mentalist, LanguageMgr.GetTranslation(player.Client.Account.Language, "MentalistTrainer.WhisperReceive.Text1", player.GetName(0, false)), null);
+                    PromotePlayer(player, (int)ECharacterClass.Mentalist, LanguageMgr.GetTranslation(player.Client.Account.Language, "MentalistTrainer.WhisperReceive.Text1", player.GetName(0, false)), null);
                     player.ReceiveItem(this, WEAPON_ID1);
                 }
             }

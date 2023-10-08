@@ -755,9 +755,9 @@ namespace DOL.GS
                     }
                     
 
-                    if (Properties.USE_NPCGUILDSCRIPTS && mob.Guild.Length > 0 && mob.Realm >= 0 && mob.Realm <= (int)eRealm._Last)
+                    if (Properties.USE_NPCGUILDSCRIPTS && mob.Guild.Length > 0 && mob.Realm >= 0 && mob.Realm <= (int)ERealm._Last)
                     {
-                        Type type = ScriptMgr.FindNPCGuildScriptClass(mob.Guild, (eRealm)mob.Realm);
+                        Type type = ScriptMgr.FindNPCGuildScriptClass(mob.Guild, (ERealm)mob.Realm);
                         if (type != null)
                         {
                             try
@@ -1439,7 +1439,7 @@ namespace DOL.GS
 
         #region Get in radius
 
-        public List<T> GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius) where T : GameObject
+        public List<T> GetInRadius<T>(Point3D point, EGameObjectType objectType, ushort radius) where T : GameObject
         {
             // Check if we are around borders of a zone.
             Zone startingZone = GetZone(point.X, point.Y);
@@ -1509,22 +1509,22 @@ namespace DOL.GS
 
         public List<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameStaticItem>(point, eGameObjectType.ITEM, radius);
+            return GetInRadius<GameStaticItem>(point, EGameObjectType.ITEM, radius);
         }
 
         public List<GameNPC> GetNPCsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameNPC>(point, eGameObjectType.NPC, radius);
+            return GetInRadius<GameNPC>(point, EGameObjectType.NPC, radius);
         }
 
         public List<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GamePlayer>(point, eGameObjectType.PLAYER, radius);
+            return GetInRadius<GamePlayer>(point, EGameObjectType.PLAYER, radius);
         }
 
         public List<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, radius);
+            return GetInRadius<GameDoorBase>(point, EGameObjectType.DOOR, radius);
         }
 
         #endregion

@@ -62,7 +62,7 @@ namespace DOL.GS
 			}
 		}
 
-		public override eRealm Realm
+		public override ERealm Realm
 		{
 			get
 			{
@@ -70,15 +70,15 @@ namespace DOL.GS
 				{
 					case 1:
 					case 11:
-						return eRealm.Albion;
+						return ERealm.Albion;
 					case 2:
 					case 12:
-						return eRealm.Midgard;
+						return ERealm.Midgard;
 					case 3:
 					case 13:
-						return eRealm.Hibernia;
+						return ERealm.Hibernia;
 					default:
-						return eRealm.None;
+						return ERealm.None;
 				}
 			}
 			set
@@ -136,17 +136,17 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="message">The message</param>
 		/// <param name="realm">The realm</param>
-		public static void BroadcastDiscordRelic(string message, eRealm realm, string keepName)
+		public static void BroadcastDiscordRelic(string message, ERealm realm, string keepName)
 		{
 			int color = 0;
 			string avatarUrl = "";
 			switch (realm)
 			{
-				case eRealm._FirstPlayerRealm:
+				case ERealm._FirstPlayerRealm:
 					color = 16711680;
 					avatarUrl = "";
 					break;
-				case eRealm._LastPlayerRealm:
+				case ERealm._LastPlayerRealm:
 					color = 32768;
 					avatarUrl = "";
 					break;
@@ -257,7 +257,7 @@ namespace DOL.GS
 
 			if (relic.CurrentCarrier != null)
 			{
-				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.RemoveRelic.Removed", relic.CurrentCarrier.Name, GlobalConstants.RealmToName((eRealm)relic.CurrentCarrier.Realm), relic.Name, Name);
+				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.RemoveRelic.Removed", relic.CurrentCarrier.Name, GlobalConstants.RealmToName((ERealm)relic.CurrentCarrier.Realm), relic.Name, Name);
 
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
 					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);

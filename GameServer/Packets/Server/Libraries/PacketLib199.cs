@@ -41,18 +41,18 @@ namespace DOL.GS.PacketHandler
 		}
 
 		// Dunnerholl 2009-09-10 i do not like the way this is done
-		public override void SendCharacterOverview(eRealm realm)
+		public override void SendCharacterOverview(ERealm realm)
 		{
 			int firstAccountSlot;
 			switch (realm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					firstAccountSlot = 100;
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					firstAccountSlot = 200;
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					firstAccountSlot = 300;
 					break;
 				default:
@@ -127,7 +127,7 @@ namespace DOL.GS.PacketHandler
 								}
 								else
 								{
-									pak.FillString(((eCharacterClass)characters[j].Class).ToString(), 24); //Class name
+									pak.FillString(((ECharacterClass)characters[j].Class).ToString(), 24); //Class name
 								}
 								//pak.FillString(GamePlayer.RACENAMES[characters[j].Race], 24);
 	                            pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
@@ -207,12 +207,12 @@ namespace DOL.GS.PacketHandler
 									if (found == 0)
 										pak.WriteShort(0x00);
 								}
-								if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+								if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 								{
 									pak.WriteByte(0x02);
 									pak.WriteByte(0x02);
 								}
-								else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+								else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 								{
 									pak.WriteByte(0x03);
 									pak.WriteByte(0x03);
@@ -230,9 +230,9 @@ namespace DOL.GS.PacketHandler
 									}
 									if (righthand == lefthand)
 									{
-										if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+										if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 											righthand = lefthand = 0x02;
-										else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+										else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 											righthand = lefthand = 0x03;
 									}
 									pak.WriteByte(righthand);

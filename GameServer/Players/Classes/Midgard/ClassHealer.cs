@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Healer, "Healer", "Seer")]
+	[CharacterClass((int)ECharacterClass.Healer, "Healer", "Seer")]
 	public class ClassHealer : ClassSeer
 	{
 		public ClassHealer()
@@ -30,10 +30,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.HouseofEir";
 			m_specializationMultiplier = 10;
-			m_primaryStat = eStat.PIE;
-			m_secondaryStat = eStat.CON;
-			m_tertiaryStat = eStat.STR;
-			m_manaStat = eStat.PIE;
+			m_primaryStat = EStat.PIE;
+			m_secondaryStat = EStat.CON;
+			m_tertiaryStat = EStat.STR;
+			m_manaStat = EStat.PIE;
 		}
 
 		public override bool HasAdvancedFromBaseClass()

@@ -7,7 +7,7 @@ namespace DOL.GS.Commands
 {
 	[Command(
 		"&keep",
-		ePrivLevel.GM,
+		EPrivLevel.GM,
 		"GMCommands.Keep.Description",
 		"GMCommands.Keep.Usage.FastCreate",
 		"GMCommands.Keep.Usage.FastCreate.Info",
@@ -2338,10 +2338,10 @@ namespace DOL.GS.Commands
 							DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Keep.Remove.MustCreateKeepFirst"));
 							return;
 						}
-						eRealm realm = eRealm.None;
+						ERealm realm = ERealm.None;
 						try
 						{
-							realm = (eRealm)Convert.ToByte(args[2]);
+							realm = (ERealm)Convert.ToByte(args[2]);
 						}
 						catch
 						{

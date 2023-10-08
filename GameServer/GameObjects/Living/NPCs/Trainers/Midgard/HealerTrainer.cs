@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Healer Trainer
 	/// </summary>
-	[NPCGuildScript("Healer Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Healer Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Healer Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Healer Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class HealerTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Healer; }
+			get { return ECharacterClass.Healer; }
 		}
 
 		public HealerTrainer() : base()
@@ -84,7 +84,7 @@ namespace DOL.GS.Trainer
 				case "join the House of Eir":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Healer, "Welcome young Healer! May your time in Midgard army be rewarding!", null);	// TODO: gifts
+						PromotePlayer(player, (int)ECharacterClass.Healer, "Welcome young Healer! May your time in Midgard army be rewarding!", null);	// TODO: gifts
 					}
 					break;
 			}

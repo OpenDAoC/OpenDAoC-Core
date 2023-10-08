@@ -6,7 +6,7 @@ using DOL.Language;
 namespace DOL.GS.Commands;
 
 [Command("&rent", //command to handle
-	ePrivLevel.Player, //minimum privelege level
+	EPrivLevel.Player, //minimum privelege level
 	"Pay house rent", //command description
     "Use /rent personal/guild <gold> to pay.")]
 public class RentCommand : ACommandHandler, ICommandHandler

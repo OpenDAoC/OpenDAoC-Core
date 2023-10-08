@@ -19,26 +19,26 @@ namespace DOL.GS
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 Point3D spawn = new Point3D(SpawnPoint.X, SpawnPoint.Y, SpawnPoint.Z);
                 if (!source.IsWithinRadius(spawn,800))//dont take any dmg 
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold || damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit || damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -110,11 +110,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -123,7 +123,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Conservator", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Conservator", 191, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Conservator not found, creating it...");
@@ -144,7 +144,7 @@ namespace DOL.GS
                 CO.Constitution = 200;
                 CO.Quickness = 125;
                 CO.BodyType = 5;
-                CO.MeleeDamageType = eDamageType.Slash;
+                CO.MeleeDamageType = EDamageType.Slash;
                 CO.Faction = FactionMgr.GetFactionByID(96);
                 CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
@@ -224,7 +224,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 spamaoe = false;
                 spampoison = false;
@@ -261,7 +261,7 @@ namespace DOL.AI.Brain
                     if (spampoison == false)
                     {
                         GameLiving target = Body.TargetObject as GameLiving;
-                        if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+                        if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
                         {
                             Body.TurnTo(Body.TargetObject);
                             new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(PoisonTimer), 5000);
@@ -308,7 +308,7 @@ namespace DOL.AI.Brain
                     spell.Type = "DamageOverTime";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+                    spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
                     m_co_poison = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_co_poison);
                 }
@@ -334,8 +334,8 @@ namespace DOL.AI.Brain
                     spell.Radius = 1200;
                     spell.SpellID = 11704;
                     spell.Target = "Enemy";
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-                    spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
+                    spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_co_aoe = new Spell(spell, 70);                   

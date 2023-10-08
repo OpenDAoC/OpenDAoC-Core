@@ -9,7 +9,7 @@ namespace DOL.GS.Commands;
 [Command(
     "&battlechat",
     new string[] { "&bc", "&bchat" },
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "Battle group chat command",
     "/bc <text>")]
 public class BattleGroupChatCommand : ACommandHandler, ICommandHandler

@@ -6,7 +6,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&sell",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Sell items to a targeted merchant.  Specify a single bag, a range or all",
 	"Use: /sell 4 to sell all items bag 4",
 	"/sell 2-3 to sell all items in bags 2 and 3",

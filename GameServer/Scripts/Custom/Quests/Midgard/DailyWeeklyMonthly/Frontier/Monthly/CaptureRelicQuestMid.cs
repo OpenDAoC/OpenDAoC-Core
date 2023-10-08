@@ -61,7 +61,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Kelteen", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Kelteen", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -81,7 +81,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				Kelteen.Model = 164;
 				Kelteen.Name = "Kelteen";
 				Kelteen.GuildName = "Atlas Logistics";
-				Kelteen.Realm = eRealm.Midgard;
+				Kelteen.Realm = ERealm.Midgard;
 				//Svasud Faste Location
 				Kelteen.CurrentRegionID = 100;
 				Kelteen.Size = 60;

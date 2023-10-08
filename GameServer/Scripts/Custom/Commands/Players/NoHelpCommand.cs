@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&nohelp",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Toggle nohelp on or off, to follow the path of solitude and stop receiving help from  your realm", "/nohelp>")]
 public class NoHelpCommand : ACommandHandler, ICommandHandler
 {

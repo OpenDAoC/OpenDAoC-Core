@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&search",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Search the current area.",
 	"/search")]
 public class QuestSearchCommand : ACommandHandler, ICommandHandler

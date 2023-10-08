@@ -4,7 +4,7 @@ namespace DOL.GS.Scripts
 {
     [Command(
         "&achievements",
-        ePrivLevel.Player,
+        EPrivLevel.Player,
         "View your progress towards various achievements", "/achievements list")]
     public class AchievementCommandHandler : ACommandHandler, ICommandHandler
     {

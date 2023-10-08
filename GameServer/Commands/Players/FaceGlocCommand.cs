@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&facegloc",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Turns and faces your character into the direction of the x, y coordinates provided (using DOL region global coordinates).",
 	"/facegloc [x] [y]")]
 public class FaceGlocCommand : ACommandHandler, ICommandHandler

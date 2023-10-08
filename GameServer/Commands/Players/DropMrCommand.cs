@@ -1,7 +1,7 @@
 namespace DOL.GS.Commands;
 
 [Command("&dropmr", //command to handle
-    ePrivLevel.Player, //minimum privelege level
+    EPrivLevel.Player, //minimum privelege level
     "Drops the Minotaurrelic.", //command description
     "/dropmr")] //usage
 public class DropMrCommand : ICommandHandler

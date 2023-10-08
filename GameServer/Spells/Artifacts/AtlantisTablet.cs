@@ -24,7 +24,7 @@ namespace DOL.GS.Spells
                         return;
                     }
                 }
-				if(player.CharacterClass.ID!=(byte)eCharacterClass.Necromancer && (ushort)Spell.LifeDrainReturn > 0) 
+				if(player.CharacterClass.ID!=(byte)ECharacterClass.Necromancer && (ushort)Spell.LifeDrainReturn > 0) 
                     player.Model = (ushort)Spell.LifeDrainReturn;
 				player.Out.SendUpdatePlayer();
 			}
@@ -35,7 +35,7 @@ namespace DOL.GS.Spells
 			if(effect.Owner is GamePlayer)
 			{
 				GamePlayer player=effect.Owner as GamePlayer; 				
-				if(player.CharacterClass.ID!=(byte)eCharacterClass.Necromancer) player.Model = player.CreationModel;
+				if(player.CharacterClass.ID!=(byte)ECharacterClass.Necromancer) player.Model = player.CreationModel;
 				player.Out.SendUpdatePlayer();
 			}	
 			return base.OnEffectExpires(effect,noMessages);

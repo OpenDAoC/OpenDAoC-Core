@@ -306,7 +306,7 @@ namespace DOL.GS
 						player.Out.SendMessage(materialName, eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 					}
 
-					if (player.Client.Account.PrivLevel == (uint)ePrivLevel.Player) return false;
+					if (player.Client.Account.PrivLevel == (uint)EPrivLevel.Player) return false;
 				}
 
 				return true;
@@ -659,9 +659,9 @@ namespace DOL.GS
 			craftingTime = (int)(craftingTime * (1 - (.05 * RelicMgr.GetRelicCount(player.Realm))));
 
 			//keep bonuses reduction in crafting time
-			if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Craft_Timers_5, (eRealm)player.Realm))
+			if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Craft_Timers_5, (ERealm)player.Realm))
 				craftingTime = (int)(craftingTime / 1.05);
-			else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Craft_Timers_3, (eRealm)player.Realm))
+			else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Craft_Timers_3, (ERealm)player.Realm))
 				craftingTime = (int)(craftingTime / 1.03);
 
 			int con = GetItemCon(player.GetCraftingSkillValue(m_eskill), recipe.Level);

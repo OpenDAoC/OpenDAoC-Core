@@ -2,28 +2,28 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.OffhandDamage)]
+[PropertyCalculator(EProperty.OffhandDamage)]
 public class OffhandDamageCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		return Math.Max(0, living.AbilityBonus[(int) property]);
 	}
 }
 
-[PropertyCalculator(eProperty.OffhandChance)]
+[PropertyCalculator(EProperty.OffhandChance)]
 public class OffhandChanceCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		return Math.Max(0, living.AbilityBonus[(int) property]);
 	}
 }
 
-[PropertyCalculator(eProperty.OffhandDamageAndChance)]
+[PropertyCalculator(EProperty.OffhandDamageAndChance)]
 public class OffhandDamageAndChanceCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		return Math.Max(0, living.AbilityBonus[(int) property]);
 	}

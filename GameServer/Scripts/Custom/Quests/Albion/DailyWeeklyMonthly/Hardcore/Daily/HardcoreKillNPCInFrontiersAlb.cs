@@ -58,7 +58,7 @@ namespace DOL.GS.DailyQuest
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Succi", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Succi", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -78,7 +78,7 @@ namespace DOL.GS.DailyQuest
 				SucciAlb.Model = 902;
 				SucciAlb.Name = "Succi";
 				SucciAlb.GuildName = "Spectre of Death";
-				SucciAlb.Realm = eRealm.Albion;
+				SucciAlb.Realm = ERealm.Albion;
 				//Sauvage Location
 				SucciAlb.CurrentRegionID = 1;
 				SucciAlb.Size = 60;

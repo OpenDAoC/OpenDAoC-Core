@@ -149,7 +149,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendRealm(eRealm realm)
+		public virtual void SendRealm(ERealm realm)
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Realm)))
 			{
@@ -158,18 +158,18 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendCharacterOverview(eRealm realm)
+		public virtual void SendCharacterOverview(ERealm realm)
 		{
 			int firstAccountSlot;
 			switch (realm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					firstAccountSlot = 100;
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					firstAccountSlot = 200;
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					firstAccountSlot = 300;
 					break;
 				default:
@@ -289,12 +289,12 @@ namespace DOL.GS.PacketHandler
 								if (found == 0)
 									pak.WriteShort(0x00);
 							}
-							if (characters[j].ActiveWeaponSlot == (byte) eActiveWeaponSlot.TwoHanded)
+							if (characters[j].ActiveWeaponSlot == (byte) EActiveWeaponSlot.TwoHanded)
 							{
 								pak.WriteByte(0x02);
 								pak.WriteByte(0x02);
 							}
-							else if (characters[j].ActiveWeaponSlot == (byte) eActiveWeaponSlot.Distance)
+							else if (characters[j].ActiveWeaponSlot == (byte) EActiveWeaponSlot.Distance)
 							{
 								pak.WriteByte(0x03);
 								pak.WriteByte(0x03);
@@ -312,9 +312,9 @@ namespace DOL.GS.PacketHandler
 								}
 								if (righthand == lefthand)
 								{
-									if (characters[j].ActiveWeaponSlot == (byte) eActiveWeaponSlot.TwoHanded)
+									if (characters[j].ActiveWeaponSlot == (byte) EActiveWeaponSlot.TwoHanded)
 										righthand = lefthand = 0x02;
-									else if (characters[j].ActiveWeaponSlot == (byte) eActiveWeaponSlot.Distance)
+									else if (characters[j].ActiveWeaponSlot == (byte) EActiveWeaponSlot.Distance)
 										righthand = lefthand = 0x03;
 								}
 								pak.WriteByte(righthand);
@@ -396,30 +396,30 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.StatsUpdate), 36))
 			{
-				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(eStat.STR));
-				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(eStat.DEX));
-				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(eStat.CON));
-				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(eStat.QUI));
-				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(eStat.INT));
-				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(eStat.PIE));
-				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(eStat.EMP));
-				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(eStat.CHR));
+				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(EStat.STR));
+				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(EStat.DEX));
+				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(EStat.CON));
+				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(EStat.QUI));
+				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(EStat.INT));
+				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(EStat.PIE));
+				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(EStat.EMP));
+				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(EStat.CHR));
 				pak.WriteShort(
-					(ushort) (m_gameClient.Player.GetModified(eProperty.Strength) - m_gameClient.Player.GetBaseStat(eStat.STR)));
+					(ushort) (m_gameClient.Player.GetModified(EProperty.Strength) - m_gameClient.Player.GetBaseStat(EStat.STR)));
 				pak.WriteShort(
-					(ushort) (m_gameClient.Player.GetModified(eProperty.Dexterity) - m_gameClient.Player.GetBaseStat(eStat.DEX)));
+					(ushort) (m_gameClient.Player.GetModified(EProperty.Dexterity) - m_gameClient.Player.GetBaseStat(EStat.DEX)));
 				pak.WriteShort(
-					(ushort) (m_gameClient.Player.GetModified(eProperty.Constitution) - m_gameClient.Player.GetBaseStat(eStat.CON)));
+					(ushort) (m_gameClient.Player.GetModified(EProperty.Constitution) - m_gameClient.Player.GetBaseStat(EStat.CON)));
 				pak.WriteShort(
-					(ushort) (m_gameClient.Player.GetModified(eProperty.Quickness) - m_gameClient.Player.GetBaseStat(eStat.QUI)));
+					(ushort) (m_gameClient.Player.GetModified(EProperty.Quickness) - m_gameClient.Player.GetBaseStat(EStat.QUI)));
 				pak.WriteShort(
-					(ushort) (m_gameClient.Player.GetModified(eProperty.Intelligence) - m_gameClient.Player.GetBaseStat(eStat.INT)));
+					(ushort) (m_gameClient.Player.GetModified(EProperty.Intelligence) - m_gameClient.Player.GetBaseStat(EStat.INT)));
 				pak.WriteShort(
-					(ushort) (m_gameClient.Player.GetModified(eProperty.Piety) - m_gameClient.Player.GetBaseStat(eStat.PIE)));
+					(ushort) (m_gameClient.Player.GetModified(EProperty.Piety) - m_gameClient.Player.GetBaseStat(EStat.PIE)));
 				pak.WriteShort(
-					(ushort) (m_gameClient.Player.GetModified(eProperty.Empathy) - m_gameClient.Player.GetBaseStat(eStat.EMP)));
+					(ushort) (m_gameClient.Player.GetModified(EProperty.Empathy) - m_gameClient.Player.GetBaseStat(EStat.EMP)));
 				pak.WriteShort(
-					(ushort) (m_gameClient.Player.GetModified(eProperty.Charisma) - m_gameClient.Player.GetBaseStat(eStat.CHR)));
+					(ushort) (m_gameClient.Player.GetModified(EProperty.Charisma) - m_gameClient.Player.GetBaseStat(EStat.CHR)));
 				pak.WriteShort((ushort) m_gameClient.Player.MaxHealth);
 				pak.WriteByte(0x24); //TODO Unknown
 				pak.WriteByte(0x25); //TODO Unknown
@@ -678,7 +678,7 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 
-			if (playerToCreate.CharacterClass.ID == (int) eCharacterClass.Warlock)
+			if (playerToCreate.CharacterClass.ID == (int) ECharacterClass.Warlock)
 			{
 				/*
 				ChamberEffect ce = (ChamberEffect)playerToCreate.EffectList.GetOfType(typeof(ChamberEffect));
@@ -1164,7 +1164,7 @@ namespace DOL.GS.PacketHandler
 					(byte)
 					Math.Min(byte.MaxValue,
 					         ((m_gameClient.Player.MaxSpeed*100/GamePlayer.PLAYER_BASE_SPEED)*
-					          (m_gameClient.Player.GetModified(eProperty.WaterSpeed)*.01))));
+					          (m_gameClient.Player.GetModified(EProperty.WaterSpeed)*.01))));
 				SendTCP(pak);
 			}
 		}
@@ -1754,7 +1754,7 @@ namespace DOL.GS.PacketHandler
 				uint flag = door.Flag;
 
 				// by default give all unflagged above ground non keep doors a default sound (excluding TrialsOfAtlantis zones)
-				if (flag == 0 && doorType != 7 && region != null && region.IsDungeon == false && region.Expansion != (int)eClientExpansion.TrialsOfAtlantis)
+				if (flag == 0 && doorType != 7 && region != null && region.IsDungeon == false && region.Expansion != (int)EClientExpansion.TrialsOfAtlantis)
 				{
 					flag = 1;
 				}
@@ -1800,28 +1800,28 @@ namespace DOL.GS.PacketHandler
 								int value2;
 								switch (item.Object_Type)
 								{
-									case (int) eObjectType.Arrow:
-									case (int) eObjectType.Bolt:
-									case (int) eObjectType.Poison:
-									case (int) eObjectType.GenericItem:
+									case (int) EObjectType.Arrow:
+									case (int) EObjectType.Bolt:
+									case (int) EObjectType.Poison:
+									case (int) EObjectType.GenericItem:
 										{
 											value1 = item.PackSize;
 											value2 = value1*item.Weight;
 											break;
 										}
-									case (int) eObjectType.Thrown:
+									case (int) EObjectType.Thrown:
 										{
 											value1 = item.DPS_AF;
 											value2 = item.PackSize;
 											break;
 										}
-									case (int) eObjectType.Shield:
+									case (int) EObjectType.Shield:
 										{
 											value1 = item.Type_Damage;
 											value2 = item.Weight;
 											break;
 										}
-									case (int) eObjectType.GardenObject:
+									case (int) EObjectType.GardenObject:
 										{
 											value1 = 0;
 											value2 = item.Weight;
@@ -1836,7 +1836,7 @@ namespace DOL.GS.PacketHandler
 								}
 								pak.WriteByte((byte) value1);
 								pak.WriteByte((byte) item.SPD_ABS);
-								if (item.Object_Type == (int) eObjectType.GardenObject)
+								if (item.Object_Type == (int) EObjectType.GardenObject)
 									pak.WriteByte((byte) (item.DPS_AF));
 								else
 									pak.WriteByte((byte) (item.Hand << 6));
@@ -2908,13 +2908,13 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendDebugMessage(string format, params object[] parameters)
 		{
-			if (m_gameClient.Account.PrivLevel > (int)ePrivLevel.Player || ServerProperties.Properties.ENABLE_DEBUG)
+			if (m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player || ServerProperties.Properties.ENABLE_DEBUG)
 				SendMessage(String.Format("[DEBUG] " + format, parameters), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
 
 		public virtual void SendDebugPopupMessage(string format, params object[] parameters)
 		{
-			if (m_gameClient.Account.PrivLevel > (int)ePrivLevel.Player || ServerProperties.Properties.ENABLE_DEBUG)
+			if (m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player || ServerProperties.Properties.ENABLE_DEBUG)
 				SendMessage(String.Format("[DEBUG] " + format, parameters), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 		}
 
@@ -3562,7 +3562,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendNPCsQuestEffect(GameNPC npc, eQuestIndicator indicator)
+		public virtual void SendNPCsQuestEffect(GameNPC npc, EQuestIndicator indicator)
 		{
 		}
 
@@ -3677,24 +3677,24 @@ namespace DOL.GS.PacketHandler
 					int value2; // some object types use this field to display count
 					switch (item.Object_Type)
 					{
-						case (int)eObjectType.Arrow:
-						case (int)eObjectType.Bolt:
-						case (int)eObjectType.Poison:
-						case (int)eObjectType.GenericItem:
+						case (int)EObjectType.Arrow:
+						case (int)EObjectType.Bolt:
+						case (int)EObjectType.Poison:
+						case (int)EObjectType.GenericItem:
 							value1 = item.PackSize;
 							value2 = item.SPD_ABS; break;
-						case (int)eObjectType.Thrown:
+						case (int)EObjectType.Thrown:
 							value1 = item.DPS_AF;
 							value2 = item.PackSize; break;
-						case (int)eObjectType.Instrument:
+						case (int)EObjectType.Instrument:
 							value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF); // 0x00 = Lute ; 0x01 = Drum ; 0x03 = Flute
 							value2 = 0; break; // unused
-						case (int)eObjectType.Shield:
+						case (int)EObjectType.Shield:
 							value1 = item.Type_Damage;
 							value2 = item.DPS_AF; break;
-						case (int)eObjectType.GardenObject:
-						case (int)eObjectType.HouseWallObject:
-						case (int)eObjectType.HouseFloorObject:
+						case (int)EObjectType.GardenObject:
+						case (int)EObjectType.HouseWallObject:
+						case (int)EObjectType.HouseFloorObject:
 							value1 = 0;
 							value2 = item.SPD_ABS; break;
 						default:
@@ -3703,7 +3703,7 @@ namespace DOL.GS.PacketHandler
 					}
 					pak.WriteByte((byte)value1);
 					pak.WriteByte((byte)value2);
-					if (item.Object_Type == (int)eObjectType.GardenObject)
+					if (item.Object_Type == (int)EObjectType.GardenObject)
 						pak.WriteByte((byte)(item.DPS_AF));
 					else
 						pak.WriteByte((byte)(item.Hand << 6));
@@ -4060,26 +4060,26 @@ namespace DOL.GS.PacketHandler
 						int value2; // some object types use this field to display count
 						switch (item.Object_Type)
 						{
-							case (int) eObjectType.Arrow:
-							case (int) eObjectType.Bolt:
-							case (int) eObjectType.Poison:
-							case (int) eObjectType.GenericItem:
+							case (int) EObjectType.Arrow:
+							case (int) EObjectType.Bolt:
+							case (int) EObjectType.Poison:
+							case (int) EObjectType.GenericItem:
 								value1 = item.Count;
 								value2 = item.SPD_ABS;
 								break;
-							case (int) eObjectType.Thrown:
+							case (int) EObjectType.Thrown:
 								value1 = item.DPS_AF;
 								value2 = item.Count;
 								break;
-							case (int) eObjectType.Instrument:
+							case (int) EObjectType.Instrument:
 								value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF); // 0x00 = Lute ; 0x01 = Drum ; 0x03 = Flute
 								value2 = 0;
 								break; // unused
-							case (int) eObjectType.Shield:
+							case (int) EObjectType.Shield:
 								value1 = item.Type_Damage;
 								value2 = item.DPS_AF;
 								break;
-							case (int) eObjectType.GardenObject:
+							case (int) EObjectType.GardenObject:
 								value1 = 0;
 								value2 = item.SPD_ABS;
 								break;
@@ -4091,7 +4091,7 @@ namespace DOL.GS.PacketHandler
 						pak.WriteByte((byte) value1);
 						pak.WriteByte((byte) value2);
 
-						if (item.Object_Type == (int) eObjectType.GardenObject)
+						if (item.Object_Type == (int) EObjectType.GardenObject)
 							pak.WriteByte((byte) (item.DPS_AF));
 						else
 							pak.WriteByte((byte) (item.Hand << 6));

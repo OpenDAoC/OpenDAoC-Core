@@ -29,9 +29,9 @@ namespace DOL.GS.Spells
 	[SpellHandler("VampiirArmorDebuff")]
 	public class VampiirArmorDebuff : SpellHandler
 	{
-		private static eArmorSlot[] slots = new eArmorSlot[] { eArmorSlot.HEAD, eArmorSlot.TORSO, eArmorSlot.LEGS,  };
-		private eArmorSlot m_slot = eArmorSlot.NOTSET;
-		public eArmorSlot Slot { get { return m_slot; } }
+		private static EArmorSlot[] slots = new EArmorSlot[] { EArmorSlot.HEAD, EArmorSlot.TORSO, EArmorSlot.LEGS,  };
+		private EArmorSlot m_slot = EArmorSlot.NOTSET;
+		public EArmorSlot Slot { get { return m_slot; } }
 		private int old_item_af = 0;
 		private int old_item_abs = 0;
 		private DbInventoryItem item = null;

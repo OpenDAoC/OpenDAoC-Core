@@ -5,7 +5,7 @@ namespace DOL.GS.Commands
 {
 	[Command(
 	   "&dismisspet",
-	   ePrivLevel.Player,
+	   EPrivLevel.Player,
 		 "Dismiss the novelty pet", "/dismisspet")]
 	public class DismissPetCommandHandler : ACommandHandler, ICommandHandler
 	{

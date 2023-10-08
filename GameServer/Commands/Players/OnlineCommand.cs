@@ -6,7 +6,7 @@ namespace DOL.GS.Commands;
 [Command(
     "&online",
     new string[] { "&on" },
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "Shows all Players that are currently online",
     "Usage: /online")]
 public class OnlineCommand : ACommandHandler, ICommandHandler
@@ -52,7 +52,7 @@ public class OnlineCommand : ACommandHandler, ICommandHandler
 
     public void OnCommand(GameClient client, string[] args)
     {
-        IList<string> textList = this.GetOnlineInfo(client.Account.PrivLevel >= (uint)ePrivLevel.GM);
+        IList<string> textList = this.GetOnlineInfo(client.Account.PrivLevel >= (uint)EPrivLevel.GM);
         client.Out.SendCustomTextWindow("Currently Online", textList);
         return;
     }
@@ -146,13 +146,13 @@ public class OnlineCommand : ACommandHandler, ICommandHandler
                 || c.Player.ObjectState != GameObject.eObjectState.Active)
                 continue;
 
-            if (c.Account.PrivLevel >= (uint)ePrivLevel.GM && !c.Player.IsAnonymous)
+            if (c.Account.PrivLevel >= (uint)EPrivLevel.GM && !c.Player.IsAnonymous)
             {
                 ++gms;
                 continue;
             }
             
-            if (c.Player.CurrentZone.IsOF && c.Account.PrivLevel == (uint)ePrivLevel.Player)
+            if (c.Player.CurrentZone.IsOF && c.Account.PrivLevel == (uint)EPrivLevel.Player)
                 frontiers++;
 
             #endregion
@@ -160,158 +160,158 @@ public class OnlineCommand : ACommandHandler, ICommandHandler
             #region class specific counting
             switch (c.Player.CharacterClass.ID)
             {   // Alb tanks:
-                case (int)eCharacterClass.Armsman:
+                case (int)ECharacterClass.Armsman:
                 { ++albTanks; classcount[0].count++; }
                     break;
-                case (int)eCharacterClass.Mercenary:
+                case (int)ECharacterClass.Mercenary:
                 { ++albTanks; classcount[1].count++; }
                     break;
-                case (int)eCharacterClass.Paladin:
+                case (int)ECharacterClass.Paladin:
                 { ++albTanks; classcount[2].count++; }
                     break;
-                case (int)eCharacterClass.Reaver:
+                case (int)ECharacterClass.Reaver:
                 { ++albTanks; classcount[3].count++; }
                     break;
-                case (int)eCharacterClass.Heretic:
+                case (int)ECharacterClass.Heretic:
                 { ++albTanks; classcount[4].count++; }
                     break;
-                case (int)eCharacterClass.MaulerAlb:
+                case (int)ECharacterClass.MaulerAlb:
                 { ++albTanks; classcount[5].count++; }
                     break;
 
                 // Alb casters:
-                case (int)eCharacterClass.Cabalist:
+                case (int)ECharacterClass.Cabalist:
                 { ++albCasters; classcount[6].count++; }
                     break;
-                case (int)eCharacterClass.Sorcerer:
+                case (int)ECharacterClass.Sorcerer:
                 { ++albCasters; classcount[7].count++; }
                     break;
-                case (int)eCharacterClass.Theurgist:
+                case (int)ECharacterClass.Theurgist:
                 { ++albCasters; classcount[8].count++; }
                     break;
-                case (int)eCharacterClass.Wizard:
+                case (int)ECharacterClass.Wizard:
                 { ++albCasters; classcount[9].count++; }
                     break;
-                case (int)eCharacterClass.Necromancer:
+                case (int)ECharacterClass.Necromancer:
                 { ++albCasters; classcount[10].count++; }
                     break;
                 // Alb support:
-                case (int)eCharacterClass.Cleric:
+                case (int)ECharacterClass.Cleric:
                 { ++albSupport; classcount[11].count++; }
                     break;
-                case (int)eCharacterClass.Friar:
+                case (int)ECharacterClass.Friar:
                 { ++albSupport; classcount[12].count++; }
                     break;
-                case (int)eCharacterClass.Minstrel:
+                case (int)ECharacterClass.Minstrel:
                 { ++albSupport; classcount[13].count++; }
                     break;
                 // Alb stealthers:
-                case (int)eCharacterClass.Infiltrator:
+                case (int)ECharacterClass.Infiltrator:
                 { ++albStealthers; classcount[14].count++; }
                     break;
-                case (int)eCharacterClass.Scout:
+                case (int)ECharacterClass.Scout:
                 { ++albStealthers; classcount[15].count++; }
                     break;
                 // Mid tanks:
-                case (int)eCharacterClass.Berserker:
+                case (int)ECharacterClass.Berserker:
                 { ++midTanks; classcount[16].count++; }
                     break;
-                case (int)eCharacterClass.Savage:
+                case (int)ECharacterClass.Savage:
                 { ++midTanks; classcount[17].count++; }
                     break;
-                case (int)eCharacterClass.Skald:
+                case (int)ECharacterClass.Skald:
                 { ++midTanks; classcount[18].count++; }
                     break;
-                case (int)eCharacterClass.Thane:
+                case (int)ECharacterClass.Thane:
                 { ++midTanks; classcount[19].count++; }
                     break;
-                case (int)eCharacterClass.Warrior:
+                case (int)ECharacterClass.Warrior:
                 { ++midTanks; classcount[20].count++; }
                     break;
-                case (int)eCharacterClass.Valkyrie:
+                case (int)ECharacterClass.Valkyrie:
                 { ++midTanks; classcount[21].count++; }
                     break;
-                case (int)eCharacterClass.MaulerMid:
+                case (int)ECharacterClass.MaulerMid:
                 { ++midTanks; classcount[22].count++; }
                     break;
                 // Mid casters:
-                case (int)eCharacterClass.Bonedancer:
+                case (int)ECharacterClass.Bonedancer:
                 { ++midCasters; classcount[23].count++; }
                     break;
-                case (int)eCharacterClass.Runemaster:
+                case (int)ECharacterClass.Runemaster:
                 { ++midCasters; classcount[24].count++; }
                     break;
-                case (int)eCharacterClass.Spiritmaster:
+                case (int)ECharacterClass.Spiritmaster:
                 { ++midCasters; classcount[25].count++; }
                     break;
-                case (int)eCharacterClass.Warlock:
+                case (int)ECharacterClass.Warlock:
                 { ++midCasters; classcount[26].count++; }
                     break;
                 // Mid support:
-                case (int)eCharacterClass.Healer:
+                case (int)ECharacterClass.Healer:
                 { ++midSupport; classcount[27].count++; }
                     break;
-                case (int)eCharacterClass.Shaman:
+                case (int)ECharacterClass.Shaman:
                 { ++midSupport; classcount[28].count++; }
                     break;
                 // Mid stealthers:
-                case (int)eCharacterClass.Hunter:
+                case (int)ECharacterClass.Hunter:
                 { ++midStealthers; classcount[29].count++; }
                     break;
-                case (int)eCharacterClass.Shadowblade:
+                case (int)ECharacterClass.Shadowblade:
                 { ++midStealthers; classcount[30].count++; }
                     break;
                 // Hib tanks:
-                case (int)eCharacterClass.Blademaster:
+                case (int)ECharacterClass.Blademaster:
                 { ++hibTanks; classcount[31].count++; }
                     break;
-                case (int)eCharacterClass.Champion:
+                case (int)ECharacterClass.Champion:
                 { ++hibTanks; classcount[32].count++; }
                     break;
-                case (int)eCharacterClass.Hero:
+                case (int)ECharacterClass.Hero:
                 { ++hibTanks; classcount[33].count++; }
                     break;
-                case (int)eCharacterClass.Valewalker:
+                case (int)ECharacterClass.Valewalker:
                 { ++hibTanks; classcount[34].count++; }
                     break;
-                case (int)eCharacterClass.MaulerHib:
+                case (int)ECharacterClass.MaulerHib:
                 { ++hibTanks; classcount[35].count++; }
                     break;
-                case (int)eCharacterClass.Vampiir:
+                case (int)ECharacterClass.Vampiir:
                 { ++hibTanks; classcount[36].count++; }
                     break;
                 // Hib casters:
-                case (int)eCharacterClass.Eldritch:
+                case (int)ECharacterClass.Eldritch:
                 { ++hibCasters; classcount[37].count++; }
                     break;
-                case (int)eCharacterClass.Enchanter:
+                case (int)ECharacterClass.Enchanter:
                 { ++hibCasters; classcount[38].count++; }
                     break;
-                case (int)eCharacterClass.Mentalist:
+                case (int)ECharacterClass.Mentalist:
                 { ++hibCasters; classcount[39].count++; }
                     break;
-                case (int)eCharacterClass.Animist:
+                case (int)ECharacterClass.Animist:
                 { ++hibCasters; classcount[40].count++; }
                     break;
-                case (int)eCharacterClass.Bainshee:
+                case (int)ECharacterClass.Bainshee:
                 { ++hibCasters; classcount[41].count++; }
                     break;
                 // Hib support:
-                case (int)eCharacterClass.Bard:
+                case (int)ECharacterClass.Bard:
                 { ++hibSupport; classcount[42].count++; }
                     break;
-                case (int)eCharacterClass.Druid:
+                case (int)ECharacterClass.Druid:
                 { ++hibSupport; classcount[43].count++; }
                     break;
-                case (int)eCharacterClass.Warden:
+                case (int)ECharacterClass.Warden:
                 { ++hibSupport; classcount[44].count++; }
                     break;
 
                 // Hib stealthers:
-                case (int)eCharacterClass.Nightshade:
+                case (int)ECharacterClass.Nightshade:
                 { ++hibStealthers; classcount[45].count++; }
                     break;
-                case (int)eCharacterClass.Ranger:
+                case (int)ECharacterClass.Ranger:
                 { ++hibStealthers; classcount[46].count++; }
                     break;
             }
@@ -364,14 +364,14 @@ public class OnlineCommand : ACommandHandler, ICommandHandler
 
                 foreach (GamePlayer player in ClientService.GetPlayersOfZone(zone))
                 {
-                    if (player.Client.Account.PrivLevel >= (uint)ePrivLevel.GM)
+                    if (player.Client.Account.PrivLevel >= (uint)EPrivLevel.GM)
                         continue;
 
-                    if (player.Realm == eRealm.Albion)
+                    if (player.Realm == ERealm.Albion)
                         albsinregion++;
-                    else if (player.Realm == eRealm.Midgard)
+                    else if (player.Realm == ERealm.Midgard)
                         midsinregion++;
-                    else if (player.Realm == eRealm.Hibernia)
+                    else if (player.Realm == ERealm.Hibernia)
                         hibsinregion++;
 
                     totalinregion++;

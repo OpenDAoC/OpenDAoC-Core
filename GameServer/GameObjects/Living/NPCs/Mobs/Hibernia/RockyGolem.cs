@@ -19,7 +19,7 @@ namespace DOL.GS
 			Model = 114;
 			Level = (byte)Util.Random(40, 42);
 			Size = 100;
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			Race = 2003;
 			Flags = 0;
 			

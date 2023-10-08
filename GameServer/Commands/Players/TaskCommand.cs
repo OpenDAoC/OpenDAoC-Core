@@ -4,7 +4,7 @@ using DOL.GS.Quests;
 
 namespace DOL.GS.Commands;
 
-[Command("&task", ePrivLevel.Player, "Show the actual task", "/task")]
+[Command("&task", EPrivLevel.Player, "Show the actual task", "/task")]
 public class TaskCommand : ACommandHandler, ICommandHandler
 {
 	public void OnCommand(GameClient client, string[] args)

@@ -9,13 +9,13 @@ namespace DOL.GS
 	public class Spell : Skill, ICustomParamsValuable
 	{
 		protected readonly string m_description = "";
-		protected readonly eSpellTarget m_target = eSpellTarget.NONE;
-        protected readonly eSpellType m_spelltype;// = "-";
+		protected readonly ESpellTarget m_target = ESpellTarget.NONE;
+        protected readonly ESpellType m_spelltype;// = "-";
 		protected readonly int m_range = 0;
 		protected readonly int m_radius = 0;
 		protected double m_value = 0;
 		protected double m_damage = 0;
-		protected readonly eDamageType m_damageType = eDamageType.Natural;
+		protected readonly EDamageType m_damageType = EDamageType.Natural;
 		protected byte m_concentration = 0;
 		protected int m_duration = 0;
 		protected readonly int m_frequency = 0;
@@ -112,7 +112,7 @@ namespace DOL.GS
             get { return m_sharedtimergroup; }
         }
 
-		public virtual eSpellTarget Target
+		public virtual ESpellTarget Target
 		{
 			get { return m_target; }
 		}
@@ -157,13 +157,13 @@ namespace DOL.GS
 			set { m_damage = value; }
 		}
 
-		public eDamageType DamageType
+		public EDamageType DamageType
 		{
 			get { return m_damageType; }
 
 		}
 
-		public virtual eSpellType SpellType
+		public virtual ESpellType SpellType
 		{
 			get { return m_spelltype; }
 		}
@@ -290,9 +290,9 @@ namespace DOL.GS
 		/// </summary>
 		public bool IsHarmful => Target switch
 		{
-			eSpellTarget.ENEMY or
-			eSpellTarget.AREA or
-			eSpellTarget.CONE => SpellType != eSpellType.Charm,
+			ESpellTarget.ENEMY or
+			ESpellTarget.AREA or
+			ESpellTarget.CONE => SpellType != ESpellType.Charm,
 			_ => false
 		};
 
@@ -311,17 +311,17 @@ namespace DOL.GS
 		/// </summary>
 		public bool IsHealing => SpellType switch
 		{
-			eSpellType.CurePoison or
-			eSpellType.CureDisease or
-			eSpellType.CombatHeal or
-			eSpellType.Heal or
-			eSpellType.HealOverTime or
-			eSpellType.HealthRegenBuff or
-			eSpellType.MercHeal or
-			eSpellType.OmniHeal or
-			eSpellType.PBAoEHeal or
-			eSpellType.SpreadHeal or
-			eSpellType.SummonHealingElemental => true,
+			ESpellType.CurePoison or
+			ESpellType.CureDisease or
+			ESpellType.CombatHeal or
+			ESpellType.Heal or
+			ESpellType.HealOverTime or
+			ESpellType.HealthRegenBuff or
+			ESpellType.MercHeal or
+			ESpellType.OmniHeal or
+			ESpellType.PBAoEHeal or
+			ESpellType.SpreadHeal or
+			ESpellType.SummonHealingElemental => true,
 			_ => false,
 		};
 
@@ -349,13 +349,13 @@ namespace DOL.GS
 			: base(dbspell.Name, dbspell.SpellID, (ushort)dbspell.Icon, requiredLevel, dbspell.TooltipId)
 		{
 			m_description = dbspell.Description;
-			m_target = Enum.Parse<eSpellTarget>(dbspell.Target, true);
-            m_spelltype = Enum.Parse<eSpellType>(dbspell.Type, true);
+			m_target = Enum.Parse<ESpellTarget>(dbspell.Target, true);
+            m_spelltype = Enum.Parse<ESpellType>(dbspell.Type, true);
 			m_range = dbspell.Range;
 			m_radius = dbspell.Radius;
 			m_value = dbspell.Value;
 			m_damage = dbspell.Damage;
-			m_damageType = (eDamageType) dbspell.DamageType;
+			m_damageType = (EDamageType) dbspell.DamageType;
 			m_concentration = (byte) dbspell.Concentration;
 			m_duration = dbspell.Duration * 1000;
 			m_frequency = dbspell.Frequency * 100;
@@ -396,7 +396,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="spell"></param>
 		/// <param name="spellType"></param>
-		public Spell(Spell spell, eSpellType spellType) :
+		public Spell(Spell spell, ESpellType spellType) :
 			base(spell.Name, spell.ID, (ushort)spell.Icon, spell.Level, spell.InternalID)
 		{
 			m_description = spell.Description;
@@ -477,7 +477,7 @@ namespace DOL.GS
 
 			delve.Add(string.Format("Casting time: {0}", CastTime == 0 ? "instant" : $"{CastTime} sec"));
 
-			if (Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
+			if (Target is ESpellTarget.ENEMY or ESpellTarget.AREA or ESpellTarget.CONE)
 				delve.Add(string.Format("Damage: {0}", GlobalConstants.DamageTypeToName(DamageType)));
 
 			delve.Add("");
@@ -493,7 +493,7 @@ namespace DOL.GS
 
 			switch (Target)
 			{
-				case eSpellTarget.ENEMY:
+				case ESpellTarget.ENEMY:
 				{
 					target = "Targeted";
 					break;

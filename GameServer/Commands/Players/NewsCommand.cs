@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&news",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Show news on social interface",
 	"/news")]
 public class NewsCommand : ACommandHandler, ICommandHandler

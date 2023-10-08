@@ -38,10 +38,10 @@ namespace DOL.GS.Spells
 		
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			var effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.MovementSpeedDebuff);
+			var effect = EffectListService.GetSpellEffectOnTarget(target, EEffect.MovementSpeedDebuff);
 			if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.RootImmunity) || 
-				EffectListService.GetEffectOnTarget(target, eEffect.SnareImmunity) != null ||
-				EffectListService.GetEffectOnTarget(target, eEffect.SpeedOfSound) != null || 
+				EffectListService.GetEffectOnTarget(target, EEffect.SnareImmunity) != null ||
+				EffectListService.GetEffectOnTarget(target, EEffect.SpeedOfSound) != null || 
 				(effect != null && effect.SpellHandler.Spell.Value == 99)
 				&& !Spell.Name.Equals("Prevent Flight"))
 			{
@@ -67,7 +67,7 @@ namespace DOL.GS.Spells
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
 			base.OnEffectStart(effect);
-			effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect, 1.0-Spell.Value*0.01);
+			effect.Owner.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, effect, 1.0-Spell.Value*0.01);
 
 			SendUpdates(effect.Owner);
 
@@ -97,7 +97,7 @@ namespace DOL.GS.Spells
 			effect.Owner.TempProperties.RemoveProperty(EFFECT_PROPERTY);
 			if(timer!=null) timer.Stop();
 
-			effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, effect);
+			effect.Owner.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, effect);
 
 			SendUpdates(effect.Owner);
 
@@ -116,7 +116,7 @@ namespace DOL.GS.Spells
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
 			double duration = base.CalculateEffectDuration(target, effectiveness);
-			duration *= target.GetModified(eProperty.SpeedDecreaseDurationReduction) * 0.01;
+			duration *= target.GetModified(EProperty.SpeedDecreaseDurationReduction) * 0.01;
 
 			if (duration < 1)
 				duration = 1;
@@ -180,7 +180,7 @@ namespace DOL.GS.Spells
 				if (factor < 0) factor = 0;
 				else if (factor > 1) factor = 1;
 
-				effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect, 1.0 - effect.Spell.Value*factor*0.01);
+				effect.Owner.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, effect, 1.0 - effect.Spell.Value*factor*0.01);
 
 				SendUpdates(effect.Owner);
 

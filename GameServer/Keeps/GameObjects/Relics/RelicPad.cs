@@ -30,7 +30,7 @@ namespace DOL.GS.Relics
 		/// </summary>
 		private RelicPillar m_relicPillar;
 
-		public override eGameObjectType GameObjectType => eGameObjectType.KEEP_COMPONENT;
+		public override EGameObjectType GameObjectType => EGameObjectType.KEEP_COMPONENT;
 
 		public RelicPad(RelicPillar relicPillar)
 		{

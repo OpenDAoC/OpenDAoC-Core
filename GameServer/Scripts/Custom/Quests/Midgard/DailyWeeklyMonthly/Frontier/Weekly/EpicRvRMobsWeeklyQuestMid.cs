@@ -67,7 +67,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Herou", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Herou", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -85,7 +85,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 				Herou.Model = 142;
 				Herou.Name = "Herou";
 				Herou.GuildName = "Realm Logistics";
-				Herou.Realm = eRealm.Midgard;
+				Herou.Realm = ERealm.Midgard;
 				//Svasud Faste Location
 				Herou.CurrentRegionID = 100;
 				Herou.Size = 50;

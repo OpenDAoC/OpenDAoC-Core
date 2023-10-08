@@ -2,7 +2,7 @@ using System;
 
 namespace DOL.GS.Commands;
 
-[Command("&summon", ePrivLevel.Player,"Summon horse","/summon")]
+[Command("&summon", EPrivLevel.Player,"Summon horse","/summon")]
 public class SummonHorseCommand : ACommandHandler, ICommandHandler
 {
 	public void OnCommand(GameClient client, string[] args)

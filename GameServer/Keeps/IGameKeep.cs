@@ -42,7 +42,7 @@ namespace DOL.GS.Keeps
 		Region CurrentRegion { get; }
 		
 		Guild Guild { get; }
-		eRealm Realm { get; }
+		ERealm Realm { get; }
 		byte Level { get; }
 		
 		byte EffectiveLevel(byte level);		

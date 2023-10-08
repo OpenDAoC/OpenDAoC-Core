@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.MidgardRogue, "Rogue", "Rogue")]
+	[CharacterClass((int)ECharacterClass.MidgardRogue, "Rogue", "Rogue")]
 	public class ClassMidgardRogue : CharacterClassBase
 	{
 		public ClassMidgardRogue()

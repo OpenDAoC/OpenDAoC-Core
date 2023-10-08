@@ -3,7 +3,7 @@ namespace DOL.GS.Commands;
 [Command(
 	"&whisper",
 	new string[] {"&whis"}, //Important, don't remove this alias, its used for communication with mobs!
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Sends a private message to your target if it is close enough",
 	"/whisper <message>")]
 public class WhisperCommand : ACommandHandler, ICommandHandler

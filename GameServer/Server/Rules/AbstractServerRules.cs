@@ -466,31 +466,31 @@ namespace DOL.GS.ServerRules
 
 				switch (spell.Target)
 				{
-					case eSpellTarget.SELF:
-					case eSpellTarget.GROUP:
-					case eSpellTarget.PET:
-					case eSpellTarget.CONTROLLED:
-					case eSpellTarget.REALM:
-					case eSpellTarget.AREA:
+					case ESpellTarget.SELF:
+					case ESpellTarget.GROUP:
+					case ESpellTarget.PET:
+					case ESpellTarget.CONTROLLED:
+					case ESpellTarget.REALM:
+					case ESpellTarget.AREA:
 					{
 						isAllowed = true;
 						break;
 					}
-					case eSpellTarget.ENEMY:
+					case ESpellTarget.ENEMY:
 					{
 						if (spell.Radius == 0)
 						{
 							switch (spell.SpellType)
 							{
-								case eSpellType.Archery:
-								case eSpellType.Bolt:
-								case eSpellType.Bomber:
-								case eSpellType.DamageSpeedDecrease:
-								case eSpellType.DirectDamage:
-								case eSpellType.MagicalStrike:
-								case eSpellType.SiegeArrow:
-								case eSpellType.SummonTheurgistPet:
-								case eSpellType.DirectDamageWithDebuff:
+								case ESpellType.Archery:
+								case ESpellType.Bolt:
+								case ESpellType.Bomber:
+								case ESpellType.DamageSpeedDecrease:
+								case ESpellType.DirectDamage:
+								case ESpellType.MagicalStrike:
+								case ESpellType.SiegeArrow:
+								case ESpellType.SummonTheurgistPet:
+								case ESpellType.DirectDamageWithDebuff:
 									isAllowed = true;
 									break;
 							}
@@ -580,7 +580,7 @@ namespace DOL.GS.ServerRules
 			if (player.Steed != null) return "GamePlayer.UseSlot.MustDismountBefore";
 
 			// gm/admin overrides the other checks
-			if (player.Client.Account.PrivLevel != (uint)ePrivLevel.Player) return string.Empty;
+			if (player.Client.Account.PrivLevel != (uint)EPrivLevel.Player) return string.Empty;
 
 			// player restrictions
 			if (player.IsMoving) return "GamePlayer.UseSlot.CantMountMoving";
@@ -691,11 +691,11 @@ namespace DOL.GS.ServerRules
 			GamePlayer player = living as GamePlayer;
 
 			// GMs can equip everything
-			if (player != null && player.Client.Account.PrivLevel > (uint)ePrivLevel.Player)
+			if (player != null && player.Client.Account.PrivLevel > (uint)EPrivLevel.Player)
 				return true;
 
 			// allow usage of all house items
-			if ((item.Object_Type == 0 || item.Object_Type >= (int)eObjectType._FirstHouse) && item.Object_Type <= (int)eObjectType._LastHouse)
+			if ((item.Object_Type == 0 || item.Object_Type >= (int)EObjectType._FirstHouse) && item.Object_Type <= (int)EObjectType._LastHouse)
 				return true;
 
 			// on some servers we may wish for dropped items to be used by all realms regardless of what is set in the db
@@ -713,27 +713,27 @@ namespace DOL.GS.ServerRules
 			}
 
 			//armor
-			if (item.Object_Type >= (int)eObjectType._FirstArmor && item.Object_Type <= (int)eObjectType._LastArmor)
+			if (item.Object_Type >= (int)EObjectType._FirstArmor && item.Object_Type <= (int)EObjectType._LastArmor)
 			{
 				int armorAbility = -1;
 
-				if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS && item.Item_Type != (int)eEquipmentItems.HEAD)
+				if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS && item.Item_Type != (int)EEquipmentItems.HEAD)
 				{
 					switch (player.Realm) // Choose based on player rather than item region
 					{
-						case eRealm.Albion: armorAbility = living.GetAbilityLevel(Abilities.AlbArmor); break;
-						case eRealm.Hibernia: armorAbility = living.GetAbilityLevel(Abilities.HibArmor); break;
-						case eRealm.Midgard: armorAbility =  living.GetAbilityLevel(Abilities.MidArmor); break;
+						case ERealm.Albion: armorAbility = living.GetAbilityLevel(Abilities.AlbArmor); break;
+						case ERealm.Hibernia: armorAbility = living.GetAbilityLevel(Abilities.HibArmor); break;
+						case ERealm.Midgard: armorAbility =  living.GetAbilityLevel(Abilities.MidArmor); break;
 						default: break;
 					}
 				}
 				else
 				{
-					switch ((eRealm)item.Realm)
+					switch ((ERealm)item.Realm)
 					{
-						case eRealm.Albion: armorAbility = living.GetAbilityLevel(Abilities.AlbArmor); break;
-						case eRealm.Hibernia: armorAbility = living.GetAbilityLevel(Abilities.HibArmor); break;
-						case eRealm.Midgard: armorAbility = living.GetAbilityLevel(Abilities.MidArmor); break;
+						case ERealm.Albion: armorAbility = living.GetAbilityLevel(Abilities.AlbArmor); break;
+						case ERealm.Hibernia: armorAbility = living.GetAbilityLevel(Abilities.HibArmor); break;
+						case ERealm.Midgard: armorAbility = living.GetAbilityLevel(Abilities.MidArmor); break;
 						default: // use old system
 							armorAbility = Math.Max(armorAbility, living.GetAbilityLevel(Abilities.AlbArmor));
 							armorAbility = Math.Max(armorAbility, living.GetAbilityLevel(Abilities.HibArmor));
@@ -741,16 +741,16 @@ namespace DOL.GS.ServerRules
 							break;
 					}
 				}
-				switch ((eObjectType)item.Object_Type)
+				switch ((EObjectType)item.Object_Type)
 				{
-					case eObjectType.GenericArmor: return armorAbility >= ArmorLevel.GenericArmor;
-					case eObjectType.Cloth: return armorAbility >= ArmorLevel.Cloth;
-					case eObjectType.Leather: return armorAbility >= ArmorLevel.Leather;
-					case eObjectType.Reinforced:
-					case eObjectType.Studded: return armorAbility >= ArmorLevel.Studded;
-					case eObjectType.Scale:
-					case eObjectType.Chain: return armorAbility >= ArmorLevel.Chain;
-					case eObjectType.Plate: return armorAbility >= ArmorLevel.Plate;
+					case EObjectType.GenericArmor: return armorAbility >= ArmorLevel.GenericArmor;
+					case EObjectType.Cloth: return armorAbility >= ArmorLevel.Cloth;
+					case EObjectType.Leather: return armorAbility >= ArmorLevel.Leather;
+					case EObjectType.Reinforced:
+					case EObjectType.Studded: return armorAbility >= ArmorLevel.Studded;
+					case EObjectType.Scale:
+					case EObjectType.Chain: return armorAbility >= ArmorLevel.Chain;
+					case EObjectType.Plate: return armorAbility >= ArmorLevel.Plate;
 					default: return false;
 				}
 			}
@@ -760,175 +760,175 @@ namespace DOL.GS.ServerRules
 			string[] otherCheck = new string[0];
 
 			//http://dol.kitchenhost.de/files/dol/Info/itemtable.txt
-			switch ((eObjectType)item.Object_Type)
+			switch ((EObjectType)item.Object_Type)
 			{
-				case eObjectType.GenericItem: return true;
-				case eObjectType.GenericArmor: return true;
-				case eObjectType.GenericWeapon: return true;
-				case eObjectType.Staff: abilityCheck = Abilities.Weapon_Staves; break;
-				case eObjectType.Fired: abilityCheck = Abilities.Weapon_Shortbows; break;
-				case eObjectType.FistWraps: abilityCheck = Abilities.Weapon_FistWraps; break;
-				case eObjectType.MaulerStaff: abilityCheck = Abilities.Weapon_MaulerStaff; break;
+				case EObjectType.GenericItem: return true;
+				case EObjectType.GenericArmor: return true;
+				case EObjectType.GenericWeapon: return true;
+				case EObjectType.Staff: abilityCheck = Abilities.Weapon_Staves; break;
+				case EObjectType.Fired: abilityCheck = Abilities.Weapon_Shortbows; break;
+				case EObjectType.FistWraps: abilityCheck = Abilities.Weapon_FistWraps; break;
+				case EObjectType.MaulerStaff: abilityCheck = Abilities.Weapon_MaulerStaff; break;
 
 				//alb
-				case eObjectType.CrushingWeapon:
+				case EObjectType.CrushingWeapon:
 					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS)
 						switch (living.Realm)
 						{
-							case eRealm.Albion: abilityCheck = Abilities.Weapon_Crushing; break;
-							case eRealm.Hibernia: abilityCheck = Abilities.Weapon_Blunt; break;
-							case eRealm.Midgard: abilityCheck = Abilities.Weapon_Hammers; break;
+							case ERealm.Albion: abilityCheck = Abilities.Weapon_Crushing; break;
+							case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blunt; break;
+							case ERealm.Midgard: abilityCheck = Abilities.Weapon_Hammers; break;
 							default: break;
 						} 
 					else abilityCheck = Abilities.Weapon_Crushing;
 					break;
-				case eObjectType.SlashingWeapon:
+				case EObjectType.SlashingWeapon:
 					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS)
 						switch (living.Realm)
 						{
-							case eRealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
-							case eRealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
-							case eRealm.Midgard: abilityCheck = Abilities.Weapon_Swords; break;
+							case ERealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
+							case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
+							case ERealm.Midgard: abilityCheck = Abilities.Weapon_Swords; break;
 							default: break;
 						}
 					else abilityCheck = Abilities.Weapon_Slashing;
 					break;
-				case eObjectType.ThrustWeapon:
-					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS && living.Realm == eRealm.Hibernia)
+				case EObjectType.ThrustWeapon:
+					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS && living.Realm == ERealm.Hibernia)
 						abilityCheck = Abilities.Weapon_Piercing;
 					else
 						abilityCheck = Abilities.Weapon_Thrusting;
 					break;
-				case eObjectType.TwoHandedWeapon:
-					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS && living.Realm == eRealm.Hibernia)
+				case EObjectType.TwoHandedWeapon:
+					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS && living.Realm == ERealm.Hibernia)
 						abilityCheck = Abilities.Weapon_LargeWeapons;
 					else abilityCheck = Abilities.Weapon_TwoHanded;
 					break;
-				case eObjectType.PolearmWeapon:
+				case EObjectType.PolearmWeapon:
 					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS)
 						switch (living.Realm)
 						{
-							case eRealm.Albion: abilityCheck = Abilities.Weapon_Polearms; break;
-							case eRealm.Hibernia: abilityCheck = Abilities.Weapon_CelticSpear; break;
-							case eRealm.Midgard: abilityCheck = Abilities.Weapon_Spears; break;
+							case ERealm.Albion: abilityCheck = Abilities.Weapon_Polearms; break;
+							case ERealm.Hibernia: abilityCheck = Abilities.Weapon_CelticSpear; break;
+							case ERealm.Midgard: abilityCheck = Abilities.Weapon_Spears; break;
 							default: break;
 						}
 					else abilityCheck = Abilities.Weapon_Polearms;
 					break;
-				case eObjectType.Longbow:
+				case EObjectType.Longbow:
 					otherCheck = new string[] { Abilities.Weapon_Longbows, Abilities.Weapon_Archery };
 					break;
-				case eObjectType.Crossbow: abilityCheck = Abilities.Weapon_Crossbow; break;
-				case eObjectType.Flexible: abilityCheck = Abilities.Weapon_Flexible; break;
+				case EObjectType.Crossbow: abilityCheck = Abilities.Weapon_Crossbow; break;
+				case EObjectType.Flexible: abilityCheck = Abilities.Weapon_Flexible; break;
 				//TODO: case 5: abilityCheck = Abilities.Weapon_Thrown;break;
 
 				//mid
-				case eObjectType.Sword:
+				case EObjectType.Sword:
 					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS)
 						switch (living.Realm)
 						{
-							case eRealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
-							case eRealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
-							case eRealm.Midgard: abilityCheck = Abilities.Weapon_Swords; break;
+							case ERealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
+							case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
+							case ERealm.Midgard: abilityCheck = Abilities.Weapon_Swords; break;
 							default: break;
 						}
 					else abilityCheck = Abilities.Weapon_Swords; 
 					break;
-				case eObjectType.Hammer:
+				case EObjectType.Hammer:
 					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS)
 						switch (living.Realm)
 						{
-							case eRealm.Albion: abilityCheck = Abilities.Weapon_Crushing; break;
-							case eRealm.Midgard: abilityCheck = Abilities.Weapon_Hammers; break;
-							case eRealm.Hibernia: abilityCheck = Abilities.Weapon_Blunt; break;
+							case ERealm.Albion: abilityCheck = Abilities.Weapon_Crushing; break;
+							case ERealm.Midgard: abilityCheck = Abilities.Weapon_Hammers; break;
+							case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blunt; break;
 							default: break;
 						}
 					else abilityCheck = Abilities.Weapon_Hammers; 
 					break;
-				case eObjectType.LeftAxe:
-				case eObjectType.Axe:
+				case EObjectType.LeftAxe:
+				case EObjectType.Axe:
 					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS)
 						switch (living.Realm)
 						{
-							case eRealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
-							case eRealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
-							case eRealm.Midgard: abilityCheck = Abilities.Weapon_Axes; break;
+							case ERealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
+							case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
+							case ERealm.Midgard: abilityCheck = Abilities.Weapon_Axes; break;
 							default: break;
 						}
 					else abilityCheck = Abilities.Weapon_Axes; 
 					break;
-				case eObjectType.Spear:
+				case EObjectType.Spear:
 					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS)
 						switch (living.Realm)
 						{
-							case eRealm.Albion: abilityCheck = Abilities.Weapon_Polearms; break;
-							case eRealm.Hibernia: abilityCheck = Abilities.Weapon_CelticSpear; break;
-							case eRealm.Midgard: abilityCheck = Abilities.Weapon_Spears; break;
+							case ERealm.Albion: abilityCheck = Abilities.Weapon_Polearms; break;
+							case ERealm.Hibernia: abilityCheck = Abilities.Weapon_CelticSpear; break;
+							case ERealm.Midgard: abilityCheck = Abilities.Weapon_Spears; break;
 							default: break;
 						}
 					else abilityCheck = Abilities.Weapon_Spears; 
 					break;
-				case eObjectType.CompositeBow:
+				case EObjectType.CompositeBow:
 					otherCheck = new string[] { Abilities.Weapon_CompositeBows, Abilities.Weapon_Archery };
 					break;
-				case eObjectType.Thrown: abilityCheck = Abilities.Weapon_Thrown; break;
-				case eObjectType.HandToHand: abilityCheck = Abilities.Weapon_HandToHand; break;
+				case EObjectType.Thrown: abilityCheck = Abilities.Weapon_Thrown; break;
+				case EObjectType.HandToHand: abilityCheck = Abilities.Weapon_HandToHand; break;
 
 				//hib
-				case eObjectType.RecurvedBow:
+				case EObjectType.RecurvedBow:
 					otherCheck = new string[] { Abilities.Weapon_RecurvedBows, Abilities.Weapon_Archery };
 					break;
-				case eObjectType.Blades:
+				case EObjectType.Blades:
 					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS)
 						switch (living.Realm)
 						{
-							case eRealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
-							case eRealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
-							case eRealm.Midgard: abilityCheck = Abilities.Weapon_Swords; break;
+							case ERealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
+							case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
+							case ERealm.Midgard: abilityCheck = Abilities.Weapon_Swords; break;
 							default: break;
 						}
 					else abilityCheck = Abilities.Weapon_Blades; 
 					break;
-				case eObjectType.Blunt:
+				case EObjectType.Blunt:
 					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS)
 						switch (living.Realm)
 						{
-							case eRealm.Albion: abilityCheck = Abilities.Weapon_Crushing; break;
-							case eRealm.Hibernia: abilityCheck = Abilities.Weapon_Blunt; break;
-							case eRealm.Midgard: abilityCheck = Abilities.Weapon_Hammers; break;
+							case ERealm.Albion: abilityCheck = Abilities.Weapon_Crushing; break;
+							case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blunt; break;
+							case ERealm.Midgard: abilityCheck = Abilities.Weapon_Hammers; break;
 							default: break;
 						}
 					else abilityCheck = Abilities.Weapon_Blunt;
 					break;
-				case eObjectType.Piercing:
-					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS && living.Realm == eRealm.Albion)
+				case EObjectType.Piercing:
+					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS && living.Realm == ERealm.Albion)
 						abilityCheck = Abilities.Weapon_Thrusting;
 					else abilityCheck = Abilities.Weapon_Piercing;
 					break;
-				case eObjectType.LargeWeapons:
-					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS && living.Realm == eRealm.Albion)
+				case EObjectType.LargeWeapons:
+					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS && living.Realm == ERealm.Albion)
 						abilityCheck = Abilities.Weapon_TwoHanded;
 					else abilityCheck = Abilities.Weapon_LargeWeapons; break;
-				case eObjectType.CelticSpear:
+				case EObjectType.CelticSpear:
 					if (ServerProperties.Properties.ALLOW_CROSS_REALM_ITEMS)
 						switch (living.Realm)
 						{
-							case eRealm.Albion: abilityCheck = Abilities.Weapon_Polearms; break;
-							case eRealm.Hibernia: abilityCheck = Abilities.Weapon_CelticSpear; break;
-							case eRealm.Midgard: abilityCheck = Abilities.Weapon_Spears; break;
+							case ERealm.Albion: abilityCheck = Abilities.Weapon_Polearms; break;
+							case ERealm.Hibernia: abilityCheck = Abilities.Weapon_CelticSpear; break;
+							case ERealm.Midgard: abilityCheck = Abilities.Weapon_Spears; break;
 							default: break;
 						}
 					else abilityCheck = Abilities.Weapon_CelticSpear;
 					break;
-				case eObjectType.Scythe: abilityCheck = Abilities.Weapon_Scythe; break;
+				case EObjectType.Scythe: abilityCheck = Abilities.Weapon_Scythe; break;
 
 				//misc
-				case eObjectType.Magical: return true;
-				case eObjectType.Shield: return living.GetAbilityLevel(Abilities.Shield) >= item.Type_Damage;
-				case eObjectType.Bolt: abilityCheck = Abilities.Weapon_Crossbow; break;
-				case eObjectType.Arrow: otherCheck = new string[] { Abilities.Weapon_CompositeBows, Abilities.Weapon_Longbows, Abilities.Weapon_RecurvedBows, Abilities.Weapon_Shortbows }; break;
-				case eObjectType.Poison: return living.GetModifiedSpecLevel(Specs.Envenom) > 0;
-				case eObjectType.Instrument: return living.HasAbility(Abilities.Weapon_Instruments);
+				case EObjectType.Magical: return true;
+				case EObjectType.Shield: return living.GetAbilityLevel(Abilities.Shield) >= item.Type_Damage;
+				case EObjectType.Bolt: abilityCheck = Abilities.Weapon_Crossbow; break;
+				case EObjectType.Arrow: otherCheck = new string[] { Abilities.Weapon_CompositeBows, Abilities.Weapon_Longbows, Abilities.Weapon_RecurvedBows, Abilities.Weapon_Shortbows }; break;
+				case EObjectType.Poison: return living.GetModifiedSpecLevel(Specs.Envenom) > 0;
+				case EObjectType.Instrument: return living.HasAbility(Abilities.Weapon_Instruments);
 					//TODO: different shield sizes
 			}
 
@@ -948,11 +948,11 @@ namespace DOL.GS.ServerRules
 		/// <param name="player">player whom specializations are checked</param>
 		/// <param name="objectType">object type</param>
 		/// <returns>specialization in object or 0</returns>
-		public virtual int GetObjectSpecLevel(GamePlayer player, eObjectType objectType)
+		public virtual int GetObjectSpecLevel(GamePlayer player, EObjectType objectType)
 		{
 			int res = 0;
 
-			foreach (eObjectType obj in GetCompatibleObjectTypes(objectType))
+			foreach (EObjectType obj in GetCompatibleObjectTypes(objectType))
 			{
 				int spec = player.GetModifiedSpecLevel(SkillBase.ObjectTypeToSpec(obj));
 				if (res < spec)
@@ -967,11 +967,11 @@ namespace DOL.GS.ServerRules
 		/// <param name="player">player whom specializations are checked</param>
 		/// <param name="objectType">object type</param>
 		/// <returns>specialization in object or 0</returns>
-		public virtual int GetBaseObjectSpecLevel(GamePlayer player, eObjectType objectType)
+		public virtual int GetBaseObjectSpecLevel(GamePlayer player, EObjectType objectType)
 		{
 			int res = 0;
 
-			foreach (eObjectType obj in GetCompatibleObjectTypes(objectType))
+			foreach (EObjectType obj in GetCompatibleObjectTypes(objectType))
 			{
 				int spec = player.GetBaseSpecLevel(SkillBase.ObjectTypeToSpec(obj));
 				if (res < spec)
@@ -987,9 +987,9 @@ namespace DOL.GS.ServerRules
 		/// <param name="type1"></param>
 		/// <param name="type2"></param>
 		/// <returns>true if equals</returns>
-		public virtual bool IsObjectTypesEqual(eObjectType type1, eObjectType type2)
+		public virtual bool IsObjectTypesEqual(EObjectType type1, EObjectType type2)
 		{
-			foreach (eObjectType obj in GetCompatibleObjectTypes(type1))
+			foreach (EObjectType obj in GetCompatibleObjectTypes(type1))
 			{
 				if (obj == type2)
 					return true;
@@ -1009,55 +1009,55 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="objectType">The object type</param>
 		/// <returns>An array of compatible object types</returns>
-		protected virtual eObjectType[] GetCompatibleObjectTypes(eObjectType objectType)
+		protected virtual EObjectType[] GetCompatibleObjectTypes(EObjectType objectType)
 		{
 			if (m_compatibleObjectTypes == null)
 			{
 				m_compatibleObjectTypes = new Hashtable();
-				m_compatibleObjectTypes[(int)eObjectType.Staff] = new eObjectType[] { eObjectType.Staff };
-				m_compatibleObjectTypes[(int)eObjectType.Fired] = new eObjectType[] { eObjectType.Fired };
+				m_compatibleObjectTypes[(int)EObjectType.Staff] = new EObjectType[] { EObjectType.Staff };
+				m_compatibleObjectTypes[(int)EObjectType.Fired] = new EObjectType[] { EObjectType.Fired };
 
-				m_compatibleObjectTypes[(int)eObjectType.FistWraps] = new eObjectType[] { eObjectType.FistWraps };
-				m_compatibleObjectTypes[(int)eObjectType.MaulerStaff] = new eObjectType[] { eObjectType.MaulerStaff };
+				m_compatibleObjectTypes[(int)EObjectType.FistWraps] = new EObjectType[] { EObjectType.FistWraps };
+				m_compatibleObjectTypes[(int)EObjectType.MaulerStaff] = new EObjectType[] { EObjectType.MaulerStaff };
 
 				//alb
-				m_compatibleObjectTypes[(int)eObjectType.CrushingWeapon] = new eObjectType[] { eObjectType.CrushingWeapon, eObjectType.Blunt, eObjectType.Hammer };
-				m_compatibleObjectTypes[(int)eObjectType.SlashingWeapon] = new eObjectType[] { eObjectType.SlashingWeapon, eObjectType.Blades, eObjectType.Sword, eObjectType.Axe };
-				m_compatibleObjectTypes[(int)eObjectType.ThrustWeapon] = new eObjectType[] { eObjectType.ThrustWeapon, eObjectType.Piercing };
-				m_compatibleObjectTypes[(int)eObjectType.TwoHandedWeapon] = new eObjectType[] { eObjectType.TwoHandedWeapon, eObjectType.LargeWeapons };
-				m_compatibleObjectTypes[(int)eObjectType.PolearmWeapon] = new eObjectType[] { eObjectType.PolearmWeapon, eObjectType.CelticSpear, eObjectType.Spear };
-				m_compatibleObjectTypes[(int)eObjectType.Flexible] = new eObjectType[] { eObjectType.Flexible };
-				m_compatibleObjectTypes[(int)eObjectType.Longbow] = new eObjectType[] { eObjectType.Longbow };
-				m_compatibleObjectTypes[(int)eObjectType.Crossbow] = new eObjectType[] { eObjectType.Crossbow };
+				m_compatibleObjectTypes[(int)EObjectType.CrushingWeapon] = new EObjectType[] { EObjectType.CrushingWeapon, EObjectType.Blunt, EObjectType.Hammer };
+				m_compatibleObjectTypes[(int)EObjectType.SlashingWeapon] = new EObjectType[] { EObjectType.SlashingWeapon, EObjectType.Blades, EObjectType.Sword, EObjectType.Axe };
+				m_compatibleObjectTypes[(int)EObjectType.ThrustWeapon] = new EObjectType[] { EObjectType.ThrustWeapon, EObjectType.Piercing };
+				m_compatibleObjectTypes[(int)EObjectType.TwoHandedWeapon] = new EObjectType[] { EObjectType.TwoHandedWeapon, EObjectType.LargeWeapons };
+				m_compatibleObjectTypes[(int)EObjectType.PolearmWeapon] = new EObjectType[] { EObjectType.PolearmWeapon, EObjectType.CelticSpear, EObjectType.Spear };
+				m_compatibleObjectTypes[(int)EObjectType.Flexible] = new EObjectType[] { EObjectType.Flexible };
+				m_compatibleObjectTypes[(int)EObjectType.Longbow] = new EObjectType[] { EObjectType.Longbow };
+				m_compatibleObjectTypes[(int)EObjectType.Crossbow] = new EObjectType[] { EObjectType.Crossbow };
 				//TODO: case 5: abilityCheck = Abilities.Weapon_Thrown; break;
 
 				//mid
-				m_compatibleObjectTypes[(int)eObjectType.Hammer] = new eObjectType[] { eObjectType.Hammer, eObjectType.CrushingWeapon, eObjectType.Blunt };
-				m_compatibleObjectTypes[(int)eObjectType.Sword] = new eObjectType[] { eObjectType.Sword, eObjectType.SlashingWeapon, eObjectType.Blades };
-				m_compatibleObjectTypes[(int)eObjectType.LeftAxe] = new eObjectType[] { eObjectType.LeftAxe };
-				m_compatibleObjectTypes[(int)eObjectType.Axe] = new eObjectType[] { eObjectType.Axe, eObjectType.SlashingWeapon, eObjectType.Blades }; //eObjectType.LeftAxe removed
-				m_compatibleObjectTypes[(int)eObjectType.HandToHand] = new eObjectType[] { eObjectType.HandToHand };
-				m_compatibleObjectTypes[(int)eObjectType.Spear] = new eObjectType[] { eObjectType.Spear, eObjectType.CelticSpear, eObjectType.PolearmWeapon };
-				m_compatibleObjectTypes[(int)eObjectType.CompositeBow] = new eObjectType[] { eObjectType.CompositeBow };
-				m_compatibleObjectTypes[(int)eObjectType.Thrown] = new eObjectType[] { eObjectType.Thrown };
+				m_compatibleObjectTypes[(int)EObjectType.Hammer] = new EObjectType[] { EObjectType.Hammer, EObjectType.CrushingWeapon, EObjectType.Blunt };
+				m_compatibleObjectTypes[(int)EObjectType.Sword] = new EObjectType[] { EObjectType.Sword, EObjectType.SlashingWeapon, EObjectType.Blades };
+				m_compatibleObjectTypes[(int)EObjectType.LeftAxe] = new EObjectType[] { EObjectType.LeftAxe };
+				m_compatibleObjectTypes[(int)EObjectType.Axe] = new EObjectType[] { EObjectType.Axe, EObjectType.SlashingWeapon, EObjectType.Blades }; //eObjectType.LeftAxe removed
+				m_compatibleObjectTypes[(int)EObjectType.HandToHand] = new EObjectType[] { EObjectType.HandToHand };
+				m_compatibleObjectTypes[(int)EObjectType.Spear] = new EObjectType[] { EObjectType.Spear, EObjectType.CelticSpear, EObjectType.PolearmWeapon };
+				m_compatibleObjectTypes[(int)EObjectType.CompositeBow] = new EObjectType[] { EObjectType.CompositeBow };
+				m_compatibleObjectTypes[(int)EObjectType.Thrown] = new EObjectType[] { EObjectType.Thrown };
 
 				//hib
-				m_compatibleObjectTypes[(int)eObjectType.Blunt] = new eObjectType[] { eObjectType.Blunt, eObjectType.CrushingWeapon, eObjectType.Hammer };
-				m_compatibleObjectTypes[(int)eObjectType.Blades] = new eObjectType[] { eObjectType.Blades, eObjectType.SlashingWeapon, eObjectType.Sword, eObjectType.Axe };
-				m_compatibleObjectTypes[(int)eObjectType.Piercing] = new eObjectType[] { eObjectType.Piercing, eObjectType.ThrustWeapon };
-				m_compatibleObjectTypes[(int)eObjectType.LargeWeapons] = new eObjectType[] { eObjectType.LargeWeapons, eObjectType.TwoHandedWeapon };
-				m_compatibleObjectTypes[(int)eObjectType.CelticSpear] = new eObjectType[] { eObjectType.CelticSpear, eObjectType.Spear, eObjectType.PolearmWeapon };
-				m_compatibleObjectTypes[(int)eObjectType.Scythe] = new eObjectType[] { eObjectType.Scythe };
-				m_compatibleObjectTypes[(int)eObjectType.RecurvedBow] = new eObjectType[] { eObjectType.RecurvedBow };
+				m_compatibleObjectTypes[(int)EObjectType.Blunt] = new EObjectType[] { EObjectType.Blunt, EObjectType.CrushingWeapon, EObjectType.Hammer };
+				m_compatibleObjectTypes[(int)EObjectType.Blades] = new EObjectType[] { EObjectType.Blades, EObjectType.SlashingWeapon, EObjectType.Sword, EObjectType.Axe };
+				m_compatibleObjectTypes[(int)EObjectType.Piercing] = new EObjectType[] { EObjectType.Piercing, EObjectType.ThrustWeapon };
+				m_compatibleObjectTypes[(int)EObjectType.LargeWeapons] = new EObjectType[] { EObjectType.LargeWeapons, EObjectType.TwoHandedWeapon };
+				m_compatibleObjectTypes[(int)EObjectType.CelticSpear] = new EObjectType[] { EObjectType.CelticSpear, EObjectType.Spear, EObjectType.PolearmWeapon };
+				m_compatibleObjectTypes[(int)EObjectType.Scythe] = new EObjectType[] { EObjectType.Scythe };
+				m_compatibleObjectTypes[(int)EObjectType.RecurvedBow] = new EObjectType[] { EObjectType.RecurvedBow };
 
-				m_compatibleObjectTypes[(int)eObjectType.Shield] = new eObjectType[] { eObjectType.Shield };
-				m_compatibleObjectTypes[(int)eObjectType.Poison] = new eObjectType[] { eObjectType.Poison };
+				m_compatibleObjectTypes[(int)EObjectType.Shield] = new EObjectType[] { EObjectType.Shield };
+				m_compatibleObjectTypes[(int)EObjectType.Poison] = new EObjectType[] { EObjectType.Poison };
 				//TODO: case 45: abilityCheck = Abilities.instruments; break;
 			}
 
-			eObjectType[] res = (eObjectType[])m_compatibleObjectTypes[(int)objectType];
+			EObjectType[] res = (EObjectType[])m_compatibleObjectTypes[(int)objectType];
 			if (res == null)
-				return new eObjectType[0];
+				return new EObjectType[0];
 			return res;
 		}
 
@@ -1388,8 +1388,8 @@ namespace DOL.GS.ServerRules
 			if (xpReward > expCap)
 				xpReward = expCap;
 
-			if (player != null && player.Group != null && (player.XPLogState == eXPLogState.On ||
-			                                               player.XPLogState == eXPLogState.Verbose))
+			if (player != null && player.Group != null && (player.XPLogState == EXpLogState.On ||
+			                                               player.XPLogState == EXpLogState.Verbose))
 			{
 				player.Out.SendMessage(
 					$"XP Award: {xpReward.ToString("N0", format)} | Group XP Cap: {expCap.ToString("N0", format)}",
@@ -1477,7 +1477,7 @@ namespace DOL.GS.ServerRules
 			{
 				if (player != null)
 				{
-					if (player.XPLogState == eXPLogState.Verbose)
+					if (player.XPLogState == EXpLogState.Verbose)
 					{
 						player.Out.SendMessage(
 							$"% of Camp remaining: {(campBonusPerc * 100 / fullCampBonus).ToString("0.##")}%",
@@ -1504,8 +1504,8 @@ namespace DOL.GS.ServerRules
 				if (plrGrpExp.Count > 0)
 					xpReward /= plrGrpExp.Count;
 
-				if (player != null && (player.XPLogState == eXPLogState.On ||
-				                       player.XPLogState == eXPLogState.Verbose))
+				if (player != null && (player.XPLogState == EXpLogState.On ||
+				                       player.XPLogState == EXpLogState.Verbose))
 				{
 					double baseXP = xpReward - campBonus - groupExp - outpostXP;
 					/*int scaleFactor = 1;
@@ -1524,7 +1524,7 @@ namespace DOL.GS.ServerRules
 						$"Base XP: {baseXP.ToString("N0", format)} | Solo Cap : {softXPCap.ToString("N0", format)} | %Cap: {((double) ((baseXP) / (softXPCap)) * 100).ToString("0.##")}%",
 						eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-					if (player.XPLogState == eXPLogState.Verbose)
+					if (player.XPLogState == EXpLogState.Verbose)
 					{
 						double campPercent = ((double) campBonus / (baseXP)) * 100.0;
 						double groupPercent = ((double) groupExp / (baseXP)) * 100.0;
@@ -1567,17 +1567,17 @@ namespace DOL.GS.ServerRules
 				}
 
 				//XP Rate is handled in GainExperience
-				living.GainExperience(eXPSource.NPC, xpReward, campBonus, groupExp, outpostXP, true,
+				living.GainExperience(EXpSource.NPC, xpReward, campBonus, groupExp, outpostXP, true,
 					true, true);
 			}
 		}
 
 		private int GetUniqueClassCount(Group group)
         {
-			HashSet<eCharacterClass> groupClasses = new HashSet<eCharacterClass>();
+			HashSet<ECharacterClass> groupClasses = new HashSet<ECharacterClass>();
             foreach (var player in group.GetPlayersInTheGroup().ToList())
             {
-				groupClasses.Add((eCharacterClass)player.CharacterClass.ID);
+				groupClasses.Add((ECharacterClass)player.CharacterClass.ID);
             }
 			return groupClasses.Count;
         }
@@ -1705,10 +1705,10 @@ namespace DOL.GS.ServerRules
 				if (xpReward > expCap)
 					xpReward = expCap;
 
-				eXPSource xpSource = eXPSource.NPC;
+				EXpSource xpSource = EXpSource.NPC;
 				if (killedLiving is GamePlayer)
 				{
-					xpSource = eXPSource.Player;
+					xpSource = EXpSource.Player;
 				}
 
 				if (xpReward > 0)
@@ -1957,9 +1957,9 @@ namespace DOL.GS.ServerRules
 				//apply the keep bonus for bounty points
 				if (killer != null)
 				{
-					if (Keeps.KeepBonusMgr.RealmHasBonus(eKeepBonusType.Bounty_Points_5, (eRealm)killer.Realm))
+					if (Keeps.KeepBonusMgr.RealmHasBonus(eKeepBonusType.Bounty_Points_5, (ERealm)killer.Realm))
 						bountyPoints += (bountyPoints / 100) * 5;
-					else if (Keeps.KeepBonusMgr.RealmHasBonus(eKeepBonusType.Bounty_Points_3, (eRealm)killer.Realm))
+					else if (Keeps.KeepBonusMgr.RealmHasBonus(eKeepBonusType.Bounty_Points_3, (ERealm)killer.Realm))
 						bountyPoints += (bountyPoints / 100) * 3;
 				}
 
@@ -2021,7 +2021,7 @@ namespace DOL.GS.ServerRules
 				if(xpReward > 0)
 					xpReward += outpostXP;
 
-				living.GainExperience(eXPSource.Player, xpReward);
+				living.GainExperience(EXpSource.Player, xpReward);
 
 				//gold
 				if (living is GamePlayer)
@@ -2051,7 +2051,7 @@ namespace DOL.GS.ServerRules
 					
 				}
 
-				if (killedPlayer.ReleaseType != eReleaseType.Duel && expGainPlayer != null)
+				if (killedPlayer.ReleaseType != EReleaseType.Duel && expGainPlayer != null)
 				{
 					if (expGainPlayer.GetConLevel(killedPlayer) > -3)
 					{
@@ -2067,38 +2067,38 @@ namespace DOL.GS.ServerRules
 							killerCheck = expGainPlayer;
 						}
 
-						switch ((eRealm)killedPlayer.Realm)
+						switch ((ERealm)killedPlayer.Realm)
 						{
-							case eRealm.Albion:
+							case ERealm.Albion:
 								expGainPlayer.KillsAlbionPlayers++;
 								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Players_Killed);
 								if (expGainPlayer == killerCheck )
 								{
 									expGainPlayer.KillsAlbionDeathBlows++;
 									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Alb_Deathblows);
-									CheckSoloKills(eRealm.Albion, XPGainerList, expGainPlayer, totalDamage);
+									CheckSoloKills(ERealm.Albion, XPGainerList, expGainPlayer, totalDamage);
 								}
 								break;
 
-							case eRealm.Hibernia:
+							case ERealm.Hibernia:
 								expGainPlayer.KillsHiberniaPlayers++;
 								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Players_Killed);
 								if (expGainPlayer == killerCheck)
 								{
 									expGainPlayer.KillsHiberniaDeathBlows++;
 									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Hib_Deathblows);
-									CheckSoloKills(eRealm.Hibernia, XPGainerList, expGainPlayer, totalDamage);
+									CheckSoloKills(ERealm.Hibernia, XPGainerList, expGainPlayer, totalDamage);
 								}
 								break;
 
-							case eRealm.Midgard:
+							case ERealm.Midgard:
 								expGainPlayer.KillsMidgardPlayers++;
 								expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Players_Killed);
 								if (expGainPlayer == killerCheck)
 								{
 									expGainPlayer.KillsMidgardDeathBlows++;
 									expGainPlayer.Achieve(AchievementUtils.AchievementNames.Mid_Deathblows);
-									CheckSoloKills(eRealm.Midgard, XPGainerList, expGainPlayer, totalDamage);
+									CheckSoloKills(ERealm.Midgard, XPGainerList, expGainPlayer, totalDamage);
 								}
 								break;
 						}
@@ -2139,13 +2139,13 @@ namespace DOL.GS.ServerRules
                 int bonusRegion = 0;
                 switch (ZoneBonusRotator.GetCurrentBonusRealm())
                 {
-	                case eRealm.Albion:
+	                case ERealm.Albion:
 		                bonusRegion = 1;
 		                break;
-	                case eRealm.Hibernia:
+	                case ERealm.Hibernia:
 		                bonusRegion = 200;
 		                break;
-	                case eRealm.Midgard:
+	                case ERealm.Midgard:
 		                bonusRegion = 100;
 		                break;
                 }
@@ -2193,7 +2193,7 @@ namespace DOL.GS.ServerRules
 			}
 		}
 
-		private void CheckSoloKills(eRealm realm, HybridDictionary XPGainerList, GamePlayer playerToCheck, float totalDamage)
+		private void CheckSoloKills(ERealm realm, HybridDictionary XPGainerList, GamePlayer playerToCheck, float totalDamage)
 		{
 			float calcDamage = 0f;
 			
@@ -2225,15 +2225,15 @@ namespace DOL.GS.ServerRules
 			{
 				switch (realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						playerToCheck.KillsAlbionSolo++;
 						playerToCheck.Achieve(AchievementUtils.AchievementNames.Alb_Solo_Kills);
 						break;
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						playerToCheck.KillsMidgardSolo++;
 						playerToCheck.Achieve(AchievementUtils.AchievementNames.Mid_Solo_Kills);
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						playerToCheck.KillsHiberniaSolo++;
 						playerToCheck.Achieve(AchievementUtils.AchievementNames.Hib_Solo_Kills);
 						break;
@@ -2371,19 +2371,19 @@ namespace DOL.GS.ServerRules
 			if ((player.KillsAlbionPlayers + player.KillsMidgardPlayers + player.KillsHiberniaPlayers) > 0)
 			{
 				stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Kill.Title"));
-				switch ((eRealm)player.Realm)
+				switch ((ERealm)player.Realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						if (player.KillsMidgardPlayers > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Kill.MidgardPlayer") + ": " + player.KillsMidgardPlayers.ToString("N0"));
 						if (player.KillsHiberniaPlayers > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Kill.HiberniaPlayer") + ": " + player.KillsHiberniaPlayers.ToString("N0"));
 						total = player.KillsMidgardPlayers + player.KillsHiberniaPlayers;
 						break;
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						if (player.KillsAlbionPlayers > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Kill.AlbionPlayer") + ": " + player.KillsAlbionPlayers.ToString("N0"));
 						if (player.KillsHiberniaPlayers > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Kill.HiberniaPlayer") + ": " + player.KillsHiberniaPlayers.ToString("N0"));
 						total = player.KillsAlbionPlayers + player.KillsHiberniaPlayers;
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						if (player.KillsAlbionPlayers > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Kill.AlbionPlayer") + ": " + player.KillsAlbionPlayers.ToString("N0"));
 						if (player.KillsMidgardPlayers > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Kill.MidgardPlayer") + ": " + player.KillsMidgardPlayers.ToString("N0"));
 						total = player.KillsMidgardPlayers + player.KillsAlbionPlayers;
@@ -2404,19 +2404,19 @@ namespace DOL.GS.ServerRules
 			if ((player.KillsAlbionDeathBlows + player.KillsMidgardDeathBlows + player.KillsHiberniaDeathBlows) > 0)
 			{
 				total = 0;
-				switch ((eRealm)player.Realm)
+				switch ((ERealm)player.Realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						if (player.KillsMidgardDeathBlows > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Deathblows.MidgardPlayer") + ": " + player.KillsMidgardDeathBlows.ToString("N0"));
 						if (player.KillsHiberniaDeathBlows > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Deathblows.HiberniaPlayer") + ": " + player.KillsHiberniaDeathBlows.ToString("N0"));
 						total = player.KillsMidgardDeathBlows + player.KillsHiberniaDeathBlows;
 						break;
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						if (player.KillsAlbionDeathBlows > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Deathblows.AlbionPlayer") + ": " + player.KillsAlbionDeathBlows.ToString("N0"));
 						if (player.KillsHiberniaDeathBlows > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Deathblows.HiberniaPlayer") + ": " + player.KillsHiberniaDeathBlows.ToString("N0"));
 						total = player.KillsAlbionDeathBlows + player.KillsHiberniaDeathBlows;
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						if (player.KillsAlbionDeathBlows > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Deathblows.AlbionPlayer") + ": " + player.KillsAlbionDeathBlows.ToString("N0"));
 						if (player.KillsMidgardDeathBlows > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Deathblows.MidgardPlayer") + ": " + player.KillsMidgardDeathBlows.ToString("N0"));
 						total = player.KillsMidgardDeathBlows + player.KillsAlbionDeathBlows;
@@ -2435,19 +2435,19 @@ namespace DOL.GS.ServerRules
 			if ((player.KillsAlbionSolo + player.KillsMidgardSolo + player.KillsHiberniaSolo) > 0)
 			{
 				total = 0;
-				switch ((eRealm)player.Realm)
+				switch ((ERealm)player.Realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						if (player.KillsMidgardSolo > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Solo.MidgardPlayer") + ": " + player.KillsMidgardSolo.ToString("N0"));
 						if (player.KillsHiberniaSolo > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Solo.HiberniaPlayer") + ": " + player.KillsHiberniaSolo.ToString("N0"));
 						total = player.KillsMidgardSolo + player.KillsHiberniaSolo;
 						break;
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						if (player.KillsAlbionSolo > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Solo.AlbionPlayer") + ": " + player.KillsAlbionSolo.ToString("N0"));
 						if (player.KillsHiberniaSolo > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Solo.HiberniaPlayer") + ": " + player.KillsHiberniaSolo.ToString("N0"));
 						total = player.KillsAlbionSolo + player.KillsHiberniaSolo;
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						if (player.KillsAlbionSolo > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Solo.AlbionPlayer") + ": " + player.KillsAlbionSolo.ToString("N0"));
 						if (player.KillsMidgardSolo > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Solo.MidgardPlayer") + ": " + player.KillsMidgardSolo.ToString("N0"));
 						total = player.KillsMidgardSolo + player.KillsAlbionSolo;
@@ -2646,13 +2646,13 @@ namespace DOL.GS.ServerRules
 				case eMerchantWindowType.HousingBindstoneHookpoint:
 					switch (player.Realm)
 					{
-						case eRealm.Albion:
+						case ERealm.Albion:
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItemsAlb, merchantType);
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItemsMid, merchantType);
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItemsHib, merchantType);
 							break;
 						default:
@@ -2669,13 +2669,13 @@ namespace DOL.GS.ServerRules
 				case eMerchantWindowType.HousingVaultHookpoint:
 					switch (player.Realm)
 					{
-						case eRealm.Albion:
+						case ERealm.Albion:
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItemsAlb, merchantType);
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItemsMid, merchantType);
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItemsHib, merchantType);
 							break;
 						default:
@@ -2717,13 +2717,13 @@ namespace DOL.GS.ServerRules
 				case eMerchantWindowType.HousingBindstoneHookpoint:
 					switch (player.Realm)
 					{
-						case eRealm.Albion:
+						case ERealm.Albion:
 							items = HouseTemplateMgr.IndoorBindstoneShopItemsAlb;
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							items = HouseTemplateMgr.IndoorBindstoneShopItemsHib;
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							items = HouseTemplateMgr.IndoorBindstoneShopItemsMid;
 							break;
 						default:
@@ -2740,13 +2740,13 @@ namespace DOL.GS.ServerRules
 				case eMerchantWindowType.HousingVaultHookpoint:
 					switch (player.Realm)
 					{
-						case eRealm.Albion:
+						case ERealm.Albion:
 							items = HouseTemplateMgr.IndoorVaultShopItemsAlb;
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							items = HouseTemplateMgr.IndoorVaultShopItemsHib;
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							items = HouseTemplateMgr.IndoorVaultShopItemsMid;
 							break;
 						default:
@@ -2817,11 +2817,11 @@ namespace DOL.GS.ServerRules
 				if (npc.Model == 0)
 				{
 					// defaults if templates are missing
-					if (house.Realm == eRealm.Albion)
+					if (house.Realm == ERealm.Albion)
 					{
 						npc.Model = (ushort)Util.Random(7, 8);
 					}
-					else if (house.Realm == eRealm.Midgard)
+					else if (house.Realm == ERealm.Midgard)
 					{
 						npc.Model = (ushort)Util.Random(160, 161);
 					}

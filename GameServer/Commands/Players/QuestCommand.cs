@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 [Command(
     "&quest",
     new string[] {"&quests"},
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "Display a list of your ongoing and completed quests", "/quest")]
 public class QuestCommand : ACommandHandler, ICommandHandler
 {

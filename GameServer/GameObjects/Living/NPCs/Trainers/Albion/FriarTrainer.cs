@@ -27,12 +27,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Friar Trainer
 	/// </summary>
-	[NPCGuildScript("Friar Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Friar Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Friar Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Friar Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class FriarTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Friar; }
+			get { return ECharacterClass.Friar; }
 		}
 
 		/// <summary>
@@ -107,7 +107,7 @@ namespace DOL.GS.Trainer
 				// promote player to other class
 				if (CanPromotePlayer(player))
 				{
-					PromotePlayer(player, (int)eCharacterClass.Friar, LanguageMgr.GetTranslation(player.Client.Account.Language, "FriarTrainer.WhisperReceive.Text1"), null);
+					PromotePlayer(player, (int)ECharacterClass.Friar, LanguageMgr.GetTranslation(player.Client.Account.Language, "FriarTrainer.WhisperReceive.Text1"), null);
 					addGift(ARMOR_ID1, player);
 				}
 			}

@@ -103,17 +103,17 @@ namespace DOL.GS.Spells
             string TemplateId = "";
             switch (caster.Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     decoy.Name = "Avalonian Unicorn Knight";
                     decoy.Model = (ushort)m_rnd.Next(61, 68);
                     TemplateId = "e3ead77b-22a7-4b7d-a415-92a29295dcf7";
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     decoy.Name = "Kobold Elding Herra";
                     decoy.Model = (ushort)m_rnd.Next(169, 184);
                     TemplateId = "ee137bff-e83d-4423-8305-8defa2cbcd7a";
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     decoy.Name = "Elf Gilded Spear";
                     decoy.Model = (ushort)m_rnd.Next(334, 349);
                     TemplateId = "a4c798a2-186a-4bda-99ff-ccef228cb745";
@@ -187,7 +187,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.SpeedDecrease.ToString();
+            dbs.Type = ESpellType.SpeedDecrease.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;
@@ -237,7 +237,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 350;
-            dbs.Type = eSpellType.PoisonspikeDot.ToString();
+            dbs.Type = ESpellType.PoisonspikeDot.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;
@@ -286,7 +286,7 @@ namespace DOL.GS.Spells
             m_target = effect.Owner as GamePlayer;
             if (m_target == null) return;
             if (!m_target.IsAlive || m_target.ObjectState != GameLiving.eObjectState.Active || !m_target.IsSitting) return;
-            Caster.BaseBuffBonusCategory[(int)eProperty.Skill_Stealth] += 100;
+            Caster.BaseBuffBonusCategory[(int)EProperty.Skill_Stealth] += 100;
             GameEventMgr.AddHandler(m_target, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
             GameEventMgr.AddHandler(Caster, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
             new LoockoutOwner().Start(Caster);
@@ -295,7 +295,7 @@ namespace DOL.GS.Spells
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            Caster.BaseBuffBonusCategory[(int)eProperty.Skill_Stealth] -= 100;
+            Caster.BaseBuffBonusCategory[(int)EProperty.Skill_Stealth] -= 100;
             GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
             GameEventMgr.RemoveHandler(m_target, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
             return base.OnEffectExpires(effect, noMessages);
@@ -369,7 +369,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.DirectDamage.ToString();
+            dbs.Type = ESpellType.DirectDamage.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;

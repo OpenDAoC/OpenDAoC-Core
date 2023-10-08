@@ -238,7 +238,7 @@ namespace DOL.GS.Spells
 				if(Spell.Power != 0) list.Add("Power cost: " + Spell.Power.ToString("0;0'%'"));
 				list.Add("Casting time: " + (Spell.CastTime*0.001).ToString("0.0## sec;-0.0## sec;'instant'"));
 				if(Spell.Radius != 0) list.Add("Radius: " + Spell.Radius);
-				if(Spell.DamageType != eDamageType.Natural) list.Add("Damage: " + GlobalConstants.DamageTypeToName(Spell.DamageType));
+				if(Spell.DamageType != EDamageType.Natural) list.Add("Damage: " + GlobalConstants.DamageTypeToName(Spell.DamageType));
 
 				return list;
 			}

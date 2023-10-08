@@ -6,7 +6,7 @@ namespace DOL.GS.Commands
 {
 	[Command(
 		 "&titlegm",
-		 ePrivLevel.GM,
+		 EPrivLevel.GM,
 		 "Changes target player's titles",
 		 "/titlegm <add> <class type> - add a title to the target player",
 		 "/titlegm <remove> <class type> - remove a title from the target player",

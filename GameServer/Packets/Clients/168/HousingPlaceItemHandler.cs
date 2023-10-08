@@ -266,7 +266,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					method = 5;
 				}
-				else if (objType == (int)eObjectType.HouseVault)
+				else if (objType == (int)EObjectType.HouseVault)
 				{
 					method = 7;
 				}
@@ -556,7 +556,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								client.Out.SendInventorySlotsUpdate(new[] { slot });
 
-								if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
+								if (client.Account.PrivLevel == (int)EPrivLevel.Admin)
 								{
 									if (client.Player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
 									{
@@ -699,7 +699,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								client.Out.SendInventorySlotsUpdate(new[] { slot });
 
-								if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
+								if (client.Account.PrivLevel == (int)EPrivLevel.Admin)
 								{
 									if (client.Player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
 									{
@@ -773,32 +773,32 @@ namespace DOL.GS.PacketHandler.Client.v168
 		{
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.HouseWallObject:
-				case (int)eObjectType.Axe:
-				case (int)eObjectType.Blades:
-				case (int)eObjectType.Blunt:
-				case (int)eObjectType.CelticSpear:
-				case (int)eObjectType.CompositeBow:
-				case (int)eObjectType.Crossbow:
-				case (int)eObjectType.Flexible:
-				case (int)eObjectType.Hammer:
-				case (int)eObjectType.HandToHand:
-				case (int)eObjectType.LargeWeapons:
-				case (int)eObjectType.LeftAxe:
-				case (int)eObjectType.Longbow:
-				case (int)eObjectType.MaulerStaff:
-				case (int)eObjectType.Piercing:
-				case (int)eObjectType.PolearmWeapon:
-				case (int)eObjectType.RecurvedBow:
-				case (int)eObjectType.Scythe:
-				case (int)eObjectType.Shield:
-				case (int)eObjectType.SlashingWeapon:
-				case (int)eObjectType.Spear:
-				case (int)eObjectType.Staff:
-				case (int)eObjectType.Sword:
-				case (int)eObjectType.Thrown:
-				case (int)eObjectType.ThrustWeapon:
-				case (int)eObjectType.TwoHandedWeapon:
+				case (int)EObjectType.HouseWallObject:
+				case (int)EObjectType.Axe:
+				case (int)EObjectType.Blades:
+				case (int)EObjectType.Blunt:
+				case (int)EObjectType.CelticSpear:
+				case (int)EObjectType.CompositeBow:
+				case (int)EObjectType.Crossbow:
+				case (int)EObjectType.Flexible:
+				case (int)EObjectType.Hammer:
+				case (int)EObjectType.HandToHand:
+				case (int)EObjectType.LargeWeapons:
+				case (int)EObjectType.LeftAxe:
+				case (int)EObjectType.Longbow:
+				case (int)EObjectType.MaulerStaff:
+				case (int)EObjectType.Piercing:
+				case (int)EObjectType.PolearmWeapon:
+				case (int)EObjectType.RecurvedBow:
+				case (int)EObjectType.Scythe:
+				case (int)EObjectType.Shield:
+				case (int)EObjectType.SlashingWeapon:
+				case (int)EObjectType.Spear:
+				case (int)EObjectType.Staff:
+				case (int)EObjectType.Sword:
+				case (int)EObjectType.Thrown:
+				case (int)EObjectType.ThrustWeapon:
+				case (int)EObjectType.TwoHandedWeapon:
 					return true;
 				default:
 					return false;
@@ -810,10 +810,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 		{
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.HouseVault:
-				case (int)eObjectType.HouseNPC:
-				case (int)eObjectType.HouseBindstone:
-				case (int)eObjectType.HouseInteriorObject:
+				case (int)EObjectType.HouseVault:
+				case (int)EObjectType.HouseNPC:
+				case (int)EObjectType.HouseBindstone:
+				case (int)EObjectType.HouseInteriorObject:
 					return true;
 				default:
 					return false;

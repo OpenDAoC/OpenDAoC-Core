@@ -69,7 +69,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 				return;
 			
 			#region defineNPCs
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rengahr", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rengahr", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -87,7 +87,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 				Rengahr.Model = 512;
 				Rengahr.Name = "Rengahr";
 				Rengahr.GuildName = "Protector of Beetles";
-				Rengahr.Realm = eRealm.Midgard;
+				Rengahr.Realm = ERealm.Midgard;
 				Rengahr.CurrentRegionID = 101;
 				Rengahr.Size = 50;
 				Rengahr.Level = 59;
@@ -321,7 +321,7 @@ namespace DOL.GS.AtlasQuest.Midgard
             Beetle.Model = 670;
             Beetle.Name = "Jeremy";
             Beetle.GuildName = "";
-            Beetle.Realm = eRealm.Midgard;
+            Beetle.Realm = ERealm.Midgard;
             Beetle.Race = 2007;
             Beetle.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
             Beetle.Size = 40;
@@ -343,7 +343,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 			MobEffect.Model = 1822;
 			MobEffect.Name = "power of the beetle";
 			MobEffect.GuildName = "";
-			MobEffect.Realm = eRealm.Midgard;
+			MobEffect.Realm = ERealm.Midgard;
 			MobEffect.Race = 2007;
 			MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
 			MobEffect.Size = 25;

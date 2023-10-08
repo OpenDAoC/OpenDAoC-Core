@@ -7,7 +7,7 @@ namespace DOL.GS.Effects
         public AtlasOF_WhirlingDervishECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.WhirlingDervish;
+            EffectType = EEffect.WhirlingDervish;
             EffectService.RequestStartEffect(this);
         }
         
@@ -18,13 +18,13 @@ namespace DOL.GS.Effects
 
         public override void OnStartEffect()
         {
-            Owner.AbilityBonus[eProperty.OffhandDamageAndChance] += 5 * (int)Math.Round(this.Effectiveness);
+            Owner.AbilityBonus[EProperty.OffhandDamageAndChance] += 5 * (int)Math.Round(this.Effectiveness);
             base.OnStartEffect();
         }
         
         public override void OnStopEffect()
         {
-            Owner.AbilityBonus[eProperty.OffhandDamageAndChance] -= 5 * (int)Math.Round(this.Effectiveness);
+            Owner.AbilityBonus[EProperty.OffhandDamageAndChance] -= 5 * (int)Math.Round(this.Effectiveness);
             base.OnStopEffect();
         }
     }

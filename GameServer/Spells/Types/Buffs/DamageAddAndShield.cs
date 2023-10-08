@@ -61,8 +61,8 @@ namespace DOL.GS.Spells
 			AttackFinishedEventArgs atkArgs = arguments as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
 
-			if (atkArgs.AttackData.AttackResult != eAttackResult.HitUnstyled
-				&& atkArgs.AttackData.AttackResult != eAttackResult.HitStyle) return;
+			if (atkArgs.AttackData.AttackResult != EAttackResult.HitUnstyled
+				&& atkArgs.AttackData.AttackResult != EAttackResult.HitStyle) return;
 
 			GameLiving target = atkArgs.AttackData.Target;
 			if (target == null) return;
@@ -102,7 +102,7 @@ namespace DOL.GS.Spells
 			ad.DamageType = Spell.DamageType;
 			ad.AttackType = AttackData.eAttackType.Spell;
 			ad.SpellHandler = this;
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 
 			if ( ad.Attacker is GameNPC )
 			{
@@ -181,8 +181,8 @@ namespace DOL.GS.Spells
 		{
 			AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
 			if (args == null) return;
-			if (args.AttackData.AttackResult != eAttackResult.HitUnstyled
-				&& args.AttackData.AttackResult != eAttackResult.HitStyle) return;
+			if (args.AttackData.AttackResult != EAttackResult.HitUnstyled
+				&& args.AttackData.AttackResult != EAttackResult.HitStyle) return;
 			if (!args.AttackData.IsMeleeAttack) return;
 			GameLiving attacker = sender as GameLiving; //sender is target of attack, becomes attacker for damage shield
 			if (attacker == null) return;
@@ -200,7 +200,7 @@ namespace DOL.GS.Spells
 
             if (!Spell.IsFocus)
             {
-				var effectiveness = 1 + Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
+				var effectiveness = 1 + Caster.GetModified(EProperty.BuffEffectiveness) * 0.01;
 				damage *= effectiveness;
 			}
 			
@@ -219,7 +219,7 @@ namespace DOL.GS.Spells
 			ad.DamageType = Spell.DamageType;
 			ad.SpellHandler = this;
 			ad.AttackType = AttackData.eAttackType.Spell;
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 
 			GamePlayer owner = null;
 
@@ -305,7 +305,7 @@ namespace DOL.GS.Spells
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
 			double duration = Spell.Duration;
-			duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
+			duration *= (1.0 + m_caster.GetModified(EProperty.SpellDuration) * 0.01);
 			return (int)duration;
 		}
 		

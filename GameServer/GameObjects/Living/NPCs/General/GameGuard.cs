@@ -42,13 +42,13 @@ namespace DOL.GS
 
             switch (Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     translatableObject = "GameGuard.Albion.StartAttackSay";
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     translatableObject = "GameGuard.Midgard.StartAttackSay";
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     translatableObject = "GameGuard.Hibernia.StartAttackSay";
                     break;
             }

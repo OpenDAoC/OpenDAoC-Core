@@ -9,7 +9,7 @@ namespace DOL.GS.Commands
     [Command(
         "&gmappeal",
         new string[] { "&gmhelp" },
-        ePrivLevel.GM,
+        EPrivLevel.GM,
         "Commands for server staff to assist players with their Appeals.",
         "/gmappeal view <player name> - Views the appeal of a specific player.",
         "/gmappeal list - Lists all the current Appeals from online players only, in a window.",

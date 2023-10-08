@@ -70,60 +70,60 @@ namespace DOL.GS
 
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.Cloth:
-				case (int)eObjectType.Leather:
+				case (int)EObjectType.Cloth:
+				case (int)EObjectType.Leather:
 					return ECraftingSkill.Tailoring;
 
-				case (int)eObjectType.Studded:
-				case (int)eObjectType.Reinforced:
-				case (int)eObjectType.Chain:
-				case (int)eObjectType.Scale:
-				case (int)eObjectType.Plate:
+				case (int)EObjectType.Studded:
+				case (int)EObjectType.Reinforced:
+				case (int)EObjectType.Chain:
+				case (int)EObjectType.Scale:
+				case (int)EObjectType.Plate:
 					return ECraftingSkill.ArmorCrafting;
 
 				// all weapon
-				case (int)eObjectType.Axe:
-				case (int)eObjectType.Blades:
-				case (int)eObjectType.Blunt:
-				case (int)eObjectType.CelticSpear:
-				case (int)eObjectType.CrushingWeapon:
-				case (int)eObjectType.Flexible:
-				case (int)eObjectType.Hammer:
-				case (int)eObjectType.HandToHand:
-				case (int)eObjectType.LargeWeapons:
-				case (int)eObjectType.LeftAxe:
-				case (int)eObjectType.Piercing:
-				case (int)eObjectType.PolearmWeapon:
-				case (int)eObjectType.Scythe:
-				case (int)eObjectType.Shield:
-				case (int)eObjectType.SlashingWeapon:
-				case (int)eObjectType.Spear:
-				case (int)eObjectType.Sword:
-				case (int)eObjectType.ThrustWeapon:
-				case (int)eObjectType.TwoHandedWeapon:
+				case (int)EObjectType.Axe:
+				case (int)EObjectType.Blades:
+				case (int)EObjectType.Blunt:
+				case (int)EObjectType.CelticSpear:
+				case (int)EObjectType.CrushingWeapon:
+				case (int)EObjectType.Flexible:
+				case (int)EObjectType.Hammer:
+				case (int)EObjectType.HandToHand:
+				case (int)EObjectType.LargeWeapons:
+				case (int)EObjectType.LeftAxe:
+				case (int)EObjectType.Piercing:
+				case (int)EObjectType.PolearmWeapon:
+				case (int)EObjectType.Scythe:
+				case (int)EObjectType.Shield:
+				case (int)EObjectType.SlashingWeapon:
+				case (int)EObjectType.Spear:
+				case (int)EObjectType.Sword:
+				case (int)EObjectType.ThrustWeapon:
+				case (int)EObjectType.TwoHandedWeapon:
 					return ECraftingSkill.WeaponCrafting;
 
-				case (int)eObjectType.CompositeBow:
-				case (int)eObjectType.Crossbow:
-				case (int)eObjectType.Fired:
-				case (int)eObjectType.Instrument:
-				case (int)eObjectType.Longbow:
-				case (int)eObjectType.RecurvedBow:
-				case (int)eObjectType.Staff:
+				case (int)EObjectType.CompositeBow:
+				case (int)EObjectType.Crossbow:
+				case (int)EObjectType.Fired:
+				case (int)EObjectType.Instrument:
+				case (int)EObjectType.Longbow:
+				case (int)EObjectType.RecurvedBow:
+				case (int)EObjectType.Staff:
 					return ECraftingSkill.Fletching;
 
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.Poison:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.Poison:
 					return ECraftingSkill.Alchemy;
 
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.SpellcraftGem:
 					return ECraftingSkill.SpellCrafting;
 
-				case (int)eObjectType.SiegeBalista:
-				case (int)eObjectType.SiegeCatapult:
-				case (int)eObjectType.SiegeCauldron:
-				case (int)eObjectType.SiegeRam:
-				case (int)eObjectType.SiegeTrebuchet:
+				case (int)EObjectType.SiegeBalista:
+				case (int)EObjectType.SiegeCatapult:
+				case (int)EObjectType.SiegeCauldron:
+				case (int)EObjectType.SiegeRam:
+				case (int)EObjectType.SiegeTrebuchet:
 					return ECraftingSkill.SiegeCrafting;
 
 				default:
@@ -138,50 +138,50 @@ namespace DOL.GS
 		{
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.Cloth:
+				case (int)EObjectType.Cloth:
 					return ECraftingSkill.ClothWorking;
 
-				case (int)eObjectType.Leather:
-				case (int)eObjectType.Studded:
+				case (int)EObjectType.Leather:
+				case (int)EObjectType.Studded:
 					return ECraftingSkill.LeatherCrafting;
 
 				// all weapon
-				case (int)eObjectType.Axe:
-				case (int)eObjectType.Blades:
-				case (int)eObjectType.Blunt:
-				case (int)eObjectType.CelticSpear:
-				case (int)eObjectType.CrushingWeapon:
-				case (int)eObjectType.Flexible:
-				case (int)eObjectType.Hammer:
-				case (int)eObjectType.HandToHand:
-				case (int)eObjectType.LargeWeapons:
-				case (int)eObjectType.LeftAxe:
-				case (int)eObjectType.Piercing:
-				case (int)eObjectType.PolearmWeapon:
-				case (int)eObjectType.Scythe:
-				case (int)eObjectType.Shield:
-				case (int)eObjectType.SlashingWeapon:
-				case (int)eObjectType.Spear:
-				case (int)eObjectType.Sword:
-				case (int)eObjectType.ThrustWeapon:
-				case (int)eObjectType.TwoHandedWeapon:
+				case (int)EObjectType.Axe:
+				case (int)EObjectType.Blades:
+				case (int)EObjectType.Blunt:
+				case (int)EObjectType.CelticSpear:
+				case (int)EObjectType.CrushingWeapon:
+				case (int)EObjectType.Flexible:
+				case (int)EObjectType.Hammer:
+				case (int)EObjectType.HandToHand:
+				case (int)EObjectType.LargeWeapons:
+				case (int)EObjectType.LeftAxe:
+				case (int)EObjectType.Piercing:
+				case (int)EObjectType.PolearmWeapon:
+				case (int)EObjectType.Scythe:
+				case (int)EObjectType.Shield:
+				case (int)EObjectType.SlashingWeapon:
+				case (int)EObjectType.Spear:
+				case (int)EObjectType.Sword:
+				case (int)EObjectType.ThrustWeapon:
+				case (int)EObjectType.TwoHandedWeapon:
 				// all other armor
-				case (int)eObjectType.Chain:
-				case (int)eObjectType.Plate:
-				case (int)eObjectType.Reinforced:
-				case (int)eObjectType.Scale:
+				case (int)EObjectType.Chain:
+				case (int)EObjectType.Plate:
+				case (int)EObjectType.Reinforced:
+				case (int)EObjectType.Scale:
 					return ECraftingSkill.MetalWorking;
 
-				case (int)eObjectType.CompositeBow:
-				case (int)eObjectType.Crossbow:
-				case (int)eObjectType.Fired:
-				case (int)eObjectType.Instrument:
-				case (int)eObjectType.Longbow:
-				case (int)eObjectType.RecurvedBow:
-				case (int)eObjectType.Staff:
+				case (int)EObjectType.CompositeBow:
+				case (int)EObjectType.Crossbow:
+				case (int)EObjectType.Fired:
+				case (int)EObjectType.Instrument:
+				case (int)EObjectType.Longbow:
+				case (int)EObjectType.RecurvedBow:
+				case (int)EObjectType.Staff:
 					return ECraftingSkill.WoodWorking;
 				
-				case (int)eObjectType.Magical:
+				case (int)EObjectType.Magical:
 					return ECraftingSkill.GemCutting;
 
 				default:
@@ -196,13 +196,13 @@ namespace DOL.GS
 		{
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.Cloth:
-				case (int)eObjectType.Leather:
-				case (int)eObjectType.Studded:
-				case (int)eObjectType.Chain:
-				case (int)eObjectType.Plate:
-				case (int)eObjectType.Reinforced:
-				case (int)eObjectType.Scale:
+				case (int)EObjectType.Cloth:
+				case (int)EObjectType.Leather:
+				case (int)EObjectType.Studded:
+				case (int)EObjectType.Chain:
+				case (int)EObjectType.Plate:
+				case (int)EObjectType.Reinforced:
+				case (int)EObjectType.Scale:
 					{
 						int baseLevel = 15 + item.Level * 20; // gloves
 						switch (item.Item_Type)
@@ -227,34 +227,34 @@ namespace DOL.GS
 						}
 					}
 
-				case (int)eObjectType.Axe:
-				case (int)eObjectType.Blades:
-				case (int)eObjectType.Blunt:
-				case (int)eObjectType.CelticSpear:
-				case (int)eObjectType.CrushingWeapon:
-				case (int)eObjectType.Flexible:
-				case (int)eObjectType.Hammer:
-				case (int)eObjectType.HandToHand:
-				case (int)eObjectType.LargeWeapons:
-				case (int)eObjectType.LeftAxe:
-				case (int)eObjectType.Piercing:
-				case (int)eObjectType.PolearmWeapon:
-				case (int)eObjectType.Scythe:
-				case (int)eObjectType.Shield:
-				case (int)eObjectType.SlashingWeapon:
-				case (int)eObjectType.Spear:
-				case (int)eObjectType.Sword:
-				case (int)eObjectType.ThrustWeapon:
-				case (int)eObjectType.TwoHandedWeapon:
+				case (int)EObjectType.Axe:
+				case (int)EObjectType.Blades:
+				case (int)EObjectType.Blunt:
+				case (int)EObjectType.CelticSpear:
+				case (int)EObjectType.CrushingWeapon:
+				case (int)EObjectType.Flexible:
+				case (int)EObjectType.Hammer:
+				case (int)EObjectType.HandToHand:
+				case (int)EObjectType.LargeWeapons:
+				case (int)EObjectType.LeftAxe:
+				case (int)EObjectType.Piercing:
+				case (int)EObjectType.PolearmWeapon:
+				case (int)EObjectType.Scythe:
+				case (int)EObjectType.Shield:
+				case (int)EObjectType.SlashingWeapon:
+				case (int)EObjectType.Spear:
+				case (int)EObjectType.Sword:
+				case (int)EObjectType.ThrustWeapon:
+				case (int)EObjectType.TwoHandedWeapon:
 
-				case (int)eObjectType.CompositeBow:
-				case (int)eObjectType.Crossbow:
-				case (int)eObjectType.Fired:
-				case (int)eObjectType.Instrument:
-				case (int)eObjectType.Longbow:
-				case (int)eObjectType.RecurvedBow:
-				case (int)eObjectType.Staff:
-				case (int)eObjectType.Magical:
+				case (int)EObjectType.CompositeBow:
+				case (int)EObjectType.Crossbow:
+				case (int)EObjectType.Fired:
+				case (int)EObjectType.Instrument:
+				case (int)EObjectType.Longbow:
+				case (int)EObjectType.RecurvedBow:
+				case (int)EObjectType.Staff:
+				case (int)EObjectType.Magical:
 					return 15 + (item.Level - 1) * 20;
 
 				default:

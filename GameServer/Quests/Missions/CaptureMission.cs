@@ -19,7 +19,7 @@ namespace DOL.GS.Quests
 		public CaptureMission(eCaptureType type, object owner, string hint)
 			: base(owner)
 		{
-			eRealm realm = eRealm.None;
+			ERealm realm = ERealm.None;
 			if (owner is Group)
 				realm = (owner as Group).Leader.Realm;
 			else if (owner is GamePlayer)

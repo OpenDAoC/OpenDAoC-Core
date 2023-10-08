@@ -65,16 +65,16 @@ namespace DOL.GS.Spells
             Npc.GuildName = "Temp Worker";
             switch (Npc.Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     Npc.Model = 10;
                     break;
-                case eRealm.Hibernia: 
+                case ERealm.Hibernia: 
                     Npc.Model = 307;
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     Npc.Model = 158;
                     break;
-                case eRealm.None: 
+                case ERealm.None: 
                     Npc.Model = 10;
                     break;
             }

@@ -9,7 +9,7 @@ namespace DOL.GS.Commands
 	/// Refresh Command Handler to handle resetting Object using Static Cache.
 	/// </summary>
 	[Command("&refresh",
-		ePrivLevel.Admin,
+		EPrivLevel.Admin,
 		"Refresh some specific static data cache stored in scripts or other objects",
 		"/refresh list | ClassName 'dot' MethodName"
 		)]

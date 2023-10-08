@@ -63,12 +63,12 @@ namespace DOL.GS.Spells
 				return;
 
 			int powerTransfer = (int)Math.Min(Spell.Value, owner.Mana);
-			int powerDrained = -owner.ChangeMana(owner, eManaChangeType.Spell, -powerTransfer);
+			int powerDrained = -owner.ChangeMana(owner, EPowerChangeType.Spell, -powerTransfer);
 
 			if (powerDrained <= 0)
 				return;
 
-			int powerHealed = target.ChangeMana(owner, eManaChangeType.Spell, powerDrained);
+			int powerHealed = target.ChangeMana(owner, EPowerChangeType.Spell, powerDrained);
 
 			if (powerHealed <= 0)
 			{

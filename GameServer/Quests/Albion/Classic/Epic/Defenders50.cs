@@ -94,7 +94,7 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Lidmann Halsey", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Lidmann Halsey", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -115,7 +115,7 @@ namespace DOL.GS.Quests.Albion
 					log.Warn("Could not find " + Lidmann.Name + ", creating it ...");
 
 				Lidmann.GuildName = "";
-				Lidmann.Realm = eRealm.Albion;
+				Lidmann.Realm = ERealm.Albion;
 				Lidmann.CurrentRegionID = 1;
 				Lidmann.Size = 50;
 				Lidmann.Level = 50;
@@ -132,7 +132,7 @@ namespace DOL.GS.Quests.Albion
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Cailleach Uragaig", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Cailleach Uragaig", ERealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -150,7 +150,7 @@ namespace DOL.GS.Quests.Albion
 				Uragaig.Model = 349;
 				Uragaig.Name = "Cailleach Uragaig";
 				Uragaig.GuildName = "";
-				Uragaig.Realm = eRealm.None;
+				Uragaig.Realm = ERealm.None;
 				Uragaig.CurrentRegionID = 1;
 				Uragaig.Size = 55;
 				Uragaig.Level = 70;
@@ -223,16 +223,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Con +10, Dex +18, Qui +15, Spirit +8%
 				i.Bonus1 = 10;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 18;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 15;
-				i.Bonus3Type = (int)eStat.QUI;
+				i.Bonus3Type = (int)EStat.QUI;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Spirit;
+				i.Bonus4Type = (int)EResist.Spirit;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -265,16 +265,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Dex +12, Qui +22, Crush +8%, Heat +8%
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 22;
-				i.Bonus2Type = (int)eStat.QUI;
+				i.Bonus2Type = (int)EStat.QUI;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Crush;
+				i.Bonus3Type = (int)EResist.Crush;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Heat;
+				i.Bonus4Type = (int)EResist.Heat;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -308,16 +308,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Dex +21, Longbow +5, Body +8%, Slash +8%
 				i.Bonus1 = 21;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 5;
-				i.Bonus2Type = (int)eProperty.Skill_Long_bows;
+				i.Bonus2Type = (int)EProperty.Skill_Long_bows;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Body;
+				i.Bonus3Type = (int)EResist.Body;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Slash;
+				i.Bonus4Type = (int)EResist.Slash;
 
 				{
 					GameServer.Database.AddObject(i);
@@ -351,16 +351,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Str +18, HP +45, Spirit +4%, Thrust +4%
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eResist.Thrust;
+				i.Bonus2Type = (int)EResist.Thrust;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eResist.Spirit;
+				i.Bonus3Type = (int)EResist.Spirit;
 
 				i.Bonus4 = 45;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -393,16 +393,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Con +22, Dex +15, Qui +7, Spirit +6%
 				i.Bonus1 = 22;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 7;
-				i.Bonus3Type = (int)eStat.QUI;
+				i.Bonus3Type = (int)EStat.QUI;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eResist.Spirit;
+				i.Bonus4Type = (int)EResist.Spirit;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -434,16 +434,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Con +22, Str +18, Energy +8%, Slash +4%
 				i.Bonus1 = 22;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 18;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eResist.Energy;
+				i.Bonus3Type = (int)EResist.Energy;
 
 				i.Bonus4 = 4;
-				i.Bonus4Type = (int)eResist.Slash;
+				i.Bonus4Type = (int)EResist.Slash;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -478,13 +478,13 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Str +15, Qui +15, Spirit +8%
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.QUI;
+				i.Bonus2Type = (int)EStat.QUI;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Spirit;
+				i.Bonus3Type = (int)EResist.Spirit;
 
 
 				{
@@ -519,16 +519,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Con +19, Qui +18, Body +6%, Crush +6%
 				i.Bonus1 = 19;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 18;
-				i.Bonus2Type = (int)eStat.QUI;
+				i.Bonus2Type = (int)EStat.QUI;
 
 				i.Bonus3 = 6;
-				i.Bonus3Type = (int)eResist.Body;
+				i.Bonus3Type = (int)EResist.Body;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eResist.Crush;
+				i.Bonus4Type = (int)EResist.Crush;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -562,16 +562,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Str +22, Dex +15, Cold +6%, Slash +6
 				i.Bonus1 = 22;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 6;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eResist.Slash;
+				i.Bonus4Type = (int)EResist.Slash;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -606,16 +606,16 @@ namespace DOL.GS.Quests.Albion
 				// there is an additional bonus here I couldn't figure out how to add
 				// 3 charges of 75 point shield ???
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eResist.Slash;
+				i.Bonus2Type = (int)EResist.Slash;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eResist.Energy;
+				i.Bonus3Type = (int)EResist.Energy;
 
 				i.Bonus4 = 45;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 
 				{
 					GameServer.Database.AddObject(i);
@@ -649,16 +649,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Con +24, Str +10, Matter +8%, Crush +8%
 				i.Bonus1 = 24;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 10;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Matter;
+				i.Bonus3Type = (int)EResist.Matter;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Crush;
+				i.Bonus4Type = (int)EResist.Crush;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -691,16 +691,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Con +19, Dex +18, Heat +6%, Thrust +6%
 				i.Bonus1 = 19;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 18;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 6;
-				i.Bonus3Type = (int)eResist.Heat;
+				i.Bonus3Type = (int)EResist.Heat;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eResist.Thrust;
+				i.Bonus4Type = (int)EResist.Thrust;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -732,16 +732,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Qui +18, Dex +15, Spirit +10%, Con +12
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.QUI;
+				i.Bonus1Type = (int)EStat.QUI;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 12;
-				i.Bonus3Type = (int)eStat.CON;
+				i.Bonus3Type = (int)EStat.CON;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eResist.Spirit;
+				i.Bonus4Type = (int)EResist.Spirit;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -775,16 +775,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Dex +15, Pie +12, Con +10, Enchantment +4
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 12;
-				i.Bonus2Type = (int)eStat.PIE;
+				i.Bonus2Type = (int)EStat.PIE;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eStat.CON;
+				i.Bonus3Type = (int)EStat.CON;
 
 				i.Bonus4 = 4;
-				i.Bonus4Type = (int)eProperty.Skill_Enhancement; //guessing here
+				i.Bonus4Type = (int)EProperty.Skill_Enhancement; //guessing here
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -818,16 +818,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Pie +15, Rejuvination +4, Qui +15, Crush +6%
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.PIE;
+				i.Bonus1Type = (int)EStat.PIE;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.QUI;
+				i.Bonus2Type = (int)EStat.QUI;
 
 				i.Bonus3 = 6;
-				i.Bonus3Type = (int)eResist.Crush;
+				i.Bonus3Type = (int)EResist.Crush;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eProperty.Skill_Rejuvenation; //guessing here
+				i.Bonus4Type = (int)EProperty.Skill_Rejuvenation; //guessing here
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -861,16 +861,16 @@ namespace DOL.GS.Quests.Albion
 				//bonuses: HP +33, Pwr +10, Spirit 4%, Crush 6%
 				// Charged (3 Max) Self-Only Shield -- 75 AF, Duration 10 mins (no clue how to add this)
 				i.Bonus1 = 10;
-				i.Bonus1Type = (int)eProperty.MaxMana;
+				i.Bonus1Type = (int)EProperty.MaxMana;
 
 				i.Bonus2 = 6;
-				i.Bonus2Type = (int)eResist.Crush;
+				i.Bonus2Type = (int)EResist.Crush;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eResist.Spirit;
+				i.Bonus3Type = (int)EResist.Spirit;
 
 				i.Bonus4 = 33;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -903,16 +903,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Con +22, Str +15, Heat +6%, Slash +6%
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 22;
-				i.Bonus2Type = (int)eStat.CON;
+				i.Bonus2Type = (int)EStat.CON;
 
 				i.Bonus3 = 6;
-				i.Bonus3Type = (int)eResist.Heat;
+				i.Bonus3Type = (int)EResist.Heat;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eResist.Slash;
+				i.Bonus4Type = (int)EResist.Slash;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -945,16 +945,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Pie +18, Dex +16, Cold +8%, Thrust +8%
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.PIE;
+				i.Bonus1Type = (int)EStat.PIE;
 
 				i.Bonus2 = 16;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Thrust;
+				i.Bonus4Type = (int)EResist.Thrust;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -986,16 +986,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Dex +16, Cold +6%, Body +8%, Energy +8%
 				i.Bonus1 = 16;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 6;
-				i.Bonus2Type = (int)eResist.Cold;
+				i.Bonus2Type = (int)EResist.Cold;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Body;
+				i.Bonus3Type = (int)EResist.Body;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Energy;
+				i.Bonus4Type = (int)EResist.Energy;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1029,16 +1029,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Int +21, Dex +13, Spirit +8%, Crush +8%
 				i.Bonus1 = 21;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 13;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Spirit;
+				i.Bonus3Type = (int)EResist.Spirit;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Crush;
+				i.Bonus4Type = (int)EResist.Crush;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1072,16 +1072,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Dex +16, Int +18, Heat +8%, Matter +8%
 				i.Bonus1 = 16;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 18;
-				i.Bonus2Type = (int)eStat.INT;
+				i.Bonus2Type = (int)EStat.INT;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Heat;
+				i.Bonus3Type = (int)EResist.Heat;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Matter;
+				i.Bonus4Type = (int)EResist.Matter;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1115,13 +1115,13 @@ namespace DOL.GS.Quests.Albion
 				//bonuses: HP +24, Power +14, Cold +4%,
 				//triggered effect: Shield (3 charges max) duration 10 mins  (no clue how to implement)
 				i.Bonus1 = 24;
-				i.Bonus1Type = (int)eProperty.MaxHealth;
+				i.Bonus1Type = (int)EProperty.MaxHealth;
 
 				i.Bonus2 = 14;
-				i.Bonus2Type = (int)eProperty.MaxMana;
+				i.Bonus2Type = (int)EProperty.MaxMana;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1154,16 +1154,16 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Con +19, Wind +4, Energy +10%, Cold +10%
 				i.Bonus1 = 19;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eProperty.Skill_Wind;
+				i.Bonus2Type = (int)EProperty.Skill_Wind;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eResist.Energy;
+				i.Bonus3Type = (int)EResist.Energy;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eResist.Cold;
+				i.Bonus4Type = (int)EResist.Cold;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1196,13 +1196,13 @@ namespace DOL.GS.Quests.Albion
 
 				//bonuses: Int +18, Earth +4, Dex +16
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eProperty.Skill_Earth;
+				i.Bonus2Type = (int)EProperty.Skill_Earth;
 
 				i.Bonus3 = 16;
-				i.Bonus3Type = (int)eStat.DEX;
+				i.Bonus3Type = (int)EStat.DEX;
 
 				GameServer.Database.AddObject(i);
 
@@ -1263,7 +1263,7 @@ namespace DOL.GS.Quests.Albion
 				return;
 
 			// player is not allowed to start this quest until the quest rewards are available
-			if (player.CharacterClass.ID == (byte)eCharacterClass.MaulerAlb &&
+			if (player.CharacterClass.ID == (byte)ECharacterClass.MaulerAlb &&
 				(MaulerAlbEpicArms == null || MaulerAlbEpicBoots == null || MaulerAlbEpicGloves == null ||
 				MaulerAlbEpicHelm == null || MaulerAlbEpicLegs == null || MaulerAlbEpicVest == null))
 			{
@@ -1361,11 +1361,11 @@ namespace DOL.GS.Quests.Albion
 			if (player.IsDoingQuest(typeof (Defenders_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) eCharacterClass.Armsman &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Scout &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Theurgist &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Friar &&
-				player.CharacterClass.ID != (byte) eCharacterClass.MaulerAlb)
+			if (player.CharacterClass.ID != (byte) ECharacterClass.Armsman &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Scout &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Theurgist &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Friar &&
+				player.CharacterClass.ID != (byte) ECharacterClass.MaulerAlb)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -1518,7 +1518,7 @@ namespace DOL.GS.Quests.Albion
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Armsman)
+			if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Armsman)
 			{
 				GiveItem(m_questPlayer, ArmsmanEpicBoots);
 				GiveItem(m_questPlayer, ArmsmanEpicArms);
@@ -1527,7 +1527,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, ArmsmanEpicLegs);
 				GiveItem(m_questPlayer, ArmsmanEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Scout)
+			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Scout)
 			{
 				GiveItem(m_questPlayer, ScoutEpicArms);
 				GiveItem(m_questPlayer, ScoutEpicBoots);
@@ -1536,7 +1536,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, ScoutEpicLegs);
 				GiveItem(m_questPlayer, ScoutEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Theurgist)
+			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Theurgist)
 			{
 				GiveItem(m_questPlayer, TheurgistEpicArms);
 				GiveItem(m_questPlayer, TheurgistEpicBoots);
@@ -1545,7 +1545,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, TheurgistEpicLegs);
 				GiveItem(m_questPlayer, TheurgistEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Friar)
+			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Friar)
 			{
 				GiveItem(m_questPlayer, FriarEpicArms);
 				GiveItem(m_questPlayer, FriarEpicBoots);
@@ -1554,7 +1554,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, FriarEpicLegs);
 				GiveItem(m_questPlayer, FriarEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.MaulerAlb)
+			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.MaulerAlb)
 			{
 				GiveItem(m_questPlayer, MaulerAlbEpicArms);
 				GiveItem(m_questPlayer, MaulerAlbEpicBoots);
@@ -1564,7 +1564,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItem(m_questPlayer, MaulerAlbEpicVest);
 			}
 
-			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			m_questPlayer.GainExperience(EXpSource.Quest, 1937768448, true);
 			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 

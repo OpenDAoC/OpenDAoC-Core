@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&combatstats",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"toggle receiving experience points",
 	"/combatstats <on/off>")]
 public class CombatStatsCommand : ACommandHandler, ICommandHandler {

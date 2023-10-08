@@ -319,16 +319,16 @@ namespace DOL.GS.Spells
 
 			if (m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons && m_spellLine.KeyName != GlobalSpellsLines.Item_Effects && m_spellLine.KeyName != GlobalSpellsLines.Item_Spells)
 			{
-				if (player != null && player.CharacterClass.ManaStat != eStat.UNDEFINED)
+				if (player != null && player.CharacterClass.ManaStat != EStat.UNDEFINED)
 				{
-					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
+					int manaStatValue = player.GetModified((EProperty)player.CharacterClass.ManaStat);
 					spellDamage *= (manaStatValue + 200) / 275.0;
 					if (spellDamage < 0)
 						spellDamage = 0;
 				}
 				else if (m_caster is GameNPC)
 				{
-					int manaStatValue = m_caster.GetModified(eProperty.Intelligence);
+					int manaStatValue = m_caster.GetModified(EProperty.Intelligence);
 					spellDamage *= (manaStatValue + 200) / 275.0;
 					if (spellDamage < 0)
 						spellDamage = 0;

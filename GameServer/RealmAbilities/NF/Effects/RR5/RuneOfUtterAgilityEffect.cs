@@ -25,7 +25,7 @@ namespace DOL.GS.Effects
 				{
 					p.Out.SendSpellEffectAnimation(player, player, Icon, 0, false, 1);
 				}
-				player.BuffBonusCategory4[(int)eProperty.EvadeChance] += 90;
+				player.BuffBonusCategory4[(int)EProperty.EvadeChance] += 90;
 			}
 		}
 
@@ -33,7 +33,7 @@ namespace DOL.GS.Effects
 		{
 			GamePlayer player = owner as GamePlayer;
 			if (player != null)
-				player.BuffBonusCategory4[(int)eProperty.EvadeChance] -= 90;
+				player.BuffBonusCategory4[(int)EProperty.EvadeChance] -= 90;
 			base.Stop();
 		}
 

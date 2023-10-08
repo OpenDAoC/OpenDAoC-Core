@@ -28,28 +28,28 @@ namespace DOL.GS
         {
             if (Util.Chance(35))
             {
-                if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+                if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
                 {
                     CastSpell(Bleed, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
             }
             base.OnAttackEnemy(ad);
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
                 default: return 30; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -58,17 +58,17 @@ namespace DOL.GS
         {
             get { return 30000; }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+                        damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+                        damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -121,7 +121,7 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 653, 0, 0);
             template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 25, 0, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.Standard);
+            SwitchWeapon(EActiveWeaponSlot.Standard);
             if (!Styles.Contains(AfterEvade))
                 Styles.Add(AfterEvade);
             if (!Styles.Contains(Taunt))
@@ -131,10 +131,10 @@ namespace DOL.GS
             MaxDistance = 2000;
             TetherRange = 1500;
             MaxSpeedBase = 225;
-            Gender = eGender.Female;
+            Gender = EGender.Female;
             Flags = eFlags.GHOST;
             VisibleActiveWeaponSlots = 16;
-            MeleeDamageType = eDamageType.Thrust;
+            MeleeDamageType = EDamageType.Thrust;
             CaptainBardalphBrain sbrain = new CaptainBardalphBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -147,7 +147,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Captain Bardalph", 277, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Captain Bardalph", 277, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Captain Heathyr not found, creating it...");
@@ -207,11 +207,11 @@ namespace DOL.GS
                     spell.Frequency = 30;
                     spell.Range = 350;
                     spell.SpellID = 11780;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.StyleBleeding.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.StyleBleeding.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Body;
+                    spell.DamageType = (int)EDamageType.Body;
                     m_Bleed = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bleed);
                 }
@@ -240,7 +240,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
             if (Body.IsOutOfTetherRange)

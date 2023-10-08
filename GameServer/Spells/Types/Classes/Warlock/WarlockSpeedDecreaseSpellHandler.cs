@@ -41,11 +41,11 @@ namespace DOL.GS.Spells
 			if(effect.Owner is GamePlayer)
 			{
 				m_playerModel = effect.Owner.Model;
-				if(effect.Owner.Realm == eRealm.Albion)
+				if(effect.Owner.Realm == ERealm.Albion)
 					effect.Owner.Model = 581;
-				else if(effect.Owner.Realm == eRealm.Midgard)
+				else if(effect.Owner.Realm == ERealm.Midgard)
 					effect.Owner.Model = 574;
-				else if(effect.Owner.Realm == eRealm.Hibernia)
+				else if(effect.Owner.Realm == ERealm.Hibernia)
 					effect.Owner.Model = 594;
 
 				SendEffectAnimation(effect.Owner, 12126, 0, false, 1);

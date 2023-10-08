@@ -93,8 +93,8 @@ namespace DOL.GS.Spells
     [SpellHandler("Bedazzlement")]
     public class ZoDebuffSpellHandler : DualStatDebuff
     {
-		public override eProperty Property1 { get { return eProperty.FumbleChance; } }
-		public override eProperty Property2 { get { return eProperty.SpellFumbleChance; } }
+		public override EProperty Property1 { get { return EProperty.FumbleChance; } }
+		public override EProperty Property2 { get { return EProperty.SpellFumbleChance; } }
 
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{

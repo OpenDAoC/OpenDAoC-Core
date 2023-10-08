@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Guardian, "Guardian", "Guardian")]
+	[CharacterClass((int)ECharacterClass.Guardian, "Guardian", "Guardian")]
 	public class ClassGuardian : CharacterClassBase
 	{
 		public ClassGuardian()

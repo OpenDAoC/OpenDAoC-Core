@@ -2,10 +2,10 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.MeleeDamage)]
+[PropertyCalculator(EProperty.MeleeDamage)]
 public class MeleeDamagePercentCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		int hardCap = 10;
 		int abilityBonus = living.AbilityBonus[(int)property];

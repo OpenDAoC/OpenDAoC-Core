@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Shaman Trainer
 	/// </summary>
-	[NPCGuildScript("Shaman Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Shaman Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Shaman Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Shaman Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ShamanTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Shaman; }
+			get { return ECharacterClass.Shaman; }
 		}
 
 		/// <summary>
@@ -80,7 +80,7 @@ namespace DOL.GS.Trainer
 				case "join the House of Ymir":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Shaman, "Welcome young Shaman! May your time in Midgard army be rewarding!", null);	// TODO: gifts
+						PromotePlayer(player, (int)ECharacterClass.Shaman, "Welcome young Shaman! May your time in Midgard army be rewarding!", null);	// TODO: gifts
 					}
 					break;
 			}

@@ -235,7 +235,7 @@ namespace DOL.GS.Keeps
 		{
 			get
             {
-				if (this.Realm == eRealm.None && (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE ||
+				if (this.Realm == ERealm.None && (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE ||
 					GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP))
 				{
 					// In PvE & PvP servers, lords are really just mobs farmed for seals.
@@ -386,18 +386,18 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// The Keep Realm linked to the DBKeep
 		/// </summary>
-		public eRealm Realm
+		public ERealm Realm
 		{
-			get	{ return (eRealm)DBKeep.Realm; }
+			get	{ return (ERealm)DBKeep.Realm; }
 			set	{ DBKeep.Realm = (byte)value; }
 		}
 
 		/// <summary>
 		/// The Original Keep Realm linked to the DBKeep
 		/// </summary>
-		public eRealm OriginalRealm
+		public ERealm OriginalRealm
 		{
-			get	{ return (eRealm)DBKeep.OriginalRealm; }
+			get	{ return (ERealm)DBKeep.OriginalRealm; }
 		}
 
 		protected string m_InternalID;
@@ -1050,7 +1050,7 @@ namespace DOL.GS.Keeps
 		/// reset the realm when the lord have been killed
 		/// </summary>
 		/// <param name="realm"></param>
-		public virtual void Reset(eRealm realm)
+		public virtual void Reset(ERealm realm)
 		{
 			LastAttackedByEnemyTick = 0;
 			StartCombatTick = 0;

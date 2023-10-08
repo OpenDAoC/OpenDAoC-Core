@@ -197,22 +197,22 @@ namespace DOL.GS.Keeps
 
 			switch (Realm)
 			{
-				case eRealm.None:
+				case ERealm.None:
 					{
 						Model = NoRealmModel;
 						break;
 					}
-				case eRealm.Albion:
+				case ERealm.Albion:
 					{
 						Model = AlbionModel;
 						break;
 					}
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					{
 						Model = MidgardModel;
 						break;
 					}
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					{
 						Model = HiberniaModel;
 						break;
@@ -241,10 +241,10 @@ namespace DOL.GS.Keeps
 			ushort model = AlbionGuildModel;
 			switch (Component.Keep.Realm)
 			{
-				case eRealm.None: model = AlbionGuildModel; break;
-				case eRealm.Albion: model = AlbionGuildModel; break;
-				case eRealm.Midgard: model = MidgardGuildModel; break;
-				case eRealm.Hibernia: model = HiberniaGuildModel; break;
+				case ERealm.None: model = AlbionGuildModel; break;
+				case ERealm.Albion: model = AlbionGuildModel; break;
+				case ERealm.Midgard: model = MidgardGuildModel; break;
+				case ERealm.Hibernia: model = HiberniaGuildModel; break;
 			}
 			this.Model = model;
 			this.Emblem = emblem;

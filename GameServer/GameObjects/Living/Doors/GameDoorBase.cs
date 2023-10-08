@@ -8,7 +8,7 @@
 
     public abstract class GameDoorBase : GameLiving
     {
-        public override eGameObjectType GameObjectType => eGameObjectType.DOOR;
+        public override EGameObjectType GameObjectType => EGameObjectType.DOOR;
 
         public abstract uint Flag { get; set; } // Used to identify what sound a door makes when open / close.
         public abstract int DoorID { get; set; }

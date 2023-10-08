@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Realm";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.StormMissHit.ToString();
+            dbs.Type = ESpellType.StormMissHit.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 4
             dbs.Frequency = spell.ResurrectMana;
@@ -75,7 +75,7 @@ namespace DOL.GS.Spells
     [SpellHandler("StormMissHit")]
     public class StormMissHit : MasterlevelBuffHandling
     {
-        public override eProperty Property1 { get { return eProperty.MissHit; } }
+        public override EProperty Property1 { get { return EProperty.MissHit; } }
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
@@ -189,7 +189,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.StormEnduDrain.ToString();
+            dbs.Type = ESpellType.StormEnduDrain.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; //should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -221,7 +221,7 @@ namespace DOL.GS.Spells
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             //spell damage should 25;
             int end = (int)(Spell.Damage);
-            target.ChangeEndurance(target, eEnduranceChangeType.Spell, (-end));
+            target.ChangeEndurance(target, EEnduranceChangeType.Spell, (-end));
 
             if (target is GamePlayer)
                 ((GamePlayer)target).Out.SendMessage(" You lose " + end + " endurance!", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
@@ -271,7 +271,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.Damage;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.StormDexQuickDebuff.ToString();
+            dbs.Type = ESpellType.StormDexQuickDebuff.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -293,8 +293,8 @@ namespace DOL.GS.Spells
     [SpellHandler("StormDexQuickDebuff")]
     public class StormDexQuickDebuff : DualStatDebuff
     {
-        public override eProperty Property1 { get { return eProperty.Dexterity; } }
-        public override eProperty Property2 { get { return eProperty.Quickness; } }
+        public override EProperty Property1 { get { return EProperty.Dexterity; } }
+        public override EProperty Property2 { get { return EProperty.Quickness; } }
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
@@ -354,7 +354,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.PowerDrainStorm.ToString();
+            dbs.Type = ESpellType.PowerDrainStorm.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -388,7 +388,7 @@ namespace DOL.GS.Spells
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
             neweffect.Start(target);
             int mana = (int)(Spell.Damage);
-            target.ChangeMana(target, eManaChangeType.Spell, (-mana));
+            target.ChangeMana(target, EPowerChangeType.Spell, (-mana));
 
             if (target is GamePlayer)
             {
@@ -403,7 +403,7 @@ namespace DOL.GS.Spells
         public virtual void StealMana(GameLiving target, int mana)
         {
             if (!m_caster.IsAlive) return;
-            m_caster.ChangeMana(target, eManaChangeType.Spell, mana);
+            m_caster.ChangeMana(target, EPowerChangeType.Spell, mana);
             SendCasterMessage(target, mana);
 
         }
@@ -508,7 +508,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.StormStrConstDebuff.ToString();
+            dbs.Type = ESpellType.StormStrConstDebuff.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -530,8 +530,8 @@ namespace DOL.GS.Spells
     [SpellHandler("StormStrConstDebuff")]
     public class StormStrConstDebuff : DualStatDebuff
     {
-        public override eProperty Property1 { get { return eProperty.Strength; } }
-        public override eProperty Property2 { get { return eProperty.Constitution; } }
+        public override EProperty Property1 { get { return EProperty.Strength; } }
+        public override EProperty Property2 { get { return EProperty.Constitution; } }
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
@@ -591,7 +591,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.StormAcuityDebuff.ToString();
+            dbs.Type = ESpellType.StormAcuityDebuff.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth; // should be 2
             dbs.Frequency = spell.ResurrectMana;
@@ -613,15 +613,15 @@ namespace DOL.GS.Spells
     [SpellHandler("StormAcuityDebuff")]
     public class StormAcuityDebuff : SingleStatDebuff
     {
-        public override eProperty Property1
+        public override EProperty Property1
         {
 
             get
             {
-                eProperty temp = eProperty.Acuity;
-                if (Target.Realm == eRealm.Albion) temp = eProperty.Intelligence;
-                if (Target.Realm == eRealm.Midgard) temp = eProperty.Piety;
-                if (Target.Realm == eRealm.Hibernia) temp = eProperty.Intelligence;
+                EProperty temp = EProperty.Acuity;
+                if (Target.Realm == ERealm.Albion) temp = EProperty.Intelligence;
+                if (Target.Realm == ERealm.Midgard) temp = EProperty.Piety;
+                if (Target.Realm == ERealm.Hibernia) temp = EProperty.Intelligence;
 
                 return temp;
             }
@@ -685,7 +685,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.StormEnergyTempest.ToString();
+            dbs.Type = ESpellType.StormEnergyTempest.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;

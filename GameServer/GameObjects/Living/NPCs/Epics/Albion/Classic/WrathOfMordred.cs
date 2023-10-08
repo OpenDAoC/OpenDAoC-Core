@@ -17,13 +17,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Wrath of Mordred Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 30;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 30;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 30;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 30;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 30;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 30;// dmg reduction for melee dmg
 				default: return 40;// dmg reduction for rest resists
 			}
 		}
@@ -43,11 +43,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -96,7 +96,7 @@ namespace DOL.GS
 		}
         public override void OnAttackedByEnemy(AttackData ad)
         {
-			if(ad != null && ad.AttackResult == eAttackResult.Parried)
+			if(ad != null && ad.AttackResult == EAttackResult.Parried)
             {
 				styleComponent.NextCombatBackupStyle = AfterParry;//boss parried so prepare after parry style backup style
 				styleComponent.NextCombatStyle = ParryFollowUP;//main style after parry followup
@@ -105,19 +105,19 @@ namespace DOL.GS
         }
         public override void OnAttackEnemy(AttackData ad)
         {
-			if (ad != null && ad.AttackResult == eAttackResult.HitUnstyled)
+			if (ad != null && ad.AttackResult == EAttackResult.HitUnstyled)
 			{
 				styleComponent.NextCombatBackupStyle = Taunt2h;//boss hit unstyled so taunt
 				styleComponent.NextCombatStyle = AfterParry;
 			}
-			if (ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 108 && ad.Style.ClassID == 2)
+			if (ad.AttackResult == EAttackResult.HitStyle && ad.Style.ID == 108 && ad.Style.ClassID == 2)
             {
 				styleComponent.NextCombatBackupStyle = Taunt2h;
 				styleComponent.NextCombatStyle = ParryFollowUP;
 			}
 			if (Util.Chance(15))//cast nasty heat proc
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 				{
 					CastSpell(HeatProc, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
@@ -143,11 +143,11 @@ namespace DOL.GS
 					spell.Range = 350;
 					spell.Radius = 300;
 					spell.SpellID = 11895;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					m_HeatProc = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HeatProc);
 				}
@@ -173,7 +173,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanWalk = false;
 			}
@@ -188,7 +188,7 @@ namespace DOL.AI.Brain
 						Body.styleComponent.NextCombatBackupStyle = WrathOfMordred.Side2H;
 						Body.styleComponent.NextCombatStyle = WrathOfMordred.SideFollowUP;
 					}
-					if (!living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+					if (!living.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
 					{
 						AttackAction attackAction = Body.attackComponent.attackAction;
 

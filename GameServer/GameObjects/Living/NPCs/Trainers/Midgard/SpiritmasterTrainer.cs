@@ -26,12 +26,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Spiritmaster Trainer
 	/// </summary>
-	[NPCGuildScript("Spiritmaster Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Spiritmaster Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Spiritmaster Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Spiritmaster Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class SpiritmasterTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Spiritmaster; }
+			get { return ECharacterClass.Spiritmaster; }
 		}
 
 		public const string WEAPON_ID = "spiritmaster_item";
@@ -87,7 +87,7 @@ namespace DOL.GS.Trainer
 				// promote player to other class
 				if (CanPromotePlayer(player))
 				{
-					PromotePlayer(player, (int)eCharacterClass.Spiritmaster, LanguageMgr.GetTranslation(player.Client.Account.Language, "SpiritmasterTrainer.WhisperReceive.Text1"), null);
+					PromotePlayer(player, (int)ECharacterClass.Spiritmaster, LanguageMgr.GetTranslation(player.Client.Account.Language, "SpiritmasterTrainer.WhisperReceive.Text1"), null);
 					player.ReceiveItem(this, WEAPON_ID);
 				}
 			}

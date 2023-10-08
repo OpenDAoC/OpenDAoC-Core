@@ -33,7 +33,7 @@ namespace DOL.GS.Effects
 		private GamePlayer owner;
 		private ECSGameTimer m_timer = null;
 		private int m_healpulse;
-		private Dictionary<eProperty, int> m_debuffs;
+		private Dictionary<EProperty, int> m_debuffs;
 
 		public override void Start(GameLiving target)
 		{
@@ -45,9 +45,9 @@ namespace DOL.GS.Effects
 			foreach (GamePlayer p in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				p.Out.SendSpellEffectAnimation(owner, owner, Icon, 0, false, 1);
 
-			m_debuffs = new Dictionary<eProperty, int>(1+eProperty.Stat_Last-eProperty.Stat_First);
+			m_debuffs = new Dictionary<EProperty, int>(1+EProperty.Stat_Last-EProperty.Stat_First);
 			
-			for (eProperty property = eProperty.Stat_First; property <= eProperty.Stat_Last; property++)
+			for (EProperty property = EProperty.Stat_First; property <= EProperty.Stat_Last; property++)
 			{
 				m_debuffs.Add(property, (int)(owner.GetModified(property) * 0.25));
 				owner.DebuffCategory[(int)property] += m_debuffs[property];
@@ -81,7 +81,7 @@ namespace DOL.GS.Effects
 						if (p.Health + heal > p.MaxHealth)
 							heal = p.MaxHealth - p.Health;
 							
-						p.ChangeHealth(player, eHealthChangeType.Regenerate, heal);
+						p.ChangeHealth(player, EHealthChangeType.Regenerate, heal);
 						
 						player.Out.SendMessage("You heal " + p.Name + " for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 						p.Out.SendMessage(player.Name + " heals you for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
@@ -98,7 +98,7 @@ namespace DOL.GS.Effects
 			
 			if (owner != null)
 			{
-				for (eProperty property = eProperty.Stat_First; property <= eProperty.Stat_Last; property++)
+				for (EProperty property = EProperty.Stat_First; property <= EProperty.Stat_Last; property++)
 				{
 					if (m_debuffs.ContainsKey(property))
 						owner.DebuffCategory[(int)property] -= m_debuffs[property];

@@ -77,7 +77,7 @@ namespace DOL.GS
 		/// 'TeleportID' field from the table) does not have to be unique across realms.  Duplicate
 		/// 'TeleportID' fields are permitted so long as the 'Realm' field is different for each.
 		/// </summary>
-		private static Dictionary<eRealm, Dictionary<string, DbTeleport>> m_teleportLocations;
+		private static Dictionary<ERealm, Dictionary<string, DbTeleport>> m_teleportLocations;
 		private static object m_syncTeleport = new object();
 
 		// this is used to hold the player ids with timestamp of ld, that ld near an enemy keep structure, to allow grace period relog
@@ -99,7 +99,7 @@ namespace DOL.GS
 		/// </param>
 		/// <param name="teleportKey">Composite key into teleport dictionary.</param>
 		/// <returns></returns>
-		public static DbTeleport GetTeleportLocation(eRealm realm, String teleportKey)
+		public static DbTeleport GetTeleportLocation(ERealm realm, String teleportKey)
 		{
 			lock (m_syncTeleport)
 			{
@@ -118,7 +118,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool AddTeleportLocation(DbTeleport teleport)
 		{
-			eRealm realm = (eRealm)teleport.Realm;
+			ERealm realm = (ERealm)teleport.Realm;
 			String teleportKey = String.Format("{0}:{1}", teleport.Type, teleport.TeleportID);
 
 			lock (m_syncTeleport)
@@ -412,17 +412,17 @@ namespace DOL.GS
 		public static string LoadTeleports()
 		{
 			var objs = GameServer.Database.SelectAllObjects<DbTeleport>();
-			m_teleportLocations = new Dictionary<eRealm, Dictionary<string, DbTeleport>>();
+			m_teleportLocations = new Dictionary<ERealm, Dictionary<string, DbTeleport>>();
 			int[] numTeleports = new int[3];
 			foreach (DbTeleport teleport in objs)
 			{
 				Dictionary<string, DbTeleport> teleportList;
-				if (m_teleportLocations.ContainsKey((eRealm)teleport.Realm))
-					teleportList = m_teleportLocations[(eRealm)teleport.Realm];
+				if (m_teleportLocations.ContainsKey((ERealm)teleport.Realm))
+					teleportList = m_teleportLocations[(ERealm)teleport.Realm];
 				else
 				{
 					teleportList = new Dictionary<string, DbTeleport>();
-					m_teleportLocations.Add((eRealm)teleport.Realm, teleportList);
+					m_teleportLocations.Add((ERealm)teleport.Realm, teleportList);
 				}
 				String teleportKey = String.Format("{0}:{1}", teleport.Type, teleport.TeleportID);
 				if (teleportList.ContainsKey(teleportKey))
@@ -826,7 +826,7 @@ namespace DOL.GS
 		/// <param name="realm">The realm of the object we search!</param>
 		/// <param name="objectType">The type of the object you search</param>
 		/// <returns>All objects with the specified parameters</returns>
-		public static GameObject[] GetObjectsByNameFromRegion(string name, ushort regionID, eRealm realm, Type objectType)
+		public static GameObject[] GetObjectsByNameFromRegion(string name, ushort regionID, ERealm realm, Type objectType)
 		{
 			Region reg;
 			if (!m_regions.TryGetValue(regionID, out reg))
@@ -855,7 +855,7 @@ namespace DOL.GS
 		/// <param name="realm">The realm of the object we search!</param>
 		/// <param name="objectType">The type of the object you search</param>
 		/// <returns>All objects with the specified parameters</returns>b
-		public static GameObject[] GetObjectsByName(string name, eRealm realm, Type objectType)
+		public static GameObject[] GetObjectsByName(string name, ERealm realm, Type objectType)
 		{
 			return (GameObject[]) m_regions.Values.Select(reg => GetObjectsByNameFromRegion(name, reg.ID, realm, objectType))
 				.SelectMany(objs => objs).OfTypeAndToArray(objectType);
@@ -868,7 +868,7 @@ namespace DOL.GS
 		/// <param name="regionID">The region to search</param>
 		/// <param name="realm">The realm of the object we search!</param>
 		/// <returns>All NPCs with the specified parameters</returns>
-		public static GameNPC[] GetNPCsByNameFromRegion(string name, ushort regionID, eRealm realm)
+		public static GameNPC[] GetNPCsByNameFromRegion(string name, ushort regionID, ERealm realm)
 		{
 			return (GameNPC[])GetObjectsByNameFromRegion(name, regionID, realm, typeof(GameNPC));
 		}
@@ -879,7 +879,7 @@ namespace DOL.GS
 		/// <param name="name">The name of the object to search</param>
 		/// <param name="realm">The realm of the object we search!</param>
 		/// <returns>All NPCs with the specified parameters</returns>b
-		public static GameNPC[] GetNPCsByName(string name, eRealm realm)
+		public static GameNPC[] GetNPCsByName(string name, ERealm realm)
 		{
 			return (GameNPC[])GetObjectsByName(name, realm, typeof(GameNPC));
 		}
@@ -890,7 +890,7 @@ namespace DOL.GS
 		/// <param name="guild">The guild name for the npc</param>
 		/// <param name="realm">The realm of the npc</param>
 		/// <returns>A collection of NPCs which match the result</returns>
-		public static List<GameNPC> GetNPCsByGuild(string guild, eRealm realm)
+		public static List<GameNPC> GetNPCsByGuild(string guild, ERealm realm)
 		{
 			return m_regions.Values.Select(r => r.Objects.OfType<GameNPC>().Where(npc => npc.Realm == realm && npc.GuildName == guild))
 				.SelectMany(objs => objs).ToList();
@@ -902,7 +902,7 @@ namespace DOL.GS
 		/// <param name="type"></param>
 		/// <param name="realm"></param>
 		/// <returns></returns>
-		public static List<GameNPC> GetNPCsByType(Type type, eRealm realm)
+		public static List<GameNPC> GetNPCsByType(Type type, ERealm realm)
 		{
 			return m_regions.Values.Select(r => r.Objects.OfType<GameNPC>().Where(npc => npc.Realm == realm && type.IsInstanceOfType(npc)))
 				.SelectMany(objs => objs).ToList();
@@ -915,7 +915,7 @@ namespace DOL.GS
 		/// <param name="realm"></param>
 		/// <param name="region"></param>
 		/// <returns></returns>
-		public static List<GameNPC> GetNPCsByType(Type type, eRealm realm, ushort region)
+		public static List<GameNPC> GetNPCsByType(Type type, ERealm realm, ushort region)
 		{
 			Region reg;
 			if (!m_regions.TryGetValue(region, out reg))

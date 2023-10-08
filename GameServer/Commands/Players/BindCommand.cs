@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&bind",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Binds your soul to a bind location, you will start from there after you die and /release",
 	"/bind")]
 public class BindCommand : ACommandHandler, ICommandHandler

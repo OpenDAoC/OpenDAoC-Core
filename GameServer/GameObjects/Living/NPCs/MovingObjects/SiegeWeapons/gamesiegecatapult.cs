@@ -31,7 +31,7 @@ namespace DOL.GS
 		public GameSiegeCatapult()
 			: base()
 		{
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			Name = "field catapult";
 			AmmoType = 0x13;
 			this.Effect = 0x89C;
@@ -231,7 +231,7 @@ namespace DOL.GS
 				AttackData ad = new AttackData();
 				ad.Target = living;
 				ad.AttackType = AttackData.eAttackType.Ranged;
-				ad.AttackResult = eAttackResult.HitUnstyled;
+				ad.AttackResult = EAttackResult.HitUnstyled;
 				ad.Damage = damageAmount;
 				ad.DamageType = MeleeDamageType;
 				
@@ -239,7 +239,7 @@ namespace DOL.GS
 				if(Owner != null)
 				{
 					ad.Attacker = Owner;
-					living.TakeDamage(Owner, eDamageType.Crush, damageAmount, 0);
+					living.TakeDamage(Owner, EDamageType.Crush, damageAmount, 0);
 					living.OnAttackedByEnemy(ad);
 	
 					Owner.OnAttackEnemy(ad);
@@ -248,7 +248,7 @@ namespace DOL.GS
 				else
 				{
 					ad.Attacker = this;
-					living.TakeDamage(this, eDamageType.Crush, damageAmount, 0);
+					living.TakeDamage(this, EDamageType.Crush, damageAmount, 0);
 					living.OnAttackedByEnemy(ad);
 				}
 

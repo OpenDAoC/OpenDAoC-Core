@@ -1,7 +1,7 @@
 namespace DOL.GS.Commands;
 
 [Command("&gloc", //command to handle
-	ePrivLevel.Player, //minimum privelege level
+	EPrivLevel.Player, //minimum privelege level
 	"Show the current coordinates", //command description
 	"/gloc")] //command usage
 public class GlocCommand : ACommandHandler, ICommandHandler

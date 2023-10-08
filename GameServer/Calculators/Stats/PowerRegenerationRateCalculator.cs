@@ -9,12 +9,12 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.PowerRegenerationRate)]
+[PropertyCalculator(EProperty.PowerRegenerationRate)]
 public class PowerRegenerationRateCalculator : PropertyCalculator
 {
 	public PowerRegenerationRateCalculator() {}
 
-	public override int CalcValue(GameLiving living, eProperty property) 
+	public override int CalcValue(GameLiving living, EProperty property) 
 	{
 		/* PATCH 1.87 COMBAT AND REGENERATION
 		  - While in combat, health and power regeneration ticks will happen twice as often.

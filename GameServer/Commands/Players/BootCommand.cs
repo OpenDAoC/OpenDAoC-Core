@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
   "&boot",
-  ePrivLevel.Player,
+  EPrivLevel.Player,
    "Kicks a player out of your house",
 	 "Useage: /boot [playername]")]
 public class BootCommand : ACommandHandler, ICommandHandler

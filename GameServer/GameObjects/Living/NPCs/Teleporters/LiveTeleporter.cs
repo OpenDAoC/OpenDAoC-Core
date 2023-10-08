@@ -28,7 +28,7 @@ namespace DOL.GS.Scripts
         /// <summary>
         /// The destination realm. 
         /// </summary>
-        protected virtual eRealm DestinationRealm
+        protected virtual ERealm DestinationRealm
         {
             get { return Realm; }
         }
@@ -37,7 +37,7 @@ namespace DOL.GS.Scripts
         {
             switch (Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     Name = "Master Visur";
                     GuildName = "Teleporter";
                     Model = 61;
@@ -52,7 +52,7 @@ namespace DOL.GS.Scripts
                     templateAlb.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166);
                     Inventory = templateAlb.CloseTemplate();
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     Name = "Stor Gothi Annark";
                     GuildName = "Teleporter";
                     Model = 215;
@@ -65,7 +65,7 @@ namespace DOL.GS.Scripts
                     templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 249, 26);
                     Inventory = templateMid.CloseTemplate();
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     Name = "Channeler Glasny";
                     GuildName = "Teleporter";
                     Model = 342;
@@ -107,7 +107,7 @@ namespace DOL.GS.Scripts
 
             switch (Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
 
                     message = "Greetings, " + player.Name +
                               " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
@@ -120,7 +120,7 @@ namespace DOL.GS.Scripts
                               //"For this event duration, I can send you to [Darkness Falls]";
                     break;
 
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     
                     message = "Greetings, " + player.Name +
                               " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
@@ -132,7 +132,7 @@ namespace DOL.GS.Scripts
                               "or one of the many [towns] throughout Midgard.";
                     break;
 
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     
                     message = "Greetings, " + player.Name +
                               " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
@@ -176,7 +176,7 @@ namespace DOL.GS.Scripts
         {
             switch (Realm) // Only offer locations based on what realm i am set at.
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     
                     if (text.ToLower() == "shrouded isles")
                     {
@@ -225,7 +225,7 @@ namespace DOL.GS.Scripts
                     
                     break;
                 
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     
                     if (text.ToLower() == "shrouded isles")
                     {
@@ -259,7 +259,7 @@ namespace DOL.GS.Scripts
                     
                     break;
                 
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     
                     if (text.ToLower() == "shrouded isles")
                     {
@@ -412,13 +412,13 @@ namespace DOL.GS.Scripts
             {
                 switch (player.Realm)
                 {
-                    case eRealm.Albion:
+                    case ERealm.Albion:
                         GetTeleportLocation(player, "Caer Sidi");
                         return true;
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                         GetTeleportLocation(player, "Tuscaran Glacier");
                         return true;
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                         GetTeleportLocation(player, "Galladoria");
                         return false;
                 }

@@ -40,9 +40,9 @@ namespace DOL.GS
 			if (!base.Interact(player) || player == null)
 				return false;
 
-			if (GlobalConstants.IsExpansionEnabled((int)eClientExpansion.DarknessRising))
+			if (GlobalConstants.IsExpansionEnabled((int)EClientExpansion.DarknessRising))
 			{
-				if (player.CurrentRegion.Expansion == (int)eClientExpansion.DarknessRising)
+				if (player.CurrentRegion.Expansion == (int)EClientExpansion.DarknessRising)
 				{
 					SayTo(player, "Do you wish to [exit]?");
 				}
@@ -77,7 +77,7 @@ namespace DOL.GS
 
 			GamePlayer player = source as GamePlayer;
 
-			if ((text.ToLower() == "king" || text.ToLower() == "exit") && GlobalConstants.IsExpansionEnabled((int)eClientExpansion.DarknessRising))
+			if ((text.ToLower() == "king" || text.ToLower() == "exit") && GlobalConstants.IsExpansionEnabled((int)EClientExpansion.DarknessRising))
 			{
 				uint throneRegionID = 0;
 				string teleportThroneID = "error";
@@ -85,17 +85,17 @@ namespace DOL.GS
 
 				switch (Realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						throneRegionID = 394;
 						teleportThroneID = "AlbThroneRoom";
 						teleportExitID = "AlbThroneExit";
 						break;
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						throneRegionID = 360;
 						teleportThroneID = "MidThroneRoom";
 						teleportExitID = "MidThroneExit";
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						throneRegionID = 395;
 						teleportThroneID = "HibThroneRoom";
 						teleportExitID = "HibThroneExit";

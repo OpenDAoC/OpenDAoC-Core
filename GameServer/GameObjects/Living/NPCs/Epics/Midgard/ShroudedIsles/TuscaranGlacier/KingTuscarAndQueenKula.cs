@@ -47,25 +47,25 @@ namespace DOL.GS
         }
         #endregion
         #region Resists & TakeDamage()
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold || damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit || damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -123,11 +123,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -159,7 +159,7 @@ namespace DOL.GS
 
                 if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
                 {
-                    if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+                    if (player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
                         canReportNews = false;
                 }
             }
@@ -193,13 +193,13 @@ namespace DOL.GS
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 316, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.Standard);
+            SwitchWeapon(EActiveWeaponSlot.Standard);
             QueenKulaBrain.IsTargetPicked = false;
             QueenKulaBrain.message1 = false;
             QueenKulaBrain.IsPulled1 = false;
 
             VisibleActiveWeaponSlots = 16;
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             QueenKulaBrain sbrain = new QueenKulaBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false;//load from database
@@ -243,11 +243,11 @@ namespace DOL.GS
                     spell.Name = "Thor's Might";
                     spell.Range = 2500;
                     spell.SpellID = 11892;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy;
+                    spell.DamageType = (int)EDamageType.Energy;
                     m_Cold_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Cold_DD);
                 }
@@ -297,8 +297,8 @@ namespace DOL.AI.Brain
                         {
                             if (!Port_Enemys.Contains(player))
                             {
-                                if (!player.effectListComponent.ContainsEffectForEffectType(eEffect.Mez) && !player.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff)
-                                    && (!player.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity) || !player.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity))
+                                if (!player.effectListComponent.ContainsEffectForEffectType(EEffect.Mez) && !player.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedDebuff)
+                                    && (!player.effectListComponent.ContainsEffectForEffectType(EEffect.MezImmunity) || !player.effectListComponent.ContainsEffectForEffectType(EEffect.SnareImmunity))
                                     && player != Body.TargetObject)
                                 {
                                     Port_Enemys.Add(player);
@@ -347,8 +347,8 @@ namespace DOL.AI.Brain
                         {
                             case 1:
                                 {//check here if target is not already mezzed or rotted or got mezzimmunity
-                                    if (!player.effectListComponent.ContainsEffectForEffectType(eEffect.Mez) && !player.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity)
-                                    && !player.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff))
+                                    if (!player.effectListComponent.ContainsEffectForEffectType(EEffect.Mez) && !player.effectListComponent.ContainsEffectForEffectType(EEffect.MezImmunity)
+                                    && !player.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedDebuff))
                                     {
                                         Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast mezz
                                     }
@@ -356,8 +356,8 @@ namespace DOL.AI.Brain
                                 break;
                             case 2:
                                 {//check here if target is not mezzed already or rooted or got snare immunity
-                                    if (!player.effectListComponent.ContainsEffectForEffectType(eEffect.Mez) && !player.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff) 
-                                    && !player.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity))
+                                    if (!player.effectListComponent.ContainsEffectForEffectType(EEffect.Mez) && !player.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedDebuff) 
+                                    && !player.effectListComponent.ContainsEffectForEffectType(EEffect.SnareImmunity))
                                     {
                                         Body.CastSpell(Root, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast root
                                     }
@@ -399,7 +399,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165083);
                 Body.Strength = npcTemplate.Strength;
@@ -442,11 +442,11 @@ namespace DOL.AI.Brain
                     if (Body.TargetObject is GamePlayer)
                     {
                         GamePlayer player = Body.TargetObject as GamePlayer;
-                        if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
+                        if (player.effectListComponent.ContainsEffectForEffectType(EEffect.Mez))
                         {
                             RemoveFromAggroList(player);
                         }
-                        if (player.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff))
+                        if (player.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedDebuff))
                         {
                             RemoveFromAggroList(player);
                         }
@@ -485,11 +485,11 @@ namespace DOL.AI.Brain
                     spell.Range = 1500;
                     spell.SpellID = 11750;
                     spell.Duration = 80;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
                     spell.Type = "Mesmerize";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
+                    spell.DamageType = (int)EDamageType.Spirit; //Spirit DMG Type
                     m_mezSpell = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_mezSpell);
                 }
@@ -516,11 +516,11 @@ namespace DOL.AI.Brain
                     spell.Range = 1500;
                     spell.SpellID = 11751;
                     spell.Duration = 80;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.SpeedDecrease.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.SpeedDecrease.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
+                    spell.DamageType = (int)EDamageType.Spirit; //Spirit DMG Type
                     m_RootSpell = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RootSpell);
                 }
@@ -554,25 +554,25 @@ namespace DOL.GS
         public static Style after_block = SkillBase.GetStyleByID(AfterBlockID, AfterBlockClassID);
         #endregion
         #region Resists and TakeDamage()
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold || damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit || damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -629,11 +629,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -651,7 +651,7 @@ namespace DOL.GS
         #region Styles
         public override void OnAttackedByEnemy(AttackData ad)// on Boss actions
         {
-            if(ad != null && ad.AttackResult == eAttackResult.Parried)
+            if(ad != null && ad.AttackResult == EAttackResult.Parried)
             {
                 styleComponent.NextCombatBackupStyle = after_parry;//boss parried so prepare after parry style backup style
                 styleComponent.NextCombatStyle = parry_followup;//main style after parry followup
@@ -660,37 +660,37 @@ namespace DOL.GS
         }
         public override void OnAttackEnemy(AttackData ad)//on enemy actions
         {
-            if (ad != null && ad.AttackResult == eAttackResult.HitStyle)
+            if (ad != null && ad.AttackResult == EAttackResult.HitStyle)
             {
                 styleComponent.NextCombatBackupStyle = taunt;//taunt as backup style
                 styleComponent.NextCombatStyle = parry_followup;//after parry style as main
             }
-            if (ad != null && ad.AttackResult == eAttackResult.HitUnstyled)
+            if (ad != null && ad.AttackResult == EAttackResult.HitUnstyled)
             {
                 styleComponent.NextCombatStyle = taunt;//boss hit unstyled so taunt
             }
-            if (ad != null && ad.AttackResult == eAttackResult.Blocked)
+            if (ad != null && ad.AttackResult == EAttackResult.Blocked)
             {
                 styleComponent.NextCombatStyle = after_block;//target blocked boss attack so use after block style
                 if(Util.Chance(50))
                     CastSpell(Hammers_aoe2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//aoe mjolnirs after style big dmg
             }
-            if (ad != null && ad.AttackResult == eAttackResult.Parried)
+            if (ad != null && ad.AttackResult == EAttackResult.Parried)
             {
                 if (Util.Chance(50))
                     CastSpell(Thunder_aoe2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//aoe mjolnirs after style big dmg
             }
             if (QueenKula.QueenKulaCount == 0 || (HealthPercent <= 50 && KingTuscarBrain.TuscarRage==true))
             {
-                if (ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 175 && ad.Style.ClassID == 22)
+                if (ad.AttackResult == EAttackResult.HitStyle && ad.Style.ID == 175 && ad.Style.ClassID == 22)
                 {
                     CastSpell(Hammers_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//aoe mjolnirs after style big dmg
                 }
-                if (ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 302 && ad.Style.ClassID == 44)
+                if (ad.AttackResult == EAttackResult.HitStyle && ad.Style.ID == 302 && ad.Style.ClassID == 44)
                 {
                     CastSpell(Thunder_aoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//aoe lightining after style medium dmg
                 }
-                if (ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 173 && ad.Style.ClassID == 22)
+                if (ad.AttackResult == EAttackResult.HitStyle && ad.Style.ID == 173 && ad.Style.ClassID == 22)
                 {
                     CastSpell(Bleed, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//bleed after style low dot bleed dmg
                 }
@@ -727,13 +727,13 @@ namespace DOL.GS
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 575, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             KingTuscarBrain.message2 = false;
             KingTuscarBrain.TuscarRage = false;
             KingTuscarBrain.IsPulled2 = false;
 
             VisibleActiveWeaponSlots = 34;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             KingTuscarBrain sbrain = new KingTuscarBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false;//load from database
@@ -762,11 +762,11 @@ namespace DOL.GS
                     spell.Radius = 500;
                     spell.Range = 350;
                     spell.SpellID = 11752;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy;
+                    spell.DamageType = (int)EDamageType.Energy;
                     m_Hammers_aoe = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hammers_aoe);
                 }
@@ -792,11 +792,11 @@ namespace DOL.GS
                     spell.Radius = 500;
                     spell.Range = 350;
                     spell.SpellID = 11753;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy;
+                    spell.DamageType = (int)EDamageType.Energy;
                     m_Thunder_aoe = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Thunder_aoe);
                 }
@@ -822,11 +822,11 @@ namespace DOL.GS
                     spell.Radius = 500;
                     spell.Range = 350;
                     spell.SpellID = 11890;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy;
+                    spell.DamageType = (int)EDamageType.Energy;
                     m_Hammers_aoe2 = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hammers_aoe2);
                 }
@@ -852,11 +852,11 @@ namespace DOL.GS
                     spell.Radius = 500;
                     spell.Range = 350;
                     spell.SpellID = 11891;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy;
+                    spell.DamageType = (int)EDamageType.Energy;
                     m_Thunder_aoe2 = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Thunder_aoe2);
                 }
@@ -886,11 +886,11 @@ namespace DOL.GS
                     spell.Frequency = 30;
                     spell.Range = 350;
                     spell.SpellID = 11754;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.StyleBleeding.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.StyleBleeding.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Body;
+                    spell.DamageType = (int)EDamageType.Body;
                     m_Bleed = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bleed);
                 }
@@ -949,7 +949,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60162909);
                 Body.Strength = npcTemplate.Strength;

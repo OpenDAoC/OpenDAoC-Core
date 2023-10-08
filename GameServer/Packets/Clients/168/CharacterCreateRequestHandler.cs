@@ -69,7 +69,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 var nameCheck = new Regex("^[A-Z][a-zA-Z]");
                 if (!string.IsNullOrEmpty(pakdata.CharName) && (pakdata.CharName.Length < 3 || !nameCheck.IsMatch(pakdata.CharName)))
                 {
-                    if ((ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player)
+                    if ((EPrivLevel)client.Account.PrivLevel == EPrivLevel.Player)
                     {
                         if (Properties.BAN_HACKERS)
                         {
@@ -143,18 +143,18 @@ namespace DOL.GS.PacketHandler.Client.v168
             }
 
             // Realm
-            eRealm currentRealm = eRealm.None;
+            ERealm currentRealm = ERealm.None;
             if (accountName.EndsWith("-S"))
             {
-                currentRealm = eRealm.Albion;
+                currentRealm = ERealm.Albion;
             }
             else if (accountName.EndsWith("-N"))
             {
-                currentRealm = eRealm.Midgard;
+                currentRealm = ERealm.Midgard;
             }
             else if (accountName.EndsWith("-H"))
             {
-                currentRealm = eRealm.Hibernia;
+                currentRealm = ERealm.Hibernia;
             }
 
             // Client character count support
@@ -168,7 +168,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 var nameCheck = new Regex("^[A-Z][a-zA-Z]");
                 if (!string.IsNullOrEmpty(pakdata.CharName) && (pakdata.CharName.Length < 3 || !nameCheck.IsMatch(pakdata.CharName)))
                 {
-                    if ((ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player)
+                    if ((EPrivLevel)client.Account.PrivLevel == EPrivLevel.Player)
                     {
                         if (Properties.BAN_HACKERS)
                         {
@@ -489,11 +489,11 @@ namespace DOL.GS.PacketHandler.Client.v168
                     select j)
                 .Count();
 
-            if (occurences > 0 && (ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player)
+            if (occurences > 0 && (EPrivLevel)client.Account.PrivLevel == EPrivLevel.Player)
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"Client {client.Account.Name} tried to create a disabled classe: {(eCharacterClass)ch.Class}");
+                    log.Debug($"Client {client.Account.Name} tried to create a disabled classe: {(ECharacterClass)ch.Class}");
                 }
 
                 return true;
@@ -507,18 +507,18 @@ namespace DOL.GS.PacketHandler.Client.v168
                     select j)
                 .Count();
 
-            if (occurences > 0 && (ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player)
+            if (occurences > 0 && (EPrivLevel)client.Account.PrivLevel == EPrivLevel.Player)
             {
                 if (log.IsDebugEnabled)
                 {
-                    log.Debug($"Client {client.Account.Name} tried to create a disabled race: {(eRace)ch.Race}");
+                    log.Debug($"Client {client.Account.Name} tried to create a disabled race: {(ERace)ch.Race}");
                 }
 
                 return true;
             }
 
             // If sending invalid Class ID
-            if (!Enum.IsDefined(typeof(eCharacterClass), (eCharacterClass)ch.Class))
+            if (!Enum.IsDefined(typeof(ECharacterClass), (ECharacterClass)ch.Class))
             {
                 if (log.IsErrorEnabled)
                 {
@@ -598,28 +598,28 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (pdata.CustomMode != 3)
                 {
-                    var stats = new Dictionary<eStat, int>
+                    var stats = new Dictionary<EStat, int>
                     {
-                        [eStat.STR] = pdata.Strength,
-                        [eStat.DEX] = pdata.Dexterity,
-                        [eStat.CON] = pdata.NewConstitution,
-                        [eStat.QUI] = pdata.Quickness,
-                        [eStat.INT] = pdata.Intelligence,
-                        [eStat.PIE] = pdata.Piety,
-                        [eStat.EMP] = pdata.Empathy,
-                        [eStat.CHR] = pdata.Charisma
+                        [EStat.STR] = pdata.Strength,
+                        [EStat.DEX] = pdata.Dexterity,
+                        [EStat.CON] = pdata.NewConstitution,
+                        [EStat.QUI] = pdata.Quickness,
+                        [EStat.INT] = pdata.Intelligence,
+                        [EStat.PIE] = pdata.Piety,
+                        [EStat.EMP] = pdata.Empathy,
+                        [EStat.CHR] = pdata.Charisma
                     };
 
                     // check for changed stats.
                     bool flagChangedStats = false;
-                    flagChangedStats |= stats[eStat.STR] != character.Strength;
-                    flagChangedStats |= stats[eStat.CON] != character.Constitution;
-                    flagChangedStats |= stats[eStat.DEX] != character.Dexterity;
-                    flagChangedStats |= stats[eStat.QUI] != character.Quickness;
-                    flagChangedStats |= stats[eStat.INT] != character.Intelligence;
-                    flagChangedStats |= stats[eStat.PIE] != character.Piety;
-                    flagChangedStats |= stats[eStat.EMP] != character.Empathy;
-                    flagChangedStats |= stats[eStat.CHR] != character.Charisma;
+                    flagChangedStats |= stats[EStat.STR] != character.Strength;
+                    flagChangedStats |= stats[EStat.CON] != character.Constitution;
+                    flagChangedStats |= stats[EStat.DEX] != character.Dexterity;
+                    flagChangedStats |= stats[EStat.QUI] != character.Quickness;
+                    flagChangedStats |= stats[EStat.INT] != character.Intelligence;
+                    flagChangedStats |= stats[EStat.PIE] != character.Piety;
+                    flagChangedStats |= stats[EStat.EMP] != character.Empathy;
+                    flagChangedStats |= stats[EStat.CHR] != character.Charisma;
 
                     if (flagChangedStats)
                     {
@@ -632,7 +632,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                             // Hacking attemp ?
                             if (points > MaxStartingBonusPoints)
                             {
-                                if ((ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player)
+                                if ((EPrivLevel)client.Account.PrivLevel == EPrivLevel.Player)
                                 {
                                     if (Properties.BAN_HACKERS)
                                     {
@@ -653,14 +653,14 @@ namespace DOL.GS.PacketHandler.Client.v168
                             if (Properties.ALLOW_CUSTOMIZE_STATS_AFTER_CREATION)
                             {
                                 // Set Stats, valid is ok.
-                                character.Strength = stats[eStat.STR];
-                                character.Constitution = stats[eStat.CON];
-                                character.Dexterity = stats[eStat.DEX];
-                                character.Quickness = stats[eStat.QUI];
-                                character.Intelligence = stats[eStat.INT];
-                                character.Piety = stats[eStat.PIE];
-                                character.Empathy = stats[eStat.EMP];
-                                character.Charisma = stats[eStat.CHR];
+                                character.Strength = stats[EStat.STR];
+                                character.Constitution = stats[EStat.CON];
+                                character.Dexterity = stats[EStat.DEX];
+                                character.Quickness = stats[EStat.QUI];
+                                character.Intelligence = stats[EStat.INT];
+                                character.Piety = stats[EStat.PIE];
+                                character.Empathy = stats[EStat.EMP];
+                                character.Charisma = stats[EStat.CHR];
 
                                 if (log.IsInfoEnabled)
                                 {
@@ -756,27 +756,27 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     if (pdata.CustomMode != 3)//patch 0042 // TODO check out these different custommodes
                     {
-                        var stats = new Dictionary<eStat, int>
+                        var stats = new Dictionary<EStat, int>
                         {
-                            [eStat.STR] = pdata.Strength, // Strength
-                            [eStat.DEX] = pdata.Dexterity, // Dexterity
-                            [eStat.CON] = pdata.NewConstitution, // New Constitution
-                            [eStat.QUI] = pdata.Quickness, // Quickness
-                            [eStat.INT] = pdata.Intelligence, // Intelligence
-                            [eStat.PIE] = pdata.Piety, // Piety
-                            [eStat.EMP] = pdata.Empathy, // Empathy
-                            [eStat.CHR] = pdata.Charisma // Charisma
+                            [EStat.STR] = pdata.Strength, // Strength
+                            [EStat.DEX] = pdata.Dexterity, // Dexterity
+                            [EStat.CON] = pdata.NewConstitution, // New Constitution
+                            [EStat.QUI] = pdata.Quickness, // Quickness
+                            [EStat.INT] = pdata.Intelligence, // Intelligence
+                            [EStat.PIE] = pdata.Piety, // Piety
+                            [EStat.EMP] = pdata.Empathy, // Empathy
+                            [EStat.CHR] = pdata.Charisma // Charisma
                         };
 
                         // check for changed stats.
-                        flagChangedStats |= stats[eStat.STR] != character.Strength;
-                        flagChangedStats |= stats[eStat.CON] != character.Constitution;
-                        flagChangedStats |= stats[eStat.DEX] != character.Dexterity;
-                        flagChangedStats |= stats[eStat.QUI] != character.Quickness;
-                        flagChangedStats |= stats[eStat.INT] != character.Intelligence;
-                        flagChangedStats |= stats[eStat.PIE] != character.Piety;
-                        flagChangedStats |= stats[eStat.EMP] != character.Empathy;
-                        flagChangedStats |= stats[eStat.CHR] != character.Charisma;
+                        flagChangedStats |= stats[EStat.STR] != character.Strength;
+                        flagChangedStats |= stats[EStat.CON] != character.Constitution;
+                        flagChangedStats |= stats[EStat.DEX] != character.Dexterity;
+                        flagChangedStats |= stats[EStat.QUI] != character.Quickness;
+                        flagChangedStats |= stats[EStat.INT] != character.Intelligence;
+                        flagChangedStats |= stats[EStat.PIE] != character.Piety;
+                        flagChangedStats |= stats[EStat.EMP] != character.Empathy;
+                        flagChangedStats |= stats[EStat.CHR] != character.Charisma;
 
                         if (flagChangedStats)
                         {
@@ -790,7 +790,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 if (points > MaxStartingBonusPoints)
                                 {
                                     log.InfoFormat("Stats above MaxStartingBonusPoints for {0}", character.Name);
-                                    if ((ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player && character.Level == 1)
+                                    if ((EPrivLevel)client.Account.PrivLevel == EPrivLevel.Player && character.Level == 1)
                                     {
                                         if (Properties.BAN_HACKERS)
                                         {
@@ -811,14 +811,14 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 if (Properties.ALLOW_CUSTOMIZE_STATS_AFTER_CREATION || character.CustomisationStep == 3)
                                 {
                                     // Set Stats, valid is ok.
-                                    character.Strength = stats[eStat.STR];
-                                    character.Constitution = stats[eStat.CON];
-                                    character.Dexterity = stats[eStat.DEX];
-                                    character.Quickness = stats[eStat.QUI];
-                                    character.Intelligence = stats[eStat.INT];
-                                    character.Piety = stats[eStat.PIE];
-                                    character.Empathy = stats[eStat.EMP];
-                                    character.Charisma = stats[eStat.CHR];
+                                    character.Strength = stats[EStat.STR];
+                                    character.Constitution = stats[EStat.CON];
+                                    character.Dexterity = stats[EStat.DEX];
+                                    character.Quickness = stats[EStat.QUI];
+                                    character.Intelligence = stats[EStat.INT];
+                                    character.Piety = stats[EStat.PIE];
+                                    character.Empathy = stats[EStat.EMP];
+                                    character.Charisma = stats[EStat.CHR];
 
                                     if (log.IsInfoEnabled)
                                     {
@@ -1025,7 +1025,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <param name="stats"></param>
         /// <param name="points"></param>
         /// <returns></returns>
-        public static bool IsCustomPointsDistributionValid(DbCoreCharacter character, IDictionary<eStat, int> stats, out int points)
+        public static bool IsCustomPointsDistributionValid(DbCoreCharacter character, IDictionary<EStat, int> stats, out int points)
         {
             ICharacterClass charClass = ScriptMgr.FindCharacterClass(character.Class);
 
@@ -1036,23 +1036,23 @@ namespace DOL.GS.PacketHandler.Client.v168
                 // check if each stat is valid.
                 foreach (var stat in stats.Keys)
                 {
-                    int raceAmount = GlobalConstants.STARTING_STATS_DICT[(eRace)character.Race][stat];
+                    int raceAmount = GlobalConstants.STARTING_STATS_DICT[(ERace)character.Race][stat];
 
                     int classAmount = 0;
 
                     for (int level = character.Level; level > 5; level--)
                     {
-                        if (charClass.PrimaryStat != eStat.UNDEFINED && charClass.PrimaryStat == stat)
+                        if (charClass.PrimaryStat != EStat.UNDEFINED && charClass.PrimaryStat == stat)
                         {
                             classAmount++;
                         }
 
-                        if (charClass.SecondaryStat != eStat.UNDEFINED && charClass.SecondaryStat == stat && (level - 6) % 2 == 0)
+                        if (charClass.SecondaryStat != EStat.UNDEFINED && charClass.SecondaryStat == stat && (level - 6) % 2 == 0)
                         {
                             classAmount++;
                         }
 
-                        if (charClass.TertiaryStat != eStat.UNDEFINED && charClass.TertiaryStat == stat && (level - 6) % 3 == 0)
+                        if (charClass.TertiaryStat != EStat.UNDEFINED && charClass.TertiaryStat == stat && (level - 6) % 3 == 0)
                         {
                             classAmount++;
                         }
@@ -1093,7 +1093,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             bool valid = true;
             try
             {
-                if ((eRealm)ch.Realm < eRealm._FirstPlayerRealm || (eRealm)ch.Realm > eRealm._LastPlayerRealm)
+                if ((ERealm)ch.Realm < ERealm._FirstPlayerRealm || (ERealm)ch.Realm > ERealm._LastPlayerRealm)
                 {
                     if (log.IsWarnEnabled)
                     {
@@ -1113,7 +1113,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     valid = false;
                 }
 
-                if (!GlobalConstants.STARTING_CLASSES_DICT.ContainsKey((eRealm)ch.Realm) || !GlobalConstants.STARTING_CLASSES_DICT[(eRealm)ch.Realm].Contains((eCharacterClass)ch.Class))
+                if (!GlobalConstants.STARTING_CLASSES_DICT.ContainsKey((ERealm)ch.Realm) || !GlobalConstants.STARTING_CLASSES_DICT[(ERealm)ch.Realm].Contains((ECharacterClass)ch.Class))
                 {
                     if (log.IsWarnEnabled)
                     {
@@ -1133,8 +1133,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
                 
 				// int pointsUsed;
-				var stats = new Dictionary<eStat, int>{{eStat.STR, ch.Strength},{eStat.CON, ch.Constitution},{eStat.DEX, ch.Dexterity},{eStat.QUI, ch.Quickness},
-					{eStat.INT, ch.Intelligence},{eStat.PIE, ch.Piety},{eStat.EMP, ch.Empathy},{eStat.CHR, ch.Charisma},};
+				var stats = new Dictionary<EStat, int>{{EStat.STR, ch.Strength},{EStat.CON, ch.Constitution},{EStat.DEX, ch.Dexterity},{EStat.QUI, ch.Quickness},
+					{EStat.INT, ch.Intelligence},{EStat.PIE, ch.Piety},{EStat.EMP, ch.Empathy},{EStat.CHR, ch.Charisma},};
     
                 valid &= IsCustomPointsDistributionValid(ch, stats, out var pointsUsed);
 
@@ -1148,9 +1148,9 @@ namespace DOL.GS.PacketHandler.Client.v168
                     valid = false;
                 }
 
-                eGender gender = ch.Gender == 0 ? eGender.Male : eGender.Female;
+                EGender gender = ch.Gender == 0 ? EGender.Male : EGender.Female;
 
-                if (GlobalConstants.RACE_GENDER_CONSTRAINTS_DICT.ContainsKey((eRace)ch.Race) && GlobalConstants.RACE_GENDER_CONSTRAINTS_DICT[(eRace)ch.Race] != gender)
+                if (GlobalConstants.RACE_GENDER_CONSTRAINTS_DICT.ContainsKey((ERace)ch.Race) && GlobalConstants.RACE_GENDER_CONSTRAINTS_DICT[(ERace)ch.Race] != gender)
                 {
                     if (log.IsWarnEnabled)
                     {
@@ -1160,7 +1160,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     valid = false;
                 }
 
-                if (GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT.ContainsKey((eCharacterClass)ch.Class) && GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT[(eCharacterClass)ch.Class] != gender)
+                if (GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT.ContainsKey((ECharacterClass)ch.Class) && GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT[(ECharacterClass)ch.Class] != gender)
                 {
                     if (log.IsWarnEnabled)
                     {

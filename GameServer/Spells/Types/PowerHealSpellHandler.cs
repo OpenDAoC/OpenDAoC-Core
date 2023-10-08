@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
 			}
 
 			// group heals seem to use full power even if no heals
-			if (!healed && Spell.Target == eSpellTarget.REALM)
+			if (!healed && Spell.Target == ESpellTarget.REALM)
 				m_caster.Mana -= PowerCost(target) >> 1; // only 1/2 power if no heal
 			else
 				m_caster.Mana -= PowerCost(target);
@@ -92,7 +92,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			int heal = target.ChangeMana(Caster, eManaChangeType.Spell, amount);
+			int heal = target.ChangeMana(Caster, EPowerChangeType.Spell, amount);
 
 			if (heal == 0)
 			{

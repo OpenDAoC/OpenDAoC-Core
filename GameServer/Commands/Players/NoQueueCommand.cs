@@ -1,7 +1,7 @@
 namespace DOL.GS.Commands;
 
 [Command("&noqueue", //command to handle
-ePrivLevel.Player, //minimum privelege level
+EPrivLevel.Player, //minimum privelege level
 "Allows you to disable/enable queuing", "/Noqueue")] //usage
 public class NoQueueCommand : ACommandHandler, ICommandHandler
 {

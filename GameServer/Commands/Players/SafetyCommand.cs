@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
      "&safety",
-     ePrivLevel.Player,
+     EPrivLevel.Player,
      "Turns off PvP safety flag.",
      "/safety off")]
 public class SafetyCommand : ACommandHandler, ICommandHandler

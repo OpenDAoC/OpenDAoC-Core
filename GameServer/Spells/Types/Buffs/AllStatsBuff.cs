@@ -52,15 +52,15 @@ namespace DOL.GS.Spells
 
 			return true;
 		}
-        public override eProperty Property1 => eProperty.Strength;
+        public override EProperty Property1 => EProperty.Strength;
 
-        public override eProperty Property2 => eProperty.Constitution;
+        public override EProperty Property2 => EProperty.Constitution;
 
-        public override eProperty Property3 => eProperty.Dexterity;
+        public override EProperty Property3 => EProperty.Dexterity;
 
-        public override eProperty Property4 => eProperty.Quickness;
+        public override EProperty Property4 => EProperty.Quickness;
 
-        public override eProperty Property5 => eProperty.Acuity;
+        public override EProperty Property5 => EProperty.Acuity;
 
         // constructor
         public AllStatsBarrel(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)

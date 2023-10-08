@@ -16,13 +16,13 @@ namespace DOL.GS.Scripts
         {
             m_FleeingAnnounce = "{0} starts fleeing!";
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
@@ -32,7 +32,7 @@ namespace DOL.GS.Scripts
             Name = "Uaimh Lairmaster";
             Size = 60;
             Level = 81;
-            Gender = eGender.Neutral;
+            Gender = EGender.Neutral;
 
             BodyType = 6; // Humanoid
             RoamingRange = 0;
@@ -81,12 +81,12 @@ namespace DOL.GS.Scripts
             return base.HasAbility(keyName);
         }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -99,7 +99,7 @@ namespace DOL.GS.Scripts
         /// <param name="damageType">The type of damage.</param>
         /// <param name="damageAmount">The amount of damage inflicted.</param>
         /// <param name="criticalAmount">The critical amount of damage inflicted</param>
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             Brain.Notify(GameObjectEvent.TakeDamage, this,
@@ -113,7 +113,7 @@ namespace DOL.GS.Scripts
         /// <param name="healSource">The source of the heal.</param>
         /// <param name="changeType">The way the living was healed.</param>
         /// <param name="healAmount">The amount that was healed.</param>
-        public override void EnemyHealed(GameLiving enemy, GameObject healSource, eHealthChangeType changeType,
+        public override void EnemyHealed(GameLiving enemy, GameObject healSource, EHealthChangeType changeType,
             int healAmount)
         {
             base.EnemyHealed(enemy, healSource, changeType, healAmount);

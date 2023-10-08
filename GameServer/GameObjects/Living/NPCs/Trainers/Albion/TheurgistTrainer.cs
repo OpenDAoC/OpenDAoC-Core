@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Theurgist Trainer
 	/// </summary>
-	[NPCGuildScript("Theurgist Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Theurgist Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Theurgist Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Theurgist Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class TheurgistTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Theurgist; }
+			get { return ECharacterClass.Theurgist; }
 		}
 
 		public const string WEAPON_ID = "theurgist_item";
@@ -86,7 +86,7 @@ namespace DOL.GS.Trainer
 				case "join the Defenders of Albion":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Theurgist, "I know you shall do your best to guard the realm from those that would harm it! To help you with this task, here is a gift from the Defenders! Use it well!", null);
+						PromotePlayer(player, (int)ECharacterClass.Theurgist, "I know you shall do your best to guard the realm from those that would harm it! To help you with this task, here is a gift from the Defenders! Use it well!", null);
 						player.ReceiveItem(this,WEAPON_ID);
 					}
 					break;

@@ -5,7 +5,7 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Commands
 {
 	[Command("&offlinejump",
-		ePrivLevel.GM,
+		EPrivLevel.GM,
 		"GMCommands.Offlinejump.Description",
 		"GMCommands.Offlinejump.Usage.Jail",
 		"GMCommands.Offlinejump.Usage.Capital"

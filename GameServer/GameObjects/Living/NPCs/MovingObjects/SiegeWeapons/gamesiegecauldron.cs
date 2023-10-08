@@ -33,7 +33,7 @@ namespace DOL.GS
 		public GameSiegeCauldron()
 			: base()
 		{
-			MeleeDamageType = eDamageType.Heat;
+			MeleeDamageType = EDamageType.Heat;
 			Name = "cauldron of boiling oil";
 			AmmoType = 0x3B;
 			EnableToMove = false;
@@ -78,13 +78,13 @@ namespace DOL.GS
 					spell.CastTime = 2;
 					spell.ClientEffect = 2209; //2209? 5909? 7086? 7091?
 					spell.Damage = 1000;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Boiling Oil";
 					spell.Radius = 350;
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 50005;
 					spell.Target = "Area";
-					spell.Type = eSpellType.SiegeDirectDamage.ToString();
+					spell.Type = ESpellType.SiegeDirectDamage.ToString();
 					m_OilSpell = new Spell(spell, 50);
 				}
 				return m_OilSpell;
@@ -136,7 +136,7 @@ namespace DOL.GS.Spells
 				GamePlayer player = target as GamePlayer;
 				int id = player.CharacterClass.ID;
 				//50% reduction for tanks
-				if (id == (int)eCharacterClass.Armsman || id == (int)eCharacterClass.Warrior || id == (int)eCharacterClass.Hero)
+				if (id == (int)ECharacterClass.Armsman || id == (int)ECharacterClass.Warrior || id == (int)ECharacterClass.Hero)
 					ad.Damage /= 2;
 				//3000 spec
 				//ram protection

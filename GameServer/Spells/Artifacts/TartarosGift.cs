@@ -46,7 +46,7 @@ namespace DOL.GS.Spells
                 heal >>= 1;
             }
             if (heal <= 0) return;            
-            heal = Caster.ChangeHealth(Caster, eHealthChangeType.Spell, heal);
+            heal = Caster.ChangeHealth(Caster, EHealthChangeType.Spell, heal);
             if (heal > 0)
             {
                 MessageToCaster("You drain " + heal + " hit point" + (heal == 1 ? "." : "s."), eChatType.CT_Spell);
@@ -57,7 +57,7 @@ namespace DOL.GS.Spells
             }
             
             if (mana <=0) return;
-            mana = Caster.ChangeMana(Caster,eManaChangeType.Spell,mana);
+            mana = Caster.ChangeMana(Caster,EPowerChangeType.Spell,mana);
             if (mana > 0)
             {
                 MessageToCaster("You drain " + mana + " power point" + (mana == 1 ? "." : "s."), eChatType.CT_Spell);
@@ -68,7 +68,7 @@ namespace DOL.GS.Spells
             }     
             
             if (endu <=0) return;
-            endu = Caster.ChangeEndurance(Caster,eEnduranceChangeType.Spell,endu);            
+            endu = Caster.ChangeEndurance(Caster,EEnduranceChangeType.Spell,endu);            
             if (heal > 0)
             {
                 MessageToCaster("You drain " + endu + " endurance point" + (endu == 1 ? "." : "s."), eChatType.CT_Spell);

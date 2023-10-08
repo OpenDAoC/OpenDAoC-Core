@@ -40,7 +40,7 @@ namespace DOL.GS.Spells
 			double manareturned = m_spell.Power + (heal * m_caster.MaxMana / 100);
             
             if (heal <= 0) return;
-            heal = m_caster.ChangeMana(m_caster, eManaChangeType.Spell, (int)manareturned);
+            heal = m_caster.ChangeMana(m_caster, EPowerChangeType.Spell, (int)manareturned);
 
             if (heal > 0)
             {

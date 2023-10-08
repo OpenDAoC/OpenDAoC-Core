@@ -19,21 +19,21 @@ namespace DOL.GS
         public static void ScriptUnloaded(DOLEvent e, object sender, EventArgs args)
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
                 default: return 70; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -104,7 +104,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 spawnMinions = true;
                 if (!RemoveAdds)
                 {
@@ -182,7 +182,7 @@ namespace DOL.GS
             MaxDistance = 1500;
             TetherRange = 2000;
             IsWorthReward = false; // worth no reward
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             NahemahMinionBrain adds = new NahemahMinionBrain();
             LoadedFromScript = true;
             SetOwnBrain(adds);
@@ -244,7 +244,7 @@ namespace DOL.GS
                     spell.Type = "DirectDamage";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Heat;
+                    spell.DamageType = (int) EDamageType.Heat;
                     m_fireDDSpell = new Spell(spell, 50);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_fireDDSpell);
                 }

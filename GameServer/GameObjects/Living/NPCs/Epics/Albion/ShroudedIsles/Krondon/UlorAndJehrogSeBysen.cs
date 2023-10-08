@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Ulor se Bysen Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -42,11 +42,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -73,10 +73,10 @@ namespace DOL.GS
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 19, 0, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
 			VisibleActiveWeaponSlots = 34;
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			MaxSpeedBase = 250;
 			MaxDistance = 3500;
 			TetherRange = 3800;
@@ -110,7 +110,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			if (Body.IsAlive)
@@ -190,9 +190,9 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 200;
 					spell.SpellID = 11886;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					m_Ulor_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ulor_DD);
 				}
@@ -223,9 +223,9 @@ namespace DOL.AI.Brain
 					spell.Message4 = "{0}'s physical vulnerability fades.";
 					spell.Range = 1500;
 					spell.SpellID = 11888;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.BodyResistDebuff.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.BodyResistDebuff.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					m_Ulor_DebuffBody = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ulor_DebuffBody);
 				}
@@ -258,9 +258,9 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11887;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DamageOverTime.ToString();
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
+					spell.DamageType = (int)EDamageType.Matter;
 					m_Ulor_aoedot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ulor_aoedot);
 				}
@@ -283,13 +283,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Jehrog se Bysen Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -309,11 +309,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -341,10 +341,10 @@ namespace DOL.GS
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 842, 0, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
 			VisibleActiveWeaponSlots = 34;
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			ParryChance = 60;
 
 			MaxSpeedBase = 250;
@@ -380,7 +380,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			if (HasAggro && Body.TargetObject != null)

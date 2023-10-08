@@ -45,7 +45,7 @@ namespace DOL.GS
 
             CurrentRegion = djinnStone.CurrentRegion;
             Heading = djinnStone.Heading;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             Flags ^= GameNPC.eFlags.FLYING | GameNPC.eFlags.PEACE;
             X = djinnStone.X;
             Y = djinnStone.Y;
@@ -80,7 +80,7 @@ namespace DOL.GS
         /// <summary>
         /// The destination realm.
         /// </summary>
-        protected override eRealm DestinationRealm
+        protected override ERealm DestinationRealm
         {
             get
             {
@@ -170,17 +170,17 @@ namespace DOL.GS
 
             switch (player.Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     destinations = String.Format("[Castle Sauvage], [Oceanus], [Stygia], [Volcanus], [Aerus], the [dungeons of Atlantis], {0} {1}",
                         "[Snowdonia Fortress], [Camelot], [Gothwaite Harbor], [Inconnu Crypt], your [Guild] house, your",
                         "[Personal] house, your [Hearth] bind, or to the [Caerwent] housing area?");
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     destinations = String.Format("[Svasud Faste], [Oceanus], [Stygia], [Volcanus], [Aerus], the [dungeons of Atlantis], {0} {1}",
                         "[Vindsaul Faste], [Jordheim], [Aegirhamn], [Kobold] Undercity, your [Guild] house, your",
                         "[Personal] house, your [Hearth] bind, or to the [Erikstaad] housing area?");
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     destinations = String.Format("[Druim Ligen], [Oceanus], [Stygia], [Volcanus], [Aerus], the [dungeons of Atlantis], {0} {1}",
                         "[Druim Cain], the [Grove of Domnann], [Tir na Nog], [Shar Labyrinth], your [Guild] house, your",
                         "[Personal] house, your [Hearth] bind, or to the [Meath] housing area?");

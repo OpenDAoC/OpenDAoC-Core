@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Naturalist Trainer
 	/// </summary>
-	[NPCGuildScript("Naturalist Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Naturalist Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Naturalist Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Naturalist Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class NaturalistTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Naturalist; }
+			get { return ECharacterClass.Naturalist; }
 		}
 
 		public const string PRACTICE_WEAPON_ID = "training_club";
@@ -91,7 +91,7 @@ namespace DOL.GS.Trainer
 
 			switch (text) {
 				case "Bard":
-					if(player.Race == (int) eRace.Celt || player.Race == (int) eRace.Firbolg){
+					if(player.Race == (int) ERace.Celt || player.Race == (int) ERace.Firbolg){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
 					else{
@@ -99,7 +99,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Druid":
-					if(player.Race == (int)eRace.Celt || player.Race == (int)eRace.Firbolg || player.Race == (int)eRace.Sylvan || player.Race == (int)eRace.HiberniaMinotaur)
+					if(player.Race == (int)ERace.Celt || player.Race == (int)ERace.Firbolg || player.Race == (int)ERace.Sylvan || player.Race == (int)ERace.HiberniaMinotaur)
 					{
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
@@ -108,7 +108,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Warden":
-					if(player.Race == (int) eRace.Celt || player.Race == (int) eRace.Firbolg || player.Race == (int) eRace.Sylvan)
+					if(player.Race == (int) ERace.Celt || player.Race == (int) ERace.Firbolg || player.Race == (int) ERace.Sylvan)
 					{
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}

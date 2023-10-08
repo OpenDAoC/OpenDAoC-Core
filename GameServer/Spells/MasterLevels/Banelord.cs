@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
     [SpellHandler("CastingSpeedDebuff")]
     public class CastingSpeedDebuff : MasterlevelDebuffHandling
     {
-        public override eProperty Property1 { get { return eProperty.CastingSpeed; } }
+        public override EProperty Property1 { get { return EProperty.CastingSpeed; } }
 		
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
@@ -150,7 +150,7 @@ namespace DOL.GS.Spells
     [SpellHandler("MLFatDebuff")]
     public class MLFatDebuffHandler : MasterlevelDebuffHandling
     {
-        public override eProperty Property1 { get { return eProperty.FatigueConsumption; } }	
+        public override EProperty Property1 { get { return EProperty.FatigueConsumption; } }	
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
@@ -184,7 +184,7 @@ namespace DOL.GS.Spells
     [SpellHandler("MissHit")]
     public class MissHit : MasterlevelBuffHandling
     {
-        public override eProperty Property1 { get { return eProperty.MissHit; } }
+        public override EProperty Property1 { get { return EProperty.MissHit; } }
 
         // constructor
         public MissHit(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -304,7 +304,7 @@ namespace DOL.GS.Spells
         {
             if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
                 return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
-            if (compare.SpellHandler.Spell.SpellType == eSpellType.UnrresistableNonImunityStun) return true;
+            if (compare.SpellHandler.Spell.SpellType == ESpellType.UnrresistableNonImunityStun) return true;
             return base.IsOverwritable(compare);
         }
 
@@ -334,7 +334,7 @@ namespace DOL.GS.Spells
     [SpellHandler("BLToHit")]
     public class BLToHit : MasterlevelBuffHandling
     {
-        public override eProperty Property1 { get { return eProperty.ToHitBonus; } }
+        public override EProperty Property1 { get { return EProperty.ToHitBonus; } }
 
         // constructor
         public BLToHit(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -400,7 +400,7 @@ namespace DOL.GS.Spells
     [SpellHandler("Banespike")]
     public class BanespikeHandler : MasterlevelBuffHandling
     {
-        public override eProperty Property1 { get { return eProperty.MeleeDamage; } }
+        public override EProperty Property1 { get { return EProperty.MeleeDamage; } }
 
         public BanespikeHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
@@ -420,10 +420,10 @@ namespace DOL.GS.PropertyCalc
     /// BuffBonusCategory4 unused
     /// BuffBonusMultCategory1 unused
     /// </summary>
-    [PropertyCalculator(eProperty.MissHit)]
+    [PropertyCalculator(EProperty.MissHit)]
     public class MissHitPercentCalculator : PropertyCalculator
     {
-        public override int CalcValue(GameLiving living, eProperty property)
+        public override int CalcValue(GameLiving living, EProperty property)
         {
             return (int)(
                 +living.BaseBuffBonusCategory[(int)property]

@@ -25,18 +25,18 @@ namespace DOL.GS.Keeps
 {
     public class GuardCaster : GameKeepGuard
     {
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             return base.GetArmorAbsorb(slot) - 0.05;
         }
 
         protected override ICharacterClass GetClass()
         {
-            if (ModelRealm == eRealm.Albion)
+            if (ModelRealm == ERealm.Albion)
                 return new ClassWizard();
-            else if (ModelRealm == eRealm.Midgard)
+            else if (ModelRealm == ERealm.Midgard)
                 return new ClassRunemaster();
-            else if (ModelRealm == eRealm.Hibernia)
+            else if (ModelRealm == ERealm.Hibernia)
                 return new ClassEldritch();
 
             return new DefaultCharacterClass();
@@ -51,8 +51,8 @@ namespace DOL.GS.Keeps
         {
             switch (ModelRealm)
             {
-                case eRealm.None:
-                case eRealm.Albion:
+                case ERealm.None:
+                case ERealm.Albion:
                 {
                     if (IsPortalKeepGuard)
                         Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.MasterWizard");
@@ -61,7 +61,7 @@ namespace DOL.GS.Keeps
 
                     break;
                 }
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                 {
                     if (IsPortalKeepGuard)
                         Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.MasterRunes");
@@ -70,7 +70,7 @@ namespace DOL.GS.Keeps
 
                     break;
                 }
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                 {
                     if (IsPortalKeepGuard)
                         Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.MasterEldritch");
@@ -81,7 +81,7 @@ namespace DOL.GS.Keeps
                 }
             }
 
-            if (Realm == eRealm.None)
+            if (Realm == ERealm.None)
                 Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
         }
     }

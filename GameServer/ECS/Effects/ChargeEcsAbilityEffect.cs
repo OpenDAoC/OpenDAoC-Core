@@ -9,7 +9,7 @@ namespace DOL.GS
         public ChargeEcsAbilityEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.Charge;
+            EffectType = EEffect.Charge;
             EffectService.RequestStartEffect(this);
         }
 

@@ -37,7 +37,7 @@ namespace DOL.GS.Spells
         {
             if (caster.CurrentRegion.IsNightTime)
             {
-                if (caster.Realm == eRealm.Albion)
+                if (caster.Realm == ERealm.Albion)
                 {
                     m_MoonMace = GameServer.Database.FindObjectByKey<DbItemTemplate>("Moon_Mace") ?? Mace;
                     items.Add(GameInventoryItem.Create(m_MoonMace));
@@ -47,7 +47,7 @@ namespace DOL.GS.Spells
                     return;
                 }
 
-                if (caster.Realm == eRealm.Midgard)
+                if (caster.Realm == ERealm.Midgard)
                 {
                     m_MoonMace = GameServer.Database.FindObjectByKey<DbItemTemplate>("Moon_MaceM") ?? MaceM;
                     items.Add(GameInventoryItem.Create(m_MoonMace));
@@ -57,7 +57,7 @@ namespace DOL.GS.Spells
                     return;
                 }
 
-                if (caster.Realm == eRealm.Hibernia)
+                if (caster.Realm == ERealm.Hibernia)
                 {
                     m_MoonMace = GameServer.Database.FindObjectByKey<DbItemTemplate>("Moon_MaceH") ?? MaceH;
                     items.Add(GameInventoryItem.Create(m_MoonMace));

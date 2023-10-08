@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Disciple Trainer
 	/// </summary>
-	[NPCGuildScript("Disciple Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Disciple Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Disciple Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Disciple Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class DiscipleTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Disciple; }
+			get { return ECharacterClass.Disciple; }
 		}
 		public const string PRACTICE_WEAPON_ID = "trimmed_branch";
 		
@@ -85,7 +85,7 @@ namespace DOL.GS.Trainer
 
 			switch (text) {
 				case "Necromancer":
-					if(player.Race == (int) eRace.Briton || player.Race == (int) eRace.Inconnu || player.Race == (int) eRace.Saracen){
+					if(player.Race == (int) ERace.Briton || player.Race == (int) ERace.Inconnu || player.Race == (int) ERace.Saracen){
 						player.Out.SendMessage(this.Name + " says, \"So you want to become a Necromancer? As a Necromancer you can summon undeath creatures.\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					}
 					else{

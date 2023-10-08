@@ -8,7 +8,7 @@ namespace DOL.GS
         public RapidFireEcsAbilityEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.RapidFire;
+            EffectType = EEffect.RapidFire;
             EffectService.RequestStartEffect(this);
         }
 

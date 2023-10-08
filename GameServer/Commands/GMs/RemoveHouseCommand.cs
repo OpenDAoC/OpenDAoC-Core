@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 /// </summary>
 [Command(
 	"&removehouse",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"Remove House or you are", "/removehouse")]
 public class RemoveHouseCommand : ACommandHandler, ICommandHandler
 {

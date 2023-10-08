@@ -10,7 +10,7 @@ namespace DOL.GS.Commands
 		"&plvl",
 		// Message: <----- '/plvl' Commands (plvl 3) ----->
 		"AdminCommands.Header.Syntax.Plvl",
-		ePrivLevel.Admin,
+		EPrivLevel.Admin,
 		// Message: "Alters an account's privilege level (plvl) and grants/revokes access to command types depending on the user's plvl. With these commands, accounts may be granted Admin, GM, and Player command access from in-game."
 		"AdminCommands.Plvl.Description",
 		// Syntax: /plvl command

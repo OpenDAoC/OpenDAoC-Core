@@ -13,14 +13,14 @@ public class ApiGuild
         _cache = new MemoryCache(new MemoryCacheOptions());
     }
 
-    private static int eRealmToID(eRealm realm)
+    private static int eRealmToID(ERealm realm)
     {
         switch (realm)
         {
-            case eRealm.None: return 0;
-            case eRealm.Albion: return 1;
-            case eRealm.Midgard: return 2;
-            case eRealm.Hibernia: return 3;
+            case ERealm.None: return 0;
+            case ERealm.Albion: return 1;
+            case ERealm.Midgard: return 2;
+            case ERealm.Hibernia: return 3;
             default: return 0;
         }
     }

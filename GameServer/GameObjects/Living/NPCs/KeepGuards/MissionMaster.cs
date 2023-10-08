@@ -261,9 +261,9 @@ namespace DOL.GS.Keeps
 
 		protected override ICharacterClass GetClass()
 		{
-			if (ModelRealm == eRealm.Albion) return new ClassArmsman();
-			else if (ModelRealm == eRealm.Midgard) return new ClassWarrior();
-			else if (ModelRealm == eRealm.Hibernia) return new ClassHero();
+			if (ModelRealm == ERealm.Albion) return new ClassArmsman();
+			else if (ModelRealm == ERealm.Midgard) return new ClassWarrior();
+			else if (ModelRealm == ERealm.Hibernia) return new ClassHero();
 			return new DefaultCharacterClass();
 		}
 
@@ -274,7 +274,7 @@ namespace DOL.GS.Keeps
 			BlockChance = 15;
 			ParryChance = 15;
 
-			if (ModelRealm != eRealm.Albion)
+			if (ModelRealm != ERealm.Albion)
 			{
 				EvadeChance = 10;
 				ParryChance = 5;
@@ -283,7 +283,7 @@ namespace DOL.GS.Keeps
 
 		protected override void SetRespawnTime()
 		{
-			if (Realm == eRealm.None && (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE ||
+			if (Realm == ERealm.None && (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE ||
 			GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP))
 			{
 				// In PvE & PvP servers, lords are really just mobs farmed for seals.
@@ -306,19 +306,19 @@ namespace DOL.GS.Keeps
 		{
 			switch (ModelRealm)
 			{
-				case eRealm.None:
-				case eRealm.Albion:
+				case ERealm.None:
+				case ERealm.Albion:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.CaptainCommander");
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.HersirCommander");
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.ChampionCommander");
 					break;
 			}
 
-			if (Realm == eRealm.None)
+			if (Realm == ERealm.None)
 			{
 				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
 			}

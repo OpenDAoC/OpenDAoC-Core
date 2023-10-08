@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Champion, "Champion", "Guardian")]
+	[CharacterClass((int)ECharacterClass.Champion, "Champion", "Guardian")]
 	public class ClassChampion : ClassGuardian
 	{
 		public ClassChampion()
@@ -30,10 +30,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.PathofEssence";
 			m_specializationMultiplier = 20;
-			m_primaryStat = eStat.STR;
-			m_secondaryStat = eStat.INT;
-			m_tertiaryStat = eStat.DEX;
-			m_manaStat = eStat.INT; //TODO: not sure
+			m_primaryStat = EStat.STR;
+			m_secondaryStat = EStat.INT;
+			m_tertiaryStat = EStat.DEX;
+			m_manaStat = EStat.INT; //TODO: not sure
 			m_wsbase = 380;
 			m_baseHP = 760;
 		}

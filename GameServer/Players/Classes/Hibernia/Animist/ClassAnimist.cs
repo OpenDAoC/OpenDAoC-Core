@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Animist, "Animist", "Forester")]
+	[CharacterClass((int)ECharacterClass.Animist, "Animist", "Forester")]
 	public class ClassAnimist : CharacterClassAnimist
 	{
 		public ClassAnimist()
@@ -31,12 +31,12 @@ namespace DOL.GS.PlayerClass
 			m_specializationMultiplier = 10;
 			m_wsbase = 280;
 			m_baseHP = 560;
-			m_manaStat = eStat.INT;
+			m_manaStat = EStat.INT;
 
 			m_profession = "PlayerClass.Profession.PathofAffinity";
-			m_primaryStat = eStat.INT;
-			m_secondaryStat = eStat.CON;
-			m_tertiaryStat = eStat.DEX;
+			m_primaryStat = EStat.INT;
+			m_secondaryStat = EStat.CON;
+			m_tertiaryStat = EStat.DEX;
 		}
 
 		public override eClassType ClassType

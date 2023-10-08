@@ -13,13 +13,13 @@ namespace DOL.GS
         public Suttung() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
@@ -43,12 +43,12 @@ namespace DOL.GS
             return base.HasAbility(keyName);
         }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -78,7 +78,7 @@ namespace DOL.GS
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 573, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.Standard);
+            SwitchWeapon(EActiveWeaponSlot.Standard);
             SuttungBrain.message1 = false;
             SuttungBrain.message2 = false;
             SuttungCount = 1;
@@ -100,7 +100,7 @@ namespace DOL.GS
         {
             if (Util.Chance(15))
             {
-                if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+                if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
                     CastSpell(SuttungDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
             base.OnAttackEnemy(ad);
@@ -131,7 +131,7 @@ namespace DOL.GS
                     spell.Type = "Disease";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+                    spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
                     m_SuttungDisease = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SuttungDisease);
                 }
@@ -217,7 +217,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 AggroText = false;
             }
@@ -278,11 +278,11 @@ namespace DOL.AI.Brain
                     spell.Range = 0;
                     spell.Radius = 440;
                     spell.SpellID = 11901;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Cold;
+                    spell.DamageType = (int)EDamageType.Cold;
                     m_IcelordHjalmar_aoe = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_IcelordHjalmar_aoe);
                 }
@@ -310,13 +310,13 @@ namespace DOL.GS
         public static int BackStyleClassID = 44;
         public static Style back_style = SkillBase.GetStyleByID(BackStyleID, BackStyleClassID);
 
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
@@ -340,12 +340,12 @@ namespace DOL.GS
             return base.HasAbility(keyName);
         }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -364,7 +364,7 @@ namespace DOL.GS
 
         public override void OnAttackEnemy(AttackData ad)
         {
-            if (ad != null && (ad.AttackResult == eAttackResult.HitStyle || ad.AttackResult == eAttackResult.HitUnstyled))
+            if (ad != null && (ad.AttackResult == EAttackResult.HitStyle || ad.AttackResult == EAttackResult.HitUnstyled))
             {
                 if (Util.Chance(20))
                     SpawnAdds();
@@ -399,10 +399,10 @@ namespace DOL.GS
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 572, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
             VisibleActiveWeaponSlots = 34;
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             HjalmarBrain sbrain = new HjalmarBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = true;
@@ -477,7 +477,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160394);
                 Body.Strength = npcTemplate.Strength;
@@ -558,13 +558,13 @@ namespace DOL.GS
         {
         }
 
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 25; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 25; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 25; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 25; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 25; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 25; // dmg reduction for melee dmg
                 default: return 25; // dmg reduction for rest resists
             }
         }
@@ -587,11 +587,11 @@ namespace DOL.GS
             return 0;
         }
         
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.25;
@@ -614,7 +614,7 @@ namespace DOL.GS
 
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             RespawnInterval = -1;
 
             MorkimmaBrain adds = new MorkimmaBrain();
@@ -630,7 +630,7 @@ namespace DOL.GS
         {
             if (Util.Chance(15))
             {
-                if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle) && HealthPercent < 100)
+                if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle) && HealthPercent < 100)
                     CastSpell(MorkimmaHeal, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
             }
             base.OnAttackEnemy(ad);
@@ -654,7 +654,7 @@ namespace DOL.GS
                     spell.Range = 1500;
                     spell.SpellID = 11930;
                     spell.Target = "Self";
-                    spell.Type = eSpellType.Heal.ToString();
+                    spell.Type = ESpellType.Heal.ToString();
                     spell.Uninterruptible = true;
                     m_MorkimmaHeal = new Spell(spell, 50);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_MorkimmaHeal);

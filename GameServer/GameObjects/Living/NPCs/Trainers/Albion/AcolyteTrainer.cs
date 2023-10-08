@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Acolyte Trainer
 	/// </summary>
-	[NPCGuildScript("Acolyte Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Acolyte Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Acolyte Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Acolyte Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class AcolyteTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Acolyte; }
+			get { return ECharacterClass.Acolyte; }
 		}
 
 		public const string PRACTICE_WEAPON_ID = "training_mace";
@@ -93,7 +93,7 @@ namespace DOL.GS.Trainer
 			switch (text)
 			{
 				case "Cleric":
-					if (player.Race == (int)eRace.Avalonian || player.Race == (int)eRace.Briton || player.Race == (int)eRace.Highlander)
+					if (player.Race == (int)ERace.Avalonian || player.Race == (int)ERace.Briton || player.Race == (int)ERace.Highlander)
 					{
 						this.SayTo(player, "So, you wish to serve the Church as healer, defender and leader of our faith. The Church of Albion will welcome one of your skill. Perhaps in time, your commitment will lead others to join our order.");
 					}
@@ -103,7 +103,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Friar":
-					if (player.Race == (int)eRace.Briton)
+					if (player.Race == (int)ERace.Briton)
 					{
 						this.SayTo(player, "Members of a brotherhood, you will find more than a community should you join ranks with the Defenders of Albion. Deadly with a Quarterstaff, and proficient with the healing of wounds, the army is in constant need of new recruits such as you.");
 					}
@@ -113,7 +113,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Heretic":
-					if (player.Race == (int)eRace.Briton || player.Race == (int)eRace.Avalonian || player.Race == (int)eRace.Inconnu || player.Race == (int)eRace.AlbionMinotaur)
+					if (player.Race == (int)ERace.Briton || player.Race == (int)ERace.Avalonian || player.Race == (int)ERace.Inconnu || player.Race == (int)ERace.AlbionMinotaur)
 					{
 						this.SayTo(player, "Members of a brotherhood, you will find more than a community should you join ranks with the Defenders of Albion. Deadly with a Quarterstaff, and proficient with the healing of wounds, the army is in constant need of new recruits such as you.");
 					}

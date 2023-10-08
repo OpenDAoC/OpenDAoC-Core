@@ -8,7 +8,7 @@ namespace DOL.GS.Commands;
 
 [Command(
    "&realm",
-   ePrivLevel.Player,
+   EPrivLevel.Player,
 	 "Displays the current realm status.", "/realm")]
 public class RealmCommand : ACommandHandler, ICommandHandler
 {
@@ -131,13 +131,13 @@ public class RealmCommand : ACommandHandler, ICommandHandler
 			{
 				var pve = DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod - GameLoop.GameLoopTime;
 				string realmName = "";
-				if (DFEnterJumpPoint.PreviousOwner == eRealm._LastPlayerRealm || 
-				    DFEnterJumpPoint.PreviousOwner == eRealm.Hibernia)
+				if (DFEnterJumpPoint.PreviousOwner == ERealm._LastPlayerRealm || 
+				    DFEnterJumpPoint.PreviousOwner == ERealm.Hibernia)
 					realmName = "Hibernia";
-				if (DFEnterJumpPoint.PreviousOwner == eRealm._FirstPlayerRealm ||
-				    DFEnterJumpPoint.PreviousOwner == eRealm.Albion)
+				if (DFEnterJumpPoint.PreviousOwner == ERealm._FirstPlayerRealm ||
+				    DFEnterJumpPoint.PreviousOwner == ERealm.Albion)
 					realmName = "Albion";
-				if (DFEnterJumpPoint.PreviousOwner == eRealm.Midgard)
+				if (DFEnterJumpPoint.PreviousOwner == ERealm.Midgard)
 					realmName = "Midgard";
 				if(realmName != "")
 					realmInfo.Add(realmName + " can enter Darkness Falls for another " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");

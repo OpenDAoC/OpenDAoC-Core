@@ -33,20 +33,20 @@ namespace DOL.GS.Spells
 		public AtensShield(GameLiving caster, Spell spell, SpellLine line)
 			: base(caster, spell, line)
 		{
-			if (caster.Realm == eRealm.Albion)
+			if (caster.Realm == ERealm.Albion)
 			{
 				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_Flame") ?? Javelin;
 				items.Add (GameInventoryItem.Create(m_goldenTridentofFlame));
 				return;
 			}
 
-			if (caster.Realm == eRealm.Midgard)
+			if (caster.Realm == ERealm.Midgard)
 			{
 				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_Flame") ?? JavelinM;
 				items.Add (GameInventoryItem.Create(m_goldenTridentofFlame));
 				return;
 			}
-			if (caster.Realm == eRealm.Hibernia)
+			if (caster.Realm == ERealm.Hibernia)
 			{
 				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_Flame") ?? JavelinH;
 				items.Add (GameInventoryItem.Create(m_goldenTridentofFlame));

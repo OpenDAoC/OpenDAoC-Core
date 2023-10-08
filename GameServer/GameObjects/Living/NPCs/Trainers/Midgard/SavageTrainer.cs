@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Savage Trainer
 	/// </summary>
-	[NPCGuildScript("Savage Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Savage Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Savage Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Savage Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class SavageTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Savage; }
+			get { return ECharacterClass.Savage; }
 		}
 
 		public SavageTrainer() : base()
@@ -84,7 +84,7 @@ namespace DOL.GS.Trainer
 				case "join the House of Kelgor":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Savage, "Welcome young Savage! May your time in Midgard army be rewarding!", null);	// TODO: gifts
+						PromotePlayer(player, (int)ECharacterClass.Savage, "Welcome young Savage! May your time in Midgard army be rewarding!", null);	// TODO: gifts
 					}
 					break;
 			}

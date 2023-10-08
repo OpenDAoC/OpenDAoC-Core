@@ -31,7 +31,7 @@ namespace DOL.GS.Scripts
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
 
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			Faction = FactionMgr.GetFactionByID(779);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
@@ -60,21 +60,21 @@ namespace DOL.GS.Scripts
 
 			return base.HasAbility(keyName);
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
 				default: return 30; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -112,7 +112,7 @@ namespace DOL.GS.Scripts
 			{
 				if(!CheckProximityAggro())
                 {
-					FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+					FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 					Body.Health = Body.MaxHealth;
 					CanCastSpell = false;
 				}
@@ -202,7 +202,7 @@ namespace DOL.GS.Scripts
 						spell.SpellID = 3541;
 						spell.Target = "Enemy";
 						spell.MoveCast = false;
-						spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+						spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 						m_Mjollnir = new Spell(spell, 50);
 						SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Mjollnir);
 					}

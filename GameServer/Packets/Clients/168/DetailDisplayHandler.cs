@@ -138,32 +138,32 @@ namespace DOL.GS.PacketHandler.Client.v168
 							objectInfo.Add(" ");
 						}
 
-						if (invItem.Object_Type >= (int)eObjectType.GenericWeapon
-							&& invItem.Object_Type <= (int)eObjectType._LastWeapon
-							|| invItem.Object_Type == (int)eObjectType.Instrument)
+						if (invItem.Object_Type >= (int)EObjectType.GenericWeapon
+							&& invItem.Object_Type <= (int)EObjectType._LastWeapon
+							|| invItem.Object_Type == (int)EObjectType.Instrument)
 						{
 							WriteUsableClasses(objectInfo, invItem, client);
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
 							WriteClassicWeaponInfos(objectInfo, invItem, client);
 						}
 
-						if (invItem.Object_Type >= (int)eObjectType.Cloth && invItem.Object_Type <= (int)eObjectType.Scale)
+						if (invItem.Object_Type >= (int)EObjectType.Cloth && invItem.Object_Type <= (int)EObjectType.Scale)
 						{
 							WriteUsableClasses(objectInfo, invItem, client);
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
 							WriteClassicArmorInfos(objectInfo, invItem, client);
 						}
 
-						if (invItem.Object_Type == (int)eObjectType.Shield)
+						if (invItem.Object_Type == (int)EObjectType.Shield)
 						{
 							WriteUsableClasses(objectInfo, invItem, client);
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
 							WriteClassicShieldInfos(objectInfo, invItem, client);
 						}
 
-						if (invItem.Object_Type == (int)eObjectType.Magical
-							|| invItem.Object_Type == (int)eObjectType.AlchemyTincture
-							|| invItem.Object_Type == (int)eObjectType.SpellcraftGem)
+						if (invItem.Object_Type == (int)EObjectType.Magical
+							|| invItem.Object_Type == (int)EObjectType.AlchemyTincture
+							|| invItem.Object_Type == (int)EObjectType.SpellcraftGem)
 						{
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
 						}
@@ -171,10 +171,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 						//***********************************
 						//shows info for Poison Potions
 						//***********************************
-						if (invItem.Object_Type == (int)eObjectType.Poison)
+						if (invItem.Object_Type == (int)EObjectType.Poison)
 							WritePoisonInfo(objectInfo, invItem, client);
 
-						if (invItem.Object_Type == (int)eObjectType.Magical && invItem.Item_Type == (int)eInventorySlot.FirstBackpack) // potion
+						if (invItem.Object_Type == (int)EObjectType.Magical && invItem.Item_Type == (int)eInventorySlot.FirstBackpack) // potion
 							WritePotionInfo(objectInfo, invItem, client);
 						else if (invItem.CanUseEvery > 0)
 						{
@@ -430,39 +430,39 @@ namespace DOL.GS.PacketHandler.Client.v168
 							objectInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.ChampionLevel", item.Level));
 						}
 
-						if ((item.Object_Type >= (int)eObjectType.GenericWeapon) && (item.Object_Type <= (int)eObjectType.MaulerStaff) ||
-						    item.Object_Type == (int)eObjectType.Instrument)
+						if ((item.Object_Type >= (int)EObjectType.GenericWeapon) && (item.Object_Type <= (int)EObjectType.MaulerStaff) ||
+						    item.Object_Type == (int)EObjectType.Instrument)
 						{
 							WriteUsableClasses(objectInfo, item, client);
 							WriteMagicalBonuses(objectInfo, item, client, false);
 							WriteClassicWeaponInfos(objectInfo, GameInventoryItem.Create(item), client);
 						}
 
-						if (item.Object_Type >= (int)eObjectType.Cloth && item.Object_Type <= (int)eObjectType.Scale)
+						if (item.Object_Type >= (int)EObjectType.Cloth && item.Object_Type <= (int)EObjectType.Scale)
 						{
 							WriteUsableClasses(objectInfo, item, client);
 							WriteMagicalBonuses(objectInfo, item, client, false);
 							WriteClassicArmorInfos(objectInfo, GameInventoryItem.Create(item), client);
 						}
 
-						if (item.Object_Type == (int)eObjectType.Shield)
+						if (item.Object_Type == (int)EObjectType.Shield)
 						{
 							WriteUsableClasses(objectInfo, item, client);
 							WriteMagicalBonuses(objectInfo, item, client, false);
 							WriteClassicShieldInfos(objectInfo, item, client);
 						}
 
-						if ((item.Item_Type != (int)eInventorySlot.Horse && item.Object_Type == (int)eObjectType.Magical)
-							|| item.Object_Type == (int)eObjectType.AlchemyTincture
-							|| item.Object_Type == (int)eObjectType.SpellcraftGem)
+						if ((item.Item_Type != (int)eInventorySlot.Horse && item.Object_Type == (int)EObjectType.Magical)
+							|| item.Object_Type == (int)EObjectType.AlchemyTincture
+							|| item.Object_Type == (int)EObjectType.SpellcraftGem)
 						{
 							WriteMagicalBonuses(objectInfo, item, client, false);
 						}
 
-						if (item.Object_Type == (int)eObjectType.Poison)
+						if (item.Object_Type == (int)EObjectType.Poison)
 							WritePoisonInfo(objectInfo, item, client);
 
-						if (item.Object_Type == (int)eObjectType.Magical && item.Item_Type == 40) // potion
+						if (item.Object_Type == (int)EObjectType.Magical && item.Item_Type == 40) // potion
 							WritePotionInfo(objectInfo, item, client);
 
 						// Add admin info
@@ -616,39 +616,39 @@ namespace DOL.GS.PacketHandler.Client.v168
 							objectInfo.Add(" ");//empty line
 							objectInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.HandlePacket.ChampionLevel", invItem.Level));
 						}
-						if ((invItem.Object_Type >= (int)eObjectType.GenericWeapon) && (invItem.Object_Type <= (int)eObjectType.MaulerStaff) ||
-						    invItem.Object_Type == (int)eObjectType.Instrument)
+						if ((invItem.Object_Type >= (int)EObjectType.GenericWeapon) && (invItem.Object_Type <= (int)EObjectType.MaulerStaff) ||
+						    invItem.Object_Type == (int)EObjectType.Instrument)
 						{
 							WriteUsableClasses(objectInfo, invItem, client);
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
 							WriteClassicWeaponInfos(objectInfo, invItem, client);
 						}
 
-						if (invItem.Object_Type >= (int)eObjectType.Cloth && invItem.Object_Type <= (int)eObjectType.Scale)
+						if (invItem.Object_Type >= (int)EObjectType.Cloth && invItem.Object_Type <= (int)EObjectType.Scale)
 						{
 							WriteUsableClasses(objectInfo, invItem, client);
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
 							WriteClassicArmorInfos(objectInfo, invItem, client);
 						}
 
-						if (invItem.Object_Type == (int)eObjectType.Shield)
+						if (invItem.Object_Type == (int)EObjectType.Shield)
 						{
 							WriteUsableClasses(objectInfo, invItem, client);
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
 							WriteClassicShieldInfos(objectInfo, invItem, client);
 						}
 
-						if ((invItem.Item_Type != (int)eInventorySlot.Horse && invItem.Object_Type == (int)eObjectType.Magical)
-							|| invItem.Object_Type == (int)eObjectType.AlchemyTincture
-							|| invItem.Object_Type == (int)eObjectType.SpellcraftGem)
+						if ((invItem.Item_Type != (int)eInventorySlot.Horse && invItem.Object_Type == (int)EObjectType.Magical)
+							|| invItem.Object_Type == (int)EObjectType.AlchemyTincture
+							|| invItem.Object_Type == (int)EObjectType.SpellcraftGem)
 						{
 							WriteMagicalBonuses(objectInfo, invItem, client, false);
 						}
 
-						if (invItem.Object_Type == (int)eObjectType.Poison)
+						if (invItem.Object_Type == (int)EObjectType.Poison)
 							WritePoisonInfo(objectInfo, invItem, client);
 
-						if (invItem.Object_Type == (int)eObjectType.Magical && invItem.Item_Type == 40) // potion
+						if (invItem.Object_Type == (int)EObjectType.Magical && invItem.Item_Type == 40) // potion
 							WritePotionInfo(objectInfo, invItem, client);
 
 						//Add admin info
@@ -1102,14 +1102,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 				output.Add("   Absorption: " + item.SPD_ABS);
 				output.Add("        Bonus: " + item.Bonus);
 			}
-			else if (item.Object_Type == (int)eObjectType.Shield)
+			else if (item.Object_Type == (int)EObjectType.Shield)
 			{
 				output.Add("Damage/Second: " + (item.DPS_AF / 10.0f));
 				output.Add("        Speed: " + (item.SPD_ABS / 10.0f));
 				output.Add("  Shield type: " + GlobalConstants.ShieldTypeToName(item.Type_Damage) + " (" + item.Type_Damage + ")");
 				output.Add("        Bonus: " + item.Bonus);
 			}
-			else if (item.Object_Type == (int)eObjectType.Arrow || item.Object_Type == (int)eObjectType.Bolt)
+			else if (item.Object_Type == (int)EObjectType.Arrow || item.Object_Type == (int)EObjectType.Bolt)
 			{
 				output.Add(" Ammunition #: " + item.DPS_AF);
 				output.Add("       Damage: " + GlobalConstants.AmmunitionTypeToDamageName(item.SPD_ABS));
@@ -1117,7 +1117,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				output.Add("     Accuracy: " + GlobalConstants.AmmunitionTypeToAccuracyName(item.SPD_ABS));
 				output.Add("        Bonus: " + item.Bonus);
 			}
-			else if (item.Object_Type == (int)eObjectType.Instrument)
+			else if (item.Object_Type == (int)EObjectType.Instrument)
 				output.Add("   Instrument: " + GlobalConstants.InstrumentTypeToName(item.DPS_AF));
 
 			output.Add(" ");
@@ -1144,23 +1144,23 @@ namespace DOL.GS.PacketHandler.Client.v168
 			string str = "- [" + item.Name + "]: " + GlobalConstants.ObjectTypeToName(item.Object_Type);
 			var objectInfo = new List<string>();
 
-			if ((item.Object_Type >= (int)eObjectType.GenericWeapon) && (item.Object_Type <= (int)eObjectType.MaulerStaff))
+			if ((item.Object_Type >= (int)EObjectType.GenericWeapon) && (item.Object_Type <= (int)EObjectType.MaulerStaff))
 			{
 				WriteMagicalBonuses(objectInfo, item, client, true);
 				WriteClassicWeaponInfos(objectInfo, item, client);
 			}
-			if (item.Object_Type >= (int)eObjectType.Cloth && item.Object_Type <= (int)eObjectType.Scale)
+			if (item.Object_Type >= (int)EObjectType.Cloth && item.Object_Type <= (int)EObjectType.Scale)
 			{
 				WriteMagicalBonuses(objectInfo, item, client, true);
 				WriteClassicArmorInfos(objectInfo, item, client);
 			}
-			if (item.Object_Type == (int)eObjectType.Shield)
+			if (item.Object_Type == (int)EObjectType.Shield)
 			{
 				WriteMagicalBonuses(objectInfo, item, client, true);
 				WriteClassicShieldInfos(objectInfo, item, client);
 			}
-			if (item.Object_Type == (int)eObjectType.Magical ||
-			    item.Object_Type == (int)eObjectType.Instrument)
+			if (item.Object_Type == (int)EObjectType.Magical ||
+			    item.Object_Type == (int)EObjectType.Instrument)
 			{
 				WriteMagicalBonuses(objectInfo, item, client, true);
 			}
@@ -1169,12 +1169,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 				objectInfo.Add(" ");//empty line
 				objectInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.GetShortItemInfo.CrafterName", item.Creator));
 			}
-			if (item.Object_Type == (int)eObjectType.Poison)
+			if (item.Object_Type == (int)EObjectType.Poison)
 			{
 				WritePoisonInfo(objectInfo, item, client);
 			}
 
-			if (item.Object_Type == (int)eObjectType.Magical && item.Item_Type == 40) // potion
+			if (item.Object_Type == (int)EObjectType.Magical && item.Item_Type == 40) // potion
 				WritePotionInfo(objectInfo, item, client);
 
 			if (!item.IsDropable)
@@ -1258,7 +1258,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				int classID = -1;
 				if (int.TryParse(allowed, out classID))
-					output.Add("- " + ((eCharacterClass)classID).ToString());
+					output.Add("- " + ((ECharacterClass)classID).ToString());
 				else log.Error(item.Id_nb + " has an invalid entry for allowed classes '" + allowed + "'");
 			}
 		}
@@ -1327,7 +1327,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (item.DPS_AF != 0)
 			{
 				int afCap = client.Player.Level;
-				if (item.Object_Type != (int)eObjectType.Cloth)
+				if (item.Object_Type != (int)EObjectType.Cloth)
 				{
 					afCap *= 2;
 				}
@@ -1423,7 +1423,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					output.Add(" ");
 				}
 
-				if (item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.FirstBackpack) // potion
+				if (item.Object_Type == (int)EObjectType.Magical && item.Item_Type == (int)eInventorySlot.FirstBackpack) // potion
 				{
 					// let WritePotion handle the rest of the display
 					return;
@@ -1697,12 +1697,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 
         protected void WriteBonusLine(IList<string> list, GameClient client, int bonusCat, int bonusValue)
 		{
-			if (bonusCat != 0 && bonusValue != 0 && !SkillBase.CheckPropertyType((eProperty)bonusCat, ePropertyType.Focus))
+			if (bonusCat != 0 && bonusValue != 0 && !SkillBase.CheckPropertyType((EProperty)bonusCat, EPropertyType.Focus))
 			{
-				if (IsPvEBonus((eProperty)bonusCat))
+				if (IsPvEBonus((EProperty)bonusCat))
 				{
 					// Evade: {0}% (PvE Only)
-					list.Add(string.Format(SkillBase.GetPropertyName((eProperty)bonusCat), bonusValue));
+					list.Add(string.Format(SkillBase.GetPropertyName((EProperty)bonusCat), bonusValue));
 				}
 				else
 				{
@@ -1717,40 +1717,40 @@ namespace DOL.GS.PacketHandler.Client.v168
 					//Power: 6 % of power pool.
 					list.Add(string.Format(
 						"- {0}: {1}{2}",
-						SkillBase.GetPropertyName((eProperty)bonusCat),
+						SkillBase.GetPropertyName((EProperty)bonusCat),
 						bonusValue.ToString("0 ;-0 ;0 "), //Eden
-						((bonusCat == (int)eProperty.PowerPool)
-						 || (bonusCat >= (int)eProperty.Resist_First && bonusCat <= (int)eProperty.Resist_Last)
-						 || (bonusCat >= (int)eProperty.ResCapBonus_First && bonusCat <= (int)eProperty.ResCapBonus_Last)
-						 || bonusCat == (int)eProperty.Conversion
-						 || bonusCat == (int)eProperty.ExtraHP
-						 || bonusCat == (int)eProperty.RealmPoints
-						 || bonusCat == (int)eProperty.StyleAbsorb
-						 || bonusCat == (int)eProperty.ArcaneSyphon
-						 || bonusCat == (int)eProperty.BountyPoints
-						 || bonusCat == (int)eProperty.XpPoints)
-                        ? ((bonusCat == (int)eProperty.PowerPool) ? LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteBonusLine.PowerPool") : "%")
+						((bonusCat == (int)EProperty.PowerPool)
+						 || (bonusCat >= (int)EProperty.Resist_First && bonusCat <= (int)EProperty.Resist_Last)
+						 || (bonusCat >= (int)EProperty.ResCapBonus_First && bonusCat <= (int)EProperty.ResCapBonus_Last)
+						 || bonusCat == (int)EProperty.Conversion
+						 || bonusCat == (int)EProperty.ExtraHP
+						 || bonusCat == (int)EProperty.RealmPoints
+						 || bonusCat == (int)EProperty.StyleAbsorb
+						 || bonusCat == (int)EProperty.ArcaneSyphon
+						 || bonusCat == (int)EProperty.BountyPoints
+						 || bonusCat == (int)EProperty.XpPoints)
+                        ? ((bonusCat == (int)EProperty.PowerPool) ? LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteBonusLine.PowerPool") : "%")
 						: LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteBonusLine.Points")
 					));
 				}
 			}
 		}
 
-		protected bool IsPvEBonus(eProperty property)
+		protected bool IsPvEBonus(EProperty property)
 		{
 			switch (property)
 			{
 					//case eProperty.BlockChance:
 					//case eProperty.ParryChance:
 					//case eProperty.EvadeChance:
-				case eProperty.DefensiveBonus:
-				case eProperty.BladeturnReinforcement:
-				case eProperty.NegativeReduction:
-				case eProperty.PieceAblative:
-				case eProperty.ReactionaryStyleDamage:
-				case eProperty.SpellPowerCost:
-				case eProperty.StyleCostReduction:
-				case eProperty.ToHitBonus:
+				case EProperty.DefensiveBonus:
+				case EProperty.BladeturnReinforcement:
+				case EProperty.NegativeReduction:
+				case EProperty.PieceAblative:
+				case EProperty.ReactionaryStyleDamage:
+				case EProperty.SpellPowerCost:
+				case EProperty.StyleCostReduction:
+				case EProperty.ToHitBonus:
 					return true;
 
 				default:
@@ -1760,10 +1760,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		protected void WriteFocusLine(IList<string> list, int focusCat, int focusLevel)
 		{
-			if (SkillBase.CheckPropertyType((eProperty)focusCat, ePropertyType.Focus))
+			if (SkillBase.CheckPropertyType((EProperty)focusCat, EPropertyType.Focus))
 			{
 				//- Body Magic: 4 lvls
-				list.Add(string.Format("- {0}: {1} lvls", SkillBase.GetPropertyName((eProperty)focusCat), focusLevel));
+				list.Add(string.Format("- {0}: {1} lvls", SkillBase.GetPropertyName((EProperty)focusCat), focusLevel));
 			}
 		}
 

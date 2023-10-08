@@ -4,7 +4,7 @@ using DOL.Language;
 namespace DOL.GS.Commands;
 
 [Command("&autosplit",
-	 ePrivLevel.Player,
+	 EPrivLevel.Player,
 	 "Choose how the loot and money are split between members of group",
 	 "/autosplit on/off (Leader only: Toggles both coins and loot for entire group)",
 	 "/autosplit coins (Leader only: When turned off, will send coins to the person who picked it up, instead of splitting it evenly across other members)",

@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Nightshade, "Nightshade", "Stalker")]
+	[CharacterClass((int)ECharacterClass.Nightshade, "Nightshade", "Stalker")]
 	public class ClassNightshade : ClassStalker
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Stealth };
@@ -32,10 +32,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.PathofEssence";
 			m_specializationMultiplier = 22;
-			m_primaryStat = eStat.DEX;
-			m_secondaryStat = eStat.QUI;
-			m_tertiaryStat = eStat.STR;
-			m_manaStat = eStat.DEX;
+			m_primaryStat = EStat.DEX;
+			m_secondaryStat = EStat.QUI;
+			m_tertiaryStat = EStat.STR;
+			m_manaStat = EStat.DEX;
 		}
 
 		public override bool CanUseLefthandedWeapon

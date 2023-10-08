@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Mollunero Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -42,11 +42,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -90,7 +90,7 @@ namespace DOL.GS
 		{
 			if (Util.Chance(25))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 					CastSpell(MolluneroDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
@@ -110,12 +110,12 @@ namespace DOL.GS
 					spell.ClientEffect = 4159;
 					spell.Icon = 4159;
 					spell.Damage = 450;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Cold Blast";
 					spell.Range = 500;
 					spell.SpellID = 11909;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_MolluneroDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_MolluneroDD);
 				}
@@ -142,7 +142,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				spawnAdds = false;
 				if (!RemoveAdds)
@@ -190,13 +190,13 @@ namespace DOL.GS
 		public MolluneroAdd() : base()
 		{
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 15;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 15;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 15;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 15;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 15;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 15;// dmg reduction for melee dmg
 				default: return 15;// dmg reduction for rest resists
 			}
 		}
@@ -208,11 +208,11 @@ namespace DOL.GS
 		{
 			get { return 2000; }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 200;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.10;

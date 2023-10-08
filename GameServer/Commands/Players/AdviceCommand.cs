@@ -8,7 +8,7 @@ namespace DOL.GS.Commands;
 [Command(
     "&advice",
      new [] { "&adv" },
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     // Displays next to the command when '/cmd' is entered
     "Lists all flagged Advisors, sends advisors questions, and sends messages to the Advice channel.",
     // Message: '/adv <message>' - Sends a message to the Advice channel.
@@ -99,19 +99,19 @@ public class AdviceCommand : ACommandHandler, ICommandHandler
         if (client.Account.PrivLevel == 1)
             client.Player.TempProperties.SetProperty(advTimeoutString, GameLoop.GameLoopTime);
 
-        static bool Predicate(GamePlayer player, (eRealm realm, bool isGm) args)
+        static bool Predicate(GamePlayer player, (ERealm realm, bool isGm) args)
         {
             return player.Advisor && ((player.Realm == args.realm && !player.IsAnonymous) || args.isGm);
         }
     }
 
-    public string GetRealmString(eRealm Realm)
+    public string GetRealmString(ERealm Realm)
     {
         return Realm switch
         {
-            eRealm.Albion => "ALB",
-            eRealm.Midgard => "MID",
-            eRealm.Hibernia => "HIB",
+            ERealm.Albion => "ALB",
+            ERealm.Midgard => "MID",
+            ERealm.Hibernia => "HIB",
             _ => "NONE",
         };
     }

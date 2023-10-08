@@ -17,17 +17,17 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Cailean Initializing...");
 		}
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				if (IsOutOfTetherRange)
 				{
-					if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-						damageType == eDamageType.Energy || damageType == eDamageType.Heat
-						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-						damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-						|| damageType == eDamageType.Slash)
+					if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+						damageType == EDamageType.Energy || damageType == EDamageType.Heat
+						|| damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+						damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+						|| damageType == EDamageType.Slash)
 					{
 						GamePlayer truc;
 						if (source is GamePlayer)
@@ -47,13 +47,13 @@ namespace DOL.GS
 				}
 			}
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
@@ -73,11 +73,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -145,7 +145,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanSpawnTree = false;
 				if (!RemoveTrees)
@@ -175,9 +175,9 @@ namespace DOL.AI.Brain
                 }
 				if(Body.TargetObject != null)
                 {					
-					if(Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff))
+					if(Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.SnareImmunity) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedDebuff))
 						Body.CastSpell(TreeRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-					if (Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
+					if (Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.MezImmunity) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.Mez))
 						Body.CastSpell(BossMezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
@@ -278,7 +278,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.SpellID = 11902;
 					spell.Target = "Self";
-					spell.Type = eSpellType.Heal.ToString();
+					spell.Type = ESpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CaileanHeal = new Spell(spell, 60);
@@ -303,12 +303,12 @@ namespace DOL.AI.Brain
 					spell.TooltipId = 5208;
 					spell.Value = 99;
 					spell.Duration = 70;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Name = "Root";
 					spell.Range = 1500;
 					spell.SpellID = 11979;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.SpeedDecrease.ToString();
+					spell.Type = ESpellType.SpeedDecrease.ToString();
 					m_TreeRoot = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TreeRoot);
 				}
@@ -337,7 +337,7 @@ namespace DOL.AI.Brain
 					spell.Type = "Mesmerize";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Spirit; //Spirit DMG Type
+					spell.DamageType = (int)EDamageType.Spirit; //Spirit DMG Type
 					m_BossmezSpell = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BossmezSpell);
 				}
@@ -356,13 +356,13 @@ namespace DOL.GS
 		public WalkingTree() : base()
 		{
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 15;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 15;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 15;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 15;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 15;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 15;// dmg reduction for melee dmg
 				default: return 15;// dmg reduction for rest resists
 			}
 		}
@@ -370,11 +370,11 @@ namespace DOL.GS
 		{
 			get { return 2000; }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 200;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.10;
@@ -412,9 +412,9 @@ namespace DOL.AI.Brain
 			if(HasAggro && Body.TargetObject != null)
             {
 				GameLiving target = Body.TargetObject as GameLiving;
-				if(Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff))
+				if(Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.SnareImmunity) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedDebuff))
 					Body.CastSpell(TreeRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				if (Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+				if (Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 					Body.CastSpell(CaileanTree_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 			}
 			base.Think();
@@ -436,12 +436,12 @@ namespace DOL.AI.Brain
 					spell.TooltipId = 5208;
 					spell.Value = 99;
 					spell.Duration = 70;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Name = "Root";
 					spell.Range = 1500;
 					spell.SpellID = 11901;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.SpeedDecrease.ToString();
+					spell.Type = ESpellType.SpeedDecrease.ToString();
 					m_TreeRoot = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TreeRoot);
 				}
@@ -476,9 +476,9 @@ namespace DOL.AI.Brain
 					spell.Target = "Enemy";
 					spell.SpellGroup = 1800;
 					spell.EffectGroup = 1500;
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					m_CaileanTree_Dot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CaileanTree_Dot);
 				}
@@ -498,13 +498,13 @@ namespace DOL.GS
 		public WalkingTree2() : base()
 		{
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 15;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 15;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 15;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 15;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 15;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 15;// dmg reduction for melee dmg
 				default: return 15;// dmg reduction for rest resists
 			}
 		}
@@ -512,11 +512,11 @@ namespace DOL.GS
 		{
 			get { return 1500; }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 200;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.10;
@@ -556,13 +556,13 @@ namespace DOL.AI.Brain
 				GameLiving target = Body.TargetObject as GameLiving;
 				if (Util.Chance(20))
 				{
-					if(target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) && target != null && target.IsAlive)
+					if(target.effectListComponent.ContainsEffectForEffectType(EEffect.SnareImmunity) && target != null && target.IsAlive)
                     {
-						var effect = EffectListService.GetEffectOnTarget(target, eEffect.SnareImmunity);
+						var effect = EffectListService.GetEffectOnTarget(target, EEffect.SnareImmunity);
 						if(effect != null)
 							EffectService.RequestImmediateCancelEffect(effect);//remove snare immunity here
 					}
-					if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff) && target != null && target.IsAlive)
+					if(!target.effectListComponent.ContainsEffectForEffectType(EEffect.SnareImmunity) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedDebuff) && target != null && target.IsAlive)
 						Body.CastSpell(TreeRoot2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 				}
 			}
@@ -585,12 +585,12 @@ namespace DOL.AI.Brain
 					spell.TooltipId = 5208;
 					spell.Value = 99;
 					spell.Duration = 70;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Name = "Root";
 					spell.Range = 4500;
 					spell.SpellID = 11981;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.SpeedDecrease.ToString();
+					spell.Type = ESpellType.SpeedDecrease.ToString();
 					m_TreeRoot = new Spell(spell, 40);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TreeRoot);
 				}
@@ -613,12 +613,12 @@ namespace DOL.AI.Brain
 					spell.TooltipId = 5208;
 					spell.Value = 40;
 					spell.Duration = 20;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Name = "Snare";
 					spell.Range = 4500;
 					spell.SpellID = 11982;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.SpeedDecrease.ToString();
+					spell.Type = ESpellType.SpeedDecrease.ToString();
 					m_TreeRoot2 = new Spell(spell, 40);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_TreeRoot2);
 				}

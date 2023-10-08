@@ -53,7 +53,7 @@ namespace DOL.Tests.Integration.Server
 		testRegionData.WaterLevel = 0;
 		testRegionData.DivingEnabled = false;
 		testRegionData.HousingEnabled = false;
-		testRegionData.Expansion = (int)eClientExpansion.None;
+		testRegionData.Expansion = (int)EClientExpansion.None;
 		testRegionData.Mobs = new DOL.Database.DbMob[]{
 			new DOL.Database.DbMob() {},
 		};
@@ -76,7 +76,7 @@ namespace DOL.Tests.Integration.Server
 		if(WorldMgr.GetRegion(testRegionData.Id) == null)
 			WorldMgr.RegisterRegion(testRegionData);
 		if(WorldMgr.GetZone(testZoneData.ZoneID) == null)
-			WorldMgr.RegisterZone(testZoneData, 0, 0, "TEST", 1, 1, 1, 1, (byte)eRealm.None);
+			WorldMgr.RegisterZone(testZoneData, 0, 0, "TEST", 1, 1, 1, 1, (byte)ERealm.None);
 	}
 
 		[Test]
@@ -86,7 +86,7 @@ namespace DOL.Tests.Integration.Server
 			Assert.IsNotNull(zone);
 
 			StartWatch();
-			GameNPC npc = zone.GetRandomNPC(eRealm.None, 5, 7);
+			GameNPC npc = zone.GetRandomNPC(ERealm.None, 5, 7);
 			// TODO(Blasnoc) the two following nullchecks always skip because there are no mobs in the db.
 			// 	this test should be enhanced with actual mobs.
 			if (npc != null)
@@ -95,7 +95,7 @@ namespace DOL.Tests.Integration.Server
 
 				Assert.GreaterOrEqual(npc.Level, 5, "NPC Level out of defined range");
 				Assert.LessOrEqual(npc.Level, 7, "NPC Level out of defined range");
-				Assert.AreEqual(eRealm.None, npc.Realm, "NPC wrong realm");
+				Assert.AreEqual(ERealm.None, npc.Realm, "NPC wrong realm");
 			}
 			else
 			{
@@ -104,12 +104,12 @@ namespace DOL.Tests.Integration.Server
 			StopWatch();
 
 			StartWatch();
-			npc = zone.GetRandomNPC(eRealm.Albion);
+			npc = zone.GetRandomNPC(ERealm.Albion);
 			if (npc != null)
 			{
 				Console.WriteLine("Found Albion NPC in " + zone.ZoneRegion.Description + "/" + zone.Description + ":" + npc.Name);
 
-				if (npc.Realm != eRealm.Albion)
+				if (npc.Realm != ERealm.Albion)
 					Assert.Fail("NPC wrong Realm");
 			}
 			else

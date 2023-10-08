@@ -66,9 +66,9 @@ namespace DOL.GS.GameEvents
 		[RefreshCommand]
 		public static void CheckStartupGuilds()
 		{
-            foreach (eRealm currentRealm in Enum.GetValues(typeof(eRealm)))
+            foreach (ERealm currentRealm in Enum.GetValues(typeof(ERealm)))
 			{
-				if (currentRealm == eRealm.None || currentRealm == eRealm.Door)
+				if (currentRealm == ERealm.None || currentRealm == ERealm.Door)
 					continue;
 				
 				CheckGuild(currentRealm,LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName(currentRealm))));
@@ -108,7 +108,7 @@ namespace DOL.GS.GameEvents
 			DbAccount account = chArgs.GameClient.Account;
 			
 
-			var guildname = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName((eRealm)ch.Realm)));
+			var guildname = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName((ERealm)ch.Realm)));
 			ch.GuildID = GuildMgr.GuildNameToGuildID(guildname);
 
 			if (ch.GuildID != "")
@@ -122,7 +122,7 @@ namespace DOL.GS.GameEvents
 		/// </summary>
 		/// <param name="currentRealm">Current Realm being checked</param>
 		/// <param name="guildName">The guild name that is being checked</param>
-		private static void CheckGuild(eRealm currentRealm, string guildName)
+		private static void CheckGuild(ERealm currentRealm, string guildName)
 		{
 			if (!GuildMgr.DoesGuildExist(guildName))
 			{

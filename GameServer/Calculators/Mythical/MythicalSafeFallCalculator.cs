@@ -3,10 +3,10 @@
 /// <summary>
 /// Calculator for Mythical Safe Fall
 /// </summary>
-[PropertyCalculator(eProperty.MythicalSafeFall)]
+[PropertyCalculator(EProperty.MythicalSafeFall)]
 public class MythicalSafeFallCalculator : PropertyCalculator
 {
-    public override int CalcValue(GameLiving living, eProperty property)
+    public override int CalcValue(GameLiving living, EProperty property)
     {
         if (living is GamePlayer)
         {

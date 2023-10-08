@@ -78,20 +78,20 @@ namespace DOL.GS
         private static DbItemTemplate GetDummyVaultItem(GamePlayer player)
         {
             DbItemTemplate vaultItem = new DbItemTemplate();
-            vaultItem.Object_Type = (int)eObjectType.HouseVault;
+            vaultItem.Object_Type = (int)EObjectType.HouseVault;
             vaultItem.Name = "Vault";
             vaultItem.ObjectId = player.Client.Account.Name + "_" + player.Realm.ToString();
             switch (player.Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     vaultItem.Id_nb = "housing_alb_vault";
                     vaultItem.Model = 1489;
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     vaultItem.Id_nb = "housing_hib_vault";
                     vaultItem.Model = 1491;
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     vaultItem.Id_nb = "housing_mid_vault";
                     vaultItem.Model = 1493;
                     break;

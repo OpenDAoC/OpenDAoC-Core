@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 [Command(
 	"&kick",
 	new string[] { "&k" },
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"GMCommands.Kick.Description",
 	"GMCommands.Kick.Usage",
 	"/kick <#ClientID>","/kick account <account>"),]

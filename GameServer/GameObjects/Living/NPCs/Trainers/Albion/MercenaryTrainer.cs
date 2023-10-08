@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Mercenary Trainer
 	/// </summary>	
-	[NPCGuildScript("Mercenary Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Mercenary Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Mercenary Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Mercenary Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class MercenaryTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Mercenary; }
+			get { return ECharacterClass.Mercenary; }
 		}
 
 		public const string WEAPON_ID1 = "slash_sword_item";
@@ -94,19 +94,19 @@ namespace DOL.GS.Trainer
 						break;
 					case "slashing":
 					
-						PromotePlayer(player, (int)eCharacterClass.Mercenary, "Here is your Sword of the Initiate. Welcome to the Guild of Shadows.", null);
+						PromotePlayer(player, (int)ECharacterClass.Mercenary, "Here is your Sword of the Initiate. Welcome to the Guild of Shadows.", null);
 						player.ReceiveItem(this,WEAPON_ID1);
 					
 						break;
 					case "crushing":
 					
-						PromotePlayer(player, (int)eCharacterClass.Mercenary, "Here is your Mace of the Initiate. Welcome to the Guild of Shadows.", null);
+						PromotePlayer(player, (int)ECharacterClass.Mercenary, "Here is your Mace of the Initiate. Welcome to the Guild of Shadows.", null);
 						player.ReceiveItem(this,WEAPON_ID2);
 					
 						break;
 					case "thrusting":
 					
-						PromotePlayer(player, (int)eCharacterClass.Mercenary, "Here is your Rapier of the Initiate. Welcome to the Guild of Shadows.", null);
+						PromotePlayer(player, (int)ECharacterClass.Mercenary, "Here is your Rapier of the Initiate. Welcome to the Guild of Shadows.", null);
 						player.ReceiveItem(this,WEAPON_ID3);
 					
 						break;

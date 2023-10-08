@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 	"&alert",
 	// Message: <----- '/alert' Commands (plvl 2) ----->
 	"GMCommands.Header.Syntax.Alert",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	// Message: "Controls whether sound alerts are triggered when receiving Player messages and appeals."
 	"GMCommands.Alert.Description",
 	// Syntax: /alert all < on | off >

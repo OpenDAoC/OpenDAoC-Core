@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Shadowblade Trainer
 	/// </summary>
-	[NPCGuildScript("Shadowblade Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Shadowblade Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Shadowblade Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Shadowblade Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ShadowbladeTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Shadowblade; }
+			get { return ECharacterClass.Shadowblade; }
 		}
 
 		/// <summary>
@@ -80,7 +80,7 @@ namespace DOL.GS.Trainer
 				case "join the House of Loki":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Shadowblade, "Welcome young Shadowblade! May your time in Midgard army be rewarding!", null);	// TODO: gifts
+						PromotePlayer(player, (int)ECharacterClass.Shadowblade, "Welcome young Shadowblade! May your time in Midgard army be rewarding!", null);	// TODO: gifts
 					}
 					break;
 			}

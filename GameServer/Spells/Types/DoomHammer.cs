@@ -31,7 +31,7 @@ namespace DOL.GS.Spells
 					visPlayer.Out.SendSpellEffectAnimation(Caster, target, (ushort) Spell.ResurrectMana, 0, false, 0x01);
 			}
 
-			if ((Spell.Duration > 0 && Spell.Target != eSpellTarget.AREA) || Spell.Concentration>0)
+			if ((Spell.Duration > 0 && Spell.Target != ESpellTarget.AREA) || Spell.Concentration>0)
 				OnDirectEffect(target);
 		}
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)

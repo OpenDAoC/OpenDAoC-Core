@@ -42,11 +42,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -54,7 +54,7 @@ namespace DOL.GS
 
         public static List<GamePlayer> attackers = new List<GamePlayer>();
         public static int attackers_count = 0;
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
@@ -74,15 +74,15 @@ namespace DOL.GS
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
 
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             if (get_resist)
             {
                 switch (damageType)
                 {
-                    case eDamageType.Slash:
-                    case eDamageType.Crush:
-                    case eDamageType.Thrust: return 99; //99% dmg reduction for melee dmg
+                    case EDamageType.Slash:
+                    case EDamageType.Crush:
+                    case EDamageType.Thrust: return 99; //99% dmg reduction for melee dmg
                     default: return 99; // 99% reduction for rest resists
                 }
             }
@@ -90,9 +90,9 @@ namespace DOL.GS
             {
                 switch (damageType)
                 {
-                    case eDamageType.Slash: return 30;
-                    case eDamageType.Crush: return 30;
-                    case eDamageType.Thrust: return 30; //30% dmg reduction for melee dmg
+                    case EDamageType.Slash: return 30;
+                    case EDamageType.Crush: return 30;
+                    case EDamageType.Thrust: return 30; //30% dmg reduction for melee dmg
                     default: return 50; // 50% reduction for rest resists
                 }
             }
@@ -182,7 +182,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 Silencer.attackers_count = 0;
                 //Silencer silencer = new Silencer();
@@ -199,7 +199,7 @@ namespace DOL.AI.Brain
                 ClearAttackers = false;
             if (Body.IsOutOfTetherRange)
             {
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 ClearAggroList();
             }

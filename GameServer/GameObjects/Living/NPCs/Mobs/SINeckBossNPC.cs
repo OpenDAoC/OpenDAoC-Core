@@ -10,13 +10,13 @@ namespace DOL.GS {
         public SINeckBoss() : base()
         {
         }
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
@@ -24,12 +24,12 @@ namespace DOL.GS {
 		{
 			get { return (6000 + (Level * 125)); }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
 
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -38,7 +38,7 @@ namespace DOL.GS {
         {
            // if(Util.Chance(20))
              //   CastSpell(spell, sl, false);
-            if(ad != null && ad.Target != null && ad.Target.IsAlive && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+            if(ad != null && ad.Target != null && ad.Target.IsAlive && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
             {
 				if(Util.Chance(20))
 					CastSpell(SINeckBossDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -60,13 +60,13 @@ namespace DOL.GS {
 					spell.ClientEffect = 9644;
 					spell.Icon = 9644;
 					spell.Damage = 300;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.DamageType = (int)EDamageType.Spirit;
 					spell.Name = "DD AOE Energy 300";
 					spell.Range = 450;
 					spell.Radius = 350;
 					spell.SpellID = 12000;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_SINeckBossDD = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SINeckBossDD);
 				}

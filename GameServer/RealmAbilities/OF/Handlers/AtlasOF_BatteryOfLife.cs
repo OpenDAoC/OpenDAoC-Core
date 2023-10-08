@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
             tmpSpell.DamageType = 0;
             tmpSpell.Target = "Self";
             tmpSpell.Radius = 0;
-            tmpSpell.Type = eSpellType.DefensiveProc.ToString();
+            tmpSpell.Type = ESpellType.DefensiveProc.ToString();
             tmpSpell.Value = 0;
             tmpSpell.Duration = 0;
             tmpSpell.Pulse = 0;

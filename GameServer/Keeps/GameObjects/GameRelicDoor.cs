@@ -106,12 +106,12 @@ namespace DOL.GS.Keeps
 		/// <param name="damageType">the damage type</param>
 		/// <param name="damageAmount">the amount of damage</param>
 		/// <param name="criticalAmount">the amount of critical damage</param>
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			return;
 		}
 
-		public override int ChangeHealth(GameObject changeSource, eHealthChangeType healthChangeType, int changeAmount)
+		public override int ChangeHealth(GameObject changeSource, EHealthChangeType healthChangeType, int changeAmount)
 		{
 			return 0;
 		}

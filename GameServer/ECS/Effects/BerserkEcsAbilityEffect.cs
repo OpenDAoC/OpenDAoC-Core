@@ -8,7 +8,7 @@ namespace DOL.GS
         public BerserkEcsAbilityEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.Berserk;
+            EffectType = EEffect.Berserk;
             EffectService.RequestStartEffect(this);
         }
 
@@ -31,7 +31,7 @@ namespace DOL.GS
 
                 OwnerPlayer.Emote(eEmote.MidgardFrenzy);
                 //TODO differentiate model between Dwarves and other races
-                if (OwnerPlayer.Race == (int)eRace.Dwarf)
+                if (OwnerPlayer.Race == (int)ERace.Dwarf)
                 {
                     OwnerPlayer.Model = 12;
                 }

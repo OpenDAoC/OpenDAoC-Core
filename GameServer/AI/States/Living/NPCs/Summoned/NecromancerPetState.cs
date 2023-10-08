@@ -6,7 +6,7 @@ public class NecromancerPetStateWakingUp : ControlledNpcStateWakingUp
 {
     public NecromancerPetStateWakingUp(NecromancerPetBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.WAKING_UP;
+        StateType = EFSMStateType.WAKING_UP;
     }
 
     public override void Think()
@@ -19,7 +19,7 @@ public class NecromancerPetStateDefensive : ControlledNpcStateDefensive
 {
     public NecromancerPetStateDefensive(NecromancerPetBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.IDLE;
+        StateType = EFSMStateType.IDLE;
     }
 
     public override void Think()
@@ -38,7 +38,7 @@ public class NecromancerPetStateAggro : ControlledNpcStateAggro
 {
     public NecromancerPetStateAggro(NecromancerPetBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.AGGRO;
+        StateType = EFSMStateType.AGGRO;
     }
 
     public override void Think()
@@ -57,7 +57,7 @@ public class NecromancerPetStatePassive : ControlledNpcStatePassive
 {
     public NecromancerPetStatePassive(NecromancerPetBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.PASSIVE;
+        StateType = EFSMStateType.PASSIVE;
     }
 
     public override void Think()

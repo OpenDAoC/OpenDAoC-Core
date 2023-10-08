@@ -44,7 +44,7 @@ namespace DOL.GS.RealmAbilities
 					if (player.GetDistanceTo(livingCurrentSpot) <= Range)
 					{
 						int healAmount = player.MaxHealth;
-						int healed = player.ChangeHealth(living, eHealthChangeType.Spell, healAmount);
+						int healed = player.ChangeHealth(living, EHealthChangeType.Spell, healAmount);
 
 						if (healed > 0) didHeal = true;
 						SendSpellEffectsToLiving(living, didHeal);
@@ -63,7 +63,7 @@ namespace DOL.GS.RealmAbilities
 			else
 			{
 				int healAmount = living.MaxHealth;
-				int healed = living.ChangeHealth(living, eHealthChangeType.Spell, healAmount);
+				int healed = living.ChangeHealth(living, EHealthChangeType.Spell, healAmount);
 				if (healed > 0) didHeal = true;
 				SendSpellEffectsToLiving(living, didHeal);
 				if(didHeal && living is GamePlayer pla) pla.Out.SendMessage("You heal yourself for " + healed + " hit points", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);

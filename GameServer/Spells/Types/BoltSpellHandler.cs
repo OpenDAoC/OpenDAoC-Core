@@ -14,7 +14,7 @@ namespace DOL.GS.Spells
         {
             Caster.Mana -= PowerCost(target);
 
-            if ((target is GameKeepDoor || target is GameKeepComponent) && Spell.SpellType != eSpellType.SiegeArrow && Spell.SpellType != eSpellType.SiegeDirectDamage)
+            if ((target is GameKeepDoor || target is GameKeepComponent) && Spell.SpellType != ESpellType.SiegeArrow && Spell.SpellType != ESpellType.SiegeDirectDamage)
             {
                 MessageToCaster($"Your spell has no effect on the {target.Name}!", eChatType.CT_SpellResisted);
                 return;
@@ -27,7 +27,7 @@ namespace DOL.GS.Spells
         {
             foreach (GameLiving livingTarget in SelectTargets(target))
             {
-                if (livingTarget is GamePlayer playerTarget && Spell.Target == eSpellTarget.CONE)
+                if (livingTarget is GamePlayer playerTarget && Spell.Target == ESpellTarget.CONE)
                     playerTarget.Out.SendCheckLOS(Caster, playerTarget, LosCheckCallback);
                 else
                     LaunchBolt(livingTarget);
@@ -53,7 +53,7 @@ namespace DOL.GS.Spells
             MessageToLiving(target, Spell.Message1, eChatType.CT_Spell); // "A bolt of runic energy hits you!"
             Message.SystemToArea(target, Util.MakeSentence(Spell.Message2, target.GetName(0, true)), eChatType.CT_System, target, Caster); // "{0} is hit by a bolt of runic energy!"
 
-            DamageTarget(ad, false, ad.AttackResult == eAttackResult.Blocked ? 0x02 : 0x14);
+            DamageTarget(ad, false, ad.AttackResult == EAttackResult.Blocked ? 0x02 : 0x14);
             target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
         }
 
@@ -77,7 +77,7 @@ namespace DOL.GS.Spells
             }
             else
             {
-                ad.AttackResult = eAttackResult.Blocked;
+                ad.AttackResult = EAttackResult.Blocked;
                 MessageToLiving(ad.Target, "You partially block " + Caster.GetName(0, false) + "'s spell!", eChatType.CT_Missed);
                 MessageToCaster(ad.Target.GetName(0, true) + " blocks!", eChatType.CT_YouHit);
             }
@@ -110,7 +110,7 @@ namespace DOL.GS.Spells
             // Use defense bonus from last executed style if any.
             AttackData targetAD = target.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
 
-            if (targetAD?.AttackResult == eAttackResult.HitStyle && targetAD.Style != null)
+            if (targetAD?.AttackResult == EAttackResult.HitStyle && targetAD.Style != null)
                 hitChance -= targetAD.Style.BonusToDefense;
 
             return hitChance;

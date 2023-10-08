@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Durval Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -42,11 +42,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -111,7 +111,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			if (HasAggro)
@@ -140,11 +140,11 @@ namespace DOL.AI.Brain
 									GameLiving target = Body.TargetObject as GameLiving;
 									if (target != null)
 									{
-										if (!Body.IsCasting && Body.GetSkillDisabledDuration(Boss_Mezz) == 0 && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Mez) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity))
+										if (!Body.IsCasting && Body.GetSkillDisabledDuration(Boss_Mezz) == 0 && !target.effectListComponent.ContainsEffectForEffectType(EEffect.Mez) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.MezImmunity))
 											Body.CastSpell(Boss_Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-										else if (!Body.IsCasting && Body.GetSkillDisabledDuration(DurvalDisease) == 0 && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+										else if (!Body.IsCasting && Body.GetSkillDisabledDuration(DurvalDisease) == 0 && !target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
 											Body.CastSpell(DurvalDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-										else if (!Body.IsCasting && Body.GetSkillDisabledDuration(Bubble) == 0 && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Bladeturn))
+										else if (!Body.IsCasting && Body.GetSkillDisabledDuration(Bubble) == 0 && !target.effectListComponent.ContainsEffectForEffectType(EEffect.Bladeturn))
 											Body.CastSpell(Bubble, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 										else
 											Body.CastSpell(Durval_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
@@ -182,7 +182,7 @@ namespace DOL.AI.Brain
 					spell.Type = "Mesmerize";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.DamageType = (int)EDamageType.Spirit;
 					m_Boss_Mezz = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Boss_Mezz);
 				}
@@ -215,7 +215,7 @@ namespace DOL.AI.Brain
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+					spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
 					m_DurvalDisease = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DurvalDisease);
 				}
@@ -241,7 +241,7 @@ namespace DOL.AI.Brain
 					spell.Range = 0;
 					spell.SpellID = 11910;
 					spell.Target = "Self";
-					spell.Type = eSpellType.Bladeturn.ToString();
+					spell.Type = ESpellType.Bladeturn.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Bubble = new Spell(spell, 70);
@@ -268,11 +268,11 @@ namespace DOL.AI.Brain
 					spell.Name = "Smite";
 					spell.Range = 1800;
 					spell.SpellID = 11913;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.DamageType = (int)EDamageType.Spirit;
 					m_Durval_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Durval_DD);
 				}

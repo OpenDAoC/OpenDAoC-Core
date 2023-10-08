@@ -29,13 +29,13 @@ namespace DOL.GS.SkillHandler
 	public class MemoriesOfWar : StatChangingAbility
 	{
 		public MemoriesOfWar(DbAbility dba, int level)
-			: base(dba, level, new eProperty[] {
-							eProperty.Resist_Body,
-							eProperty.Resist_Cold,
-							eProperty.Resist_Energy,
-							eProperty.Resist_Heat,
-							eProperty.Resist_Matter,
-							eProperty.Resist_Spirit, })
+			: base(dba, level, new EProperty[] {
+							EProperty.Resist_Body,
+							EProperty.Resist_Cold,
+							EProperty.Resist_Energy,
+							EProperty.Resist_Heat,
+							EProperty.Resist_Matter,
+							EProperty.Resist_Spirit, })
 		{
 		}
 

@@ -13,7 +13,7 @@ using DOL.Events;
 namespace DOL.GS.Commands
 {
     [Command("&ngg", //command to handle
-       ePrivLevel.GM, //minimum privelege level
+       EPrivLevel.GM, //minimum privelege level
        "NPC Gear Generator", //command description
        "'/ngg random [color]' Create a completely random equipment template",
        "'/ngg cloth [color]' Create a random set of cloth",
@@ -589,15 +589,15 @@ namespace DOL.GS.Commands
                             }
                             if (sloti == 7 || sloti == 8)
                             {
-                                npc.SwitchWeapon(eActiveWeaponSlot.Standard);
+                                npc.SwitchWeapon(EActiveWeaponSlot.Standard);
                             }
                             if (sloti == 9)
                             {
-                                npc.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                                npc.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             }
                             if (sloti == 10)
                             {
-                                npc.SwitchWeapon(eActiveWeaponSlot.Distance);
+                                npc.SwitchWeapon(EActiveWeaponSlot.Distance);
                             }
                             break;
                         }

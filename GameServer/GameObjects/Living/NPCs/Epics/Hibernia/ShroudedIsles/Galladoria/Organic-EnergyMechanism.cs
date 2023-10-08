@@ -23,13 +23,13 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.Info("Organic-Energy Mechanism Initializing...");
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
@@ -45,12 +45,12 @@ namespace DOL.GS
             get { return 450; }
             set { }
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
@@ -308,7 +308,7 @@ namespace DOL.AI.Brain
                     spell.Target = "Enemy";
                     spell.Type = "DamageOverTime";
                     spell.Uninterruptible = true;
-                    spell.DamageType = (int) eDamageType.Matter; //Spirit DMG Type
+                    spell.DamageType = (int) EDamageType.Matter; //Spirit DMG Type
                     m_AOE_Poison = new Spell(spell, 50);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AOE_Poison);
                 }
@@ -339,7 +339,7 @@ namespace DOL.AI.Brain
                     spell.Target = "Self";
                     spell.Type = "DamageShield";
                     spell.Uninterruptible = true;
-                    spell.DamageType = (int) eDamageType.Matter; //Spirit DMG Type
+                    spell.DamageType = (int) EDamageType.Matter; //Spirit DMG Type
                     m_DamageShield = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DamageShield);
                 }
@@ -365,7 +365,7 @@ namespace DOL.AI.Brain
                     spell.TooltipId = 5126;
                     spell.SpellID = 11864;
                     spell.Target = "Self";
-                    spell.Type = eSpellType.PowerRegenBuff.ToString();
+                    spell.Type = ESpellType.PowerRegenBuff.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_OEMEffect = new Spell(spell, 70);
@@ -389,22 +389,22 @@ namespace DOL.GS
             : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 35; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 35; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 35; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 35; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 35; // dmg reduction for melee dmg
                 default: return 35; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
@@ -445,8 +445,8 @@ namespace DOL.GS
             Constitution = 200;
             Quickness = 125;
             RespawnInterval = -1;
-            Gender = eGender.Neutral;
-            MeleeDamageType = eDamageType.Slash;
+            Gender = EGender.Neutral;
+            MeleeDamageType = EDamageType.Slash;
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             IsWorthReward = false; //worth no reward
@@ -483,21 +483,21 @@ namespace DOL.AI.Brain
                 GameLiving target = Body.TargetObject as GameLiving;
                 if (Util.Chance(15) && Body.TargetObject != null)
                 {
-                    if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.StrConDebuff))
+                    if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.StrConDebuff))
                     {
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastSCDebuff), 3000);
                     }
                 }
                 if (Util.Chance(15) && Body.TargetObject != null)
                 {
-                    if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteDebuff))
+                    if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.MeleeHasteDebuff))
                     {
                         new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteDebuff), 3000);
                     }
                 }
                 if (Util.Chance(15) && Body.TargetObject != null)
                 {                    
-                    if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity))
+                    if(!target.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedDebuff) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.SnareImmunity))
                     {
                         Body.CastSpell(FeederRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                     }
@@ -546,7 +546,7 @@ namespace DOL.AI.Brain
                     spell.Type = "StrengthConstitutionDebuff";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Energy;
+                    spell.DamageType = (int) EDamageType.Energy;
                     m_FeederSCDebuff = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederSCDebuff);
                 }
@@ -577,7 +577,7 @@ namespace DOL.AI.Brain
                     spell.Type = "CombatSpeedDebuff";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int) eDamageType.Energy;
+                    spell.DamageType = (int) EDamageType.Energy;
                     m_FeederHasteDebuff = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederHasteDebuff);
                 }
@@ -605,10 +605,10 @@ namespace DOL.AI.Brain
                     spell.Duration = 60;
                     spell.SpellID = 11865;
                     spell.Target = "Enemy";
-                    spell.Type = eSpellType.SpeedDecrease.ToString();
+                    spell.Type = ESpellType.SpeedDecrease.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Body;
+                    spell.DamageType = (int)EDamageType.Body;
                     m_FeederRoot = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FeederRoot);
                 }

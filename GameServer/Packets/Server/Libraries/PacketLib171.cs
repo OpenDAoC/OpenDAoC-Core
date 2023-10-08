@@ -199,11 +199,11 @@ namespace DOL.GS.PacketHandler
 				if( ( npc.Flags & GameNPC.eFlags.STEALTH ) > 0 )
 					flags2 |= 0x04;
 
-				eQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);
+				EQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);
 
-				if (questIndicator == eQuestIndicator.Available)
+				if (questIndicator == EQuestIndicator.Available)
 					flags2 |= 0x08;//hex 8 - quest available
-				if (questIndicator == eQuestIndicator.Finish)
+				if (questIndicator == EQuestIndicator.Finish)
 					flags2 |= 0x10;//hex 16 - quest finish
 				//flags2 |= 0x20;//hex 32 - water mob?
 				//flags2 |= 0x40;//hex 64 - unknown
@@ -213,9 +213,9 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(flags2); // flags 2
 
 				byte flags3 = 0x00;
-				if (questIndicator == eQuestIndicator.Lesson)
+				if (questIndicator == EQuestIndicator.Lesson)
 					flags3 |= 0x01;
-				if (questIndicator == eQuestIndicator.Lore)
+				if (questIndicator == EQuestIndicator.Lore)
 					flags3 |= 0x02;
 				pak.WriteByte(flags3); // new in 1.71 (region instance ID from StoC_0x20) OR flags 3?
 				pak.WriteShort(0x00); // new in 1.71 unknown
@@ -377,13 +377,13 @@ namespace DOL.GS.PacketHandler
 				//time is in minutes
 				switch (player.Realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						time = (ushort)((ServerProperties.Properties.FREELEVEL_DAYS_ALBION * 24 * 60) - t.TotalMinutes);
 						break;
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						time = (ushort)((ServerProperties.Properties.FREELEVEL_DAYS_MIDGARD * 24 * 60) - t.TotalMinutes);
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						time = (ushort)((ServerProperties.Properties.FREELEVEL_DAYS_HIBERNIA * 24 * 60) - t.TotalMinutes);
 						break;
 				}

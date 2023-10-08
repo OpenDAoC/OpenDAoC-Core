@@ -10,14 +10,14 @@ namespace DOL.GS.RealmAbilities
 		/// <summary>
 		/// The list of properties this RA affects
 		/// </summary>
-		public static eProperty[] properties = new eProperty[]
+		public static EProperty[] properties = new EProperty[]
 		{
-			eProperty.Resist_Body,
-			eProperty.Resist_Cold,
-			eProperty.Resist_Energy,
-			eProperty.Resist_Heat,
-			eProperty.Resist_Matter,
-			eProperty.Resist_Spirit,
+			EProperty.Resist_Body,
+			EProperty.Resist_Cold,
+			EProperty.Resist_Energy,
+			EProperty.Resist_Heat,
+			EProperty.Resist_Matter,
+			EProperty.Resist_Spirit,
 		};
 
 		public AvoidanceOfMagicAbility(DbAbility dba, int level)
@@ -64,11 +64,11 @@ namespace DOL.GS.RealmAbilities
 		/// <summary>
 		/// The list of properties this RA affects
 		/// </summary>
-		public static eProperty[] properties = new eProperty[]
+		public static EProperty[] properties = new EProperty[]
 		{
-			eProperty.Resist_Crush,
-			eProperty.Resist_Slash,
-			eProperty.Resist_Thrust,
+			EProperty.Resist_Crush,
+			EProperty.Resist_Slash,
+			EProperty.Resist_Thrust,
 		};
 
 		public PhysicalDefenceAbility(DbAbility dba, int level)

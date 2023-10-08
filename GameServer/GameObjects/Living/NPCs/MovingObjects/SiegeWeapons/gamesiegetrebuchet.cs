@@ -30,7 +30,7 @@ namespace DOL.GS
 		public GameSiegeTrebuchet()
 			: base()
 		{
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			Name = "trebuchet";
 			AmmoType = 0x3A;
 			EnableToMove = false;

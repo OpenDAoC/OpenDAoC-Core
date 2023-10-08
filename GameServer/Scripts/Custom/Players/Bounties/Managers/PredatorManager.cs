@@ -348,36 +348,36 @@ public class PredatorManager
             GamePlayer currentplayer = bounty.Predator;
             switch (currentplayer.Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     if (!AlbPlayers.Contains(currentplayer)) AlbPlayers.Push(currentplayer);
                     //Console.WriteLine($"Mapped {currentplayer.Name} to albion {AlbPlayers.Count}");
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     if (!HibPlayers.Contains(currentplayer)) HibPlayers.Push(currentplayer);
                     //Console.WriteLine($"Mapped {currentplayer.Name} to hibernia {HibPlayers.Count}");
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     if (!MidPlayers.Contains(currentplayer)) MidPlayers.Push(currentplayer);
                     //Console.WriteLine($"Mapped {currentplayer.Name} to midgard {MidPlayers.Count}");
                     break;
             }
         }
 
-        List<eRealm> validRealms = new List<eRealm>();
-        if (HibPlayers.Count > 0) validRealms.Add(eRealm.Hibernia);
-        if (MidPlayers.Count > 0) validRealms.Add(eRealm.Midgard);
-        if (AlbPlayers.Count > 0) validRealms.Add(eRealm.Albion);
+        List<ERealm> validRealms = new List<ERealm>();
+        if (HibPlayers.Count > 0) validRealms.Add(ERealm.Hibernia);
+        if (MidPlayers.Count > 0) validRealms.Add(ERealm.Midgard);
+        if (AlbPlayers.Count > 0) validRealms.Add(ERealm.Albion);
         if (validRealms.Count < 2) return; //bail if not enough realms
 
-        eRealm loopRealm = validRealms[Util.Random(validRealms.Count - 1)];
+        ERealm loopRealm = validRealms[Util.Random(validRealms.Count - 1)];
 
         GamePlayer LastPredator = null;
 
         while (validRealms.Count > 1)
         {
-            if (AlbPlayers.Count == 0 && validRealms.Contains(eRealm.Albion)) validRealms.Remove(eRealm.Albion);
-            if (MidPlayers.Count == 0 && validRealms.Contains(eRealm.Midgard)) validRealms.Remove(eRealm.Midgard);
-            if (HibPlayers.Count == 0 && validRealms.Contains(eRealm.Hibernia)) validRealms.Remove(eRealm.Hibernia);
+            if (AlbPlayers.Count == 0 && validRealms.Contains(ERealm.Albion)) validRealms.Remove(ERealm.Albion);
+            if (MidPlayers.Count == 0 && validRealms.Contains(ERealm.Midgard)) validRealms.Remove(ERealm.Midgard);
+            if (HibPlayers.Count == 0 && validRealms.Contains(ERealm.Hibernia)) validRealms.Remove(ERealm.Hibernia);
            // Console.WriteLine(
               //  $"ValidRealms {validRealms.Count} Hibs {HibPlayers.Count} Mids {MidPlayers.Count} Albs {AlbPlayers.Count} startrealm {loopRealm}");
 
@@ -385,17 +385,17 @@ public class PredatorManager
             List<GamePlayer> PotentialTargets = new List<GamePlayer>();
             switch (loopRealm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     NextPredator = AlbPlayers.Pop();
                     PotentialTargets.AddRange(HibPlayers.ToList());
                     PotentialTargets.AddRange(MidPlayers.ToList());
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     NextPredator = HibPlayers.Pop();
                     PotentialTargets.AddRange(AlbPlayers.ToList());
                     PotentialTargets.AddRange(MidPlayers.ToList());
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     NextPredator = MidPlayers.Pop();
                     PotentialTargets.AddRange(HibPlayers.ToList());
                     PotentialTargets.AddRange(AlbPlayers.ToList());

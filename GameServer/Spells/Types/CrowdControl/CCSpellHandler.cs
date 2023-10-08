@@ -87,7 +87,7 @@ namespace DOL.GS.Spells
             //     duration = (double)Math.Round(duration * mocFactor);
             // }
 
-            if (Spell.SpellType != eSpellType.StyleStun)
+            if (Spell.SpellType != ESpellType.StyleStun)
             {
                 // capping duration adjustment to 100%, live cap unknown - Tolakram
                 int hitChance = Math.Min(200, CalculateToHitChance(target));
@@ -177,7 +177,7 @@ namespace DOL.GS.Spells
             {
                 if (target != null && (!target.IsAlive))
                 {
-                    EcsGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.Mez);
+                    EcsGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, EEffect.Mez);
 
                     if (effect != null)
                     {
@@ -198,7 +198,7 @@ namespace DOL.GS.Spells
                     return;
             }
 
-            EcsGameEffect mezz = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
+            EcsGameEffect mezz = EffectListService.GetEffectOnTarget(target, EEffect.Mez);
 
             if (mezz != null)
             {
@@ -206,7 +206,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (EffectListService.GetEffectOnTarget(target, eEffect.MezImmunity) is EcsImmunityEffect immunity)
+            if (EffectListService.GetEffectOnTarget(target, EEffect.MezImmunity) is EcsImmunityEffect immunity)
             {
                 MessageToCaster(immunity.Owner.GetName(0, true) + " can't have that effect again yet!!!", eChatType.CT_SpellPulse);
                 return;
@@ -231,7 +231,7 @@ namespace DOL.GS.Spells
 
                 if (target != null && (!target.IsAlive)) 
                 {
-                    EcsGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, eEffect.Mez);
+                    EcsGameSpellEffect effect = EffectListService.GetSpellEffectOnTarget(target, EEffect.Mez);
 
                     if (effect != null)
                     {
@@ -245,12 +245,12 @@ namespace DOL.GS.Spells
 
                 if (Spell.Range != 0)
                 {
-                    if (!Caster.IsWithinRadius(target, Spell.Range) && !m_spell.IsPulsing && m_spell.SpellType != eSpellType.Mesmerize)
+                    if (!Caster.IsWithinRadius(target, Spell.Range) && !m_spell.IsPulsing && m_spell.SpellType != ESpellType.Mesmerize)
                         return;
                 }
             }
 
-            if (target.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity) || target.HasAbility(Abilities.MezzImmunity))
+            if (target.effectListComponent.Effects.ContainsKey(EEffect.MezImmunity) || target.HasAbility(Abilities.MezzImmunity))
             {
                 MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
                 SendEffectAnimation(target, 0, false, 0);
@@ -275,7 +275,7 @@ namespace DOL.GS.Spells
             }
 
             // Do nothing when already mez, but inform caster.
-            target.effectListComponent.Effects.TryGetValue(eEffect.Mez, out var mezz);
+            target.effectListComponent.Effects.TryGetValue(EEffect.Mez, out var mezz);
 
             if (mezz != null)
             {
@@ -309,8 +309,8 @@ namespace DOL.GS.Spells
         protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
         {
             double duration = base.CalculateEffectDuration(target, effectiveness);
-            duration *= target.GetModified(eProperty.MesmerizeDurationReduction) * 0.01;
-            NpcEcsMezImmunityEffect npcImmune = (NpcEcsMezImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCMezImmunity);
+            duration *= target.GetModified(EProperty.MesmerizeDurationReduction) * 0.01;
+            NpcEcsMezImmunityEffect npcImmune = (NpcEcsMezImmunityEffect)EffectListService.GetEffectOnTarget(target, EEffect.NPCMezImmunity);
 
             if (npcImmune != null)
                 duration = npcImmune.CalculateMezDuration((long)duration);
@@ -375,7 +375,7 @@ namespace DOL.GS.Spells
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
-            if ((target.effectListComponent.Effects.ContainsKey(eEffect.StunImmunity) && this is not UnresistableStunSpellHandler) || (EffectListService.GetEffectOnTarget(target, eEffect.Stun) != null && !(Caster is GameSummonedPet)))//target.HasAbility(Abilities.StunImmunity))
+            if ((target.effectListComponent.Effects.ContainsKey(EEffect.StunImmunity) && this is not UnresistableStunSpellHandler) || (EffectListService.GetEffectOnTarget(target, EEffect.Stun) != null && !(Caster is GameSummonedPet)))//target.HasAbility(Abilities.StunImmunity))
             {
                 MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
                 target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
@@ -384,7 +384,7 @@ namespace DOL.GS.Spells
             }
 
             // Ceremonial bracer doesn't intercept physical stun.
-            if(Spell.SpellType != eSpellType.StyleStun)
+            if(Spell.SpellType != ESpellType.StyleStun)
             {
                 /*
                 GameSpellEffect stunblock = SpellHandler.FindEffectOnTarget(target, "CeremonialBracerStun");
@@ -410,8 +410,8 @@ namespace DOL.GS.Spells
         protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
         {
             double duration = base.CalculateEffectDuration(target, effectiveness);
-            duration *= target.GetModified(eProperty.StunDurationReduction) * 0.01;
-            NpcEcsStunImmunityEffect npcImmune = (NpcEcsStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
+            duration *= target.GetModified(EProperty.StunDurationReduction) * 0.01;
+            NpcEcsStunImmunityEffect npcImmune = (NpcEcsStunImmunityEffect)EffectListService.GetEffectOnTarget(target, EEffect.NPCStunImmunity);
 
             if (npcImmune != null)
                 duration = npcImmune.CalculateStunDuration((long)duration); //target.GetModified(eProperty.StunDurationReduction) * 0.01;
@@ -433,7 +433,7 @@ namespace DOL.GS.Spells
         {
             if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
                 return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
-            if (compare.SpellHandler.Spell.SpellType == eSpellType.StyleStun) return true;
+            if (compare.SpellHandler.Spell.SpellType == ESpellType.StyleStun) return true;
             return base.IsOverwritable(compare);
         }
 

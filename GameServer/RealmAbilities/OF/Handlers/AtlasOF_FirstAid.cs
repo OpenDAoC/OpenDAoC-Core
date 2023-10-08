@@ -42,7 +42,7 @@ namespace DOL.GS.RealmAbilities
 
 			log.InfoFormat("healAmount is {0}", healAmount);
 
-			int healed = living.ChangeHealth(living, eHealthChangeType.Spell, healAmount);
+			int healed = living.ChangeHealth(living, EHealthChangeType.Spell, healAmount);
 
 			SendCasterSpellEffectAndCastMessage(living, 7001, healed > 0);
 

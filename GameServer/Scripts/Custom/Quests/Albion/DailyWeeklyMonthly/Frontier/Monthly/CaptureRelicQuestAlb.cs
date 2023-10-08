@@ -61,7 +61,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Kelteen", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Kelteen", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -81,7 +81,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 				Kelteen.Model = 37;
 				Kelteen.Name = "Kelteen";
 				Kelteen.GuildName = "Atlas Logistics";
-				Kelteen.Realm = eRealm.Albion;
+				Kelteen.Realm = ERealm.Albion;
 				//Castle Sauvage Location
 				Kelteen.CurrentRegionID = 1;
 				Kelteen.Size = 60;

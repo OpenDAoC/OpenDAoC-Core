@@ -46,23 +46,23 @@ public class Weaponcrafting : AProfession
 	{
 		switch (recipe.Product.Object_Type)
 		{
-			case (int)eObjectType.CrushingWeapon:
-			case (int)eObjectType.SlashingWeapon:
-			case (int)eObjectType.ThrustWeapon:
-			case (int)eObjectType.TwoHandedWeapon:
-			case (int)eObjectType.PolearmWeapon:
-			case (int)eObjectType.Flexible:
-			case (int)eObjectType.Sword:
-			case (int)eObjectType.Hammer:
-			case (int)eObjectType.Axe:
-			case (int)eObjectType.Spear:
-			case (int)eObjectType.HandToHand:
-			case (int)eObjectType.Blades:
-			case (int)eObjectType.Blunt:
-			case (int)eObjectType.Piercing:
-			case (int)eObjectType.LargeWeapons:
-			case (int)eObjectType.CelticSpear:
-			case (int)eObjectType.Scythe:
+			case (int)EObjectType.CrushingWeapon:
+			case (int)EObjectType.SlashingWeapon:
+			case (int)EObjectType.ThrustWeapon:
+			case (int)EObjectType.TwoHandedWeapon:
+			case (int)EObjectType.PolearmWeapon:
+			case (int)EObjectType.Flexible:
+			case (int)EObjectType.Sword:
+			case (int)EObjectType.Hammer:
+			case (int)EObjectType.Axe:
+			case (int)EObjectType.Spear:
+			case (int)EObjectType.HandToHand:
+			case (int)EObjectType.Blades:
+			case (int)EObjectType.Blunt:
+			case (int)EObjectType.Piercing:
+			case (int)EObjectType.LargeWeapons:
+			case (int)EObjectType.CelticSpear:
+			case (int)EObjectType.Scythe:
 				return recipe.Level - 60;
 		}
 

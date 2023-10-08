@@ -9,7 +9,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&area",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"GMCommands.Area.Description",
 	"GMCommands.Area.Usage.Create")]
 public class AreaCommand : ACommandHandler, ICommandHandler

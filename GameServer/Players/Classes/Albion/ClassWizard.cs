@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Wizard, "Wizard", "Elementalist")]
+	[CharacterClass((int)ECharacterClass.Wizard, "Wizard", "Elementalist")]
 	public class ClassWizard : ClassElementalist
 	{
 		public ClassWizard()
@@ -30,10 +30,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.Academy";
 			m_specializationMultiplier = 10;
-			m_primaryStat = eStat.INT;
-			m_secondaryStat = eStat.DEX;
-			m_tertiaryStat = eStat.QUI;
-			m_manaStat = eStat.INT;
+			m_primaryStat = EStat.INT;
+			m_secondaryStat = EStat.DEX;
+			m_tertiaryStat = EStat.QUI;
+			m_manaStat = EStat.INT;
 			m_wsbase = 240; // yes, lower that for other casters for some reason
 		}
 

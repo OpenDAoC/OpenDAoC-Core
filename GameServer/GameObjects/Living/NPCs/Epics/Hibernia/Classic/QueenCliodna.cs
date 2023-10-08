@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Queen Cliodna Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 40;// dmg reduction for rest resists
 			}
 		}
@@ -42,11 +42,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -85,10 +85,10 @@ namespace DOL.GS
 			template.AddNPCEquipment(eInventorySlot.Cloak, 91, 39, 0, 0);
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468, 0, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
 			VisibleActiveWeaponSlots = 34;
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			QueenCliodnaBrain sbrain = new QueenCliodnaBrain();
 			SetOwnBrain(sbrain);
@@ -123,7 +123,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			if (HasAggro && Body.TargetObject != null)
@@ -150,7 +150,7 @@ namespace DOL.AI.Brain
 								GameLiving target = Body.TargetObject as GameLiving;
 								if (target != null)
 								{
-									if (!Body.IsCasting  && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+									if (!Body.IsCasting  && !target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
 										Body.CastSpell(Cliodna_stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 									else
 										Body.CastSpell(CliodnaDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
@@ -177,12 +177,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 4159;
 					spell.Icon = 4159;
 					spell.Damage = 400;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Dark Blast";
 					spell.Range = 1500;
 					spell.SpellID = 11892;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CliodnaDD = new Spell(spell, 60);
@@ -211,8 +211,8 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.SpellID = 11893;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Stun.ToString();
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.Type = ESpellType.Stun.ToString();
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Cliodna_stun = new Spell(spell, 60);

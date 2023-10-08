@@ -8,7 +8,7 @@ namespace DOL.GS.Effects
         public AtlasOF_TrueSightECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.TrueSight;
+            EffectType = EEffect.TrueSight;
             EffectService.RequestStartEffect(this);
         }
 

@@ -143,8 +143,8 @@ namespace DOL.GS.Spells
 	[SpellHandler("EssenceResist")]
 	public class EssenceResistHandler : AbstractResistBuff
 	{
-		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-		public override eProperty Property1 { get { return eProperty.Resist_Natural; } }
+		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
+		public override EProperty Property1 { get { return EProperty.Resist_Natural; } }
 		public EssenceResistHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 	#endregion Sojourner-7
@@ -227,7 +227,7 @@ namespace DOL.GS.Spells
         {
             m_target.IsStunned = false;
 			m_target.DismountSteed(true);
-            m_target.DebuffCategory[(int)eProperty.SpellFumbleChance]-=100;
+            m_target.DebuffCategory[(int)EProperty.SpellFumbleChance]-=100;
             GameEventMgr.RemoveHandler(m_target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
             m_npc.StopMoving();
             m_npc.RemoveFromWorld();
@@ -273,7 +273,7 @@ namespace DOL.GS.Spells
                 return;
 
             playerTarget.IsStunned = true;
-            playerTarget.DebuffCategory[(int)eProperty.SpellFumbleChance]+=100;
+            playerTarget.DebuffCategory[(int)EProperty.SpellFumbleChance]+=100;
             playerTarget.attackComponent.StopAttack();
             playerTarget.StopCurrentSpellcast();
             playerTarget.MountSteed(zephyr, true);

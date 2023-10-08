@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Mauler Trainer
 	/// </summary>
-	[NPCGuildScript("Mauler Trainer", eRealm.Albion)]
+	[NPCGuildScript("Mauler Trainer", ERealm.Albion)]
 	public class AlbionMaulerTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.MaulerAlb; }
+			get { return ECharacterClass.MaulerAlb; }
 		}
 
 		/// <summary>
@@ -83,7 +83,7 @@ namespace DOL.GS.Trainer
 					if (CanPromotePlayer(player))
 					{
 						// Mauler_Alb = 60
-						PromotePlayer(player, (int)eCharacterClass.MaulerAlb, "Welcome young Mauler. May your time in Albion be rewarding.", null);
+						PromotePlayer(player, (int)ECharacterClass.MaulerAlb, "Welcome young Mauler. May your time in Albion be rewarding.", null);
 					}
 					break;
 			}

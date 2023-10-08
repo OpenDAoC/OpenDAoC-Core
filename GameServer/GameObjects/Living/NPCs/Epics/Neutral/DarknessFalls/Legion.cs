@@ -47,21 +47,21 @@ namespace DOL.GS.Scripts
             : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
                 default: return 40; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -135,7 +135,7 @@ namespace DOL.GS.Scripts
                 player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 
                 if (!canReportNews || GameServer.ServerRules.CanGenerateNews(player) != false) continue;
-                if (player.Client.Account.PrivLevel == (int) ePrivLevel.Player)
+                if (player.Client.Account.PrivLevel == (int) EPrivLevel.Player)
                     canReportNews = false;
             }
 
@@ -243,7 +243,7 @@ namespace DOL.GS.Scripts
                 playerNearby.BroadcastUpdate();
             }
         }*/
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             //possible AttackRange
             int distance = 1400;
@@ -298,7 +298,7 @@ namespace DOL.GS.Scripts
         }
         public override void DealDamage(AttackData ad)
         {
-            if (ad != null && ad.DamageType == eDamageType.Body)
+            if (ad != null && ad.DamageType == EDamageType.Body)
                 Health += ad.Damage / 4;
             base.DealDamage(ad);
         }
@@ -566,9 +566,9 @@ namespace DOL.AI.Brain
                 GameLiving target = Body.TargetObject as GameLiving;
                 if (Util.Chance(100))
                 {
-                    if (target.effectListComponent.ContainsEffectForEffectType(eEffect.Bladeturn) && target != null && target.IsAlive)
+                    if (target.effectListComponent.ContainsEffectForEffectType(EEffect.Bladeturn) && target != null && target.IsAlive)
                     {
-                        var effect = EffectListService.GetEffectOnTarget(target, eEffect.Bladeturn);
+                        var effect = EffectListService.GetEffectOnTarget(target, EEffect.Bladeturn);
                         if (effect != null)
                         {
                             EffectService.RequestImmediateCancelEffect(effect);//remove bladeturn effect here
@@ -709,13 +709,13 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 9191;
                     spell.Icon = 9191;
                     spell.Damage = 1000;
-                    spell.DamageType = (int)eDamageType.Body;
+                    spell.DamageType = (int)EDamageType.Body;
                     spell.Name = "Lifetap";
                     spell.Range = 0;
                     spell.Radius = 1000;
                     spell.SpellID = 12013;
                     spell.Target = "Enemy";
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     m_LegionLifetapAoe = new Spell(spell, 60);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LegionLifetapAoe);
                 }
@@ -751,12 +751,12 @@ namespace DOL.GS
         {
         }
         public override long ExperienceValue => 0;
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 150;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.10;
@@ -777,8 +777,8 @@ namespace DOL.GS
             Quickness = 60;
             RespawnInterval = -1;
 
-            Gender = eGender.Neutral;
-            MeleeDamageType = eDamageType.Slash;
+            Gender = EGender.Neutral;
+            MeleeDamageType = EDamageType.Slash;
 
             BodyType = 2;
             LegionAddBrain sBrain = new LegionAddBrain();
@@ -829,13 +829,13 @@ namespace DOL.GS
             : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
                 default: return 70; // dmg reduction for rest resists
             }
         }
@@ -860,11 +860,11 @@ namespace DOL.GS
             get { return 450; }
             set { }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 550;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.50;
@@ -917,7 +917,7 @@ namespace DOL.AI.Brain
         {
             if (!CheckProximityAggro())
             {
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
             base.Think();

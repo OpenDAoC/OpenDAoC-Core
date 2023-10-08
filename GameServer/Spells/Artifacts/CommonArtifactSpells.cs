@@ -35,17 +35,17 @@ namespace DOL.GS.Spells
         public override void OnEffectStart(GameSpellEffect effect)
         {    
      		base.OnEffectStart(effect);            
-            effect.Owner.DebuffCategory[(int)eProperty.Dexterity] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Strength] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Constitution] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Acuity] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Piety] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Empathy] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Quickness] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Intelligence] += (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Charisma] += (int)m_spell.Value;   
-            effect.Owner.DebuffCategory[(int)eProperty.ArmorAbsorption] += (int)m_spell.Value; 
-            effect.Owner.DebuffCategory[(int)eProperty.MagicAbsorption] += (int)m_spell.Value; 
+            effect.Owner.DebuffCategory[(int)EProperty.Dexterity] += (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Strength] += (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Constitution] += (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Acuity] += (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Piety] += (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Empathy] += (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Quickness] += (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Intelligence] += (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Charisma] += (int)m_spell.Value;   
+            effect.Owner.DebuffCategory[(int)EProperty.ArmorAbsorption] += (int)m_spell.Value; 
+            effect.Owner.DebuffCategory[(int)EProperty.MagicAbsorption] += (int)m_spell.Value; 
             
             if(effect.Owner is GamePlayer)
             {
@@ -58,17 +58,17 @@ namespace DOL.GS.Spells
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {  
-            effect.Owner.DebuffCategory[(int)eProperty.Dexterity] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Strength] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Constitution] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Acuity] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Piety] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Empathy] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Quickness] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Intelligence] -= (int)m_spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Charisma] -= (int)m_spell.Value;        
-            effect.Owner.DebuffCategory[(int)eProperty.ArmorAbsorption] -= (int)m_spell.Value; 
-            effect.Owner.DebuffCategory[(int)eProperty.MagicAbsorption] -= (int)m_spell.Value; 
+            effect.Owner.DebuffCategory[(int)EProperty.Dexterity] -= (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Strength] -= (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Constitution] -= (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Acuity] -= (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Piety] -= (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Empathy] -= (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Quickness] -= (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Intelligence] -= (int)m_spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Charisma] -= (int)m_spell.Value;        
+            effect.Owner.DebuffCategory[(int)EProperty.ArmorAbsorption] -= (int)m_spell.Value; 
+            effect.Owner.DebuffCategory[(int)EProperty.MagicAbsorption] -= (int)m_spell.Value; 
  
             if(effect.Owner is GamePlayer)
             {
@@ -117,12 +117,12 @@ namespace DOL.GS.Spells
         public override void OnEffectStart(GameSpellEffect effect)
         {
         	base.OnEffectStart(effect);      
-        	effect.Owner.DebuffCategory[(int)eProperty.SpellDamage] += (int)Spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Resist_Heat] += (int)Spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Resist_Cold] += (int)Spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Resist_Matter] += (int)Spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Resist_Spirit] += (int)Spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Resist_Energy] += (int)Spell.Value;
+        	effect.Owner.DebuffCategory[(int)EProperty.SpellDamage] += (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Resist_Heat] += (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Resist_Cold] += (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Resist_Matter] += (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Resist_Spirit] += (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Resist_Energy] += (int)Spell.Value;
             
             if(effect.Owner is GamePlayer)
             {
@@ -133,12 +133,12 @@ namespace DOL.GS.Spells
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            effect.Owner.DebuffCategory[(int)eProperty.SpellDamage] -= (int)Spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Resist_Heat] -= (int)Spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Resist_Cold] -= (int)Spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Resist_Matter] -= (int)Spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Resist_Spirit] -= (int)Spell.Value;
-            effect.Owner.DebuffCategory[(int)eProperty.Resist_Energy] -= (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.SpellDamage] -= (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Resist_Heat] -= (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Resist_Cold] -= (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Resist_Matter] -= (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Resist_Spirit] -= (int)Spell.Value;
+            effect.Owner.DebuffCategory[(int)EProperty.Resist_Energy] -= (int)Spell.Value;
             
             if(effect.Owner is GamePlayer)
             {
@@ -186,8 +186,8 @@ namespace DOL.GS.Spells
         public override void OnEffectStart(GameSpellEffect effect)
         {
         	base.OnEffectStart(effect);         
-            Caster.BaseBuffBonusCategory[(int)eProperty.Strength] += (int)m_spell.Value;
-            Caster.BaseBuffBonusCategory[(int)eProperty.Constitution] += (int)m_spell.Value;
+            Caster.BaseBuffBonusCategory[(int)EProperty.Strength] += (int)m_spell.Value;
+            Caster.BaseBuffBonusCategory[(int)EProperty.Constitution] += (int)m_spell.Value;
  
             if(Caster is GamePlayer)
             {
@@ -200,8 +200,8 @@ namespace DOL.GS.Spells
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {           
-            Caster.BaseBuffBonusCategory[(int)eProperty.Strength] -= (int)m_spell.Value;
-            Caster.BaseBuffBonusCategory[(int)eProperty.Constitution] -= (int)m_spell.Value;          
+            Caster.BaseBuffBonusCategory[(int)EProperty.Strength] -= (int)m_spell.Value;
+            Caster.BaseBuffBonusCategory[(int)EProperty.Constitution] -= (int)m_spell.Value;          
  
             if(Caster is GamePlayer)
             {
@@ -230,7 +230,7 @@ namespace DOL.GS.Spells
             newad.Damage = DamageAmount;
             newad.DamageType = Spell.DamageType;
             newad.AttackType = AttackData.eAttackType.Spell;
-            newad.AttackResult = eAttackResult.HitUnstyled;
+            newad.AttackResult = EAttackResult.HitUnstyled;
             newad.SpellHandler = this;
             newad.Target.OnAttackedByEnemy(newad);
             newad.Attacker.DealDamage(newad);

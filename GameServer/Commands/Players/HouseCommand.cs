@@ -6,7 +6,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&house",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Show various housing information"
 	)]
 public class HouseCommand : ACommandHandler, ICommandHandler
@@ -17,7 +17,7 @@ public class HouseCommand : ACommandHandler, ICommandHandler
 	{
 		try
 		{
-			if (client.Account.PrivLevel > (int)ePrivLevel.Player)
+			if (client.Account.PrivLevel > (int)EPrivLevel.Player)
 			{
 				if (args.Length > 1)
 				{
@@ -25,12 +25,12 @@ public class HouseCommand : ACommandHandler, ICommandHandler
 					return;
 				}
 
-				if (client.Account.PrivLevel >= (int)ePrivLevel.GM)
+				if (client.Account.PrivLevel >= (int)EPrivLevel.GM)
 				{
 					DisplayMessage(client, "GM: info - Display house info for a nearby house");
 				}
 
-				if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
+				if (client.Account.PrivLevel == (int)EPrivLevel.Admin)
 				{
 					DisplayMessage(client, "Admin: model <1 - 12> - change house model");
 					DisplayMessage(client, "Admin: restart - restart the housing manager");
@@ -103,7 +103,7 @@ public class HouseCommand : ACommandHandler, ICommandHandler
 
 	public void HouseAdmin(GamePlayer player, string [] args)
 	{
-		if (player.Client.Account.PrivLevel == (int)ePrivLevel.Admin)
+		if (player.Client.Account.PrivLevel == (int)EPrivLevel.Admin)
 		{
 			if (args[1].ToLower() == "restart")
 			{
@@ -143,7 +143,7 @@ public class HouseCommand : ACommandHandler, ICommandHandler
 
 		// The following commands are for Admins only
 
-		if (player.Client.Account.PrivLevel != (int)ePrivLevel.Admin)
+		if (player.Client.Account.PrivLevel != (int)EPrivLevel.Admin)
 			return;
 
 		if (args[1].ToLower() == "model")

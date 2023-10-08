@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
 		/// <returns>The effect duration in milliseconds</returns>
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
-			NpcEcsStunImmunityEffect npcImmune = (NpcEcsStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
+			NpcEcsStunImmunityEffect npcImmune = (NpcEcsStunImmunityEffect)EffectListService.GetEffectOnTarget(target, EEffect.NPCStunImmunity);
 			if (npcImmune != null)
 			{
 				int duration = (int)npcImmune.CalculateStunDuration(Spell.Duration);
@@ -81,7 +81,7 @@ namespace DOL.GS.Spells
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
-			if (compare.SpellHandler.Spell.SpellType == eSpellType.Stun) return true;
+			if (compare.SpellHandler.Spell.SpellType == ESpellType.Stun) return true;
 			return base.IsOverwritable(compare);
 		}
 

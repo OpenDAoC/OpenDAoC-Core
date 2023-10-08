@@ -45,14 +45,14 @@ namespace DOL.GS.Spells
 				SendEffectAnimation(target, 0, false, 0);
 				return;
 			}
-			if (EffectListService.GetEffectOnTarget(target, eEffect.Nearsight) != null)
+			if (EffectListService.GetEffectOnTarget(target, EEffect.Nearsight) != null)
             {
 				MessageToCaster(target.Name + " already has this effect!", eChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);
 				//target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 				return;
 			}
-			if (EffectListService.GetEffectOnTarget(target, eEffect.NearsightImmunity) != null)
+			if (EffectListService.GetEffectOnTarget(target, EEffect.NearsightImmunity) != null)
 			{
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);
@@ -168,7 +168,7 @@ namespace DOL.GS.Spells
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.ConcentrationCost", Spell.Concentration));
                 if (Spell.Radius != 0)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Radius", Spell.Radius));
-                if (Spell.DamageType != eDamageType.Natural)
+                if (Spell.DamageType != EDamageType.Natural)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
 
 				return list;

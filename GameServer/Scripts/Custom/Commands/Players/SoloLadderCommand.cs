@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 		"&sololadder",
-		ePrivLevel.Player,
+		EPrivLevel.Player,
 		"Displays the Solo Ladder.",
 		"/sololadder")]
 public class SoloLadderCommand : ACommandHandler, ICommandHandler
@@ -66,7 +66,7 @@ public class SoloLadderCommand : ACommandHandler, ICommandHandler
 				if (c == null)
 					continue;
 
-				string className = ((eCharacterClass) c.Class).ToString();
+				string className = ((ECharacterClass) c.Class).ToString();
 				
 
 				soloCharacters.Add(new SoloCharacter() {CharacterName = c.Name, CharacterLevel = c.Level, CharacterClass = className, isHC = c.HCFlag});

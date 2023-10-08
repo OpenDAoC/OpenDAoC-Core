@@ -6,7 +6,7 @@ using DOL.Language;
 namespace DOL.GS.Commands;
 
 [Command("&setsalvage",
-     ePrivLevel.GM,
+     EPrivLevel.GM,
      "/setsalvage - the item to modify have to be in lastbagpack slot (item saved and updated automatically)")]
 public class SetSalvageCommand : ACommandHandler, ICommandHandler
 {

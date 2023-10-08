@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 "&siegeweapon",
-ePrivLevel.GM,
+EPrivLevel.GM,
 "creates siege weapons",
 "/siegeweapon create miniram/lightram/mediumram/heavyram/catapult/ballista/cauldron/trebuchet")]
 public class SiegeWeaponCommand : ACommandHandler, ICommandHandler

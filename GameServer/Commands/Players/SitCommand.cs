@@ -1,6 +1,6 @@
 namespace DOL.GS.Commands;
 
-[Command("&sit", new string[] { "&rest" }, ePrivLevel.Player, "Sit", "/sit")]
+[Command("&sit", new string[] { "&rest" }, EPrivLevel.Player, "Sit", "/sit")]
 public class SitCommandHandler : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)

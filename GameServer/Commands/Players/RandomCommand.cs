@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&random",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"prints out a random number between 1 and the number specified.",
 	"/random [#] to get a random number between 1 and the number you specified.")]
 public class RandomCommand : ACommandHandler, ICommandHandler

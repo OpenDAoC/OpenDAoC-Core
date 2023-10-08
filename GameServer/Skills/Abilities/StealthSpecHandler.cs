@@ -38,12 +38,12 @@ namespace DOL.GS.SkillHandler
 		public void Execute(Specialization spec, GamePlayer player)
 		{
 			// Can't stealth while in combat
-			if(player.InCombat && !player.IsStealthed && player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+			if(player.InCombat && !player.IsStealthed && player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
 			}
-			EcsGameEffect volley = EffectListService.GetEffectOnTarget(player, eEffect.Volley);
+			EcsGameEffect volley = EffectListService.GetEffectOnTarget(player, EEffect.Volley);
 			if (volley != null)
 			{
 				player.Out.SendMessage("You can't stealth while you have active Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);

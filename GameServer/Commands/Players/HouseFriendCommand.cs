@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
     "&housefriend",
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "Invite a specified player to your house", 
     "/housefriend all", 
     "/housefriend player <player>", 

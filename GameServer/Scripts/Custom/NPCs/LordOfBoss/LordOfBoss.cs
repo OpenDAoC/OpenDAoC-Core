@@ -58,13 +58,13 @@ namespace DOL.GS {
 
 	        switch (player.Realm)
 	        {
-		        case eRealm._FirstPlayerRealm:
+		        case ERealm._FirstPlayerRealm:
 			        player.Out.SendMessage("I have some minions from [Caer Sidi] ready for you..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			        break;
-		        case eRealm.Midgard:
+		        case ERealm.Midgard:
 			        player.Out.SendMessage("I have some minions from [Tuscaren Glacier] ready for you..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			        break;
-		        case eRealm.Hibernia:
+		        case ERealm.Hibernia:
 			        player.Out.SendMessage("I have some minions from [Galladoria] ready for you..", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			        break;
 	        }
@@ -89,13 +89,13 @@ namespace DOL.GS {
 				case "back":
 					switch (t.Realm)
 					{
-						case eRealm.Albion:
+						case ERealm.Albion:
 							t.MoveTo(1, 560365, 511888, 2280, 66);
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							t.MoveTo(100, 804750, 723986, 4680, 671);
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							t.MoveTo(200, 345684, 490996, 1071, 900);
 							break;
 					}
@@ -105,7 +105,7 @@ namespace DOL.GS {
 				#region Caer Sidi
 
 				case "caer sidi":
-					if (t.Realm != eRealm.Albion) return false;
+					if (t.Realm != ERealm.Albion) return false;
 					t.Out.SendMessage("I can summon the following bosses from Caer Sidi:\n\n" +
 					                  "1. [Skeletal Sacristan]\n" +
 					                  "2. [Spectral Provisioner]\n" +
@@ -122,54 +122,54 @@ namespace DOL.GS {
 					break;
 
 				case "skeletal sacristan":
-					if (t.Realm != eRealm.Albion) return false;
+					if (t.Realm != ERealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Scripts.SkeletalSacristan");
 					break;
 				
 				case "spectral provisioner":
-					if (t.Realm != eRealm.Albion) return false;
+					if (t.Realm != ERealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Scripts.SpectralProvisioner");
 					break;
 				
 				case "lich lord ilron":
-					if (t.Realm != eRealm.Albion) return false;
+					if (t.Realm != ERealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Scripts.LichLordIlron");
 					break;
 				
 				case "warlord dorinakka":
-					if (t.Realm != eRealm.Albion) return false;
+					if (t.Realm != ERealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Scripts.WarlordDorinakka");
 					break;
 				
 				case "soul reckoner":
-					if (t.Realm != eRealm.Albion) return false;
+					if (t.Realm != ERealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.SoulReckoner");
 					break;
 				
 				case "crypt lord":
-					if (t.Realm != eRealm.Albion) return false;
+					if (t.Realm != ERealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.CryptLord");
 					break;
 				
 				case "silencer":
-					if (t.Realm != eRealm.Albion) return false;
+					if (t.Realm != ERealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Silencer");
 					break;
 				
 				case "lord sanguis":
-					if (t.Realm != eRealm.Albion) return false;
+					if (t.Realm != ERealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.LordSanguis");
 					break;
 				
 				case "bane of hope":
-					if (t.Realm != eRealm.Albion) return false;
+					if (t.Realm != ERealm.Albion) return false;
 					SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
 					break;
 				#endregion
 				
 				#region Galladoria
 				case "galladoria":
-					if (t.Realm != eRealm.Hibernia) return false;
+					if (t.Realm != ERealm.Hibernia) return false;
 					t.Out.SendMessage("I can summon the following bosses from Galladoria:\n\n" +
 					                  "1. [Easmarach]\n" +
 					                  "2. [Organic Energy Mechanism]\n" +
@@ -184,49 +184,49 @@ namespace DOL.GS {
 					break;
 
 				case "easmarach":
-					if (t.Realm != eRealm.Hibernia) return false;
+					if (t.Realm != ERealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.Easmarach");
 					break;
 				
 				case "organic energy mechanism":
-					if (t.Realm != eRealm.Hibernia) return false;
+					if (t.Realm != ERealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.OrganicEnergyMechanism");
 					break;
 				
 				case "giant sporite cluster":
-					if (t.Realm != eRealm.Hibernia) return false;
+					if (t.Realm != ERealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.GiantSporiteCluster");
 					break;
 				
 				case "conservator":
-					if (t.Realm != eRealm.Hibernia) return false;
+					if (t.Realm != ERealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.Conservator");
 					break;
 				
 				case "xaga":
-					if (t.Realm != eRealm.Hibernia) return false;
+					if (t.Realm != ERealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.Xaga");
 					SummonBoss(t,"DOL.GS.Beatha");
 					SummonBoss(t,"DOL.GS.Tine");
 					break;
 				
 				case "spindler broodmother":
-					if (t.Realm != eRealm.Hibernia) return false;
+					if (t.Realm != ERealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.SpindlerBroodmother");
 					break;
 				
 				case "olcasar geomancer":
-					if (t.Realm != eRealm.Hibernia) return false;
+					if (t.Realm != ERealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.OlcasarGeomancer");
 					break;
 				
 				case "aroon the urlamhai":
-					if (t.Realm != eRealm.Hibernia) return false;
+					if (t.Realm != ERealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.Aroon");
 					break;
 				
 				case "hurionthex":
-					if (t.Realm != eRealm.Hibernia) return false;
+					if (t.Realm != ERealm.Hibernia) return false;
 					SummonBoss(t,"DOL.GS.Hurionthex");
 					break;
 				

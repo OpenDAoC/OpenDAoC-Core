@@ -42,9 +42,9 @@ namespace DOL.GS.Spells
                     initParams.Duration = (int)(initParams.Duration * rezSickEffectiveness);
                 }
                 
-                if (targetPlayer.GetModified(eProperty.ResIllnessReduction) > 0)
+                if (targetPlayer.GetModified(EProperty.ResIllnessReduction) > 0)
                 {
-	                initParams.Duration = initParams.Duration * (100-targetPlayer.GetModified(eProperty.ResIllnessReduction))/100;
+	                initParams.Duration = initParams.Duration * (100-targetPlayer.GetModified(EProperty.ResIllnessReduction))/100;
                 }
             }
 

@@ -33,7 +33,7 @@ public class ArcherSubPetBrain : SubPetBrain
 	public override void Attack(GameObject target)
 	{
 		if (m_orderAttackTarget != target)
-			Body.SwitchWeapon(eActiveWeaponSlot.Distance);
+			Body.SwitchWeapon(EActiveWeaponSlot.Distance);
 
 		base.Attack(target);
 	}

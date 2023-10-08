@@ -6,7 +6,7 @@ namespace DOL.GS.Commands;
 
 [Command(
     "&friend",
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "Adds/Removes a player to/from your friendlist!",
     "/friend <playerName>")]
 public class FriendCommand : ACommandHandler, ICommandHandler

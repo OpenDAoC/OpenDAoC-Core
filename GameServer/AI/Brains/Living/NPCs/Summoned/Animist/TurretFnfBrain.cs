@@ -104,7 +104,7 @@ namespace DOL.AI.Brain
 
             bool IsLivingWithoutEffect(KeyValuePair<GameLiving, long> livingPair)
             {
-                return !LivingHasEffect(livingPair.Key, ((TurretPet)Body).TurretSpell) && EffectListService.GetEffectOnTarget(livingPair.Key, eEffect.SnareImmunity) == null;
+                return !LivingHasEffect(livingPair.Key, ((TurretPet)Body).TurretSpell) && EffectListService.GetEffectOnTarget(livingPair.Key, EEffect.SnareImmunity) == null;
             }
         }
 

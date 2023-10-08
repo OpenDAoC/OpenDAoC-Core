@@ -850,11 +850,11 @@ namespace DOL.GS.GameEvents
             {
                 if (relic == null)
                     break;
-                if (relic.Realm == eRealm.Albion)
+                if (relic.Realm == ERealm.Albion)
                     AlbrelicCount++;
-                if (relic.Realm == eRealm.Midgard)
+                if (relic.Realm == ERealm.Midgard)
                     MidrelicCount++;
-                if (relic.Realm == eRealm.Hibernia)
+                if (relic.Realm == ERealm.Hibernia)
                     HibrelicCount++;
             }
 
@@ -898,7 +898,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Renaris Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Renaris Knight", eRealm.Albion);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Renaris Knight", ERealm.Albion);
 
                 if (keep.Realm == keep.OriginalRealm)
                 {
@@ -967,7 +967,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Hurbury Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Hurbury Knight", eRealm.Albion);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Hurbury Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1032,7 +1032,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Berckstead Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Berckstead Knight", eRealm.Albion);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Berckstead Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1137,7 +1137,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Sursbrook Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Sursbrooke Knight", eRealm.Albion);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Sursbrooke Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1241,7 +1241,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Boldiam Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Boldiam Knight", eRealm.Albion);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Boldiam Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1345,7 +1345,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Erasleigh Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Erasleigh Knight", eRealm.Albion);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Erasleigh Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1449,7 +1449,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Benowyc Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Benowyc Knight", eRealm.Albion);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Benowyc Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1557,7 +1557,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Fensalir Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Fensalir Jarl", eRealm.Midgard);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Fensalir Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1622,7 +1622,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Arvakr Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Arvakr Jarl", eRealm.Midgard);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Arvakr Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1687,7 +1687,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Glenlock Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Glenlock Jarl", eRealm.Midgard);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Glenlock Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1791,7 +1791,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Blendrake Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Blendrake Jarl", eRealm.Midgard);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Blendrake Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1895,7 +1895,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Hlidskialf Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Hlidskialf Jarl", eRealm.Midgard);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Hlidskialf Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1999,7 +1999,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Nottmoor Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Nottmoor Jarl", eRealm.Midgard);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Nottmoor Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2103,7 +2103,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Bledmeer Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Bledmeer Jarl", eRealm.Midgard);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Bledmeer Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2211,7 +2211,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Ailinne Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Ailinne Sentinel", eRealm.Hibernia);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Ailinne Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2276,7 +2276,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Scathaig Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Scathaig Sentinel", eRealm.Hibernia);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Scathaig Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2341,7 +2341,7 @@ namespace DOL.GS.GameEvents
             {
                 #region nGed Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("nGed Sentinel", eRealm.Hibernia);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("nGed Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2445,7 +2445,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Bolg Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Bolg Sentinel", eRealm.Hibernia);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Bolg Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2549,7 +2549,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Behnn Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Behnn Sentinel", eRealm.Hibernia);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Behnn Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2653,7 +2653,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Crimthain Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Crimthain Sentinel", eRealm.Hibernia);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Crimthain Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2757,7 +2757,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Crauchon Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Crauchon Sentinel", eRealm.Hibernia);
+                GameNPC[] npcs = WorldMgr.GetNPCsByName("Crauchon Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)

@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Fighter Trainer
 	/// </summary>
-	[NPCGuildScript("Fighter Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Fighter Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Fighter Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Fighter Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class FighterTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Fighter; }
+			get { return ECharacterClass.Fighter; }
 		}
 
 		/// <summary>
@@ -97,7 +97,7 @@ namespace DOL.GS.Trainer
 
 			switch (text) {
 				case "Armsman":
-					if(player.Race == (int)eRace.Avalonian || player.Race == (int)eRace.Briton || player.Race == (int)eRace.HalfOgre || player.Race == (int)eRace.Highlander || player.Race == (int)eRace.Inconnu || player.Race == (int)eRace.Saracen || player.Race == (int)eRace.AlbionMinotaur)
+					if(player.Race == (int)ERace.Avalonian || player.Race == (int)ERace.Briton || player.Race == (int)ERace.HalfOgre || player.Race == (int)ERace.Highlander || player.Race == (int)ERace.Inconnu || player.Race == (int)ERace.Saracen || player.Race == (int)ERace.AlbionMinotaur)
 					{
 						player.Out.SendMessage(this.Name + " says, \"Ah! An Armsmen is it? Good solid fighters they are! Their fighting prowess is a great asset to Albion. To become an armsman you must enlist with the Defenders of Albion.\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					}
@@ -106,7 +106,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Mercenary":
-					if(player.Race == (int)eRace.Avalonian || player.Race == (int)eRace.Briton || player.Race == (int)eRace.HalfOgre || player.Race == (int)eRace.Highlander || player.Race == (int)eRace.Inconnu || player.Race == (int)eRace.Saracen || player.Race == (int)eRace.AlbionMinotaur)
+					if(player.Race == (int)ERace.Avalonian || player.Race == (int)ERace.Briton || player.Race == (int)ERace.HalfOgre || player.Race == (int)ERace.Highlander || player.Race == (int)ERace.Inconnu || player.Race == (int)ERace.Saracen || player.Race == (int)ERace.AlbionMinotaur)
 					{
 						player.Out.SendMessage(this.Name + " says, \"You wish to become a Mercenary do you? Roguish fighters in nature, solid warriors in battle, their ability to quickly evade enemy attacks has made them a valuable asset to the Guild of Shadows.\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					}
@@ -115,7 +115,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Paladin":
-					if(player.Race == (int) eRace.Avalonian || player.Race == (int) eRace.Briton || player.Race == (int) eRace.Highlander || player.Race == (int) eRace.Saracen){
+					if(player.Race == (int) ERace.Avalonian || player.Race == (int) ERace.Briton || player.Race == (int) ERace.Highlander || player.Race == (int) ERace.Saracen){
 						player.Out.SendMessage(this.Name + " says, \"You wish to be a defender of the faith I take it? Many a Paladin has led our fighters into battle with victory not far behind. Their never-ending sacrifice proves that the Church of Albion will remain for many centuries!\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					}
 					else{

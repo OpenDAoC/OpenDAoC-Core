@@ -23,13 +23,13 @@ namespace DOL.GS.Realm
 {
 	public class PlayerRace
 	{
-		public eRace ID { get; }
+		public ERace ID { get; }
 		public virtual eDAoCExpansion Expansion { get; }
-		public eRealm Realm { get; }
-		private eLivingModel FemaleModel { get; }
-		private eLivingModel MaleModel { get; }
+		public ERealm Realm { get; }
+		private ELivingModel FemaleModel { get; }
+		private ELivingModel MaleModel { get; }
 
-		private PlayerRace(eRace race, eRealm realm, eDAoCExpansion expansion, eLivingModel maleModel, eLivingModel femaleModel)
+		private PlayerRace(ERace race, ERealm realm, eDAoCExpansion expansion, ELivingModel maleModel, ELivingModel femaleModel)
         {
 			ID = race;
 			Realm = realm;
@@ -38,36 +38,36 @@ namespace DOL.GS.Realm
 			FemaleModel = femaleModel;
         }
 
-		private static Dictionary<eRace, PlayerRace> races = new Dictionary<eRace, PlayerRace>()
+		private static Dictionary<ERace, PlayerRace> races = new Dictionary<ERace, PlayerRace>()
 		{
-			{ eRace.Briton, new PlayerRace( eRace.Briton, eRealm.Albion, eDAoCExpansion.Classic, eLivingModel.BritonMale, eLivingModel.BritonFemale) } ,
-			{ eRace.Highlander, new PlayerRace(eRace.Highlander, eRealm.Albion, eDAoCExpansion.Classic, eLivingModel.HighlanderMale, eLivingModel.HighlanderFemale) } ,
-			{ eRace.Saracen, new PlayerRace(eRace.Saracen, eRealm.Albion, eDAoCExpansion.Classic, eLivingModel.SaracenMale, eLivingModel.SaracenFemale) } ,
-			{ eRace.Avalonian, new PlayerRace(eRace.Avalonian, eRealm.Albion, eDAoCExpansion.Classic, eLivingModel.AvalonianMale, eLivingModel.AvalonianFemale) } ,
-			{ eRace.Inconnu, new PlayerRace(eRace.Inconnu, eRealm.Albion, eDAoCExpansion.ShroudedIsles, eLivingModel.InconnuMale, eLivingModel.InconnuFemale) } ,
-			{ eRace.HalfOgre, new PlayerRace(eRace.HalfOgre, eRealm.Albion, eDAoCExpansion.Catacombs, eLivingModel.HalfOgreMale, eLivingModel.HalfOgreFemale) } ,
-			{ eRace.Korazh, new PlayerRace(eRace.Korazh, eRealm.Albion, eDAoCExpansion.LabyrinthOfTheMinotaur, eLivingModel.MinotaurMaleAlb, eLivingModel.None) },
-			{ eRace.Troll, new PlayerRace(eRace.Troll, eRealm.Midgard, eDAoCExpansion.Classic, eLivingModel.TrollMale, eLivingModel.TrollFemale) },
-			{ eRace.Norseman, new PlayerRace(eRace.Norseman, eRealm.Midgard, eDAoCExpansion.Classic, eLivingModel.NorseMale, eLivingModel.NorseFemale) } ,
-			{ eRace.Kobold, new PlayerRace(eRace.Kobold, eRealm.Midgard, eDAoCExpansion.Classic, eLivingModel.KoboldMale, eLivingModel.KoboldFemale) } ,
-			{ eRace.Dwarf, new PlayerRace(eRace.Dwarf, eRealm.Midgard, eDAoCExpansion.Classic, eLivingModel.DwarfMale, eLivingModel.DwarfFemale) } ,
-			{ eRace.Valkyn, new PlayerRace(eRace.Valkyn, eRealm.Midgard, eDAoCExpansion.ShroudedIsles, eLivingModel.ValkynMale, eLivingModel.ValkynFemale) } ,
-			{ eRace.Frostalf, new PlayerRace(eRace.Frostalf, eRealm.Midgard, eDAoCExpansion.Catacombs, eLivingModel.FrostalfMale, eLivingModel.FrostalfFemale) } ,
-			{ eRace.Deifrang, new PlayerRace(eRace.Deifrang, eRealm.Midgard, eDAoCExpansion.LabyrinthOfTheMinotaur, eLivingModel.MinotaurMaleMid, eLivingModel.None) } ,
-			{ eRace.Firbolg, new PlayerRace(eRace.Firbolg, eRealm.Hibernia, eDAoCExpansion.Classic, eLivingModel.FirbolgMale, eLivingModel.FirbolgFemale) } ,
-			{ eRace.Celt, new PlayerRace(eRace.Celt, eRealm.Hibernia, eDAoCExpansion.Classic, eLivingModel.CeltMale, eLivingModel.CeltFemale) } ,
-			{ eRace.Lurikeen, new PlayerRace(eRace.Lurikeen, eRealm.Hibernia, eDAoCExpansion.Classic, eLivingModel.LurikeenMale, eLivingModel.LurikeenFemale) } ,
-			{ eRace.Elf, new PlayerRace(eRace.Elf, eRealm.Hibernia, eDAoCExpansion.Classic, eLivingModel.ElfMale, eLivingModel.ElfFemale) } ,
-			{ eRace.Sylvan, new PlayerRace(eRace.Sylvan, eRealm.Hibernia, eDAoCExpansion.ShroudedIsles, eLivingModel.SylvanMale, eLivingModel.SylvanFemale) } ,
-			{ eRace.Shar, new PlayerRace(eRace.Shar, eRealm.Hibernia, eDAoCExpansion.Catacombs, eLivingModel.SharMale, eLivingModel.SharFemale) } ,
-			{ eRace.Graoch, new PlayerRace(eRace.Graoch, eRealm.Hibernia, eDAoCExpansion.LabyrinthOfTheMinotaur, eLivingModel.MinotaurMaleHib, eLivingModel.None) } ,
+			{ ERace.Briton, new PlayerRace( ERace.Briton, ERealm.Albion, eDAoCExpansion.Classic, ELivingModel.BritonMale, ELivingModel.BritonFemale) } ,
+			{ ERace.Highlander, new PlayerRace(ERace.Highlander, ERealm.Albion, eDAoCExpansion.Classic, ELivingModel.HighlanderMale, ELivingModel.HighlanderFemale) } ,
+			{ ERace.Saracen, new PlayerRace(ERace.Saracen, ERealm.Albion, eDAoCExpansion.Classic, ELivingModel.SaracenMale, ELivingModel.SaracenFemale) } ,
+			{ ERace.Avalonian, new PlayerRace(ERace.Avalonian, ERealm.Albion, eDAoCExpansion.Classic, ELivingModel.AvalonianMale, ELivingModel.AvalonianFemale) } ,
+			{ ERace.Inconnu, new PlayerRace(ERace.Inconnu, ERealm.Albion, eDAoCExpansion.ShroudedIsles, ELivingModel.InconnuMale, ELivingModel.InconnuFemale) } ,
+			{ ERace.HalfOgre, new PlayerRace(ERace.HalfOgre, ERealm.Albion, eDAoCExpansion.Catacombs, ELivingModel.HalfOgreMale, ELivingModel.HalfOgreFemale) } ,
+			{ ERace.Korazh, new PlayerRace(ERace.Korazh, ERealm.Albion, eDAoCExpansion.LabyrinthOfTheMinotaur, ELivingModel.MinotaurMaleAlb, ELivingModel.None) },
+			{ ERace.Troll, new PlayerRace(ERace.Troll, ERealm.Midgard, eDAoCExpansion.Classic, ELivingModel.TrollMale, ELivingModel.TrollFemale) },
+			{ ERace.Norseman, new PlayerRace(ERace.Norseman, ERealm.Midgard, eDAoCExpansion.Classic, ELivingModel.NorseMale, ELivingModel.NorseFemale) } ,
+			{ ERace.Kobold, new PlayerRace(ERace.Kobold, ERealm.Midgard, eDAoCExpansion.Classic, ELivingModel.KoboldMale, ELivingModel.KoboldFemale) } ,
+			{ ERace.Dwarf, new PlayerRace(ERace.Dwarf, ERealm.Midgard, eDAoCExpansion.Classic, ELivingModel.DwarfMale, ELivingModel.DwarfFemale) } ,
+			{ ERace.Valkyn, new PlayerRace(ERace.Valkyn, ERealm.Midgard, eDAoCExpansion.ShroudedIsles, ELivingModel.ValkynMale, ELivingModel.ValkynFemale) } ,
+			{ ERace.Frostalf, new PlayerRace(ERace.Frostalf, ERealm.Midgard, eDAoCExpansion.Catacombs, ELivingModel.FrostalfMale, ELivingModel.FrostalfFemale) } ,
+			{ ERace.Deifrang, new PlayerRace(ERace.Deifrang, ERealm.Midgard, eDAoCExpansion.LabyrinthOfTheMinotaur, ELivingModel.MinotaurMaleMid, ELivingModel.None) } ,
+			{ ERace.Firbolg, new PlayerRace(ERace.Firbolg, ERealm.Hibernia, eDAoCExpansion.Classic, ELivingModel.FirbolgMale, ELivingModel.FirbolgFemale) } ,
+			{ ERace.Celt, new PlayerRace(ERace.Celt, ERealm.Hibernia, eDAoCExpansion.Classic, ELivingModel.CeltMale, ELivingModel.CeltFemale) } ,
+			{ ERace.Lurikeen, new PlayerRace(ERace.Lurikeen, ERealm.Hibernia, eDAoCExpansion.Classic, ELivingModel.LurikeenMale, ELivingModel.LurikeenFemale) } ,
+			{ ERace.Elf, new PlayerRace(ERace.Elf, ERealm.Hibernia, eDAoCExpansion.Classic, ELivingModel.ElfMale, ELivingModel.ElfFemale) } ,
+			{ ERace.Sylvan, new PlayerRace(ERace.Sylvan, ERealm.Hibernia, eDAoCExpansion.ShroudedIsles, ELivingModel.SylvanMale, ELivingModel.SylvanFemale) } ,
+			{ ERace.Shar, new PlayerRace(ERace.Shar, ERealm.Hibernia, eDAoCExpansion.Catacombs, ELivingModel.SharMale, ELivingModel.SharFemale) } ,
+			{ ERace.Graoch, new PlayerRace(ERace.Graoch, ERealm.Hibernia, eDAoCExpansion.LabyrinthOfTheMinotaur, ELivingModel.MinotaurMaleHib, ELivingModel.None) } ,
 		};
 
-		public eLivingModel GetModel(eGender gender)
+		public ELivingModel GetModel(EGender gender)
         {
-			if (gender == eGender.Male) return MaleModel;
-			else if (gender == eGender.Female) return FemaleModel;
-			else return eLivingModel.None;
+			if (gender == EGender.Male) return MaleModel;
+			else if (gender == EGender.Female) return FemaleModel;
+			else return ELivingModel.None;
 		}
 
 		public static List<PlayerRace> AllRaces
@@ -83,27 +83,27 @@ namespace DOL.GS.Realm
 			}
 		}
 
-		public static PlayerRace Briton => races[eRace.Briton];
-		public static PlayerRace Highlander => races[eRace.Highlander];
-		public static PlayerRace Saracen => races[eRace.Saracen];
-		public static PlayerRace Avalonian => races[eRace.Avalonian];
-		public static PlayerRace Inconnu => races[eRace.Inconnu];
-		public static PlayerRace HalfOgre => races[eRace.HalfOgre];
-		public static PlayerRace Korazh => races[eRace.Korazh];
-		public static PlayerRace Troll => races[eRace.Troll];
-		public static PlayerRace Norseman => races[eRace.Norseman];
-		public static PlayerRace Kobold => races[eRace.Kobold];
-		public static PlayerRace Dwarf => races[eRace.Dwarf];
-		public static PlayerRace Valkyn => races[eRace.Valkyn];
-		public static PlayerRace Frostalf => races[eRace.Frostalf];
-		public static PlayerRace Deifrang => races[eRace.Deifrang];
-		public static PlayerRace Firbolg => races[eRace.Firbolg];
-		public static PlayerRace Celt => races[eRace.Celt];
-		public static PlayerRace Lurikeen => races[eRace.Lurikeen];
-		public static PlayerRace Elf => races[eRace.Elf];
-		public static PlayerRace Shar => races[eRace.Shar];
-		public static PlayerRace Sylvan => races[eRace.Sylvan];
-		public static PlayerRace Graoch => races[eRace.Graoch];
+		public static PlayerRace Briton => races[ERace.Briton];
+		public static PlayerRace Highlander => races[ERace.Highlander];
+		public static PlayerRace Saracen => races[ERace.Saracen];
+		public static PlayerRace Avalonian => races[ERace.Avalonian];
+		public static PlayerRace Inconnu => races[ERace.Inconnu];
+		public static PlayerRace HalfOgre => races[ERace.HalfOgre];
+		public static PlayerRace Korazh => races[ERace.Korazh];
+		public static PlayerRace Troll => races[ERace.Troll];
+		public static PlayerRace Norseman => races[ERace.Norseman];
+		public static PlayerRace Kobold => races[ERace.Kobold];
+		public static PlayerRace Dwarf => races[ERace.Dwarf];
+		public static PlayerRace Valkyn => races[ERace.Valkyn];
+		public static PlayerRace Frostalf => races[ERace.Frostalf];
+		public static PlayerRace Deifrang => races[ERace.Deifrang];
+		public static PlayerRace Firbolg => races[ERace.Firbolg];
+		public static PlayerRace Celt => races[ERace.Celt];
+		public static PlayerRace Lurikeen => races[ERace.Lurikeen];
+		public static PlayerRace Elf => races[ERace.Elf];
+		public static PlayerRace Shar => races[ERace.Shar];
+		public static PlayerRace Sylvan => races[ERace.Sylvan];
+		public static PlayerRace Graoch => races[ERace.Graoch];
 
         public override bool Equals(object obj)
         {

@@ -76,13 +76,13 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)playerRegion.GetYOffInZone(playerToCreate.X, playerToCreate.Y));
 				pak.WriteShort(playerToCreate.Heading);
 
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
 				pak.WriteByte(playerToCreate.GetDisplayLevel(m_gameClient.Player));
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
 
 				int flags = (GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, playerToCreate) & 0x03) << 2;
 				if (playerToCreate.IsAlive == false)
@@ -256,34 +256,34 @@ namespace DOL.GS.PacketHandler
 						int value2; // some object types use this field to display count
 						switch (item.Object_Type)
 						{
-							case (int)eObjectType.Arrow:
-							case (int)eObjectType.Bolt:
-							case (int)eObjectType.Poison:
-							case (int)eObjectType.GenericItem:
+							case (int)EObjectType.Arrow:
+							case (int)EObjectType.Bolt:
+							case (int)EObjectType.Poison:
+							case (int)EObjectType.GenericItem:
 								value1 = item.Count;
 								value2 = item.SPD_ABS;
 								break;
-							case (int)eObjectType.Thrown:
+							case (int)EObjectType.Thrown:
 								value1 = item.DPS_AF;
 								value2 = item.Count;
 								break;
-							case (int)eObjectType.Instrument:
+							case (int)EObjectType.Instrument:
 								value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF);
 								value2 = 0;
 								break; // unused
-							case (int)eObjectType.Shield:
+							case (int)EObjectType.Shield:
 								value1 = item.Type_Damage;
 								value2 = item.DPS_AF;
 								break;
-							case (int)eObjectType.AlchemyTincture:
-							case (int)eObjectType.SpellcraftGem:
+							case (int)EObjectType.AlchemyTincture:
+							case (int)EObjectType.SpellcraftGem:
 								value1 = 0;
 								value2 = 0;
 								/*
 								must contain the quality of gem for spell craft and think same for tincture
 								*/
 								break;
-							case (int)eObjectType.GardenObject:
+							case (int)EObjectType.GardenObject:
 								value1 = 0;
 								value2 = item.SPD_ABS;
 								/*
@@ -302,7 +302,7 @@ namespace DOL.GS.PacketHandler
 						pak.WriteByte((byte)value1);
 						pak.WriteByte((byte)value2);
 
-						if (item.Object_Type == (int)eObjectType.GardenObject)
+						if (item.Object_Type == (int)EObjectType.GardenObject)
 							pak.WriteByte((byte)(item.DPS_AF));
 						else
 							pak.WriteByte((byte)(item.Hand << 6));

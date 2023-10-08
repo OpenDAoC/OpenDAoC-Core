@@ -53,7 +53,7 @@ namespace GameServerScripts.Titles
 		{
 			string description = GenericNames.Item1;
 			
-			if (player.Gender == eGender.Female && !string.IsNullOrEmpty(GenericNames.Item3))
+			if (player.Gender == EGender.Female && !string.IsNullOrEmpty(GenericNames.Item3))
 				description = GenericNames.Item3;
 			
 			return Translate ? TryTranslate(description, player) : description;
@@ -69,7 +69,7 @@ namespace GameServerScripts.Titles
 		{
 			string titleValue = GenericNames.Item2;
 			
-			if (player.Gender == eGender.Female && !string.IsNullOrEmpty(GenericNames.Item4))
+			if (player.Gender == EGender.Female && !string.IsNullOrEmpty(GenericNames.Item4))
 				titleValue = GenericNames.Item4;
 						
 			return Translate ? TryTranslate(titleValue, source) : titleValue;

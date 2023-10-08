@@ -9,13 +9,13 @@ namespace DOL.GS
 	{
 		public WrethOfWinterScorp() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -35,11 +35,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -61,7 +61,7 @@ namespace DOL.GS
 			Level = 74;
 			MaxSpeedBase = 280;
 			Flags = eFlags.GHOST;
-			MeleeDamageType = eDamageType.Thrust;
+			MeleeDamageType = EDamageType.Thrust;
 			WrethOfWinterScorpBrain sbrain = new WrethOfWinterScorpBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -71,9 +71,9 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (Util.Chance(25) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+			if (Util.Chance(25) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 					CastSpell(WoWPoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
@@ -103,9 +103,9 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11875;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DamageOverTime.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Uninterruptible = true;
 					m_WoWPoison = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WoWPoison);
@@ -132,7 +132,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
@@ -148,13 +148,13 @@ namespace DOL.GS
 	{
 		public WrethOfWinterSpider() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -174,11 +174,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -200,7 +200,7 @@ namespace DOL.GS
 			Level = 70;
 			MaxSpeedBase = 280;
 			Flags = eFlags.GHOST;
-			MeleeDamageType = eDamageType.Thrust;
+			MeleeDamageType = EDamageType.Thrust;
 			WrethOfWinterSpiderBrain sbrain = new WrethOfWinterSpiderBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -210,9 +210,9 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (Util.Chance(25) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+			if (Util.Chance(25) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 					CastSpell(WoWPoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
@@ -242,9 +242,9 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11956;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DamageOverTime.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Uninterruptible = true;
 					m_WoWPoison = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WoWPoison);
@@ -271,7 +271,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
@@ -287,13 +287,13 @@ namespace DOL.GS
 	{
 		public WrethOfWinterCrab() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -313,11 +313,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -339,7 +339,7 @@ namespace DOL.GS
 			Level = 74;
 			MaxSpeedBase = 280;
 			Flags = eFlags.GHOST;
-			MeleeDamageType = eDamageType.Thrust;
+			MeleeDamageType = EDamageType.Thrust;
 			WrethOfWinterCrabBrain sbrain = new WrethOfWinterCrabBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -349,9 +349,9 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (Util.Chance(25) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+			if (Util.Chance(25) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 					CastSpell(WoWPoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
@@ -381,9 +381,9 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11959;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DamageOverTime.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Uninterruptible = true;
 					m_WoWPoison = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WoWPoison);
@@ -409,7 +409,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
@@ -425,13 +425,13 @@ namespace DOL.GS
 	{
 		public WrethOfWinterJotun() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -451,11 +451,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -476,7 +476,7 @@ namespace DOL.GS
 			Size = 250;
 			Level = 77;
 			MaxSpeedBase = 280;
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			Flags = eFlags.GHOST;
 			WrethOfWinterJotunBrain sbrain = new WrethOfWinterJotunBrain();
 			SetOwnBrain(sbrain);
@@ -487,7 +487,7 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 			{
 				if (Util.Chance(25))
 					CastSpell(WoWDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -509,12 +509,12 @@ namespace DOL.GS
 					spell.ClientEffect = 4075;
 					spell.Icon = 4075;
 					spell.Damage = 400;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Frost Shock";
 					spell.Range = 500;
 					spell.SpellID = 11876;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_WoWDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WoWDD);
 				}
@@ -540,7 +540,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
@@ -556,13 +556,13 @@ namespace DOL.GS
 	{
 		public WrethOfWinterOgre() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -582,11 +582,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -607,7 +607,7 @@ namespace DOL.GS
 			Size = 250;
 			Level = 71;
 			MaxSpeedBase = 280;
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			Flags = eFlags.GHOST;
 			WrethOfWinterOgreBrain sbrain = new WrethOfWinterOgreBrain();
 			SetOwnBrain(sbrain);
@@ -618,7 +618,7 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 			{
 				if(Util.Chance(25))
 					CastSpell(WoWDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -640,12 +640,12 @@ namespace DOL.GS
 					spell.ClientEffect = 4075;
 					spell.Icon = 4075;
 					spell.Damage = 400;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Frost Shock";
 					spell.Range = 500;
 					spell.SpellID = 11957;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_WoWDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WoWDD);
 				}
@@ -671,7 +671,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
@@ -687,13 +687,13 @@ namespace DOL.GS
 	{
 		public WrethOfWinterIce() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -713,11 +713,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -738,7 +738,7 @@ namespace DOL.GS
 			Size = 250;
 			Level = 73;
 			MaxSpeedBase = 280;
-			MeleeDamageType = eDamageType.Cold;
+			MeleeDamageType = EDamageType.Cold;
 			Flags = eFlags.GHOST;
 			WrethOfWinterIceBrain sbrain = new WrethOfWinterIceBrain();
 			SetOwnBrain(sbrain);
@@ -749,7 +749,7 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 			{
 				if (Util.Chance(25))
 					CastSpell(WoWDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -771,12 +771,12 @@ namespace DOL.GS
 					spell.ClientEffect = 4075;
 					spell.Icon = 4075;
 					spell.Damage = 400;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Frost Shock";
 					spell.Range = 500;
 					spell.SpellID = 11958;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_WoWDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WoWDD);
 				}
@@ -802,7 +802,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
@@ -818,13 +818,13 @@ namespace DOL.GS
 	{
 		public WrethOfWinterRaumarik() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -844,11 +844,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -869,7 +869,7 @@ namespace DOL.GS
 			Size = 250;
 			Level = 74;
 			MaxSpeedBase = 280;
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			Flags = eFlags.GHOST;
 			WrethOfWinterRaumarikBrain sbrain = new WrethOfWinterRaumarikBrain();
 			SetOwnBrain(sbrain);
@@ -880,7 +880,7 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 			{
 				if (Util.Chance(25))
 					CastSpell(WoWDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -902,12 +902,12 @@ namespace DOL.GS
 					spell.ClientEffect = 4075;
 					spell.Icon = 4075;
 					spell.Damage = 400;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Frost Shock";
 					spell.Range = 500;
 					spell.SpellID = 11958;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_WoWDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WoWDD);
 				}
@@ -933,7 +933,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
@@ -949,13 +949,13 @@ namespace DOL.GS
 	{
 		public WrethOfWinterLich() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -975,11 +975,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -1000,7 +1000,7 @@ namespace DOL.GS
 			Size = 250;
 			Level = 74;
 			MaxSpeedBase = 280;
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			Flags = eFlags.GHOST;
 			WrethOfWinterLichBrain sbrain = new WrethOfWinterLichBrain();
 			SetOwnBrain(sbrain);
@@ -1011,7 +1011,7 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 			{
 				if (Util.Chance(25))
 					CastSpell(WoWDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -1033,12 +1033,12 @@ namespace DOL.GS
 					spell.ClientEffect = 4075;
 					spell.Icon = 4075;
 					spell.Damage = 400;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Frost Shock";
 					spell.Range = 500;
 					spell.SpellID = 11877;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_WoWDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WoWDD);
 				}
@@ -1064,7 +1064,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
@@ -1080,13 +1080,13 @@ namespace DOL.GS
 	{
 		public WrethOfWinterArachite() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -1106,11 +1106,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -1131,7 +1131,7 @@ namespace DOL.GS
 			Size = 250;
 			Level = 75;
 			MaxSpeedBase = 280;
-			MeleeDamageType = eDamageType.Thrust;
+			MeleeDamageType = EDamageType.Thrust;
 			Flags = eFlags.GHOST;
 			WrethOfWinterArachiteBrain sbrain = new WrethOfWinterArachiteBrain();
 			SetOwnBrain(sbrain);
@@ -1142,9 +1142,9 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (Util.Chance(25) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+			if (Util.Chance(25) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 					CastSpell(WoWPoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
@@ -1175,9 +1175,9 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11878;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DamageOverTime.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Uninterruptible = true;
 					m_WoWPoison = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_WoWPoison);
@@ -1204,7 +1204,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();

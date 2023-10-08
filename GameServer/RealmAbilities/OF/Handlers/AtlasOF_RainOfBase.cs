@@ -54,7 +54,7 @@ namespace DOL.GS.RealmAbilities
                 DamageType = damageType,
                 Target = "Self",
                 Radius = 0,
-                Type = eSpellType.DamageAdd.ToString(),
+                Type = ESpellType.DamageAdd.ToString(),
                 Value = 0,
                 Duration = duration / 1000,
                 Pulse = 0,

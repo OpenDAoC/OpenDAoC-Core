@@ -554,29 +554,29 @@ namespace DOL.GS
 
             #region Weapons
 
-            switch ((eObjectType)item.Object_Type)
+            switch ((EObjectType)item.Object_Type)
             {
-                case eObjectType.RecurvedBow:
-                case eObjectType.CompositeBow:
-                case eObjectType.Longbow:
-                case eObjectType.Crossbow:
-                case eObjectType.Staff:
-                case eObjectType.Fired:
+                case EObjectType.RecurvedBow:
+                case EObjectType.CompositeBow:
+                case EObjectType.Longbow:
+                case EObjectType.Crossbow:
+                case EObjectType.Staff:
+                case EObjectType.Fired:
                     maxCount += 36;
                     break;
-                case eObjectType.Thrown:
-                case eObjectType.CrushingWeapon:
-                case eObjectType.SlashingWeapon:
-                case eObjectType.ThrustWeapon:
-                case eObjectType.Flexible:
-                case eObjectType.Blades:
-                case eObjectType.Blunt:
-                case eObjectType.Piercing:
-                case eObjectType.Sword:
-                case eObjectType.Hammer:
-                case eObjectType.LeftAxe:
-                case eObjectType.Axe:
-                case eObjectType.HandToHand:
+                case EObjectType.Thrown:
+                case EObjectType.CrushingWeapon:
+                case EObjectType.SlashingWeapon:
+                case EObjectType.ThrustWeapon:
+                case EObjectType.Flexible:
+                case EObjectType.Blades:
+                case EObjectType.Blunt:
+                case EObjectType.Piercing:
+                case EObjectType.Sword:
+                case EObjectType.Hammer:
+                case EObjectType.LeftAxe:
+                case EObjectType.Axe:
+                case EObjectType.HandToHand:
                     {
                         int dps = item.DPS_AF;
                         if (dps > 520)
@@ -585,12 +585,12 @@ namespace DOL.GS
                             maxCount += 5;
                         break;
                     }
-                case eObjectType.TwoHandedWeapon:
-                case eObjectType.PolearmWeapon:
-                case eObjectType.LargeWeapons:
-                case eObjectType.CelticSpear:
-                case eObjectType.Scythe:
-                case eObjectType.Spear:
+                case EObjectType.TwoHandedWeapon:
+                case EObjectType.PolearmWeapon:
+                case EObjectType.LargeWeapons:
+                case EObjectType.CelticSpear:
+                case EObjectType.Scythe:
+                case EObjectType.Spear:
                     {
                         int dps = item.DPS_AF;
                         if (dps > 520)
@@ -599,7 +599,7 @@ namespace DOL.GS
                             maxCount += 10;
                     }
                     break;
-                case eObjectType.Shield:
+                case EObjectType.Shield:
                     switch (item.Type_Damage)
                     {
                         case 1:
@@ -616,7 +616,7 @@ namespace DOL.GS
                             break;
                     }
                     break;
-                case eObjectType.Instrument:
+                case EObjectType.Instrument:
                     switch (item.Type_Damage)
                     {
                         case 1:
@@ -639,13 +639,13 @@ namespace DOL.GS
 
             #region Armor
 
-                case eObjectType.Cloth:
-                case eObjectType.Leather:
-                case eObjectType.Reinforced:
-                case eObjectType.Studded:
-                case eObjectType.Scale:
-                case eObjectType.Chain:
-                case eObjectType.Plate:
+                case EObjectType.Cloth:
+                case EObjectType.Leather:
+                case EObjectType.Reinforced:
+                case EObjectType.Studded:
+                case EObjectType.Scale:
+                case EObjectType.Chain:
+                case EObjectType.Plate:
                     switch (item.Item_Type)
                     {
                         case Slot.HELM:

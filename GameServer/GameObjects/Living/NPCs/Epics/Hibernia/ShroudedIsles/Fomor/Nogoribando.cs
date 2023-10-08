@@ -16,21 +16,21 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Nogoribando Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
 				default: return 30; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -125,7 +125,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
 				IsChangingSize = false;
@@ -158,7 +158,7 @@ namespace DOL.AI.Brain
 				GameLiving target = Body.TargetObject as GameLiving;
 				if(target != null)
                 {
-					if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.StrConDebuff))
+					if(!target.effectListComponent.ContainsEffectForEffectType(EEffect.StrConDebuff))
 						Body.CastSpell(Boss_SC_Debuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
 				if(IsChangingSize==false)
@@ -191,8 +191,8 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.Radius = 350;
 					spell.SpellID = 11837;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.StrengthConstitutionDebuff.ToString();
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.StrengthConstitutionDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Boss_SC_Debuff = new Spell(spell, 70);
@@ -223,7 +223,7 @@ namespace DOL.AI.Brain
 					spell.Value = 50;
 					spell.SpellID = 11838;
 					spell.Target = "Self";
-					spell.Type = eSpellType.CombatSpeedBuff.ToString();
+					spell.Type = ESpellType.CombatSpeedBuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Boss_Haste_Buff = new Spell(spell, 70);

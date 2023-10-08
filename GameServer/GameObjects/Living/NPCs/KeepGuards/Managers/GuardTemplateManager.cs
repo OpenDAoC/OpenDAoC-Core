@@ -36,14 +36,14 @@ namespace DOL.GS.Keeps
                 {
                     switch (guard.Realm)
                     {
-                        case eRealm.None:
-                        case eRealm.Albion:
+                        case ERealm.None:
+                        case ERealm.Albion:
                             guard.Spells.Add(SpellMgr.AlbLordHealSpell);
                             break;
-                        case eRealm.Midgard:
+                        case ERealm.Midgard:
                             guard.Spells.Add(SpellMgr.MidLordHealSpell);
                             break;
-                        case eRealm.Hibernia:
+                        case ERealm.Hibernia:
                             guard.Spells.Add(SpellMgr.HibLordHealSpell);
                             break;
                     }
@@ -52,14 +52,14 @@ namespace DOL.GS.Keeps
                 {
                     switch (guard.Realm)
                     {
-                        case eRealm.None:
-                        case eRealm.Albion:
+                        case ERealm.None:
+                        case ERealm.Albion:
                             guard.Spells.Add(SpellMgr.AlbGuardHealSmallSpell);
                             break;
-                        case eRealm.Midgard:
+                        case ERealm.Midgard:
                             guard.Spells.Add(SpellMgr.MidGuardHealSmallSpell);
                             break;
-                        case eRealm.Hibernia:
+                        case ERealm.Hibernia:
                             guard.Spells.Add(SpellMgr.HibGuardHealSmallSpell);
                             break;
                     }
@@ -71,16 +71,16 @@ namespace DOL.GS.Keeps
                 {
                     switch (guard.Realm)
                     {
-                        case eRealm.None:
-                        case eRealm.Albion:
+                        case ERealm.None:
+                        case ERealm.Albion:
                             guard.Spells.Add(SpellMgr.AlbGuardBoltSpellPortalKeep);
                             guard.Spells.Add(SkillBase.GetSpellByID(10));
                             break;
-                        case eRealm.Midgard:
+                        case ERealm.Midgard:
                             guard.Spells.Add(SpellMgr.MidGuardBoltSpellPortalKeep);
                             guard.Spells.Add(SkillBase.GetSpellByID(2669));
                             break;
-                        case eRealm.Hibernia:
+                        case ERealm.Hibernia:
                             guard.Spells.Add(SpellMgr.HibGuardBoltSpellPortalKeep);
                             guard.Spells.Add(SkillBase.GetSpellByID(4310));
                             break;
@@ -90,8 +90,8 @@ namespace DOL.GS.Keeps
                 {
                     switch (guard.Realm)
                     {
-                        case eRealm.None:
-                        case eRealm.Albion:
+                        case ERealm.None:
+                        case ERealm.Albion:
                             if (guard.Level < 6)
                             {
                                 guard.Spells.Add(SkillBase.GetSpellByID(301));
@@ -144,7 +144,7 @@ namespace DOL.GS.Keeps
                             }
 
                             break;
-                        case eRealm.Midgard:
+                        case ERealm.Midgard:
                             if (guard.Level < 6)
                             {
                                 guard.Spells.Add(SkillBase.GetSpellByID(2503));
@@ -196,7 +196,7 @@ namespace DOL.GS.Keeps
                                 guard.Spells.Add(SkillBase.GetSpellByID(2670));
                             }
                             break;
-                        case eRealm.Hibernia:
+                        case ERealm.Hibernia:
                             if (guard.Level < 6)
                             {
                                 guard.Spells.Add(SkillBase.GetSpellByID(4103));
@@ -260,13 +260,13 @@ namespace DOL.GS.Keeps
                 if (guard.Component.Keep != null)
 					guard.Realm = guard.Component.Keep.Realm;
 
-                if (guard.Realm != eRealm.None)
+                if (guard.Realm != ERealm.None)
                 {
                     guard.ModelRealm = guard.Realm;
                 }
                 else
                 {
-                    guard.ModelRealm = (eRealm)Util.Random(1, 3);
+                    guard.ModelRealm = (ERealm)Util.Random(1, 3);
                 }
             }
             else
@@ -371,25 +371,25 @@ namespace DOL.GS.Keeps
             //portal keep guards are always male
             if (guard is GuardFighterRK)
             {
-                guard.Gender = eGender.Male;
+                guard.Gender = EGender.Male;
             }
             if (guard is GuardCorpseSummoner)
             {
-                guard.Gender = eGender.Male;
+                guard.Gender = EGender.Male;
             }
             else if (guard.IsPortalKeepGuard || guard.Level == 255)
             {
-                guard.Gender = eGender.Male;
+                guard.Gender = EGender.Male;
             }
             else
             {
                 if (Util.Chance(50))
                 {
-                    guard.Gender = eGender.Male;
+                    guard.Gender = EGender.Male;
                 }
                 else
                 {
-                    guard.Gender = eGender.Female;
+                    guard.Gender = EGender.Female;
                 }
             }
         }
@@ -463,21 +463,21 @@ namespace DOL.GS.Keeps
             {
                 switch (guard.Realm)
                 {
-                    case eRealm.None:
-                    case eRealm.Albion:
+                    case ERealm.None:
+                    case ERealm.Albion:
                         {
                             guard.Model = AlbionHastener;
                             guard.Size = 45;
                             break;
                         }
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                         {
                             guard.Model = MidgardHastener;
                             guard.Size = 50;
                             guard.Flags ^= GameNPC.eFlags.GHOST;
                             break;
                         }
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                         {
                             guard.Model = HiberniaHastener;
                             guard.Size = 45;
@@ -490,15 +490,15 @@ namespace DOL.GS.Keeps
             switch (guard.ModelRealm)
             {
                 #region None
-                case eRealm.None:
+                case ERealm.None:
                 #endregion
 
                 #region Albion
-                case eRealm.Albion:
+                case ERealm.Albion:
                     {
                         if (guard is GuardArcher)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 3))
                                 {
@@ -521,7 +521,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardCaster)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 1))
                                 {
@@ -542,7 +542,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardFighter)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 4))
                                 {
@@ -580,7 +580,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardHealer)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 2))
                                 {
@@ -601,7 +601,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardLord || guard is MissionMaster)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 2))
                                 {
@@ -622,7 +622,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardStealther)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 2))
                                 {
@@ -646,11 +646,11 @@ namespace DOL.GS.Keeps
                 #endregion
 
                 #region Midgard
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     {
                         if (guard is GuardArcher)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 3))
                                 {
@@ -675,7 +675,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardCaster)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 2))
                                 {
@@ -698,7 +698,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardFighter)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 4))
                                 {
@@ -736,7 +736,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardHealer)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 1))
                                 {
@@ -757,7 +757,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardLord || guard is MissionMaster)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 3))
                                 {
@@ -781,7 +781,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardStealther)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 2))
                                 {
@@ -805,11 +805,11 @@ namespace DOL.GS.Keeps
                 #endregion
 
                 #region Hibernia
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     {
                         if (guard is GuardArcher)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 2))
                                 {
@@ -832,7 +832,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardCaster)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 1))
                                 {
@@ -851,7 +851,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardFighter)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 2))
                                 {
@@ -885,7 +885,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardHealer)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 2))
                                 {
@@ -906,7 +906,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardLord || guard is MissionMaster)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 3))
                                 {
@@ -930,7 +930,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardStealther)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 switch (Util.Random(0, 1))
                                 {
@@ -1040,13 +1040,13 @@ namespace DOL.GS.Keeps
             {
                 #region None
 
-                case eRealm.None:
+                case ERealm.None:
 
                 #endregion None
 
                 #region Albion
 
-                case eRealm.Albion:
+                case ERealm.Albion:
                     {
                         if (guard is GuardArcher)
                         {
@@ -1083,7 +1083,7 @@ namespace DOL.GS.Keeps
                             }
                             else
                             {
-                                if (guard.Gender == eGender.Male)
+                                if (guard.Gender == EGender.Male)
                                 {
                                     guard.Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SetGuardName.Armsman");
                                     guard.TranslationId = "SetGuardName.Armsman";
@@ -1102,7 +1102,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardLord && guard.Component != null && guard.Component.Keep != null)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 guard.Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SetGuardName.Lord", GetKeepShortName(guard.Component.Keep.Name));
                                 guard.TranslationId = "SetGuardName.Lord";
@@ -1130,7 +1130,7 @@ namespace DOL.GS.Keeps
 
                 #region Midgard
 
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     {
                         if (guard is GuardArcher)
                         {
@@ -1197,7 +1197,7 @@ namespace DOL.GS.Keeps
 
                 #region Hibernia
 
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     {
                         if (guard is GuardArcher)
                         {
@@ -1245,7 +1245,7 @@ namespace DOL.GS.Keeps
                         }
                         else if (guard is GuardLord)
                         {
-                            if (guard.Gender == eGender.Male)
+                            if (guard.Gender == EGender.Male)
                             {
                                 guard.Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SetGuardName.Chieftain", GetKeepShortName(guard.Component.Keep.Name));
                                 guard.TranslationId = "SetGuardName.Chieftain";
@@ -1272,7 +1272,7 @@ namespace DOL.GS.Keeps
                 #endregion
             }
 
-            if (guard.Realm == eRealm.None)
+            if (guard.Realm == ERealm.None)
             {
                 guard.Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SetGuardName.Renegade", guard.Name);
             }
@@ -1293,7 +1293,7 @@ namespace DOL.GS.Keeps
                 guard.BlockChance = 15;
                 guard.ParryChance = 15;
 
-                if (guard.ModelRealm != eRealm.Albion)
+                if (guard.ModelRealm != ERealm.Albion)
                 {
                     guard.EvadeChance = 10;
                     guard.ParryChance = 5;
@@ -1313,7 +1313,7 @@ namespace DOL.GS.Keeps
                 guard.BlockChance = 10;
                 guard.ParryChance = 10;
 
-                if (guard.ModelRealm != eRealm.Albion)
+                if (guard.ModelRealm != ERealm.Albion)
                 {
                     guard.EvadeChance = 5;
                     guard.ParryChance = 5;
@@ -1325,7 +1325,7 @@ namespace DOL.GS.Keeps
             }
             else if (guard is GuardArcher)
             {
-                if (guard.ModelRealm == eRealm.Albion)
+                if (guard.ModelRealm == ERealm.Albion)
                 {
                     guard.BlockChance = 10;
                     guard.EvadeChance = 5;
@@ -1384,7 +1384,7 @@ namespace DOL.GS.Keeps
             }
             else if (guard.Level < 85)
             {
-                if (guard.Realm == eRealm.None)
+                if (guard.Realm == ERealm.None)
                 {
                     guard.MaxSpeedBase = 200;
                 }
@@ -1413,7 +1413,7 @@ namespace DOL.GS.Keeps
         /// <param name="guard">The guard object</param>
         private static void SetGuardResists(GameKeepGuard guard)
         {
-            for (int i = (int)eProperty.Resist_First; i <= (int)eProperty.Resist_Last; i++)
+            for (int i = (int)EProperty.Resist_First; i <= (int)EProperty.Resist_Last; i++)
             {
                 if (guard is GuardLord)
                 {

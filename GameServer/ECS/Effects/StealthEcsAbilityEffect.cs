@@ -10,7 +10,7 @@ namespace DOL.GS
         public StealthEcsAbilityEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.Stealth;
+            EffectType = EEffect.Stealth;
             EffectService.RequestStartEffect(this);
         }
 
@@ -26,9 +26,9 @@ namespace DOL.GS
                 OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Stealth.NowHidden"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             OwnerPlayer.Out.SendPlayerModelTypeChange(OwnerPlayer, 3);
 
-            if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
+            if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedBuff))
             {
-                foreach (var speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
+                foreach (var speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(EEffect.MovementSpeedBuff))
                 {
                     EffectService.RequestDisableEffect(speedBuff);
                 }
@@ -81,9 +81,9 @@ namespace DOL.GS
                 otherPlayer.Out.SendPlayerCreate(OwnerPlayer);
                 otherPlayer.Out.SendLivingEquipmentUpdate(OwnerPlayer);
             }
-            if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
+            if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedBuff))
             {
-                var speedBuff = OwnerPlayer.effectListComponent.GetBestDisabledSpellEffect(eEffect.MovementSpeedBuff);
+                var speedBuff = OwnerPlayer.effectListComponent.GetBestDisabledSpellEffect(EEffect.MovementSpeedBuff);
 
                 if (speedBuff != null)
                 {

@@ -13,7 +13,7 @@ namespace DOL.GS.Quests
 		public RaizeMission(object owner)
 			: base(owner)
 		{
-			eRealm realm = 0;
+			ERealm realm = 0;
 			if (owner is Group)
 				realm = (owner as Group).Leader.Realm;
 			else if (owner is GamePlayer)

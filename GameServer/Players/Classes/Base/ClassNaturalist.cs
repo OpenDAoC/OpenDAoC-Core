@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Naturalist, "Naturalist", "Naturalist")]
+	[CharacterClass((int)ECharacterClass.Naturalist, "Naturalist", "Naturalist")]
 	public class ClassNaturalist : CharacterClassBase
 	{
 		public ClassNaturalist()
@@ -31,7 +31,7 @@ namespace DOL.GS.PlayerClass
 			m_specializationMultiplier = 10;
 			m_wsbase = 360;
 			m_baseHP = 720;
-			m_manaStat = eStat.EMP;
+			m_manaStat = EStat.EMP;
 		}
 
 		public override string GetTitle(GamePlayer player, int level)

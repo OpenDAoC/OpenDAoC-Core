@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Magician Trainer
 	/// </summary>
-	[NPCGuildScript("Magician Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Magician Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Magician Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Magician Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class MagicianTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Magician; }
+			get { return ECharacterClass.Magician; }
 		}
 
 		public const string PRACTICE_WEAPON_ID = "training_staff";
@@ -87,7 +87,7 @@ namespace DOL.GS.Trainer
 
 			switch (text) {
 				case "Eldritch":
-					if(player.Race == (int) eRace.Elf || player.Race == (int) eRace.Lurikeen){
+					if(player.Race == (int) ERace.Elf || player.Race == (int) ERace.Lurikeen){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
 					else{
@@ -95,7 +95,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Enchanter":
-					if(player.Race == (int) eRace.Elf || player.Race == (int) eRace.Lurikeen){
+					if(player.Race == (int) ERace.Elf || player.Race == (int) ERace.Lurikeen){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
 					else{
@@ -103,7 +103,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Mentalist":
-					if(player.Race == (int) eRace.Celt || player.Race == (int) eRace.Elf || player.Race == (int) eRace.Lurikeen || player.Race == (int) eRace.Shar)
+					if(player.Race == (int) ERace.Celt || player.Race == (int) ERace.Elf || player.Race == (int) ERace.Lurikeen || player.Race == (int) ERace.Shar)
 					{
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}

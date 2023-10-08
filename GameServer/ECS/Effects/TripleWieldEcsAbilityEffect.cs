@@ -9,7 +9,7 @@ namespace DOL.GS
         public TripleWieldEcsAbilityEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.TripleWield;
+            EffectType = EEffect.TripleWield;
 			EffectService.RequestStartEffect(this);
 		}
 
@@ -42,8 +42,8 @@ namespace DOL.GS
 		public void EventHandler(AttackData attackData)
 		{
 			if (attackData == null) return;
-			if (attackData.AttackResult != eAttackResult.HitUnstyled
-				&& attackData.AttackResult != eAttackResult.HitStyle) return;
+			if (attackData.AttackResult != EAttackResult.HitUnstyled
+				&& attackData.AttackResult != EAttackResult.HitStyle) return;
 			if (attackData.Target == null) return;
 			GameLiving target = attackData.Target;
 			if (target == null) return;
@@ -67,16 +67,16 @@ namespace DOL.GS
 			modifier = Math.Max(75, modifier);
 
 			double damage = baseDamage * modifier * 0.001; // attack speed is 10 times higher (2.5spd=25)			
-			double damageResisted = damage * target.GetResist(eDamageType.Body) * -0.01;
+			double damageResisted = damage * target.GetResist(EDamageType.Body) * -0.01;
 
 			AttackData ad = new AttackData();
 			ad.Attacker = attacker;
 			ad.Target = target;
 			ad.Damage = (int)(damage + damageResisted);
 			ad.Modifier = (int)damageResisted;
-			ad.DamageType = eDamageType.Body;
+			ad.DamageType = EDamageType.Body;
 			ad.AttackType = AttackData.eAttackType.MeleeOneHand;
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 			ad.WeaponSpeed = attackData.WeaponSpeed;
 
 			GamePlayer owner = attacker as GamePlayer;

@@ -87,7 +87,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(Icons); // unknown
 				pak.WriteByte(0); // unknown
 
-				foreach (EcsGameEffect effect in m_gameClient.Player.effectListComponent.GetAllEffects().Where(e => e.EffectType != eEffect.Pulse))
+				foreach (EcsGameEffect effect in m_gameClient.Player.effectListComponent.GetAllEffects().Where(e => e.EffectType != EEffect.Pulse))
 				{
 					if (effect.Icon == 0)
 						continue;
@@ -238,7 +238,7 @@ namespace DOL.GS.PacketHandler
 								SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID(spell.SubSpellID)));
 						}
 
-						if (spell.SpellType == eSpellType.DefensiveProc || spell.SpellType == eSpellType.OffensiveProc)
+						if (spell.SpellType == ESpellType.DefensiveProc || spell.SpellType == ESpellType.OffensiveProc)
 							SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, SkillBase.GetSpellByID((int)spell.Value)));
 					}
 				}

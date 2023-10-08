@@ -2,10 +2,10 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.BuffEffectiveness)]
+[PropertyCalculator(EProperty.BuffEffectiveness)]
 public class BuffEffectivenessPercentCalculator : PropertyCalculator
 {
-    public override int CalcValue(GameLiving living, eProperty property)
+    public override int CalcValue(GameLiving living, EProperty property)
     {
         GameLiving livingToCheck;
 

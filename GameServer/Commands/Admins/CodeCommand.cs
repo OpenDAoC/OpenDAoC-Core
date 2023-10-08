@@ -9,7 +9,7 @@ namespace DOL.GS.Commands
 {
 	[Command(
 		"&code",
-		ePrivLevel.Admin,
+		EPrivLevel.Admin,
 		"AdminCommands.Code.Description",
 		"AdminCommands.Code.Usage")]
 	public class CodeCommand : ACommandHandler, ICommandHandler

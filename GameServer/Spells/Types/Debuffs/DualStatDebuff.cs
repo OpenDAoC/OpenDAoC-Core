@@ -24,8 +24,8 @@ namespace DOL.GS.Spells
 	/// </summary>	
 	public abstract class DualStatDebuff : SingleStatDebuff
 	{
-		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.Debuff; } }
-		public override eBuffBonusCategory BonusCategory2 { get { return eBuffBonusCategory.Debuff; } }
+		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.Debuff; } }
+		public override EBuffBonusCategory BonusCategory2 { get { return EBuffBonusCategory.Debuff; } }
 
         // public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         // {
@@ -60,8 +60,8 @@ namespace DOL.GS.Spells
 	[SpellHandler("StrengthConstitutionDebuff")]
 	public class StrengthConDebuff : DualStatDebuff
 	{
-		public override eProperty Property1 { get { return eProperty.Strength; } }
-		public override eProperty Property2 { get { return eProperty.Constitution; } }
+		public override EProperty Property1 { get { return EProperty.Strength; } }
+		public override EProperty Property2 { get { return EProperty.Constitution; } }
 
 		// constructor
 		public StrengthConDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -73,8 +73,8 @@ namespace DOL.GS.Spells
 	[SpellHandler("DexterityQuicknessDebuff")]
 	public class DexterityQuiDebuff : DualStatDebuff
 	{
-		public override eProperty Property1 { get { return eProperty.Dexterity; } }
-		public override eProperty Property2 { get { return eProperty.Quickness; } }
+		public override EProperty Property1 { get { return EProperty.Dexterity; } }
+		public override EProperty Property2 { get { return EProperty.Quickness; } }
 
 		// constructor
 		public DexterityQuiDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -86,8 +86,8 @@ namespace DOL.GS.Spells
 	[SpellHandler("DexterityConstitutionDebuff")]
 	public class DexterityConDebuff : DualStatDebuff
 	{
-		public override eProperty Property1 { get { return eProperty.Dexterity; } }
-		public override eProperty Property2 { get { return eProperty.Constitution; } }
+		public override EProperty Property1 { get { return EProperty.Dexterity; } }
+		public override EProperty Property2 { get { return EProperty.Constitution; } }
 
 		// constructor
 		public DexterityConDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -96,8 +96,8 @@ namespace DOL.GS.Spells
 	[SpellHandler("WeaponSkillConstitutionDebuff")]
 	public class WeaponskillConDebuff : DualStatDebuff
 	{
-		public override eProperty Property1 { get { return eProperty.WeaponSkill; } }
-		public override eProperty Property2 { get { return eProperty.Constitution; } }
+		public override EProperty Property1 { get { return EProperty.WeaponSkill; } }
+		public override EProperty Property2 { get { return EProperty.Constitution; } }
 		public WeaponskillConDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 }

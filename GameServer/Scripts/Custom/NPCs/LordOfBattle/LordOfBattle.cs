@@ -29,23 +29,23 @@ namespace DOL.GS {
 			
 				player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 
-            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
+            if (player.effectListComponent.ContainsEffectForEffectType(EEffect.ResurrectionIllness))
             {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness));
+                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, EEffect.ResurrectionIllness));
             }
 
-            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
+            if (player.effectListComponent.ContainsEffectForEffectType(EEffect.RvrResurrectionIllness))
             {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
+                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, EEffect.RvrResurrectionIllness));
             }
 
 
             if (player.InCombatPvPInLast(8000))
                 return true;
 
-            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+            if (player.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
             {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.Disease));
+                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, EEffect.Disease));
             }
 
 
@@ -70,13 +70,13 @@ namespace DOL.GS {
 				case "event zone":
 					switch (t.Realm)
 					{
-						case eRealm.Albion:
+						case ERealm.Albion:
 							t.MoveTo(330, 52759, 39528, 4677, 36);
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							t.MoveTo(334, 52160, 39862, 5472, 46);
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							t.MoveTo(335, 52836, 40401, 4672, 441);
 							break;
 					}
@@ -126,14 +126,14 @@ namespace DOL.GS {
                     playersToRez.Add(player, GameLoop.GameLoopTime);
                 }
 
-                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
+                if (player.effectListComponent.ContainsEffectForEffectType(EEffect.ResurrectionIllness))
                 {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness));
+                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, EEffect.ResurrectionIllness));
                 }
 
-                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
+                if (player.effectListComponent.ContainsEffectForEffectType(EEffect.RvrResurrectionIllness))
                 {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
+                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, EEffect.RvrResurrectionIllness));
                 }
 
                 if(playersToKill.Contains(player))

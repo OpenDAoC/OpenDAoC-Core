@@ -57,7 +57,7 @@ namespace DOL.GS.Keeps
 		public void MoveToPosition(DbKeepPosition position)
 		{ }
 
-		public override eRealm Realm
+		public override ERealm Realm
 		{
 			get
 			{
@@ -87,7 +87,7 @@ namespace DOL.GS.Keeps
 			//For players in frontiers only
 			if (GameServer.KeepManager.FrontierRegionsList.Contains(player.CurrentRegionID))
 			{
-				if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+				if (player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
 				{
 					if (player.Realm != this.Realm)
 						return false;
@@ -107,9 +107,9 @@ namespace DOL.GS.Keeps
 				eDialogCode code = eDialogCode.WarmapWindowAlbion;
 				switch (player.Realm)
 				{
-					case eRealm.Albion: code = eDialogCode.WarmapWindowAlbion; break;
-					case eRealm.Midgard: code = eDialogCode.WarmapWindowMidgard; break;
-					case eRealm.Hibernia: code = eDialogCode.WarmapWindowHibernia; break;
+					case ERealm.Albion: code = eDialogCode.WarmapWindowAlbion; break;
+					case ERealm.Midgard: code = eDialogCode.WarmapWindowMidgard; break;
+					case ERealm.Hibernia: code = eDialogCode.WarmapWindowHibernia; break;
 				}
 
 				player.Out.SendDialogBox(code, 0, 0, 0, 0, eDialogType.Warmap, false, "");

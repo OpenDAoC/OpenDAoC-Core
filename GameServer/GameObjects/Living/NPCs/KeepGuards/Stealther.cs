@@ -13,9 +13,9 @@ namespace DOL.GS.Keeps
 
 		protected override ICharacterClass GetClass()
 		{
-			if (ModelRealm == eRealm.Albion) return new ClassInfiltrator();
-			else if (ModelRealm == eRealm.Midgard) return new ClassShadowblade();
-			else if (ModelRealm == eRealm.Hibernia) return new ClassNightshade();
+			if (ModelRealm == ERealm.Albion) return new ClassInfiltrator();
+			else if (ModelRealm == ERealm.Midgard) return new ClassShadowblade();
+			else if (ModelRealm == ERealm.Hibernia) return new ClassNightshade();
 			return new DefaultCharacterClass();
 		}
 
@@ -29,19 +29,19 @@ namespace DOL.GS.Keeps
 		{
 			switch (ModelRealm)
 			{
-				case eRealm.None:
-				case eRealm.Albion:
+				case ERealm.None:
+				case ERealm.Albion:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Infiltrator");
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Shadowblade");
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Nightshade");
 					break;
 			}
 
-			if (Realm == eRealm.None)
+			if (Realm == ERealm.None)
 			{
 				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
 			}

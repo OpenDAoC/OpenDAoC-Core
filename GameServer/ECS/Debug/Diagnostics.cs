@@ -221,7 +221,7 @@ namespace DOL.GS.Commands
 {
     [Command(
     "&diag",
-    ePrivLevel.GM,
+    EPrivLevel.GM,
     "Toggle server logging of performance diagnostics.",
     "/diag perf <on|off> to toggle performance diagnostics logging on server.",
     "/diag notify <on|off> <interval> to toggle GameEventMgr Notify profiling, where interval is the period of time in milliseconds during which to accumulate stats.",
@@ -325,7 +325,7 @@ namespace DOL.GS.Commands
     // This should be moved outside of this file if we want this as a real player-facing feature.
     [Command(
         "&charstats",
-        ePrivLevel.GM,
+        EPrivLevel.GM,
         "Shows normally hidden character stats.")]
     public class CharStatsCommandHandler : ACommandHandler, ICommandHandler
     {
@@ -363,19 +363,19 @@ namespace DOL.GS.Commands
             }
 
             // Melee crit chance.
-            int meleeCritChance = player.GetModified(eProperty.CriticalMeleeHitChance);
+            int meleeCritChance = player.GetModified(EProperty.CriticalMeleeHitChance);
             messages.Add($"Melee Crit Chance: {meleeCritChance}%");
 
             // Spell crit chance
-            int spellCritChance = player.GetModified(eProperty.CriticalSpellHitChance);
+            int spellCritChance = player.GetModified(EProperty.CriticalSpellHitChance);
             messages.Add($"Spell Crit Chance: {spellCritChance}");
 
             // Spell casting speed bonus.
-            int spellCastSpeed = player.GetModified(eProperty.CastingSpeed);
+            int spellCastSpeed = player.GetModified(EProperty.CastingSpeed);
             messages.Add($"Spell Casting Speed Bonus: {spellCastSpeed}%");
 
             // Heal crit chance.
-            int healCritChance = player.GetModified(eProperty.CriticalHealHitChance);
+            int healCritChance = player.GetModified(EProperty.CriticalHealHitChance);
             messages.Add($"Heal Crit Chance: {healCritChance}%");
 
             // Archery crit chance.
@@ -386,7 +386,7 @@ namespace DOL.GS.Commands
                 || player.HasSpecialization(Specs.Crossbow)
                 || player.HasSpecialization(Specs.Longbow))
             {
-                int archeryCritChance = player.GetModified(eProperty.CriticalArcheryHitChance);
+                int archeryCritChance = player.GetModified(EProperty.CriticalArcheryHitChance);
                 messages.Add($"Archery Crit Chance: {archeryCritChance}%");
             }
 
@@ -397,7 +397,7 @@ namespace DOL.GS.Commands
 
     [Command(
     "&fsm",
-    ePrivLevel.GM,
+    EPrivLevel.GM,
     "Toggle server logging of mob FSM states.",
     "/fsm debug <on|off> to toggle performance diagnostics logging on server.")]
     public class StateMachineCommandHandler : ACommandHandler, ICommandHandler
@@ -437,7 +437,7 @@ namespace DOL.GS.Commands
 
     [Command(
     "&aggro",
-    ePrivLevel.GM,
+    EPrivLevel.GM,
     "Toggle server logging of mob aggro tables.",
     "/aggro debug <on|off> to toggle mob aggro logging on server.")]
     public class AggroCommandHandler : ACommandHandler, ICommandHandler

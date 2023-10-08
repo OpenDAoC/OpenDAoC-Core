@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Curengkur Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -42,11 +42,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -121,7 +121,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
@@ -142,7 +142,7 @@ namespace DOL.AI.Brain
 				}				
 				if (Util.Chance(50) && !Body.IsCasting)
 					Body.CastSpell(CurengkurDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
-				if (Util.Chance(50) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+				if (Util.Chance(50) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 					Body.CastSpell(CurengkurPoison, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 			}
 			base.Think();
@@ -163,12 +163,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 4159;
 					spell.Icon = 4159;
 					spell.Damage = 400;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Curengkur's Strike";
 					spell.Range = 1500;
 					spell.SpellID = 11903;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CurengkurDD = new Spell(spell, 60);
@@ -202,9 +202,9 @@ namespace DOL.AI.Brain
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11904;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DamageOverTime.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Uninterruptible = true;
 					m_CurengkurPoison = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CurengkurPoison);
@@ -290,13 +290,13 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 1141;
 					spell.Icon = 1141;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Curengkur's Radiation";
 					spell.Range = 0;
 					spell.Radius = 800;
 					spell.SpellID = 11903;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_CurengkurDD2 = new Spell(spell, 60);

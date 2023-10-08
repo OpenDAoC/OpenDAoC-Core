@@ -18,7 +18,7 @@ namespace DOL.GS.Scripts
             Name = "Gnat";
             Size = 50;
             Level = 35;
-            Gender = eGender.Neutral;
+            Gender = EGender.Neutral;
 
             BodyType = 6; // Humanoid
             MaxDistance = 1500;
@@ -125,7 +125,7 @@ namespace DOL.GS
         {
             Model = 115;
             Name = "fiery ant";
-            MeleeDamageType = eDamageType.Thrust;
+            MeleeDamageType = EDamageType.Thrust;
             RoamingRange = 350;
             RespawnInterval = -1;
             MaxDistance = 1500;
@@ -133,7 +133,7 @@ namespace DOL.GS
             IsWorthReward = false; //worth no reward
             Size = (byte) Util.Random(8, 12);
             Level = (byte) Util.Random(30, 34);
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             GnatAntsBrain adds = new GnatAntsBrain();
             LoadedFromScript = true;
             SetOwnBrain(adds);

@@ -27,13 +27,13 @@ namespace DOL.GS.Keeps
 		{
 			switch (Realm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					TradeItems = new MerchantTradeItems("AlbRvRCraftingList");
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					TradeItems = new MerchantTradeItems("MidRvRCraftingList");
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					TradeItems = new MerchantTradeItems("HibRvRCraftingList");
 					break;
 			}
@@ -42,7 +42,7 @@ namespace DOL.GS.Keeps
 			return base.AddToWorld();
 		}
 
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			return base.GetArmorAbsorb(slot) - 0.05;
 		}
@@ -51,64 +51,64 @@ namespace DOL.GS.Keeps
 		
 		protected override ICharacterClass GetClass()
 		{
-			if (ModelRealm == eRealm.Albion) return new ClassArmsman();
-			else if (ModelRealm == eRealm.Midgard) return new ClassWarrior();
-			else if (ModelRealm == eRealm.Hibernia) return new ClassHero();
+			if (ModelRealm == ERealm.Albion) return new ClassArmsman();
+			else if (ModelRealm == ERealm.Midgard) return new ClassWarrior();
+			else if (ModelRealm == ERealm.Hibernia) return new ClassHero();
 			return new DefaultCharacterClass();
 		}
 		protected override void SetName()
 		{
 			switch (ModelRealm)
 			{
-				case eRealm.None:
-				case eRealm.Albion:
+				case ERealm.None:
+				case ERealm.Albion:
 					if (IsPortalKeepGuard)
 					{
-						if (Gender == eGender.Female)
+						if (Gender == EGender.Female)
 							Name = "Frida";
 						else Name = "Frederic";
 					}
 					else
 					{
-						if (Gender == eGender.Female)
+						if (Gender == EGender.Female)
 							Name = "Fabienne";
 						else Name = "Francis";
 					}
 					GuildName = "Merchant";
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					if (IsPortalKeepGuard)
 					{
-						if (Gender == eGender.Female)
+						if (Gender == EGender.Female)
 							Name = "Olga";
 						else Name = "Odun";
 					}
 					else
 					{
-						if (Gender == eGender.Female)
+						if (Gender == EGender.Female)
 							Name = "Rikke";
 						else Name = "Rollo";
 					}
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					if (IsPortalKeepGuard)
 					{
-						if (Gender == eGender.Female)
+						if (Gender == EGender.Female)
 							Name = "Alenja";
 						else Name = "Airell";
 					}
 					else
 					{
-						if (Gender == eGender.Female)
+						if (Gender == EGender.Female)
 							Name = "Arwen";
 						else Name = "Aidan";
 					}
 					break;
 			}
 
-			if (Realm == eRealm.None)
+			if (Realm == ERealm.None)
 			{
-				if (Gender == eGender.Female)
+				if (Gender == EGender.Female)
 					Name = "Finnja";
 				else Name = "Fynn";
 			}

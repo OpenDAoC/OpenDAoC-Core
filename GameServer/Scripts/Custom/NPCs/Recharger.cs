@@ -78,8 +78,8 @@ public class Recharger : GameNPC
         }
 
         if ((item.SpellID == 0 && item.SpellID1 == 0) ||
-            item.Object_Type == (int) eObjectType.Poison ||
-            (item.Object_Type == (int) eObjectType.Magical && (item.Item_Type == 40 || item.Item_Type == 41)))
+            item.Object_Type == (int) EObjectType.Poison ||
+            (item.Object_Type == (int) EObjectType.Magical && (item.Item_Type == 40 || item.Item_Type == 41)))
         {
             SayTo(player,
                 LanguageMgr.GetTranslation(player.Client.Account.Language,
@@ -279,8 +279,8 @@ public class Recharger : GameNPC
         }
 
         if ((item.SpellID == 0 && item.SpellID1 == 0) ||
-            item.Object_Type == (int) eObjectType.Poison ||
-            (item.Object_Type == (int) eObjectType.Magical && (item.Item_Type == 40 || item.Item_Type == 41)))
+            item.Object_Type == (int) EObjectType.Poison ||
+            (item.Object_Type == (int) EObjectType.Magical && (item.Item_Type == 40 || item.Item_Type == 41)))
         {
             return false;
         }

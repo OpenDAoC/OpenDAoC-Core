@@ -204,16 +204,16 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			eStat[] updateStats =
+			EStat[] updateStats =
 			{
-				eStat.STR,
-				eStat.DEX,
-				eStat.CON,
-				eStat.QUI,
-				eStat.INT,
-				eStat.PIE,
-				eStat.EMP,
-				eStat.CHR,
+				EStat.STR,
+				EStat.DEX,
+				EStat.CON,
+				EStat.QUI,
+				EStat.INT,
+				EStat.PIE,
+				EStat.EMP,
+				EStat.CHR,
 			};
 
 			int[] baseStats = new int[updateStats.Length];
@@ -225,37 +225,37 @@ namespace DOL.GS.PacketHandler
 			for (int i = 0; i < updateStats.Length; i++)
 			{
 				int cap = itemCap;
-				switch ((eProperty)updateStats[i])
+				switch ((EProperty)updateStats[i])
 				{
-					case eProperty.Strength:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.StrCapBonus];
+					case EProperty.Strength:
+						cap += m_gameClient.Player.ItemBonus[(int)EProperty.StrCapBonus];
 						break;
-					case eProperty.Dexterity:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.DexCapBonus];
+					case EProperty.Dexterity:
+						cap += m_gameClient.Player.ItemBonus[(int)EProperty.DexCapBonus];
 						break;
-					case eProperty.Constitution:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.ConCapBonus];
+					case EProperty.Constitution:
+						cap += m_gameClient.Player.ItemBonus[(int)EProperty.ConCapBonus];
 						break;
-					case eProperty.Quickness:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.QuiCapBonus];
+					case EProperty.Quickness:
+						cap += m_gameClient.Player.ItemBonus[(int)EProperty.QuiCapBonus];
 						break;
-					case eProperty.Intelligence:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.IntCapBonus];
+					case EProperty.Intelligence:
+						cap += m_gameClient.Player.ItemBonus[(int)EProperty.IntCapBonus];
 						break;
-					case eProperty.Piety:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.PieCapBonus];
+					case EProperty.Piety:
+						cap += m_gameClient.Player.ItemBonus[(int)EProperty.PieCapBonus];
 						break;
-					case eProperty.Charisma:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.ChaCapBonus];
+					case EProperty.Charisma:
+						cap += m_gameClient.Player.ItemBonus[(int)EProperty.ChaCapBonus];
 						break;
-					case eProperty.Empathy:
-						cap += m_gameClient.Player.ItemBonus[(int)eProperty.EmpCapBonus];
+					case EProperty.Empathy:
+						cap += m_gameClient.Player.ItemBonus[(int)EProperty.EmpCapBonus];
 						break;
 					default: break;
 				}
 
 				if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
-					cap += m_gameClient.Player.ItemBonus[(int)eProperty.AcuCapBonus];
+					cap += m_gameClient.Player.ItemBonus[(int)EProperty.AcuCapBonus];
 
 				itemCaps[i] = Math.Min(cap, itemCap + bonusCap);
 			}
@@ -267,7 +267,7 @@ namespace DOL.GS.PacketHandler
 				{
 					baseStats[i] = m_gameClient.Player.GetBaseStat(updateStats[i]);
 
-					if (updateStats[i] == eStat.CON)
+					if (updateStats[i] == EStat.CON)
 						baseStats[i] -= m_gameClient.Player.TotalConstitutionLostAtDeath;
 
 					pak.WriteShort((ushort)baseStats[i]);
@@ -278,19 +278,19 @@ namespace DOL.GS.PacketHandler
 				// buffs/debuffs only; remove base, item bonus, RA bonus, class bonus
 				for (int i = 0; i < updateStats.Length; i++)
 				{
-					modStats[i] = m_gameClient.Player.GetModified((eProperty)updateStats[i]);
+					modStats[i] = m_gameClient.Player.GetModified((EProperty)updateStats[i]);
 					int abilityBonus = m_gameClient.Player.AbilityBonus[(int)updateStats[i]];
 					int acuityItemBonus = 0;
 
 					if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
 					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
-							&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
+						if (m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Ranger
+							&& m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Nightshade)
 						{
-							abilityBonus += m_gameClient.Player.AbilityBonus[(int)eProperty.Acuity];
+							abilityBonus += m_gameClient.Player.AbilityBonus[(int)EProperty.Acuity];
 
 							if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
-								acuityItemBonus = m_gameClient.Player.ItemBonus[(int)eProperty.Acuity];
+								acuityItemBonus = m_gameClient.Player.ItemBonus[(int)EProperty.Acuity];
 						}
 					}
 
@@ -310,12 +310,12 @@ namespace DOL.GS.PacketHandler
 
 					if (updateStats[i] == m_gameClient.Player.CharacterClass.ManaStat)
 					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
-							&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
+						if (m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Ranger
+							&& m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Nightshade)
 						{
 
 							if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank)
-								acuityItemBonus = m_gameClient.Player.ItemBonus[(int)eProperty.Acuity];
+								acuityItemBonus = m_gameClient.Player.ItemBonus[(int)EProperty.Acuity];
 						}
 					}
 
@@ -338,10 +338,10 @@ namespace DOL.GS.PacketHandler
 					int acuityItemBonus = 0;
 					if (m_gameClient.Player.CharacterClass.ClassType != eClassType.PureTank && (int)updateStats[i] == (int)m_gameClient.Player.CharacterClass.ManaStat)
 					{
-						if (m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Ranger
-							&& m_gameClient.Player.CharacterClass.ID != (int)eCharacterClass.Nightshade)
+						if (m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Scout && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Hunter && m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Ranger
+							&& m_gameClient.Player.CharacterClass.ID != (int)ECharacterClass.Nightshade)
 						{
-							acuityItemBonus = m_gameClient.Player.AbilityBonus[(int)eProperty.Acuity];
+							acuityItemBonus = m_gameClient.Player.AbilityBonus[(int)EProperty.Acuity];
 						}
 					}
 					pak.WriteByte((byte)(m_gameClient.Player.AbilityBonus[(int)updateStats[i]] + acuityItemBonus));
@@ -368,17 +368,17 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			eResist[] updateResists =
+			EResist[] updateResists =
 			{
-				eResist.Crush,
-				eResist.Slash,
-				eResist.Thrust,
-				eResist.Heat,
-				eResist.Cold,
-				eResist.Matter,
-				eResist.Body,
-				eResist.Spirit,
-				eResist.Energy,
+				EResist.Crush,
+				EResist.Slash,
+				EResist.Thrust,
+				EResist.Heat,
+				EResist.Cold,
+				EResist.Matter,
+				EResist.Body,
+				EResist.Spirit,
+				EResist.Energy,
 			};
 
 			int[] racial = new int[updateResists.Length];
@@ -403,7 +403,7 @@ namespace DOL.GS.PacketHandler
 				// buffs/debuffs only; remove base, item bonus, RA bonus, race bonus
 				for (int i = 0; i < updateResists.Length; i++)
 				{
-					int mod = m_gameClient.Player.GetModified((eProperty)updateResists[i]);
+					int mod = m_gameClient.Player.GetModified((EProperty)updateResists[i]);
 					int buff = mod - racial[i] - m_gameClient.Player.AbilityBonus[(int)updateResists[i]] - Math.Min(caps[i], m_gameClient.Player.ItemBonus[(int)updateResists[i]]);
 					pak.WriteShort((ushort)buff);
 				}
@@ -468,21 +468,21 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)playerRegion.GetYOffInZone(playerToCreate.X, playerToCreate.Y));
 				pak.WriteShort(playerToCreate.Heading);
 
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
 				pak.WriteByte(playerToCreate.GetDisplayLevel(m_gameClient.Player));
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
 
 				int flags = (GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, playerToCreate) & 0x03) << 2;
 				if (playerToCreate.IsAlive == false) flags |= 0x01;
 				if (playerToCreate.IsUnderwater) flags |= 0x02; //swimming
 				if (playerToCreate.IsStealthed)  flags |= 0x10;
 				if (playerToCreate.IsWireframe) flags |= 0x20;
-				if (playerToCreate.CharacterClass.ID == (int)eCharacterClass.Vampiir) flags |= 0x40; //Vamp fly
+				if (playerToCreate.CharacterClass.ID == (int)ECharacterClass.Vampiir) flags |= 0x40; //Vamp fly
 				pak.WriteByte((byte)flags);
 				pak.WriteByte(0x00); // new in 1.74
 
@@ -522,7 +522,7 @@ namespace DOL.GS.PacketHandler
         {
             //[Freya] Nidel: Can use realm button in character selection screen
 
-            if (ServerProperties.Properties.ALLOW_ALL_REALMS || m_gameClient.Account.PrivLevel > (int)ePrivLevel.Player)
+            if (ServerProperties.Properties.ALLOW_ALL_REALMS || m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player)
             {
                 SendLoginGranted(1);
             }

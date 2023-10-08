@@ -13,10 +13,10 @@ namespace DOL.GS.Keeps
     {
         private static new readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private eRealm m_lastRealm = eRealm.None;
+        private ERealm m_lastRealm = ERealm.None;
         private long m_lastSpawnTime = 0;
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             return base.GetArmorAbsorb(slot) + 0.05;
         }
@@ -28,7 +28,7 @@ namespace DOL.GS.Keeps
             get
             {
                 // PvE Lords drop stacks of dreaded seals instead of giving RP directly
-                if (Realm == eRealm.None && GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
+                if (Realm == ERealm.None && GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
                     return 0;
 
                 long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
@@ -54,7 +54,7 @@ namespace DOL.GS.Keeps
             get
             {
                 // PvE Lords drop stacks of dreaded seals instead of giving RP directly
-                if (Realm == eRealm.None && GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
+                if (Realm == ERealm.None && GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
                     return 0;
 
                 long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
@@ -143,7 +143,7 @@ namespace DOL.GS.Keeps
             if (this.isDeadOrDying == false)
             {
                 this.isDeadOrDying = true;
-                m_lastRealm = eRealm.None;
+                m_lastRealm = ERealm.None;
 
                 if (Properties.LOG_KEEP_CAPTURES)
                 {
@@ -261,7 +261,7 @@ namespace DOL.GS.Keeps
         /// <param name="damageType">The type of the damage</param>
         /// <param name="damageAmount">The amount of the damage</param>
         /// <param name="criticalAmount">The critical hit amount of damage</param>
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             int distance;
             if (Component != null && Component.Keep != null && Component.Keep is GameKeep)
@@ -289,7 +289,7 @@ namespace DOL.GS.Keeps
 
             if (attacker != null && Component != null && Component.Keep != null && IsAlive && !GameServer.ServerRules.IsSameRealm(this, attacker, true))
             {
-                if (Realm == m_lastRealm && m_lastRealm != eRealm.None)
+                if (Realm == m_lastRealm && m_lastRealm != ERealm.None)
                     Component.Keep.LastAttackedByEnemyTick = CurrentRegion.Time; // light up the keep/tower
             }
 
@@ -338,9 +338,9 @@ namespace DOL.GS.Keeps
 
         protected override ICharacterClass GetClass()
         {
-            if (ModelRealm == eRealm.Albion) return new ClassArmsman();
-            else if (ModelRealm == eRealm.Midgard) return new ClassWarrior();
-            else if (ModelRealm == eRealm.Hibernia) return new ClassHero();
+            if (ModelRealm == ERealm.Albion) return new ClassArmsman();
+            else if (ModelRealm == ERealm.Midgard) return new ClassWarrior();
+            else if (ModelRealm == ERealm.Hibernia) return new ClassHero();
             return new DefaultCharacterClass();
         }
 
@@ -351,7 +351,7 @@ namespace DOL.GS.Keeps
             BlockChance = 15;
             ParryChance = 15;
 
-            if (ModelRealm != eRealm.Albion)
+            if (ModelRealm != ERealm.Albion)
             {
                 EvadeChance = 10;
                 ParryChance = 5;
@@ -456,23 +456,23 @@ namespace DOL.GS.Keeps
 
             switch (ModelRealm)
             {
-                case eRealm.None:
-                case eRealm.Albion:
-                    if (Gender == eGender.Male)
+                case ERealm.None:
+                case ERealm.Albion:
+                    if (Gender == EGender.Male)
                         Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Lord", GetKeepShortName(Component.Keep.Name));
                     else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Lady", GetKeepShortName(Component.Keep.Name));
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Jarl", GetKeepShortName(Component.Keep.Name));
                     break;
-                case eRealm.Hibernia:
-                    if (Gender == eGender.Male)
+                case ERealm.Hibernia:
+                    if (Gender == EGender.Male)
                         Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Chieftain", GetKeepShortName(Component.Keep.Name));
                     else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Chieftess", GetKeepShortName(Component.Keep.Name));
                     break;
             }
 
-            if (Realm == eRealm.None)
+            if (Realm == ERealm.None)
             {
                 Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
             }

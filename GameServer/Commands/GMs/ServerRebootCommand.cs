@@ -8,7 +8,7 @@ using log4net;
 
 namespace DOL.GS.Commands;
 
-[Command("&ServerReboot",ePrivLevel.GM,"Restarts the server instantly!!")]
+[Command("&ServerReboot",EPrivLevel.GM,"Restarts the server instantly!!")]
 public class ServerRebootCommand : ACommandHandler, ICommandHandler
 {
     private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

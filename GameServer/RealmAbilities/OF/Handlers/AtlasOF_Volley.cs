@@ -17,29 +17,29 @@ namespace DOL.GS.RealmAbilities
 
         private GamePlayer _player;
 
-        public static int GetMinAttackRange(eRealm realm)
+        public static int GetMinAttackRange(ERealm realm)
         {
             double minAttackRange = 2000;
 
-            if (realm == eRealm.Albion)
+            if (realm == ERealm.Albion)
                 minAttackRange = 2200;
-            if (realm == eRealm.Hibernia)
+            if (realm == ERealm.Hibernia)
                 minAttackRange = 2100;
-            if (realm == eRealm.Midgard)
+            if (realm == ERealm.Midgard)
                 minAttackRange = 2000;
 
             return (int) (minAttackRange * 0.66);
         }
 
-        public static int GetMaxAttackRange(eRealm realm)
+        public static int GetMaxAttackRange(ERealm realm)
         {
             double maxAttackRange = 4000;
 
-            if (realm == eRealm.Albion)
+            if (realm == ERealm.Albion)
                 maxAttackRange = 4400;
-            if (realm == eRealm.Hibernia)
+            if (realm == ERealm.Hibernia)
                 maxAttackRange = 4300;
-            if (realm == eRealm.Midgard)
+            if (realm == ERealm.Midgard)
                 maxAttackRange = 4200;
 
             return (int) maxAttackRange;
@@ -76,7 +76,7 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            if (_player.ActiveWeaponSlot != eActiveWeaponSlot.Distance || _player.ActiveWeapon == null)
+            if (_player.ActiveWeaponSlot != EActiveWeaponSlot.Distance || _player.ActiveWeapon == null)
             {
                 _player.Out.SendMessage("You need to be equipped with a bow to use Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -108,7 +108,7 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            EcsGameEffect volley = EffectListService.GetEffectOnTarget(_player, eEffect.Volley);
+            EcsGameEffect volley = EffectListService.GetEffectOnTarget(_player, EEffect.Volley);
 
             if (volley != null)
             {
@@ -137,12 +137,12 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            if (_player.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
+            if (_player.rangeAttackComponent.RangedAttackType == ERangedAttackType.Critical)
             {
                 _player.Out.SendMessage("You can't use Volley while Critical-Shot is active!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
-            else if (_player.rangeAttackComponent.RangedAttackType == eRangedAttackType.Long)
+            else if (_player.rangeAttackComponent.RangedAttackType == ERangedAttackType.Long)
             {
                 _player.Out.SendMessage("You can't use Volley while Longshot is active!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -155,7 +155,7 @@ namespace DOL.GS.RealmAbilities
                 {
                     if (area is Area.Circle)
                     {
-                        if (_player.Realm == eRealm.Albion)
+                        if (_player.Realm == ERealm.Albion)
                         {
                             if (area.Description is "Druim Ligen" or "Druim Cain" or "Svasud Faste" or "Vindsaul Faste")
                             {
@@ -163,7 +163,7 @@ namespace DOL.GS.RealmAbilities
                                 return;
                             }
                         }
-                        else if (_player.Realm == eRealm.Hibernia)
+                        else if (_player.Realm == ERealm.Hibernia)
                         {
                             if (area.Description is "Svasud Faste" or "Vindsaul Faste" or "Castle Sauvage" or "Snowdonia Fortress")
                             {
@@ -171,7 +171,7 @@ namespace DOL.GS.RealmAbilities
                                 return;
                             }
                         }
-                        else if (_player.Realm == eRealm.Midgard)
+                        else if (_player.Realm == ERealm.Midgard)
                         {
                             if (area.Description is "Druim Ligen" or "Druim Cain" or "Castle Sauvage" or "Snowdonia Fortress")
                             {
@@ -182,7 +182,7 @@ namespace DOL.GS.RealmAbilities
                     }
                     else if (area is KeepArea)
                     {
-                        if (_player.Realm == eRealm.Albion)
+                        if (_player.Realm == ERealm.Albion)
                         {
                             if (area.Description is "Hibernia Portal Keep" or "Midgard Portal Keep")
                             {
@@ -190,7 +190,7 @@ namespace DOL.GS.RealmAbilities
                                 return;
                             }
                         }
-                        else if (_player.Realm == eRealm.Hibernia)
+                        else if (_player.Realm == ERealm.Hibernia)
                         {
                             if (area.Description is "Midgard Portal Keep" or "Albion Portal Keep")
                             {
@@ -198,7 +198,7 @@ namespace DOL.GS.RealmAbilities
                                 return;
                             }
                         }
-                        else if (_player.Realm == eRealm.Midgard)
+                        else if (_player.Realm == ERealm.Midgard)
                         {
                             if (area.Description is "Albion Portal Keep" or "Hibernia Portal Keep")
                             {

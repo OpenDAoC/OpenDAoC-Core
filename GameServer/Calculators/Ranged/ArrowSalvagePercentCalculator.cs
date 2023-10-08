@@ -11,10 +11,10 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.ArrowRecovery)]
+[PropertyCalculator(EProperty.ArrowRecovery)]
 public class ArrowSalvagePercentCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		return Math.Max(0, living.AbilityBonus[(int)property] - living.DebuffCategory[(int)property]);
 	}

@@ -36,7 +36,7 @@ namespace DOL.GS
         public bool RenewEffect;
         public bool IsDisabled;
         public bool IsBuffActive;
-        public eEffect EffectType;
+        public EEffect EffectType;
         public GameLiving Owner;
         public GamePlayer OwnerPlayer;
         public int TickInterval;
@@ -88,7 +88,7 @@ namespace DOL.GS
             Duration = initParams.Duration;
             Effectiveness = initParams.Effectiveness;
             OwnerPlayer = Owner as GamePlayer; // will be null on NPCs, but here for convenience.
-            EffectType = eEffect.Unknown; // should be overridden in subclasses
+            EffectType = EEffect.Unknown; // should be overridden in subclasses
             CancelEffect = false;
             RenewEffect = false;
             IsDisabled = false;

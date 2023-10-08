@@ -69,9 +69,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 			client.Player = null;
 
 			//reset realm if no characters
-			if((client.Account.Characters == null || client.Account.Characters.Length <= 0) && client.Account.Realm != (int)eRealm.None)
+			if((client.Account.Characters == null || client.Account.Characters.Length <= 0) && client.Account.Realm != (int)ERealm.None)
 			{
-				client.Account.Realm = (int)eRealm.None;
+				client.Account.Realm = (int)ERealm.None;
 			}
 
 			string accountName = packet.ReadString(24);
@@ -80,7 +80,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				if(GameServer.ServerRules.IsAllowedCharsInAllRealms(client))
 				{
-					client.Out.SendRealm(eRealm.None);
+					client.Out.SendRealm(ERealm.None);
 				}
 				else
 				{
@@ -89,32 +89,32 @@ namespace DOL.GS.PacketHandler.Client.v168
 					//Realm selection screen is shown
 					switch(client.Account.Realm)
 					{
-						case 1: client.Out.SendRealm(eRealm.Albion); break;
-						case 2: client.Out.SendRealm(eRealm.Midgard); break;
-						case 3: client.Out.SendRealm(eRealm.Hibernia); break;
-						default: client.Out.SendRealm(eRealm.None); break;
+						case 1: client.Out.SendRealm(ERealm.Albion); break;
+						case 2: client.Out.SendRealm(ERealm.Midgard); break;
+						case 3: client.Out.SendRealm(ERealm.Hibernia); break;
+						default: client.Out.SendRealm(ERealm.None); break;
 					}
 				}
 			} 
 			else 
 			{
-				eRealm chosenRealm;
+				ERealm chosenRealm;
 
-				if(client.Account.Realm == (int)eRealm.None || GameServer.ServerRules.IsAllowedCharsInAllRealms(client))
+				if(client.Account.Realm == (int)ERealm.None || GameServer.ServerRules.IsAllowedCharsInAllRealms(client))
 				{
 					// allow player to choose the realm if not set already or if allowed by server rules
-					if(accountName.EndsWith("-S"))      chosenRealm = eRealm.Albion;
-					else if(accountName.EndsWith("-N")) chosenRealm = eRealm.Midgard;
-					else if(accountName.EndsWith("-H")) chosenRealm = eRealm.Hibernia;
+					if(accountName.EndsWith("-S"))      chosenRealm = ERealm.Albion;
+					else if(accountName.EndsWith("-N")) chosenRealm = ERealm.Midgard;
+					else if(accountName.EndsWith("-H")) chosenRealm = ERealm.Hibernia;
 					else
 					{
 						if (log.IsErrorEnabled)
 							log.Error("User has chosen unknown realm: "+accountName+"; account="+client.Account.Name);
-						client.Out.SendRealm(eRealm.None);
+						client.Out.SendRealm(ERealm.None);
 						return;
 					}
 
-					if (client.Account.Realm == (int)eRealm.None && !GameServer.ServerRules.IsAllowedCharsInAllRealms(client))
+					if (client.Account.Realm == (int)ERealm.None && !GameServer.ServerRules.IsAllowedCharsInAllRealms(client))
 					{
 						// save the choice
 						client.Account.Realm = (int)chosenRealm;
@@ -126,7 +126,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				else
 				{
 					// use saved realm ignoring what user has chosen if server rules do not allow to choose the realm
-					chosenRealm = (eRealm)client.Account.Realm;
+					chosenRealm = (ERealm)client.Account.Realm;
 				}
 
 				client.Out.SendCharacterOverview(chosenRealm);
@@ -164,15 +164,15 @@ namespace DOL.GS.PacketHandler.Client.v168
 			client.Player = null;
 
 			//reset realm if no characters
-			if ((client.Account.Characters == null || client.Account.Characters.Length <= 0) && client.Account.Realm != (int)eRealm.None)
-				client.Account.Realm = (int)eRealm.None;
+			if ((client.Account.Characters == null || client.Account.Characters.Length <= 0) && client.Account.Realm != (int)ERealm.None)
+				client.Account.Realm = (int)ERealm.None;
 
 			//string accountName = packet.Readstring(24);
 			byte realm = (byte)packet.ReadByte();
 			if (realm == 0)
 			{
 				if (GameServer.ServerRules.IsAllowedCharsInAllRealms(client))
-					client.Out.SendRealm(eRealm.None);
+					client.Out.SendRealm(ERealm.None);
 				else
 				{
 					//Requests to know what realm an account is
@@ -180,30 +180,30 @@ namespace DOL.GS.PacketHandler.Client.v168
 					//Realm selection screen is shown
 					switch (client.Account.Realm)
 					{
-						case 1: client.Out.SendRealm(eRealm.Albion); break;
-						case 2: client.Out.SendRealm(eRealm.Midgard); break;
-						case 3: client.Out.SendRealm(eRealm.Hibernia); break;
-						default: client.Out.SendRealm(eRealm.None); break;
+						case 1: client.Out.SendRealm(ERealm.Albion); break;
+						case 2: client.Out.SendRealm(ERealm.Midgard); break;
+						case 3: client.Out.SendRealm(ERealm.Hibernia); break;
+						default: client.Out.SendRealm(ERealm.None); break;
 					}
 				}
 			}
 			else
 			{
-				eRealm chosenRealm;
+				ERealm chosenRealm;
 
-				if (client.Account.Realm == (int)eRealm.None || GameServer.ServerRules.IsAllowedCharsInAllRealms(client))
+				if (client.Account.Realm == (int)ERealm.None || GameServer.ServerRules.IsAllowedCharsInAllRealms(client))
 				{
 					// allow player to choose the realm if not set already or if allowed by server rules
 					if (realm == 1)
-						chosenRealm = eRealm.Albion;
+						chosenRealm = ERealm.Albion;
 					else if (realm == 2)
-						chosenRealm = eRealm.Midgard;
+						chosenRealm = ERealm.Midgard;
 					else if (realm == 3)
-						chosenRealm = eRealm.Hibernia;
+						chosenRealm = ERealm.Hibernia;
 					else
 					{
 						log.Error($"User has chosen unknown realm: {realm}; account={client.Account.Name}");
-						client.Out.SendRealm(eRealm.None);
+						client.Out.SendRealm(ERealm.None);
 						return;
 					}
 
@@ -211,7 +211,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 				else
 					// use saved realm ignoring what user has chosen if server rules do not allow to choose the realm
-					chosenRealm = (eRealm)client.Account.Realm;
+					chosenRealm = (ERealm)client.Account.Realm;
 
 				client.Out.SendCharacterOverview(chosenRealm);
 			}

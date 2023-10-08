@@ -63,7 +63,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -81,7 +81,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 				Dean.Model = 355;
 				Dean.Name = "Dean";
 				Dean.GuildName = "Advisor to the King";
-				Dean.Realm = eRealm.Hibernia;
+				Dean.Realm = ERealm.Hibernia;
 				//Druim Ligen Location
 				Dean.CurrentRegionID = 200;
 				Dean.Size = 50;

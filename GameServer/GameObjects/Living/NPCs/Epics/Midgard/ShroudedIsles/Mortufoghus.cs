@@ -18,13 +18,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Mortufoghus Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -44,11 +44,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -79,9 +79,9 @@ namespace DOL.GS
 		}
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
-			if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 			{
-				if (Util.Chance(35) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && ad.Target.IsAlive)
+				if (Util.Chance(35) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && ad.Target.IsAlive)
 					CastSpell(Mortufoghus_stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
@@ -107,7 +107,7 @@ namespace DOL.GS
 					spell.Range = 400;
 					spell.SpellID = 11890;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Stun.ToString();
+					spell.Type = ESpellType.Stun.ToString();
 					m_Mortufoghus_stun = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Mortufoghus_stun);
 				}
@@ -134,7 +134,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsTargetPicked = false;
 				RandomTarget = null;
@@ -184,7 +184,7 @@ namespace DOL.AI.Brain
 					if (RandomTarget.IsAlive && RandomTarget != null)
 					{
 						RandomTarget.MoveTo(Body.CurrentRegionID, Body.X+Util.Random(-1500,1500), Body.Y + Util.Random(-1500, 1500), Body.Z, Body.Heading);
-						RandomTarget.TakeDamage(RandomTarget, eDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
+						RandomTarget.TakeDamage(RandomTarget, EDamageType.Falling, RandomTarget.MaxHealth / 5, 0);
 						RandomTarget.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 						Port_Enemys.Remove(RandomTarget);
 					}
@@ -210,13 +210,13 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 14315;
 					spell.Icon = 14315;
 					spell.Damage = 250;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Dark Packt";
 					spell.Range = 500;
 					spell.Radius = 1000;
 					spell.SpellID = 11891;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_MortufoghusDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_MortufoghusDD);
 				}

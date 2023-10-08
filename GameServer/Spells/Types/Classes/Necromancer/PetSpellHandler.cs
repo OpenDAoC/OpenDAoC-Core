@@ -82,7 +82,7 @@ namespace DOL.GS.Spells
             int powerCost = PowerCost(playerCaster);
 
             if (powerCost > 0)
-                playerCaster.ChangeMana(playerCaster, eManaChangeType.Spell, -powerCost);
+                playerCaster.ChangeMana(playerCaster, EPowerChangeType.Spell, -powerCost);
 
             if (playerCaster.ControlledBrain is NecromancerPetBrain petBrain && Spell.SubSpellID > 0)
             {

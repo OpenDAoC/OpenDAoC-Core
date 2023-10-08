@@ -58,7 +58,7 @@ namespace DOL.GS.DailyQuest
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Succi", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Succi", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -78,7 +78,7 @@ namespace DOL.GS.DailyQuest
 				SucciHib.Model = 902;
 				SucciHib.Name = "Succi";
 				SucciHib.GuildName = "Spectre of Death";
-				SucciHib.Realm = eRealm.Hibernia;
+				SucciHib.Realm = ERealm.Hibernia;
 				//Svasud Location
 				SucciHib.CurrentRegionID = 200;
 				SucciHib.Size = 60;

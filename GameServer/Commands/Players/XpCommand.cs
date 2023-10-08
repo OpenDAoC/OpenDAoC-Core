@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&xp",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"toggle receiving experience points",
 	"/xp <on/off>")]
 public class XpCommand : ACommandHandler, ICommandHandler

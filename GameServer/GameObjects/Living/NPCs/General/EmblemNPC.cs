@@ -65,7 +65,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			if (item.Object_Type == (int) eObjectType.Shield
+			if (item.Object_Type == (int) EObjectType.Shield
 				|| item.Item_Type == Slot.CLOAK)
 			{
 				if (t.Guild == null)

@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&mountgm",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"Mount a steed",
 	"/mountgm")]
 public class MountGmCommand : ACommandHandler, ICommandHandler

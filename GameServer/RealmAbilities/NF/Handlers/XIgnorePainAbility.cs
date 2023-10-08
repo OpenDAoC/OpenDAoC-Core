@@ -42,7 +42,7 @@ namespace DOL.GS.RealmAbilities
 				}				
 			}
 
-			int healed = living.ChangeHealth(living, eHealthChangeType.Spell, living.MaxHealth * heal / 100);
+			int healed = living.ChangeHealth(living, EHealthChangeType.Spell, living.MaxHealth * heal / 100);
 
 			SendCasterSpellEffectAndCastMessage(living, 7004, healed > 0);
 

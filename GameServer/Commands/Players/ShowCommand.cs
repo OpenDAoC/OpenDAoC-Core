@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&show",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Show all your cards to the other players (all cards become 'up').",
 	"/show")]
 public class ShowCommand : ACommandHandler, ICommandHandler

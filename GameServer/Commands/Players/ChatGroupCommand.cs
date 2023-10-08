@@ -8,7 +8,7 @@ namespace DOL.GS.Commands;
 [Command(
 	"&chatgroup",
 	new string[] { "&cg" },
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Chat group command",
 	"/cg <option>")]
 public class ChatGroupCommand : ACommandHandler, ICommandHandler

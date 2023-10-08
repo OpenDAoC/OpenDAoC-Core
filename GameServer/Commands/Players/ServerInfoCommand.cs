@@ -4,7 +4,7 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Commands;
 
 [Command("&serverinfo", //command to handle
-    ePrivLevel.Player, //minimum privelege level
+    EPrivLevel.Player, //minimum privelege level
     "Shows information about the server", //command description
     "/serverinfo")] //usage
 public class ServerInfoCommand : ACommandHandler, ICommandHandler

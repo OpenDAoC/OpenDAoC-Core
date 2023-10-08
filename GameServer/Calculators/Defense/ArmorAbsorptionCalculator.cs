@@ -2,10 +2,10 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.ArmorAbsorption)]
+[PropertyCalculator(EProperty.ArmorAbsorption)]
 public class ArmorAbsorptionCalculator : PropertyCalculator
 {
-    public override int CalcValue(GameLiving living, eProperty property)
+    public override int CalcValue(GameLiving living, EProperty property)
     {
         int buffBonus = living.BaseBuffBonusCategory[property];
         int debuffMalus = Math.Abs(living.DebuffCategory[property]);

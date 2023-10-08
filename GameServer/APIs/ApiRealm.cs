@@ -61,7 +61,7 @@ public class ApiRealm
         public int UnderSiege { get; set; }
     }
 
-    public List<KeepInfo> GetKeepsByRealm(eRealm realm)
+    public List<KeepInfo> GetKeepsByRealm(ERealm realm)
     {
         var _keepsCacheKey = "api_keeps_" + realm;
         var keepInfos = new List<KeepInfo>();
@@ -73,7 +73,7 @@ public class ApiRealm
 
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
 
                     keepList = GameServer.KeepManager.GetKeepsOfRegion(1);
 
@@ -90,7 +90,7 @@ public class ApiRealm
 
                     break;
 
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     keepList = GameServer.KeepManager.GetKeepsOfRegion(100);
 
                     foreach (var keep in keepList)
@@ -107,7 +107,7 @@ public class ApiRealm
 
                     break;
 
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     keepList = GameServer.KeepManager.GetKeepsOfRegion(200);
 
                     foreach (var keep in keepList)

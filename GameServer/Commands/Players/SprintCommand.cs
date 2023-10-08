@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&sprint",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Toggles sprint mode",
 	"/sprint")]
 public class SprintCommand : ACommandHandler, ICommandHandler

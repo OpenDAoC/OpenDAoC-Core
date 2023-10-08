@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&faceloc",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Turns and faces your character into the direction of the x, y coordinates provided (using Mythic zone coordinates).",
 	"/faceloc [x] [y]")]
 public class FaceLocCommand : ACommandHandler,ICommandHandler

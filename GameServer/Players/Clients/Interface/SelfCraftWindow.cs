@@ -257,7 +257,7 @@ namespace DOL.GS
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
-                        if (i.Object_Type == (int)eObjectType.AlchemyTincture)
+                        if (i.Object_Type == (int)EObjectType.AlchemyTincture)
                         {
                             if (m_owner.GetCraftingSkillValue(ECraftingSkill.Alchemy) > 0)
                             {
@@ -265,7 +265,7 @@ namespace DOL.GS
                                 break;
                             }
                         }
-                        else if (i.Object_Type == (int)eObjectType.SpellcraftGem)
+                        else if (i.Object_Type == (int)EObjectType.SpellcraftGem)
                         {
                             if (m_owner.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) > 0)
                             {
@@ -311,7 +311,7 @@ namespace DOL.GS
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
-                        if (i.Object_Type == (int)eObjectType.AlchemyTincture)
+                        if (i.Object_Type == (int)EObjectType.AlchemyTincture)
                         {
                             if (m_owner.GetCraftingSkillValue(ECraftingSkill.Alchemy) > 0)
                             {
@@ -319,7 +319,7 @@ namespace DOL.GS
                                 break;
                             }
                         }
-                        else if (i.Object_Type == (int)eObjectType.SpellcraftGem)
+                        else if (i.Object_Type == (int)EObjectType.SpellcraftGem)
                         {
                             if (m_owner.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) > 0)
                             {

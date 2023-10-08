@@ -111,7 +111,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			#region NPC Declarations
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Brigit", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Brigit", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -130,7 +130,7 @@ namespace DOL.GS.Quests.Hibernia
 				Brigit.Model = 346;
 				Brigit.Name = "Brigit";
 				Brigit.GuildName = "";
-				Brigit.Realm = eRealm.Hibernia;
+				Brigit.Realm = ERealm.Hibernia;
 				Brigit.CurrentRegionID = 201;
 				Brigit.Size = 50;
 				Brigit.Level = 54;
@@ -146,7 +146,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Giant Caithor", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Giant Caithor", ERealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -164,7 +164,7 @@ namespace DOL.GS.Quests.Hibernia
 				Caithor.Model = 339;
 				Caithor.Name = "Giant Caithor";
 				Caithor.GuildName = "";
-				Caithor.Realm = eRealm.None;
+				Caithor.Realm = ERealm.None;
 				Caithor.CurrentRegionID = 200;
 				Caithor.Size = 160;
 				Caithor.Level = (byte)Util.Random(62,64);
@@ -237,16 +237,16 @@ namespace DOL.GS.Quests.Hibernia
 				BardEpicBoots.Durability = 50000;
 
 				BardEpicBoots.Bonus1 = 15;
-				BardEpicBoots.Bonus1Type = (int) eStat.QUI;
+				BardEpicBoots.Bonus1Type = (int) EStat.QUI;
 
 				BardEpicBoots.Bonus2 = 10;
-				BardEpicBoots.Bonus2Type = (int) eResist.Matter;
+				BardEpicBoots.Bonus2Type = (int) EResist.Matter;
 
 				BardEpicBoots.Bonus3 = 4;
-				BardEpicBoots.Bonus3Type = (int) eProperty.PowerRegenerationRate;
+				BardEpicBoots.Bonus3Type = (int) EProperty.PowerRegenerationRate;
 
 				BardEpicBoots.Bonus4 = 33;
-				BardEpicBoots.Bonus4Type = (int) eProperty.MaxHealth;
+				BardEpicBoots.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -281,16 +281,16 @@ namespace DOL.GS.Quests.Hibernia
 				BardEpicHelm.Durability = 50000;
 
 				BardEpicHelm.Bonus1 = 18;
-				BardEpicHelm.Bonus1Type = (int) eStat.CHR;
+				BardEpicHelm.Bonus1Type = (int) EStat.CHR;
 
 				BardEpicHelm.Bonus2 = 4;
-				BardEpicHelm.Bonus2Type = (int) eProperty.PowerRegenerationRate;
+				BardEpicHelm.Bonus2Type = (int) EProperty.PowerRegenerationRate;
 
 				BardEpicHelm.Bonus3 = 3;
-				BardEpicHelm.Bonus3Type = (int) eProperty.Skill_Regrowth;
+				BardEpicHelm.Bonus3Type = (int) EProperty.Skill_Regrowth;
 
 				BardEpicHelm.Bonus4 = 21;
-				BardEpicHelm.Bonus4Type = (int) eProperty.MaxHealth;
+				BardEpicHelm.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -326,16 +326,16 @@ namespace DOL.GS.Quests.Hibernia
 				BardEpicGloves.Durability = 50000;
 
 				BardEpicGloves.Bonus1 = 3;
-				BardEpicGloves.Bonus1Type = (int) eProperty.Skill_Nurture;
+				BardEpicGloves.Bonus1Type = (int) EProperty.Skill_Nurture;
 
 				BardEpicGloves.Bonus2 = 3;
-				BardEpicGloves.Bonus2Type = (int) eProperty.Skill_Music;
+				BardEpicGloves.Bonus2Type = (int) EProperty.Skill_Music;
 
 				BardEpicGloves.Bonus3 = 12;
-				BardEpicGloves.Bonus3Type = (int) eStat.DEX;
+				BardEpicGloves.Bonus3Type = (int) EStat.DEX;
 
 				BardEpicGloves.Bonus4 = 33;
-				BardEpicGloves.Bonus4Type = (int) eProperty.MaxHealth;
+				BardEpicGloves.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -369,16 +369,16 @@ namespace DOL.GS.Quests.Hibernia
 				BardEpicVest.Durability = 50000;
 
 				BardEpicVest.Bonus1 = 3;
-				BardEpicVest.Bonus1Type = (int) eProperty.Skill_Regrowth;
+				BardEpicVest.Bonus1Type = (int) EProperty.Skill_Regrowth;
 
 				BardEpicVest.Bonus2 = 3;
-				BardEpicVest.Bonus2Type = (int) eProperty.Skill_Nurture;
+				BardEpicVest.Bonus2Type = (int) EProperty.Skill_Nurture;
 
 				BardEpicVest.Bonus3 = 13;
-				BardEpicVest.Bonus3Type = (int) eStat.CON;
+				BardEpicVest.Bonus3Type = (int) EStat.CON;
 
 				BardEpicVest.Bonus4 = 15;
-				BardEpicVest.Bonus4Type = (int) eStat.CHR;
+				BardEpicVest.Bonus4Type = (int) EStat.CHR;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -412,16 +412,16 @@ namespace DOL.GS.Quests.Hibernia
 				BardEpicLegs.Durability = 50000;
 
 				BardEpicLegs.Bonus1 = 16;
-				BardEpicLegs.Bonus1Type = (int) eStat.CON;
+				BardEpicLegs.Bonus1Type = (int) EStat.CON;
 
 				BardEpicLegs.Bonus2 = 15;
-				BardEpicLegs.Bonus2Type = (int) eStat.DEX;
+				BardEpicLegs.Bonus2Type = (int) EStat.DEX;
 
 				BardEpicLegs.Bonus3 = 10;
-				BardEpicLegs.Bonus3Type = (int) eResist.Body;
+				BardEpicLegs.Bonus3Type = (int) EResist.Body;
 
 				BardEpicLegs.Bonus4 = 10;
-				BardEpicLegs.Bonus4Type = (int) eResist.Matter;
+				BardEpicLegs.Bonus4Type = (int) EResist.Matter;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -455,16 +455,16 @@ namespace DOL.GS.Quests.Hibernia
 				BardEpicArms.Durability = 50000;
 
 				BardEpicArms.Bonus1 = 15;
-				BardEpicArms.Bonus1Type = (int) eStat.STR;
+				BardEpicArms.Bonus1Type = (int) EStat.STR;
 
 				BardEpicArms.Bonus2 = 12;
-				BardEpicArms.Bonus2Type = (int) eStat.CHR;
+				BardEpicArms.Bonus2Type = (int) EStat.CHR;
 
 				BardEpicArms.Bonus3 = 10;
-				BardEpicArms.Bonus3Type = (int) eStat.CON;
+				BardEpicArms.Bonus3Type = (int) EStat.CON;
 
 				BardEpicArms.Bonus4 = 12;
-				BardEpicArms.Bonus4Type = (int) eResist.Energy;
+				BardEpicArms.Bonus4Type = (int) EResist.Energy;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -498,16 +498,16 @@ namespace DOL.GS.Quests.Hibernia
 				ChampionEpicBoots.Durability = 50000;
 
 				ChampionEpicBoots.Bonus1 = 33;
-				ChampionEpicBoots.Bonus1Type = (int) eProperty.MaxHealth;
+				ChampionEpicBoots.Bonus1Type = (int) EProperty.MaxHealth;
 
 				ChampionEpicBoots.Bonus2 = 10;
-				ChampionEpicBoots.Bonus2Type = (int) eResist.Heat;
+				ChampionEpicBoots.Bonus2Type = (int) EResist.Heat;
 
 				ChampionEpicBoots.Bonus3 = 10;
-				ChampionEpicBoots.Bonus3Type = (int) eResist.Matter;
+				ChampionEpicBoots.Bonus3Type = (int) EResist.Matter;
 
 				ChampionEpicBoots.Bonus4 = 15;
-				ChampionEpicBoots.Bonus4Type = (int) eStat.DEX;
+				ChampionEpicBoots.Bonus4Type = (int) EStat.DEX;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -542,16 +542,16 @@ namespace DOL.GS.Quests.Hibernia
 				ChampionEpicHelm.Durability = 50000;
 
 				ChampionEpicHelm.Bonus1 = 3;
-				ChampionEpicHelm.Bonus1Type = (int) eProperty.Skill_Valor;
+				ChampionEpicHelm.Bonus1Type = (int) EProperty.Skill_Valor;
 
 				ChampionEpicHelm.Bonus2 = 12;
-				ChampionEpicHelm.Bonus2Type = (int) eStat.CON;
+				ChampionEpicHelm.Bonus2Type = (int) EStat.CON;
 
 				ChampionEpicHelm.Bonus3 = 12;
-				ChampionEpicHelm.Bonus3Type = (int) eStat.QUI;
+				ChampionEpicHelm.Bonus3Type = (int) EStat.QUI;
 
 				ChampionEpicHelm.Bonus4 = 6;
-				ChampionEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				ChampionEpicHelm.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -586,16 +586,16 @@ namespace DOL.GS.Quests.Hibernia
 				ChampionEpicGloves.Durability = 50000;
 
 				ChampionEpicGloves.Bonus1 = 3;
-				ChampionEpicGloves.Bonus1Type = (int) eProperty.Skill_Parry;
+				ChampionEpicGloves.Bonus1Type = (int) EProperty.Skill_Parry;
 
 				ChampionEpicGloves.Bonus2 = 15;
-				ChampionEpicGloves.Bonus2Type = (int) eStat.STR;
+				ChampionEpicGloves.Bonus2Type = (int) EStat.STR;
 
 				ChampionEpicGloves.Bonus3 = 15;
-				ChampionEpicGloves.Bonus3Type = (int) eStat.QUI;
+				ChampionEpicGloves.Bonus3Type = (int) EStat.QUI;
 
 				ChampionEpicGloves.Bonus4 = 10;
-				ChampionEpicGloves.Bonus4Type = (int) eResist.Crush;
+				ChampionEpicGloves.Bonus4Type = (int) EResist.Crush;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -629,16 +629,16 @@ namespace DOL.GS.Quests.Hibernia
 				ChampionEpicVest.Durability = 50000;
 
 				ChampionEpicVest.Bonus1 = 4;
-				ChampionEpicVest.Bonus1Type = (int) eProperty.Skill_Valor;
+				ChampionEpicVest.Bonus1Type = (int) EProperty.Skill_Valor;
 
 				ChampionEpicVest.Bonus2 = 13;
-				ChampionEpicVest.Bonus2Type = (int) eStat.STR;
+				ChampionEpicVest.Bonus2Type = (int) EStat.STR;
 
 				ChampionEpicVest.Bonus3 = 13;
-				ChampionEpicVest.Bonus3Type = (int) eStat.QUI;
+				ChampionEpicVest.Bonus3Type = (int) EStat.QUI;
 
 				ChampionEpicVest.Bonus4 = 10;
-				ChampionEpicVest.Bonus4Type = (int) eResist.Energy;
+				ChampionEpicVest.Bonus4Type = (int) EResist.Energy;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -672,16 +672,16 @@ namespace DOL.GS.Quests.Hibernia
 				ChampionEpicLegs.Durability = 50000;
 
 				ChampionEpicLegs.Bonus1 = 15;
-				ChampionEpicLegs.Bonus1Type = (int) eStat.CON;
+				ChampionEpicLegs.Bonus1Type = (int) EStat.CON;
 
 				ChampionEpicLegs.Bonus2 = 15;
-				ChampionEpicLegs.Bonus2Type = (int) eStat.DEX;
+				ChampionEpicLegs.Bonus2Type = (int) EStat.DEX;
 
 				ChampionEpicLegs.Bonus3 = 10;
-				ChampionEpicLegs.Bonus3Type = (int) eResist.Crush;
+				ChampionEpicLegs.Bonus3Type = (int) EResist.Crush;
 
 				ChampionEpicLegs.Bonus4 = 18;
-				ChampionEpicLegs.Bonus4Type = (int) eProperty.MaxHealth;
+				ChampionEpicLegs.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -715,16 +715,16 @@ namespace DOL.GS.Quests.Hibernia
 				ChampionEpicArms.Durability = 50000;
 
 				ChampionEpicArms.Bonus1 = 3;
-				ChampionEpicArms.Bonus1Type = (int) eProperty.Skill_Large_Weapon;
+				ChampionEpicArms.Bonus1Type = (int) EProperty.Skill_Large_Weapon;
 
 				ChampionEpicArms.Bonus2 = 10;
-				ChampionEpicArms.Bonus2Type = (int) eStat.STR;
+				ChampionEpicArms.Bonus2Type = (int) EStat.STR;
 
 				ChampionEpicArms.Bonus3 = 10;
-				ChampionEpicArms.Bonus3Type = (int) eStat.QUI;
+				ChampionEpicArms.Bonus3Type = (int) EStat.QUI;
 
 				ChampionEpicArms.Bonus4 = 33;
-				ChampionEpicArms.Bonus4Type = (int) eProperty.MaxHealth;
+				ChampionEpicArms.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -757,16 +757,16 @@ namespace DOL.GS.Quests.Hibernia
 				NightshadeEpicBoots.Durability = 50000;
 
 				NightshadeEpicBoots.Bonus1 = 12;
-				NightshadeEpicBoots.Bonus1Type = (int) eStat.STR;
+				NightshadeEpicBoots.Bonus1Type = (int) EStat.STR;
 
 				NightshadeEpicBoots.Bonus2 = 15;
-				NightshadeEpicBoots.Bonus2Type = (int) eStat.DEX;
+				NightshadeEpicBoots.Bonus2Type = (int) EStat.DEX;
 
 				NightshadeEpicBoots.Bonus3 = 10;
-				NightshadeEpicBoots.Bonus3Type = (int) eResist.Thrust;
+				NightshadeEpicBoots.Bonus3Type = (int) EResist.Thrust;
 
 				NightshadeEpicBoots.Bonus4 = 24;
-				NightshadeEpicBoots.Bonus4Type = (int) eProperty.MaxHealth;
+				NightshadeEpicBoots.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -801,16 +801,16 @@ namespace DOL.GS.Quests.Hibernia
 				NightshadeEpicHelm.Durability = 50000;
 
 				NightshadeEpicHelm.Bonus1 = 9;
-				NightshadeEpicHelm.Bonus1Type = (int) eStat.STR;
+				NightshadeEpicHelm.Bonus1Type = (int) EStat.STR;
 
 				NightshadeEpicHelm.Bonus2 = 9;
-				NightshadeEpicHelm.Bonus2Type = (int) eStat.DEX;
+				NightshadeEpicHelm.Bonus2Type = (int) EStat.DEX;
 
 				NightshadeEpicHelm.Bonus3 = 9;
-				NightshadeEpicHelm.Bonus3Type = (int) eStat.QUI;
+				NightshadeEpicHelm.Bonus3Type = (int) EStat.QUI;
 
 				NightshadeEpicHelm.Bonus4 = 39;
-				NightshadeEpicHelm.Bonus4Type = (int) eProperty.MaxHealth;
+				NightshadeEpicHelm.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -845,16 +845,16 @@ namespace DOL.GS.Quests.Hibernia
 				NightshadeEpicGloves.Durability = 50000;
 
 				NightshadeEpicGloves.Bonus1 = 2;
-				NightshadeEpicGloves.Bonus1Type = (int) eProperty.Skill_Critical_Strike;
+				NightshadeEpicGloves.Bonus1Type = (int) EProperty.Skill_Critical_Strike;
 
 				NightshadeEpicGloves.Bonus2 = 12;
-				NightshadeEpicGloves.Bonus2Type = (int) eStat.DEX;
+				NightshadeEpicGloves.Bonus2Type = (int) EStat.DEX;
 
 				NightshadeEpicGloves.Bonus3 = 13;
-				NightshadeEpicGloves.Bonus3Type = (int) eStat.QUI;
+				NightshadeEpicGloves.Bonus3Type = (int) EStat.QUI;
 
 				NightshadeEpicGloves.Bonus4 = 5;
-				NightshadeEpicGloves.Bonus4Type = (int) eProperty.Skill_Envenom;
+				NightshadeEpicGloves.Bonus4Type = (int) EProperty.Skill_Envenom;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -888,13 +888,13 @@ namespace DOL.GS.Quests.Hibernia
 				NightshadeEpicVest.Durability = 50000;
 
 				NightshadeEpicVest.Bonus1 = 10;
-				NightshadeEpicVest.Bonus1Type = (int) eStat.STR;
+				NightshadeEpicVest.Bonus1Type = (int) EStat.STR;
 
 				NightshadeEpicVest.Bonus2 = 10;
-				NightshadeEpicVest.Bonus2Type = (int) eStat.DEX;
+				NightshadeEpicVest.Bonus2Type = (int) EStat.DEX;
 
 				NightshadeEpicVest.Bonus3 = 30;
-				NightshadeEpicVest.Bonus3Type = (int) eProperty.MaxHealth;
+				NightshadeEpicVest.Bonus3Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -928,16 +928,16 @@ namespace DOL.GS.Quests.Hibernia
 				NightshadeEpicLegs.Durability = 50000;
 
 				NightshadeEpicLegs.Bonus1 = 16;
-				NightshadeEpicLegs.Bonus1Type = (int) eStat.CON;
+				NightshadeEpicLegs.Bonus1Type = (int) EStat.CON;
 
 				NightshadeEpicLegs.Bonus2 = 15;
-				NightshadeEpicLegs.Bonus2Type = (int) eStat.DEX;
+				NightshadeEpicLegs.Bonus2Type = (int) EStat.DEX;
 
 				NightshadeEpicLegs.Bonus3 = 10;
-				NightshadeEpicLegs.Bonus3Type = (int) eResist.Crush;
+				NightshadeEpicLegs.Bonus3Type = (int) EResist.Crush;
 
 				NightshadeEpicLegs.Bonus4 = 10;
-				NightshadeEpicLegs.Bonus4Type = (int) eResist.Slash;
+				NightshadeEpicLegs.Bonus4Type = (int) EResist.Slash;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -971,16 +971,16 @@ namespace DOL.GS.Quests.Hibernia
 				NightshadeEpicArms.Durability = 50000;
 
 				NightshadeEpicArms.Bonus1 = 4;
-				NightshadeEpicArms.Bonus1Type = (int) eProperty.Skill_Celtic_Dual;
+				NightshadeEpicArms.Bonus1Type = (int) EProperty.Skill_Celtic_Dual;
 
 				NightshadeEpicArms.Bonus2 = 16;
-				NightshadeEpicArms.Bonus2Type = (int) eStat.CON;
+				NightshadeEpicArms.Bonus2Type = (int) EStat.CON;
 
 				NightshadeEpicArms.Bonus3 = 15;
-				NightshadeEpicArms.Bonus3Type = (int) eStat.DEX;
+				NightshadeEpicArms.Bonus3Type = (int) EStat.DEX;
 
 				NightshadeEpicArms.Bonus4 = 6;
-				NightshadeEpicArms.Bonus4Type = (int) eResist.Cold;
+				NightshadeEpicArms.Bonus4Type = (int) EResist.Cold;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1013,16 +1013,16 @@ namespace DOL.GS.Quests.Hibernia
 				EnchanterEpicBoots.Durability = 50000;
 
 				EnchanterEpicBoots.Bonus1 = 12;
-				EnchanterEpicBoots.Bonus1Type = (int) eStat.CON;
+				EnchanterEpicBoots.Bonus1Type = (int) EStat.CON;
 
 				EnchanterEpicBoots.Bonus2 = 12;
-				EnchanterEpicBoots.Bonus2Type = (int) eStat.DEX;
+				EnchanterEpicBoots.Bonus2Type = (int) EStat.DEX;
 
 				EnchanterEpicBoots.Bonus3 = 12;
-				EnchanterEpicBoots.Bonus3Type = (int) eResist.Body;
+				EnchanterEpicBoots.Bonus3Type = (int) EResist.Body;
 
 				EnchanterEpicBoots.Bonus4 = 39;
-				EnchanterEpicBoots.Bonus4Type = (int) eProperty.MaxHealth;
+				EnchanterEpicBoots.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1057,16 +1057,16 @@ namespace DOL.GS.Quests.Hibernia
 				EnchanterEpicHelm.Durability = 50000;
 
 				EnchanterEpicHelm.Bonus1 = 21;
-				EnchanterEpicHelm.Bonus1Type = (int) eProperty.MaxHealth;
+				EnchanterEpicHelm.Bonus1Type = (int) EProperty.MaxHealth;
 
 				EnchanterEpicHelm.Bonus2 = 8;
-				EnchanterEpicHelm.Bonus2Type = (int) eResist.Energy;
+				EnchanterEpicHelm.Bonus2Type = (int) EResist.Energy;
 
 				EnchanterEpicHelm.Bonus3 = 4;
-				EnchanterEpicHelm.Bonus3Type = (int) eProperty.Skill_Enchantments;
+				EnchanterEpicHelm.Bonus3Type = (int) EProperty.Skill_Enchantments;
 
 				EnchanterEpicHelm.Bonus4 = 18;
-				EnchanterEpicHelm.Bonus4Type = (int) eStat.INT;
+				EnchanterEpicHelm.Bonus4Type = (int) EStat.INT;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1101,16 +1101,16 @@ namespace DOL.GS.Quests.Hibernia
 				EnchanterEpicGloves.Durability = 50000;
 
 				EnchanterEpicGloves.Bonus1 = 30;
-				EnchanterEpicGloves.Bonus1Type = (int) eProperty.MaxHealth;
+				EnchanterEpicGloves.Bonus1Type = (int) EProperty.MaxHealth;
 
 				EnchanterEpicGloves.Bonus2 = 4;
-				EnchanterEpicGloves.Bonus2Type = (int) eProperty.Skill_Mana;
+				EnchanterEpicGloves.Bonus2Type = (int) EProperty.Skill_Mana;
 
 				EnchanterEpicGloves.Bonus3 = 6;
-				EnchanterEpicGloves.Bonus3Type = (int) eStat.INT;
+				EnchanterEpicGloves.Bonus3Type = (int) EStat.INT;
 
 				EnchanterEpicGloves.Bonus4 = 13;
-				EnchanterEpicGloves.Bonus4Type = (int) eStat.DEX;
+				EnchanterEpicGloves.Bonus4Type = (int) EStat.DEX;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1144,13 +1144,13 @@ namespace DOL.GS.Quests.Hibernia
 				EnchanterEpicVest.Durability = 50000;
 
 				EnchanterEpicVest.Bonus1 = 30;
-				EnchanterEpicVest.Bonus1Type = (int) eProperty.MaxHealth;
+				EnchanterEpicVest.Bonus1Type = (int) EProperty.MaxHealth;
 
 				EnchanterEpicVest.Bonus2 = 15;
-				EnchanterEpicVest.Bonus2Type = (int) eStat.INT;
+				EnchanterEpicVest.Bonus2Type = (int) EStat.INT;
 
 				EnchanterEpicVest.Bonus3 = 15;
-				EnchanterEpicVest.Bonus3Type = (int) eStat.DEX;
+				EnchanterEpicVest.Bonus3Type = (int) EStat.DEX;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1184,16 +1184,16 @@ namespace DOL.GS.Quests.Hibernia
 				EnchanterEpicLegs.Durability = 50000;
 
 				EnchanterEpicLegs.Bonus1 = 16;
-				EnchanterEpicLegs.Bonus1Type = (int) eStat.CON;
+				EnchanterEpicLegs.Bonus1Type = (int) EStat.CON;
 
 				EnchanterEpicLegs.Bonus2 = 15;
-				EnchanterEpicLegs.Bonus2Type = (int) eStat.DEX;
+				EnchanterEpicLegs.Bonus2Type = (int) EStat.DEX;
 
 				EnchanterEpicLegs.Bonus3 = 10;
-				EnchanterEpicLegs.Bonus3Type = (int) eResist.Heat;
+				EnchanterEpicLegs.Bonus3Type = (int) EResist.Heat;
 
 				EnchanterEpicLegs.Bonus4 = 10;
-				EnchanterEpicLegs.Bonus4Type = (int) eResist.Cold;
+				EnchanterEpicLegs.Bonus4Type = (int) EResist.Cold;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1227,16 +1227,16 @@ namespace DOL.GS.Quests.Hibernia
 				EnchanterEpicArms.Durability = 50000;
 
 				EnchanterEpicArms.Bonus1 = 27;
-				EnchanterEpicArms.Bonus1Type = (int) eProperty.MaxHealth;
+				EnchanterEpicArms.Bonus1Type = (int) EProperty.MaxHealth;
 
 				EnchanterEpicArms.Bonus2 = 10;
-				EnchanterEpicArms.Bonus2Type = (int) eStat.INT;
+				EnchanterEpicArms.Bonus2Type = (int) EStat.INT;
 
 				EnchanterEpicArms.Bonus3 = 5;
-				EnchanterEpicArms.Bonus3Type = (int) eProperty.Skill_Light;
+				EnchanterEpicArms.Bonus3Type = (int) EProperty.Skill_Light;
 
 				EnchanterEpicArms.Bonus4 = 10;
-				EnchanterEpicArms.Bonus4Type = (int) eStat.DEX;
+				EnchanterEpicArms.Bonus4Type = (int) EStat.DEX;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1378,10 +1378,10 @@ namespace DOL.GS.Quests.Hibernia
 			if (player.IsDoingQuest(typeof (Essence_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) eCharacterClass.Champion &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Bard &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Nightshade &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Enchanter)
+			if (player.CharacterClass.ID != (byte) ECharacterClass.Champion &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Bard &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Nightshade &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Enchanter)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -1530,7 +1530,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Champion)
+			if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Champion)
 			{
 				GiveItem(m_questPlayer, ChampionEpicArms);
 				GiveItem(m_questPlayer, ChampionEpicBoots);
@@ -1539,7 +1539,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, ChampionEpicLegs);
 				GiveItem(m_questPlayer, ChampionEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Bard)
+			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Bard)
 			{
 				GiveItem(m_questPlayer, BardEpicArms);
 				GiveItem(m_questPlayer, BardEpicBoots);
@@ -1548,7 +1548,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, BardEpicLegs);
 				GiveItem(m_questPlayer, BardEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Enchanter)
+			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Enchanter)
 			{
 				GiveItem(m_questPlayer, EnchanterEpicArms);
 				GiveItem(m_questPlayer, EnchanterEpicBoots);
@@ -1557,7 +1557,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, EnchanterEpicLegs);
 				GiveItem(m_questPlayer, EnchanterEpicVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Nightshade)
+			else if (m_questPlayer.CharacterClass.ID == (byte)ECharacterClass.Nightshade)
 			{
 				GiveItem(m_questPlayer, NightshadeEpicArms);
 				GiveItem(m_questPlayer, NightshadeEpicBoots);
@@ -1567,7 +1567,7 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItem(m_questPlayer, NightshadeEpicVest);
 			}
 
-			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			m_questPlayer.GainExperience(EXpSource.Quest, 1937768448, true);
 			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 

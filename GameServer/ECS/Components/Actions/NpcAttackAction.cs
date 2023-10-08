@@ -169,7 +169,7 @@ namespace DOL.GS
         {
             if (_target == null)
                 _hasLos = false;
-            else if (_npcOwner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+            else if (_npcOwner.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
                 _hasLos = true;
             else if (_target is GamePlayer || (_target is GameNPC _targetNpc &&
                                               _targetNpc.Brain is IControlledBrain _targetNpcBrain &&

@@ -25,13 +25,13 @@ namespace DOL.GS.SkillHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public StatChangingAbility(DbAbility dba, int level, eProperty[] property)
+		public StatChangingAbility(DbAbility dba, int level, EProperty[] property)
 			: base(dba, level, property)
 		{
 
 		}
 
-		public StatChangingAbility(DbAbility dba, int level, eProperty property)
+		public StatChangingAbility(DbAbility dba, int level, EProperty property)
 			: base(dba, level, property)
 		{
 

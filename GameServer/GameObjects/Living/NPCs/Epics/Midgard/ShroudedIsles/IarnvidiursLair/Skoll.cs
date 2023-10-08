@@ -16,21 +16,21 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Skoll Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
 				default: return 30; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -43,7 +43,7 @@ namespace DOL.GS
 		{
 			if (Util.Chance(35))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 				{
 					CastSpell(SkollDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
@@ -110,10 +110,10 @@ namespace DOL.GS
 					spell.Duration = 20;
 					spell.SpellID = 11810;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageWithDebuff.ToString();
+					spell.Type = ESpellType.DirectDamageWithDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					m_SkollDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SkollDD);
 				}
@@ -139,7 +139,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
 			}
@@ -164,7 +164,7 @@ namespace DOL.AI.Brain
 					GameLiving target = Body.TargetObject as GameLiving;
 					if (Util.Chance(15))
 					{
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 						{
 							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDot), 1000);
 						}
@@ -216,7 +216,7 @@ namespace DOL.AI.Brain
 					spell.Value = 38;
 					spell.SpellID = 11811;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.CombatSpeedDebuff.ToString();
+					spell.Type = ESpellType.CombatSpeedDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Skoll_Haste_Debuff = new Spell(spell, 70);
@@ -251,9 +251,9 @@ namespace DOL.AI.Brain
 					spell.Frequency = 40;
 					spell.SpellID = 11812;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					m_Skoll_Dot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Skoll_Dot);
 				}

@@ -14,17 +14,17 @@ namespace DOL.GS.PropertyCalc
 	/// BuffBonusCategory4 unused
 	/// BuffBonusMultCategory1 unused
 	/// </summary>
-	[PropertyCalculator(eProperty.MaxHealth)]
+	[PropertyCalculator(EProperty.MaxHealth)]
 	public class MaxHitPointsCalculator : PropertyCalculator
 	{
 		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public override int CalcValue(GameLiving living, eProperty property)
+		public override int CalcValue(GameLiving living, EProperty property)
 		{
 			if (living is GamePlayer)
 			{
 				GamePlayer player = living as GamePlayer;
-				int hpBase = player.CalculateMaxHealth(player.Level, player.GetModified(eProperty.Constitution));
+				int hpBase = player.CalculateMaxHealth(player.Level, player.GetModified(EProperty.Constitution));
 				int buffBonus = living.BaseBuffBonusCategory[(int)property];
 
 				if (buffBonus < 0)
@@ -32,7 +32,7 @@ namespace DOL.GS.PropertyCalc
 
 				int itemBonus = living.ItemBonus[(int)property];
 				int cap = Math.Max(player.Level * 4, 20) +
-						  Math.Min(living.ItemBonus[(int)eProperty.MaxHealthCapBonus], player.Level * 4);
+						  Math.Min(living.ItemBonus[(int)EProperty.MaxHealthCapBonus], player.Level * 4);
 				itemBonus = Math.Min(itemBonus, cap);
 
 				if (player.HasAbility(Abilities.ScarsOfBattle) && player.Level >= 40)
@@ -181,7 +181,7 @@ namespace DOL.GS.PropertyCalc
 
 				// adjust hit points based on constitution difference from base con
 				// modified from http://www.btinternet.com/~challand/hp_calculator.htm
-				int conhp = hp + (conmod * living.Level * (living.GetModified(eProperty.Constitution) - basecon) / 250);
+				int conhp = hp + (conmod * living.Level * (living.GetModified(EProperty.Constitution) - basecon) / 250);
 
 				// 50% buff / debuff cap
 				if (conhp > hp * 1.5)
@@ -234,7 +234,7 @@ namespace DOL.GS.PropertyCalc
 
 					// adjust hit points based on constitution difference from base con
 					// modified from http://www.btinternet.com/~challand/hp_calculator.htm
-					int conhp = hp + (conmod * living.Level * (living.GetModified(eProperty.Constitution) - basecon) / 250);
+					int conhp = hp + (conmod * living.Level * (living.GetModified(EProperty.Constitution) - basecon) / 250);
 
 					// 50% buff / debuff cap
 					if (conhp > hp * 1.5)
@@ -255,12 +255,12 @@ namespace DOL.GS.PropertyCalc
             {
                 if (living.Level < 10)
                 {
-                    return living.Level * 20 + 20 + living.GetBaseStat(eStat.CON) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
+                    return living.Level * 20 + 20 + living.GetBaseStat(EStat.CON) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
                 }
                 else
                 {
                     // approx to original formula, thx to mathematica :)
-                    int hp = (int)(50 + 11 * living.Level + 0.548331 * living.Level * living.Level) + living.GetBaseStat(eStat.CON)/*living.BaseBuffBonusCategory[(int)property]*/;
+                    int hp = (int)(50 + 11 * living.Level + 0.548331 * living.Level * living.Level) + living.GetBaseStat(EStat.CON)/*living.BaseBuffBonusCategory[(int)property]*/;
                     if (living.Level < 25)
                     {
                         hp += 20;
@@ -290,7 +290,7 @@ namespace DOL.GS.PropertyCalc
         {
             if (living == null) return 0;
             int itemBonusCapIncreaseCap = GetItemBonusCapIncreaseCap(living);
-            int itemBonusCapIncrease = living.ItemBonus[(int)(eProperty.MaxHealthCapBonus)];
+            int itemBonusCapIncrease = living.ItemBonus[(int)(EProperty.MaxHealthCapBonus)];
             return Math.Min(itemBonusCapIncrease, itemBonusCapIncreaseCap);
         }
 

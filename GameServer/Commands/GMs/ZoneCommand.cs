@@ -7,7 +7,7 @@ namespace DOL.GS.Commands
 {
     [Command(
         "&zone",
-        ePrivLevel.GM,
+        EPrivLevel.GM,
 		"/zone info",
 		"/zone divingflag <0 = use region, 1 = on, 2 = off>",
 		"/zone waterlevel <#>",
@@ -25,10 +25,10 @@ namespace DOL.GS.Commands
 					var info = new List<string>();
 					info.Add(" ");
 					info.Add(" NPCs in zone:");
-					info.Add(" Alb: " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.Albion).Count);
-					info.Add(" Hib: " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.Hibernia).Count);
-					info.Add(" Mid: " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.Midgard).Count);
-					info.Add(" None: " + client.Player.CurrentZone.GetNPCsOfZone(eRealm.None).Count);
+					info.Add(" Alb: " + client.Player.CurrentZone.GetNPCsOfZone(ERealm.Albion).Count);
+					info.Add(" Hib: " + client.Player.CurrentZone.GetNPCsOfZone(ERealm.Hibernia).Count);
+					info.Add(" Mid: " + client.Player.CurrentZone.GetNPCsOfZone(ERealm.Midgard).Count);
+					info.Add(" None: " + client.Player.CurrentZone.GetNPCsOfZone(ERealm.None).Count);
 					info.Add(" ");
 					info.Add(string.Format(" Objects in zone: {0}, Total allowed for region: {1}", client.Player.CurrentZone.ObjectCount, ServerProperties.Properties.REGION_MAX_OBJECTS));
 					info.Add(" ");

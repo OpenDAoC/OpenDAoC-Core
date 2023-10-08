@@ -28,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 			int heal = 0;
 			int currentCharMaxHealth = living.MaxHealth;
 
-			int healed = living.ChangeHealth(living, eHealthChangeType.Spell, currentCharMaxHealth);
+			int healed = living.ChangeHealth(living, EHealthChangeType.Spell, currentCharMaxHealth);
 
 			SendCasterSpellEffectAndCastMessage(living, 7004, healed > 0);
 

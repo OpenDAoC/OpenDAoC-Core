@@ -49,7 +49,7 @@ namespace DOL.GS.Spells
             switch (spell.Target)
             {
                 //GTAoE
-                case eSpellTarget.AREA:
+                case ESpellTarget.AREA:
                 {
                     if (spell.Radius > 0)
                     {
@@ -62,7 +62,7 @@ namespace DOL.GS.Spells
 
                     break;
                 }
-                case eSpellTarget.PET:
+                case ESpellTarget.PET:
                 {
                     if (caster is GamePlayer player)
                     {
@@ -74,7 +74,7 @@ namespace DOL.GS.Spells
 
                     break;
                 }
-                case eSpellTarget.ENEMY:
+                case ESpellTarget.ENEMY:
                 {
                     if (spell.Radius > 0)
                     {
@@ -93,7 +93,7 @@ namespace DOL.GS.Spells
 
                     break;
                 }
-                case eSpellTarget.REALM:
+                case ESpellTarget.REALM:
                 {
                     if (spell.Radius > 0)
                     {
@@ -114,7 +114,7 @@ namespace DOL.GS.Spells
 
                     break;
                 }
-                case eSpellTarget.SELF:
+                case ESpellTarget.SELF:
                 {
                     if (spell.Radius > 0)
                     {
@@ -132,7 +132,7 @@ namespace DOL.GS.Spells
 
                     break;
                 }
-                case eSpellTarget.GROUP:
+                case ESpellTarget.GROUP:
                 {
                     Group group = caster.Group;
                     int spellRange = spellHandler.CalculateSpellRange();
@@ -219,7 +219,7 @@ namespace DOL.GS.Spells
     public abstract class MasterlevelDebuffHandling : SingleStatDebuff
     {
         // bonus category
-        public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.Debuff; } }
+        public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.Debuff; } }
 
         public override bool HasPositiveEffect
         {
@@ -283,7 +283,7 @@ namespace DOL.GS.Spells
     public abstract class MasterlevelBuffHandling : SingleStatBuff
     {
         // bonus category
-        public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
+        public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 
         public override int CalculateSpellResistChance(GameLiving target)
         {
@@ -337,8 +337,8 @@ namespace DOL.GS.Spells
     public abstract class MasterlevelDualBuffHandling : DualStatBuff
     {
         // bonus category
-        public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-        public override eBuffBonusCategory BonusCategory2 { get { return eBuffBonusCategory.SpecBuff; } }
+        public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
+        public override EBuffBonusCategory BonusCategory2 { get { return EBuffBonusCategory.SpecBuff; } }
 
         public override int CalculateSpellResistChance(GameLiving target)
         {
@@ -414,7 +414,7 @@ namespace DOL.GS.Spells
             effect.Owner.TempProperties.RemoveProperty(EFFECT_PROPERTY);
             timer.Stop();
 
-            effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, effect);
+            effect.Owner.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, effect);
 
             SendUpdates(effect.Owner);
             MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
@@ -792,16 +792,16 @@ namespace DOL.GS
         {
             int spellLevel = m_owner.Level;
             GameLiving caster = m_owner as GameLiving;
-            int spellbonus = m_owner.GetModified(eProperty.SpellLevel);
+            int spellbonus = m_owner.GetModified(EProperty.SpellLevel);
             spellLevel += spellbonus;
             if (spellLevel > 50)
                 spellLevel = 50;
             int hitchance = 85 + ((spellLevel - target.Level) / 2);
             return hitchance;
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (damageType == eDamageType.Slash || damageType == eDamageType.Crush || damageType == eDamageType.Thrust)
+            if (damageType == EDamageType.Slash || damageType == EDamageType.Crush || damageType == EDamageType.Thrust)
             {
                 damageAmount /= 10;
                 criticalAmount /= 10;
@@ -843,14 +843,14 @@ namespace DOL.GS
         {
             int spellLevel = m_owner.Level;
             GameLiving caster = m_owner as GameLiving;
-            int spellbonus = m_owner.GetModified(eProperty.SpellLevel);
+            int spellbonus = m_owner.GetModified(EProperty.SpellLevel);
             spellLevel += spellbonus;
             if (spellLevel > 50)
                 spellLevel = 50;
             int hitchance = 85 + ((spellLevel - target.Level) / 2);
             return hitchance;
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
             {
@@ -910,14 +910,14 @@ namespace DOL.GS
         {
             int spellLevel = m_owner.Level;
             GameLiving caster = m_owner as GameLiving;
-            int spellbonus = m_owner.GetModified(eProperty.SpellLevel);
+            int spellbonus = m_owner.GetModified(EProperty.SpellLevel);
             spellLevel += spellbonus;
             if (spellLevel > 50)
                 spellLevel = 50;
             int hitchance = 85 + ((spellLevel - target.Level) / 2);
             return hitchance;
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
         }
     }

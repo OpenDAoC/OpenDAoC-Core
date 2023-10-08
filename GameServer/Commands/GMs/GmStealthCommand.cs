@@ -2,7 +2,7 @@
 
 [Command(
     "&gmstealth",
-    ePrivLevel.GM,
+    EPrivLevel.GM,
     "Grants the ability to stealth to a gm/admin character",
     "/gmstealth on : turns the command on",
     "/gmstealth off : turns the command off")]

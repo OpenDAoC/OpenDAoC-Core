@@ -24,7 +24,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Theurgist, "Theurgist", "Elementalist")]
+	[CharacterClass((int)ECharacterClass.Theurgist, "Theurgist", "Elementalist")]
 	public class ClassTheurgist : ClassElementalist
 	{
 		public ClassTheurgist()
@@ -32,10 +32,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.DefendersofAlbion";
 			m_specializationMultiplier = 10;
-			m_primaryStat = eStat.INT;
-			m_secondaryStat = eStat.DEX;
-			m_tertiaryStat = eStat.QUI;
-			m_manaStat = eStat.INT;
+			m_primaryStat = EStat.INT;
+			m_secondaryStat = EStat.DEX;
+			m_tertiaryStat = EStat.QUI;
+			m_manaStat = EStat.INT;
 		}
 
 		public override bool HasAdvancedFromBaseClass()

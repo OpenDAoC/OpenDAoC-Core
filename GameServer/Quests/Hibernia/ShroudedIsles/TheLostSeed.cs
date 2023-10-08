@@ -75,7 +75,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			#region defineNPCs
 			
-			 var npcs = WorldMgr.GetNPCsByName("Terod", eRealm.Hibernia);
+			 var npcs = WorldMgr.GetNPCsByName("Terod", ERealm.Hibernia);
 
         if (npcs.Length > 0)
             foreach (var npc in npcs)
@@ -93,7 +93,7 @@ namespace DOL.GS.Quests.Hibernia
             Terod.Model = 382;
             Terod.Name = "Terod";
             Terod.GuildName = "";
-            Terod.Realm = eRealm.Hibernia;
+            Terod.Realm = ERealm.Hibernia;
             Terod.CurrentRegionID = 181;
             Terod.LoadEquipmentTemplateFromDatabase("Terod");
             Terod.Size = 50;
@@ -106,7 +106,7 @@ namespace DOL.GS.Quests.Hibernia
             if (SAVE_INTO_DATABASE) Terod.SaveIntoDatabase();
         }
 
-        npcs = WorldMgr.GetNPCsByName("Kredril", eRealm.Hibernia);
+        npcs = WorldMgr.GetNPCsByName("Kredril", ERealm.Hibernia);
 
         if (npcs.Length > 0)
             foreach (var npc in npcs)
@@ -124,7 +124,7 @@ namespace DOL.GS.Quests.Hibernia
             Kredril.Model = 352;
             Kredril.Name = "Kredril";
             Kredril.GuildName = "";
-            Kredril.Realm = eRealm.Hibernia;
+            Kredril.Realm = ERealm.Hibernia;
             Kredril.CurrentRegionID = 181;
             Kredril.LoadEquipmentTemplateFromDatabase("Kredril");
             Kredril.Size = 51;
@@ -138,7 +138,7 @@ namespace DOL.GS.Quests.Hibernia
         }
         // end npc
 
-        npcs = WorldMgr.GetNPCsByName("Emolia", eRealm.Hibernia);
+        npcs = WorldMgr.GetNPCsByName("Emolia", ERealm.Hibernia);
         if (npcs.Length > 0)
             foreach (var npc in npcs)
                 if (npc.CurrentRegionID == 181 && npc.X == 404696 && npc.Y == 503469)
@@ -157,7 +157,7 @@ namespace DOL.GS.Quests.Hibernia
             Emolia.Model = 714;
             Emolia.Name = "Emolia";
             Emolia.GuildName = "";
-            Emolia.Realm = eRealm.Hibernia;
+            Emolia.Realm = ERealm.Hibernia;
             Emolia.CurrentRegionID = 181;
             Emolia.Size = 50;
             Emolia.Level = 50;
@@ -172,7 +172,7 @@ namespace DOL.GS.Quests.Hibernia
         }
         // end npc
 
-        npcs = WorldMgr.GetNPCsByName("Jandros", eRealm.Hibernia);
+        npcs = WorldMgr.GetNPCsByName("Jandros", ERealm.Hibernia);
         if (npcs.Length > 0)
 	        foreach (var npc in npcs)
 		        if (npc.CurrentRegionID == 181 && npc.X == 404696 && npc.Y == 503469)
@@ -190,7 +190,7 @@ namespace DOL.GS.Quests.Hibernia
 	        Jandros.Model = 734;
 	        Jandros.Name = "Jandros";
 	        Jandros.GuildName = "";
-	        Jandros.Realm = eRealm.Hibernia;
+	        Jandros.Realm = ERealm.Hibernia;
 	        Jandros.CurrentRegionID = 181;
 	        Jandros.Size = 53;
 	        Jandros.Level = 54;
@@ -308,7 +308,7 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.Model = 767;
 			Feairna_Athar.Name = "Feairna-Athar";
 			Feairna_Athar.GuildName = "";
-			Feairna_Athar.Realm = eRealm.None;
+			Feairna_Athar.Realm = ERealm.None;
 			Feairna_Athar.Race = 2007;
 			Feairna_Athar.BodyType = (ushort) NpcTemplateMgr.eBodyType.Plant;
 			Feairna_Athar.CurrentRegionID = 181;
@@ -380,7 +380,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			if (quest is not {Step: 5}) return;
 
-			var existingCopy = WorldMgr.GetNPCsByName("Feairna-Athar", eRealm.None);
+			var existingCopy = WorldMgr.GetNPCsByName("Feairna-Athar", ERealm.None);
 
 			if (existingCopy.Length > 0) return;
 
@@ -898,10 +898,10 @@ namespace DOL.GS.Quests.Hibernia
 			if (m_questPlayer.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
 				if (m_questPlayer.Level >= 49)
-					m_questPlayer.GainExperience(eXPSource.Quest,
+					m_questPlayer.GainExperience(EXpSource.Quest,
 						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 3, false);
 				else
-					m_questPlayer.GainExperience(eXPSource.Quest,
+					m_questPlayer.GainExperience(EXpSource.Quest,
 						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
 				RemoveItem(m_questPlayer, glowing_red_jewel);
 				GiveItem(m_questPlayer, paidrean_necklace);

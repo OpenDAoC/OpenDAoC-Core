@@ -9,9 +9,9 @@ namespace DOL.GS.Keeps
 	{
 		protected override ICharacterClass GetClass()
 		{
-			if (ModelRealm == eRealm.Albion) return new ClassCleric();
-			else if (ModelRealm == eRealm.Midgard) return new ClassHealer();
-			else if (ModelRealm == eRealm.Hibernia) return new ClassDruid();
+			if (ModelRealm == ERealm.Albion) return new ClassCleric();
+			else if (ModelRealm == ERealm.Midgard) return new ClassHealer();
+			else if (ModelRealm == ERealm.Hibernia) return new ClassDruid();
 			return new DefaultCharacterClass();
 		}
 
@@ -27,19 +27,19 @@ namespace DOL.GS.Keeps
 		{
 			switch (ModelRealm)
 			{
-				case eRealm.None:
-				case eRealm.Albion:
+				case ERealm.None:
+				case ERealm.Albion:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Cleric");
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Healer");
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Druid");
 					break;
 			}
 
-			if (Realm == eRealm.None)
+			if (Realm == ERealm.None)
 			{
 				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
 			}

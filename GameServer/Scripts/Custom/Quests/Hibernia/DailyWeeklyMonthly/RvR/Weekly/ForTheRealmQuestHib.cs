@@ -62,7 +62,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -82,7 +82,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 				ReyHib.Model = 26;
 				ReyHib.Name = "Rey";
 				ReyHib.GuildName = "Bone Collector";
-				ReyHib.Realm = eRealm.Hibernia;
+				ReyHib.Realm = ERealm.Hibernia;
 				//Druim Ligen Location
 				ReyHib.CurrentRegionID = 200;
 				ReyHib.Size = 60;
@@ -315,13 +315,13 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 			if (e != GameLivingEvent.EnemyKilled || Step != 1) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-			if (gArgs.Target.Realm == eRealm.Midgard && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledMid < MAX_KILLGOAL) 
+			if (gArgs.Target.Realm == ERealm.Midgard && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledMid < MAX_KILLGOAL) 
 			{
 				_playersKilledMid++;
 				player.Out.SendMessage("[Daily] Midgard Enemy Killed: (" + _playersKilledMid + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Realm == eRealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledAlb < MAX_KILLGOAL) 
+			else if (gArgs.Target.Realm == ERealm.Albion && gArgs.Target.Realm != player.Realm && gArgs.Target is GamePlayer && player.GetConLevel(gArgs.Target) > MIN_PLAYER_CON && _playersKilledAlb < MAX_KILLGOAL) 
 			{
 				_playersKilledAlb++;
 				player.Out.SendMessage("[Daily] Albion Enemy Killed: (" + _playersKilledAlb + " | " + MAX_KILLGOAL + ")", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);

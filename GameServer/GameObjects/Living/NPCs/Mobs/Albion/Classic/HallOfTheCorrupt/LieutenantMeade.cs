@@ -32,28 +32,28 @@ namespace DOL.GS
         {
             base.OnAttackEnemy(ad);
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 35; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 35; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 35; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 35; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 35; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 35; // dmg reduction for melee dmg
                 default: return 25; // dmg reduction for rest resists
             }
         }
 
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (this.IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+                        damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+                        damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -89,11 +89,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 500;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.35;
@@ -127,7 +127,7 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 865, 0, 0);
             template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 1041, 0, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.Standard);
+            SwitchWeapon(EActiveWeaponSlot.Standard);
             if (!this.Styles.Contains(Side))
             {
                 Styles.Add(Side);
@@ -142,7 +142,7 @@ namespace DOL.GS
             }
             LieutenantMeadeBrain.CanWalk = false;
             VisibleActiveWeaponSlots = 16;
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             LieutenantMeadeBrain sbrain = new LieutenantMeadeBrain();
             SetOwnBrain(sbrain);
             SaveIntoDatabase();
@@ -154,7 +154,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Lieutenant Meade", 277, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Lieutenant Meade", 277, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Lieutenant Meade not found, creating it...");
@@ -206,7 +206,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 this.Body.Health = this.Body.MaxHealth;              
                 CanWalk = false;
                 lock (Body.effectListComponent.EffectsLock)
@@ -234,11 +234,11 @@ namespace DOL.AI.Brain
                 {
                     GameLiving living = Body.TargetObject as GameLiving;
                     float angle = Body.TargetObject.GetAngle(Body);
-                    if (!living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !living.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+                    if (!living.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && !living.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
                     {
                         Body.styleComponent.NextCombatStyle = LieutenantMeade.slam;//check if target has stun or immunity if not slam
                     }
-                    if (living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+                    if (living.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
                     {
                         if (CanWalk == false)
                         {
@@ -250,11 +250,11 @@ namespace DOL.AI.Brain
                     {
                         Body.styleComponent.NextCombatStyle = LieutenantMeade.Side;
                     }
-                    if(!living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && living.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+                    if(!living.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && living.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
                     {
                         Body.styleComponent.NextCombatStyle = LieutenantMeade.Taunt;
                     }
-                    if (!living.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) && !living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+                    if (!living.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity) && !living.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
                     {
                         CanWalk = false;//reset flag 
                     }
@@ -307,11 +307,11 @@ namespace DOL.AI.Brain
                     spell.Radius = 350;
                     spell.Range = 0;
                     spell.SpellID = 11782;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.MeleeDamageDebuff.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.MeleeDamageDebuff.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Spirit;
+                    spell.DamageType = (int)EDamageType.Spirit;
                     m_Meade_Pulse = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Meade_Pulse);
                 }

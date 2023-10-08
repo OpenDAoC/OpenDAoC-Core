@@ -17,7 +17,7 @@ public class ArosTheSpiritmasterStateIdle : ArosTheSpiritmasterState
 {
     public ArosTheSpiritmasterStateIdle(ArosTheSpiritmasterBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.IDLE;
+        StateType = EFSMStateType.IDLE;
     }
 
     public override void Enter()
@@ -48,7 +48,7 @@ public class ArosTheSpiritmasterStateIdle : ArosTheSpiritmasterState
             {
                 //Set state to AGGRO
                 _brain.AttackMostWanted();
-                _brain.FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO);
+                _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
                 return;
             }
             else
@@ -65,7 +65,7 @@ public class ArosTheSpiritmasterStateIdle : ArosTheSpiritmasterState
         if (_brain.CheckTether())
         {
             //set state to RETURN TO SPAWN
-            _brain.FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
         }
     }
 }
@@ -74,7 +74,7 @@ public class ArosTheSpiritmasterStateAggro : ArosTheSpiritmasterState
 {
     public ArosTheSpiritmasterStateAggro(ArosTheSpiritmasterBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.AGGRO;
+        StateType = EFSMStateType.AGGRO;
     }
 
     public override void Enter()
@@ -96,7 +96,7 @@ public class ArosTheSpiritmasterStateAggro : ArosTheSpiritmasterState
         if (_brain.CheckTether() || !_brain.CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            _brain.FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
         }
     }
 }
@@ -105,7 +105,7 @@ public class ArosTheSpiritmasterStateReturnToSpawn : ArosTheSpiritmasterState
 {
     public ArosTheSpiritmasterStateReturnToSpawn(ArosTheSpiritmasterBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.RETURN_TO_SPAWN;
+        StateType = EFSMStateType.RETURN_TO_SPAWN;
     }
 
     public override void Enter()
@@ -124,7 +124,7 @@ public class ArosTheSpiritmasterStateReturnToSpawn : ArosTheSpiritmasterState
         if (_brain.Body.IsNearSpawn)
         {
             _brain.Body.CancelReturnToSpawnPoint();
-            _brain.FiniteStateMachine.SetCurrentState(eFSMStateType.IDLE);
+            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.IDLE);
         }
     }
 }

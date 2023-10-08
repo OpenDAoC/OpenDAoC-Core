@@ -79,13 +79,13 @@ namespace DOL.GS
 				{
 					switch (itemTemplate.Realm)
 					{
-						case (int)eRealm.Albion:
+						case (int)ERealm.Albion:
 							templatesAlb.Add(itemTemplate);
 							break;
-						case (int)eRealm.Hibernia:
+						case (int)ERealm.Hibernia:
 							templatesHib.Add(itemTemplate);
 							break;
-						case (int)eRealm.Midgard:
+						case (int)ERealm.Midgard:
 							templatesMid.Add(itemTemplate);
 							break;
 						default:
@@ -110,26 +110,26 @@ namespace DOL.GS
 			{
 				DbItemTemplate[] itemTemplates = null;
 
-				eRealm realm = mob.CurrentZone.Realm;
+				ERealm realm = mob.CurrentZone.Realm;
 
-				if (realm < eRealm._FirstPlayerRealm || realm > eRealm._LastPlayerRealm)
-					realm = (eRealm)Util.Random((int)eRealm._FirstPlayerRealm, (int)eRealm._LastPlayerRealm);
+				if (realm < ERealm._FirstPlayerRealm || realm > ERealm._LastPlayerRealm)
+					realm = (ERealm)Util.Random((int)ERealm._FirstPlayerRealm, (int)ERealm._LastPlayerRealm);
 
 				switch (realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						{
 							int index = Math.Min(m_itemTemplatesAlb.Length - 1, mob.Level / LEVEL_RANGE);
 							itemTemplates = m_itemTemplatesAlb[index];
 						}
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						{
 							int index = Math.Min(m_itemTemplatesHib.Length - 1, mob.Level / LEVEL_RANGE);
 							itemTemplates = m_itemTemplatesHib[index];
 							break;
 						}
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						{
 							int index = Math.Min(m_itemTemplatesHib.Length - 1, mob.Level / LEVEL_RANGE);
 							itemTemplates = m_itemTemplatesMid[index];

@@ -23,18 +23,18 @@ namespace DOL.AI.Brain
             // react only on these attack results
             switch (ad.AttackResult)
             {
-                case eAttackResult.Blocked:
-                case eAttackResult.Evaded:
-                case eAttackResult.Fumbled:
-                case eAttackResult.HitStyle:
-                case eAttackResult.HitUnstyled:
-                case eAttackResult.Missed:
-                case eAttackResult.Parried:
+                case EAttackResult.Blocked:
+                case EAttackResult.Evaded:
+                case EAttackResult.Fumbled:
+                case EAttackResult.HitStyle:
+                case EAttackResult.HitUnstyled:
+                case EAttackResult.Missed:
+                case EAttackResult.Parried:
                     AddToAggroList(ad.Attacker, ad.Attacker.EffectiveLevel + ad.Damage + ad.CriticalDamage);
                     break;
             }
 
-            if (FiniteStateMachine.GetState(eFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO); }
+            if (FiniteStateMachine.GetState(EFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO); }
             AttackMostWanted();
         }
 

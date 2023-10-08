@@ -21,25 +21,25 @@ namespace DOL.GS
         public const int PROJECTILE_FLIGHT_SPEED = 1800; // 1800 units per second. Live value is unknown, but DoL had 1500. Also affects throwing weapons.
         public const int MAX_DRAW_DURATION = 15000;
         public GameObject AutoFireTarget { get; set; } // Used to shoot at a different target than the one currently selected. Always null for NPCs.
-        public eRangedAttackState RangedAttackState { get; set; }
-        public eRangedAttackType RangedAttackType { get; set; }
-        public eActiveQuiverSlot ActiveQuiverSlot { get; set; }
+        public ERangedAttackState RangedAttackState { get; set; }
+        public ERangedAttackType RangedAttackType { get; set; }
+        public EActiveQuiverSlot ActiveQuiverSlot { get; set; }
         public DbInventoryItem Ammo { get; private set; }
         public bool IsAmmoCompatible { get; private set; }
 
-        private DbInventoryItem GetAmmoFromInventory(eObjectType ammoType)
+        private DbInventoryItem GetAmmoFromInventory(EObjectType ammoType)
         {
             switch (ActiveQuiverSlot)
             {
-                case eActiveQuiverSlot.First:
+                case EActiveQuiverSlot.First:
                     return m_owner.Inventory.GetItem(eInventorySlot.FirstQuiver);
-                case eActiveQuiverSlot.Second:
+                case EActiveQuiverSlot.Second:
                     return m_owner.Inventory.GetItem(eInventorySlot.SecondQuiver);
-                case eActiveQuiverSlot.Third:
+                case EActiveQuiverSlot.Third:
                     return m_owner.Inventory.GetItem(eInventorySlot.ThirdQuiver);
-                case eActiveQuiverSlot.Fourth:
+                case EActiveQuiverSlot.Fourth:
                     return m_owner.Inventory.GetItem(eInventorySlot.FourthQuiver);
-                case eActiveQuiverSlot.None:
+                case EActiveQuiverSlot.None:
                     return m_owner.Inventory.GetFirstItemByObjectType((int)ammoType, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
             }
 
@@ -56,19 +56,19 @@ namespace DOL.GS
 
             switch (weapon.Object_Type)
             {
-                case (int)eObjectType.Thrown:
+                case (int)EObjectType.Thrown:
                     Ammo = m_owner.Inventory.GetItem(eInventorySlot.DistanceWeapon);
                     break;
-                case (int)eObjectType.Crossbow:
-                    Ammo = GetAmmoFromInventory(eObjectType.Bolt);
-                    IsAmmoCompatible = Ammo?.Object_Type == (int)eObjectType.Bolt;
+                case (int)EObjectType.Crossbow:
+                    Ammo = GetAmmoFromInventory(EObjectType.Bolt);
+                    IsAmmoCompatible = Ammo?.Object_Type == (int)EObjectType.Bolt;
                     break;
-                case (int)eObjectType.Longbow:
-                case (int)eObjectType.CompositeBow:
-                case (int)eObjectType.RecurvedBow:
-                case (int)eObjectType.Fired:
-                    Ammo = GetAmmoFromInventory(eObjectType.Arrow);
-                    IsAmmoCompatible = Ammo?.Object_Type == (int)eObjectType.Arrow;
+                case (int)EObjectType.Longbow:
+                case (int)EObjectType.CompositeBow:
+                case (int)EObjectType.RecurvedBow:
+                case (int)EObjectType.Fired:
+                    Ammo = GetAmmoFromInventory(EObjectType.Arrow);
+                    IsAmmoCompatible = Ammo?.Object_Type == (int)EObjectType.Arrow;
                     break;
             }
 
@@ -78,7 +78,7 @@ namespace DOL.GS
         /// <summary>
         /// Check the range attack state and decides what to do. Called inside the AttackTimerCallback.
         /// </summary>
-        public eCheckRangeAttackStateResult CheckRangeAttackState(GameObject target)
+        public ECheckRangeAttackStateResult CheckRangeAttackState(GameObject target)
         {
             if (m_owner is GamePlayer playerOwner)
             {
@@ -91,14 +91,14 @@ namespace DOL.GS
                     playerOwner.TempProperties.SetProperty(RANGED_ATTACK_START, attackStart);
                 }
 
-                if ((GameLoop.GameLoopTime - attackStart) > MAX_DRAW_DURATION && playerOwner.ActiveWeapon.Object_Type != (int)eObjectType.Crossbow)
+                if ((GameLoop.GameLoopTime - attackStart) > MAX_DRAW_DURATION && playerOwner.ActiveWeapon.Object_Type != (int)EObjectType.Crossbow)
                 {
                     playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooTired"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    return eCheckRangeAttackStateResult.Stop;
+                    return ECheckRangeAttackStateResult.Stop;
                 }
 
                 // This state is set when the player wants to fire.
-                if (RangedAttackState is eRangedAttackState.Fire or eRangedAttackState.AimFire or eRangedAttackState.AimFireReload)
+                if (RangedAttackState is ERangedAttackState.Fire or ERangedAttackState.AimFire or ERangedAttackState.AimFireReload)
                 {
                     // Clean the RangeAttackTarget at the first shot try even if failed.
                     AutoFireTarget = null;
@@ -106,7 +106,7 @@ namespace DOL.GS
                     if (target is null or not GameLiving)
                     {
                         // Volley check to avoid spam.
-                        EcsGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, eEffect.Volley);
+                        EcsGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, EEffect.Volley);
 
                         if (volley == null)
                             playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "System.MustSelectTarget"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -125,10 +125,10 @@ namespace DOL.GS
                     else if (GameServer.ServerRules.IsAllowedToAttack(playerOwner, (GameLiving)target, false))
                     {
                         if (target is GameLiving living &&
-                            RangedAttackType == eRangedAttackType.Critical &&
+                            RangedAttackType == ERangedAttackType.Critical &&
                             (living.CurrentSpeed > 90 || // Walk speed == 85, hope that's what they mean.
                             (living.attackComponent.AttackState && living.InCombat) || // Maybe not 100% correct.
-                            EffectListService.GetEffectOnTarget(living, eEffect.Mez) != null))
+                            EffectListService.GetEffectOnTarget(living, EEffect.Mez) != null))
                         {
                             /*
                              * http://rothwellhome.org/guides/archery.htm
@@ -152,52 +152,52 @@ namespace DOL.GS
 
                             // TODO: More checks?
                             playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.CantCritical"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            RangedAttackType = eRangedAttackType.Normal;
+                            RangedAttackType = ERangedAttackType.Normal;
                         }
 
-                        return eCheckRangeAttackStateResult.Fire;
+                        return ECheckRangeAttackStateResult.Fire;
                     }
 
-                    RangedAttackState = eRangedAttackState.ReadyToFire;
-                    return eCheckRangeAttackStateResult.Hold;
+                    RangedAttackState = ERangedAttackState.ReadyToFire;
+                    return ECheckRangeAttackStateResult.Hold;
                 }
 
-                if (RangedAttackState == eRangedAttackState.Aim)
+                if (RangedAttackState == ERangedAttackState.Aim)
                 {
-                    EcsGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, eEffect.Volley);//volley check to avoid spam
+                    EcsGameEffect volley = EffectListService.GetEffectOnTarget(playerOwner, EEffect.Volley);//volley check to avoid spam
                     if (volley == null)
                     {
                         playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.ReadyToFire"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        RangedAttackState = eRangedAttackState.ReadyToFire;
-                        return eCheckRangeAttackStateResult.Hold;
+                        RangedAttackState = ERangedAttackState.ReadyToFire;
+                        return ECheckRangeAttackStateResult.Hold;
                     }
                 }
-                else if (RangedAttackState == eRangedAttackState.ReadyToFire)
-                    return eCheckRangeAttackStateResult.Hold;
+                else if (RangedAttackState == ERangedAttackState.ReadyToFire)
+                    return ECheckRangeAttackStateResult.Hold;
 
-                return eCheckRangeAttackStateResult.Fire;
+                return ECheckRangeAttackStateResult.Fire;
             }
             else
             {
                 if (!m_owner.IsWithinRadius(target, m_owner.attackComponent.AttackRange))
-                    return eCheckRangeAttackStateResult.Stop;
+                    return ECheckRangeAttackStateResult.Stop;
 
-                return eCheckRangeAttackStateResult.Fire;
+                return ECheckRangeAttackStateResult.Fire;
             }
         }
 
         public void RemoveEnduranceAndAmmoOnShot()
         {
-            int arrowRecoveryChance = m_owner.GetModified(eProperty.ArrowRecovery);
+            int arrowRecoveryChance = m_owner.GetModified(EProperty.ArrowRecovery);
 
             if (arrowRecoveryChance == 0 || Util.Chance(100 - arrowRecoveryChance))
                 m_owner.Inventory.RemoveCountFromStack(Ammo, 1);
 
-            if (RangedAttackType == eRangedAttackType.Critical)
+            if (RangedAttackType == ERangedAttackType.Critical)
                 m_owner.Endurance -= CRITICAL_SHOT_ENDURANCE_COST;
-            else if (RangedAttackType == eRangedAttackType.RapidFire && m_owner.GetAbilityLevel(Abilities.RapidFire) == 2)
+            else if (RangedAttackType == ERangedAttackType.RapidFire && m_owner.GetAbilityLevel(Abilities.RapidFire) == 2)
                 m_owner.Endurance -= (int)Math.Ceiling(DEFAULT_ENDURANCE_COST / 2.0);
-            else if (RangedAttackType == eRangedAttackType.Volley)
+            else if (RangedAttackType == ERangedAttackType.Volley)
                 m_owner.Endurance -= VOLLEY_ENDURANCE_COST;
             else
                 m_owner.Endurance -= DEFAULT_ENDURANCE_COST;

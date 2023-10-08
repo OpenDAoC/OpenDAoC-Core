@@ -8,7 +8,7 @@ namespace DOL.GS.Commands
 {
     [Command(
      "&minorelic",
-     ePrivLevel.GM,
+     EPrivLevel.GM,
      "GMCommands.MinoRelic.Description",
      "GMCommands.MinoRelic.Usage.Create",
      "GMCommands.MinoRelic.Usage.MoveHere",

@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Hunter Trainer
 	/// </summary>
-	[NPCGuildScript("Hunter Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Hunter Trainer" NPC's in Midgard (multiple guilds are possible for one script)
+	[NPCGuildScript("Hunter Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Hunter Trainer" NPC's in Midgard (multiple guilds are possible for one script)
 	public class HunterTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Hunter; }
+			get { return ECharacterClass.Hunter; }
 		}
 
 		public const string WEAPON_ID = "hunter_item";
@@ -82,7 +82,7 @@ namespace DOL.GS.Trainer
 				case "join the House of Skadi":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Hunter, "Welcome young Hunter! May your time in Midgard army be rewarding!", null);
+						PromotePlayer(player, (int)ECharacterClass.Hunter, "Welcome young Hunter! May your time in Midgard army be rewarding!", null);
 						player.ReceiveItem(this, WEAPON_ID);
 					}
 					break;

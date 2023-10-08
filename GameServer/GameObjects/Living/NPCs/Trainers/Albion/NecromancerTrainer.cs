@@ -25,12 +25,12 @@ namespace DOL.GS.Trainer
 	/// Necromancer trainer.
 	/// </summary>
 	/// <author>Aredhel</author>
-	[NPCGuildScript("Necromancer Trainer", eRealm.Albion)]
+	[NPCGuildScript("Necromancer Trainer", ERealm.Albion)]
 	public class NecromancerTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Necromancer; }
+			get { return ECharacterClass.Necromancer; }
 		}
 
 		public const string WEAPON_ID = "necromancer_item";
@@ -102,7 +102,7 @@ namespace DOL.GS.Trainer
 				case "join the temple of arawn":
 					if (CanPromotePlayer(player))
 					{
-						PromotePlayer(player, (int)eCharacterClass.Necromancer,
+						PromotePlayer(player, (int)ECharacterClass.Necromancer,
 						              "Lord Arawn has accepted you into his Temple. Here is his gift to you. Use it well, Disciple.", null);
 						player.ReceiveItem(this, WEAPON_ID);
 					}

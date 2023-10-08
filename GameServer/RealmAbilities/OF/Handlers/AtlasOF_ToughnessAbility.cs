@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AtlasOF_ToughnessAbility(DbAbility dba, int level) : base(dba, level, eProperty.MaxHealth) { }
+        public AtlasOF_ToughnessAbility(DbAbility dba, int level) : base(dba, level, EProperty.MaxHealth) { }
 
         public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
 

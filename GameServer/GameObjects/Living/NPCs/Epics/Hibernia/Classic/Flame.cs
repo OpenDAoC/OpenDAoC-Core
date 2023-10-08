@@ -17,13 +17,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Flame Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 30;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 30;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 30;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 30;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 30;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 30;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -43,11 +43,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -96,12 +96,12 @@ namespace DOL.GS
 					spell.ClientEffect = 360;
 					spell.Icon = 360;
 					spell.Damage = 300;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Flame Strike";
 					spell.Range = 500;
 					spell.SpellID = 11900;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_FlameDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FlameDD);
 				}
@@ -127,7 +127,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			base.Think();
@@ -149,13 +149,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Luriquay Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
@@ -175,11 +175,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 200;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.10;
@@ -246,7 +246,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 			}
 			base.Think();
 		}
@@ -261,13 +261,13 @@ namespace DOL.GS
 	{
 		public FlameNormal() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 30;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 30;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 30;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 30;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 30;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 30;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -287,11 +287,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 200;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.10;
@@ -315,7 +315,7 @@ namespace DOL.GS
 			Model = 456;
 			Size = 200;
 			Level = 64;
-			MeleeDamageType = eDamageType.Thrust;
+			MeleeDamageType = EDamageType.Thrust;
 			Flags = eFlags.GHOST;
 			RespawnInterval = -1;
 
@@ -357,7 +357,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 			}
 			if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
 				Body.RemoveFromWorld();

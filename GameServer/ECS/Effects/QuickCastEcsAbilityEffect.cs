@@ -8,7 +8,7 @@ namespace DOL.GS
         public QuickCastEcsAbilityEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.QuickCast;
+            EffectType = EEffect.QuickCast;
             EffectService.RequestStartEffect(this);
         }
 

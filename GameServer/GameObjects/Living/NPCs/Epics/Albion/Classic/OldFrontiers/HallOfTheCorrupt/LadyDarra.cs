@@ -26,12 +26,12 @@ namespace DOL.GS
         public static Style after_block = SkillBase.GetStyleByID(AfterBlockID, AfterBlockClassID);
         public override void OnAttackedByEnemy(AttackData ad) // on Boss actions
         {
-            if (ad != null && ad.AttackResult == eAttackResult.Blocked)
+            if (ad != null && ad.AttackResult == EAttackResult.Blocked)
             {
                 styleComponent.NextCombatBackupStyle = taunt;
                 styleComponent.NextCombatStyle = after_block; 
             }
-            if (ad != null && ad.AttackResult == eAttackResult.Parried)
+            if (ad != null && ad.AttackResult == EAttackResult.Parried)
             {
                 styleComponent.NextCombatBackupStyle = taunt; 
                 styleComponent.NextCombatStyle = after_parry; 
@@ -40,27 +40,27 @@ namespace DOL.GS
         }
         public override void OnAttackEnemy(AttackData ad) //on enemy actions
         {
-            if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+            if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
             {
                 styleComponent.NextCombatStyle = taunt; //boss hit unstyled/styled so taunt
             }
             base.OnAttackEnemy(ad);
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
                 default: return 30; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -69,17 +69,17 @@ namespace DOL.GS
         {
             get { return 30000; }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+                        damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+                        damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -141,7 +141,7 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 4, 0, 0);
             template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 1077, 0, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.Standard);
+            SwitchWeapon(EActiveWeaponSlot.Standard);
             if(!Styles.Contains(taunt))
                 Styles.Add(taunt);
             if(!Styles.Contains(after_block))
@@ -150,7 +150,7 @@ namespace DOL.GS
             spawn_palas = false;
             
             VisibleActiveWeaponSlots = 16;
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             LadyDarraBrain sbrain = new LadyDarraBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -167,7 +167,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Lady Darra", 277, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Lady Darra", 277, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Lady Darra found, creating it...");
@@ -180,7 +180,7 @@ namespace DOL.GS
                 HOC.Level = 68;
                 HOC.Size = 50;
                 HOC.CurrentRegionID = 277; //hall of the corrupt
-                HOC.MeleeDamageType = eDamageType.Slash;
+                HOC.MeleeDamageType = EDamageType.Slash;
                 HOC.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 HOC.Faction = FactionMgr.GetFactionByID(187);
                 HOC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
@@ -262,7 +262,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;              
             }
             if (Body.IsOutOfTetherRange)
@@ -314,13 +314,13 @@ namespace DOL.GS
         public SpectralPaladin() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 25; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 25; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 25; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 25; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 25; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 25; // dmg reduction for melee dmg
                 default: return 25; // dmg reduction for rest resists
             }
         }
@@ -333,11 +333,11 @@ namespace DOL.GS
             get { return 350; }
             set { }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 300;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -369,7 +369,7 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 4, 43, 0);
             template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 1077, 43, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.Standard);
+            SwitchWeapon(EActiveWeaponSlot.Standard);
             VisibleActiveWeaponSlots = 16;
             ++paladins_count;
 
@@ -441,8 +441,8 @@ namespace DOL.AI.Brain
                     spell.Value = 350;
                     spell.Range = 2000;
                     spell.SpellID = 11776;
-                    spell.Target = eSpellTarget.REALM.ToString();
-                    spell.Type = eSpellType.Heal.ToString();
+                    spell.Target = ESpellTarget.REALM.ToString();
+                    spell.Type = ESpellType.Heal.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
                     m_Paladin_Heal = new Spell(spell, 70);

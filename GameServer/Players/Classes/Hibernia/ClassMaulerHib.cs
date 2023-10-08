@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.MaulerHib, "Mauler", "Guardian")]
+	[CharacterClass((int)ECharacterClass.MaulerHib, "Mauler", "Guardian")]
 	public class ClassMaulerHib : ClassGuardian
 	{
 		public ClassMaulerHib()
@@ -32,10 +32,10 @@ namespace DOL.GS.PlayerClass
 			m_specializationMultiplier = 15;
 			m_wsbase = 440;
 			m_baseHP = 600;
-			m_primaryStat = eStat.STR;
-			m_secondaryStat = eStat.CON;
-			m_tertiaryStat = eStat.QUI;
-            m_manaStat = eStat.STR;
+			m_primaryStat = EStat.STR;
+			m_secondaryStat = EStat.CON;
+			m_tertiaryStat = EStat.QUI;
+            m_manaStat = EStat.STR;
 		}
 
 		public override bool CanUseLefthandedWeapon

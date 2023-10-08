@@ -62,11 +62,11 @@ namespace DOL.GS.Scripts
             TetherRange = 3500;
             SetOwnBrain(new ArosTheSpiritmasterBrain());
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -131,7 +131,7 @@ namespace DOL.GS.Scripts
         /// <param name="damageType">The type of damage.</param>
         /// <param name="damageAmount">The amount of damage inflicted.</param>
         /// <param name="criticalAmount">The critical amount of damage inflicted</param>
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             m_healthPercentOld = HealthPercent;
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
@@ -146,7 +146,7 @@ namespace DOL.GS.Scripts
         /// <param name="healSource">The source of the heal.</param>
         /// <param name="changeType">The way the living was healed.</param>
         /// <param name="healAmount">The amount that was healed.</param>
-        public override void EnemyHealed(GameLiving enemy, GameObject healSource, eHealthChangeType changeType,
+        public override void EnemyHealed(GameLiving enemy, GameObject healSource, EHealthChangeType changeType,
             int healAmount)
         {
             base.EnemyHealed(enemy, healSource, changeType, healAmount);
@@ -245,7 +245,7 @@ namespace DOL.GS.Scripts
             summonedGuardian.Size = 65;
             summonedGuardian.AttackRange = 200;
             summonedGuardian.Flags |= eFlags.GHOST;
-            summonedGuardian.MeleeDamageType = eDamageType.Spirit;
+            summonedGuardian.MeleeDamageType = EDamageType.Spirit;
             summonedGuardian.RespawnInterval = -1; // dont respawn
             summonedGuardian.RoamingRange = this.RoamingRange;
             summonedGuardian.MaxDistance = 2000;

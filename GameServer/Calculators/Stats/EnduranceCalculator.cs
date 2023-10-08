@@ -11,10 +11,10 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.Fatigue)]
+[PropertyCalculator(EProperty.Fatigue)]
 public class EnduranceCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		if (living is GamePlayer)
 		{

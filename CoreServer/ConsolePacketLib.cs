@@ -62,8 +62,8 @@ namespace DOLGameServerConsole
 		public void SendLoginGranted(byte color) { } // help for rvr AND pvp servers
 		public void SendSessionID() { }
 		public void SendPingReply(ulong timestamp, ushort sequence) { }
-		public void SendRealm(eRealm realm) { }
-		public void SendCharacterOverview(eRealm realm) { }
+		public void SendRealm(ERealm realm) { }
+		public void SendCharacterOverview(ERealm realm) { }
 		public void SendDupNameCheckReply(string name, byte nameExists) { }
 		public void SendBadNameCheckReply(string name, bool bad) { }
 		public void SendAttackMode(bool attackState) { }
@@ -174,7 +174,7 @@ namespace DOLGameServerConsole
 		public void SendClearKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex) { }
 		public void SendHookPointStore(GameKeepHookPoint hookPoint) { }
 		public void SendPlaySound(eSoundType soundType, ushort soundID) { }
-        public void SendNPCsQuestEffect(GameNPC npc, eQuestIndicator indicator) { }
+        public void SendNPCsQuestEffect(GameNPC npc, EQuestIndicator indicator) { }
 		public void SendMasterLevelWindow(byte ml) { }
 		public void SendHexEffect(GamePlayer player, byte effect1, byte effect2, byte effect3, byte effect4, byte effect5) { }
 

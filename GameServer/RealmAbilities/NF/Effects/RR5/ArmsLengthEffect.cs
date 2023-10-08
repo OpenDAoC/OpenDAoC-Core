@@ -20,7 +20,7 @@ namespace DOL.GS.Effects
 		{
 			base.Start(target);
 			target.TempProperties.SetProperty("Charging", true);
-			target.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 2.5);
+			target.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, this, 2.5);
 			if (target is GamePlayer)
 			{
 				((GamePlayer)target).Out.SendUpdateMaxSpeed();
@@ -31,7 +31,7 @@ namespace DOL.GS.Effects
 		{
 			base.Stop();
 			Owner.TempProperties.RemoveProperty("Charging");
-			Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
+			Owner.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, this);
 			if (Owner is GamePlayer)
 			{
 				((GamePlayer)Owner).Out.SendUpdateMaxSpeed();

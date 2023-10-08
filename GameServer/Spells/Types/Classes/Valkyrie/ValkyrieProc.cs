@@ -46,7 +46,7 @@ namespace DOL.GS.Spells
                 return;
             }
             AttackData ad = args.AttackData;
-            if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
+            if (ad.AttackResult != EAttackResult.HitUnstyled && ad.AttackResult != EAttackResult.HitStyle)
                 return;
 
             int baseChance = 0;
@@ -63,7 +63,7 @@ namespace DOL.GS.Spells
                     DbInventoryItem leftWeapon = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                     // if we can use left weapon, we have currently a weapon in left hand and we still have endurance,
                     // we can assume that we are using the two weapons.
-                    if (player.attackComponent.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield)
+                    if (player.attackComponent.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)EObjectType.Shield)
                     {
                         baseChance /= 2;
                     }
@@ -76,9 +76,9 @@ namespace DOL.GS.Spells
                 ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, m_procSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
                 if (handler != null)
                 {
-                    if (m_procSpell.Target == eSpellTarget.ENEMY)
+                    if (m_procSpell.Target == ESpellTarget.ENEMY)
                         handler.StartSpell(ad.Target);
-                    else if (m_procSpell.Target == eSpellTarget.SELF)
+                    else if (m_procSpell.Target == ESpellTarget.SELF)
                         handler.StartSpell(ad.Attacker);
                 }
             }

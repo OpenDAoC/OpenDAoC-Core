@@ -27,7 +27,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Beliathan Initializator", 249, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Beliathan Initializator", 249, (ERealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Beliathan Initializator not found, creating it...");
@@ -84,7 +84,7 @@ namespace DOL.AI.Brain
         {
             var princeStatus = WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID);
             var princeCount = 0;
-            var beliathan = WorldMgr.GetNPCsByNameFromRegion("Beliathan", 249, (eRealm) 0);
+            var beliathan = WorldMgr.GetNPCsByNameFromRegion("Beliathan", 249, (ERealm) 0);
             bool beliSpawned;
 
             if (beliathan.Length == 0)
@@ -161,21 +161,21 @@ namespace DOL.GS
         {
             return base.AttackSpeed(mainWeapon, leftWeapon) * 2;
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
                 default: return 70; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -274,7 +274,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 if (!RemoveAdds)
                 {
                     foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
@@ -316,7 +316,7 @@ namespace DOL.GS
             MaxDistance = 1500;
             TetherRange = 2000;
             IsWorthReward = false; // worth no reward
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             BeliathanMinionBrain adds = new BeliathanMinionBrain();
             LoadedFromScript = true;
             SetOwnBrain(adds);

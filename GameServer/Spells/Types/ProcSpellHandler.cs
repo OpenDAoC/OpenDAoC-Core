@@ -81,7 +81,7 @@ namespace DOL.GS.Spells
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
 			double duration = Spell.Duration;
-			duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
+			duration *= (1.0 + m_caster.GetModified(EProperty.SpellDuration) * 0.01);
 			return (int)duration;
 		}
 
@@ -316,7 +316,7 @@ namespace DOL.GS.Spells
             //    return;
 
             //AttackData ad = args.AttackData;
-            if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
+            if (ad.AttackResult != EAttackResult.HitUnstyled && ad.AttackResult != EAttackResult.HitStyle)
                 return;
 
             int baseChance = Spell.Frequency / 100;
@@ -337,7 +337,7 @@ namespace DOL.GS.Spells
 
                     switch (m_procSpell.Target)
                     {
-                        case eSpellTarget.ENEMY:
+                        case ESpellTarget.ENEMY:
                         {
                             handler.StartSpell(ad.Target);
                             break;
@@ -393,7 +393,7 @@ namespace DOL.GS.Spells
 			//	return;
 
 			//AttackData ad = args.AttackData;
-			if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
+			if (ad.AttackResult != EAttackResult.HitUnstyled && ad.AttackResult != EAttackResult.HitStyle)
 				return;
 
 			int baseChance = Spell.Frequency / 100;
@@ -412,7 +412,7 @@ namespace DOL.GS.Spells
 				{
 					switch (m_procSpell.Target)
 					{
-						case eSpellTarget.ENEMY:
+						case ESpellTarget.ENEMY:
 						{
 							handler.StartSpell(ad.Attacker);
 							break;

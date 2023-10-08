@@ -51,7 +51,7 @@ namespace DOL.GS.PacketHandler
 						if (fx is GameSpellEffect)
 						{
 							GameSpellEffect effect = (GameSpellEffect)fx;
-							if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == eSpellType.Chamber))
+							if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == ESpellType.Chamber))
 							{
 								ChamberSpellHandler chamber = (ChamberSpellHandler)effect.SpellHandler;
 								sortList[chamber.EffectSlot] = effect;
@@ -73,19 +73,19 @@ namespace DOL.GS.PacketHandler
 							}
 							else if (chamber.PrimarySpell != null && chamber.SecondarySpell != null)
 							{
-								if (chamber.SecondarySpell.SpellType == eSpellType.Lifedrain)
+								if (chamber.SecondarySpell.SpellType == ESpellType.Lifedrain)
 									pak.WriteByte(0x11);
 								else if (chamber.SecondarySpell.SpellType.ToString().IndexOf("SpeedDecrease") != -1)
 									pak.WriteByte(0x33);
-								else if (chamber.SecondarySpell.SpellType == eSpellType.PowerRegenBuff)
+								else if (chamber.SecondarySpell.SpellType == ESpellType.PowerRegenBuff)
 									pak.WriteByte(0x77);
-								else if (chamber.SecondarySpell.SpellType == eSpellType.DirectDamage)
+								else if (chamber.SecondarySpell.SpellType == ESpellType.DirectDamage)
 									pak.WriteByte(0x66);
-								else if (chamber.SecondarySpell.SpellType == eSpellType.SpreadHeal)
+								else if (chamber.SecondarySpell.SpellType == ESpellType.SpreadHeal)
 									pak.WriteByte(0x55);
-								else if (chamber.SecondarySpell.SpellType == eSpellType.Nearsight)
+								else if (chamber.SecondarySpell.SpellType == ESpellType.Nearsight)
 									pak.WriteByte(0x44);
-								else if (chamber.SecondarySpell.SpellType == eSpellType.DamageOverTime)
+								else if (chamber.SecondarySpell.SpellType == ESpellType.DamageOverTime)
 									pak.WriteByte(0x22);
 							}
 						}
@@ -248,14 +248,14 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendCharacterOverview(eRealm realm)
+		public override void SendCharacterOverview(ERealm realm)
 		{
 			int firstAccountSlot;
 			switch (realm)
 			{
-				case eRealm.Albion: firstAccountSlot = 100; break;
-				case eRealm.Midgard: firstAccountSlot = 200; break;
-				case eRealm.Hibernia: firstAccountSlot = 300; break;
+				case ERealm.Albion: firstAccountSlot = 100; break;
+				case ERealm.Midgard: firstAccountSlot = 200; break;
+				case ERealm.Hibernia: firstAccountSlot = 300; break;
 				default: throw new Exception("CharacterOverview requested for unknown realm " + realm);
 			}
 
@@ -324,7 +324,7 @@ namespace DOL.GS.PacketHandler
 								if (characters[j].Class == 0)
 									pak.FillString("", 24); //Class name
 								else
-									pak.FillString(((eCharacterClass)characters[j].Class).ToString(), 24); //Class name
+									pak.FillString(((ECharacterClass)characters[j].Class).ToString(), 24); //Class name
 
 								//pak.FillString(GamePlayer.RACENAMES[characters[j].Race], 24);
 	                            pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
@@ -404,12 +404,12 @@ namespace DOL.GS.PacketHandler
 									if (found == 0)
 										pak.WriteShort(0x00);
 								}
-								if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+								if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 								{
 									pak.WriteByte(0x02);
 									pak.WriteByte(0x02);
 								}
-								else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+								else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 								{
 									pak.WriteByte(0x03);
 									pak.WriteByte(0x03);
@@ -427,9 +427,9 @@ namespace DOL.GS.PacketHandler
 									}
 									if (righthand == lefthand)
 									{
-										if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+										if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 											righthand = lefthand = 0x02;
-										else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+										else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 											righthand = lefthand = 0x03;
 									}
 									pak.WriteByte(righthand);
@@ -496,7 +496,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendNPCsQuestEffect(GameNPC npc, eQuestIndicator indicator)
+		public override void SendNPCsQuestEffect(GameNPC npc, EQuestIndicator indicator)
 		{
 			if (m_gameClient.Player == null || npc == null)
 				return;

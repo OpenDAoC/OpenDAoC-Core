@@ -11,24 +11,24 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.Focus_Darkness, eProperty.Focus_Matter)]
-[PropertyCalculator(eProperty.Focus_Mind, eProperty.Focus_Arboreal)]
-[PropertyCalculator(eProperty.Focus_EtherealShriek, eProperty.Focus_Witchcraft)]
+[PropertyCalculator(EProperty.Focus_Darkness, EProperty.Focus_Matter)]
+[PropertyCalculator(EProperty.Focus_Mind, EProperty.Focus_Arboreal)]
+[PropertyCalculator(EProperty.Focus_EtherealShriek, EProperty.Focus_Witchcraft)]
 public class FocusLevelCalculator : PropertyCalculator
 {
 	public FocusLevelCalculator() { }
 
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		if (living is GamePlayer)
 		{
 			int itemBonus = living.ItemBonus[(int)property];
 			int focusLevel = living.BaseBuffBonusCategory[(int)property];
-			if (SkillBase.CheckPropertyType(property, ePropertyType.Focus)
+			if (SkillBase.CheckPropertyType(property, EPropertyType.Focus)
 			 && ((GamePlayer)living).CharacterClass.ClassType == eClassType.ListCaster)
 			{
-				focusLevel += living.BaseBuffBonusCategory[(int)eProperty.AllFocusLevels];
-				itemBonus = Math.Max(itemBonus, living.ItemBonus[(int)eProperty.AllFocusLevels]);
+				focusLevel += living.BaseBuffBonusCategory[(int)EProperty.AllFocusLevels];
+				itemBonus = Math.Max(itemBonus, living.ItemBonus[(int)EProperty.AllFocusLevels]);
 			}
 			return focusLevel + Math.Min(50, itemBonus);
 		}

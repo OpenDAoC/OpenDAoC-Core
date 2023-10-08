@@ -8,7 +8,7 @@ namespace DOL.GS.Effects
         public AtlasOF_MajesticWillECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.MajesticWill;
+            EffectType = EEffect.MajesticWill;
             EffectService.RequestStartEffect(this);
         }
 

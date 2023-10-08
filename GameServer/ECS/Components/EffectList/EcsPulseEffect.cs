@@ -15,7 +15,7 @@ namespace DOL.GS
         {
             PulseFreq = pulseFreq;
             CancelEffect = cancelEffect;
-            EffectType = eEffect.Pulse;
+            EffectType = EEffect.Pulse;
             ExpireTick = pulseFreq + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             LastTick = 0;

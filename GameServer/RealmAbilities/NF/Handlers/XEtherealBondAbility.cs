@@ -7,7 +7,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class XEtherealBondAbility : RAPropertyEnhancer
 	{
-		public XEtherealBondAbility(DbAbility dba, int level) : base(dba, level, eProperty.MaxMana) { }
+		public XEtherealBondAbility(DbAbility dba, int level) : base(dba, level, EProperty.MaxMana) { }
 
 		public override int CostForUpgrade(int level)
 		{

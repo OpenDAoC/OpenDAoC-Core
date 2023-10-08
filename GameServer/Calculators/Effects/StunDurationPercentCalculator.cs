@@ -9,10 +9,10 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.StunDurationReduction)]
+[PropertyCalculator(EProperty.StunDurationReduction)]
 public class StunDurationPercentCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		int percent = 100
 			- living.BaseBuffBonusCategory[(int)property] // buff reduce the duration

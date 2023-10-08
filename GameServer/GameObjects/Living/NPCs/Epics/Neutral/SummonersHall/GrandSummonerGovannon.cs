@@ -11,21 +11,21 @@ namespace DOL.GS
 	public class GrandSummonerGovannon : GameEpicBoss
 	{
 		public GrandSummonerGovannon() : base() { }
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
 				default: return 70; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -34,15 +34,15 @@ namespace DOL.GS
 		{
 			get { return 300000; }
 		}
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				if (IsOutOfTetherRange)
 				{
-					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-						|| damageType == eDamageType.Slash)
+					if (damageType == EDamageType.Body || damageType == EDamageType.Cold || damageType == EDamageType.Energy || damageType == EDamageType.Heat
+						|| damageType == EDamageType.Matter || damageType == EDamageType.Spirit || damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+						|| damageType == EDamageType.Slash)
 					{
 						GamePlayer truc;
 						if (source is GamePlayer)
@@ -83,7 +83,7 @@ namespace DOL.GS
             {
 				if(Util.Chance(35))//30% chance to make a bleed
                 {
-					if (!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed))
+					if (!ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.Bleed))
 						CastSpell(Bleed, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
             }
@@ -127,7 +127,7 @@ namespace DOL.GS
 			template.AddNPCEquipment(eInventorySlot.Cloak, 57, 65, 0, 0);
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 442, 0, 0, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
 			GrandSummonerGovannonBrain sbrain = new GrandSummonerGovannonBrain();
 			SetOwnBrain(sbrain);
@@ -141,7 +141,7 @@ namespace DOL.GS
 		{
 			GameNPC[] npcs;
 
-			npcs = WorldMgr.GetNPCsByNameFromRegion("Grand Summoner Govannon", 248, (eRealm)0);
+			npcs = WorldMgr.GetNPCsByNameFromRegion("Grand Summoner Govannon", 248, (ERealm)0);
 			if (npcs.Length == 0)
 			{
 				log.Warn("Grand Summoner Govannon not found, creating it...");
@@ -163,7 +163,7 @@ namespace DOL.GS
 				OF.Quickness = 125;
 				OF.Empathy = 300;
 				OF.BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
-				OF.MeleeDamageType = eDamageType.Crush;
+				OF.MeleeDamageType = EDamageType.Crush;
 				OF.Faction = FactionMgr.GetFactionByID(206);
 				OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
@@ -210,11 +210,11 @@ namespace DOL.GS
 					spell.Frequency = 30;
 					spell.Range = 250;
 					spell.SpellID = 11762;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.StyleBleeding.ToString();
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.StyleBleeding.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					m_Bleed = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bleed);
 				}
@@ -249,7 +249,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Stage2 = false;
 				SpawnSacrifices1 = false;
 				Body.Health = Body.MaxHealth;
@@ -380,7 +380,7 @@ namespace DOL.AI.Brain
 					spell.Damage = 120;
 					spell.Frequency = 20;
 					spell.Duration = 24;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Name = "Govannon's Shroud of Agony";
 					spell.Description = "Inflicts 150 damage to the target every 3 sec for 36 seconds.";
 					spell.Message1 = "Your body is covered with painful sores!";
@@ -392,7 +392,7 @@ namespace DOL.AI.Brain
 					spell.SpellID = 11763;
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					m_GovannonDot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_GovannonDot);
 				}
@@ -413,22 +413,22 @@ namespace DOL.GS
 		{
 			get { return 6000; }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 500;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 35;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 35;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 35;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 35;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 35;// dmg reduction for melee dmg
 				default: return 55;// dmg reduction for rest resists
 			}
 		}
@@ -499,22 +499,22 @@ namespace DOL.GS
 		{
 			get { return 6000; }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 500;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 35;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 35;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 35;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 35;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 35;// dmg reduction for melee dmg
 				default: return 55;// dmg reduction for rest resists
 			}
 		}
@@ -585,22 +585,22 @@ namespace DOL.GS
 		{
 			get { return 10000; }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 35;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 35;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 35;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 35;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 35;// dmg reduction for melee dmg
 				default: return 55;// dmg reduction for rest resists
 			}
 		}
@@ -654,7 +654,7 @@ namespace DOL.GS
 					spell.Icon = 3379;
 					spell.TooltipId = 3379;
 					spell.Duration = 5;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.DamageType = (int)EDamageType.Spirit;
 					spell.Name = "Aelfgar's Shout";
 					spell.Description = "Target is stunned and cannot move or take any other action for the duration of the spell.";
 					spell.Message1 = "You are stunned!";
@@ -666,7 +666,7 @@ namespace DOL.GS
 					spell.SpellID = 11764;
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
-					spell.Type = eSpellType.Stun.ToString();
+					spell.Type = ESpellType.Stun.ToString();
 					m_AelfgarStun = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AelfgarStun);
 				}

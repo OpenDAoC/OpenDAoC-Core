@@ -207,7 +207,7 @@ namespace DOL.GS.SalvageCalc
             }
 #endregion
 
-            eRealm Realm = Player.Realm;
+            ERealm Realm = Player.Realm;
 
             Yield.Level = Item.Level;
             
@@ -480,10 +480,10 @@ namespace DOL.GS.SalvageCalc
             switch (Realm)
             {
                 #region Determine offset by player realm
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     Material_Offset = 10; //Midgard
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     Material_Offset = 20; //Hibernia
                     break;
                 default:
@@ -1592,11 +1592,11 @@ namespace DOL.GS.SalvageCalc
                             case 3: //Levels 3,8,13,18,23,28,33,38,43,48
                                 switch (Realm)
                                 {
-                                    case eRealm.Albion:
+                                    case ERealm.Albion:
                                         Yield.Count = 22; //Albion shod staff
                                         if (Item.SPD_ABS <= 42) Yield.Count = 26; //Albion shod quarterstaff
                                         break;
-                                    case eRealm.Midgard:
+                                    case ERealm.Midgard:
                                         Yield.Count = 24; //Midgard shod staff
                                         break;
                                     default:
@@ -2025,11 +2025,11 @@ namespace DOL.GS.SalvageCalc
                             case 3: //Levels 3,8,13,18,23,28,33,38,43,48
                                 switch (Realm)
                                 {
-                                    case eRealm.Albion:
+                                    case ERealm.Albion:
                                         Yield.Count = 22; //Albion shod staff
                                         if (Item.SPD_ABS <= 42) Yield.Count = 26; //Albion shod quarterstaff
                                         break;
-                                    case eRealm.Midgard:
+                                    case ERealm.Midgard:
                                         Yield.Count = 24; //Midgard shod staff
                                         break;
                                     default:

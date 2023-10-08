@@ -14,15 +14,15 @@ namespace DOL.GS.PropertyCalc
 	///
 	/// Crit propability is capped to 50% except for berserk
 	/// </summary>
-	[PropertyCalculator(eProperty.CriticalMeleeHitChance)]
+	[PropertyCalculator(EProperty.CriticalMeleeHitChance)]
 	public class MeleeCriticalHitChanceCalculator : PropertyCalculator
 	{
 		public MeleeCriticalHitChanceCalculator() { }
 
-		public override int CalcValue(GameLiving living, eProperty property)
+		public override int CalcValue(GameLiving living, EProperty property)
 		{
 			// No berserk for ranged weapons.
-			EcsGameEffect berserk = EffectListService.GetEffectOnTarget(living, eEffect.Berserk);
+			EcsGameEffect berserk = EffectListService.GetEffectOnTarget(living, EEffect.Berserk);
 
 			if (berserk != null)
 				return 100;

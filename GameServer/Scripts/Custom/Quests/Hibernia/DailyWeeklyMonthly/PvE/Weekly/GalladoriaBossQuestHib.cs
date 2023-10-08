@@ -61,7 +61,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Anthony", eRealm.Hibernia);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName("Anthony", ERealm.Hibernia);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
@@ -79,7 +79,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
                 Anthony.Model = 289;
                 Anthony.Name = "Anthony";
                 Anthony.GuildName = "Advisor to the King";
-                Anthony.Realm = eRealm.Hibernia;
+                Anthony.Realm = ERealm.Hibernia;
                 //Domnann Location
                 Anthony.CurrentRegionID = 181;
                 Anthony.Size = 50;

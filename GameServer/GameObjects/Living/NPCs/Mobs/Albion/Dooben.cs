@@ -36,7 +36,7 @@ namespace DOL.GS
 		{
 			if (Util.Chance(45))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 					CastSpell(DoobenDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
@@ -56,12 +56,12 @@ namespace DOL.GS
 					spell.ClientEffect = 127;
 					spell.Icon = 127;
 					spell.Damage = 25;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.DamageType = (int)EDamageType.Spirit;
 					spell.Name = "Sand Strike";
 					spell.Range = 350;
 					spell.SpellID = 11988;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_DoobenDD = new Spell(spell, 10);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_DoobenDD);
 				}

@@ -11,7 +11,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
         public void CalcValue_50StrengthBuff_6()
         {
             var npc = NewNPC();
-            npc.BaseBuffBonusCategory[eProperty.Strength] = 50;
+            npc.BaseBuffBonusCategory[EProperty.Strength] = 50;
 
             int actual = MeleeDamageBonusCalculator.CalcValue(npc, MeleeDamageProperty);
 
@@ -22,7 +22,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
         public void CalcValue_NPCWith50StrengthDebuff_Minus6()
         {
             var npc = NewNPC();
-            npc.DebuffCategory[eProperty.Strength] = 50;
+            npc.DebuffCategory[EProperty.Strength] = 50;
 
             int actual = MeleeDamageBonusCalculator.CalcValue(npc, MeleeDamageProperty);
 
@@ -30,7 +30,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
         }
 
         private MeleeDamagePercentCalculator MeleeDamageBonusCalculator => new MeleeDamagePercentCalculator();
-        private eProperty MeleeDamageProperty => eProperty.MeleeDamage;
+        private EProperty MeleeDamageProperty => EProperty.MeleeDamage;
         private FakeNPC NewNPC() => new FakeNPC();
     }
 }

@@ -6,7 +6,7 @@ namespace DOL.GS.Commands;
 
 [Command(
     "&craftmacro",
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "Crafting macros and utilities",
     "'/craftmacro set <#>' to set how many items you want to craft",
     "'/craftmacro clear' to reset to crafting once",

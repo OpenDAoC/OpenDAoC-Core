@@ -34,7 +34,7 @@ namespace DOL.GS.Spells
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
 
-			effect.Owner.BaseBuffBonusCategory[(int)eProperty.Skill_Stealth]+=(int)m_spell.Value;
+			effect.Owner.BaseBuffBonusCategory[(int)EProperty.Skill_Stealth]+=(int)m_spell.Value;
 			base.OnEffectStart(effect);
 	//		effect.Owner.BuffBonusCategory1[(int)eProperty.StealthRange] += (int)m_spell.Value;
 		}
@@ -43,7 +43,7 @@ namespace DOL.GS.Spells
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
 	//		effect.Owner.BuffBonusCategory1[(int)eProperty.StealthRange] -= (int)m_spell.Value;
-			effect.Owner.BaseBuffBonusCategory[(int)eProperty.Skill_Stealth]-=(int)m_spell.Value;
+			effect.Owner.BaseBuffBonusCategory[(int)EProperty.Skill_Stealth]-=(int)m_spell.Value;
 			return base.OnEffectExpires(effect, noMessages);
 		}
 

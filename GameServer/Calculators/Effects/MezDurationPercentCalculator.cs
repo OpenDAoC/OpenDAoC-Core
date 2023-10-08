@@ -11,10 +11,10 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.MesmerizeDurationReduction)]
+[PropertyCalculator(EProperty.MesmerizeDurationReduction)]
 public class MezDurationPercentCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property) 
+	public override int CalcValue(GameLiving living, EProperty property) 
 	{
 		int percent = 100
 			-living.BaseBuffBonusCategory[(int)property] // buff reduce the duration

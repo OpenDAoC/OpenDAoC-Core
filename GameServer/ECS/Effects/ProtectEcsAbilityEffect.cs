@@ -14,7 +14,7 @@ namespace DOL.GS
 			m_protectSource = protectSource;
 			m_protectTarget = protectTarget;
 			if (protectSource.Group != null) m_playerGroup = protectSource.Group;
-            EffectType = eEffect.Protect;
+            EffectType = EEffect.Protect;
             EffectService.RequestStartEffect(this);
 		}
 
@@ -97,10 +97,10 @@ namespace DOL.GS
 			if(m_playerGroup != null)
 				GameEventMgr.RemoveHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
 
-			var protectSourceEffect = EffectListService.GetEffectOnTarget(m_protectSource, eEffect.Protect);
+			var protectSourceEffect = EffectListService.GetEffectOnTarget(m_protectSource, EEffect.Protect);
 			if (protectSourceEffect != null)
 				EffectService.RequestImmediateCancelEffect(protectSourceEffect);
-			var protectTargetEffect = EffectListService.GetEffectOnTarget(m_protectTarget, eEffect.Protect);
+			var protectTargetEffect = EffectListService.GetEffectOnTarget(m_protectTarget, EEffect.Protect);
 			if (protectTargetEffect != null)
 				EffectService.RequestImmediateCancelEffect(protectTargetEffect);
 

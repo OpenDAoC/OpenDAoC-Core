@@ -16,7 +16,7 @@ namespace DOL.GS
 
     public class NewsMgr
     {
-        public static void CreateNews(string message, eRealm realm, eNewsType type, bool sendMessage)
+        public static void CreateNews(string message, ERealm realm, eNewsType type, bool sendMessage)
         {
             if (sendMessage)
             {

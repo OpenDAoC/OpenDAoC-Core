@@ -74,7 +74,7 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Sir Lukas", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Sir Lukas", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -92,7 +92,7 @@ namespace DOL.GS.Quests.Albion
 				Lukas.Model = 33;
 				Lukas.Name = "Sir Lukas";
 				Lukas.GuildName = "Emissary of the King";
-				Lukas.Realm = eRealm.Albion;
+				Lukas.Realm = ERealm.Albion;
 				Lukas.CurrentRegionID = 1;
 				Lukas.LoadEquipmentTemplateFromDatabase("SirLukasVetusta");
 				Lukas.Size = 50;
@@ -108,7 +108,7 @@ namespace DOL.GS.Quests.Albion
 				}
 			}
 			
-			npcs = WorldMgr.GetNPCsByName("Sir Lukas", eRealm.Albion);
+			npcs = WorldMgr.GetNPCsByName("Sir Lukas", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -126,7 +126,7 @@ namespace DOL.GS.Quests.Albion
 				SirLukas.Model = 33;
 				SirLukas.Name = "Sir Lukas";
 				SirLukas.GuildName = "Emissary of the King";
-				SirLukas.Realm = eRealm.Albion;
+				SirLukas.Realm = ERealm.Albion;
 				SirLukas.CurrentRegionID = 10;
 				SirLukas.LoadEquipmentTemplateFromDatabase("SirLukas");
 				SirLukas.Size = 52;
@@ -143,7 +143,7 @@ namespace DOL.GS.Quests.Albion
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Ellyn Weyland", eRealm.Albion);
+			npcs = WorldMgr.GetNPCsByName("Ellyn Weyland", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC merchant in npcs)
@@ -163,7 +163,7 @@ namespace DOL.GS.Quests.Albion
 				EllynWeyland.Model = 38;
 				EllynWeyland.Name = "Ellyn Weyland";
 				EllynWeyland.GuildName = "Armor Merchant";
-				EllynWeyland.Realm = eRealm.Albion;
+				EllynWeyland.Realm = ERealm.Albion;
 				EllynWeyland.CurrentRegionID = 1;
 				EllynWeyland.Size = 50;
 				EllynWeyland.Level = 1;
@@ -756,7 +756,7 @@ namespace DOL.GS.Quests.Albion
 			Lukas.Emote(eEmote.Curtsey);
 			Lukas.TurnTo(Lukas.SpawnHeading);
 
-			m_questPlayer.GainExperience(eXPSource.Quest, 20, false);
+			m_questPlayer.GainExperience(EXpSource.Quest, 20, false);
 			m_questPlayer.AddMoney(Money.GetMoney(0,0,1,32,Util.Random(50)), "You receive {0} as a reward.");
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...

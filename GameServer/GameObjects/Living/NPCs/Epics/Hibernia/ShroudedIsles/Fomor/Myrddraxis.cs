@@ -83,7 +83,7 @@ namespace DOL.GS
 				player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 				if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
 				{
-					if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+					if (player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
 						canReportNews = false;
 				}
 			}
@@ -107,21 +107,21 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Myrddraxis Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
 				default: return 70; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -144,7 +144,7 @@ namespace DOL.GS
 		}
         public override void OnAttackEnemy(AttackData ad)
         {
-			if(ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if(ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
             {
 				if(Util.Chance(25))
                 {
@@ -270,7 +270,7 @@ namespace DOL.GS
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+					spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
 					m_HydraDisease = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_HydraDisease);
 				}
@@ -298,7 +298,7 @@ namespace DOL.GS
 					spell.Radius = 800;
 					spell.SpellID = 11844;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.CombatSpeedDebuff.ToString();
+					spell.Type = ESpellType.CombatSpeedDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Hydra_Haste_Debuff = new Spell(spell, 70);
@@ -483,7 +483,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
 				StartCastDD = false;
@@ -698,9 +698,9 @@ namespace DOL.AI.Brain
 					spell.Radius = 800;
 					spell.SpellID = 11849;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					m_Hydra_Dot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_Dot);
 				}
@@ -727,9 +727,9 @@ namespace DOL.AI.Brain
 					spell.Radius = 450;
 					spell.SpellID = 11840;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					m_Hydra_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_DD);
 				}
@@ -756,9 +756,9 @@ namespace DOL.AI.Brain
 					spell.Radius = 200;
 					spell.SpellID = 11850;
 					spell.Target = "Area";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					m_Hydra_DD2 = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_DD2);
 				}
@@ -785,9 +785,9 @@ namespace DOL.AI.Brain
 					spell.Radius = 1800;
 					spell.SpellID = 11841;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					m_Hydra_PBAOE = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_PBAOE);
 				}
@@ -814,9 +814,9 @@ namespace DOL.AI.Brain
 					spell.Radius = 1800;
 					spell.SpellID = 11842;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Stun.ToString();
+					spell.Type = ESpellType.Stun.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					m_Hydra_Stun = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Hydra_Stun);
 				}
@@ -840,13 +840,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Second Head of Myrddraxis Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
@@ -862,11 +862,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
@@ -951,7 +951,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled1 = false;
 			}
@@ -1030,9 +1030,9 @@ namespace DOL.AI.Brain
 					spell.Range = 2000;
 					spell.SpellID = 11845;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					m_Head2_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Head2_DD);
 				}
@@ -1056,13 +1056,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Third Head of Myrddraxis Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
@@ -1078,11 +1078,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
@@ -1168,7 +1168,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled2 = false;
 			}
@@ -1247,9 +1247,9 @@ namespace DOL.AI.Brain
 					spell.Range = 2000;
 					spell.SpellID = 11846;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					m_Head3_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Head3_DD);
 				}
@@ -1273,13 +1273,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Fourth Head of Myrddraxis Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
@@ -1295,11 +1295,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
@@ -1385,7 +1385,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled3 = false;
 			}
@@ -1464,9 +1464,9 @@ namespace DOL.AI.Brain
 					spell.Range = 2000;
 					spell.SpellID = 11847;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.DamageType = (int)EDamageType.Spirit;
 					m_Head4_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Head4_DD);
 				}
@@ -1490,13 +1490,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Fifth Head of Myrddraxis Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
@@ -1512,11 +1512,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
@@ -1601,7 +1601,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled4 = false;
 			}
@@ -1680,9 +1680,9 @@ namespace DOL.AI.Brain
 					spell.Range = 2000;
 					spell.SpellID = 11848;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					m_Head5_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Head5_DD);
 				}

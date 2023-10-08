@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Eldritch Trainer
 	/// </summary>
-	[NPCGuildScript("Eldritch Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Eldritch Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Eldritch Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Eldritch Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class EldritchTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Eldritch; }
+			get { return ECharacterClass.Eldritch; }
 		}
 
 		public const string WEAPON_ID1 = "eldritch_item";
@@ -86,7 +86,7 @@ namespace DOL.GS.Trainer
 				case "Eldritch":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Eldritch, "I can give you the gift of knowledge, but wisdom you must seek on your own. I welcome you, " + source.GetName(0, false) + ". Here, take this welcoming gift. Use it wisely.", null);
+						PromotePlayer(player, (int)ECharacterClass.Eldritch, "I can give you the gift of knowledge, but wisdom you must seek on your own. I welcome you, " + source.GetName(0, false) + ". Here, take this welcoming gift. Use it wisely.", null);
 						player.ReceiveItem(this,WEAPON_ID1);
 					}
 					break;

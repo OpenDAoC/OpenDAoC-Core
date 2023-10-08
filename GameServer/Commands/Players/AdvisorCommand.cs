@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
     "&advisor",
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     // Displays next to the command when '/cmd' is entered
     "Flags your character as a class or tradeskill Advisor (<ADV>) for new players' questions.",
     // Syntax: '/advisor' - Flags your character as an Advisor (<ADV>) to indicate that you are willing to answer new players' questions.
@@ -45,7 +45,7 @@ public class AdvisorCommand : ACommandHandler, ICommandHandler
                 // Character is level 50 and has played 15+ hours at level
                 // OR
                 // Character has 1000+ in a primary tradeskill, '/setwho craft' active, and played 15+ hours total
-                if (client.Player.Level == 50 && played >= 15 || craftingSkill && totalPlayed >= 15 && !client.Player.ClassNameFlag || client.Account.PrivLevel > (uint) ePrivLevel.Player)
+                if (client.Player.Level == 50 && played >= 15 || craftingSkill && totalPlayed >= 15 && !client.Player.ClassNameFlag || client.Account.PrivLevel > (uint) EPrivLevel.Player)
                 {
                     // Enable the advisor flag
                     if (client.Player.Advisor)
@@ -87,7 +87,7 @@ public class AdvisorCommand : ACommandHandler, ICommandHandler
 
                 // If the player is not online, anonymous, or is a member of another realm
                 if (advisorPlayer == null ||
-                    (advisorPlayer.IsAnonymous && advisorPlayer.Client.Account.PrivLevel == (uint) ePrivLevel.Player && client.Account.PrivLevel == (uint) ePrivLevel.Player))
+                    (advisorPlayer.IsAnonymous && advisorPlayer.Client.Account.PrivLevel == (uint) EPrivLevel.Player && client.Account.PrivLevel == (uint) EPrivLevel.Player))
                 {
                     // Message: "{0} is not in the game, or is a member of another realm."
                     ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", name);
@@ -103,9 +103,9 @@ public class AdvisorCommand : ACommandHandler, ICommandHandler
                 }
 
                 // Staff members still receive messages while `/anon`, but the player doesn't see that it delivered. This is intended as a protection against players spamming Admins/GMs.
-                if (advisorPlayer != null && advisorPlayer.IsAnonymous && advisorPlayer.Client.Account.PrivLevel > (uint) ePrivLevel.Player)
+                if (advisorPlayer != null && advisorPlayer.IsAnonymous && advisorPlayer.Client.Account.PrivLevel > (uint) EPrivLevel.Player)
                 {
-                    if (client.Account.PrivLevel == (uint) ePrivLevel.Player)
+                    if (client.Account.PrivLevel == (uint) EPrivLevel.Player)
                     {
                         // Message: "{0} is not in the game, or is a member of another realm."
                         ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", name);

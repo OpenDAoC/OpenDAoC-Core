@@ -12,7 +12,7 @@ namespace DOL.GS.Commands;
 [Command(
 	"&boat",
 	new string[] { "&boatcommand" },
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Boat command (use /boat for options)",
 	"/boat <option>")]
 public class BoatCommand : ACommandHandler, ICommandHandler

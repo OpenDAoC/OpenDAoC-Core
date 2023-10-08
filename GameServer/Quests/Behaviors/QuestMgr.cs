@@ -144,7 +144,7 @@ namespace DOL.GS.Quests
                 // TODO: Dirty Hack this should be done better
                 var mob = CoreDb<DbMob>.SelectObject(DB.Column("Mob_ID").IsEqualTo(tempID).Or(DB.Column("Name").IsEqualTo(tempID)));
 
-                GameNPC[] livings = WorldMgr.GetNPCsByName(mob.Name,(eRealm) mob.Realm);
+                GameNPC[] livings = WorldMgr.GetNPCsByName(mob.Name,(ERealm) mob.Realm);
 
                 if (livings.Length == 1)
                     living = livings[0];
@@ -207,7 +207,7 @@ namespace DOL.GS.Quests
 
                 var mob = CoreDb<DbMob>.SelectObject(DB.Column("Mob_ID").IsEqualTo(tempID).Or(DB.Column("Name").IsEqualTo(tempID)));
 
-				GameNPC[] npcs = WorldMgr.GetNPCsByName(mob.Name,(eRealm) mob.Realm);
+				GameNPC[] npcs = WorldMgr.GetNPCsByName(mob.Name,(ERealm) mob.Realm);
 
                 if (npcs.Length == 1)
                 {

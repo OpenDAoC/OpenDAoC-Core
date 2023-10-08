@@ -54,25 +54,25 @@ namespace DOL.GS
 		/// Stat gained every level.
 		///	see eStat consts
 		/// </summary>
-		protected eStat m_primaryStat = eStat.UNDEFINED;
+		protected EStat m_primaryStat = EStat.UNDEFINED;
 
 		/// <summary>
 		/// Stat gained every second level.
 		/// see eStat consts
 		/// </summary>
-		protected eStat m_secondaryStat = eStat.UNDEFINED;
+		protected EStat m_secondaryStat = EStat.UNDEFINED;
 
 		/// <summary>
 		/// Stat gained every third level.
 		/// see eStat consts
 		/// </summary>
-		protected eStat m_tertiaryStat = eStat.UNDEFINED;
+		protected EStat m_tertiaryStat = EStat.UNDEFINED;
 
 		/// <summary>
 		/// Stat that affects the power/mana pool.
 		/// Do not set if they do not have a power pool/spells
 		/// </summary>
-		protected eStat m_manaStat = eStat.UNDEFINED;
+		protected EStat m_manaStat = EStat.UNDEFINED;
 
 		/// <summary>
 		/// Weapon Skill Base value to influence weapon skill calc
@@ -142,7 +142,7 @@ namespace DOL.GS
 
 		public string Name
 		{
-			get { return (Player != null && Player.Gender == eGender.Female && !string.IsNullOrEmpty(m_femaleName)) ? m_femaleName : m_name; }
+			get { return (Player != null && Player.Gender == EGender.Female && !string.IsNullOrEmpty(m_femaleName)) ? m_femaleName : m_name; }
 		}
 
 		public string BaseName
@@ -175,22 +175,22 @@ namespace DOL.GS
 			get { return m_specializationMultiplier; }
 		}
 
-		public eStat PrimaryStat
+		public EStat PrimaryStat
 		{
 			get { return m_primaryStat; }
 		}
 
-		public eStat SecondaryStat
+		public EStat SecondaryStat
 		{
 			get { return m_secondaryStat; }
 		}
 
-		public eStat TertiaryStat
+		public EStat TertiaryStat
 		{
 			get { return m_tertiaryStat; }
 		}
 
-		public eStat ManaStat
+		public EStat ManaStat
 		{
 			get { return m_manaStat; }
 		}

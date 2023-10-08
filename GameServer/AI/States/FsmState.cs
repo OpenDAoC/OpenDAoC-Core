@@ -4,7 +4,7 @@ namespace DOL.AI;
 
 public abstract class FsmState
 {
-    public eFSMStateType StateType { get; protected set; }
+    public EFSMStateType StateType { get; protected set; }
 
     public FsmState() { }
 

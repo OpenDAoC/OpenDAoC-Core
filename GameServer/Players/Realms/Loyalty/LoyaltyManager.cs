@@ -62,11 +62,11 @@ public class LoyaltyManager
 
         foreach (var realm in realmLoyalty)
         {
-            if (realm.Realm == (int) eRealm.Albion)
+            if (realm.Realm == (int) ERealm.Albion)
                 albLoyalty = realm.LoyalDays;
-            if (realm.Realm == (int) eRealm.Hibernia)
+            if (realm.Realm == (int) ERealm.Hibernia)
                 hibLoyalty = realm.LoyalDays;
-            if (realm.Realm == (int) eRealm.Midgard)
+            if (realm.Realm == (int) ERealm.Midgard)
                 midLoyalty = realm.LoyalDays;
         }
 
@@ -101,15 +101,15 @@ public class LoyaltyManager
 
         switch (player.Realm)
         {
-            case eRealm.Albion:
+            case ERealm.Albion:
                 days = totalLoyalty.AlbLoyaltyDays;
                 percent = totalLoyalty.AlbPercent;
                 break;
-            case eRealm.Hibernia:
+            case ERealm.Hibernia:
                 days = totalLoyalty.HibLoyaltyDays;
                 percent = totalLoyalty.HibPercent;
                 break;
-            case eRealm.Midgard:
+            case ERealm.Midgard:
                 days = totalLoyalty.MidLoyaltyDays;
                 percent = totalLoyalty.MidPercent;
                 break;

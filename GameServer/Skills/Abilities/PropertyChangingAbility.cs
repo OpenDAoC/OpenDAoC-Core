@@ -26,22 +26,22 @@ namespace DOL.GS.SkillHandler
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		// property to modify
-		protected eProperty[] m_property;
-		public eProperty[] Properties
+		protected EProperty[] m_property;
+		public EProperty[] Properties
 		{
 			get { return m_property; }
 		}
 
-		public PropertyChangingAbility(DbAbility dba, int level, eProperty[] property)
+		public PropertyChangingAbility(DbAbility dba, int level, EProperty[] property)
 			: base(dba, level)
 		{
 			m_property = property;
 		}
 
-		public PropertyChangingAbility(DbAbility dba, int level, eProperty property)
+		public PropertyChangingAbility(DbAbility dba, int level, EProperty property)
 			: base(dba, level)
 		{
-			m_property = new eProperty[] { property };
+			m_property = new EProperty[] { property };
 		}
 
 		/// <summary>
@@ -83,7 +83,7 @@ namespace DOL.GS.SkillHandler
 			if (m_activeLiving == null)
 			{
 				m_activeLiving = living;
-				foreach (eProperty property in m_property)
+				foreach (EProperty property in m_property)
 				{
 					living.AbilityBonus[(int)property] += GetAmountForLevel(living.CalculateSkillLevel(this));
 				}
@@ -101,7 +101,7 @@ namespace DOL.GS.SkillHandler
 		{
 			if (m_activeLiving != null)
 			{
-				foreach (eProperty property in m_property)
+				foreach (EProperty property in m_property)
 				{
 					living.AbilityBonus[(int)property] -= GetAmountForLevel(living.CalculateSkillLevel(this));
 				}
@@ -119,7 +119,7 @@ namespace DOL.GS.SkillHandler
 			if (newLevel == 0)
 				newLevel = Level;
 
-			foreach (eProperty property in m_property)
+			foreach (EProperty property in m_property)
 			{
 				m_activeLiving.AbilityBonus[(int)property] += GetAmountForLevel(newLevel) - GetAmountForLevel(oldLevel);
 			}

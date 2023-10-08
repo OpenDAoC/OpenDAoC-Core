@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Infiltrator, "Infiltrator", "Rogue")]
+	[CharacterClass((int)ECharacterClass.Infiltrator, "Infiltrator", "Rogue")]
 	public class ClassInfiltrator : ClassAlbionRogue
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Stealth };
@@ -32,9 +32,9 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.GuildofShadows";
 			m_specializationMultiplier = 25;
-			m_primaryStat = eStat.DEX;
-			m_secondaryStat = eStat.QUI;
-			m_tertiaryStat = eStat.STR;
+			m_primaryStat = EStat.DEX;
+			m_secondaryStat = EStat.QUI;
+			m_tertiaryStat = EStat.STR;
 			m_baseHP = 720;
 		}
 

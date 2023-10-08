@@ -44,21 +44,21 @@ namespace DOL.GS
         {
             base.OnAttackEnemy(ad);
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
                 default: return 30; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -67,17 +67,17 @@ namespace DOL.GS
         {
             get { return 30000; }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+                        damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+                        damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -141,7 +141,7 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 1147, 0, 0);
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 475, 0, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.Standard);
+            SwitchWeapon(EActiveWeaponSlot.Standard);
             if (!Styles.Contains(Taunt))
                 Styles.Add(Taunt);
             if (!Styles.Contains(taunt2h))
@@ -159,7 +159,7 @@ namespace DOL.GS
             ChieftainCaimheulBrain.CanWalk = false;
             ChieftainCaimheulBrain.IsPulled = false;
             VisibleActiveWeaponSlots = 16;
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             ChieftainCaimheulBrain sbrain = new ChieftainCaimheulBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -172,7 +172,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Chieftain Caimheul", 276, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Chieftain Caimheul", 276, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Chieftain Caimheul not found, creating it...");
@@ -228,14 +228,14 @@ namespace DOL.AI.Brain
             {
                 //set state to RETURN TO SPAWN
                 INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(8821);
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 Phase2 = false;
                 CanWalk = false;
                 IsPulled = false;
                 Body.Strength = npcTemplate.Strength;
-                Body.SwitchWeapon(eActiveWeaponSlot.Standard);
-                Body.MeleeDamageType = eDamageType.Slash;
+                Body.SwitchWeapon(EActiveWeaponSlot.Standard);
+                Body.MeleeDamageType = EDamageType.Slash;
                 Body.VisibleActiveWeaponSlots = 16;
                 if (!Body.Styles.Contains(ChieftainCaimheul.Taunt))
                     Body.Styles.Add(ChieftainCaimheul.Taunt);
@@ -263,23 +263,23 @@ namespace DOL.AI.Brain
                     INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(8821);
                     GameLiving living = Body.TargetObject as GameLiving;
                     float angle = Body.TargetObject.GetAngle(Body);
-                    if (!living.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) && !living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+                    if (!living.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity) && !living.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
                     {
                         CanWalk = false;//reset flag 
                     }
                     if (Phase2 == false)
                     {
-                        if (!living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !living.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+                        if (!living.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && !living.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
                         {
                             Body.Strength = npcTemplate.Strength;
-                            Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+                            Body.SwitchWeapon(EActiveWeaponSlot.Standard);
                             Body.VisibleActiveWeaponSlots = 16;
                             Body.styleComponent.NextCombatStyle = ChieftainCaimheul.slam;//check if target has stun or immunity if not slam
                             Body.BlockChance = 50;
                             Body.ParryChance = 0;
-                            Body.MeleeDamageType = eDamageType.Crush;
+                            Body.MeleeDamageType = EDamageType.Crush;
                         }
-                        if (living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+                        if (living.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
                         {
                             if (CanWalk == false)
                             {
@@ -292,19 +292,19 @@ namespace DOL.AI.Brain
                             Body.Strength = 400;
                             Body.BlockChance = 0;
                             Body.ParryChance = 50;
-                            Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-                            Body.MeleeDamageType = eDamageType.Thrust;
-                            Body.VisibleActiveWeaponSlots = (byte)eActiveWeaponSlot.TwoHanded;
+                            Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
+                            Body.MeleeDamageType = EDamageType.Thrust;
+                            Body.VisibleActiveWeaponSlots = (byte)EActiveWeaponSlot.TwoHanded;
                             Body.styleComponent.NextCombatBackupStyle = ChieftainCaimheul.SideStyle;
                             Body.styleComponent.NextCombatStyle = ChieftainCaimheul.SideFollowUp;
                         }
-                        else if(!living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && living.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+                        else if(!living.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && living.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
                         {
                             Body.Strength = npcTemplate.Strength;
-                            Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+                            Body.SwitchWeapon(EActiveWeaponSlot.Standard);
                             Body.VisibleActiveWeaponSlots = 16;
                             Body.styleComponent.NextCombatStyle = ChieftainCaimheul.Taunt;
-                            Body.MeleeDamageType = eDamageType.Slash;
+                            Body.MeleeDamageType = EDamageType.Slash;
                             Body.BlockChance = 50;
                             Body.ParryChance = 0;
                         }
@@ -316,17 +316,17 @@ namespace DOL.AI.Brain
                     if(Phase2)
                     {
                         Body.Strength = 400;
-                        Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-                        Body.VisibleActiveWeaponSlots = (byte)eActiveWeaponSlot.TwoHanded;
+                        Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
+                        Body.VisibleActiveWeaponSlots = (byte)EActiveWeaponSlot.TwoHanded;
                         Body.BlockChance = 0;
                         Body.ParryChance = 50;
                         if(Body.Styles.Contains(ChieftainCaimheul.slam))
                             Body.Styles.Remove(ChieftainCaimheul.slam);
                         if(Body.Styles.Contains(ChieftainCaimheul.Taunt))
                             Body.Styles.Remove(ChieftainCaimheul.Taunt);
-                        Body.MeleeDamageType = eDamageType.Thrust;
+                        Body.MeleeDamageType = EDamageType.Thrust;
 
-                        if (living.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+                        if (living.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
                         {
                             if (CanWalk == false)
                             {

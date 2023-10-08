@@ -37,7 +37,7 @@ namespace DOL.GS.RealmAbilities
                 Hashtable table_spells = new Hashtable();
 				foreach (Spell spell in SkillBase.GetSpellList("Savagery"))
 				{
-                    if (spell.Group==0 || spell.Target != eSpellTarget.SELF)
+                    if (spell.Group==0 || spell.Target != ESpellTarget.SELF)
                         continue;
 
                     if (spell.Level <= player.GetSpellLine("Savagery").Level)

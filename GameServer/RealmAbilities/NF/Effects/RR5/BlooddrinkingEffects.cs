@@ -96,8 +96,8 @@ namespace DOL.GS.Effects
                 return;
             }
             if (args.AttackData.SpellHandler != null) return;
-            if (args.AttackData.AttackResult != eAttackResult.HitUnstyled
-                && args.AttackData.AttackResult != eAttackResult.HitStyle)
+            if (args.AttackData.AttackResult != EAttackResult.HitUnstyled
+                && args.AttackData.AttackResult != EAttackResult.HitStyle)
                 return;
 
             AttackData ad = args.AttackData;
@@ -131,7 +131,7 @@ namespace DOL.GS.Effects
         protected virtual bool MatchingDamageType(ref AttackData ad)
         {
 
-            if (ad == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
+            if (ad == null || (ad.AttackResult != EAttackResult.HitStyle && ad.AttackResult != EAttackResult.HitUnstyled))
                 return false;
             if (!ad.IsMeleeAttack && ad.AttackType != AttackData.eAttackType.Ranged)
                 return false;

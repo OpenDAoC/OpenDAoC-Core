@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 [Command(
 	"&group",
 	new string[] {"&g"},
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Say something to other chat group players",
 	"/g <message>")]
 public class GroupChatCommand : ACommandHandler, ICommandHandler

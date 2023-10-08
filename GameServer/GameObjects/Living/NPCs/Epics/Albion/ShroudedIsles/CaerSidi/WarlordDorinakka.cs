@@ -6,17 +6,17 @@ namespace DOL.GS.Scripts
 {
 	public class WarlordDorinakka : GameEpicBoss
 	{
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
@@ -26,7 +26,7 @@ namespace DOL.GS.Scripts
 			return base.AttackDamage(weapon) * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
 		}
 		
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -54,17 +54,17 @@ namespace DOL.GS.Scripts
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 847, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 
 			VisibleActiveWeaponSlots = 34;
-			MeleeDamageType = eDamageType.Slash;
+			MeleeDamageType = EDamageType.Slash;
 			Level = 81;
-			Gender = eGender.Neutral;
+			Gender = EGender.Neutral;
 			BodyType = 5; // giant
 			MaxDistance = 1500;
 			TetherRange = 2000;
 			RoamingRange = 0;
-			Realm = eRealm.None;
+			Realm = ERealm.None;
 			ParryChance = 80; // 80% parry chance
 
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167787);
@@ -104,7 +104,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
 

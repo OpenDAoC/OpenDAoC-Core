@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
     "&filter",
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "Turns off the bad word filter.",
     "/filter")]
 public class FilterCommand : ACommandHandler, ICommandHandler

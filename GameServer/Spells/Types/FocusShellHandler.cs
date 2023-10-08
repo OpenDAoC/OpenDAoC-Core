@@ -126,7 +126,7 @@ namespace DOL.GS.Spells
 				return;
 
 			//If the attacker was not a mob, then lets do the reduction!
-			if (attackArgs.AttackData.Attacker.Realm != eRealm.None)
+			if (attackArgs.AttackData.Attacker.Realm != ERealm.None)
 			{
 				//Damage absorbed from normal attack
 				int damageAbsorbed = (int)(attackArgs.AttackData.Damage * (Spell.Value * .01));

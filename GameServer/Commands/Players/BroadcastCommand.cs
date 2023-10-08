@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 [Command(
      "&broadcast",
      new string[] { "&b" },
-     ePrivLevel.Player,
+     EPrivLevel.Player,
      "Broadcast something to other players in the same zone",
      "/b <message>")]
 public class BroadcastCommand : ACommandHandler, ICommandHandler

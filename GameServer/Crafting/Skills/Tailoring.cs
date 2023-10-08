@@ -59,9 +59,9 @@ public class Tailoring : AProfession
     {
         switch (recipe.Product.Object_Type)
         {
-            case (int)eObjectType.Cloth:
-            case (int)eObjectType.Leather:
-            case (int)eObjectType.Studded:
+            case (int)EObjectType.Cloth:
+            case (int)EObjectType.Leather:
+            case (int)EObjectType.Studded:
                 return recipe.Level - 30;
         }
 

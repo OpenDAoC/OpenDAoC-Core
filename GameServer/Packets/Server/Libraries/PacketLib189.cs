@@ -241,39 +241,39 @@ namespace DOL.GS.PacketHandler
 
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.GenericItem:
+				case (int)EObjectType.GenericItem:
 					value1 = item.Count & 0xFF;
 					value2 = (item.Count >> 8) & 0xFF;
 					break;
-				case (int)eObjectType.Arrow:
-				case (int)eObjectType.Bolt:
-				case (int)eObjectType.Poison:
+				case (int)EObjectType.Arrow:
+				case (int)EObjectType.Bolt:
+				case (int)EObjectType.Poison:
 					value1 = item.Count;
 					value2 = item.SPD_ABS;
 					break;
-				case (int)eObjectType.Thrown:
+				case (int)EObjectType.Thrown:
 					value1 = item.DPS_AF;
 					value2 = item.Count;
 					break;
-				case (int)eObjectType.Instrument:
+				case (int)EObjectType.Instrument:
 					value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF);
 					value2 = 0;
 					break; // unused
-				case (int)eObjectType.Shield:
+				case (int)EObjectType.Shield:
 					value1 = item.Type_Damage;
 					value2 = item.DPS_AF;
 					break;
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.SpellcraftGem:
 					value1 = 0;
 					value2 = 0;
 					/*
 					must contain the quality of gem for spell craft and think same for tincture
 					*/
 					break;
-				case (int)eObjectType.HouseWallObject:
-				case (int)eObjectType.HouseFloorObject:
-				case (int)eObjectType.GardenObject:
+				case (int)EObjectType.HouseWallObject:
+				case (int)EObjectType.HouseFloorObject:
+				case (int)EObjectType.GardenObject:
 					value1 = 0;
 					value2 = item.SPD_ABS;
 					/*
@@ -295,7 +295,7 @@ namespace DOL.GS.PacketHandler
 
 			// ChatUtil.SendDebugMessage(m_gameClient, string.Format("WriteItemDate189: name {0}, level {1}, object {2}, value1 {3}, value2 {4}", item.Id_nb, item.Level, item.Object_Type, value1, value2));
 
-			if (item.Object_Type == (int)eObjectType.GardenObject)
+			if (item.Object_Type == (int)EObjectType.GardenObject)
 			{
 				pak.WriteByte((byte)(item.DPS_AF));
 			}
@@ -348,7 +348,7 @@ namespace DOL.GS.PacketHandler
 			string spell_name1 = "";
 			string spell_name2 = "";
 
-			if (item.Object_Type != (int)eObjectType.AlchemyTincture)
+			if (item.Object_Type != (int)EObjectType.AlchemyTincture)
 			{
 				SpellLine chargeEffectsLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
 

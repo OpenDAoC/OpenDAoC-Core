@@ -197,7 +197,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 88001;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Base Armor Factor by 20.";
-                    spell.Type = eSpellType.ArmorFactorBuff.ToString();
+                    spell.Type = ESpellType.ArmorFactorBuff.ToString();
                     spell.EffectGroup = 1;
 
                     m_baseaf = new Spell(spell, 39);
@@ -228,7 +228,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 89001;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Base Armor Factor by 20.";
-                    spell.Type = eSpellType.ArmorFactorBuff.ToString();
+                    spell.Type = ESpellType.ArmorFactorBuff.ToString();
                     spell.EffectGroup = 1;
 
                     m_casterbaseaf = new Spell(spell, 39);
@@ -259,7 +259,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 88002;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Strength by 20.";
-                    spell.Type = eSpellType.StrengthBuff.ToString();
+                    spell.Type = ESpellType.StrengthBuff.ToString();
                     spell.EffectGroup = 4;
 
                     m_basestr = new Spell(spell, 39);
@@ -290,7 +290,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 89002;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Strength by 20.";
-                    spell.Type = eSpellType.StrengthBuff.ToString();
+                    spell.Type = ESpellType.StrengthBuff.ToString();
                     spell.EffectGroup = 4;
 
                     m_casterbasestr = new Spell(spell, 39);
@@ -321,7 +321,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 88003;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Constitution by 20.";
-                    spell.Type = eSpellType.ConstitutionBuff.ToString();
+                    spell.Type = ESpellType.ConstitutionBuff.ToString();
                     spell.EffectGroup = 201;
 
                     m_basecon = new Spell(spell, 39);
@@ -352,7 +352,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 89003;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Constitution by 20.";
-                    spell.Type = eSpellType.ConstitutionBuff.ToString();
+                    spell.Type = ESpellType.ConstitutionBuff.ToString();
                     spell.EffectGroup = 201;
 
                     m_casterbasecon = new Spell(spell, 39);
@@ -383,7 +383,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 88004;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Dexterity by 20.";
-                    spell.Type = eSpellType.DexterityBuff.ToString();
+                    spell.Type = ESpellType.DexterityBuff.ToString();
                     spell.EffectGroup = 202;
 
                     m_basedex = new Spell(spell, 39);
@@ -414,7 +414,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 89004;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Dexterity by 20.";
-                    spell.Type = eSpellType.DexterityBuff.ToString();
+                    spell.Type = ESpellType.DexterityBuff.ToString();
                     spell.EffectGroup = 202;
 
                     m_casterbasedex = new Spell(spell, 39);
@@ -445,7 +445,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 88005;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Str/Con by 35.";
-                    spell.Type = eSpellType.StrengthConstitutionBuff.ToString();
+                    spell.Type = ESpellType.StrengthConstitutionBuff.ToString();
                     spell.EffectGroup = 204;
 
                     m_strcon = new Spell(spell, 39);
@@ -476,7 +476,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 89005;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Str/Con by 35.";
-                    spell.Type = eSpellType.StrengthConstitutionBuff.ToString();
+                    spell.Type = ESpellType.StrengthConstitutionBuff.ToString();
                     spell.EffectGroup = 204;
 
                     m_casterstrcon = new Spell(spell, 39);
@@ -507,7 +507,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 88006;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Dex/Qui by 35.";
-                    spell.Type = eSpellType.DexterityQuicknessBuff.ToString();
+                    spell.Type = ESpellType.DexterityQuicknessBuff.ToString();
                     spell.EffectGroup = 203;
 
                     m_dexqui = new Spell(spell, 39);
@@ -538,7 +538,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 89006;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Dex/Qui by 35.";
-                    spell.Type = eSpellType.DexterityQuicknessBuff.ToString();
+                    spell.Type = ESpellType.DexterityQuicknessBuff.ToString();
                     spell.EffectGroup = 203;
 
                     m_casterdexqui = new Spell(spell, 39);
@@ -569,7 +569,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 88007;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Acuity by 35.";
-                    spell.Type = eSpellType.AcuityBuff.ToString();
+                    spell.Type = ESpellType.AcuityBuff.ToString();
                     spell.EffectGroup = 200;
 
                     m_acuity = new Spell(spell, 39);
@@ -600,7 +600,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 89007;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Acuity by 35.";
-                    spell.Type = eSpellType.AcuityBuff.ToString();
+                    spell.Type = ESpellType.AcuityBuff.ToString();
                     spell.EffectGroup = 200;
 
                     m_casteracuity = new Spell(spell, 39);
@@ -631,7 +631,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 88014;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Armor Factor by 35.";
-                    spell.Type = eSpellType.ArmorFactorBuff.ToString();
+                    spell.Type = ESpellType.ArmorFactorBuff.ToString();
                     spell.EffectGroup = 2;
 
                     m_specaf = new Spell(spell, 39);
@@ -662,7 +662,7 @@ namespace DOL.GS.Scripts
                     spell.SpellID = 89014;
                     spell.Target = "Realm";
                     spell.Message1 = "Increases target's Armor Factor by 35.";
-                    spell.Type = eSpellType.ArmorFactorBuff.ToString();
+                    spell.Type = ESpellType.ArmorFactorBuff.ToString();
                     spell.EffectGroup = 2;
 
                     m_casterspecaf = new Spell(spell, 39);
@@ -692,7 +692,7 @@ namespace DOL.GS.Scripts
                     spell.Range = WorldMgr.VISIBILITY_DISTANCE;
                     spell.SpellID = 88010;
                     spell.Target = "Realm";
-                    spell.Type = eSpellType.CombatSpeedBuff.ToString();
+                    spell.Type = ESpellType.CombatSpeedBuff.ToString();
                     spell.EffectGroup = 100;
 
                     m_haste = new Spell(spell, 39);
@@ -856,9 +856,9 @@ namespace DOL.GS.Scripts
             }
         }
 
-        public override eQuestIndicator GetQuestIndicator(GamePlayer player)
+        public override EQuestIndicator GetQuestIndicator(GamePlayer player)
         {
-            return eQuestIndicator.Lore ;
+            return EQuestIndicator.Lore ;
         }
         #endregion
 

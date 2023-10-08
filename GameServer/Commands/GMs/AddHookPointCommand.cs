@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	 "&addhookpoint",
-	 ePrivLevel.GM,
+	 EPrivLevel.GM,
 	 "GMCommands.HookPoint.Description",
 	 "GMCommands.HookPoint.Usage")]
 public class AddHookPointCommand : ACommandHandler, ICommandHandler

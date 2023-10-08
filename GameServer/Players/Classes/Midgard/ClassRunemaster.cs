@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Runemaster, "Runemaster", "Mystic")]
+	[CharacterClass((int)ECharacterClass.Runemaster, "Runemaster", "Mystic")]
 	public class ClassRunemaster : ClassMystic
 	{
 		public ClassRunemaster()
@@ -30,10 +30,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.HouseofOdin";
 			m_specializationMultiplier = 10;
-			m_primaryStat = eStat.PIE;
-			m_secondaryStat = eStat.DEX;
-			m_tertiaryStat = eStat.QUI;
-			m_manaStat = eStat.PIE;
+			m_primaryStat = EStat.PIE;
+			m_secondaryStat = EStat.DEX;
+			m_tertiaryStat = EStat.QUI;
+			m_manaStat = EStat.PIE;
 		}
 
 		public override bool HasAdvancedFromBaseClass()

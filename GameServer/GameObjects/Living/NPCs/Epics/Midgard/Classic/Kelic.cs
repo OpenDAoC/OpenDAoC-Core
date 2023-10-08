@@ -9,26 +9,26 @@ namespace DOL.GS
 	{
 		public Kelic() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				Point3D spawn = new Point3D(SpawnPoint.X, SpawnPoint.Y, SpawnPoint.Z);
 				if (!source.IsWithinRadius(spawn, TetherRange))//dont take any dmg 
 				{
-					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-						|| damageType == eDamageType.Slash)
+					if (damageType == EDamageType.Body || damageType == EDamageType.Cold || damageType == EDamageType.Energy || damageType == EDamageType.Heat
+						|| damageType == EDamageType.Matter || damageType == EDamageType.Spirit || damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+						|| damageType == EDamageType.Slash)
 					{
 						GamePlayer truc;
 						if (source is GamePlayer)
@@ -63,11 +63,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -117,7 +117,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			if (Body.TargetObject != null && HasAggro)
@@ -133,17 +133,17 @@ namespace DOL.AI.Brain
 				}
 				if(Util.Chance(25) && target != null && target.IsAlive)
                 {
-					if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+					if(!target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 						Body.CastSpell(KelicDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				if (Util.Chance(25) && target != null && target.IsAlive)
 				{
-					if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+					if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
 						Body.CastSpell(KelicDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 				if (Util.Chance(25) && target != null && target.IsAlive)
 				{
-					if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity))
+					if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.SnareImmunity))
 						Body.CastSpell(KelicRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 			}
@@ -167,7 +167,7 @@ namespace DOL.AI.Brain
 					spell.Damage = 89;
 					spell.Frequency = 20;
 					spell.Duration = 24;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Name = "Delaceration";
 					spell.Description = "Inflicts 89 damage to the target every 2 sec for 24 seconds";
 					spell.Message1 = "Your body is covered with painful sores!";
@@ -177,7 +177,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.SpellID = 12006;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_KelicDD = new Spell(spell, 60);
@@ -213,7 +213,7 @@ namespace DOL.AI.Brain
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+					spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
 					m_KelicDisease = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_KelicDisease);
 				}
@@ -235,14 +235,14 @@ namespace DOL.AI.Brain
 					spell.Icon = 688;
 					spell.Duration = 73;
 					spell.Value = 99;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Name = "Superior Leg Twisting";
 					spell.Message1 = "Your feet are frozen to the ground!";
 					spell.Message2 = "{0}'s feet are frozen to the ground!";
 					spell.Range = 1500;
 					spell.SpellID = 12009;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.SpeedDecrease.ToString();
+					spell.Type = ESpellType.SpeedDecrease.ToString();
 					spell.Uninterruptible = true;
 					m_KelicRoot = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_KelicRoot);

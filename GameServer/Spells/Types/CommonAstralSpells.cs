@@ -33,8 +33,8 @@ namespace DOL.GS.Spells
     [SpellHandler("DexStrConQuiTap")]
     public class DexStrConQuiTap : SpellHandler
     {
-        private IList<eProperty> m_stats;
-        public IList<eProperty> Stats
+        private IList<EProperty> m_stats;
+        public IList<EProperty> Stats
         {
             get { return m_stats; }
             set { m_stats = value; }
@@ -43,17 +43,17 @@ namespace DOL.GS.Spells
         public DexStrConQuiTap(GameLiving caster, Spell spell, SpellLine line)
             : base(caster, spell, line)
         {
-            Stats = new List<eProperty>();
-            Stats.Add(eProperty.Dexterity);
-            Stats.Add(eProperty.Strength);
-            Stats.Add(eProperty.Constitution);
-            Stats.Add(eProperty.Quickness);
+            Stats = new List<EProperty>();
+            Stats.Add(EProperty.Dexterity);
+            Stats.Add(EProperty.Strength);
+            Stats.Add(EProperty.Constitution);
+            Stats.Add(EProperty.Quickness);
         }
 
         public override void OnEffectStart(GameSpellEffect effect)
         {
             base.OnEffectStart(effect);
-            foreach (eProperty property in Stats)
+            foreach (EProperty property in Stats)
             {
                 m_caster.BaseBuffBonusCategory[(int)property] += (int)m_spell.Value;
                 Target.DebuffCategory[(int)property] -= (int)m_spell.Value;
@@ -61,7 +61,7 @@ namespace DOL.GS.Spells
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            foreach (eProperty property in Stats)
+            foreach (EProperty property in Stats)
             {
                 Target.DebuffCategory[(int)property] += (int)m_spell.Value;
                 m_caster.BaseBuffBonusCategory[(int)property] -= (int)m_spell.Value;
@@ -76,8 +76,8 @@ namespace DOL.GS.Spells
     [SpellHandler("ArmorReducingEffectiveness")]
     public class ArmorReducingEffectiveness : DualStatDebuff
     {
-        public override eProperty Property1 { get { return eProperty.ArmorFactor; } }
-        public override eProperty Property2 { get { return eProperty.ArmorAbsorption; } }
+        public override EProperty Property1 { get { return EProperty.ArmorFactor; } }
+        public override EProperty Property2 { get { return EProperty.ArmorAbsorption; } }
         public ArmorReducingEffectiveness(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 
@@ -202,7 +202,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = 15;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.DirectDamage.ToString();
+            dbs.Type = ESpellType.DirectDamage.ToString();
             dbs.Damage = 80;
             dbs.Value = 0;
             dbs.Duration = 0;

@@ -9,7 +9,7 @@ namespace DOL.GS
             : base(initParams)
         {
             m_level = level;
-            EffectType = eEffect.Stag;
+            EffectType = EEffect.Stag;
 			EffectService.RequestStartEffect(this);
 		}
 
@@ -33,7 +33,7 @@ namespace DOL.GS
 			//TODO differentiate model between Lurikeens and other races
 			if (OwnerPlayer != null)
 			{
-				if (OwnerPlayer.Race == (int)eRace.Lurikeen)
+				if (OwnerPlayer.Race == (int)ERace.Lurikeen)
 					OwnerPlayer.Model = 13;
 				else OwnerPlayer.Model = 4;
 			}
@@ -41,11 +41,11 @@ namespace DOL.GS
 
 			double m_amountPercent = (m_level + 0.5 + Util.RandomDouble()) / 10; //+-5% random
 			if (OwnerPlayer != null)
-				m_amount = (int)(OwnerPlayer.CalculateMaxHealth(OwnerPlayer.Level, OwnerPlayer.GetModified(eProperty.Constitution)) * m_amountPercent);
+				m_amount = (int)(OwnerPlayer.CalculateMaxHealth(OwnerPlayer.Level, OwnerPlayer.GetModified(EProperty.Constitution)) * m_amountPercent);
 			else m_amount = (int)(Owner.MaxHealth * m_amountPercent);
 
-			Owner.BaseBuffBonusCategory[(int)eProperty.MaxHealth] += m_amount;
-			Owner.Health += (int)(Owner.GetModified(eProperty.MaxHealth) * m_amountPercent);
+			Owner.BaseBuffBonusCategory[(int)EProperty.MaxHealth] += m_amount;
+			Owner.Health += (int)(Owner.GetModified(EProperty.MaxHealth) * m_amountPercent);
 			if (Owner.Health > Owner.MaxHealth) Owner.Health = Owner.MaxHealth;
 
 			Owner.Emote(eEmote.StagFrenzy);
@@ -60,7 +60,7 @@ namespace DOL.GS
         {
 			Owner.Model = m_originalModel;
 			
-			Owner.BaseBuffBonusCategory[(int)eProperty.MaxHealth] -= m_amount;
+			Owner.BaseBuffBonusCategory[(int)EProperty.MaxHealth] -= m_amount;
 			if (Owner.IsAlive && Owner.Health > Owner.MaxHealth)
 				Owner.Health = Owner.MaxHealth;
 

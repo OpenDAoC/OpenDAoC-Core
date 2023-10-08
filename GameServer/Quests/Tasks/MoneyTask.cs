@@ -208,7 +208,7 @@ namespace DOL.GS.Quests
 		/// <returns>The GameNPC Searched</returns>
 		public static GameNPC GetRandomNPC(GamePlayer Player)
 		{
-			return Player.CurrentZone.GetRandomNPC(new eRealm[]{eRealm.Albion,eRealm.Hibernia,eRealm.Midgard});			
+			return Player.CurrentZone.GetRandomNPC(new ERealm[]{ERealm.Albion,ERealm.Hibernia,ERealm.Midgard});			
 		}
 
 		public new static bool CheckAvailability(GamePlayer player, GameLiving target)

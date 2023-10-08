@@ -11,17 +11,17 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 for uncapped realm ability bonus
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.CriticalArcheryHitChance)]
+[PropertyCalculator(EProperty.CriticalArcheryHitChance)]
 public class RangedCriticalHitChanceCalculator : PropertyCalculator
 {
 	public RangedCriticalHitChanceCalculator() {}
 
-	public override int CalcValue(GameLiving living, eProperty property) 
+	public override int CalcValue(GameLiving living, EProperty property) 
 	{
 		int chance = living.BuffBonusCategory4[(int)property] + living.AbilityBonus[(int)property];
 
 		//Volley effect apply crit chance during volley effect
-		EcsGameEffect volley = EffectListService.GetEffectOnTarget(living, eEffect.Volley);
+		EcsGameEffect volley = EffectListService.GetEffectOnTarget(living, EEffect.Volley);
 		if (living is GamePlayer archer && volley != null)
 		{
 			chance += 10;

@@ -272,7 +272,7 @@ namespace DOL.GS.Scripts
 
             foreach (GamePlayer player in players)
             {
-                if (player.Client.Account.PrivLevel < (uint) ePrivLevel.GM)
+                if (player.Client.Account.PrivLevel < (uint) EPrivLevel.GM)
                 {
                     player.Out.SendCustomTextWindow("Voting", array1);
                     player.Out.SendMessage(str1, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
@@ -291,7 +291,7 @@ namespace DOL.GS.Scripts
         {
             if (voting == null || player == null) return;
             StringBuilder sb = new StringBuilder();
-            if (player.Client.Account.PrivLevel >= (uint)ePrivLevel.GM)
+            if (player.Client.Account.PrivLevel >= (uint)EPrivLevel.GM)
                 sb.Append("VoteID: ").Append(voting.VoteID).Append("\n");
             if (voting.Description != string.Empty)
                 sb.Append("\n").Append(voting.Description).Append("\n");
@@ -417,7 +417,7 @@ namespace DOL.GS.Commands
 {
     [Command(
         "&vote",
-        ePrivLevel.Player,
+        EPrivLevel.Player,
         "Displays the current poll or let you vote",
         "/vote  shows you the current voting",
         "/vote 1|2|...|x  vote for your choice with the given number")]
@@ -460,7 +460,7 @@ namespace DOL.GS.Commands
 {
     [Command(
         "&gmvote",
-       ePrivLevel.GM,
+       EPrivLevel.GM,
         "Various voting commands!",
         "/gmvote create ... creates a new empty voting",
         "/gmvote add choice 1 ... adds 'choice 1' to the newly created voting",

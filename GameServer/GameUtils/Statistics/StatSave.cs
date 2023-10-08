@@ -71,9 +71,9 @@ namespace DOL.GS.GameEvents
                     Upload = (int) ((Statistics.BytesOut - _lastBytesOut) / time / 1024),
                     Download = (int) ((Statistics.BytesIn - _lastBytesIn) / time / 1024),
                     Memory = GC.GetTotalMemory(false) / 1024,
-                    AlbionPlayers = ClientService.GetPlayersOfRealm(eRealm.Albion).Count,
-                    MidgardPlayers = ClientService.GetPlayersOfRealm(eRealm.Midgard).Count,
-                    HiberniaPlayers = ClientService.GetPlayersOfRealm(eRealm.Hibernia).Count
+                    AlbionPlayers = ClientService.GetPlayersOfRealm(ERealm.Albion).Count,
+                    MidgardPlayers = ClientService.GetPlayersOfRealm(ERealm.Midgard).Count,
+                    HiberniaPlayers = ClientService.GetPlayersOfRealm(ERealm.Hibernia).Count
                 };
 
                 _lastBytesIn = Statistics.BytesIn;

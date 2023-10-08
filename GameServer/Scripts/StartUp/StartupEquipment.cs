@@ -49,7 +49,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Table Cache
 		/// </summary>
-		private static readonly Dictionary<eCharacterClass, List<DbItemTemplate>> m_cachedClassEquipment = new Dictionary<eCharacterClass, List<DbItemTemplate>>();
+		private static readonly Dictionary<ECharacterClass, List<DbItemTemplate>> m_cachedClassEquipment = new Dictionary<ECharacterClass, List<DbItemTemplate>>();
 		
 		/// <summary>
 		/// Register Character Creation Events
@@ -84,7 +84,7 @@ namespace DOL.GS.GameEvents
 						{
 							try
 							{
-								eCharacterClass gameClass = (eCharacterClass)cId;
+								ECharacterClass gameClass = (ECharacterClass)cId;
 								if (!m_cachedClassEquipment.ContainsKey(gameClass))
 									m_cachedClassEquipment.Add(gameClass, new List<DbItemTemplate>());
 								
@@ -142,10 +142,10 @@ namespace DOL.GS.GameEvents
 			{
 				var usedSlots = new Dictionary<eInventorySlot, bool>();
 				
-				if (m_cachedClassEquipment.ContainsKey((eCharacterClass)ch.Class))
+				if (m_cachedClassEquipment.ContainsKey((ECharacterClass)ch.Class))
 				{
 					// sort for filling righ hand first...
-					foreach (var item in m_cachedClassEquipment.Where(k => k.Key == 0 || k.Key == (eCharacterClass)ch.Class).SelectMany(kv => kv.Value).OrderBy(it => it.Item_Type))
+					foreach (var item in m_cachedClassEquipment.Where(k => k.Key == 0 || k.Key == (ECharacterClass)ch.Class).SelectMany(kv => kv.Value).OrderBy(it => it.Item_Type))
 					{
 						// create Inventory item and set to owner.
 						DbInventoryItem inventoryItem = GameInventoryItem.Create(item);
@@ -162,7 +162,7 @@ namespace DOL.GS.GameEvents
 								eInventorySlot chosenSlot;
 		
 								// try to set Left Hand in Right Hand slot if not already used.
-								if (currentSlot == eInventorySlot.LeftHandWeapon && (eObjectType)inventoryItem.Object_Type != eObjectType.Shield && !usedSlots.ContainsKey(eInventorySlot.RightHandWeapon))
+								if (currentSlot == eInventorySlot.LeftHandWeapon && (EObjectType)inventoryItem.Object_Type != EObjectType.Shield && !usedSlots.ContainsKey(eInventorySlot.RightHandWeapon))
 								{
 									chosenSlot = eInventorySlot.RightHandWeapon;
 								}
@@ -186,13 +186,13 @@ namespace DOL.GS.GameEvents
 									switch (inventoryItem.SlotPosition)
 									{
 										case Slot.RIGHTHAND:
-											ch.ActiveWeaponSlot = (byte)eActiveWeaponSlot.Standard;
+											ch.ActiveWeaponSlot = (byte)EActiveWeaponSlot.Standard;
 											break;
 										case Slot.TWOHAND:
-											ch.ActiveWeaponSlot = (byte)eActiveWeaponSlot.TwoHanded;
+											ch.ActiveWeaponSlot = (byte)EActiveWeaponSlot.TwoHanded;
 											break;
 										case Slot.RANGED:
-											ch.ActiveWeaponSlot = (byte)eActiveWeaponSlot.Distance;
+											ch.ActiveWeaponSlot = (byte)EActiveWeaponSlot.Distance;
 											break;
 									}
 									

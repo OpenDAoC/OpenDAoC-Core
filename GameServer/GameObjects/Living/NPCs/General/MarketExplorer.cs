@@ -90,24 +90,24 @@ namespace DOL.GS
 			get { return (int)eInventorySlot.Consignment_Last; } // not used
 		}
 		
-		public eRealm GetRealmOfLot(ushort houseNumber)
+		public ERealm GetRealmOfLot(ushort houseNumber)
 		{
 			if (houseNumber <= 1382)
 			{
-				return eRealm.Albion;
+				return ERealm.Albion;
 			}
 
 			if (houseNumber <= 2573)
 			{
-				return eRealm.Midgard;
+				return ERealm.Midgard;
 			}
 
 			if (houseNumber <= 4398)
 			{
-				return eRealm.Hibernia;
+				return ERealm.Hibernia;
 			}
 
-			return eRealm.None;
+			return ERealm.None;
 		}
 
 

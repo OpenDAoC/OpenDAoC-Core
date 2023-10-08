@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Scout, "Scout", "Rogue")]
+	[CharacterClass((int)ECharacterClass.Scout, "Scout", "Rogue")]
 	public class ClassScout : ClassAlbionRogue
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Archery, Specs.Longbow };
@@ -32,11 +32,11 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.DefendersofAlbion";
 			m_specializationMultiplier = 20;
-			m_primaryStat = eStat.DEX;
-			m_secondaryStat = eStat.QUI;
-			m_tertiaryStat = eStat.STR;
+			m_primaryStat = EStat.DEX;
+			m_secondaryStat = EStat.QUI;
+			m_tertiaryStat = EStat.STR;
 			m_baseHP = 720;
-            m_manaStat = eStat.DEX; 
+            m_manaStat = EStat.DEX; 
 		}
 
         public override eClassType ClassType

@@ -49,12 +49,12 @@ namespace DOL.GS
 					spell.ClientEffect = 0;
 					spell.Icon = 0;
 					spell.Damage = Util.Random(350,450);
-					spell.DamageType = (int)eDamageType.Slash;
+					spell.DamageType = (int)EDamageType.Slash;
 					spell.Name = "Melee Swing";
 					spell.Range = 400;
 					spell.SpellID = 12016;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_CrusaderDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_CrusaderDD);
 				}

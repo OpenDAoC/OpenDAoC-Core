@@ -66,7 +66,7 @@ namespace DOL.GS.ServerRules
 			if (attacker == null || defender == null)
 				return false;
 
-			if (attacker.Realm != eRealm.None && defender.Realm != eRealm.None)
+			if (attacker.Realm != ERealm.None && defender.Realm != ERealm.None)
 			{
 				if (attacker is GamePlayer && ((GamePlayer)attacker).DuelTarget == defender)
 					return true;
@@ -82,7 +82,7 @@ namespace DOL.GS.ServerRules
 					return true;
 
 				// else, don't allow mobs to attack mobs
-				if (attacker.Realm == eRealm.None)
+				if (attacker.Realm == ERealm.None)
 				{
 					return FactionMgr.CanLivingAttack(attacker, defender);
 				}
@@ -147,7 +147,7 @@ namespace DOL.GS.ServerRules
 		/// <returns></returns>
 		public override bool IsAllowedToCraft(GamePlayer player, DbItemTemplate item)
 		{
-			return player.Realm == (eRealm)item.Realm || (item.Realm == 0 && ServerProperties.Properties.ALLOW_CRAFT_NOREALM_ITEMS);
+			return player.Realm == (ERealm)item.Realm || (item.Realm == 0 && ServerProperties.Properties.ALLOW_CRAFT_NOREALM_ITEMS);
 		}
 
 		public override bool IsAllowedCharsInAllRealms(GameClient client)

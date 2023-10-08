@@ -63,7 +63,7 @@ namespace DOL.GS.Spells
 			}
             
             if (heal <= 0) return;
-            heal = m_caster.ChangeHealth(m_caster, eHealthChangeType.Spell, heal);
+            heal = m_caster.ChangeHealth(m_caster, EHealthChangeType.Spell, heal);
 
             if (heal > 0)
             {

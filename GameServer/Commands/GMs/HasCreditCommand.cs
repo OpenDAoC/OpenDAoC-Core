@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&hascredit",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"GMCommands.HasCredit.Description",
 	"GMCommands.HasCredit.Usage")]
 public class HasCreditCommand : ACommandHandler, ICommandHandler

@@ -61,7 +61,7 @@ namespace DOL.GS.DailyQuest.Albion
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("James", eRealm.Albion);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName("James", ERealm.Albion);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
@@ -79,7 +79,7 @@ namespace DOL.GS.DailyQuest.Albion
                 James.Model = 254;
                 James.Name = "James";
                 James.GuildName = "Advisor To The King";
-                James.Realm = eRealm.Albion;
+                James.Realm = ERealm.Albion;
                 James.CurrentRegionID = 51;
                 James.Size = 50;
                 James.Level = 59;

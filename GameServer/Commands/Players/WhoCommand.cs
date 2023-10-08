@@ -6,7 +6,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&who",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Shows who is online",
 	//help:
 	//"/who  Can be modified with [playername], [class], [#] level, [location], [##] [##] level range",
@@ -48,14 +48,14 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 
 		foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
 		{
-			if (otherPlayer.Client.Account.PrivLevel > (uint) ePrivLevel.Player && otherPlayer.IsAnonymous == false)
+			if (otherPlayer.Client.Account.PrivLevel > (uint) EPrivLevel.Player && otherPlayer.IsAnonymous == false)
 			{
 				clientsList.Add(otherPlayer.Client);
 				continue;
 			}
 
 			if (otherPlayer.Client != client
-				&& client.Account.PrivLevel == (uint) ePrivLevel.Player
+				&& client.Account.PrivLevel == (uint) EPrivLevel.Player
 				&& (otherPlayer.IsAnonymous || !GameServer.ServerRules.IsSameRealm(otherPlayer, client.Player, true)))
 			{
 				continue;
@@ -244,11 +244,11 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 		if (player.CurrentZone != null && GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvP)
 		{
 			// If '/who' source is a Player and target is plvl 3, do not return zone description (only return for Admins if Admin is source)
-			if (source.Account.PrivLevel == (uint)ePrivLevel.Player && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player || source.Account.PrivLevel == (uint)ePrivLevel.Admin)
+			if (source.Account.PrivLevel == (uint)EPrivLevel.Player && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player || source.Account.PrivLevel == (uint)EPrivLevel.Admin)
 			{
 				result.Append(" in ");
 				// Counter-espionage behavior: Change zone description to "Frontiers" if source is a Player and target(s) located in OF (RVR-enabled zone in classic Alb/Hib/Mid region)
-				if (source.Account.PrivLevel == (uint)ePrivLevel.Player && player.CurrentZone.IsRvR && player.CurrentRegion.ID is 1 or 100 or 200)
+				if (source.Account.PrivLevel == (uint)EPrivLevel.Player && player.CurrentZone.IsRvR && player.CurrentRegion.ID is 1 or 100 or 200)
 				{
 					result.Append("the Frontiers");
 				}
@@ -261,7 +261,7 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 		}
 		else
 		{
-			if (log.IsErrorEnabled && player.Client.Account.PrivLevel != (uint)ePrivLevel.Admin)
+			if (log.IsErrorEnabled && player.Client.Account.PrivLevel != (uint)EPrivLevel.Admin)
 				log.Error("no currentzone in who commandhandler for player " + player.Name);
 		}
 		ChatGroup mychatgroup = player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
@@ -294,11 +294,11 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 		{
 			result.Append(" <SOLO>");
 		}
-		if(player.Client.Account.PrivLevel == (uint)ePrivLevel.GM)
+		if(player.Client.Account.PrivLevel == (uint)EPrivLevel.GM)
 		{
 			result.Append(" <GM>");
 		}
-		if(player.Client.Account.PrivLevel == (uint)ePrivLevel.Admin)
+		if(player.Client.Account.PrivLevel == (uint)EPrivLevel.Admin)
 		{
 			result.Append(" <Admin>");
 		}
@@ -427,7 +427,7 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 	{
 		public bool ApplyFilter(GamePlayer player)
 		{
-			if(!player.IsAnonymous && player.Client.Account.PrivLevel > (uint)ePrivLevel.Player)
+			if(!player.IsAnonymous && player.Client.Account.PrivLevel > (uint)EPrivLevel.Player)
 				return true;
 			return false;
 		}
@@ -473,9 +473,9 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 	{
 		public bool ApplyFilter(GamePlayer player)
 		{
-			if (player.Client.Account.PrivLevel == (uint)ePrivLevel.Admin && player.CurrentZone.IsRvR)
+			if (player.Client.Account.PrivLevel == (uint)EPrivLevel.Admin && player.CurrentZone.IsRvR)
 				return false;
-			if (player.Client.Account.PrivLevel < (uint)ePrivLevel.Admin && player.CurrentZone.IsRvR && player.CurrentRegion.ID is 1 or 100 or 200)
+			if (player.Client.Account.PrivLevel < (uint)EPrivLevel.Admin && player.CurrentZone.IsRvR && player.CurrentRegion.ID is 1 or 100 or 200)
 				return true;
 			return false;
 		}

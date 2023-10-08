@@ -11,10 +11,10 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.ArcaneSyphon)]
+[PropertyCalculator(EProperty.ArcaneSyphon)]
 public class ArcaneSyphonCalculator : PropertyCalculator
 {
-    public override int CalcValue(GameLiving living, eProperty property)
+    public override int CalcValue(GameLiving living, EProperty property)
     {
         GamePlayer player = living as GamePlayer;
         if (player == null)

@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
 					case 3: heal = 100; break;
 				}
 			}
-			int healed = living.ChangeMana(living, eManaChangeType.Spell, living.MaxMana * heal / 100);
+			int healed = living.ChangeMana(living, EPowerChangeType.Spell, living.MaxMana * heal / 100);
 
 			SendCasterSpellEffectAndCastMessage(living, 7009, healed > 0);
 

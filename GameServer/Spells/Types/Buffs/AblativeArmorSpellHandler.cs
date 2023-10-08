@@ -58,13 +58,13 @@ namespace DOL.GS.Spells
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
 			double duration = Spell.Duration;
-			duration *= 1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01;
+			duration *= 1.0 + m_caster.GetModified(EProperty.SpellDuration) * 0.01;
 			return (int)duration;
 		}
 
 		public virtual bool MatchingDamageType(ref AttackData ad)
 		{
-			if (ad == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
+			if (ad == null || (ad.AttackResult != EAttackResult.HitStyle && ad.AttackResult != EAttackResult.HitUnstyled))
 				return false;
 
 			if (!ad.IsMeleeAttack && ad.AttackType != AttackData.eAttackType.Ranged)
@@ -170,7 +170,7 @@ namespace DOL.GS.Spells
 		// Check if Melee
 		public override bool MatchingDamageType(ref AttackData ad)
 		{
-			if (ad == null || (ad.AttackResult == eAttackResult.HitStyle && ad.AttackResult == eAttackResult.HitUnstyled))
+			if (ad == null || (ad.AttackResult == EAttackResult.HitStyle && ad.AttackResult == EAttackResult.HitUnstyled))
 				return false;
 
 			if (ad.IsMeleeAttack && ad.AttackType == AttackData.eAttackType.Ranged)

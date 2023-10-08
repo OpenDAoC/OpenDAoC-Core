@@ -13,7 +13,7 @@ namespace DOL.GS.PropertyCalc
     /// BuffBonusCategory4 unused
     /// BuffBonusMultCategory1 used for all multiplicative speed bonuses
     /// </summary>
-    [PropertyCalculator(eProperty.MaxSpeed)]
+    [PropertyCalculator(EProperty.MaxSpeed)]
     public class MaxMovementSpeedCalculator : PropertyCalculator
     {
         public static readonly double SPEED1 = 1.44;
@@ -22,7 +22,7 @@ namespace DOL.GS.PropertyCalc
         public static readonly double SPEED4 = 1.89;
         public static readonly double SPEED5 = 2.04;
 
-        public override int CalcValue(GameLiving living, eProperty property)
+        public override int CalcValue(GameLiving living, EProperty property)
         {
             if ((living.IsMezzed || living.IsStunned) && living.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
                 return 0;
@@ -88,7 +88,7 @@ namespace DOL.GS.PropertyCalc
                     //if (bloodrage != null)
                     //    speed *= 1 + (bloodrage.Spell.Value * 0.01); // 25 * 0.01 = 0.25 (a.k 25%) value should be 25.5
 
-                    if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ShadowRun))
+                    if (player.effectListComponent.ContainsEffectForEffectType(EEffect.ShadowRun))
                         speed *= 2;
                 }
 

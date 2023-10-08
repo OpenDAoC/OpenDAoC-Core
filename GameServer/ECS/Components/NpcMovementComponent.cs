@@ -320,7 +320,7 @@ namespace DOL.GS
         private int FollowTick()
         {
             // Stop moving if the NPC is casting or attacking with a ranged weapon.
-            if (Owner.IsCasting || (Owner.attackComponent.IsAttacking && Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance))
+            if (Owner.IsCasting || (Owner.attackComponent.IsAttacking && Owner.ActiveWeaponSlot == EActiveWeaponSlot.Distance))
             {
                 TurnTo(FollowTarget);
 
@@ -369,7 +369,7 @@ namespace DOL.GS
                         {
                             Owner.LastAttackedByEnemyTickPvE = 0;
                             Owner.LastAttackedByEnemyTickPvP = 0;
-                            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                             return 0;
                         }
                     }

@@ -6,7 +6,7 @@ namespace DOL.GS.Effects
     {
         public AtlasOF_ForestheartAmbusherECSEffect(EcsGameEffectInitParams initParams) : base(initParams)
         {
-            EffectType = eEffect.ForestheartAmbusher;
+            EffectType = EEffect.ForestheartAmbusher;
             EffectService.RequestStartEffect(this);
         }
 
@@ -29,7 +29,7 @@ namespace DOL.GS.Effects
         public override void OnStopEffect()
         {
             // The effect can be cancelled before the spell if fired by the casting service, in which case 'PetSpellHander' can be null.
-            PetSpellHander?.Pet.TakeDamage(null, eDamageType.Natural, int.MaxValue, 0);
+            PetSpellHander?.Pet.TakeDamage(null, EDamageType.Natural, int.MaxValue, 0);
             base.OnStopEffect();
         }
 

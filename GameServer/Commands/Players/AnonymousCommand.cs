@@ -3,7 +3,7 @@ namespace DOL.GS.Commands;
 [Command(
   "&anonymous",
   new [] {"&anon"},
-  ePrivLevel.Player,
+  EPrivLevel.Player,
   // Displays next to the command when '/cmd' is entered
   "Enables/disables anonymous mode, which hides you from player searches (e.g., '/who').",
   // Syntax: '/anonymous' or '/anon' - Enables/disables anonymous mode, which hides you from player searches (e.g., '/who').

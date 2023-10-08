@@ -32,7 +32,7 @@ namespace DOL.AI.Brain
 				return;
 
 			m_orderAttackTarget = target as GameLiving;
-			FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO);
+			FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
 		}
 
 		#region AI
@@ -57,9 +57,9 @@ namespace DOL.AI.Brain
 			switch (spell.SpellType)
 			{
 				#region Buffs
-				case eSpellType.CombatSpeedBuff:
-				case eSpellType.DamageShield:
-				case eSpellType.Bladeturn:
+				case ESpellType.CombatSpeedBuff:
+				case ESpellType.DamageShield:
+				case ESpellType.Bladeturn:
 					{
 						if (!Body.IsAttacking)
 						{
@@ -70,7 +70,7 @@ namespace DOL.AI.Brain
 								break;
 							}
 
-							if (spell.Target != eSpellTarget.SELF)
+							if (spell.Target != ESpellTarget.SELF)
 							{
 								owner = (this as IControlledBrain).Owner;
 

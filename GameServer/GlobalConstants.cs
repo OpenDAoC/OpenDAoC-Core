@@ -125,19 +125,19 @@ namespace DOL.GS
 
 	public static class GlobalConstants
 	{
-		private static readonly Dictionary<eAttackResult, byte> AttackResultByte = new Dictionary<eAttackResult, byte>()
+		private static readonly Dictionary<EAttackResult, byte> AttackResultByte = new Dictionary<EAttackResult, byte>()
 	    {
-			{eAttackResult.Missed, 0},
-			{eAttackResult.Parried, 1},
-			{eAttackResult.Blocked, 2},
-			{eAttackResult.Evaded, 3},
-			{eAttackResult.Fumbled, 4},
-			{eAttackResult.HitUnstyled, 10},
-			{eAttackResult.HitStyle, 11},
-			{eAttackResult.Any, 20},
+			{EAttackResult.Missed, 0},
+			{EAttackResult.Parried, 1},
+			{EAttackResult.Blocked, 2},
+			{EAttackResult.Evaded, 3},
+			{EAttackResult.Fumbled, 4},
+			{EAttackResult.HitUnstyled, 10},
+			{EAttackResult.HitStyle, 11},
+			{EAttackResult.Any, 20},
 	    };
 		
-		public static byte GetAttackResultByte(eAttackResult attResult)
+		public static byte GetAttackResultByte(EAttackResult attResult)
 		{
 			if (AttackResultByte.ContainsKey(attResult))
 			{
@@ -167,25 +167,25 @@ namespace DOL.GS
 		}
 
 
-		public static string StatToName(eStat stat)
+		public static string StatToName(EStat stat)
 		{
 			switch (stat)
 			{
-				case eStat.STR:
+				case EStat.STR:
 					return "Strength";
-				case eStat.DEX:
+				case EStat.DEX:
 					return "Dexterity";
-				case eStat.CON:
+				case EStat.CON:
 					return "Constitution";
-				case eStat.QUI:
+				case EStat.QUI:
 					return "Quickness";
-				case eStat.INT:
+				case EStat.INT:
 					return "Intelligence";
-				case eStat.PIE:
+				case EStat.PIE:
 					return "Piety";
-				case eStat.EMP:
+				case EStat.EMP:
 					return "Empathy";
-				case eStat.CHR:
+				case EStat.CHR:
 					return "Charisma";
 			}
 
@@ -197,9 +197,9 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="objectType"></param>
 		/// <returns></returns>
-		public static bool IsBowWeapon(eObjectType objectType)
+		public static bool IsBowWeapon(EObjectType objectType)
 		{
-			return (objectType == eObjectType.CompositeBow || objectType == eObjectType.Longbow || objectType == eObjectType.RecurvedBow);
+			return (objectType == EObjectType.CompositeBow || objectType == EObjectType.Longbow || objectType == EObjectType.RecurvedBow);
 		}
 		/// <summary>
 		/// Check an Object_Type to determine if it's a weapon
@@ -208,7 +208,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool IsWeapon(int objectTypeID)
 		{
-			if ((objectTypeID >= 1 && objectTypeID <= 28) || objectTypeID == (int)eObjectType.Shield) return true;
+			if ((objectTypeID >= 1 && objectTypeID <= 28) || objectTypeID == (int)EObjectType.Shield) return true;
 			return false;
 		}
 		/// <summary>
@@ -245,7 +245,7 @@ namespace DOL.GS
 
 		public static string InstrumentTypeToName(int instrumentTypeID)
 		{
-			return Enum.GetName(typeof(eInstrumentType), instrumentTypeID);
+			return Enum.GetName(typeof(EInstrumentType), instrumentTypeID);
 		}
 
 		public static string AmmunitionTypeToDamageName(int ammutype)
@@ -289,11 +289,11 @@ namespace DOL.GS
 			return Enum.GetName(typeof(ShieldLevel), shieldTypeID);
 		}
 
-		public static string ArmorLevelToName(int armorLevel, eRealm realm)
+		public static string ArmorLevelToName(int armorLevel, ERealm realm)
 		{
 			switch (realm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					{
 						switch (armorLevel)
 						{
@@ -305,7 +305,7 @@ namespace DOL.GS
 								default: return "undefined";
 						}
 					}
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					{
 						switch (armorLevel)
 						{
@@ -316,7 +316,7 @@ namespace DOL.GS
 								default: return "undefined";
 						}
 					}
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					{
 						switch (armorLevel)
 						{
@@ -333,7 +333,7 @@ namespace DOL.GS
 
 		public static string WeaponDamageTypeToName(int weaponDamageTypeID)
 		{
-			return Enum.GetName(typeof(eWeaponDamageType), weaponDamageTypeID);
+			return Enum.GetName(typeof(EWeaponDamageType), weaponDamageTypeID);
 		}
 
 		public static string NameToShortName(string name)
@@ -605,71 +605,71 @@ namespace DOL.GS
 			}
 			return 0x00;
 		}
-		public static string RealmToName(eRealm realm)
+		public static string RealmToName(ERealm realm)
 		{
 			switch (realm)
 			{
-					case eRealm.None: return "None";
-					case eRealm.Albion: return "Albion";
-					case eRealm.Midgard: return "Midgard";
-					case eRealm.Hibernia: return "Hibernia";
-					case eRealm.Door: return "Door";
+					case ERealm.None: return "None";
+					case ERealm.Albion: return "Albion";
+					case ERealm.Midgard: return "Midgard";
+					case ERealm.Hibernia: return "Hibernia";
+					case ERealm.Door: return "Door";
 					default: return "";
 			}
 		}
-		public static int EmblemOfRealm(eRealm realm)
+		public static int EmblemOfRealm(ERealm realm)
 		{
 			switch (realm)
 			{
-					case eRealm.None: return 0;
-					case eRealm.Albion: return 464;
-					case eRealm.Midgard: return 465;
-					case eRealm.Hibernia: return 466;
+					case ERealm.None: return 0;
+					case ERealm.Albion: return 464;
+					case ERealm.Midgard: return 465;
+					case ERealm.Hibernia: return 466;
 					default: return 0;
 			}
 		}
 
-		public static string PropertyToName(eProperty property)
+		public static string PropertyToName(EProperty property)
 		{
 			switch (property)
 			{
-					case eProperty.Strength: return "Strength";
-					case eProperty.Dexterity: return "Dexterity";
-					case eProperty.Constitution: return "Constitution";
-					case eProperty.Quickness: return "Quickness";
-					case eProperty.Intelligence: return "Intelligence";
-					case eProperty.Piety: return "Piety";
-					case eProperty.Empathy: return "Empathy";
-					case eProperty.Charisma: return "Charisma";
-					case eProperty.Resist_Body: return "Body Resist";
-					case eProperty.Resist_Cold: return "Cold Resist";
-					case eProperty.Resist_Crush: return "Crush Resist";
-					case eProperty.Resist_Energy: return "Energy Resist";
-					case eProperty.Resist_Heat: return "Heat Resist";
-					case eProperty.Resist_Matter: return "Matter Resist";
-					case eProperty.Resist_Slash: return "Slash Resist";
-					case eProperty.Resist_Spirit: return "Spirit Resist";
-					case eProperty.Resist_Thrust: return "Thrust Resist";
-					case eProperty.Resist_Natural: return "Essence Resist";
+					case EProperty.Strength: return "Strength";
+					case EProperty.Dexterity: return "Dexterity";
+					case EProperty.Constitution: return "Constitution";
+					case EProperty.Quickness: return "Quickness";
+					case EProperty.Intelligence: return "Intelligence";
+					case EProperty.Piety: return "Piety";
+					case EProperty.Empathy: return "Empathy";
+					case EProperty.Charisma: return "Charisma";
+					case EProperty.Resist_Body: return "Body Resist";
+					case EProperty.Resist_Cold: return "Cold Resist";
+					case EProperty.Resist_Crush: return "Crush Resist";
+					case EProperty.Resist_Energy: return "Energy Resist";
+					case EProperty.Resist_Heat: return "Heat Resist";
+					case EProperty.Resist_Matter: return "Matter Resist";
+					case EProperty.Resist_Slash: return "Slash Resist";
+					case EProperty.Resist_Spirit: return "Spirit Resist";
+					case EProperty.Resist_Thrust: return "Thrust Resist";
+					case EProperty.Resist_Natural: return "Essence Resist";
 					default: return "not implemented";
 			}
 		}
 
-		public static string DamageTypeToName(eDamageType damage)
+		public static string DamageTypeToName(EDamageType damage)
 		{
 			switch (damage)
 			{
-					case eDamageType.Body: return "Body";
-					case eDamageType.Cold: return "Cold";
-					case eDamageType.Crush: return "Crush";
-					case eDamageType.Energy: return "Energy";
-					case eDamageType.Falling: return "Falling";
-					case eDamageType.Heat: return "Heat";
-					case eDamageType.Matter: return "Matter";
-					case eDamageType.Natural: return "Natural";
-					case eDamageType.Slash: return "Slash";
-					case eDamageType.Spirit: return "Spirit";
-					case eDamageType.Thrust: return "Thrust";
+					case EDamageType.Body: return "Body";
+					case EDamageType.Cold: return "Cold";
+					case EDamageType.Crush: return "Crush";
+					case EDamageType.Energy: return "Energy";
+					case EDamageType.Falling: return "Falling";
+					case EDamageType.Heat: return "Heat";
+					case EDamageType.Matter: return "Matter";
+					case EDamageType.Natural: return "Natural";
+					case EDamageType.Slash: return "Slash";
+					case EDamageType.Spirit: return "Spirit";
+					case EDamageType.Thrust: return "Thrust";
 					default: return "unknown damagetype " + damage.ToString();
 			}
 		}
@@ -698,122 +698,122 @@ namespace DOL.GS
 			return "";
 		}
 
-		public static eRealm GetBonusRealm(eProperty bonus)
+		public static ERealm GetBonusRealm(EProperty bonus)
 		{
-			if (SkillBase.CheckPropertyType(bonus, ePropertyType.Albion))
-				return eRealm.Albion;
-			if (SkillBase.CheckPropertyType(bonus, ePropertyType.Midgard))
-				return eRealm.Midgard;
-			if (SkillBase.CheckPropertyType(bonus, ePropertyType.Hibernia))
-				return eRealm.Hibernia;
-			return eRealm.None;
+			if (SkillBase.CheckPropertyType(bonus, EPropertyType.Albion))
+				return ERealm.Albion;
+			if (SkillBase.CheckPropertyType(bonus, EPropertyType.Midgard))
+				return ERealm.Midgard;
+			if (SkillBase.CheckPropertyType(bonus, EPropertyType.Hibernia))
+				return ERealm.Hibernia;
+			return ERealm.None;
 		}
 
-		public static eRealm[] GetItemTemplateRealm(DbItemTemplate item)
+		public static ERealm[] GetItemTemplateRealm(DbItemTemplate item)
 		{
-			switch ((eObjectType)item.Object_Type)
+			switch ((EObjectType)item.Object_Type)
 			{
 					//Albion
-				case eObjectType.CrushingWeapon:
-				case eObjectType.SlashingWeapon:
-				case eObjectType.ThrustWeapon:
-				case eObjectType.TwoHandedWeapon:
-				case eObjectType.PolearmWeapon:
-				case eObjectType.Staff:
-				case eObjectType.Longbow:
-				case eObjectType.Crossbow:
-				case eObjectType.Flexible:
-				case eObjectType.Plate:
-				case eObjectType.Bolt:
-					return new eRealm[] { eRealm.Albion };
+				case EObjectType.CrushingWeapon:
+				case EObjectType.SlashingWeapon:
+				case EObjectType.ThrustWeapon:
+				case EObjectType.TwoHandedWeapon:
+				case EObjectType.PolearmWeapon:
+				case EObjectType.Staff:
+				case EObjectType.Longbow:
+				case EObjectType.Crossbow:
+				case EObjectType.Flexible:
+				case EObjectType.Plate:
+				case EObjectType.Bolt:
+					return new ERealm[] { ERealm.Albion };
 
 					//Midgard
-				case eObjectType.Sword:
-				case eObjectType.Hammer:
-				case eObjectType.Axe:
-				case eObjectType.Spear:
-				case eObjectType.CompositeBow:
-				case eObjectType.Thrown:
-				case eObjectType.LeftAxe:
-				case eObjectType.HandToHand:
-					return new eRealm[] { eRealm.Midgard };
+				case EObjectType.Sword:
+				case EObjectType.Hammer:
+				case EObjectType.Axe:
+				case EObjectType.Spear:
+				case EObjectType.CompositeBow:
+				case EObjectType.Thrown:
+				case EObjectType.LeftAxe:
+				case EObjectType.HandToHand:
+					return new ERealm[] { ERealm.Midgard };
 
 					//Hibernia
-				case eObjectType.Fired:
-				case eObjectType.RecurvedBow:
-				case eObjectType.Blades:
-				case eObjectType.Blunt:
-				case eObjectType.Piercing:
-				case eObjectType.LargeWeapons:
-				case eObjectType.CelticSpear:
-				case eObjectType.Scythe:
-				case eObjectType.Reinforced:
-				case eObjectType.Scale:
-					return new eRealm[] { eRealm.Hibernia };
+				case EObjectType.Fired:
+				case EObjectType.RecurvedBow:
+				case EObjectType.Blades:
+				case EObjectType.Blunt:
+				case EObjectType.Piercing:
+				case EObjectType.LargeWeapons:
+				case EObjectType.CelticSpear:
+				case EObjectType.Scythe:
+				case EObjectType.Reinforced:
+				case EObjectType.Scale:
+					return new ERealm[] { ERealm.Hibernia };
 
 					//Special
-				case eObjectType.Studded:
-				case eObjectType.Chain:
-					return new eRealm[] { eRealm.Albion, eRealm.Midgard };
+				case EObjectType.Studded:
+				case EObjectType.Chain:
+					return new ERealm[] { ERealm.Albion, ERealm.Midgard };
 
-				case eObjectType.Instrument:
-					return new eRealm[] { eRealm.Albion, eRealm.Hibernia };
+				case EObjectType.Instrument:
+					return new ERealm[] { ERealm.Albion, ERealm.Hibernia };
 
 					//Common Armor
-				case eObjectType.Cloth:
-				case eObjectType.Leather:
+				case EObjectType.Cloth:
+				case EObjectType.Leather:
 					//Misc
-				case eObjectType.GenericItem:
-				case eObjectType.GenericWeapon:
-				case eObjectType.GenericArmor:
-				case eObjectType.Magical:
-				case eObjectType.Shield:
-				case eObjectType.Arrow:
-				case eObjectType.Poison:
-				case eObjectType.AlchemyTincture:
-				case eObjectType.SpellcraftGem:
-				case eObjectType.GardenObject:
-				case eObjectType.SiegeBalista:
-				case eObjectType.SiegeCatapult:
-				case eObjectType.SiegeCauldron:
-				case eObjectType.SiegeRam:
-				case eObjectType.SiegeTrebuchet:
+				case EObjectType.GenericItem:
+				case EObjectType.GenericWeapon:
+				case EObjectType.GenericArmor:
+				case EObjectType.Magical:
+				case EObjectType.Shield:
+				case EObjectType.Arrow:
+				case EObjectType.Poison:
+				case EObjectType.AlchemyTincture:
+				case EObjectType.SpellcraftGem:
+				case EObjectType.GardenObject:
+				case EObjectType.SiegeBalista:
+				case EObjectType.SiegeCatapult:
+				case EObjectType.SiegeCauldron:
+				case EObjectType.SiegeRam:
+				case EObjectType.SiegeTrebuchet:
 					break;
 			}
 
-			eRealm realm = eRealm.None;
+			ERealm realm = ERealm.None;
 
-			if (item.Bonus1Type > 0 && (realm = GetBonusRealm((eProperty)item.Bonus1Type)) != eRealm.None)
-				return new eRealm[] { realm };
+			if (item.Bonus1Type > 0 && (realm = GetBonusRealm((EProperty)item.Bonus1Type)) != ERealm.None)
+				return new ERealm[] { realm };
 
-			if (item.Bonus2Type > 0 && (realm = GetBonusRealm((eProperty)item.Bonus2Type)) != eRealm.None)
-				return new eRealm[] { realm };
+			if (item.Bonus2Type > 0 && (realm = GetBonusRealm((EProperty)item.Bonus2Type)) != ERealm.None)
+				return new ERealm[] { realm };
 
-			if (item.Bonus3Type > 0 && (realm = GetBonusRealm((eProperty)item.Bonus3Type)) != eRealm.None)
-				return new eRealm[] { realm };
+			if (item.Bonus3Type > 0 && (realm = GetBonusRealm((EProperty)item.Bonus3Type)) != ERealm.None)
+				return new ERealm[] { realm };
 
-			if (item.Bonus4Type > 0 && (realm = GetBonusRealm((eProperty)item.Bonus4Type)) != eRealm.None)
-				return new eRealm[] { realm };
+			if (item.Bonus4Type > 0 && (realm = GetBonusRealm((EProperty)item.Bonus4Type)) != ERealm.None)
+				return new ERealm[] { realm };
 
-			if (item.Bonus5Type > 0 && (realm = GetBonusRealm((eProperty)item.Bonus5Type)) != eRealm.None)
-				return new eRealm[] { realm };
+			if (item.Bonus5Type > 0 && (realm = GetBonusRealm((EProperty)item.Bonus5Type)) != ERealm.None)
+				return new ERealm[] { realm };
 
-			if (item.Bonus6Type > 0 && (realm = GetBonusRealm((eProperty)item.Bonus6Type)) != eRealm.None)
-				return new eRealm[] { realm };
+			if (item.Bonus6Type > 0 && (realm = GetBonusRealm((EProperty)item.Bonus6Type)) != ERealm.None)
+				return new ERealm[] { realm };
 
-			if (item.Bonus7Type > 0 && (realm = GetBonusRealm((eProperty)item.Bonus7Type)) != eRealm.None)
-				return new eRealm[] { realm };
+			if (item.Bonus7Type > 0 && (realm = GetBonusRealm((EProperty)item.Bonus7Type)) != ERealm.None)
+				return new ERealm[] { realm };
 
-			if (item.Bonus8Type > 0 && (realm = GetBonusRealm((eProperty)item.Bonus8Type)) != eRealm.None)
-				return new eRealm[] { realm };
+			if (item.Bonus8Type > 0 && (realm = GetBonusRealm((EProperty)item.Bonus8Type)) != ERealm.None)
+				return new ERealm[] { realm };
 
-			if (item.Bonus9Type > 0 && (realm = GetBonusRealm((eProperty)item.Bonus9Type)) != eRealm.None)
-				return new eRealm[] { realm };
+			if (item.Bonus9Type > 0 && (realm = GetBonusRealm((EProperty)item.Bonus9Type)) != ERealm.None)
+				return new ERealm[] { realm };
 
-			if (item.Bonus10Type > 0 && (realm = GetBonusRealm((eProperty)item.Bonus10Type)) != eRealm.None)
-				return new eRealm[] { realm };
+			if (item.Bonus10Type > 0 && (realm = GetBonusRealm((EProperty)item.Bonus10Type)) != ERealm.None)
+				return new ERealm[] { realm };
 
-			return new eRealm[] { realm };
+			return new ERealm[] { realm };
 
 		}
 
@@ -926,24 +926,24 @@ namespace DOL.GS
 		/// <summary>
 		/// All possible player races
 		/// </summary>
-		public static readonly Dictionary<eRace, Dictionary<eStat, int>> STARTING_STATS_DICT = new Dictionary<eRace, Dictionary<eStat, int>>()
+		public static readonly Dictionary<ERace, Dictionary<EStat, int>> STARTING_STATS_DICT = new Dictionary<ERace, Dictionary<EStat, int>>()
 		{ 
-			{ eRace.Unknown, new Dictionary<eStat, int>()			{{eStat.STR, 60}, {eStat.CON, 60}, {eStat.DEX, 60}, {eStat.QUI, 60}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Briton, new Dictionary<eStat, int>()			{{eStat.STR, 60}, {eStat.CON, 60}, {eStat.DEX, 60}, {eStat.QUI, 60}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Avalonian, new Dictionary<eStat, int>()			{{eStat.STR, 45}, {eStat.CON, 45}, {eStat.DEX, 60}, {eStat.QUI, 70}, {eStat.INT, 80}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Highlander, new Dictionary<eStat, int>()		{{eStat.STR, 70}, {eStat.CON, 70}, {eStat.DEX, 50}, {eStat.QUI, 50}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Saracen, new Dictionary<eStat, int>()			{{eStat.STR, 50}, {eStat.CON, 50}, {eStat.DEX, 80}, {eStat.QUI, 60}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Norseman, new Dictionary<eStat, int>()			{{eStat.STR, 70}, {eStat.CON, 70}, {eStat.DEX, 50}, {eStat.QUI, 50}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Troll, new Dictionary<eStat, int>()				{{eStat.STR, 100}, {eStat.CON, 70}, {eStat.DEX, 35}, {eStat.QUI, 35}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Dwarf, new Dictionary<eStat, int>()				{{eStat.STR, 60}, {eStat.CON, 80}, {eStat.DEX, 50}, {eStat.QUI, 50}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Kobold, new Dictionary<eStat, int>()			{{eStat.STR, 50}, {eStat.CON, 50}, {eStat.DEX, 70}, {eStat.QUI, 70}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Celt, new Dictionary<eStat, int>()				{{eStat.STR, 60}, {eStat.CON, 60}, {eStat.DEX, 60}, {eStat.QUI, 60}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Firbolg, new Dictionary<eStat, int>()			{{eStat.STR, 90}, {eStat.CON, 60}, {eStat.DEX, 40}, {eStat.QUI, 40}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 70}, {eStat.CHR, 60}, }},
-			{ eRace.Elf, new Dictionary<eStat, int>()				{{eStat.STR, 40}, {eStat.CON, 40}, {eStat.DEX, 75}, {eStat.QUI, 75}, {eStat.INT, 70}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Lurikeen, new Dictionary<eStat, int>()			{{eStat.STR, 40}, {eStat.CON, 40}, {eStat.DEX, 80}, {eStat.QUI, 80}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Inconnu, new Dictionary<eStat, int>()			{{eStat.STR, 50}, {eStat.CON, 60}, {eStat.DEX, 70}, {eStat.QUI, 50}, {eStat.INT, 70}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Valkyn, new Dictionary<eStat, int>()			{{eStat.STR, 55}, {eStat.CON, 45}, {eStat.DEX, 65}, {eStat.QUI, 75}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
-			{ eRace.Sylvan, new Dictionary<eStat, int>()			{{eStat.STR, 70}, {eStat.CON, 60}, {eStat.DEX, 55}, {eStat.QUI, 45}, {eStat.INT, 70}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
+			{ ERace.Unknown, new Dictionary<EStat, int>()			{{EStat.STR, 60}, {EStat.CON, 60}, {EStat.DEX, 60}, {EStat.QUI, 60}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Briton, new Dictionary<EStat, int>()			{{EStat.STR, 60}, {EStat.CON, 60}, {EStat.DEX, 60}, {EStat.QUI, 60}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Avalonian, new Dictionary<EStat, int>()			{{EStat.STR, 45}, {EStat.CON, 45}, {EStat.DEX, 60}, {EStat.QUI, 70}, {EStat.INT, 80}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Highlander, new Dictionary<EStat, int>()		{{EStat.STR, 70}, {EStat.CON, 70}, {EStat.DEX, 50}, {EStat.QUI, 50}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Saracen, new Dictionary<EStat, int>()			{{EStat.STR, 50}, {EStat.CON, 50}, {EStat.DEX, 80}, {EStat.QUI, 60}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Norseman, new Dictionary<EStat, int>()			{{EStat.STR, 70}, {EStat.CON, 70}, {EStat.DEX, 50}, {EStat.QUI, 50}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Troll, new Dictionary<EStat, int>()				{{EStat.STR, 100}, {EStat.CON, 70}, {EStat.DEX, 35}, {EStat.QUI, 35}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Dwarf, new Dictionary<EStat, int>()				{{EStat.STR, 60}, {EStat.CON, 80}, {EStat.DEX, 50}, {EStat.QUI, 50}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Kobold, new Dictionary<EStat, int>()			{{EStat.STR, 50}, {EStat.CON, 50}, {EStat.DEX, 70}, {EStat.QUI, 70}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Celt, new Dictionary<EStat, int>()				{{EStat.STR, 60}, {EStat.CON, 60}, {EStat.DEX, 60}, {EStat.QUI, 60}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Firbolg, new Dictionary<EStat, int>()			{{EStat.STR, 90}, {EStat.CON, 60}, {EStat.DEX, 40}, {EStat.QUI, 40}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 70}, {EStat.CHR, 60}, }},
+			{ ERace.Elf, new Dictionary<EStat, int>()				{{EStat.STR, 40}, {EStat.CON, 40}, {EStat.DEX, 75}, {EStat.QUI, 75}, {EStat.INT, 70}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Lurikeen, new Dictionary<EStat, int>()			{{EStat.STR, 40}, {EStat.CON, 40}, {EStat.DEX, 80}, {EStat.QUI, 80}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Inconnu, new Dictionary<EStat, int>()			{{EStat.STR, 50}, {EStat.CON, 60}, {EStat.DEX, 70}, {EStat.QUI, 50}, {EStat.INT, 70}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Valkyn, new Dictionary<EStat, int>()			{{EStat.STR, 55}, {EStat.CON, 45}, {EStat.DEX, 65}, {EStat.QUI, 75}, {EStat.INT, 60}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
+			{ ERace.Sylvan, new Dictionary<EStat, int>()			{{EStat.STR, 70}, {EStat.CON, 60}, {EStat.DEX, 55}, {EStat.QUI, 45}, {EStat.INT, 70}, {EStat.PIE, 60}, {EStat.EMP, 60}, {EStat.CHR, 60}, }},
 			// { eRace.HalfOgre, new Dictionary<eStat, int>()			{{eStat.STR, 90}, {eStat.CON, 70}, {eStat.DEX, 40}, {eStat.QUI, 40}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
 			// { eRace.Frostalf, new Dictionary<eStat, int>()			{{eStat.STR, 55}, {eStat.CON, 55}, {eStat.DEX, 55}, {eStat.QUI, 60}, {eStat.INT, 60}, {eStat.PIE, 75}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
 			// { eRace.Shar, new Dictionary<eStat, int>()				{{eStat.STR, 60}, {eStat.CON, 80}, {eStat.DEX, 50}, {eStat.QUI, 50}, {eStat.INT, 60}, {eStat.PIE, 60}, {eStat.EMP, 60}, {eStat.CHR, 60}, }},
@@ -954,77 +954,77 @@ namespace DOL.GS
 		/// <summary>
 		/// All possible player starting classes
 		/// </summary>
-		public static readonly Dictionary<eRealm, List<eCharacterClass>> STARTING_CLASSES_DICT = new Dictionary<eRealm, List<eCharacterClass>>()
+		public static readonly Dictionary<ERealm, List<ECharacterClass>> STARTING_CLASSES_DICT = new Dictionary<ERealm, List<ECharacterClass>>()
 		{
 			// pre 1.93
-			{eRealm.Albion, new List<eCharacterClass>() {eCharacterClass.Fighter, eCharacterClass.Acolyte, eCharacterClass.Mage, eCharacterClass.Elementalist, eCharacterClass.AlbionRogue, eCharacterClass.Disciple,
+			{ERealm.Albion, new List<ECharacterClass>() {ECharacterClass.Fighter, ECharacterClass.Acolyte, ECharacterClass.Mage, ECharacterClass.Elementalist, ECharacterClass.AlbionRogue, ECharacterClass.Disciple,
 				// post 1.93
-				eCharacterClass.Paladin, 		// Paladin = 1,
-				eCharacterClass.Armsman, 		// Armsman = 2,
-				eCharacterClass.Scout, 	    // Scout = 3,
-				eCharacterClass.Minstrel, 	    // Minstrel = 4,
-				eCharacterClass.Theurgist, 	// Theurgist = 5,
-				eCharacterClass.Cleric, 		// Cleric = 6,
-				eCharacterClass.Wizard, 	    // Wizard = 7,
-				eCharacterClass.Sorcerer, 		// Sorcerer = 8,
-				eCharacterClass.Infiltrator, 	// Infiltrator = 9,
-				eCharacterClass.Friar, 		// Friar = 10,
-				eCharacterClass.Mercenary, 	// Mercenary = 11,
-				eCharacterClass.Necromancer, 	// Necromancer = 12,
-				eCharacterClass.Cabalist, 		// Cabalist = 13,
-				eCharacterClass.Fighter, 		// Fighter = 14,
-				eCharacterClass.Elementalist, 	// Elementalist = 15,
-				eCharacterClass.Acolyte, 		// Acolyte = 16,
-				eCharacterClass.AlbionRogue, 	// AlbionRogue = 17,
-				eCharacterClass.Mage, 			// Mage = 18,
-				eCharacterClass.Reaver, 		// Reaver = 19,
-				eCharacterClass.Disciple,		// Disciple = 20,
+				ECharacterClass.Paladin, 		// Paladin = 1,
+				ECharacterClass.Armsman, 		// Armsman = 2,
+				ECharacterClass.Scout, 	    // Scout = 3,
+				ECharacterClass.Minstrel, 	    // Minstrel = 4,
+				ECharacterClass.Theurgist, 	// Theurgist = 5,
+				ECharacterClass.Cleric, 		// Cleric = 6,
+				ECharacterClass.Wizard, 	    // Wizard = 7,
+				ECharacterClass.Sorcerer, 		// Sorcerer = 8,
+				ECharacterClass.Infiltrator, 	// Infiltrator = 9,
+				ECharacterClass.Friar, 		// Friar = 10,
+				ECharacterClass.Mercenary, 	// Mercenary = 11,
+				ECharacterClass.Necromancer, 	// Necromancer = 12,
+				ECharacterClass.Cabalist, 		// Cabalist = 13,
+				ECharacterClass.Fighter, 		// Fighter = 14,
+				ECharacterClass.Elementalist, 	// Elementalist = 15,
+				ECharacterClass.Acolyte, 		// Acolyte = 16,
+				ECharacterClass.AlbionRogue, 	// AlbionRogue = 17,
+				ECharacterClass.Mage, 			// Mage = 18,
+				ECharacterClass.Reaver, 		// Reaver = 19,
+				ECharacterClass.Disciple,		// Disciple = 20,
 				// eCharacterClass.Heretic, 		// Heretic = 33,
 				// eCharacterClass.MaulerAlb		// Mauler_Alb = 60,
 			}},
-			{eRealm.Midgard, new List<eCharacterClass>() {eCharacterClass.Viking, eCharacterClass.Mystic, eCharacterClass.Seer, eCharacterClass.MidgardRogue,
+			{ERealm.Midgard, new List<ECharacterClass>() {ECharacterClass.Viking, ECharacterClass.Mystic, ECharacterClass.Seer, ECharacterClass.MidgardRogue,
 				// post 1.93
-				eCharacterClass.Thane, 		// Thane = 21,
-				eCharacterClass.Warrior, 		// Warrior = 22,
-				eCharacterClass.Shadowblade, 	// Shadowblade = 23,
-				eCharacterClass.Skald, 		// Skald = 24,
-				eCharacterClass.Hunter, 	    // Hunter = 25,
-				eCharacterClass.Healer, 		// Healer = 26,
-				eCharacterClass.Spiritmaster,  // Spiritmaster = 27,
-				eCharacterClass.Shaman, 		// Shaman = 28,
-				eCharacterClass.Runemaster, 	// Runemaster = 29,
-				eCharacterClass.Bonedancer, 	// Bonedancer = 30,
-				eCharacterClass.Berserker, 	// Berserker = 31,
-				eCharacterClass.Savage, 		// Savage = 32,
-				eCharacterClass.Valkyrie, 		// Valkyrie = 34,
-				eCharacterClass.Viking, 		// Viking = 35,
-				eCharacterClass.Mystic, 		// Mystic = 36,
-				eCharacterClass.Seer, 			// Seer = 37,
-				eCharacterClass.MidgardRogue,	// MidgardRogue = 38,
+				ECharacterClass.Thane, 		// Thane = 21,
+				ECharacterClass.Warrior, 		// Warrior = 22,
+				ECharacterClass.Shadowblade, 	// Shadowblade = 23,
+				ECharacterClass.Skald, 		// Skald = 24,
+				ECharacterClass.Hunter, 	    // Hunter = 25,
+				ECharacterClass.Healer, 		// Healer = 26,
+				ECharacterClass.Spiritmaster,  // Spiritmaster = 27,
+				ECharacterClass.Shaman, 		// Shaman = 28,
+				ECharacterClass.Runemaster, 	// Runemaster = 29,
+				ECharacterClass.Bonedancer, 	// Bonedancer = 30,
+				ECharacterClass.Berserker, 	// Berserker = 31,
+				ECharacterClass.Savage, 		// Savage = 32,
+				ECharacterClass.Valkyrie, 		// Valkyrie = 34,
+				ECharacterClass.Viking, 		// Viking = 35,
+				ECharacterClass.Mystic, 		// Mystic = 36,
+				ECharacterClass.Seer, 			// Seer = 37,
+				ECharacterClass.MidgardRogue,	// MidgardRogue = 38,
 				// eCharacterClass.Warlock, 		// Warlock = 59,
 				// eCharacterClass.MaulerMid		// Mauler_Mid = 61,
 			}},
-			{eRealm.Hibernia, new List<eCharacterClass>() {eCharacterClass.Guardian, eCharacterClass.Stalker, eCharacterClass.Naturalist, eCharacterClass.Magician, eCharacterClass.Forester,
+			{ERealm.Hibernia, new List<ECharacterClass>() {ECharacterClass.Guardian, ECharacterClass.Stalker, ECharacterClass.Naturalist, ECharacterClass.Magician, ECharacterClass.Forester,
 				// post 1.93
-				eCharacterClass.Bainshee, 		// Bainshee = 39,
-				eCharacterClass.Eldritch, 		// Eldritch = 40,
-				eCharacterClass.Enchanter, 	// Enchanter = 41,
-				eCharacterClass.Mentalist, 	// Mentalist = 42,
-				eCharacterClass.Blademaster, 	// Blademaster = 43,
-				eCharacterClass.Hero, 		    // Hero = 44,
-				eCharacterClass.Champion, 		// Champion = 45,
-				eCharacterClass.Warden, 	    // Warden = 46,
-				eCharacterClass.Druid, 	    // Druid = 47,
-				eCharacterClass.Bard, 	        // Bard = 48,
-				eCharacterClass.Nightshade, 	// Nightshade = 49,
-				eCharacterClass.Ranger, 		// Ranger = 50,
-				eCharacterClass.Magician, 		// Magician = 51,
-				eCharacterClass.Guardian, 		// Guardian = 52,
-				eCharacterClass.Naturalist, 	// Naturalist = 53,
-				eCharacterClass.Stalker, 		// Stalker = 54,
-				eCharacterClass.Animist, 		// Animist = 55,
-				eCharacterClass.Valewalker, 	// Valewalker = 56,
-				eCharacterClass.Forester, 		// Forester = 57,
+				ECharacterClass.Bainshee, 		// Bainshee = 39,
+				ECharacterClass.Eldritch, 		// Eldritch = 40,
+				ECharacterClass.Enchanter, 	// Enchanter = 41,
+				ECharacterClass.Mentalist, 	// Mentalist = 42,
+				ECharacterClass.Blademaster, 	// Blademaster = 43,
+				ECharacterClass.Hero, 		    // Hero = 44,
+				ECharacterClass.Champion, 		// Champion = 45,
+				ECharacterClass.Warden, 	    // Warden = 46,
+				ECharacterClass.Druid, 	    // Druid = 47,
+				ECharacterClass.Bard, 	        // Bard = 48,
+				ECharacterClass.Nightshade, 	// Nightshade = 49,
+				ECharacterClass.Ranger, 		// Ranger = 50,
+				ECharacterClass.Magician, 		// Magician = 51,
+				ECharacterClass.Guardian, 		// Guardian = 52,
+				ECharacterClass.Naturalist, 	// Naturalist = 53,
+				ECharacterClass.Stalker, 		// Stalker = 54,
+				ECharacterClass.Animist, 		// Animist = 55,
+				ECharacterClass.Valewalker, 	// Valewalker = 56,
+				ECharacterClass.Forester, 		// Forester = 57,
 				// eCharacterClass.Vampiir, 		// Vampiir = 58,
 				// eCharacterClass.MaulerHib	 	// Mauler_Hib = 62,
 			}},
@@ -1033,20 +1033,20 @@ namespace DOL.GS
 		/// <summary>
 		/// Race to Gender Constraints
 		/// </summary>
-		public static readonly Dictionary<eRace, eGender> RACE_GENDER_CONSTRAINTS_DICT = new Dictionary<eRace, eGender>()
+		public static readonly Dictionary<ERace, EGender> RACE_GENDER_CONSTRAINTS_DICT = new Dictionary<ERace, EGender>()
 		{
-			{eRace.AlbionMinotaur, eGender.Male},
-			{eRace.MidgardMinotaur, eGender.Male},
-			{eRace.HiberniaMinotaur, eGender.Male},
+			{ERace.AlbionMinotaur, EGender.Male},
+			{ERace.MidgardMinotaur, EGender.Male},
+			{ERace.HiberniaMinotaur, EGender.Male},
 		};
 		
 		/// <summary>
 		/// Class to Gender Constraints
 		/// </summary>
-		public static readonly Dictionary<eCharacterClass, eGender> CLASS_GENDER_CONSTRAINTS_DICT = new Dictionary<eCharacterClass, eGender>()
+		public static readonly Dictionary<ECharacterClass, EGender> CLASS_GENDER_CONSTRAINTS_DICT = new Dictionary<ECharacterClass, EGender>()
 		{
-			{eCharacterClass.Valkyrie, eGender.Female},
-			{eCharacterClass.Bainshee, eGender.Female},
+			{ECharacterClass.Valkyrie, EGender.Female},
+			{ECharacterClass.Bainshee, EGender.Female},
 		};
 		
 		/// <summary>
@@ -1182,14 +1182,14 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static string RaceToTranslatedName(this GameClient client, int race, int gender)
 		{
-			eRace r = (eRace)race;
+			ERace r = (ERace)race;
 			string translationID = string.Format("GamePlayer.PlayerRace.{0}", r.ToString("F")); //Returns 'Unknown'
 
 			if (r != 0)
 			{
-				switch ((eGender)gender)
+				switch ((EGender)gender)
 				{
-					case eGender.Female:
+					case EGender.Female:
 						translationID = string.Format("GamePlayer.PlayerRace.Female.{0}", r.ToString("F"));
 						break;
 					default:
@@ -1208,12 +1208,12 @@ namespace DOL.GS
 		/// <param name="race"></param>
 		/// <param name="gender"></param>
 		/// <returns></returns>
-		public static string RaceToTranslatedName(this GamePlayer player, int race, eGender gender)
+		public static string RaceToTranslatedName(this GamePlayer player, int race, EGender gender)
 		{
 			if (player.Client != null)
 				return player.Client.RaceToTranslatedName(race, (int)gender);
 			
-			return string.Format("!{0} - {1}!", ((eRace)race).ToString("F"), gender.ToString("F"));
+			return string.Format("!{0} - {1}!", ((ERace)race).ToString("F"), gender.ToString("F"));
 		}
 		#endregion
 		

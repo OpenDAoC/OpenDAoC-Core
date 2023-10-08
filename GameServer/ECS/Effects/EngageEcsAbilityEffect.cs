@@ -23,7 +23,7 @@ namespace DOL.GS
 
         public EngageEcsAbilityEffect(EcsGameEffectInitParams initParams) : base(initParams)
         {
-            EffectType = eEffect.Engage;
+            EffectType = EEffect.Engage;
             EffectService.RequestStartEffect(this);
         }
 

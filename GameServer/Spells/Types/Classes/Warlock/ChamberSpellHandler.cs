@@ -177,12 +177,12 @@ namespace DOL.GS.Spells
 					MessageToCaster(Target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
 					return false;
 				}
-				if (GameServer.ServerRules.IsAllowedToAttack(Caster, Target, true) && chamber.PrimarySpell.Target == eSpellTarget.REALM)
+				if (GameServer.ServerRules.IsAllowedToAttack(Caster, Target, true) && chamber.PrimarySpell.Target == ESpellTarget.REALM)
 				{
 					MessageToCaster("This spell only works on friendly targets!", eChatType.CT_System);
 					return false;
 				}
-				if (!GameServer.ServerRules.IsAllowedToAttack(Caster, Target, true) && chamber.PrimarySpell.Target != eSpellTarget.REALM)
+				if (!GameServer.ServerRules.IsAllowedToAttack(Caster, Target, true) && chamber.PrimarySpell.Target != ESpellTarget.REALM)
 				{
 					MessageToCaster("That target isn't attackable at this time!", eChatType.CT_System);
 					return false;
@@ -258,7 +258,7 @@ namespace DOL.GS.Spells
 			//set the time when casting to can not quickcast during a minimum time
 			if (m_caster is GamePlayer)
 			{
-				QuickCastEcsAbilityEffect quickcast = (QuickCastEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast);
+				QuickCastEcsAbilityEffect quickcast = (QuickCastEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(m_caster, EEffect.QuickCast);
 				if (quickcast != null && Spell.CastTime > 0)
 				{
 					m_caster.TempProperties.SetProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, m_caster.CurrentRegion.Time);

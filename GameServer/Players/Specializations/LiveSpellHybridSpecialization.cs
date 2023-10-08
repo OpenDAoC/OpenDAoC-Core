@@ -152,13 +152,13 @@ namespace DOL.GS
 					break;
 
 				case Specs.Enhancement:
-					if ((line.IsBaseLine || player.CharacterClass.ID == (int)eCharacterClass.Cleric) && player.CharacterClass.ID != (int)eCharacterClass.Heretic)
+					if ((line.IsBaseLine || player.CharacterClass.ID == (int)ECharacterClass.Cleric) && player.CharacterClass.ID != (int)ECharacterClass.Heretic)
 						allow = true;
 
 					break;
 
 				case Specs.Nurture:
-					if (line.IsBaseLine || player.CharacterClass.ID == (int)eCharacterClass.Druid)
+					if (line.IsBaseLine || player.CharacterClass.ID == (int)ECharacterClass.Druid)
 						allow = true;
 
 					break;

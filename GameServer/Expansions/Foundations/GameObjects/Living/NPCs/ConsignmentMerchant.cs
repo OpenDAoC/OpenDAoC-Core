@@ -797,7 +797,7 @@ namespace DOL.GS
 			var template = new GameNpcInventoryTemplate();
 			switch (Realm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					{
 						Model = 92;
 						template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 310, 81);
@@ -816,7 +816,7 @@ namespace DOL.GS
 						template.AddNPCEquipment(eInventorySlot.Cloak, 669, 65);
 					}
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					{
 						Model = 156;
 						template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 321, 81);
@@ -835,7 +835,7 @@ namespace DOL.GS
 						template.AddNPCEquipment(eInventorySlot.Cloak, 669, 51);
 					}
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					{
 						Model = 335;
 						template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 457, 81);

@@ -31,7 +31,7 @@ namespace DOL.GS.Effects
 			healthdrain = (int)(target.MaxHealth * 0.1);
 			if (target.Health <= healthdrain)
 				return;
-			target.TakeDamage(target, eDamageType.Body, healthdrain, 0);
+			target.TakeDamage(target, EDamageType.Body, healthdrain, 0);
 
 		}
 

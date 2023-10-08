@@ -154,7 +154,7 @@ namespace DOL.GS
                     m_pet.Z = Z;
 
                     m_pet.Heading = Heading;
-                    m_pet.Realm = eRealm.None;
+                    m_pet.Realm = ERealm.None;
                     m_pet.LoadedFromScript = true;
                     m_pet.MaxDistance = PetMaxDistance;
                     m_pet.TetherRange = PetTetherRange;

@@ -3,7 +3,7 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Commands;
 
 [Command("&cloak", //command to handle
-	ePrivLevel.Player, //minimum privelege level
+	EPrivLevel.Player, //minimum privelege level
    "Show / hide your cloak.", //command description
    "Usage: /cloak [on|off].", //usage
    "Example: \"/cloak off\" to hide your cloak")] 

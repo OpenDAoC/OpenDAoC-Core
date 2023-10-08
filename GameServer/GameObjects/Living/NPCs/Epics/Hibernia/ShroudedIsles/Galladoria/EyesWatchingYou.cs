@@ -27,7 +27,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Eyes Watching You Initializator", 191, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Eyes Watching You Initializator", 191, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Eyes Watching You Initializator not found, creating it...");
@@ -170,7 +170,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             OlcasgeanEffectBrain adds = new OlcasgeanEffectBrain();
             LoadedFromScript = true;
             SetOwnBrain(adds);

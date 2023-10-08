@@ -8,7 +8,7 @@ namespace DOL.GS.Effects
         public AtlasOF_ShadowRunECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.ShadowRun;
+            EffectType = EEffect.ShadowRun;
             EffectService.RequestStartEffect(this);
         }
 

@@ -70,7 +70,7 @@ namespace DOL.GS.Spells
 			if (target == null)
 				return;
 
-			if (Spell.Target == eSpellTarget.CONE) //  || (Spell.Target == eSpellTarget.ENEMY && Spell.IsPBAoE)  <-- pbaoe skips los per 1.65
+			if (Spell.Target == ESpellTarget.CONE) //  || (Spell.Target == eSpellTarget.ENEMY && Spell.IsPBAoE)  <-- pbaoe skips los per 1.65
 			{
 				GamePlayer checkPlayer = null;
 				if (target is GamePlayer)
@@ -131,7 +131,7 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				if (Spell.Target == eSpellTarget.ENEMY && Spell.Radius == 0 && Spell.Range != 0)
+				if (Spell.Target == ESpellTarget.ENEMY && Spell.Radius == 0 && Spell.Range != 0)
 				{
 					m_castFailed = true;
 					MessageToCaster("You can't see your target!", eChatType.CT_SpellResisted);

@@ -9,7 +9,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&ban",
-	ePrivLevel.GM,
+	EPrivLevel.GM,
 	"GMCommands.Ban.Description",
 	"GMCommands.Ban.Usage.IP",
 	"GMCommands.Ban.Usage.Account",

@@ -11,7 +11,7 @@ namespace DOL.GS.PropertyCalc
 	/// BuffBonusCategory4 unused
 	/// BuffBonusMultCategory1 unused
 	/// </summary>
-	[PropertyCalculator(eProperty.EnduranceRegenerationRate)]
+	[PropertyCalculator(EProperty.EnduranceRegenerationRate)]
 	public class EnduranceRegenerationRateCalculator : PropertyCalculator
 	{
 		public EnduranceRegenerationRateCalculator() {}
@@ -22,7 +22,7 @@ namespace DOL.GS.PropertyCalc
 		/// <param name="living"></param>
 		/// <param name="property"></param>
 		/// <returns></returns>
-		public override int CalcValue(GameLiving living, eProperty property)
+		public override int CalcValue(GameLiving living, EProperty property)
 		{
 			int debuff = living.SpecBuffBonusCategory[(int)property];
 			if (debuff < 0)

@@ -72,8 +72,8 @@ namespace DOL.GS.Keeps
 			set { m_hookPoint = value; }
 		}
 
-		private eRealm m_modelRealm = eRealm.None;
-		public eRealm ModelRealm
+		private ERealm m_modelRealm = ERealm.None;
+		public ERealm ModelRealm
 		{
 			get { return m_modelRealm; }
 			set { m_modelRealm = value; }
@@ -145,7 +145,7 @@ namespace DOL.GS.Keeps
 		public override int MaxHealth
 		{
 			// (base.Level * 4)
-			get { return GetModified(eProperty.MaxHealth) + (base.Level * 2); }
+			get { return GetModified(EProperty.MaxHealth) + (base.Level * 2); }
 		}
 
 		private bool m_changingPositions = false;
@@ -180,16 +180,16 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		private static Spell GetGuardHealSmallSpell(eRealm realm)
+		private static Spell GetGuardHealSmallSpell(ERealm realm)
 		{
 			switch (realm)
 			{
-				case eRealm.None:
-				case eRealm.Albion:
+				case ERealm.None:
+				case ERealm.Albion:
 					return GuardSpellDB.AlbGuardHealSmallSpell;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					return GuardSpellDB.MidGuardHealSmallSpell;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					return GuardSpellDB.HibGuardHealSmallSpell;
 			}
 			return null;
@@ -277,10 +277,10 @@ namespace DOL.GS.Keeps
 			{
 				switch (Realm)
 				{
-					case eRealm.None:
-					case eRealm.Albion: LaunchSpell(47, "Pyromancy"); break;
-					case eRealm.Midgard: LaunchSpell(48, "Runecarving"); break;
-					case eRealm.Hibernia: LaunchSpell(47, "Way of the Eclipse"); break;
+					case ERealm.None:
+					case ERealm.Albion: LaunchSpell(47, "Pyromancy"); break;
+					case ERealm.Midgard: LaunchSpell(48, "Runecarving"); break;
+					case ERealm.Hibernia: LaunchSpell(47, "Way of the Eclipse"); break;
 				}
 			}
 		}
@@ -327,7 +327,7 @@ namespace DOL.GS.Keeps
 				{
 					if (Inventory == null) return false;
 					if (Inventory.GetItem(eInventorySlot.DistanceWeapon) == null) return false;
-					if (ActiveWeaponSlot == eActiveWeaponSlot.Distance) return false;
+					if (ActiveWeaponSlot == EActiveWeaponSlot.Distance) return false;
 				}
 				if (this is GuardCaster || this is GuardHealer)
 				{
@@ -358,7 +358,7 @@ namespace DOL.GS.Keeps
 			if (MaxSpeedBase == 0)
 			{
 				//if we are currently fighting in melee
-				if (ActiveWeaponSlot == eActiveWeaponSlot.Standard || ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded)
+				if (ActiveWeaponSlot == EActiveWeaponSlot.Standard || ActiveWeaponSlot == EActiveWeaponSlot.TwoHanded)
 				{
 					//if we are targeting something, and the distance to the target object is greater than the attack range
 					if (TargetObject != null && !IsWithinRadius(TargetObject, AttackRange))
@@ -524,7 +524,7 @@ namespace DOL.GS.Keeps
 			IList list = new ArrayList(4);
 			list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameKeepGuard.GetExamineMessages.YouTarget", GetName(0, false)));
 
-			if (Realm != eRealm.None)
+			if (Realm != ERealm.None)
 			{
 				list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameKeepGuard.GetExamineMessages.YouExamine", GetName(0, false), GetPronoun(0, true), GetAggroLevelString(player, false)));
 				if (this.Component != null)
@@ -555,7 +555,7 @@ namespace DOL.GS.Keeps
 				default:
 					{
 						// Subjective
-						if (Gender == GS.eGender.Male)
+						if (Gender == GS.EGender.Male)
 							s = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameKeepGuard.GetPronoun.He");
 						else s = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameKeepGuard.GetPronoun.She");
 						if (!firstLetterUppercase)
@@ -565,7 +565,7 @@ namespace DOL.GS.Keeps
 				case 1:
 					{
 						// Possessive
-						if (Gender == eGender.Male)
+						if (Gender == EGender.Male)
 							s = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameKeepGuard.GetPronoun.His");
 						else s = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameKeepGuard.GetPronoun.Hers");
 						if (!firstLetterUppercase)
@@ -575,7 +575,7 @@ namespace DOL.GS.Keeps
 				case 2:
 					{
 						// Objective
-						if (Gender == eGender.Male)
+						if (Gender == EGender.Male)
 							s = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameKeepGuard.GetPronoun.Him");
 						else s = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameKeepGuard.GetPronoun.Her");
 						if (!firstLetterUppercase)
@@ -810,7 +810,7 @@ namespace DOL.GS.Keeps
 
 		protected virtual void SetName()
 		{
-			if (Realm == eRealm.None)
+			if (Realm == ERealm.None)
 			{
 				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
 			}
@@ -843,7 +843,7 @@ namespace DOL.GS.Keeps
 			}
 			if (Level < 250)
 			{
-				if (Realm == eRealm.None)
+				if (Realm == ERealm.None)
 				{
 					MaxSpeedBase = 250;
 				}
@@ -864,7 +864,7 @@ namespace DOL.GS.Keeps
 
 		private void SetResists()
 		{
-			for (int i = (int)eProperty.Resist_First; i <= (int)eProperty.Resist_Last; i++)
+			for (int i = (int)EProperty.Resist_First; i <= (int)EProperty.Resist_Last; i++)
 			{
 				if (this is GuardLord)
 				{
@@ -901,13 +901,13 @@ namespace DOL.GS.Keeps
 				Realm = CurrentZone.Realm;
 			}
 
-			if (Realm != eRealm.None)
+			if (Realm != ERealm.None)
 			{
 				ModelRealm = Realm;
 			}
 			else
 			{
-				ModelRealm = (eRealm)Util.Random(1, 3);
+				ModelRealm = (ERealm)Util.Random(1, 3);
 			}
 		}
 
@@ -959,17 +959,17 @@ namespace DOL.GS.Keeps
 			//portal keep guards are always male
 			if (IsPortalKeepGuard)
 			{
-				Gender = eGender.Male;
+				Gender = EGender.Male;
 			}
 			else
 			{
 				if (Util.Chance(50))
 				{
-					Gender = eGender.Male;
+					Gender = EGender.Male;
 				}
 				else
 				{
-					Gender = eGender.Female;
+					Gender = EGender.Female;
 				}
 			}
 		}
@@ -986,7 +986,7 @@ namespace DOL.GS.Keeps
 				return;
 			}
 			
-			var possibleRaces = GetClass().EligibleRaces.FindAll(s => s.GetModel(Gender) != eLivingModel.None);
+			var possibleRaces = GetClass().EligibleRaces.FindAll(s => s.GetModel(Gender) != ELivingModel.None);
 			if (possibleRaces.Count > 0)
 			{
 				var indexPick = Util.Random(0, possibleRaces.Count - 1);
@@ -1012,7 +1012,7 @@ namespace DOL.GS.Keeps
 				spell.CastTime = 2;
 				spell.Name = "Guard Heal";
 				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-				spell.Type = eSpellType.Heal.ToString();
+				spell.Type = ESpellType.Heal.ToString();
 				return spell;
 			}
         }

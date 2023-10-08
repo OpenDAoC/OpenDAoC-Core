@@ -15,13 +15,13 @@ namespace DOL.GS
             : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 70;// dmg reduction for rest resists
             }
         }
@@ -49,12 +49,12 @@ namespace DOL.GS
             return base.HasAbility(keyName);
         }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -72,7 +72,7 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
 
-            MeleeDamageType = eDamageType.Spirit;
+            MeleeDamageType = EDamageType.Spirit;
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             ReckonedSoul.SoulCount = 0;
             SoulReckonerBrain adds = new SoulReckonerBrain();
@@ -137,7 +137,7 @@ namespace DOL.GS
             }
         }
 
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
@@ -170,7 +170,7 @@ namespace DOL.GS
         }
         public override void DealDamage(AttackData ad)
         {
-            if(ad != null && ad.DamageType == eDamageType.Body)
+            if(ad != null && ad.DamageType == EDamageType.Body)
                 Health += ad.Damage;
             base.DealDamage(ad);
         }
@@ -240,7 +240,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 BafMobs = false;
                 Spawn_Souls = false;
@@ -322,10 +322,10 @@ namespace DOL.AI.Brain
                     spell.Range = 1800;
                     spell.SpellID = 11733;
                     spell.Target = "Enemy";
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.MoveCast = true;
                     spell.Uninterruptible = true;
-                    spell.DamageType = (int) eDamageType.Body; //Body DMG Type
+                    spell.DamageType = (int) EDamageType.Body; //Body DMG Type
                     m_Reckoner_Lifetap = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Reckoner_Lifetap);
                 }
@@ -356,12 +356,12 @@ namespace DOL.GS
             set { }
         }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 150;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -387,7 +387,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 909;
-            MeleeDamageType = eDamageType.Spirit;
+            MeleeDamageType = EDamageType.Spirit;
             Name = "reckoned soul";
             PackageID = "SoulReckonerBaf";
             RespawnInterval = -1;
@@ -403,7 +403,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 6;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             ++SoulCount;
 
             ReckonedSoulBrain adds = new ReckonedSoulBrain();

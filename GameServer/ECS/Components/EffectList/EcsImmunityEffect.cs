@@ -25,23 +25,23 @@ namespace DOL.GS
 
         protected EcsImmunityEffect(EcsGameEffectInitParams initParams) : base(initParams) { }
 
-        protected eEffect MapImmunityEffect()
+        protected EEffect MapImmunityEffect()
         {
             switch (SpellHandler.Spell.SpellType)
             {
-                case eSpellType.Mesmerize:
-                    return eEffect.MezImmunity;
-                case eSpellType.StyleStun:
-                case eSpellType.Stun:
-                    return eEffect.StunImmunity;
-                case eSpellType.SpeedDecrease:
-                case eSpellType.DamageSpeedDecreaseNoVariance:
-                case eSpellType.DamageSpeedDecrease:
-                    return eEffect.SnareImmunity;
-                case eSpellType.Nearsight:
-                    return eEffect.NearsightImmunity;
+                case ESpellType.Mesmerize:
+                    return EEffect.MezImmunity;
+                case ESpellType.StyleStun:
+                case ESpellType.Stun:
+                    return EEffect.StunImmunity;
+                case ESpellType.SpeedDecrease:
+                case ESpellType.DamageSpeedDecreaseNoVariance:
+                case ESpellType.DamageSpeedDecrease:
+                    return EEffect.SnareImmunity;
+                case ESpellType.Nearsight:
+                    return EEffect.NearsightImmunity;
                 default:
-                    return eEffect.Unknown;
+                    return EEffect.Unknown;
             }
         }
     }
@@ -54,7 +54,7 @@ namespace DOL.GS
         {
             Owner = initParams.Target;
             Duration = 60000;
-            EffectType = eEffect.NPCStunImmunity;
+            EffectType = EEffect.NPCStunImmunity;
             EffectService.RequestStartEffect(this);
         }
 
@@ -74,7 +74,7 @@ namespace DOL.GS
         {
             Owner = initParams.Target;
             Duration = 60000;
-            EffectType = eEffect.NPCMezImmunity;
+            EffectType = EEffect.NPCMezImmunity;
             EffectService.RequestStartEffect(this);
         }
 

@@ -94,7 +94,7 @@ namespace DOL.GS
                         SpellHandler.Caster.IsAlive &&
                         !SpellHandler.Caster.IsStealthed)
                     {
-                        newBrain.FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO);
+                        newBrain.FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
                         newBrain.AddToAggroList(SpellHandler.Caster, SpellHandler.Caster.Level * 10);
                         charmMob.StartAttack(SpellHandler.Caster);
                         charmMob.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;

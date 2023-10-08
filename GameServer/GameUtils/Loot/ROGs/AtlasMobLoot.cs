@@ -46,7 +46,7 @@ namespace DOL.GS {
                     return loot;
                 }
 
-                eCharacterClass classForLoot = (eCharacterClass)player.CharacterClass.ID;
+                ECharacterClass classForLoot = (ECharacterClass)player.CharacterClass.ID;
                 // allow the leader to decide the loot realm
                 if (player.Group != null)
                 {
@@ -201,7 +201,7 @@ namespace DOL.GS {
         }
 
 
-        private DbItemTemplate GenerateItemTemplate(GamePlayer player, eCharacterClass classForLoot, byte lootLevel, int killedcon)
+        private DbItemTemplate GenerateItemTemplate(GamePlayer player, ECharacterClass classForLoot, byte lootLevel, int killedcon)
         {
             DbItemTemplate item = null;
                 
@@ -215,79 +215,79 @@ namespace DOL.GS {
             return item;
         }
 
-        private eCharacterClass GetRandomClassFromGroup(Group group)
+        private ECharacterClass GetRandomClassFromGroup(Group group)
         {
-            List<eCharacterClass> validClasses = new List<eCharacterClass>();
+            List<ECharacterClass> validClasses = new List<ECharacterClass>();
 
             foreach (GamePlayer player in group.GetMembersInTheGroup())
             {
-                validClasses.Add((eCharacterClass)player.CharacterClass.ID);
+                validClasses.Add((ECharacterClass)player.CharacterClass.ID);
             }
-            eCharacterClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
+            ECharacterClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
 
             return ranClass;
         }
         
-        private eCharacterClass GetRandomClassFromBattlegroup(BattleGroup battlegroup)
+        private ECharacterClass GetRandomClassFromBattlegroup(BattleGroup battlegroup)
         {
-            List<eCharacterClass> validClasses = new List<eCharacterClass>();
+            List<ECharacterClass> validClasses = new List<ECharacterClass>();
 
             foreach (GamePlayer player in battlegroup.Members.Keys)
             {
-                validClasses.Add((eCharacterClass)player.CharacterClass.ID);
+                validClasses.Add((ECharacterClass)player.CharacterClass.ID);
             }
-            eCharacterClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
+            ECharacterClass ranClass = validClasses[Util.Random(validClasses.Count - 1)];
 
             return ranClass;
         }
 
-        private eCharacterClass GetRandomClassFromRealm(eRealm realm)
+        private ECharacterClass GetRandomClassFromRealm(ERealm realm)
         {
-            List<eCharacterClass> classesForRealm = new List<eCharacterClass>();
+            List<ECharacterClass> classesForRealm = new List<ECharacterClass>();
             switch (realm)
             {
-                case eRealm.Albion:
-                    classesForRealm.Add(eCharacterClass.Armsman);
-                    classesForRealm.Add(eCharacterClass.Cabalist);
-                    classesForRealm.Add(eCharacterClass.Cleric);
-                    classesForRealm.Add(eCharacterClass.Friar);
-                    classesForRealm.Add(eCharacterClass.Infiltrator);
-                    classesForRealm.Add(eCharacterClass.Mercenary);
-                    classesForRealm.Add(eCharacterClass.Necromancer);
-                    classesForRealm.Add(eCharacterClass.Paladin);
-                    classesForRealm.Add(eCharacterClass.Reaver);
-                    classesForRealm.Add(eCharacterClass.Scout);
-                    classesForRealm.Add(eCharacterClass.Sorcerer);
-                    classesForRealm.Add(eCharacterClass.Theurgist);
-                    classesForRealm.Add(eCharacterClass.Wizard);
+                case ERealm.Albion:
+                    classesForRealm.Add(ECharacterClass.Armsman);
+                    classesForRealm.Add(ECharacterClass.Cabalist);
+                    classesForRealm.Add(ECharacterClass.Cleric);
+                    classesForRealm.Add(ECharacterClass.Friar);
+                    classesForRealm.Add(ECharacterClass.Infiltrator);
+                    classesForRealm.Add(ECharacterClass.Mercenary);
+                    classesForRealm.Add(ECharacterClass.Necromancer);
+                    classesForRealm.Add(ECharacterClass.Paladin);
+                    classesForRealm.Add(ECharacterClass.Reaver);
+                    classesForRealm.Add(ECharacterClass.Scout);
+                    classesForRealm.Add(ECharacterClass.Sorcerer);
+                    classesForRealm.Add(ECharacterClass.Theurgist);
+                    classesForRealm.Add(ECharacterClass.Wizard);
                     break;
-                case eRealm.Midgard:
-                    classesForRealm.Add(eCharacterClass.Berserker);
-                    classesForRealm.Add(eCharacterClass.Bonedancer);
-                    classesForRealm.Add(eCharacterClass.Healer);
-                    classesForRealm.Add(eCharacterClass.Hunter);
-                    classesForRealm.Add(eCharacterClass.Runemaster);
-                    classesForRealm.Add(eCharacterClass.Savage);
-                    classesForRealm.Add(eCharacterClass.Shadowblade);
-                    classesForRealm.Add(eCharacterClass.Skald);
-                    classesForRealm.Add(eCharacterClass.Spiritmaster);
-                    classesForRealm.Add(eCharacterClass.Thane);
-                    classesForRealm.Add(eCharacterClass.Warrior);
+                case ERealm.Midgard:
+                    classesForRealm.Add(ECharacterClass.Berserker);
+                    classesForRealm.Add(ECharacterClass.Bonedancer);
+                    classesForRealm.Add(ECharacterClass.Healer);
+                    classesForRealm.Add(ECharacterClass.Hunter);
+                    classesForRealm.Add(ECharacterClass.Runemaster);
+                    classesForRealm.Add(ECharacterClass.Savage);
+                    classesForRealm.Add(ECharacterClass.Shadowblade);
+                    classesForRealm.Add(ECharacterClass.Skald);
+                    classesForRealm.Add(ECharacterClass.Spiritmaster);
+                    classesForRealm.Add(ECharacterClass.Thane);
+                    classesForRealm.Add(ECharacterClass.Warrior);
                     break;
-                case eRealm.Hibernia:
-                    classesForRealm.Add(eCharacterClass.Animist);
-                    classesForRealm.Add(eCharacterClass.Bard);
-                    classesForRealm.Add(eCharacterClass.Blademaster);
-                    classesForRealm.Add(eCharacterClass.Champion);
-                    classesForRealm.Add(eCharacterClass.Druid);
-                    classesForRealm.Add(eCharacterClass.Eldritch);
-                    classesForRealm.Add(eCharacterClass.Enchanter);
-                    classesForRealm.Add(eCharacterClass.Hero);
-                    classesForRealm.Add(eCharacterClass.Mentalist);
-                    classesForRealm.Add(eCharacterClass.Nightshade);
-                    classesForRealm.Add(eCharacterClass.Ranger);
-                    classesForRealm.Add(eCharacterClass.Valewalker);
-                    classesForRealm.Add(eCharacterClass.Warden);
+                case ERealm.Hibernia:
+                    classesForRealm.Add(ECharacterClass.Animist);
+                    classesForRealm.Add(ECharacterClass.Bard);
+                    classesForRealm.Add(ECharacterClass.Blademaster);
+                    classesForRealm.Add(ECharacterClass.Champion);
+                    classesForRealm.Add(ECharacterClass.Druid);
+                    classesForRealm.Add(ECharacterClass.Eldritch);
+                    classesForRealm.Add(ECharacterClass.Enchanter);
+                    classesForRealm.Add(ECharacterClass.Hero);
+                    classesForRealm.Add(ECharacterClass.Mentalist);
+                    classesForRealm.Add(ECharacterClass.Nightshade);
+                    classesForRealm.Add(ECharacterClass.Ranger);
+                    classesForRealm.Add(ECharacterClass.Valewalker);
+                    classesForRealm.Add(ECharacterClass.Warden);
                     break;
             }
 

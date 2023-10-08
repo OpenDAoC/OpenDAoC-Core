@@ -38,7 +38,7 @@ namespace DOL.GS
 
         protected override bool CanCastSpell()
         {
-            if (_playerOwner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+            if (_playerOwner.effectListComponent.ContainsEffectForEffectType(EEffect.Volley))
             {
                 _playerOwner.Out.SendMessage("You can't cast spells while Volley is active!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;

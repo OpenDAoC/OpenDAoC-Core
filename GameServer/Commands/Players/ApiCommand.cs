@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&api",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Toggles API options",
 	"/api specs - toggle showing the specs of the player")]
 public class ApiCommand : ACommandHandler, ICommandHandler

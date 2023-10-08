@@ -400,7 +400,7 @@ namespace DOL.GS.GameEvents
             if (sender is not GamePlayer caster || args is not CastingEventArgs fargs)
                 return;
 
-            if (fargs.SpellHandler.Spell.SpellType == eSpellType.Resurrect)
+            if (fargs.SpellHandler.Spell.SpellType == ESpellType.Resurrect)
             {
                 if (caster.Statistics is PlayerStatistics stats)
                     stats.ResurrectionsPerformed++;
@@ -411,7 +411,7 @@ namespace DOL.GS.GameEvents
         {
             HealthChangedEventArgs hargs = args as HealthChangedEventArgs;
 
-            if (hargs.ChangeType == eHealthChangeType.Spell)
+            if (hargs.ChangeType == EHealthChangeType.Spell)
             {
                 if (hargs.ChangeSource is not GamePlayer player)
                     return;

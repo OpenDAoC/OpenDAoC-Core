@@ -94,21 +94,21 @@ namespace DOL.GS
 			player.Inventory.RemoveItem(this);
 
 			int trophyModel = 0;
-			eRealm realm = eRealm.None;
+			ERealm realm = ERealm.None;
 
 			switch (Model)
 			{
 				case 3223:
 					trophyModel = 3359;
-					realm = eRealm.Albion;
+					realm = ERealm.Albion;
 					break;
 				case 3224:
 					trophyModel = 3361;
-					realm = eRealm.Midgard;
+					realm = ERealm.Midgard;
 					break;
 				case 3225:
 					trophyModel = 3360;
-					realm = eRealm.Hibernia;
+					realm = ERealm.Hibernia;
 					break;
 			}
 

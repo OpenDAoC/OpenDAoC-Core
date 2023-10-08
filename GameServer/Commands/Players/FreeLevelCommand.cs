@@ -5,7 +5,7 @@ using DOL.Language;
 namespace DOL.GS.Commands;
 
 [Command("&freelevel", //command to handle
-              ePrivLevel.Player, //minimum privelege level
+              EPrivLevel.Player, //minimum privelege level
               "Display state of FreeLevel", //command description
               "/freelevel")] //command usage
 public class FreeLevelCommand : ACommandHandler, ICommandHandler
@@ -39,13 +39,13 @@ public class FreeLevelCommand : ACommandHandler, ICommandHandler
 
 		switch (client.Player.Realm)
 		{
-			case eRealm.Albion:
+			case ERealm.Albion:
 				t = client.Player.LastFreeLeveled.AddDays(DOL.GS.ServerProperties.Properties.FREELEVEL_DAYS_ALBION) - DateTime.Now;
 				break;
-			case eRealm.Midgard:
+			case ERealm.Midgard:
 				t = client.Player.LastFreeLeveled.AddDays(DOL.GS.ServerProperties.Properties.FREELEVEL_DAYS_MIDGARD) - DateTime.Now;
 				break;
-			case eRealm.Hibernia:
+			case ERealm.Hibernia:
 				t = client.Player.LastFreeLeveled.AddDays(DOL.GS.ServerProperties.Properties.FREELEVEL_DAYS_HIBERNIA) - DateTime.Now;
 				Console.WriteLine("derp");
 				break;

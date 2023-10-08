@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 [Command(
     "&adviceteam",
      new [] { "&advt" },
-    ePrivLevel.GM,
+    EPrivLevel.GM,
     // Displays next to the command when '/cmd' is entered
     "Lists all flagged Advisors, sends advisors questions, and sends messages to the Advice channel as STAFF.")]
 public class AdviceTeamCommand : ACommandHandler, ICommandHandler
@@ -36,13 +36,13 @@ public class AdviceTeamCommand : ACommandHandler, ICommandHandler
             WebhookMessage.LogChatMessage(client.Player, eChatType.CT_Advise, msg);
     }
 
-    private static string GetRealmString(eRealm Realm)
+    private static string GetRealmString(ERealm Realm)
     {
         return Realm switch
         {
-            eRealm.Albion => "ALB",
-            eRealm.Midgard => "MID",
-            eRealm.Hibernia => "HIB",
+            ERealm.Albion => "ALB",
+            ERealm.Midgard => "MID",
+            ERealm.Hibernia => "HIB",
             _ => "NONE",
         };
     }

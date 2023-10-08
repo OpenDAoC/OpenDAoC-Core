@@ -73,7 +73,7 @@ namespace DOL.AI.Brain
 			switch (spell.SpellType)
 			{
 				#region Heals
-				case eSpellType.Heal:
+				case ESpellType.Heal:
 					player = GetPlayerOwner();
 					if (player != null)
 					{
@@ -112,7 +112,7 @@ namespace DOL.AI.Brain
 					break;
 				#endregion
 				#region Buffs
-				case eSpellType.HealthRegenBuff:
+				case ESpellType.HealthRegenBuff:
 					{
 						//Buff self
 						if (!LivingHasEffect(Body, spell))

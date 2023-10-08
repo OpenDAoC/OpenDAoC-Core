@@ -15,7 +15,7 @@ namespace DOL.GS.Commands
 		"&shutdown",
 		// Message: <----- '/shutdown' Commands (plvl 3) ----->
 		"AdminCommands.Header.Syntax.Shutdown",
-		ePrivLevel.Admin,
+		EPrivLevel.Admin,
 		// Message: "Initiates a total shutdown of the server."
 		"AdminCommands.Shutdown.Description",
 		// Syntax: /shutdown command

@@ -106,8 +106,8 @@ namespace DOL.GS.Spells
 			m_model = player.Model;
 			player.Model = (ushort)Spell.Value;
 
-            player.BaseBuffBonusCategory[(int)eProperty.MagicAbsorption] += (int)Spell.LifeDrainReturn;
-            player.BaseBuffBonusCategory[(int)eProperty.ArmorAbsorption] += (int)Spell.LifeDrainReturn;
+            player.BaseBuffBonusCategory[(int)EProperty.MagicAbsorption] += (int)Spell.LifeDrainReturn;
+            player.BaseBuffBonusCategory[(int)EProperty.ArmorAbsorption] += (int)Spell.LifeDrainReturn;
 			player.Out.SendCharStatsUpdate();
 			player.Health = player.MaxHealth;
 			GameEventMgr.AddHandler(player, GameLivingEvent.Dying, new DOLEventHandler(EventRaised));
@@ -140,8 +140,8 @@ namespace DOL.GS.Spells
 
 			player.Model = m_model;
 
-            player.BaseBuffBonusCategory[(int)eProperty.MagicAbsorption] -= (int)Spell.LifeDrainReturn ;
-            player.BaseBuffBonusCategory[(int)eProperty.ArmorAbsorption] -= (int)Spell.LifeDrainReturn ;
+            player.BaseBuffBonusCategory[(int)EProperty.MagicAbsorption] -= (int)Spell.LifeDrainReturn ;
+            player.BaseBuffBonusCategory[(int)EProperty.ArmorAbsorption] -= (int)Spell.LifeDrainReturn ;
 			player.Out.SendCharStatsUpdate();
 
 			int leftHealth = Convert.ToInt32(player.MaxHealth * 0.10);

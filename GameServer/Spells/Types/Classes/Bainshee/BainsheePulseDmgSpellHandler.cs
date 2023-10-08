@@ -26,7 +26,7 @@ namespace DOL.GS.Spells
 			m_caster.Mana -= PowerCost(target);
 			base.FinishSpellCast(target);
 		}
-        public override bool CancelPulsingSpell(GameLiving living, eSpellType spellType)
+        public override bool CancelPulsingSpell(GameLiving living, ESpellType spellType)
         {
             lock (living.effectListComponent.ConcentrationEffectsLock)
             {
@@ -65,7 +65,7 @@ namespace DOL.GS.Spells
 			if (target == null)
 				return;
 
-			if (Spell.Target == eSpellTarget.CONE || (Spell.Target == eSpellTarget.ENEMY && Spell.IsPBAoE))
+			if (Spell.Target == ESpellTarget.CONE || (Spell.Target == ESpellTarget.ENEMY && Spell.IsPBAoE))
 			{
 				GamePlayer player = null;
 				if (target is GamePlayer)

@@ -156,7 +156,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Host Initializator", 60, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Host Initializator", 60, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Host Initializator not found, creating it...");
@@ -235,13 +235,13 @@ namespace DOL.GS
             set { }
         }
 
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
                 default: return 50;// dmg reduction for rest resists
             }
         }
@@ -249,11 +249,11 @@ namespace DOL.GS
         {
             get { return 30000; }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 250;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -299,7 +299,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 26;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             Name = "Host";
             PackageID = "HostCopy";
             RespawnInterval = -1;
@@ -313,7 +313,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 6;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
 
             Strength = 5;
             Dexterity = 200;

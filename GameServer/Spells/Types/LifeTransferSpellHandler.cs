@@ -52,7 +52,7 @@ namespace DOL.GS.Spells
 				else healed |= HealTarget(healTarget, transferHeal);
 			}
 
-			if (!healed && Spell.Target == eSpellTarget.REALM)
+			if (!healed && Spell.Target == ESpellTarget.REALM)
 			{
 				m_caster.Mana -= PowerCost(target) >> 1;	// only 1/2 power if no heal
 			}
@@ -114,7 +114,7 @@ namespace DOL.GS.Spells
 			}
 
 
-			int heal = target.ChangeHealth(Caster, eHealthChangeType.Spell, amount);
+			int heal = target.ChangeHealth(Caster, EHealthChangeType.Spell, amount);
 
             #region PVP DAMAGE
 

@@ -2,7 +2,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&pray",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"You can pray on your gravestones to get some experience back",
 	"/pray")]
 public class PrayCommand : ACommandHandler, ICommandHandler

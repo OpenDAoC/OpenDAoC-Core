@@ -18,13 +18,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Mistress of Runes Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -40,11 +40,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -93,7 +93,7 @@ namespace DOL.AI.Brain
 		{
 			if(!CheckProximityAggro())
             {
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanCastSpear = false;
 				RandomTarget = null;
@@ -171,8 +171,8 @@ namespace DOL.AI.Brain
 				if (player != null)
 				{
 					if (player.IsAlive && player.Client.Account.PrivLevel == 1
-						&& (!player.effectListComponent.ContainsEffectForEffectType(eEffect.Nearsight) 
-						&& (!player.effectListComponent.ContainsEffectForEffectType(eEffect.NearsightImmunity)))
+						&& (!player.effectListComponent.ContainsEffectForEffectType(EEffect.Nearsight) 
+						&& (!player.effectListComponent.ContainsEffectForEffectType(EEffect.NearsightImmunity)))
 						&& !Enemys_To_NS.Contains(player))
 					{
 						Enemys_To_NS.Add(player);
@@ -196,7 +196,7 @@ namespace DOL.AI.Brain
 		}
 		public int ResetDot(ECSGameTimer timer)//reset here so boss can start dot again
 		{
-			if(RandomTarget != null && Enemys_To_NS.Contains(RandomTarget) && RandomTarget.effectListComponent.ContainsEffectForEffectType(eEffect.Nearsight))
+			if(RandomTarget != null && Enemys_To_NS.Contains(RandomTarget) && RandomTarget.effectListComponent.ContainsEffectForEffectType(EEffect.Nearsight))
 				Enemys_To_NS.Remove(RandomTarget);
 
 			//RandomTarget = null;
@@ -230,10 +230,10 @@ namespace DOL.AI.Brain
 					spell.Value = 65;
 					spell.Duration = 60;
 					spell.Damage = 0;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.SpellID = 18920;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Nearsight.ToString();
+					spell.Type = ESpellType.Nearsight.ToString();
 					spell.Message1 = "You are blinded!";
 					spell.Message2 = "{0} is blinded!";
 					m_NearsightMistressSpell = new Spell(spell, 50);
@@ -265,9 +265,9 @@ namespace DOL.AI.Brain
 					spell.SpellID = 18921;
 					spell.RecastDelay = 0;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.MoveCast = false;
-					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+					spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
 					m_AoESpell = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_AoESpell);
 				}

@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Guardian Trainer
 	/// </summary>
-	[NPCGuildScript("Guardian Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Guardian Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Guardian Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Guardian Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class GuardianTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Guardian; }
+			get { return ECharacterClass.Guardian; }
 		}
 
 		public const string PRACTICE_WEAPON_ID = "training_sword_hib";
@@ -91,7 +91,7 @@ namespace DOL.GS.Trainer
 
 			switch (text) {
 				case "Hero":
-					if(player.Race == (int)eRace.Celt || player.Race == (int)eRace.Firbolg || player.Race == (int)eRace.Lurikeen || player.Race == (int)eRace.Shar || player.Race == (int)eRace.Sylvan || player.Race == (int)eRace.HiberniaMinotaur)
+					if(player.Race == (int)ERace.Celt || player.Race == (int)ERace.Firbolg || player.Race == (int)ERace.Lurikeen || player.Race == (int)ERace.Shar || player.Race == (int)ERace.Sylvan || player.Race == (int)ERace.HiberniaMinotaur)
 					{
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
@@ -100,7 +100,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Champion":
-					if(player.Race == (int) eRace.Celt || player.Race == (int) eRace.Elf || player.Race == (int) eRace.Lurikeen || player.Race == (int) eRace.Shar){
+					if(player.Race == (int) ERace.Celt || player.Race == (int) ERace.Elf || player.Race == (int) ERace.Lurikeen || player.Race == (int) ERace.Shar){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
 					else{
@@ -108,7 +108,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Blademaster":
-					if(player.Race == (int)eRace.Celt || player.Race == (int)eRace.Elf || player.Race == (int)eRace.Firbolg || player.Race == (int)eRace.Shar || player.Race == (int)eRace.HiberniaMinotaur)
+					if(player.Race == (int)ERace.Celt || player.Race == (int)ERace.Elf || player.Race == (int)ERace.Firbolg || player.Race == (int)ERace.Shar || player.Race == (int)ERace.HiberniaMinotaur)
 					{
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}

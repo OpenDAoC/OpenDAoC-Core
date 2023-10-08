@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
 			if (player == null)
 				return;
 
-			AtlasOF_JuggernautECSEffect effect = (AtlasOF_JuggernautECSEffect)EffectListService.GetEffectOnTarget(player, eEffect.Juggernaut);
+			AtlasOF_JuggernautECSEffect effect = (AtlasOF_JuggernautECSEffect)EffectListService.GetEffectOnTarget(player, EEffect.Juggernaut);
 			effect?.Cancel(false);
 
 			base.OnNpcReleaseCommand(e, sender, arguments);

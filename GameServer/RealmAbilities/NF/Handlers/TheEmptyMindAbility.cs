@@ -77,7 +77,7 @@ namespace DOL.GS.RealmAbilities
 	        dbspell.DamageType = 0;
 	        dbspell.Target = "Self";
 	        dbspell.Radius = 0;
-	        dbspell.Type = eSpellType.AllMagicResistBuff.ToString();
+	        dbspell.Type = ESpellType.AllMagicResistBuff.ToString();
 	        dbspell.Value = GetEffectiveness();
 	        dbspell.Duration = 30;
 	        dbspell.Pulse = 0;

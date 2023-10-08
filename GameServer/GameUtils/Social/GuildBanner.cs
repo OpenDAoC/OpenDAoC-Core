@@ -87,7 +87,7 @@ namespace DOL.GS
                     }
                 }
             }
-            else if (m_player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+            else if (m_player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
             {
                 m_player.Out.SendMessage("You have left the group and your guild banner disappears!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
                 m_player.GuildBanner = null;
@@ -248,18 +248,18 @@ namespace DOL.GS
 					m_guildBannerTemplate.Emblem = m_player.Guild.Emblem;
 					switch (m_player.Realm)
 					{
-						case eRealm.Albion:
+						case ERealm.Albion:
 							m_guildBannerTemplate.Model = 3223;
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							m_guildBannerTemplate.Model = 3224;
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							m_guildBannerTemplate.Model = 3225;
 							break;
 					}
 					m_guildBannerTemplate.Name = m_player.Guild.Name + "'s Banner";
-					m_guildBannerTemplate.Object_Type = (int)eObjectType.HouseWallObject;
+					m_guildBannerTemplate.Object_Type = (int)EObjectType.HouseWallObject;
 					m_guildBannerTemplate.Realm = 0;
 					m_guildBannerTemplate.Quality = 100;
 					m_guildBannerTemplate.ClassType = "DOL.GS.GuildBannerItem";

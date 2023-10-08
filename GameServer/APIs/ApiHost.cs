@@ -129,20 +129,20 @@ namespace DOL.GS.API
                     return Results.NotFound();
                 }
 
-                eRealm realm = eRealm.None;
+                ERealm realm = ERealm.None;
                 switch (realmName.ToLower())
                 {
                     case "alb":
                     case "albion":
-                        realm = eRealm.Albion;
+                        realm = ERealm.Albion;
                         break;
                     case "mid":
                     case "midgard":
-                        realm = eRealm.Midgard;
+                        realm = ERealm.Midgard;
                         break;
                     case "hib":
                     case "hibernia":
-                        realm = eRealm.Hibernia;
+                        realm = ERealm.Hibernia;
                         break;
                 }
 

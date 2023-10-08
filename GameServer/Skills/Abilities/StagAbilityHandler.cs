@@ -75,7 +75,7 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 			//Cancel old stag effects on player
-			StagEcsAbilityEffect stag = (StagEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.Stag);
+			StagEcsAbilityEffect stag = (StagEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(player, EEffect.Stag);
 			if (stag != null)
 			{
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseAlreadyActive"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

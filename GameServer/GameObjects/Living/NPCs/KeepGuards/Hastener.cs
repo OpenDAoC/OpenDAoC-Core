@@ -41,23 +41,23 @@ namespace DOL.GS.Keeps
 			}
 			switch (Realm)
 			{
-				case eRealm.None:
-				case eRealm.Albion:
+				case ERealm.None:
+				case ERealm.Albion:
 					{
-						Model = (ushort)eLivingModel.AlbionHastener;
+						Model = (ushort)ELivingModel.AlbionHastener;
 						Size = 45;
 						break;
 					}
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					{
-						Model = (ushort)eLivingModel.MidgardHastener;
+						Model = (ushort)ELivingModel.MidgardHastener;
 						Size = 50;
 						Flags ^= eFlags.GHOST;
 						break;
 					}
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					{
-						Model = (ushort)eLivingModel.HiberniaHastener;
+						Model = (ushort)ELivingModel.HiberniaHastener;
 						Size = 45;
 						break;
 					}

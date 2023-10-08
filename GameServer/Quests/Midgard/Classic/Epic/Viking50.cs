@@ -129,7 +129,7 @@ namespace DOL.GS.Quests.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Lynnleigh", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Lynnleigh", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -147,7 +147,7 @@ namespace DOL.GS.Quests.Midgard
 				Lynnleigh.Model = 217;
 				Lynnleigh.Name = "Lynnleigh";
 				Lynnleigh.GuildName = "";
-				Lynnleigh.Realm = eRealm.Midgard;
+				Lynnleigh.Realm = ERealm.Midgard;
 				Lynnleigh.CurrentRegionID = 100;
 				Lynnleigh.Size = 51;
 				Lynnleigh.Level = 50;
@@ -162,7 +162,7 @@ namespace DOL.GS.Quests.Midgard
 				}
 			}
 			// end npc
-			npcs = WorldMgr.GetNPCsByName("Elizabeth", eRealm.Midgard);
+			npcs = WorldMgr.GetNPCsByName("Elizabeth", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -180,7 +180,7 @@ namespace DOL.GS.Quests.Midgard
 				Elizabeth.Model = 217;
 				Elizabeth.GuildName = "Enchanter";
 				Elizabeth.Name = "Elizabeth";
-				Elizabeth.Realm = eRealm.Midgard;
+				Elizabeth.Realm = ERealm.Midgard;
 				Elizabeth.CurrentRegionID = 100;
 				Elizabeth.LoadEquipmentTemplateFromDatabase("Elizabeth");
 				Elizabeth.Size = 51;
@@ -198,7 +198,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Ydenia of the Seithkona", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Ydenia of the Seithkona", ERealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -216,7 +216,7 @@ namespace DOL.GS.Quests.Midgard
 				Ydenia.Model = 439;
 				Ydenia.Name = "Ydenia of the Seithkona";
 				Ydenia.GuildName = "";
-				Ydenia.Realm = eRealm.None;
+				Ydenia.Realm = ERealm.None;
 				Ydenia.CurrentRegionID = 100;
 				Ydenia.Size = 60;
 				Ydenia.Level = 65;
@@ -316,16 +316,16 @@ namespace DOL.GS.Quests.Midgard
 				WarriorEpicBoots.Condition = 50000;
 
 				WarriorEpicBoots.Bonus1 = 16;
-				WarriorEpicBoots.Bonus1Type = (int) eStat.CON;
+				WarriorEpicBoots.Bonus1Type = (int) EStat.CON;
 
 				WarriorEpicBoots.Bonus2 = 15;
-				WarriorEpicBoots.Bonus2Type = (int) eStat.QUI;
+				WarriorEpicBoots.Bonus2Type = (int) EStat.QUI;
 
 				WarriorEpicBoots.Bonus3 = 10;
-				WarriorEpicBoots.Bonus3Type = (int) eResist.Heat;
+				WarriorEpicBoots.Bonus3Type = (int) EResist.Heat;
 
 				WarriorEpicBoots.Bonus4 = 10;
-				WarriorEpicBoots.Bonus4Type = (int) eResist.Energy;
+				WarriorEpicBoots.Bonus4Type = (int) EResist.Energy;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -359,16 +359,16 @@ namespace DOL.GS.Quests.Midgard
 				WarriorEpicHelm.Durability = 50000;
 
 				WarriorEpicHelm.Bonus1 = 12;
-				WarriorEpicHelm.Bonus1Type = (int) eStat.STR;
+				WarriorEpicHelm.Bonus1Type = (int) EStat.STR;
 
 				WarriorEpicHelm.Bonus2 = 12;
-				WarriorEpicHelm.Bonus2Type = (int) eStat.CON;
+				WarriorEpicHelm.Bonus2Type = (int) EStat.CON;
 
 				WarriorEpicHelm.Bonus3 = 12;
-				WarriorEpicHelm.Bonus3Type = (int) eStat.DEX;
+				WarriorEpicHelm.Bonus3Type = (int) EStat.DEX;
 
 				WarriorEpicHelm.Bonus4 = 11;
-				WarriorEpicHelm.Bonus4Type = (int) eResist.Crush;
+				WarriorEpicHelm.Bonus4Type = (int) EResist.Crush;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -402,16 +402,16 @@ namespace DOL.GS.Quests.Midgard
 				WarriorEpicGloves.Durability = 50000;
 
 				WarriorEpicGloves.Bonus1 = 3;
-				WarriorEpicGloves.Bonus1Type = (int) eProperty.Skill_Shields;
+				WarriorEpicGloves.Bonus1Type = (int) EProperty.Skill_Shields;
 
 				WarriorEpicGloves.Bonus2 = 3;
-				WarriorEpicGloves.Bonus2Type = (int) eProperty.Skill_Parry;
+				WarriorEpicGloves.Bonus2Type = (int) EProperty.Skill_Parry;
 
 				WarriorEpicGloves.Bonus3 = 15;
-				WarriorEpicGloves.Bonus3Type = (int) eStat.STR;
+				WarriorEpicGloves.Bonus3Type = (int) EStat.STR;
 
 				WarriorEpicGloves.Bonus4 = 13;
-				WarriorEpicGloves.Bonus4Type = (int) eStat.DEX;
+				WarriorEpicGloves.Bonus4Type = (int) EStat.DEX;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -445,16 +445,16 @@ namespace DOL.GS.Quests.Midgard
 				WarriorEpicVest.Durability = 50000;
 
 				WarriorEpicVest.Bonus1 = 13;
-				WarriorEpicVest.Bonus1Type = (int) eStat.STR;
+				WarriorEpicVest.Bonus1Type = (int) EStat.STR;
 
 				WarriorEpicVest.Bonus2 = 13;
-				WarriorEpicVest.Bonus2Type = (int) eStat.DEX;
+				WarriorEpicVest.Bonus2Type = (int) EStat.DEX;
 
 				WarriorEpicVest.Bonus3 = 6;
-				WarriorEpicVest.Bonus3Type = (int) eResist.Matter;
+				WarriorEpicVest.Bonus3Type = (int) EResist.Matter;
 
 				WarriorEpicVest.Bonus4 = 30;
-				WarriorEpicVest.Bonus4Type = (int) eProperty.MaxHealth;
+				WarriorEpicVest.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -488,16 +488,16 @@ namespace DOL.GS.Quests.Midgard
 				WarriorEpicLegs.Durability = 50000;
 
 				WarriorEpicLegs.Bonus1 = 22;
-				WarriorEpicLegs.Bonus1Type = (int) eStat.CON;
+				WarriorEpicLegs.Bonus1Type = (int) EStat.CON;
 
 				WarriorEpicLegs.Bonus2 = 15;
-				WarriorEpicLegs.Bonus2Type = (int) eStat.STR;
+				WarriorEpicLegs.Bonus2Type = (int) EStat.STR;
 
 				WarriorEpicLegs.Bonus3 = 8;
-				WarriorEpicLegs.Bonus3Type = (int) eResist.Cold;
+				WarriorEpicLegs.Bonus3Type = (int) EResist.Cold;
 
 				WarriorEpicLegs.Bonus4 = 8;
-				WarriorEpicLegs.Bonus4Type = (int) eResist.Body;
+				WarriorEpicLegs.Bonus4Type = (int) EResist.Body;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -531,16 +531,16 @@ namespace DOL.GS.Quests.Midgard
 				WarriorEpicArms.Durability = 50000;
 
 				WarriorEpicArms.Bonus1 = 22;
-				WarriorEpicArms.Bonus1Type = (int) eStat.DEX;
+				WarriorEpicArms.Bonus1Type = (int) EStat.DEX;
 
 				WarriorEpicArms.Bonus2 = 15;
-				WarriorEpicArms.Bonus2Type = (int) eStat.QUI;
+				WarriorEpicArms.Bonus2Type = (int) EStat.QUI;
 
 				WarriorEpicArms.Bonus3 = 8;
-				WarriorEpicArms.Bonus3Type = (int) eResist.Crush;
+				WarriorEpicArms.Bonus3Type = (int) EResist.Crush;
 
 				WarriorEpicArms.Bonus4 = 8;
-				WarriorEpicArms.Bonus4Type = (int) eResist.Slash;
+				WarriorEpicArms.Bonus4Type = (int) EResist.Slash;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -573,16 +573,16 @@ namespace DOL.GS.Quests.Midgard
 				BerserkerEpicBoots.Durability = 50000;
 
 				BerserkerEpicBoots.Bonus1 = 19;
-				BerserkerEpicBoots.Bonus1Type = (int) eStat.DEX;
+				BerserkerEpicBoots.Bonus1Type = (int) EStat.DEX;
 
 				BerserkerEpicBoots.Bonus2 = 15;
-				BerserkerEpicBoots.Bonus2Type = (int) eStat.QUI;
+				BerserkerEpicBoots.Bonus2Type = (int) EStat.QUI;
 
 				BerserkerEpicBoots.Bonus3 = 8;
-				BerserkerEpicBoots.Bonus3Type = (int) eResist.Spirit;
+				BerserkerEpicBoots.Bonus3Type = (int) EResist.Spirit;
 
 				BerserkerEpicBoots.Bonus4 = 8;
-				BerserkerEpicBoots.Bonus4Type = (int) eResist.Energy;
+				BerserkerEpicBoots.Bonus4Type = (int) EResist.Energy;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -616,16 +616,16 @@ namespace DOL.GS.Quests.Midgard
 				BerserkerEpicHelm.Durability = 50000;
 
 				BerserkerEpicHelm.Bonus1 = 10;
-				BerserkerEpicHelm.Bonus1Type = (int) eStat.STR;
+				BerserkerEpicHelm.Bonus1Type = (int) EStat.STR;
 
 				BerserkerEpicHelm.Bonus2 = 15;
-				BerserkerEpicHelm.Bonus2Type = (int) eStat.CON;
+				BerserkerEpicHelm.Bonus2Type = (int) EStat.CON;
 
 				BerserkerEpicHelm.Bonus3 = 10;
-				BerserkerEpicHelm.Bonus3Type = (int) eStat.DEX;
+				BerserkerEpicHelm.Bonus3Type = (int) EStat.DEX;
 
 				BerserkerEpicHelm.Bonus4 = 10;
-				BerserkerEpicHelm.Bonus4Type = (int) eStat.QUI;
+				BerserkerEpicHelm.Bonus4Type = (int) EStat.QUI;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -658,16 +658,16 @@ namespace DOL.GS.Quests.Midgard
 				BerserkerEpicGloves.Durability = 50000;
 
 				BerserkerEpicGloves.Bonus1 = 3;
-				BerserkerEpicGloves.Bonus1Type = (int) eProperty.Skill_Left_Axe;
+				BerserkerEpicGloves.Bonus1Type = (int) EProperty.Skill_Left_Axe;
 
 				BerserkerEpicGloves.Bonus2 = 3;
-				BerserkerEpicGloves.Bonus2Type = (int) eProperty.Skill_Parry;
+				BerserkerEpicGloves.Bonus2Type = (int) EProperty.Skill_Parry;
 
 				BerserkerEpicGloves.Bonus3 = 12;
-				BerserkerEpicGloves.Bonus3Type = (int) eStat.STR;
+				BerserkerEpicGloves.Bonus3Type = (int) EStat.STR;
 
 				BerserkerEpicGloves.Bonus4 = 33;
-				BerserkerEpicGloves.Bonus4Type = (int) eProperty.MaxHealth;
+				BerserkerEpicGloves.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -700,16 +700,16 @@ namespace DOL.GS.Quests.Midgard
 				BerserkerEpicVest.Durability = 50000;
 
 				BerserkerEpicVest.Bonus1 = 13;
-				BerserkerEpicVest.Bonus1Type = (int) eStat.STR;
+				BerserkerEpicVest.Bonus1Type = (int) EStat.STR;
 
 				BerserkerEpicVest.Bonus2 = 13;
-				BerserkerEpicVest.Bonus2Type = (int) eStat.DEX;
+				BerserkerEpicVest.Bonus2Type = (int) EStat.DEX;
 
 				BerserkerEpicVest.Bonus3 = 6;
-				BerserkerEpicVest.Bonus3Type = (int) eResist.Body;
+				BerserkerEpicVest.Bonus3Type = (int) EResist.Body;
 
 				BerserkerEpicVest.Bonus4 = 30;
-				BerserkerEpicVest.Bonus4Type = (int) eProperty.MaxHealth;
+				BerserkerEpicVest.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -742,16 +742,16 @@ namespace DOL.GS.Quests.Midgard
 				BerserkerEpicLegs.Durability = 50000;
 
 				BerserkerEpicLegs.Bonus1 = 15;
-				BerserkerEpicLegs.Bonus1Type = (int) eStat.STR;
+				BerserkerEpicLegs.Bonus1Type = (int) EStat.STR;
 
 				BerserkerEpicLegs.Bonus2 = 15;
-				BerserkerEpicLegs.Bonus2Type = (int) eStat.CON;
+				BerserkerEpicLegs.Bonus2Type = (int) EStat.CON;
 
 				BerserkerEpicLegs.Bonus3 = 7;
-				BerserkerEpicLegs.Bonus3Type = (int) eStat.DEX;
+				BerserkerEpicLegs.Bonus3Type = (int) EStat.DEX;
 
 				BerserkerEpicLegs.Bonus4 = 12;
-				BerserkerEpicLegs.Bonus4Type = (int) eResist.Slash;
+				BerserkerEpicLegs.Bonus4Type = (int) EResist.Slash;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -784,16 +784,16 @@ namespace DOL.GS.Quests.Midgard
 				BerserkerEpicArms.Durability = 50000;
 
 				BerserkerEpicArms.Bonus1 = 19;
-				BerserkerEpicArms.Bonus1Type = (int) eStat.STR;
+				BerserkerEpicArms.Bonus1Type = (int) EStat.STR;
 
 				BerserkerEpicArms.Bonus2 = 15;
-				BerserkerEpicArms.Bonus2Type = (int) eStat.CON;
+				BerserkerEpicArms.Bonus2Type = (int) EStat.CON;
 
 				BerserkerEpicArms.Bonus3 = 8;
-				BerserkerEpicArms.Bonus3Type = (int) eResist.Thrust;
+				BerserkerEpicArms.Bonus3Type = (int) EResist.Thrust;
 
 				BerserkerEpicArms.Bonus4 = 8;
-				BerserkerEpicArms.Bonus4Type = (int) eResist.Heat;
+				BerserkerEpicArms.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -826,16 +826,16 @@ namespace DOL.GS.Quests.Midgard
 				ThaneEpicBoots.Durability = 50000;
 
 				ThaneEpicBoots.Bonus1 = 13;
-				ThaneEpicBoots.Bonus1Type = (int) eStat.CON;
+				ThaneEpicBoots.Bonus1Type = (int) EStat.CON;
 
 				ThaneEpicBoots.Bonus2 = 13;
-				ThaneEpicBoots.Bonus2Type = (int) eStat.DEX;
+				ThaneEpicBoots.Bonus2Type = (int) EStat.DEX;
 
 				ThaneEpicBoots.Bonus3 = 13;
-				ThaneEpicBoots.Bonus3Type = (int) eStat.QUI;
+				ThaneEpicBoots.Bonus3Type = (int) EStat.QUI;
 
 				ThaneEpicBoots.Bonus4 = 8;
-				ThaneEpicBoots.Bonus4Type = (int) eResist.Matter;
+				ThaneEpicBoots.Bonus4Type = (int) EResist.Matter;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -869,16 +869,16 @@ namespace DOL.GS.Quests.Midgard
 				ThaneEpicHelm.Durability = 50000;
 
 				ThaneEpicHelm.Bonus1 = 4;
-				ThaneEpicHelm.Bonus1Type = (int) eProperty.Skill_Stormcalling;
+				ThaneEpicHelm.Bonus1Type = (int) EProperty.Skill_Stormcalling;
 
 				ThaneEpicHelm.Bonus2 = 18;
-				ThaneEpicHelm.Bonus2Type = (int) eStat.CON;
+				ThaneEpicHelm.Bonus2Type = (int) EStat.CON;
 
 				ThaneEpicHelm.Bonus3 = 4;
-				ThaneEpicHelm.Bonus3Type = (int) eResist.Spirit;
+				ThaneEpicHelm.Bonus3Type = (int) EResist.Spirit;
 
 				ThaneEpicHelm.Bonus4 = 6;
-				ThaneEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				ThaneEpicHelm.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 
 				if (SAVE_INTO_DATABASE)
@@ -913,16 +913,16 @@ namespace DOL.GS.Quests.Midgard
 				ThaneEpicGloves.Durability = 50000;
 
 				ThaneEpicGloves.Bonus1 = 3;
-				ThaneEpicGloves.Bonus1Type = (int) eProperty.Skill_Sword;
+				ThaneEpicGloves.Bonus1Type = (int) EProperty.Skill_Sword;
 
 				ThaneEpicGloves.Bonus2 = 3;
-				ThaneEpicGloves.Bonus2Type = (int) eProperty.Skill_Hammer;
+				ThaneEpicGloves.Bonus2Type = (int) EProperty.Skill_Hammer;
 
 				ThaneEpicGloves.Bonus3 = 3;
-				ThaneEpicGloves.Bonus3Type = (int) eProperty.Skill_Axe;
+				ThaneEpicGloves.Bonus3Type = (int) EProperty.Skill_Axe;
 
 				ThaneEpicGloves.Bonus4 = 19;
-				ThaneEpicGloves.Bonus4Type = (int) eStat.STR;
+				ThaneEpicGloves.Bonus4Type = (int) EStat.STR;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -956,16 +956,16 @@ namespace DOL.GS.Quests.Midgard
 				ThaneEpicVest.Durability = 50000;
 
 				ThaneEpicVest.Bonus1 = 13;
-				ThaneEpicVest.Bonus1Type = (int) eStat.STR;
+				ThaneEpicVest.Bonus1Type = (int) EStat.STR;
 
 				ThaneEpicVest.Bonus2 = 13;
-				ThaneEpicVest.Bonus2Type = (int) eStat.CON;
+				ThaneEpicVest.Bonus2Type = (int) EStat.CON;
 
 				ThaneEpicVest.Bonus3 = 6;
-				ThaneEpicVest.Bonus3Type = (int) eResist.Slash;
+				ThaneEpicVest.Bonus3Type = (int) EResist.Slash;
 
 				ThaneEpicVest.Bonus4 = 30;
-				ThaneEpicVest.Bonus4Type = (int) eProperty.MaxHealth;
+				ThaneEpicVest.Bonus4Type = (int) EProperty.MaxHealth;
 
 
 				if (SAVE_INTO_DATABASE)
@@ -999,16 +999,16 @@ namespace DOL.GS.Quests.Midgard
 				ThaneEpicLegs.Durability = 50000;
 
 				ThaneEpicLegs.Bonus1 = 19;
-				ThaneEpicLegs.Bonus1Type = (int) eStat.CON;
+				ThaneEpicLegs.Bonus1Type = (int) EStat.CON;
 
 				ThaneEpicLegs.Bonus2 = 15;
-				ThaneEpicLegs.Bonus2Type = (int) eStat.PIE;
+				ThaneEpicLegs.Bonus2Type = (int) EStat.PIE;
 
 				ThaneEpicLegs.Bonus3 = 8;
-				ThaneEpicLegs.Bonus3Type = (int) eResist.Crush;
+				ThaneEpicLegs.Bonus3Type = (int) EResist.Crush;
 
 				ThaneEpicLegs.Bonus4 = 8;
-				ThaneEpicLegs.Bonus4Type = (int) eResist.Heat;
+				ThaneEpicLegs.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1041,16 +1041,16 @@ namespace DOL.GS.Quests.Midgard
 				ThaneEpicArms.Durability = 50000;
 
 				ThaneEpicArms.Bonus1 = 18;
-				ThaneEpicArms.Bonus1Type = (int) eStat.STR;
+				ThaneEpicArms.Bonus1Type = (int) EStat.STR;
 
 				ThaneEpicArms.Bonus2 = 16;
-				ThaneEpicArms.Bonus2Type = (int) eStat.QUI;
+				ThaneEpicArms.Bonus2Type = (int) EStat.QUI;
 
 				ThaneEpicArms.Bonus3 = 8;
-				ThaneEpicArms.Bonus3Type = (int) eResist.Thrust;
+				ThaneEpicArms.Bonus3Type = (int) EResist.Thrust;
 
 				ThaneEpicArms.Bonus4 = 8;
-				ThaneEpicArms.Bonus4Type = (int) eResist.Body;
+				ThaneEpicArms.Bonus4Type = (int) EResist.Body;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1083,16 +1083,16 @@ namespace DOL.GS.Quests.Midgard
 				SkaldEpicBoots.Durability = 50000;
 
 				SkaldEpicBoots.Bonus1 = 13;
-				SkaldEpicBoots.Bonus1Type = (int) eStat.CON;
+				SkaldEpicBoots.Bonus1Type = (int) EStat.CON;
 
 				SkaldEpicBoots.Bonus2 = 13;
-				SkaldEpicBoots.Bonus2Type = (int) eStat.QUI;
+				SkaldEpicBoots.Bonus2Type = (int) EStat.QUI;
 
 				SkaldEpicBoots.Bonus3 = 10;
-				SkaldEpicBoots.Bonus3Type = (int) eResist.Cold;
+				SkaldEpicBoots.Bonus3Type = (int) EResist.Cold;
 
 				SkaldEpicBoots.Bonus4 = 24;
-				SkaldEpicBoots.Bonus4Type = (int) eProperty.MaxHealth;
+				SkaldEpicBoots.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1126,13 +1126,13 @@ namespace DOL.GS.Quests.Midgard
 				SkaldEpicHelm.Durability = 50000;
 
 				SkaldEpicHelm.Bonus1 = 5;
-				SkaldEpicHelm.Bonus1Type = (int) eProperty.Skill_Battlesongs;
+				SkaldEpicHelm.Bonus1Type = (int) EProperty.Skill_Battlesongs;
 
 				SkaldEpicHelm.Bonus2 = 15;
-				SkaldEpicHelm.Bonus2Type = (int) eStat.CHR;
+				SkaldEpicHelm.Bonus2Type = (int) EStat.CHR;
 
 				SkaldEpicHelm.Bonus3 = 33;
-				SkaldEpicHelm.Bonus3Type = (int) eProperty.MaxHealth;
+				SkaldEpicHelm.Bonus3Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1166,16 +1166,16 @@ namespace DOL.GS.Quests.Midgard
 				SkaldEpicGloves.Durability = 50000;
 
 				SkaldEpicGloves.Bonus1 = 18;
-				SkaldEpicGloves.Bonus1Type = (int) eStat.STR;
+				SkaldEpicGloves.Bonus1Type = (int) EStat.STR;
 
 				SkaldEpicGloves.Bonus2 = 15;
-				SkaldEpicGloves.Bonus2Type = (int) eStat.DEX;
+				SkaldEpicGloves.Bonus2Type = (int) EStat.DEX;
 
 				SkaldEpicGloves.Bonus3 = 8;
-				SkaldEpicGloves.Bonus3Type = (int) eResist.Body;
+				SkaldEpicGloves.Bonus3Type = (int) EResist.Body;
 
 				SkaldEpicGloves.Bonus4 = 10;
-				SkaldEpicGloves.Bonus4Type = (int) eResist.Energy;
+				SkaldEpicGloves.Bonus4Type = (int) EResist.Energy;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1209,16 +1209,16 @@ namespace DOL.GS.Quests.Midgard
 				SkaldEpicVest.Durability = 50000;
 
 				SkaldEpicVest.Bonus1 = 13;
-				SkaldEpicVest.Bonus1Type = (int) eStat.STR;
+				SkaldEpicVest.Bonus1Type = (int) EStat.STR;
 
 				SkaldEpicVest.Bonus2 = 13;
-				SkaldEpicVest.Bonus2Type = (int) eStat.CON;
+				SkaldEpicVest.Bonus2Type = (int) EStat.CON;
 
 				SkaldEpicVest.Bonus3 = 13;
-				SkaldEpicVest.Bonus3Type = (int) eStat.CHR;
+				SkaldEpicVest.Bonus3Type = (int) EStat.CHR;
 
 				SkaldEpicVest.Bonus4 = 8;
-				SkaldEpicVest.Bonus4Type = (int) eResist.Matter;
+				SkaldEpicVest.Bonus4Type = (int) EResist.Matter;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1251,16 +1251,16 @@ namespace DOL.GS.Quests.Midgard
 				SkaldEpicLegs.Durability = 50000;
 
 				SkaldEpicLegs.Bonus1 = 13;
-				SkaldEpicLegs.Bonus1Type = (int) eStat.STR;
+				SkaldEpicLegs.Bonus1Type = (int) EStat.STR;
 
 				SkaldEpicLegs.Bonus2 = 13;
-				SkaldEpicLegs.Bonus2Type = (int) eStat.CON;
+				SkaldEpicLegs.Bonus2Type = (int) EStat.CON;
 
 				SkaldEpicLegs.Bonus3 = 8;
-				SkaldEpicLegs.Bonus3Type = (int) eResist.Spirit;
+				SkaldEpicLegs.Bonus3Type = (int) EResist.Spirit;
 
 				SkaldEpicLegs.Bonus4 = 27;
-				SkaldEpicLegs.Bonus4Type = (int) eProperty.MaxHealth;
+				SkaldEpicLegs.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1293,16 +1293,16 @@ namespace DOL.GS.Quests.Midgard
 				SkaldEpicArms.Durability = 50000;
 
 				SkaldEpicArms.Bonus1 = 16;
-				SkaldEpicArms.Bonus1Type = (int) eStat.STR;
+				SkaldEpicArms.Bonus1Type = (int) EStat.STR;
 
 				SkaldEpicArms.Bonus2 = 15;
-				SkaldEpicArms.Bonus2Type = (int) eStat.CON;
+				SkaldEpicArms.Bonus2Type = (int) EStat.CON;
 
 				SkaldEpicArms.Bonus3 = 10;
-				SkaldEpicArms.Bonus3Type = (int) eResist.Thrust;
+				SkaldEpicArms.Bonus3Type = (int) EResist.Thrust;
 
 				SkaldEpicArms.Bonus4 = 10;
-				SkaldEpicArms.Bonus4Type = (int) eResist.Cold;
+				SkaldEpicArms.Bonus4Type = (int) EResist.Cold;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1335,16 +1335,16 @@ namespace DOL.GS.Quests.Midgard
 				SavageEpicBoots.Durability = 50000;
 
 				SavageEpicBoots.Bonus1 = 15;
-				SavageEpicBoots.Bonus1Type = (int) eStat.CON;
+				SavageEpicBoots.Bonus1Type = (int) EStat.CON;
 
 				SavageEpicBoots.Bonus2 = 19;
-				SavageEpicBoots.Bonus2Type = (int) eStat.DEX;
+				SavageEpicBoots.Bonus2Type = (int) EStat.DEX;
 
 				SavageEpicBoots.Bonus3 = 8;
-				SavageEpicBoots.Bonus3Type = (int) eResist.Matter;
+				SavageEpicBoots.Bonus3Type = (int) EResist.Matter;
 
 				SavageEpicBoots.Bonus4 = 8;
-				SavageEpicBoots.Bonus4Type = (int) eResist.Energy;
+				SavageEpicBoots.Bonus4Type = (int) EResist.Energy;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1377,16 +1377,16 @@ namespace DOL.GS.Quests.Midgard
 				SavageEpicHelm.Durability = 50000;
 
 				SavageEpicHelm.Bonus1 = 15;
-				SavageEpicHelm.Bonus1Type = (int) eStat.STR;
+				SavageEpicHelm.Bonus1Type = (int) EStat.STR;
 
 				SavageEpicHelm.Bonus2 = 10;
-				SavageEpicHelm.Bonus2Type = (int) eStat.CON;
+				SavageEpicHelm.Bonus2Type = (int) EStat.CON;
 
 				SavageEpicHelm.Bonus3 = 10;
-				SavageEpicHelm.Bonus3Type = (int) eStat.DEX;
+				SavageEpicHelm.Bonus3Type = (int) EStat.DEX;
 
 				SavageEpicHelm.Bonus4 = 10;
-				SavageEpicHelm.Bonus4Type = (int) eStat.QUI;
+				SavageEpicHelm.Bonus4Type = (int) EStat.QUI;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1419,16 +1419,16 @@ namespace DOL.GS.Quests.Midgard
 				SavageEpicGloves.Durability = 50000;
 
 				SavageEpicGloves.Bonus1 = 3;
-				SavageEpicGloves.Bonus1Type = (int) eProperty.Skill_Parry;
+				SavageEpicGloves.Bonus1Type = (int) EProperty.Skill_Parry;
 
 				SavageEpicGloves.Bonus2 = 12;
-				SavageEpicGloves.Bonus2Type = (int) eStat.DEX;
+				SavageEpicGloves.Bonus2Type = (int) EStat.DEX;
 
 				SavageEpicGloves.Bonus3 = 33;
-				SavageEpicGloves.Bonus3Type = (int) eProperty.MaxHealth;
+				SavageEpicGloves.Bonus3Type = (int) EProperty.MaxHealth;
 
 				SavageEpicGloves.Bonus4 = 3;
-				SavageEpicGloves.Bonus4Type = (int) eProperty.Skill_HandToHand;
+				SavageEpicGloves.Bonus4Type = (int) EProperty.Skill_HandToHand;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1461,16 +1461,16 @@ namespace DOL.GS.Quests.Midgard
 				SavageEpicVest.Durability = 50000;
 
 				SavageEpicVest.Bonus1 = 13;
-				SavageEpicVest.Bonus1Type = (int) eStat.STR;
+				SavageEpicVest.Bonus1Type = (int) EStat.STR;
 
 				SavageEpicVest.Bonus2 = 13;
-				SavageEpicVest.Bonus2Type = (int) eStat.QUI;
+				SavageEpicVest.Bonus2Type = (int) EStat.QUI;
 
 				SavageEpicVest.Bonus3 = 6;
-				SavageEpicVest.Bonus3Type = (int) eResist.Slash;
+				SavageEpicVest.Bonus3Type = (int) EResist.Slash;
 
 				SavageEpicVest.Bonus4 = 30;
-				SavageEpicVest.Bonus4Type = (int) eProperty.MaxHealth;
+				SavageEpicVest.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1503,16 +1503,16 @@ namespace DOL.GS.Quests.Midgard
 				SavageEpicLegs.Durability = 50000;
 
 				SavageEpicLegs.Bonus1 = 12;
-				SavageEpicLegs.Bonus1Type = (int) eResist.Heat;
+				SavageEpicLegs.Bonus1Type = (int) EResist.Heat;
 
 				SavageEpicLegs.Bonus2 = 7;
-				SavageEpicLegs.Bonus2Type = (int) eStat.CON;
+				SavageEpicLegs.Bonus2Type = (int) EStat.CON;
 
 				SavageEpicLegs.Bonus3 = 15;
-				SavageEpicLegs.Bonus3Type = (int) eStat.DEX;
+				SavageEpicLegs.Bonus3Type = (int) EStat.DEX;
 
 				SavageEpicLegs.Bonus4 = 15;
-				SavageEpicLegs.Bonus4Type = (int) eStat.QUI;
+				SavageEpicLegs.Bonus4Type = (int) EStat.QUI;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1545,16 +1545,16 @@ namespace DOL.GS.Quests.Midgard
 				SavageEpicArms.Durability = 50000;
 
 				SavageEpicArms.Bonus1 = 19;
-				SavageEpicArms.Bonus1Type = (int) eStat.STR;
+				SavageEpicArms.Bonus1Type = (int) EStat.STR;
 
 				SavageEpicArms.Bonus2 = 15;
-				SavageEpicArms.Bonus2Type = (int) eStat.QUI;
+				SavageEpicArms.Bonus2Type = (int) EStat.QUI;
 
 				SavageEpicArms.Bonus3 = 8;
-				SavageEpicArms.Bonus3 = (int) eResist.Cold;
+				SavageEpicArms.Bonus3 = (int) EResist.Cold;
 
 				SavageEpicArms.Bonus4 = 8;
-				SavageEpicArms.Bonus4Type = (int) eResist.Heat;
+				SavageEpicArms.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1595,16 +1595,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				ValkyrieEpicBoots.Bonus1 = 7;
-				ValkyrieEpicBoots.Bonus1Type = (int)eStat.CON;
+				ValkyrieEpicBoots.Bonus1Type = (int)EStat.CON;
 
 				ValkyrieEpicBoots.Bonus2 = 13;
-				ValkyrieEpicBoots.Bonus2Type = (int)eStat.DEX;
+				ValkyrieEpicBoots.Bonus2Type = (int)EStat.DEX;
 
 				ValkyrieEpicBoots.Bonus3 = 13;
-				ValkyrieEpicBoots.Bonus3Type = (int)eStat.QUI;
+				ValkyrieEpicBoots.Bonus3Type = (int)EStat.QUI;
 
 				ValkyrieEpicBoots.Bonus4 = 8;
-				ValkyrieEpicBoots.Bonus4Type = (int)eResist.Body;
+				ValkyrieEpicBoots.Bonus4Type = (int)EResist.Body;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1645,16 +1645,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				ValkyrieEpicHelm.Bonus1 = 4;
-				ValkyrieEpicHelm.Bonus1Type = (int)eProperty.Skill_Sword;
+				ValkyrieEpicHelm.Bonus1Type = (int)EProperty.Skill_Sword;
 
 				ValkyrieEpicHelm.Bonus2 = 18;
-				ValkyrieEpicHelm.Bonus2Type = (int)eStat.CON;
+				ValkyrieEpicHelm.Bonus2Type = (int)EStat.CON;
 
 				ValkyrieEpicHelm.Bonus3 = 4;
-				ValkyrieEpicHelm.Bonus3Type = (int)eResist.Cold;
+				ValkyrieEpicHelm.Bonus3Type = (int)EResist.Cold;
 
 				ValkyrieEpicHelm.Bonus4 = 6;
-				ValkyrieEpicHelm.Bonus4Type = (int)eResist.Energy;
+				ValkyrieEpicHelm.Bonus4Type = (int)EResist.Energy;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1695,16 +1695,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				ValkyrieEpicGloves.Bonus1 = 3;
-				ValkyrieEpicGloves.Bonus1Type = (int)eProperty.Skill_Spear;
+				ValkyrieEpicGloves.Bonus1Type = (int)EProperty.Skill_Spear;
 
 				ValkyrieEpicGloves.Bonus2 = 3;
-				ValkyrieEpicGloves.Bonus2Type = (int)eProperty.Skill_Parry;
+				ValkyrieEpicGloves.Bonus2Type = (int)EProperty.Skill_Parry;
 
 				ValkyrieEpicGloves.Bonus3 = 19;
-				ValkyrieEpicGloves.Bonus3Type = (int)eStat.STR;
+				ValkyrieEpicGloves.Bonus3Type = (int)EStat.STR;
 
 				ValkyrieEpicGloves.Bonus4 = 3;
-				ValkyrieEpicGloves.Bonus4Type = (int)eProperty.Skill_OdinsWill;
+				ValkyrieEpicGloves.Bonus4Type = (int)EProperty.Skill_OdinsWill;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1745,16 +1745,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				ValkyrieEpicVest.Bonus1 = 13;
-				ValkyrieEpicVest.Bonus1Type = (int)eStat.STR;
+				ValkyrieEpicVest.Bonus1Type = (int)EStat.STR;
 
 				ValkyrieEpicVest.Bonus2 = 13;
-				ValkyrieEpicVest.Bonus2Type = (int)eStat.CON;
+				ValkyrieEpicVest.Bonus2Type = (int)EStat.CON;
 
 				ValkyrieEpicVest.Bonus3 = 6;
-				ValkyrieEpicVest.Bonus3Type = (int)eResist.Matter;
+				ValkyrieEpicVest.Bonus3Type = (int)EResist.Matter;
 
 				ValkyrieEpicVest.Bonus4 = 30;
-				ValkyrieEpicVest.Bonus4Type = (int)eProperty.MaxHealth;
+				ValkyrieEpicVest.Bonus4Type = (int)EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1795,16 +1795,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				ValkyrieEpicLegs.Bonus1 = 19;
-				ValkyrieEpicLegs.Bonus1Type = (int)eStat.CON;
+				ValkyrieEpicLegs.Bonus1Type = (int)EStat.CON;
 
 				ValkyrieEpicLegs.Bonus2 = 15;
-				ValkyrieEpicLegs.Bonus2Type = (int)eStat.PIE;
+				ValkyrieEpicLegs.Bonus2Type = (int)EStat.PIE;
 
 				ValkyrieEpicLegs.Bonus3 = 8;
-				ValkyrieEpicLegs.Bonus3Type = (int)eResist.Crush;
+				ValkyrieEpicLegs.Bonus3Type = (int)EResist.Crush;
 
 				ValkyrieEpicLegs.Bonus4 = 8;
-				ValkyrieEpicLegs.Bonus4Type = (int)eResist.Heat;
+				ValkyrieEpicLegs.Bonus4Type = (int)EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1845,16 +1845,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				ValkyrieEpicArms.Bonus1 = 18;
-				ValkyrieEpicArms.Bonus1Type = (int)eStat.STR;
+				ValkyrieEpicArms.Bonus1Type = (int)EStat.STR;
 
 				ValkyrieEpicArms.Bonus2 = 16;
-				ValkyrieEpicArms.Bonus2Type = (int)eStat.QUI;
+				ValkyrieEpicArms.Bonus2Type = (int)EStat.QUI;
 
 				ValkyrieEpicArms.Bonus3 = 8;
-				ValkyrieEpicArms.Bonus3Type = (int)eResist.Thrust;
+				ValkyrieEpicArms.Bonus3Type = (int)EResist.Thrust;
 
 				ValkyrieEpicArms.Bonus4 = 8;
-				ValkyrieEpicArms.Bonus4Type = (int)eResist.Spirit;
+				ValkyrieEpicArms.Bonus4Type = (int)EResist.Spirit;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1924,7 +1924,7 @@ namespace DOL.GS.Quests.Midgard
 				return;
 
 			// player is not allowed to start this quest until the quest rewards are available
-			if (player.CharacterClass.ID == (byte)eCharacterClass.MaulerMid &&
+			if (player.CharacterClass.ID == (byte)ECharacterClass.MaulerMid &&
 				(MaulerMidEpicArms == null || MaulerMidEpicBoots == null || MaulerMidEpicGloves == null ||
 				MaulerMidEpicHelm == null || MaulerMidEpicLegs == null || MaulerMidEpicVest == null))
 			{
@@ -2105,13 +2105,13 @@ namespace DOL.GS.Quests.Midgard
 			if (player.IsDoingQuest(typeof (Viking_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) eCharacterClass.Warrior &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Berserker &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Thane &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Skald &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Savage &&
-                player.CharacterClass.ID != (byte) eCharacterClass.MaulerMid &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Valkyrie)
+			if (player.CharacterClass.ID != (byte) ECharacterClass.Warrior &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Berserker &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Thane &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Skald &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Savage &&
+                player.CharacterClass.ID != (byte) ECharacterClass.MaulerMid &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Valkyrie)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -2259,9 +2259,9 @@ namespace DOL.GS.Quests.Midgard
 		{
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
+			switch ((ECharacterClass)m_questPlayer.CharacterClass.ID)
 			{
-				case eCharacterClass.Warrior:
+				case ECharacterClass.Warrior:
 					{
 						GiveItem(m_questPlayer, WarriorEpicArms);
 						GiveItem(m_questPlayer, WarriorEpicBoots);
@@ -2271,7 +2271,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, WarriorEpicVest);
 						break;
 					}
-				case eCharacterClass.Berserker:
+				case ECharacterClass.Berserker:
 					{
 						GiveItem(m_questPlayer, BerserkerEpicArms);
 						GiveItem(m_questPlayer, BerserkerEpicBoots);
@@ -2281,7 +2281,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, BerserkerEpicVest);
 						break;
 					}
-				case eCharacterClass.Thane:
+				case ECharacterClass.Thane:
 					{
 						GiveItem(m_questPlayer, ThaneEpicArms);
 						GiveItem(m_questPlayer, ThaneEpicBoots);
@@ -2291,7 +2291,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, ThaneEpicVest);
 						break;
 					}
-				case eCharacterClass.Skald:
+				case ECharacterClass.Skald:
 					{
 						GiveItem(m_questPlayer, SkaldEpicArms);
 						GiveItem(m_questPlayer, SkaldEpicBoots);
@@ -2301,7 +2301,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, SkaldEpicVest);
 						break;
 					}
-				case eCharacterClass.Savage:
+				case ECharacterClass.Savage:
 					{
 						GiveItem(m_questPlayer, SavageEpicArms);
 						GiveItem(m_questPlayer, SavageEpicBoots);
@@ -2311,7 +2311,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, SavageEpicVest);
 						break;
 					}
-				case eCharacterClass.Valkyrie:
+				case ECharacterClass.Valkyrie:
 					{
 						GiveItem(m_questPlayer, ValkyrieEpicArms);
 						GiveItem(m_questPlayer, ValkyrieEpicBoots);
@@ -2321,7 +2321,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, ValkyrieEpicVest);
 						break;
 					}
-				case eCharacterClass.MaulerMid:
+				case ECharacterClass.MaulerMid:
 					{
 						GiveItem(m_questPlayer, MaulerMidEpicArms);
 						GiveItem(m_questPlayer, MaulerMidEpicBoots);
@@ -2333,7 +2333,7 @@ namespace DOL.GS.Quests.Midgard
 					}
 			}
 
-			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			m_questPlayer.GainExperience(EXpSource.Quest, 1937768448, true);
 			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 	}

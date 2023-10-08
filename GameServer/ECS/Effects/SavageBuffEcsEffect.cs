@@ -39,7 +39,7 @@ namespace DOL.GS
                 else
                     cost = SpellHandler.Spell.Power;
                 if (Owner.Health > cost)
-                    Owner.ChangeHealth(Owner, eHealthChangeType.Spell, -cost);
+                    Owner.ChangeHealth(Owner, EHealthChangeType.Spell, -cost);
             }
         }
     }

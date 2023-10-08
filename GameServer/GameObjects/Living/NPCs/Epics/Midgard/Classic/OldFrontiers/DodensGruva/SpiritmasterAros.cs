@@ -25,13 +25,13 @@ namespace DOL.GS
 				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
 			}
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 30;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 30;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 30;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 30;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 30;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 30;// dmg reduction for melee dmg
 				default: return 40;// dmg reduction for rest resists
 			}
 		}
@@ -51,11 +51,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -110,7 +110,7 @@ namespace DOL.GS
         }
         public override void DealDamage(AttackData ad)
         {
-			if (ad != null && ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0 && ad.DamageType == eDamageType.Cold)
+			if (ad != null && ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0 && ad.DamageType == EDamageType.Cold)
 				Health += ad.Damage / 6;
             base.DealDamage(ad);
         }
@@ -156,7 +156,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				DebuffTarget = null;
 				CanCastDebuff = false;
@@ -257,7 +257,7 @@ namespace DOL.AI.Brain
 			{
 				foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
 				{
-					if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && player.CharacterClass.ID != (int)eCharacterClass.Necromancer)
+					if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && player.CharacterClass.ID != (int)ECharacterClass.Necromancer)
 						{
 						if (!Enemys_To_Debuff.Contains(player))
 							Enemys_To_Debuff.Add(player);
@@ -299,12 +299,12 @@ namespace DOL.AI.Brain
 					spell.Icon = 2610;
 					spell.TooltipId = 2610;
 					spell.Damage = 500;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Extinguish Lifeforce";
 					spell.Range = 1500;
 					spell.SpellID = 11916;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Aros_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aros_DD);
@@ -327,13 +327,13 @@ namespace DOL.AI.Brain
 					spell.Icon = 2797;
 					spell.TooltipId = 2797;
 					spell.Damage = 1400;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.DamageType = (int)EDamageType.Spirit;
 					spell.Name = "Soul Annihilation";
 					spell.Range = 0;
 					spell.Radius = 800;
 					spell.SpellID = 11917;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Aros_Bomb = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Aros_Bomb);
@@ -357,13 +357,13 @@ namespace DOL.AI.Brain
 					spell.TooltipId = 4575;
 					spell.Value = 40;
 					spell.Duration = 60;
-					spell.DamageType = (int)eDamageType.Spirit;
+					spell.DamageType = (int)EDamageType.Spirit;
 					spell.Name = "Negate Spirit";
 					spell.Range = 1500;
 					spell.Radius = 500;
 					spell.SpellID = 11918;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.SpiritResistDebuff.ToString();
+					spell.Type = ESpellType.SpiritResistDebuff.ToString();
 					spell.Message1 = "You feel more vulnerable to spirit magic!";
 					spell.Message2 = "{0} seems vulnerable to spirit magic!";
 					spell.Uninterruptible = true;
@@ -385,30 +385,30 @@ namespace DOL.GS
 		{
 			get { return 8000; }
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 25; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 25; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 25; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 25; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 25; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 25; // dmg reduction for melee dmg
 				default: return 25; // dmg reduction for rest resists
 			}
 		}
 		public override void OnAttackEnemy(AttackData ad)
 		{
-			if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 			{
-				if (Util.Chance(25) && (!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) || !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun)) && ad.Target.IsAlive)
+				if (Util.Chance(25) && (!ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity) || !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun)) && ad.Target.IsAlive)
 					CastSpell(SpiritChampion_stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.OnAttackEnemy(ad);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
@@ -439,7 +439,7 @@ namespace DOL.GS
 			template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 310, 0, 0, 0);
 			template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 79, 0, 0, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.Standard);
+			SwitchWeapon(EActiveWeaponSlot.Standard);
 
 			Faction = FactionMgr.GetFactionByID(779);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(779));
@@ -452,7 +452,7 @@ namespace DOL.GS
 			BlockChance = 40;
 			RespawnInterval = -1;
 			Flags ^= eFlags.GHOST;
-			Realm = eRealm.None;
+			Realm = ERealm.None;
 			SpiritmasterArosPetBrain adds = new SpiritmasterArosPetBrain();
 			adds.AggroRange = 600;
 			adds.AggroLevel = 100;
@@ -489,7 +489,7 @@ namespace DOL.GS
 					spell.Range = 400;
 					spell.SpellID = 11915;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Stun.ToString();
+					spell.Type = ESpellType.Stun.ToString();
 					m_SpiritChampion_stun = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpiritChampion_stun);
 				}

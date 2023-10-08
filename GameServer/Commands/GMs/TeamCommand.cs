@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 new [] { "&te" },
 // Message: <----- '/team' Commands (plvl 2) ----->
 "GMCommands.Header.Command.Team",
-ePrivLevel.GM,
+EPrivLevel.GM,
 "Broadcasts a message to all server team members (i.e., plvl 2+).",
 // Syntax: '/team <message>' or '/te <message>'
 "GMCommands.Team.Syntax.Team",

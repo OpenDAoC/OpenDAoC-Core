@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Skald Trainer
 	/// </summary>
-	[NPCGuildScript("Skald Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Skald Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Skald Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Skald Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class SkaldTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Skald; }
+			get { return ECharacterClass.Skald; }
 		}
 
 		public const string WEAPON_ID = "skald_item";
@@ -82,7 +82,7 @@ namespace DOL.GS.Trainer
 				case "join the House of Bragi":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Skald, "Welcome young Skald! May your time in Midgard army be rewarding!", null);
+						PromotePlayer(player, (int)ECharacterClass.Skald, "Welcome young Skald! May your time in Midgard army be rewarding!", null);
 						player.ReceiveItem(this, WEAPON_ID);
 					}
 					break;

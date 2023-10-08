@@ -65,7 +65,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 
-				if (player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+				if (player.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
 				{
 					if (m_userAction)
 						player.Out.SendMessage("You can't enter melee combat mode with a fired weapon!", eChatType.CT_YouHit,

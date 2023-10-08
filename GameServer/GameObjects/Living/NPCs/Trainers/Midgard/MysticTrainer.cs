@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Mystic Trainer
 	/// </summary>
-	[NPCGuildScript("Mystic Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Mystic Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Mystic Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Mystic Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class MysticTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Mystic; }
+			get { return ECharacterClass.Mystic; }
 		}
 
 		public const string PRACTICE_WEAPON_ID = "trimmed_branch";
@@ -86,7 +86,7 @@ namespace DOL.GS.Trainer
 
 			switch (text) {
 				case "Runemaster":
-					if(player.Race == (int) eRace.Frostalf || player.Race == (int) eRace.Kobold || player.Race == (int) eRace.Norseman || player.Race == (int) eRace.Dwarf){
+					if(player.Race == (int) ERace.Frostalf || player.Race == (int) ERace.Kobold || player.Race == (int) ERace.Norseman || player.Race == (int) ERace.Dwarf){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					}
 					else{
@@ -94,7 +94,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Spiritmaster":
-					if(player.Race == (int) eRace.Kobold || player.Race == (int) eRace.Frostalf || player.Race == (int) eRace.Norseman){
+					if(player.Race == (int) ERace.Kobold || player.Race == (int) ERace.Frostalf || player.Race == (int) ERace.Norseman){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					}
 					else{

@@ -113,9 +113,9 @@ namespace DOL.GS
 
 				foreach (GameRelic lostRelic in lostRelics)
 				{
-					eRealm returnRealm = (eRealm)lostRelic.LastRealm;
+					ERealm returnRealm = (ERealm)lostRelic.LastRealm;
 
-					if (returnRealm == eRealm.None)
+					if (returnRealm == ERealm.None)
 					{
 						returnRealm = lostRelic.OriginalRealm;
 					}
@@ -227,7 +227,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="Realm"></param>
 		/// <returns></returns>
-		public static IEnumerable getRelics(eRealm Realm)
+		public static IEnumerable getRelics(ERealm Realm)
 		{
 			ArrayList realmRelics = new ArrayList();
 			lock (m_relics)
@@ -248,7 +248,7 @@ namespace DOL.GS
 		/// <param name="Realm"></param>
 		/// <param name="RelicType"></param>
 		/// <returns></returns>
-		public static IEnumerable getRelics(eRealm Realm, eRelicType RelicType)
+		public static IEnumerable getRelics(ERealm Realm, eRelicType RelicType)
 		{
 			ArrayList realmTypeRelics = new ArrayList();
 			foreach (GameRelic relic in getRelics(Realm))
@@ -266,7 +266,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="realm"></param>
 		/// <returns></returns>
-		public static int GetRelicCount(eRealm realm)
+		public static int GetRelicCount(ERealm realm)
 		{
 			int index = 0;
 			lock (m_relics.SyncRoot)
@@ -286,7 +286,7 @@ namespace DOL.GS
 		/// <param name="realm"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public static int GetRelicCount(eRealm realm, eRelicType type)
+		public static int GetRelicCount(ERealm realm, eRelicType type)
 		{
 			int index = 0;
 			lock (m_relics.SyncRoot)
@@ -308,7 +308,7 @@ namespace DOL.GS
 		/// <param name="realm"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public static double GetRelicBonusModifier(eRealm realm, eRelicType type)
+		public static double GetRelicBonusModifier(ERealm realm, eRelicType type)
 		{
 			double bonus = 0.0;
 			bool owningSelf = false;

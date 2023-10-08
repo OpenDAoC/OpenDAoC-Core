@@ -58,7 +58,7 @@ namespace DOL.GS.DailyQuest
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Succi", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Succi", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -78,7 +78,7 @@ namespace DOL.GS.DailyQuest
 				SucciMid.Model = 902;
 				SucciMid.Name = "Succi";
 				SucciMid.GuildName = "Spectre of Death";
-				SucciMid.Realm = eRealm.Midgard;
+				SucciMid.Realm = ERealm.Midgard;
 				//Svasud Location
 				SucciMid.CurrentRegionID = 100;
 				SucciMid.Size = 60;

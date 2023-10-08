@@ -41,29 +41,29 @@ public class Siegecrafting : AProfession
 	{
 		var product = recipe.Product;
 		GameSiegeWeapon siegeweapon;
-		switch ((eObjectType)product.Object_Type)
+		switch ((EObjectType)product.Object_Type)
 		{
-			case eObjectType.SiegeBalista:
+			case EObjectType.SiegeBalista:
 				{
 					siegeweapon = new GameSiegeBallista();
 				}
 				break;
-			case eObjectType.SiegeCatapult:
+			case EObjectType.SiegeCatapult:
 				{
 					siegeweapon = new GameSiegeCatapult();
 				}
 				break;
-			case eObjectType.SiegeCauldron:
+			case EObjectType.SiegeCauldron:
 				{
 					siegeweapon = new GameSiegeCauldron();
 				}
 				break;
-			case eObjectType.SiegeRam:
+			case EObjectType.SiegeRam:
 				{
 					siegeweapon = new GameSiegeRam();
 				}
 				break;
-			case eObjectType.SiegeTrebuchet:
+			case EObjectType.SiegeTrebuchet:
 				{
 					siegeweapon = new GameSiegeTrebuchet();
 				}

@@ -100,7 +100,7 @@ namespace DOL.AI.Brain
 					Body.MaxSpeedBase = 0;
 					if (!Body.IsCasting && Util.Chance(100))
 					{
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
 							Body.CastSpell(VagdushDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 						else
 							Body.CastSpell(VagdushDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -140,7 +140,7 @@ namespace DOL.AI.Brain
 					spell.SpellID = 11986;
 					spell.Target = "Enemy";
 					spell.Type = "Disease";
-					spell.DamageType = (int)eDamageType.Body; //Energy DMG Type
+					spell.DamageType = (int)EDamageType.Body; //Energy DMG Type
 					m_VagdushDisease = new Spell(spell, 10);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VagdushDisease);
 				}
@@ -165,8 +165,8 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.SpellID = 11987;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
+					spell.DamageType = (int)EDamageType.Matter;
 					m_VagdushDD = new Spell(spell, 10);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VagdushDD);
 				}

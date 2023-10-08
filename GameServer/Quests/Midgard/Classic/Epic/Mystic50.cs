@@ -116,7 +116,7 @@ namespace DOL.GS.Quests.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Danica", eRealm.Midgard);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Danica", ERealm.Midgard);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -134,7 +134,7 @@ namespace DOL.GS.Quests.Midgard
 				Danica.Model = 227;
 				Danica.Name = "Danica";
 				Danica.GuildName = "";
-				Danica.Realm = eRealm.Midgard;
+				Danica.Realm = ERealm.Midgard;
 				Danica.CurrentRegionID = 100;
 				Danica.LoadEquipmentTemplateFromDatabase("Danica");
 				Danica.Size = 51;
@@ -151,7 +151,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Kelic", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Kelic", ERealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -169,7 +169,7 @@ namespace DOL.GS.Quests.Midgard
 				Kelic.Model = 26;
 				Kelic.Name = "Kelic";
 				Kelic.GuildName = "";
-				Kelic.Realm = eRealm.None;
+				Kelic.Realm = ERealm.None;
 				Kelic.CurrentRegionID = 100;
 				Kelic.Size = 100;
 				Kelic.Level = 65;
@@ -243,16 +243,16 @@ namespace DOL.GS.Quests.Midgard
 				SpiritmasterEpicBoots.Durability = 50000;
 
 				SpiritmasterEpicBoots.Bonus1 = 16;
-				SpiritmasterEpicBoots.Bonus1Type = (int) eStat.CON;
+				SpiritmasterEpicBoots.Bonus1Type = (int) EStat.CON;
 
 				SpiritmasterEpicBoots.Bonus2 = 16;
-				SpiritmasterEpicBoots.Bonus2Type = (int) eStat.DEX;
+				SpiritmasterEpicBoots.Bonus2Type = (int) EStat.DEX;
 
 				SpiritmasterEpicBoots.Bonus3 = 8;
-				SpiritmasterEpicBoots.Bonus3Type = (int) eResist.Matter;
+				SpiritmasterEpicBoots.Bonus3Type = (int) EResist.Matter;
 
 				SpiritmasterEpicBoots.Bonus4 = 10;
-				SpiritmasterEpicBoots.Bonus4Type = (int) eResist.Heat;
+				SpiritmasterEpicBoots.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -286,16 +286,16 @@ namespace DOL.GS.Quests.Midgard
 				SpiritmasterEpicHelm.Durability = 50000;
 
 				SpiritmasterEpicHelm.Bonus1 = 4;
-				SpiritmasterEpicHelm.Bonus1Type = (int) eProperty.Focus_Darkness;
+				SpiritmasterEpicHelm.Bonus1Type = (int) EProperty.Focus_Darkness;
 
 				SpiritmasterEpicHelm.Bonus2 = 4;
-				SpiritmasterEpicHelm.Bonus2Type = (int) eProperty.Focus_Suppression;
+				SpiritmasterEpicHelm.Bonus2Type = (int) EProperty.Focus_Suppression;
 
 				SpiritmasterEpicHelm.Bonus3 = 13;
-				SpiritmasterEpicHelm.Bonus3Type = (int) eStat.PIE;
+				SpiritmasterEpicHelm.Bonus3Type = (int) EStat.PIE;
 
 				SpiritmasterEpicHelm.Bonus4 = 4;
-				SpiritmasterEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				SpiritmasterEpicHelm.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -329,16 +329,16 @@ namespace DOL.GS.Quests.Midgard
 				SpiritmasterEpicGloves.Durability = 50000;
 
 				SpiritmasterEpicGloves.Bonus1 = 4;
-				SpiritmasterEpicGloves.Bonus1Type = (int) eProperty.Focus_Summoning;
+				SpiritmasterEpicGloves.Bonus1Type = (int) EProperty.Focus_Summoning;
 
 				SpiritmasterEpicGloves.Bonus2 = 13;
-				SpiritmasterEpicGloves.Bonus2Type = (int) eStat.DEX;
+				SpiritmasterEpicGloves.Bonus2Type = (int) EStat.DEX;
 
 				SpiritmasterEpicGloves.Bonus3 = 12;
-				SpiritmasterEpicGloves.Bonus3Type = (int) eStat.PIE;
+				SpiritmasterEpicGloves.Bonus3Type = (int) EStat.PIE;
 
 				SpiritmasterEpicGloves.Bonus4 = 4;
-				SpiritmasterEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				SpiritmasterEpicGloves.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -372,16 +372,16 @@ namespace DOL.GS.Quests.Midgard
 				SpiritmasterEpicVest.Durability = 50000;
 
 				SpiritmasterEpicVest.Bonus1 = 12;
-				SpiritmasterEpicVest.Bonus1Type = (int) eStat.DEX;
+				SpiritmasterEpicVest.Bonus1Type = (int) EStat.DEX;
 
 				SpiritmasterEpicVest.Bonus2 = 13;
-				SpiritmasterEpicVest.Bonus2Type = (int) eStat.PIE;
+				SpiritmasterEpicVest.Bonus2Type = (int) EStat.PIE;
 
 				SpiritmasterEpicVest.Bonus3 = 12;
-				SpiritmasterEpicVest.Bonus3Type = (int) eResist.Slash;
+				SpiritmasterEpicVest.Bonus3Type = (int) EResist.Slash;
 
 				SpiritmasterEpicVest.Bonus4 = 24;
-				SpiritmasterEpicVest.Bonus4Type = (int) eProperty.MaxHealth;
+				SpiritmasterEpicVest.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -415,16 +415,16 @@ namespace DOL.GS.Quests.Midgard
 				SpiritmasterEpicLegs.Durability = 50000;
 
 				SpiritmasterEpicLegs.Bonus1 = 13;
-				SpiritmasterEpicLegs.Bonus1Type = (int) eStat.CON;
+				SpiritmasterEpicLegs.Bonus1Type = (int) EStat.CON;
 
 				SpiritmasterEpicLegs.Bonus2 = 13;
-				SpiritmasterEpicLegs.Bonus2Type = (int) eStat.DEX;
+				SpiritmasterEpicLegs.Bonus2Type = (int) EStat.DEX;
 
 				SpiritmasterEpicLegs.Bonus3 = 12;
-				SpiritmasterEpicLegs.Bonus3Type = (int) eResist.Crush;
+				SpiritmasterEpicLegs.Bonus3Type = (int) EResist.Crush;
 
 				SpiritmasterEpicLegs.Bonus4 = 24;
-				SpiritmasterEpicLegs.Bonus4Type = (int) eProperty.MaxHealth;
+				SpiritmasterEpicLegs.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -458,16 +458,16 @@ namespace DOL.GS.Quests.Midgard
 				SpiritmasterEpicArms.Durability = 50000;
 
 				SpiritmasterEpicArms.Bonus1 = 9;
-				SpiritmasterEpicArms.Bonus1Type = (int) eStat.PIE;
+				SpiritmasterEpicArms.Bonus1Type = (int) EStat.PIE;
 
 				SpiritmasterEpicArms.Bonus2 = 6;
-				SpiritmasterEpicArms.Bonus2Type = (int) eResist.Thrust;
+				SpiritmasterEpicArms.Bonus2Type = (int) EResist.Thrust;
 
 				SpiritmasterEpicArms.Bonus3 = 12;
-				SpiritmasterEpicArms.Bonus3Type = (int) eProperty.MaxHealth;
+				SpiritmasterEpicArms.Bonus3Type = (int) EProperty.MaxHealth;
 
 				SpiritmasterEpicArms.Bonus4 = 8;
-				SpiritmasterEpicArms.Bonus4Type = (int) eResist.Heat;
+				SpiritmasterEpicArms.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -500,16 +500,16 @@ namespace DOL.GS.Quests.Midgard
 				RunemasterEpicBoots.Durability = 50000;
 
 				RunemasterEpicBoots.Bonus1 = 16;
-				RunemasterEpicBoots.Bonus1Type = (int) eStat.CON;
+				RunemasterEpicBoots.Bonus1Type = (int) EStat.CON;
 
 				RunemasterEpicBoots.Bonus2 = 16;
-				RunemasterEpicBoots.Bonus2Type = (int) eStat.DEX;
+				RunemasterEpicBoots.Bonus2Type = (int) EStat.DEX;
 
 				RunemasterEpicBoots.Bonus3 = 8;
-				RunemasterEpicBoots.Bonus3Type = (int) eResist.Matter;
+				RunemasterEpicBoots.Bonus3Type = (int) EResist.Matter;
 
 				RunemasterEpicBoots.Bonus4 = 10;
-				RunemasterEpicBoots.Bonus4Type = (int) eResist.Heat;
+				RunemasterEpicBoots.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -542,16 +542,16 @@ namespace DOL.GS.Quests.Midgard
 				RunemasterEpicHelm.Durability = 50000;
 
 				RunemasterEpicHelm.Bonus1 = 4;
-				RunemasterEpicHelm.Bonus1Type = (int) eProperty.Focus_Darkness;
+				RunemasterEpicHelm.Bonus1Type = (int) EProperty.Focus_Darkness;
 
 				RunemasterEpicHelm.Bonus2 = 4;
-				RunemasterEpicHelm.Bonus2Type = (int) eProperty.Focus_Suppression;
+				RunemasterEpicHelm.Bonus2Type = (int) EProperty.Focus_Suppression;
 
 				RunemasterEpicHelm.Bonus3 = 13;
-				RunemasterEpicHelm.Bonus3Type = (int) eStat.PIE;
+				RunemasterEpicHelm.Bonus3Type = (int) EStat.PIE;
 
 				RunemasterEpicHelm.Bonus4 = 4;
-				RunemasterEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				RunemasterEpicHelm.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -584,16 +584,16 @@ namespace DOL.GS.Quests.Midgard
 				RunemasterEpicGloves.Durability = 50000;
 
 				RunemasterEpicGloves.Bonus1 = 4;
-				RunemasterEpicGloves.Bonus1Type = (int) eProperty.Focus_Summoning;
+				RunemasterEpicGloves.Bonus1Type = (int) EProperty.Focus_Summoning;
 
 				RunemasterEpicGloves.Bonus2 = 13;
-				RunemasterEpicGloves.Bonus2Type = (int) eStat.DEX;
+				RunemasterEpicGloves.Bonus2Type = (int) EStat.DEX;
 
 				RunemasterEpicGloves.Bonus3 = 12;
-				RunemasterEpicGloves.Bonus3Type = (int) eStat.PIE;
+				RunemasterEpicGloves.Bonus3Type = (int) EStat.PIE;
 
 				RunemasterEpicGloves.Bonus4 = 6;
-				RunemasterEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				RunemasterEpicGloves.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -626,16 +626,16 @@ namespace DOL.GS.Quests.Midgard
 				RunemasterEpicVest.Durability = 50000;
 
 				RunemasterEpicVest.Bonus1 = 12;
-				RunemasterEpicVest.Bonus1Type = (int) eStat.DEX;
+				RunemasterEpicVest.Bonus1Type = (int) EStat.DEX;
 
 				RunemasterEpicVest.Bonus2 = 13;
-				RunemasterEpicVest.Bonus2Type = (int) eStat.PIE;
+				RunemasterEpicVest.Bonus2Type = (int) EStat.PIE;
 
 				RunemasterEpicVest.Bonus3 = 12;
-				RunemasterEpicVest.Bonus3Type = (int) eResist.Slash;
+				RunemasterEpicVest.Bonus3Type = (int) EResist.Slash;
 
 				RunemasterEpicVest.Bonus4 = 24;
-				RunemasterEpicVest.Bonus4Type = (int) eProperty.MaxHealth;
+				RunemasterEpicVest.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -668,16 +668,16 @@ namespace DOL.GS.Quests.Midgard
 				RunemasterEpicLegs.Durability = 50000;
 
 				RunemasterEpicLegs.Bonus1 = 13;
-				RunemasterEpicLegs.Bonus1Type = (int) eStat.CON;
+				RunemasterEpicLegs.Bonus1Type = (int) EStat.CON;
 
 				RunemasterEpicLegs.Bonus2 = 13;
-				RunemasterEpicLegs.Bonus2Type = (int) eStat.DEX;
+				RunemasterEpicLegs.Bonus2Type = (int) EStat.DEX;
 
 				RunemasterEpicLegs.Bonus3 = 12;
-				RunemasterEpicLegs.Bonus3Type = (int) eResist.Crush;
+				RunemasterEpicLegs.Bonus3Type = (int) EResist.Crush;
 
 				RunemasterEpicLegs.Bonus4 = 24;
-				RunemasterEpicLegs.Bonus4Type = (int) eProperty.MaxHealth;
+				RunemasterEpicLegs.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -710,16 +710,16 @@ namespace DOL.GS.Quests.Midgard
 				RunemasterEpicArms.Durability = 50000;
 
 				RunemasterEpicArms.Bonus1 = 9;
-				RunemasterEpicArms.Bonus1Type = (int) eStat.PIE;
+				RunemasterEpicArms.Bonus1Type = (int) EStat.PIE;
 
 				RunemasterEpicArms.Bonus2 = 6;
-				RunemasterEpicArms.Bonus2Type = (int) eResist.Thrust;
+				RunemasterEpicArms.Bonus2Type = (int) EResist.Thrust;
 
 				RunemasterEpicArms.Bonus3 = 12;
-				RunemasterEpicArms.Bonus3Type = (int) eProperty.MaxHealth;
+				RunemasterEpicArms.Bonus3Type = (int) EProperty.MaxHealth;
 
 				RunemasterEpicArms.Bonus4 = 8;
-				RunemasterEpicArms.Bonus4Type = (int) eResist.Heat;
+				RunemasterEpicArms.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -752,16 +752,16 @@ namespace DOL.GS.Quests.Midgard
 				BonedancerEpicBoots.Durability = 50000;
 
 				BonedancerEpicBoots.Bonus1 = 16;
-				BonedancerEpicBoots.Bonus1Type = (int) eStat.CON;
+				BonedancerEpicBoots.Bonus1Type = (int) EStat.CON;
 
 				BonedancerEpicBoots.Bonus2 = 16;
-				BonedancerEpicBoots.Bonus2Type = (int) eStat.DEX;
+				BonedancerEpicBoots.Bonus2Type = (int) EStat.DEX;
 
 				BonedancerEpicBoots.Bonus3 = 8;
-				BonedancerEpicBoots.Bonus3Type = (int) eResist.Matter;
+				BonedancerEpicBoots.Bonus3Type = (int) EResist.Matter;
 
 				BonedancerEpicBoots.Bonus4 = 10;
-				BonedancerEpicBoots.Bonus4Type = (int) eResist.Heat;
+				BonedancerEpicBoots.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -795,16 +795,16 @@ namespace DOL.GS.Quests.Midgard
 				BonedancerEpicHelm.Durability = 50000;
 
 				BonedancerEpicHelm.Bonus1 = 4;
-				BonedancerEpicHelm.Bonus1Type = (int) eProperty.Focus_Suppression;
+				BonedancerEpicHelm.Bonus1Type = (int) EProperty.Focus_Suppression;
 
 				BonedancerEpicHelm.Bonus2 = 13;
-				BonedancerEpicHelm.Bonus2Type = (int) eStat.PIE;
+				BonedancerEpicHelm.Bonus2Type = (int) EStat.PIE;
 
 				BonedancerEpicHelm.Bonus3 = 4;
-				BonedancerEpicHelm.Bonus3Type = (int) eProperty.PowerRegenerationRate;
+				BonedancerEpicHelm.Bonus3Type = (int) EProperty.PowerRegenerationRate;
 
 				BonedancerEpicHelm.Bonus4 = 4;
-				BonedancerEpicHelm.Bonus4Type = (int) eProperty.Focus_BoneArmy;
+				BonedancerEpicHelm.Bonus4Type = (int) EProperty.Focus_BoneArmy;
 
 
 				if (SAVE_INTO_DATABASE)
@@ -839,16 +839,16 @@ namespace DOL.GS.Quests.Midgard
 				BonedancerEpicGloves.Durability = 50000;
 
 				BonedancerEpicGloves.Bonus1 = 4;
-				BonedancerEpicGloves.Bonus1Type = (int) eProperty.Focus_Darkness;
+				BonedancerEpicGloves.Bonus1Type = (int) EProperty.Focus_Darkness;
 
 				BonedancerEpicGloves.Bonus2 = 13;
-				BonedancerEpicGloves.Bonus2Type = (int) eStat.DEX;
+				BonedancerEpicGloves.Bonus2Type = (int) EStat.DEX;
 
 				BonedancerEpicGloves.Bonus3 = 12;
-				BonedancerEpicGloves.Bonus3Type = (int) eStat.PIE;
+				BonedancerEpicGloves.Bonus3Type = (int) EStat.PIE;
 
 				BonedancerEpicGloves.Bonus4 = 6;
-				BonedancerEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				BonedancerEpicGloves.Bonus4Type = (int) EProperty.PowerRegenerationRate;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -881,16 +881,16 @@ namespace DOL.GS.Quests.Midgard
 				BonedancerEpicVest.Durability = 50000;
 
 				BonedancerEpicVest.Bonus1 = 12;
-				BonedancerEpicVest.Bonus1Type = (int) eStat.DEX;
+				BonedancerEpicVest.Bonus1Type = (int) EStat.DEX;
 
 				BonedancerEpicVest.Bonus2 = 13;
-				BonedancerEpicVest.Bonus2Type = (int) eStat.PIE;
+				BonedancerEpicVest.Bonus2Type = (int) EStat.PIE;
 
 				BonedancerEpicVest.Bonus3 = 12;
-				BonedancerEpicVest.Bonus3Type = (int) eResist.Slash;
+				BonedancerEpicVest.Bonus3Type = (int) EResist.Slash;
 
 				BonedancerEpicVest.Bonus4 = 24;
-				BonedancerEpicVest.Bonus4Type = (int) eProperty.MaxHealth;
+				BonedancerEpicVest.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -923,16 +923,16 @@ namespace DOL.GS.Quests.Midgard
 				BonedancerEpicLegs.Durability = 50000;
 
 				BonedancerEpicLegs.Bonus1 = 13;
-				BonedancerEpicLegs.Bonus1Type = (int) eStat.CON;
+				BonedancerEpicLegs.Bonus1Type = (int) EStat.CON;
 
 				BonedancerEpicLegs.Bonus2 = 13;
-				BonedancerEpicLegs.Bonus2Type = (int) eStat.DEX;
+				BonedancerEpicLegs.Bonus2Type = (int) EStat.DEX;
 
 				BonedancerEpicLegs.Bonus3 = 12;
-				BonedancerEpicLegs.Bonus3Type = (int) eResist.Crush;
+				BonedancerEpicLegs.Bonus3Type = (int) EResist.Crush;
 
 				BonedancerEpicLegs.Bonus4 = 24;
-				BonedancerEpicLegs.Bonus4Type = (int) eProperty.MaxHealth;
+				BonedancerEpicLegs.Bonus4Type = (int) EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -966,16 +966,16 @@ namespace DOL.GS.Quests.Midgard
 				BonedancerEpicArms.Durability = 50000;
 
 				BonedancerEpicArms.Bonus1 = 9;
-				BonedancerEpicArms.Bonus1Type = (int) eStat.PIE;
+				BonedancerEpicArms.Bonus1Type = (int) EStat.PIE;
 
 				BonedancerEpicArms.Bonus2 = 6;
-				BonedancerEpicArms.Bonus2Type = (int) eResist.Thrust;
+				BonedancerEpicArms.Bonus2Type = (int) EResist.Thrust;
 
 				BonedancerEpicArms.Bonus3 = 12;
-				BonedancerEpicArms.Bonus3Type = (int) eProperty.MaxHealth;
+				BonedancerEpicArms.Bonus3Type = (int) EProperty.MaxHealth;
 
 				BonedancerEpicArms.Bonus4 = 8;
-				BonedancerEpicArms.Bonus4Type = (int) eResist.Heat;
+				BonedancerEpicArms.Bonus4Type = (int) EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1016,16 +1016,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				WarlockEpicBoots.Bonus1 = 16;
-				WarlockEpicBoots.Bonus1Type = (int)eStat.CON;
+				WarlockEpicBoots.Bonus1Type = (int)EStat.CON;
 
 				WarlockEpicBoots.Bonus2 = 8;
-				WarlockEpicBoots.Bonus2Type = (int)eResist.Matter;
+				WarlockEpicBoots.Bonus2Type = (int)EResist.Matter;
 
 				WarlockEpicBoots.Bonus3 = 48;
-				WarlockEpicBoots.Bonus3Type = (int)eProperty.MaxHealth;
+				WarlockEpicBoots.Bonus3Type = (int)EProperty.MaxHealth;
 
 				WarlockEpicBoots.Bonus4 = 10;
-				WarlockEpicBoots.Bonus4Type = (int)eResist.Heat;
+				WarlockEpicBoots.Bonus4Type = (int)EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1066,16 +1066,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				WarlockEpicHelm.Bonus1 = 13;
-				WarlockEpicHelm.Bonus1Type = (int)eStat.PIE;
+				WarlockEpicHelm.Bonus1Type = (int)EStat.PIE;
 
 				WarlockEpicHelm.Bonus2 = 4;
-				WarlockEpicHelm.Bonus2Type = (int)eProperty.MaxMana;
+				WarlockEpicHelm.Bonus2Type = (int)EProperty.MaxMana;
 
 				WarlockEpicHelm.Bonus3 = 4;
-				WarlockEpicHelm.Bonus3Type = (int)eProperty.Skill_Cursing;
+				WarlockEpicHelm.Bonus3Type = (int)EProperty.Skill_Cursing;
 
 				WarlockEpicHelm.Bonus4 = 4;
-				WarlockEpicHelm.Bonus4Type = (int)eProperty.Skill_Hexing;
+				WarlockEpicHelm.Bonus4Type = (int)EProperty.Skill_Hexing;
 
 
 				if (SAVE_INTO_DATABASE)
@@ -1117,16 +1117,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				WarlockEpicGloves.Bonus1 = 13;
-				WarlockEpicGloves.Bonus1Type = (int)eStat.CON;
+				WarlockEpicGloves.Bonus1Type = (int)EStat.CON;
 
 				WarlockEpicGloves.Bonus2 = 12;
-				WarlockEpicGloves.Bonus2Type = (int)eStat.PIE;
+				WarlockEpicGloves.Bonus2Type = (int)EStat.PIE;
 
 				WarlockEpicGloves.Bonus3 = 4;
-				WarlockEpicGloves.Bonus3Type = (int)eProperty.MaxMana;
+				WarlockEpicGloves.Bonus3Type = (int)EProperty.MaxMana;
 
 				WarlockEpicGloves.Bonus4 = 4;
-				WarlockEpicGloves.Bonus4Type = (int)eProperty.Skill_Hexing;
+				WarlockEpicGloves.Bonus4Type = (int)EProperty.Skill_Hexing;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1166,16 +1166,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				WarlockEpicVest.Bonus1 = 12;
-				WarlockEpicVest.Bonus1Type = (int)eStat.CON;
+				WarlockEpicVest.Bonus1Type = (int)EStat.CON;
 
 				WarlockEpicVest.Bonus2 = 13;
-				WarlockEpicVest.Bonus2Type = (int)eStat.PIE;
+				WarlockEpicVest.Bonus2Type = (int)EStat.PIE;
 
 				WarlockEpicVest.Bonus3 = 12;
-				WarlockEpicVest.Bonus3Type = (int)eResist.Slash;
+				WarlockEpicVest.Bonus3Type = (int)EResist.Slash;
 
 				WarlockEpicVest.Bonus4 = 24;
-				WarlockEpicVest.Bonus4Type = (int)eProperty.MaxHealth;
+				WarlockEpicVest.Bonus4Type = (int)EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1215,16 +1215,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				WarlockEpicLegs.Bonus1 = 13;
-				WarlockEpicLegs.Bonus1Type = (int)eStat.CON;
+				WarlockEpicLegs.Bonus1Type = (int)EStat.CON;
 
 				WarlockEpicLegs.Bonus2 = 13;
-				WarlockEpicLegs.Bonus2Type = (int)eStat.PIE;
+				WarlockEpicLegs.Bonus2Type = (int)EStat.PIE;
 
 				WarlockEpicLegs.Bonus3 = 12;
-				WarlockEpicLegs.Bonus3Type = (int)eResist.Crush;
+				WarlockEpicLegs.Bonus3Type = (int)EResist.Crush;
 
 				WarlockEpicLegs.Bonus4 = 24;
-				WarlockEpicLegs.Bonus4Type = (int)eProperty.MaxHealth;
+				WarlockEpicLegs.Bonus4Type = (int)EProperty.MaxHealth;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1265,16 +1265,16 @@ namespace DOL.GS.Quests.Midgard
 				 */
 
 				WarlockEpicArms.Bonus1 = 9;
-				WarlockEpicArms.Bonus1Type = (int)eStat.PIE;
+				WarlockEpicArms.Bonus1Type = (int)EStat.PIE;
 
 				WarlockEpicArms.Bonus2 = 6;
-				WarlockEpicArms.Bonus2Type = (int)eResist.Thrust;
+				WarlockEpicArms.Bonus2Type = (int)EResist.Thrust;
 
 				WarlockEpicArms.Bonus3 = 12;
-				WarlockEpicArms.Bonus3Type = (int)eProperty.MaxMana;
+				WarlockEpicArms.Bonus3Type = (int)EProperty.MaxMana;
 
 				WarlockEpicArms.Bonus4 = 8;
-				WarlockEpicArms.Bonus4Type = (int)eResist.Heat;
+				WarlockEpicArms.Bonus4Type = (int)EResist.Heat;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -1429,10 +1429,10 @@ namespace DOL.GS.Quests.Midgard
 			if (player.IsDoingQuest(typeof (Mystic_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte) eCharacterClass.Spiritmaster &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Runemaster &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Bonedancer &&
-				player.CharacterClass.ID != (byte) eCharacterClass.Warlock)
+			if (player.CharacterClass.ID != (byte) ECharacterClass.Spiritmaster &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Runemaster &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Bonedancer &&
+				player.CharacterClass.ID != (byte) ECharacterClass.Warlock)
 				return false;
 
 			if (player.Level < minimumLevel || player.Level > maximumLevel)
@@ -1575,9 +1575,9 @@ namespace DOL.GS.Quests.Midgard
 		{
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
+			switch ((ECharacterClass)m_questPlayer.CharacterClass.ID)
 			{
-				case eCharacterClass.Spiritmaster:
+				case ECharacterClass.Spiritmaster:
 					{
 						GiveItem(m_questPlayer, SpiritmasterEpicArms);
 						GiveItem(m_questPlayer, SpiritmasterEpicBoots);
@@ -1587,7 +1587,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, SpiritmasterEpicVest);
 						break;
 					}
-				case eCharacterClass.Runemaster:
+				case ECharacterClass.Runemaster:
 					{
 						GiveItem(m_questPlayer, RunemasterEpicArms);
 						GiveItem(m_questPlayer, RunemasterEpicBoots);
@@ -1597,7 +1597,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, RunemasterEpicVest);
 						break;
 					}
-				case eCharacterClass.Bonedancer:
+				case ECharacterClass.Bonedancer:
 					{
 						GiveItem(m_questPlayer, BonedancerEpicArms);
 						GiveItem(m_questPlayer, BonedancerEpicBoots);
@@ -1607,7 +1607,7 @@ namespace DOL.GS.Quests.Midgard
 						GiveItem(m_questPlayer, BonedancerEpicVest);
 						break;
 					}
-				case eCharacterClass.Warlock:
+				case ECharacterClass.Warlock:
 					{
 						GiveItem(m_questPlayer, WarlockEpicArms);
 						GiveItem(m_questPlayer, WarlockEpicBoots);
@@ -1620,7 +1620,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 			Danica.SayTo(m_questPlayer, "May it serve you well, knowing that you have helped preserve the history of Midgard!");
 
-			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			m_questPlayer.GainExperience(EXpSource.Quest, 1937768448, true);
 			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 				
 		}

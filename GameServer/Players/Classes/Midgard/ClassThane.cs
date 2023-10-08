@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Thane, "Thane", "Viking")]
+	[CharacterClass((int)ECharacterClass.Thane, "Thane", "Viking")]
 	public class ClassThane : ClassViking
 	{
 		public ClassThane()
@@ -30,10 +30,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.HouseofThor";
 			m_specializationMultiplier = 20;
-			m_primaryStat = eStat.STR;
-			m_secondaryStat = eStat.PIE;
-			m_tertiaryStat = eStat.CON;
-			m_manaStat = eStat.PIE;
+			m_primaryStat = EStat.STR;
+			m_secondaryStat = EStat.PIE;
+			m_tertiaryStat = EStat.CON;
+			m_manaStat = EStat.PIE;
 			//changed to increase in damage table
 			m_wsbase = 360;
 			m_baseHP = 720;

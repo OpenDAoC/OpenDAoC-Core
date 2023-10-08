@@ -39,7 +39,7 @@ namespace DOL.GS.Spells
 			
 			// Is PS ?
 			GameSpellEffect Phaseshift = SpellHandler.FindEffectOnTarget(Caster, "Phaseshift");
-			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == eSpellType.Mesmerize))
+			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == ESpellType.Mesmerize))
 			{
 				MessageToCaster("You're phaseshifted and can't cast a spell", eChatType.CT_System);
 				return false;
@@ -91,7 +91,7 @@ namespace DOL.GS.Spells
 
 			switch (m_spell.Target)
 			{
-				case eSpellTarget.AREA:
+				case ESpellTarget.AREA:
 				{
 					if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
 					{
@@ -101,7 +101,7 @@ namespace DOL.GS.Spells
 
 					break;
 				}
-				case eSpellTarget.ENEMY:
+				case ESpellTarget.ENEMY:
 				{
 					if (m_caster.IsObjectInFront(selectedTarget, 180) == false)
 					{
@@ -121,7 +121,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (Caster != null && Caster is GamePlayer && Caster.ActiveWeapon != null && GlobalConstants.IsBowWeapon((eObjectType)Caster.ActiveWeapon.Object_Type))
+			if (Caster != null && Caster is GamePlayer && Caster.ActiveWeapon != null && GlobalConstants.IsBowWeapon((EObjectType)Caster.ActiveWeapon.Object_Type))
 			{
 				if (Spell.LifeDrainReturn == (int)eShotType.Critical && (!(Caster.IsStealthed)))
 				{
@@ -152,7 +152,7 @@ namespace DOL.GS.Spells
 
 		public override int CalculateToHitChance(GameLiving target)
 		{
-			int bonustohit = Caster.GetModified(eProperty.ToHitBonus);
+			int bonustohit = Caster.GetModified(EProperty.ToHitBonus);
 
 			// miss rate is 0 on same level opponent
 			int hitchance = 100 + bonustohit;
@@ -201,7 +201,7 @@ namespace DOL.GS.Spells
 			AttackData ad = base.CalculateDamageToTarget(target);
 			GamePlayer player;
 			//GameSpellEffect bladeturn = FindEffectOnTarget(target, "Bladeturn");
-            target.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out var bladeturn);
+            target.effectListComponent.Effects.TryGetValue(EEffect.Bladeturn, out var bladeturn);
 			if (bladeturn != null)
 			{
 				switch (Spell.LifeDrainReturn)
@@ -213,7 +213,7 @@ namespace DOL.GS.Spells
 								player = target as GamePlayer;
 								player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 							}
-							ad.AttackResult = eAttackResult.HitUnstyled;
+							ad.AttackResult = EAttackResult.HitUnstyled;
 						}
 						break;
 
@@ -221,7 +221,7 @@ namespace DOL.GS.Spells
 						{
 							player = target as GamePlayer;
 							player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-							ad.AttackResult = eAttackResult.HitUnstyled;
+							ad.AttackResult = EAttackResult.HitUnstyled;
                             EffectService.RequestImmediateCancelEffect(bladeturn.FirstOrDefault());
                         }
                         break;
@@ -238,7 +238,7 @@ namespace DOL.GS.Spells
 							{
 								player = target as GamePlayer;
 								player.Out.SendMessage("The blow was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-								ad.AttackResult = eAttackResult.Missed;
+								ad.AttackResult = EAttackResult.Missed;
 								EffectService.RequestImmediateCancelEffect(bladeturn.FirstOrDefault());
 							}
 						}
@@ -246,7 +246,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (ad.AttackResult != eAttackResult.Missed)
+			if (ad.AttackResult != EAttackResult.Missed)
 			{
 				GameNPC npc = target as GameNPC;
 				if (npc != null)
@@ -259,7 +259,7 @@ namespace DOL.GS.Spells
 				}
 
 				// Volley damage reduction based on live testing - tolakram
-				if (Spell.Target == eSpellTarget.AREA)
+				if (Spell.Target == ESpellTarget.AREA)
 				{
 					ad.Damage = (int)(ad.Damage * 0.815);
 				}
@@ -272,7 +272,7 @@ namespace DOL.GS.Spells
 		/// Determines what damage type to use.  For archery the player can choose.
 		/// </summary>
 		/// <returns></returns>
-		public override eDamageType DetermineSpellDamageType()
+		public override EDamageType DetermineSpellDamageType()
 		{
 			GameSpellEffect ef = FindEffectOnTarget(Caster, "ArrowDamageTypes");
 			if (ef != null)
@@ -281,7 +281,7 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				return eDamageType.Slash;
+				return EDamageType.Slash;
 			}
 		}
 
@@ -296,7 +296,7 @@ namespace DOL.GS.Spells
 
 			if (player != null)
 			{
-				int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
+				int manaStatValue = player.GetModified((EProperty)player.CharacterClass.ManaStat);
 				spellDamage *= (manaStatValue + 300) / 275.0;
 			}
 
@@ -308,7 +308,7 @@ namespace DOL.GS.Spells
 
 		public override void FinishSpellCast(GameLiving target)
 		{
-			if (target == null && Spell.Target != eSpellTarget.AREA)
+			if (target == null && Spell.Target != ESpellTarget.AREA)
 				return;
 
 			if (Caster == null)
@@ -317,7 +317,7 @@ namespace DOL.GS.Spells
 			if (Caster is GamePlayer playerCaster && Caster.IsStealthed)
 				playerCaster.Stealth(false);
 
-			if (Spell.Target == eSpellTarget.AREA)
+			if (Spell.Target == ESpellTarget.AREA)
 			{
 				// always put archer into combat when using area (volley)
 				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
@@ -359,7 +359,7 @@ namespace DOL.GS.Spells
 			int ticks = m_spell.CastTime;
 
 			double percent = 1.0;
-			int dex = Caster.GetModified(eProperty.Dexterity);
+			int dex = Caster.GetModified(EProperty.Dexterity);
 
 			if (dex < 60)
 			{
@@ -378,7 +378,7 @@ namespace DOL.GS.Spells
 
 			if (player != null)
 			{
-				percent *= 1.0 - m_caster.GetModified(eProperty.CastingSpeed) * 0.01;
+				percent *= 1.0 - m_caster.GetModified(EProperty.CastingSpeed) * 0.01;
 			}
 
 			ticks = (int)(ticks * Math.Max(m_caster.CastingSpeedReductionCap, percent));
@@ -394,7 +394,7 @@ namespace DOL.GS.Spells
 		public override int CalculateEnduranceCost()
 		{
 			#region [Freya] Nidel: Arcane Syphon chance
-			int syphon = Caster.GetModified(eProperty.ArcaneSyphon);
+			int syphon = Caster.GetModified(EProperty.ArcaneSyphon);
 			if (syphon > 0)
 			{
 				if(Util.Chance(syphon))
@@ -465,7 +465,7 @@ namespace DOL.GS.Spells
 					list.Add("Recast time: " + (Spell.RecastDelay / 1000).ToString() + " sec");
 				if (Spell.Radius != 0)
 					list.Add("Radius: " + Spell.Radius);
-				if (Spell.DamageType != eDamageType.Natural)
+				if (Spell.DamageType != EDamageType.Natural)
 					list.Add("Damage: " + GlobalConstants.DamageTypeToName(Spell.DamageType));
 				return list;
 			}

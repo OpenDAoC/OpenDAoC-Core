@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&roll",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"simulates a dice roll.",
 	"/roll [#] to throw with a specified number of dice")]
 public class RollCommand : ACommandHandler, ICommandHandler

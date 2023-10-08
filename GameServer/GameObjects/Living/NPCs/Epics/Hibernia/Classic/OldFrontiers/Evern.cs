@@ -12,21 +12,21 @@ namespace DOL.GS
         public Evern() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
                 default: return 70; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -52,17 +52,17 @@ namespace DOL.GS
                 return true;
             return base.HasAbility(keyName);
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+                        damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+                        damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -112,7 +112,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Evern", 200, (eRealm) 0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Evern", 200, (ERealm) 0);
             if (npcs.Length == 0)
             {
                 log.Warn("Evern not found, creating it...");
@@ -134,7 +134,7 @@ namespace DOL.GS
                 CO.Quickness = 125;
                 CO.Empathy = 300;
                 CO.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
-                CO.MeleeDamageType = eDamageType.Slash;
+                CO.MeleeDamageType = EDamageType.Slash;
 
                 CO.X = 429840;
                 CO.Y = 380396;
@@ -269,22 +269,22 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 400;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.35;
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 25; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 25; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 25; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 25; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 25; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 25; // dmg reduction for melee dmg
                 default: return 35; // dmg reduction for rest resists
             }
         }
@@ -302,14 +302,14 @@ namespace DOL.GS
         {
             Model = 603;
             Name = "Wraith Fairy";
-            MeleeDamageType = eDamageType.Thrust;
+            MeleeDamageType = EDamageType.Thrust;
             RespawnInterval = -1;
             Size = 50;
             Flags = eFlags.FLYING;
             Faction = FactionMgr.GetFactionByID(81);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(81));
             Level = (byte) Util.Random(50, 55);
-            Gender = eGender.Female;
+            Gender = EGender.Female;
             EvernFairyBrain adds = new EvernFairyBrain();
             SetOwnBrain(adds);
             base.AddToWorld();

@@ -58,7 +58,7 @@ namespace DOL.GS.Effects
 			//TODO differentiate model between Lurikeens and other races
 			if (living is GamePlayer)
 			{
-				if ((living as GamePlayer).Race == (int)eRace.Lurikeen)
+				if ((living as GamePlayer).Race == (int)ERace.Lurikeen)
 					living.Model = 13;
 				else living.Model = 4;
 			}			
@@ -66,11 +66,11 @@ namespace DOL.GS.Effects
 
 			double m_amountPercent = (m_level + 0.5 + Util.RandomDouble()) / 10; //+-5% random
 			if (living is GamePlayer)
-				m_amount = (int)((living as GamePlayer).CalculateMaxHealth(living.Level, living.GetModified(eProperty.Constitution)) * m_amountPercent);
+				m_amount = (int)((living as GamePlayer).CalculateMaxHealth(living.Level, living.GetModified(EProperty.Constitution)) * m_amountPercent);
 			else m_amount = (int)(living.MaxHealth * m_amountPercent);
 
-			living.BaseBuffBonusCategory[(int)eProperty.MaxHealth] += m_amount;
-			living.Health += (int)(living.GetModified(eProperty.MaxHealth) * m_amountPercent);
+			living.BaseBuffBonusCategory[(int)EProperty.MaxHealth] += m_amount;
+			living.Health += (int)(living.GetModified(EProperty.MaxHealth) * m_amountPercent);
 			if (living.Health > living.MaxHealth) living.Health = living.MaxHealth;
 
 			living.Emote(eEmote.StagFrenzy);
@@ -87,9 +87,9 @@ namespace DOL.GS.Effects
 			base.Stop();
 			m_owner.Model = m_originalModel;
 
-			double m_amountPercent = m_amount / m_owner.GetModified(eProperty.MaxHealth);
+			double m_amountPercent = m_amount / m_owner.GetModified(EProperty.MaxHealth);
 			int playerHealthPercent = m_owner.HealthPercent;
-			m_owner.BaseBuffBonusCategory[(int)eProperty.MaxHealth] -= m_amount;
+			m_owner.BaseBuffBonusCategory[(int)EProperty.MaxHealth] -= m_amount;
 			if (m_owner.IsAlive)
 				m_owner.Health = (int)Math.Max(1, 0.01 * m_owner.MaxHealth * playerHealthPercent);
 

@@ -1,7 +1,7 @@
 namespace DOL.GS.Commands;
 
 [Command("&stuck",
-	ePrivLevel.Player, //minimum privelege level
+	EPrivLevel.Player, //minimum privelege level
 	"Removes the player from the world and put it to a safe location", //command description
 	"/stuck")] //usage
 public class StuckCommand : ACommandHandler, ICommandHandler

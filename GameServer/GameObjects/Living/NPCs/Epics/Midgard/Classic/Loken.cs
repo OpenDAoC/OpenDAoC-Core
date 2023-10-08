@@ -8,26 +8,26 @@ namespace DOL.GS
 	public class Loken : GameEpicNPC
 	{
 		public Loken() : base() { }
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				Point3D spawn = new Point3D(SpawnPoint.X, SpawnPoint.Y, SpawnPoint.Z);
 				if (!source.IsWithinRadius(spawn, TetherRange))//dont take any dmg 
 				{
-					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-						|| damageType == eDamageType.Slash)
+					if (damageType == EDamageType.Body || damageType == EDamageType.Cold || damageType == EDamageType.Energy || damageType == EDamageType.Heat
+						|| damageType == EDamageType.Matter || damageType == EDamageType.Spirit || damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+						|| damageType == EDamageType.Slash)
 					{
 						GamePlayer truc;
 						if (source is GamePlayer)
@@ -62,11 +62,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -147,7 +147,7 @@ namespace DOL.AI.Brain
 			}
 			if(!CheckProximityAggro())
             {
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163372);
 				Body.MaxSpeedBase = npcTemplate.MaxSpeed;
@@ -224,13 +224,13 @@ namespace DOL.AI.Brain
 					spell.Damage = 280;
 					spell.Duration = 30;
 					spell.Value = 20;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Description = "Damages the target and lowers their resistance to Heat by 20%";
 					spell.Name = "Searing Blast";
 					spell.Range = 1500;
 					spell.SpellID = 12001;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageWithDebuff.ToString();
+					spell.Type = ESpellType.DirectDamageWithDebuff.ToString();
 					m_LokenDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LokenDD);
 				}
@@ -254,7 +254,7 @@ namespace DOL.AI.Brain
 					spell.Damage = 280;
 					spell.Duration = 30;
 					spell.Value = 20;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Description = "Damages the target and lowers their resistance to Heat by 20%";
 					spell.Name = "Searing Blast";
 					spell.Range = 1500;
@@ -262,7 +262,7 @@ namespace DOL.AI.Brain
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.Type = eSpellType.DirectDamageWithDebuff.ToString();
+					spell.Type = ESpellType.DirectDamageWithDebuff.ToString();
 					m_LokenDD2 = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LokenDD2);
 				}
@@ -283,12 +283,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 378;
 					spell.Icon = 378;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Flame Spear";
 					spell.Range = 1800;
 					spell.SpellID = 12003;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					m_LokenBolt = new Spell(spell, 60);
 					spell.Uninterruptible = true;
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_LokenBolt);

@@ -61,7 +61,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -79,7 +79,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				Cola.Model = 583;
 				Cola.Name = "Cola";
 				Cola.GuildName = "Realm Logistics";
-				Cola.Realm = eRealm.Hibernia;
+				Cola.Realm = ERealm.Hibernia;
 				//Druim Ligen Location
 				Cola.CurrentRegionID = 200;
 				Cola.Size = 50;

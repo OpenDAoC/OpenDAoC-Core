@@ -163,7 +163,7 @@ namespace DOL.GS
 					{
 						DbInventoryItem currentItem = (DbInventoryItem)player.TradeWindow.TradeItems[i];
 
-						if (currentItem.Object_Type != (int)eObjectType.SpellcraftGem)
+						if (currentItem.Object_Type != (int)EObjectType.SpellcraftGem)
 						{
 							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.IsAllowedToCombine.FalseItem"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return false;
@@ -220,7 +220,7 @@ namespace DOL.GS
 			{
 				ApplyMagicalDusts(player, item);
 			}
-			else if (((DbInventoryItem)player.TradeWindow.TradeItems[0]).Object_Type == (int)eObjectType.SpellcraftGem) // Spellcraft item
+			else if (((DbInventoryItem)player.TradeWindow.TradeItems[0]).Object_Type == (int)EObjectType.SpellcraftGem) // Spellcraft item
 			{
 				ApplySpellcraftGems(player, item);
 			}
@@ -370,7 +370,7 @@ namespace DOL.GS
                     // The base item is no longer lost when spellcrafting explodes - only gems are destroyed.
                     foreach (DbInventoryItem gem in (ArrayList)player.TradeWindow.TradeItems.Clone())
                     {
-                        if (gem.Object_Type == (int)eObjectType.SpellcraftGem)
+                        if (gem.Object_Type == (int)EObjectType.SpellcraftGem)
 						{
                             player.Inventory.RemoveCountFromStack(gem, 1);
 							InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, gem.Template);
@@ -427,16 +427,16 @@ namespace DOL.GS
 			spellcraftInfos.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfos.CurrentBonus", item.Name));
 			if (item.Bonus1Type != 0)
 			{
-				spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((eProperty)item.Bonus1Type) + ": " + item.Bonus1 + " " + ((item.Bonus1Type >= (int)eProperty.Resist_First && item.Bonus1Type <= (int)eProperty.Resist_Last) ? "%" : " pts"));
+				spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((EProperty)item.Bonus1Type) + ": " + item.Bonus1 + " " + ((item.Bonus1Type >= (int)EProperty.Resist_First && item.Bonus1Type <= (int)EProperty.Resist_Last) ? "%" : " pts"));
 				if (item.Bonus2Type != 0)
 				{
-					spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((eProperty)item.Bonus2Type) + ": " + item.Bonus2 + " " + ((item.Bonus2Type >= (int)eProperty.Resist_First && item.Bonus2Type <= (int)eProperty.Resist_Last) ? "%" : "pts"));
+					spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((EProperty)item.Bonus2Type) + ": " + item.Bonus2 + " " + ((item.Bonus2Type >= (int)EProperty.Resist_First && item.Bonus2Type <= (int)EProperty.Resist_Last) ? "%" : "pts"));
 					if (item.Bonus3Type != 0)
 					{
-						spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((eProperty)item.Bonus3Type) + ": " + item.Bonus3 + " " + ((item.Bonus3Type >= (int)eProperty.Resist_First && item.Bonus3Type <= (int)eProperty.Resist_Last) ? "%" : "pts"));
+						spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((EProperty)item.Bonus3Type) + ": " + item.Bonus3 + " " + ((item.Bonus3Type >= (int)EProperty.Resist_First && item.Bonus3Type <= (int)EProperty.Resist_Last) ? "%" : "pts"));
 						if (item.Bonus4Type != 0)
 						{
-							spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((eProperty)item.Bonus4Type) + ": " + item.Bonus4 + " " + ((item.Bonus4Type >= (int)eProperty.Resist_First && item.Bonus4Type <= (int)eProperty.Resist_Last) ? "%" : "pts"));
+							spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((EProperty)item.Bonus4Type) + ": " + item.Bonus4 + " " + ((item.Bonus4Type >= (int)EProperty.Resist_First && item.Bonus4Type <= (int)EProperty.Resist_Last) ? "%" : "pts"));
 						}
 					}
 				}
@@ -447,7 +447,7 @@ namespace DOL.GS
 				for (int i = 0; i < player.TradeWindow.ItemsCount; i++)
 				{
 					DbInventoryItem currentGem = (DbInventoryItem)player.TradeWindow.TradeItems[i];
-					spellcraftInfos.Add("\t" + currentGem.Name + " - " + SkillBase.GetPropertyName((eProperty)currentGem.Bonus1Type) + ": (" + GetGemImbuePoints(currentGem.Bonus1Type, currentGem.Bonus1) + ") " + currentGem.Bonus1 + " " + ((currentGem.Bonus1Type >= (int)eProperty.Resist_First && currentGem.Bonus1Type <= (int)eProperty.Resist_Last) ? "%" : "pts"));
+					spellcraftInfos.Add("\t" + currentGem.Name + " - " + SkillBase.GetPropertyName((EProperty)currentGem.Bonus1Type) + ": (" + GetGemImbuePoints(currentGem.Bonus1Type, currentGem.Bonus1) + ") " + currentGem.Bonus1 + " " + ((currentGem.Bonus1Type >= (int)EProperty.Resist_First && currentGem.Bonus1Type <= (int)EProperty.Resist_Last) ? "%" : "pts"));
 				}
 			}
 			spellcraftInfos.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfos.ImbueCapacity", totalGemmesCharges, totalItemCharges));
@@ -606,11 +606,11 @@ namespace DOL.GS
 		protected int GetGemImbuePoints(int bonusType, int bonusValue)
 		{
 			int gemBonus;
-			if (bonusType <= (int)eProperty.Stat_Last) gemBonus = (int)(((bonusValue - 1) * 2 / 3) + 1); //stat
-			else if (bonusType == (int)eProperty.MaxMana) gemBonus = (int)((bonusValue * 2) - 2); //mana
-			else if (bonusType == (int)eProperty.MaxHealth) gemBonus = (int)(bonusValue / 4); //HP
-			else if (bonusType <= (int)eProperty.Resist_Last) gemBonus = (int)((bonusValue * 2) - 2);//resist
-			else if (bonusType <= (int)eProperty.Skill_Last) gemBonus = (int)((bonusValue - 1) * 5);//skill
+			if (bonusType <= (int)EProperty.Stat_Last) gemBonus = (int)(((bonusValue - 1) * 2 / 3) + 1); //stat
+			else if (bonusType == (int)EProperty.MaxMana) gemBonus = (int)((bonusValue * 2) - 2); //mana
+			else if (bonusType == (int)EProperty.MaxHealth) gemBonus = (int)(bonusValue / 4); //HP
+			else if (bonusType <= (int)EProperty.Resist_Last) gemBonus = (int)((bonusValue * 2) - 2);//resist
+			else if (bonusType <= (int)EProperty.Skill_Last) gemBonus = (int)((bonusValue - 1) * 5);//skill
 			else gemBonus = 1;// focus
 			if (gemBonus < 1) gemBonus = 1;
 

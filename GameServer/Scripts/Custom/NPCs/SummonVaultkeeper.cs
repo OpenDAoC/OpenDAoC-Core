@@ -10,10 +10,10 @@ namespace DOL.GS.Scripts
             
             switch (Realm)
             {
-                case eRealm.Albion: Model = 10;break;
-                case eRealm.Hibernia: Model = 307;break;
-                case eRealm.Midgard: Model = 158;break;
-                case eRealm.None: Model = 10;break;
+                case ERealm.Albion: Model = 10;break;
+                case ERealm.Hibernia: Model = 307;break;
+                case ERealm.Midgard: Model = 158;break;
+                case ERealm.None: Model = 10;break;
             }
             // adding dark blue robe
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -22,7 +22,7 @@ namespace DOL.GS.Scripts
             template.CloseTemplate();
             
             GuildName = "Temp Worker";
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             return base.AddToWorld();
         }
         

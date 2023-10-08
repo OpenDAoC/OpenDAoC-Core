@@ -60,7 +60,7 @@ namespace DOL.GS.SkillHandler
             //Cancel old engage effects on player
             if (player.IsEngaging)
             {
-                if (EffectListService.GetEffectOnTarget(player, eEffect.Engage) is EngageEcsAbilityEffect engage)
+                if (EffectListService.GetEffectOnTarget(player, EEffect.Engage) is EngageEcsAbilityEffect engage)
                 {
                     engage.Cancel(true, true);
                     return;
@@ -79,7 +79,7 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 
-            if (player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            if (player.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
             {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Engage.CannotUseNoCaCWeapons"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 return;

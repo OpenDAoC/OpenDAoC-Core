@@ -4,7 +4,7 @@ using DOL.GS.PacketHandler.Client.v168;
 
 namespace DOL.GS.Commands;
 
-[Command("&password", ePrivLevel.Player,
+[Command("&password", EPrivLevel.Player,
 	"Changes your account password",
 	"/password <current_password> <new_password>")]
 public class PasswordCommand : ACommandHandler, ICommandHandler

@@ -31,7 +31,7 @@ namespace DOL.GS
 	/// <summary>
 	/// Stable master that sells and takes horse route tickes
 	/// </summary>
-	[NPCGuildScript("Stable Master", eRealm.None)]
+	[NPCGuildScript("Stable Master", ERealm.None)]
 	public class GameStableMaster : GameMerchant
 	{
 		/// <summary>
@@ -162,69 +162,69 @@ namespace DOL.GS
                             }
 						}
 						
-						switch ((eRace)player.Race)
+						switch ((ERace)player.Race)
 						{
-							case eRace.Lurikeen:
+							case ERace.Lurikeen:
 								mount.Size = 38;
 								break;
-							case eRace.Kobold:
+							case ERace.Kobold:
 								mount.Size = 38;
 								break;
-							case eRace.Dwarf:
+							case ERace.Dwarf:
 								mount.Size = 42;
 								break;
-							case eRace.Inconnu:
+							case ERace.Inconnu:
 								mount.Size = 45;
 								break;
-							case eRace.Frostalf:
+							case ERace.Frostalf:
 								mount.Size = 48;
 								break;
-							case eRace.Shar:
+							case ERace.Shar:
 								mount.Size = 48;
 								break;
-							case eRace.Briton:
+							case ERace.Briton:
 								mount.Size = 50;
 								break;
-							case eRace.Saracen:
+							case ERace.Saracen:
 								mount.Size = 48;
 								break;
-							case eRace.Celt:
+							case ERace.Celt:
 								mount.Size = 50;
 								break;
-							case eRace.Valkyn:
+							case ERace.Valkyn:
 								mount.Size = 52;
 								break;
-							case eRace.Avalonian:
+							case ERace.Avalonian:
 								mount.Size = 52;
 								break;
-							case eRace.Highlander:
+							case ERace.Highlander:
 								mount.Size = 55;
 								break;
-							case eRace.Norseman:
+							case ERace.Norseman:
 								mount.Size = 50;
 								break;
-							case eRace.Elf:
+							case ERace.Elf:
 								mount.Size = 52;
 								break;
-							case eRace.Sylvan:
+							case ERace.Sylvan:
 								mount.Size = 55;
 								break;
-							case eRace.Firbolg:
+							case ERace.Firbolg:
 								mount.Size = 62;
 								break;
-							case eRace.HalfOgre:
+							case ERace.HalfOgre:
 								mount.Size = 62;
 								break;
-							case eRace.AlbionMinotaur:
+							case ERace.AlbionMinotaur:
 								mount.Size = 65;
 								break;
-							case eRace.MidgardMinotaur:
+							case ERace.MidgardMinotaur:
 								mount.Size = 65;
 								break;
-							case eRace.HiberniaMinotaur:
+							case ERace.HiberniaMinotaur:
 								mount.Size = 65;
 								break;
-							case eRace.Troll:
+							case ERace.Troll:
 								mount.Size = 67;
 								break;
 							default:

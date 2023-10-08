@@ -43,7 +43,7 @@ namespace DOL.GS.Quests.Albion
             if (log.IsInfoEnabled)
                 log.Info("Quest \"" + questTitle + "\" initializing ...");
 
-            GameNPC[] gameNpcQuery = WorldMgr.GetNPCsByName(stewardWillieNpcName, eRealm.Albion);
+            GameNPC[] gameNpcQuery = WorldMgr.GetNPCsByName(stewardWillieNpcName, ERealm.Albion);
             if (gameNpcQuery.Length == 0)
             {
                 _logReasonQuestCantBeImplemented(stewardWillieNpcName);
@@ -53,7 +53,7 @@ namespace DOL.GS.Quests.Albion
             {
                 _stewardWillie = gameNpcQuery[0];
             }
-            gameNpcQuery = WorldMgr.GetNPCsByName(streamstressLynnetNpcName, eRealm.Albion);
+            gameNpcQuery = WorldMgr.GetNPCsByName(streamstressLynnetNpcName, ERealm.Albion);
             if (gameNpcQuery.Length == 0)
             {
                 _logReasonQuestCantBeImplemented(streamstressLynnetNpcName);
@@ -63,7 +63,7 @@ namespace DOL.GS.Quests.Albion
             {
                 _lynett = gameNpcQuery[0];
             }
-            gameNpcQuery = WorldMgr.GetNPCsByName(brothDonNpcName, eRealm.Albion);
+            gameNpcQuery = WorldMgr.GetNPCsByName(brothDonNpcName, ERealm.Albion);
             if (gameNpcQuery.Length == 0)
             {
                 _logReasonQuestCantBeImplemented(brothDonNpcName);
@@ -399,7 +399,7 @@ namespace DOL.GS.Quests.Albion
             base.FinishQuest();
             GiveItem(_lynett, m_questPlayer, _wolfPeltCloak);
 
-            m_questPlayer.GainExperience(eXPSource.Quest, 50, true);
+            m_questPlayer.GainExperience(EXpSource.Quest, 50, true);
             long money = Money.GetMoney(0, 0, 0, 0, 50);
             m_questPlayer.AddMoney(money, "You recieve {0} for your service.");
             InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);

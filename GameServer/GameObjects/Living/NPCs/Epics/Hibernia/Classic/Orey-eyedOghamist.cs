@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Orey-eyed Oghamist Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 40;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 40;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 40;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40;// dmg reduction for melee dmg
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
@@ -42,11 +42,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -243,7 +243,7 @@ namespace DOL.AI.Brain
 				{
 					if (target != null && target.IsAlive)
 					{
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.StrConDebuff) && !Body.IsCasting && Util.Chance(25))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.StrConDebuff) && !Body.IsCasting && Util.Chance(25))
 							Body.CastSpell(Orey_SC_Debuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					}
 				}
@@ -266,14 +266,14 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 4369;
 					spell.Icon = 4369;
 					spell.Damage = 800;
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.Name = "Energy Blast";
 					spell.Range = 0;
 					spell.Radius = 1000;
 					spell.SpellID = 12012;
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_OreyBomb = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OreyBomb);
 				}
@@ -301,8 +301,8 @@ namespace DOL.AI.Brain
 					spell.Radius = 400;
 					spell.SpellID = 12013;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.StrengthConstitutionDebuff.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Type = ESpellType.StrengthConstitutionDebuff.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					m_Orey_SC_Debuff = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Orey_SC_Debuff);
 				}
@@ -324,12 +324,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 0;
 					spell.Icon = 0;
 					spell.Damage = 500;
-					spell.DamageType = (int)eDamageType.Slash;
+					spell.DamageType = (int)EDamageType.Slash;
 					spell.Name = "Ranged Melee Swing";
 					spell.Range = 2200;
 					spell.SpellID = 12014;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_OreyDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OreyDD);
 				}

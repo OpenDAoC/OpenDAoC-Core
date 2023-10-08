@@ -30,7 +30,7 @@ namespace DOL.GS.Effects
             StartTimers();
 
             GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
-            m_player.AbilityBonus[(int)eProperty.EvadeChance] += m_value;
+            m_player.AbilityBonus[(int)EProperty.EvadeChance] += m_value;
 
             m_player.EffectList.Add(this);
         }
@@ -59,7 +59,7 @@ namespace DOL.GS.Effects
         public override void Cancel(bool playerCancel)
         {
             StopTimers();
-            m_player.AbilityBonus[(int)eProperty.EvadeChance] -= m_value;
+            m_player.AbilityBonus[(int)EProperty.EvadeChance] -= m_value;
             m_player.EffectList.Remove(this);
             GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
         }

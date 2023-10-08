@@ -25,7 +25,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             resiPierceBuff.ApplyEffectOnTarget(target);
 
-            var actual = target.BaseBuffBonusCategory[eProperty.ResistPierce];
+            var actual = target.BaseBuffBonusCategory[EProperty.ResistPierce];
             Assert.AreEqual(5, actual);
         }
 
@@ -43,7 +43,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             constitutionBuff.ApplyEffectOnTarget(target);
 
-            var actual = target.GetModified(eProperty.Constitution);
+            var actual = target.GetModified(EProperty.Constitution);
             Assert.AreEqual(51, actual);
         }
 

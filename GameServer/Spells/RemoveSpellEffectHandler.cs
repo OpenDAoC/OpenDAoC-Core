@@ -68,10 +68,10 @@ namespace DOL.GS.Spells
 			foreach (string toRemove in SpellTypesToRemove)
 			{
 				//GameSpellEffect effect = target.FindEffectOnTarget(toRemove);
-				eEffect.TryParse(toRemove, out eEffect effectType);
+				EEffect.TryParse(toRemove, out EEffect effectType);
 				EcsGameEffect effect = EffectListService.GetEffectOnTarget(target, effectType);
 				if (toRemove == "Mesmerize")
-					effect = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
+					effect = EffectListService.GetEffectOnTarget(target, EEffect.Mez);
 				if (effect != null)
 					EffectService.RequestCancelEffect(effect);
 					//effect.Cancel(false);

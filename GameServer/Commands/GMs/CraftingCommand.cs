@@ -7,7 +7,7 @@ namespace DOL.GS.Commands
 {
 	[Command(
 		"&crafting",
-		ePrivLevel.GM,
+		EPrivLevel.GM,
 		"GMCommands.Crafting.Description",
 		"GMCommands.Crafting.Usage.Add",
 		"GMCommands.Crafting.Usage.Change",
@@ -70,7 +70,7 @@ namespace DOL.GS.Commands
 					list.Add("   SalvageLevel: " + (salvage.SalvageLevel == 0 ? "Unused" : salvage.SalvageLevel.ToString()));
 					list.Add("       Material: " + materialName + " (" + salvage.MaterialId_nb + ")");
 					list.Add("          Count: " + (salvage.Count == 0 ? "Calculated" : salvage.Count.ToString()));
-					list.Add("          Realm: " + (salvage.Realm == 0 ? "Any" : GlobalConstants.RealmToName((eRealm)salvage.Realm)));
+					list.Add("          Realm: " + (salvage.Realm == 0 ? "Any" : GlobalConstants.RealmToName((ERealm)salvage.Realm)));
 					list.Add("      PackageID: " + salvage.PackageID);
 
 					client.Out.SendCustomTextWindow("SalvageYield ID " + salvageID, list);

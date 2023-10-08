@@ -7,7 +7,7 @@ namespace DOL.GS.Commands
 {
     [Command(
         "&achievement",
-        ePrivLevel.Admin,
+        EPrivLevel.Admin,
         "/achievement add <MobName> ie: /achievement add Organic-Energy Mechanism",
         "/achievement addbg <MobName> ie: /achievement addbg Olcasgean",
         "/achievement addgroup <MobName> ie: /achievement addgroup Cuuldurach the Glimmer King")]

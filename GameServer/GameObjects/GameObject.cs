@@ -89,7 +89,7 @@ namespace DOL.GS
 			}
 		}
 
-		public abstract eGameObjectType GameObjectType { get; }
+		public abstract EGameObjectType GameObjectType { get; }
 
 		#endregion
 
@@ -98,7 +98,7 @@ namespace DOL.GS
 		protected ushort _heading;
 
 		public virtual string OwnerID { get; set; }
-		public virtual eRealm Realm { get; set; }
+		public virtual ERealm Realm { get; set; }
 		public virtual Region CurrentRegion { get; set; }
 		public virtual ushort CurrentRegionID
 		{
@@ -392,7 +392,7 @@ namespace DOL.GS
         {
             get
             {
-                if (this.Realm == eRealm.None)
+                if (this.Realm == ERealm.None)
                     return true;
 
                 return false;
@@ -990,7 +990,7 @@ namespace DOL.GS
 		/// <param name="damageType">the damage type</param>
 		/// <param name="damageAmount">the amount of damage</param>
 		/// <param name="criticalAmount">the amount of critical damage</param>
-		public virtual void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public virtual void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			Notify(GameObjectEvent.TakeDamage, this, new TakeDamageEventArgs(source, damageType, damageAmount, criticalAmount));
 		}
@@ -1075,20 +1075,20 @@ namespace DOL.GS
 
 		#region ObjectsInRadius
 
-		private Dictionary<eGameObjectType, (object, ushort, long)> _objectsInRadiusCache;
+		private Dictionary<EGameObjectType, (object, ushort, long)> _objectsInRadiusCache;
 
 		private void ClearObjectsInRadiusCache()
 		{
 			_objectsInRadiusCache = new()
 			{
-				{ eGameObjectType.PLAYER, (null, 0, 0) },
-				{ eGameObjectType.NPC, (null, 0, 0) },
-				{ eGameObjectType.ITEM, (null, 0, 0) },
-				{ eGameObjectType.DOOR, (null, 0, 0) }
+				{ EGameObjectType.PLAYER, (null, 0, 0) },
+				{ EGameObjectType.NPC, (null, 0, 0) },
+				{ EGameObjectType.ITEM, (null, 0, 0) },
+				{ EGameObjectType.DOOR, (null, 0, 0) }
 			};
 		}
 
-		public List<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck)  where T : GameObject
+		public List<T> GetObjectsInRadius<T>(EGameObjectType objectType, ushort radiusToCheck)  where T : GameObject
 		{
 			List<T> result = new();
 
@@ -1135,22 +1135,22 @@ namespace DOL.GS
 
 		public List<GamePlayer> GetPlayersInRadius(ushort radiusToCheck)
 		{
-			return GetObjectsInRadius<GamePlayer>(eGameObjectType.PLAYER, radiusToCheck);
+			return GetObjectsInRadius<GamePlayer>(EGameObjectType.PLAYER, radiusToCheck);
 		}
 
 		public List<GameNPC> GetNPCsInRadius(ushort radiusToCheck)
 		{
-			return GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, radiusToCheck);
+			return GetObjectsInRadius<GameNPC>(EGameObjectType.NPC, radiusToCheck);
 		}
 
 		public List<GameStaticItem> GetItemsInRadius(ushort radiusToCheck)
 		{
-			return GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, radiusToCheck);
+			return GetObjectsInRadius<GameStaticItem>(EGameObjectType.ITEM, radiusToCheck);
 		}
 
 		public List<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
 		{
-			return GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, radiusToCheck);
+			return GetObjectsInRadius<GameDoorBase>(EGameObjectType.DOOR, radiusToCheck);
 		}
 
 		#endregion
@@ -1269,9 +1269,9 @@ namespace DOL.GS
         /// <summary>
         /// All objects are neutral.
         /// </summary>
-        public virtual eGender Gender
+        public virtual EGender Gender
         {
-            get { return eGender.Neutral; }
+            get { return EGender.Neutral; }
             set { }
         }
 

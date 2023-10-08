@@ -42,13 +42,13 @@ namespace DOL.GS.Spells
 
             foreach (DbInventoryItem item in effect.Owner.Inventory.EquippedItems)
             {
-                if (item.Object_Type >= (int)eObjectType._FirstArmor && item.Object_Type <= (int)eObjectType._LastArmor)
+                if (item.Object_Type >= (int)EObjectType._FirstArmor && item.Object_Type <= (int)EObjectType._LastArmor)
                 {
                     playerAF += item.DPS_AF;
                 }
             }
 
-            playerAF += effect.Owner.GetModifiedFromItems(eProperty.ArmorFactor);
+            playerAF += effect.Owner.GetModifiedFromItems(EProperty.ArmorFactor);
 
             if (m_spell.Value < 0)
             {
@@ -65,8 +65,8 @@ namespace DOL.GS.Spells
             GameLiving living = effect.Owner as GameLiving;
             living.TempProperties.SetProperty("BONUS_HP", bonusHP);
             living.TempProperties.SetProperty("BONUS_AF", bonusAF);
-            living.AbilityBonus[(int)eProperty.MaxHealth] += (int)bonusHP;
-            living.ItemBonus[(int)eProperty.ArmorFactor] += (int)bonusAF;
+            living.AbilityBonus[(int)EProperty.MaxHealth] += (int)bonusHP;
+            living.ItemBonus[(int)EProperty.ArmorFactor] += (int)bonusAF;
 
             SendUpdates(effect.Owner);
         }
@@ -79,8 +79,8 @@ namespace DOL.GS.Spells
             double bonusAF = living.TempProperties.GetProperty<double>("BONUS_AF");
             double bonusHP = living.TempProperties.GetProperty<double>("BONUS_HP");
 
-            living.ItemBonus[(int)eProperty.ArmorFactor] -= (int)bonusAF;
-            living.AbilityBonus[(int)eProperty.MaxHealth] -= (int)bonusHP;
+            living.ItemBonus[(int)EProperty.ArmorFactor] -= (int)bonusAF;
+            living.AbilityBonus[(int)EProperty.MaxHealth] -= (int)bonusHP;
 
             living.TempProperties.RemoveProperty("BONUS_AF");
             living.TempProperties.RemoveProperty("BONUS_HP");

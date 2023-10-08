@@ -8,16 +8,16 @@ namespace DOL.GS.Keeps
 	{
 		protected override ICharacterClass GetClass()
 		{
-			if (ModelRealm == eRealm.Albion) return new ClassScout();
-			else if (ModelRealm == eRealm.Midgard) return new ClassHunter();
-			else if (ModelRealm == eRealm.Hibernia) return new ClassRanger();
+			if (ModelRealm == ERealm.Albion) return new ClassScout();
+			else if (ModelRealm == ERealm.Midgard) return new ClassHunter();
+			else if (ModelRealm == ERealm.Hibernia) return new ClassRanger();
 			return new DefaultCharacterClass();
 		}
 
 		protected override void SetBlockEvadeParryChance()
 		{
 			base.SetBlockEvadeParryChance();
-			if (ModelRealm == eRealm.Albion)
+			if (ModelRealm == ERealm.Albion)
 			{
 				BlockChance = 10;
 				EvadeChance = 5;
@@ -33,25 +33,25 @@ namespace DOL.GS.Keeps
 		{
 			switch (ModelRealm)
 			{
-				case eRealm.None:
-				case eRealm.Albion:
+				case ERealm.None:
+				case ERealm.Albion:
 					if (IsPortalKeepGuard)
 						Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.BowmanCommander");
 					else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Scout");
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					if (IsPortalKeepGuard)
 						Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.NordicHunter");
 					else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Hunter");
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					if (IsPortalKeepGuard)
 						Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.MasterRanger");
 					else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Ranger");
 					break;
 			}
 
-			if (Realm == eRealm.None)
+			if (Realm == ERealm.None)
 			{
 				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
 			}

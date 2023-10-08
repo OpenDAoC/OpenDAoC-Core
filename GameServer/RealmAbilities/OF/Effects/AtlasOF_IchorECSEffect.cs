@@ -9,7 +9,7 @@ namespace DOL.GS.Effects
         public AtlasOF_IchorECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.Ichor;
+            EffectType = EEffect.Ichor;
             EffectService.RequestStartEffect(this);
         }
 
@@ -25,7 +25,7 @@ namespace DOL.GS.Effects
                 gpMessage.Out.SendMessage("Constricting bonds surround your body!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
             // Apply the snare
-            Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
+            Owner.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
             //m_rootExpire = new ECSGameTimer(target, new ECSGameTimer.ECSTimerCallback(RootExpires), duration);
             //GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
             SendUpdates(Owner);
@@ -42,7 +42,7 @@ namespace DOL.GS.Effects
 
         public override void OnStopEffect()
         {
-            Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
+            Owner.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, this);
             SendUpdates(Owner);
             base.OnStopEffect();
         }

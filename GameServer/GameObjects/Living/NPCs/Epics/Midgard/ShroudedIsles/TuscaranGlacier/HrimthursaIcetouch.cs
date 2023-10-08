@@ -107,7 +107,7 @@ namespace DOL.AI.Brain
 								Body.TargetObject = null;
 								ResetNoTarget = true;
 							}
-							FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+							FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 						}
 					}
 				}
@@ -123,7 +123,7 @@ namespace DOL.AI.Brain
 				if (HasAggro && Body.TargetObject != null)
                 {
 					ResetNoTarget = false;
-					if(!target.effectListComponent.ContainsEffectForEffectType(eEffect.Mez) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity) && !Body.IsCasting && Util.Chance(30))
+					if(!target.effectListComponent.ContainsEffectForEffectType(EEffect.Mez) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.MezImmunity) && !Body.IsCasting && Util.Chance(30))
 						Body.CastSpell(IcetouchMezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					if (!Body.IsCasting && Util.Chance(30))
 						Body.CastSpell(IcetouchRoot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
@@ -151,7 +151,7 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.SpellID = 11966;
 					spell.Target = "Realm";
-					spell.Type = eSpellType.Heal.ToString();
+					spell.Type = ESpellType.Heal.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_IcetouchHeal = new Spell(spell, 60);
@@ -185,7 +185,7 @@ namespace DOL.AI.Brain
 					spell.SpellID = 11967;
 					spell.Target = "Enemy";
 					spell.Type = "Mesmerize";
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_IcetouchMezz = new Spell(spell, 60);
@@ -218,7 +218,7 @@ namespace DOL.AI.Brain
 					spell.SpellID = 11968;
 					spell.Target = "Enemy";
 					spell.Type = "SpeedDecrease";
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_IcetouchRoot = new Spell(spell, 60);

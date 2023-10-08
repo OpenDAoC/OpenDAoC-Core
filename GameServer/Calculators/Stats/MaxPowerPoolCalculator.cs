@@ -11,19 +11,19 @@ namespace DOL.GS.PropertyCalc
 	/// BuffBonusCategory4 unused
 	/// BuffBonusMultCategory1 unused
 	/// </summary>
-	[PropertyCalculator(eProperty.MaxMana)]
+	[PropertyCalculator(EProperty.MaxMana)]
 	public class MaxPowerPoolCalculator : PropertyCalculator
 	{
 		public MaxPowerPoolCalculator() {}
 
-		public override int CalcValue(GameLiving living, eProperty property) 
+		public override int CalcValue(GameLiving living, EProperty property) 
 		{
 			if (living is GamePlayer) 
 			{
 				GamePlayer player = living as GamePlayer;
-				eStat manaStat = player.CharacterClass.ManaStat;
+				EStat manaStat = player.CharacterClass.ManaStat;
 
-				if (player.CharacterClass.ManaStat == eStat.UNDEFINED)
+				if (player.CharacterClass.ManaStat == EStat.UNDEFINED)
 				{
 					//Special handling for Vampiirs:
 					/* There is no stat that affects the Vampiir's power pool or the damage done by its power based spells.
@@ -35,9 +35,9 @@ namespace DOL.GS.PropertyCalc
 					 * 
 					 * This means that strength ONLY affects a Vampiir's mana pool
 					 */
-					if (player.CharacterClass.ID == (int)eCharacterClass.Vampiir)
+					if (player.CharacterClass.ID == (int)ECharacterClass.Vampiir)
 					{
-						manaStat = eStat.STR;
+						manaStat = EStat.STR;
 					}
 					else if (player.Champion && player.ChampionLevel > 0)
 					{
@@ -49,15 +49,15 @@ namespace DOL.GS.PropertyCalc
 					}
 				}
 
-				int manaBase = player.CalculateMaxMana(player.Level, player.GetModified((eProperty)manaStat));
+				int manaBase = player.CalculateMaxMana(player.Level, player.GetModified((EProperty)manaStat));
 				int itemBonus = living.ItemBonus[(int)property];
-				int poolBonus = living.ItemBonus[(int)eProperty.PowerPool];
+				int poolBonus = living.ItemBonus[(int)EProperty.PowerPool];
 				int abilityBonus = living.AbilityBonus[(int)property]; 
 
 				int itemCap = player.Level / 2 + 1;
 				int poolCap = player.Level / 2;
-				itemCap = itemCap + Math.Min(player.ItemBonus[(int)eProperty.PowerPoolCapBonus], itemCap);
-				poolCap = poolCap + Math.Min(player.ItemBonus[(int)eProperty.PowerPoolCapBonus], player.Level);
+				itemCap = itemCap + Math.Min(player.ItemBonus[(int)EProperty.PowerPoolCapBonus], itemCap);
+				poolCap = poolCap + Math.Min(player.ItemBonus[(int)EProperty.PowerPoolCapBonus], player.Level);
 
 
 				if (itemBonus > itemCap) {

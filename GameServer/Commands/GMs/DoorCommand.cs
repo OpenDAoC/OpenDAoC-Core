@@ -8,7 +8,7 @@ namespace DOL.GS.Commands
 {
 	[Command(
 		"&door",
-		ePrivLevel.GM,
+		EPrivLevel.GM,
 		"GMCommands.door.Description",
 		"'/door show' toggle enable/disable add dialog when targeting doors",
 		"GMCommands.door.Add",
@@ -316,7 +316,7 @@ namespace DOL.GS.Commands
 			try
 			{
 				realm = Convert.ToByte(args[2]);
-				targetDoor.Realm = (eRealm) realm;
+				targetDoor.Realm = (ERealm) realm;
 				targetDoor.SaveIntoDatabase();
 				client.Out.SendMessage("You changed the door realm to " + targetDoor.Realm, eChatType.CT_System,
 				                       eChatLoc.CL_SystemWindow);
@@ -329,19 +329,19 @@ namespace DOL.GS.Commands
 
 		private void info(GameClient client, GameDoor targetDoor)
 		{
-			if (targetDoor.Realm == eRealm.None)
+			if (targetDoor.Realm == ERealm.None)
 				Realmname = "None";
 
-			if (targetDoor.Realm == eRealm.Albion)
+			if (targetDoor.Realm == ERealm.Albion)
 				Realmname = "Albion";
 
-			if (targetDoor.Realm == eRealm.Midgard)
+			if (targetDoor.Realm == ERealm.Midgard)
 				Realmname = "Midgard";
 
-			if (targetDoor.Realm == eRealm.Hibernia)
+			if (targetDoor.Realm == ERealm.Hibernia)
 				Realmname = "Hibernia";
 
-			if (targetDoor.Realm == eRealm.Door)
+			if (targetDoor.Realm == ERealm.Door)
 				Realmname = "All";
 
 			if (targetDoor.Locked == 1)

@@ -53,7 +53,7 @@ namespace DOL.GS.Quests.Hibernia
                 return;
 
             #region initialize NPC
-            GameNPC[] npcs = WorldMgr.GetNPCsByName(QUEST_GIVER_NAME, eRealm.Hibernia);
+            GameNPC[] npcs = WorldMgr.GetNPCsByName(QUEST_GIVER_NAME, ERealm.Hibernia);
 
             if (npcs.Length > 0)
                 foreach (GameNPC npc in npcs)
@@ -72,7 +72,7 @@ namespace DOL.GS.Quests.Hibernia
                 _miach.Name = "Miach";
                 _miach.LoadEquipmentTemplateFromDatabase("586bb1ab-7832-48ba-b46c-3bcede4d6d8a");
                 _miach.GuildName = "Forester Trainer";
-                _miach.Realm = eRealm.Hibernia;
+                _miach.Realm = ERealm.Hibernia;
                 _miach.CurrentRegionID = 181;
                 _miach.Size = 50;
                 _miach.Level = 59;
@@ -86,7 +86,7 @@ namespace DOL.GS.Quests.Hibernia
                 
             }
             
-            npcs = WorldMgr.GetNPCsByName("Resalg", eRealm.Hibernia);
+            npcs = WorldMgr.GetNPCsByName("Resalg", ERealm.Hibernia);
 
             if (npcs.Length > 0)
                 foreach (var npc in npcs)
@@ -104,7 +104,7 @@ namespace DOL.GS.Quests.Hibernia
                 _resalg.Model = 363;
                 _resalg.Name = "Resalg";
                 _resalg.GuildName = "";
-                _resalg.Realm = eRealm.Hibernia;
+                _resalg.Realm = ERealm.Hibernia;
                 _resalg.CurrentRegionID = 181;
                 _resalg.LoadEquipmentTemplateFromDatabase("Resalg");
                 _resalg.Size = 51;
@@ -396,8 +396,8 @@ namespace DOL.GS.Quests.Hibernia
             {
                 return false;
             }
-            if (player.CharacterClass.ID != (byte) eCharacterClass.Animist &&
-                player.CharacterClass.ID != (byte) eCharacterClass.Forester)
+            if (player.CharacterClass.ID != (byte) ECharacterClass.Animist &&
+                player.CharacterClass.ID != (byte) ECharacterClass.Forester)
                 return false;
             
             return true;

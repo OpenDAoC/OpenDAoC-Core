@@ -11,7 +11,7 @@ namespace DOL.GS.Commands
     /// </summary>
     [Command(
         "&keepdoorteleport",
-        ePrivLevel.Admin,
+        EPrivLevel.Admin,
         "Manage keepdoor teleport destinations",
         "'/keepdoorteleport add <enter|exit> <in|out> add a teleport destination"/*,
         "'/keepdoorteleport reload' reload all teleport locations from the db"*/)]

@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Mauler Trainer
 	/// </summary>
-	[NPCGuildScript("Mauler Trainer", eRealm.Midgard)]
+	[NPCGuildScript("Mauler Trainer", ERealm.Midgard)]
 	public class MidgardMaulerTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.MaulerMid; }
+			get { return ECharacterClass.MaulerMid; }
 		}
 
 		/// <summary>
@@ -83,7 +83,7 @@ namespace DOL.GS.Trainer
 					if (CanPromotePlayer(player))
 					{
 						// Mauler_mid = 61
-						PromotePlayer(player, (int)eCharacterClass.MaulerMid, "Welcome young Mauler. May your time in Midgard be rewarding.", null);
+						PromotePlayer(player, (int)ECharacterClass.MaulerMid, "Welcome young Mauler. May your time in Midgard be rewarding.", null);
 					}
 					break;
 			}

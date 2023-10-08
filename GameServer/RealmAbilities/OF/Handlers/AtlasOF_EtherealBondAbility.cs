@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AtlasOF_EtherealBondAbility(DbAbility dba, int level) : base(dba, level, eProperty.MaxMana) { }
+        public AtlasOF_EtherealBondAbility(DbAbility dba, int level) : base(dba, level, EProperty.MaxMana) { }
 
         protected override string ValueUnit { get { return "%"; } }
 

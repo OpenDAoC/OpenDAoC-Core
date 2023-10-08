@@ -7,7 +7,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class XLongWindAbility : RAPropertyEnhancer
 	{
-		public XLongWindAbility(DbAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
+		public XLongWindAbility(DbAbility dba, int level) : base(dba, level, EProperty.Undefined) { }
 
         protected override string ValueUnit { get { return "%"; } }
 

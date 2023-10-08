@@ -221,7 +221,7 @@ namespace DOL.GS.Styles
         /// </summary>
         public bool RandomProc => baseStyle.RandomProc;
 
-        public eArmorSlot ArmorHitLocation => (eArmorSlot) baseStyle.ArmorHitLocation;
+        public EArmorSlot ArmorHitLocation => (EArmorSlot) baseStyle.ArmorHitLocation;
 
         public StyleExecutedCallback OnStyleExecuted { get; private set; }
 
@@ -254,7 +254,7 @@ namespace DOL.GS.Styles
 
                 default:
                     // spec name needed to use weapon type
-                    string specKeyName = SkillBase.ObjectTypeToSpec((eObjectType)WeaponTypeRequirement);
+                    string specKeyName = SkillBase.ObjectTypeToSpec((EObjectType)WeaponTypeRequirement);
                     if (specKeyName == null)
                         return "unknown weapon type";
                     Specialization spec = SkillBase.GetSpecialization(specKeyName);

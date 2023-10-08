@@ -63,7 +63,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Hector", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Hector", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -81,7 +81,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 				Hector.Model = 716;
 				Hector.Name = "Hector";
 				Hector.GuildName = "Advisor to the King";
-				Hector.Realm = eRealm.Albion;
+				Hector.Realm = ERealm.Albion;
 				Hector.CurrentRegionID = 1;
 				Hector.Size = 50;
 				Hector.Level = 59;

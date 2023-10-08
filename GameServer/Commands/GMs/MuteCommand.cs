@@ -5,7 +5,7 @@ namespace DOL.GS.Commands
 {
 	[Command(
 		"&mute",
-		ePrivLevel.GM,
+		EPrivLevel.GM,
 		"Command to mute annoying players.  Player mutes are temporary, allchars are set on an account and must be removed.",
 		"/mute <playername or #ClientID> - example /mute #24  to mute player on client id 24",
 		"/mute <playername or #ClientID> allchars - this applies an account mute to this player",

@@ -35,7 +35,7 @@ namespace DOL.GS.Spells
 			}
 
 			// group heals seem to use full power even if no heals
-			if (!healed && Spell.Target == eSpellTarget.REALM)
+			if (!healed && Spell.Target == ESpellTarget.REALM)
 				RemoveFromStat(PowerCost(target) >> 1); // only 1/2 power if no heal
 			else
 				RemoveFromStat(PowerCost(target));
@@ -87,7 +87,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			int heal = target.ChangeEndurance(Caster, eEnduranceChangeType.Spell, amount);
+			int heal = target.ChangeEndurance(Caster, EEnduranceChangeType.Spell, amount);
 
 			if (heal == 0)
 			{

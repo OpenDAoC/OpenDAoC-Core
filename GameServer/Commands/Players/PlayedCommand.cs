@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&played",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Returns the age of the character",
 	"/played")]
 public class PlayedCommand : ACommandHandler, ICommandHandler

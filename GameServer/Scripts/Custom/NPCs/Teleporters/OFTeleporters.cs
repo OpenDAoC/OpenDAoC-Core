@@ -19,26 +19,26 @@ namespace DOL.GS.Scripts
             Level = 100;
             Flags |= eFlags.PEACE;
 
-            if (Realm == eRealm.None)
-                Realm = eRealm.Albion;
+            if (Realm == ERealm.None)
+                Realm = ERealm.Albion;
 
             switch (Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                 {
                     Name = "Master Elementalist";
                     Model = 61;
                     LoadEquipmentTemplateFromDatabase("master_elementalist");
                 }
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                 {
                     Name = "Seoltoir";
                     Model = 342;
                     LoadEquipmentTemplateFromDatabase("seoltoir");
                 }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                 {
                     Name = "Gothi of Odin";
                     Model = 153;
@@ -164,18 +164,18 @@ namespace DOL.GS.Scripts
 
                 switch (Realm)
                 {
-                    case eRealm.Albion:
+                    case ERealm.Albion:
                     {
                         portMessage =
                             "From sodden ground to the glow of the moon, let each vessel in this circle depart to lands now lost from the light of our fair Camelot!";
                         break;
                     }
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                     {
                         portMessage = "Huginn and Munnin guide you all and return with news of your journeys.";
                         break;
                     }
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                     {
                         portMessage =
                             "Go forth and rid Hibernia of the threat of foreign barbarians and fools forever.";
@@ -222,7 +222,7 @@ namespace DOL.GS.Scripts
 
                 switch (player.Realm)
                 {
-                    case eRealm.Albion:
+                    case ERealm.Albion:
                     {
                         if (medallion != null)
                         {
@@ -381,7 +381,7 @@ namespace DOL.GS.Scripts
                         }
                     }
                         break;
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                     {
                         if (medallion != null)
                         {
@@ -538,7 +538,7 @@ namespace DOL.GS.Scripts
                         }
                     }
                         break;
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                     {
                         if (medallion != null)
                         {
@@ -714,28 +714,28 @@ namespace DOL.GS.Scripts
             if (!(base.AddToWorld()))
                 return false;
 
-            if (Realm == eRealm.None)
-                Realm = eRealm.Albion;
+            if (Realm == ERealm.None)
+                Realm = ERealm.Albion;
 
             Level = 100;
 
             switch (Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                 {
                     Name = "Master Visur";
                     Model = 63;
                     LoadEquipmentTemplateFromDatabase("visur");
                 }
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                 {
                     Name = "Glasny";
                     Model = 342;
                     LoadEquipmentTemplateFromDatabase("glasny");
                 }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                 {
                     Name = "Stor Gothi Annark";
                     Model = 153;
@@ -754,17 +754,17 @@ namespace DOL.GS.Scripts
             var keeps = new List<int>();
             switch (player.Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     keeps.Add(55); // Caer Hurbury
                     keeps.Add(56); // Caer Renaris
                     keeps.Add(51); // Caer Berkstead
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     keeps.Add(81); // Arvakr Faste
                     keeps.Add(80); // Fensalir Faste
                     keeps.Add(79); // Glenlock Faste
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     keeps.Add(105); // Dun Scathaig
                     keeps.Add(106); // Dun Ailinne
                     keeps.Add(103); // Dun nGed

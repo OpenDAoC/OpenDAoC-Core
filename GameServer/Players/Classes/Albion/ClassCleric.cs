@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Cleric, "Cleric", "Acolyte")]
+	[CharacterClass((int)ECharacterClass.Cleric, "Cleric", "Acolyte")]
 	public class ClassCleric : ClassAcolyte
 	{
 		public ClassCleric()
@@ -30,10 +30,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.ChurchofAlbion";
 			m_specializationMultiplier = 10;
-			m_primaryStat = eStat.PIE;
-			m_secondaryStat = eStat.CON;
-			m_tertiaryStat = eStat.STR;
-			m_manaStat = eStat.PIE;
+			m_primaryStat = EStat.PIE;
+			m_secondaryStat = EStat.CON;
+			m_tertiaryStat = EStat.STR;
+			m_manaStat = EStat.PIE;
 			m_baseHP = 720;
 		}
 

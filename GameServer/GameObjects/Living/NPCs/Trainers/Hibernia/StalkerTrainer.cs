@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Stalker Trainer
 	/// </summary>
-	[NPCGuildScript("Stalker Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Stalker Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Stalker Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Stalker Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class StalkerTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Stalker; }
+			get { return ECharacterClass.Stalker; }
 		}
 
 		/// <summary>
@@ -90,7 +90,7 @@ namespace DOL.GS.Trainer
 
 			switch (text) {
 				case "Ranger":
-					if(player.Race == (int) eRace.Celt || player.Race == (int) eRace.Elf || player.Race == (int) eRace.Lurikeen || player.Race == (int) eRace.Shar){
+					if(player.Race == (int) ERace.Celt || player.Race == (int) ERace.Elf || player.Race == (int) ERace.Lurikeen || player.Race == (int) ERace.Shar){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
 					else{
@@ -98,7 +98,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Nightshade":
-					if(player.Race == (int) eRace.Elf || player.Race == (int) eRace.Lurikeen){
+					if(player.Race == (int) ERace.Elf || player.Race == (int) ERace.Lurikeen){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					}
 					else{

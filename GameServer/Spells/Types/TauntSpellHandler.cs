@@ -35,7 +35,7 @@ namespace DOL.GS.Spells
 			DamageTarget(ad, false);
 
 			// Interrupt only if target is actually casting
-			if (target.IsCasting && Spell.Target != eSpellTarget.CONE)
+			if (target.IsCasting && Spell.Target != ESpellTarget.CONE)
 				target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
 		}
 
@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
 			base.OnSpellResisted(target);
 
 			// Interrupt only if target is actually casting
-			if (target.IsCasting && Spell.Target != eSpellTarget.CONE)
+			if (target.IsCasting && Spell.Target != ESpellTarget.CONE)
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 

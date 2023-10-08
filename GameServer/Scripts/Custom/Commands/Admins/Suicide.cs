@@ -29,7 +29,7 @@ namespace DOL.GS.Commands
     /// </summary>
     [Command(
         "&suicide",
-        ePrivLevel.Admin,
+        EPrivLevel.Admin,
         "Kill yourself. You can't suicide while in combat!")]
     public class KillselfCommandHandler : ACommandHandler, ICommandHandler
     {
@@ -62,7 +62,7 @@ namespace DOL.GS.Commands
             {
                 {
                     player.Emote(eEmote.SpellGoBoom);
-                    player.TakeDamage(player, eDamageType.Natural, player.MaxHealth, 0);
+                    player.TakeDamage(player, EDamageType.Natural, player.MaxHealth, 0);
                 }
             }
             else

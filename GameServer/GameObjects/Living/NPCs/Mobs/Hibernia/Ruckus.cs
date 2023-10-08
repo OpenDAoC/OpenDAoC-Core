@@ -48,8 +48,8 @@ namespace DOL.AI.Brain
 			if(HasAggro && Body.TargetObject != null)
             {
 				GameLiving target = Body.TargetObject as GameLiving;
-				if (Util.Chance(25) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) 
-					&& !target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && target.IsAlive && target != null && !PrepareStun)
+				if (Util.Chance(25) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity) 
+					&& !target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && target.IsAlive && target != null && !PrepareStun)
                 {
 					foreach(GamePlayer player in Body.GetPlayersInRadius(1500))
                     {
@@ -59,7 +59,7 @@ namespace DOL.AI.Brain
 					new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastStun), 2000);
 					PrepareStun = true;
                 }
-				if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageAdd) && !Body.IsCasting)
+				if (!Body.effectListComponent.ContainsEffectForEffectType(EEffect.DamageAdd) && !Body.IsCasting)
 					Body.CastSpell(RuckusDA, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.Think();
@@ -93,12 +93,12 @@ namespace DOL.AI.Brain
 					spell.Icon = 18;
 					spell.Damage = 10;
 					spell.Duration = 10;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Name = "Earthen Fury";
 					spell.Range = 1000;
 					spell.SpellID = 11942;
 					spell.Target = "Self";
-					spell.Type = eSpellType.DamageAdd.ToString();
+					spell.Type = ESpellType.DamageAdd.ToString();
 					spell.Uninterruptible = true;
 					m_RuckusDA = new Spell(spell, 20);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RuckusDA);
@@ -126,7 +126,7 @@ namespace DOL.AI.Brain
 					spell.Range = 400;
 					spell.SpellID = 11943;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Stun.ToString();
+					spell.Type = ESpellType.Stun.ToString();
 					m_Ruckus_stun = new Spell(spell, 20);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ruckus_stun);
 				}

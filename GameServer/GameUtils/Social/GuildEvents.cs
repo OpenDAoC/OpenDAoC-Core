@@ -206,20 +206,20 @@ namespace DOL.GS
 
 			GainedExperienceEventArgs xpArgs = args as GainedExperienceEventArgs;
 
-			if (player.Guild != null && !player.Guild.IsStartingGuild && player.Guild.BonusType == Guild.eBonusType.Experience && xpArgs.XPSource == eXPSource.NPC)
+			if (player.Guild != null && !player.Guild.IsStartingGuild && player.Guild.BonusType == Guild.eBonusType.Experience && xpArgs.XPSource == EXpSource.NPC)
 			{
 				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 100);
 
-				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, false);
+				player.GainExperience(EXpSource.Other, bonusXP, 0, 0, 0, false);
 				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				// player.Guild.UpdateGuildWindow();
 			}
 			
-			if (player.Guild != null && player.Guild.IsStartingGuild && xpArgs.XPSource == eXPSource.NPC)
+			if (player.Guild != null && player.Guild.IsStartingGuild && xpArgs.XPSource == EXpSource.NPC)
 			{
 				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 200);
 
-				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, false);
+				player.GainExperience(EXpSource.Other, bonusXP, 0, 0, 0, false);
 				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your starting guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				// player.Guild.UpdateGuildWindow();
 			}
@@ -250,7 +250,7 @@ namespace DOL.GS
 					if ((oldGuildRealmPoints < 100000000) && (player.Guild.RealmPoints > 100000000))
 					{
 						// Report to Newsmgr
-						string message = player.Guild.Name + " [" + GlobalConstants.RealmToName((eRealm)player.Realm) + "] has reached 100,000,000 Realm Points!";
+						string message = player.Guild.Name + " [" + GlobalConstants.RealmToName((ERealm)player.Realm) + "] has reached 100,000,000 Realm Points!";
 						NewsMgr.CreateNews(message, player.Realm, eNewsType.RvRGlobal, false);
 					}
 

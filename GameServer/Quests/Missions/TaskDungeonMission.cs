@@ -220,7 +220,7 @@ namespace DOL.GS.Quests
         private static ushort[] unused_mine_laby = new ushort[] { 048, 471, 472, 473 };
         #endregion
 
-		private static ushort GetRegionFromLevel(byte level, eRealm realm, eDungeonType dungeonType)
+		private static ushort GetRegionFromLevel(byte level, ERealm realm, eDungeonType dungeonType)
 		{
             //return 286;
 
@@ -231,17 +231,17 @@ namespace DOL.GS.Quests
             {
                 switch (realm)
                 {
-                    case eRealm.Albion:
+                    case ERealm.Albion:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(burial_tomb_long);
                 		else
                 			return GetRandomRegion(burial_tomb_laby);
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(damp_cavern_long);
                 		else
                 			return GetRandomRegion(damp_cavern_laby);
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(the_cursed_barrow_long);
                 		else
@@ -252,17 +252,17 @@ namespace DOL.GS.Quests
             {
                 switch (realm)
                 {
-                    case eRealm.Albion:
+                    case ERealm.Albion:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(forgotten_mines_long);
                 		else
                 			return GetRandomRegion(forgotten_mines_laby);
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(forgotten_sepulchre_long);
                 		else
                 			return GetRandomRegion(forgotten_sepulchre_laby);
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(dismal_grotto_long);
                 		else
@@ -273,17 +273,17 @@ namespace DOL.GS.Quests
             {
                 switch (realm)
                 {
-                    case eRealm.Albion:
+                    case ERealm.Albion:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(desecrated_grounds_long);
                 		else
                 			return GetRandomRegion(desecrated_grounds_laby);
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(the_concealed_guardhouse_long);
                 		else
                 			return GetRandomRegion(the_concealed_guardhouse_laby);
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(the_accursed_caves_long);
                 		else
@@ -294,17 +294,17 @@ namespace DOL.GS.Quests
             {
                 switch (realm)
                 {
-                    case eRealm.Albion:
+                    case ERealm.Albion:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(funerary_hall_long);
                 		else
                 			return GetRandomRegion(funerary_hall_laby);
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(the_gossamer_grotto_long);
                 		else
                 			return GetRandomRegion(the_gossamer_grotto_laby);
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(dark_cavern_long);
                 		else
@@ -315,17 +315,17 @@ namespace DOL.GS.Quests
             {
                 switch (realm)
                 {
-                    case eRealm.Albion:
+                    case ERealm.Albion:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(sundered_tombs_long);
                 		else
                 			return GetRandomRegion(sundered_tombs_laby);
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(underground_tunnel_long);
                 		else
                 			return GetRandomRegion(underground_tunnel_laby);
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                 		if(dungeonType == eDungeonType.Ranged)
                         	return GetRandomRegion(unused_mine_long);
                 		else

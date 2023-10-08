@@ -30,7 +30,7 @@ namespace DOL.GS
         {
             string attackTypeMsg;
 
-            if (_playerOwner.ActiveWeapon != null && _playerOwner.ActiveWeapon.Object_Type == (int)eObjectType.Thrown)
+            if (_playerOwner.ActiveWeapon != null && _playerOwner.ActiveWeapon.Object_Type == (int)EObjectType.Thrown)
                 attackTypeMsg = LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.Type.Throw");
             else
                 attackTypeMsg = LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.Type.Shot");
@@ -84,7 +84,7 @@ namespace DOL.GS
         {
             bool stopAttack = false;
 
-            if (_playerOwner.rangeAttackComponent.RangedAttackState != eRangedAttackState.AimFireReload)
+            if (_playerOwner.rangeAttackComponent.RangedAttackState != ERangedAttackState.AimFireReload)
                 stopAttack = true;
             else if (_playerOwner.Endurance < RangeAttackComponent.DEFAULT_ENDURANCE_COST)
             {

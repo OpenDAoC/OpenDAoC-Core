@@ -35,7 +35,7 @@ namespace DOL.GS
 		protected int m_spawnregion;
 		protected int m_relicSpellID;
 		protected Spell m_relicSpell;
-		protected eSpellTarget m_relicTarget;
+		protected ESpellTarget m_relicTarget;
 		protected double m_xp;
 		protected GamePlayer m_owner;
 		protected int m_effect;
@@ -101,7 +101,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the RelicTarget
 		/// </summary>
-		public eSpellTarget RelicTarget
+		public ESpellTarget RelicTarget
 		{
 			get { return m_relicTarget; }
 			set { m_relicTarget = value; }
@@ -170,7 +170,7 @@ namespace DOL.GS
 
 			RelicSpellID = m_dbRelic.relicSpell;
 			RelicSpell = SkillBase.GetSpellByID(m_dbRelic.relicSpell);
-			RelicTarget = Enum.Parse<eSpellTarget>(m_dbRelic.relicTarget, true);
+			RelicTarget = Enum.Parse<ESpellTarget>(m_dbRelic.relicTarget, true);
 
 			Name = m_dbRelic.Name;
 			Model = m_dbRelic.Model;
@@ -298,12 +298,12 @@ namespace DOL.GS
 			{
 				switch (RelicTarget)
 				{
-					case eSpellTarget.SELF:
+					case ESpellTarget.SELF:
 					{
 						newPlayerlist.Add(m_owner);
 						break;
 					}
-					case eSpellTarget.GROUP:
+					case ESpellTarget.GROUP:
 					{
 						if (m_owner.Group == null)
 						{
@@ -321,7 +321,7 @@ namespace DOL.GS
 
 						break;
 					}
-					case eSpellTarget.REALM:
+					case ESpellTarget.REALM:
 					{
 						foreach (GamePlayer plr in m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 						{
@@ -616,7 +616,7 @@ namespace DOL.GS
 						return;
 					}
 				}
-				if (RelicTarget != eSpellTarget.SELF) return;
+				if (RelicTarget != ESpellTarget.SELF) return;
 			}
 			PlayerLoosesRelic(player, false);
 		}

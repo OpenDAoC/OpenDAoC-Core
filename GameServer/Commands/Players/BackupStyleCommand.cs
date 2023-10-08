@@ -3,7 +3,7 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS.Commands;
 
-[Command("&backupstyle", ePrivLevel.Player, "Modify automatic backup style.", "/backupstyle <set|clear>")]
+[Command("&backupstyle", EPrivLevel.Player, "Modify automatic backup style.", "/backupstyle <set|clear>")]
 public class BackupStyleCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)

@@ -18,13 +18,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Legendary Afanc Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -44,11 +44,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -113,7 +113,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				BringAdds = false;
 				CanPort = false;
@@ -172,9 +172,9 @@ namespace DOL.AI.Brain
 					if (Target != null && Target.IsAlive)
                     {					
 						Target.MoveTo(Body.CurrentRegionID, 451486, 393503, 2754, 2390);
-						if(Target.CharacterClass.ID != (int)eCharacterClass.Necromancer)
+						if(Target.CharacterClass.ID != (int)ECharacterClass.Necromancer)
                         {
-							Target.TakeDamage(Target, eDamageType.Falling, Target.MaxHealth / 5, 0);
+							Target.TakeDamage(Target, EDamageType.Falling, Target.MaxHealth / 5, 0);
 							Target.Out.SendMessage("You take falling damage!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
 						}
                     }

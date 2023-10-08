@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Heretic Trainer
 	/// </summary>
-	[NPCGuildScript("Heretic Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Heretic Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Heretic Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Heretic Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class HereticTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Heretic; }
+			get { return ECharacterClass.Heretic; }
 		}
 
 		public const string WEAPON_ID1 = "chrush_sword_item";
@@ -89,7 +89,7 @@ namespace DOL.GS.Trainer
 					// promote player to other class
 					if (CanPromotePlayer(player))
 					{
-						PromotePlayer(player, (int)eCharacterClass.Heretic, "Welcome to the Temple of Arawn, " + player.Name + ".", null);
+						PromotePlayer(player, (int)ECharacterClass.Heretic, "Welcome to the Temple of Arawn, " + player.Name + ".", null);
 					}
 					break;
 			}

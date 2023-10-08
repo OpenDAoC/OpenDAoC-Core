@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Berserker Trainer
 	/// </summary>	
-	[NPCGuildScript("Berserker Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Berserker Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Berserker Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Berserker Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class BerserkerTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Berserker; }
+			get { return ECharacterClass.Berserker; }
 		}
 
 		public BerserkerTrainer() : base()
@@ -84,7 +84,7 @@ namespace DOL.GS.Trainer
 			case "join the House of Modi":
 				// promote player to other class
 				if (CanPromotePlayer(player)) {
-					PromotePlayer(player, (int)eCharacterClass.Berserker, "Welcome young warrior! May your time in Midgard army be rewarding!", null);	// TODO: gifts
+					PromotePlayer(player, (int)ECharacterClass.Berserker, "Welcome young warrior! May your time in Midgard army be rewarding!", null);	// TODO: gifts
 				}
 				break;
 			}

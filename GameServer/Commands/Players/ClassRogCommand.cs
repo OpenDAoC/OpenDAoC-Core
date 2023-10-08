@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 
 [Command(
     "&classrog",
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "change the chance% of getting ROGs outside of your current class at level 50," +
     " or the likelihood of getting items relevant to your spec while under 50",
     "/classrog <%chance>")]

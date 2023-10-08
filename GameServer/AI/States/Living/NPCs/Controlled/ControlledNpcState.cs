@@ -6,7 +6,7 @@ public class ControlledNpcStateWakingUp : StandardNpcStateWakingUp
 {
     public ControlledNpcStateWakingUp(ControlledNpcBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.WAKING_UP;
+        StateType = EFSMStateType.WAKING_UP;
     }
 
     public override void Think()
@@ -23,11 +23,11 @@ public class ControlledNpcStateWakingUp : StandardNpcStateWakingUp
 
         // Determine state we should be in.
         if (brain.AggressionState == EAggressionState.Aggressive)
-            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO);
+            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
         else if (brain.AggressionState == EAggressionState.Defensive)
-            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.IDLE);
+            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.IDLE);
         else if (brain.AggressionState == EAggressionState.Passive)
-            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.PASSIVE);
+            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.PASSIVE);
 
         // Put this here so no delay after entering initial state before next Think().
         brain.Think();
@@ -38,7 +38,7 @@ public class ControlledNpcStateDefensive : StandardNpcStateIdle
 {
     public ControlledNpcStateDefensive(ControlledNpcBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.IDLE;
+        StateType = EFSMStateType.IDLE;
     }
 
     public override void Think()
@@ -55,9 +55,9 @@ public class ControlledNpcStateDefensive : StandardNpcStateIdle
 
         // Handle state changes.
         if (brain.AggressionState == EAggressionState.Aggressive)
-            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO);
+            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
         else if (brain.AggressionState == EAggressionState.Passive)
-            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.PASSIVE);
+            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.PASSIVE);
 
         // Handle pet movement.
         if (brain.WalkState == EWalkState.Follow && brain.Owner != null)
@@ -72,7 +72,7 @@ public class ControlledNpcStateAggro : StandardNpcStateAggro
 {
     public ControlledNpcStateAggro(ControlledNpcBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.AGGRO;
+        StateType = EFSMStateType.AGGRO;
     }
 
     public override void Exit()
@@ -99,7 +99,7 @@ public class ControlledNpcStateAggro : StandardNpcStateAggro
 
         if (brain.AggressionState == EAggressionState.Passive)
         {
-            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.PASSIVE);
+            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.PASSIVE);
             return;
         }
 
@@ -133,7 +133,7 @@ public class ControlledNpcStateAggro : StandardNpcStateAggro
         // Return to defensive if there's no valid target.
         if (!hasTarget && brain.AggressionState != EAggressionState.Aggressive)
         {
-            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.IDLE);
+            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.IDLE);
             return;
         }
 
@@ -145,7 +145,7 @@ public class ControlledNpcStatePassive : StandardNpcState
 {
     public ControlledNpcStatePassive(ControlledNpcBrain brain) : base(brain)
     {
-        StateType = eFSMStateType.PASSIVE;
+        StateType = EFSMStateType.PASSIVE;
     }
 
     public override void Enter()
@@ -170,9 +170,9 @@ public class ControlledNpcStatePassive : StandardNpcState
 
         // Handle state changes.
         if (brain.AggressionState == EAggressionState.Aggressive)
-            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.AGGRO);
+            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
         else if (brain.AggressionState == EAggressionState.Defensive)
-            brain.FiniteStateMachine.SetCurrentState(eFSMStateType.IDLE);
+            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.IDLE);
 
         // Handle pet movement.
         if (brain.WalkState == EWalkState.Follow && brain.Owner != null)

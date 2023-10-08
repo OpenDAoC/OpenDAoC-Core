@@ -771,7 +771,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.Out.SendObjectDelete(client.Player); //remove the stealthed player from view
 			}
 
-			if (client.Player.CharacterClass.ID == (int)eCharacterClass.Warlock)
+			if (client.Player.CharacterClass.ID == (int)ECharacterClass.Warlock)
 			{
 				//Send Chamber effect
 				client.Player.Out.SendWarlockChamberEffect(client.Player);
@@ -1195,7 +1195,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						if (fallSpeed > 500)
 						{
-							if (client.Player.CharacterClass.ID != (int)eCharacterClass.Necromancer || !client.Player.IsShade)
+							if (client.Player.CharacterClass.ID != (int)ECharacterClass.Necromancer || !client.Player.IsShade)
 							{
 								client.Player.CalcFallDamage(fallPercent);
 							}

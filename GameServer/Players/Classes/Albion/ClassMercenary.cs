@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Mercenary, "Mercenary", "Fighter")]
+	[CharacterClass((int)ECharacterClass.Mercenary, "Mercenary", "Fighter")]
 	public class ClassMercenary : ClassFighter
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Slash, Specs.Thrust };
@@ -32,9 +32,9 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.GuildofShadows";
 			m_specializationMultiplier = 20;
-			m_primaryStat = eStat.STR;
-			m_secondaryStat = eStat.DEX;
-			m_tertiaryStat = eStat.CON;
+			m_primaryStat = EStat.STR;
+			m_secondaryStat = EStat.DEX;
+			m_tertiaryStat = EStat.CON;
 			m_baseHP = 880;
 		}
 

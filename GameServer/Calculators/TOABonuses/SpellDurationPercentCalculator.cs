@@ -2,10 +2,10 @@ using System;
 
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.SpellDuration)]
+[PropertyCalculator(EProperty.SpellDuration)]
 public class SpellDurationPercentCalculator : PropertyCalculator
 {
-    public override int CalcValue(GameLiving living, eProperty property)
+    public override int CalcValue(GameLiving living, EProperty property)
     {
         //hardcap at 25%
         return Math.Min(25, living.ItemBonus[(int)property] - living.DebuffCategory[(int)property]);

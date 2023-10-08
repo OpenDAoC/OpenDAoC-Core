@@ -75,7 +75,7 @@ namespace DOL.GS
 
 				if (canReportNews && GameServer.ServerRules.CanGenerateNews(player) == false)
 				{
-					if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+					if (player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
 						canReportNews = false;
 				}
 			}
@@ -109,21 +109,21 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Nosdoden Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
 				default: return 70; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -178,25 +178,25 @@ namespace DOL.GS
 					add.Size = (byte)player.Size;
 					add.Flags = eFlags.GHOST;
                     #region Set mob model
-                    if (player.Race == (short)eRace.Norseman && player.Gender == eGender.Male)//norse male
+                    if (player.Race == (short)ERace.Norseman && player.Gender == EGender.Male)//norse male
 						add.Model = (ushort)Util.Random(153, 160);
-					if (player.Race == (short)eRace.Norseman && player.Gender == eGender.Female)//norse female
+					if (player.Race == (short)ERace.Norseman && player.Gender == EGender.Female)//norse female
 						add.Model = (ushort)Util.Random(161, 168);
-					if (player.Race == (short)eRace.Troll && player.Gender == eGender.Male)//troll male
+					if (player.Race == (short)ERace.Troll && player.Gender == EGender.Male)//troll male
 						add.Model = (ushort)Util.Random(137, 144);
-					if (player.Race == (short)eRace.Troll && player.Gender == eGender.Female)//troll female
+					if (player.Race == (short)ERace.Troll && player.Gender == EGender.Female)//troll female
 						add.Model = (ushort)Util.Random(145, 152);
-					if (player.Race == (short)eRace.Kobold && player.Gender == eGender.Male)//kobolt male
+					if (player.Race == (short)ERace.Kobold && player.Gender == EGender.Male)//kobolt male
 						add.Model = (ushort)Util.Random(169, 176);
-					if (player.Race == (short)eRace.Kobold && player.Gender == eGender.Female)//kobolt female
+					if (player.Race == (short)ERace.Kobold && player.Gender == EGender.Female)//kobolt female
 						add.Model = (ushort)Util.Random(177, 184);
-					if (player.Race == (short)eRace.Valkyn && player.Gender == eGender.Male)//valkyn male
+					if (player.Race == (short)ERace.Valkyn && player.Gender == EGender.Male)//valkyn male
 						add.Model = (ushort)Util.Random(773, 780);
-					if (player.Race == (short)eRace.Valkyn && player.Gender == eGender.Female)//valkyn female
+					if (player.Race == (short)ERace.Valkyn && player.Gender == EGender.Female)//valkyn female
 						add.Model = (ushort)Util.Random(781, 788);
-					if (player.Race == (short)eRace.Dwarf && player.Gender == eGender.Male)//dwarf male
+					if (player.Race == (short)ERace.Dwarf && player.Gender == EGender.Male)//dwarf male
 						add.Model = (ushort)Util.Random(185, 192);
-					if (player.Race == (short)eRace.Dwarf && player.Gender == eGender.Female)//dwarf female
+					if (player.Race == (short)ERace.Dwarf && player.Gender == EGender.Female)//dwarf female
 						add.Model = (ushort)Util.Random(193, 200);
                     #endregion
                     add.Heading = Heading;
@@ -254,19 +254,19 @@ namespace DOL.GS
 						{
 							template.AddNPCEquipment(eInventorySlot.RightHandWeapon, righthand.Model, righthand.Color, righthand.Effect);
 							#region Styles for Warrior and Thane
-							if (player.CharacterClass.ID == (int)eCharacterClass.Warrior || player.CharacterClass.ID == (int)eCharacterClass.Thane)
+							if (player.CharacterClass.ID == (int)ECharacterClass.Warrior || player.CharacterClass.ID == (int)ECharacterClass.Thane)
 							{
-								if (righthand.Object_Type == (int)eObjectType.Axe)
+								if (righthand.Object_Type == (int)EObjectType.Axe)
 								{
 									if (!add.Styles.Contains(NosdodenGhostAddBrain.tauntAxeWarrior))
 										add.Styles.Add(NosdodenGhostAddBrain.tauntAxeWarrior);
 								}
-								if (righthand.Object_Type == (int)eObjectType.Hammer)
+								if (righthand.Object_Type == (int)EObjectType.Hammer)
 								{
 									if (!add.Styles.Contains(NosdodenGhostAddBrain.tauntHammerWarrior))
 										add.Styles.Add(NosdodenGhostAddBrain.tauntHammerWarrior);
 								}
-								if (righthand.Object_Type == (int)eObjectType.Sword)
+								if (righthand.Object_Type == (int)EObjectType.Sword)
 								{
 									if (!add.Styles.Contains(NosdodenGhostAddBrain.tauntSwordWarrior))
 										add.Styles.Add(NosdodenGhostAddBrain.tauntSwordWarrior);
@@ -274,9 +274,9 @@ namespace DOL.GS
 							}
 							#endregion
 							#region Styles for Savage
-							if (player.CharacterClass.ID == (int)eCharacterClass.Savage)
+							if (player.CharacterClass.ID == (int)ECharacterClass.Savage)
 							{
-								if (righthand.Object_Type == (int)eObjectType.HandToHand || lefthand.Object_Type == (int)eObjectType.HandToHand)
+								if (righthand.Object_Type == (int)EObjectType.HandToHand || lefthand.Object_Type == (int)EObjectType.HandToHand)
 								{
 									if (!add.Styles.Contains(NosdodenGhostAddBrain.tauntSavage))
 										add.Styles.Add(NosdodenGhostAddBrain.tauntSavage);
@@ -301,14 +301,14 @@ namespace DOL.GS
 						{
 							template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, twohand.Model, twohand.Color, twohand.Effect);
 							#region Styles for Savage 2h
-							if (player.CharacterClass.ID == (int)eCharacterClass.Savage && righthand == null)
+							if (player.CharacterClass.ID == (int)ECharacterClass.Savage && righthand == null)
 							{
 								if (!add.Styles.Contains(NosdodenGhostAddBrain.Taunt2h))
 									add.Styles.Add(NosdodenGhostAddBrain.Taunt2h);
 							}
 							#endregion
 							#region Styles for Hunter Spear 2h
-							if (player.CharacterClass.ID == (int)eCharacterClass.Hunter && twohand.Object_Type == (int)eObjectType.Spear)
+							if (player.CharacterClass.ID == (int)ECharacterClass.Hunter && twohand.Object_Type == (int)EObjectType.Spear)
 							{
 								if (!add.Styles.Contains(NosdodenGhostAddBrain.TauntSpearHunt))
 									add.Styles.Add(NosdodenGhostAddBrain.TauntSpearHunt);
@@ -333,31 +333,31 @@ namespace DOL.GS
 					DbInventoryItem mob_distance = template.GetItem(eInventorySlot.LeftHandWeapon);
 					if (mob_lefthand != null && mob_righthand != null)
 					{
-						if ((mob_righthand.Object_Type == (int)eObjectType.Axe && mob_righthand.Item_Type == Slot.RIGHTHAND) /*axe*/
-						|| (mob_righthand.Object_Type == (int)eObjectType.Sword && mob_righthand.Item_Type == Slot.RIGHTHAND) /*sword*/
-						|| ((mob_righthand.Object_Type == (int)eObjectType.HandToHand || mob_lefthand.Object_Type == (int)eObjectType.HandToHand) && (mob_righthand.Item_Type == Slot.RIGHTHAND || mob_lefthand.Item_Type == Slot.LEFTHAND)) /*Hand-to-Hand*/
-						|| (mob_righthand.Object_Type == (int)eObjectType.Hammer && mob_righthand.Item_Type == Slot.RIGHTHAND) /*hammer*/
-						|| (mob_lefthand.Object_Type == (int)eObjectType.LeftAxe) /*left axe*/
-						|| (mob_lefthand.Object_Type == (int)eObjectType.Shield)) /*shield*/
+						if ((mob_righthand.Object_Type == (int)EObjectType.Axe && mob_righthand.Item_Type == Slot.RIGHTHAND) /*axe*/
+						|| (mob_righthand.Object_Type == (int)EObjectType.Sword && mob_righthand.Item_Type == Slot.RIGHTHAND) /*sword*/
+						|| ((mob_righthand.Object_Type == (int)EObjectType.HandToHand || mob_lefthand.Object_Type == (int)EObjectType.HandToHand) && (mob_righthand.Item_Type == Slot.RIGHTHAND || mob_lefthand.Item_Type == Slot.LEFTHAND)) /*Hand-to-Hand*/
+						|| (mob_righthand.Object_Type == (int)EObjectType.Hammer && mob_righthand.Item_Type == Slot.RIGHTHAND) /*hammer*/
+						|| (mob_lefthand.Object_Type == (int)EObjectType.LeftAxe) /*left axe*/
+						|| (mob_lefthand.Object_Type == (int)EObjectType.Shield)) /*shield*/
 						{
-							add.SwitchWeapon(eActiveWeaponSlot.Standard);
+							add.SwitchWeapon(EActiveWeaponSlot.Standard);
 							add.VisibleActiveWeaponSlots = 16;
 						}
 					}
 					if (mob_twohand != null)
 					{
-						if (((mob_twohand.Object_Type == (int)eObjectType.Hammer && mob_twohand.Item_Type == Slot.TWOHAND) /*axe2h*/
-						|| (mob_twohand.Object_Type == (int)eObjectType.Sword && mob_twohand.Item_Type == Slot.TWOHAND) /*sword2h*/
-						|| (mob_twohand.Object_Type == (int)eObjectType.Spear && mob_twohand.Item_Type == Slot.TWOHAND) /*spear*/
-						|| (mob_twohand.Object_Type == (int)eObjectType.Staff && mob_twohand.Item_Type == Slot.TWOHAND))) /*Staff*/
+						if (((mob_twohand.Object_Type == (int)EObjectType.Hammer && mob_twohand.Item_Type == Slot.TWOHAND) /*axe2h*/
+						|| (mob_twohand.Object_Type == (int)EObjectType.Sword && mob_twohand.Item_Type == Slot.TWOHAND) /*sword2h*/
+						|| (mob_twohand.Object_Type == (int)EObjectType.Spear && mob_twohand.Item_Type == Slot.TWOHAND) /*spear*/
+						|| (mob_twohand.Object_Type == (int)EObjectType.Staff && mob_twohand.Item_Type == Slot.TWOHAND))) /*Staff*/
 						{
-							add.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+							add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 							add.VisibleActiveWeaponSlots = 34;
 						}
 					}
-					if(mob_distance != null && mob_distance.Object_Type == (int)eObjectType.CompositeBow && mob_distance.Item_Type == Slot.RANGED) /*distance*/
+					if(mob_distance != null && mob_distance.Object_Type == (int)EObjectType.CompositeBow && mob_distance.Item_Type == Slot.RANGED) /*distance*/
                     {
-						add.SwitchWeapon(eActiveWeaponSlot.Distance);
+						add.SwitchWeapon(EActiveWeaponSlot.Distance);
 						add.VisibleActiveWeaponSlots = 51;
 					}
 					#endregion
@@ -546,7 +546,7 @@ namespace DOL.AI.Brain
 		{
 			if (!CheckProximityAggro())
 			{
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
                 #region Checks
                 StartCastDOT = false;
@@ -722,9 +722,9 @@ namespace DOL.AI.Brain
 					spell.Range = 1800;
 					spell.Radius = 500;
 					spell.SpellID = 11856;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DamageOverTime.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_NosdodenDot = new Spell(spell, 70);
@@ -752,9 +752,9 @@ namespace DOL.AI.Brain
 					spell.Range = 1800;
 					spell.Radius = 550;
 					spell.SpellID = 11857;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_NosdodenDD = new Spell(spell, 70);
@@ -800,7 +800,7 @@ namespace DOL.AI.Brain
         {
 			if (Body.PackageID == "NosdodenGhostBerserker")
 			{
-				Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+				Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 				Body.VisibleActiveWeaponSlots = 16;
 				Body.EvadeChance = 60;
 				if (Body.IsAlive)
@@ -835,7 +835,7 @@ namespace DOL.AI.Brain
 							Body.Quickness = 100;
 							Body.Strength = 180;
 						}
-						if (target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+						if (target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
 						{
 							if (CanWalkBerserker == false)
 							{
@@ -843,7 +843,7 @@ namespace DOL.AI.Brain
 								CanWalkBerserker = true;
 							}
 						}
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
 						{
 							CanWalkBerserker = false;//reset flag so can slam again
 						}
@@ -878,7 +878,7 @@ namespace DOL.AI.Brain
                 {
 					Body.ParryChance = 15;
 					Body.BlockChance = 60;
-					Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+					Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 					Body.VisibleActiveWeaponSlots = 16;
 				}
 				if (!CheckProximityAggro())
@@ -905,7 +905,7 @@ namespace DOL.AI.Brain
 							Body.Strength = 250;
 							Body.ParryChance = 60;
 							Body.BlockChance = 0;
-							Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+							Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 							Body.VisibleActiveWeaponSlots = 34;
 							Body.styleComponent.NextCombatStyle = Back2h;
 							Body.styleComponent.NextCombatBackupStyle = Taunt2h;
@@ -916,7 +916,7 @@ namespace DOL.AI.Brain
 							Body.Quickness = 100;
 							Body.ParryChance = 15;
 							Body.BlockChance = 60;
-							Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+							Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 							Body.VisibleActiveWeaponSlots = 16;
 							foreach (Style styles in Body.Styles)
 							{
@@ -933,17 +933,17 @@ namespace DOL.AI.Brain
 								}
 							}
 						}
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
 						{
 							Body.Strength = 180;
 							Body.Quickness = 100;
-							Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+							Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 							Body.VisibleActiveWeaponSlots = 16;
 							Body.ParryChance = 15;
 							Body.BlockChance = 60;
 							Body.styleComponent.NextCombatStyle = slamWarrior;
 						}
-						if (target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+						if (target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
 						{
 							if (CanWalkWarrior == false)
 							{
@@ -951,7 +951,7 @@ namespace DOL.AI.Brain
 								CanWalkWarrior = true;
 							}
 						}
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
 						{
 							CanWalkWarrior = false;//reset flag so can slam again
 						}
@@ -975,7 +975,7 @@ namespace DOL.AI.Brain
 			{
 				Body.EvadeChance = 50;
 				Body.ParryChance = 15;
-				Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+				Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 				Body.VisibleActiveWeaponSlots = 16;
 				if (Body.InCombat && HasAggro)
 				{
@@ -988,7 +988,7 @@ namespace DOL.AI.Brain
 						float angle = Body.TargetObject.GetAngle(Body);
 						if (angle >= 160 && angle <= 200)
 						{
-							Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+							Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 							Body.VisibleActiveWeaponSlots = 16;
 							foreach (Style styles in Body.Styles)
 							{
@@ -998,7 +998,7 @@ namespace DOL.AI.Brain
 									{
 										Body.Quickness = 80;
 										Body.Strength = 200;
-										Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+										Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 										Body.VisibleActiveWeaponSlots = 16;
 										Body.styleComponent.NextCombatStyle = BackSavage;
 									}
@@ -1006,7 +1006,7 @@ namespace DOL.AI.Brain
 									{
 										Body.Quickness = 80;
 										Body.Strength = 170;
-										Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+										Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 										Body.VisibleActiveWeaponSlots = 16;
 										Body.styleComponent.NextCombatBackupStyle = tauntSavage;
 									}
@@ -1016,7 +1016,7 @@ namespace DOL.AI.Brain
                             {
 								Body.Strength = 250;
 								Body.Quickness = 50;
-								Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+								Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 								Body.VisibleActiveWeaponSlots = 34;
 								Body.styleComponent.NextCombatStyle = Taunt2h;
 							}
@@ -1031,7 +1031,7 @@ namespace DOL.AI.Brain
 									{
 										Body.Strength = 170;
 										Body.Quickness = 80;
-										Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+										Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 										Body.VisibleActiveWeaponSlots = 16;
 										Body.styleComponent.NextCombatStyle = tauntSavage;
 									}
@@ -1041,7 +1041,7 @@ namespace DOL.AI.Brain
 										{
 											Body.Strength = 250;
 											Body.Quickness = 50;
-											Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+											Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 											Body.VisibleActiveWeaponSlots = 34;
 											Body.styleComponent.NextCombatStyle = Taunt2h;
 										}
@@ -1064,7 +1064,7 @@ namespace DOL.AI.Brain
 				{
 					Body.ParryChance = 15;
 					Body.BlockChance = 60;
-					Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+					Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 					Body.VisibleActiveWeaponSlots = 16;
 				}
 				if (!CheckProximityAggro())
@@ -1106,7 +1106,7 @@ namespace DOL.AI.Brain
 							Body.Quickness = 60;
 							Body.ParryChance = 50;
 							Body.BlockChance = 0;
-							Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+							Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 							Body.VisibleActiveWeaponSlots = 34;
 							Body.styleComponent.NextCombatStyle = Back2h;
 							Body.styleComponent.NextCombatBackupStyle = Taunt2h;
@@ -1117,7 +1117,7 @@ namespace DOL.AI.Brain
 							Body.Quickness = 100;
 							Body.ParryChance = 15;
 							Body.BlockChance = 50;
-							Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+							Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 							Body.VisibleActiveWeaponSlots = 16;
 							foreach (Style styles in Body.Styles)
 							{
@@ -1134,17 +1134,17 @@ namespace DOL.AI.Brain
 								}
 							}
 						}
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
 						{
 							Body.Strength = 160;
 							Body.Quickness = 100;
-							Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+							Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 							Body.VisibleActiveWeaponSlots = 16;
 							Body.ParryChance = 15;
 							Body.BlockChance = 50;
 							Body.styleComponent.NextCombatStyle = slamWarrior;
 						}
-						if (target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+						if (target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
 						{
 							if (CanWalkThane == false)
 							{
@@ -1152,7 +1152,7 @@ namespace DOL.AI.Brain
 								CanWalkThane = true;
 							}
 						}
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
 							CanWalkThane = false;//reset flag so can slam again
 					}
 				}
@@ -1175,7 +1175,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body.PackageID == "NosdodenGhostSkald")
 			{
-				Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+				Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 				Body.VisibleActiveWeaponSlots = 34;
 				Body.ParryChance = 50;
 				if(Body.IsAlive)
@@ -1220,7 +1220,7 @@ namespace DOL.AI.Brain
 						{
 							Body.Quickness = 80;
 							Body.Strength = 220;
-							Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+							Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 							Body.VisibleActiveWeaponSlots = 34;
 							Body.styleComponent.NextCombatStyle = AfterParry2h;
 							Body.styleComponent.NextCombatBackupStyle = Taunt2h;
@@ -1252,7 +1252,7 @@ namespace DOL.AI.Brain
 				}
 				if (!CheckProximityAggro())
 				{
-					Body.SwitchWeapon(eActiveWeaponSlot.Distance);
+					Body.SwitchWeapon(EActiveWeaponSlot.Distance);
 					Body.VisibleActiveWeaponSlots = 51;
 					CanCreateHunterPet = false;
 					Switch_to_Ranged = false;
@@ -1276,7 +1276,7 @@ namespace DOL.AI.Brain
 								Body.StopFollowing();
 							if (Switch_to_Ranged == false)
 							{
-								Body.SwitchWeapon(eActiveWeaponSlot.Distance);
+								Body.SwitchWeapon(EActiveWeaponSlot.Distance);
 								Body.VisibleActiveWeaponSlots = 51;
 								Body.Strength = 220;
 								Switch_to_Ranged = true;
@@ -1297,7 +1297,7 @@ namespace DOL.AI.Brain
 										{
 											Body.Quickness = 60;
 											Body.Strength = 220;
-											Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+											Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 											Body.VisibleActiveWeaponSlots = 34;
 											Body.styleComponent.NextCombatStyle = BackSpearHunt;
 										}
@@ -1305,7 +1305,7 @@ namespace DOL.AI.Brain
 										{
 											Body.Quickness = 60;
 											Body.Strength = 170;
-											Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+											Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 											Body.VisibleActiveWeaponSlots = 34;
 											Body.styleComponent.NextCombatBackupStyle = TauntSpearHunt;
 										}
@@ -1315,7 +1315,7 @@ namespace DOL.AI.Brain
 								{
 									Body.Quickness = 60;
 									Body.Strength = 170;
-									Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+									Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 									Body.VisibleActiveWeaponSlots = 34;
 									Body.styleComponent.NextCombatStyle = Taunt2h;
 								}
@@ -1330,7 +1330,7 @@ namespace DOL.AI.Brain
 										{
 											Body.Quickness = 60;
 											Body.Strength = 170;
-											Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+											Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 											Body.VisibleActiveWeaponSlots = 34;
 											Body.styleComponent.NextCombatStyle = TauntSpearHunt;
 										}
@@ -1340,7 +1340,7 @@ namespace DOL.AI.Brain
 								{
 									Body.Quickness = 60;
 									Body.Strength = 170;
-									Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+									Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 									Body.VisibleActiveWeaponSlots = 34;
 									Body.styleComponent.NextCombatStyle = Taunt2h;
 								}
@@ -1365,7 +1365,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body.PackageID == "NosdodenGhostShadowblade")
 			{
-				Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+				Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 				Body.VisibleActiveWeaponSlots = 16;
 				Body.EvadeChance = 60;
 				if (Body.IsAlive)
@@ -1400,7 +1400,7 @@ namespace DOL.AI.Brain
 							Body.Quickness = 100;
 							Body.Strength = 150;
 						}
-						if (target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+						if (target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
 						{
 							if (CanWalkShadowblade == false)
 							{
@@ -1408,7 +1408,7 @@ namespace DOL.AI.Brain
 								CanWalkShadowblade = true;
 							}
 						}
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
 						{
 							CanWalkShadowblade = false;//reset flag so can slam again
 						}
@@ -1422,7 +1422,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body.PackageID == "NosdodenGhostRunemaster")
 			{
-				Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+				Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 				Body.VisibleActiveWeaponSlots = 34;
 				if (Body.IsAlive)
 				{
@@ -1467,7 +1467,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body.PackageID == "NosdodenGhostSpiritmaster")
 			{
-				Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+				Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 				Body.VisibleActiveWeaponSlots = 34;
 				if(!CheckProximityAggro())
                 {
@@ -1531,7 +1531,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body.PackageID == "NosdodenGhostBonedancer")
 			{
-				Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+				Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 				Body.VisibleActiveWeaponSlots = 34;
 				if (!CheckProximityAggro())
 				{
@@ -1608,7 +1608,7 @@ namespace DOL.AI.Brain
 					{
 						if (player.IsAlive && player.Client.Account.PrivLevel == 1)
 						{
-							if (!HealerEnemys_To_Mezz.Contains(player) && (!player.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity) || !player.effectListComponent.ContainsEffectForEffectType(eEffect.Mez)))
+							if (!HealerEnemys_To_Mezz.Contains(player) && (!player.effectListComponent.ContainsEffectForEffectType(EEffect.MezImmunity) || !player.effectListComponent.ContainsEffectForEffectType(EEffect.Mez)))
 								HealerEnemys_To_Mezz.Add(player);
 						}
 					}
@@ -1620,7 +1620,7 @@ namespace DOL.AI.Brain
 						GamePlayer Target = HealerEnemys_To_Mezz[Util.Random(0, HealerEnemys_To_Mezz.Count - 1)];//pick random target from list
 						RandomHealerTarget = Target;
 						if (RandomHealerTarget != null && RandomHealerTarget.IsAlive
-							&& (!RandomHealerTarget.effectListComponent.ContainsEffectForEffectType(eEffect.Mez) || !RandomHealerTarget.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity)))
+							&& (!RandomHealerTarget.effectListComponent.ContainsEffectForEffectType(EEffect.Mez) || !RandomHealerTarget.effectListComponent.ContainsEffectForEffectType(EEffect.MezImmunity)))
 						{
 							Body.TargetObject = RandomHealerTarget;
 							Body.TurnTo(RandomHealerTarget);
@@ -1634,7 +1634,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body.PackageID == "NosdodenGhostHealer")
 			{
-				Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+				Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 				Body.VisibleActiveWeaponSlots = 16;
 				if (Body.IsAlive)
 				{
@@ -1727,7 +1727,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body.PackageID == "NosdodenGhostShaman")
 			{
-				Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+				Body.SwitchWeapon(EActiveWeaponSlot.Standard);
 				Body.VisibleActiveWeaponSlots = 16;
 				if (Body.IsAlive)
 				{
@@ -1829,12 +1829,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 3510;
 					spell.Icon = 3510;
 					spell.Damage = 120;
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.Name = "Toothgnasher's Ram";
 					spell.Range = 1500;
 					spell.SpellID = 11869;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_InstantThaneDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_InstantThaneDD);
 				}
@@ -1855,13 +1855,13 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 3528;
 					spell.Icon = 35280;
 					spell.Damage = 120;
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.Name = "Greater Thunder Roar";
 					spell.Range = 0;
 					spell.Radius = 350;
 					spell.SpellID = 11870;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_InstantThaneDD_pbaoe = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_InstantThaneDD_pbaoe);
 				}
@@ -1882,12 +1882,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 3510;
 					spell.Icon = 3510;
 					spell.Damage = 300;
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.Name = "Thor's Full Lightning";
 					spell.Range = 1500;
 					spell.SpellID = 11871;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_InstantThaneDD_casting = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_InstantThaneDD_casting);
 				}
@@ -1910,12 +1910,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 3628;
 					spell.Icon = 3628;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Name = "Battle Roar";
 					spell.Range = 700;
 					spell.SpellID = 11872;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_InstantSkaldDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_InstantSkaldDD);
 				}
@@ -1936,12 +1936,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 3624;
 					spell.Icon = 3624;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Name = "Battle Roar";
 					spell.Range = 700;
 					spell.SpellID = 11873;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_InstantSkaldDD2 = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_InstantSkaldDD2);
 				}
@@ -1965,12 +1965,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 3607;
 					spell.Icon = 3607;
 					spell.Damage = 10;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Name = "Chant of Blood";
 					spell.Range = 700;
 					spell.SpellID = 11875;
 					spell.Target = "Self";
-					spell.Type = eSpellType.DamageAdd.ToString();
+					spell.Type = ESpellType.DamageAdd.ToString();
 					m_Skald_DA = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Skald_DA);
 				}
@@ -2000,7 +2000,7 @@ namespace DOL.AI.Brain
 					spell.Value = 25;
 					spell.SpellID = 11874;
 					spell.Target = "Self";
-					spell.Type = eSpellType.SavageDPSBuff.ToString();
+					spell.Type = ESpellType.SavageDPSBuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Savage_dps_Buff = new Spell(spell, 70);
@@ -2064,12 +2064,12 @@ namespace DOL.AI.Brain
 					spell.Icon = 2570;
 					spell.TooltipId = 2570;
 					spell.Damage = 300;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Greater Rune of Shadow";
 					spell.Range = 1500;
 					spell.SpellID = 11877;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Rune_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Rune_DD);
@@ -2092,12 +2092,12 @@ namespace DOL.AI.Brain
 					spell.Icon = 2970;
 					spell.TooltipId = 2970;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Sigil of Undoing";
 					spell.Range = 1800;
 					spell.SpellID = 11878;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					spell.Uninterruptible = true;
 					m_Rune_Bolt = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Rune_Bolt);
@@ -2122,12 +2122,12 @@ namespace DOL.AI.Brain
 					spell.Icon = 2610;
 					spell.TooltipId = 2610;
 					spell.Damage = 320;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Extinguish Lifeforce";
 					spell.Range = 1500;
 					spell.SpellID = 11879;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Spirit_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Spirit_DD);
@@ -2150,7 +2150,7 @@ namespace DOL.AI.Brain
 					spell.Icon = 2643;
 					spell.TooltipId = 2643;
 					spell.Duration = 35;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Description = "Target is mesmerized and cannot move or take any other action for the duration of the spell. If the target suffers any damage or other negative effect the spell will break.";
 					spell.Name = "Umbral Shroud";
 					spell.Range = 1500;
@@ -2211,13 +2211,13 @@ namespace DOL.AI.Brain
 					spell.Value = 35;
 					spell.Duration = 30;
 					spell.LifeDrainReturn = 90;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Description = "Target is damaged for 179 and also moves 35% slower for the spell duration.";
 					spell.Name = "Crystallize Skeleton";
 					spell.Range = 1500;
 					spell.SpellID = 11882;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
+					spell.Type = ESpellType.DamageSpeedDecreaseNoVariance.ToString();
 					m_Bone_DD2 = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bone_DD2);
 				}
@@ -2241,12 +2241,12 @@ namespace DOL.AI.Brain
 					spell.Damage = 250;
 					spell.Value = -90;
 					spell.LifeDrainReturn = 90;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Name = "Pulverize Skeleton";
 					spell.Range = 1500;
 					spell.SpellID = 11881;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Lifedrain.ToString();
+					spell.Type = ESpellType.Lifedrain.ToString();
 					m_Bone_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Bone_DD);
 				}
@@ -2330,7 +2330,7 @@ namespace DOL.AI.Brain
 					spell.SpellID = 11886;
 					spell.Target = "Enemy";
 					spell.Type = "Mesmerize";
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					m_Healer_Mezz = new Spell(spell, 70);
 					spell.Uninterruptible = true;
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Healer_Mezz);
@@ -2384,12 +2384,12 @@ namespace DOL.AI.Brain
 					spell.Icon = 3470;
 					spell.TooltipId = 3470;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Name = "Fungal Spine";
 					spell.Range = 1800;
 					spell.SpellID = 11888;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					spell.Uninterruptible = true;
 					m_Shamy_Bolt = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Shamy_Bolt);
@@ -2412,12 +2412,12 @@ namespace DOL.AI.Brain
 					spell.Icon = 3494;
 					spell.TooltipId = 3494;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Name = "Fungal Mucus";
 					spell.Range = 1500;
 					spell.SpellID = 11890;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Shamy_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Shamy_DD);
@@ -2440,7 +2440,7 @@ namespace DOL.AI.Brain
 					spell.Icon = 3425;
 					spell.TooltipId = 3425;
 					spell.Duration = 120;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Description = "Inflicts a wasting disease on the target that slows it, weakens it, and inhibits heal spells.";
 					spell.Message1 = "You are diseased!";
 					spell.Message2 = "{0} is diseased!";
@@ -2451,7 +2451,7 @@ namespace DOL.AI.Brain
 					spell.Radius = 400;
 					spell.SpellID = 11891;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Disease.ToString();
+					spell.Type = ESpellType.Disease.ToString();
 					spell.Uninterruptible = true;
 					m_Shamy_InstaAoeDisease = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Shamy_InstaAoeDisease);
@@ -2476,7 +2476,7 @@ namespace DOL.AI.Brain
 					spell.Damage = 83;
 					spell.Duration = 24;
 					spell.Frequency = 40;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					spell.Description = "Inflicts 83 damage to the target every 4 sec for 24 seconds";
 					spell.Message1 = "Your body is covered with painful sores!";
 					spell.Message2 = "{0}'s skin erupts in open wounds!";
@@ -2487,7 +2487,7 @@ namespace DOL.AI.Brain
 					spell.Radius = 350;
 					spell.SpellID = 11889;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
 					m_Shamy_AoeDot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Shamy_AoeDot);
@@ -2503,13 +2503,13 @@ namespace DOL.GS
 {
 	public class NosdodenGhostAdd : GameNPC
 	{
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
 				default: return 20; // dmg reduction for rest resists
 			}
 		}
@@ -2528,7 +2528,7 @@ namespace DOL.GS
         }
         public override void OnAttackedByEnemy(AttackData ad)
         {       
-            if (ad != null && ad.AttackResult == eAttackResult.Evaded)
+            if (ad != null && ad.AttackResult == EAttackResult.Evaded)
             {
 				#region Berserker
 				if (PackageID == "NosdodenGhostBerserker")
@@ -2559,12 +2559,12 @@ namespace DOL.GS
             #region Berserker
             if (PackageID == "NosdodenGhostBerserker")
 			{
-				if (ad != null && ad.AttackResult == eAttackResult.HitUnstyled)
+				if (ad != null && ad.AttackResult == EAttackResult.HitUnstyled)
 				{
 					styleComponent.NextCombatBackupStyle = NosdodenGhostAddBrain.tauntBerserker;
 					styleComponent.NextCombatStyle = NosdodenGhostAddBrain.AfterEvadeBerserker;
 				}
-				if (ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 198 && ad.Style.ClassID == 31)
+				if (ad.AttackResult == EAttackResult.HitStyle && ad.Style.ID == 198 && ad.Style.ClassID == 31)
 				{
 					styleComponent.NextCombatBackupStyle = NosdodenGhostAddBrain.tauntBerserker;
 					styleComponent.NextCombatStyle = NosdodenGhostAddBrain.EvadeFollowUpBerserker;
@@ -2574,19 +2574,19 @@ namespace DOL.GS
 			#region Shadowblade
 			if (PackageID == "NosdodenGhostShadowblade")
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle) && !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle) && !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 					CastSpell(SB_Lifebane, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-				if (ad != null && ad.AttackResult == eAttackResult.HitUnstyled)
+				if (ad != null && ad.AttackResult == EAttackResult.HitUnstyled)
 				{
 					styleComponent.NextCombatBackupStyle = NosdodenGhostAddBrain.AnyTimerSB;
 					styleComponent.NextCombatStyle = NosdodenGhostAddBrain.AnyTimerFollowUpSB;
 				}
-				if (ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 198 && ad.Style.ClassID == 31)
+				if (ad.AttackResult == EAttackResult.HitStyle && ad.Style.ID == 198 && ad.Style.ClassID == 31)
 				{
 					styleComponent.NextCombatBackupStyle = NosdodenGhostAddBrain.AnyTimerSB;
 					styleComponent.NextCombatStyle = NosdodenGhostAddBrain.EvadeFollowUpBerserker;
 				}
-				if (ad.AttackResult == eAttackResult.HitStyle && ad.Style.ID == 342 && ad.Style.ClassID == 23)
+				if (ad.AttackResult == EAttackResult.HitStyle && ad.Style.ID == 342 && ad.Style.ClassID == 23)
 				{
 					styleComponent.NextCombatBackupStyle = NosdodenGhostAddBrain.AnyTimerSB;
 					styleComponent.NextCombatStyle = NosdodenGhostAddBrain.AnyTimerFollowUpSB;
@@ -2595,11 +2595,11 @@ namespace DOL.GS
 			#endregion
 			base.OnAttackEnemy(ad);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 250;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -2683,7 +2683,7 @@ namespace DOL.GS
 					spell.Icon = 4099;
 					spell.TooltipId = 4099;
 					spell.Damage = 65;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Description = "Inflicts damage to the target repeatly over a given time period.";
 					spell.Message1 = "You are afflicted with a vicious poison!";
 					spell.Message2 = "{0} has been poisoned!";
@@ -2693,7 +2693,7 @@ namespace DOL.GS
 					spell.Range = 350;
 					spell.SpellID = 11876;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					m_SB_Lifebane = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SB_Lifebane);
 				}
@@ -2714,30 +2714,30 @@ namespace DOL.GS
 		{
 			get { return 2500; }
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 15; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 15; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 15; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 15; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 15; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 15; // dmg reduction for melee dmg
 				default: return 25; // dmg reduction for rest resists
 			}
 		}
         public override void OnAttackEnemy(AttackData ad)
         {
-			if(ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+			if(ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
             {
-				if(Util.Chance(25) && (!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) || !ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun)) && ad.Target.IsAlive)
+				if(Util.Chance(25) && (!ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity) || !ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun)) && ad.Target.IsAlive)
 					CastSpell(SpiritChampion_stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}				
             base.OnAttackEnemy(ad);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
@@ -2767,7 +2767,7 @@ namespace DOL.GS
 			template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 310, 0, 0, 0);
 			template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 79, 0, 0, 0);
 			Inventory = template.CloseTemplate();
-			SwitchWeapon(eActiveWeaponSlot.Standard);
+			SwitchWeapon(EActiveWeaponSlot.Standard);
 			VisibleActiveWeaponSlots = 16;
 			Size = 50;
 			Level = 50;
@@ -2775,7 +2775,7 @@ namespace DOL.GS
 			BlockChance = 40;
 			RespawnInterval = -1;
 			Flags ^= eFlags.GHOST;
-			Realm = eRealm.None;
+			Realm = ERealm.None;
 			GhostSpiritChampionBrain adds = new GhostSpiritChampionBrain();
 			SetOwnBrain(adds);
 			base.AddToWorld();
@@ -2805,7 +2805,7 @@ namespace DOL.GS
 					spell.Range = 400;
 					spell.SpellID = 11884;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Stun.ToString();
+					spell.Type = ESpellType.Stun.ToString();
 					m_SpiritChampion_stun = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SpiritChampion_stun);
 				}
@@ -2871,21 +2871,21 @@ namespace DOL.GS
 		{
 			get { return 2500; }
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 15; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 15; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 15; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 15; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 15; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 15; // dmg reduction for melee dmg
 				default: return 25; // dmg reduction for rest resists
 			}
 		}
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
@@ -2905,7 +2905,7 @@ namespace DOL.GS
 			Size = 60;
 			Level = 50;
 			RespawnInterval = -1;
-			Realm = eRealm.None;
+			Realm = ERealm.None;
 			GhostSkeletalCommanderBrain adds = new GhostSkeletalCommanderBrain();
 			SetOwnBrain(adds);
 			base.AddToWorld();
@@ -3005,17 +3005,17 @@ namespace DOL.GS
 		{
 			get { return 1500; }
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 15; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 15; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 15; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 15; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 15; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 15; // dmg reduction for melee dmg
 				default: return 25; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 200;
 		}
@@ -3029,7 +3029,7 @@ namespace DOL.GS
 				return;
 			base.StartAttack(target);
 		}	
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.15;
@@ -3043,7 +3043,7 @@ namespace DOL.GS
 			RespawnInterval = -1;
 			Dexterity = 200;
 			Flags ^= eFlags.GHOST;
-			Realm = eRealm.None;
+			Realm = ERealm.None;
 			SkeletalCommanderHealerBrain adds = new SkeletalCommanderHealerBrain();
 			SetOwnBrain(adds);
 			base.AddToWorld();
@@ -3168,21 +3168,21 @@ namespace DOL.GS
 		{
 			get { return 2500; }
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 15; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 15; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 15; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 15; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 15; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 15; // dmg reduction for melee dmg
 				default: return 25; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 200;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.15;
@@ -3196,7 +3196,7 @@ namespace DOL.GS
 			Size = 50;
 			Level = (byte)Util.Random(60,62);
 			RespawnInterval = -1;
-			Realm = eRealm.None;
+			Realm = ERealm.None;
 			MaxSpeedBase = 250;
 			Faction = FactionMgr.GetFactionByID(150);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(150));

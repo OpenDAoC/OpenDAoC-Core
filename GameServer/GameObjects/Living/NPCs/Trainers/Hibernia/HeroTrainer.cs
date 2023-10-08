@@ -26,12 +26,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Hero Trainer
 	/// </summary>
-	[NPCGuildScript("Hero Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Hero Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Hero Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Hero Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class HeroTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Hero; }
+			get { return ECharacterClass.Hero; }
 		}
 
 		public const string ARMOR_ID1 = "hero_item";
@@ -90,7 +90,7 @@ namespace DOL.GS.Trainer
 				// promote player to other class
 				if (CanPromotePlayer(player))
 				{
-					PromotePlayer(player, (int)eCharacterClass.Hero, LanguageMgr.GetTranslation(player.Client.Account.Language, "HeroTrainer.WhisperReceive.Text1", player.GetName(0, false)), null);
+					PromotePlayer(player, (int)ECharacterClass.Hero, LanguageMgr.GetTranslation(player.Client.Account.Language, "HeroTrainer.WhisperReceive.Text1", player.GetName(0, false)), null);
 					player.ReceiveItem(this, ARMOR_ID1);
 				}
 			}

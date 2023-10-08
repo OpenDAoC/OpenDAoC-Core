@@ -10,13 +10,13 @@ namespace DOL.GS
 	{
 		public Ydenia() : base() { }
 
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
@@ -36,11 +36,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -79,7 +79,7 @@ namespace DOL.GS
         }
 		public override void DealDamage(AttackData ad)
 		{
-			if (ad != null && ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0 && ad.DamageType == eDamageType.Body)
+			if (ad != null && ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0 && ad.DamageType == EDamageType.Body)
 			{
 				Health += ad.Damage;
 			}
@@ -111,7 +111,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				canPort = false;
 				var throwPlayer = Body.TempProperties.GetProperty<ECSGameTimer>("ydenia_teleport");//cancel teleport
@@ -136,7 +136,7 @@ namespace DOL.AI.Brain
                 {
 					if (Util.Chance(100) && !Body.IsCasting)
 					{
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.StrConDebuff))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.StrConDebuff))
 							Body.CastSpell(Ydenia_SC_Debuff, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					}
 					if (Util.Chance(100) && !Body.IsCasting)
@@ -166,7 +166,7 @@ namespace DOL.AI.Brain
                 {
 					case 1: 
 						player.MoveTo(100, 664713, 896689, 1553, 2373);
-						player.TakeDamage(player, eDamageType.Cold, player.MaxHealth / 7, 0);
+						player.TakeDamage(player, EDamageType.Cold, player.MaxHealth / 7, 0);
 						foreach (GamePlayer players in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 						{
 							if (players != null)
@@ -176,7 +176,7 @@ namespace DOL.AI.Brain
 						break;
 					case 2:
 						player.MoveTo(100, 667220, 894261, 1543, 692);
-						player.TakeDamage(player, eDamageType.Cold, player.MaxHealth / 7, 0);
+						player.TakeDamage(player, EDamageType.Cold, player.MaxHealth / 7, 0);
 						foreach (GamePlayer players in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 						{
 							if (players != null)
@@ -186,7 +186,7 @@ namespace DOL.AI.Brain
 						break;
 					case 3:
 						player.MoveTo(100, 665968, 892792, 1561, 235);
-						player.TakeDamage(player, eDamageType.Cold, player.MaxHealth / 7, 0);
+						player.TakeDamage(player, EDamageType.Cold, player.MaxHealth / 7, 0);
 						foreach (GamePlayer players in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 						{
 							if (players != null)
@@ -196,7 +196,7 @@ namespace DOL.AI.Brain
 						break;
 					case 4:
 						player.MoveTo(100, 663895, 893446, 1554, 3482);
-						player.TakeDamage(player, eDamageType.Cold, player.MaxHealth / 7, 0);
+						player.TakeDamage(player, EDamageType.Cold, player.MaxHealth / 7, 0);
 						foreach (GamePlayer players in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 						{
 							if (players != null)
@@ -224,14 +224,14 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 9191;
 					spell.Icon = 9191;
 					spell.Damage = 320;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Name = "Lifedrain";
 					spell.Range = 1500;
 					spell.SpellID = 12010;
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					m_YdeniaDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_YdeniaDD);
 				}
@@ -259,7 +259,7 @@ namespace DOL.AI.Brain
 					spell.Radius = 400;
 					spell.SpellID = 12011;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.StrengthConstitutionDebuff.ToString();
+					spell.Type = ESpellType.StrengthConstitutionDebuff.ToString();
 					m_Ydenia_SC_Debuff = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Ydenia_SC_Debuff);
 				}

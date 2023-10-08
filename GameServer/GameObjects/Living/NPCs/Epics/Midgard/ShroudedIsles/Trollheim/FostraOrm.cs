@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Fostra Orm Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -35,11 +35,11 @@ namespace DOL.GS
 			get { return 350; }
 			set { }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.25;
@@ -89,14 +89,14 @@ namespace DOL.AI.Brain
 				GameLiving target = Body.TargetObject as GameLiving;
 				if (Util.Chance(25) && target != null)
 				{
-					if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+					if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 					{
 						Body.CastSpell(OrmDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					}
 				}
 				if (Util.Chance(25) && target != null)
 				{
-					if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+					if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
 					{
 						Body.CastSpell(OrmDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					}
@@ -129,9 +129,9 @@ namespace DOL.AI.Brain
 					spell.Frequency = 30;
 					spell.Range = 500;
 					spell.SpellID = 11853;
-					spell.Target = eSpellTarget.ENEMY.ToString();
-					spell.Type = eSpellType.DamageOverTime.ToString();
-					spell.DamageType = (int)eDamageType.Body;
+					spell.Target = ESpellTarget.ENEMY.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Uninterruptible = true;
 					m_OrmDot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OrmDot);
@@ -164,7 +164,7 @@ namespace DOL.AI.Brain
 					spell.Target = "Enemy";
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+					spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
 					m_OrmDisease = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OrmDisease);
 				}

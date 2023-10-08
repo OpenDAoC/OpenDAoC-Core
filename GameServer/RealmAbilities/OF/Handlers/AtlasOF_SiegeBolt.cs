@@ -34,10 +34,10 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Icon = 0;
             m_dbspell.ClientEffect = 2100;
             m_dbspell.Damage = m_dmgValue;
-            m_dbspell.DamageType = (int)eDamageType.Natural;
+            m_dbspell.DamageType = (int)EDamageType.Natural;
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = m_radius;
-            m_dbspell.Type = eSpellType.SiegeDirectDamage.ToString();
+            m_dbspell.Type = ESpellType.SiegeDirectDamage.ToString();
             m_dbspell.Value = 0;
             m_dbspell.Duration = 0;
             m_dbspell.Pulse = 0;

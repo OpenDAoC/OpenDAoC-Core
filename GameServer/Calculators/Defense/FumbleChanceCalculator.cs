@@ -11,19 +11,19 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusCategory4 unused
 /// BuffBonusMultCategory1 unused
 /// </summary>
-[PropertyCalculator(eProperty.FumbleChance)]
+[PropertyCalculator(EProperty.FumbleChance)]
 public class FumbleChanceCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		// 5% level 1, 0.1% level 50
 		return Math.Max(51 - living.Level, (10 * living.DebuffCategory[(int)property]) + (10 * living.AbilityBonus[(int)property]));
 	}
 }
-[PropertyCalculator(eProperty.SpellFumbleChance)]
+[PropertyCalculator(EProperty.SpellFumbleChance)]
 public class SpellFumbleChanceCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		return Math.Min(100, living.DebuffCategory[(int)property]);
 	}

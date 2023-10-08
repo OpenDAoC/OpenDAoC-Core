@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Wizard Trainer
 	/// </summary>	
-	[NPCGuildScript("Wizard Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Wizard Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Wizard Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Wizard Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class WizardTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Wizard; }
+			get { return ECharacterClass.Wizard; }
 		}
 
 		public const string WEAPON_ID = "wizard_item";
@@ -86,7 +86,7 @@ namespace DOL.GS.Trainer
 			case "join the Academy":
 				// promote player to other class
 				if (CanPromotePlayer(player)) {
-					PromotePlayer(player, (int)eCharacterClass.Wizard, "Welcome to our guild! You have much to learn, but I see greatness in your future! Here too is your guild weapon, a Staff of Focus!", null);
+					PromotePlayer(player, (int)ECharacterClass.Wizard, "Welcome to our guild! You have much to learn, but I see greatness in your future! Here too is your guild weapon, a Staff of Focus!", null);
 					player.ReceiveItem(this,WEAPON_ID);
 				}
 				break;

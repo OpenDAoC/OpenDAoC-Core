@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Ranger, "Ranger", "Stalker")]
+	[CharacterClass((int)ECharacterClass.Ranger, "Ranger", "Stalker")]
 	public class ClassRanger : ClassStalker
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Archery, Specs.RecurveBow };
@@ -32,10 +32,10 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.PathofFocus";
 			m_specializationMultiplier = 20;
-			m_primaryStat = eStat.DEX;
-			m_secondaryStat = eStat.QUI;
-			m_tertiaryStat = eStat.STR;
-			m_manaStat = eStat.DEX;
+			m_primaryStat = EStat.DEX;
+			m_secondaryStat = EStat.QUI;
+			m_tertiaryStat = EStat.STR;
+			m_manaStat = EStat.DEX;
 		}
 
 		public override bool CanUseLefthandedWeapon

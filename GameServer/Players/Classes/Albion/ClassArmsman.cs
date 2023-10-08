@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Armsman, "Armsman", "Fighter", "Armswoman")]
+	[CharacterClass((int)ECharacterClass.Armsman, "Armsman", "Fighter", "Armswoman")]
 	public class ClassArmsman : ClassFighter
 	{
 		private static readonly string[] AutotrainableSkills = new[] { Specs.Slash, Specs.Thrust };
@@ -32,9 +32,9 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.DefendersofAlbion";
 			m_specializationMultiplier = 20;
-			m_primaryStat = eStat.STR;
-			m_secondaryStat = eStat.CON;
-			m_tertiaryStat = eStat.DEX;
+			m_primaryStat = EStat.STR;
+			m_secondaryStat = EStat.CON;
+			m_tertiaryStat = EStat.DEX;
 			m_baseHP = 880;
 		}
 

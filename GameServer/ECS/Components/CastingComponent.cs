@@ -107,7 +107,7 @@ namespace DOL.GS
                 {
                     if (Owner is GamePlayer player)
                     {
-                        if (newSpellHandler.Spell.CastTime > 0 && SpellHandler is not ChamberSpellHandler && newSpellHandler.Spell.SpellType != eSpellType.Chamber)
+                        if (newSpellHandler.Spell.CastTime > 0 && SpellHandler is not ChamberSpellHandler && newSpellHandler.Spell.SpellType != ESpellType.Chamber)
                         {
                             if (SpellHandler.Spell.InstrumentRequirement != 0)
                             {

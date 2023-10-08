@@ -49,7 +49,7 @@ namespace DOL.GS
         /// <summary>
         /// The destination realm. 
         /// </summary>
-        protected virtual eRealm DestinationRealm
+        protected virtual ERealm DestinationRealm
         {
             get { return Realm; }
         }
@@ -95,7 +95,7 @@ namespace DOL.GS
 			// the level of the player, so let's deal with that first.
 			if (text.ToLower() == "battlegrounds")
 			{
-				if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player)
+				if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
 				{
 					SayTo(player, ServerProperties.Properties.BG_ZONES_CLOSED_MESSAGE);
 				}
@@ -117,7 +117,7 @@ namespace DOL.GS
 					}
 					else
 					{
-						if (player.Client.Account.PrivLevel > (uint)ePrivLevel.Player)
+						if (player.Client.Account.PrivLevel > (uint)EPrivLevel.Player)
 						{
 							player.Out.SendMessage("No portal keep found.", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 						}

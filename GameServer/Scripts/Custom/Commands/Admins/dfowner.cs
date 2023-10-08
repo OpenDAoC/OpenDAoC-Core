@@ -4,7 +4,7 @@ using DOL.GS.ServerRules;
 
 namespace DOL.GS.Commands
 {
-    [Command("&dfowner", ePrivLevel.Admin,
+    [Command("&dfowner", EPrivLevel.Admin,
         "Changes the Realm owning access to Darkness Falls", "&dfowner <Realm>")]
 
     public class DFOwnerCommandHandler : ACommandHandler, ICommandHandler
@@ -27,7 +27,7 @@ namespace DOL.GS.Commands
                                 eChatLoc.CL_SystemWindow);
                         return;
                     }
-                    DFEnterJumpPoint.SetDFOwner(player, (eRealm)newRealm);
+                    DFEnterJumpPoint.SetDFOwner(player, (ERealm)newRealm);
 
                 }
 

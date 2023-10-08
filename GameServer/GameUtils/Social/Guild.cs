@@ -130,11 +130,11 @@ namespace DOL.GS
 		/// </summary>
 		protected List<AbstractGameKeep> m_claimedKeeps = new List<AbstractGameKeep>();
 
-		public eRealm Realm
+		public ERealm Realm
 		{
 			get
 			{
-				return (eRealm)m_DBguild.Realm;
+				return (ERealm)m_DBguild.Realm;
 			}
 			set
 			{

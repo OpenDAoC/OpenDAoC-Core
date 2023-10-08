@@ -51,11 +51,11 @@ namespace DOL.GS.Effects
 			DbInventoryItem shield = living.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 			if (shield == null)
 				return;
-			if (shield.Object_Type != (int)eObjectType.Shield)
+			if (shield.Object_Type != (int)EObjectType.Shield)
 				return;
 			if (living.TargetObject == null)
 				return;
-			if (living.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+			if (living.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
 				return;
 			if (living.ActiveWeapon.Hand == 1)
 				return;
@@ -88,13 +88,13 @@ namespace DOL.GS.Effects
 			if (ag.AttackData == null) return;
 			switch (ag.AttackData.AttackResult)
 			{
-				case eAttackResult.Blocked:
-				case eAttackResult.Evaded:
-				case eAttackResult.Fumbled:
-				case eAttackResult.HitStyle:
-				case eAttackResult.HitUnstyled:
-				case eAttackResult.Missed:
-				case eAttackResult.Parried:
+				case EAttackResult.Blocked:
+				case EAttackResult.Evaded:
+				case EAttackResult.Fumbled:
+				case EAttackResult.HitStyle:
+				case EAttackResult.HitUnstyled:
+				case EAttackResult.Missed:
+				case EAttackResult.Parried:
 					Stop(); break;
 			}
 

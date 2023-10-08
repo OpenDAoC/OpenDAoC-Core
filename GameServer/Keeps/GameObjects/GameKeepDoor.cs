@@ -75,13 +75,13 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Get the realm of the keep door from keep owner
 		/// </summary>
-		public override eRealm Realm
+		public override ERealm Realm
 		{
 			get
 			{
 				if (Component == null || Component.Keep == null)
 				{
-					return eRealm.None;
+					return ERealm.None;
 				}
 
 				return Component.Keep.Realm;
@@ -267,7 +267,7 @@ namespace DOL.GS.Keeps
 		}
 
 
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (damageAmount > 0 && IsAlive)
 			{
@@ -331,7 +331,7 @@ namespace DOL.GS.Keeps
 		public override void ModifyAttack(AttackData attackData)
 		{
 			// Allow a GM to use commands to damage components, regardless of toughness setting
-			if (attackData.DamageType == eDamageType.GM)
+			if (attackData.DamageType == EDamageType.GM)
 				return;
 
 			int toughness = Properties.SET_KEEP_DOOR_TOUGHNESS;
@@ -362,7 +362,7 @@ namespace DOL.GS.Keeps
 				{
 					baseDamage = 0;
 					styleDamage = 0;
-					attackData.AttackResult = eAttackResult.NotAllowed_ServerRules;
+					attackData.AttackResult = EAttackResult.NotAllowed_ServerRules;
 				}
 				else
 				{
@@ -375,7 +375,7 @@ namespace DOL.GS.Keeps
 						if (player != null)
 						{
 							// special considerations for pet spam classes
-							if (player.CharacterClass.ID == (int)eCharacterClass.Theurgist || player.CharacterClass.ID == (int)eCharacterClass.Animist)
+							if (player.CharacterClass.ID == (int)ECharacterClass.Theurgist || player.CharacterClass.ID == (int)ECharacterClass.Animist)
 							{
 								baseDamage = (int)(baseDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
 								styleDamage = (int)(styleDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
@@ -839,7 +839,7 @@ namespace DOL.GS.Keeps
 		/// This Function is called when keep is taken to repair door
 		/// </summary>
 		/// <param name="realm">new realm of keep taken</param>
-		public void Reset(eRealm realm)
+		public void Reset(ERealm realm)
 		{
 			Realm = realm;
 			Health = MaxHealth;

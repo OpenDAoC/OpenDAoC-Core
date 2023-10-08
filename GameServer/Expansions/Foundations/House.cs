@@ -62,17 +62,17 @@ namespace DOL.GS.Housing
 			set { _databaseItem.Model = value; }
 		}
 
-		public eRealm Realm
+		public ERealm Realm
 		{
 			get
 			{
 				if (Model < 5)
-					return eRealm.Albion;
+					return ERealm.Albion;
 
 				if (Model < 9)
-					return eRealm.Midgard;
+					return ERealm.Midgard;
 
-				return eRealm.Hibernia;
+				return ERealm.Hibernia;
 			}
 		}
 
@@ -479,7 +479,7 @@ namespace DOL.GS.Housing
 
 			text.Add(" ");
 
-			if (player.Client.Account.PrivLevel > (int)ePrivLevel.Player)
+			if (player.Client.Account.PrivLevel > (int)EPrivLevel.Player)
 			{
 				text.Add("GM: Model: " + Model);
 				text.Add("GM: Realm: " + GlobalConstants.RealmToName(Realm));
@@ -690,21 +690,21 @@ namespace DOL.GS.Housing
 			int z = location.Z;
 			GameObject hookpointObject = null;
 
-			switch ((eObjectType)item.Object_Type)
+			switch ((EObjectType)item.Object_Type)
 			{
-				case eObjectType.HouseVault:
+				case EObjectType.HouseVault:
 					{
 						var houseVault = new GameHouseVault(item, index);
 						houseVault.Attach(this, position, heading);
 						hookpointObject = houseVault;
 						break;
 					}
-				case eObjectType.HouseNPC:
+				case EObjectType.HouseNPC:
 					{
 						hookpointObject = GameServer.ServerRules.PlaceHousingNPC(this, item, location, GetHookpointHeading(position));
 						break;
 					}
-				case eObjectType.HouseBindstone:
+				case EObjectType.HouseBindstone:
 					{
 						hookpointObject = new GameStaticItem();
 						hookpointObject.CurrentHouse = this;
@@ -722,7 +722,7 @@ namespace DOL.GS.Housing
 						//add bind point
 						break;
 					}
-				case eObjectType.HouseInteriorObject:
+				case EObjectType.HouseInteriorObject:
 					{
 						hookpointObject = GameServer.ServerRules.PlaceHousingInteriorItem(this, item, location, heading);
 						break;
@@ -886,7 +886,7 @@ namespace DOL.GS.Housing
 			con.Y = tY;
 			con.Z = Z + zaddition;
 			con.Level = 50;
-			con.Realm = (eRealm) realm;
+			con.Realm = (ERealm) realm;
 			con.HouseNumber = (ushort)HouseNumber;
 			con.Heading = heading;
 			con.Model = 144;
@@ -1025,51 +1025,51 @@ namespace DOL.GS.Housing
 
 				if (item != null)
 				{
-					switch ((eObjectType) item.Object_Type)
+					switch ((EObjectType) item.Object_Type)
 					{
-						case eObjectType.HouseInteriorBanner:
+						case EObjectType.HouseInteriorBanner:
 							IndoorGuildBanner = (item.DPS_AF == 1 ? true : false);
 							break;
-						case eObjectType.HouseInteriorShield:
+						case EObjectType.HouseInteriorShield:
 							IndoorGuildShield = (item.DPS_AF == 1 ? true : false);
 							break;
-						case eObjectType.HouseCarpetFirst:
+						case EObjectType.HouseCarpetFirst:
 							Rug1Color = item.DPS_AF;
 							break;
-						case eObjectType.HouseCarpetSecond:
+						case EObjectType.HouseCarpetSecond:
 							Rug2Color = item.DPS_AF;
 							break;
-						case eObjectType.HouseCarpetThird:
+						case EObjectType.HouseCarpetThird:
 							Rug3Color = item.DPS_AF;
 							break;
-						case eObjectType.HouseCarpetFourth:
+						case EObjectType.HouseCarpetFourth:
 							Rug4Color = item.DPS_AF;
 							break;
-						case eObjectType.HouseTentColor:
+						case EObjectType.HouseTentColor:
 							PorchRoofColor = item.DPS_AF;
 							break;
-						case eObjectType.HouseExteriorBanner:
+						case EObjectType.HouseExteriorBanner:
 							OutdoorGuildBanner = (item.DPS_AF == 1 ? true : false);
 							break;
-						case eObjectType.HouseExteriorShield:
+						case EObjectType.HouseExteriorShield:
 							OutdoorGuildShield = (item.DPS_AF == 1 ? true : false);
 							break;
-						case eObjectType.HouseRoofMaterial:
+						case EObjectType.HouseRoofMaterial:
 							RoofMaterial = item.DPS_AF;
 							break;
-						case eObjectType.HouseWallMaterial:
+						case EObjectType.HouseWallMaterial:
 							WallMaterial = item.DPS_AF;
 							break;
-						case eObjectType.HouseDoorMaterial:
+						case EObjectType.HouseDoorMaterial:
 							DoorMaterial = item.DPS_AF;
 							break;
-						case eObjectType.HousePorchMaterial:
+						case EObjectType.HousePorchMaterial:
 							PorchMaterial = item.DPS_AF;
 							break;
-						case eObjectType.HouseWoodMaterial:
+						case EObjectType.HouseWoodMaterial:
 							TrussMaterial = item.DPS_AF;
 							break;
-						case eObjectType.HouseShutterMaterial:
+						case EObjectType.HouseShutterMaterial:
 							WindowMaterial = item.DPS_AF;
 							break;
 						default:
@@ -1305,7 +1305,7 @@ namespace DOL.GS.Housing
 			if (player == null)
 				return false;
 
-			if (player.Client.Account.PrivLevel == (int)ePrivLevel.Admin)
+			if (player.Client.Account.PrivLevel == (int)EPrivLevel.Admin)
 				return true;
 
 			// check by character name/account if not guild house

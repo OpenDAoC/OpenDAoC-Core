@@ -14,7 +14,7 @@ namespace DOL.GS.Commands
 {
 	[Command(
 		"&player",
-		ePrivLevel.GM,
+		EPrivLevel.GM,
 		"Various Admin/GM commands to edit characters.",
 		"/player name <newName>",
 		"/player lastname <change|reset> <newLastName>",
@@ -173,7 +173,7 @@ namespace DOL.GS.Commands
                         }
                         else
                         {
-                            pToLevel.GainExperience(eXPSource.Other, pToLevel.ExperienceForCurrentLevelSecondStage - pToLevel.Experience);
+                            pToLevel.GainExperience(EXpSource.Other, pToLevel.ExperienceForCurrentLevelSecondStage - pToLevel.Experience);
 
                             client.Out.SendMessage("You gave " + pToLevel.Name + " a free half level!",
                                                        eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -222,7 +222,7 @@ namespace DOL.GS.Commands
                                 bool curSecondStage = player.IsLevelSecondStage;
                                 if (newLevel > curLevel && curSecondStage)
                                 {
-                                    player.GainExperience(eXPSource.Other, player.GetExperienceValueForLevel(++curLevel));
+                                    player.GainExperience(EXpSource.Other, player.GetExperienceValueForLevel(++curLevel));
                                 }
                                 if (newLevel != curLevel || !curSecondStage)
                                     player.Level = newLevel;
@@ -525,13 +525,13 @@ namespace DOL.GS.Commands
                                 return;
                             }
 
-                            player.Realm = (eRealm)newRealm;
+                            player.Realm = (ERealm)newRealm;
 
                             client.Out.SendMessage(
-                                "You successfully changed " + player.Name + "'s realm to " + GlobalConstants.RealmToName((eRealm)newRealm) +
+                                "You successfully changed " + player.Name + "'s realm to " + GlobalConstants.RealmToName((ERealm)newRealm) +
                                 "!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                             player.Out.SendMessage(
-                                client.Player.Name + " has changed your realm to " + GlobalConstants.RealmToName((eRealm)newRealm) + "!",
+                                client.Player.Name + " has changed your realm to " + GlobalConstants.RealmToName((ERealm)newRealm) + "!",
                                 eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
                             player.Out.SendUpdatePlayer();
@@ -769,10 +769,10 @@ namespace DOL.GS.Commands
                             if (player == null)
                                 player = client.Player;
 
-                            eXPSource xpSource = eXPSource.Other;
+                            EXpSource xpSource = EXpSource.Other;
                             if (args[1].ToLower() == "xpa")
                             {
-                                xpSource = eXPSource.NPC;
+                                xpSource = EXpSource.NPC;
                             }
 
                             long amount = long.Parse(args[2]);
@@ -808,7 +808,7 @@ namespace DOL.GS.Commands
                                 player = client.Player;
 
                             long amount = long.Parse(args[2]);
-                            player.GainChampionExperience(amount, eXPSource.GM);
+                            player.GainChampionExperience(amount, EXpSource.GM);
                             client.Out.SendMessage("You gave " + player.Name + " " + amount + " Champion experience succesfully!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                             player.Out.SendMessage(client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + amount + " Champion experience!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
@@ -939,7 +939,7 @@ namespace DOL.GS.Commands
                                 /*1*/
                                 case "dex":
                                     {
-                                        player.ChangeBaseStat(eStat.DEX, value);
+                                        player.ChangeBaseStat(EStat.DEX, value);
                                         player.Out.SendMessage(
                                             client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + value + " dexterity!",
                                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -951,7 +951,7 @@ namespace DOL.GS.Commands
                                 /*2*/
                                 case "str":
                                     {
-                                        player.ChangeBaseStat(eStat.STR, value);
+                                        player.ChangeBaseStat(EStat.STR, value);
                                         player.Out.SendMessage(
                                             client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + value + " strength!",
                                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -963,7 +963,7 @@ namespace DOL.GS.Commands
                                 /*3*/
                                 case "con":
                                     {
-                                        player.ChangeBaseStat(eStat.CON, value);
+                                        player.ChangeBaseStat(EStat.CON, value);
                                         player.Out.SendMessage(
                                             client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + value +
                                             " consititution!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -975,7 +975,7 @@ namespace DOL.GS.Commands
                                 /*4*/
                                 case "emp":
                                     {
-                                        player.ChangeBaseStat(eStat.EMP, value);
+                                        player.ChangeBaseStat(EStat.EMP, value);
                                         player.Out.SendMessage(
                                             client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + value + " empathy!",
                                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -987,7 +987,7 @@ namespace DOL.GS.Commands
                                 /*5*/
                                 case "int":
                                     {
-                                        player.ChangeBaseStat(eStat.INT, value);
+                                        player.ChangeBaseStat(EStat.INT, value);
                                         player.Out.SendMessage(
                                             client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + value +
                                             " intelligence!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -999,7 +999,7 @@ namespace DOL.GS.Commands
                                 /*6*/
                                 case "pie":
                                     {
-                                        player.ChangeBaseStat(eStat.PIE, value);
+                                        player.ChangeBaseStat(EStat.PIE, value);
                                         player.Out.SendMessage(
                                             client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + value + " piety!",
                                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -1011,7 +1011,7 @@ namespace DOL.GS.Commands
                                 /*7*/
                                 case "qui":
                                     {
-                                        player.ChangeBaseStat(eStat.QUI, value);
+                                        player.ChangeBaseStat(EStat.QUI, value);
                                         player.Out.SendMessage(
                                             client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + value + " quickness!",
                                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -1023,7 +1023,7 @@ namespace DOL.GS.Commands
                                 /*8*/
                                 case "cha":
                                     {
-                                        player.ChangeBaseStat(eStat.CHR, value);
+                                        player.ChangeBaseStat(EStat.CHR, value);
                                         player.Out.SendMessage(
                                             client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + value + " charisma!",
                                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -1035,14 +1035,14 @@ namespace DOL.GS.Commands
                                 /*all*/
                                 case "all":
                                     {
-                                        player.ChangeBaseStat(eStat.CHR, value); //1
-                                        player.ChangeBaseStat(eStat.QUI, value); //2
-                                        player.ChangeBaseStat(eStat.INT, value); //3
-                                        player.ChangeBaseStat(eStat.PIE, value); //4
-                                        player.ChangeBaseStat(eStat.EMP, value); //5
-                                        player.ChangeBaseStat(eStat.CON, value); //6
-                                        player.ChangeBaseStat(eStat.STR, value); //7
-                                        player.ChangeBaseStat(eStat.DEX, value); //8
+                                        player.ChangeBaseStat(EStat.CHR, value); //1
+                                        player.ChangeBaseStat(EStat.QUI, value); //2
+                                        player.ChangeBaseStat(EStat.INT, value); //3
+                                        player.ChangeBaseStat(EStat.PIE, value); //4
+                                        player.ChangeBaseStat(EStat.EMP, value); //5
+                                        player.ChangeBaseStat(EStat.CON, value); //6
+                                        player.ChangeBaseStat(EStat.STR, value); //7
+                                        player.ChangeBaseStat(EStat.DEX, value); //8
                                         player.Out.SendMessage(
                                             client.Player.Name + "(PrivLevel: " + client.Account.PrivLevel + ") has given you " + value +
                                             " to all stats!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -1467,7 +1467,7 @@ namespace DOL.GS.Commands
                             {
                                 case "albs":
                                     {
-                                        foreach (GamePlayer albPlayer in ClientService.GetPlayersOfRealm(eRealm.Albion))
+                                        foreach (GamePlayer albPlayer in ClientService.GetPlayersOfRealm(ERealm.Albion))
                                         {
                                             if (!albPlayer.IsAlive)
                                             {
@@ -1487,7 +1487,7 @@ namespace DOL.GS.Commands
 
                                 case "hibs":
                                     {
-                                        foreach (GamePlayer hibPlayer in ClientService.GetPlayersOfRealm(eRealm.Hibernia))
+                                        foreach (GamePlayer hibPlayer in ClientService.GetPlayersOfRealm(ERealm.Hibernia))
                                         {
                                             if (!hibPlayer.IsAlive)
                                             {
@@ -1506,7 +1506,7 @@ namespace DOL.GS.Commands
                                     break;
                                 case "mids":
                                     {
-                                        foreach (GamePlayer midPlayer in ClientService.GetPlayersOfRealm(eRealm.Midgard))
+                                        foreach (GamePlayer midPlayer in ClientService.GetPlayersOfRealm(ERealm.Midgard))
                                         {
                                             if (!midPlayer.IsAlive)
                                             {
@@ -1623,7 +1623,7 @@ namespace DOL.GS.Commands
                         {
                             case "albs":
                                 {
-                                    foreach (GamePlayer albPlayer in ClientService.GetPlayersOfRealm(eRealm.Albion))
+                                    foreach (GamePlayer albPlayer in ClientService.GetPlayersOfRealm(ERealm.Albion))
                                     {
                                         if (albPlayer.IsAlive && albPlayer.Client.Account.PrivLevel == 1)
                                             KillPlayer(client.Player, albPlayer);
@@ -1633,7 +1633,7 @@ namespace DOL.GS.Commands
 
                             case "mids":
                                 {
-                                    foreach (GamePlayer midPlayer in ClientService.GetPlayersOfRealm(eRealm.Midgard))
+                                    foreach (GamePlayer midPlayer in ClientService.GetPlayersOfRealm(ERealm.Midgard))
                                     {
                                         if (midPlayer.IsAlive && midPlayer.Client.Account.PrivLevel == 1)
                                             KillPlayer(client.Player, midPlayer);
@@ -1643,7 +1643,7 @@ namespace DOL.GS.Commands
 
                             case "hibs":
                                 {
-                                    foreach (GamePlayer hibPlayer in ClientService.GetPlayersOfRealm(eRealm.Hibernia))
+                                    foreach (GamePlayer hibPlayer in ClientService.GetPlayersOfRealm(ERealm.Hibernia))
                                     {
                                         if (hibPlayer.IsAlive && hibPlayer.Client.Account.PrivLevel == 1)
                                             KillPlayer(client.Player, hibPlayer);
@@ -2127,9 +2127,9 @@ namespace DOL.GS.Commands
                                 {
                                     IList<string> classList = new List<string>();
 
-                                    foreach (eCharacterClass cl in Enum.GetValues(typeof(eCharacterClass)))
+                                    foreach (ECharacterClass cl in Enum.GetValues(typeof(ECharacterClass)))
                                     {
-                                        classList.Add(Enum.GetName(typeof(eCharacterClass), cl) + " - " + (int)cl);
+                                        classList.Add(Enum.GetName(typeof(ECharacterClass), cl) + " - " + (int)cl);
                                     }
 
                                     client.Player.Out.SendCustomTextWindow("[Class IDs List]", classList);
@@ -2147,7 +2147,7 @@ namespace DOL.GS.Commands
                                     {
                                         SetClass(targetPlayer, valueInt);
                                     }
-                                    else if (Enum.TryParse(args[2], true, out eCharacterClass valueEnum))
+                                    else if (Enum.TryParse(args[2], true, out ECharacterClass valueEnum))
                                     {
                                         SetClass(targetPlayer, (byte)valueEnum);
                                     }
@@ -2219,7 +2219,7 @@ namespace DOL.GS.Commands
 		{
 			int damage = player.Health;
 			if (damage > 0)
-				player.TakeDamage(killer, eDamageType.Natural, damage, 0);
+				player.TakeDamage(killer, EDamageType.Natural, damage, 0);
 		}
 
 		private void Show_Inventory(GamePlayer player, GameClient client, string limitType)
@@ -2331,7 +2331,7 @@ namespace DOL.GS.Commands
 				string activeBags = "None";
 				if (player.ActiveSaddleBags != 0)
 				{
-					if (player.ActiveSaddleBags == (byte)eHorseSaddleBag.All)
+					if (player.ActiveSaddleBags == (byte)EHorseSaddleBag.All)
 					{
 						activeBags = "All";
 					}
@@ -2339,28 +2339,28 @@ namespace DOL.GS.Commands
 					{
 						activeBags = "";
 
-						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.LeftFront) > 0)
+						if ((player.ActiveSaddleBags & (byte)EHorseSaddleBag.LeftFront) > 0)
 						{
 							if (activeBags != "")
 								activeBags += ", ";
 
 							activeBags += "LeftFront";
 						}
-						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.RightFront) > 0)
+						if ((player.ActiveSaddleBags & (byte)EHorseSaddleBag.RightFront) > 0)
 						{
 							if (activeBags != "")
 								activeBags += ", ";
 
 							activeBags += "RightFront";
 						}
-						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.LeftRear) > 0)
+						if ((player.ActiveSaddleBags & (byte)EHorseSaddleBag.LeftRear) > 0)
 						{
 							if (activeBags != "")
 								activeBags += ", ";
 
 							activeBags += "LeftRear";
 						}
-						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.RightRear) > 0)
+						if ((player.ActiveSaddleBags & (byte)EHorseSaddleBag.RightRear) > 0)
 						{
 							if (activeBags != "")
 								activeBags += ", ";
@@ -2407,7 +2407,7 @@ namespace DOL.GS.Commands
 			String sTitle = "";
 			int cnt = 0;
 
-			for (eProperty stat = eProperty.Stat_First; stat <= eProperty.Stat_Last; stat++, cnt++)
+			for (EProperty stat = EProperty.Stat_First; stat <= EProperty.Stat_Last; stat++, cnt++)
 			{
 				sTitle += GlobalConstants.PropertyToName(stat) + "/";
 				sCurrent += player.GetModified(stat) + "/";
@@ -2423,7 +2423,7 @@ namespace DOL.GS.Commands
 			sCurrent = "";
 			sTitle = "";
 			cnt = 0;
-			for (eProperty res = eProperty.Resist_First; res <= eProperty.Resist_Last; res++, cnt++)
+			for (EProperty res = EProperty.Resist_First; res <= EProperty.Resist_Last; res++, cnt++)
 			{
 				sTitle += GlobalConstants.PropertyToName(res) + "/";
 				sCurrent += player.GetModified(res) + "/";
@@ -2443,8 +2443,8 @@ namespace DOL.GS.Commands
 			text.Add("  - Current " + sTitle + " : " + sCurrent);
 
 			text.Add("  - Maximum Health : " + player.MaxHealth);
-			text.Add("  - Current AF and ABS : " + player.GetModified(eProperty.ArmorFactor) + " AF, " +
-					 player.GetModified(eProperty.ArmorAbsorption) + " ABS");
+			text.Add("  - Current AF and ABS : " + player.GetModified(EProperty.ArmorFactor) + " AF, " +
+					 player.GetModified(EProperty.ArmorAbsorption) + " ABS");
 			text.Add(" ");
 			text.Add("SPECCING INFORMATIONS ");
 			text.Add("  - Respecs availables : " + player.RespecAmountDOL + " dol, " + player.RespecAmountSingleSkill +

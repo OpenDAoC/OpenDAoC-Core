@@ -594,7 +594,7 @@ namespace DOL.GS.Quests
                     Name = "ticket to " + destination,
                     Id_nb = ticket_Id.ToLower(),
                     Model = 499,
-                    Object_Type = (int) eObjectType.GenericItem,
+                    Object_Type = (int) EObjectType.GenericItem,
                     Item_Type = 40,
                     IsPickable = true,
                     IsDropable = true,

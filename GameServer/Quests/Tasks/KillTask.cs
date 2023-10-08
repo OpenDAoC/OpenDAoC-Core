@@ -359,7 +359,7 @@ namespace DOL.GS.Quests
 		{
 			int minLevel = GameLiving.NoXPForLevel[Player.Level]+1;
 			int maxLevel = Player.Level;
-			GameNPC npc = Player.CurrentZone.GetRandomNPC(eRealm.None, minLevel,maxLevel);
+			GameNPC npc = Player.CurrentZone.GetRandomNPC(ERealm.None, minLevel,maxLevel);
 			
 			return npc != null && npc.Name.ToLower().Equals(npc.Name) ? npc : null;
 		}

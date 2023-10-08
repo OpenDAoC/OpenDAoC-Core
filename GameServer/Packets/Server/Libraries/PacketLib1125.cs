@@ -80,7 +80,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// 1125 sendrealm
 		/// </summary>
-		public override void SendRealm(eRealm realm)
+		public override void SendRealm(ERealm realm)
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Realm)))
 			{
@@ -93,9 +93,9 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// 1125 char overview
 		/// </summary>
-		public override void SendCharacterOverview(eRealm realm)
+		public override void SendCharacterOverview(ERealm realm)
 		{
-			if (realm < eRealm._FirstPlayerRealm || realm > eRealm._LastPlayerRealm)
+			if (realm < ERealm._FirstPlayerRealm || realm > ERealm._LastPlayerRealm)
 			{
 				throw new Exception("CharacterOverview requested for unknown realm " + realm);
 			}
@@ -215,7 +215,7 @@ namespace DOL.GS.PacketHandler
 							string classname = "";
 							if (c.Class != 0)
 							{
-								classname = ((eCharacterClass)c.Class).ToString();
+								classname = ((ECharacterClass)c.Class).ToString();
 							}
 							pak.WritePascalStringIntLE(classname);
 
@@ -339,12 +339,12 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)c.Realm); // moved
 							pak.WriteByte((byte)((((c.Race & 0x10) << 2) + (c.Race & 0x0F)) | (c.Gender << 4)));
 
-							if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+							if (c.ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 							{
 								pak.WriteByte(0x02);
 								pak.WriteByte(0x02);
 							}
-							else if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+							else if (c.ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 							{
 								pak.WriteByte(0x03);
 								pak.WriteByte(0x03);
@@ -470,7 +470,7 @@ namespace DOL.GS.PacketHandler
 				playerStatus |= 0x08;
 			if (player?.Client?.ClientState == GameClient.eClientState.Linkdead)
 				playerStatus |= 0x10;
-			if (living.DebuffCategory[(int)eProperty.SpellRange] != 0 || living.DebuffCategory[(int)eProperty.ArcheryRange] != 0)
+			if (living.DebuffCategory[(int)EProperty.SpellRange] != 0 || living.DebuffCategory[(int)EProperty.ArcheryRange] != 0)
 				playerStatus |= 0x40;
 			pak.WriteByte(playerStatus);
 			// 0x00 = Normal , 0x01 = Dead , 0x02 = Mezzed , 0x04 = Diseased ,
@@ -498,7 +498,7 @@ namespace DOL.GS.PacketHandler
 				{
 					byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();
-					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)eCharacterClass.Necromancer && necro.IsShade)
+					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)ECharacterClass.Necromancer && necro.IsShade)
 						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
 					foreach (var effect in effects)//.Effects.Values)
 												   //foreach (ECSGameEffect effect in effects)
@@ -535,24 +535,24 @@ namespace DOL.GS.PacketHandler
 					int value2; // some object types use this field to display count
 					switch (item.Object_Type)
 					{
-						case (int)eObjectType.Arrow:
-						case (int)eObjectType.Bolt:
-						case (int)eObjectType.Poison:
-						case (int)eObjectType.GenericItem:
+						case (int)EObjectType.Arrow:
+						case (int)EObjectType.Bolt:
+						case (int)EObjectType.Poison:
+						case (int)EObjectType.GenericItem:
 							value1 = item.PackSize;
 							value2 = item.SPD_ABS; break;
-						case (int)eObjectType.Thrown:
+						case (int)EObjectType.Thrown:
 							value1 = item.DPS_AF;
 							value2 = item.PackSize; break;
-						case (int)eObjectType.Instrument:
+						case (int)EObjectType.Instrument:
 							value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF); // 0x00 = Lute ; 0x01 = Drum ; 0x03 = Flute
 							value2 = 0; break; // unused
-						case (int)eObjectType.Shield:
+						case (int)EObjectType.Shield:
 							value1 = item.Type_Damage;
 							value2 = item.DPS_AF; break;
-						case (int)eObjectType.GardenObject:
-						case (int)eObjectType.HouseWallObject:
-						case (int)eObjectType.HouseFloorObject:
+						case (int)EObjectType.GardenObject:
+						case (int)EObjectType.HouseWallObject:
+						case (int)EObjectType.HouseFloorObject:
 							value1 = 0;
 							value2 = item.SPD_ABS; break;
 						default:
@@ -561,7 +561,7 @@ namespace DOL.GS.PacketHandler
 					}
 					pak.WriteByte((byte)value1);
 					pak.WriteByte((byte)value2);
-					if (item.Object_Type == (int)eObjectType.GardenObject)
+					if (item.Object_Type == (int)EObjectType.GardenObject)
 					{
 						pak.WriteByte((byte)(item.DPS_AF));
 					}
@@ -674,28 +674,28 @@ namespace DOL.GS.PacketHandler
 								int value2;
 								switch (item.Object_Type)
 								{
-									case (int)eObjectType.Arrow:
-									case (int)eObjectType.Bolt:
-									case (int)eObjectType.Poison:
-									case (int)eObjectType.GenericItem:
+									case (int)EObjectType.Arrow:
+									case (int)EObjectType.Bolt:
+									case (int)EObjectType.Poison:
+									case (int)EObjectType.GenericItem:
 										{
 											value1 = item.PackSize;
 											value2 = value1 * item.Weight;
 											break;
 										}
-									case (int)eObjectType.Thrown:
+									case (int)EObjectType.Thrown:
 										{
 											value1 = item.DPS_AF;
 											value2 = item.PackSize;
 											break;
 										}
-									case (int)eObjectType.Shield:
+									case (int)EObjectType.Shield:
 										{
 											value1 = item.Type_Damage;
 											value2 = item.Weight;
 											break;
 										}
-									case (int)eObjectType.GardenObject:
+									case (int)EObjectType.GardenObject:
 										{
 											value1 = 0;
 											value2 = item.Weight;
@@ -710,7 +710,7 @@ namespace DOL.GS.PacketHandler
 								}
 								pak.WriteByte((byte)value1);
 								pak.WriteByte((byte)item.SPD_ABS);
-								if (item.Object_Type == (int)eObjectType.GardenObject)
+								if (item.Object_Type == (int)EObjectType.GardenObject)
 								{
 									pak.WriteByte((byte)(item.DPS_AF));
 								}

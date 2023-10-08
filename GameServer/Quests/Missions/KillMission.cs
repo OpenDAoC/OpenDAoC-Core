@@ -27,7 +27,7 @@ namespace DOL.GS.Quests
 
 			//we don't want mission masters to be considered realm guards because they are insta respawn
 			//in addition do not count realm 0 guards
-			if (eargs.Target is Keeps.MissionMaster || eargs.Target.Realm == eRealm.None)
+			if (eargs.Target is Keeps.MissionMaster || eargs.Target.Realm == ERealm.None)
 				return;
 
 			if (m_targetType.IsInstanceOfType(eargs.Target) == false)

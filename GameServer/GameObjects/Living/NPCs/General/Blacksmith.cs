@@ -115,10 +115,10 @@ public class Blacksmith : GameNPC
 
         switch (item.Object_Type)
         {
-            case (int) eObjectType.GenericItem:
-            case (int) eObjectType.Magical:
-            case (int) eObjectType.Instrument:
-            case (int) eObjectType.Poison:
+            case (int) EObjectType.GenericItem:
+            case (int) EObjectType.Magical:
+            case (int) EObjectType.Instrument:
+            case (int) EObjectType.Poison:
                 // Message: {0} says, "I can't repair that."
                 ChatUtil.SendSayMessage(player, "GameNPC.Blacksmith.CantRepairThat", GetName(0, true));
 

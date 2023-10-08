@@ -2,10 +2,10 @@
 
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.XpPoints)]
+[PropertyCalculator(EProperty.XpPoints)]
 public class ExperiencePointsCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		if (living is GamePlayer)
 		{

@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
 {
 	public interface ISpellHandler
 	{
-		eCastState CastState { get; set; }
+		ECastState CastState { get; set; }
 		GameLiving Target { get; set; }
 		bool HasLos { get; set; }
 

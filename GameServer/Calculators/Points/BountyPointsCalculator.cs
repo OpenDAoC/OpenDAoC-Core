@@ -2,10 +2,10 @@
 
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.BountyPoints)]
+[PropertyCalculator(EProperty.BountyPoints)]
 public class BountyPointsCalculator : PropertyCalculator
 {
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		if (living is GamePlayer)
 		{

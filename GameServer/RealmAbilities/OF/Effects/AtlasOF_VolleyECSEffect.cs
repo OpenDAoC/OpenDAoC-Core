@@ -36,7 +36,7 @@ namespace DOL.GS.Effects
 
         public AtlasOF_VolleyECSEffect(EcsGameEffectInitParams initParams) : base(initParams)
         {
-            EffectType = eEffect.Volley;
+            EffectType = EEffect.Volley;
             EffectService.RequestStartEffect(this);
         }
 
@@ -52,7 +52,7 @@ namespace DOL.GS.Effects
 
             OwnerPlayer.attackComponent.StopAttack();
             OwnerPlayer.StopCurrentSpellcast();
-            OwnerPlayer.rangeAttackComponent.RangedAttackType = eRangedAttackType.Volley; // Used by 'RangeAttackComponent' to calculate endurance cost.
+            OwnerPlayer.rangeAttackComponent.RangedAttackType = ERangedAttackType.Volley; // Used by 'RangeAttackComponent' to calculate endurance cost.
             GameEventMgr.AddHandler(OwnerPlayer, GamePlayerEvent.Quit, new DOLEventHandler(OnPlayerLeftWorld));
             GameEventMgr.AddHandler(OwnerPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
             PrepareBow(true);
@@ -78,7 +78,7 @@ namespace DOL.GS.Effects
 
             GameEventMgr.RemoveHandler(OwnerPlayer, GamePlayerEvent.Quit, new DOLEventHandler(OnPlayerLeftWorld));
             GameEventMgr.RemoveHandler(OwnerPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseVolley));
-            OwnerPlayer.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
+            OwnerPlayer.rangeAttackComponent.RangedAttackType = ERangedAttackType.Normal;
             base.OnStopEffect();
         }
 
@@ -118,7 +118,7 @@ namespace DOL.GS.Effects
 
         private int TooTired(ECSGameTimer timer)
         {
-            EcsGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Volley);
+            EcsGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, EEffect.Volley);
 
             if (volley == null || !OwnerPlayer.IsAlive)
                 return 0;
@@ -133,7 +133,7 @@ namespace DOL.GS.Effects
 
         private int ReadyToShoot(ECSGameTimer timer)
         {
-            EcsGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Volley);
+            EcsGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, EEffect.Volley);
 
             if (volley == null || !OwnerPlayer.IsAlive)
                 return 0;
@@ -211,7 +211,7 @@ namespace DOL.GS.Effects
                 return;
             }
 
-            if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+            if (player.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
             {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 return;
@@ -310,7 +310,7 @@ namespace DOL.GS.Effects
 
             if (_isReadyToShoot)
             {
-                EcsGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Volley);
+                EcsGameEffect volley = EffectListService.GetEffectOnTarget(OwnerPlayer, EEffect.Volley);
 
                 if (volley != null)
                     LaunchVolley(player);
@@ -336,7 +336,7 @@ namespace DOL.GS.Effects
             // This is a little dirty but it allow us to use the normal attack calculations from the attack component (miss chance will be ignored).
             // We clear it up once we're done using it because at this point the attack component isn't ticking.
             AttackComponent attackComponent = OwnerPlayer.attackComponent;
-            attackComponent.weaponAction = new WeaponAction(OwnerPlayer, potentialTargets[Util.Random(0, potentialTargets.Count - 1)], weaponActionData.AttackWeapon, 1.0, weaponActionData.InterruptDuration, eRangedAttackType.Volley);
+            attackComponent.weaponAction = new WeaponAction(OwnerPlayer, potentialTargets[Util.Random(0, potentialTargets.Count - 1)], weaponActionData.AttackWeapon, 1.0, weaponActionData.InterruptDuration, ERangedAttackType.Volley);
             attackComponent.weaponAction.Execute();
             attackComponent.weaponAction = null;
             return 0;

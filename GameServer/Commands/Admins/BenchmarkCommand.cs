@@ -8,7 +8,7 @@ namespace DOL.GS.Commands
 		"&benchmark",
 		// Message: <----- '/benchmark' Commands (plvl 3) ----->
 		"AdminCommands.Header.Syntax.Benchmark",
-		ePrivLevel.Admin,
+		EPrivLevel.Admin,
 		// Message: "Performs a system benchmark of the specified type. This is used to gauge overall system performance."
 		"AdminCommands.Benchmark.Description",
 		// Syntax: /benchmark listskills

@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&discard",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Discard card # from your hand, or discard all cards.",
 	"/discard <#|all>")]
 public class DiscardCommand : ACommandHandler, ICommandHandler

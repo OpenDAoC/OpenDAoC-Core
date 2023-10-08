@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Paladin Trainer
 	/// </summary>
-	[NPCGuildScript("Paladin Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Paladin Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Paladin Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Paladin Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class PaladinTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Paladin; }
+			get { return ECharacterClass.Paladin; }
 		}
 
 		public const string WEAPON_ID1 = "slash_sword_item";
@@ -94,19 +94,19 @@ namespace DOL.GS.Trainer
 						player.Out.SendMessage(this.Name + " says, \"Very well then! Choose your weapon, and your initiation into the Church of Albion will be complete. You may wield [slashing], [crushing], [thrusting] or [two handed] weapons.\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 						break;
 					case "slashing":
-						PromotePlayer(player, (int)eCharacterClass.Paladin, "Here is your Sword of the Initiate. Welcome to the Church of Albion.", null);
+						PromotePlayer(player, (int)ECharacterClass.Paladin, "Here is your Sword of the Initiate. Welcome to the Church of Albion.", null);
 						player.ReceiveItem(this,WEAPON_ID1);
 						break;
 					case "crushing":
-						PromotePlayer(player, (int)eCharacterClass.Paladin, "Here is your Mace of the Initiate. Welcome to the Church of Albion.", null);
+						PromotePlayer(player, (int)ECharacterClass.Paladin, "Here is your Mace of the Initiate. Welcome to the Church of Albion.", null);
 						player.ReceiveItem(this,WEAPON_ID2);
 						break;
 					case "thrusting":
-						PromotePlayer(player, (int)eCharacterClass.Paladin, "Here is your Rapier of the Initiate. Welcome to the Church of Albion.", null);
+						PromotePlayer(player, (int)ECharacterClass.Paladin, "Here is your Rapier of the Initiate. Welcome to the Church of Albion.", null);
 						player.ReceiveItem(this,WEAPON_ID3);
 						break;
 					case "two handed":
-						PromotePlayer(player, (int)eCharacterClass.Paladin, "Here is your Great Sword of the Initiate. Welcome to the Church of Albion.", null);
+						PromotePlayer(player, (int)ECharacterClass.Paladin, "Here is your Great Sword of the Initiate. Welcome to the Church of Albion.", null);
 						player.ReceiveItem(this,WEAPON_ID4);
 						break;
 				}

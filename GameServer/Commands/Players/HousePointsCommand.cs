@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command(
   "&housepoints",
-  ePrivLevel.Player,
+  EPrivLevel.Player,
    "Toggles display of housepoints",
 	 "Useage: /housepoints toggle")]
 public class HousePointsCommand : ACommandHandler, ICommandHandler

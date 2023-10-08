@@ -6,7 +6,7 @@ namespace DOL.GS.Effects
         public SoldiersBarricadeECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.SoldiersBarricade;
+            EffectType = EEffect.SoldiersBarricade;
             EffectService.RequestStartEffect(this);
         }
 
@@ -19,7 +19,7 @@ namespace DOL.GS.Effects
             if (OwnerPlayer == null)
                 return;
 
-            OwnerPlayer.BuffBonusCategory4[(int)eProperty.ArmorFactor] += (int)Effectiveness;
+            OwnerPlayer.BuffBonusCategory4[(int)EProperty.ArmorFactor] += (int)Effectiveness;
             OwnerPlayer.Out.SendUpdateWeaponAndArmorStats();
         }
 
@@ -28,7 +28,7 @@ namespace DOL.GS.Effects
             if (OwnerPlayer == null)
                 return;
 
-            OwnerPlayer.BuffBonusCategory4[(int)eProperty.ArmorFactor] -= (int)Effectiveness;
+            OwnerPlayer.BuffBonusCategory4[(int)EProperty.ArmorFactor] -= (int)Effectiveness;
             OwnerPlayer.Out.SendUpdateWeaponAndArmorStats();
         }
     }

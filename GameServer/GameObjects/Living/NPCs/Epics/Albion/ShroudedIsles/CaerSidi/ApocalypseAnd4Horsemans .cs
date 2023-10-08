@@ -196,7 +196,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Apoc Initializator", 60, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Apoc Initializator", 60, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Apoc Initializator not found, creating it...");
@@ -299,13 +299,13 @@ namespace DOL.GS
         }
         public static bool CanInteract = false;
         public static bool FamesIsUp = true;
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
                 default: return 70; // dmg reduction for rest resists
             }
         }
@@ -397,11 +397,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -446,7 +446,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 938;
-            MeleeDamageType = eDamageType.Body;
+            MeleeDamageType = EDamageType.Body;
             Name = "Fames";
             RespawnInterval = -1;
 
@@ -468,7 +468,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             FamesBrain.spawn_fate = false;
             CanInteract = false;
             FamesBrain.StartedFames = false;
@@ -502,7 +502,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 BafMobs = false;
                 StartedFames = false;
@@ -589,11 +589,11 @@ namespace DOL.GS
             {
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -671,7 +671,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 927;
-            MeleeDamageType = eDamageType.Body;
+            MeleeDamageType = EDamageType.Body;
             Name = "Bellum";
             RespawnInterval = -1;
 
@@ -693,21 +693,21 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             BellumBrain.StartedBellum = false;
             BellumBrain.SpawnWeapons = false;
             BellumUP = true;
             prepareMorbus = false;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = -10;
-            AbilityBonus[(int)eProperty.Resist_Heat] = -10;
-            AbilityBonus[(int)eProperty.Resist_Cold] = -10;
-            AbilityBonus[(int)eProperty.Resist_Matter] = -10;
-            AbilityBonus[(int)eProperty.Resist_Energy] = -10;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = -10;
-            AbilityBonus[(int)eProperty.Resist_Slash] = 99;
-            AbilityBonus[(int)eProperty.Resist_Crush] = 99;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = 99;
+            AbilityBonus[(int)EProperty.Resist_Body] = -10;
+            AbilityBonus[(int)EProperty.Resist_Heat] = -10;
+            AbilityBonus[(int)EProperty.Resist_Cold] = -10;
+            AbilityBonus[(int)EProperty.Resist_Matter] = -10;
+            AbilityBonus[(int)EProperty.Resist_Energy] = -10;
+            AbilityBonus[(int)EProperty.Resist_Spirit] = -10;
+            AbilityBonus[(int)EProperty.Resist_Slash] = 99;
+            AbilityBonus[(int)EProperty.Resist_Crush] = 99;
+            AbilityBonus[(int)EProperty.Resist_Thrust] = 99;
 
             if (spawn_fate2 == false)
             {
@@ -741,7 +741,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 StartedBellum = false;
                 SpawnWeapons = false;
@@ -785,7 +785,7 @@ namespace DOL.AI.Brain
             Add.Y = Body.Y + 200;
             Add.Z = Body.Z;
             Add.CurrentRegionID = Body.CurrentRegionID;
-            Add.MeleeDamageType = eDamageType.Crush;
+            Add.MeleeDamageType = EDamageType.Crush;
             Add.Heading = Body.Heading;
             Add.RespawnInterval = -1;
             Add.PackageID = "BellumBaf";
@@ -800,7 +800,7 @@ namespace DOL.AI.Brain
             Add.Y = Body.Y;
             Add.Z = Body.Z;
             Add.CurrentRegionID = Body.CurrentRegionID;
-            Add.MeleeDamageType = eDamageType.Slash;
+            Add.MeleeDamageType = EDamageType.Slash;
             Add.Heading = Body.Heading;
             Add.RespawnInterval = -1;
             Add.PackageID = "BellumBaf";
@@ -815,7 +815,7 @@ namespace DOL.AI.Brain
             Add.Y = Body.Y;
             Add.Z = Body.Z;
             Add.CurrentRegionID = Body.CurrentRegionID;
-            Add.MeleeDamageType = eDamageType.Thrust;
+            Add.MeleeDamageType = EDamageType.Thrust;
             Add.Heading = Body.Heading;
             Add.RespawnInterval = -1;
             Add.PackageID = "BellumBaf";
@@ -833,11 +833,11 @@ namespace DOL.GS
     {
         public WarIncarnateCrush() : base() { }
 
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -858,7 +858,7 @@ namespace DOL.GS
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                         template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 17, 0, 0);
                         Inventory = template.CloseTemplate();
-                        SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                        SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
 
                     }
@@ -868,7 +868,7 @@ namespace DOL.GS
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                         template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 70, 0, 0);
                         Inventory = template.CloseTemplate();
-                        SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                        SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
                     }
                     break;
@@ -877,14 +877,14 @@ namespace DOL.GS
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                         template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 12, 0, 0);
                         Inventory = template.CloseTemplate();
-                        SwitchWeapon(eActiveWeaponSlot.Standard);
+                        SwitchWeapon(EActiveWeaponSlot.Standard);
                         VisibleActiveWeaponSlots = 10;
                     }
                     break;
             }          
             Model = 665;
             Name = "war incarnate";
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             RespawnInterval = -1;
             MaxSpeedBase = 210;
             Strength = 150;
@@ -894,7 +894,7 @@ namespace DOL.GS
             Level = 75;
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             WarIncarnateCrushBrain adds = new WarIncarnateCrushBrain();
             LoadedFromScript = true;
             WarIncarnateCrushBrain.spawn_copies = false;
@@ -929,7 +929,7 @@ namespace DOL.AI.Brain
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 17, 0, 0);
                             Add.Inventory = template.CloseTemplate();
-                            Add.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                            Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
                         }
                         break;
@@ -938,7 +938,7 @@ namespace DOL.AI.Brain
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 70, 0, 0);
                             Add.Inventory = template.CloseTemplate();
-                            Add.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                            Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
                         }
                         break;
@@ -947,7 +947,7 @@ namespace DOL.AI.Brain
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 12, 0, 0);
                             Add.Inventory = template.CloseTemplate();
-                            Add.SwitchWeapon(eActiveWeaponSlot.Standard);
+                            Add.SwitchWeapon(EActiveWeaponSlot.Standard);
                             Add.VisibleActiveWeaponSlots = 10;
                         }
                         break;
@@ -956,7 +956,7 @@ namespace DOL.AI.Brain
                 Add.Y = Body.Y + Util.Random(-200, 200);
                 Add.Z = Body.Z;
                 Add.CurrentRegionID = Body.CurrentRegionID;
-                Add.MeleeDamageType = eDamageType.Crush;
+                Add.MeleeDamageType = EDamageType.Crush;
                 Add.Heading = Body.Heading;
                 Add.RespawnInterval = -1;
                 Add.PackageID = "BellumBaf";
@@ -993,11 +993,11 @@ namespace DOL.GS
     public class WarIncarnateSlash : GameNPC
     {
         public WarIncarnateSlash() : base() { }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -1018,7 +1018,7 @@ namespace DOL.GS
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                         template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 6, 0, 0);
                         Inventory = template.CloseTemplate();
-                        SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                        SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
 
                     }
@@ -1028,7 +1028,7 @@ namespace DOL.GS
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                         template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 73, 0, 0);
                         Inventory = template.CloseTemplate();
-                        SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                        SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
                     }
                     break;
@@ -1037,7 +1037,7 @@ namespace DOL.GS
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                         template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 67, 0, 0);
                         Inventory = template.CloseTemplate();
-                        SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                        SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
                     }
                     break;
@@ -1046,14 +1046,14 @@ namespace DOL.GS
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                         template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 4, 0, 0);
                         Inventory = template.CloseTemplate();
-                        SwitchWeapon(eActiveWeaponSlot.Standard);
+                        SwitchWeapon(EActiveWeaponSlot.Standard);
                         VisibleActiveWeaponSlots = 10;
                     }
                     break;
             }
             Model = 665;
             Name = "war incarnate";
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             RespawnInterval = -1;
             MaxSpeedBase = 210;
             Strength = 150;
@@ -1063,7 +1063,7 @@ namespace DOL.GS
             Level = 75;
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             WarIncarnateSlashBrain adds = new WarIncarnateSlashBrain();
             LoadedFromScript = true;
             WarIncarnateSlashBrain.spawn_copies2 = false;
@@ -1098,7 +1098,7 @@ namespace DOL.AI.Brain
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 6, 0, 0);
                             Add.Inventory = template.CloseTemplate();
-                            Add.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                            Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
                         }
                         break;
@@ -1107,7 +1107,7 @@ namespace DOL.AI.Brain
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 73, 0, 0);
                             Add.Inventory = template.CloseTemplate();
-                            Add.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                            Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
                         }
                         break;
@@ -1116,7 +1116,7 @@ namespace DOL.AI.Brain
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 67, 0, 0);
                             Add.Inventory = template.CloseTemplate();
-                            Add.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                            Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
                         }
                         break;
@@ -1125,7 +1125,7 @@ namespace DOL.AI.Brain
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 4, 0, 0);
                             Add.Inventory = template.CloseTemplate();
-                            Add.SwitchWeapon(eActiveWeaponSlot.Standard);
+                            Add.SwitchWeapon(EActiveWeaponSlot.Standard);
                             Add.VisibleActiveWeaponSlots = 10;
                         }
                         break;
@@ -1134,7 +1134,7 @@ namespace DOL.AI.Brain
                 Add.Y = Body.Y + Util.Random(-200, 200);
                 Add.Z = Body.Z;
                 Add.CurrentRegionID = Body.CurrentRegionID;
-                Add.MeleeDamageType = eDamageType.Slash;
+                Add.MeleeDamageType = EDamageType.Slash;
                 Add.Heading = Body.Heading;
                 Add.RespawnInterval = -1;
                 Add.PackageID = "BellumBaf";
@@ -1171,11 +1171,11 @@ namespace DOL.GS
     public class WarIncarnateThrust : GameNPC
     {
         public WarIncarnateThrust() : base() { }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -1196,7 +1196,7 @@ namespace DOL.GS
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                         template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 69, 0, 0);
                         Inventory = template.CloseTemplate();
-                        SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                        SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
 
                     }
@@ -1206,7 +1206,7 @@ namespace DOL.GS
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                         template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 846, 0, 0);
                         Inventory = template.CloseTemplate();
-                        SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                        SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                         VisibleActiveWeaponSlots = 34;
                     }
                     break;
@@ -1215,14 +1215,14 @@ namespace DOL.GS
                         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                         template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 886, 0, 0);
                         Inventory = template.CloseTemplate();
-                        SwitchWeapon(eActiveWeaponSlot.Standard);
+                        SwitchWeapon(EActiveWeaponSlot.Standard);
                         VisibleActiveWeaponSlots = 255;
                     }
                     break;
             }
             Model = 665;
             Name = "war incarnate";
-            MeleeDamageType = eDamageType.Thrust;
+            MeleeDamageType = EDamageType.Thrust;
             RespawnInterval = -1;
             MaxSpeedBase = 210;
             Strength = 150;
@@ -1232,7 +1232,7 @@ namespace DOL.GS
             Level = 75;
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             WarIncarnateThrustBrain adds = new WarIncarnateThrustBrain();
             LoadedFromScript = true;
             WarIncarnateThrustBrain.spawn_copies3 = false;
@@ -1267,7 +1267,7 @@ namespace DOL.AI.Brain
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 69, 0, 0);
                             Add.Inventory = template.CloseTemplate();
-                            Add.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                            Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
 
                         }
@@ -1277,7 +1277,7 @@ namespace DOL.AI.Brain
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 846, 0, 0);
                             Add.Inventory = template.CloseTemplate();
-                            Add.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                            Add.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Add.VisibleActiveWeaponSlots = 34;
                         }
                         break;
@@ -1286,7 +1286,7 @@ namespace DOL.AI.Brain
                             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
                             template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 886, 0, 0);
                             Add.Inventory = template.CloseTemplate();
-                            Add.SwitchWeapon(eActiveWeaponSlot.Standard);
+                            Add.SwitchWeapon(EActiveWeaponSlot.Standard);
                             Add.VisibleActiveWeaponSlots = 255;
                         }
                         break;
@@ -1295,7 +1295,7 @@ namespace DOL.AI.Brain
                 Add.Y = Body.Y + Util.Random(-200, 200);
                 Add.Z = Body.Z;
                 Add.CurrentRegionID = Body.CurrentRegionID;
-                Add.MeleeDamageType = eDamageType.Thrust;
+                Add.MeleeDamageType = EDamageType.Thrust;
                 Add.Heading = Body.Heading;
                 Add.RespawnInterval = -1;
                 Add.PackageID = "BellumBaf";
@@ -1347,15 +1347,15 @@ namespace DOL.GS
 
             base.ReturnToSpawnPoint(speed);
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (Morbus_Swarm_count > 0)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold || damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit || damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -1389,11 +1389,11 @@ namespace DOL.GS
             {
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -1460,7 +1460,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 952;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             Name = "Morbus";
             RespawnInterval = -1;
 
@@ -1482,7 +1482,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             MorbusBrain.StartedMorbus = false;
             MorbusBrain.BafMobs3 = false;
             MorbusBrain.spawn_swarm = false;
@@ -1491,15 +1491,15 @@ namespace DOL.GS
             MorbusUP = true;
             prepareFunus = false;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = 26;
-            AbilityBonus[(int)eProperty.Resist_Heat] = 26;
-            AbilityBonus[(int)eProperty.Resist_Cold] = -15;//weak to cold
-            AbilityBonus[(int)eProperty.Resist_Matter] = 26;
-            AbilityBonus[(int)eProperty.Resist_Energy] = 26;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = 26;
-            AbilityBonus[(int)eProperty.Resist_Slash] = 60;
-            AbilityBonus[(int)eProperty.Resist_Crush] = 60;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = 60;
+            AbilityBonus[(int)EProperty.Resist_Body] = 26;
+            AbilityBonus[(int)EProperty.Resist_Heat] = 26;
+            AbilityBonus[(int)EProperty.Resist_Cold] = -15;//weak to cold
+            AbilityBonus[(int)EProperty.Resist_Matter] = 26;
+            AbilityBonus[(int)EProperty.Resist_Energy] = 26;
+            AbilityBonus[(int)EProperty.Resist_Spirit] = 26;
+            AbilityBonus[(int)EProperty.Resist_Slash] = 60;
+            AbilityBonus[(int)EProperty.Resist_Crush] = 60;
+            AbilityBonus[(int)EProperty.Resist_Thrust] = 60;
 
             if (spawn_fate3 == false)
             {
@@ -1562,7 +1562,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 StartedMorbus = false;
                 BafMobs3 = false;
@@ -1705,11 +1705,11 @@ namespace DOL.GS
             {
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -1746,7 +1746,7 @@ namespace DOL.GS
                         Quickness = 80;
                         Size = (byte)Util.Random(20, 45);
                         MaxSpeedBase = 185;
-                        MeleeDamageType = eDamageType.Crush;
+                        MeleeDamageType = EDamageType.Crush;
                     }
                     break;
                 case 2:
@@ -1758,7 +1758,7 @@ namespace DOL.GS
                         Quickness = 100;
                         Size = (byte)Util.Random(20, 30);
                         MaxSpeedBase = 200;
-                        MeleeDamageType = eDamageType.Slash;
+                        MeleeDamageType = EDamageType.Slash;
                     }
                     break;
                 case 3:
@@ -1770,7 +1770,7 @@ namespace DOL.GS
                         Quickness = 65;
                         Size = (byte)Util.Random(20, 30);
                         MaxSpeedBase = 165;
-                        MeleeDamageType = eDamageType.Crush;
+                        MeleeDamageType = EDamageType.Crush;
                     }
                     break;
                 case 4:
@@ -1782,7 +1782,7 @@ namespace DOL.GS
                         Dexterity = 100;
                         Quickness = 200;
                         MaxSpeedBase = 220;
-                        MeleeDamageType = eDamageType.Thrust;
+                        MeleeDamageType = EDamageType.Thrust;
                     }
                     break;
                 case 5:
@@ -1794,7 +1794,7 @@ namespace DOL.GS
                         Dexterity = 100;
                         Quickness = 200;
                         MaxSpeedBase = 220;
-                        MeleeDamageType = eDamageType.Thrust;
+                        MeleeDamageType = EDamageType.Thrust;
                     }
                     break;
             }
@@ -1802,20 +1802,20 @@ namespace DOL.GS
             TetherRange = 3000;
             Level = 75;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = 15;
-            AbilityBonus[(int)eProperty.Resist_Heat] = 15;
-            AbilityBonus[(int)eProperty.Resist_Cold] = -15;//weak to cold
-            AbilityBonus[(int)eProperty.Resist_Matter] = 15;
-            AbilityBonus[(int)eProperty.Resist_Energy] = 15;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = 15;
-            AbilityBonus[(int)eProperty.Resist_Slash] = 25;
-            AbilityBonus[(int)eProperty.Resist_Crush] = 25;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = 25;
+            AbilityBonus[(int)EProperty.Resist_Body] = 15;
+            AbilityBonus[(int)EProperty.Resist_Heat] = 15;
+            AbilityBonus[(int)EProperty.Resist_Cold] = -15;//weak to cold
+            AbilityBonus[(int)EProperty.Resist_Matter] = 15;
+            AbilityBonus[(int)EProperty.Resist_Energy] = 15;
+            AbilityBonus[(int)EProperty.Resist_Spirit] = 15;
+            AbilityBonus[(int)EProperty.Resist_Slash] = 25;
+            AbilityBonus[(int)EProperty.Resist_Crush] = 25;
+            AbilityBonus[(int)EProperty.Resist_Thrust] = 25;
 
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 7;
-            Realm = eRealm.None;          
+            Realm = ERealm.None;          
 
             MorbusSwarmBrain adds = new MorbusSwarmBrain();
             SetOwnBrain(adds);
@@ -1843,7 +1843,7 @@ namespace DOL.AI.Brain
                 GameLiving target = Body.TargetObject as GameLiving;
                 if (target != null && target.IsAlive)
                 {
-                    if (Util.Chance(15) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+                    if (Util.Chance(15) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
                         Body.CastSpell(BlackPlague, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
                 }
             }
@@ -1876,7 +1876,7 @@ namespace DOL.AI.Brain
                     spell.Target = "Enemy";
                     spell.Type = "Disease";
                     spell.Uninterruptible = true;
-                    spell.DamageType = (int)eDamageType.Body; //Energy DMG Type
+                    spell.DamageType = (int)EDamageType.Body; //Energy DMG Type
                     m_black_plague = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_black_plague);
                 }
@@ -1908,7 +1908,7 @@ namespace DOL.GS
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
             {
@@ -1960,11 +1960,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 250;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.10;
@@ -2020,7 +2020,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Model = 911;
-            MeleeDamageType = eDamageType.Heat;
+            MeleeDamageType = EDamageType.Heat;
             Name = "Funus";
             RespawnInterval = -1;
 
@@ -2042,21 +2042,21 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 11;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
             FunusBrain.StartedFunus = false;
             FunusBrain.BafMobs4 = false;
             FunusUp = true;
             prepareApoc = false;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = -25;
-            AbilityBonus[(int)eProperty.Resist_Heat] = -25;
-            AbilityBonus[(int)eProperty.Resist_Cold] = -25;
-            AbilityBonus[(int)eProperty.Resist_Matter] = -25;
-            AbilityBonus[(int)eProperty.Resist_Energy] = -25;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = -25;
-            AbilityBonus[(int)eProperty.Resist_Slash] = -25;
-            AbilityBonus[(int)eProperty.Resist_Crush] = -25;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = -25;
+            AbilityBonus[(int)EProperty.Resist_Body] = -25;
+            AbilityBonus[(int)EProperty.Resist_Heat] = -25;
+            AbilityBonus[(int)EProperty.Resist_Cold] = -25;
+            AbilityBonus[(int)EProperty.Resist_Matter] = -25;
+            AbilityBonus[(int)EProperty.Resist_Energy] = -25;
+            AbilityBonus[(int)EProperty.Resist_Spirit] = -25;
+            AbilityBonus[(int)EProperty.Resist_Slash] = -25;
+            AbilityBonus[(int)EProperty.Resist_Crush] = -25;
+            AbilityBonus[(int)EProperty.Resist_Thrust] = -25;
 
             if (spawn_fate4 == false)
             {
@@ -2089,7 +2089,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 StartedFunus = false;
                 BafMobs4 = false;
@@ -2141,13 +2141,13 @@ namespace DOL.GS
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
             }
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 40; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 40; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 40; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 40; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 40; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 40; // dmg reduction for melee dmg
                 default: return 70; // dmg reduction for rest resists
             }
         }
@@ -2172,11 +2172,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -2226,11 +2226,11 @@ namespace DOL.GS
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 843, 82, 32);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
 
             Model = 857;
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             Name = "Apocalypse";
             RespawnInterval = -1;
 
@@ -2565,7 +2565,7 @@ namespace DOL.AI.Brain
                     spell.Type = "DirectDamageNoVariance";
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
+                    spell.DamageType = (int)EDamageType.Heat;
                     m_Apoc_Gtaoe = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Apoc_Gtaoe);
                 }
@@ -2596,11 +2596,11 @@ namespace DOL.GS
             {
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -2628,9 +2628,9 @@ namespace DOL.GS
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 6, 0, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             VisibleActiveWeaponSlots = 34;
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
 
             Name = "Harbringer of Fate";
             RespawnInterval = -1;
@@ -2638,15 +2638,15 @@ namespace DOL.GS
             Size = 90;
             ParryChance = 25;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Cold] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = 26;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 30;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 30;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 30;
+            this.AbilityBonus[(int)EProperty.Resist_Body] = 25;
+            this.AbilityBonus[(int)EProperty.Resist_Heat] = 25;
+            this.AbilityBonus[(int)EProperty.Resist_Cold] = 25;
+            this.AbilityBonus[(int)EProperty.Resist_Matter] = 25;
+            this.AbilityBonus[(int)EProperty.Resist_Energy] = 26;
+            this.AbilityBonus[(int)EProperty.Resist_Spirit] = 25;
+            this.AbilityBonus[(int)EProperty.Resist_Slash] = 30;
+            this.AbilityBonus[(int)EProperty.Resist_Crush] = 30;
+            this.AbilityBonus[(int)EProperty.Resist_Thrust] = 30;
 
             MaxDistance = 2500;
             TetherRange = 3000;
@@ -2657,7 +2657,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 6;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
 
             HarbringerOfFateBrain adds = new HarbringerOfFateBrain();
             SetOwnBrain(adds);
@@ -2701,13 +2701,13 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100;
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 99;
-                case eDamageType.Thrust: return 99;
-                case eDamageType.Crush: return 99;
+                case EDamageType.Slash: return 99;
+                case EDamageType.Thrust: return 99;
+                case EDamageType.Crush: return 99;
                 default: return 99;
             }
         }
@@ -2760,7 +2760,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 8;
-            Realm = eRealm.None;
+            Realm = ERealm.None;
 
             RainOfFireBrain adds = new RainOfFireBrain();
             SetOwnBrain(adds);
@@ -2867,10 +2867,10 @@ namespace DOL.AI.Brain
                     spell.Range = 2800;
                     spell.SpellID = 11738;
                     spell.Target = "Enemy";
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Heat;
+                    spell.DamageType = (int)EDamageType.Heat;
                     m_Apoc_Rain_of_Fire = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Apoc_Rain_of_Fire);
                 }

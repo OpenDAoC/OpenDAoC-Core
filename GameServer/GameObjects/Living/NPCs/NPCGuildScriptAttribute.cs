@@ -28,14 +28,14 @@ namespace DOL.GS
 	public class NPCGuildScriptAttribute : Attribute
 	{
 		string m_guild;
-		eRealm m_realm;
+		ERealm m_realm;
 
 		/// <summary>
 		/// constructs new attribute
 		/// </summary>
 		/// <param name="guildname">name of the npc guild to that the script has to be applied</param>
 		/// <param name="realm">valid realm for the script</param>
-		public NPCGuildScriptAttribute(string guildname, eRealm realm)
+		public NPCGuildScriptAttribute(string guildname, ERealm realm)
 		{
 			m_guild = guildname;
 			m_realm = realm;
@@ -48,7 +48,7 @@ namespace DOL.GS
 		public NPCGuildScriptAttribute(string guildname)
 		{
 			m_guild = guildname;
-			m_realm = eRealm.None;
+			m_realm = ERealm.None;
 		}
 
 		/// <summary>
@@ -61,7 +61,7 @@ namespace DOL.GS
 		/// <summary>
 		/// valid realm for this script
 		/// </summary>
-		public eRealm Realm {
+		public ERealm Realm {
 			get { return m_realm; }
 		}
 	}

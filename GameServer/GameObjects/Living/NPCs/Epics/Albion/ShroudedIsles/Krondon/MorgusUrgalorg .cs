@@ -17,13 +17,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Morgus Urgalorg Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -43,11 +43,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -147,7 +147,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				RandomTarget = null;
 				CanCast = false;
@@ -242,13 +242,13 @@ namespace DOL.AI.Brain
 					spell.Icon = 368;
 					spell.TooltipId = 368;
 					spell.Damage = 400;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Ebullient Blast";
 					spell.Range = 1500;
 					spell.Radius = 250;
 					spell.SpellID = 11892;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_Morgus_DD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Morgus_DD);
@@ -271,12 +271,12 @@ namespace DOL.AI.Brain
 					spell.Icon = 69;
 					spell.TooltipId = 69;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Lava's Fury";
 					spell.Range = 1800;
 					spell.SpellID = 11893;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					spell.Uninterruptible = true;
 					m_Morgus_Bolt = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Morgus_Bolt);
@@ -299,12 +299,12 @@ namespace DOL.AI.Brain
 					spell.Icon = 318;
 					spell.TooltipId = 318;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Lava's Fury";
 					spell.Range = 1800;
 					spell.SpellID = 11894;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					spell.Uninterruptible = true;
 					m_Morgus_Bolt2 = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Morgus_Bolt2);

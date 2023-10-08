@@ -81,7 +81,7 @@ namespace DOL.GS.Spells
 				heal >>= 1;
 			}
 			if(heal <= 0) return;
-			heal = m_caster.ChangeHealth(m_caster, eHealthChangeType.Spell, heal);
+			heal = m_caster.ChangeHealth(m_caster, EHealthChangeType.Spell, heal);
 
 			if(heal > 0) 
 			{
@@ -175,7 +175,7 @@ namespace DOL.GS.Spells
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.ConcentrationCost", Spell.Concentration));
                 if (Spell.Radius != 0)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Radius", Spell.Radius));
-                if (Spell.DamageType != eDamageType.Natural)
+                if (Spell.DamageType != EDamageType.Natural)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
                 
                 return list;

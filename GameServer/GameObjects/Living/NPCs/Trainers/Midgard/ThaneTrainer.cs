@@ -24,13 +24,13 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Thane Trainer
 	/// </summary>
-	[NPCGuildScript("Thane Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Thane Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Thane Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Thane Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ThaneTrainer : GameTrainer
 	{
 
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Thane; }
+			get { return ECharacterClass.Thane; }
 		}
 
 		public const string WEAPON_ID = "thane_item";
@@ -83,7 +83,7 @@ namespace DOL.GS.Trainer
 				case "join the House of Thor":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Thane, "Welcome young Thane! May your time in Midgard army be rewarding!", null);
+						PromotePlayer(player, (int)ECharacterClass.Thane, "Welcome young Thane! May your time in Midgard army be rewarding!", null);
 						player.ReceiveItem(this, WEAPON_ID);
 					}
 					break;

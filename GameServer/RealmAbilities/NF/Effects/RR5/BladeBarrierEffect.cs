@@ -59,13 +59,13 @@ namespace DOL.GS.Effects
 			if (ag.AttackData.Attacker != Owner) return;
 			switch (ag.AttackData.AttackResult)
 			{
-				case eAttackResult.Blocked:
-				case eAttackResult.Evaded:
-				case eAttackResult.Fumbled:
-				case eAttackResult.HitStyle:
-				case eAttackResult.HitUnstyled:
-				case eAttackResult.Missed:
-				case eAttackResult.Parried:
+				case EAttackResult.Blocked:
+				case EAttackResult.Evaded:
+				case EAttackResult.Fumbled:
+				case EAttackResult.HitStyle:
+				case EAttackResult.HitUnstyled:
+				case EAttackResult.Missed:
+				case EAttackResult.Parried:
 					Stop(); break;
 			}
 

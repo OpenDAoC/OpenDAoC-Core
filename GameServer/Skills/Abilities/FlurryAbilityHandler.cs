@@ -134,10 +134,10 @@ namespace DOL.GS.SkillHandler
 			{ damage = (int)(target.MaxHealth / 100 * specc / 4.6); } // prev 3.6
 
 			#region Resists
-			int primaryResistModifier = target.GetResist(eDamageType.Slash);
+			int primaryResistModifier = target.GetResist(EDamageType.Slash);
 
 			//Using the resist BuffBonusCategory2 - its unused in ResistCalculator
-			int secondaryResistModifier = target.SpecBuffBonusCategory[(int)eProperty.Resist_Slash];
+			int secondaryResistModifier = target.SpecBuffBonusCategory[(int)EProperty.Resist_Slash];
 
 			int resistModifier = 0;
 			//primary resists
@@ -150,7 +150,7 @@ namespace DOL.GS.SkillHandler
 			#endregion
 
 			//flurry is slash damage
-			target.TakeDamage(player, eDamageType.Slash, damage, 0);
+			target.TakeDamage(player, EDamageType.Slash, damage, 0);
 			/*
 			GameSpellEffect mez = SpellHandler.FindEffectOnTarget(target, "Mesmerize");
             if (mez != null)

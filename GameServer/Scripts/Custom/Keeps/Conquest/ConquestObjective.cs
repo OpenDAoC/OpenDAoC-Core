@@ -283,7 +283,7 @@ public class ConquestObjective
         }
     }
 
-    public int GetNumFlagsOwnedByRealm(eRealm realm)
+    public int GetNumFlagsOwnedByRealm(ERealm realm)
     {
         int output = 0;
         if (ObjectiveOne.OwningRealm == realm) output++;

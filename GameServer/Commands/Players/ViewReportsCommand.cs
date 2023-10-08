@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 
 [Command(
 	"&viewreports",
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Allows you to view submitted bug reports.",
 	"/viewreports")]
 public class ViewReportsCommand : ACommandHandler, ICommandHandler

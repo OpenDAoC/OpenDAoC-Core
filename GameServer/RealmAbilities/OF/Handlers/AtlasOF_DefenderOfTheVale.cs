@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = 11;
             m_dbspell.Target = "Group";
             m_dbspell.Radius = 1500;
-            m_dbspell.Type = eSpellType.AblativeArmor.ToString();
+            m_dbspell.Type = ESpellType.AblativeArmor.ToString();
             m_dbspell.Value = 500;
             m_dbspell.Duration = 60;
             m_dbspell.Pulse = 0;

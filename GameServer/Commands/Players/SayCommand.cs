@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 [Command(
 	"&say",
 	new string[] {"&s"},
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Say something to other players around you",
 	"/say <message>")]
 public class SayCommand : ACommandHandler, ICommandHandler

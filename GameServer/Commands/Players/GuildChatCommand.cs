@@ -5,7 +5,7 @@ namespace DOL.GS.Commands;
 [Command(
 	"&gu",
 	new string[] {"&guild"},
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Guild Chat command",
 	"/gu <text>")]
 public class GuildChatCommand : ACommandHandler, ICommandHandler
@@ -38,7 +38,7 @@ public class GuildChatCommand : ACommandHandler, ICommandHandler
 [Command(
 	"&o",
 	new string[] {"&osend"},
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Speak in officer chat (Must be a guild officer)",
 	"/o <text>")]
 public class OfficerGuildChatCommandHandler : ACommandHandler, ICommandHandler
@@ -78,7 +78,7 @@ public class OfficerGuildChatCommandHandler : ACommandHandler, ICommandHandler
 [Command(
 	"&as",
 	new string[] {"&asend"},
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Sends a message to the alliance chat",
 	"/as <text>")]
 public class AllianceGuildChatCommandHandler : ACommandHandler, ICommandHandler

@@ -9,26 +9,26 @@ namespace DOL.GS
 	public class Oona : GameEpicNPC
 	{
 		public Oona() : base() { }
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 20;// dmg reduction for rest resists
 			}
 		}
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (source is GamePlayer || source is GameSummonedPet)
 			{
 				Point3D spawn = new Point3D(SpawnPoint.X, SpawnPoint.Y, SpawnPoint.Z);
 				if (!source.IsWithinRadius(spawn, TetherRange))//dont take any dmg 
 				{
-					if (damageType == eDamageType.Body || damageType == eDamageType.Cold || damageType == eDamageType.Energy || damageType == eDamageType.Heat
-						|| damageType == eDamageType.Matter || damageType == eDamageType.Spirit || damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-						|| damageType == eDamageType.Slash)
+					if (damageType == EDamageType.Body || damageType == EDamageType.Cold || damageType == EDamageType.Energy || damageType == EDamageType.Heat
+						|| damageType == EDamageType.Matter || damageType == EDamageType.Spirit || damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+						|| damageType == EDamageType.Slash)
 					{
 						GamePlayer truc;
 						if (source is GamePlayer)
@@ -63,11 +63,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -127,25 +127,25 @@ namespace DOL.GS
 				{
 					OonaUndeadAdd npc = new OonaUndeadAdd();
 					npc.Name = "undead " + player.RaceName;
-					if (player.Race == (int)eRace.Dwarf && player.Gender == eGender.Male)
+					if (player.Race == (int)ERace.Dwarf && player.Gender == EGender.Male)
 						npc.Model = 185;
-					if (player.Race == (int)eRace.Dwarf && player.Gender == eGender.Female)
+					if (player.Race == (int)ERace.Dwarf && player.Gender == EGender.Female)
 						npc.Model = 194;
-					if (player.Race == (int)eRace.Norseman && player.Gender == eGender.Male)
+					if (player.Race == (int)ERace.Norseman && player.Gender == EGender.Male)
 						npc.Model = 153;
-					if (player.Race == (int)eRace.Norseman && player.Gender == eGender.Female)
+					if (player.Race == (int)ERace.Norseman && player.Gender == EGender.Female)
 						npc.Model = 162;
-					if (player.Race == (int)eRace.Kobold && player.Gender == eGender.Male)
+					if (player.Race == (int)ERace.Kobold && player.Gender == EGender.Male)
 						npc.Model = 169;
-					if (player.Race == (int)eRace.Kobold && player.Gender == eGender.Female)
+					if (player.Race == (int)ERace.Kobold && player.Gender == EGender.Female)
 						npc.Model = 178;
-					if (player.Race == (int)eRace.Troll && player.Gender == eGender.Male)
+					if (player.Race == (int)ERace.Troll && player.Gender == EGender.Male)
 						npc.Model = 137;
-					if (player.Race == (int)eRace.Troll && player.Gender == eGender.Female)
+					if (player.Race == (int)ERace.Troll && player.Gender == EGender.Female)
 						npc.Model = 146;
-					if (player.Race == (int)eRace.Valkyn && player.Gender == eGender.Male)
+					if (player.Race == (int)ERace.Valkyn && player.Gender == EGender.Male)
 						npc.Model = 773;
-					if (player.Race == (int)eRace.Valkyn && player.Gender == eGender.Female)
+					if (player.Race == (int)ERace.Valkyn && player.Gender == EGender.Female)
 						npc.Model = 782;
 					npc.Gender = player.Gender;
 					npc.X = player.X;
@@ -184,7 +184,7 @@ namespace DOL.AI.Brain
 			}
 			if (!CheckProximityAggro())
 			{
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 			}
 			if (Body.TargetObject != null && HasAggro)
@@ -248,14 +248,14 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 4111;
 					spell.Icon = 4111;
 					spell.Damage = 330;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					spell.Name = "Aurora Blast";
 					spell.Range = 1650;
 					spell.SpellID = 12004;
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();					
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();					
 					m_OonaDD = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OonaDD);
 				}
@@ -277,14 +277,14 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 4559;
 					spell.Icon = 4559;
 					spell.Damage = 200;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					spell.Name = "Bolt of Uncreation";
 					spell.Range = 1800;
 					spell.SpellID = 12005;
 					spell.Target = "Enemy";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.Type = eSpellType.Bolt.ToString();
+					spell.Type = ESpellType.Bolt.ToString();
 					m_OonaBolt = new Spell(spell, 60);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_OonaBolt);
 				}

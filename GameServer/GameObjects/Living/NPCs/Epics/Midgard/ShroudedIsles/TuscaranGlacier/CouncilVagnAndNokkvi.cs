@@ -9,13 +9,13 @@ namespace DOL.GS
         public Vagn() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
                 default: return 90;// dmg reduction for rest resists
             }
         }
@@ -35,11 +35,11 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -106,7 +106,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled = false;
             }
@@ -140,12 +140,12 @@ namespace DOL.AI.Brain
                     spell.ClientEffect = 4075;
                     spell.Icon = 4075;
                     spell.Damage = 600;
-                    spell.DamageType = (int)eDamageType.Cold;
+                    spell.DamageType = (int)EDamageType.Cold;
                     spell.Name = "Frost Shock";
                     spell.Range = 1500;
                     spell.SpellID = 11927;
                     spell.Target = "Enemy";
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     m_VagnDD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_VagnDD);
                 }
@@ -163,13 +163,13 @@ namespace DOL.GS
         public Nokkvi() : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 90;// dmg reduction for melee dmg
-                case eDamageType.Crush: return 90;// dmg reduction for melee dmg
-                case eDamageType.Thrust: return 90;// dmg reduction for melee dmg
+                case EDamageType.Slash: return 90;// dmg reduction for melee dmg
+                case EDamageType.Crush: return 90;// dmg reduction for melee dmg
+                case EDamageType.Thrust: return 90;// dmg reduction for melee dmg
                 default: return 20;// dmg reduction for rest resists
             }
         }
@@ -190,12 +190,12 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
 
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -263,7 +263,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled2 = false;
             }

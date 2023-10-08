@@ -61,7 +61,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Joe", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Joe", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -79,7 +79,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 				Joe.Model = 42;
 				Joe.Name = "Joe";
 				Joe.GuildName = "Realm Logistics";
-				Joe.Realm = eRealm.Albion;
+				Joe.Realm = ERealm.Albion;
 				//Darkness Falls Alb Entrance Location
 				Joe.CurrentRegionID = 249;
 				Joe.Size = 50;

@@ -19,7 +19,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
-			int regged = living.ChangeEndurance(living, eEnduranceChangeType.Spell, living.MaxEndurance);
+			int regged = living.ChangeEndurance(living, EEnduranceChangeType.Spell, living.MaxEndurance);
 
 			SendCasterSpellEffectAndCastMessage(living, 7003, regged > 0);
 

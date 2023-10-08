@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 [Command(
 	"&train",
 	new string[] { "&trainline", "&trainskill" }, // new aliases to work around 1.105 client /train command
-	ePrivLevel.Player,
+	EPrivLevel.Player,
 	"Trains a line by the specified amount",
 	"/train <line> <level>",
 	"e.g. /train Dual Wield 50")]
@@ -43,7 +43,7 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 
 		GameTrainer trainer = client.Player.TargetObject as GameTrainer;
 		// Make sure the player is at a trainer.
-		if (!DOL.GS.ServerProperties.Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)ePrivLevel.Player && (trainer == null || trainer.CanTrain(client.Player) == false))
+		if (!DOL.GS.ServerProperties.Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player && (trainer == null || trainer.CanTrain(client.Player) == false))
 		{
 			client.Out.SendMessage("You have to be at your trainer to use this command.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			return;

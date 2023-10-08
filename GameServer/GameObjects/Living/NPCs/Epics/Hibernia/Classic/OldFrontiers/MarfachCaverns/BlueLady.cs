@@ -22,17 +22,17 @@ namespace DOL.GS
             : base()
         {
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+                        damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+                        damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -68,21 +68,21 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
                 default: return 30; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -116,10 +116,10 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.Cloak, 443, 54, 0, 0);
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468, 43, 91);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+            SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             // humanoid
             VisibleActiveWeaponSlots = 34;
-            MeleeDamageType = eDamageType.Crush;
+            MeleeDamageType = EDamageType.Crush;
             IsCloakHoodUp = true;
             BlueLadyBrain sBrain = new BlueLadyBrain();
             SetOwnBrain(sBrain);
@@ -161,7 +161,7 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
                 CanSpawnAdds = false;
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 if (!RemoveAdds)
                 {
                     foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
@@ -236,11 +236,11 @@ namespace DOL.AI.Brain
                     spell.Radius = 550;
                     spell.Range = 0;
                     spell.SpellID = 11788;
-                    spell.Target = eSpellTarget.ENEMY.ToString();
-                    spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+                    spell.Target = ESpellTarget.ENEMY.ToString();
+                    spell.Type = ESpellType.DirectDamageNoVariance.ToString();
                     spell.Uninterruptible = true;
                     spell.MoveCast = true;
-                    spell.DamageType = (int)eDamageType.Cold;
+                    spell.DamageType = (int)EDamageType.Cold;
                     m_BlueLady_DD = new Spell(spell, 70);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_BlueLady_DD);
                 }
@@ -274,11 +274,11 @@ namespace DOL.GS
             get { return 450; }
             set { }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -309,13 +309,13 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
-            Gender = eGender.Neutral;
-            MeleeDamageType = eDamageType.Slash;
+            Gender = EGender.Neutral;
+            MeleeDamageType = EDamageType.Slash;
 
             GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
             templateHib.AddNPCEquipment(eInventorySlot.RightHandWeapon, 5);
             Inventory = templateHib.CloseTemplate();
-            VisibleActiveWeaponSlots = (byte)eActiveWeaponSlot.Standard;
+            VisibleActiveWeaponSlots = (byte)EActiveWeaponSlot.Standard;
 
             BodyType = 6;
             BlueLadyAddBrain sBrain = new BlueLadyAddBrain();
@@ -348,11 +348,11 @@ namespace DOL.GS
             get { return 450; }
             set { }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 200;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.15;
@@ -381,15 +381,15 @@ namespace DOL.GS
             GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
             templateHib.AddNPCEquipment(eInventorySlot.RightHandWeapon, 316);
             Inventory = templateHib.CloseTemplate();
-            VisibleActiveWeaponSlots = (byte)eActiveWeaponSlot.Standard;
+            VisibleActiveWeaponSlots = (byte)EActiveWeaponSlot.Standard;
 
             ++AxeCount;
             RespawnInterval = -1;
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
-            Gender = eGender.Neutral;
-            MeleeDamageType = eDamageType.Slash;
+            Gender = EGender.Neutral;
+            MeleeDamageType = EDamageType.Slash;
 
             BodyType = 6;
             BlueLadyAddBrain sBrain = new BlueLadyAddBrain();

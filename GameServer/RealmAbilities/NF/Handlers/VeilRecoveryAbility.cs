@@ -5,7 +5,7 @@ namespace DOL.GS.RealmAbilities
 	public class VeilRecoveryAbility : RAPropertyEnhancer
 	{
 		public VeilRecoveryAbility(DbAbility dba, int level)
-			: base(dba, level, eProperty.ResIllnessReduction)
+			: base(dba, level, EProperty.ResIllnessReduction)
 		{
 		}
 

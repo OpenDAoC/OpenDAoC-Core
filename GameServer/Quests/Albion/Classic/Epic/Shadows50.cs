@@ -103,7 +103,7 @@ namespace DOL.GS.Quests.Albion
 
 			#region NPC Declarations
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Lidmann Halsey", eRealm.Albion);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Lidmann Halsey", ERealm.Albion);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -121,7 +121,7 @@ namespace DOL.GS.Quests.Albion
 				Lidmann.Model = 64;
 				Lidmann.Name = "Lidmann Halsey";
 				Lidmann.GuildName = "";
-				Lidmann.Realm = eRealm.Albion;
+				Lidmann.Realm = ERealm.Albion;
 				Lidmann.CurrentRegionID = 1;
 				Lidmann.Size = 50;
 				Lidmann.Level = 50;
@@ -137,7 +137,7 @@ namespace DOL.GS.Quests.Albion
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Cailleach Uragaig", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Cailleach Uragaig", ERealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -155,7 +155,7 @@ namespace DOL.GS.Quests.Albion
 				Uragaig.Model = 349;
 				Uragaig.Name = "Cailleach Uragaig";
 				Uragaig.GuildName = "";
-				Uragaig.Realm = eRealm.None;
+				Uragaig.Realm = ERealm.None;
 				Uragaig.CurrentRegionID = 1;
 				Uragaig.Size = 55;
 				Uragaig.Level = 70;
@@ -229,16 +229,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 16;
-				i.Bonus2Type = (int)eStat.QUI;
+				i.Bonus2Type = (int)EStat.QUI;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 9;
-				i.Bonus4Type = (int)eStat.STR;
+				i.Bonus4Type = (int)EStat.STR;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -272,16 +272,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 16;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 18;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Body;
+				i.Bonus3Type = (int)EResist.Body;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Thrust;
+				i.Bonus4Type = (int)EResist.Thrust;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -315,16 +315,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 19;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.CON;
+				i.Bonus2Type = (int)EStat.CON;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Crush;
+				i.Bonus3Type = (int)EResist.Crush;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Matter;
+				i.Bonus4Type = (int)EResist.Matter;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -357,16 +357,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 48;
-				i.Bonus2Type = (int)eProperty.MaxHealth;
+				i.Bonus2Type = (int)EProperty.MaxHealth;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eResist.Thrust;
+				i.Bonus4Type = (int)EResist.Thrust;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -399,16 +399,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 16;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Heat;
+				i.Bonus3Type = (int)EResist.Heat;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Slash;
+				i.Bonus4Type = (int)EResist.Slash;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -441,16 +441,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 16;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 12;
-				i.Bonus4Type = (int)eStat.QUI;
+				i.Bonus4Type = (int)EStat.QUI;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -484,13 +484,13 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 14;
-				i.Bonus1Type = (int)eProperty.MaxMana;
+				i.Bonus1Type = (int)EProperty.MaxMana;
 
 				i.Bonus2 = 9;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				//                    i.Bonus4 = 10;
 				//                    i.Bonus4Type = (int)eResist.Energy;
@@ -527,16 +527,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 16;
-				i.Bonus1Type = (int)eStat.PIE;
+				i.Bonus1Type = (int)EStat.PIE;
 
 				i.Bonus2 = 6;
-				i.Bonus2Type = (int)eProperty.Skill_Flexible_Weapon;
+				i.Bonus2Type = (int)EProperty.Skill_Flexible_Weapon;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Body;
+				i.Bonus3Type = (int)EResist.Body;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Thrust;
+				i.Bonus4Type = (int)EResist.Thrust;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -570,16 +570,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 19;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.CON;
+				i.Bonus2Type = (int)EStat.CON;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Matter;
+				i.Bonus3Type = (int)EResist.Matter;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Crush;
+				i.Bonus4Type = (int)EResist.Crush;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -612,16 +612,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 48;
-				i.Bonus1Type = (int)eProperty.MaxHealth;
+				i.Bonus1Type = (int)EProperty.MaxHealth;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.PIE;
+				i.Bonus2Type = (int)EStat.PIE;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eResist.Thrust;
+				i.Bonus4Type = (int)EResist.Thrust;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -654,16 +654,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 16;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Heat;
+				i.Bonus3Type = (int)EResist.Heat;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Slash;
+				i.Bonus4Type = (int)EResist.Slash;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -696,16 +696,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 16;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 4;
-				i.Bonus4Type = (int)eProperty.Skill_Slashing;
+				i.Bonus4Type = (int)EProperty.Skill_Slashing;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -737,16 +737,16 @@ namespace DOL.GS.Quests.Albion
 				InfiltratorEpicBoots.Durability = 50000;
 
 				InfiltratorEpicBoots.Bonus1 = 13;
-				InfiltratorEpicBoots.Bonus1Type = (int)eStat.QUI;
+				InfiltratorEpicBoots.Bonus1Type = (int)EStat.QUI;
 
 				InfiltratorEpicBoots.Bonus2 = 13;
-				InfiltratorEpicBoots.Bonus2Type = (int)eStat.DEX;
+				InfiltratorEpicBoots.Bonus2Type = (int)EStat.DEX;
 
 				InfiltratorEpicBoots.Bonus3 = 8;
-				InfiltratorEpicBoots.Bonus3Type = (int)eResist.Cold;
+				InfiltratorEpicBoots.Bonus3Type = (int)EResist.Cold;
 
 				InfiltratorEpicBoots.Bonus4 = 13;
-				InfiltratorEpicBoots.Bonus4Type = (int)eStat.CON;
+				InfiltratorEpicBoots.Bonus4Type = (int)EStat.CON;
 				{
 					GameServer.Database.AddObject(InfiltratorEpicBoots);
 				}
@@ -777,16 +777,16 @@ namespace DOL.GS.Quests.Albion
 				InfiltratorEpicHelm.Durability = 50000;
 
 				InfiltratorEpicHelm.Bonus1 = 13;
-				InfiltratorEpicHelm.Bonus1Type = (int)eStat.DEX;
+				InfiltratorEpicHelm.Bonus1Type = (int)EStat.DEX;
 
 				InfiltratorEpicHelm.Bonus2 = 13;
-				InfiltratorEpicHelm.Bonus2Type = (int)eStat.QUI;
+				InfiltratorEpicHelm.Bonus2Type = (int)EStat.QUI;
 
 				InfiltratorEpicHelm.Bonus3 = 8;
-				InfiltratorEpicHelm.Bonus3Type = (int)eResist.Spirit;
+				InfiltratorEpicHelm.Bonus3Type = (int)EResist.Spirit;
 
 				InfiltratorEpicHelm.Bonus4 = 13;
-				InfiltratorEpicHelm.Bonus4Type = (int)eStat.STR;
+				InfiltratorEpicHelm.Bonus4Type = (int)EStat.STR;
 				{
 					GameServer.Database.AddObject(InfiltratorEpicHelm);
 				}
@@ -818,16 +818,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				InfiltratorEpicGloves.Bonus1 = 18;
-				InfiltratorEpicGloves.Bonus1Type = (int)eStat.STR;
+				InfiltratorEpicGloves.Bonus1Type = (int)EStat.STR;
 
 				InfiltratorEpicGloves.Bonus2 = 21;
-				InfiltratorEpicGloves.Bonus2Type = (int)eProperty.MaxHealth;
+				InfiltratorEpicGloves.Bonus2Type = (int)EProperty.MaxHealth;
 
 				InfiltratorEpicGloves.Bonus3 = 3;
-				InfiltratorEpicGloves.Bonus3Type = (int)eProperty.Skill_Envenom;
+				InfiltratorEpicGloves.Bonus3Type = (int)EProperty.Skill_Envenom;
 
 				InfiltratorEpicGloves.Bonus4 = 3;
-				InfiltratorEpicGloves.Bonus4Type = (int)eProperty.Skill_Critical_Strike;
+				InfiltratorEpicGloves.Bonus4Type = (int)EProperty.Skill_Critical_Strike;
 				{
 					GameServer.Database.AddObject(InfiltratorEpicGloves);
 				}
@@ -857,16 +857,16 @@ namespace DOL.GS.Quests.Albion
 				InfiltratorEpicVest.Durability = 50000;
 
 				InfiltratorEpicVest.Bonus1 = 36;
-				InfiltratorEpicVest.Bonus1Type = (int)eProperty.MaxHealth;
+				InfiltratorEpicVest.Bonus1Type = (int)EProperty.MaxHealth;
 
 				InfiltratorEpicVest.Bonus2 = 16;
-				InfiltratorEpicVest.Bonus2Type = (int)eStat.DEX;
+				InfiltratorEpicVest.Bonus2Type = (int)EStat.DEX;
 
 				InfiltratorEpicVest.Bonus3 = 8;
-				InfiltratorEpicVest.Bonus3Type = (int)eResist.Cold;
+				InfiltratorEpicVest.Bonus3Type = (int)EResist.Cold;
 
 				InfiltratorEpicVest.Bonus4 = 8;
-				InfiltratorEpicVest.Bonus4Type = (int)eResist.Body;
+				InfiltratorEpicVest.Bonus4Type = (int)EResist.Body;
 				{
 					GameServer.Database.AddObject(InfiltratorEpicVest);
 				}
@@ -896,16 +896,16 @@ namespace DOL.GS.Quests.Albion
 				InfiltratorEpicLegs.Durability = 50000;
 
 				InfiltratorEpicLegs.Bonus1 = 21;
-				InfiltratorEpicLegs.Bonus1Type = (int)eStat.CON;
+				InfiltratorEpicLegs.Bonus1Type = (int)EStat.CON;
 
 				InfiltratorEpicLegs.Bonus2 = 16;
-				InfiltratorEpicLegs.Bonus2Type = (int)eStat.QUI;
+				InfiltratorEpicLegs.Bonus2Type = (int)EStat.QUI;
 
 				InfiltratorEpicLegs.Bonus3 = 6;
-				InfiltratorEpicLegs.Bonus3Type = (int)eResist.Heat;
+				InfiltratorEpicLegs.Bonus3Type = (int)EResist.Heat;
 
 				InfiltratorEpicLegs.Bonus4 = 6;
-				InfiltratorEpicLegs.Bonus4Type = (int)eResist.Crush;
+				InfiltratorEpicLegs.Bonus4Type = (int)EResist.Crush;
 				{
 					GameServer.Database.AddObject(InfiltratorEpicLegs);
 				}
@@ -935,16 +935,16 @@ namespace DOL.GS.Quests.Albion
 				InfiltratorEpicArms.Durability = 50000;
 
 				InfiltratorEpicArms.Bonus1 = 21;
-				InfiltratorEpicArms.Bonus1Type = (int)eStat.DEX;
+				InfiltratorEpicArms.Bonus1Type = (int)EStat.DEX;
 
 				InfiltratorEpicArms.Bonus2 = 18;
-				InfiltratorEpicArms.Bonus2Type = (int)eStat.STR;
+				InfiltratorEpicArms.Bonus2Type = (int)EStat.STR;
 
 				InfiltratorEpicArms.Bonus3 = 6;
-				InfiltratorEpicArms.Bonus3Type = (int)eResist.Matter;
+				InfiltratorEpicArms.Bonus3Type = (int)EResist.Matter;
 
 				InfiltratorEpicArms.Bonus4 = 4;
-				InfiltratorEpicArms.Bonus4Type = (int)eResist.Slash;
+				InfiltratorEpicArms.Bonus4Type = (int)EResist.Slash;
 				{
 					GameServer.Database.AddObject(InfiltratorEpicArms);
 				}
@@ -975,16 +975,16 @@ namespace DOL.GS.Quests.Albion
 				CabalistEpicBoots.Durability = 50000;
 
 				CabalistEpicBoots.Bonus1 = 22;
-				CabalistEpicBoots.Bonus1Type = (int)eStat.DEX;
+				CabalistEpicBoots.Bonus1Type = (int)EStat.DEX;
 
 				CabalistEpicBoots.Bonus2 = 3;
-				CabalistEpicBoots.Bonus2Type = (int)eProperty.Skill_Matter;
+				CabalistEpicBoots.Bonus2Type = (int)EProperty.Skill_Matter;
 
 				CabalistEpicBoots.Bonus3 = 8;
-				CabalistEpicBoots.Bonus3Type = (int)eResist.Slash;
+				CabalistEpicBoots.Bonus3Type = (int)EResist.Slash;
 
 				CabalistEpicBoots.Bonus4 = 8;
-				CabalistEpicBoots.Bonus4Type = (int)eResist.Thrust;
+				CabalistEpicBoots.Bonus4Type = (int)EResist.Thrust;
 				{
 					GameServer.Database.AddObject(CabalistEpicBoots);
 				}
@@ -1015,16 +1015,16 @@ namespace DOL.GS.Quests.Albion
 				i.Durability = 50000;
 
 				i.Bonus1 = 21;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 13;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Heat;
+				i.Bonus3Type = (int)EResist.Heat;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Matter;
+				i.Bonus4Type = (int)EResist.Matter;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1056,16 +1056,16 @@ namespace DOL.GS.Quests.Albion
 				i.Durability = 50000;
 
 				i.Bonus1 = 10;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 10;
-				i.Bonus2Type = (int)eStat.INT;
+				i.Bonus2Type = (int)EStat.INT;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eProperty.MaxMana;
+				i.Bonus3Type = (int)EProperty.MaxMana;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eResist.Energy;
+				i.Bonus4Type = (int)EResist.Energy;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1097,13 +1097,13 @@ namespace DOL.GS.Quests.Albion
 				i.Durability = 50000;
 
 				i.Bonus1 = 24;
-				i.Bonus1Type = (int)eProperty.MaxHealth;
+				i.Bonus1Type = (int)EProperty.MaxHealth;
 
 				i.Bonus2 = 14;
-				i.Bonus2Type = (int)eProperty.MaxMana;
+				i.Bonus2Type = (int)EProperty.MaxMana;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eResist.Crush;
+				i.Bonus3Type = (int)EResist.Crush;
 
 				//                    i.Bonus4 = 10;
 				//                    i.Bonus4Type = (int)eResist.Energy;
@@ -1139,16 +1139,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 22;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eProperty.Skill_Spirit;
+				i.Bonus2Type = (int)EProperty.Skill_Spirit;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Matter;
+				i.Bonus4Type = (int)EResist.Matter;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1181,13 +1181,13 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eProperty.Skill_Body;
+				i.Bonus2Type = (int)EProperty.Skill_Body;
 
 				i.Bonus3 = 16;
-				i.Bonus3Type = (int)eStat.DEX;
+				i.Bonus3Type = (int)EStat.DEX;
 
 				//                    i.Bonus4 = 10;
 				//                    i.Bonus4Type = (int)eResist.Energy;
@@ -1223,16 +1223,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 22;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eProperty.Skill_Pain_working;
+				i.Bonus2Type = (int)EProperty.Skill_Pain_working;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Slash;
+				i.Bonus3Type = (int)EResist.Slash;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Thrust;
+				i.Bonus4Type = (int)EResist.Thrust;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1265,16 +1265,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 21;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 13;
-				i.Bonus2Type = (int)eStat.QUI;
+				i.Bonus2Type = (int)EStat.QUI;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Heat;
+				i.Bonus3Type = (int)EResist.Heat;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Matter;
+				i.Bonus4Type = (int)EResist.Matter;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1307,16 +1307,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 10;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 10;
-				i.Bonus2Type = (int)eStat.INT;
+				i.Bonus2Type = (int)EStat.INT;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eProperty.MaxMana;
+				i.Bonus3Type = (int)EProperty.MaxMana;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eResist.Energy;
+				i.Bonus4Type = (int)EResist.Energy;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1348,13 +1348,13 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 24;
-				i.Bonus1Type = (int)eProperty.MaxHealth;
+				i.Bonus1Type = (int)EProperty.MaxHealth;
 
 				i.Bonus2 = 14;
-				i.Bonus2Type = (int)eProperty.MaxMana;
+				i.Bonus2Type = (int)EProperty.MaxMana;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eResist.Crush;
+				i.Bonus3Type = (int)EResist.Crush;
 
 				//                    i.Bonus4 = 10;
 				//                    i.Bonus4Type = (int)eResist.Energy;
@@ -1390,16 +1390,16 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 22;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eProperty.Skill_Death_Servant;
+				i.Bonus2Type = (int)EProperty.Skill_Death_Servant;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Matter;
+				i.Bonus4Type = (int)EResist.Matter;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1431,13 +1431,13 @@ namespace DOL.GS.Quests.Albion
 
 
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eProperty.Skill_DeathSight;
+				i.Bonus2Type = (int)EProperty.Skill_DeathSight;
 
 				i.Bonus3 = 16;
-				i.Bonus3Type = (int)eStat.DEX;
+				i.Bonus3Type = (int)EStat.DEX;
 
 				//                    i.Bonus4 = 10;
 				//                    i.Bonus4Type = (int)eResist.Energy;
@@ -1479,16 +1479,16 @@ namespace DOL.GS.Quests.Albion
 				 */
 
 				i.Bonus1 = 16;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 18;
-				i.Bonus2Type = (int)eStat.CON;
+				i.Bonus2Type = (int)EStat.CON;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Slash;
+				i.Bonus3Type = (int)EResist.Slash;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Heat;
+				i.Bonus4Type = (int)EResist.Heat;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1527,16 +1527,16 @@ namespace DOL.GS.Quests.Albion
 				 */
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.PIE;
+				i.Bonus1Type = (int)EStat.PIE;
 
 				i.Bonus2 = 6;
-				i.Bonus2Type = (int)eResist.Thrust;
+				i.Bonus2Type = (int)EResist.Thrust;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 48;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1573,13 +1573,13 @@ namespace DOL.GS.Quests.Albion
 				 *   Cold Resist: 8%
 				 */
 				i.Bonus1 = 9;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 14;
-				i.Bonus2Type = (int)eProperty.MaxMana;
+				i.Bonus2Type = (int)EProperty.MaxMana;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				{
 					GameServer.Database.AddObject(i);
@@ -1618,16 +1618,16 @@ namespace DOL.GS.Quests.Albion
 				 */
 
 				i.Bonus1 = 4;
-				i.Bonus1Type = (int)eProperty.Skill_Crushing;
+				i.Bonus1Type = (int)EProperty.Skill_Crushing;
 
 				i.Bonus2 = 16;
-				i.Bonus2Type = (int)eStat.CON;
+				i.Bonus2Type = (int)EStat.CON;
 
 				i.Bonus3 = 15;
-				i.Bonus3Type = (int)eStat.DEX;
+				i.Bonus3Type = (int)EStat.DEX;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Cold;
+				i.Bonus4Type = (int)EResist.Cold;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1666,16 +1666,16 @@ namespace DOL.GS.Quests.Albion
 				 */
 
 				i.Bonus1 = 19;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.CON;
+				i.Bonus2Type = (int)EStat.CON;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Crush;
+				i.Bonus3Type = (int)EResist.Crush;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Matter;
+				i.Bonus4Type = (int)EResist.Matter;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1713,16 +1713,16 @@ namespace DOL.GS.Quests.Albion
 				 */
 
 				i.Bonus1 = 16;
-				i.Bonus1Type = (int)eStat.PIE;
+				i.Bonus1Type = (int)EStat.PIE;
 
 				i.Bonus2 = 8;
-				i.Bonus2Type = (int)eResist.Thrust;
+				i.Bonus2Type = (int)EResist.Thrust;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Body;
+				i.Bonus3Type = (int)EResist.Body;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eProperty.Skill_Flexible_Weapon;
+				i.Bonus4Type = (int)EProperty.Skill_Flexible_Weapon;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1865,12 +1865,12 @@ namespace DOL.GS.Quests.Albion
 			if (player.IsDoingQuest(typeof(Shadows_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte)eCharacterClass.Reaver &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Mercenary &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Cabalist &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Necromancer &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Infiltrator &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Heretic)
+			if (player.CharacterClass.ID != (byte)ECharacterClass.Reaver &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Mercenary &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Cabalist &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Necromancer &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Infiltrator &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Heretic)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -2023,9 +2023,9 @@ namespace DOL.GS.Quests.Albion
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
+			switch ((ECharacterClass)m_questPlayer.CharacterClass.ID)
 			{
-				case eCharacterClass.Reaver:
+				case ECharacterClass.Reaver:
 					{
 						GiveItem(m_questPlayer, ReaverEpicArms);
 						GiveItem(m_questPlayer, ReaverEpicBoots);
@@ -2035,7 +2035,7 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, ReaverEpicVest);
 						break;
 					}
-				case eCharacterClass.Mercenary:
+				case ECharacterClass.Mercenary:
 					{
 						GiveItem(m_questPlayer, MercenaryEpicArms);
 						GiveItem(m_questPlayer, MercenaryEpicBoots);
@@ -2045,7 +2045,7 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, MercenaryEpicVest);
 						break;
 					}
-				case eCharacterClass.Cabalist:
+				case ECharacterClass.Cabalist:
 					{
 						GiveItem(m_questPlayer, CabalistEpicArms);
 						GiveItem(m_questPlayer, CabalistEpicBoots);
@@ -2055,7 +2055,7 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, CabalistEpicVest);
 						break;
 					}
-				case eCharacterClass.Infiltrator:
+				case ECharacterClass.Infiltrator:
 					{
 						GiveItem(m_questPlayer, InfiltratorEpicArms);
 						GiveItem(m_questPlayer, InfiltratorEpicBoots);
@@ -2065,7 +2065,7 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, InfiltratorEpicVest);
 						break;
 					}
-				case eCharacterClass.Necromancer:
+				case ECharacterClass.Necromancer:
 					{
 						GiveItem(m_questPlayer, NecromancerEpicArms);
 						GiveItem(m_questPlayer, NecromancerEpicBoots);
@@ -2075,7 +2075,7 @@ namespace DOL.GS.Quests.Albion
 						GiveItem(m_questPlayer, NecromancerEpicVest);
 						break;
 					}
-				case eCharacterClass.Heretic:
+				case ECharacterClass.Heretic:
 					{
 						GiveItem(m_questPlayer, HereticEpicArms);
 						GiveItem(m_questPlayer, HereticEpicBoots);
@@ -2087,7 +2087,7 @@ namespace DOL.GS.Quests.Albion
 					}
 			}
 
-			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			m_questPlayer.GainExperience(EXpSource.Quest, 1937768448, true);
 			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 

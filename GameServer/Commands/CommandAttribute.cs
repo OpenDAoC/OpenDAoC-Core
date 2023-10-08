@@ -23,7 +23,7 @@ namespace DOL.GS
 		/// <param name="plvl">Minimum required plvl for this command</param>
 		/// <param name="desc">Description of the command</param>
 		/// <param name="usage">How to use the command</param>
-		public CommandAttribute(string cmd, string[] alias, ePrivLevel plvl, string desc, params string[] usage)
+		public CommandAttribute(string cmd, string[] alias, EPrivLevel plvl, string desc, params string[] usage)
 		{
 			m_cmd=cmd;
 			m_cmdAliases = alias;
@@ -40,7 +40,7 @@ namespace DOL.GS
 		/// <param name="plvl">Minimum required plvl for this command</param>
 		/// <param name="desc">Description of the command</param>
 		/// <param name="usage">How to use the command</param>
-		public CommandAttribute(string cmd, ePrivLevel plvl, string desc, params string[] usage)
+		public CommandAttribute(string cmd, EPrivLevel plvl, string desc, params string[] usage)
 		{
 			m_cmd=cmd;
 			m_plvl = (uint)plvl;
@@ -57,7 +57,7 @@ namespace DOL.GS
 		/// <param name="plvl">Minimum required privilege level (e.g., ePrivLevel.Admin)</param>
 		/// <param name="desc">Description of the command type (e.g., "AdminCommands.Account.Description")</param>
 		/// <param name="usage">Syntax/descriptions for how to structure and use all commands of this type (e.g., syntax = "AdminCommands.Account.Syntax.AccountName", desc = "AdminCommands.Account.Usage.AccountName")</param>
-		public CommandAttribute(string cmd, string[] alias, string header, ePrivLevel plvl, string desc, params string[] usage)
+		public CommandAttribute(string cmd, string[] alias, string header, EPrivLevel plvl, string desc, params string[] usage)
 		{
 			m_cmd = cmd;
 			m_cmdAliases = alias;
@@ -75,7 +75,7 @@ namespace DOL.GS
 		/// <param name="plvl">Minimum required privilege level (e.g., ePrivLevel.Admin)</param>
 		/// <param name="desc">Description of the command type (e.g., "AdminCommands.Account.Description")</param>
 		/// <param name="usage">Syntax/descriptions for how to structure and use all commands of this type (e.g., syntax = "AdminCommands.Account.Syntax.AccountName", desc = "AdminCommands.Account.Usage.AccountName")</param>
-		public CommandAttribute(string cmd, string header, ePrivLevel plvl, string desc, params string[] usage)
+		public CommandAttribute(string cmd, string header, EPrivLevel plvl, string desc, params string[] usage)
 		{
 			m_cmd = cmd;
 			m_header = header;

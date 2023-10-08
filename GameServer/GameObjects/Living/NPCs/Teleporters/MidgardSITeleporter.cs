@@ -44,7 +44,7 @@ namespace DOL.GS
 			template.AddNPCEquipment(eInventorySlot.Cloak, 57, 26);
 			Inventory = template.CloseTemplate();
 
-			SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+			SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 			VisibleActiveWeaponSlots = 34;
 			return base.AddToWorld();
 		}

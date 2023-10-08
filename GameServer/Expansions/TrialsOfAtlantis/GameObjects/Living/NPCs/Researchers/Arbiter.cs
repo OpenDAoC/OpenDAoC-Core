@@ -41,7 +41,7 @@ namespace DOL.GS
             if (!base.Interact(player)) 
                 return false;
 
-			String realm = GlobalConstants.RealmToName((eRealm)Realm);
+			String realm = GlobalConstants.RealmToName((ERealm)Realm);
 
 			SayTo(player, eChatLoc.CL_PopupWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, 
 				String.Format("{0}.Arbiter.Interact.Welcome", realm), player.CharacterClass.Name));
@@ -65,7 +65,7 @@ namespace DOL.GS
         {
             if (!base.WhisperReceive(source, text)) return false;
             GamePlayer player = source as GamePlayer;
-			String realm = GlobalConstants.RealmToName((eRealm)Realm);
+			String realm = GlobalConstants.RealmToName((ERealm)Realm);
 			String lowerCase = text.ToLower();
 
 			if (lowerCase == LanguageMgr.GetTranslation(player.Client.Account.Language,

@@ -40,7 +40,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = 0;
             m_dbspell.Target = "Pet";
             m_dbspell.Radius = 0;
-            m_dbspell.Type = eSpellType.SpeedEnhancement.ToString();
+            m_dbspell.Type = ESpellType.SpeedEnhancement.ToString();
             m_dbspell.Value = 200;
             m_dbspell.Duration = 30;
             m_dbspell.Pulse = 0;

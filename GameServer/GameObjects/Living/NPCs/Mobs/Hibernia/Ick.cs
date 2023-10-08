@@ -132,12 +132,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 581;
 					spell.Icon = 581;
 					spell.Damage = 80;
-					spell.DamageType = (int)eDamageType.Body;
+					spell.DamageType = (int)EDamageType.Body;
 					spell.Name = "LifeDrain";
 					spell.Range = 1500;
 					spell.SpellID = 11945;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_IckDD = new Spell(spell, 20);

@@ -4,7 +4,7 @@ namespace DOL.GS.Commands;
 
 [Command("&makeleader",
      new string[] { "&m" },
-     ePrivLevel.Player,
+     EPrivLevel.Player,
      "Set a new group leader (can be used by current leader).",
      "/m <playerName>")]
 

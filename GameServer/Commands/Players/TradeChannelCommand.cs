@@ -7,7 +7,7 @@ namespace DOL.GS.Commands;
 
 [Command(
      "&trade",
-     ePrivLevel.Player,
+     EPrivLevel.Player,
      "Broadcast a trade message to other players in the same region",
      "/trade <message>")]
 public class TradeChannelCommand : ACommandHandler, ICommandHandler

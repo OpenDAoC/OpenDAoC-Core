@@ -2,7 +2,7 @@ using DOL.Language;
 
 namespace DOL.GS.Commands;
 
-[Command("&cancelstyle", ePrivLevel.Player, "Toggle cancelstyle flag.", "/cancelstyle")]
+[Command("&cancelstyle", EPrivLevel.Player, "Toggle cancelstyle flag.", "/cancelstyle")]
 public class CancelStyleCommand : ACommandHandler, ICommandHandler
 {
 	public void OnCommand(GameClient client, string[] args)

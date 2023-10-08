@@ -43,11 +43,11 @@ public class Armorcrafting : AProfession
 	{
 		switch(recipe.Product.Object_Type)
 		{
-			case (int)eObjectType.Studded:
-			case (int)eObjectType.Chain:
-			case (int)eObjectType.Plate:
-			case (int)eObjectType.Reinforced:
-			case (int)eObjectType.Scale:
+			case (int)EObjectType.Studded:
+			case (int)EObjectType.Chain:
+			case (int)EObjectType.Plate:
+			case (int)EObjectType.Reinforced:
+			case (int)EObjectType.Scale:
 				return recipe.Level - 60;
 		}
 

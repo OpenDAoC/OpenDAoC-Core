@@ -13,12 +13,12 @@ namespace DOL.GS.PropertyCalc;
 /// BuffBonusMultCategory1 unused
 /// AbilityBonus used
 /// </summary>
-[PropertyCalculator(eProperty.CriticalDotHitChance)]
+[PropertyCalculator(EProperty.CriticalDotHitChance)]
 public class DotCriticalHitChanceCalculator : PropertyCalculator
 {
 	public DotCriticalHitChanceCalculator() { }
 
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		int chance = living.AbilityBonus[(int)property];
 

@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Stalker, "Stalker", "Stalker")]
+	[CharacterClass((int)ECharacterClass.Stalker, "Stalker", "Stalker")]
 	public class ClassStalker : CharacterClassBase
 	{
 		public ClassStalker()

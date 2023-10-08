@@ -3,7 +3,7 @@ using DOL.Language;
 
 namespace DOL.GS.Commands;
 
-[Command("&horse", ePrivLevel.Player, "Horse emotes", "/horse <emote>")]
+[Command("&horse", EPrivLevel.Player, "Horse emotes", "/horse <emote>")]
 public class HorseEmoteCommand : ACommandHandler, ICommandHandler
 {
 	private const ushort EMOTE_RANGE_TO_TARGET = 2048;

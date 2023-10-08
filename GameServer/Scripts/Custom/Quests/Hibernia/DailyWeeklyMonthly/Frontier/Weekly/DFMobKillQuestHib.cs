@@ -61,7 +61,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Stefano", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Stefano", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -79,7 +79,7 @@ namespace DOL.GS.WeeklyQuest.Hibernia
 				Stefano.Model = 306;
 				Stefano.Name = "Stefano";
 				Stefano.GuildName = "Realm Logistics";
-				Stefano.Realm = eRealm.Hibernia;
+				Stefano.Realm = ERealm.Hibernia;
 				//Darkness Falls Hib Entrance Location
 				Stefano.CurrentRegionID = 249;
 				Stefano.Size = 50;

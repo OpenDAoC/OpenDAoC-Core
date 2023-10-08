@@ -16,13 +16,13 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Sarcondina Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 20;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 20;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 20;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20;// dmg reduction for melee dmg
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
@@ -42,11 +42,11 @@ namespace DOL.GS
 
 			return base.HasAbility(keyName);
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -99,9 +99,9 @@ namespace DOL.GS
 		{
 			if (Util.Chance(45))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 				{
-					if(!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+					if(!ad.Target.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime))
 						CastSpell(Sarcondina_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 			}
@@ -135,9 +135,9 @@ namespace DOL.GS
 					spell.Target = "Enemy";
 					spell.SpellGroup = 1800;
 					spell.EffectGroup = 1500;
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
-					spell.DamageType = (int)eDamageType.Matter;
+					spell.DamageType = (int)EDamageType.Matter;
 					m_Sarcondina_Dot = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Sarcondina_Dot);
 				}
@@ -163,7 +163,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanSpawnAdd = false;
 				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
@@ -193,7 +193,7 @@ namespace DOL.AI.Brain
 				add.Level = (byte)Util.Random(55, 59);
 				add.Strength = 120;
 				add.Quickness = 80;
-				add.MeleeDamageType = eDamageType.Crush;
+				add.MeleeDamageType = EDamageType.Crush;
 				add.MaxSpeedBase = 225;
 				add.PackageID = "SarcondinaAdd";
 				add.RespawnInterval = -1;

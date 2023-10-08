@@ -28,67 +28,67 @@
             get { return 70; }
         }
 
-        public int GetResist(eResist resist)
+        public int GetResist(EResist resist)
         {
             switch (resist)
             {
-                case eResist.Body:
+                case EResist.Body:
                     return Body;
-                case eResist.Cold:
+                case EResist.Cold:
                     return Cold;
-                case eResist.Crush:
+                case EResist.Crush:
                     return Crush;
-                case eResist.Energy:
+                case EResist.Energy:
                     return Energy;
-                case eResist.Heat:
+                case EResist.Heat:
                     return Heat;
-                case eResist.Matter:
+                case EResist.Matter:
                     return Matter;
-                case eResist.Natural:
+                case EResist.Natural:
                     return Natural;
-                case eResist.Slash:
+                case EResist.Slash:
                     return Slash;
-                case eResist.Spirit:
+                case EResist.Spirit:
                     return Spirit;
-                case eResist.Thrust:
+                case EResist.Thrust:
                     return Thrust;
                 default:
                     return 0;
             }
         }
 
-        public void SetResist(eResist resist, int value)
+        public void SetResist(EResist resist, int value)
         {
             switch (resist)
             {
-                case eResist.Body:
+                case EResist.Body:
                     this.Body = value;
                     break;
-                case eResist.Cold:
+                case EResist.Cold:
                     this.Cold = value;
                     break;
-                case eResist.Crush:
+                case EResist.Crush:
                     this.Crush = value;
                     break;
-                case eResist.Energy:
+                case EResist.Energy:
                     this.Energy = value;
                     break;
-                case eResist.Heat:
+                case EResist.Heat:
                     this.Heat = value;
                     break;
-                case eResist.Matter:
+                case EResist.Matter:
                     this.Matter = value;
                     break;
-                case eResist.Natural:
+                case EResist.Natural:
                     this.Natural = value;
                     break;
-                case eResist.Slash:
+                case EResist.Slash:
                     this.Slash = value;
                     break;
-                case eResist.Spirit:
+                case EResist.Spirit:
                     this.Spirit = value;
                     break;
-                case eResist.Thrust:
+                case EResist.Thrust:
                     this.Thrust = value;
                     break;
                 default:
@@ -96,38 +96,38 @@
             }
         }
 
-        public int IncreaseResist(eResist resist, int valueToIncreaseBy)
+        public int IncreaseResist(EResist resist, int valueToIncreaseBy)
         {
             switch (resist)
             {
-                case eResist.Body:
+                case EResist.Body:
                     Body += valueToIncreaseBy;
                     return Body;
-                case eResist.Cold:
+                case EResist.Cold:
                     Cold += valueToIncreaseBy;
                     return Cold;
-                case eResist.Crush:
+                case EResist.Crush:
                     Crush += valueToIncreaseBy;
                     return Crush;
-                case eResist.Energy:
+                case EResist.Energy:
                     Energy += valueToIncreaseBy;
                     return Energy;
-                case eResist.Heat:
+                case EResist.Heat:
                     Heat += valueToIncreaseBy;
                     return Heat;
-                case eResist.Matter:
+                case EResist.Matter:
                     Matter += valueToIncreaseBy;
                     return Matter;
-                case eResist.Natural:
+                case EResist.Natural:
                     Natural += valueToIncreaseBy;
                     return Natural;
-                case eResist.Slash:
+                case EResist.Slash:
                     Slash += valueToIncreaseBy;
                     return Slash;
-                case eResist.Spirit:
+                case EResist.Spirit:
                     Spirit += valueToIncreaseBy;
                     return Spirit;
-                case eResist.Thrust:
+                case EResist.Thrust:
                     Thrust += valueToIncreaseBy;
                     return Thrust;
                 default:
@@ -135,38 +135,38 @@
             }
         }
 
-        public int DecreaseStat(eResist resist, int valueToDecreaseBy)
+        public int DecreaseStat(EResist resist, int valueToDecreaseBy)
         {
             switch (resist)
             {
-                case eResist.Body:
+                case EResist.Body:
                     Body += valueToDecreaseBy;
                     return Body;
-                case eResist.Cold:
+                case EResist.Cold:
                     Cold += valueToDecreaseBy;
                     return Cold;
-                case eResist.Crush:
+                case EResist.Crush:
                     Crush += valueToDecreaseBy;
                     return Crush;
-                case eResist.Energy:
+                case EResist.Energy:
                     Energy += valueToDecreaseBy;
                     return Energy;
-                case eResist.Heat:
+                case EResist.Heat:
                     Heat += valueToDecreaseBy;
                     return Heat;
-                case eResist.Matter:
+                case EResist.Matter:
                     Matter += valueToDecreaseBy;
                     return Matter;
-                case eResist.Natural:
+                case EResist.Natural:
                     Natural += valueToDecreaseBy;
                     return Natural;
-                case eResist.Slash:
+                case EResist.Slash:
                     Slash += valueToDecreaseBy;
                     return Slash;
-                case eResist.Spirit:
+                case EResist.Spirit:
                     Spirit += valueToDecreaseBy;
                     return Spirit;
-                case eResist.Thrust:
+                case EResist.Thrust:
                     Thrust += valueToDecreaseBy;
                     return Thrust;
                 default:

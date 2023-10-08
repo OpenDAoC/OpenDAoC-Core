@@ -51,7 +51,7 @@ public class Alchemy : AdvancedCraftingSkill
             return false;
 		
 		if (((DbInventoryItem)player.TradeWindow.TradeItems[0]).Object_Type != 
-            (int)eObjectType.AlchemyTincture)
+            (int)EObjectType.AlchemyTincture)
 		{
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, 
                 "Alchemy.IsAllowedToCombine.AlchemyTinctures"), PacketHandler.eChatType.CT_System, 

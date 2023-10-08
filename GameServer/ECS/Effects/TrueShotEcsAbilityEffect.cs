@@ -7,7 +7,7 @@ namespace DOL.GS
         public TrueShotEcsAbilityEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.TrueShot;
+            EffectType = EEffect.TrueShot;
             EffectService.RequestStartEffect(this);
         }
 

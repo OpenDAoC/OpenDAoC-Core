@@ -111,7 +111,7 @@ namespace DOL.GS.Quests.Hibernia
 
 			#region NPC Declarations
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Revelin", eRealm.Hibernia);
+			GameNPC[] npcs = WorldMgr.GetNPCsByName("Revelin", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -129,7 +129,7 @@ namespace DOL.GS.Quests.Hibernia
 				Revelin.Model = 361;
 				Revelin.Name = "Revelin";
 				Revelin.GuildName = "";
-				Revelin.Realm = eRealm.Hibernia;
+				Revelin.Realm = ERealm.Hibernia;
 				Revelin.CurrentRegionID = 200;
 				Revelin.Size = 42;
 				Revelin.Level = 20;
@@ -146,7 +146,7 @@ namespace DOL.GS.Quests.Hibernia
 			}
 			// end npc
 
-			npcs = WorldMgr.GetNPCsByName("Cailean", eRealm.None);
+			npcs = WorldMgr.GetNPCsByName("Cailean", ERealm.None);
 
 			if (npcs.Length > 0)
 				foreach (GameNPC npc in npcs)
@@ -164,7 +164,7 @@ namespace DOL.GS.Quests.Hibernia
 				Cailean.Model = 98;
 				Cailean.Name = "Cailean";
 				Cailean.GuildName = "";
-				Cailean.Realm = eRealm.None;
+				Cailean.Realm = ERealm.None;
 				Cailean.CurrentRegionID = 200;
 				Cailean.Size = 60;
 				Cailean.Level = 65;
@@ -236,16 +236,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 9;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 9;
-				i.Bonus2Type = (int)eStat.QUI;
+				i.Bonus2Type = (int)EStat.QUI;
 
 				i.Bonus3 = 14;
-				i.Bonus3Type = (int)eResist.Body;
+				i.Bonus3Type = (int)EResist.Body;
 
 				i.Bonus4 = 36;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -278,16 +278,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.EMP;
+				i.Bonus1Type = (int)EStat.EMP;
 
 				i.Bonus2 = 3;
-				i.Bonus2Type = (int)eProperty.Skill_Nurture;
+				i.Bonus2Type = (int)EProperty.Skill_Nurture;
 
 				i.Bonus3 = 3;
-				i.Bonus3Type = (int)eProperty.Skill_Nature;
+				i.Bonus3Type = (int)EProperty.Skill_Nature;
 
 				i.Bonus4 = 27;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -319,16 +319,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 3;
-				i.Bonus1Type = (int)eProperty.Skill_Regrowth;
+				i.Bonus1Type = (int)EProperty.Skill_Regrowth;
 
 				i.Bonus2 = 6;
-				i.Bonus2Type = (int)eProperty.MaxMana;
+				i.Bonus2Type = (int)EProperty.MaxMana;
 
 				i.Bonus3 = 12;
-				i.Bonus3Type = (int)eStat.DEX;
+				i.Bonus3Type = (int)EStat.DEX;
 
 				i.Bonus4 = 12;
-				i.Bonus4Type = (int)eStat.EMP;
+				i.Bonus4Type = (int)EStat.EMP;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -359,16 +359,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.EMP;
+				i.Bonus1Type = (int)EStat.EMP;
 
 				i.Bonus2 = 3;
-				i.Bonus2Type = (int)eProperty.Skill_Nature;
+				i.Bonus2Type = (int)EProperty.Skill_Nature;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eResist.Slash;
+				i.Bonus3Type = (int)EResist.Slash;
 
 				i.Bonus4 = 30;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -399,16 +399,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 57;
-				i.Bonus1Type = (int)eProperty.MaxHealth;
+				i.Bonus1Type = (int)EProperty.MaxHealth;
 
 				i.Bonus2 = 8;
-				i.Bonus2Type = (int)eResist.Crush;
+				i.Bonus2Type = (int)EResist.Crush;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Spirit;
+				i.Bonus3Type = (int)EResist.Spirit;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Cold;
+				i.Bonus4Type = (int)EResist.Cold;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -440,16 +440,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 13;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 13;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 13;
-				i.Bonus3Type = (int)eStat.EMP;
+				i.Bonus3Type = (int)EStat.EMP;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Matter;
+				i.Bonus4Type = (int)EResist.Matter;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -481,16 +481,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.QUI;
+				i.Bonus2Type = (int)EStat.QUI;
 
 				i.Bonus3 = 24;
-				i.Bonus3Type = (int)eProperty.MaxHealth;
+				i.Bonus3Type = (int)EProperty.MaxHealth;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eResist.Cold;
+				i.Bonus4Type = (int)EResist.Cold;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -522,16 +522,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 30;
-				i.Bonus1Type = (int)eProperty.MaxHealth;
+				i.Bonus1Type = (int)EProperty.MaxHealth;
 
 				i.Bonus2 = 10;
-				i.Bonus2Type = (int)eResist.Spirit;
+				i.Bonus2Type = (int)EResist.Spirit;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eResist.Heat;
+				i.Bonus3Type = (int)EResist.Heat;
 
 				i.Bonus4 = 16;
-				i.Bonus4Type = (int)eStat.QUI;
+				i.Bonus4Type = (int)EStat.QUI;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -564,16 +564,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 13;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 3;
-				i.Bonus3Type = (int)eProperty.Skill_Celtic_Dual;
+				i.Bonus3Type = (int)EProperty.Skill_Celtic_Dual;
 
 				i.Bonus4 = 3;
-				i.Bonus4Type = (int)eProperty.Skill_Parry;
+				i.Bonus4Type = (int)EProperty.Skill_Parry;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -605,16 +605,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 12;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 33;
-				i.Bonus3Type = (int)eProperty.MaxHealth;
+				i.Bonus3Type = (int)EProperty.MaxHealth;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Slash;
+				i.Bonus4Type = (int)EResist.Slash;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -646,16 +646,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.QUI;
+				i.Bonus1Type = (int)EStat.QUI;
 
 				i.Bonus2 = 12;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 27;
-				i.Bonus3Type = (int)eProperty.MaxHealth;
+				i.Bonus3Type = (int)EProperty.MaxHealth;
 
 				i.Bonus4 = 12;
-				i.Bonus4Type = (int)eResist.Cold;
+				i.Bonus4Type = (int)EResist.Cold;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -687,16 +687,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 16;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Heat;
+				i.Bonus4Type = (int)EResist.Heat;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -727,16 +727,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 12;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 27;
-				i.Bonus3Type = (int)eProperty.MaxHealth;
+				i.Bonus3Type = (int)EProperty.MaxHealth;
 
 				i.Bonus4 = 12;
-				i.Bonus4Type = (int)eResist.Matter;
+				i.Bonus4Type = (int)EResist.Matter;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -768,16 +768,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eProperty.Skill_Arboreal;
+				i.Bonus2Type = (int)EProperty.Skill_Arboreal;
 
 				i.Bonus3 = 21;
-				i.Bonus3Type = (int)eProperty.MaxHealth;
+				i.Bonus3Type = (int)EProperty.MaxHealth;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Thrust;
+				i.Bonus4Type = (int)EResist.Thrust;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -810,16 +810,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 10;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 9;
-				i.Bonus2Type = (int)eStat.INT;
+				i.Bonus2Type = (int)EStat.INT;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eProperty.Skill_Creeping;
+				i.Bonus3Type = (int)EProperty.Skill_Creeping;
 
 				i.Bonus4 = 30;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -850,16 +850,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 30;
-				i.Bonus2Type = (int)eProperty.MaxHealth;
+				i.Bonus2Type = (int)EProperty.MaxHealth;
 
 				i.Bonus3 = 6;
-				i.Bonus3Type = (int)eProperty.MaxMana;
+				i.Bonus3Type = (int)EProperty.MaxMana;
 
 				i.Bonus4 = 8;
-				i.Bonus4Type = (int)eResist.Body;
+				i.Bonus4Type = (int)EResist.Body;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -890,16 +890,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 16;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eResist.Body;
+				i.Bonus4Type = (int)EResist.Body;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -930,16 +930,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 10;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 27;
-				i.Bonus2Type = (int)eProperty.MaxHealth;
+				i.Bonus2Type = (int)EProperty.MaxHealth;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eStat.INT;
+				i.Bonus3Type = (int)EStat.INT;
 
 				i.Bonus4 = 4;
-				i.Bonus4Type = (int)eProperty.Skill_Mana;
+				i.Bonus4Type = (int)EProperty.Skill_Mana;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -969,16 +969,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 12;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 12;
-				i.Bonus3Type = (int)eResist.Matter;
+				i.Bonus3Type = (int)EResist.Matter;
 
 				i.Bonus4 = 27;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1010,16 +1010,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eProperty.Skill_Mentalism;
+				i.Bonus2Type = (int)EProperty.Skill_Mentalism;
 
 				i.Bonus3 = 8;
-				i.Bonus3Type = (int)eResist.Thrust;
+				i.Bonus3Type = (int)EResist.Thrust;
 
 				i.Bonus4 = 21;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1051,16 +1051,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 30;
-				i.Bonus1Type = (int)eProperty.MaxHealth;
+				i.Bonus1Type = (int)EProperty.MaxHealth;
 
 				i.Bonus2 = 4;
-				i.Bonus2Type = (int)eProperty.Skill_Light;
+				i.Bonus2Type = (int)EProperty.Skill_Light;
 
 				i.Bonus3 = 9;
-				i.Bonus3Type = (int)eStat.INT;
+				i.Bonus3Type = (int)EStat.INT;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eStat.DEX;
+				i.Bonus4Type = (int)EStat.DEX;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1091,16 +1091,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 8;
-				i.Bonus2Type = (int)eResist.Body;
+				i.Bonus2Type = (int)EResist.Body;
 
 				i.Bonus3 = 30;
-				i.Bonus3Type = (int)eProperty.MaxHealth;
+				i.Bonus3Type = (int)EProperty.MaxHealth;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eProperty.MaxMana;
+				i.Bonus4Type = (int)EProperty.MaxMana;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1131,16 +1131,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 16;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eResist.Body;
+				i.Bonus4Type = (int)EResist.Body;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1171,16 +1171,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 10;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 27;
-				i.Bonus2Type = (int)eProperty.MaxHealth;
+				i.Bonus2Type = (int)EProperty.MaxHealth;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eStat.INT;
+				i.Bonus3Type = (int)EStat.INT;
 
 				i.Bonus4 = 4;
-				i.Bonus4Type = (int)eProperty.Skill_Mana;
+				i.Bonus4Type = (int)EProperty.Skill_Mana;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1210,16 +1210,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 10;
-				i.Bonus2Type = (int)eResist.Matter;
+				i.Bonus2Type = (int)EResist.Matter;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eResist.Heat;
+				i.Bonus3Type = (int)EResist.Heat;
 
 				i.Bonus4 = 33;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1251,16 +1251,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 3;
-				i.Bonus1Type = (int)eProperty.Skill_Arboreal;
+				i.Bonus1Type = (int)EProperty.Skill_Arboreal;
 
 				i.Bonus2 = 6;
-				i.Bonus2Type = (int)eProperty.MaxMana;
+				i.Bonus2Type = (int)EProperty.MaxMana;
 
 				i.Bonus3 = 12;
-				i.Bonus3Type = (int)eStat.CON;
+				i.Bonus3Type = (int)EStat.CON;
 
 				i.Bonus4 = 12;
-				i.Bonus4Type = (int)eStat.INT;
+				i.Bonus4Type = (int)EStat.INT;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1292,16 +1292,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 3;
-				i.Bonus1Type = (int)eProperty.Skill_Parry;
+				i.Bonus1Type = (int)EProperty.Skill_Parry;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.CON;
+				i.Bonus2Type = (int)EStat.CON;
 
 				i.Bonus3 = 15;
-				i.Bonus3Type = (int)eStat.DEX;
+				i.Bonus3Type = (int)EStat.DEX;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eResist.Crush;
+				i.Bonus4Type = (int)EResist.Crush;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1332,16 +1332,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 13;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 13;
-				i.Bonus2Type = (int)eStat.STR;
+				i.Bonus2Type = (int)EStat.STR;
 
 				i.Bonus3 = 4;
-				i.Bonus3Type = (int)eProperty.Skill_Arboreal;
+				i.Bonus3Type = (int)EProperty.Skill_Arboreal;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eResist.Energy;
+				i.Bonus4Type = (int)EResist.Energy;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1372,16 +1372,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.CON;
+				i.Bonus2Type = (int)EStat.CON;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eResist.Crush;
+				i.Bonus3Type = (int)EResist.Crush;
 
 				i.Bonus4 = 18;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1412,16 +1412,16 @@ namespace DOL.GS.Quests.Hibernia
 				i.Durability = 50000;
 
 				i.Bonus1 = 3;
-				i.Bonus1Type = (int)eProperty.Skill_Scythe;
+				i.Bonus1Type = (int)EProperty.Skill_Scythe;
 
 				i.Bonus2 = 10;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eStat.INT;
+				i.Bonus3Type = (int)EStat.INT;
 
 				i.Bonus4 = 33;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1443,7 +1443,7 @@ namespace DOL.GS.Quests.Hibernia
 				i.IsPickable = true;
 				i.DPS_AF = 100;
 				i.SPD_ABS = 10;
-				i.Object_Type = (int)eObjectType.Leather;
+				i.Object_Type = (int)EObjectType.Leather;
 				i.Quality = 100;
 				i.Weight = 22;
 				i.Bonus = 35;
@@ -1460,16 +1460,16 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eResist.Thrust;
+				i.Bonus3Type = (int)EResist.Thrust;
 
 				i.Bonus4 = 24;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1491,7 +1491,7 @@ namespace DOL.GS.Quests.Hibernia
 				i.IsPickable = true;
 				i.DPS_AF = 100;
 				i.SPD_ABS = 10;
-				i.Object_Type = (int)eObjectType.Leather;
+				i.Object_Type = (int)EObjectType.Leather;
 				i.Quality = 100;
 				i.Weight = 22;
 				i.Bonus = 35;
@@ -1508,16 +1508,16 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 6;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 16;
-				i.Bonus2Type = (int)eStat.CON;
+				i.Bonus2Type = (int)EStat.CON;
 
 				i.Bonus3 = 6;
-				i.Bonus3Type = (int)eStat.DEX;
+				i.Bonus3Type = (int)EStat.DEX;
 
 				i.Bonus4 = 30;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1539,7 +1539,7 @@ namespace DOL.GS.Quests.Hibernia
 				i.IsPickable = true;
 				i.DPS_AF = 100;
 				i.SPD_ABS = 10;
-				i.Object_Type = (int)eObjectType.Leather;
+				i.Object_Type = (int)EObjectType.Leather;
 				i.Quality = 100;
 				i.Weight = 22;
 				i.Bonus = 35;
@@ -1556,16 +1556,16 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 12;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 13;
-				i.Bonus2Type = (int)eStat.QUI;
+				i.Bonus2Type = (int)EStat.QUI;
 
 				i.Bonus3 = 2;
-				i.Bonus3Type = (int)eProperty.Skill_Dementia;
+				i.Bonus3Type = (int)EProperty.Skill_Dementia;
 
 				i.Bonus4 = 5;
-				i.Bonus4Type = (int)eProperty.Skill_ShadowMastery;
+				i.Bonus4Type = (int)EProperty.Skill_ShadowMastery;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1586,7 +1586,7 @@ namespace DOL.GS.Quests.Hibernia
 				i.IsPickable = true;
 				i.DPS_AF = 100;
 				i.SPD_ABS = 10;
-				i.Object_Type = (int)eObjectType.Leather;
+				i.Object_Type = (int)EObjectType.Leather;
 				i.Quality = 100;
 				i.Weight = 22;
 				i.Bonus = 35;
@@ -1603,16 +1603,16 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 10;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 10;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eStat.QUI;
+				i.Bonus3Type = (int)EStat.QUI;
 
 				i.Bonus4 = 30;
-				i.Bonus4Type = (int)eProperty.MaxHealth;
+				i.Bonus4Type = (int)EProperty.MaxHealth;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1633,7 +1633,7 @@ namespace DOL.GS.Quests.Hibernia
 				i.IsPickable = true;
 				i.DPS_AF = 100;
 				i.SPD_ABS = 10;
-				i.Object_Type = (int)eObjectType.Leather;
+				i.Object_Type = (int)EObjectType.Leather;
 				i.Quality = 100;
 				i.Weight = 22;
 				i.Bonus = 35;
@@ -1650,16 +1650,16 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 16;
-				i.Bonus1Type = (int)eStat.CON ;
+				i.Bonus1Type = (int)EStat.CON ;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 10;
-				i.Bonus3Type = (int)eResist.Crush;
+				i.Bonus3Type = (int)EResist.Crush;
 
 				i.Bonus4 = 10;
-				i.Bonus4Type = (int)eResist.Slash;
+				i.Bonus4Type = (int)EResist.Slash;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1680,7 +1680,7 @@ namespace DOL.GS.Quests.Hibernia
 				i.IsPickable = true;
 				i.DPS_AF = 100;
 				i.SPD_ABS = 10;
-				i.Object_Type = (int)eObjectType.Leather;
+				i.Object_Type = (int)EObjectType.Leather;
 				i.Quality = 100;
 				i.Weight = 22;
 				i.Bonus = 35;
@@ -1697,16 +1697,16 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.STR;
+				i.Bonus1Type = (int)EStat.STR;
 
 				i.Bonus2 = 15;
-				i.Bonus2Type = (int)eStat.DEX;
+				i.Bonus2Type = (int)EStat.DEX;
 
 				i.Bonus3 = 6;
-				i.Bonus3Type = (int)eResist.Cold;
+				i.Bonus3Type = (int)EResist.Cold;
 
 				i.Bonus4 = 4;
-				i.Bonus4Type = (int)eProperty.Skill_VampiiricEmbrace;
+				i.Bonus4Type = (int)EProperty.Skill_VampiiricEmbrace;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1747,22 +1747,22 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 6;
-				i.Bonus2Type = (int)eResist.Cold;
+				i.Bonus2Type = (int)EResist.Cold;
 
 				i.Bonus3 = 40;
-				i.Bonus3Type = (int)eProperty.MaxHealth;
+				i.Bonus3Type = (int)EProperty.MaxHealth;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eResist.Heat;
+				i.Bonus4Type = (int)EResist.Heat;
 
 				i.Bonus5 = 5;
-				i.Bonus5Type = (int)eProperty.IntCapBonus;
+				i.Bonus5Type = (int)EProperty.IntCapBonus;
 
 				i.Bonus6 = 40;
-				i.Bonus6Type = (int)eProperty.MaxHealthCapBonus;
+				i.Bonus6Type = (int)EProperty.MaxHealthCapBonus;
 
 				{
 					GameServer.Database.AddObject(i);
@@ -1804,22 +1804,22 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 6;
-				i.Bonus2Type = (int)eResist.Body;
+				i.Bonus2Type = (int)EResist.Body;
 
 				i.Bonus3 = 40;
-				i.Bonus3Type = (int)eProperty.MaxHealth;
+				i.Bonus3Type = (int)EProperty.MaxHealth;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eResist.Energy;
+				i.Bonus4Type = (int)EResist.Energy;
 
 				i.Bonus5 = 40;
-				i.Bonus4Type = (int)eProperty.MaxHealthCapBonus;
+				i.Bonus4Type = (int)EProperty.MaxHealthCapBonus;
 
 				i.Bonus6 = 5;
-				i.Bonus4Type = (int)eProperty.ConCapBonus;
+				i.Bonus4Type = (int)EProperty.ConCapBonus;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1860,22 +1860,22 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 18;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 6;
-				i.Bonus2Type = (int)eResist.Matter;
+				i.Bonus2Type = (int)EResist.Matter;
 
 				i.Bonus3 = 6;
-				i.Bonus3Type = (int)eResist.Spirit;
+				i.Bonus3Type = (int)EResist.Spirit;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eProperty.MaxMana;
+				i.Bonus4Type = (int)EProperty.MaxMana;
 
 				i.Bonus5 = 5;
-				i.Bonus5Type = (int)eProperty.DexCapBonus;
+				i.Bonus5Type = (int)EProperty.DexCapBonus;
 
 				i.Bonus6 = 6;
-				i.Bonus6Type = (int)eProperty.PowerPool;
+				i.Bonus6Type = (int)EProperty.PowerPool;
 
 				{
 					GameServer.Database.AddObject(i);
@@ -1916,22 +1916,22 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.INT;
+				i.Bonus1Type = (int)EStat.INT;
 
 				i.Bonus2 = 7;
-				i.Bonus2Type = (int)eResist.Crush;
+				i.Bonus2Type = (int)EResist.Crush;
 
 				i.Bonus3 = 40;
-				i.Bonus3Type = (int)eProperty.MaxHealth;
+				i.Bonus3Type = (int)EProperty.MaxHealth;
 
 				i.Bonus4 = 3;
-				i.Bonus4Type = (int)eProperty.AllMagicSkills;
+				i.Bonus4Type = (int)EProperty.AllMagicSkills;
 
 				i.Bonus5 = 5;
-				i.Bonus5Type = (int)eProperty.IntCapBonus;
+				i.Bonus5Type = (int)EProperty.IntCapBonus;
 
 				i.Bonus6 = 40;
-				i.Bonus6Type = (int)eProperty.MaxHealthCapBonus;
+				i.Bonus6Type = (int)EProperty.MaxHealthCapBonus;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -1971,22 +1971,22 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.CON;
+				i.Bonus1Type = (int)EStat.CON;
 
 				i.Bonus2 = 7;
-				i.Bonus2Type = (int)eResist.Thrust;
+				i.Bonus2Type = (int)EResist.Thrust;
 
 				i.Bonus3 = 6;
-				i.Bonus3Type = (int)eProperty.PowerPool;
+				i.Bonus3Type = (int)EProperty.PowerPool;
 
 				i.Bonus4 = 5;
-				i.Bonus4Type = (int)eProperty.IntCapBonus;
+				i.Bonus4Type = (int)EProperty.IntCapBonus;
 
 				i.Bonus5 = 5;
-				i.Bonus5Type = (int)eProperty.ConCapBonus;
+				i.Bonus5Type = (int)EProperty.ConCapBonus;
 
 				i.Bonus6 = 6;
-				i.Bonus6Type = (int)eProperty.PowerPoolCapBonus;
+				i.Bonus6Type = (int)EProperty.PowerPoolCapBonus;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -2026,22 +2026,22 @@ namespace DOL.GS.Quests.Hibernia
 				 */
 
 				i.Bonus1 = 15;
-				i.Bonus1Type = (int)eStat.DEX;
+				i.Bonus1Type = (int)EStat.DEX;
 
 				i.Bonus2 = 7;
-				i.Bonus2Type = (int)eResist.Slash;
+				i.Bonus2Type = (int)EResist.Slash;
 
 				i.Bonus3 = 3;
-				i.Bonus3Type = (int)eProperty.AllMagicSkills;
+				i.Bonus3Type = (int)EProperty.AllMagicSkills;
 
 				i.Bonus4 = 6;
-				i.Bonus4Type = (int)eProperty.PowerPool;
+				i.Bonus4Type = (int)EProperty.PowerPool;
 
 				i.Bonus5 = 7;
-				i.Bonus5Type = (int)eProperty.DexCapBonus;
+				i.Bonus5Type = (int)EProperty.DexCapBonus;
 
 				i.Bonus6 = 6;
-				i.Bonus6Type = (int)eProperty.PowerPoolCapBonus;
+				i.Bonus6Type = (int)EProperty.PowerPoolCapBonus;
 				{
 					GameServer.Database.AddObject(i);
 				}
@@ -2179,13 +2179,13 @@ namespace DOL.GS.Quests.Hibernia
 			if (player.IsDoingQuest(typeof(Harmony_50)) != null)
 				return true;
 
-			if (player.CharacterClass.ID != (byte)eCharacterClass.Blademaster &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Druid &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Valewalker &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Animist &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Mentalist &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Vampiir &&
-				player.CharacterClass.ID != (byte)eCharacterClass.Bainshee)
+			if (player.CharacterClass.ID != (byte)ECharacterClass.Blademaster &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Druid &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Valewalker &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Animist &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Mentalist &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Vampiir &&
+				player.CharacterClass.ID != (byte)ECharacterClass.Bainshee)
 				return false;
 
 			// This checks below are only performed is player isn't doing quest already
@@ -2334,9 +2334,9 @@ namespace DOL.GS.Quests.Hibernia
 
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
+			switch ((ECharacterClass)m_questPlayer.CharacterClass.ID)
 			{
-				case eCharacterClass.Blademaster:
+				case ECharacterClass.Blademaster:
 					{
 						GiveItem(m_questPlayer, BlademasterEpicArms);
 						GiveItem(m_questPlayer, BlademasterEpicBoots);
@@ -2346,7 +2346,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, BlademasterEpicVest);
 						break;
 					}
-				case eCharacterClass.Animist:
+				case ECharacterClass.Animist:
 					{
 						GiveItem(m_questPlayer, AnimistEpicArms);
 						GiveItem(m_questPlayer, AnimistEpicBoots);
@@ -2356,7 +2356,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, AnimistEpicVest);
 						break;
 					}
-				case eCharacterClass.Mentalist:
+				case ECharacterClass.Mentalist:
 					{
 						GiveItem(m_questPlayer, MentalistEpicArms);
 						GiveItem(m_questPlayer, MentalistEpicBoots);
@@ -2366,7 +2366,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, MentalistEpicVest);
 						break;
 					}
-				case eCharacterClass.Druid:
+				case ECharacterClass.Druid:
 					{
 						GiveItem(m_questPlayer, DruidEpicArms);
 						GiveItem(m_questPlayer, DruidEpicBoots);
@@ -2376,7 +2376,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, DruidEpicVest);
 						break;
 					}
-				case eCharacterClass.Valewalker:
+				case ECharacterClass.Valewalker:
 					{
 						GiveItem(m_questPlayer, ValewalkerEpicArms);
 						GiveItem(m_questPlayer, ValewalkerEpicBoots);
@@ -2386,7 +2386,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, ValewalkerEpicVest);
 						break;
 					}
-				case eCharacterClass.Vampiir:
+				case ECharacterClass.Vampiir:
 					{
 						GiveItem(m_questPlayer, VampiirEpicArms);
 						GiveItem(m_questPlayer, VampiirEpicBoots);
@@ -2396,7 +2396,7 @@ namespace DOL.GS.Quests.Hibernia
 						GiveItem(m_questPlayer, VampiirEpicVest);
 						break;
 					}
-				case eCharacterClass.Bainshee:
+				case ECharacterClass.Bainshee:
 					{
 						GiveItem(m_questPlayer, BainsheeEpicArms);
 						GiveItem(m_questPlayer, BainsheeEpicBoots);
@@ -2408,7 +2408,7 @@ namespace DOL.GS.Quests.Hibernia
 					}
 			}
 
-			m_questPlayer.GainExperience(eXPSource.Quest, 1937768448, true);
+			m_questPlayer.GainExperience(EXpSource.Quest, 1937768448, true);
 			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 		}
 

@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Hero, "Hero", "Guardian", "Heroine")]
+	[CharacterClass((int)ECharacterClass.Hero, "Hero", "Guardian", "Heroine")]
 	public class ClassHero : ClassGuardian
 	{
 		public ClassHero()
@@ -30,9 +30,9 @@ namespace DOL.GS.PlayerClass
 		{
 			m_profession = "PlayerClass.Profession.PathofFocus";
 			m_specializationMultiplier = 20;
-			m_primaryStat = eStat.STR;
-			m_secondaryStat = eStat.CON;
-			m_tertiaryStat = eStat.DEX;
+			m_primaryStat = EStat.STR;
+			m_secondaryStat = EStat.CON;
+			m_tertiaryStat = EStat.DEX;
 			m_wsbase = 440;
 		}
 

@@ -9,7 +9,7 @@ namespace DOL.GS.RealmAbilities
 	public class FalconsEyeAbility : RAPropertyEnhancer
 	{
 		public FalconsEyeAbility(DbAbility dba, int level)
-			: base(dba, level, eProperty.CriticalSpellHitChance)
+			: base(dba, level, EProperty.CriticalSpellHitChance)
 		{
 		}
 		public override int CostForUpgrade(int level)

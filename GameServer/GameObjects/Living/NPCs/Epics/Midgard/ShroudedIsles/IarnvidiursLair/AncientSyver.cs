@@ -16,21 +16,21 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Ancient Syver Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
 				default: return 30; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -43,7 +43,7 @@ namespace DOL.GS
 		{
 			if (Util.Chance(35))
 			{
-				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
+				if (ad != null && (ad.AttackResult == EAttackResult.HitUnstyled || ad.AttackResult == EAttackResult.HitStyle))
 				{
 					CastSpell(SyverDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
@@ -109,10 +109,10 @@ namespace DOL.GS
 					spell.Radius = 350;
 					spell.SpellID = 11824;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Cold;
+					spell.DamageType = (int)EDamageType.Cold;
 					m_SyverDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SyverDD);
 				}
@@ -138,7 +138,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
 			}
@@ -163,7 +163,7 @@ namespace DOL.AI.Brain
 					if (Util.Chance(15))
 					{
 						GameLiving target = Body.TargetObject as GameLiving;
-						if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+						if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
 						{
 							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastDisease), 1000);
 						}
@@ -177,7 +177,7 @@ namespace DOL.AI.Brain
 					}
 					if (Util.Chance(15))
 					{
-						if (!Body.effectListComponent.ContainsEffectForEffectType(eEffect.MeleeHasteBuff))
+						if (!Body.effectListComponent.ContainsEffectForEffectType(EEffect.MeleeHasteBuff))
 						{
 							new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(CastHasteBuff), 1000);
 						}
@@ -231,7 +231,7 @@ namespace DOL.AI.Brain
 					spell.Value = 46;
 					spell.SpellID = 11826;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.StrengthDebuff.ToString();
+					spell.Type = ESpellType.StrengthDebuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Syver_Str_Debuff = new Spell(spell, 70);
@@ -267,7 +267,7 @@ namespace DOL.AI.Brain
 					spell.Type = "Disease";
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Energy; //Energy DMG Type
+					spell.DamageType = (int)EDamageType.Energy; //Energy DMG Type
 					m_SyverDisease = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_SyverDisease);
 				}
@@ -296,7 +296,7 @@ namespace DOL.AI.Brain
 					spell.Value = 50;
 					spell.SpellID = 11827;
 					spell.Target = "Self";
-					spell.Type = eSpellType.CombatSpeedBuff.ToString();
+					spell.Type = ESpellType.CombatSpeedBuff.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Syver_Haste_Buff = new Spell(spell, 70);

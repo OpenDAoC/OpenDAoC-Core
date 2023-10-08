@@ -13,15 +13,15 @@ namespace DOL.GS
 	{
 		private GameLiving m_attacker = null;
 		private GameLiving m_target = null;
-		private eArmorSlot m_hitArmorSlot = eArmorSlot.NOTSET;
+		private EArmorSlot m_hitArmorSlot = EArmorSlot.NOTSET;
 		private int m_damage = 0;
 		private int m_critdamage = 0;
 		private int m_styledamage = 0;
 		private int m_modifier = 0;
-		private eDamageType m_damageType = 0;
+		private EDamageType m_damageType = 0;
 		private Style m_style = null;
 		private eAttackType m_attackType = eAttackType.Unknown;
-		private eAttackResult m_attackResult = eAttackResult.Any;
+		private EAttackResult m_attackResult = EAttackResult.Any;
 		private ISpellHandler m_spellHandler;
 		private List<ISpellHandler> m_styleEffects;
 		private int m_animationId;
@@ -106,7 +106,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Sets or gets the armor hit location
 		/// </summary>
-		public eArmorSlot ArmorHitLocation
+		public EArmorSlot ArmorHitLocation
 		{
 			get { return m_hitArmorSlot; }
 			set { m_hitArmorSlot = value; }
@@ -142,7 +142,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Sets or gets the damage type
 		/// </summary>
-		public eDamageType DamageType
+		public EDamageType DamageType
 		{
 			get { return m_damageType; }
 			set { m_damageType = value; }
@@ -160,7 +160,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Sets or gets the attack result
 		/// </summary>
-		public eAttackResult AttackResult
+		public EAttackResult AttackResult
 		{
 			get { return m_attackResult; }
 			set { m_attackResult = value; }
@@ -276,13 +276,13 @@ namespace DOL.GS
 			{
 				switch (m_attackResult)
 				{
-					case eAttackResult.HitUnstyled:
-					case eAttackResult.HitStyle:
-					case eAttackResult.Missed:
-					case eAttackResult.Blocked:
-					case eAttackResult.Evaded:
-					case eAttackResult.Fumbled:
-					case eAttackResult.Parried: return true;
+					case EAttackResult.HitUnstyled:
+					case EAttackResult.HitStyle:
+					case EAttackResult.Missed:
+					case EAttackResult.Blocked:
+					case EAttackResult.Evaded:
+					case EAttackResult.Fumbled:
+					case EAttackResult.Parried: return true;
 					default: return false;
 				}
 			}

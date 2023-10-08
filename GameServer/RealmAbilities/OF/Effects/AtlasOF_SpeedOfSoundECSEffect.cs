@@ -7,7 +7,7 @@ namespace DOL.GS.Effects
         public SpeedOfSoundECSEffect(EcsGameEffectInitParams initParams)
             : base(initParams)
         {
-            EffectType = eEffect.SpeedOfSound;
+            EffectType = EEffect.SpeedOfSound;
             EffectService.RequestStartEffect(this);
         }
 
@@ -61,26 +61,26 @@ namespace DOL.GS.Effects
             
             // removed handler as OF SOS doesn't break on attack - yay minstrels..
             // GameEventMgr.AddHandler(OwnerPlayer, GameLivingEvent.CastFinished, m_attackFinished);
-            foreach (var speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
+            foreach (var speedBuff in OwnerPlayer.effectListComponent.GetSpellEffects(EEffect.MovementSpeedBuff))
             {
                 if(speedBuff.GetType() != typeof(SpeedOfSoundECSEffect))
                     EffectService.RequestDisableEffect(speedBuff);
             }
 
-            foreach (var snare in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Snare))
+            foreach (var snare in OwnerPlayer.effectListComponent.GetSpellEffects(EEffect.Snare))
             {
                 EffectService.RequestDisableEffect(snare);
             }
             
-            foreach (var root in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
+            foreach (var root in OwnerPlayer.effectListComponent.GetSpellEffects(EEffect.MovementSpeedDebuff))
             {
                 EffectService.RequestDisableEffect(root);
             }
             
-            if(OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Ichor))
-                EffectService.RequestDisableEffect(OwnerPlayer.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.Ichor));
+            if(OwnerPlayer.effectListComponent.ContainsEffectForEffectType(EEffect.Ichor))
+                EffectService.RequestDisableEffect(OwnerPlayer.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == EEffect.Ichor));
             
-            OwnerPlayer.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this,
+            OwnerPlayer.BuffBonusMultCategory1.Set((int) EProperty.MaxSpeed, this,
                 PropertyCalc.MaxMovementSpeedCalculator.SPEED4);
             OwnerPlayer.Out.SendUpdateMaxSpeed();
         }
@@ -90,10 +90,10 @@ namespace DOL.GS.Effects
             if (OwnerPlayer == null)
                 return;
 
-            OwnerPlayer.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
-            if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
+            OwnerPlayer.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, this);
+            if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(EEffect.MovementSpeedBuff))
             {
-                var speedBuff = OwnerPlayer.effectListComponent.GetBestDisabledSpellEffect(eEffect.MovementSpeedBuff);
+                var speedBuff = OwnerPlayer.effectListComponent.GetBestDisabledSpellEffect(EEffect.MovementSpeedBuff);
 
                 if (speedBuff != null)
                 {
@@ -102,18 +102,18 @@ namespace DOL.GS.Effects
                 }
             }
             
-            foreach (var snare in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.Snare))
+            foreach (var snare in OwnerPlayer.effectListComponent.GetSpellEffects(EEffect.Snare))
             {
                 EffectService.RequestEnableEffect(snare);
             }
             
-            foreach (var root in OwnerPlayer.effectListComponent.GetSpellEffects(eEffect.MovementSpeedDebuff))
+            foreach (var root in OwnerPlayer.effectListComponent.GetSpellEffects(EEffect.MovementSpeedDebuff))
             {
                 EffectService.RequestEnableEffect(root);
             }
             
-            if(OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Ichor))
-                EffectService.RequestEnableEffect(OwnerPlayer.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.Ichor));
+            if(OwnerPlayer.effectListComponent.ContainsEffectForEffectType(EEffect.Ichor))
+                EffectService.RequestEnableEffect(OwnerPlayer.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == EEffect.Ichor));
             
             OwnerPlayer.Out.SendUpdateMaxSpeed();
             

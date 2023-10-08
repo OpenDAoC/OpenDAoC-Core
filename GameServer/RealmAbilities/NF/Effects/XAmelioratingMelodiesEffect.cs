@@ -51,7 +51,7 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer player = target as GamePlayer;
 			if (player == null) return;
 			player.EffectList.Add(this);
-			m_range = (int)(2000 * (player.GetModified(eProperty.SpellRange) * 0.01));
+			m_range = (int)(2000 * (player.GetModified(EProperty.SpellRange) * 0.01));
 			m_countDownTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(CountDown));
 			m_countDownTimer.Start(1);
 		}
@@ -93,7 +93,7 @@ namespace DOL.GS.RealmAbilities
 
 						int heal = m_heal;
 						if (p.Health + heal > p.MaxHealth) heal = p.MaxHealth - p.Health;
-						p.ChangeHealth(player, eHealthChangeType.Regenerate, heal);
+						p.ChangeHealth(player, EHealthChangeType.Regenerate, heal);
 						player.Out.SendMessage("You heal " + p.Name + " for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 						p.Out.SendMessage(player.Name + " heals you for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 					}

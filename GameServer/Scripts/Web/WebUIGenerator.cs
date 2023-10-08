@@ -159,10 +159,10 @@ namespace DOL.GS.Scripts
 
 			foreach (GamePlayer player in ClientService.GetPlayers())
 			{
-				if (player.Client.Account.PrivLevel == (int) ePrivLevel.GM)
+				if (player.Client.Account.PrivLevel == (int) EPrivLevel.GM)
 					gm++;
 
-				if (player.Client.Account.PrivLevel == (int) ePrivLevel.Admin)
+				if (player.Client.Account.PrivLevel == (int) EPrivLevel.Admin)
 					admin++;
 			}
 

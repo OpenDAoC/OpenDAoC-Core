@@ -121,7 +121,7 @@ namespace DOL.GS.Spells
 			ad.Modifier = bleedValue * ad.Target.GetResist( Spell.DamageType ) / -100;
 			ad.Damage = bleedValue + ad.Modifier;
 			ad.DamageType = Spell.DamageType;
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 			ad.SpellHandler = this;
 			ad.CausesCombat = false;
 

@@ -101,11 +101,11 @@ namespace DOL.GS.Housing
 
             switch (player.Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     return _indoorNpcShopItemsAlb;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     return _indoorNpcShopItemsHib;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     return _indoorNpcShopItemsMid;
             }
 
@@ -165,53 +165,53 @@ namespace DOL.GS.Housing
             CheckItemTemplate("House removal deed", "housing_house_removal_deed", 498, 0, 50000000, 0, 0, 0, 0, 0);
 
             //default indoor npc
-            CheckItemTemplate("Hastener", "housing_hastener", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID, 0, 0);
-            CheckItemTemplate("Smith", "housing_smith", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 1, 0, 0);
-            CheckItemTemplate("Enchanter", "housing_enchanter", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 2, 0, 0);
-            CheckItemTemplate("Emblemer", "housing_emblemer", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 3, 0, 0);
-            CheckItemTemplate("Healer", "housing_healer", 593, (int)eObjectType.HouseNPC, 30000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 4, 0, 0);
-            CheckItemTemplate("Recharger", "housing_recharger", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 5, 0, 0);
-            CheckItemTemplate("Hibernia Teleporter", "housing_hib_teleporter", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 6, 0, 3);
-            CheckItemTemplate("Albion Teleporter", "housing_alb_teleporter", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 6, 0, 1);
-            CheckItemTemplate("Midgard Teleporter", "housing_mid_teleporter", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 6, 0, 2);
-            CheckItemTemplate("Apprentice Merchant", "housing_apprentice_merchant", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 7, 0, 0);
-            CheckItemTemplate("Grandmaster Merchant", "housing_grandmaster_merchant", 593, (int)eObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 8, 0, 0);
-            CheckItemTemplate("Incantation Merchant", "housing_incantation_merchant", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 9, 0, 0);
-            CheckItemTemplate("Poison and Dye Supplies", "housing_poison_dye_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 10, 0, 0);
-            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_potion_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 11, 0, 0);
-            CheckItemTemplate("Poison and Potion Supplies", "housing_poison_potion_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 12, 0, 0);
-            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_dye_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 13, 0, 0);
-            CheckItemTemplate("Taxidermy Supplies", "housing_taxidermy_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 14, 0, 0);
-            CheckItemTemplate("Siegecraft Supplies", "housing_siegecraft_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 15, 0, 0);
-            CheckItemTemplate("Vault Keeper", "housing_vault_keeper", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 16, 0, 0);
-            CheckItemTemplate("Dye Supply Master", "housing_dye_supply_master", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 17, 0, 0);
-            CheckItemTemplate("Grandmaster Merchant", "housing_mid_grandmaster_merchant", 593, (int)eObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 18, 0, 0);
-            CheckItemTemplate("Grandmaster Merchant", "housing_alb_grandmaster_merchant", 593, (int)eObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 19, 0, 0);
-            CheckItemTemplate("Grandmaster Merchant", "housing_hib_grandmaster_merchant", 593, (int)eObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 20, 0, 0);
-            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_mid_potion_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 30, 0, 0);
-            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_alb_potion_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 31, 0, 0);
-            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_hib_potion_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 32, 0, 0);
-            CheckItemTemplate("Apprentice Merchant", "housing_mid_apprentice_merchant", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 36, 0, 0);
-            CheckItemTemplate("Apprentice Merchant", "housing_alb_apprentice_merchant", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 37, 0, 0);
-            CheckItemTemplate("Apprentice Merchant", "housing_hib_apprentice_merchant", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 38, 0, 0);
-            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_mid_dye_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 39, 0, 0);
-            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_alb_dye_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 40, 0, 0);
-            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_hib_dye_tincture_enchantment_supplies", 593, (int)eObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 41, 0, 0);
+            CheckItemTemplate("Hastener", "housing_hastener", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID, 0, 0);
+            CheckItemTemplate("Smith", "housing_smith", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 1, 0, 0);
+            CheckItemTemplate("Enchanter", "housing_enchanter", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 2, 0, 0);
+            CheckItemTemplate("Emblemer", "housing_emblemer", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 3, 0, 0);
+            CheckItemTemplate("Healer", "housing_healer", 593, (int)EObjectType.HouseNPC, 30000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 4, 0, 0);
+            CheckItemTemplate("Recharger", "housing_recharger", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 5, 0, 0);
+            CheckItemTemplate("Hibernia Teleporter", "housing_hib_teleporter", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 6, 0, 3);
+            CheckItemTemplate("Albion Teleporter", "housing_alb_teleporter", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 6, 0, 1);
+            CheckItemTemplate("Midgard Teleporter", "housing_mid_teleporter", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 6, 0, 2);
+            CheckItemTemplate("Apprentice Merchant", "housing_apprentice_merchant", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 7, 0, 0);
+            CheckItemTemplate("Grandmaster Merchant", "housing_grandmaster_merchant", 593, (int)EObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 8, 0, 0);
+            CheckItemTemplate("Incantation Merchant", "housing_incantation_merchant", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 9, 0, 0);
+            CheckItemTemplate("Poison and Dye Supplies", "housing_poison_dye_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 10, 0, 0);
+            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_potion_tincture_enchantment_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 11, 0, 0);
+            CheckItemTemplate("Poison and Potion Supplies", "housing_poison_potion_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 12, 0, 0);
+            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_dye_tincture_enchantment_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 13, 0, 0);
+            CheckItemTemplate("Taxidermy Supplies", "housing_taxidermy_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 14, 0, 0);
+            CheckItemTemplate("Siegecraft Supplies", "housing_siegecraft_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 15, 0, 0);
+            CheckItemTemplate("Vault Keeper", "housing_vault_keeper", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 16, 0, 0);
+            CheckItemTemplate("Dye Supply Master", "housing_dye_supply_master", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 17, 0, 0);
+            CheckItemTemplate("Grandmaster Merchant", "housing_mid_grandmaster_merchant", 593, (int)EObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 18, 0, 0);
+            CheckItemTemplate("Grandmaster Merchant", "housing_alb_grandmaster_merchant", 593, (int)EObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 19, 0, 0);
+            CheckItemTemplate("Grandmaster Merchant", "housing_hib_grandmaster_merchant", 593, (int)EObjectType.HouseNPC, 5000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 20, 0, 0);
+            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_mid_potion_tincture_enchantment_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 30, 0, 0);
+            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_alb_potion_tincture_enchantment_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 31, 0, 0);
+            CheckItemTemplate("Potion, Tincture, and Enchantment Supplies", "housing_hib_potion_tincture_enchantment_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 32, 0, 0);
+            CheckItemTemplate("Apprentice Merchant", "housing_mid_apprentice_merchant", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 36, 0, 0);
+            CheckItemTemplate("Apprentice Merchant", "housing_alb_apprentice_merchant", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 37, 0, 0);
+            CheckItemTemplate("Apprentice Merchant", "housing_hib_apprentice_merchant", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 38, 0, 0);
+            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_mid_dye_tincture_enchantment_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 39, 0, 0);
+            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_alb_dye_tincture_enchantment_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 40, 0, 0);
+            CheckItemTemplate("Dye, Tincture, and Enchantment Supplies", "housing_hib_dye_tincture_enchantment_supplies", 593, (int)EObjectType.HouseNPC, 1000000, 0, 0, Properties.HOUSING_STARTING_NPCTEMPLATE_ID + 41, 0, 0);
 
             //indoor craft
-            CheckItemTemplate("alchemy table", "housing_alchemy_table", 1494, (int)eObjectType.HouseInteriorObject, 10000000, 0, 0, 0, 0, 0);
-            CheckItemTemplate("forge", "housing_forge", 1495, (int)eObjectType.HouseInteriorObject, 10000000, 0, 0, 0, 0, 0);
-            CheckItemTemplate("lathe", "housing_lathe", 1496, (int)eObjectType.HouseInteriorObject, 10000000, 0, 0, 0, 0, 0);
+            CheckItemTemplate("alchemy table", "housing_alchemy_table", 1494, (int)EObjectType.HouseInteriorObject, 10000000, 0, 0, 0, 0, 0);
+            CheckItemTemplate("forge", "housing_forge", 1495, (int)EObjectType.HouseInteriorObject, 10000000, 0, 0, 0, 0, 0);
+            CheckItemTemplate("lathe", "housing_lathe", 1496, (int)EObjectType.HouseInteriorObject, 10000000, 0, 0, 0, 0, 0);
 
             //indoor bindstone
-            CheckItemTemplate("Albion bindstone", "housing_alb_bindstone", 1488, (int)eObjectType.HouseBindstone, 10000000, 0, 0, 0, 0, 1);
-            CheckItemTemplate("Midgard bindstone", "housing_mid_bindstone", 1492, (int)eObjectType.HouseBindstone, 10000000, 0, 0, 0, 0, 2);
-            CheckItemTemplate("Hibernia bindstone", "housing_hib_bindstone", 1490, (int)eObjectType.HouseBindstone, 10000000, 0, 0, 0, 0, 3);
+            CheckItemTemplate("Albion bindstone", "housing_alb_bindstone", 1488, (int)EObjectType.HouseBindstone, 10000000, 0, 0, 0, 0, 1);
+            CheckItemTemplate("Midgard bindstone", "housing_mid_bindstone", 1492, (int)EObjectType.HouseBindstone, 10000000, 0, 0, 0, 0, 2);
+            CheckItemTemplate("Hibernia bindstone", "housing_hib_bindstone", 1490, (int)EObjectType.HouseBindstone, 10000000, 0, 0, 0, 0, 3);
 
             //indoor vault
-            CheckItemTemplate("Albion vault", "housing_alb_vault", 1489, (int)eObjectType.HouseVault, 10000000, 0, 0, 0, 0, 1);
-            CheckItemTemplate("Midgard vault", "housing_mid_vault", 1493, (int)eObjectType.HouseVault, 10000000, 0, 0, 0, 0, 2);
-            CheckItemTemplate("Hibernia vault", "housing_hib_vault", 1491, (int)eObjectType.HouseVault, 10000000, 0, 0, 0, 0, 3);
+            CheckItemTemplate("Albion vault", "housing_alb_vault", 1489, (int)EObjectType.HouseVault, 10000000, 0, 0, 0, 0, 1);
+            CheckItemTemplate("Midgard vault", "housing_mid_vault", 1493, (int)EObjectType.HouseVault, 10000000, 0, 0, 0, 0, 2);
+            CheckItemTemplate("Hibernia vault", "housing_hib_vault", 1491, (int)EObjectType.HouseVault, 10000000, 0, 0, 0, 0, 3);
         }
 
         private static void CheckMerchantItemTemplates()

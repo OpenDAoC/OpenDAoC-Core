@@ -33,7 +33,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = 14; // matter
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = m_radius;
-            m_dbspell.Type = eSpellType.DamageOverTime.ToString();
+            m_dbspell.Type = ESpellType.DamageOverTime.ToString();
             m_dbspell.Value = 0;
             m_dbspell.Duration = 40;
             m_dbspell.Pulse = 0;

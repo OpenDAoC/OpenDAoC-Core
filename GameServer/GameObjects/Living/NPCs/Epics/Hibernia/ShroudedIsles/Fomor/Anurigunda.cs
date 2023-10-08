@@ -17,21 +17,21 @@ namespace DOL.GS
 			if (log.IsInfoEnabled)
 				log.Info("Anurigunda Initializing...");
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-				case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-				case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+				case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+				case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+				case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
 				default: return 30; // dmg reduction for rest resists
 			}
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 350;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
@@ -111,7 +111,7 @@ namespace DOL.AI.Brain
 			foreach(GamePlayer player in Body.GetPlayersInRadius(Body.CurrentRegionID))
             {
 				if (player == null) continue;
-				if(player.IsAlive && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player)
+				if(player.IsAlive && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
                 {
 					if(player.IsWithinRadius(entrance,400))
                     {
@@ -125,7 +125,7 @@ namespace DOL.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				IsPulled = false;
 				Adds1 = false;
@@ -236,10 +236,10 @@ namespace DOL.AI.Brain
 					spell.Radius = 350;
 					spell.SpellID = 11839;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DamageOverTime.ToString();
+					spell.Type = ESpellType.DamageOverTime.ToString();
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
-					spell.DamageType = (int)eDamageType.Heat;
+					spell.DamageType = (int)EDamageType.Heat;
 					m_FireGroundDD = new Spell(spell, 70);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_FireGroundDD);
 				}
@@ -263,7 +263,7 @@ namespace DOL.AI.Brain
 		{
 			if (!CheckProximityAggro())
 			{
-				FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 			}
 			base.Think();
 		}
@@ -277,22 +277,22 @@ namespace DOL.GS
 		{
 			get { return 5000; }
 		}
-		public override double GetArmorAF(eArmorSlot slot)
+		public override double GetArmorAF(EArmorSlot slot)
 		{
 			return 300;
 		}
-		public override double GetArmorAbsorb(eArmorSlot slot)
+		public override double GetArmorAbsorb(EArmorSlot slot)
 		{
 			// 85% ABS is cap.
 			return 0.20;
 		}
-		public override int GetResist(eDamageType damageType)
+		public override int GetResist(EDamageType damageType)
 		{
 			switch (damageType)
 			{
-				case eDamageType.Slash: return 35;// dmg reduction for melee dmg
-				case eDamageType.Crush: return 35;// dmg reduction for melee dmg
-				case eDamageType.Thrust: return 35;// dmg reduction for melee dmg
+				case EDamageType.Slash: return 35;// dmg reduction for melee dmg
+				case EDamageType.Crush: return 35;// dmg reduction for melee dmg
+				case EDamageType.Thrust: return 35;// dmg reduction for melee dmg
 				default: return 25;// dmg reduction for rest resists
 			}
 		}

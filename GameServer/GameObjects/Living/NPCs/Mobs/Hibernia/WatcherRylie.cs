@@ -80,7 +80,7 @@ namespace DOL.AI.Brain
 						AddAggroListTo(npc.Brain as StandardMobBrain);
 				}
 				GameLiving target = Body.TargetObject as GameLiving;
-				if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+				if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
 					Body.CastSpell(Rylie_stun, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 				else
 					Body.CastSpell(RylieDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
@@ -103,12 +103,12 @@ namespace DOL.AI.Brain
 					spell.ClientEffect = 4111;
 					spell.Icon = 4111;
 					spell.Damage = 80;
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.Name = "Energy Blast";
 					spell.Range = 1500;
 					spell.SpellID = 11949;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.DirectDamageNoVariance.ToString();
+					spell.Type = ESpellType.DirectDamageNoVariance.ToString();
 					spell.Uninterruptible = true;
 					m_RylieDD = new Spell(spell, 15);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_RylieDD);
@@ -136,8 +136,8 @@ namespace DOL.AI.Brain
 					spell.Range = 1500;
 					spell.SpellID = 11950;
 					spell.Target = "Enemy";
-					spell.Type = eSpellType.Stun.ToString();
-					spell.DamageType = (int)eDamageType.Energy;
+					spell.Type = ESpellType.Stun.ToString();
+					spell.DamageType = (int)EDamageType.Energy;
 					spell.Uninterruptible = true;
 					spell.MoveCast = true;
 					m_Rylie_stun = new Spell(spell, 15);

@@ -83,9 +83,9 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendCharacterOverview(eRealm realm)
+		public override void SendCharacterOverview(ERealm realm)
 		{
-			if (realm < eRealm._FirstPlayerRealm || realm > eRealm._LastPlayerRealm)
+			if (realm < ERealm._FirstPlayerRealm || realm > ERealm._LastPlayerRealm)
 				throw new Exception($"CharacterOverview requested for unknown realm {realm}");
 
 			int firstSlot = (byte)realm * 100;
@@ -172,7 +172,7 @@ namespace DOL.GS.PacketHandler
 						locationDescription = m_gameClient.GetTranslatedSpotDescription(region, c.Xpos, c.Ypos, c.Zpos);
 					string classname = "";
 					if (c.Class != 0)
-						classname = ((eCharacterClass)c.Class).ToString();
+						classname = ((ECharacterClass)c.Class).ToString();
 					string racename = m_gameClient.RaceToTranslatedName(c.Race, c.Gender);
 
 					charItems.TryGetValue(eInventorySlot.RightHandWeapon, out DbInventoryItem rightHandWeapon);
@@ -277,12 +277,12 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte((byte)c.Class);
 					pak.WriteByte((byte)c.Realm); // ok?
 					pak.WriteByte((byte)((((c.Race & 0x10) << 2) + (c.Race & 0x0F)) | (c.Gender << 7)));
-					if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+					if (c.ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 					{
 						pak.WriteByte(0x02);
 						pak.WriteByte(0x02);
 					}
-					else if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+					else if (c.ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 					{
 						pak.WriteByte(0x03);
 						pak.WriteByte(0x03);

@@ -24,14 +24,14 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Viking Trainer
 	/// </summary>
-	[NPCGuildScript("Viking Trainer", eRealm.Midgard)]		// this attribute instructs DOL to use this script for all "Acolyte Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Viking Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Acolyte Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class VikingTrainer : GameTrainer
 	{
 		public const string PRACTICE_WEAPON_ID = "training_axe";
 
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Viking; }
+			get { return ECharacterClass.Viking; }
 		}
 
 		public VikingTrainer() : base(eChampionTrainerType.Viking)
@@ -86,7 +86,7 @@ namespace DOL.GS.Trainer
 
 			switch (text) {
 				case "Warrior":
-					if(player.Race == (int) eRace.Dwarf || player.Race == (int) eRace.Kobold || player.Race == (int) eRace.Norseman || player.Race == (int) eRace.Troll || player.Race == (int) eRace.Valkyn || player.Race == (int)eRace.MidgardMinotaur){
+					if(player.Race == (int) ERace.Dwarf || player.Race == (int) ERace.Kobold || player.Race == (int) ERace.Norseman || player.Race == (int) ERace.Troll || player.Race == (int) ERace.Valkyn || player.Race == (int)ERace.MidgardMinotaur){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					}
 					else{
@@ -94,7 +94,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Berserker":
-					if(player.Race == (int)eRace.Dwarf || player.Race == (int)eRace.Troll || player.Race == (int)eRace.Norseman || player.Race == (int)eRace.Valkyn || player.Race == (int)eRace.MidgardMinotaur)
+					if(player.Race == (int)ERace.Dwarf || player.Race == (int)ERace.Troll || player.Race == (int)ERace.Norseman || player.Race == (int)ERace.Valkyn || player.Race == (int)ERace.MidgardMinotaur)
 					{
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					}
@@ -103,7 +103,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Skald":
-					if(player.Race == (int) eRace.Dwarf || player.Race == (int) eRace.Kobold || player.Race == (int) eRace.Norseman || player.Race == (int) eRace.Troll){
+					if(player.Race == (int) ERace.Dwarf || player.Race == (int) ERace.Kobold || player.Race == (int) ERace.Norseman || player.Race == (int) ERace.Troll){
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					}
 					else{
@@ -111,7 +111,7 @@ namespace DOL.GS.Trainer
 					}
 					return true;
 				case "Thane":
-					if(player.Race == (int) eRace.Dwarf || player.Race == (int) eRace.Frostalf || player.Race == (int) eRace.Norseman || player.Race == (int) eRace.Troll)
+					if(player.Race == (int) ERace.Dwarf || player.Race == (int) ERace.Frostalf || player.Race == (int) ERace.Norseman || player.Race == (int) ERace.Troll)
 					{
 						player.Out.SendMessage(this.Name + " says, \"I can't tell you something about this class.\"",eChatType.CT_Say,eChatLoc.CL_PopupWindow);
 					}

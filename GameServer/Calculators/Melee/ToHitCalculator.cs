@@ -1,11 +1,11 @@
 namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.ToHitBonus)]
+[PropertyCalculator(EProperty.ToHitBonus)]
 public class ToHitBonusCalculator : PropertyCalculator
 {
 	public ToHitBonusCalculator() { }
 
-	public override int CalcValue(GameLiving living, eProperty property)
+	public override int CalcValue(GameLiving living, EProperty property)
 	{
 		return (int)(
 			+living.BaseBuffBonusCategory[(int)property]

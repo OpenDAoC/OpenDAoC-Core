@@ -8,7 +8,7 @@ namespace DOL.GS.Commands;
 //most of it's functionality is built into the client.
 [Command(
     "&appeal",
-    ePrivLevel.Player,
+    EPrivLevel.Player,
     "/appeal")]
 
     // "Usage: '/appeal <appeal type> <appeal text>",
@@ -40,7 +40,7 @@ public class AppealCommand : ACommandHandler, ICommandHandler
         if (args.Length == 1)
         {
             DisplaySyntax(client);
-            if (client.Account.PrivLevel > (uint)ePrivLevel.Player)
+            if (client.Account.PrivLevel > (uint)EPrivLevel.Player)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.UseGMappeal"));
             }
@@ -117,7 +117,7 @@ public class AppealCommand : ACommandHandler, ICommandHandler
 //handles /reportbug command that is issued from the client /appeal function.
 [Command(
 "&reportbug",
-ePrivLevel.Player, "Use /appeal to file an appeal")]
+EPrivLevel.Player, "Use /appeal to file an appeal")]
 public class ReportBugCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)
@@ -162,7 +162,7 @@ public class ReportBugCommand : ACommandHandler, ICommandHandler
 //handles /reportharass command that is issued from the client /appeal function.
 [Command(
 "&reportharass",
-ePrivLevel.Player, "Use /appeal to file an appeal")]
+EPrivLevel.Player, "Use /appeal to file an appeal")]
 public class ReportHarassCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)
@@ -209,7 +209,7 @@ public class ReportHarassCommand : ACommandHandler, ICommandHandler
 //handles /reporttos command that is issued from the client /appeal function.
 [Command(
 "&reporttos",
-ePrivLevel.Player, "Use /appeal to file an appeal")]
+EPrivLevel.Player, "Use /appeal to file an appeal")]
 public class ReportTosCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)
@@ -284,7 +284,7 @@ public class ReportTosCommand : ACommandHandler, ICommandHandler
 //handles /reportharass command that is issued from the client /appeal function.
 [Command(
 "&reportstuck",
-ePrivLevel.Player, "Use /appeal to file an appeal")]
+EPrivLevel.Player, "Use /appeal to file an appeal")]
 public class ReportStuckCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)
@@ -331,7 +331,7 @@ public class ReportStuckCommand : ACommandHandler, ICommandHandler
 //handles /appea command that is issued from the client /appeal function (emergency appeal).
 [Command(
 "&appea",
-ePrivLevel.Player, "Use /appeal to file an appeal")]
+EPrivLevel.Player, "Use /appeal to file an appeal")]
 public class EmergencyAppealCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)

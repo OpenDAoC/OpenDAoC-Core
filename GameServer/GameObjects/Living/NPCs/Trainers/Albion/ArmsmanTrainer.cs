@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Armsman Trainer
 	/// </summary>
-	[NPCGuildScript("Armsman Trainer", eRealm.Albion)]		// this attribute instructs DOL to use this script for all "Fighter Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Armsman Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Fighter Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class ArmsmanTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Armsman; }
+			get { return ECharacterClass.Armsman; }
 		}
 		/// <summary>
 		/// The slash sword item template ID
@@ -103,25 +103,25 @@ namespace DOL.GS.Trainer
 						break;
 					case "slashing":
 						
-						PromotePlayer(player, (int)eCharacterClass.Armsman, "Here is your Sword of the Initiate. Welcome to the Defenders of Albion.", null);
+						PromotePlayer(player, (int)ECharacterClass.Armsman, "Here is your Sword of the Initiate. Welcome to the Defenders of Albion.", null);
 						player.ReceiveItem(this,WEAPON_ID1);
 						
 						break;
 					case "crushing":
 						
-						PromotePlayer(player, (int)eCharacterClass.Armsman, "Here is your Mace of the Initiate. Welcome to the Defenders of Albion.", null);
+						PromotePlayer(player, (int)ECharacterClass.Armsman, "Here is your Mace of the Initiate. Welcome to the Defenders of Albion.", null);
 						player.ReceiveItem(this,WEAPON_ID2);
 						
 						break;
 					case "thrusting":
 						
-						PromotePlayer(player, (int)eCharacterClass.Armsman, "Here is your Rapier of the Initiate. Welcome to the Defenders of Albion.", null);
+						PromotePlayer(player, (int)ECharacterClass.Armsman, "Here is your Rapier of the Initiate. Welcome to the Defenders of Albion.", null);
 						player.ReceiveItem(this,WEAPON_ID3);
 						
 						break;
 					case "polearms":
 						
-						PromotePlayer(player, (int)eCharacterClass.Armsman, "Here is your Pike of the Initiate. Welcome to the Defenders of Albion.", null);
+						PromotePlayer(player, (int)ECharacterClass.Armsman, "Here is your Pike of the Initiate. Welcome to the Defenders of Albion.", null);
 						player.ReceiveItem(this,WEAPON_ID4);
 						
 						break;

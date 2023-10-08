@@ -44,21 +44,21 @@ namespace DOL.GS
         {
             base.OnAttackEnemy(ad);
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 30; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 30; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 30; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 30; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 30; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 30; // dmg reduction for melee dmg
                 default: return 40; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -67,17 +67,17 @@ namespace DOL.GS
         {
             get { return 40000; }
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
             {
                 if (IsOutOfTetherRange)
                 {
-                    if (damageType == eDamageType.Body || damageType == eDamageType.Cold ||
-                        damageType == eDamageType.Energy || damageType == eDamageType.Heat
-                        || damageType == eDamageType.Matter || damageType == eDamageType.Spirit ||
-                        damageType == eDamageType.Crush || damageType == eDamageType.Thrust
-                        || damageType == eDamageType.Slash)
+                    if (damageType == EDamageType.Body || damageType == EDamageType.Cold ||
+                        damageType == EDamageType.Energy || damageType == EDamageType.Heat
+                        || damageType == EDamageType.Matter || damageType == EDamageType.Spirit ||
+                        damageType == EDamageType.Crush || damageType == EDamageType.Thrust
+                        || damageType == EDamageType.Slash)
                     {
                         GamePlayer truc;
                         if (source is GamePlayer)
@@ -140,7 +140,7 @@ namespace DOL.GS
             template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 1077, 0, 0);
             template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 0, 0);
             Inventory = template.CloseTemplate();
-            SwitchWeapon(eActiveWeaponSlot.Standard);
+            SwitchWeapon(EActiveWeaponSlot.Standard);
             LordGildasBrain.Stage2 = false;
             LordGildasBrain.CanWalk = false;
             LordGildasBrain.Reset_Gildas = false;
@@ -157,7 +157,7 @@ namespace DOL.GS
             if (!Styles.Contains(Taunt2h))
                 Styles.Add(Taunt2h);
             VisibleActiveWeaponSlots = 16;
-            MeleeDamageType = eDamageType.Slash;
+            MeleeDamageType = EDamageType.Slash;
             LordGildasBrain sbrain = new LordGildasBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -170,7 +170,7 @@ namespace DOL.GS
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
             GameNPC[] npcs;
-            npcs = WorldMgr.GetNPCsByNameFromRegion("Lord Gildas", 277, (eRealm)0);
+            npcs = WorldMgr.GetNPCsByNameFromRegion("Lord Gildas", 277, (ERealm)0);
             if (npcs.Length == 0)
             {
                 log.Warn("Lord Gildas found, creating it...");
@@ -183,7 +183,7 @@ namespace DOL.GS
                 HOC.Level = 75;
                 HOC.Size = 50;
                 HOC.CurrentRegionID = 277; //hall of the corrupt
-                HOC.MeleeDamageType = eDamageType.Slash;
+                HOC.MeleeDamageType = EDamageType.Slash;
                 HOC.RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 HOC.Faction = FactionMgr.GetFactionByID(187);
                 HOC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
@@ -231,7 +231,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 CanWalk = false;                              
             }
             if (Body.IsOutOfTetherRange)
@@ -255,7 +255,7 @@ namespace DOL.AI.Brain
                     template.AddNPCEquipment(eInventorySlot.LeftHandWeapon, 1077, 0, 0);
                     template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 7, 0, 0);
                     Body.Inventory = template.CloseTemplate();
-                    Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+                    Body.SwitchWeapon(EActiveWeaponSlot.Standard);
                     Body.VisibleActiveWeaponSlots = 16;
                     if (!Body.Styles.Contains(LordGildas.slam))
                         Body.Styles.Add(LordGildas.slam);
@@ -288,7 +288,7 @@ namespace DOL.AI.Brain
                             Body.Strength = 400;
                             Body.ParryChance = 60;
                             Body.BlockChance = 0;
-                            Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                            Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                             Body.VisibleActiveWeaponSlots = 34;
                             Body.styleComponent.NextCombatBackupStyle = LordGildas.Taunt2h;
                             Body.styleComponent.NextCombatStyle = LordGildas.BackStyle;//do backstyle when angle allow it
@@ -298,20 +298,20 @@ namespace DOL.AI.Brain
                             Body.Strength = npcTemplate.Strength;
                             Body.ParryChance = 25;
                             Body.BlockChance = 75;
-                            Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+                            Body.SwitchWeapon(EActiveWeaponSlot.Standard);
                             Body.VisibleActiveWeaponSlots = 16;
                             Body.styleComponent.NextCombatStyle = LordGildas.taunt;//if not backstyle for angle then do taunt
                         }
-                        if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+                        if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
                         {
                             Body.Strength = npcTemplate.Strength;
-                            Body.SwitchWeapon(eActiveWeaponSlot.Standard);
+                            Body.SwitchWeapon(EActiveWeaponSlot.Standard);
                             Body.VisibleActiveWeaponSlots = 16;
                             Body.ParryChance = 25;
                             Body.BlockChance = 80;
                             Body.styleComponent.NextCombatStyle = LordGildas.slam;//check if target has stun or immunity if not slam
                         }
-                        if (target.effectListComponent.ContainsEffectForEffectType(eEffect.Stun))
+                        if (target.effectListComponent.ContainsEffectForEffectType(EEffect.Stun))
                         {
                             if (CanWalk == false)
                             {
@@ -319,7 +319,7 @@ namespace DOL.AI.Brain
                                 CanWalk = true;
                             }
                         }
-                        if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity))
+                        if (!target.effectListComponent.ContainsEffectForEffectType(EEffect.StunImmunity))
                         {
                             CanWalk = false;//reset flag so can slam again
                         }
@@ -351,8 +351,8 @@ namespace DOL.AI.Brain
                     Body.styleComponent.NextCombatBackupStyle = LordGildas.PoleAnytimer;
                     Body.styleComponent.NextCombatStyle = LordGildas.AfterStyle;
                     Body.Strength = 340;
-                    Body.SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-                    Body.MeleeDamageType = eDamageType.Crush;
+                    Body.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
+                    Body.MeleeDamageType = EDamageType.Crush;
                     Body.VisibleActiveWeaponSlots = 34;
                     Body.ParryChance = 60;
                     Body.BlockChance = 0;

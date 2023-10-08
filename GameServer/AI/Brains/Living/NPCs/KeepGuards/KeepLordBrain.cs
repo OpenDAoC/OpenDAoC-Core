@@ -17,14 +17,14 @@ namespace DOL.AI.Brain
 			{
 				switch (Body.Realm)
 				{
-					case eRealm.None:
-					case eRealm.Albion:
+					case ERealm.None:
+					case ERealm.Albion:
 						Body.Spells.Add(GuardSpellDB.AlbLordHealSpell);
 						break;
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						Body.Spells.Add(GuardSpellDB.MidLordHealSpell);
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						Body.Spells.Add(GuardSpellDB.HibLordHealSpell);
 						break;
 				}

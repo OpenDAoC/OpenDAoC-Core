@@ -287,7 +287,7 @@ namespace DOL.GS
 
             static bool Predicate(GamePlayer player, object unused)
             {
-                return player.Client.Account.PrivLevel == (uint) ePrivLevel.Player;
+                return player.Client.Account.PrivLevel == (uint) EPrivLevel.Player;
             }
         }
 
@@ -297,25 +297,25 @@ namespace DOL.GS
 
             static bool Predicate(GamePlayer player, object unused)
             {
-                return player.Client.Account.PrivLevel > (uint) ePrivLevel.Player;
+                return player.Client.Account.PrivLevel > (uint) EPrivLevel.Player;
             }
         }
 
-        public static List<GamePlayer> GetPlayersOfRealm(eRealm realm)
+        public static List<GamePlayer> GetPlayersOfRealm(ERealm realm)
         {
             return GetPlayersOfRealm<object>((realm, default, default));
         }
 
-        public static List<GamePlayer> GetPlayersOfRealm<T>(eRealm realm, CheckPlayerAction<T> action)
+        public static List<GamePlayer> GetPlayersOfRealm<T>(ERealm realm, CheckPlayerAction<T> action)
         {
             return GetPlayersOfRealm((realm, action, default));
         }
 
-        public static List<GamePlayer> GetPlayersOfRealm<T>((eRealm, CheckPlayerAction<T>, T) args)
+        public static List<GamePlayer> GetPlayersOfRealm<T>((ERealm, CheckPlayerAction<T>, T) args)
         {
             return GetPlayers(Predicate, args);
 
-            static bool Predicate(GamePlayer player, (eRealm realm, CheckPlayerAction<T> action, T actionArgument) args)
+            static bool Predicate(GamePlayer player, (ERealm realm, CheckPlayerAction<T> action, T actionArgument) args)
             {
                 return player.Realm == args.realm && args.action?.Invoke(player, args.actionArgument) != false;
             }
@@ -341,11 +341,11 @@ namespace DOL.GS
             }
         }
 
-        public static List<GamePlayer> GetPlayersOfRegionAndRealm(Region region, eRealm realm)
+        public static List<GamePlayer> GetPlayersOfRegionAndRealm(Region region, ERealm realm)
         {
             return GetPlayersOfRegion((region, Predicate, realm));
 
-            static bool Predicate(GamePlayer player, eRealm realm)
+            static bool Predicate(GamePlayer player, ERealm realm)
             {
                 return player.Realm == realm;
             }
@@ -413,7 +413,7 @@ namespace DOL.GS
 
             static bool Predicate(GameClient client, GameClient otherClient)
             {
-                return client.Account != null && client.Account.PrivLevel <= (uint) ePrivLevel.Player && client.TcpEndpointAddress.Equals(otherClient.TcpEndpointAddress) && client != otherClient;
+                return client.Account != null && client.Account.PrivLevel <= (uint) EPrivLevel.Player && client.TcpEndpointAddress.Equals(otherClient.TcpEndpointAddress) && client != otherClient;
             }
         }
 
@@ -467,17 +467,17 @@ namespace DOL.GS
             // Doesn't handle houses. They aren't 'GameObject'.
             switch (gameObject.GameObjectType)
             {
-                case eGameObjectType.ITEM:
+                case EGameObjectType.ITEM:
                 {
                     AddItemToPlayerCache(player, gameObject as GameStaticItem);
                     break;
                 }
-                case eGameObjectType.NPC:
+                case EGameObjectType.NPC:
                 {
                     AddNpcToPlayerCache(player, gameObject as GameNPC);
                     break;
                 }
-                case eGameObjectType.DOOR:
+                case EGameObjectType.DOOR:
                 {
                     AddDoorToPlayerCache(player, gameObject as GameDoorBase);
                     break;
@@ -555,7 +555,7 @@ namespace DOL.GS
                     npcUpdateCache.Remove(npc, out _);
             }
 
-            List<GameNPC> npcsInRange = player.GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE);
+            List<GameNPC> npcsInRange = player.GetObjectsInRadius<GameNPC>(EGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE);
             GameObject targetObject = player.TargetObject;
             GameNPC pet = player.ControlledBrain?.Body;
             CachedNpcValues cachedTargetValues = null;
@@ -605,7 +605,7 @@ namespace DOL.GS
                     itemUpdateCache.Remove(item, out _);
             }
 
-            List<GameStaticItem> itemsInRange = player.GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE);
+            List<GameStaticItem> itemsInRange = player.GetObjectsInRadius<GameStaticItem>(EGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE);
 
             foreach (GameStaticItem itemInRange in itemsInRange)
             {
@@ -629,7 +629,7 @@ namespace DOL.GS
                     doorUpdateCache.Remove(door, out _);
             }
 
-            List<GameDoorBase> doorsInRange = player.GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE);
+            List<GameDoorBase> doorsInRange = player.GetObjectsInRadius<GameDoorBase>(EGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE);
 
             foreach (GameDoorBase doorInRange in doorsInRange)
             {

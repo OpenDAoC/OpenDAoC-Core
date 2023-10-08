@@ -24,12 +24,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Blademaster Trainer
 	/// </summary>
-	[NPCGuildScript("Blademaster Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Blademaster Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Blademaster Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Blademaster Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class BlademasterTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Blademaster; }
+			get { return ECharacterClass.Blademaster; }
 		}
 
 		public const string ARMOR_ID1 = "blademaster_item";
@@ -86,7 +86,7 @@ namespace DOL.GS.Trainer
 				case "Blademaster":
 					// promote player to other class
 					if (CanPromotePlayer(player)) {
-						PromotePlayer(player, (int)eCharacterClass.Blademaster, "Very well, " + source.GetName(0, false) + ". I gladly take your training into my hands. Congratulations, from this day forth, you are a Blademaster. Here, take this gift to aid you.", null);
+						PromotePlayer(player, (int)ECharacterClass.Blademaster, "Very well, " + source.GetName(0, false) + ". I gladly take your training into my hands. Congratulations, from this day forth, you are a Blademaster. Here, take this gift to aid you.", null);
 						player.ReceiveItem(this,ARMOR_ID1);
 					}
 					break;

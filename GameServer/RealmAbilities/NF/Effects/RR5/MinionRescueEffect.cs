@@ -63,7 +63,7 @@ namespace DOL.GS.Effects
             tSpell.CastTime = 0;
             tSpell.Duration = spellDuration;
             tSpell.Uninterruptible = true;
-            tSpell.Type = eSpellType.Stun.ToString();
+            tSpell.Type = ESpellType.Stun.ToString();
 			tSpell.ResurrectMana=1;
 			tSpell.ResurrectHealth=1;
             tSpell.Damage = 0;

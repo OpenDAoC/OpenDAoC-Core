@@ -26,12 +26,12 @@ namespace DOL.GS.Trainer
 	/// <summary>
 	/// Bainshee Trainer
 	/// </summary>
-	[NPCGuildScript("Bainshee Trainer", eRealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Bainshee Trainer" NPC's in Albion (multiple guilds are possible for one script)
+	[NPCGuildScript("Bainshee Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Bainshee Trainer" NPC's in Albion (multiple guilds are possible for one script)
 	public class BainsheeTrainer : GameTrainer
 	{
-		public override eCharacterClass TrainedClass
+		public override ECharacterClass TrainedClass
 		{
-			get { return eCharacterClass.Bainshee; }
+			get { return ECharacterClass.Bainshee; }
 		}
 
 		public const string WEAPON_ID1 = "bainshee_item";
@@ -91,7 +91,7 @@ namespace DOL.GS.Trainer
 				// promote player to other class
 				if (CanPromotePlayer(player))
 				{
-					PromotePlayer(player, (int)eCharacterClass.Bainshee, LanguageMgr.GetTranslation(player.Client.Account.Language, "BainsheeTrainer.WhisperReceive.Text1", player.GetName(0, false)), null);
+					PromotePlayer(player, (int)ECharacterClass.Bainshee, LanguageMgr.GetTranslation(player.Client.Account.Language, "BainsheeTrainer.WhisperReceive.Text1", player.GetName(0, false)), null);
 					player.ReceiveItem(this, WEAPON_ID1);
 				}
 			}

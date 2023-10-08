@@ -40,9 +40,9 @@ namespace DOL.GS.Spells
 			GameLiving living = effect.Owner as GameLiving;
             GamePlayer player = effect.Owner as GamePlayer;
             int value = (int)Spell.Value;
-            living.BaseBuffBonusCategory[(int)eProperty.Resist_Slash] += value;
-            living.BaseBuffBonusCategory[(int)eProperty.Resist_Crush] += value;
-            living.BaseBuffBonusCategory[(int)eProperty.Resist_Thrust] += value;
+            living.BaseBuffBonusCategory[(int)EProperty.Resist_Slash] += value;
+            living.BaseBuffBonusCategory[(int)EProperty.Resist_Crush] += value;
+            living.BaseBuffBonusCategory[(int)EProperty.Resist_Thrust] += value;
             if (player != null)
             {
                 player.Out.SendCharStatsUpdate();
@@ -59,9 +59,9 @@ namespace DOL.GS.Spells
             GameLiving living = effect.Owner as GameLiving;
             GamePlayer player = effect.Owner as GamePlayer;
 			int value = (int)Spell.Value;
-            living.BaseBuffBonusCategory[(int)eProperty.Resist_Slash] -= value;
-            living.BaseBuffBonusCategory[(int)eProperty.Resist_Crush] -= value;
-            living.BaseBuffBonusCategory[(int)eProperty.Resist_Thrust] -= value;
+            living.BaseBuffBonusCategory[(int)EProperty.Resist_Slash] -= value;
+            living.BaseBuffBonusCategory[(int)EProperty.Resist_Crush] -= value;
+            living.BaseBuffBonusCategory[(int)EProperty.Resist_Thrust] -= value;
             if (player != null)
             {
                 player.Out.SendCharStatsUpdate();
@@ -136,12 +136,12 @@ namespace DOL.GS.Spells
 			if (boad != null) boad.Cancel(false);
 			
             int value = (int)Spell.Value;
-            living.AbilityBonus[(int)eProperty.Resist_Body] += value;
-            living.AbilityBonus[(int)eProperty.Resist_Cold] += value;
-            living.AbilityBonus[(int)eProperty.Resist_Energy] += value;
-            living.AbilityBonus[(int)eProperty.Resist_Heat] += value;
-            living.AbilityBonus[(int)eProperty.Resist_Matter] += value;
-            living.AbilityBonus[(int)eProperty.Resist_Spirit] += value;
+            living.AbilityBonus[(int)EProperty.Resist_Body] += value;
+            living.AbilityBonus[(int)EProperty.Resist_Cold] += value;
+            living.AbilityBonus[(int)EProperty.Resist_Energy] += value;
+            living.AbilityBonus[(int)EProperty.Resist_Heat] += value;
+            living.AbilityBonus[(int)EProperty.Resist_Matter] += value;
+            living.AbilityBonus[(int)EProperty.Resist_Spirit] += value;
             if(player != null)
             {
                 player.Out.SendCharStatsUpdate();
@@ -156,12 +156,12 @@ namespace DOL.GS.Spells
 		{
             GameLiving living = effect.Owner as GameLiving;
             int value = (int)Spell.Value;
-            living.AbilityBonus[(int)eProperty.Resist_Body] -= value;
-            living.AbilityBonus[(int)eProperty.Resist_Cold] -= value;
-            living.AbilityBonus[(int)eProperty.Resist_Energy] -= value;
-            living.AbilityBonus[(int)eProperty.Resist_Heat] -= value;
-            living.AbilityBonus[(int)eProperty.Resist_Matter] -= value;
-            living.AbilityBonus[(int)eProperty.Resist_Spirit] -= value;
+            living.AbilityBonus[(int)EProperty.Resist_Body] -= value;
+            living.AbilityBonus[(int)EProperty.Resist_Cold] -= value;
+            living.AbilityBonus[(int)EProperty.Resist_Energy] -= value;
+            living.AbilityBonus[(int)EProperty.Resist_Heat] -= value;
+            living.AbilityBonus[(int)EProperty.Resist_Matter] -= value;
+            living.AbilityBonus[(int)EProperty.Resist_Spirit] -= value;
             GamePlayer player = living as GamePlayer;
             if(player != null)
             {

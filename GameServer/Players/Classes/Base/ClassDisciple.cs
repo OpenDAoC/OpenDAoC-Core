@@ -22,7 +22,7 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Disciple, "Disciple", "Disciple")]
+	[CharacterClass((int)ECharacterClass.Disciple, "Disciple", "Disciple")]
 	public class ClassDisciple : CharacterClassBase
 	{
 		public ClassDisciple()
@@ -31,7 +31,7 @@ namespace DOL.GS.PlayerClass
 			m_specializationMultiplier = 10;
 			m_wsbase = 280;
 			m_baseHP = 560;
-			m_manaStat = eStat.INT;
+			m_manaStat = EStat.INT;
 		}
 
 		public override string GetTitle(GamePlayer player, int level)

@@ -14,7 +14,7 @@ namespace DOL.GS
         {
 			m_interceptSource = interceptSource;
 			m_interceptTarget = interceptTarget;
-			EffectType = eEffect.Intercept;
+			EffectType = EEffect.Intercept;
 			EffectService.RequestStartEffect(this);
 		}
 
@@ -141,10 +141,10 @@ namespace DOL.GS
 				m_group = null;
 			}
 
-			var interceptSourceEffect = EffectListService.GetEffectOnTarget(m_interceptSource, eEffect.Intercept);
+			var interceptSourceEffect = EffectListService.GetEffectOnTarget(m_interceptSource, EEffect.Intercept);
 			if (interceptSourceEffect != null)
 				EffectService.RequestImmediateCancelEffect(interceptSourceEffect);
-			var interceptTargetEffect = EffectListService.GetEffectOnTarget(m_interceptTarget, eEffect.Intercept);
+			var interceptTargetEffect = EffectListService.GetEffectOnTarget(m_interceptTarget, EEffect.Intercept);
 			if (interceptTargetEffect != null)
 				EffectService.RequestImmediateCancelEffect(interceptTargetEffect);
 

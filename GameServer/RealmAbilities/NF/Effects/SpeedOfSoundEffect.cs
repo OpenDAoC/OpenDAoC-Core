@@ -30,7 +30,7 @@ namespace DOL.GS.Effects
 			living.TempProperties.SetProperty("Charging", true);
 			GameEventMgr.AddHandler(living, GameLivingEvent.AttackFinished, m_attackFinished);
 			GameEventMgr.AddHandler(living, GameLivingEvent.CastFinished, m_attackFinished);
-			living.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, PropertyCalc.MaxMovementSpeedCalculator.SPEED4);		
+			living.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, this, PropertyCalc.MaxMovementSpeedCalculator.SPEED4);		
 			if (living is GamePlayer)
 				(living as GamePlayer).Out.SendUpdateMaxSpeed();
 		}
@@ -70,13 +70,13 @@ namespace DOL.GS.Effects
 
 				switch (afargs.AttackData.AttackResult)
 				{
-					case eAttackResult.HitStyle:
-					case eAttackResult.HitUnstyled:
-					case eAttackResult.Blocked:
-					case eAttackResult.Evaded:
-					case eAttackResult.Fumbled:
-					case eAttackResult.Missed:
-					case eAttackResult.Parried:
+					case EAttackResult.HitStyle:
+					case EAttackResult.HitUnstyled:
+					case EAttackResult.Blocked:
+					case EAttackResult.Evaded:
+					case EAttackResult.Fumbled:
+					case EAttackResult.Missed:
+					case EAttackResult.Parried:
 						SpeedOfSoundEffect effect = player.EffectList.GetOfType<SpeedOfSoundEffect>();
 						if (effect != null)
 							effect.Cancel(false);
@@ -90,7 +90,7 @@ namespace DOL.GS.Effects
 			
 			base.Stop();
 			m_owner.TempProperties.RemoveProperty("Charging");
-			m_owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
+			m_owner.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, this);
 			if (m_owner is GamePlayer)
             {
 				//log.InfoFormat("Stop SpeedOfSoundEffect for player {0}", m_owner.Name);

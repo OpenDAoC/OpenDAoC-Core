@@ -60,12 +60,12 @@ namespace DOL.GS
 			}
 		}
 
-		private eRealm m_originalRealm;
+		private ERealm m_originalRealm;
 
 		/// <summary>
 		/// Get the original Realm of the relict (can only be 1(alb),2(mid) or 3(hibernia))
 		/// </summary>
-		public eRealm OriginalRealm
+		public ERealm OriginalRealm
 		{
 			get
 			{
@@ -73,12 +73,12 @@ namespace DOL.GS
 			}
 		}
 
-		private eRealm m_lastRealm = eRealm.None;
+		private ERealm m_lastRealm = ERealm.None;
 
 		/// <summary>
 		/// Get the Realm who last owned this relic
 		/// </summary>
-		public eRealm LastRealm
+		public ERealm LastRealm
 		{
 			get
 			{
@@ -488,7 +488,7 @@ namespace DOL.GS
 		{
 
 			IList messages = base.GetExamineMessages(player);
-			messages.Add((IsMounted) ? ("It is owned by " + ((player.Realm == Realm) ? "your realm" : GlobalConstants.RealmToName((eRealm)Realm)) + ".") : "It is without owner, take it!");
+			messages.Add((IsMounted) ? ("It is owned by " + ((player.Realm == Realm) ? "your realm" : GlobalConstants.RealmToName((ERealm)Realm)) + ".") : "It is without owner, take it!");
 			return messages;
 		}
 
@@ -507,9 +507,9 @@ namespace DOL.GS
 			Z = m_dbRelic.Z;
 			Heading = (ushort)m_dbRelic.Heading;
 			m_relicType = (eRelicType)m_dbRelic.relicType;
-			Realm = (eRealm)m_dbRelic.Realm;
-			m_originalRealm = (eRealm)m_dbRelic.OriginalRealm;
-			m_lastRealm = (eRealm)m_dbRelic.LastRealm;
+			Realm = (ERealm)m_dbRelic.Realm;
+			m_originalRealm = (ERealm)m_dbRelic.OriginalRealm;
+			m_lastRealm = (ERealm)m_dbRelic.LastRealm;
 			m_lastCapturedDate = m_dbRelic.LastCaptureDate;
 
 
@@ -527,7 +527,7 @@ namespace DOL.GS
 			DbItemTemplate m_itemTemp;
 			m_itemTemp = new DbItemTemplate();
 			m_itemTemp.Name = Name;
-			m_itemTemp.Object_Type = (int)eObjectType.Magical;
+			m_itemTemp.Object_Type = (int)EObjectType.Magical;
 			m_itemTemp.Model = Model;
 			m_itemTemp.IsDropable = true;
 			m_itemTemp.IsPickable = false;
@@ -581,12 +581,12 @@ namespace DOL.GS
 			public ushort Model;
 		}
 
-		public static MiniTemp GetRelicTemplate(eRealm Realm, eRelicType RelicType)
+		public static MiniTemp GetRelicTemplate(ERealm Realm, eRelicType RelicType)
 		{
 			MiniTemp m_template = new MiniTemp();
 			switch (Realm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					if (RelicType == eRelicType.Magic)
 					{
 						m_template.Name = "Merlin's Staff";
@@ -598,7 +598,7 @@ namespace DOL.GS
 						m_template.Model = 631;
 					}
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					if (RelicType == eRelicType.Magic)
 					{
 						m_template.Name = "Horn of Valhalla";
@@ -610,7 +610,7 @@ namespace DOL.GS
 						m_template.Model = 634;
 					}
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					if (RelicType == eRelicType.Magic)
 					{
 						m_template.Name = "Cauldron of Dagda";

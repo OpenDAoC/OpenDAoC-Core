@@ -8,7 +8,7 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Commands
 {
     [Command("&xmob", //command to handle
-         ePrivLevel.GM, //minimum privelege level
+         EPrivLevel.GM, //minimum privelege level
          "/xmob get <radius> (max5000)",
          "/xmob view",
          "/xmob spawn <radius> (max5000)",
@@ -93,7 +93,7 @@ namespace DOL.GS.Commands
                             {
                                 spot = new List<GameNPC>();
                                 foreach (GameNPC npc in player.GetNPCsInRadius(radius))
-                                    if (npc.Realm == eRealm.None)
+                                    if (npc.Realm == ERealm.None)
                                         spot.Add(npc);
 
                                 AddClientSpot(client, spot);
@@ -102,7 +102,7 @@ namespace DOL.GS.Commands
                             {
                                 spot = new List<GameNPC>();
                                 foreach (GameNPC npc in player.GetNPCsInRadius(radius))
-                                    if (npc.Realm == eRealm.None)
+                                    if (npc.Realm == ERealm.None)
                                         spot.Add(npc);
                                 m_spots.Add(client, spot);
                             }
@@ -189,13 +189,13 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        eRealm realm = eRealm.None;
+                        ERealm realm = ERealm.None;
 
                         switch(args[2])
                         {
-                            case "alb" : realm= eRealm.Albion; break;
-                            case "mid" : realm= eRealm.Midgard; break;
-                            case "hib" : realm= eRealm.Hibernia; break;
+                            case "alb" : realm= ERealm.Albion; break;
+                            case "mid" : realm= ERealm.Midgard; break;
+                            case "hib" : realm= ERealm.Hibernia; break;
                         }
 
                         IList<GameNPC> setupmobs = new List<GameNPC>();
@@ -400,7 +400,7 @@ namespace DOL.GS.Commands
                             if (newradius > 5000) newradius = 5000;
 
                             foreach (GameNPC npc in player.GetNPCsInRadius(radius))
-                                if (npc.Realm == eRealm.None)
+                                if (npc.Realm == ERealm.None)
                                     move(client, npc, newradius);
                         }
                         else
@@ -438,7 +438,7 @@ namespace DOL.GS.Commands
                                     if (max > 255) min = 255;
 
                                     foreach (GameNPC npc in player.GetNPCsInRadius(radius))
-                                        if (npc.Realm == eRealm.None)
+                                        if (npc.Realm == ERealm.None)
                                         {
                                             npc.Level = (byte)Util.Random(min, max);
                                             npc.AutoSetStats();
@@ -456,7 +456,7 @@ namespace DOL.GS.Commands
 
                                     foreach (GameNPC npc in player.GetNPCsInRadius(radius))
                                     {
-                                        if (npc.Realm == eRealm.None)
+                                        if (npc.Realm == ERealm.None)
                                         {
                                             npc.Level = nlvl;
                                             npc.AutoSetStats();
@@ -492,7 +492,7 @@ namespace DOL.GS.Commands
 
                             foreach (GameNPC npc in player.GetNPCsInRadius(radius))
                             {
-                                npc.Realm = (eRealm)realm;
+                                npc.Realm = (ERealm)realm;
                                 npc.SaveIntoDatabase();
                             }
                         }
@@ -511,7 +511,7 @@ namespace DOL.GS.Commands
                             if (radius > 5000) radius = 5000;
 
                             foreach (GameNPC npc in player.GetNPCsInRadius(radius))
-                                if (npc.Realm == eRealm.None && !(npc is GameTrainingDummy))
+                                if (npc.Realm == ERealm.None && !(npc is GameTrainingDummy))
                                     remove(npc);
                         }
                         else
@@ -522,7 +522,7 @@ namespace DOL.GS.Commands
             }
         }
 
-        private void spawnsetupmob(GameClient client, GameNPC mob, eRealm realm,int x,int y, ushort h)
+        private void spawnsetupmob(GameClient client, GameNPC mob, ERealm realm,int x,int y, ushort h)
         {
             //Fill the object variables
             mob.X = x;
@@ -533,7 +533,7 @@ namespace DOL.GS.Commands
             mob.CurrentRegion = client.Player.CurrentRegion;
             mob.Level = 50;
             if (mob is GameTrainingDummy)
-                mob.Realm = eRealm.None;
+                mob.Realm = ERealm.None;
             else
             {
                 mob.Realm = realm;

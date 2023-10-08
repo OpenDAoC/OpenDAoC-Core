@@ -6,7 +6,7 @@ namespace DOL.GS.Commands;
 
 [Command(
      "&sameip",
-     ePrivLevel.GM,
+     EPrivLevel.GM,
      "Find the double logins",
      "/sameip")]
 public class SameIpCommand : ACommandHandler, ICommandHandler

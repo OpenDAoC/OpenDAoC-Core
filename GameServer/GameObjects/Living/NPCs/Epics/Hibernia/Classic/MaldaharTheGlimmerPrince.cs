@@ -16,21 +16,21 @@ namespace DOL.GS
             : base()
         {
         }
-        public override int GetResist(eDamageType damageType)
+        public override int GetResist(EDamageType damageType)
         {
             switch (damageType)
             {
-                case eDamageType.Slash: return 20; // dmg reduction for melee dmg
-                case eDamageType.Crush: return 20; // dmg reduction for melee dmg
-                case eDamageType.Thrust: return 20; // dmg reduction for melee dmg
+                case EDamageType.Slash: return 20; // dmg reduction for melee dmg
+                case EDamageType.Crush: return 20; // dmg reduction for melee dmg
+                case EDamageType.Thrust: return 20; // dmg reduction for melee dmg
                 default: return 30; // dmg reduction for rest resists
             }
         }
-        public override double GetArmorAF(eArmorSlot slot)
+        public override double GetArmorAF(EArmorSlot slot)
         {
             return 350;
         }
-        public override double GetArmorAbsorb(eArmorSlot slot)
+        public override double GetArmorAbsorb(EArmorSlot slot)
         {
             // 85% ABS is cap.
             return 0.20;
@@ -201,7 +201,7 @@ namespace DOL.AI.Brain
                     spell.SpellID = 710;
                     spell.Target = "Enemy";
                     spell.Type = "Lifedrain";
-                    spell.DamageType = (int) eDamageType.Body;
+                    spell.DamageType = (int) EDamageType.Body;
                     m_Lifetap = new Spell(spell, 60);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_Lifetap);
                 }
@@ -237,7 +237,7 @@ namespace DOL.AI.Brain
                     spell.SpellID = 4204;
                     spell.Target = "Enemy";
                     spell.Type = "DirectDamage";
-                    spell.DamageType = (int) eDamageType.Energy;
+                    spell.DamageType = (int) EDamageType.Energy;
                     m_PBAoe = new Spell(spell, 60);
                     SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_PBAoe);
                 }

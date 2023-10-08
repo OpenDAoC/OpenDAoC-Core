@@ -1,9 +1,9 @@
 ﻿namespace DOL.GS.PropertyCalc;
 
-[PropertyCalculator(eProperty.MythicalDiscumbering)]
+[PropertyCalculator(EProperty.MythicalDiscumbering)]
 public class MythicalDiscumberingCalculator : PropertyCalculator
 {
-    public override int CalcValue(GameLiving living, eProperty property)
+    public override int CalcValue(GameLiving living, EProperty property)
     {
         if (living is GamePlayer)
         {

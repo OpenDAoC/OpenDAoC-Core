@@ -29,7 +29,7 @@ namespace DOL.GS.Spells
     // Main class for savage buffs
 	public abstract class AbstractSavageBuff : PropertyChangingSpell
 	{
-		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
+		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 
 		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
@@ -106,7 +106,7 @@ namespace DOL.GS.Spells
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.ConcentrationCost", Spell.Concentration));
                 if (Spell.Radius != 0)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Radius", Spell.Radius));
-                if (Spell.DamageType != eDamageType.Natural)
+                if (Spell.DamageType != EDamageType.Natural)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
                 if (Spell.IsFocus)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Focus"));
@@ -185,7 +185,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("SavageParryBuff")]
 	public class SavageParryBuff : AbstractSavageStatBuff
 	{
-		public override eProperty Property1 { get { return eProperty.ParryChance; } }
+		public override EProperty Property1 { get { return EProperty.ParryChance; } }
 
 		// constructor
 		public SavageParryBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
@@ -193,7 +193,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("SavageEvadeBuff")]
 	public class SavageEvadeBuff : AbstractSavageStatBuff
 	{
-		public override eProperty Property1 { get { return eProperty.EvadeChance; } }
+		public override EProperty Property1 { get { return EProperty.EvadeChance; } }
 
 		// constructor
 		public SavageEvadeBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
@@ -201,7 +201,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("SavageCombatSpeedBuff")]
 	public class SavageCombatSpeedBuff : AbstractSavageStatBuff
 	{
-		public override eProperty Property1 { get { return eProperty.MeleeSpeed; } }
+		public override EProperty Property1 { get { return EProperty.MeleeSpeed; } }
 
 		// constructor
 		public SavageCombatSpeedBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
@@ -209,7 +209,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("SavageDPSBuff")]
 	public class SavageDPSBuff : AbstractSavageStatBuff
 	{
-		public override eProperty Property1 { get { return eProperty.MeleeDamage; } }
+		public override EProperty Property1 { get { return EProperty.MeleeDamage; } }
 
 		// constructor
 		public SavageDPSBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
@@ -217,7 +217,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("SavageSlashResistanceBuff")]
 	public class SavageSlashResistanceBuff : AbstractSavageResistBuff
 	{
-		public override eProperty Property1 { get { return eProperty.Resist_Slash; } }
+		public override EProperty Property1 { get { return EProperty.Resist_Slash; } }
 
 		// constructor
 		public SavageSlashResistanceBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
@@ -225,7 +225,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("SavageThrustResistanceBuff")]
 	public class SavageThrustResistanceBuff : AbstractSavageResistBuff
 	{
-		public override eProperty Property1 { get { return eProperty.Resist_Thrust; } }
+		public override EProperty Property1 { get { return EProperty.Resist_Thrust; } }
 
 		// constructor
 		public SavageThrustResistanceBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
@@ -233,7 +233,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("SavageCrushResistanceBuff")]
 	public class SavageCrushResistanceBuff : AbstractSavageResistBuff
 	{
-		public override eProperty Property1 { get { return eProperty.Resist_Crush; } }
+		public override EProperty Property1 { get { return EProperty.Resist_Crush; } }
 
 		// constructor
 		public SavageCrushResistanceBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
