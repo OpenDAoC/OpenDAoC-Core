@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.Database;
 
 namespace DOL.GS.SkillHandler
@@ -24,7 +5,7 @@ namespace DOL.GS.SkillHandler
 	/// <summary>
 	/// Abstract Vampiir Ability using Level Based Ability to enable stat changing with Ratio Preset.
 	/// </summary>
-	public abstract class VampiirAbility : LevelBasedStatChangingAbility
+	public abstract class VampiirAbilityHandlers : LevelBasedStatChangingAbility
 	{
 		/// <summary>
 		/// Multiplier for Ability Level to adjust Stats for given Ability 
@@ -43,7 +24,7 @@ namespace DOL.GS.SkillHandler
 			return level < 6 ? 0 : (level - 5) * RatioByLevel;
 		}
 		
-		protected VampiirAbility(DbAbility dba, int level, EProperty property)
+		protected VampiirAbilityHandlers(DbAbility dba, int level, EProperty property)
 			: base(dba, level, property)
 		{
 		}
@@ -52,14 +33,14 @@ namespace DOL.GS.SkillHandler
 	/// <summary>
 	/// Vampiir Ability for Strength Stat
 	/// </summary>
-	public class VampiirStrength : VampiirAbility
+	public class VampiirStrengthAbilityHandler : VampiirAbilityHandlers
 	{
 		/// <summary>
 		/// Ratio Preset to *3
 		/// </summary>
 		public override int RatioByLevel { get { return 3; } }
 		
-		public VampiirStrength(DbAbility dba, int level)
+		public VampiirStrengthAbilityHandler(DbAbility dba, int level)
 			: base(dba, level, EProperty.Strength)
 		{
 		}
@@ -68,14 +49,14 @@ namespace DOL.GS.SkillHandler
 	/// <summary>
 	/// Vampiir Ability for Strength Stat
 	/// </summary>
-	public class VampiirDexterity : VampiirAbility
+	public class VampiirDexterityAbilityHandler : VampiirAbilityHandlers
 	{
 		/// <summary>
 		/// Ratio Preset to *3
 		/// </summary>
 		public override int RatioByLevel { get { return 3; } }
 
-		public VampiirDexterity(DbAbility dba, int level)
+		public VampiirDexterityAbilityHandler(DbAbility dba, int level)
 			: base(dba, level, EProperty.Dexterity)
 		{
 		}
@@ -84,14 +65,14 @@ namespace DOL.GS.SkillHandler
 	/// <summary>
 	/// Vampiir Ability for Strength Stat
 	/// </summary>
-	public class VampiirConstitution : VampiirAbility
+	public class VampiirConstitutionAbilityHandler : VampiirAbilityHandlers
 	{
 		/// <summary>
 		/// Ratio Preset to *3
 		/// </summary>
 		public override int RatioByLevel { get { return 3; } }
 
-		public VampiirConstitution(DbAbility dba, int level)
+		public VampiirConstitutionAbilityHandler(DbAbility dba, int level)
 			: base(dba, level, EProperty.Constitution)
 		{
 		}
@@ -100,14 +81,14 @@ namespace DOL.GS.SkillHandler
 	/// <summary>
 	/// Vampiir Ability for Strength Stat
 	/// </summary>
-	public class VampiirQuickness : VampiirAbility
+	public class VampiirQuicknessAbilityHandler : VampiirAbilityHandlers
 	{
 		/// <summary>
 		/// Ratio Preset to *2
 		/// </summary>
 		public override int RatioByLevel { get { return 2; } }
 
-		public VampiirQuickness(DbAbility dba, int level)
+		public VampiirQuicknessAbilityHandler(DbAbility dba, int level)
 			: base(dba, level, EProperty.Quickness)
 		{
 		}

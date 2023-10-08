@@ -5,9 +5,6 @@ using log4net;
 
 namespace DOL.GS.SkillHandler
 {
-	/// <summary>
-	/// Handler for Triple Wield clicks
-	/// </summary>
 	[SkillHandler(Abilities.Triple_Wield)]
 	public class TripleWieldAbilityHandler : IAbilityActionHandler
 	{

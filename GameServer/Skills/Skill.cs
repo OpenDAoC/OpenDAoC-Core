@@ -3,9 +3,6 @@ using DOL.Database;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// base class for skills
-	/// </summary>
 	public abstract class Skill
 	{
 		protected int m_id;
