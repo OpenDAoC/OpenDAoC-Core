@@ -48,7 +48,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
 
 			// make sure player has permissions to withdraw from the consignment merchant
-            if (!house.CanUseConsignmentMerchant(client.Player, ConsignmentPermissions.Withdraw))
+            if (!house.CanUseConsignmentMerchant(client.Player, EConsignmentPermissions.Withdraw))
             {
                 client.Player.Out.SendMessage("You don't have permission to withdraw money from this merchant!", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
                 return;

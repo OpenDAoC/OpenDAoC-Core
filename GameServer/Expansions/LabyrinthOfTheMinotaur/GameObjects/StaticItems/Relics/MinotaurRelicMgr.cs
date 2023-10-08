@@ -8,7 +8,7 @@ using log4net;
 
 namespace DOL.GS
 {
-    public sealed class MinotaurRelicManager
+    public sealed class MinotaurRelicMgr
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 

@@ -67,13 +67,13 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        relic.RelicID = MinotaurRelicManager.GetRelicCount() + 1;
+                        relic.RelicID = MinotaurRelicMgr.GetRelicCount() + 1;
                         GameServer.Database.AddObject(relic);
 
                         MinotaurRelic rrelic = new MinotaurRelic(relic);
                         rrelic.AddToWorld();
 
-                        MinotaurRelicManager.AddRelic(rrelic);
+                        MinotaurRelicMgr.AddRelic(rrelic);
 
 						break;
 					}
@@ -289,7 +289,7 @@ namespace DOL.GS.Commands
                             else
                             {
 
-                                foreach (MinotaurRelic relic in MinotaurRelicManager.m_minotaurrelics.Values)
+                                foreach (MinotaurRelic relic in MinotaurRelicMgr.m_minotaurrelics.Values)
                                 {
                                     if (relic != null)
                                     {
@@ -301,7 +301,7 @@ namespace DOL.GS.Commands
                                             client.Player.Out.SendMessage("Relic " + relic.RelicID + " has been removed from the world", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                             
                                             //remove it from the hashtable
-                                            MinotaurRelicManager.RemoveRelic(relic);
+                                            MinotaurRelicMgr.RemoveRelic(relic);
                                             client.Player.Out.SendMessage("Relic " + relic.RelicID + " has been removed from the Minorelic Hash Table", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                             
                                             DataObject obj = GameServer.Database.FindObjectByKey<DbMinotaurRelic>(relic.RelicID);
@@ -335,7 +335,7 @@ namespace DOL.GS.Commands
                             client.Player.Out.SendMessage("Relic " + relic.RelicID + " has been removed from the world", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                             
                             //remove it from the hashtable
-                            MinotaurRelicManager.RemoveRelic(relic);
+                            MinotaurRelicMgr.RemoveRelic(relic);
                             client.Player.Out.SendMessage("Relic " + relic.RelicID + " has been removed from the Minorelic Hash Table", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                             
 
@@ -393,7 +393,7 @@ namespace DOL.GS.Commands
                                 return;
                             }
 
-                            foreach (MinotaurRelic relic in MinotaurRelicManager.m_minotaurrelics.Values)
+                            foreach (MinotaurRelic relic in MinotaurRelicMgr.m_minotaurrelics.Values)
                             {
                                 if (relic != null && relic.CurrentRegionID == region)
                                 {
@@ -409,7 +409,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        foreach (MinotaurRelic relic in MinotaurRelicManager.m_minotaurrelics.Values)
+                        foreach (MinotaurRelic relic in MinotaurRelicMgr.m_minotaurrelics.Values)
                         {
                             if (relic != null)
                             {
@@ -418,7 +418,7 @@ namespace DOL.GS.Commands
                             }
                         }
 
-                        info.Add(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.MinoRelic.ShowAll.Count", MinotaurRelicManager.m_minotaurrelics.Count));
+                        info.Add(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.MinoRelic.ShowAll.Count", MinotaurRelicMgr.m_minotaurrelics.Count));
 
 						client.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.MinoRelic.ShowAll.Infos"), info);
 
@@ -434,7 +434,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        MinotaurRelic relic = MinotaurRelicManager.GetRelic(Convert.ToInt32(args[2]));
+                        MinotaurRelic relic = MinotaurRelicMgr.GetRelic(Convert.ToInt32(args[2]));
                         
                         if (relic == null)
                         {

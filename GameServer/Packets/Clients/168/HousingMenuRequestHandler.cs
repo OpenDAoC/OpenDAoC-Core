@@ -84,7 +84,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				case eMerchantWindowType.HousingOutsideShop:
 				case eMerchantWindowType.HousingOutsideMenu:
-					if (!house.CanChangeGarden(client.Player, DecorationPermissions.Add))
+					if (!house.CanChangeGarden(client.Player, EDecorationPermissions.Add))
 						return;
 					HouseMgr.SendHousingMerchantWindow(client.Player, type);
 					break;
@@ -96,7 +96,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				case eMerchantWindowType.HousingNPCHookpoint:
 				case eMerchantWindowType.HousingInsideShop:
 				case eMerchantWindowType.HousingInsideMenu:
-					if (!house.CanChangeInterior(client.Player, DecorationPermissions.Add))
+					if (!house.CanChangeInterior(client.Player, EDecorationPermissions.Add))
 						return;
 					HouseMgr.SendHousingMerchantWindow(client.Player, type);
 					break;

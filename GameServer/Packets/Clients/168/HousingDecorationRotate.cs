@@ -46,7 +46,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				return;
 
 			// no permission to change the interior, return
-			if (!house.CanChangeInterior(client.Player, DecorationPermissions.Add))
+			if (!house.CanChangeInterior(client.Player, EDecorationPermissions.Add))
 				return;
 
 			if (house.IndoorItems.ContainsKey(position) == false)

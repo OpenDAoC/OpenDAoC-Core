@@ -1,6 +1,11 @@
+using System;
+
 namespace DOL.GS.Housing;
 
-public enum EDecorationPermissions
+[Flags]
+public enum EDecorationPermissions : byte
 {
-    
+    None = 0x00,
+    Add = 0x01,
+    Remove = 0x02
 }

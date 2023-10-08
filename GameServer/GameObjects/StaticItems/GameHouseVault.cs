@@ -268,7 +268,7 @@ namespace DOL.GS
 				return false;
 			}
 			
-			return CurrentHouse.CanUseVault(player, this, VaultPermissions.View);
+			return CurrentHouse.CanUseVault(player, this, EVaultPermissions.View);
 		}
 
 		/// <summary>
@@ -283,7 +283,7 @@ namespace DOL.GS
 				return false;
 			}
 			
-			return CurrentHouse.CanUseVault(player, this, VaultPermissions.Add);
+			return CurrentHouse.CanUseVault(player, this, EVaultPermissions.Add);
 		}
 
 		/// <summary>
@@ -298,7 +298,7 @@ namespace DOL.GS
 				return false;
 			}
 			
-			return CurrentHouse.CanUseVault(player, this, VaultPermissions.Remove);
+			return CurrentHouse.CanUseVault(player, this, EVaultPermissions.Remove);
 		}
 	}
 }
