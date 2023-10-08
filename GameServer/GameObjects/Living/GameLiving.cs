@@ -1056,7 +1056,7 @@ namespace DOL.GS
 		/// <param name="duration"></param>
 		/// <param name="attackType"></param>
 		/// <param name="attacker"></param>
-		public virtual void StartInterruptTimer(int duration, AttackData.EAttackType attackType, GameLiving attacker)
+		public virtual void StartInterruptTimer(int duration, EAttackType attackType, GameLiving attacker)
 		{
 			if (!IsAlive || ObjectState != eObjectState.Active)
 			{
@@ -1154,13 +1154,13 @@ namespace DOL.GS
 			return Util.Chance((int)chance);
 		}
 
-		protected virtual bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.EAttackType attackType)
+		protected virtual bool CheckRangedAttackInterrupt(GameLiving attacker, EAttackType attackType)
 		{
 			if (rangeAttackComponent.RangedAttackType == ERangedAttackType.SureShot)
 			{
-				if (attackType is not AttackData.EAttackType.MeleeOneHand
-					and not AttackData.EAttackType.MeleeTwoHand
-					and not AttackData.EAttackType.MeleeDualWield)
+				if (attackType is not EAttackType.MeleeOneHand
+					and not EAttackType.MeleeTwoHand
+					and not EAttackType.MeleeDualWield)
 					return false;
 			}
 
@@ -1405,7 +1405,7 @@ namespace DOL.GS
 				// Reduce chance by attacker's defense penetration.
 				evadeChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100.0;
 
-				if (ad.AttackType == AttackData.EAttackType.Ranged)
+				if (ad.AttackType == EAttackType.Ranged)
 					evadeChance /= 5.0;
 
 				if (evadeChance < 0.01)
@@ -1416,13 +1416,13 @@ namespace DOL.GS
 				if (evadeChance > 0.995)
 					evadeChance = 0.995;
 				
-				if (ad.AttackType == AttackData.EAttackType.MeleeDualWield)
+				if (ad.AttackType == EAttackType.MeleeDualWield)
 					evadeChance = Math.Max(evadeChance * 0.5, 0.01);
 			
 				if (IsObjectInFront(ad.Attacker, 180) &&
 					(evadeBuff != null || (player != null && player.HasAbility(Abilities.Evade))) &&
 					evadeChance < 0.05 &&
-					ad.AttackType != AttackData.EAttackType.Ranged)
+					ad.AttackType != EAttackType.Ranged)
 				{
 					// If player has a hard evade source, 5% minimum evade chance.
 					evadeChance = 0.05;
@@ -1518,7 +1518,7 @@ namespace DOL.GS
 				}
 			}
 
-			if (ad.AttackType == AttackData.EAttackType.MeleeTwoHand)
+			if (ad.AttackType == EAttackType.MeleeTwoHand)
 				parryChance = Math.Max(parryChance * 0.5, 0);
 
 			// Infiltrator RR5.
@@ -1627,7 +1627,7 @@ namespace DOL.GS
 					}
 				}
 
-				if (ad.AttackType == AttackData.EAttackType.MeleeDualWield)
+				if (ad.AttackType == EAttackType.MeleeDualWield)
 					blockChance *= 0.5;
 			}
 
@@ -1852,7 +1852,7 @@ namespace DOL.GS
 
 			var oProcEffects = effectListComponent.GetSpellEffects(EEffect.OffensiveProc);
             //OffensiveProcs
-            if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.EAttackType.Spell && ad.AttackResult != EAttackResult.Missed)
+            if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != EAttackType.Spell && ad.AttackResult != EAttackResult.Missed)
             {
                 for (int i = 0; i < oProcEffects.Count; i++)
                 {
@@ -1900,7 +1900,7 @@ namespace DOL.GS
 			}
 
 			// Don't cancel offensive focus spell
-			if (ad.AttackType != AttackData.EAttackType.Spell)
+			if (ad.AttackType != EAttackType.Spell)
 				CancelFocusSpell();
         }
 
@@ -2013,7 +2013,7 @@ namespace DOL.GS
 				// Handle DefensiveProcs.
 				List<EcsGameSpellEffect> dProcEffects = effectListComponent.GetSpellEffects(EEffect.DefensiveProc);
 
-				if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != AttackData.EAttackType.Spell)
+				if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != EAttackType.Spell)
 				{
 					for (int i = 0; i < dProcEffects.Count; i++)
 						(dProcEffects[i].SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
@@ -2054,7 +2054,7 @@ namespace DOL.GS
 			bool removeMovementSpeedDebuff = false; // Non-immunity snares like focus snare, melee snares, DD+Snare spells, etc.
 
 			// Attack was Melee
-			if (ad.AttackType != AttackData.EAttackType.Spell)
+			if (ad.AttackType != EAttackType.Spell)
 			{
 				switch (ad.AttackResult)
 				{

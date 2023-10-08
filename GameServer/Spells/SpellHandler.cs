@@ -2377,7 +2377,7 @@ namespace DOL.GS.Spells
 				AttackData ad = new AttackData();
 				ad.Attacker = Caster;
 				ad.Target = target;
-				ad.AttackType = AttackData.EAttackType.Spell;
+				ad.AttackType = EAttackType.Spell;
 				ad.SpellHandler = this;
 				ad.AttackResult = EAttackResult.HitUnstyled;
 				ad.IsSpellResisted = false;
@@ -2737,7 +2737,7 @@ namespace DOL.GS.Spells
 			AttackData ad = new AttackData();
 			ad.Attacker = Caster;
 			ad.Target = target;
-			ad.AttackType = AttackData.EAttackType.Spell;
+			ad.AttackType = EAttackType.Spell;
 			ad.SpellHandler = this;
 			ad.AttackResult = EAttackResult.Missed;
 			ad.IsSpellResisted = true;
@@ -2753,7 +2753,7 @@ namespace DOL.GS.Spells
 			// Spells that would have caused damage or are not instant will still
 			// interrupt a casting player.
 			if(!(Spell.SpellType.ToString().IndexOf("debuff", StringComparison.OrdinalIgnoreCase) >= 0 && Spell.CastTime == 0))
-				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);			
+				target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);			
 		}
 		
 		/// <summary>
@@ -3378,7 +3378,7 @@ namespace DOL.GS.Spells
 			{
 				Attacker = m_caster,
 				Target = target,
-				AttackType = AttackData.EAttackType.Spell,
+				AttackType = EAttackType.Spell,
 				SpellHandler = this,
 				AttackResult = EAttackResult.HitUnstyled
 			};

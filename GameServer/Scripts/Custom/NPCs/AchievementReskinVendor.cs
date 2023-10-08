@@ -445,12 +445,12 @@ public class AchievementReskinVendor : GameNPC
         tempAd.Target = display;
         if (item.Hand == 1)
         {
-            tempAd.AttackType = AttackData.EAttackType.MeleeTwoHand;
+            tempAd.AttackType = EAttackType.MeleeTwoHand;
             display.SwitchWeapon(EActiveWeaponSlot.TwoHanded);
         }
         else
         {
-            tempAd.AttackType = AttackData.EAttackType.MeleeOneHand;
+            tempAd.AttackType = EAttackType.MeleeOneHand;
             display.SwitchWeapon(EActiveWeaponSlot.Standard);
         }
 

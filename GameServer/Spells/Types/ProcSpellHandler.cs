@@ -321,7 +321,7 @@ namespace DOL.GS.Spells
 
             int baseChance = Spell.Frequency / 100;
 
-            if (ad.AttackType == AttackData.EAttackType.MeleeDualWield)
+            if (ad.AttackType == EAttackType.MeleeDualWield)
                 baseChance /= 2;
 
             if (baseChance < 1)
@@ -398,7 +398,7 @@ namespace DOL.GS.Spells
 
 			int baseChance = Spell.Frequency / 100;
 
-			if (ad.AttackType == AttackData.EAttackType.MeleeDualWield)
+			if (ad.AttackType == EAttackType.MeleeDualWield)
 				baseChance /= 2;
 
 			if (baseChance < 1)

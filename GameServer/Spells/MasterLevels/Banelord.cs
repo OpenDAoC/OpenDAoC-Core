@@ -15,7 +15,7 @@ namespace DOL.GS.Spells
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			base.ApplyEffectOnTarget(target);
-			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+			target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);
 		}
 
         // constructor
@@ -90,7 +90,7 @@ namespace DOL.GS.Spells
                 {
                     SendEffectAnimation(player, 0, false, 1);
                 }
-                player.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+                player.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);
             }
         }
 
@@ -124,7 +124,7 @@ namespace DOL.GS.Spells
             base.OnEffectStart(effect);
             if (effect.Owner is GamePlayer)
                 ((GamePlayer)effect.Owner).UpdateEncumberance();
-			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, EAttackType.Spell, Caster);
         }
 
         public override void ApplyEffectOnTarget(GameLiving target)
@@ -165,7 +165,7 @@ namespace DOL.GS.Spells
 
         public override void OnEffectStart(GameSpellEffect effect)
         {
-			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, EAttackType.Spell, Caster);
             base.OnEffectStart(effect);
         }
 

@@ -60,7 +60,7 @@ namespace DOL.GS.Spells
 			effect.Owner.attackComponent.StopAttack();
 			MessageToLiving(effect.Owner, Spell.Message1, EChatType.CT_Spell);
 			MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), EChatType.CT_Spell, effect.Owner);
-			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, EAttackType.Spell, Caster);
 			if (effect.Owner is GameNPC)
 			{
 				IOldAggressiveBrain aggroBrain = ((GameNPC)effect.Owner).Brain as IOldAggressiveBrain;

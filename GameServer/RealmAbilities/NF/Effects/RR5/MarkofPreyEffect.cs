@@ -112,7 +112,7 @@ namespace DOL.GS.Effects
 			ad.Damage = (int)(damage + damageResisted);
 			ad.Modifier = (int)damageResisted;
 			ad.DamageType = EDamageType.Heat;
-			ad.AttackType = AttackData.EAttackType.Spell;
+			ad.AttackType = EAttackType.Spell;
 			ad.AttackResult = EAttackResult.HitUnstyled;
 			target.OnAttackedByEnemy(ad);
 			EffectCaster.ChangeMana(EffectOwner, EPowerChangeType.Spell, (int)ad.Damage);

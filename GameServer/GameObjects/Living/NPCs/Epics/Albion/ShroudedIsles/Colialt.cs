@@ -109,7 +109,7 @@ namespace DOL.GS
         }
 		public override void DealDamage(AttackData ad)
 		{
-			if (ad != null && ad.AttackType == AttackData.EAttackType.Spell && ad.Damage > 0 && ColialtBrain.ColialtPhase)
+			if (ad != null && ad.AttackType == EAttackType.Spell && ad.Damage > 0 && ColialtBrain.ColialtPhase)
 			{
 				Health += ad.Damage;
 			}

@@ -127,7 +127,7 @@ namespace DOL.GS
             }
             
             if(SpellHandler.Caster is GameSummonedPet)
-                Owner.StartInterruptTimer(SpellHandler.Caster.SpellInterruptDuration, AttackData.EAttackType.Spell, SpellHandler.Caster);
+                Owner.StartInterruptTimer(SpellHandler.Caster.SpellInterruptDuration, EAttackType.Spell, SpellHandler.Caster);
                 
         }
     }

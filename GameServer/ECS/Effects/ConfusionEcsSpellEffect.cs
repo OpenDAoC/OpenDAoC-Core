@@ -25,7 +25,7 @@ namespace DOL.GS
                     //Spell value below 0 means it's 100% chance to confuse.
                     GamePlayer gPlayer = Owner as GamePlayer;
 
-                    gPlayer.StartInterruptTimer(gPlayer.SpellInterruptDuration, AttackData.EAttackType.Spell, SpellHandler.Caster);
+                    gPlayer.StartInterruptTimer(gPlayer.SpellInterruptDuration, EAttackType.Spell, SpellHandler.Caster);
                     
                     // "You can't focus your knight viking badger helmet... meow!"
                     // "{0} is confused!"

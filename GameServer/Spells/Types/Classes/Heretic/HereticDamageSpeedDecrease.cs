@@ -34,7 +34,7 @@ namespace DOL.GS.Spells
         {
             AttackData ad = base.CalculateDamageToTarget(target);
             ad.CriticalDamage = 0;
-            ad.AttackType = AttackData.EAttackType.Unknown;
+            ad.AttackType = EAttackType.Unknown;
             return ad;
         }
 
@@ -216,7 +216,7 @@ namespace DOL.GS.Spells
                 AttackData ad = new AttackData();
                 ad.Attacker = Caster;
                 ad.Target = target;
-                ad.AttackType = AttackData.EAttackType.Spell;
+                ad.AttackType = EAttackType.Spell;
                 ad.AttackResult = EAttackResult.Missed;
 				ad.SpellHandler = this;
                 target.OnAttackedByEnemy(ad);
@@ -224,7 +224,7 @@ namespace DOL.GS.Spells
             }
             else if (Spell.CastTime > 0)
             {
-                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+                target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);
             }
 
             if (target is GameNPC)

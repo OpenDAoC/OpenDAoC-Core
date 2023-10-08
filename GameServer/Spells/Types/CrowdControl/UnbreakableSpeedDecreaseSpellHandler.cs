@@ -79,7 +79,7 @@ namespace DOL.GS.Spells
 			timer.Interval = 650;
 			timer.Start(1 + (effect.Duration >> 1));
 
-			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, EAttackType.Spell, Caster);
 		}
 
 		/// <summary>

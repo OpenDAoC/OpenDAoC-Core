@@ -176,7 +176,7 @@ namespace DOL.GS.Spells
 			{
 				switch (attackedByEnemy.AttackData.AttackType)
 				{
-					case AttackData.EAttackType.Spell:
+					case EAttackType.Spell:
 						{
 							int reduceddmg = living.TempProperties.GetProperty<int>(ConvertDamage, 0);
 							double absorbPercent = Spell.Damage;

@@ -275,7 +275,7 @@ namespace DOL.GS.RealmAbilities
 			int dmgWithFalloff = CalculateDamageWithFalloff(dmgValue, living, target);
 
 			target.TakeDamage(caster, EDamageType.Spirit, dmgWithFalloff, 0);
-			target.StartInterruptTimer(3000, AttackData.EAttackType.Spell, caster);
+			target.StartInterruptTimer(3000, EAttackType.Spell, caster);
 
 			// Spell damage messages
 			caster.Out.SendMessage("You hit " + target.GetName(0, false) + " for " + dmgWithFalloff + " damage!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);

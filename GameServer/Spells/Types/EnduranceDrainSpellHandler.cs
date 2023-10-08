@@ -29,7 +29,7 @@ namespace DOL.GS.Spells
 			}
 
 			StealEndurance(target,end);
-			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+			target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);
 		}
 
 		

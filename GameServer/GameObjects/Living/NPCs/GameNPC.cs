@@ -3042,7 +3042,7 @@ namespace DOL.GS
 			attackComponent.RequestStartAttack(target);
 		}
 
-		public override void StartInterruptTimer(int duration, AttackData.EAttackType attackType, GameLiving attacker)
+		public override void StartInterruptTimer(int duration, EAttackType attackType, GameLiving attacker)
 		{
 			// Increase substantially the base interrupt timer duration for non player controlled NPCs
 			// so that they don't start attacking immediately after the attacker's melee swing interval.
@@ -3053,10 +3053,10 @@ namespace DOL.GS
 			base.StartInterruptTimer(duration, attackType, attacker);
 		}
 
-		protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.EAttackType attackType)
+		protected override bool CheckRangedAttackInterrupt(GameLiving attacker, EAttackType attackType)
 		{
 			// Immobile NPCs can only be interrupted from close range attacks.
-			if (MaxSpeedBase == 0 && attackType is AttackData.EAttackType.Ranged or AttackData.EAttackType.Spell && !IsWithinRadius(attacker, 150))
+			if (MaxSpeedBase == 0 && attackType is EAttackType.Ranged or EAttackType.Spell && !IsWithinRadius(attacker, 150))
 				return false;
 
 			bool interrupted = base.CheckRangedAttackInterrupt(attacker, attackType);

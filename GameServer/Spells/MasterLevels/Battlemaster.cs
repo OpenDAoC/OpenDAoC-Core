@@ -36,7 +36,7 @@ namespace DOL.GS.Spells
                 ((GamePlayer)target).Out.SendMessage(" You lose " + end + " endurance!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
             (m_caster as GamePlayer).Out.SendMessage("" + target.Name + " loses " + end + " endurance!", EChatType.CT_YouWereHit, EChatLoc.CL_SystemWindow);
 
-            target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+            target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);
         }
     }
     #endregion
@@ -72,7 +72,7 @@ namespace DOL.GS.Spells
             int mana = (int)(Spell.Damage);
             target.ChangeMana(target, EPowerChangeType.Spell, (-mana));
 
-            target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+            target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);
         }
     }
     #endregion
@@ -563,10 +563,10 @@ namespace DOL.GS.Spells
                 default:
                 case Slot.RIGHTHAND:
                 case Slot.LEFTHAND:
-                    ad.AttackType = AttackData.EAttackType.MeleeOneHand;
+                    ad.AttackType = EAttackType.MeleeOneHand;
                     break;
                 case Slot.TWOHAND:
-                    ad.AttackType = AttackData.EAttackType.MeleeTwoHand;
+                    ad.AttackType = EAttackType.MeleeTwoHand;
                     break;
             }
             //Throw Weapon is subject to all the conventional attack results, parry, evade, block, etc.

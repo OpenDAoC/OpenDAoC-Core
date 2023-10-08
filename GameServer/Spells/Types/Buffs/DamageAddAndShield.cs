@@ -100,7 +100,7 @@ namespace DOL.GS.Spells
 			ad.Damage = (int)((damage + damageResisted) * effectiveness);
 			ad.Modifier = (int)damageResisted;
 			ad.DamageType = Spell.DamageType;
-			ad.AttackType = AttackData.EAttackType.Spell;
+			ad.AttackType = EAttackType.Spell;
 			ad.SpellHandler = this;
 			ad.AttackResult = EAttackResult.HitUnstyled;
 
@@ -218,7 +218,7 @@ namespace DOL.GS.Spells
 			ad.Modifier = (int)damageResisted;
 			ad.DamageType = Spell.DamageType;
 			ad.SpellHandler = this;
-			ad.AttackType = AttackData.EAttackType.Spell;
+			ad.AttackType = EAttackType.Spell;
 			ad.AttackResult = EAttackResult.HitUnstyled;
 
 			GamePlayer owner = null;

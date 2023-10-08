@@ -284,7 +284,7 @@ namespace DOL.GS
 		/// <param name="ad">information about the attack</param>
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
-			if (ad.AttackType == AttackData.EAttackType.Spell && ad.Damage > 0)
+			if (ad.AttackType == EAttackType.Spell && ad.Damage > 0)
 			{
 				GamePlayer player = Owner as GamePlayer;
 				string modmessage = "";

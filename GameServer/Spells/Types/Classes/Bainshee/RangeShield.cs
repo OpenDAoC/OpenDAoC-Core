@@ -29,11 +29,11 @@ namespace DOL.GS.Spells
             double value = 0;
             switch (attackArgs.AttackData.AttackType)
             {
-                case AttackData.EAttackType.Ranged:
+                case EAttackType.Ranged:
                     value = Spell.Value * .01;
                     attackArgs.AttackData.Damage *= (int)value;
                     break;
-                case AttackData.EAttackType.Spell:
+                case EAttackType.Spell:
                     if (attackArgs.AttackData.SpellHandler.Spell.SpellType == ESpellType.Archery)
                     {
                         value = Spell.Value * .01;

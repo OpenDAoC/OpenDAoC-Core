@@ -127,7 +127,7 @@ namespace DOL.GS.Spells
 
             if (ad == null || (ad.AttackResult != EAttackResult.HitStyle && ad.AttackResult != EAttackResult.HitUnstyled))
                 return false;
-            if (!ad.IsMeleeAttack && ad.AttackType != AttackData.EAttackType.Ranged)
+            if (!ad.IsMeleeAttack && ad.AttackType != EAttackType.Ranged)
                 return false;
 
             return true;

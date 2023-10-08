@@ -64,7 +64,7 @@ namespace DOL.GS.Spells
 			}
 
 			base.ApplyEffectOnTarget(target);
-			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, Caster);
+			target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);
 		}
 
 		/// <summary>

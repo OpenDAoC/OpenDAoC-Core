@@ -100,7 +100,7 @@ namespace DOL.GS.Spells
                     spellhandler.StartSpell(target);
                 }
 
-                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.EAttackType.Spell, caster);
+                target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, caster);
                 return 0;
             }
         }

@@ -58,7 +58,7 @@ namespace DOL.GS.Effects
                     AttackData ad = new AttackData();
                     ad.Attacker = SpellHandler.Caster;
                     ad.Target = target;
-                    ad.AttackType = AttackData.EAttackType.Spell;
+                    ad.AttackType = EAttackType.Spell;
                     ad.SpellHandler = SpellHandler;
                     ad.AttackResult = EAttackResult.HitUnstyled;
                     ad.IsSpellResisted = false;

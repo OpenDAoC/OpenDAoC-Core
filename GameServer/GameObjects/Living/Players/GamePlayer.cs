@@ -6174,7 +6174,7 @@ namespace DOL.GS
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Fumbled", ad.Attacker.GetName(0, true)), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                     break;
                 case EAttackResult.Missed:
-                    if (ad.AttackType == AttackData.EAttackType.Spell)
+                    if (ad.AttackType == EAttackType.Spell)
                         break;
                     if (ad.Attacker is GameNPC)
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Missed", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC))) + " (" + Math.Min(ad.MissRate, 100).ToString("0") + "%)", EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
@@ -6189,12 +6189,12 @@ namespace DOL.GS
 
                     // If attacked by a non-damaging spell, we should not show damage numbers.
                     // We need to check the damage on the spell here, not in the AD, since this could in theory be a damaging spell that had its damage modified to 0.
-                    if (ad.AttackType == AttackData.EAttackType.Spell && ad.SpellHandler.Spell?.Damage == 0)
+                    if (ad.AttackType == EAttackType.Spell && ad.SpellHandler.Spell?.Damage == 0)
                         break;
 
                     if (IsStealthed && !effectListComponent.ContainsEffectForEffectType(EEffect.Vanish))
                     {
-                        if (!(ad.AttackType == AttackData.EAttackType.Spell && ad.SpellHandler.Spell.SpellType == ESpellType.DamageOverTime))
+                        if (!(ad.AttackType == EAttackType.Spell && ad.SpellHandler.Spell.SpellType == ESpellType.DamageOverTime))
                             Stealth(false);
                     }
 
@@ -6373,7 +6373,7 @@ namespace DOL.GS
         /// <param name="attacker">the attacker that is interrupting</param>
         /// <param name="attackType">The attack type</param>
         /// <returns>true if interrupted successfully</returns>
-        protected override bool CheckRangedAttackInterrupt(GameLiving attacker, AttackData.EAttackType attackType)
+        protected override bool CheckRangedAttackInterrupt(GameLiving attacker, EAttackType attackType)
         {
             if (base.CheckRangedAttackInterrupt(attacker, attackType))
             {

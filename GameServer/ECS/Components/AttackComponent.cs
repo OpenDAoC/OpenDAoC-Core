@@ -1119,16 +1119,16 @@ namespace DOL.GS
             int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Item1.Value - AttackRange) : 0;
 
             if (dualWield && (ad.Attacker is GamePlayer gPlayer) && gPlayer.PlayerClass.ID != (int) EPlayerClass.Savage)
-                ad.AttackType = AttackData.EAttackType.MeleeDualWield;
+                ad.AttackType = EAttackType.MeleeDualWield;
             else if (weapon == null)
-                ad.AttackType = AttackData.EAttackType.MeleeOneHand;
+                ad.AttackType = EAttackType.MeleeOneHand;
             else
             {
                 ad.AttackType = weapon.SlotPosition switch
                 {
-                    Slot.TWOHAND => AttackData.EAttackType.MeleeTwoHand,
-                    Slot.RANGED => AttackData.EAttackType.Ranged,
-                    _ => AttackData.EAttackType.MeleeOneHand,
+                    Slot.TWOHAND => EAttackType.MeleeTwoHand,
+                    Slot.RANGED => EAttackType.Ranged,
+                    _ => EAttackType.MeleeOneHand,
                 };
             }
 
@@ -1149,7 +1149,7 @@ namespace DOL.GS
             }
 
             // LoS / in front check.
-            if (!ignoreLOS && ad.AttackType != AttackData.EAttackType.Ranged && owner is GamePlayer &&
+            if (!ignoreLOS && ad.AttackType != EAttackType.Ranged && owner is GamePlayer &&
                 !(ad.Target is GameKeepComponent) &&
                 !(owner.IsObjectInFront(ad.Target, 120) && owner.TargetInView))
             {
@@ -1167,7 +1167,7 @@ namespace DOL.GS
             }
 
             // Melee range check (ranged is already done at this point).
-            if (ad.AttackType != AttackData.EAttackType.Ranged)
+            if (ad.AttackType != EAttackType.Ranged)
             {
                 if (!owner.IsWithinRadius(ad.Target, AttackRange + addRange))
                 {
@@ -1651,7 +1651,7 @@ namespace DOL.GS
                                     EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                                 break;
                             case EAttackResult.Missed:
-                                if (ad.AttackType != AttackData.EAttackType.Spell)
+                                if (ad.AttackType != EAttackType.Spell)
                                     owner.Out.SendMessage(
                                         string.Format(
                                             LanguageMgr.GetTranslation(owner.Client.Account.Language,
@@ -1701,7 +1701,7 @@ namespace DOL.GS
             ad.Target.StartInterruptTimer(interruptDuration, ad.AttackType, ad.Attacker);
 
             // If we're attacking via melee, start an interrupt timer on ourselves so we cannot swing + immediately cast.
-            if (ad.AttackType != AttackData.EAttackType.Spell && ad.AttackType != AttackData.EAttackType.Ranged && owner.StartInterruptTimerOnItselfOnMeleeAttack())
+            if (ad.AttackType != EAttackType.Spell && ad.AttackType != EAttackType.Ranged && owner.StartInterruptTimerOnItselfOnMeleeAttack())
                 owner.StartInterruptTimer(owner.SpellInterruptDuration, ad.AttackType, ad.Attacker);
 
             owner.OnAttackEnemy(ad);
@@ -1861,7 +1861,7 @@ namespace DOL.GS
                     return true;
             }
 
-            if (ad.AttackType is AttackData.EAttackType.Ranged or AttackData.EAttackType.Spell)
+            if (ad.AttackType is EAttackType.Ranged or EAttackType.Spell)
             {
                 // Nature's shield, 100% block chance, 120° frontal angle.
                 if (owner.IsObjectInFront(ad.Attacker, 120) && (owner.styleComponent.NextCombatStyle?.ID == 394 || owner.styleComponent.NextCombatBackupStyle?.ID == 394))
@@ -1941,7 +1941,7 @@ namespace DOL.GS
             else if (shieldSize == 3 && guardChance > 0.99)
                 guardChance = 0.99;
 
-            if (ad.AttackType == AttackData.EAttackType.MeleeDualWield)
+            if (ad.AttackType == EAttackType.MeleeDualWield)
                 guardChance *= 0.5;
 
             double guardRoll;
@@ -2010,7 +2010,7 @@ namespace DOL.GS
                 if (Attackers.Count > shieldSize)
                     guardchance *= shieldSize / (double) Attackers.Count;
 
-                if (ad.AttackType == AttackData.EAttackType.MeleeDualWield)
+                if (ad.AttackType == EAttackType.MeleeDualWield)
                     guardchance /= 2;
 
                 double parrychance = dashing.GuardSource.GetModified(EProperty.ParryChance);
@@ -2313,7 +2313,7 @@ namespace DOL.GS
                     return EAttackResult.HitUnstyled; // Exit early for stealth to prevent breaking bubble but still register a hit.
 
                 if (action.RangedAttackType == ERangedAttackType.Long ||
-                    (ad.AttackType == AttackData.EAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && playerAttacker?.HasAbility(Abilities.PenetratingArrow) == true))
+                    (ad.AttackType == EAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && playerAttacker?.HasAbility(Abilities.PenetratingArrow) == true))
                     penetrate = true;
 
                 if (ad.IsMeleeAttack && !Util.ChanceDouble(bladeturn.SpellHandler.Caster.Level / ad.Attacker.Level))

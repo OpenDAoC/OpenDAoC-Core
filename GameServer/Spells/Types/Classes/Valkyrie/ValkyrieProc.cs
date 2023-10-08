@@ -50,7 +50,7 @@ namespace DOL.GS.Spells
                 return;
 
             int baseChance = 0;
-            if (ad.AttackType == AttackData.EAttackType.Ranged)
+            if (ad.AttackType == EAttackType.Ranged)
             {
                 baseChance = (int)(Spell.Frequency * .0001);
             }
