@@ -12503,8 +12503,10 @@ namespace DOL.GS
 
             if (this.effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
                 return true;
+            if (enemy.effectListComponent.ContainsEffectForEffectType(eEffect.ExposeStealth))
+                return true;
 
-            if (HasAbilityType(typeof(AtlasOF_SeeHidden)) 
+            if (HasAbilityType(typeof(AtlasOF_SeeHidden))
                 && ( enemy.CharacterClass is ClassMinstrel 
                      || enemy.CharacterClass is ClassRanger
                      || enemy.CharacterClass is ClassHunter

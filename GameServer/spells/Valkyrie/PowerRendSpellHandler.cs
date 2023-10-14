@@ -60,22 +60,13 @@ namespace DOL.GS.spells
 
 				if (targetIsGameplayer)
 				{
-					powerRendValue = (int)(target.MaxMana * Spell.Value * GetVariance());
+					powerRendValue = (int)(target.MaxMana * (Spell.Value/100));
 					if (powerRendValue > target.Mana)
 						powerRendValue = target.Mana;
-					target.Mana -= powerRendValue;
-					target.MessageToSelf(string.Format(m_spell.Message2, powerRendValue), eChatType.CT_Spell);
+					target.Mana += powerRendValue;
+					target.MessageToSelf($"You have lost {powerRendValue *-1} power!", eChatType.CT_Spell);
+					
 				}
-				else
-				{
-					powerRendValue = (int)(necroPet.Owner.MaxMana * Spell.Value * GetVariance());
-					if (powerRendValue > necroPet.Owner.Mana)
-						powerRendValue = necroPet.Owner.Mana;
-					necroPet.Owner.Mana -= powerRendValue;
-					necroPet.Owner.MessageToSelf(string.Format(m_spell.Message2, powerRendValue), eChatType.CT_Spell);
-				}
-
-				MessageToCaster(string.Format(m_spell.Message1, powerRendValue), eChatType.CT_Spell);
 			}
 		}
 		

@@ -2390,7 +2390,7 @@ namespace DOL.GS.Spells
 				// Harmful spells that deal no damage (ie. debuffs) should still trigger OnAttackedByEnemy.
 				// Exception for DoTs here since the initial landing of the DoT spell reports 0 damage
 				// and the first tick damage is done by the pulsing effect, which takes care of firing OnAttackedByEnemy.
-				if (ad.Damage == 0 && ad.SpellHandler.Spell.SpellType != eSpellType.DamageOverTime)
+				if (ad.Damage == 0 && ad.SpellHandler.Spell.SpellType != eSpellType.DamageOverTime && ad.SpellHandler.Spell.SpellType != eSpellType.Prescience && ad.SpellHandler.Spell.SpellType != eSpellType.SpeedWrap)
 					target.OnAttackedByEnemy(ad);
 			}
 		}

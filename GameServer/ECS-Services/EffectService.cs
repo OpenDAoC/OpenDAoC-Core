@@ -480,6 +480,8 @@ namespace DOL.GS
 
                 case eSpellType.StyleBleeding:
                     return eEffect.Bleed;
+                case eSpellType.Prescience:
+                    return eEffect.ExposeStealth;
                 case eSpellType.DamageOverTime:
                     return eEffect.DamageOverTime;
                 case eSpellType.Charm:
@@ -490,6 +492,8 @@ namespace DOL.GS
                 case eSpellType.SpeedDecrease:
                 case eSpellType.UnbreakableSpeedDecrease:
                     return eEffect.MovementSpeedDebuff;
+                case eSpellType.SpeedWrap:
+                    return eEffect.SpeedWarp;
                 case eSpellType.MeleeDamageDebuff:
                     return eEffect.MeleeDamageDebuff;
                 case eSpellType.StyleCombatSpeedDebuff:

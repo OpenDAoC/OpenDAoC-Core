@@ -111,7 +111,7 @@ namespace DOL.GS.PropertyCalc
                         speed *= 2;
                 }
 
-                if (GameRelic.IsPlayerCarryingRelic(player))
+                if (GameRelic.IsPlayerCarryingRelic(player) || player.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedWarp))
                 {
                     if (speed > 1.0)
                         speed = 1.0;
