@@ -7,7 +7,6 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-    //handled in HealSpellHandler
     [SpellHandler("EfficientHealing")]
     public class EfficientHealing : SpellHandler
     {

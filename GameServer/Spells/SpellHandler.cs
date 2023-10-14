@@ -15,10 +15,6 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Default class for spell handler
-	/// should be used as a base class for spell handler
-	/// </summary>
 	public class SpellHandler : ISpellHandler
 	{
 		// Maximum number of sub-spells to get delve info for.
@@ -960,9 +956,9 @@ namespace DOL.GS.Spells
 								// Avoid flute mez's chat log spam.
 								if (m_spell.IsPulsing && m_spell.SpellType == ESpellType.Mesmerize)
 								{
-									MesmerizeSpellHandler mesmerizeSpellHandler = this as MesmerizeSpellHandler;
+									MesmerizeSpell mesmerizeSpellHandler = this as MesmerizeSpell;
 
-									if (GameLoop.GameLoopTime - mesmerizeSpellHandler.FluteMezLastEndOfCastMessage < MesmerizeSpellHandler.FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL)
+									if (GameLoop.GameLoopTime - mesmerizeSpellHandler.FluteMezLastEndOfCastMessage < MesmerizeSpell.FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL)
 										return false;
 
 									mesmerizeSpellHandler.FluteMezLastEndOfCastMessage = GameLoop.GameLoopTime;
@@ -2221,13 +2217,13 @@ namespace DOL.GS.Spells
 
 			if (Caster is GamePlayer && (Caster as GamePlayer).PlayerClass.ID == (int)EPlayerClass.Warlock && m_spell.IsSecondary)
 			{
-				Spell uninterruptibleSpell = Caster.TempProperties.GetProperty<Spell>(UninterruptableSpellHandler.WARLOCK_UNINTERRUPTABLE_SPELL);
+				Spell uninterruptibleSpell = Caster.TempProperties.GetProperty<Spell>(UninterruptableSpell.WARLOCK_UNINTERRUPTABLE_SPELL);
 
 				if (uninterruptibleSpell != null && uninterruptibleSpell.Value > 0)
 				{
 					double nerf = uninterruptibleSpell.Value;
 					Effectiveness *= (1 - (nerf * 0.01));
-					Caster.TempProperties.RemoveProperty(UninterruptableSpellHandler.WARLOCK_UNINTERRUPTABLE_SPELL);
+					Caster.TempProperties.RemoveProperty(UninterruptableSpell.WARLOCK_UNINTERRUPTABLE_SPELL);
 				}
 			}
 
@@ -3437,7 +3433,7 @@ namespace DOL.GS.Spells
 				finalDamage = 0;
 
 			// DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly.
-			int criticalChance = this is not DoTSpellHandler ? m_caster.SpellCriticalChance : 0;
+			int criticalChance = this is not DamageOverTimeSpell ? m_caster.SpellCriticalChance : 0;
 			int criticalDamage = 0;
 			int randNum = Util.CryptoNextInt(0, 100);
 			int criticalCap = Math.Min(50, criticalChance);
@@ -3554,7 +3550,7 @@ namespace DOL.GS.Spells
 				if (targetNpc.Brain is IOldAggressiveBrain brain)
 					brain.AddToAggroList(Caster, 1);
 
-				if (this is not DoTSpellHandler and not StyleBleeding)
+				if (this is not DamageOverTimeSpell and not StyleBleeding)
 				{
 					if (Caster.Realm == 0 || ad.Target.Realm == 0)
 					{
@@ -4119,37 +4115,37 @@ namespace DOL.GS.Spells
 					dw.AddKeyValuePair("power_level", Spell.Value);
 
 					// var baseMessage = "Attempts to bring the target monster under the caster's control.";
-					switch ((CharmSpellHandler.eCharmType)Spell.AmnesiaChance)
+					switch ((CharmSpell.eCharmType)Spell.AmnesiaChance)
 					{
-						case CharmSpellHandler.eCharmType.All:
+						case CharmSpell.eCharmType.All:
 							// Message: Attempts to bring the target monster under the caster's control. Spell works on all monster types. Cannot charm named or epic monsters.
 							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.AllMonsterTypes"));
 							break;
-						case CharmSpellHandler.eCharmType.Animal:
+						case CharmSpell.eCharmType.Animal:
 							// Message: Attempts to bring the target monster under the caster's control. Spell only works on animals. Cannot charm named or epic monsters.
 							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.Animal"));
 							break;
-						case CharmSpellHandler.eCharmType.Humanoid:
+						case CharmSpell.eCharmType.Humanoid:
 							// Message: Attempts to bring the target monster under the caster's control. Spell only works on humanoids. Cannot charm named or epic monsters.
 							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.Humanoid"));
 							break;
-						case CharmSpellHandler.eCharmType.Insect:
+						case CharmSpell.eCharmType.Insect:
 							// Message: Attempts to bring the target monster under the caster's control. Spell only works on insects. Cannot charm named or epic monsters.
 							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.Insect"));
 							break;
-						case CharmSpellHandler.eCharmType.HumanoidAnimal:
+						case CharmSpell.eCharmType.HumanoidAnimal:
 							// Message: Attempts to bring the target monster under the caster's control. Spell only works on animals and humanoids. Cannot charm named or epic monsters.
 							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.HumanoidAnimal"));
 							break;
-						case CharmSpellHandler.eCharmType.HumanoidAnimalInsect:
+						case CharmSpell.eCharmType.HumanoidAnimalInsect:
 							// Message: Attempts to bring the target monster under the caster's control. Spell only works on animals, humanoids, insects, and reptiles. Cannot charm named or epic monsters.
 							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.HumanoidAnimalInsect"));
 							break;
-						case CharmSpellHandler.eCharmType.HumanoidAnimalInsectMagical:
+						case CharmSpell.eCharmType.HumanoidAnimalInsectMagical:
 							// Message: Attempts to bring the target monster under the caster's control. Spell only works on animals, elemental, humanoids, insects, magical, plant, and reptile monster types. Cannot charm named or epic monsters.
 							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.HumanoidAnimalInsectMagical"));
 							break;
-						case CharmSpellHandler.eCharmType.HumanoidAnimalInsectMagicalUndead:
+						case CharmSpell.eCharmType.HumanoidAnimalInsectMagicalUndead:
 							// Message: Attempts to bring the target monster under the caster's control. Spell only works on animals, elemental, humanoids, insects, magical, plant, reptile, and undead monster types. Cannot charm named or epic monsters.
 							dw.AddKeyValuePair("delve_string", LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpell.DelveInfo.Desc.HumanoidAnimalInsectMagicalUndead"));
 							break;

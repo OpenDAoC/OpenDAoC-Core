@@ -43,7 +43,7 @@ namespace DOL.GS
 
             if (Owner.IsAlive)
             {
-                if (SpellHandler is DoTSpellHandler handler)
+                if (SpellHandler is DamageOverTimeSpell handler)
                 {
                     if (OwnerPlayer != null)
                     {

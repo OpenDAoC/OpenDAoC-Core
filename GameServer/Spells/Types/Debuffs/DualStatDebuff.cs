@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 namespace DOL.GS.Spells
 {
 	/// <summary>
@@ -58,39 +39,39 @@ namespace DOL.GS.Spells
 	/// Str/Con stat specline debuff
 	/// </summary>
 	[SpellHandler("StrengthConstitutionDebuff")]
-	public class StrengthConDebuff : DualStatDebuff
+	public class StrConDebuff : DualStatDebuff
 	{
 		public override EProperty Property1 { get { return EProperty.Strength; } }
 		public override EProperty Property2 { get { return EProperty.Constitution; } }
 
 		// constructor
-		public StrengthConDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		public StrConDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 
 	/// <summary>
 	/// Dex/Qui stat specline debuff
 	/// </summary>
 	[SpellHandler("DexterityQuicknessDebuff")]
-	public class DexterityQuiDebuff : DualStatDebuff
+	public class DexQuiDebuff : DualStatDebuff
 	{
 		public override EProperty Property1 { get { return EProperty.Dexterity; } }
 		public override EProperty Property2 { get { return EProperty.Quickness; } }
 
 		// constructor
-		public DexterityQuiDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		public DexQuiDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 	/// Dex/Con Debuff for assassin poisons
 	/// <summary>
 	/// Dex/Con stat specline debuff
 	/// </summary>
 	[SpellHandler("DexterityConstitutionDebuff")]
-	public class DexterityConDebuff : DualStatDebuff
+	public class DexConDebuff : DualStatDebuff
 	{
 		public override EProperty Property1 { get { return EProperty.Dexterity; } }
 		public override EProperty Property2 { get { return EProperty.Constitution; } }
 
 		// constructor
-		public DexterityConDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		public DexConDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 
 	[SpellHandler("WeaponSkillConstitutionDebuff")]

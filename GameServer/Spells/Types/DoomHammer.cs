@@ -4,7 +4,7 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Spells
 {
 	[SpellHandler("DoomHammer")]
-	public class DoomHammerSpellHandler : DirectDamageSpellHandler
+	public class DoomHammerSpell : DirectDamageSpell
 	{
 		public override bool CheckBeginCast(GameLiving selectedTarget)
 		{
@@ -39,6 +39,6 @@ namespace DOL.GS.Spells
 			//Caster.IsDisarmed=false;
 			return base.OnEffectExpires(effect,noMessages);
 		}
-		public DoomHammerSpellHandler(GameLiving caster,Spell spell,SpellLine line) : base(caster,spell,line) {}
+		public DoomHammerSpell(GameLiving caster,Spell spell,SpellLine line) : base(caster,spell,line) {}
 	}
 }

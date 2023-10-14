@@ -8002,7 +8002,7 @@ namespace DOL.GS
                                                     if (spellHandler is AllStatsBarrel)
                                                         target = this;
 
-                                                    if (spellHandler is AllRegenBuff)
+                                                    if (spellHandler is AllRegenBuffSpell)
                                                         target = this;
 
                                                     if (spell.Target == ESpellTarget.ENEMY)

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.GS.Effects;
@@ -27,7 +8,7 @@ namespace DOL.GS.Spells
 {
 	
     // Main class for savage buffs
-	public abstract class AbstractSavageBuff : PropertyChangingSpell
+	public abstract class ASavageBuff : PropertyChangingSpell
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 
@@ -140,10 +121,10 @@ namespace DOL.GS.Spells
 		}
 
 		// constructor
-		public AbstractSavageBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}		
+		public ASavageBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}		
 	}
 	
-	public abstract class AbstractSavageStatBuff : AbstractSavageBuff
+	public abstract class ASavageStatBuff : ASavageBuff
 	{
 		/// <summary>
         /// Sends needed updates on start/stop
@@ -161,9 +142,9 @@ namespace DOL.GS.Spells
 			}
 		}
 		// constructor
-		public AbstractSavageStatBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}				
+		public ASavageStatBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}				
 	}
-	public abstract class AbstractSavageResistBuff : AbstractSavageBuff
+	public abstract class ASavageResistBuff : ASavageBuff
 	{
 		/// <summary>
         /// Sends needed updates on start/stop
@@ -179,64 +160,64 @@ namespace DOL.GS.Spells
 			}
 		}
 		// constructor
-		public AbstractSavageResistBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}				
+		public ASavageResistBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}				
 	}
 	
 	[SpellHandler("SavageParryBuff")]
-	public class SavageParryBuff : AbstractSavageStatBuff
+	public class SavageParryBuffSpell : ASavageStatBuff
 	{
 		public override EProperty Property1 { get { return EProperty.ParryChance; } }
 
 		// constructor
-		public SavageParryBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageParryBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 	[SpellHandler("SavageEvadeBuff")]
-	public class SavageEvadeBuff : AbstractSavageStatBuff
+	public class SavageEvadeBuffSpell : ASavageStatBuff
 	{
 		public override EProperty Property1 { get { return EProperty.EvadeChance; } }
 
 		// constructor
-		public SavageEvadeBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageEvadeBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 	[SpellHandler("SavageCombatSpeedBuff")]
-	public class SavageCombatSpeedBuff : AbstractSavageStatBuff
+	public class SavageCombatSpeedBuffSpell : ASavageStatBuff
 	{
 		public override EProperty Property1 { get { return EProperty.MeleeSpeed; } }
 
 		// constructor
-		public SavageCombatSpeedBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageCombatSpeedBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 	[SpellHandler("SavageDPSBuff")]
-	public class SavageDPSBuff : AbstractSavageStatBuff
+	public class SavageDpsBuffSpell : ASavageStatBuff
 	{
 		public override EProperty Property1 { get { return EProperty.MeleeDamage; } }
 
 		// constructor
-		public SavageDPSBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageDpsBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}	
 	[SpellHandler("SavageSlashResistanceBuff")]
-	public class SavageSlashResistanceBuff : AbstractSavageResistBuff
+	public class SavageSlashResistanceBuffSpell : ASavageResistBuff
 	{
 		public override EProperty Property1 { get { return EProperty.Resist_Slash; } }
 
 		// constructor
-		public SavageSlashResistanceBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageSlashResistanceBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 	[SpellHandler("SavageThrustResistanceBuff")]
-	public class SavageThrustResistanceBuff : AbstractSavageResistBuff
+	public class SavageThrustResistanceBuffSpell : ASavageResistBuff
 	{
 		public override EProperty Property1 { get { return EProperty.Resist_Thrust; } }
 
 		// constructor
-		public SavageThrustResistanceBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageThrustResistanceBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 	[SpellHandler("SavageCrushResistanceBuff")]
-	public class SavageCrushResistanceBuff : AbstractSavageResistBuff
+	public class SavageCrushResistanceBuffSpell : ASavageResistBuff
 	{
 		public override EProperty Property1 { get { return EProperty.Resist_Crush; } }
 
 		// constructor
-		public SavageCrushResistanceBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageCrushResistanceBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 }
 

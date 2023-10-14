@@ -303,7 +303,7 @@ namespace DOL.GS
 
 			if (spell != null)
 			{
-				UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
+				UniPortalSpell portalHandler = new UniPortalSpell(this, spell, spellLine, destination);
 				portalHandler.StartSpell(player);
 				return;
 			}

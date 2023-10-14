@@ -71,7 +71,7 @@ namespace DOL.GS
 
 		public override void OnUnEquipped(GamePlayer player)
 		{
-			if (this.Name.ToLower().Contains("ektaktos") && SpellHelper.FindEffectOnTarget(player, typeof(WaterBreathingSpellHandler)) == null)
+			if (this.Name.ToLower().Contains("ektaktos") && SpellHelper.FindEffectOnTarget(player, typeof(WaterBreathingSpell)) == null)
 			{
 				player.CanBreathUnderWater = false;
 				player.Out.SendMessage("With a gulp and a gasp you realize that you are unable to breathe underwater any longer!", EChatType.CT_SpellExpires, EChatLoc.CL_SystemWindow);

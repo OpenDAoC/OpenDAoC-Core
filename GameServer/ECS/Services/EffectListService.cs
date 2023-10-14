@@ -151,7 +151,7 @@ namespace DOL.GS
                             //effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.SpellHandler.Spell.ID, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
                             effect.Owner.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, effect.EffectType, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
 
-                            UnbreakableSpeedDecreaseSpellHandler.SendUpdates(effect.Owner);
+                            UnbreakableSpeedDecreaseSpell.SendUpdates(effect.Owner);
                             effect.NextTick = tick + effect.TickInterval;
                             if (factor <= 0)
                                 effect.ExpireTick = tick - 1;

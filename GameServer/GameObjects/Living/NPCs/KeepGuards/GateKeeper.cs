@@ -117,7 +117,7 @@ namespace DOL.GS.Keeps
                 if (spell != null)
                 {
                     TargetObject = player;
-                    UniPortalKeep portalHandler = new UniPortalKeep(this, spell, spellLine, destination);
+                    UniPortalKeepSpell portalHandler = new UniPortalKeepSpell(this, spell, spellLine, destination);
                     portalHandler.StartSpell(player);
 
                 }
@@ -127,7 +127,7 @@ namespace DOL.GS.Keeps
                 if (delayedSpell != null)
                 {
                     TargetObject = player;
-                    UniPortalKeep portalHandler = new UniPortalKeep(this, delayedSpell, spellLine, destination);
+                    UniPortalKeepSpell portalHandler = new UniPortalKeepSpell(this, delayedSpell, spellLine, destination);
                     portalHandler.StartSpell(player);
 
                 }
@@ -310,7 +310,7 @@ namespace DOL.GS.Keeps
                 if (spell != null)
                 {
                     TargetObject = player;
-                    UniPortalKeep portalHandler = new UniPortalKeep(this, spell, spellLine, destination);
+                    UniPortalKeepSpell portalHandler = new UniPortalKeepSpell(this, spell, spellLine, destination);
                     portalHandler.StartSpell(player);
 
                     return;
@@ -321,7 +321,7 @@ namespace DOL.GS.Keeps
                 if (delayedSpell != null)
                 {
                     TargetObject = player;
-                    UniPortalKeep portalHandler = new UniPortalKeep(this, delayedSpell, spellLine, destination);
+                    UniPortalKeepSpell portalHandler = new UniPortalKeepSpell(this, delayedSpell, spellLine, destination);
                     portalHandler.StartSpell(player);
 
                     return;

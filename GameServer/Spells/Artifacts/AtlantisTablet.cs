@@ -3,7 +3,7 @@ using DOL.GS.Effects;
 namespace DOL.GS.Spells
 {
 	[SpellHandler("AtlantisTabletMorph")]
-	public class AtlantisTabletMorph : OffensiveProcSpellHandler
+	public class AtlantisTabletMorph : OffensiveProcSpell
 	{   	
 		public override void OnEffectStart(GameSpellEffect effect)
 		{

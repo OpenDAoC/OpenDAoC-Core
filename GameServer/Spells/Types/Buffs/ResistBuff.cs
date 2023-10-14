@@ -1,28 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 namespace DOL.GS.Spells
 {
 	/// <summary>
 	/// Base class for all resist buffs, needed to set effectiveness
 	/// </summary>
-	public abstract class AbstractResistBuff : PropertyChangingSpell
+	public abstract class AResistBuff : PropertyChangingSpell
 	{
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
@@ -45,14 +26,14 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		public AbstractResistBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		public AResistBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 
 	/// <summary>
 	/// Body resistance buff
 	/// </summary>
 	[SpellHandler("BodyResistBuff")]
-	public class BodyResistBuff : AbstractResistBuff
+	public class BodyResistBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.Resist_Body; } }
@@ -65,7 +46,7 @@ namespace DOL.GS.Spells
 	/// Cold resistance buff
 	/// </summary>
 	[SpellHandler("ColdResistBuff")]
-	public class ColdResistBuff : AbstractResistBuff
+	public class ColdResistBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.Resist_Cold; } }
@@ -78,7 +59,7 @@ namespace DOL.GS.Spells
 	/// Energy resistance buff
 	/// </summary>
 	[SpellHandler("EnergyResistBuff")]
-	public class EnergyResistBuff : AbstractResistBuff
+	public class EnergyResistBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.Resist_Energy; } }
@@ -91,7 +72,7 @@ namespace DOL.GS.Spells
 	/// Heat resistance buff
 	/// </summary>
 	[SpellHandler("HeatResistBuff")]
-	public class HeatResistBuff : AbstractResistBuff
+	public class HeatResistBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.Resist_Heat; } }
@@ -104,7 +85,7 @@ namespace DOL.GS.Spells
 	/// Matter resistance buff
 	/// </summary>
 	[SpellHandler("MatterResistBuff")]
-	public class MatterResistBuff : AbstractResistBuff
+	public class MatterResistBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.Resist_Matter; } }
@@ -117,7 +98,7 @@ namespace DOL.GS.Spells
 	/// Spirit resistance buff
 	/// </summary>
 	[SpellHandler("SpiritResistBuff")]
-	public class SpiritResistBuff : AbstractResistBuff
+	public class SpiritResistBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.Resist_Spirit; } }
@@ -130,7 +111,7 @@ namespace DOL.GS.Spells
 	/// Body/Spirit/Energy resistance buff
 	/// </summary>
 	[SpellHandler("BodySpiritEnergyBuff")]
-	public class BodySpiritEnergyBuff : AbstractResistBuff
+	public class BodySpiritEnergyBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EBuffBonusCategory BonusCategory2 { get { return EBuffBonusCategory.BaseBuff; } }
@@ -148,7 +129,7 @@ namespace DOL.GS.Spells
 	/// Heat/Cold/Matter resistance buff
 	/// </summary>
 	[SpellHandler("HeatColdMatterBuff")]
-	public class HeatColdMatterBuff : AbstractResistBuff
+	public class HeatColdMatterBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EBuffBonusCategory BonusCategory2 { get { return EBuffBonusCategory.BaseBuff; } }
@@ -166,7 +147,7 @@ namespace DOL.GS.Spells
 	/// Body/Spirit/Energy/Heat/Cold/Matter resistance buff
 	/// </summary>
 	[SpellHandler("AllMagicResistsBuff")]
-	public class AllMagicResistsBuff : AbstractResistBuff
+	public class AllMagicResistsBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EBuffBonusCategory BonusCategory2 { get { return EBuffBonusCategory.BaseBuff; } }
@@ -191,7 +172,7 @@ namespace DOL.GS.Spells
 	/// </summary>
 	[SpellHandler("CrushSlashThrustBuff")]
 	[SpellHandler("AllMeleeResistsBuff")]
-	public class CrushSlashThrustBuff : AbstractResistBuff
+	public class CrushSlashThrustBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EBuffBonusCategory BonusCategory2 { get { return EBuffBonusCategory.BaseBuff; } }
@@ -206,7 +187,7 @@ namespace DOL.GS.Spells
 	}
 
 	[SpellHandler("CrushResistBuff")]
-	public class CrushResistBuff : AbstractResistBuff
+	public class CrushResistBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.Resist_Crush; } }
@@ -219,7 +200,7 @@ namespace DOL.GS.Spells
 	/// Slash buff
 	/// </summary>
 	[SpellHandler("SlashResistBuff")]
-	public class SlashResistBuff : AbstractResistBuff
+	public class SlashResistBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.Resist_Slash; } }
@@ -232,7 +213,7 @@ namespace DOL.GS.Spells
 	/// Thrust buff
 	/// </summary>
 	[SpellHandler("ThrustResistBuff")]
-	public class ThrustResistBuff : AbstractResistBuff
+	public class ThrustResistBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.Resist_Thrust; } }
@@ -245,7 +226,7 @@ namespace DOL.GS.Spells
 	/// Resist all 
 	/// </summary>
 	[SpellHandler("AllResistsBuff")]
-	public class AllResistsBuff : AbstractResistBuff
+	public class AllResistsBuff : AResistBuff
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EBuffBonusCategory BonusCategory2 { get { return EBuffBonusCategory.BaseBuff; } }

@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Contains all common code for Banelord Spells
     /// </summary>
-    public class MasterlevelHandling : SpellHandler
+    public class MasterLevelSpellHandling : SpellHandler
     {
         public override bool HasPositiveEffect
         {
@@ -200,13 +200,13 @@ namespace DOL.GS.Spells
             }
         }
 
-        public MasterlevelHandling(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+        public MasterLevelSpellHandling(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
     #endregion
 
     #region Stylhandler
     [SpellHandler("MLStyleHandler")]
-    public class MLStyleHandler : MasterlevelHandling
+    public class MLStyleHandler : MasterLevelSpellHandling
     {
         public MLStyleHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
@@ -255,7 +255,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
+            return MasterLevelSpellHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -280,7 +280,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Contains all common code for Banelord Spells
     /// </summary>
-    public abstract class MasterlevelBuffHandling : SingleStatBuff
+    public abstract class MasterLevelBuffHandling : SingleStatBuff
     {
         // bonus category
         public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
@@ -309,7 +309,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
+            return MasterLevelSpellHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -326,7 +326,7 @@ namespace DOL.GS.Spells
             }
         }
 
-        protected MasterlevelBuffHandling(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+        protected MasterLevelBuffHandling(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
     #endregion
 
@@ -364,7 +364,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
+            return MasterLevelSpellHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -389,7 +389,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Contains all common code for Banelord Spells
     /// </summary>
-    public class BanelordSnare : UnbreakableSpeedDecreaseSpellHandler
+    public class BanelordSnare : UnbreakableSpeedDecreaseSpell
     {
         private const string EFFECT_PROPERTY = "BanelordSnareProperty";
 
@@ -442,7 +442,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
+            return MasterLevelSpellHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -464,7 +464,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Fontbase
-    public class FontSpellHandler : DoTSpellHandler
+    public class FontSpellHandler : DamageOverTimeSpell
     {
         protected GameFont font;
         protected DbSpell dbs;
@@ -534,7 +534,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Trapbase
-    public class MineSpellHandler : DoTSpellHandler
+    public class MineSpellHandler : DamageOverTimeSpell
     {
         protected GameMine mine;
         protected ISpellHandler trap;
@@ -660,7 +660,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region SummonItemBase
-    public class SummonItemSpellHandler : MasterlevelHandling
+    public class SummonItemSpellHandler : MasterLevelSpellHandling
     {
         protected IList<DbInventoryItem> items;
 
@@ -713,7 +713,7 @@ namespace DOL.GS.Spells
 
     #region TargetModifier
     [SpellHandler("TargetModifier")]
-    public class TargetModifierSpellHandler : MasterlevelHandling
+    public class TargetModifierSpellHandler : MasterLevelSpellHandling
     {
         public override bool HasPositiveEffect
         {
@@ -725,7 +725,7 @@ namespace DOL.GS.Spells
 
     #region Passive
     [SpellHandler("PassiveSpell")]
-    public class PassiveSpellHandler : MasterlevelHandling
+    public class PassiveSpellHandler : MasterLevelSpellHandling
     {
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {

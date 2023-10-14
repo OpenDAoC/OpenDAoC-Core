@@ -344,7 +344,7 @@ namespace DOL.GS
                     if (effect.SpellHandler.Spell.EffectGroup == 99999)
                     {
                         dmgAddsUnaffectedByStacking.Add(effect);
-                        ((DamageAddSpellHandler)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), 1);
+                        ((DamageAddSpell)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), 1);
                     }
                 }
 
@@ -357,7 +357,7 @@ namespace DOL.GS
                     double effectiveness = 1 + effect.SpellHandler.Caster.GetModified(EProperty.BuffEffectiveness) * 0.01;
                     if (effect.IsBuffActive)
                     {
-                        ((DamageAddSpellHandler)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), numRegularDmgAddsApplied > 0 ? effectiveness * 0.5 : effectiveness);
+                        ((DamageAddSpell)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), numRegularDmgAddsApplied > 0 ? effectiveness * 0.5 : effectiveness);
                         numRegularDmgAddsApplied++;
                     }
                 }

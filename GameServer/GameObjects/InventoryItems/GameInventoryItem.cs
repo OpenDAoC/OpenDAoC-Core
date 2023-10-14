@@ -433,7 +433,7 @@ namespace DOL.GS
                         break;
                     case 31052:
                         // regen barrel
-                        WritePotionInfo(delve, AllRegenBuff.RegenList, player.Client);
+                        WritePotionInfo(delve, AllRegenBuffSpell.RegenList, player.Client);
                         break;
                     case 31053:
                         // summon merchant
@@ -443,7 +443,7 @@ namespace DOL.GS
                         break;
                     case 31054:
                         // bead regen gem
-                        WritePotionInfo(delve, BeadRegen.BeadRegenList, player.Client);
+                        WritePotionInfo(delve, BeadRegenSpell.BeadRegenList, player.Client);
                         break;
                     case 34000:
                         // summon vaultkeeper

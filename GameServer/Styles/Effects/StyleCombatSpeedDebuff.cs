@@ -23,7 +23,7 @@ namespace DOL.GS.Spells
 	/// Style combat speed debuff effect spell handler
 	/// </summary>
 	[SpellHandler("StyleCombatSpeedDebuff")]
-	public class StyleCombatSpeedDebuff : CombatSpeedDebuff
+	public class StyleCombatSpeedDebuff : CombatSpeedDebuffSpell
 	{
 		public override int CalculateSpellResistChance(GameLiving target)
 		{

@@ -68,7 +68,7 @@ namespace DOL.GS
             {
                 if (OwnerPlayer != null)
                 {
-                    if ((EffectType == EEffect.Stun && SpellHandler.Caster is GameSummonedPet) || SpellHandler is UnresistableStunSpellHandler)
+                    if ((EffectType == EEffect.Stun && SpellHandler.Caster is GameSummonedPet) || SpellHandler is UnresistableStunSpell)
                         return;
 
                     new EcsImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);

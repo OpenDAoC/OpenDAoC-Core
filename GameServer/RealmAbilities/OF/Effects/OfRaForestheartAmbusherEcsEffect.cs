@@ -13,7 +13,7 @@ namespace DOL.GS.Effects
         public override ushort Icon => 4268;
         public override string Name => "Forestheart Ambusher";
         public override bool HasPositiveEffect => true;
-        public SummonAnimistAmbusher PetSpellHander;
+        public SummonAnimistAmbusherSpell PetSpellHander;
 
         public override void OnStartEffect()
         {

@@ -99,7 +99,7 @@ namespace DOL.GS.Spells
     /// 
     /// </summary>
     [SpellHandler("SiegeDirectDamage")]
-	public class SiegeDirectDamageSpellHandler : DirectDamageSpellHandler
+	public class SiegeDirectDamageSpell : DirectDamageSpell
 	{
 
 		/// <summary>
@@ -200,6 +200,6 @@ namespace DOL.GS.Spells
 
 
 		// constructor
-		public SiegeDirectDamageSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		public SiegeDirectDamageSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 }

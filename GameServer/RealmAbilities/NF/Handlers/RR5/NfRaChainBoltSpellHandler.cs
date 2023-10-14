@@ -1,7 +1,7 @@
 namespace DOL.GS.Spells
 {
     [SpellHandler("ChainBolt")]
-    public class NfRaChainBoltSpellHandler : BoltSpellHandler
+    public class NfRaChainBoltSpellHandler : BoltSpell
     {
         public NfRaChainBoltSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 

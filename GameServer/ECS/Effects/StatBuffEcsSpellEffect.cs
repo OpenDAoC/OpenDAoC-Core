@@ -52,7 +52,7 @@ namespace DOL.GS
                             //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
                             Owner.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, EffectType, SpellHandler.Spell.Value / 100.0);
                             //Console.WriteLine($"Value after: {Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                            (SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(Owner);
+                            (SpellHandler as SpeedEnhancementSpell).SendUpdates(Owner);
                         }
                         if (Owner.IsStealthed)
                         {
@@ -119,7 +119,7 @@ namespace DOL.GS
                             //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
                             Owner.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, EffectType);
                             //Console.WriteLine($"Value after: {Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                            (SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(Owner);
+                            (SpellHandler as SpeedEnhancementSpell).SendUpdates(Owner);
                         //}
                     }
                     

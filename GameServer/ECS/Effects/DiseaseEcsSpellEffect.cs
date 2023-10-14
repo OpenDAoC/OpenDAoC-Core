@@ -31,7 +31,7 @@ namespace DOL.GS
             Owner.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, EffectType, 1.0 - baseSpeedDebuff);
             Owner.BuffBonusMultCategory1.Set((int)EProperty.Strength, EffectType, 1.0 - baseStrDebuff);
 
-            (SpellHandler as DiseaseSpellHandler).SendUpdates(this);
+            (SpellHandler as DiseaseSpell).SendUpdates(this);
 
             // "You are diseased!"
             // "{0} is diseased!"
@@ -57,7 +57,7 @@ namespace DOL.GS
             OnEffectExpiresMsg(Owner, true, true, true);
 
 
-            (SpellHandler as DiseaseSpellHandler).SendUpdates(this);
+            (SpellHandler as DiseaseSpell).SendUpdates(this);
         }
     }
 }

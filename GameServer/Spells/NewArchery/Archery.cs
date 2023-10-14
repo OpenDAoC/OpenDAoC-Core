@@ -11,15 +11,6 @@ namespace DOL.GS.Spells
 	[SpellHandler("Archery")]
 	public class Archery : ArrowSpellHandler
 	{
-		public enum eShotType
-		{
-			Other = 0,
-			Critical = 1,
-			Power = 2,
-			PointBlank = 3,
-			Rapid = 4
-		}
-
 		/// <summary>
 		/// Does this spell break stealth on start?
 		/// </summary>
@@ -123,7 +114,7 @@ namespace DOL.GS.Spells
 
 			if (Caster != null && Caster is GamePlayer && Caster.ActiveWeapon != null && GlobalConstants.IsBowWeapon((EObjectType)Caster.ActiveWeapon.Object_Type))
 			{
-				if (Spell.LifeDrainReturn == (int)eShotType.Critical && (!(Caster.IsStealthed)))
+				if (Spell.LifeDrainReturn == (int)EShotType.Critical && (!(Caster.IsStealthed)))
 				{
 					MessageToCaster("You must be stealthed and wielding a bow to use this ability!", EChatType.CT_SpellResisted);
 					return false;
@@ -133,7 +124,7 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				if (Spell.LifeDrainReturn == (int)eShotType.Critical)
+				if (Spell.LifeDrainReturn == (int)EShotType.Critical)
 				{
 					MessageToCaster("You must be stealthed and wielding a bow to use this ability!", EChatType.CT_SpellResisted);
 					return false;
@@ -206,7 +197,7 @@ namespace DOL.GS.Spells
 			{
 				switch (Spell.LifeDrainReturn)
 				{
-					case (int)eShotType.Critical:
+					case (int)EShotType.Critical:
 						{
 							if (target is GamePlayer)
 							{
@@ -217,7 +208,7 @@ namespace DOL.GS.Spells
 						}
 						break;
 
-					case (int)eShotType.Power:
+					case (int)EShotType.Power:
 						{
 							player = target as GamePlayer;
 							player.Out.SendMessage("A shot penetrated your magic barrier!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
@@ -226,7 +217,7 @@ namespace DOL.GS.Spells
                         }
                         break;
 
-					case (int)eShotType.Other:
+					case (int)EShotType.Other:
 					default:
 						{
 							if (Caster is GamePlayer)
@@ -354,7 +345,7 @@ namespace DOL.GS.Spells
 		/// <returns>effective casting time in milliseconds</returns>
 		public override int CalculateCastingTime()
 		{
-			if (Spell.LifeDrainReturn == (int)eShotType.Power) return 6000;
+			if (Spell.LifeDrainReturn == (int)EShotType.Power) return 6000;
 
 			int ticks = m_spell.CastTime;
 

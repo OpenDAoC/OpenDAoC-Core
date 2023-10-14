@@ -995,7 +995,7 @@ namespace DOL.AI.Brain
 					{
 						foreach (IGameEffect effect in Body.EffectList)
 						{
-							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
+							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpell)
 								effects.Add(gameSpellEffect);
 						}
 					}
@@ -1004,7 +1004,7 @@ namespace DOL.AI.Brain
 					{
 						foreach (IGameEffect effect in Owner.EffectList)
 						{
-							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
+							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpell)
 								effects.Add(gameSpellEffect);
 						}
 					}

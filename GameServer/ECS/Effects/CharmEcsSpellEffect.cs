@@ -16,7 +16,7 @@ namespace DOL.GS
             if (SpellHandler.Caster is not GamePlayer casterPlayer || Owner is not GameNPC charmMob)
                 return;
 
-            CharmSpellHandler charmSpellHandler = SpellHandler as CharmSpellHandler;
+            CharmSpell charmSpellHandler = SpellHandler as CharmSpell;
 
             if (charmSpellHandler.m_controlledBrain == null && charmMob.Brain is not ControlledNpcBrain)
                 charmSpellHandler.m_controlledBrain = new ControlledNpcBrain(casterPlayer);
@@ -64,7 +64,7 @@ namespace DOL.GS
         {
             GamePlayer casterPlayer = SpellHandler.Caster as GamePlayer;
             GameNPC charmMob = Owner as GameNPC;
-            CharmSpellHandler charmSpellHandler = SpellHandler as CharmSpellHandler;
+            CharmSpell charmSpellHandler = SpellHandler as CharmSpell;
             bool keepSongAlive = false;
 
             if (casterPlayer != null && charmMob != null)

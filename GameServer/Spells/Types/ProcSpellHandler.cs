@@ -13,7 +13,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Base class for proc spell handler
 	/// </summary>
-	public abstract class BaseProcSpellHandler : SpellHandler
+	public abstract class BaseProcSpell : SpellHandler
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -31,7 +31,7 @@ namespace DOL.GS.Spells
 		/// <param name="caster"></param>
 		/// <param name="spell"></param>
 		/// <param name="spellLine"></param>
-		protected BaseProcSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine)
+		protected BaseProcSpell(GameLiving caster, Spell spell, SpellLine spellLine)
 			: base(caster, spell, spellLine)
 		{
 			m_procSpellLine = SkillBase.GetSpellLine(SubSpellLineName);
@@ -280,7 +280,7 @@ namespace DOL.GS.Spells
 	/// This class contains data for OffensiveProc spells
 	/// </summary>
 	[SpellHandler("OffensiveProc")]
-	public class OffensiveProcSpellHandler : BaseProcSpellHandler
+	public class OffensiveProcSpell : BaseProcSpell
 	{
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -353,14 +353,14 @@ namespace DOL.GS.Spells
         }
 
         // constructor
-        public OffensiveProcSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        public OffensiveProcSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 
 	/// <summary>
 	/// This class contains data for DefensiveProc spells
 	/// </summary>
 	[SpellHandler("DefensiveProc")]
-	public class DefensiveProcSpellHandler : BaseProcSpellHandler
+	public class DefensiveProcSpell : BaseProcSpell
 	{
 		/// <summary>
 		/// The event type to hook on
@@ -428,11 +428,11 @@ namespace DOL.GS.Spells
 		}
 
 		// constructor
-		public DefensiveProcSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		public DefensiveProcSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 	
 	[SpellHandler( "OffensiveProcPvE" )]
-	public class OffensiveProcPvESpellHandler : OffensiveProcSpellHandler
+	public class OffensiveProcPveSpell : OffensiveProcSpell
 	{
 		/// <summary>
 		/// Handler fired whenever effect target is attacked
@@ -452,6 +452,6 @@ namespace DOL.GS.Spells
 				base.EventHandler(e, sender, arguments);
 		}
 
-		public OffensiveProcPvESpellHandler( GameLiving caster, Spell spell, SpellLine line ) : base( caster, spell, line ) { }
+		public OffensiveProcPveSpell( GameLiving caster, Spell spell, SpellLine line ) : base( caster, spell, line ) { }
 	}
 }

@@ -72,7 +72,7 @@ namespace DOL.GS
 
                     Owner.BuffBonusMultCategory1.Set((int) EProperty.MaxSpeed, EffectType,
                         1.0 - effectiveValue * 0.01);
-                    UnbreakableSpeedDecreaseSpellHandler.SendUpdates(Owner);
+                    UnbreakableSpeedDecreaseSpell.SendUpdates(Owner);
 
                 }
                 else
@@ -130,7 +130,7 @@ namespace DOL.GS
                     }
 
                     Owner.BuffBonusMultCategory1.Remove((int) EProperty.MaxSpeed, EffectType);
-                    UnbreakableSpeedDecreaseSpellHandler.SendUpdates(Owner);
+                    UnbreakableSpeedDecreaseSpell.SendUpdates(Owner);
                 }
                 else
                 {

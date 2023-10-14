@@ -3,7 +3,7 @@
 namespace DOL.GS.Spells
 {
     [SpellHandler("ShatterIllusions")]
-	public class ShatterIllusions : SpellHandler
+	public class ShatterIllusionsSpell : SpellHandler
 	{
         //Shatter Illusions 
         //(returns the enemy from their shapeshift forms 
@@ -41,6 +41,6 @@ namespace DOL.GS.Spells
                 player.Out.SendCombatAnimation(null, ad.Target, 0, 0, 0, 0, 0x0A, ad.Target.HealthPercent);
             }
         }
-        public ShatterIllusions(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        public ShatterIllusionsSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 }

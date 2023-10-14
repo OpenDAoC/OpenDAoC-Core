@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections;
 using System.Collections.Specialized;
 using DOL.GS.Effects;
@@ -29,12 +10,12 @@ namespace DOL.GS.Spells
 	/// Health regeneration rate buff
 	/// </summary>
 	[SpellHandler("HealthRegenBuff")]
-	public class HealthRegenSpellHandler : PropertyChangingSpell
+	public class HealthRegenSpell : PropertyChangingSpell
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.HealthRegenerationRate; } }
 
-		public HealthRegenSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
+		public HealthRegenSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
 
 	/// <summary>
@@ -61,7 +42,7 @@ namespace DOL.GS.Spells
 	/// Endurance regeneration rate buff
 	/// </summary>
 	[SpellHandler("EnduranceRegenBuff")]
-	public class EnduranceRegenSpellHandler : PropertyChangingSpell
+	public class EnduranceRegenSpell : PropertyChangingSpell
 	{
 		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 		public override EProperty Property1 { get { return EProperty.EnduranceRegenerationRate; } }
@@ -161,14 +142,14 @@ namespace DOL.GS.Spells
 			/// <summary>
 			/// The list of effects
 			/// </summary>
-			private readonly EnduranceRegenSpellHandler m_handler;
+			private readonly EnduranceRegenSpell m_handler;
 
 			/// <summary>
 			/// Constructs a new RangeCheckAction
 			/// </summary>
 			/// <param name="actionSource">The action source</param>
 			/// <param name="handler">The spell handler</param>
-			public RangeCheckAction(GameLiving actionSource, EnduranceRegenSpellHandler handler) : base(actionSource)
+			public RangeCheckAction(GameLiving actionSource, EnduranceRegenSpell handler) : base(actionSource)
 			{
 				m_handler = handler;
 			}
@@ -236,6 +217,6 @@ namespace DOL.GS.Spells
 		/// <param name="caster">The spell caster</param>
 		/// <param name="spell">The spell used</param>
 		/// <param name="line">The spell line used</param>
-		public EnduranceRegenSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
+		public EnduranceRegenSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
 }

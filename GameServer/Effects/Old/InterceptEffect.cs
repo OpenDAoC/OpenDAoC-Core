@@ -50,7 +50,7 @@ namespace DOL.GS.Effects
 			{
 				GameSummonedPet pet = InterceptSource as GameSummonedPet;
 				if (pet == null) { return 0; }
-				if (pet.Brain is BrittleBrain)
+				if (pet.Brain is BrittleGuardBrain)
 					return 100;
 				else if (pet is BDSubPet)
 					// Patch 1.123: The intercept chance on the Fossil Defender has been reduced by 20%.

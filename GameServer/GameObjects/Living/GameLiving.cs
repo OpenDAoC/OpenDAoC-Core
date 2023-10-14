@@ -1858,7 +1858,7 @@ namespace DOL.GS
                 {
                     var oProcEffect = oProcEffects[i];
 
-                    (oProcEffect.SpellHandler as OffensiveProcSpellHandler).EventHandler(ad);
+                    (oProcEffect.SpellHandler as OffensiveProcSpell).EventHandler(ad);
                 }
             }
 			DirtyTricksEcsAbilityEffect dt = (DirtyTricksEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(this, EEffect.DirtyTricks);
@@ -1953,7 +1953,7 @@ namespace DOL.GS
 
 				attackComponent.AddAttacker(ad.Attacker);
 
-				if (ad.SpellHandler == null || (ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler))
+				if (ad.SpellHandler == null || (ad.SpellHandler != null && ad.SpellHandler is not DamageOverTimeSpell))
 				{
 					if (ad.Attacker.Realm == 0 || Realm == 0)
 					{
@@ -1980,13 +1980,13 @@ namespace DOL.GS
 						if (effect == null)
 							continue;
 
-						AblativeArmorSpellHandler ablativeArmorSpellHandler = effect.SpellHandler as AblativeArmorSpellHandler;
+						AblativeArmorSpell ablativeArmorSpellHandler = effect.SpellHandler as AblativeArmorSpell;
 
 						if (!ablativeArmorSpellHandler.MatchingDamageType(ref ad))
 							continue;
 
 						int ablativeHp = effect.RemainingValue;
-						double absorbPercent = AblativeArmorSpellHandler.ValidateSpellDamage((int)effect.SpellHandler.Spell.Damage);
+						double absorbPercent = AblativeArmorSpell.ValidateSpellDamage((int)effect.SpellHandler.Spell.Damage);
 						int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
 
 						if (damageAbsorbed > ablativeHp)
@@ -1995,7 +1995,7 @@ namespace DOL.GS
 						ablativeHp -= damageAbsorbed;
 						ad.Damage -= damageAbsorbed;
 
-						(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
+						(effect.SpellHandler as AblativeArmorSpell).OnDamageAbsorbed(ad, damageAbsorbed);
 
 						if (ad.Target is GamePlayer)
 							(ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
@@ -2016,7 +2016,7 @@ namespace DOL.GS
 				if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != EAttackType.Spell)
 				{
 					for (int i = 0; i < dProcEffects.Count; i++)
-						(dProcEffects[i].SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
+						(dProcEffects[i].SpellHandler as DefensiveProcSpell).EventHandler(ad);
 				}
 			}
 			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
@@ -2035,7 +2035,7 @@ namespace DOL.GS
 					{
 						var dSEffect = dSEffects[i];
 
-						((DamageShieldSpellHandler)dSEffect.SpellHandler).EventHandler(null, this, new AttackedByEnemyEventArgs(ad));
+						((DamageShieldSpell)dSEffect.SpellHandler).EventHandler(null, this, new AttackedByEnemyEventArgs(ad));
 					}
 				}
 			}
@@ -2090,14 +2090,14 @@ namespace DOL.GS
 					removeMez = true;
                 }
 				// Non-Damaging, non-resisted spells that break mez.
-				else if (ad.SpellHandler is NearsightSpellHandler || ad.SpellHandler is AmnesiaSpellHandler || ad.SpellHandler is DiseaseSpellHandler
-						 || ad.SpellHandler is SpeedDecreaseSpellHandler || ad.SpellHandler is StunSpellHandler || ad.SpellHandler is ConfusionSpellHandler
-						 || ad.SpellHandler is AbstractResistDebuff) 
+				else if (ad.SpellHandler is NearsightSpell || ad.SpellHandler is AmnesiaSpell || ad.SpellHandler is DiseaseSpell
+						 || ad.SpellHandler is SpeedDecreaseSpell || ad.SpellHandler is StunSpell || ad.SpellHandler is ConfusionSpell
+						 || ad.SpellHandler is AResistDebuff) 
 				{
 					removeMez = true;
 				}
 				
-				if (this is GameNPC && ad.SpellHandler is not MesmerizeSpellHandler)
+				if (this is GameNPC && ad.SpellHandler is not MesmerizeSpell)
 					removeMez = true;
 			}
 

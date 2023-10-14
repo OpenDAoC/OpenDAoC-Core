@@ -23,7 +23,7 @@ namespace DOL.Tests.Unit.Gameserver
             var source = NewL50Player();
             var target = NewFakeNPC();
             var spellLine = NewGenericSpellLine();
-            var damageFocus = new RampingDamageFocus(source, spell, spellLine);
+            var damageFocus = new RampingDamageFocusSpell(source, spell, spellLine);
 
             Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnDirectEffect(target);
@@ -42,7 +42,7 @@ namespace DOL.Tests.Unit.Gameserver
             var source = NewL50Player();
             var target = NewFakeNPC();
             var spellLine = NewGenericSpellLine();
-            var damageFocus = new RampingDamageFocus(source, spell, spellLine);
+            var damageFocus = new RampingDamageFocusSpell(source, spell, spellLine);
 
             Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnSpellPulse(null);
@@ -63,7 +63,7 @@ namespace DOL.Tests.Unit.Gameserver
             var source = NewL50Player();
             var target = NewFakeNPC();
             var spellLine = NewGenericSpellLine();
-            var damageFocus = new RampingDamageFocus(source, spell, spellLine);
+            var damageFocus = new RampingDamageFocusSpell(source, spell, spellLine);
 
             Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnSpellPulse(null);
@@ -84,7 +84,7 @@ namespace DOL.Tests.Unit.Gameserver
             var source = NewL50Player();
             var target = NewFakeNPC();
             var spellLine = NewGenericSpellLine();
-            var damageFocus = new RampingDamageFocus(source, spell, spellLine);
+            var damageFocus = new RampingDamageFocusSpell(source, spell, spellLine);
 
             Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnSpellPulse(null);

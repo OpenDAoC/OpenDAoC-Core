@@ -16,7 +16,7 @@ namespace DOL.GS
             Owner.DebuffCategory[(int)EProperty.ArcheryRange] += (int)SpellHandler.Spell.Value;
             Owner.DebuffCategory[(int)EProperty.SpellRange] += (int)SpellHandler.Spell.Value;
             //Owner.StartInterruptTimer(Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
-            (SpellHandler as NearsightSpellHandler).SendEffectAnimation(Owner, 0, false, 1);
+            (SpellHandler as NearsightSpell).SendEffectAnimation(Owner, 0, false, 1);
             
             // "Your combat skills are hampered by blindness!"
             // "{0} stumbles, unable to see!"

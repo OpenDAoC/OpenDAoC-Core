@@ -12,8 +12,8 @@ namespace DOL.GS
         {
             if (!IsBuffActive && !IsDisabled)
             {
-                ApplyBonus(Owner, (SpellHandler as AbstractSavageBuff).BonusCategory1,
-                    (SpellHandler as AbstractSavageBuff).Property1, SpellHandler.Spell.Value, Effectiveness, false);
+                ApplyBonus(Owner, (SpellHandler as ASavageBuff).BonusCategory1,
+                    (SpellHandler as ASavageBuff).Property1, SpellHandler.Spell.Value, Effectiveness, false);
                 
                 // "You parry with extra skill!"
                 // "{0} begins parrying faster!"
@@ -25,7 +25,7 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
-            ApplyBonus(Owner, (SpellHandler as AbstractSavageBuff).BonusCategory1, (SpellHandler as AbstractSavageBuff).Property1, SpellHandler.Spell.Value, Effectiveness, true);
+            ApplyBonus(Owner, (SpellHandler as ASavageBuff).BonusCategory1, (SpellHandler as ASavageBuff).Property1, SpellHandler.Spell.Value, Effectiveness, true);
             OnHealthCost();           
         }
 
