@@ -53,7 +53,7 @@ namespace DOL.GS.RealmAbilities
 				foreach (GameSpellEffect effect in living.EffectList.GetAllOfType<GameSpellEffect>())
 				{
 					if (effect.SpellHandler is DamageOverTimeSpell ||
-						effect.SpellHandler is StyleBleeding ||
+						effect.SpellHandler is StyleBleedingEffect ||
 							effect.SpellHandler is ACrowdControlSpell ||
 							effect.SpellHandler is SpeedDecreaseSpell)
 					{

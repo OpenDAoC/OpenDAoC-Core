@@ -10,9 +10,6 @@ using DOL.Language;
 
 namespace DOL.GS.Styles
 {
-	/// <summary>
-	/// Processes styles and style related stuff.
-	/// </summary>
 	public class StyleProcessor
 	{
 		/// <summary>

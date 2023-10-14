@@ -3550,7 +3550,7 @@ namespace DOL.GS.Spells
 				if (targetNpc.Brain is IOldAggressiveBrain brain)
 					brain.AddToAggroList(Caster, 1);
 
-				if (this is not DamageOverTimeSpell and not StyleBleeding)
+				if (this is not DamageOverTimeSpell and not StyleBleedingEffect)
 				{
 					if (Caster.Realm == 0 || ad.Target.Realm == 0)
 					{

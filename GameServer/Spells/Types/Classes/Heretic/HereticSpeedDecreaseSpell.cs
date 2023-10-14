@@ -179,7 +179,7 @@ namespace DOL.GS.Spells
 							if (effect != null)
 								effect.Cancel(false);
 			}
-            if (attackArgs.AttackData.SpellHandler is StyleBleeding || attackArgs.AttackData.SpellHandler is DamageOverTimeSpell || attackArgs.AttackData.SpellHandler is HereticDotSpell)
+            if (attackArgs.AttackData.SpellHandler is StyleBleedingEffect || attackArgs.AttackData.SpellHandler is DamageOverTimeSpell || attackArgs.AttackData.SpellHandler is HereticDotSpell)
             {
                 GameSpellEffect affect = FindEffectOnTarget(living, this);
                 if (affect != null)
