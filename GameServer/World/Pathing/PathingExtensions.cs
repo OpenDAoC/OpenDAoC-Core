@@ -2,7 +2,7 @@ using System.Numerics;
 
 namespace DOL.GS
 {
-    static class Extensions
+    static class PathingExtensions
     {
         public static bool IsInRange(this Vector3 value, Vector3 target, float range)
         {

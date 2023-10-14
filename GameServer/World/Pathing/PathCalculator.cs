@@ -152,12 +152,12 @@ namespace DOL.GS
                 lock (_pathNodes)
                 {
                     _pathNodes.Clear();
-                    if (pathingResult.Error != PathingError.NoPathFound && pathingResult.Error != PathingError.NavmeshUnavailable &&
+                    if (pathingResult.Error != EPathingError.NoPathFound && pathingResult.Error != EPathingError.NavmeshUnavailable &&
                         pathingResult.Points != null)
                     {
                         DidFindPath = true;
                         var to = pathingResult.Points.Length - 1; /* remove target node only if no partial path */
-                        if (pathingResult.Error == PathingError.PartialPathFound)
+                        if (pathingResult.Error == EPathingError.PartialPathFound)
                         {
                             to = pathingResult.Points.Length;
                         }
@@ -195,12 +195,12 @@ namespace DOL.GS
         /// </summary>
         /// <param name="target"></param>
         /// <returns>Next path node, or null if target reached. Throws a NoPathToTargetException if path is blocked/returns>
-        public Tuple<Vector3?, NoPathReason> CalculateNextTarget(Vector3 target)
+        public Tuple<Vector3?, ENoPathReason> CalculateNextTarget(Vector3 target)
         {
             if (!ShouldPath(target))
             {
                 DidFindPath = true; // not needed
-                return new Tuple<Vector3?, NoPathReason>(null, NoPathReason.NOPROBLEM);
+                return new Tuple<Vector3?, ENoPathReason>(null, ENoPathReason.NOPROBLEM);
             }
 
             // Check if we can reuse our path. We assume that we ourselves never "suddenly" warp to a completely
@@ -248,13 +248,13 @@ namespace DOL.GS
             {
                 // Path end reached, or no path found
                 if (!DidFindPath)
-                    return new Tuple<Vector3?, NoPathReason>(null, NoPathReason.RECAST_FOUND_NO_PATH);
-                return new Tuple<Vector3?, NoPathReason>(null, NoPathReason.UNKNOWN); // no more nodes (or no path)
+                    return new Tuple<Vector3?, ENoPathReason>(null, ENoPathReason.RECAST_FOUND_NO_PATH);
+                return new Tuple<Vector3?, ENoPathReason>(null, ENoPathReason.UNKNOWN); // no more nodes (or no path)
             }
 
             // Just walk to the next pathing node
             var next = _pathNodes.Peek();
-            return new Tuple<Vector3?, NoPathReason>(next.Position, NoPathReason.NOPROBLEM);
+            return new Tuple<Vector3?, ENoPathReason>(next.Position, ENoPathReason.NOPROBLEM);
         }
 
         public override string ToString()

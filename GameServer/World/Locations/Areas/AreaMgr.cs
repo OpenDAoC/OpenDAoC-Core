@@ -7,9 +7,6 @@ namespace DOL.GS
 {
 	public class AreaMgr
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public static bool LoadAllAreas()

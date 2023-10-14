@@ -3,7 +3,7 @@ namespace DOL.GS
   /// <summary>
   /// Reason for why no path was found
   /// </summary>
-  public enum NoPathReason
+  public enum ENoPathReason
   {
     NOPROBLEM,
     UNKNOWN,

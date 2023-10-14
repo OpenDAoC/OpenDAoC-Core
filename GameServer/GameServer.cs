@@ -166,7 +166,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the server WorldManager
 		/// </summary>
-		public WorldManager WorldManager { get; protected set; }
+		public WorldEventMgr WorldManager { get; protected set; }
 
 		/// <summary>
 		/// Gets the server PlayerManager
@@ -634,7 +634,7 @@ namespace DOL.GS
 
 				//---------------------------------------------------------------
 				//Try to initialize the WorldManager
-				if (!InitComponent(() => WorldManager = new WorldManager(this), "Instancied World Manager Initialization"))
+				if (!InitComponent(() => WorldManager = new WorldEventMgr(this), "Instancied World Manager Initialization"))
 					return false;
 
 				//---------------------------------------------------------------
