@@ -135,7 +135,7 @@ namespace DOL.GS
 
 			for (int i = 0; i < 8; i++)
 			{
-				foreach (GameNPC npc in GetNPCsInRadius(8000))
+				foreach (GameNpc npc in GetNPCsInRadius(8000))
 				{
 					if (npc.Brain is BlightControllerBrain)
                     {
@@ -241,7 +241,7 @@ namespace DOL.AI.Brain
 #region Fire Blight
 namespace DOL.GS
 {
-    public class FireBlight : GameNPC
+    public class FireBlight : GameNpc
 	{
 		public FireBlight() : base()
 		{
@@ -332,7 +332,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && Body.TargetObject != null)
 			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc != Body && npc.Brain is FireBlightBrain brain)
 					{
@@ -351,7 +351,7 @@ namespace DOL.AI.Brain
 #region Late Blight
 namespace DOL.GS
 {
-    public class LateBlight : GameNPC
+    public class LateBlight : GameNpc
 	{
 		public LateBlight() : base()
 		{
@@ -441,7 +441,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && Body.TargetObject != null)
 			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc != Body && npc.Brain is LateBlightBrain brain)
 					{
@@ -460,7 +460,7 @@ namespace DOL.AI.Brain
 #region Flesh Blight
 namespace DOL.GS
 {
-    public class FleshBlight : GameNPC
+    public class FleshBlight : GameNpc
 	{
 		public FleshBlight() : base()
 		{
@@ -550,7 +550,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && Body.TargetObject != null)
 			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc != Body && npc.Brain is FleshBlightBrain brain)
 					{
@@ -572,7 +572,7 @@ namespace DOL.AI.Brain
 #region Blight Controller - control when and what kind of blights will spawn
 namespace DOL.GS
 {
-    public class BlightController : GameNPC
+    public class BlightController : GameNpc
 	{
 		public BlightController() : base()
 		{
@@ -585,7 +585,7 @@ namespace DOL.GS
 			Level = 50;
 			Model = 665;
 			RespawnInterval = 5000;
-			Flags = (GameNPC.eFlags)28;
+			Flags = (ENpcFlags)28;
 			SpawnFireBlight();
 
 			BlightControllerBrain sbrain = new BlightControllerBrain();
@@ -602,7 +602,7 @@ namespace DOL.GS
 			LateBlight.LateBlightCount = 0;
 			FleshBlight.FleshBlightCount = 0;
 
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is FireBlightBrain)
 					return;
@@ -654,7 +654,7 @@ namespace DOL.AI.Brain
 
 		public void SpawnLateBlight()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is LateBlightBrain)
 					return;
@@ -676,7 +676,7 @@ namespace DOL.AI.Brain
 		}
 		public void SpawnFleshBlight()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is FleshBlightBrain)
 					return;
@@ -698,7 +698,7 @@ namespace DOL.AI.Brain
 		}
 		public void SpawnBlight()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is BlightBrain)
 					return;

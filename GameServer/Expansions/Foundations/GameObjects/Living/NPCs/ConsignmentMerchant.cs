@@ -8,7 +8,7 @@ using log4net;
 
 namespace DOL.GS
 {
-    public class GameConsignmentMerchant : GameNPC, IGameInventoryObject
+    public class GameConsignmentMerchant : GameNpc, IGameInventoryObject
     {
 		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 

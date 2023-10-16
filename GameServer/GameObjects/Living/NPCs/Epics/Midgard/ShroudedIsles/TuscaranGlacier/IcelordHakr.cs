@@ -91,7 +91,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Hakr", 160, (ERealm) 0);
             if (npcs.Length == 0)
             {
@@ -168,7 +168,7 @@ namespace DOL.AI.Brain
         {
             if (IsPulled == false)
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc != null)
                     {
@@ -286,7 +286,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////////////////////////////////Adds-snakes////////////////////////////////////////////
 namespace DOL.GS
 {
-    public class HakrAdd : GameNPC
+    public class HakrAdd : GameNpc
     {
         public HakrAdd() : base()
         {
@@ -374,7 +374,7 @@ namespace DOL.AI.Brain
         {
             if (IsPulled == false)
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc != null)
                     {

@@ -9,19 +9,19 @@ namespace DOL.GS.Behaviour.Actions
 	public class PlaySoundAction : AAction<ushort, ESoundType>
 	{
 
-		public PlaySoundAction(GameNPC defaultNPC, Object p, Object q)
+		public PlaySoundAction(GameNpc defaultNPC, Object p, Object q)
 			: base(defaultNPC, EActionType.PlaySound, p, q)
 		{
 		}
 
 
-		public PlaySoundAction(GameNPC defaultNPC, ushort id, ESoundType type)
+		public PlaySoundAction(GameNpc defaultNPC, ushort id, ESoundType type)
 			: this(defaultNPC, (object)id, (object)type)
 		{
 		}
 
 
-		public PlaySoundAction(GameNPC defaultNPC, ushort id)
+		public PlaySoundAction(GameNpc defaultNPC, ushort id)
 			: this(defaultNPC, (object)id, (object)ESoundType.Divers)
 		{
 		}

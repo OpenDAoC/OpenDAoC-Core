@@ -74,7 +74,7 @@ namespace DOL.Tests.Unit.Gameserver
         public override bool TargetInView { get; set; } = true;
     }
 
-    public class FakeNPC : GameNPC
+    public class FakeNPC : GameNpc
     {
         public int modifiedEffectiveLevel;
 
@@ -130,7 +130,7 @@ namespace DOL.Tests.Unit.Gameserver
         public void Follow(GameObject target) { }
         public void FollowOwner() { }
         public GameLiving GetLivingOwner() { return null; }
-        public GameNPC GetNPCOwner() { return null; }
+        public GameNpc GetNPCOwner() { return null; }
         public GamePlayer GetPlayerOwner() { return null; }
         public void Goto(GameObject target) { }
         public void SetAggressionState(EAggressionState state) { }

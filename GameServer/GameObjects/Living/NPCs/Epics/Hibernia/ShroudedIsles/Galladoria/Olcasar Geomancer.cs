@@ -69,7 +69,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            foreach (GameNpc npc in GetNPCsInRadius(8000))
             {
                 if (npc.Brain is OGAddsBrain)
                 {
@@ -112,7 +112,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
 
             npcs = WorldMgr.GetNPCsByNameFromRegion("Olcasar Geomancer", 191, (ERealm) 0);
             if (npcs.Length == 0)
@@ -228,7 +228,7 @@ namespace DOL.AI.Brain
                 RandomTarget2 = null;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
                     {
                         if (npc.Brain is OGAddsBrain)
                         {
@@ -502,7 +502,7 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-    public class OGAdds : GameNPC
+    public class OGAdds : GameNpc
     {
         public OGAdds() : base()
         {
@@ -561,7 +561,7 @@ namespace DOL.GS
             {
                 if (ppl != null)
                 {
-                    foreach (GameNPC boss in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GameNpc boss in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     {
                         if (boss != null)
                         {

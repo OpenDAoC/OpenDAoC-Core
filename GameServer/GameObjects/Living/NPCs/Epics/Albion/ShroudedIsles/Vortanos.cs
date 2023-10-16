@@ -80,7 +80,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is VortanosAddBrain)
 					npc.RemoveFromWorld();
@@ -178,7 +178,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;		
 		}
 		ushort oldModel;
-		GameNPC.eFlags oldFlags;
+		ENpcFlags oldFlags;
 		bool changed;
 		private bool CanSpawnAdds = false;
 		private bool NotInCombat = false;
@@ -221,9 +221,9 @@ namespace DOL.AI.Brain
 				if (changed == false)
 				{
 					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-					Body.Flags ^= GameNPC.eFlags.PEACE;
+					Body.Flags ^= ENpcFlags.CANTTARGET;
+					Body.Flags ^= ENpcFlags.DONTSHOWNAME;
+					Body.Flags ^= ENpcFlags.PEACE;
 
 					if (oldModel == 0)
 						oldModel = Body.Model;
@@ -250,7 +250,7 @@ namespace DOL.AI.Brain
 				SpamMess1 = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is VortanosAddBrain)
 						{
@@ -275,7 +275,7 @@ namespace DOL.AI.Brain
 					InCombat1 = true;
                 }
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is VortanosAddBrain brain)
 					{
@@ -413,7 +413,7 @@ namespace DOL.AI.Brain
 #region Vortanos Adds
 namespace DOL.GS
 {
-	public class VortanosAdd : GameNPC
+	public class VortanosAdd : GameNpc
 	{
 		public VortanosAdd() : base() { }
 

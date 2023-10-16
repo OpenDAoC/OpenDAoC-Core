@@ -872,7 +872,7 @@ namespace DOL.GS.Housing
 			con.Heading = heading;
 			con.Model = 144;
 
-			con.Flags |= GameNPC.eFlags.PEACE;
+			con.Flags |= ENpcFlags.PEACE;
 			con.LoadedFromScript = false;
 			con.RoamingRange = 0;
 

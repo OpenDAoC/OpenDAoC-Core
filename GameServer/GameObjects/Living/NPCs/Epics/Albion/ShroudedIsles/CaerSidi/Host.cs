@@ -12,7 +12,7 @@ using DOL.GS.ServerProperties;
 //DO NOT REMOVE Host Initializator from ingame or encounter will  not work!
 namespace DOL.GS
 {
-    public class HostInitializator : GameNPC
+    public class HostInitializator : GameNpc
     {
         public HostInitializator() : base()
         {
@@ -91,13 +91,13 @@ namespace DOL.GS
 
         #region Pick real Host
 
-        List<GameNPC> ChooseHost = new List<GameNPC>();
+        List<GameNpc> ChooseHost = new List<GameNpc>();
         public static bool set_realhost = false;
         public static bool pickhostcheck = false;
 
         public void PickHost()
         {
-            foreach (GameNPC host in GetNPCsInRadius(8000))
+            foreach (GameNpc host in GetNPCsInRadius(8000))
             {
                 if (host != null)
                 {
@@ -115,7 +115,7 @@ namespace DOL.GS
             {
                 if (set_realhost == false)
                 {
-                    GameNPC RealHost = ChooseHost[Util.Random(0, ChooseHost.Count - 1)];
+                    GameNpc RealHost = ChooseHost[Util.Random(0, ChooseHost.Count - 1)];
                     RealHost.PackageID = "HostReal";
                     RealHost.OrbsReward = Properties.EPICBOSS_ORBS;
                     set_realhost = true;
@@ -155,7 +155,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Host Initializator", 60, (ERealm)0);
             if (npcs.Length == 0)
             {
@@ -171,10 +171,10 @@ namespace DOL.GS
                 CO.Level = 50;
                 CO.Size = 50;
                 CO.CurrentRegionID = 60; //caer sidi
-                CO.Flags ^= eFlags.CANTTARGET;
-                CO.Flags ^= eFlags.FLYING;
-                CO.Flags ^= eFlags.DONTSHOWNAME;
-                CO.Flags ^= eFlags.PEACE;
+                CO.Flags ^= ENpcFlags.CANTTARGET;
+                CO.Flags ^= ENpcFlags.FLYING;
+                CO.Flags ^= ENpcFlags.DONTSHOWNAME;
+                CO.Flags ^= ENpcFlags.PEACE;
                 CO.Faction = FactionMgr.GetFactionByID(64);
                 CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
                 CO.X = 26995;
@@ -263,7 +263,7 @@ namespace DOL.GS
         {
             if (PackageID == "HostReal")
             {
-                foreach (GameNPC boss in WorldMgr.GetNPCsByNameFromRegion("Host", this.CurrentRegionID, 0))
+                foreach (GameNpc boss in WorldMgr.GetNPCsByNameFromRegion("Host", this.CurrentRegionID, 0))
                 {
                     if (boss != null)
                     {
@@ -308,7 +308,7 @@ namespace DOL.GS
             Size = 60;
             Level = 79;
             MaxSpeedBase = 300;
-            Flags = eFlags.GHOST;
+            Flags = ENpcFlags.GHOST;
 
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
@@ -4003,7 +4003,7 @@ namespace DOL.AI.Brain
         {
             if (Body.TargetObject != null && (Body.InCombat || HasAggro || Body.attackComponent.AttackState == true)) //if in combat
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc != null)
                     {
@@ -4026,7 +4026,7 @@ namespace DOL.AI.Brain
             }
             else //if not in combat
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc != null)
                     {
@@ -4070,7 +4070,7 @@ namespace DOL.AI.Brain
             {
                 if (BafHost == false)//baf all copies to pulled host
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc != null)
                         {
@@ -4090,7 +4090,7 @@ namespace DOL.AI.Brain
                 }
                 if (BafMobs == false)//baf linked mobs to boss
                 {
-                    foreach (GameNPC npc2 in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc2 in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc2 != null)
                         {

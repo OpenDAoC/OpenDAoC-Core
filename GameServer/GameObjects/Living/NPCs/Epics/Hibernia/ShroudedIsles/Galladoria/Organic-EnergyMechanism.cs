@@ -223,7 +223,7 @@ namespace DOL.AI.Brain
                 SpawnFeeder = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                     {
                         if (npc != null)
                         {
@@ -381,7 +381,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////adds//////////////////////
 namespace DOL.GS
 {
-    public class OEMAdd : GameNPC
+    public class OEMAdd : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

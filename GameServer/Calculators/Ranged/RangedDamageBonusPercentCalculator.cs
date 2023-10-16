@@ -16,12 +16,12 @@ public class RangedDamageBonusPercentCalculator : PropertyCalculator
 {
 	public override int CalcValue(GameLiving living, EProperty property)
 	{
-		if (living is GameNPC)
+		if (living is GameNpc)
 		{
 			int rangedDamagePercent = 8;
 			var rangedBuffBonus = living.BaseBuffBonusCategory[EProperty.Dexterity] + living.SpecBuffBonusCategory[EProperty.Dexterity];
 			var rangedDebuff = living.DebuffCategory[EProperty.Dexterity] + living.SpecDebuffCategory[EProperty.Dexterity];
-			return ((living as GameNPC).Dexterity + (rangedBuffBonus - rangedDebuff)) / rangedDamagePercent;
+			return ((living as GameNpc).Dexterity + (rangedBuffBonus - rangedDebuff)) / rangedDamagePercent;
 		}
 
 		// Hardcap 10%

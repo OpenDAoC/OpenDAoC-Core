@@ -118,7 +118,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null)
 				{
@@ -252,7 +252,7 @@ namespace DOL.GS
 			Size = 20;
 			MaxSpeedBase = 0;
 			RespawnInterval = -1;//Util.Random(180000, 480000);
-			Flags = eFlags.FLYING;
+			Flags = ENpcFlags.FLYING;
 			++Orb1Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
@@ -382,7 +382,7 @@ namespace DOL.GS
 			Size = 20;
 			MaxSpeedBase = 0;
 			RespawnInterval = -1;// Util.Random(180000, 480000);
-			Flags = eFlags.FLYING;
+			Flags = ENpcFlags.FLYING;
 			++Orb2Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
@@ -512,7 +512,7 @@ namespace DOL.GS
 			Size = 20;
 			MaxSpeedBase = 0;
 			RespawnInterval = -1;// Util.Random(180000, 480000);
-			Flags = eFlags.FLYING;
+			Flags = ENpcFlags.FLYING;
 			++Orb3Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
@@ -640,7 +640,7 @@ namespace DOL.GS
 			Z = 17511;
 			Heading = 1536;
 			Size = 20;
-			Flags = eFlags.FLYING;
+			Flags = ENpcFlags.FLYING;
 			MaxSpeedBase = 0;
 			RespawnInterval = -1;// Util.Random(180000, 480000);
 			++Orb4Count;

@@ -57,7 +57,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
 			{
 				if (npc != null)
 				{
@@ -150,7 +150,7 @@ namespace DOL.AI.Brain
 				Body.Intelligence = 150;
 				Body.Empathy = 300;
 				Body.MeleeDamageType = EDamageType.Energy;
-				Body.Flags = GameNPC.eFlags.DONTSHOWNAME;
+				Body.Flags = ENpcFlags.DONTSHOWNAME;
 				IsRift = true;
             }
 		}
@@ -170,7 +170,7 @@ namespace DOL.AI.Brain
 				SpawnMoreAdds = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
 						if (npc != null)
 						{
@@ -266,7 +266,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-	public class Morkenhet : GameNPC
+	public class Morkenhet : GameNpc
 	{
 		public override int GetResist(EDamageType damageType)
 		{

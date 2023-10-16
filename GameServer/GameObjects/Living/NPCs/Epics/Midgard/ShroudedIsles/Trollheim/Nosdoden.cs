@@ -91,12 +91,12 @@ namespace DOL.GS
 			{
 				ReportNews(killer);
 			}
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is NosdodenGhostAddBrain)
 					npc.Die(this);
 			}
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is NosdodenSummonedAddsBrain)
 					npc.RemoveFromWorld();
@@ -176,7 +176,7 @@ namespace DOL.GS
 					add.Y = player.Y;
 					add.Z = player.Z;
 					add.Size = (byte)player.Size;
-					add.Flags = eFlags.GHOST;
+					add.Flags = ENpcFlags.GHOST;
                     #region Set mob model
                     if (player.Race == (short)ERace.Norseman && player.Gender == EGender.Male)//norse male
 						add.Model = (ushort)Util.Random(153, 160);
@@ -529,8 +529,8 @@ namespace DOL.AI.Brain
 			return 0;
 		}
 		#endregion
-		public static GameNPC spiritmob = null;
-		public static GameNPC SpiritMob
+		public static GameNpc spiritmob = null;
+		public static GameNpc SpiritMob
 		{
 			get { return spiritmob; }
 			set { spiritmob = value; }
@@ -572,12 +572,12 @@ namespace DOL.AI.Brain
 					Enemys_To_DOT.Clear();
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is NosdodenGhostAddBrain)
 							npc.Die(Body);
 					}
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is NosdodenSummonedAddsBrain)
 							npc.RemoveFromWorld();
@@ -650,7 +650,7 @@ namespace DOL.AI.Brain
 				{
 					if (player != null && player.IsAlive)
 					{
-						foreach (GameNPC ghosts in Body.GetNPCsInRadius(5000))
+						foreach (GameNpc ghosts in Body.GetNPCsInRadius(5000))
 						{
 							if (ghosts != null && ghosts.IsAlive && ghosts.Brain is NosdodenGhostAddBrain)
 							{
@@ -1256,7 +1256,7 @@ namespace DOL.AI.Brain
 					Body.VisibleActiveWeaponSlots = 51;
 					CanCreateHunterPet = false;
 					Switch_to_Ranged = false;
-					foreach(GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach(GameNpc npc in Body.GetNPCsInRadius(5000))
                     {
 						if(npc != null)
                         {
@@ -1482,7 +1482,7 @@ namespace DOL.AI.Brain
 				if (HasAggro)
 				{
 					SummonSpiritChampion();
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2000))
 					{
 						if (npc != null)
 						{
@@ -1546,7 +1546,7 @@ namespace DOL.AI.Brain
 				if (HasAggro)
 				{
 					SummonSkeletalCommander();
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2000))
 					{
 						if (npc != null)
 						{
@@ -1651,7 +1651,7 @@ namespace DOL.AI.Brain
 					if (HealerEnemys_To_Mezz.Count > 0)
 						HealerEnemys_To_Mezz.Clear();
 
-					foreach(GameNPC npc in Body.GetNPCsInRadius((ushort)Healer_Heal.Range))
+					foreach(GameNpc npc in Body.GetNPCsInRadius((ushort)Healer_Heal.Range))
                     {
 						if(npc != null)
                         {
@@ -1687,7 +1687,7 @@ namespace DOL.AI.Brain
 											PickTargetToMezz();
 										else
 										{
-											foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)Healer_Heal.Range))
+											foreach (GameNpc npc in Body.GetNPCsInRadius((ushort)Healer_Heal.Range))
 											{
 												if (npc != null)
 												{
@@ -2018,7 +2018,7 @@ namespace DOL.AI.Brain
 			if(CanCreateHunterPet==false && Body.PackageID == "NosdodenGhostHunter")
             {
 				GameLiving ptarget = CalculateNextAttackTarget();
-				GameNPC pet = new GameNPC();
+				GameNpc pet = new GameNpc();
 				pet.Name = "Hunter's Avatar";
 				pet.Model = 648;
 				pet.Size = 60;
@@ -2167,7 +2167,7 @@ namespace DOL.AI.Brain
 		}	
 		public void SummonSpiritChampion()
         {
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 			{
 				if (npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == Convert.ToString(Body.ObjectID) && npc.Brain is GhostSpiritChampionBrain)
 					return;
@@ -2255,7 +2255,7 @@ namespace DOL.AI.Brain
 		}
 		public void SummonSkeletalCommander()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 			{
 				if (npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == Convert.ToString(Body.ObjectID) && npc.Brain is GhostSkeletalCommanderBrain)
 					return;
@@ -2501,7 +2501,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-	public class NosdodenGhostAdd : GameNPC
+	public class NosdodenGhostAdd : GameNpc
 	{
 		public override int GetResist(EDamageType damageType)
 		{
@@ -2609,7 +2609,7 @@ namespace DOL.GS
             #region Kill pet Hunter
             if (PackageID == "NosdodenGhostHunter")
 			{
-				foreach (GameNPC npc in GetNPCsInRadius(5000))
+				foreach (GameNpc npc in GetNPCsInRadius(5000))
 				{
 					if (npc != null)
 					{
@@ -2623,7 +2623,7 @@ namespace DOL.GS
 			#region Kill pet Spiritmaster
 			if (PackageID == "NosdodenGhostSpiritmaster")
 			{
-				foreach (GameNPC npc in GetNPCsInRadius(5000))
+				foreach (GameNpc npc in GetNPCsInRadius(5000))
 				{
 					if (npc != null)
 					{
@@ -2636,7 +2636,7 @@ namespace DOL.GS
 			#region Kill pet Bonedancer
 			if (PackageID == "NosdodenGhostBonedancer")
 			{
-				foreach (GameNPC npc in GetNPCsInRadius(5000))
+				foreach (GameNpc npc in GetNPCsInRadius(5000))
 				{
 					if (npc != null)
 					{
@@ -2708,7 +2708,7 @@ namespace DOL.GS
 #region Spiritmaster pet
 namespace DOL.GS
 {
-	public class GhostSpiritChampion : GameNPC
+	public class GhostSpiritChampion : GameNpc
 	{
 		public override int MaxHealth
 		{
@@ -2774,7 +2774,7 @@ namespace DOL.GS
 			MaxSpeedBase = 225;
 			BlockChance = 40;
 			RespawnInterval = -1;
-			Flags ^= eFlags.GHOST;
+			Flags ^= ENpcFlags.GHOST;
 			Realm = ERealm.None;
 			GhostSpiritChampionBrain adds = new GhostSpiritChampionBrain();
 			SetOwnBrain(adds);
@@ -2829,7 +2829,7 @@ namespace DOL.AI.Brain
 		{
 			if (!CheckProximityAggro())
 			{
-				foreach (GameNPC bone in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc bone in Body.GetNPCsInRadius(5000))
 				{
 					if (bone != null)
 					{
@@ -2840,7 +2840,7 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro)
 			{
-				foreach (GameNPC bone in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc bone in Body.GetNPCsInRadius(5000))
 				{
 					if (bone != null)
 					{
@@ -2865,7 +2865,7 @@ namespace DOL.AI.Brain
 #region Skeletal Commander
 namespace DOL.GS
 {
-	public class GhostSkeletalCommander : GameNPC
+	public class GhostSkeletalCommander : GameNpc
 	{
 		public override int MaxHealth
 		{
@@ -2899,7 +2899,7 @@ namespace DOL.GS
         public override bool AddToWorld()
 		{
 			Model = 2220;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			EquipmentTemplateID = "bd_armor";
 			Name = "bone commander";
 			Size = 60;
@@ -2913,7 +2913,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc.IsAlive && npc.RespawnInterval == -1 && npc.Brain is SkeletalCommanderHealerBrain && npc.PackageID == PackageID)
 					npc.Die(npc);
@@ -2943,7 +2943,7 @@ namespace DOL.AI.Brain
 			if(!CheckProximityAggro())
             {
 				CanSummonBonemender=false;
-				foreach(GameNPC bone in Body.GetNPCsInRadius(5000))
+				foreach(GameNpc bone in Body.GetNPCsInRadius(5000))
                 {
 					if(bone != null)
                     {
@@ -2954,7 +2954,7 @@ namespace DOL.AI.Brain
             }
 			if(HasAggro)
             {
-				foreach (GameNPC bone in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc bone in Body.GetNPCsInRadius(5000))
 				{
 					if (bone != null)
 					{
@@ -2977,7 +2977,7 @@ namespace DOL.AI.Brain
 		private protected bool CanSummonBonemender = false;
 		private protected void SummonBonemender()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 			{
 				if (npc.IsAlive && npc.RespawnInterval == -1 && npc.Brain is SkeletalCommanderHealerBrain && npc.PackageID == Body.PackageID)
 					return;
@@ -2999,7 +2999,7 @@ namespace DOL.AI.Brain
 #region Bonemender
 namespace DOL.GS
 {
-	public class SkeletalCommanderHealer : GameNPC
+	public class SkeletalCommanderHealer : GameNpc
 	{
 		public override int MaxHealth
 		{
@@ -3042,7 +3042,7 @@ namespace DOL.GS
 			Level = 44;
 			RespawnInterval = -1;
 			Dexterity = 200;
-			Flags ^= eFlags.GHOST;
+			Flags ^= ENpcFlags.GHOST;
 			Realm = ERealm.None;
 			SkeletalCommanderHealerBrain adds = new SkeletalCommanderHealerBrain();
 			SetOwnBrain(adds);
@@ -3073,9 +3073,9 @@ namespace DOL.AI.Brain
             {
 				if (!Body.Spells.Contains(Pet_Heal))
 					Body.Spells.Add(Pet_Heal);
-				foreach (GameNPC commander in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc commander in Body.GetNPCsInRadius(5000))
                 {
-					foreach (GameNPC bone in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc bone in Body.GetNPCsInRadius(5000))
 					{
 						if (commander != null && bone != null)
 						{
@@ -3162,7 +3162,7 @@ namespace DOL.AI.Brain
 #region Nosdoden adds
 namespace DOL.GS
 {
-	public class NosdodenSummonedAdds : GameNPC
+	public class NosdodenSummonedAdds : GameNpc
 	{
 		public override int MaxHealth
 		{

@@ -85,9 +85,9 @@ namespace DOL.GS.Spells
 			ad.SpellHandler = this;
 			ad.AttackResult = EAttackResult.HitUnstyled;
 
-			if ( ad.Attacker is GameNPC )
+			if ( ad.Attacker is GameNpc )
 			{
-				IControlledBrain brain = ((GameNPC)ad.Attacker).Brain as IControlledBrain;
+				IControlledBrain brain = ((GameNpc)ad.Attacker).Brain as IControlledBrain;
 				if (brain != null)
 				{
 					GamePlayer owner = brain.GetPlayerOwner();

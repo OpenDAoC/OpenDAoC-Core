@@ -22,7 +22,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 		// Kill Goal
 		private const int MAX_KILLED = 200;
 
-		private static GameNPC Joe = null; // Start NPC
+		private static GameNpc Joe = null; // Start NPC
 
 		private int _mobsKilled = 0;
 
@@ -61,10 +61,10 @@ namespace DOL.GS.WeeklyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Joe", ERealm.Albion);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Joe", ERealm.Albion);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 249 && npc.X == 32526 && npc.Y == 27679)
 					{
 						Joe = npc;
@@ -75,7 +75,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Joe , creating it ...");
-				Joe = new GameNPC();
+				Joe = new GameNpc();
 				Joe.Model = 42;
 				Joe.Name = "Joe";
 				Joe.GuildName = "Realm Logistics";
@@ -88,7 +88,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 				Joe.Y = 27679;
 				Joe.Z = 22893;
 				Joe.Heading = 466;
-				Joe.Flags |= GameNPC.eFlags.PEACE;
+				Joe.Flags |= ENpcFlags.PEACE;
 				GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
 				templateAlb.AddNPCEquipment(EInventorySlot.TorsoArmor, 713,0,0,3);
 				templateAlb.AddNPCEquipment(EInventorySlot.LegsArmor, 714);
@@ -330,7 +330,7 @@ namespace DOL.GS.WeeklyQuest.Albion
 			if (gArgs.Target is GameSummonedPet)
 				return;
 			
-			if (gArgs.Target.Realm != 0 || gArgs.Target is not GameNPC || gArgs.Target.CurrentRegionID != 249 ||
+			if (gArgs.Target.Realm != 0 || gArgs.Target is not GameNpc || gArgs.Target.CurrentRegionID != 249 ||
 			    !(player.GetConLevel(gArgs.Target) > -2)) return;
 			if (player.Group != null)
 			{

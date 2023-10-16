@@ -65,7 +65,7 @@ namespace DOL.GS.Quests
         /// </summary>
         /// <param name="questType">type of Quest this QuestPart will belong to.</param>
         /// <param name="npc">NPC associated with his questpart typically NPC talking to or mob killing, etc...</param>        
-        public QuestBehavior(Type questType, GameNPC npc) 
+        public QuestBehavior(Type questType, GameNpc npc) 
             : this (questType,npc,-1) { }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace DOL.GS.Quests
         /// <param name="questType">type of Quest this QuestPart will belong to.</param>
         /// <param name="npc">NPC associated with his questpart typically NPC talking to or mob killing, etc...</param>        
         /// <param name="executions">Maximum number of executions the questpart should be execute during one quest for each player</param>
-        public QuestBehavior(Type questType, GameNPC npc, int executions) : base (npc)
+        public QuestBehavior(Type questType, GameNpc npc, int executions) : base (npc)
         {
             this.questType = questType;            
             this.maxNumberOfExecutions = executions;            

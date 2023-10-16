@@ -33,13 +33,13 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// door state (open or closed)
 		/// </summary>
-		private eDoorState m_state;
+		private EDoorState m_state;
 
 		/// <summary>
 		/// door state (open or closed)
 		/// call the broadcast of state in area
 		/// </summary>
-		public override eDoorState State
+		public override EDoorState State
 		{
 			get => m_state;
 			set
@@ -218,7 +218,7 @@ namespace DOL.GS.Keeps
 			m_level = 0;
 			m_model = 0xFFFF;
 			m_doorID = door.InternalID;
-			m_state = eDoorState.Closed;
+			m_state = EDoorState.Closed;
 			this.AddToWorld();
 
 			m_health = MaxHealth;
@@ -243,7 +243,7 @@ namespace DOL.GS.Keeps
 
 		public virtual void OpenDoor()
 		{
-			m_state = eDoorState.Open;
+			m_state = EDoorState.Open;
 			BroadcastDoorStatus();
 		}
 
@@ -252,7 +252,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public virtual void CloseDoor()
 		{
-			m_state = eDoorState.Closed;
+			m_state = EDoorState.Closed;
 			BroadcastDoorStatus();
 		}
 
@@ -302,6 +302,6 @@ namespace DOL.GS.Keeps
 			return true;
 		}
 
-		public override void NPCManipulateDoorRequest(GameNPC npc, bool open) { }
+		public override void NPCManipulateDoorRequest(GameNpc npc, bool open) { }
 	}
 }

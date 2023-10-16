@@ -24,7 +24,7 @@ namespace DOL.GS.Quests.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public AcceptQuestTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, Object k, Object i)
+        public AcceptQuestTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, Object k, Object i)
             : base(defaultNPC, notifyHandler, ETriggerType.AcceptQuest, k, i)
         { }
 
@@ -34,7 +34,7 @@ namespace DOL.GS.Quests.Triggers
         /// <param name="defautNPC"></param>
         /// <param name="notifyHandler"></param>
         /// <param name="questType"></param>
-        public AcceptQuestTrigger(GameNPC defautNPC, CoreEventHandler notifyHandler, Type questType)
+        public AcceptQuestTrigger(GameNpc defautNPC, CoreEventHandler notifyHandler, Type questType)
             : this(defautNPC,notifyHandler, (object)null,(object) questType)
         { }
 

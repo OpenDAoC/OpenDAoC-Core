@@ -68,7 +68,7 @@ namespace DOL.GS.SkillHandler
 			{
 				if (intercept.InterceptTarget != interceptTarget)
 					continue;
-				if (intercept.InterceptSource != player && !(intercept.InterceptSource is GameNPC))
+				if (intercept.InterceptSource != player && !(intercept.InterceptSource is GameNpc))
 				{
                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CannotUse.InterceptTargetAlreadyInterceptedEffect", intercept.InterceptSource.GetName(0, true), intercept.InterceptTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;

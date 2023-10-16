@@ -23,7 +23,7 @@ namespace DOL.GS.Spells
         /// <summary>
         /// Holds the charmed GameNPC for pulsing spells
         /// </summary>
-        public GameNPC m_charmedNpc;
+        public GameNpc m_charmedNpc;
 
         /// <summary>
         /// Holds the new controlled NPC's brain
@@ -74,7 +74,7 @@ namespace DOL.GS.Spells
         {
             if (m_charmedNpc == null)
                 // Save target on first tick
-                m_charmedNpc = target as GameNPC;
+                m_charmedNpc = target as GameNpc;
             else
                 // Reuse target for pulsing spells
                 target = m_charmedNpc;
@@ -115,7 +115,7 @@ namespace DOL.GS.Spells
         public override bool CheckEndCast(GameLiving selectedTarget)
         {
             var casterPlayer = Caster as GamePlayer;
-            var charmMob = selectedTarget as GameNPC;
+            var charmMob = selectedTarget as GameNpc;
 
             if (Caster == null || casterPlayer == null)
                 return false;
@@ -203,7 +203,7 @@ namespace DOL.GS.Spells
                         isCharmable = false;
                     if (charmMob is GameTrainer) // Class trainers
                         isCharmable = false;
-                    if (charmMob is GameGuard) // Realm guards
+                    if (charmMob is GameRealmGuard) // Realm guards
                         isCharmable = false;
                     if (charmMob is GameKeepGuard) // Keep guards
                         isCharmable = false;
@@ -252,50 +252,50 @@ namespace DOL.GS.Spells
                     switch((eCharmType)m_spell.AmnesiaChance)
                     {
                         case eCharmType.HumanoidAnimalInsectMagicalUndead:
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Undead)
+                            if (charmMob.BodyType == (ushort)EBodyType.Undead)
                                 isCharmable = true;
                             goto case eCharmType.HumanoidAnimalInsectMagical;
 
                         // Plant and Elemental body types are considered to be inherently Magical
                         case eCharmType.HumanoidAnimalInsectMagical:
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Magical)
+                            if (charmMob.BodyType == (ushort)EBodyType.Magical)
                                 isCharmable = true;
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Plant)
+                            if (charmMob.BodyType == (ushort)EBodyType.Plant)
                                 isCharmable = true;
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Elemental)
+                            if (charmMob.BodyType == (ushort)EBodyType.Elemental)
                                 isCharmable = true;
                             goto case eCharmType.HumanoidAnimalInsect;
 
                         case eCharmType.HumanoidAnimalInsect:
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Insect)
+                            if (charmMob.BodyType == (ushort)EBodyType.Insect)
                                 isCharmable = true;
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Reptile)
+                            if (charmMob.BodyType == (ushort)EBodyType.Reptile)
                                 isCharmable = true;
                             goto case eCharmType.HumanoidAnimal;
 
                         case eCharmType.HumanoidAnimal:
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Animal)
+                            if (charmMob.BodyType == (ushort)EBodyType.Animal)
                                 isCharmable = true;
                             goto case eCharmType.Humanoid;
 
                         case eCharmType.Humanoid:
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Humanoid)
+                            if (charmMob.BodyType == (ushort)EBodyType.Humanoid)
                                 isCharmable = true;
                             break;
 
                         case eCharmType.Animal:
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Animal)
+                            if (charmMob.BodyType == (ushort)EBodyType.Animal)
                                 isCharmable = true;
                             break;
 
                         case eCharmType.Insect:
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Insect)
+                            if (charmMob.BodyType == (ushort)EBodyType.Insect)
                                 isCharmable = true;
                             break;
 
                         // Only available for spells with AmnesiaChance of 'eCharmType.HumanoidAnimalInsect' or higher
                         case eCharmType.Reptile:
-                            if (charmMob.BodyType == (ushort)NpcTemplateMgr.eBodyType.Reptile)
+                            if (charmMob.BodyType == (ushort)EBodyType.Reptile)
                                 isCharmable = true;
                             break;
                     }
@@ -478,7 +478,7 @@ namespace DOL.GS.Spells
         /// <param name="arguments"></param>
         public void ReleaseEventHandler(CoreEvent e, object sender, EventArgs arguments)
         {
-            if (sender is not GameNPC pet || pet.Brain is not IControlledBrain)
+            if (sender is not GameNpc pet || pet.Brain is not IControlledBrain)
                 return;
 
             if (pet.effectListComponent.Effects.TryGetValue(EEffect.Charm, out List<EcsGameEffect> charms))

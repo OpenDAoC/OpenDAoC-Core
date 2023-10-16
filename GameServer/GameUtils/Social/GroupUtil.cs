@@ -361,7 +361,7 @@ namespace DOL.GS
 
 		// Part of the hack to make friendly pets untargetable (or targetable again) with TAB on a PvP server.
 		// Calls 'SendObjectGuildID' on the player and looks for all controlled NPCs controlled by 'controlledBody' recursively.
-		private static void SendControlledBodyGuildID(GamePlayer player, GuildUtil playerGuild, GameNPC controlledBody)
+		private static void SendControlledBodyGuildID(GamePlayer player, GuildUtil playerGuild, GameNpc controlledBody)
 		{
 			IControlledBrain[] npcControlledBrains = controlledBody.ControlledNpcList;
 

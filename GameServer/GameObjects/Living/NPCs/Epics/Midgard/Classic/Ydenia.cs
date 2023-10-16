@@ -124,7 +124,7 @@ namespace DOL.AI.Brain
 			if (Body.TargetObject != null && HasAggro)
 			{
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 				{
 					if (npc != null && npc.IsAlive && npc.Name.ToLower() == "dark seithkona" && npc.Brain is StandardMobBrain brain)
 					{

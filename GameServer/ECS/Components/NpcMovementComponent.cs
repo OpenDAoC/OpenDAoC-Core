@@ -24,7 +24,7 @@ namespace DOL.GS
         private PathCalculator _pathCalculator;
         private Action<NpcMovementComponent> _goToNextPathingNodeCallback;
 
-        public new GameNPC Owner { get; private set; }
+        public new GameNpc Owner { get; private set; }
         // 'TargetPosition' is accessed from multiple threads simultaneously (from the current NPC being updated, others NPCs checking around them, and the world update thread).
         // Actual synchronization would be expensive, so instead threads are expected to check 'IsTargetPositionValid' before using it, which is set to false when a NPC stops.
         // This however means 'TargetPosition' might be slightly outdated.
@@ -42,7 +42,7 @@ namespace DOL.GS
         public bool IsAtTargetPosition => IsTargetPositionValid && TargetPosition.X == Owner.X && TargetPosition.Y == Owner.Y && TargetPosition.Z == Owner.Z;
         public bool CanRoam => ServerProperties.Properties.ALLOW_ROAM && RoamingRange != 0 && string.IsNullOrWhiteSpace(PathID);
 
-        public NpcMovementComponent(GameNPC npcOwner) : base(npcOwner)
+        public NpcMovementComponent(GameNpc npcOwner) : base(npcOwner)
         {
             Owner = npcOwner;
             _pathCalculator = new(npcOwner);

@@ -23,7 +23,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public RandomChanceRequirement(GameNPC defaultNPC,  Object n, Object v, EComparator comp)
+        public RandomChanceRequirement(GameNpc defaultNPC,  Object n, Object v, EComparator comp)
             : base(defaultNPC, ERequirementType.Random, n, v, comp)
 		{   			
 		}
@@ -33,7 +33,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// </summary>
 		/// <param name="defaultNPC">Parent defaultNPC of this Requirement</param>		
 		/// <param name="n">First Requirement Variable, meaning depends on RequirementType</param>		
-        public RandomChanceRequirement(GameNPC defaultNPC,  int n )
+        public RandomChanceRequirement(GameNpc defaultNPC,  int n )
             : this(defaultNPC,  (object)n, (object)null, EComparator.None)
 		{   			
 		}

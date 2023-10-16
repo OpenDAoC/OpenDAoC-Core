@@ -102,14 +102,14 @@ namespace DOL.GS.Commands
 
 					if (targetPlayer == null)
 					{
-						GameNPC[] npcs = WorldMgr.GetNPCsByName(args[2], ERealm.None);
+						GameNpc[] npcs = WorldMgr.GetNPCsByName(args[2], ERealm.None);
 
 						if (npcs.Length > 0)
 						{
 							// for multiple npc's first try to jump to the npc in the players current region
-							GameNPC jumpTarget = npcs[0];
+							GameNpc jumpTarget = npcs[0];
 
-							foreach (GameNPC npc in npcs)
+							foreach (GameNpc npc in npcs)
 							{
 								if (npc.CurrentRegionID == client.Player.CurrentRegionID)
 								{
@@ -159,14 +159,14 @@ namespace DOL.GS.Commands
 						int realm = 0;
 						int.TryParse(args[3], out realm);
 
-						GameNPC[] npcs = WorldMgr.GetNPCsByName(args[2], (ERealm)realm);
+						GameNpc[] npcs = WorldMgr.GetNPCsByName(args[2], (ERealm)realm);
 
 						if (npcs.Length > 0)
 						{
 							// for multiple npc's first try to jump to the npc in the players current region
-							GameNPC jumpTarget = npcs[0];
+							GameNpc jumpTarget = npcs[0];
 
-							foreach (GameNPC npc in npcs)
+							foreach (GameNpc npc in npcs)
 							{
 								if (npc.CurrentRegionID == client.Player.CurrentRegionID)
 								{

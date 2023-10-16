@@ -25,7 +25,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 		private int _orylleKilled = 0;
 		private int _xanxicarKilled = 0;
 
-		private static GameNPC James = null; // Start NPC
+		private static GameNpc James = null; // Start NPC
 
 		private const string Orylle_NAME = "Orylle";
 		private const string Xanxicar_NAME = "Xanxicar";
@@ -66,10 +66,10 @@ namespace DOL.GS.MonthlyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("James", ERealm.Albion);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("James", ERealm.Albion);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 51 && npc.X == 534044 && npc.Y == 549664)
 					{
 						James = npc;
@@ -80,7 +80,7 @@ namespace DOL.GS.MonthlyQuest.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find James , creating it ...");
-				James = new GameNPC();
+				James = new GameNpc();
 				James.Model = 254;
 				James.Name = "James";
 				James.GuildName = "Advisor To The King";
@@ -319,13 +319,13 @@ namespace DOL.GS.MonthlyQuest.Albion
 			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-			if (gArgs.Target.Name.ToLower() == Orylle_NAME.ToLower() && gArgs.Target is GameNPC && _orylleKilled < MAX_KILLED)
+			if (gArgs.Target.Name.ToLower() == Orylle_NAME.ToLower() && gArgs.Target is GameNpc && _orylleKilled < MAX_KILLED)
 			{
 				_orylleKilled = 1;
 				player.Out.SendMessage("[Monthly] You killed " + Orylle_NAME + ": (" + _orylleKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == Xanxicar_NAME.ToLower() && gArgs.Target is GameNPC && _xanxicarKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == Xanxicar_NAME.ToLower() && gArgs.Target is GameNpc && _xanxicarKilled < MAX_KILLED)
 			{
 				_xanxicarKilled = 1;
 				player.Out.SendMessage("[Monthly] You killed " + Xanxicar_NAME + ": (" + _xanxicarKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);

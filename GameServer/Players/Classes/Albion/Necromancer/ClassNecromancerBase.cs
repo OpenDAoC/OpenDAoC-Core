@@ -123,11 +123,11 @@ namespace DOL.GS
 
 				if (Player.ControlledBrain != null && Player.ControlledBrain.Body != null)
 				{
-					GameNPC pet = Player.ControlledBrain.Body;
+					GameNpc pet = Player.ControlledBrain.Body;
 
 					foreach (GameObject attacker in Player.attackComponent.Attackers.Keys)
 					{
-						if (attacker is GameNPC npcAttacker)
+						if (attacker is GameNpc npcAttacker)
 						{
 							if (npcAttacker.TargetObject == Player && npcAttacker.attackComponent.AttackState)
 							{
@@ -183,7 +183,7 @@ namespace DOL.GS
         {
             if (Player.ControlledBrain != null)
             {
-				GameNPC pet = Player.ControlledBrain.Body;
+				GameNpc pet = Player.ControlledBrain.Body;
 
                 if (pet != null && sender == pet && e == GameLivingEvent.CastStarting && args is CastingEventArgs)
                 {

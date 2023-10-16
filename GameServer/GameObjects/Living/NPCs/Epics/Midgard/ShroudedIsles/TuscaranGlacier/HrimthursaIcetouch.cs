@@ -51,8 +51,8 @@ namespace DOL.AI.Brain
 		private bool CanHeal = false;
 		private bool LockNpc = false;
 		private bool ResetNoTarget;
-		private GameNPC healnpc = null;
-		private GameNPC HealNpc
+		private GameNpc healnpc = null;
+		private GameNpc HealNpc
 		{
 			get { return healnpc; }
 			set { healnpc = value; }
@@ -62,9 +62,9 @@ namespace DOL.AI.Brain
 			if(Body.IsAlive)
             {
 				#region Heal mobs				
-				List<GameNPC> NpcToHeal = new List<GameNPC>();
+				List<GameNpc> NpcToHeal = new List<GameNpc>();
 				GameLiving target = Body.TargetObject as GameLiving;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(1000))
                 {
 					if (npc != null && npc.IsAlive && npc.Faction == Body.Faction )
 					{
@@ -76,7 +76,7 @@ namespace DOL.AI.Brain
 				{
 					if (!LockNpc)
 					{
-						GameNPC mob = NpcToHeal[Util.Random(0, NpcToHeal.Count - 1)];//pick randomly mob that need to be healed
+						GameNpc mob = NpcToHeal[Util.Random(0, NpcToHeal.Count - 1)];//pick randomly mob that need to be healed
 						HealNpc = mob;
 						LockNpc = true;
 					}

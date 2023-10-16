@@ -9,11 +9,11 @@ namespace DOL.GS.Behaviour.Actions
     public class AnimationAction : AAction<EEmote,GameLiving>
     {               
 
-        public AnimationAction(GameNPC defaultNPC, Object p, Object q)
+        public AnimationAction(GameNpc defaultNPC, Object p, Object q)
             : base(defaultNPC, EActionType.Animation, p, q) { }
         
 
-        public AnimationAction(GameNPC defaultNPC, EEmote emote, GameLiving actor)
+        public AnimationAction(GameNpc defaultNPC, EEmote emote, GameLiving actor)
             : this(defaultNPC, (object) emote, (object)actor) { }
         
 

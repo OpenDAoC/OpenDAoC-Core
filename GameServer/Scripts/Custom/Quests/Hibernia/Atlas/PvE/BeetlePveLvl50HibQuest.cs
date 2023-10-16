@@ -26,9 +26,9 @@ namespace DOL.GS.AtlasQuest.Hibernia
 		private int _legionKilled = 0;
 		private int _grandSummonerKilled = 0;
 
-		private static GameNPC Harris = null; // Start NPC
-		private static GameNPC Beetle = null;
-		private static GameNPC MobEffect = null;
+		private static GameNpc Harris = null; // Start NPC
+		private static GameNpc Beetle = null;
+		private static GameNpc MobEffect = null;
 		private static String HIB_DRAGON_NAME = "Cuuldurach the Glimmer King";
 		private static String LEGION_NAME = "Legion";
 		private static String GRAND_SUMMONER_NAME = "Grand Summoner Govannon";
@@ -70,10 +70,10 @@ namespace DOL.GS.AtlasQuest.Hibernia
 			
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Harris", ERealm.Hibernia);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Harris", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 201 && npc.X == 34765 && npc.Y == 32235)
 					{
 						Harris = npc;
@@ -84,7 +84,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Harris , creating it ...");
-				Harris = new GameNPC();
+				Harris = new GameNpc();
 				Harris.Model = 309;
 				Harris.Name = "Harris";
 				Harris.GuildName = "Protector of Beetles";
@@ -316,16 +316,16 @@ namespace DOL.GS.AtlasQuest.Hibernia
 		
 		private static int CreateBeetle(EcsGameTimer timer)
         {
-	        Beetle = new GameNPC();
+	        Beetle = new GameNpc();
             Beetle.Model = 668;
             Beetle.Name = "Kevin";
             Beetle.GuildName = "";
             Beetle.Realm = ERealm.Hibernia;
             Beetle.Race = 2007;
-            Beetle.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
+            Beetle.BodyType = (ushort) EBodyType.Magical;
             Beetle.Size = 40;
             Beetle.Level = 55;
-            Beetle.Flags ^= GameNPC.eFlags.PEACE;
+            Beetle.Flags ^= ENpcFlags.PEACE;
             Beetle.CurrentRegionID = 201;
             Beetle.X = 34824;
             Beetle.Y = 32162;
@@ -338,18 +338,18 @@ namespace DOL.GS.AtlasQuest.Hibernia
 		
 		private static int CreateEffect(EcsGameTimer timer)
 		{
-			MobEffect = new GameNPC();
+			MobEffect = new GameNpc();
 			MobEffect.Model = 1822;
 			MobEffect.Name = "power of the beetle";
 			MobEffect.GuildName = "";
 			MobEffect.Realm = ERealm.Hibernia;
 			MobEffect.Race = 2007;
-			MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
+			MobEffect.BodyType = (ushort) EBodyType.Magical;
 			MobEffect.Size = 25;
 			MobEffect.Level = 65;
-			MobEffect.Flags ^= GameNPC.eFlags.CANTTARGET;
-			MobEffect.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-			MobEffect.Flags ^= GameNPC.eFlags.PEACE;
+			MobEffect.Flags ^= ENpcFlags.CANTTARGET;
+			MobEffect.Flags ^= ENpcFlags.DONTSHOWNAME;
+			MobEffect.Flags ^= ENpcFlags.PEACE;
 			
 			MobEffect.CurrentRegionID = 201;
 			MobEffect.X = 34824;
@@ -367,7 +367,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 		
 		private static int RemoveEffectMob(EcsGameTimer timer)
 		{
-			foreach (GameNPC effect in Harris.GetNPCsInRadius(600))
+			foreach (GameNpc effect in Harris.GetNPCsInRadius(600))
 			{
 				if (effect.Name.ToLower() == "power of the beetle")
 					effect.RemoveFromWorld();
@@ -378,7 +378,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 		
 		private static int RemoveBeetle(EcsGameTimer timer)
 		{
-			foreach (GameNPC effect in Harris.GetNPCsInRadius(600))
+			foreach (GameNpc effect in Harris.GetNPCsInRadius(600))
 			{
 				if (effect.Name.ToLower() == "kevin")
 					effect.RemoveFromWorld();
@@ -553,19 +553,19 @@ namespace DOL.GS.AtlasQuest.Hibernia
 			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-			if (gArgs.Target.Name.ToLower() == HIB_DRAGON_NAME.ToLower() && gArgs.Target is GameNPC && _dragonKilled < MAX_KILLED)
+			if (gArgs.Target.Name.ToLower() == HIB_DRAGON_NAME.ToLower() && gArgs.Target is GameNpc && _dragonKilled < MAX_KILLED)
 			{
 				_dragonKilled = 1;
 				player.Out.SendMessage("[Beetle] You killed " + HIB_DRAGON_NAME + ": (" + _dragonKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == LEGION_NAME.ToLower() && gArgs.Target is GameNPC && _legionKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == LEGION_NAME.ToLower() && gArgs.Target is GameNpc && _legionKilled < MAX_KILLED)
 			{
 				_legionKilled = 1;
 				player.Out.SendMessage("[Beetle] You killed " + LEGION_NAME + ": (" + _legionKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == GRAND_SUMMONER_NAME.ToLower() && gArgs.Target is GameNPC && _grandSummonerKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == GRAND_SUMMONER_NAME.ToLower() && gArgs.Target is GameNpc && _grandSummonerKilled < MAX_KILLED)
 			{
 				_grandSummonerKilled = 1;
 				player.Out.SendMessage("[Beetle] You killed " + GRAND_SUMMONER_NAME + ": (" + _grandSummonerKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);

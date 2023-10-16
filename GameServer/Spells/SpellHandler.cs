@@ -474,7 +474,7 @@ namespace DOL.GS.Spells
 						Target = Caster?.TargetObject as GameLiving;
 
 					// Pet spells are automatically casted on the controlled NPC, but only if the current target isn't a subpet or a turret.
-					if (((Target as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster && Caster.ControlledBrain?.Body != null)
+					if (((Target as GameNpc)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster && Caster.ControlledBrain?.Body != null)
 						Target = Caster.ControlledBrain.Body;
 
 					break;
@@ -496,7 +496,7 @@ namespace DOL.GS.Spells
 			// Initial LoS state.
 			HasLos = Caster.TargetInView;
 
-			if (Caster is GameNPC npcOwner)
+			if (Caster is GameNpc npcOwner)
 			{
 				// Reset for LoS checks during cast.
 				HasLos = true;
@@ -661,7 +661,7 @@ namespace DOL.GS.Spells
 			{
 				case ESpellTarget.PET:
 				{
-					if (Target == null || ((Target as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster)
+					if (Target == null || ((Target as GameNpc)?.Brain as IControlledBrain)?.GetPlayerOwner() != Caster)
 					{
 						if (!quiet)
 							MessageToCaster("You must cast this spell on a creature you are controlling.", EChatType.CT_System);
@@ -706,8 +706,8 @@ namespace DOL.GS.Spells
 
 						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
 
-						if (Caster is GameNPC npc)
-							npc.Follow(Target, Spell.Range - 100, GameNPC.STICK_MAXIMUM_RANGE);
+						if (Caster is GameNpc npc)
+							npc.Follow(Target, Spell.Range - 100, GameNpc.STICK_MAXIMUM_RANGE);
 
 						return false;
 					}
@@ -884,7 +884,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 			
-			if (Caster != target && Caster is GameNPC casterNPC && Caster is not NecromancerPet)
+			if (Caster != target && Caster is GameNpc casterNPC && Caster is not NecromancerPet)
 				casterNPC.TurnTo(target);
 
 			if (m_caster.ObjectState != GameObject.eObjectState.Active)
@@ -1046,7 +1046,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (Caster is GameNPC npcOwner)
+			if (Caster is GameNpc npcOwner)
 			{
 				if (Spell.CastTime > 0)
 				{
@@ -1105,7 +1105,7 @@ namespace DOL.GS.Spells
 					{
 						_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
 
-						if (Caster is GameNPC npc && npc.Brain is IControlledBrain npcBrain)
+						if (Caster is GameNpc npc && npc.Brain is IControlledBrain npcBrain)
 							npcBrain.GetPlayerOwner()?.Out.SendCheckLOS(npc, target, CheckPetLosDuringCastCallback);
 						else if (Caster is GamePlayer player)
 							player.Out.SendCheckLOS(player, target, CheckPlayerLosDuringCastCallback);
@@ -1612,7 +1612,7 @@ namespace DOL.GS.Spells
 					
 					m_caster.DisableSkills(toDisable);
 				}
-				else if (m_caster is GameNPC)
+				else if (m_caster is GameNpc)
 					m_caster.DisableSkill(m_spell, m_spell.RecastDelay);
 			}
 
@@ -1675,9 +1675,9 @@ namespace DOL.GS.Spells
 						}
 
 						list.AddRange(aoePlayers);
-						ConcurrentBag<GameNPC> aoeMobs = new();
+						ConcurrentBag<GameNpc> aoeMobs = new();
 
-						foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget, modifiedRadius))
+						foreach (GameNpc npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget, modifiedRadius))
 						{
 							if (npc is GameStorm)
 								aoeMobs.Add(npc);
@@ -1705,7 +1705,7 @@ namespace DOL.GS.Spells
 					// PBAE spells.
 					if (modifiedRadius > 0 && Spell.Range == 0)
 					{
-						foreach (GameNPC npcInRadius in Caster.GetNPCsInRadius(modifiedRadius))
+						foreach (GameNpc npcInRadius in Caster.GetNPCsInRadius(modifiedRadius))
 						{
 							if (Caster.IsControlledNPC(npcInRadius))
 								list.Add(npcInRadius);
@@ -1717,7 +1717,7 @@ namespace DOL.GS.Spells
 					if (target == null)
 						break;
 
-					GameNPC pet = target as GameNPC;
+					GameNpc pet = target as GameNpc;
 
 					if (pet != null && Caster.IsWithinRadius(pet, Spell.Range))
 					{
@@ -1730,11 +1730,11 @@ namespace DOL.GS.Spells
 					{
 						if (Caster is GamePlayer player && player.PlayerClass.Name.ToLower() == "bonedancer")
 						{
-							foreach (GameNPC npcInRadius in player.GetNPCsInRadius((ushort) Spell.Range))
+							foreach (GameNpc npcInRadius in player.GetNPCsInRadius((ushort) Spell.Range))
 							{
 								if (npcInRadius is CommanderPet commander && commander.Owner == player)
 									list.Add(commander);
-								else if (npcInRadius is BDSubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
+								else if (npcInRadius is SubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
 								{
 									if (!Spell.IsHealing)
 										list.Add(subpet);
@@ -1756,7 +1756,7 @@ namespace DOL.GS.Spells
 					// Buffs affect every pet around the targetted pet (same owner).
 					if (pet != null)
 					{
-						foreach (GameNPC npcInRadius in pet.GetNPCsInRadius(modifiedRadius))
+						foreach (GameNpc npcInRadius in pet.GetNPCsInRadius(modifiedRadius))
 						{
 							if (npcInRadius == pet || !Caster.IsControlledNPC(npcInRadius) || npcInRadius.Brain is BomberBrain)
 								continue;
@@ -1801,9 +1801,9 @@ namespace DOL.GS.Spells
 						}
 
 						list.AddRange(aoePlayers);
-						ConcurrentBag<GameNPC> aoeMobs = new();
+						ConcurrentBag<GameNpc> aoeMobs = new();
 
-						foreach (GameNPC npc in  target.GetNPCsInRadius(modifiedRadius))
+						foreach (GameNpc npc in  target.GetNPCsInRadius(modifiedRadius))
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 							{
@@ -1869,9 +1869,9 @@ namespace DOL.GS.Spells
 						}
 
 						list.AddRange(aoePlayers);
-						ConcurrentBag<GameNPC> aoeMobs = new();
+						ConcurrentBag<GameNpc> aoeMobs = new();
 
-						foreach (GameNPC npc in target.GetNPCsInRadius(modifiedRadius))
+						foreach (GameNpc npc in target.GetNPCsInRadius(modifiedRadius))
 						{
 							if (GameServer.ServerRules.IsSameRealm(Caster, npc, true))
 							{
@@ -1919,9 +1919,9 @@ namespace DOL.GS.Spells
 						}
 
 						list.AddRange(aoePlayers);
-						ConcurrentBag<GameNPC> aoeMobs = new();
+						ConcurrentBag<GameNpc> aoeMobs = new();
 
-						foreach (GameNPC npc in target.GetNPCsInRadius(modifiedRadius))
+						foreach (GameNpc npc in target.GetNPCsInRadius(modifiedRadius))
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true) == false)
 								aoeMobs.Add(npc);
@@ -1954,7 +1954,7 @@ namespace DOL.GS.Spells
 							if (npc != null)
 							{
 								//Add our first pet
-								GameNPC petBody2 = npc.Body;
+								GameNpc petBody2 = npc.Body;
 								if (m_caster.IsWithinRadius(petBody2, spellRange))
 									list.Add(petBody2);
 
@@ -1969,9 +1969,9 @@ namespace DOL.GS.Spells
 								}
 							}
 						}// if (m_caster is GamePlayer)
-						else if (m_caster is GameNPC && (m_caster as GameNPC).Brain is ControlledNpcBrain)
+						else if (m_caster is GameNpc && (m_caster as GameNpc).Brain is ControlledNpcBrain)
 						{
-							IControlledBrain casterbrain = (m_caster as GameNPC).Brain as IControlledBrain;
+							IControlledBrain casterbrain = (m_caster as GameNpc).Brain as IControlledBrain;
 
 							GamePlayer player = casterbrain.GetPlayerOwner();
 
@@ -2008,7 +2008,7 @@ namespace DOL.GS.Spells
 								if (npc != null)
 								{
 									//Add our first pet
-									GameNPC petBody2 = npc.Body;
+									GameNpc petBody2 = npc.Body;
 									if (m_caster.IsWithinRadius(petBody2, spellRange))
 										list.Add(petBody2);
 
@@ -2049,9 +2049,9 @@ namespace DOL.GS.Spells
 					}
 
 					list.AddRange(aoePlayers);
-					ConcurrentBag<GameNPC> aoeMobs = new();
+					ConcurrentBag<GameNpc> aoeMobs = new();
 
-					foreach (GameNPC npc in target.GetNPCsInRadius((ushort) Spell.Range))
+					foreach (GameNpc npc in target.GetNPCsInRadius((ushort) Spell.Range))
 					{
 						if (npc == Caster)
 							continue;
@@ -2246,7 +2246,7 @@ namespace DOL.GS.Spells
 					ApplyEffectOnTarget(targetInList);
 				}
 
-				if (Spell.IsConcentration && Caster is GameNPC npc && npc.Brain is ControlledNpcBrain npcBrain && Spell.IsBuff)
+				if (Spell.IsConcentration && Caster is GameNpc npc && npc.Brain is ControlledNpcBrain npcBrain && Spell.IsBuff)
 					npcBrain.AddBuffedTarget(Target);
 			}
 
@@ -2478,7 +2478,7 @@ namespace DOL.GS.Spells
 			double durationEffectiveness = Effectiveness;
 
 			// Duration is reduced for AoE spells based on the distance from the center, but only in RvR combat and if the spell doesn't have a damage component.
-			if (_distanceFallOff > 0 && Spell.Damage == 0 && (target is GamePlayer || (target is GameNPC npcTarget && npcTarget.Brain is IControlledBrain)))
+			if (_distanceFallOff > 0 && Spell.Damage == 0 && (target is GamePlayer || (target is GameNpc npcTarget && npcTarget.Brain is IControlledBrain)))
 				durationEffectiveness *= 1 - _distanceFallOff / 2;
 
 			CreateECSEffect(new EcsGameEffectInitParams(target, CalculateEffectDuration(target, durationEffectiveness), Effectiveness, this));
@@ -2577,13 +2577,13 @@ namespace DOL.GS.Spells
 
 			int hitChance = m_caster.GetModified(EProperty.ToHitBonus);
 
-			if (m_caster is GameNPC)
+			if (m_caster is GameNpc)
 				hitChance += (int)(87.5 - (target.Level - m_caster.Level));
 			else
 			{
 				hitChance += 88 + (spellLevel - target.Level) / 2;
 
-				if (target is GameNPC)
+				if (target is GameNpc)
 				{
 					double mobScalar = m_caster.GetConLevel(target) > 3 ? 3 : m_caster.GetConLevel(target);
 					hitChance -= (int)(mobScalar * Properties.PVE_SPELL_CONHITPERCENT);
@@ -2675,7 +2675,7 @@ namespace DOL.GS.Spells
 			StartSpellResistLastAttackTimer(target);
 
 			// Treat resists as attacks to trigger an immediate response and BAF
-			if (target is GameNPC)
+			if (target is GameNpc)
 			{
 				if (Caster.Realm == 0 || target.Realm == 0)
 				{
@@ -2705,7 +2705,7 @@ namespace DOL.GS.Spells
 		public virtual void SendSpellResistMessages(GameLiving target)
 		{
 			// Deliver message to the target, if the target is a pet, to its owner instead.
-			if (target is GameNPC npcTarget)
+			if (target is GameNpc npcTarget)
 			{
 				if (npcTarget.Brain is IControlledBrain npcTargetBrain)
 				{
@@ -2780,7 +2780,7 @@ namespace DOL.GS.Spells
 		{
 			if (Caster is GamePlayer playerCaster)
 				playerCaster.MessageToSelf(message, type);
-			else if (Caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain npcCasterBrain
+			else if (Caster is GameNpc npcCaster && npcCaster.Brain is IControlledBrain npcCasterBrain
 					 && (type is EChatType.CT_YouHit or EChatType.CT_SpellResisted or EChatType.CT_Spell))
 			{
 				GamePlayer playerOwner = npcCasterBrain.GetPlayerOwner();
@@ -2894,10 +2894,10 @@ namespace DOL.GS.Spells
 				//list.Add(" "); //empty line
 				GamePlayer p = null;
 
-				if (Caster is GamePlayer || Caster is GameNPC && (Caster as GameNPC).Brain is IControlledBrain &&
-				((Caster as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null)
+				if (Caster is GamePlayer || Caster is GameNpc && (Caster as GameNpc).Brain is IControlledBrain &&
+				((Caster as GameNpc).Brain as IControlledBrain).GetPlayerOwner() != null)
 				{
-					p = Caster is GamePlayer ? (Caster as GamePlayer) : ((Caster as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+					p = Caster is GamePlayer ? (Caster as GamePlayer) : ((Caster as GameNpc).Brain as IControlledBrain).GetPlayerOwner();
 				}
 				list.Add(Spell.Description);
 				list.Add(" "); //empty line
@@ -3143,7 +3143,7 @@ namespace DOL.GS.Spells
 
 			if (m_caster is GameSummonedPet)
 			{
-				IControlledBrain brain = (m_caster as GameNPC).Brain as IControlledBrain;
+				IControlledBrain brain = (m_caster as GameNpc).Brain as IControlledBrain;
 				speclevel = brain.GetLivingOwner().Level;
 			}
 			else if (m_caster is GamePlayer)
@@ -3183,10 +3183,10 @@ namespace DOL.GS.Spells
 				min += GetLevelModFactor() * (m_caster.Level - target.Level);
 				max += GetLevelModFactor() * (m_caster.Level - target.Level);
 			}
-			else if (m_caster is GameNPC && ((GameNPC)m_caster).Brain is IControlledBrain)
+			else if (m_caster is GameNpc && ((GameNpc)m_caster).Brain is IControlledBrain)
 			{
 				//Get the root owner
-				GameLiving owner = ((IControlledBrain)((GameNPC)m_caster).Brain).GetLivingOwner();
+				GameLiving owner = ((IControlledBrain)((GameNpc)m_caster).Brain).GetLivingOwner();
 				if (owner != null)
 				{
 					min += GetLevelModFactor() * (owner.Level - target.Level);
@@ -3235,7 +3235,7 @@ namespace DOL.GS.Spells
 		/// <param name="damage"></param>
 		/// <param name="player"></param>
 		/// <returns></returns>
-		public virtual double CapNPCSpellDamage(double damage, GameNPC npc)
+		public virtual double CapNPCSpellDamage(double damage, GameNpc npc)
 		{
 			if (npc.Level < 50)
 			{
@@ -3259,9 +3259,9 @@ namespace DOL.GS.Spells
 
 			// For pets the stats of the owner have to be taken into account.
 
-			if (Caster is GameNPC && ((Caster as GameNPC).Brain) is IControlledBrain)
+			if (Caster is GameNpc && ((Caster as GameNpc).Brain) is IControlledBrain)
 			{
-				player = (((Caster as GameNPC).Brain) as IControlledBrain).Owner as GamePlayer;
+				player = (((Caster as GameNpc).Brain) as IControlledBrain).Owner as GamePlayer;
 			}
 
 			if (player != null)
@@ -3339,9 +3339,9 @@ namespace DOL.GS.Spells
 					if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
 				}
 			}
-			else if (Caster is GameNPC)
+			else if (Caster is GameNpc)
 			{
-				var npc = (GameNPC) Caster;
+				var npc = (GameNpc) Caster;
 				int manaStatValue = npc.GetModified(EProperty.Intelligence);
 				spellDamage = CapNPCSpellDamage(spellDamage, npc)*(manaStatValue + 200)/275.0;
 			}
@@ -3403,11 +3403,11 @@ namespace DOL.GS.Spells
 			int hitChance = CalculateToHitChance(ad.Target);
 			finalDamage = AdjustDamageForHitChance(finalDamage, hitChance);
 
-			if (m_caster is GamePlayer || (m_caster is GameNPC && (m_caster as GameNPC).Brain is IControlledBrain && m_caster.Realm != 0))
+			if (m_caster is GamePlayer || (m_caster is GameNpc && (m_caster as GameNpc).Brain is IControlledBrain && m_caster.Realm != 0))
 			{
 				if (target is GamePlayer)
 					finalDamage = (int) (finalDamage * Properties.PVP_SPELL_DAMAGE);
-				else if (target is GameNPC)
+				else if (target is GameNpc)
 					finalDamage = (int) (finalDamage * Properties.PVE_SPELL_DAMAGE);
 			}
 
@@ -3516,7 +3516,7 @@ namespace DOL.GS.Spells
 				modmessage = " (" + ad.Modifier + ")";
 			if (Caster is GamePlayer || Caster is NecromancerPet)
 				MessageToCaster(string.Format("You hit {0} for {1}{2} damage!", ad.Target.GetName(0, false), ad.Damage, modmessage), EChatType.CT_YouHit);
-			else if (Caster is GameNPC)
+			else if (Caster is GameNpc)
 				MessageToCaster(string.Format("Your " + Caster.Name + " hits {0} for {1}{2} damage!",
 											  ad.Target.GetName(0, false), ad.Damage, modmessage), EChatType.CT_YouHit);
 			if (ad.CriticalDamage > 0)
@@ -3545,7 +3545,7 @@ namespace DOL.GS.Spells
 			ad.Target.OnAttackedByEnemy(ad);
 			ad.Attacker.DealDamage(ad);
 
-			if (ad.Damage == 0 && ad.Target is GameNPC targetNpc)
+			if (ad.Damage == 0 && ad.Target is GameNpc targetNpc)
 			{
 				if (targetNpc.Brain is IOldAggressiveBrain brain)
 					brain.AddToAggroList(Caster, 1);

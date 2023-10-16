@@ -26,9 +26,9 @@ namespace DOL.GS.AtlasQuest.Midgard
 		private int _legionKilled = 0;
 		private int _grandSummonerKilled = 0;
 
-		private static GameNPC Rengahr = null; // Start NPC
-		private static GameNPC Beetle = null;
-		private static GameNPC MobEffect = null;
+		private static GameNpc Rengahr = null; // Start NPC
+		private static GameNpc Beetle = null;
+		private static GameNpc MobEffect = null;
 		private static String MID_DRAGON_NAME = "Gjalpinulva";
 		private static String LEGION_NAME = "Legion";
 		private static String GRAND_SUMMONER_NAME = "Grand Summoner Govannon";
@@ -69,10 +69,10 @@ namespace DOL.GS.AtlasQuest.Midgard
 				return;
 			
 			#region defineNPCs
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rengahr", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Rengahr", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 101 && npc.X == 31458 && npc.Y == 27707)
 					{
 						Rengahr = npc;
@@ -83,7 +83,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Rengahr , creating it ...");
-				Rengahr = new GameNPC();
+				Rengahr = new GameNpc();
 				Rengahr.Model = 512;
 				Rengahr.Name = "Rengahr";
 				Rengahr.GuildName = "Protector of Beetles";
@@ -317,16 +317,16 @@ namespace DOL.GS.AtlasQuest.Midgard
 		
 		private static int CreateBeetle(EcsGameTimer timer)
         {
-	        Beetle = new GameNPC();
+	        Beetle = new GameNpc();
             Beetle.Model = 670;
             Beetle.Name = "Jeremy";
             Beetle.GuildName = "";
             Beetle.Realm = ERealm.Midgard;
             Beetle.Race = 2007;
-            Beetle.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
+            Beetle.BodyType = (ushort) EBodyType.Magical;
             Beetle.Size = 40;
             Beetle.Level = 55;
-            Beetle.Flags ^= GameNPC.eFlags.PEACE;
+            Beetle.Flags ^= ENpcFlags.PEACE;
             Beetle.CurrentRegionID = 101;
             Beetle.X = 31445;
             Beetle.Y = 27618;
@@ -339,18 +339,18 @@ namespace DOL.GS.AtlasQuest.Midgard
 		
 		private static int CreateEffect(EcsGameTimer timer)
 		{
-			MobEffect = new GameNPC();
+			MobEffect = new GameNpc();
 			MobEffect.Model = 1822;
 			MobEffect.Name = "power of the beetle";
 			MobEffect.GuildName = "";
 			MobEffect.Realm = ERealm.Midgard;
 			MobEffect.Race = 2007;
-			MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
+			MobEffect.BodyType = (ushort) EBodyType.Magical;
 			MobEffect.Size = 25;
 			MobEffect.Level = 65;
-			MobEffect.Flags ^= GameNPC.eFlags.CANTTARGET;
-			MobEffect.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-			MobEffect.Flags ^= GameNPC.eFlags.PEACE;
+			MobEffect.Flags ^= ENpcFlags.CANTTARGET;
+			MobEffect.Flags ^= ENpcFlags.DONTSHOWNAME;
+			MobEffect.Flags ^= ENpcFlags.PEACE;
 			
 			MobEffect.CurrentRegionID = 101;
 			MobEffect.X = 31445;
@@ -368,7 +368,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 		
 		private static int RemoveEffectMob(EcsGameTimer timer)
 		{
-			foreach (GameNPC effect in Rengahr.GetNPCsInRadius(600))
+			foreach (GameNpc effect in Rengahr.GetNPCsInRadius(600))
 			{
 				if (effect.Name.ToLower() == "power of the beetle")
 					effect.RemoveFromWorld();
@@ -379,7 +379,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 		
 		private static int RemoveBeetle(EcsGameTimer timer)
 		{
-			foreach (GameNPC effect in Rengahr.GetNPCsInRadius(600))
+			foreach (GameNpc effect in Rengahr.GetNPCsInRadius(600))
 			{
 				if (effect.Name.ToLower() == "jeremy")
 					effect.RemoveFromWorld();
@@ -554,19 +554,19 @@ namespace DOL.GS.AtlasQuest.Midgard
 			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-			if (gArgs.Target.Name.ToLower() == MID_DRAGON_NAME.ToLower() && gArgs.Target is GameNPC && _dragonKilled < MAX_KILLED)
+			if (gArgs.Target.Name.ToLower() == MID_DRAGON_NAME.ToLower() && gArgs.Target is GameNpc && _dragonKilled < MAX_KILLED)
 			{
 				_dragonKilled = 1;
 				player.Out.SendMessage("[Beetle] You killed " + MID_DRAGON_NAME + ": (" + _dragonKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == LEGION_NAME.ToLower() && gArgs.Target is GameNPC && _legionKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == LEGION_NAME.ToLower() && gArgs.Target is GameNpc && _legionKilled < MAX_KILLED)
 			{
 				_legionKilled = 1;
 				player.Out.SendMessage("[Beetle] You killed " + LEGION_NAME + ": (" + _legionKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == GRAND_SUMMONER_NAME.ToLower() && gArgs.Target is GameNPC && _grandSummonerKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == GRAND_SUMMONER_NAME.ToLower() && gArgs.Target is GameNpc && _grandSummonerKilled < MAX_KILLED)
 			{
 				_grandSummonerKilled = 1;
 				player.Out.SendMessage("[Beetle] You killed " + GRAND_SUMMONER_NAME + ": (" + _grandSummonerKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);

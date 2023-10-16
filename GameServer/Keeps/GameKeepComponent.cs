@@ -481,7 +481,7 @@ namespace DOL.GS.Keeps
 				baseDamage = (baseDamage - (baseDamage * 5 * Keep.Level / 100)) * toughness / 100;
 				styleDamage = (styleDamage - (styleDamage * 5 * Keep.Level / 100)) * toughness / 100;
 			}
-			else if (source is GameNPC)
+			else if (source is GameNpc)
 			{
 				if (!Properties.STRUCTURES_ALLOWPETATTACK)
 				{
@@ -494,9 +494,9 @@ namespace DOL.GS.Keeps
 					baseDamage = (baseDamage - (baseDamage * 5 * Keep.Level / 100)) * toughness / 100;
 					styleDamage = (styleDamage - (styleDamage * 5 * Keep.Level / 100)) * toughness / 100;
 
-					if (((GameNPC)source).Brain is AI.Brain.IControlledBrain)
+					if (((GameNpc)source).Brain is AI.Brain.IControlledBrain)
 					{
-						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNPC)source).Brain).Owner as GamePlayer);
+						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNpc)source).Brain).Owner as GamePlayer);
 						if (player != null)
 						{
 							// special considerations for pet spam classes

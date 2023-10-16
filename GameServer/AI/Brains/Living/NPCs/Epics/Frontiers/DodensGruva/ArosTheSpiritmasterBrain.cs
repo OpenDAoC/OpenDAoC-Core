@@ -55,9 +55,9 @@ namespace DOL.AI.Brain
             int min_value = 35;
             ushort minradius = 300;
 
-            GameNPC nearbyGuardian = null;
+            GameNpc nearbyGuardian = null;
 
-            foreach (GameNPC npc in this.Body.GetNPCsInRadius(minradius))
+            foreach (GameNpc npc in this.Body.GetNPCsInRadius(minradius))
             {
                 if (npc.Name.Equals("Summoned Guardian"))
                 {
@@ -96,8 +96,8 @@ namespace DOL.AI.Brain
             int min_value = 30;
             ushort radius = 3000;
 
-            GameNPC summonedGuardian = null;
-            foreach (GameNPC summonNpc in this.Body.GetNPCsInRadius(radius))
+            GameNpc summonedGuardian = null;
+            foreach (GameNpc summonNpc in this.Body.GetNPCsInRadius(radius))
             {
                 if (summonNpc.Name.Equals("Guardian of Aros"))
                 {
@@ -141,7 +141,7 @@ namespace DOL.AI.Brain
             if (Body.attackComponent.AttackState)
                 return;
 
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
+            foreach (GameNpc npc in Body.GetNPCsInRadius((ushort)AggroRange))
             {
                 if (!npc.IsAlive || npc.ObjectState != GameObject.eObjectState.Active)
                     continue;

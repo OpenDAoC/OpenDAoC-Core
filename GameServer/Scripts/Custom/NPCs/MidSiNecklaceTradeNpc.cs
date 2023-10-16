@@ -3,7 +3,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public class MidSiNecklaceTradeNpc : GameNPC
+    public class MidSiNecklaceTradeNpc : GameNpc
     {
         public MidSiNecklaceTradeNpc() : base() { }
         public override bool AddToWorld()
@@ -13,7 +13,7 @@ namespace DOL.GS
             GuildName = "The Patient";
             Level = 50;
             Size = 30;
-            Flags |= eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
             base.AddToWorld();
             return true;
         }

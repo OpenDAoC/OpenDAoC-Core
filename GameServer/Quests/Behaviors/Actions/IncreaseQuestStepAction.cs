@@ -9,12 +9,12 @@ namespace DOL.GS.Quests.Actions
     public class IncreaseQuestStepAction: AAction<Type,Unused>
     {
 
-        public IncreaseQuestStepAction(GameNPC defaultNPC,  Object p, Object q)
+        public IncreaseQuestStepAction(GameNpc defaultNPC,  Object p, Object q)
             : base(defaultNPC, EActionType.IncQuestStep, p, q) 
         {        
         }
 
-        public IncreaseQuestStepAction(GameNPC defaultNPC, Type questType)
+        public IncreaseQuestStepAction(GameNpc defaultNPC, Type questType)
             : this(defaultNPC, (object)questType, (object)null)
         { }
 

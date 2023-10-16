@@ -22,7 +22,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 		// Capture Goal
 		private const int MAX_CAPTURED = 1;
 		
-		private static GameNPC Kelteen = null; // Start NPC
+		private static GameNpc Kelteen = null; // Start NPC
 
 		private int _isCaptured = 0;
 
@@ -61,10 +61,10 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Kelteen", ERealm.Hibernia);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Kelteen", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 				{
 					if (npc.CurrentRegionID == 200 && npc.X == 334215 && npc.Y == 421276)
 					{
@@ -77,7 +77,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find KelteenHib, creating it ...");
-				Kelteen = new GameNPC();
+				Kelteen = new GameNpc();
 				Kelteen.Model = 315;
 				Kelteen.Name = "Kelteen";
 				Kelteen.GuildName = "Atlas Logistics";
@@ -90,7 +90,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 				Kelteen.Y = 421276;
 				Kelteen.Z = 5180;
 				Kelteen.Heading = 1566;
-				Kelteen.Flags |= GameNPC.eFlags.PEACE;
+				Kelteen.Flags |= ENpcFlags.PEACE;
 				GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
 				templateHib.AddNPCEquipment(EInventorySlot.Cloak, 1722);
 				templateHib.AddNPCEquipment(EInventorySlot.HeadArmor, 1288);

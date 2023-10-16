@@ -155,7 +155,7 @@ namespace DOL.GS.Effects
 		{
 			get
 			{
-				if (m_owner is GameNPC)
+				if (m_owner is GameNpc)
 					return 1001;
 				return 412;
 			}

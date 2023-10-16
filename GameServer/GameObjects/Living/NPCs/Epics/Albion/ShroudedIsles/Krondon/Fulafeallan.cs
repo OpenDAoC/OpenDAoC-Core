@@ -124,7 +124,7 @@ namespace DOL.AI.Brain
 				spawnadds = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null)
 						{
@@ -168,7 +168,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////////////////////////Fuladl adds////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class FulafeallanAdd : GameNPC
+	public class FulafeallanAdd : GameNpc
 	{
 		public FulafeallanAdd() : base() { }
 

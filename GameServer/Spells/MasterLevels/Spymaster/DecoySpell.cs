@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 
         private void DecoyDied(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC kDecoy = sender as GameNPC;
+            GameNpc kDecoy = sender as GameNpc;
             if (kDecoy == null) return;
             if (e == GameLivingEvent.Dying)
             {

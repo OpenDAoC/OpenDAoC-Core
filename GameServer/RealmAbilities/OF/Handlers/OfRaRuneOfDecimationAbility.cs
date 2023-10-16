@@ -85,7 +85,7 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            GameNPC trap = new();
+            GameNpc trap = new();
             trap.Model = 488;
             trap.Name = "nothing";
             trap.GuildName = m_player.Name + "";

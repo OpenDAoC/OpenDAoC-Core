@@ -492,17 +492,17 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="alive">Return Alive mobs or all mobs</param>
 		/// <returns>List of Mobs</returns>
-		public IEnumerable<GameNPC> GetMobsInsideInstance(bool alive)
+		public IEnumerable<GameNpc> GetMobsInsideInstance(bool alive)
 		{
 			lock(ObjectsSyncLock)
 			{
 				if(alive)
 				{
-					return new List<GameNPC>(from regionObjects in this.Objects where (regionObjects is GameNPC) && ((((GameNPC)regionObjects).Flags & GameNPC.eFlags.PEACE) != GameNPC.eFlags.PEACE) && ((GameNPC)regionObjects).IsAlive select (GameNPC)regionObjects);
+					return new List<GameNpc>(from regionObjects in this.Objects where (regionObjects is GameNpc) && ((((GameNpc)regionObjects).Flags & ENpcFlags.PEACE) != ENpcFlags.PEACE) && ((GameNpc)regionObjects).IsAlive select (GameNpc)regionObjects);
 				}
 				else
 				{
-					return new List<GameNPC>(from regionObjects in this.Objects where (regionObjects is GameNPC) && ((((GameNPC)regionObjects).Flags & GameNPC.eFlags.PEACE) != GameNPC.eFlags.PEACE) select (GameNPC)regionObjects);
+					return new List<GameNpc>(from regionObjects in this.Objects where (regionObjects is GameNpc) && ((((GameNpc)regionObjects).Flags & ENpcFlags.PEACE) != ENpcFlags.PEACE) select (GameNpc)regionObjects);
 				}
 			}
 		}

@@ -60,7 +60,7 @@ namespace DOL.GS
 			Size = 250;
 			Level = 74;
 			MaxSpeedBase = 280;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			MeleeDamageType = EDamageType.Thrust;
 			WrethOfWinterScorpBrain sbrain = new WrethOfWinterScorpBrain();
 			SetOwnBrain(sbrain);
@@ -199,7 +199,7 @@ namespace DOL.GS
 			Size = 250;
 			Level = 70;
 			MaxSpeedBase = 280;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			MeleeDamageType = EDamageType.Thrust;
 			WrethOfWinterSpiderBrain sbrain = new WrethOfWinterSpiderBrain();
 			SetOwnBrain(sbrain);
@@ -338,7 +338,7 @@ namespace DOL.GS
 			Size = 250;
 			Level = 74;
 			MaxSpeedBase = 280;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			MeleeDamageType = EDamageType.Thrust;
 			WrethOfWinterCrabBrain sbrain = new WrethOfWinterCrabBrain();
 			SetOwnBrain(sbrain);
@@ -477,7 +477,7 @@ namespace DOL.GS
 			Level = 77;
 			MaxSpeedBase = 280;
 			MeleeDamageType = EDamageType.Crush;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			WrethOfWinterJotunBrain sbrain = new WrethOfWinterJotunBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -608,7 +608,7 @@ namespace DOL.GS
 			Level = 71;
 			MaxSpeedBase = 280;
 			MeleeDamageType = EDamageType.Crush;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			WrethOfWinterOgreBrain sbrain = new WrethOfWinterOgreBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -739,7 +739,7 @@ namespace DOL.GS
 			Level = 73;
 			MaxSpeedBase = 280;
 			MeleeDamageType = EDamageType.Cold;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			WrethOfWinterIceBrain sbrain = new WrethOfWinterIceBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -870,7 +870,7 @@ namespace DOL.GS
 			Level = 74;
 			MaxSpeedBase = 280;
 			MeleeDamageType = EDamageType.Crush;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			WrethOfWinterRaumarikBrain sbrain = new WrethOfWinterRaumarikBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -1001,7 +1001,7 @@ namespace DOL.GS
 			Level = 74;
 			MaxSpeedBase = 280;
 			MeleeDamageType = EDamageType.Crush;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			WrethOfWinterLichBrain sbrain = new WrethOfWinterLichBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database
@@ -1132,7 +1132,7 @@ namespace DOL.GS
 			Level = 75;
 			MaxSpeedBase = 280;
 			MeleeDamageType = EDamageType.Thrust;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			WrethOfWinterArachiteBrain sbrain = new WrethOfWinterArachiteBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database

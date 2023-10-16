@@ -42,7 +42,7 @@ namespace DOL.GS
 
         public static AttackAction Create(GameLiving gameLiving)
         {
-            if (gameLiving is GameNPC gameNpc)
+            if (gameLiving is GameNpc gameNpc)
                 return new NpcAttackAction(gameNpc);
             else if (gameLiving is GamePlayer gamePlayer)
                 return new PlayerAttackAction(gamePlayer);

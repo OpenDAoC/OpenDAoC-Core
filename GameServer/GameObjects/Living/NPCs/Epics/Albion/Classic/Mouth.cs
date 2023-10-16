@@ -80,7 +80,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "MouthAdd")
 					npc.Die(this);
@@ -160,7 +160,7 @@ namespace DOL.AI.Brain
 				SpawnAdd = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "MouthAdd")
 							npc.Die(Body);
@@ -183,7 +183,7 @@ namespace DOL.AI.Brain
         {
 			if (HasAggro && Body.IsAlive)
 			{
-				GameNPC add = new GameNPC();
+				GameNpc add = new GameNpc();
 				add.Name = Body.Name + "'s minion";
 				add.Model = 584;
 				add.Size = (byte)Util.Random(45, 55);

@@ -36,9 +36,9 @@ public class Version002 : IDbConverter
 		var mobs = CoreDb<DbMob>.SelectObjects(DB.Column("Realm").IsEqualTo(6));
 		foreach (DbMob mob in mobs)
 		{
-			if ((mob.Flags & (uint)GameNPC.eFlags.PEACE) == 0)
+			if ((mob.Flags & (uint)ENpcFlags.PEACE) == 0)
 			{
-				mob.Flags ^= (uint)GameNPC.eFlags.PEACE;
+				mob.Flags ^= (uint)ENpcFlags.PEACE;
 			}
 
 			Region region = WorldMgr.GetRegion(mob.Region);

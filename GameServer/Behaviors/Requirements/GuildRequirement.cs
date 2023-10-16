@@ -23,7 +23,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public GuildRequirement(GameNPC defaultNPC,  Object n, Object v, EComparator comp)
+        public GuildRequirement(GameNpc defaultNPC,  Object n, Object v, EComparator comp)
             : base(defaultNPC, ERequirementType.Guild, n, v, comp)
 		{   			
 		}
@@ -34,7 +34,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="defaultNPC">Parent defaultNPC of this Requirement</param>		
 		/// <param name="n">First Requirement Variable, meaning depends on RequirementType</param>
 		/// <param name="v">Second Requirement Variable, meaning depends on RequirementType</param>		
-        public GuildRequirement(GameNPC defaultNPC,  GameLiving n, string v)
+        public GuildRequirement(GameNpc defaultNPC,  GameLiving n, string v)
             : this(defaultNPC,  (object)n, (object)v, EComparator.None)
 		{   			
 		}

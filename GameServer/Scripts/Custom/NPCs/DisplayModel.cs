@@ -1,7 +1,7 @@
 using DOL.Database;
 
 namespace DOL.GS {
-    public class DisplayModel : GameNPC
+    public class DisplayModel : GameNpc
     {
         private GamePlayer m_displayedPlayer;
         

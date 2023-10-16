@@ -98,7 +98,7 @@ namespace DOL.GS.RealmAbilities
 				player.Out.SendSpellEffectAnimation(m_caster, (m_caster.TargetObject as GameLiving), 7025, 0, false, 1);
 			}
 
-			foreach (GameNPC mob in m_caster.TargetObject.GetNPCsInRadius(500))
+			foreach (GameNpc mob in m_caster.TargetObject.GetNPCsInRadius(500))
 			{
 				if (!GameServer.ServerRules.IsAllowedToAttack(m_caster, mob, true))
 					continue;

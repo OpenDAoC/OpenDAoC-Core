@@ -29,7 +29,7 @@ namespace DOL.GS {
 	        if (player.InCombatInLast(10000)) return false;
 	        TurnTo(player.X, player.Y);
 	        
-	        foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(player.CurrentRegionID))
+	        foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(player.CurrentRegionID))
 	        {
 		        if (npc.Brain is LordOfBossBrain || npc.Name.Contains("Council") || npc.Name.Contains("isolationist") || npc.Name.Contains("muryan"))
 			        continue; 
@@ -242,7 +242,7 @@ namespace DOL.GS {
 					
 				case "reset":
 					if (source.InCombatInLast(10000)) return false;
-					foreach (GameNPC mob in WorldMgr.GetNPCsFromRegion(t.CurrentRegionID))
+					foreach (GameNpc mob in WorldMgr.GetNPCsFromRegion(t.CurrentRegionID))
 					{
 						if (mob.Brain is LordOfBossBrain || mob.Name.Contains("Council") || mob.Name.Contains("isolationist") || mob.Name.Contains("muryan"))
 							continue;
@@ -262,7 +262,7 @@ namespace DOL.GS {
 
 		private void SummonBoss(GamePlayer player, string BossClass)
 		{
-			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(player.CurrentRegionID))
+			foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(player.CurrentRegionID))
 			{
 				if (npc.Brain is LordOfBossBrain || npc.Name.Contains("Council") || npc.Name.Contains("isolationist") || npc.Name.Contains("muryan"))
 					continue;
@@ -272,8 +272,8 @@ namespace DOL.GS {
 			
 			
 			//Create a new mob
-			GameNPC mob = new GameNPC();
-			mob = (GameNPC) Assembly.GetAssembly(typeof(GameServer)).CreateInstance(BossClass, false);
+			GameNpc mob = new GameNpc();
+			mob = (GameNpc) Assembly.GetAssembly(typeof(GameServer)).CreateInstance(BossClass, false);
 			Console.WriteLine("Summoned " + BossClass);
 
 			if (mob == null)
@@ -287,7 +287,7 @@ namespace DOL.GS {
 				mob.Heading = 2050;
 
 				//Fill the living variables
-				mob.Flags ^= eFlags.PEACE;
+				mob.Flags ^= ENpcFlags.PEACE;
 				mob.AddToWorld();
 				
 	    }

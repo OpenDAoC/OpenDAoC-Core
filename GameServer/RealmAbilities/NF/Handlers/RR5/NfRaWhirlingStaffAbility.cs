@@ -29,7 +29,7 @@ namespace DOL.GS.RealmAbilities
 				}
 			}
 
-			foreach (GameNPC npc in living.GetNPCsInRadius(350))
+			foreach (GameNpc npc in living.GetNPCsInRadius(350))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(living, npc, true))
 				{

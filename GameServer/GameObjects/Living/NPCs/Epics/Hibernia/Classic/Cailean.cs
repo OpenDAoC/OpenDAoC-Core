@@ -88,7 +88,7 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is CaileanBrain)
 					return false;
@@ -113,12 +113,12 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is WalkingTreeBrain)
 					npc.RemoveFromWorld();
 			}
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is WalkingTree2Brain)
 					npc.RemoveFromWorld();
@@ -150,12 +150,12 @@ namespace DOL.AI.Brain
 				CanSpawnTree = false;
 				if (!RemoveTrees)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is WalkingTreeBrain)
 							npc.RemoveFromWorld();
 					}
-					foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is WalkingTree2Brain)
 							npc.RemoveFromWorld();
@@ -180,7 +180,7 @@ namespace DOL.AI.Brain
 					if (Util.Chance(20) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.MezImmunity) && !target.effectListComponent.ContainsEffectForEffectType(EEffect.Mez))
 						Body.CastSpell(BossMezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 				{
 					if (npc != null && npc.IsAlive)
 					{
@@ -205,7 +205,7 @@ namespace DOL.AI.Brain
         #region Spawn Trees
         private void SpawnTree()
         {
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is WalkingTreeBrain)
 					return;
@@ -223,7 +223,7 @@ namespace DOL.AI.Brain
 		}
 		private void SpawnTree2()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is WalkingTree2Brain)
 					return;
@@ -351,7 +351,7 @@ namespace DOL.AI.Brain
 #region Cailean's Trees 4-5 yellows
 namespace DOL.GS
 {
-	public class WalkingTree : GameNPC
+	public class WalkingTree : GameNpc
 	{
 		public WalkingTree() : base()
 		{
@@ -493,7 +493,7 @@ namespace DOL.AI.Brain
 #region Cailean's Trees 8-10 blue
 namespace DOL.GS
 {
-	public class WalkingTree2 : GameNPC
+	public class WalkingTree2 : GameNpc
 	{
 		public WalkingTree2() : base()
 		{

@@ -83,9 +83,9 @@ namespace DOL.GS.Spells
 					{
 						checkPlayer = Caster as GamePlayer;
 					}
-					else if (Caster is GameNPC && (Caster as GameNPC).Brain is IControlledBrain)
+					else if (Caster is GameNpc && (Caster as GameNpc).Brain is IControlledBrain)
 					{
-						IControlledBrain brain = (Caster as GameNPC).Brain as IControlledBrain;
+						IControlledBrain brain = (Caster as GameNpc).Brain as IControlledBrain;
 						checkPlayer = brain.GetPlayerOwner();
 					}
 				}

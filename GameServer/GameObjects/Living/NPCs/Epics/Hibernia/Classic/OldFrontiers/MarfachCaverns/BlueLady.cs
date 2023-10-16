@@ -128,7 +128,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(this.CurrentRegionID))
+            foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(this.CurrentRegionID))
             {
                 if (npc.Brain is BlueLadyAddBrain)
                 {
@@ -164,7 +164,7 @@ namespace DOL.AI.Brain
                 FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc.Brain is BlueLadyAddBrain)
                         {
@@ -252,7 +252,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-    public class BlueLadySwordAdd : GameNPC
+    public class BlueLadySwordAdd : GameNpc
     {
         private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -326,7 +326,7 @@ namespace DOL.GS
             return true;
         }
     }
-    public class BlueLadyAxeAdd : GameNPC
+    public class BlueLadyAxeAdd : GameNpc
     {
         private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

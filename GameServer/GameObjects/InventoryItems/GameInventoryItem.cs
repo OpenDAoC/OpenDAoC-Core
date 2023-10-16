@@ -9,9 +9,6 @@ using log4net;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// This class represents an inventory item
-    /// </summary>
     public class GameInventoryItem : DbInventoryItem, IGameInventoryItem, ITranslatableObject {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 

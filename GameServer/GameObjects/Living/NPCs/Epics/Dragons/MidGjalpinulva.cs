@@ -321,7 +321,7 @@ namespace DOL.AI.Brain
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
 		public static bool checkForMessangers = false;
-		public static List<GameNPC> DragonAdds = new List<GameNPC>();
+		public static List<GameNpc> DragonAdds = new List<GameNpc>();
 		private List<Point3D> _roamingPathPoints = new List<Point3D>();
 		private int _lastRoamIndex = 0;
 
@@ -391,12 +391,12 @@ namespace DOL.AI.Brain
 				{
 					if (DragonAdds.Count > 0)
 					{
-						foreach (GameNPC messenger in DragonAdds)
+						foreach (GameNpc messenger in DragonAdds)
 						{
 							if (messenger != null && messenger.IsAlive && messenger.Brain is GjalpinulvaMessengerBrain)
 								messenger.RemoveFromWorld();
 						}
-						foreach (GameNPC drakulv in DragonAdds)
+						foreach (GameNpc drakulv in DragonAdds)
 						{
 							if (drakulv != null && drakulv.IsAlive && drakulv.Brain is GjalpinulvaSpawnedAdBrain)
 								drakulv.RemoveFromWorld();
@@ -431,7 +431,7 @@ namespace DOL.AI.Brain
 					player.Out.SendMessage("A booming voice echoes through the canyons, 'I grow restless. Who has dared to enter my domain? I shall freeze their flesh and grind their bones to dust!'", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 				}
 
-				Body.Flags = GameNPC.eFlags.FLYING;//make dragon fly mode
+				Body.Flags = ENpcFlags.FLYING;//make dragon fly mode
 				ResetChecks = false;//reset it so can reset bools at end of path
 				LockIsRestless = true;
 			}
@@ -1010,7 +1010,7 @@ namespace DOL.AI.Brain
 #region Gjalpinulva's messengers
 namespace DOL.GS
 {
-	public class GjalpinulvaMessenger : GameNPC
+	public class GjalpinulvaMessenger : GameNpc
 	{
 		public override bool IsVisibleToPlayers => true;
 
@@ -1325,7 +1325,7 @@ namespace DOL.AI.Brain
 #region Gjalpinulva's  spawned adds
 namespace DOL.GS
 {
-	public class GjalpinulvaSpawnedAdd : GameNPC
+	public class GjalpinulvaSpawnedAdd : GameNpc
 	{
 		public override bool IsVisibleToPlayers => true;
 

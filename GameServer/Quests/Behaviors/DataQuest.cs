@@ -116,7 +116,7 @@ namespace DOL.GS.Quests
 		protected DbDataQuest m_dataQuest = null;
 		protected DbCharacterXDataQuest m_charQuest = null;
 		protected GameObject m_startObject = null;
-		protected GameNPC m_startNPC = null;
+		protected GameNpc m_startNPC = null;
 		protected IDataQuestStep m_customQuestStep = null;
 
 		/// <summary>
@@ -303,9 +303,9 @@ namespace DOL.GS.Quests
 
 			if (sourceObject != null)
 			{
-				if (sourceObject is GameNPC)
+				if (sourceObject is GameNpc)
 				{
-					m_startNPC = sourceObject as GameNPC;
+					m_startNPC = sourceObject as GameNpc;
 				}
 
 				m_startObject = sourceObject;
@@ -1062,7 +1062,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="npc"></param>
 		/// <param name="player"></param>
-		public virtual void UpdateQuestIndicator(GameNPC npc, GamePlayer player)
+		public virtual void UpdateQuestIndicator(GameNpc npc, GamePlayer player)
 		{
             player.Out.SendNPCsQuestEffect(npc, npc.GetQuestIndicator(player));
 		}
@@ -1698,9 +1698,9 @@ namespace DOL.GS.Quests
 						case eStepType.KillFinish:
 						case eStepType.WhisperFinish:
 						case eStepType.CollectFinish:
-							foreach (GameNPC n in m_questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+							foreach (GameNpc n in m_questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					        {
-					         	GameNPC npc = n;
+					         	GameNpc npc = n;
 					         	if (npc != null && (TargetName == npc.Name && (TargetRegion == 0 || TargetRegion == npc.CurrentRegionID)))
 					         		UpdateQuestIndicator(npc, m_questPlayer);
 					        }
@@ -1923,9 +1923,9 @@ namespace DOL.GS.Quests
 						DataQuest dq = new DataQuest(player, giver, quest, charQuest);
 						dq.Step = 1;
 						player.AddQuest(dq);
-						if (giver is GameNPC)
+						if (giver is GameNpc)
 						{
-                            GameNPC npc = giver as GameNPC;
+                            GameNpc npc = giver as GameNpc;
                             player.Out.SendNPCsQuestEffect(npc, npc.GetQuestIndicator(player));
 						}
 						player.Out.SendSoundEffect(7, 0, 0, 0, 0, 0);
@@ -2063,9 +2063,9 @@ namespace DOL.GS.Quests
 						ChatUtil.SendDebugMessage(player, "Source Text missing on AutoStart quest.");
 					}
 
-					if (obj is GameNPC)
+					if (obj is GameNpc)
 					{
-						UpdateQuestIndicator(obj as GameNPC, player);
+						UpdateQuestIndicator(obj as GameNpc, player);
 					}
 					return;
 				}
@@ -2115,9 +2115,9 @@ namespace DOL.GS.Quests
                         ChatUtil.SendDebugMessage(player, "Source Text missing on SearchStart quest.");
                     }
 
-                    if (obj is GameNPC)
+                    if (obj is GameNpc)
                     {
-                        UpdateQuestIndicator(obj as GameNPC, player);
+                        UpdateQuestIndicator(obj as GameNpc, player);
                     }
 
                     return;
@@ -2127,7 +2127,7 @@ namespace DOL.GS.Quests
 				{
                     // Send offer quest dialog
 
-                    GameNPC offerNPC = obj as GameNPC;
+                    GameNpc offerNPC = obj as GameNpc;
 					if (offerNPC != null)
 					{
 						TryTurnTo(obj, player);
@@ -2168,7 +2168,7 @@ namespace DOL.GS.Quests
 
 		protected virtual void TryTurnTo(GameObject obj, GamePlayer player)
 		{
-			GameNPC npc = obj as GameNPC;
+			GameNpc npc = obj as GameNpc;
 
 			if (npc != null)
 			{
@@ -2332,9 +2332,9 @@ namespace DOL.GS.Quests
 				{
 					ChatUtil.SendDebugMessage(player, "Source Text missing on accept quest.");
 				}
-				if (living is GameNPC)
+				if (living is GameNpc)
 				{
-					UpdateQuestIndicator(living as GameNPC, player);
+					UpdateQuestIndicator(living as GameNpc, player);
 				}
 			}
 		}
@@ -2369,7 +2369,7 @@ namespace DOL.GS.Quests
 						{
 							if (StartType == eStartType.RewardQuest)
 							{
-								GameNPC finishNPC = obj as GameNPC;
+								GameNpc finishNPC = obj as GameNpc;
 								if (finishNPC != null)
 								{
 									TryTurnTo(obj, player);
@@ -2590,7 +2590,7 @@ namespace DOL.GS.Quests
 
 					if (player == null)
 					{
-						GameNPC npc = killer as GameNPC;
+						GameNpc npc = killer as GameNpc;
 						if (npc != null)
 						{
 							if (npc.Brain != null && npc.Brain is IControlledBrain)
@@ -3083,9 +3083,9 @@ namespace DOL.GS.Quests
 				}
 			}
 
-			if (obj != null && obj is GameNPC)
+			if (obj != null && obj is GameNpc)
 			{
-				UpdateQuestIndicator(obj as GameNPC, m_questPlayer);
+				UpdateQuestIndicator(obj as GameNpc, m_questPlayer);
 			}
 
 			if (m_startNPC != null)
@@ -3093,7 +3093,7 @@ namespace DOL.GS.Quests
 				UpdateQuestIndicator(m_startNPC, m_questPlayer);
 			}
 
-			foreach (GameNPC npc in m_questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GameNpc npc in m_questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				UpdateQuestIndicator(npc, m_questPlayer);
 			}

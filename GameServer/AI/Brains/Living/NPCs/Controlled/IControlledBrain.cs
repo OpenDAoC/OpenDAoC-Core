@@ -9,7 +9,7 @@ public interface IControlledBrain
 {
     EWalkState WalkState { get; }
     EAggressionState AggressionState { get; set; }
-    GameNPC Body { get; }
+    GameNpc Body { get; }
     GameLiving Owner { get; }
     void Attack(GameObject target);
     void Disengage();
@@ -20,7 +20,7 @@ public interface IControlledBrain
     void Goto(GameObject target);
     void UpdatePetWindow();
     GamePlayer GetPlayerOwner();
-    GameNPC GetNPCOwner();
+    GameNpc GetNPCOwner();
     GameLiving GetLivingOwner();
     void SetAggressionState(EAggressionState state);
     bool IsMainPet { get; set; }

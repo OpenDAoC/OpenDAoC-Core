@@ -113,7 +113,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Plant;
+            BodyType = (ushort)EBodyType.Plant;
             AncientBlackOakBrain.IsPulled = false;
             OakCount =1;
             MeleeDamageType = EDamageType.Matter;
@@ -187,7 +187,7 @@ namespace DOL.AI.Brain
             {
                 if (IsPulled == false)
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc != null)
                         {

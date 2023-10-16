@@ -16,7 +16,7 @@ namespace DOL.GS.Effects
         private const int spellDuration = 4;		// Duration of stun in seconds
 
         // Objects
-        private GameNPC[] spirits;				// Array containing spirits
+        private GameNpc[] spirits;				// Array containing spirits
         private EcsGameTimer[] spiritTimer;			// Array containing spirit timers
         private Spell spiritSpell;			// The spell to cast
         private SpellLine spiritSpellLine;	 	// The spell line
@@ -27,7 +27,7 @@ namespace DOL.GS.Effects
             : base(RealmAbilities.NfRaMinionRescueAbility.DURATION)
         {
             // Init NPC & Timer array
-            spirits = new GameNPC[spiritCount];
+            spirits = new GameNpc[spiritCount];
             spiritTimer = new EcsGameTimer[spiritCount];
 
             // Build spell
@@ -88,7 +88,7 @@ namespace DOL.GS.Effects
         // Summon a spirit that will follow target
         private void SummonSpirit(int spiritId, GamePlayer targetPlayer)
         {
-            spirits[spiritId] = new GameNPC();
+            spirits[spiritId] = new GameNpc();
             spirits[spiritId].CurrentRegion = EffectOwner.CurrentRegion;
             spirits[spiritId].Heading = (ushort)((EffectOwner.Heading + 2048) % 4096);
             spirits[spiritId].Level = spiritLevel;
@@ -102,7 +102,7 @@ namespace DOL.GS.Effects
             spirits[spiritId].X = EffectOwner.X + Util.Random(20, 40) - Util.Random(20, 40);
             spirits[spiritId].Y = EffectOwner.Y + Util.Random(20, 40) - Util.Random(20, 40);
             spirits[spiritId].Z = EffectOwner.Z;
-            spirits[spiritId].Flags |= GameNPC.eFlags.DONTSHOWNAME;
+            spirits[spiritId].Flags |= ENpcFlags.DONTSHOWNAME;
             spirits[spiritId].SetOwnBrain(new StandardMobBrain());
             spirits[spiritId].AddToWorld();
             spirits[spiritId].TargetObject = targetPlayer;
@@ -113,14 +113,14 @@ namespace DOL.GS.Effects
         // Check distance between spirit and target
         private int spiritCallBack(EcsGameTimer timer)
         {
-            if (timer.Owner == null || !(timer.Owner is GameNPC))
+            if (timer.Owner == null || !(timer.Owner is GameNpc))
             {
                 timer.Stop();
                 timer = null;
                 return 0;
             }
 
-            GameNPC spirit = timer.Owner as GameNPC;
+            GameNpc spirit = timer.Owner as GameNpc;
             GamePlayer targetPlayer = spirit.TargetObject as GamePlayer;
 
             if (targetPlayer == null || !targetPlayer.IsAlive)

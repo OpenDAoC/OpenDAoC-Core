@@ -73,7 +73,7 @@ namespace DOL.GS.RealmAbilities
 
 					if (attacker is GamePlayer attackerPlayer)
 						attackerPlayer.Out.SendChangeTarget(null);
-					else if (attacker is GameNPC npcAttacker)
+					else if (attacker is GameNpc npcAttacker)
 					{
 						if (npcAttacker.Brain is IOldAggressiveBrain npcAttackerBrain)
 							npcAttackerBrain.RemoveFromAggroList(living);

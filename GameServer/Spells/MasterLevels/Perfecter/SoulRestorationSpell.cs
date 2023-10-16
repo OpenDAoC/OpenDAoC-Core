@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace DOL.GS.Spells
 {
     //no shared timer

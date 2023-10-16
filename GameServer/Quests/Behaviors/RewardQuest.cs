@@ -11,7 +11,7 @@ namespace DOL.GS.Quests
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private GameNPC m_questGiver;
+		private GameNpc m_questGiver;
 		private List<QuestGoal> m_goals;
 		private QuestRewards m_rewards;
 
@@ -86,7 +86,7 @@ namespace DOL.GS.Quests
 		/// <summary>
 		/// The NPC giving the quest.
 		/// </summary>
-		public GameNPC QuestGiver
+		public GameNpc QuestGiver
 		{
 			get { return m_questGiver; }
 			set { m_questGiver = value; }

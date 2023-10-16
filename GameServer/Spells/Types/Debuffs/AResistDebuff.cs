@@ -103,9 +103,9 @@ public abstract class AResistDebuff : PropertyChangingSpell
 			target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
 			Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
 		}
-		if(target is GameNPC)
+		if(target is GameNpc)
 		{
-			IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
+			IOldAggressiveBrain aggroBrain = ((GameNpc)target).Brain as IOldAggressiveBrain;
 			if (aggroBrain != null)
 				aggroBrain.AddToAggroList(Caster, 1);
 		}

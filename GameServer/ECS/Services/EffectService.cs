@@ -183,7 +183,7 @@ namespace DOL.GS
                 SendPlayerUpdates(player);
                 player.Out.SendConcentrationList();
             }
-            else if (e.Owner is GameNPC npc)
+            else if (e.Owner is GameNpc npc)
             {
                 if (npc.Brain is IControlledBrain npcBrain)
                 {
@@ -256,7 +256,7 @@ namespace DOL.GS
                 player.Out.SendUpdateIcons(ecsList, ref e.Owner.effectListComponent.GetLastUpdateEffectsCount());
                 player.Out.SendConcentrationList();
             }
-            else if (e.Owner is GameNPC npc && npc.Brain is IControlledBrain npcBrain)
+            else if (e.Owner is GameNpc npc && npc.Brain is IControlledBrain npcBrain)
                 npcBrain.UpdatePetWindow();
         }
 

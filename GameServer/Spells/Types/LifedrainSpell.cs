@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
 		{
 			if (target == null || !target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
 
-			if (target is not (GamePlayer or GameNPC or GameKeepDoor or GameRelicDoor)) return;
+			if (target is not (GamePlayer or GameNpc or GameKeepDoor or GameRelicDoor)) return;
 			// calc damage and healing
 			AttackData ad = CalculateDamageToTarget(target);
 			// "Your life energy is stolen!"

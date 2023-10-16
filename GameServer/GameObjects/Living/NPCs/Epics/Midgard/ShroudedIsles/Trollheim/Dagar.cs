@@ -94,7 +94,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && Body.TargetObject != null)
 			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2000))
 				{
 					if (npc != null)
 					{

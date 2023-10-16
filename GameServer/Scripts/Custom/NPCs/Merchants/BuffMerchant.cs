@@ -18,7 +18,7 @@ namespace DOL.GS
 		public BuffMerchant()
 			: base()
 		{
-			Flags |= GameNPC.eFlags.PEACE;
+			Flags |= ENpcFlags.PEACE;
 		}
 
 		public override int Concentration

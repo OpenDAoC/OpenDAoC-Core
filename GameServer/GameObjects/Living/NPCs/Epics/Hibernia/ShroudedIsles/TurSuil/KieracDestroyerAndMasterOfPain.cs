@@ -122,7 +122,7 @@ namespace DOL.GS
 			bool success = base.AddToWorld();
 			if (success)
             {
-				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+				foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
 				{
 					if (npc != null)
 					{

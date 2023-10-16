@@ -98,7 +98,7 @@ namespace DOL.GS
 
 			Faction = FactionMgr.GetFactionByID(93);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));
-			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
 			{
 				if (npc != null)
 				{
@@ -183,7 +183,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
 						if (npc != null)
 						{
@@ -224,7 +224,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-	public class QunilariaAdd : GameNPC
+	public class QunilariaAdd : GameNpc
 	{
 		public override int GetResist(EDamageType damageType)
 		{
@@ -286,7 +286,7 @@ namespace DOL.GS
 ///////////////////////////////////////////////////////////////////////adds after boss dead////////////////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class QunilariaAdd2 : GameNPC
+	public class QunilariaAdd2 : GameNpc
 	{
 		public override int GetResist(EDamageType damageType)
 		{

@@ -219,7 +219,7 @@ namespace DOL.GS
 		{
 			if (!base.Interact(player)) return false;
 
-            foreach (GameNPC npc in GetNPCsInRadius(100))
+            foreach (GameNpc npc in GetNPCsInRadius(100))
             {
                 if (npc.Model == 1583)
                 {

@@ -80,7 +80,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is CurengkurNestBrain)
 					npc.RemoveFromWorld();
@@ -89,7 +89,7 @@ namespace DOL.GS
         }
         private void SpawnNest()
         {
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is CurengkurNestBrain)
 					return;
@@ -132,7 +132,7 @@ namespace DOL.AI.Brain
 			if (HasAggro && Body.TargetObject != null)
 			{
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is CurengkurNestBrain brain)
 					{
@@ -219,7 +219,7 @@ namespace DOL.AI.Brain
 #region Curengkur Nest
 namespace DOL.GS
 {
-	public class CurengkurNest : GameNPC
+	public class CurengkurNest : GameNpc
 	{
 		public CurengkurNest() : base()
 		{
@@ -243,7 +243,7 @@ namespace DOL.GS
 			Level = 70;
 			Size = (byte)Util.Random(50, 55);
 			RespawnInterval = 5000;
-			Flags = (GameNPC.eFlags)42;
+			Flags = (ENpcFlags)42;
 			MaxSpeedBase = 0;
 			Faction = FactionMgr.GetFactionByID(69);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(69));

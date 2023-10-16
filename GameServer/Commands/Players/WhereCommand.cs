@@ -17,17 +17,17 @@ public class WhereCommand : ACommandHandler, ICommandHandler
 			return;
 		}
 
-		GameNPC targetnpc = client.Player.TargetObject as GameNPC;
+		GameNpc targetnpc = client.Player.TargetObject as GameNpc;
 		if (targetnpc != null && CheckTargetIsGuard(targetnpc))
 		{
 			string name = String.Join(" ", args, 1, args.Length - 1);
-			GameNPC[] npcs = WorldMgr.GetNPCsByNameFromRegion(name, client.Player.CurrentRegionID, (ERealm) client.Player.Realm);
+			GameNpc[] npcs = WorldMgr.GetNPCsByNameFromRegion(name, client.Player.CurrentRegionID, (ERealm) client.Player.Realm);
 			if (npcs == null || npcs.Length <= 0)
 			{
 				targetnpc.SayTo(client.Player, "Sorry, i do not know this person.");
 				return;
 			}
-			GameNPC npc = npcs[0];
+			GameNpc npc = npcs[0];
 			ushort heading = targetnpc.GetHeading(npc);
 			string directionstring = GetDirectionFromHeading(heading);
 			targetnpc.SayTo(client.Player, EChatLoc.CL_SystemWindow, npc.Name + " is in the " + directionstring);
@@ -38,7 +38,7 @@ public class WhereCommand : ACommandHandler, ICommandHandler
 
 	public bool CheckTargetIsGuard(GameLiving target)
 	{
-		if (target is GameGuard)
+		if (target is GameRealmGuard)
 			return true;
 
 		if (target.Realm == 0)

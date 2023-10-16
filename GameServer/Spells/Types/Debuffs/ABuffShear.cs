@@ -42,9 +42,9 @@ public abstract class ABuffShear : SpellHandler
             mez.Cancel(false);
             return;
         }
-		if (target is GameNPC)
+		if (target is GameNpc)
 		{
-			GameNPC npc = (GameNPC)target;
+			GameNpc npc = (GameNpc)target;
 			IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;
 			if (aggroBrain != null)
 				aggroBrain.AddToAggroList(Caster, 1);

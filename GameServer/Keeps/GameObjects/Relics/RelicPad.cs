@@ -38,9 +38,9 @@ namespace DOL.GS.Relics
 				m_playersOnPad = value;
 
 				if (m_playersOnPad >= ServerProperties.Properties.RELIC_PLAYERS_REQUIRED_ON_PAD &&
-					m_relicPillar.State == eDoorState.Closed)
+					m_relicPillar.State == EDoorState.Closed)
 					m_relicPillar.Open();
-				else if (m_relicPillar.State == eDoorState.Open && m_playersOnPad <= 0)
+				else if (m_relicPillar.State == EDoorState.Open && m_playersOnPad <= 0)
 					m_relicPillar.Close();
 			}
 		}

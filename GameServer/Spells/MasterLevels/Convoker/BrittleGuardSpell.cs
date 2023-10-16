@@ -14,7 +14,7 @@ namespace DOL.GS.Spells
 		private static readonly log4net.ILog log =
 			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		GameNPC summoned = null;
+		GameNpc summoned = null;
 		GameSpellEffect beffect = null;
 
 		public BrittleGuardSpell(GameLiving caster, Spell spell, SpellLine line)
@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 
 				BrittleGuardBrain controlledBrain = new BrittleGuardBrain(player);
 				controlledBrain.IsMainPet = false;
-				summoned = new GameNPC(template);
+				summoned = new GameNpc(template);
 				summoned.SetOwnBrain(controlledBrain);
 				summoned.X = summonloc.X;
 				summoned.Y = summonloc.Y;
@@ -76,7 +76,7 @@ namespace DOL.GS.Spells
 
 		private void GuardDie(CoreEvent e, object sender, EventArgs args)
 		{
-			GameNPC bguard = sender as GameNPC;
+			GameNpc bguard = sender as GameNpc;
 			if (bguard == summoned)
 			{
 				GameEventMgr.RemoveHandler(summoned, GameLivingEvent.Dying, new CoreEventHandler(GuardDie));

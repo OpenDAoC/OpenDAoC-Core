@@ -7,8 +7,8 @@ using DOL.Language;
 
 namespace DOL.GS;
 
-[NPCGuildScript("Smith")]
-public class Blacksmith : GameNPC
+[NpcGuildScript("Smith")]
+public class Blacksmith : GameNpc
 {
     private const string REPAIR_ITEM_WEAK = "repair item";
     private const double REPAIR_ALL_TAX = 0.20;

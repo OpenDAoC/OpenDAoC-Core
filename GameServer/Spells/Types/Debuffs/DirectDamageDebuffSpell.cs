@@ -40,14 +40,14 @@ namespace DOL.GS.Spells
 				{
 					if (Caster is GamePlayer)
 						player = Caster as GamePlayer;
-					else if (Caster is GameNPC && (Caster as GameNPC).Brain is AI.Brain.IControlledBrain)
+					else if (Caster is GameNpc && (Caster as GameNpc).Brain is AI.Brain.IControlledBrain)
 					{
-						AI.Brain.IControlledBrain brain = (Caster as GameNPC).Brain as AI.Brain.IControlledBrain;
+						AI.Brain.IControlledBrain brain = (Caster as GameNpc).Brain as AI.Brain.IControlledBrain;
 						//Ryan: edit for BD
 						if (brain.Owner is GamePlayer)
 							player = (GamePlayer)brain.Owner;
 						else
-							player = (GamePlayer)((AI.Brain.IControlledBrain)((GameNPC)brain.Owner).Brain).Owner;
+							player = (GamePlayer)((AI.Brain.IControlledBrain)((GameNpc)brain.Owner).Brain).Owner;
 					}
 				}
 				if (player != null)

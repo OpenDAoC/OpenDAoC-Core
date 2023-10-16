@@ -54,7 +54,7 @@ public class ArrektosProtector : BaseProtector
     {
         if (!TempProperties.GetProperty<bool>(ALREADY_GOT_HELP))
         {
-            foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GameNpc npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 //on initial attack, all fireborn in range add!
                 if (npc.Name == "minotaur fireborn")

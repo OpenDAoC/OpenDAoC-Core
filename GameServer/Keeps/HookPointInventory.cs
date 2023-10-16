@@ -270,9 +270,9 @@ namespace DOL.GS.Keeps
 				(hookPointObj as GameKeepGuard).HookPoint = hookpoint;
 				(hookPointObj as GameKeepGuard).RefreshTemplate();
 			}
-			if (hookPointObj is GameNPC)
+			if (hookPointObj is GameNpc)
 			{
-				((GameNPC)hookPointObj).RespawnInterval = -1;//do not respawn
+				((GameNpc)hookPointObj).RespawnInterval = -1;//do not respawn
 			}
 			hookPointObj.AddToWorld();
 			if (hookPointObj is GameKeepGuard guard)
@@ -323,9 +323,9 @@ namespace DOL.GS.Keeps
 			if (ServerProperties.Properties.ENABLE_DEBUG)
 				hookPointObj.Name += " hookpoint " + hookpoint.ID.ToString();
 
-			if (hookPointObj is GameNPC)
+			if (hookPointObj is GameNpc)
 			{
-				((GameNPC)hookPointObj).RespawnInterval = -1;//do not respawn
+				((GameNpc)hookPointObj).RespawnInterval = -1;//do not respawn
 			}
 			hookPointObj.AddToWorld();
 			if (hookPointObj is GameKeepGuard guard)

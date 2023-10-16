@@ -52,7 +52,7 @@ namespace DOL.GS.PropertyCalc
 
             int result = itemBonus + buffBonus + abilityBonus + racialBonus;
 
-            if (living is GameNPC)
+            if (living is GameNpc)
             {
                 double resistanceFromConstitution = StatCalculator.CalculateBuffContributionToAbsorbOrResist(living, EProperty.Constitution) / 8;
                 result += (int) ((100 - result) * resistanceFromConstitution);
@@ -84,7 +84,7 @@ namespace DOL.GS.PropertyCalc
                     break;
             }
 
-            if (living is GameNPC)
+            if (living is GameNpc)
             {
                 // NPC buffs effects are halved compared to debuffs, so it takes 2% debuff to mitigate 1% buff.
                 // See PropertyChangingSpell.ApplyNpcEffect() for details.
@@ -137,7 +137,7 @@ namespace DOL.GS.PropertyCalc
                 livingToCheck = living;
 
             int buffBonus = living.BaseBuffBonusCategory[(int)property] + living.BuffBonusCategory4[(int)property];
-            int RACalcHolder = livingToCheck is GameNPC ? buffBonus : Math.Min(buffBonus, BuffBonusCap);
+            int RACalcHolder = livingToCheck is GameNpc ? buffBonus : Math.Min(buffBonus, BuffBonusCap);
 
             return RACalcHolder + livingToCheck.SpecBuffBonusCategory[(int)property];
         }
@@ -157,7 +157,7 @@ namespace DOL.GS.PropertyCalc
             else
                 livingToCheck = living;
 
-            if (livingToCheck is GameNPC)
+            if (livingToCheck is GameNpc)
                 return 0;
 
             int itemBonus = livingToCheck.ItemBonus[(int)property];
@@ -213,7 +213,7 @@ namespace DOL.GS.PropertyCalc
             int itemBonus = CalcValueFromItems(living, property);
             int buffBonus = CalcValueFromBuffs(living, property);
 
-            if (living is GameNPC)
+            if (living is GameNpc)
             {
                 // NPC buffs effects are halved compared to debuffs, so it takes 2% debuff to mitigate 1% buff
                 // See PropertyChangingSpell.ApplyNpcEffect() for details.
@@ -239,7 +239,7 @@ namespace DOL.GS.PropertyCalc
             int buffBonus = living.BaseBuffBonusCategory[(int)property] 
                 + living.BuffBonusCategory4[(int)property]
                 + living.BaseBuffBonusCategory[EProperty.MagicAbsorption];
-            if (living is GameNPC)
+            if (living is GameNpc)
                 return buffBonus;
             return Math.Min(buffBonus, BuffBonusCap);
         }

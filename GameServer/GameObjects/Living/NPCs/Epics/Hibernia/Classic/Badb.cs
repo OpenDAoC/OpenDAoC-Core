@@ -90,7 +90,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC adds in GetNPCsInRadius(8000))
+			foreach (GameNpc adds in GetNPCsInRadius(8000))
 			{
 				if (adds != null && adds.IsAlive && adds.Brain is BadbWraithBrain)
 					adds.RemoveFromWorld();
@@ -111,7 +111,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		ushort oldModel;
-		GameNPC.eFlags oldFlags;
+		ENpcFlags oldFlags;
 		bool changed;
 		public override void Think()
 		{
@@ -120,15 +120,15 @@ namespace DOL.AI.Brain
 				if (changed == false)
 				{
 					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-					Body.Flags ^= GameNPC.eFlags.PEACE;
+					Body.Flags ^= ENpcFlags.CANTTARGET;
+					Body.Flags ^= ENpcFlags.DONTSHOWNAME;
+					Body.Flags ^= ENpcFlags.PEACE;
 
 					if (oldModel == 0)
 						oldModel = Body.Model;
 
 					Body.Model = 1;
-					foreach (GameNPC adds in Body.GetNPCsInRadius(8000))
+					foreach (GameNpc adds in Body.GetNPCsInRadius(8000))
 					{
 						if (adds != null && adds.IsAlive && adds.Brain is BadbWraithBrain)
 							adds.RemoveFromWorld();
@@ -154,7 +154,7 @@ namespace DOL.AI.Brain
 			}
 			if(HasAggro && Body.TargetObject != null)
             {
-				foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is BadbWraithBrain brain)
 					{
@@ -253,7 +253,7 @@ namespace DOL.AI.Brain
 #region Badb Raven Wraith
 namespace DOL.GS
 {
-	public class BadbWraith : GameNPC
+	public class BadbWraith : GameNpc
 	{
 		public BadbWraith() : base()
 		{
@@ -295,7 +295,7 @@ namespace DOL.GS
 			Size = (byte)Util.Random(50, 55);
 			RespawnInterval = -1;
 			RoamingRange = 200;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 
 			LoadedFromScript = true;
 			BadbWraithBrain sbrain = new BadbWraithBrain();

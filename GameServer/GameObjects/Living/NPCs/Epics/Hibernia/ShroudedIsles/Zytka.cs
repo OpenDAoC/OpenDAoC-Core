@@ -86,7 +86,7 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(2500))
+			foreach (GameNpc npc in GetNPCsInRadius(2500))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is ZytkaAddBrain)
 					npc.RemoveFromWorld();
@@ -151,7 +151,7 @@ namespace DOL.AI.Brain
 				spawnAdds = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is ZytkaAddBrain)
 							npc.RemoveFromWorld();
@@ -189,7 +189,7 @@ namespace DOL.AI.Brain
 #region Zytka's adds
 namespace DOL.GS
 {
-	public class ZytkaAdd : GameNPC
+	public class ZytkaAdd : GameNpc
 	{
 		public ZytkaAdd() : base()
 		{

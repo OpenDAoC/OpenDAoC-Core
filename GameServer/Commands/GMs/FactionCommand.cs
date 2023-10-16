@@ -87,7 +87,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						GameNPC npc = client.Player.TargetObject as GameNPC;
+						GameNpc npc = client.Player.TargetObject as GameNpc;
 						if (npc == null)
 						{
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.Assign.MustSelectMob"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);

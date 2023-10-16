@@ -21,7 +21,7 @@ public class BlockChanceCalculator : PropertyCalculator
             chance += (player.Dexterity * 2 - 100) / 4 + (player.GetModifiedSpecLevel(Specs.Shields) - 1) * (10 / 2) + 50;
             chance += player.AbilityBonus[(int) property] * 10;
         }
-        else if (living is GameNPC npc)
+        else if (living is GameNpc npc)
             chance += npc.BlockChance * 10;
 
         return chance;

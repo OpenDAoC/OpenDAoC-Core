@@ -117,7 +117,7 @@ namespace DOL.GS
         {
             base.Die(killer);
 
-            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+            foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
                 if (npc.Brain is SpecialInnocentBrain)
                 {
@@ -172,7 +172,7 @@ namespace DOL.AI.Brain
                 CanSpawnAdds = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc.Brain is SpecialInnocentBrain)
                         {
@@ -190,7 +190,7 @@ namespace DOL.AI.Brain
                     new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnAdd), Util.Random(20000, 30000));
                     CanSpawnAdds=true;
                 }
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc.Brain is SpecialInnocentBrain)
                     {
@@ -245,7 +245,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class SpecialInnocent : GameNPC
+    public class SpecialInnocent : GameNpc
     {
         public SpecialInnocent() : base()
         {

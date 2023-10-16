@@ -167,7 +167,7 @@ namespace DOL.GS.PropertyCalc
 						hp += 20;
 				}
 
-				int basecon = (living as GameNPC).Constitution;
+				int basecon = (living as GameNpc).Constitution;
 				int conmod = 20; // at level 50 +75 con ~= +300 hit points
 
 				// first adjust hitpoints based on base CON
@@ -193,7 +193,7 @@ namespace DOL.GS.PropertyCalc
 				return hp;
 				//return conhp;
 			}
-            else if (living is GameNPC)
+            else if (living is GameNpc)
 			{
 				int hp = 0;
 
@@ -202,7 +202,7 @@ namespace DOL.GS.PropertyCalc
 					//14 hp per level
 					//30 base
 					//con * level HP, scaled by level
-					hp = (int)((living.Level * 11) + 20 + (Math.Floor((double)((living as GameNPC).Constitution * living.Level) / (1 + (20-living.Level))))) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
+					hp = (int)((living.Level * 11) + 20 + (Math.Floor((double)((living as GameNpc).Constitution * living.Level) / (1 + (20-living.Level))))) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
 				}
 				else
 				{
@@ -213,12 +213,12 @@ namespace DOL.GS.PropertyCalc
 						levelScalar += (living.Level - 40) * .0015;
 					}
 					// approx to original formula, thx to mathematica :)
-					hp = (int)(50 + 12*living.Level + levelScalar * living.Level * (living.Level)) + (living as GameNPC).Constitution;
+					hp = (int)(50 + 12*living.Level + levelScalar * living.Level * (living.Level)) + (living as GameNpc).Constitution;
 					if (living.Level < 25)
 						hp += 20;
 				}
 
-				int basecon = (living as GameNPC).Constitution;
+				int basecon = (living as GameNpc).Constitution;
 				int conmod = 25; // at level 50 +75 con ~= +300 hit points
 
 				// first adjust hitpoints based on base CON

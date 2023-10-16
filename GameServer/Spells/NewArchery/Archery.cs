@@ -239,7 +239,7 @@ namespace DOL.GS.Spells
 
 			if (ad.AttackResult != EAttackResult.Missed)
 			{
-				GameNPC npc = target as GameNPC;
+				GameNpc npc = target as GameNpc;
 				if (npc != null)
 				{
 					if (npc.Brain != null && (npc.Brain is IControlledBrain) == false)

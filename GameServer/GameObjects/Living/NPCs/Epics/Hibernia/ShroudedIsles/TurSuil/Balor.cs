@@ -297,7 +297,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-	public class BalorEye : GameNPC
+	public class BalorEye : GameNpc
 	{
 		public override int MaxHealth
 		{
@@ -322,9 +322,9 @@ namespace DOL.GS
 			Constitution = 100;
 			RespawnInterval = -1;
 			MaxSpeedBase = 0;
-			Flags ^= eFlags.FLYING;
-			Flags ^= eFlags.CANTTARGET;
-			Flags ^= eFlags.DONTSHOWNAME;
+			Flags ^= ENpcFlags.FLYING;
+			Flags ^= ENpcFlags.CANTTARGET;
+			Flags ^= ENpcFlags.DONTSHOWNAME;
 			//Flags ^= eFlags.STATUE;
 
 			BalorEyeBrain.PickTarget = false;

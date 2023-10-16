@@ -136,7 +136,7 @@ namespace DOL.GS
 			base.LoadFromDatabase(mobObjs, ref mobCount, ref merchantCount, ref itemCount, ref bindCount);
 			
 			// Set respawn to false
-			foreach(GameNPC mob in GetMobsInsideInstance(true))
+			foreach(GameNpc mob in GetMobsInsideInstance(true))
 			{
 				mob.RespawnInterval = -1;
 			}
@@ -172,7 +172,7 @@ namespace DOL.GS
             else
             {
             	// check if there is still alive mobs
-            	foreach (GameNPC mob in GetMobsInsideInstance(true))
+            	foreach (GameNpc mob in GetMobsInsideInstance(true))
             	{
             		// there is still something => standard autoclosure + break;
 	            	log.Warn("Instance now empty, will destroy instance " + Description + ", ID: " + ID + ", type=" + GetType().ToString() + ". In " + ServerProperties.Properties.ADVENTUREWING_TIME_TO_DESTROY + " min.");

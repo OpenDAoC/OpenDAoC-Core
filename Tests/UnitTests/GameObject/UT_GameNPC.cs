@@ -72,7 +72,7 @@ namespace DOL.Tests.Unit.Gameserver
             Assert.AreEqual(-0.25, actual, 0.001);
         }
 
-        private static GameNPC NewNPC() => new GameNPC(new FakeControlledBrain());
+        private static GameNpc NewNPC() => new GameNpc(new FakeControlledBrain());
     }
 
     [TestFixture]

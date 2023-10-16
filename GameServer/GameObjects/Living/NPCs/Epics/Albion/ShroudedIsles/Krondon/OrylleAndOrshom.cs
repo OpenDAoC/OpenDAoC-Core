@@ -166,7 +166,7 @@ namespace DOL.AI.Brain
 				}
 				if(IsPulled==false)
                 {
-					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
 						if (npc != null)
 						{
@@ -294,7 +294,7 @@ namespace DOL.AI.Brain
 				Spawn_Fire = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null)
 						{
@@ -318,7 +318,7 @@ namespace DOL.AI.Brain
 				}
 				if(Body.HealthPercent <=50)
                 {
-					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
 						if (npc != null)
 						{
@@ -335,7 +335,7 @@ namespace DOL.AI.Brain
 		}
 		public void SpawnFire()
 		{
-			foreach (GameNPC mob in Body.GetNPCsInRadius(8000))
+			foreach (GameNpc mob in Body.GetNPCsInRadius(8000))
 			{
 				if (mob.Brain is OrshomFireBrain)
 				{

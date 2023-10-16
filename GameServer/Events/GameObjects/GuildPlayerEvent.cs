@@ -89,7 +89,7 @@ namespace DOL.GS
 
 		#region NPC Kill
 
-		public static void MeritForNPCKilled(GamePlayer player, GameNPC npc, int meritPoints)
+		public static void MeritForNPCKilled(GamePlayer player, GameNpc npc, int meritPoints)
 		{
 			if (player.IsEligibleToGiveMeritPoints)
 			{

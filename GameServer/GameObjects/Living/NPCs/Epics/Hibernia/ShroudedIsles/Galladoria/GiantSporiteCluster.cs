@@ -56,7 +56,7 @@ namespace DOL.GS
         {
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             int damageDealt = damageAmount + criticalAmount;
-            foreach (GameNPC copy in GetNPCsInRadius(10000))
+            foreach (GameNpc copy in GetNPCsInRadius(10000))
             {
                 if (copy != null)
                 {
@@ -69,7 +69,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC copy in GetNPCsInRadius(10000))
+            foreach (GameNpc copy in GetNPCsInRadius(10000))
             {
                 if (copy != null)
                 {
@@ -83,7 +83,7 @@ namespace DOL.GS
         }
         public void Spawn()
         {
-            foreach (GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNpc npc in GetNPCsInRadius(4000))
             {
                 if (npc.Brain is GSCAddsBrain)
                 {
@@ -152,7 +152,7 @@ public class GiantSporiteClusterBrain : StandardMobBrain
             {
                 new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(CastAOEDD), 3000);
             }
-            foreach (GameNPC copy in Body.GetNPCsInRadius(5000))
+            foreach (GameNpc copy in Body.GetNPCsInRadius(5000))
             {
                 if (copy != null)
                 {
@@ -255,7 +255,7 @@ namespace DOL.GS
         {
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             int damageDealt = damageAmount + criticalAmount;
-            foreach (GameNPC copy in GetNPCsInRadius(10000))
+            foreach (GameNpc copy in GetNPCsInRadius(10000))
             {
                 if (copy != null)
                 {
@@ -268,7 +268,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach(GameNPC copy in GetNPCsInRadius(10000))
+            foreach(GameNpc copy in GetNPCsInRadius(10000))
             {
                 if (copy != null)
                 {
@@ -278,7 +278,7 @@ namespace DOL.GS
                     }
                 }
             }
-            foreach (GameNPC boss in GetNPCsInRadius(10000))
+            foreach (GameNpc boss in GetNPCsInRadius(10000))
             {
                 if (boss != null)
                 {
@@ -335,7 +335,7 @@ namespace DOL.AI.Brain
             }
             if(HasAggro && Body.TargetObject != null)
             {
-                foreach(GameNPC copy in Body.GetNPCsInRadius(5000))
+                foreach(GameNpc copy in Body.GetNPCsInRadius(5000))
                 {
                     if(copy != null)
                     {
@@ -347,7 +347,7 @@ namespace DOL.AI.Brain
                         }
                     }
                 }
-                foreach (GameNPC boss in Body.GetNPCsInRadius(5000))
+                foreach (GameNpc boss in Body.GetNPCsInRadius(5000))
                 {
                     if (boss != null)
                     {

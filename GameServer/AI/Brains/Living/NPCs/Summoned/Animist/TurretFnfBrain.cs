@@ -47,7 +47,7 @@ namespace DOL.AI.Brain
         protected override void CheckNPCAggro()
         {
             // Copy paste of 'base.CheckNPCAggro()' except we add all NPCs in range.
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange))
+            foreach (GameNpc npc in Body.GetNPCsInRadius((ushort) AggroRange))
             {
                 if (!CanAggroTarget(npc))
                     continue;

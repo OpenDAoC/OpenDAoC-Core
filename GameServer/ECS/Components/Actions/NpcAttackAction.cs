@@ -12,7 +12,7 @@ namespace DOL.GS
         private const int NPC_VICINITY_CHECK_INTERVAL = 1000;
         private const int PET_LOS_CHECK_INTERVAL = 1000;
 
-        private GameNPC _npcOwner;
+        private GameNpc _npcOwner;
         private bool _isGuardArcher;
         // Next check for NPCs in attack range to hit while on the way to main target.
         private long _nextVicinityCheck = 0;
@@ -20,7 +20,7 @@ namespace DOL.GS
         private int _petLosCheckInterval = PET_LOS_CHECK_INTERVAL;
         private bool _hasLos;
 
-        public NpcAttackAction(GameNPC npcOwner) : base(npcOwner)
+        public NpcAttackAction(GameNpc npcOwner) : base(npcOwner)
         {
             _npcOwner = npcOwner;
             _isGuardArcher = _npcOwner is GuardArcher;
@@ -99,7 +99,7 @@ namespace DOL.GS
                     // Set the next check for NPCs. Will be in a range from 100ms -> NPC_VICINITY_CHECK_DELAY.
                     _nextVicinityCheck = GameLoop.GameLoopTime + Util.Random(100, NPC_VICINITY_CHECK_INTERVAL);
 
-                    foreach (GameNPC npcInRadius in _npcOwner.GetNPCsInRadius((ushort)_attackComponent.AttackRange))
+                    foreach (GameNpc npcInRadius in _npcOwner.GetNPCsInRadius((ushort)_attackComponent.AttackRange))
                     {
                         if (npcBrain.AggroTable.ContainsKey(npcInRadius))
                         {
@@ -171,7 +171,7 @@ namespace DOL.GS
                 _hasLos = false;
             else if (_npcOwner.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
                 _hasLos = true;
-            else if (_target is GamePlayer || (_target is GameNPC _targetNpc &&
+            else if (_target is GamePlayer || (_target is GameNpc _targetNpc &&
                                               _targetNpc.Brain is IControlledBrain _targetNpcBrain &&
                                               _targetNpcBrain.GetPlayerOwner() != null))
                 // Target is either a player or a pet owned by a player.

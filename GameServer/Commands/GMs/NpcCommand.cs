@@ -30,13 +30,13 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			if (!(client.Player.TargetObject is GameNPC))
+			if (!(client.Player.TargetObject is GameNpc))
 			{
 				client.Out.SendMessage("You must target an NPC.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
-			GameNPC npc = client.Player.TargetObject as GameNPC;
+			GameNpc npc = client.Player.TargetObject as GameNpc;
 
 			switch (args[1].ToLower())
 			{
@@ -204,7 +204,7 @@ namespace DOL.GS.Commands
 										}
 									}
 									//Check for NPCs by name in visibility distance
-									foreach (GameNPC target in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+									foreach (GameNpc target in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
 									{
 										if (target.Name.ToLower() == args[2].ToLower())
 										{
@@ -257,7 +257,7 @@ namespace DOL.GS.Commands
 										}
 									}
 									//Check for NPCs by name in visibility distance
-									foreach (GameNPC targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+									foreach (GameNpc targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
 									{
 										if (targetNpc.Name.ToLower() == args[2].ToLower())
 										{
@@ -307,7 +307,7 @@ namespace DOL.GS.Commands
 										}
 									}
 									//Check for NPCs by name in visibility distance
-									foreach (GameNPC targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+									foreach (GameNpc targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
 									{
 										if (targetNpc.Name.ToLower() == args[2].ToLower())
 										{
@@ -374,7 +374,7 @@ namespace DOL.GS.Commands
 										}
 									}
 									//Check for NPCs by name in visibility distance
-									foreach (GameNPC targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+									foreach (GameNpc targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
 									{
 										if (targetNpc.Name.ToLower() == args[2].ToLower())
 										{

@@ -26,13 +26,13 @@ namespace DOL.GS.Quests
             addActionMethod.Invoke(null, new object[] { questPart });
         }        
 
-        public QuestBehavior CreateBehaviour(GameNPC npc)
+        public QuestBehavior CreateBehaviour(GameNpc npc)
         {
             QuestBehavior questPart =  new QuestBehavior(questType, npc);            
             return questPart;
         }
 
-        public QuestBehavior CreateBehaviour(GameNPC npc, int maxExecutions)
+        public QuestBehavior CreateBehaviour(GameNpc npc, int maxExecutions)
         {
             QuestBehavior questPart = new QuestBehavior(questType, npc,maxExecutions);
             return questPart;

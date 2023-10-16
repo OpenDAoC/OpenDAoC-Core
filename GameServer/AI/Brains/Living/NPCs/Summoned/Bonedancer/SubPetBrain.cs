@@ -100,7 +100,7 @@ namespace DOL.AI.Brain
         {
             if (!Body.IsCasting && !Body.attackComponent.AttackState && Body.attackComponent.Attackers.IsEmpty)
             {
-                GameNPC commander = (GameNPC)Owner;
+                GameNpc commander = (GameNpc)Owner;
                 double heading = commander.Heading * Point2D.HEADING_TO_RADIAN;
                 //Get which place we should put minion
                 int i = 0;
@@ -116,16 +116,16 @@ namespace DOL.AI.Brain
 
                 switch (commander.Formation)
                 {
-                    case GameNPC.eFormationType.Triangle:
+                    case EPetFormationType.Triangle:
                         par_slide = BASEFORMATIONDIST;
                         perp_slide = BASEFORMATIONDIST;
                         if (i != 0)
                             par_slide = BASEFORMATIONDIST * 2;
                         break;
-                    case GameNPC.eFormationType.Line:
+                    case EPetFormationType.Line:
                         par_slide = BASEFORMATIONDIST * (i + 1);
                         break;
-                    case GameNPC.eFormationType.Protect:
+                    case EPetFormationType.Protect:
                         switch (i)
                         {
                             case 0:

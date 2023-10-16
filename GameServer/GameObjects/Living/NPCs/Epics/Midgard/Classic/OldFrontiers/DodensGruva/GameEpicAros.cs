@@ -108,7 +108,7 @@ namespace DOL.GS.Scripts
             {
                 BroadcastMessage(String.Format(message, Name));
             }
-            foreach (GameNPC npc in this.GetNPCsInRadius(4000))
+            foreach (GameNpc npc in this.GetNPCsInRadius(4000))
             {
                 if (npc.Name.Contains("Guardian of Aros"))
                 {
@@ -222,12 +222,12 @@ namespace DOL.GS.Scripts
 
         public void SpawnGuardian(GamePlayer enemy)
         {
-            GameNPC summonedGuard = new GameNPC();
+            GameNpc summonedGuard = new GameNpc();
             SetVariables(summonedGuard);
             summonedGuard.AddToWorld();
             summonedGuard.StartAttack(enemy);
         }
-        public void SetVariables(GameNPC summonedGuardian)
+        public void SetVariables(GameNpc summonedGuardian)
         {
             summonedGuardian.LoadEquipmentTemplateFromDatabase("Summoned_Guardian");
             summonedGuardian.Health = summonedGuardian.MaxHealth;
@@ -244,7 +244,7 @@ namespace DOL.GS.Scripts
             summonedGuardian.Model = 140;
             summonedGuardian.Size = 65;
             summonedGuardian.AttackRange = 200;
-            summonedGuardian.Flags |= eFlags.GHOST;
+            summonedGuardian.Flags |= ENpcFlags.GHOST;
             summonedGuardian.MeleeDamageType = EDamageType.Spirit;
             summonedGuardian.RespawnInterval = -1; // dont respawn
             summonedGuardian.RoamingRange = this.RoamingRange;

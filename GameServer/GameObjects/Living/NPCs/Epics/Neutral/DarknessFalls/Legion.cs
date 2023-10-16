@@ -119,7 +119,7 @@ namespace DOL.GS.Scripts
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC npc in GetNPCsInRadius(5000))
+            foreach (GameNpc npc in GetNPCsInRadius(5000))
             {
                 if (npc.Brain is LegionAddBrain)
                 {
@@ -394,7 +394,7 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                     {
                         if (npc.Brain is LegionAddBrain)
                             npc.RemoveFromWorld();
@@ -728,7 +728,7 @@ namespace DOL.AI.Brain
 #region Legion adds
 namespace DOL.GS
 {
-    public class LegionAdd : GameNPC
+    public class LegionAdd : GameNpc
     {
         private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

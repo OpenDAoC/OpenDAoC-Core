@@ -49,7 +49,7 @@ public class HealthRegenerationRateCalculator : PropertyCalculator
 		// assumes NPC regen is now half as effective as GamePlayer (as noted above) - tolakram
 		// http://www.dolserver.net/viewtopic.php?f=16&t=13197
 
-		if (living is GameNPC)
+		if (living is GameNpc)
 		{
 			if (living.InCombat)
 				regen /= 2.0;

@@ -164,7 +164,7 @@ namespace DOL.GS
         /// Reload the loot templates for this mob
         /// </summary>
         /// <param name="mob"></param>
-        public override void Refresh(GameNPC mob)
+        public override void Refresh(GameNpc mob)
         {
             if (mob == null)
                 return;
@@ -242,7 +242,7 @@ namespace DOL.GS
             }
         }
 
-        public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+        public override LootList GenerateLoot(GameNpc mob, GameObject killer)
         {
             LootList loot = base.GenerateLoot(mob, killer);
 
@@ -257,9 +257,9 @@ namespace DOL.GS
                 {
                     player = killer as GamePlayer;
                 }
-                else if (killer is GameNPC && (killer as GameNPC).Brain is IControlledBrain)
+                else if (killer is GameNpc && (killer as GameNpc).Brain is IControlledBrain)
                 {
-                    player = ((killer as GameNPC).Brain as ControlledNpcBrain).GetPlayerOwner();
+                    player = ((killer as GameNpc).Brain as ControlledNpcBrain).GetPlayerOwner();
                 }
 
                 // allow the leader to decide the loot realm

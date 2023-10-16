@@ -20,7 +20,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="killedNPC">npc that died</param>
 		/// <param name="killer">killer</param>
-		public override void OnNPCKilled(GameNPC killedNPC, GameObject killer)
+		public override void OnNPCKilled(GameNpc killedNPC, GameObject killer)
 		{
 			base.OnNPCKilled(killedNPC, killer); 	
 		}
@@ -31,18 +31,18 @@ namespace DOL.GS.ServerRules
 				return false;
 
 			// if controlled NPC - do checks for owner instead
-			if (attacker is GameNPC)
+			if (attacker is GameNpc)
 			{
-				IControlledBrain controlled = ((GameNPC)attacker).Brain as IControlledBrain;
+				IControlledBrain controlled = ((GameNpc)attacker).Brain as IControlledBrain;
 				if (controlled != null)
 				{
                     attacker = controlled.GetLivingOwner();
 					quiet = true; // silence all attacks by controlled npc
 				}
 			}
-			if (defender is GameNPC)
+			if (defender is GameNpc)
 			{
-				IControlledBrain controlled = ((GameNPC)defender).Brain as IControlledBrain;
+				IControlledBrain controlled = ((GameNpc)defender).Brain as IControlledBrain;
 				if (controlled != null)
                     defender = controlled.GetLivingOwner();
 			}
@@ -58,7 +58,7 @@ namespace DOL.GS.ServerRules
 			if (attacker.Realm == defender.Realm && !(attacker is GamePlayer && ((GamePlayer)attacker).DuelTarget == defender))
 			{
 				// allow confused mobs to attack same realm
-				if (attacker is GameNPC && (attacker as GameNPC).IsConfused)
+				if (attacker is GameNpc && (attacker as GameNpc).IsConfused)
 					return true;
 
 				if (attacker.Realm == 0)
@@ -79,18 +79,18 @@ namespace DOL.GS.ServerRules
 				return false;
 
 			// if controlled NPC - do checks for owner instead
-			if (source is GameNPC)
+			if (source is GameNpc)
 			{
-				IControlledBrain controlled = ((GameNPC)source).Brain as IControlledBrain;
+				IControlledBrain controlled = ((GameNpc)source).Brain as IControlledBrain;
 				if (controlled != null)
 				{
                     source = controlled.GetLivingOwner();
 					quiet = true; // silence all attacks by controlled npc
 				}
 			}
-			if (target is GameNPC)
+			if (target is GameNpc)
 			{
-				IControlledBrain controlled = ((GameNPC)target).Brain as IControlledBrain;
+				IControlledBrain controlled = ((GameNpc)target).Brain as IControlledBrain;
 				if (controlled != null)
                     target = controlled.GetLivingOwner();
 			}
@@ -104,12 +104,12 @@ namespace DOL.GS.ServerRules
 			if (source is GamePlayer && ((GamePlayer)source).Client.Account.PrivLevel > 1) return true;
 
 			//Peace flag NPCs are same realm
-			if (target is GameNPC)
-				if ((((GameNPC)target).Flags & GameNPC.eFlags.PEACE) != 0)
+			if (target is GameNpc)
+				if ((((GameNpc)target).Flags & ENpcFlags.PEACE) != 0)
 					return true;
 
-			if (source is GameNPC)
-				if ((((GameNPC)source).Flags & GameNPC.eFlags.PEACE) != 0)
+			if (source is GameNpc)
+				if ((((GameNpc)source).Flags & ENpcFlags.PEACE) != 0)
 					return true;
 
 			if(source.Realm != target.Realm)
@@ -183,12 +183,12 @@ namespace DOL.GS.ServerRules
 			}
 
 			//Peace flag NPCs can trade with everyone
-			if (target is GameNPC)
-				if ((((GameNPC)target).Flags & GameNPC.eFlags.PEACE) != 0)
+			if (target is GameNpc)
+				if ((((GameNpc)target).Flags & ENpcFlags.PEACE) != 0)
 					return true;
 
-			if (source is GameNPC)
-				if ((((GameNPC)source).Flags & GameNPC.eFlags.PEACE) != 0)
+			if (source is GameNpc)
+				if ((((GameNpc)source).Flags & ENpcFlags.PEACE) != 0)
 					return true;
 
 			if(source.Realm != target.Realm)
@@ -211,8 +211,8 @@ namespace DOL.GS.ServerRules
 
 			//Peace flag NPCs can be understood by everyone
 
-			if (source is GameNPC)
-				if ((((GameNPC)source).Flags & GameNPC.eFlags.PEACE) != 0)
+			if (source is GameNpc)
+				if ((((GameNpc)source).Flags & ENpcFlags.PEACE) != 0)
 					return true;
 
 			if(source.Realm > 0 && source.Realm != target.Realm) return false;

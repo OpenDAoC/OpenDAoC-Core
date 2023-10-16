@@ -77,7 +77,7 @@ namespace DOL.GS.Scripts
 
 		public void Spawn(GamePlayer player)
 		{
-			GameNPC mob = new GameNPC();
+			GameNpc mob = new GameNpc();
 			SetVariables(mob);
 			//Level Range of 50-55
 			int level = Util.Random(50, 55);
@@ -88,7 +88,7 @@ namespace DOL.GS.Scripts
 			mob.StartAttack(player);
 		}
 
-		public void SetVariables(GameNPC mob)
+		public void SetVariables(GameNpc mob)
 		{
 			mob.X = this.X + 350;
 			mob.Y = this.Y + 350;
@@ -153,7 +153,7 @@ namespace DOL.GS.Scripts
 		public override void Die(GameObject killer)
 		{
 			base.Die(killer);
-			foreach (GameNPC npc in this.GetNPCsInRadius(5000))
+			foreach (GameNpc npc in this.GetNPCsInRadius(5000))
 			{
 				if (npc.Name.Contains("ancient treant"))
 				{

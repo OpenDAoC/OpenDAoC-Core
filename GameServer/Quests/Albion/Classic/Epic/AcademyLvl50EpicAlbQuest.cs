@@ -22,7 +22,7 @@ namespace DOL.GS.Quests.Albion
 		protected private int _BechardKilled = 0;
 		protected private int _SilchardeKilled = 0;
 
-		private static GameNPC Ferowl = null; // Start NPC
+		private static GameNpc Ferowl = null; // Start NPC
 		private static Morgana Morgana = null; // Mob
 		private static Bechard Bechard = null; // Mob to kill
 		private static Silcharde Silcharde = null; // Mob to kill
@@ -75,10 +75,10 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Master Ferowl", ERealm.Albion);
+            GameNpc[] npcs = WorldMgr.GetNPCsByName("Master Ferowl", ERealm.Albion);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 1 && npc.X == 559690 && npc.Y == 510258)
 					{
 						Ferowl = npc;
@@ -87,7 +87,7 @@ namespace DOL.GS.Quests.Albion
 
 			if (Ferowl == null)
 			{
-				Ferowl = new GameNPC();
+				Ferowl = new GameNpc();
 				Ferowl.Model = 61;
 				Ferowl.Name = "Master Ferowl";
 				if (log.IsWarnEnabled)
@@ -111,7 +111,7 @@ namespace DOL.GS.Quests.Albion
 			npcs = WorldMgr.GetNPCsByName("Morgana", ERealm.None);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 1 && npc.X == 306093 && npc.Y == 670120)
 					{
 						Morgana = npc as Morgana;

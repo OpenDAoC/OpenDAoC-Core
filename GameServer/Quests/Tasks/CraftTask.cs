@@ -157,7 +157,7 @@ namespace DOL.GS.Quests
 			if (source == null)
 				return false;
 
-			GameNPC NPC = GetRandomNPC(player);
+			GameNpc NPC = GetRandomNPC(player);
 			if (NPC == null)
 			{
 				player.Out.SendMessage("I have no task for you, come back some time later.", EChatType.CT_System, EChatLoc.CL_PopupWindow);
@@ -195,7 +195,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="Player">The GamePlayer Object</param>		
 		/// <returns>The GameNPC Searched</returns>
-		public static GameNPC GetRandomNPC(GamePlayer Player)
+		public static GameNpc GetRandomNPC(GamePlayer Player)
 		{
 			return Player.CurrentZone.GetRandomNPC(new ERealm[] { ERealm.Albion, ERealm.Hibernia, ERealm.Midgard });
 		}
@@ -205,9 +205,9 @@ namespace DOL.GS.Quests
 			if (target == null)
 				return false;
 
-			if (target is CraftNPC)
+			if (target is CraftMasterNpc)
 			{
-				if (((target as CraftNPC).TheCraftingSkill == player.CraftingPrimarySkill))
+				if (((target as CraftMasterNpc).TheCraftingSkill == player.CraftingPrimarySkill))
 					return ATask.CheckAvailability(player, target, CHANCE);
 			}
 			return false;//else return false

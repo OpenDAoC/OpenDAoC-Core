@@ -7,11 +7,11 @@ using log4net;
 namespace DOL.GS.Behaviour.Actions
 {
 	[Action(ActionType = EActionType.TrainerWindow, IsNullableP = true)]
-	public class TrainerWindowAction : AAction<int?, GameNPC>
+	public class TrainerWindowAction : AAction<int?, GameNpc>
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public TrainerWindowAction(GameNPC defaultNPC)
+		public TrainerWindowAction(GameNpc defaultNPC)
 			: base(defaultNPC, EActionType.TrainerWindow)
 		{
 		}

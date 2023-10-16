@@ -94,7 +94,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC npc in GetNPCsInRadius(5000))
+            foreach (GameNpc npc in GetNPCsInRadius(5000))
             {
                 if (npc.Brain is OroCloneBrain)
                 {
@@ -125,7 +125,7 @@ namespace DOL.AI.Brain
         {
             if (!isPulled)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
                 {
                     if (npc?.Brain is OroCloneBrain && npc.IsAlive)
                     {
@@ -161,7 +161,7 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-    public class HighLordOroClone : GameNPC
+    public class HighLordOroClone : GameNpc
     {
         private static new readonly log4net.ILog log =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -252,7 +252,7 @@ namespace DOL.AI.Brain
         {
             if (!isPulled)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
                 {
                     if (npc?.Brain is OroCloneBrain)
                     {
@@ -264,7 +264,7 @@ namespace DOL.AI.Brain
             }
             if(!isPulled2)
             {
-                foreach (GameNPC npc2 in Body.GetNPCsInRadius(2500))
+                foreach (GameNpc npc2 in Body.GetNPCsInRadius(2500))
                 {
                     if (npc2?.Brain is OroBrain)
                     {

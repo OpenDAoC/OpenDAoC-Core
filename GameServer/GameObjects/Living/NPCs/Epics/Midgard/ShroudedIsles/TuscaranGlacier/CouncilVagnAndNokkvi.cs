@@ -92,7 +92,7 @@ namespace DOL.AI.Brain
         {
             if (IsPulled == false)
             {
-                foreach (GameNPC Nokkvi in Body.GetNPCsInRadius(1800))
+                foreach (GameNpc Nokkvi in Body.GetNPCsInRadius(1800))
                 {
                     if (Nokkvi != null && Nokkvi.IsAlive && Nokkvi.Brain is NokkviBrain)
                         AddAggroListTo(Nokkvi.Brain as NokkviBrain);
@@ -248,7 +248,7 @@ namespace DOL.AI.Brain
         {
             if (IsPulled2 == false)
             {
-                foreach (GameNPC Vagn in Body.GetNPCsInRadius(1800))
+                foreach (GameNpc Vagn in Body.GetNPCsInRadius(1800))
                 {
                     if (Vagn != null && Vagn.IsAlive && Vagn.Brain is VagnBrain)
                         AddAggroListTo(Vagn.Brain as VagnBrain);

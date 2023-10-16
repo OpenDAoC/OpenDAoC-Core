@@ -6,7 +6,7 @@ using log4net;
 
 namespace DOL.GS.Scripts
 {
-	public class EpicTeleporter: GameNPC
+	public class EpicTeleporter: GameNpc
 	{
 		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -29,7 +29,7 @@ namespace DOL.GS.Scripts
             }
 
             Inventory = template.CloseTemplate();
-            Flags |= eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
             Name = "Celestius Teleporter";
             GuildName = "GM Only Please";
             Model = 342;

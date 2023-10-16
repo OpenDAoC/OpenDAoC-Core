@@ -95,7 +95,7 @@ namespace DOL.GS.PacketHandler
 				ushort model = obj.Model;
 				if (obj.IsUnderwater)
 				{
-					if (obj is GameNPC)
+					if (obj is GameNpc)
 						model |= 0x8000;
 					else
 						flag |= 0x01; // Underwater

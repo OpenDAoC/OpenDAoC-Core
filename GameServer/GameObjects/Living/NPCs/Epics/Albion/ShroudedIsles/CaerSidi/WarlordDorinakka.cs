@@ -110,7 +110,7 @@ namespace DOL.AI.Brain
 
 			if (Body.TargetObject != null && HasAggro) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
 			{
-				foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+				foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 				{
 					if (npc != null)
 					{

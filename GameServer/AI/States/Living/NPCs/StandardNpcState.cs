@@ -144,8 +144,8 @@ public class StandardNpcStateAggro : StandardNpcState
             return;
         }
 
-        if (_brain.Body.Flags.HasFlag(GameNPC.eFlags.STEALTH))
-            _brain.Body.Flags ^= GameNPC.eFlags.STEALTH;
+        if (_brain.Body.Flags.HasFlag(ENpcFlags.STEALTH))
+            _brain.Body.Flags ^= ENpcFlags.STEALTH;
 
         _brain.AttackMostWanted();
         base.Think();
@@ -189,7 +189,7 @@ public class StandardNpcStateRoaming : StandardNpcState
             if (_lastRoamTick + ROAM_COOLDOWN <= GameLoop.GameLoopTime && Util.Chance(Properties.GAMENPC_RANDOMWALK_CHANCE))
             {
                 _brain.Body.Roam(NpcMovementComponent.DEFAULT_WALK_SPEED);
-                _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
+                _brain.Body.FireAmbientSentence(EAmbientNpcTrigger.roaming, _brain.Body);
                 _lastRoamTick = GameLoop.GameLoopTime;
             }
         }
@@ -212,7 +212,7 @@ public class StandardNpcStateReturnToSpawn : StandardNpcState
             Console.WriteLine($"{_brain.Body} is entering RETURN_TO_SPAWN");
 
         if (_brain.Body.WasStealthed)
-            _brain.Body.Flags |= GameNPC.eFlags.STEALTH;
+            _brain.Body.Flags |= ENpcFlags.STEALTH;
 
         _brain.ClearAggroList();
         _brain.Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);

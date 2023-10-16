@@ -8,17 +8,17 @@ using log4net;
 namespace DOL.GS.Behaviour.Actions
 {
     [Action(ActionType = EActionType.Attack,IsNullableP=true)]
-    public class AttackAction : AAction<int?,GameNPC>
+    public class AttackAction : AAction<int?,GameNpc>
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public AttackAction(GameNPC defaultNPC, Object p, Object q)
+        public AttackAction(GameNpc defaultNPC, Object p, Object q)
             : base(defaultNPC, EActionType.Attack, p, q)
         {
         }
 
 
-        public AttackAction(GameNPC defaultNPC, Nullable<Int32> aggroAmount, GameNPC attacker)
+        public AttackAction(GameNpc defaultNPC, Nullable<Int32> aggroAmount, GameNpc attacker)
             : this(defaultNPC, (object)aggroAmount, (object)attacker) { }
         
 
@@ -28,7 +28,7 @@ namespace DOL.GS.Behaviour.Actions
             GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
 
             int aggroAmount = P.HasValue ? P.Value : player.Level << 1;
-            GameNPC attacker = Q;
+            GameNpc attacker = Q;
 
             if (attacker.Brain is IOldAggressiveBrain)
             {

@@ -15,9 +15,9 @@ namespace DOL.GS.Quests.Midgard
 		protected const int minimumLevel = 50;
 		protected const int maximumLevel = 50;
 
-		private static GameNPC Inaksha = null; // Start NPC
+		private static GameNpc Inaksha = null; // Start NPC
 		private static Loken Loken = null; // Mob to kill
-		private static GameNPC Miri = null; // Trainer for reward
+		private static GameNpc Miri = null; // Trainer for reward
 
 		private static DbItemTemplate ball_of_flame = null; //ball of flame
 		private static DbItemTemplate sealed_pouch = null; //sealed pouch
@@ -60,10 +60,10 @@ namespace DOL.GS.Quests.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Inaksha", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Inaksha", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 805929 && npc.Y == 702449)
 					{
 						Inaksha = npc;
@@ -74,7 +74,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Inaksha , creating it ...");
-				Inaksha = new GameNPC();
+				Inaksha = new GameNpc();
 				Inaksha.Model = 193;
 				Inaksha.Name = "Inaksha";
 				Inaksha.GuildName = "";
@@ -97,7 +97,7 @@ namespace DOL.GS.Quests.Midgard
 			npcs = WorldMgr.GetNPCsByName("Loken", ERealm.None);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 636784 && npc.Y == 762433)
 					{
 						Loken = npc as Loken;
@@ -131,7 +131,7 @@ namespace DOL.GS.Quests.Midgard
 			npcs = WorldMgr.GetNPCsByName("Miri", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 101 && npc.X == 30641 && npc.Y == 32093)
 					{
 						Miri = npc;
@@ -142,7 +142,7 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Miri , creating it ...");
-				Miri = new GameNPC();
+				Miri = new GameNpc();
 				Miri.Model = 220;
 				Miri.Name = "Miri";
 				Miri.GuildName = "";

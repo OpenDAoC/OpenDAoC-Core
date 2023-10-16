@@ -87,7 +87,7 @@ namespace DOL.GS
                         truc = ((source as GameSummonedPet).Owner as GamePlayer);
 
 
-                    foreach (GameNPC npc in this.GetNPCsInRadius(5000))
+                    foreach (GameNpc npc in this.GetNPCsInRadius(5000))
                     {
                         if (npc != null)
                         {
@@ -185,7 +185,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)EBodyType.Giant;
             if (!Styles.Contains(taunt))
                 Styles.Add(taunt);
             ++QueenKulaCount;
@@ -377,7 +377,7 @@ namespace DOL.AI.Brain
         {
             if (HasAggro && Body.TargetObject != null)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                 {
                     if (npc != null)
                     {
@@ -593,7 +593,7 @@ namespace DOL.GS
                     else
                         truc = ((source as GameSummonedPet).Owner as GamePlayer);
                     
-                    foreach (GameNPC npc in GetNPCsInRadius(5000))
+                    foreach (GameNpc npc in GetNPCsInRadius(5000))
                     {
                         if (npc != null)
                         {
@@ -713,7 +713,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)EBodyType.Giant;
             if(!Styles.Contains(taunt))
                 Styles.Add(taunt);
             if (!Styles.Contains(after_parry))
@@ -927,7 +927,7 @@ namespace DOL.AI.Brain
         {
             if (HasAggro && Body.TargetObject != null)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                 {
                     if (npc != null)
                     {

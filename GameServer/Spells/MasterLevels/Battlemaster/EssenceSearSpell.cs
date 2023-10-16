@@ -60,9 +60,9 @@ namespace DOL.GS.Spells
                 Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
             }
 
-            if (target is GameNPC)
+            if (target is GameNpc)
             {
-                IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
+                IOldAggressiveBrain aggroBrain = ((GameNpc)target).Brain as IOldAggressiveBrain;
                 if (aggroBrain != null)
                     aggroBrain.AddToAggroList(Caster, (int)Spell.Value);
             }

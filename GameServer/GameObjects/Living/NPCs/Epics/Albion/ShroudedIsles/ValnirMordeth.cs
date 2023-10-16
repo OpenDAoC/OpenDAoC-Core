@@ -85,7 +85,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is ValnirMordethAddBrain)
 					npc.Die(this);
@@ -182,7 +182,7 @@ namespace DOL.AI.Brain
 				}
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is ValnirMordethAddBrain && npc.PackageID == "MordethAdds")
 							npc.Die(Body);
@@ -194,7 +194,7 @@ namespace DOL.AI.Brain
 			{
 				RemoveAdds = false;
 				spawnAddsAfterCombat = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc.PackageID == "MordethBaf")
 						AddAggroListTo(npc.Brain as StandardMobBrain);
@@ -333,7 +333,7 @@ namespace DOL.AI.Brain
 /////////////////////////////////////////////////////////////////////Adds//////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class ValnirMordethAdd : GameNPC
+	public class ValnirMordethAdd : GameNpc
 	{
 		public ValnirMordethAdd() : base() { }
 
@@ -409,7 +409,7 @@ namespace DOL.GS
 		{
 			if (ad != null && ad.AttackType == EAttackType.Spell && ad.Damage > 0)
 			{
-				foreach(GameNPC boss in GetNPCsInRadius(5000))
+				foreach(GameNpc boss in GetNPCsInRadius(5000))
                 {
 					if (boss != null && boss.IsAlive && boss.Brain is ValnirMordethBrain)
 						boss.Health += ad.Damage;//heal boss

@@ -177,7 +177,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC adds in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					foreach (GameNpc adds in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
 						if (adds != null)
 						{
@@ -220,7 +220,7 @@ namespace DOL.AI.Brain
 ///////////////////////////////////////////////////////////////////////////adddssss///////////////////////////////////
 namespace DOL.GS
 {
-	public class AbomosAdd : GameNPC
+	public class AbomosAdd : GameNpc
 	{
 		public AbomosAdd() : base()
 		{

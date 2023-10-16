@@ -55,7 +55,7 @@ namespace DOL.GS.Spells
                 merchant.MaxSpeedBase = 0;
                 merchant.GuildName = "";
                 merchant.Size = 50;
-                merchant.Flags |= GameNPC.eFlags.PEACE;
+                merchant.Flags |= ENpcFlags.PEACE;
                 merchant.TradeItems = new MerchantTradeItems("ML_transmuteritems");
             }
         }

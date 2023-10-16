@@ -72,9 +72,9 @@ namespace DOL.GS.Spells
 
 				int power ;
 
-				if (target is GameNPC || target.Mana > 0)
+				if (target is GameNpc || target.Mana > 0)
 				{
-					if (target is GameNPC)
+					if (target is GameNpc)
 						power = (int) Math.Round(target.Level * (double) m_handler.Spell.Value * 2 / 100);
 					else 
 						power = (int) Math.Round(target.MaxMana * ((double) m_handler.Spell.Value / 250));

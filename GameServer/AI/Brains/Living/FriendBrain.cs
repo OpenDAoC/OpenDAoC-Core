@@ -42,7 +42,7 @@ public class FriendBrain : StandardMobBrain
 	{
 		if(m_spellHandler!=null)
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
+			foreach (GameNpc npc in Body.GetNPCsInRadius((ushort)AggroRange))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(m_spellHandler.Caster, npc, true))
 				{

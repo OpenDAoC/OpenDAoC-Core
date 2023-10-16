@@ -79,7 +79,7 @@ namespace DOL.GS
         {
             base.Die(killer);
 
-            foreach (GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNpc npc in GetNPCsInRadius(4000))
             {
                 if (npc.Brain is NahemahMinionBrain)
                 {
@@ -108,7 +108,7 @@ namespace DOL.AI.Brain
                 spawnMinions = true;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                     {
                         if (npc.Brain is NahemahMinionBrain)
                         {
@@ -129,7 +129,7 @@ namespace DOL.AI.Brain
                 Spawn(); // spawn minions
                 spawnMinions = false; // check to avoid spawning adds multiple times
 
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(2000))
+                foreach (GameNpc mob_c in Body.GetNPCsInRadius(2000))
                 {
                     if (mob_c?.Brain is NahemahMinionBrain && mob_c.IsAlive && mob_c.IsAvailable)
                     {
@@ -141,7 +141,7 @@ namespace DOL.AI.Brain
         }
         private void Spawn()
         {
-            foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+            foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
             {
                 if (npc.Brain is NahemahMinionBrain)
                 {
@@ -167,7 +167,7 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-    public class NahemahMinion : GameNPC
+    public class NahemahMinion : GameNpc
     {
         public override int MaxHealth
         {

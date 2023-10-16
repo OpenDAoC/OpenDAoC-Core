@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Dictionary to Keep Track of Fear Brains attached to NPCs
 		/// </summary>
-		private readonly ConcurrentDictionary<GameNPC, FearBrain> m_NPCFearBrains = new();
+		private readonly ConcurrentDictionary<GameNpc, FearBrain> m_NPCFearBrains = new();
 		
 		/// <summary>
 		/// Consume Power on Spell Start
@@ -31,7 +31,7 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public override IList<GameLiving> SelectTargets(GameObject castTarget)
 		{
-			return base.SelectTargets(castTarget).Where(t => t is GameNPC).ToList();
+			return base.SelectTargets(castTarget).Where(t => t is GameNpc).ToList();
 		}
 
 		/// <summary>
@@ -39,7 +39,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			var npcTarget = target as GameNPC;
+			var npcTarget = target as GameNpc;
 			if (npcTarget == null) return;
 			
 			if (npcTarget.Level > Spell.Value)
@@ -58,7 +58,7 @@ namespace DOL.GS.Spells
 		/// <param name="effect"></param>
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
-			var npcTarget = effect.Owner as GameNPC;
+			var npcTarget = effect.Owner as GameNpc;
 			
 			var fearBrain = new FearBrain();
 			m_NPCFearBrains[npcTarget] = fearBrain;
@@ -77,7 +77,7 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			var npcTarget = effect.Owner as GameNPC;
+			var npcTarget = effect.Owner as GameNpc;
 
 			FearBrain fearBrain;
 			if (m_NPCFearBrains.TryRemove(npcTarget, out fearBrain))

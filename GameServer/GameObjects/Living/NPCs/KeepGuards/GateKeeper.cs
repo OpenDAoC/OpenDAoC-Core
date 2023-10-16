@@ -15,9 +15,9 @@ namespace DOL.GS.Keeps
         private List<DbKeepDoorTeleport> m_destinationsIn = new List<DbKeepDoorTeleport>();
         private const string type = "GateKeeperIn";
 
-        public override eFlags Flags
+        public override ENpcFlags Flags
         {
-            get { return eFlags.PEACE; }
+            get { return ENpcFlags.PEACE; }
         }
 
         public override bool AddToWorld()
@@ -207,9 +207,9 @@ namespace DOL.GS.Keeps
         private List<DbKeepDoorTeleport> m_destinationsOut = new List<DbKeepDoorTeleport>();
         private const string type = "GateKeeperOut";
 
-        public override eFlags Flags
+        public override ENpcFlags Flags
         {
-            get { return eFlags.PEACE; }
+            get { return ENpcFlags.PEACE; }
         }
 
         public override bool AddToWorld()

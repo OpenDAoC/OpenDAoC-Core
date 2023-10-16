@@ -278,7 +278,7 @@ namespace DOL.GS.Quests
 			if (source == null)
 				return false;
 
-			GameNPC Mob = GetRandomMob(player);
+			GameNpc Mob = GetRandomMob(player);
 
 			if (Mob == null)
 			{
@@ -332,11 +332,11 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="Player">The GamePlayer Object</param>
 		/// <returns>The GameMob Searched</returns>
-		public static GameNPC GetRandomMob(GamePlayer Player)
+		public static GameNpc GetRandomMob(GamePlayer Player)
 		{
 			int minLevel = GameLiving.NoXPForLevel[Player.Level]+1;
 			int maxLevel = Player.Level;
-			GameNPC npc = Player.CurrentZone.GetRandomNPC(ERealm.None, minLevel,maxLevel);
+			GameNpc npc = Player.CurrentZone.GetRandomNPC(ERealm.None, minLevel,maxLevel);
 			
 			return npc != null && npc.Name.ToLower().Equals(npc.Name) ? npc : null;
 		}

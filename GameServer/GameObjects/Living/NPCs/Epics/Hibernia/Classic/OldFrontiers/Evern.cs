@@ -111,7 +111,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Evern", 200, (ERealm) 0);
             if (npcs.Length == 0)
             {
@@ -133,7 +133,7 @@ namespace DOL.GS
                 CO.Constitution = 100;
                 CO.Quickness = 125;
                 CO.Empathy = 300;
-                CO.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
+                CO.BodyType = (ushort) EBodyType.Magical;
                 CO.MeleeDamageType = EDamageType.Slash;
 
                 CO.X = 429840;
@@ -157,7 +157,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            foreach (GameNpc npc in GetNPCsInRadius(8000))
             {
                 if (npc == null) break;
                 if (npc.Brain is EvernFairyBrain)
@@ -192,7 +192,7 @@ namespace DOL.AI.Brain
                 spawnfairy = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4500))
                     {
                         if (npc == null) break;
                         if (npc.Brain is EvernFairyBrain)
@@ -223,7 +223,7 @@ namespace DOL.AI.Brain
             {
                 Body.Health = Body.MaxHealth;
 
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(4500))
                 {
                     if (npc == null) break;
                     if (npc.Brain is EvernFairyBrain)
@@ -259,7 +259,7 @@ namespace DOL.AI.Brain
 ///////////////////////////////////Evern Fairys//////////////////////////////////23stones
 namespace DOL.GS
 {
-    public class EvernFairy : GameNPC
+    public class EvernFairy : GameNpc
     {
         public EvernFairy() : base()
         {
@@ -305,7 +305,7 @@ namespace DOL.GS
             MeleeDamageType = EDamageType.Thrust;
             RespawnInterval = -1;
             Size = 50;
-            Flags = eFlags.FLYING;
+            Flags = ENpcFlags.FLYING;
             Faction = FactionMgr.GetFactionByID(81);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(81));
             Level = (byte) Util.Random(50, 55);
@@ -334,7 +334,7 @@ namespace DOL.AI.Brain
             Body.MoveTo(Body.CurrentRegionID, target.X, target.Y, target.Z, Body.Heading);
             Body.CancelReturnToSpawnPoint();
 
-            foreach(GameNPC evern in Body.GetNPCsInRadius(2500))
+            foreach(GameNpc evern in Body.GetNPCsInRadius(2500))
             {
                 if(evern != null)
                 {

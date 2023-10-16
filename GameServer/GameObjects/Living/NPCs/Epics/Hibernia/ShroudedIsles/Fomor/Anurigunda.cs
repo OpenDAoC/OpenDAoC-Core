@@ -54,7 +54,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
 			{
 				if (npc != null)
 				{
@@ -132,7 +132,7 @@ namespace DOL.AI.Brain
 				Adds2 = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
 						if (npc != null)
 						{
@@ -154,7 +154,7 @@ namespace DOL.AI.Brain
 				RemoveAdds = false;
 				if (IsPulled == false)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null)
 						{
@@ -271,7 +271,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-	public class AnurigundaAdds : GameNPC
+	public class AnurigundaAdds : GameNpc
 	{
 		public override int MaxHealth
 		{

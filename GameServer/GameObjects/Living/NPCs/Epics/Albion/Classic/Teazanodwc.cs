@@ -80,7 +80,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null)
 				{
@@ -115,7 +115,7 @@ namespace DOL.AI.Brain
 				_SpawnAdds = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null)
 						{
@@ -154,7 +154,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-	public class TeazanodwcAdd : GameNPC
+	public class TeazanodwcAdd : GameNpc
 	{
 		public TeazanodwcAdd() : base() { }
 

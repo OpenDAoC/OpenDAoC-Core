@@ -18,7 +18,7 @@ namespace DOL.GS
         public override ushort Icon {
             get
             {
-                if (Owner is GameNPC) return 411;
+                if (Owner is GameNpc) return 411;
                 else return 3034;
             }
         }
@@ -35,9 +35,9 @@ namespace DOL.GS
                 // "{0} begins charging wildly!"
                 MessageUtil.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.AreaStartCharge",OwnerPlayer.GetName(0, true)), EChatType.CT_System, OwnerPlayer);
             }
-            else if (Owner is GameNPC)
+            else if (Owner is GameNpc)
             {
-                IControlledBrain icb = ((GameNPC)Owner).Brain as IControlledBrain;
+                IControlledBrain icb = ((GameNpc)Owner).Brain as IControlledBrain;
                 if (icb != null && icb.Body != null)
                 {
                     GamePlayer playerowner = icb.GetPlayerOwner();
@@ -99,9 +99,9 @@ namespace DOL.GS
                 // "{0} ceases their charge!"
                 MessageUtil.SystemToArea(OwnerPlayer, LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ChargeEffect.AreaEndCharge", OwnerPlayer.GetName(0, true)), EChatType.CT_System, OwnerPlayer);
             }
-            else if (Owner is GameNPC)
+            else if (Owner is GameNpc)
             {
-                IControlledBrain icb = ((GameNPC)Owner).Brain as IControlledBrain;
+                IControlledBrain icb = ((GameNpc)Owner).Brain as IControlledBrain;
                 if (icb != null && icb.Body != null)
                 {
                     GamePlayer playerowner = icb.GetPlayerOwner();

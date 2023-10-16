@@ -214,7 +214,7 @@ namespace DOL.GS.RealmAbilities
             {
                 GameObject attacker = _player.LastInterrupter;
 
-                if (attacker is GameNPC npcAttacker)
+                if (attacker is GameNpc npcAttacker)
                     _player.Out.SendMessage(LanguageMgr.GetTranslation(_player.Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true, _player.Client.Account.Language, npcAttacker), "volley"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                 else
                     _player.Out.SendMessage(LanguageMgr.GetTranslation(_player.Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true), "volley"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);

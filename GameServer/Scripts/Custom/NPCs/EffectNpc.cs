@@ -5,8 +5,8 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    [NPCGuildScript("Effect Master")]
-    public class EffectNpc : GameNPC {
+    [NpcGuildScript("Effect Master")]
+    public class EffectNpc : GameNpc {
         private string EFFECTNPC_ITEM_WEAK = "DOL.GS.Scripts.EffectNPC_Item_Manipulation";//used to store the item in the player
         private ushort spell = 7215;//The spell which is casted
         private ushort duration = 3000;//3s, the duration the spell is cast
@@ -1151,7 +1151,7 @@ namespace DOL.GS
         
         private void DisplayReskinPreviewTo(GamePlayer player, DbInventoryItem item)
         {
-            GameNPC display = CreateDisplayNPC(player, item);
+            GameNpc display = CreateDisplayNPC(player, item);
             display.AddToWorld();
 
             var tempAd = new AttackData();
@@ -1182,7 +1182,7 @@ namespace DOL.GS
             // animationThread.Start();
         }
         
-        private GameNPC CreateDisplayNPC(GamePlayer player, DbInventoryItem item)
+        private GameNpc CreateDisplayNPC(GamePlayer player, DbInventoryItem item)
         {
             var mob = new DisplayModel(player, item);
 

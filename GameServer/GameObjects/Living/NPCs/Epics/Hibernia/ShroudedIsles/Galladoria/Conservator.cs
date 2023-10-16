@@ -122,7 +122,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Conservator", 191, (ERealm)0);
             if (npcs.Length == 0)
             {

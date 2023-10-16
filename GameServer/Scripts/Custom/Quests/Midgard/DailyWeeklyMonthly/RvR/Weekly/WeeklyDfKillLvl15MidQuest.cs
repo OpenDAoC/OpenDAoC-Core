@@ -24,7 +24,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 		// Kill Goal
 		private const int MAX_KILLED = 50;
 
-		private static GameNPC Patrick = null; // Start NPC
+		private static GameNpc Patrick = null; // Start NPC
 
 		private int EnemiesKilled = 0;
 
@@ -63,10 +63,10 @@ namespace DOL.GS.WeeklyQuest.Midgard
 
 			#region defineNPCs
 			
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Patrick", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Patrick", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 249 && npc.X == 16639 && npc.Y == 18947)
 					{
 						Patrick = npc;
@@ -77,7 +77,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Patrick , creating it ...");
-				Patrick = new GameNPC();
+				Patrick = new GameNpc();
 				Patrick.Model = 138;
 				Patrick.Name = "Patrick";
 				Patrick.GuildName = "Realm Logistics";
@@ -90,7 +90,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 				Patrick.Y = 18947;
 				Patrick.Z = 22892;
 				Patrick.Heading = 2117;
-				Patrick.Flags |= GameNPC.eFlags.PEACE;
+				Patrick.Flags |= ENpcFlags.PEACE;
 				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
 				templateMid.AddNPCEquipment(EInventorySlot.TorsoArmor, 751,0,0,3);
 				templateMid.AddNPCEquipment(EInventorySlot.LegsArmor, 752);

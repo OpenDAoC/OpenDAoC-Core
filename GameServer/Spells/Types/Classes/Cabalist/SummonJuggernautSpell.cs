@@ -21,7 +21,7 @@ namespace DOL.GS.Spells
 		
 		protected override void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments)
 		{
-			if (e != GameLivingEvent.PetReleased || sender is not GameNPC gameNpc)
+			if (e != GameLivingEvent.PetReleased || sender is not GameNpc gameNpc)
 				return;
 
 			if (gameNpc.Brain is not JuggernautBrain juggernautBrain)

@@ -81,7 +81,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is AmphiptereAddsBrain)
 					npc.Die(this);
@@ -188,7 +188,7 @@ namespace DOL.AI.Brain
 				CanSpawnAdds = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is AmphiptereAddsBrain)
 							npc.Die(Body);
@@ -200,7 +200,7 @@ namespace DOL.AI.Brain
 			{
 				RemoveAdds = false;
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is AmphiptereAddsBrain brain)
 						if (target != null && !brain.HasAggro)
@@ -331,7 +331,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////////////////////////////////////Zombie Adds//////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class AmphiptereAdds : GameNPC
+	public class AmphiptereAdds : GameNpc
 	{
 		public AmphiptereAdds() : base() { }
 		public override int GetResist(EDamageType damageType)

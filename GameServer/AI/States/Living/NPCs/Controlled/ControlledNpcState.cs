@@ -124,7 +124,7 @@ public class ControlledNpcStateAggro : StandardNpcStateAggro
         bool hasTarget = brain.HasAggro || brain.OrderedAttackTarget != null;
 
         // Check for buffs, heals, etc, interrupting melee if not being interrupted.
-        if (brain.Owner is GameNPC || (brain.Owner is GamePlayer && !hasTarget))
+        if (brain.Owner is GameNpc || (brain.Owner is GamePlayer && !hasTarget))
         {
             if (brain.CheckSpells(ECheckSpellType.Defensive))
                 return;

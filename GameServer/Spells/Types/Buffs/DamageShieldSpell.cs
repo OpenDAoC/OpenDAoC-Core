@@ -81,9 +81,9 @@ namespace DOL.GS.Spells
 			GameClient attackerClient = null;
 			if ( attacker is GamePlayer ) attackerClient = ( (GamePlayer)attacker ).Client;
 
-			if ( ad.Attacker is GameNPC )
+			if ( ad.Attacker is GameNpc )
 			{
-				IControlledBrain brain = ((GameNPC)ad.Attacker).Brain as IControlledBrain;
+				IControlledBrain brain = ((GameNpc)ad.Attacker).Brain as IControlledBrain;
 				if (brain != null)
 				{
 					owner = brain.GetPlayerOwner();

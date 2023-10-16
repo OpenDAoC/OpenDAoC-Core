@@ -110,7 +110,7 @@ namespace DOL.GS
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameNPC[] npcs;
+			GameNpc[] npcs;
 
 			npcs = WorldMgr.GetNPCsByNameFromRegion("Summoner Lossren", 248, (ERealm)0);
 			if (npcs.Length == 0)
@@ -133,7 +133,7 @@ namespace DOL.GS
 				OF.Constitution = 100;
 				OF.Quickness = 125;
 				OF.Empathy = 300;
-				OF.BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
+				OF.BodyType = (ushort)EBodyType.Humanoid;
 				OF.MeleeDamageType = EDamageType.Crush;
 				OF.Faction = FactionMgr.GetFactionByID(206);
 				OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
@@ -184,7 +184,7 @@ namespace DOL.AI.Brain
 				TorturedSouls.TorturedSoulCount = 0;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC souls in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc souls in Body.GetNPCsInRadius(5000))
 					{
 						if (souls != null)
 						{
@@ -205,7 +205,7 @@ namespace DOL.AI.Brain
 					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(DoSpawn), Util.Random(5000, 8000));//every 5-8s it will spawn tortured souls
 					IsCreatingSouls =true;
                 }
-				foreach(GameNPC souls in Body.GetNPCsInRadius(4000))
+				foreach(GameNpc souls in Body.GetNPCsInRadius(4000))
                 {
 					if(souls != null)
                     {
@@ -355,7 +355,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-	public class TorturedSouls : GameNPC
+	public class TorturedSouls : GameNpc
 	{
 		public override int MaxHealth
 		{
@@ -515,7 +515,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-	public class ExplodeUndead : GameNPC
+	public class ExplodeUndead : GameNpc
 	{
 		public override int MaxHealth
 		{

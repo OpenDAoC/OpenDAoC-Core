@@ -4,7 +4,7 @@ using DOL.Database;
 
 namespace DOL.GS.Scripts
 {
-    public class HeraldNpc : GameNPC
+    public class HeraldNpc : GameNpc
     {
 
         public HeraldNpc() : base() { }
@@ -14,7 +14,7 @@ namespace DOL.GS.Scripts
             Name = "Faelyn";
             Level = 50;
             Size = 60;
-            Flags |= eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
             base.AddToWorld();
             return true;
         }

@@ -8,13 +8,13 @@ namespace DOL.GS.Behaviour.Actions
     public class TakeGoldAction : AAction<long,Unused>
     {               
 
-        public TakeGoldAction(GameNPC defaultNPC,  Object p, Object q)
+        public TakeGoldAction(GameNpc defaultNPC,  Object p, Object q)
             : base(defaultNPC, EActionType.TakeGold, p, q)
         {                
         }
 
 
-        public TakeGoldAction(GameNPC defaultNPC, long p)
+        public TakeGoldAction(GameNpc defaultNPC, long p)
             : this(defaultNPC, (object)p, (object)null) { }
         
 

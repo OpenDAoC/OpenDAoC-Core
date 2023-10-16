@@ -128,7 +128,7 @@ namespace DOL.GS
                         else
                             player.Out.SendMessage("You are already casting a spell!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                     }
-                    else if (Owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain)
+                    else if (Owner is GameNpc npcOwner && npcOwner.Brain is IControlledBrain)
                         QueuedSpellHandler = newSpellHandler;
                 }
             }

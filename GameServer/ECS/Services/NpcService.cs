@@ -51,7 +51,7 @@ namespace DOL.GS
 
                 try
                 {
-                    GameNPC npc = brain.Body;
+                    GameNpc npc = brain.Body;
 
                     if (brain.LastThinkTick + brain.ThinkInterval < tick)
                     {

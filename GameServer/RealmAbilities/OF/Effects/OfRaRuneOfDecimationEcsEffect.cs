@@ -34,7 +34,7 @@ namespace DOL.GS.Effects
                 }
             }
 
-            foreach (GameNPC living in Owner.GetNPCsInRadius((ushort)SpellHandler.Spell.Range))
+            foreach (GameNpc living in Owner.GetNPCsInRadius((ushort)SpellHandler.Spell.Range))
             {
                 if (GameServer.ServerRules.IsAllowedToAttack(Owner, living, true))
                 {

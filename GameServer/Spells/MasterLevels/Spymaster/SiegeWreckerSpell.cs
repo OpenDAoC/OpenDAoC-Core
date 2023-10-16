@@ -18,7 +18,7 @@ namespace DOL.GS.Spells
 
             if (trap == null) return;
             bool wasstealthed = ((GamePlayer)Caster).IsStealthed;
-            foreach (GameNPC npc in mine.GetNPCsInRadius((ushort)s.Range))
+            foreach (GameNpc npc in mine.GetNPCsInRadius((ushort)s.Range))
             {
                 if (npc is GameSiegeWeapon && npc.IsAlive &&
                     GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))

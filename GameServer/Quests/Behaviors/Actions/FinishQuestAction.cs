@@ -9,11 +9,11 @@ namespace DOL.GS.Quests.Actions
     public class FinishQuestAction: AAction<Type,Unused>
     {
 
-        public FinishQuestAction(GameNPC defaultNPC, Object p, Object q)
+        public FinishQuestAction(GameNpc defaultNPC, Object p, Object q)
             : base(defaultNPC, EActionType.FinishQuest, p, q) 
         { }
 
-        public FinishQuestAction(GameNPC defaultNPC, Type questType)
+        public FinishQuestAction(GameNpc defaultNPC, Type questType)
             : this(defaultNPC, (object) questType,(object) null)
         { }
 

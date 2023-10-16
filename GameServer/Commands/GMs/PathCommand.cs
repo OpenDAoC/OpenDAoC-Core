@@ -185,7 +185,7 @@ namespace DOL.GS.Commands
 		private void PathTravel(GameClient client)
 		{
 			PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST, null);
-			if (client.Player.TargetObject == null || !(client.Player.TargetObject is GameNPC))
+			if (client.Player.TargetObject == null || !(client.Player.TargetObject is GameNpc))
 			{
 				DisplayMessage(client, "You need to select a mob first!");
 				return;
@@ -196,15 +196,15 @@ namespace DOL.GS.Commands
 				DisplayMessage(client, "No path created yet! Use /path create first!");
 				return;
 			}
-			short speed = Math.Min(((GameNPC)client.Player.TargetObject).MaxSpeedBase, path.MaxSpeed);
+			short speed = Math.Min(((GameNpc)client.Player.TargetObject).MaxSpeedBase, path.MaxSpeed);
 
 			// clear any current path
-			((GameNPC)client.Player.TargetObject).CurrentWaypoint = null;
+			((GameNpc)client.Player.TargetObject).CurrentWaypoint = null;
 
 			// set the new path
-			((GameNPC)client.Player.TargetObject).CurrentWaypoint = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST, null);
+			((GameNpc)client.Player.TargetObject).CurrentWaypoint = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_FIRST, null);
 
-			((GameNPC)client.Player.TargetObject).MoveOnPath(speed);
+			((GameNpc)client.Player.TargetObject).MoveOnPath(speed);
 
 			DisplayMessage(client, "{0} told to travel path!", client.Player.TargetObject.Name);
 
@@ -212,14 +212,14 @@ namespace DOL.GS.Commands
 
 		private void PathStop(GameClient client)
 		{
-			if (client.Player.TargetObject == null || !(client.Player.TargetObject is GameNPC))
+			if (client.Player.TargetObject == null || !(client.Player.TargetObject is GameNpc))
 			{
 				DisplayMessage(client, "You need to select a mob first!");
 				return;
 			}
 
 			// clear any current path
-			GameNPC npcTarget = (GameNPC) client.Player.TargetObject;
+			GameNpc npcTarget = (GameNpc) client.Player.TargetObject;
 			npcTarget.CurrentWaypoint = null;
 			npcTarget.ReturnToSpawnPoint(npcTarget.MaxSpeed);
 

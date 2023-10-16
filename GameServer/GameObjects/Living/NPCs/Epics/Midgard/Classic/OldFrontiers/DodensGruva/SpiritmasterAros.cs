@@ -92,7 +92,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null)
 				{
@@ -167,7 +167,7 @@ namespace DOL.AI.Brain
 			{
 				SummonPet();
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2000))
 				{
 					if (npc != null)
 					{
@@ -226,7 +226,7 @@ namespace DOL.AI.Brain
 		}
 		private void SummonPet()
         {
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 			{
 				if (npc.IsAlive && npc.Brain is SpiritmasterArosPetBrain)
 					return;
@@ -379,7 +379,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////////////////////////////////////Aros Spirit Champion//////////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class SpiritmasterArosPet : GameNPC
+	public class SpiritmasterArosPet : GameNpc
 	{
 		public override int MaxHealth
 		{
@@ -451,7 +451,7 @@ namespace DOL.GS
 			MaxSpeedBase = 225;
 			BlockChance = 40;
 			RespawnInterval = -1;
-			Flags ^= eFlags.GHOST;
+			Flags ^= ENpcFlags.GHOST;
 			Realm = ERealm.None;
 			SpiritmasterArosPetBrain adds = new SpiritmasterArosPetBrain();
 			adds.AggroRange = 600;
@@ -513,7 +513,7 @@ namespace DOL.AI.Brain
 		{
 			if (!CheckProximityAggro())
 			{
-				foreach (GameNPC aros in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc aros in Body.GetNPCsInRadius(5000))
 				{
 					if (aros != null)
 					{
@@ -524,7 +524,7 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro)
 			{
-				foreach (GameNPC aros in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc aros in Body.GetNPCsInRadius(5000))
 				{
 					if (aros != null)
 					{

@@ -105,7 +105,7 @@ namespace DOL.GS.Quests
             instance.LoadFromDatabase(keyname);
 
             //Now, search for the boss and possible targets in the instance!
-            foreach (GameNPC npc in instance.Objects)
+            foreach (GameNpc npc in instance.Objects)
             {
                 if (npc == null)
                     continue;
@@ -135,7 +135,7 @@ namespace DOL.GS.Quests
             //Now, count if we need to.
             if (m_missionType != ETdMissionType.Boss)
             {
-                foreach (GameNPC entry in instance.Objects)
+                foreach (GameNpc entry in instance.Objects)
                 {
                     if (entry == null)
                         continue;
@@ -568,7 +568,7 @@ namespace DOL.GS.Quests
                     if (obj == null)
                         continue;
 
-                    if (obj is not GameNPC npc)
+                    if (obj is not GameNpc npc)
                         continue;
 
                     npc.Level = (byte) m_level;

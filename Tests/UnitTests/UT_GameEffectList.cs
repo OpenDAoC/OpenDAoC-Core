@@ -146,7 +146,7 @@ namespace DOL.Tests.Unit.Gameserver
         public void OnEffectsChanged_NoOpenChanges_NPCupdatePetWindowIsCalled()
         {
             var brain = NewFakeControlledBrain();
-            var owner = new GameNPC(brain);
+            var owner = new GameNpc(brain);
             var effectList = NewGameEffectList(owner);
             
             effectList.OnEffectsChanged(null);
@@ -158,7 +158,7 @@ namespace DOL.Tests.Unit.Gameserver
         public void OnEffectsChanged_OpenChanges_NPCupdatePetWindowIsNotCalled()
         {
             var brain = NewFakeControlledBrain();
-            var owner = new GameNPC(brain);
+            var owner = new GameNpc(brain);
             var effectList = NewGameEffectList(owner);
 
             effectList.BeginChanges();
@@ -171,7 +171,7 @@ namespace DOL.Tests.Unit.Gameserver
         public void CommitChanges_NoOpenChanges_NPCupdatePetWindowIsCalled()
         {
             var brain = NewFakeControlledBrain();
-            var owner = new GameNPC(brain);
+            var owner = new GameNpc(brain);
             var effectList = NewGameEffectList(owner);
             
             effectList.OnEffectsChanged(null);
@@ -183,7 +183,7 @@ namespace DOL.Tests.Unit.Gameserver
         public void CommitChanges_OpenChanges_NPCupdatePetWindowIsNotCalled()
         {
             var brain = NewFakeControlledBrain();
-            var owner = new GameNPC(brain);
+            var owner = new GameNpc(brain);
             var effectList = NewGameEffectList(owner);
 
             effectList.BeginChanges();

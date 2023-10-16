@@ -19,7 +19,7 @@ namespace DOL.GS.DailyQuest
 		private const int minimumLevel = 1;
 		private const int maximumLevel = 50;
 
-		private static GameNPC SucciHib = null; // Start NPC
+		private static GameNpc SucciHib = null; // Start NPC
 
 		private int PlayerKilled = 0;
 		private int MAX_KillGoal = 1;
@@ -58,10 +58,10 @@ namespace DOL.GS.DailyQuest
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Succi", ERealm.Hibernia);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Succi", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 				{
 					if (npc.CurrentRegionID == 200 && npc.X == 335117 && npc.Y == 420642)
 					{
@@ -74,7 +74,7 @@ namespace DOL.GS.DailyQuest
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find SucciHib , creating it ...");
-				SucciHib = new GameNPC();
+				SucciHib = new GameNpc();
 				SucciHib.Model = 902;
 				SucciHib.Name = "Succi";
 				SucciHib.GuildName = "Spectre of Death";
@@ -87,7 +87,7 @@ namespace DOL.GS.DailyQuest
 				SucciHib.Y = 420642;
 				SucciHib.Z = 5195;
 				SucciHib.Heading = 3723;
-				SucciHib.Flags |= GameNPC.eFlags.PEACE;
+				SucciHib.Flags |= ENpcFlags.PEACE;
 				SucciHib.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{

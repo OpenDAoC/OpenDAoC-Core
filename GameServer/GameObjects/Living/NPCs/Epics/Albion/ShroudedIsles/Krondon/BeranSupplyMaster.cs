@@ -77,7 +77,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(2500))
+			foreach (GameNpc npc in GetNPCsInRadius(2500))
 			{
 				if (npc != null)
 				{
@@ -114,7 +114,7 @@ namespace DOL.AI.Brain
 				BringAdds = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null)
 						{
@@ -147,7 +147,7 @@ namespace DOL.AI.Brain
 			{
 				for (int i = 0; i < Util.Random(2, 4); i++)
 				{
-					GameNPC add = new GameNPC();
+					GameNpc add = new GameNpc();
 					add.Name = "Onstal Hyrde";
 					add.Model = 919;
 					add.Level = (byte)(Util.Random(64, 68));
@@ -228,7 +228,7 @@ namespace DOL.AI.Brain
 //////////////////////////////////////////////////////////////////////Barrel-Explosion-Mob///////////////////////////////////////////////////
 namespace DOL.GS
 {
-    public class BarrelExplosive : GameNPC
+    public class BarrelExplosive : GameNpc
 	{
 		public BarrelExplosive() : base() { }
 
@@ -250,9 +250,9 @@ namespace DOL.GS
 			Level = 80;
 			RespawnInterval = -1;
 			Size = 100;
-			Flags ^= eFlags.DONTSHOWNAME;
-			Flags ^= eFlags.CANTTARGET;
-			Flags ^= eFlags.STATUE;
+			Flags ^= ENpcFlags.DONTSHOWNAME;
+			Flags ^= ENpcFlags.CANTTARGET;
+			Flags ^= ENpcFlags.STATUE;
 
 			Faction = FactionMgr.GetFactionByID(8);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));

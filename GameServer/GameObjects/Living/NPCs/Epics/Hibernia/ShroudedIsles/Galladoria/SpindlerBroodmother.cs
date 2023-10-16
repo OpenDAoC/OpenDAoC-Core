@@ -70,7 +70,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            foreach (GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNpc npc in GetNPCsInRadius(4000))
             {
                 if (npc.RespawnInterval == -1 && npc.Brain is SBDeadAddsBrain)
                 {
@@ -117,7 +117,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
 
             npcs = WorldMgr.GetNPCsByNameFromRegion("Spindler Broodmother", 191, (ERealm) 0);
             if (npcs.Length == 0)
@@ -207,7 +207,7 @@ namespace DOL.AI.Brain
                 FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                     {
                         if (npc.Brain is SBAddsBrain && npc != null && npc.IsAlive)
                         {
@@ -426,7 +426,7 @@ namespace DOL.AI.Brain
 /////////////////////////////////////////Minions here//////////////////////////////////
 namespace DOL.GS
 {
-    public class SBAdds : GameNPC
+    public class SBAdds : GameNpc
     {
         public SBAdds() : base()
         {
@@ -534,7 +534,7 @@ namespace DOL.AI.Brain
 //////////////////////////////////adds after main boss die////////////////////////
 namespace DOL.GS
 {
-    public class SBDeadAdds : GameNPC
+    public class SBDeadAdds : GameNpc
     {
         public SBDeadAdds() : base()
         {

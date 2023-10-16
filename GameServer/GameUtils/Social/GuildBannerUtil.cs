@@ -178,9 +178,9 @@ namespace DOL.GS
 			{
 				playerKiller = killer as GamePlayer;
 			}
-			else if (killer is GameNPC && (killer as GameNPC).Brain != null && (killer as GameNPC).Brain is AI.Brain.IControlledBrain)
+			else if (killer is GameNpc && (killer as GameNpc).Brain != null && (killer as GameNpc).Brain is AI.Brain.IControlledBrain)
 			{
-				playerKiller = ((killer as GameNPC).Brain as AI.Brain.IControlledBrain).Owner as GamePlayer;
+				playerKiller = ((killer as GameNpc).Brain as AI.Brain.IControlledBrain).Owner as GamePlayer;
 			}
 
 			Stop();

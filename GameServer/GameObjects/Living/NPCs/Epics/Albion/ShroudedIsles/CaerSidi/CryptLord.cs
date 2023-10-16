@@ -191,7 +191,7 @@ namespace DOL.AI.Brain
 
         public void BafMobAggro() //if baf mob aggro and boss is near it will pull boss+ rest of mobs
         {
-            foreach (GameNPC npc in Body.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GameNpc npc in Body.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 if (npc != null && npc.IsAlive && npc.PackageID == "CryptLordBaf")
                 {
@@ -212,7 +212,7 @@ namespace DOL.AI.Brain
         {
             if (Body.TargetObject != null && HasAggro) //if in combat
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(10000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(10000))
                 {
                     if (npc != null)
                     {
@@ -233,7 +233,7 @@ namespace DOL.AI.Brain
             }
             else //if not in combat
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(10000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(10000))
                 {
                     if (npc != null)
                     {
@@ -280,7 +280,7 @@ namespace DOL.AI.Brain
             if (HasAggro && Body.TargetObject != null) //bring mobs from rooms if mobs got set PackageID="CryptLordBaf"
             {
                 GameLiving target = Body.TargetObject as GameLiving;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(10000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(10000))
                 {
                     if (npc != null)
                     {

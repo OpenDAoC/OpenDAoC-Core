@@ -23,7 +23,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public DistanceRequirement(GameNPC defaultNPC,  Object n, Object v, EComparator comp)
+        public DistanceRequirement(GameNpc defaultNPC,  Object n, Object v, EComparator comp)
             : base(defaultNPC, ERequirementType.Distance, n, v, comp)
 		{   			
 		}
@@ -35,7 +35,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="npc">First Requirement Variable, meaning depends on RequirementType</param>
 		/// <param name="distance">Second Requirement Variable, meaning depends on RequirementType</param>
 		/// <param name="comp">Comparator used if some values are veeing compared</param>
-        public DistanceRequirement(GameNPC defaultNPC, GameLiving npc, int distance, EComparator comp)
+        public DistanceRequirement(GameNpc defaultNPC, GameLiving npc, int distance, EComparator comp)
             : this(defaultNPC, (object)npc, (object)distance, comp)
 		{   			
 		}

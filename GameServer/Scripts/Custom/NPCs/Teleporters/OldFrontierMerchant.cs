@@ -21,7 +21,7 @@ namespace DOL.GS.Scripts
         {
             GuildName = "Medallion Merchant";
             Level = 75;
-            Flags |= eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
 
             switch (Realm)
             {
@@ -73,7 +73,7 @@ namespace DOL.GS.Scripts
 
             GuildName = "Medallion Merchant";
             Level = 75;
-            Flags |= eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
 
             switch (Realm)
             {

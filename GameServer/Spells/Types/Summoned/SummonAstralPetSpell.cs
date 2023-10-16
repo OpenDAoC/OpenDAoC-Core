@@ -23,9 +23,9 @@ namespace DOL.GS.Spells
 
         protected override void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments)
         {
-            if (!(sender is GameNPC) || !((sender as GameNPC).Brain is IControlledBrain))
+            if (!(sender is GameNpc) || !((sender as GameNpc).Brain is IControlledBrain))
                 return;
-            GameNPC pet = sender as GameNPC;
+            GameNpc pet = sender as GameNpc;
             IControlledBrain brain = pet.Brain as IControlledBrain;
 
             GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new CoreEventHandler(OnNpcReleaseCommand));

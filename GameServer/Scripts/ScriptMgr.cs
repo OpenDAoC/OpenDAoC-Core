@@ -755,14 +755,14 @@ namespace DOL.GS
 				{
 					// Pick up a class
 					if (type.IsClass != true) continue;
-					if (!type.IsSubclassOf(typeof(GameNPC))) continue;
+					if (!type.IsSubclassOf(typeof(GameNpc))) continue;
 
 					try
 					{
-						object[] objs = type.GetCustomAttributes(typeof(NPCGuildScriptAttribute), false);
+						object[] objs = type.GetCustomAttributes(typeof(NpcGuildScriptAttribute), false);
 						if (objs.Length == 0) continue;
 
-						foreach (NPCGuildScriptAttribute attrib in objs)
+						foreach (NpcGuildScriptAttribute attrib in objs)
 						{
 							if (attrib.Realm == ERealm.None || attrib.Realm == realm)
 							{

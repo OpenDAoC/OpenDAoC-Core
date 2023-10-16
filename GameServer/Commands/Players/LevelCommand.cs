@@ -62,7 +62,7 @@ public class LevelCommand : ACommandHandler, ICommandHandler
 			}
 			
 			
-			if (client.Player.TargetObject is not (GameTrainer or AtlasTrainer))
+			if (client.Player.TargetObject is not (GameTrainer or MasterTrainer))
 			{
 				client.Player.Out.SendMessage("You need to be at your trainer to use this command.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;

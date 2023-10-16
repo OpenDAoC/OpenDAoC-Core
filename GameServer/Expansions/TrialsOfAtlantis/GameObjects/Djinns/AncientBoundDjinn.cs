@@ -27,7 +27,7 @@ namespace DOL.GS
             CurrentRegion = djinnStone.CurrentRegion;
             Heading = djinnStone.Heading;
             Realm = ERealm.None;
-            Flags ^= GameNPC.eFlags.FLYING | GameNPC.eFlags.PEACE;
+            Flags ^= ENpcFlags.FLYING | ENpcFlags.PEACE;
             X = djinnStone.X;
             Y = djinnStone.Y;
             Z = djinnStone.Z + HoverHeight;

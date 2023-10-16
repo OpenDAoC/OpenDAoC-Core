@@ -192,9 +192,9 @@ namespace DOL.GS.Spells
         {
             m_lastdamage -= Convert.ToInt32(m_lastdamage * 0.25);
             SendEffectAnimation(target, 0, false, 0);
-            if (target is GameNPC)
+            if (target is GameNpc)
             {
-                IControlledBrain brain = ((GameNPC)target).Brain as IControlledBrain;
+                IControlledBrain brain = ((GameNpc)target).Brain as IControlledBrain;
                 if (brain != null)
                 {
                     GamePlayer owner = brain.GetPlayerOwner();
@@ -227,9 +227,9 @@ namespace DOL.GS.Spells
                 target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);
             }
 
-            if (target is GameNPC)
+            if (target is GameNpc)
             {
-                IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
+                IOldAggressiveBrain aggroBrain = ((GameNpc)target).Brain as IOldAggressiveBrain;
                 if (aggroBrain != null)
                     aggroBrain.AddToAggroList(Caster, 1);
 			}

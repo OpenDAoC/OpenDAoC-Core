@@ -128,7 +128,7 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 				{
 					if (npc != null && npc.IsAlive && npc.PackageID == "CliodnaBaf")
 						AddAggroListTo(npc.Brain as StandardMobBrain);

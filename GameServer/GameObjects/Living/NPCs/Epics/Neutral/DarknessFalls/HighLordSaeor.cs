@@ -106,7 +106,7 @@ namespace DOL.GS
             if (eArgs?.Killer?.Name != "High Lord Saeor")
                 return;
 
-            foreach (GameNPC mob in player.GetNPCsInRadius(1000))
+            foreach (GameNpc mob in player.GetNPCsInRadius(1000))
             {
                 if (mob is not HighLordSaeor) continue;
                 mob.Health += player.MaxHealth;

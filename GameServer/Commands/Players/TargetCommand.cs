@@ -28,7 +28,7 @@ public class TargetCommand : ACommandHandler, ICommandHandler
             }
             else if (client.Account.PrivLevel > 1)
             {
-                foreach (GameNPC npc in client.Player.GetNPCsInRadius(800))
+                foreach (GameNpc npc in client.Player.GetNPCsInRadius(800))
                 {
                     if (npc.Name == args[1])
                     {

@@ -24,7 +24,7 @@ public class PowerRegenerationRateCalculator : PropertyCalculator
 
 		double regen = living.Level / 10 + (living.Level / 2.75);
 
-		if (living is GameNPC && living.InCombat)
+		if (living is GameNpc && living.InCombat)
 			regen /= 2.0;
 
 		// tolakram - there is no difference per tic between combat and non combat

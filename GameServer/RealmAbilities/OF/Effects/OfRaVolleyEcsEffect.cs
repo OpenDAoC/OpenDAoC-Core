@@ -164,7 +164,7 @@ namespace DOL.GS.Effects
                     potentialTargets.Add(playerTarget);
             }
 
-            foreach (GameNPC npcTarget in WorldMgr.GetNPCsCloseToSpot(OwnerPlayer.CurrentRegionID, OwnerPlayer.GroundTarget.X, OwnerPlayer.GroundTarget.Y, OwnerPlayer.GroundTarget.Z, EFFECT_RADIUS))
+            foreach (GameNpc npcTarget in WorldMgr.GetNPCsCloseToSpot(OwnerPlayer.CurrentRegionID, OwnerPlayer.GroundTarget.X, OwnerPlayer.GroundTarget.Y, OwnerPlayer.GroundTarget.Z, EFFECT_RADIUS))
             {
                 if (npcTarget is GameSiegeWeapon)
                     continue;
@@ -375,7 +375,7 @@ namespace DOL.GS.Effects
     /// <summary>
     /// Volley mob to show player actual volley location hit and nice effect for ability
     /// </summary>
-    public class VolleyMob : GameNPC
+    public class VolleyMob : GameNpc
     {
         public VolleyMob() : base() { }
 
@@ -387,9 +387,9 @@ namespace DOL.GS.Effects
             Size = 80;
             MaxSpeedBase = 0;
             Name = "Volley Effect";
-            Flags ^= eFlags.PEACE;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.CANTTARGET;
+            Flags ^= ENpcFlags.PEACE;
+            Flags ^= ENpcFlags.DONTSHOWNAME;
+            Flags ^= ENpcFlags.CANTTARGET;
             RespawnInterval = -1;
 
             StandardMobBrain volley = new();

@@ -109,7 +109,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
+            BodyType = (ushort)EBodyType.Humanoid;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(EInventorySlot.TorsoArmor, 186, 0, 0, 0);//modelID,color,effect,extension
@@ -132,7 +132,7 @@ namespace DOL.GS
             TetherRange = 1500;
             MaxSpeedBase = 225;
             Gender = EGender.Female;
-            Flags = eFlags.GHOST;
+            Flags = ENpcFlags.GHOST;
             VisibleActiveWeaponSlots = 16;
             MeleeDamageType = EDamageType.Thrust;
             CaptainBardalphBrain sbrain = new CaptainBardalphBrain();
@@ -146,7 +146,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Captain Bardalph", 277, (ERealm)0);
             if (npcs.Length == 0)
             {

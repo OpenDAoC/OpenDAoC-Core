@@ -89,7 +89,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)EBodyType.Giant;
             SteinvorBrain.PlayerX = 0;
             SteinvorBrain.PlayerY = 0;
             SteinvorBrain.PlayerZ = 0;
@@ -107,7 +107,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Steinvor", 160, (ERealm)0);
             if (npcs.Length == 0)
             {
@@ -127,7 +127,7 @@ namespace DOL.GS
                     60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+                TG.BodyType = (ushort)EBodyType.Giant;
 
                 TG.X = 25405;
                 TG.Y = 57241;
@@ -165,7 +165,7 @@ namespace DOL.AI.Brain
         {
             if (IsPulled == false)
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc != null)
                     {
@@ -201,7 +201,7 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC mob in Body.GetNPCsInRadius(5000))
+                    foreach (GameNpc mob in Body.GetNPCsInRadius(5000))
                     {
                         if (mob != null)
                         {
@@ -302,7 +302,7 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                 {
                     if (npc != null)
                     {
@@ -410,7 +410,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval =ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)EBodyType.Giant;
 
             SkufBrain sbrain = new SkufBrain();
             SetOwnBrain(sbrain);
@@ -423,7 +423,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Icelord Skuf", 160, (ERealm)0);
             if (npcs.Length == 0)
             {
@@ -443,7 +443,7 @@ namespace DOL.GS
                     60000; //1min is 60000 miliseconds
                 TG.Faction = FactionMgr.GetFactionByID(140);
                 TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-                TG.BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+                TG.BodyType = (ushort)EBodyType.Giant;
 
                 TG.X = 25405;
                 TG.Y = 57241;
@@ -480,7 +480,7 @@ namespace DOL.AI.Brain
         {
             if (IsPulled2 == false)
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc != null)
                     {
@@ -584,7 +584,7 @@ namespace DOL.GS
 
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)EBodyType.Giant;
             Realm = ERealm.None;
             RespawnInterval = -1;
 
@@ -684,9 +684,9 @@ namespace DOL.GS
             MaxSpeedBase = 0;
             Name = "Pillar of Ice";
             Level = 80;
-            Flags = GameNPC.eFlags.DONTSHOWNAME;
-            Flags = GameNPC.eFlags.CANTTARGET;
-            Flags = GameNPC.eFlags.STATUE;
+            Flags = ENpcFlags.DONTSHOWNAME;
+            Flags = ENpcFlags.CANTTARGET;
+            Flags = ENpcFlags.STATUE;
 
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));

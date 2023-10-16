@@ -6,7 +6,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public class FallingIce : GameNPC
+    public class FallingIce : GameNpc
     {
         public FallingIce() : base() { }
         public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
@@ -42,7 +42,7 @@ namespace DOL.GS
         {
         }
         public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 200; }
-        public override eFlags Flags { get => base.Flags; set => base.Flags = (eFlags)12; }
+        public override ENpcFlags Flags { get => base.Flags; set => base.Flags = (ENpcFlags)12; }
         public override bool AddToWorld()
         {
             Model = 913;

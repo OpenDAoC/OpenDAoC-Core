@@ -47,9 +47,9 @@ namespace DOL.GS.Commands
 				
 				#region Mob
 				/********************* MOB ************************/
-				if (client.Player.TargetObject is GameNPC)
+				if (client.Player.TargetObject is GameNpc)
 				{
-					var target = client.Player.TargetObject as GameNPC;
+					var target = client.Player.TargetObject as GameNpc;
 					name = target.Name;
 					
 					
@@ -106,7 +106,7 @@ namespace DOL.GS.Commands
 					info.Add(" + Realm: " + GlobalConstants.RealmToName(target.Realm));
 					info.Add(" + Model:  " + target.Model);
 					info.Add(" + Size " + target.Size);
-					info.Add(string.Format(" + Flags: {0} (0x{1})", ((GameNPC.eFlags)target.Flags).ToString("G"), target.Flags.ToString("X")));
+					info.Add(string.Format(" + Flags: {0} (0x{1})", ((ENpcFlags)target.Flags).ToString("G"), target.Flags.ToString("X")));
 					info.Add(" ");
 					
 					info.Add(" + Speed(current/max): " + target.CurrentSpeed + "/" + target.MaxSpeedBase);

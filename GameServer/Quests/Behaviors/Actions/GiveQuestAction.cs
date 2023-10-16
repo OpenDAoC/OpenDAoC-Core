@@ -6,14 +6,14 @@ using DOL.GS.Behaviour.Attributes;
 namespace DOL.GS.Quests.Actions
 {
     [Action(ActionType = EActionType.GiveQuest)]
-    public class GiveQuestAction : AAction<Type,GameNPC>
+    public class GiveQuestAction : AAction<Type,GameNpc>
     {
 
-        public GiveQuestAction(GameNPC defaultNPC, Object p, Object q)
+        public GiveQuestAction(GameNpc defaultNPC, Object p, Object q)
             : base(defaultNPC, EActionType.GiveQuest, p, q) { }
 
 
-        public GiveQuestAction(GameNPC defaultNPC, Type questType, GameNPC questGiver)
+        public GiveQuestAction(GameNpc defaultNPC, Type questType, GameNpc questGiver)
             : this(defaultNPC, (object)questType, (object)questGiver) { }
         
 

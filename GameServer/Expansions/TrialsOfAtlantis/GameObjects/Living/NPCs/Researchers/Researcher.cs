@@ -8,7 +8,7 @@ namespace DOL.GS
     /// <summary>
     /// Base class for all Atlantis scholar type NPCs.
     /// </summary>
-    public class Researcher : GameNPC
+    public class Researcher : GameNpc
     {
         public Researcher()
             : base() { }
@@ -43,7 +43,7 @@ namespace DOL.GS
 			}
 
             Inventory = template.CloseTemplate();
-            Flags = eFlags.PEACE;	// Peace flag.
+            Flags = ENpcFlags.PEACE;	// Peace flag.
             return base.AddToWorld();
         }
 

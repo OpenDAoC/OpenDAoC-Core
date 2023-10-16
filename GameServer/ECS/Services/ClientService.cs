@@ -436,7 +436,7 @@ namespace DOL.GS
             return savedCount;
         }
 
-        private static void AddNpcToPlayerCache(GamePlayer player, GameNPC npc)
+        private static void AddNpcToPlayerCache(GamePlayer player, GameNpc npc)
         {
             if (player.NpcUpdateCache.TryGetValue(npc, out CachedNpcValues cachedNpcValues))
             {
@@ -474,7 +474,7 @@ namespace DOL.GS
                 }
                 case EGameObjectType.NPC:
                 {
-                    AddNpcToPlayerCache(player, gameObject as GameNPC);
+                    AddNpcToPlayerCache(player, gameObject as GameNpc);
                     break;
                 }
                 case EGameObjectType.DOOR:
@@ -545,23 +545,23 @@ namespace DOL.GS
 
         private static void UpdateNpcs(GamePlayer player)
         {
-            ConcurrentDictionary<GameNPC, CachedNpcValues> npcUpdateCache = player.NpcUpdateCache;
+            ConcurrentDictionary<GameNpc, CachedNpcValues> npcUpdateCache = player.NpcUpdateCache;
 
             foreach (var npcInCache in npcUpdateCache)
             {
-                GameNPC npc = npcInCache.Key;
+                GameNpc npc = npcInCache.Key;
 
                 if (!npc.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || npc.ObjectState != GameObject.eObjectState.Active || !npc.IsVisibleTo(player))
                     npcUpdateCache.Remove(npc, out _);
             }
 
-            List<GameNPC> npcsInRange = player.GetObjectsInRadius<GameNPC>(EGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE);
+            List<GameNpc> npcsInRange = player.GetObjectsInRadius<GameNpc>(EGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE);
             GameObject targetObject = player.TargetObject;
-            GameNPC pet = player.ControlledBrain?.Body;
+            GameNpc pet = player.ControlledBrain?.Body;
             CachedNpcValues cachedTargetValues = null;
             CachedNpcValues cachedPetValues = null;
 
-            foreach (GameNPC objectInRange in npcsInRange)
+            foreach (GameNpc objectInRange in npcsInRange)
             {
                 if (!objectInRange.IsVisibleTo(player))
                     continue;

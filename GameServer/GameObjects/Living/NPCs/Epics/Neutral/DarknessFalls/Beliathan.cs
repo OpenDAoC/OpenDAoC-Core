@@ -9,7 +9,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public class BeliathanInit : GameNPC
+    public class BeliathanInit : GameNpc
     {
         public BeliathanInit() : base()
         {
@@ -26,7 +26,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Beliathan Initializator", 249, (ERealm) 0);
             if (npcs.Length == 0)
             {
@@ -42,10 +42,10 @@ namespace DOL.GS
                 CO.Level = 50;
                 CO.Size = 50;
                 CO.CurrentRegionID = 249;
-                CO.Flags ^= eFlags.CANTTARGET;
-                CO.Flags ^= eFlags.FLYING;
-                CO.Flags ^= eFlags.DONTSHOWNAME;
-                CO.Flags ^= eFlags.PEACE;
+                CO.Flags ^= ENpcFlags.CANTTARGET;
+                CO.Flags ^= ENpcFlags.FLYING;
+                CO.Flags ^= ENpcFlags.DONTSHOWNAME;
+                CO.Flags ^= ENpcFlags.PEACE;
                 CO.Faction = FactionMgr.GetFactionByID(191);
                 CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
                 CO.X = 22699;
@@ -98,7 +98,7 @@ namespace DOL.AI.Brain
 
             if (!beliSpawned)
             {
-                foreach (GameNPC npc in princeStatus)
+                foreach (GameNpc npc in princeStatus)
                 {
                     if (!npc.Name.ToLower().Contains("prince")) continue;
                     princeCount++;
@@ -224,7 +224,7 @@ namespace DOL.GS
         {
             base.Die(killer);
 
-            foreach (GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNpc npc in GetNPCsInRadius(4000))
             {
                 if (npc.Brain is BeliathanMinionBrain)
                 {
@@ -244,7 +244,7 @@ namespace DOL.GS
             if (eArgs?.Killer?.Name != "Beliathan")
                 return;
 
-            GameNPC beliathan = eArgs.Killer as GameNPC;
+            GameNpc beliathan = eArgs.Killer as GameNpc;
 
             if (beliathan == null)
                 return;
@@ -277,7 +277,7 @@ namespace DOL.AI.Brain
                 FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                     {
                         if (npc.Brain is BeliathanMinionBrain)
                         {
@@ -296,7 +296,7 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-    public class BeliathanMinion : GameNPC
+    public class BeliathanMinion : GameNpc
     {
         public override int MaxHealth
         {

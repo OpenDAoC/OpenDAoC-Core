@@ -96,7 +96,7 @@ namespace DOL.GS
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             RespawnInterval =
                 ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
+            BodyType = (ushort)EBodyType.Humanoid;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
@@ -124,7 +124,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Aidon the Archwizard", 277, (ERealm)0);
             if (npcs.Length == 0)
             {
@@ -191,7 +191,7 @@ namespace DOL.AI.Brain
             }
             if (Body.IsAlive)
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc != null)
                     {
@@ -234,7 +234,7 @@ namespace DOL.AI.Brain
                 AidonCopyEarth.CopyCountEarth = 0;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
                     {
                         if (npc != null)
                         {
@@ -440,7 +440,7 @@ namespace DOL.AI.Brain
 ///////////////////////////////////////////////////////////////////Aidon Copies///////////////////////////////////////////////////////
 namespace DOL.GS
 {
-    public class AidonCopyFire : GameNPC
+    public class AidonCopyFire : GameNpc
     {
         public AidonCopyFire() : base()
         {
@@ -484,7 +484,7 @@ namespace DOL.GS
             MeleeDamageType = EDamageType.Crush;
             Name = "Illusion of Aidon the Archwizard";
             RespawnInterval = -1;
-            Flags = eFlags.GHOST;
+            Flags = ENpcFlags.GHOST;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
@@ -573,7 +573,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class AidonCopyIce : GameNPC
+    public class AidonCopyIce : GameNpc
     {
         public AidonCopyIce() : base()
         {
@@ -617,7 +617,7 @@ namespace DOL.GS
             MeleeDamageType = EDamageType.Crush;
             Name = "Illusion of Aidon the Archwizard";
             RespawnInterval = -1;
-            Flags = eFlags.GHOST;
+            Flags = ENpcFlags.GHOST;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
@@ -706,7 +706,7 @@ namespace DOL.AI.Brain
 ///////////////////////////////////////////////////////////////////Air//////////////////////////////////
 namespace DOL.GS
 {
-    public class AidonCopyAir : GameNPC
+    public class AidonCopyAir : GameNpc
     {
         public AidonCopyAir() : base()
         {
@@ -750,7 +750,7 @@ namespace DOL.GS
             MeleeDamageType = EDamageType.Crush;
             Name = "Illusion of Aidon the Archwizard";
             RespawnInterval = -1;
-            Flags = eFlags.GHOST;
+            Flags = ENpcFlags.GHOST;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension
@@ -837,7 +837,7 @@ namespace DOL.AI.Brain
 //////////////////////////////////////////////////////////////////////////////////////Earth///////////////////////////////////////////////////
 namespace DOL.GS
 {
-    public class AidonCopyEarth : GameNPC
+    public class AidonCopyEarth : GameNpc
     {
         public AidonCopyEarth() : base()
         {
@@ -881,7 +881,7 @@ namespace DOL.GS
             MeleeDamageType = EDamageType.Crush;
             Name = "Illusion of Aidon the Archwizard";
             RespawnInterval = -1;
-            Flags = eFlags.GHOST;
+            Flags = ENpcFlags.GHOST;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(EInventorySlot.TorsoArmor, 58, 54, 0, 0);//modelID,color,effect,extension

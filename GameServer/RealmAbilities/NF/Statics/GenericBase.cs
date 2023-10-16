@@ -54,7 +54,7 @@ namespace DOL.GS.RealmAbilities.Statics
                 {
 					CastSpell(target);
 				}
-				foreach (GameNPC npc in this.GetNPCsInRadius(m_radius))	
+				foreach (GameNpc npc in this.GetNPCsInRadius(m_radius))	
                 {
 					CastSpell(npc);
 				}

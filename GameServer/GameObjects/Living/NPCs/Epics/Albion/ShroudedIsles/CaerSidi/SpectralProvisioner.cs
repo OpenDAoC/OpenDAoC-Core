@@ -330,7 +330,7 @@ namespace DOL.AI.Brain
 #region Spectral Provisioner Spawner
 namespace DOL.GS
 {
-	public class SpectralProvisionerSpawner : GameNPC
+	public class SpectralProvisionerSpawner : GameNpc
 	{
 		public SpectralProvisionerSpawner() : base()
 		{
@@ -342,7 +342,7 @@ namespace DOL.GS
 			Level = 50;
 			Model = 665;
 			RespawnInterval = 5000;
-			Flags = (GameNPC.eFlags)28;
+			Flags = (ENpcFlags)28;
 
 			SpectralProvisionerSpawnerBrain sbrain = new SpectralProvisionerSpawnerBrain();
 			SetOwnBrain(sbrain);
@@ -385,7 +385,7 @@ namespace DOL.AI.Brain
 		}
 		public void SpawnSpectralProvisioner(GamePlayer player)
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is SpectralProvisionerBrain)
 					return;

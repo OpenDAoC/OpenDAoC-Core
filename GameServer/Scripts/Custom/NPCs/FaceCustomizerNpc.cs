@@ -2,7 +2,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class FaceCustomizerNpc : GameNPC
+	public class FaceCustomizerNpc : GameNpc
 	{
 		/// <summary>
 		/// Spell id of the magical effect

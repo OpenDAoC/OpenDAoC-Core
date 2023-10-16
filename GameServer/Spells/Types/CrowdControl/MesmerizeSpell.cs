@@ -119,7 +119,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if(target is GameNPC && target.HealthPercent < 75)
+            if(target is GameNpc && target.HealthPercent < 75)
             {
                 MessageToCaster("Your target is enraged and resists the spell!", EChatType.CT_System);
                 SendEffectAnimation(target, 0, false, 0);

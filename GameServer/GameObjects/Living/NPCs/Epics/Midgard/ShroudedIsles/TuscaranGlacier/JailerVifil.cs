@@ -80,7 +80,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Jailer Vifil", 160, (ERealm) 0);
             if (npcs.Length == 0)
             {
@@ -224,7 +224,7 @@ namespace DOL.AI.Brain
                 IsPulled = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(160))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(160))
                     {
                         if (npc != null)
                         {
@@ -276,7 +276,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////////////////////////////////Spawn Adds on tunnel entrance////////////////////////////////////////////
 namespace DOL.GS
 {
-    public class JailerAdd : GameNPC
+    public class JailerAdd : GameNpc
     {
         public JailerAdd() : base()
         {

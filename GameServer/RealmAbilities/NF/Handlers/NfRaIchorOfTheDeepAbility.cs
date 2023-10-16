@@ -143,7 +143,7 @@ namespace DOL.GS.RealmAbilities
 			}*/
 
 			// Hit all non-friendly mobs in radius, including the target
-			foreach (GameNPC mob in living.GetNPCsInRadius(500))
+			foreach (GameNpc mob in living.GetNPCsInRadius(500))
 			{
 				IchorEffect(living, mob);
 			}
@@ -191,7 +191,7 @@ namespace DOL.GS.RealmAbilities
 			if (player != null)
 				player.Out.SendUpdateMaxSpeed();
 
-			GameNPC npc = owner as GameNPC;
+			GameNpc npc = owner as GameNpc;
 			if (npc != null)
 			{
 				short maxSpeed = npc.MaxSpeed;
@@ -244,7 +244,7 @@ namespace DOL.GS.RealmAbilities
 
 			if (target is GamePlayer)
 				dmgValue += resistModifier;
-			else if (target is GameNPC)
+			else if (target is GameNpc)
 				dmgValue += resistModifier;
 
 			var rootmodifier = 0;

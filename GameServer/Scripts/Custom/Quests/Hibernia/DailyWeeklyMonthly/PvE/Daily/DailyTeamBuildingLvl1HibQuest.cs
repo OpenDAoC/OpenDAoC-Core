@@ -24,7 +24,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		// Kill Goal
 		private const int MAX_KILLED = 25;
 		
-		private static GameNPC Dean = null; // Start NPC
+		private static GameNpc Dean = null; // Start NPC
 
 		private bool HasGuardian = false;
 		private bool HasNaturalist = false;
@@ -67,10 +67,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Dean", ERealm.Hibernia);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Dean", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 200 && npc.X == 334962 && npc.Y == 420687)
 					{
 						Dean = npc;
@@ -81,7 +81,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Dean , creating it ...");
-				Dean = new GameNPC();
+				Dean = new GameNpc();
 				Dean.Model = 355;
 				Dean.Name = "Dean";
 				Dean.GuildName = "Advisor to the King";

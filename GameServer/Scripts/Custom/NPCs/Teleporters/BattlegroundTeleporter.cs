@@ -6,7 +6,7 @@ using log4net;
 
 namespace DOL.GS.Scripts
 {
-    public class BattlegroundTeleporter : GameNPC
+    public class BattlegroundTeleporter : GameNpc
 	{
 		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -16,7 +16,7 @@ namespace DOL.GS.Scripts
             Name = "BG TELEPORTER";
             Level = 50;
             Size = 60;
-            Flags |= GameNPC.eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
             return base.AddToWorld();
         }
 		public override bool Interact(GamePlayer player)

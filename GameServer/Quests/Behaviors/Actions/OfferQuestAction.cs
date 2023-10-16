@@ -9,12 +9,12 @@ namespace DOL.GS.Quests.Actions
     public class OfferQuestAction : AAction<Type,String>
     {               
 
-        public OfferQuestAction(GameNPC defaultNPC, EActionType actionType, Object p, Object q)
+        public OfferQuestAction(GameNpc defaultNPC, EActionType actionType, Object p, Object q)
             : base(defaultNPC, EActionType.OfferQuest, p, q)
         {                
         }
 
-        public OfferQuestAction(GameNPC defaultNPC, Type questType, String offerMessage)
+        public OfferQuestAction(GameNpc defaultNPC, Type questType, String offerMessage)
             : this(defaultNPC, EActionType.OfferQuest, (object)questType, (object)offerMessage) { }
         
 

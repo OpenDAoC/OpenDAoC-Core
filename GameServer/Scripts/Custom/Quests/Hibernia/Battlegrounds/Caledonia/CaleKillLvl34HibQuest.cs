@@ -19,7 +19,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		private const int minimumLevel = 34;
 		private const int maximumLevel = 39;
 
-		private static GameNPC PazzHib = null; // Start NPC
+		private static GameNpc PazzHib = null; // Start NPC
 
 		private int PlayersKilled = 0;
 		private const int MAX_KILLED = 10;
@@ -61,10 +61,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Pazz", ERealm.Hibernia);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Pazz", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 				{
 					if (npc.CurrentRegionID == 250 && npc.X == 18658 && npc.Y == 18710)
 					{
@@ -77,7 +77,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find PazzHib, creating it ...");
-				PazzHib = new GameNPC();
+				PazzHib = new GameNpc();
 				PazzHib.Model = 26;
 				PazzHib.Name = "Pazz";
 				PazzHib.GuildName = "Bone Collector";
@@ -90,7 +90,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 				PazzHib.Y = 18710;
 				PazzHib.Z = 4320;
 				PazzHib.Heading = 1424;
-				PazzHib.Flags |= GameNPC.eFlags.PEACE;
+				PazzHib.Flags |= ENpcFlags.PEACE;
 				PazzHib.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{

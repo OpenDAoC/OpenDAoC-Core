@@ -6,7 +6,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
-	public class Archilus : GameNPC
+	public class Archilus : GameNpc
 	{
 		protected String m_SpawnAnnounce;
 
@@ -43,7 +43,7 @@ namespace DOL.GS.Scripts
 		
 		public void Spawn(GamePlayer player)
 		{
-			GameNPC mob = new GameNPC();
+			GameNpc mob = new GameNpc();
 			SetVariables(mob);
 			//Level Range of 40-45
 			int level = Util.Random(40, 45);
@@ -54,7 +54,7 @@ namespace DOL.GS.Scripts
 			mob.StartAttack(player);
 		}
 
-		public void SetVariables(GameNPC mob)
+		public void SetVariables(GameNpc mob)
 		{
 			mob.X = this.X + 350;
 			mob.Y = this.Y + 350;
@@ -122,7 +122,7 @@ namespace DOL.GS.Scripts
 			this.Level = 60;
 			this.Size = 100;
 			base.Die(killer);
-			foreach (GameNPC npc in this.GetNPCsInRadius(5000))
+			foreach (GameNpc npc in this.GetNPCsInRadius(5000))
 			{
 				if (npc.Name.Contains("young death shroud"))
 				{

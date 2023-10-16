@@ -154,7 +154,7 @@ namespace DOL.AI.Brain
                 IsChanged = false;//reset IsChanged flag here
                 if(IsPulled==false)
                 { 
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc == null) continue;
                         if (!npc.IsAlive || npc.PackageID != "AgmundrBaf") continue;
@@ -185,7 +185,7 @@ namespace DOL.AI.Brain
 
         private void SetMobstats()
         {
-            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+            foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
             {
                 if (npc == null) continue;
                 if (npc.NPCTemplate == null) continue;//check for nontemplated mobs
@@ -206,7 +206,7 @@ namespace DOL.AI.Brain
         }
         private void LoadBAFTemplate()
         {
-            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+            foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
             {
                 if (npc == null) continue;
                 if (npc.NPCTemplate == null) continue;//check if mob got npctemplate

@@ -149,7 +149,7 @@ namespace DOL.GS
 		/// Reload the loot templates for this mob
 		/// </summary>
 		/// <param name="mob"></param>
-		public override void Refresh(GameNPC mob)
+		public override void Refresh(GameNpc mob)
 		{
 			if (mob == null)
 				return;
@@ -213,15 +213,15 @@ namespace DOL.GS
 			}
 		}
 
-		public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+		public override LootList GenerateLoot(GameNpc mob, GameObject killer)
 		{
 			LootList loot = base.GenerateLoot(mob, killer);
 
 			try
 			{
 				GamePlayer player = killer as GamePlayer;
-				if (killer is GameNPC && ((GameNPC)killer).Brain is IControlledBrain)
-					player = ((ControlledNpcBrain)((GameNPC)killer).Brain).GetPlayerOwner();
+				if (killer is GameNpc && ((GameNpc)killer).Brain is IControlledBrain)
+					player = ((ControlledNpcBrain)((GameNpc)killer).Brain).GetPlayerOwner();
 				if (player == null)
 					return loot;
 

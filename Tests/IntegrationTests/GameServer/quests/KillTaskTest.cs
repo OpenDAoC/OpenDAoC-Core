@@ -67,7 +67,7 @@ namespace DOL.Tests.Integration.Server
 				DbInventoryItem item = GameInventoryItem.Create(new DbItemTemplate());
 				item.Name = task.ItemName;
 
-				GameNPC mob = new GameNPC();
+				GameNpc mob = new GameNpc();
 				mob.Name = task.MobName;
 				mob.X = player.X;
 				mob.Y = player.Y;

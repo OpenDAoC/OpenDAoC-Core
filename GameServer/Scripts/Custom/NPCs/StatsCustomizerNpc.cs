@@ -3,7 +3,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	public class StatsCustomizerNpc : GameNPC
+	public class StatsCustomizerNpc : GameNpc
 	{
 
 		private const string StatsResetKey = "StatsReset";

@@ -229,9 +229,9 @@ namespace DOL.GS.Commands
             }
             int[] colorArray = { color1, color2, color3, color4, color5, color6 };
 
-            GameNPC npc = null;
-            if (client.Player.TargetObject is GameNPC)
-                npc = (GameNPC)client.Player.TargetObject;
+            GameNpc npc = null;
+            if (client.Player.TargetObject is GameNpc)
+                npc = (GameNpc)client.Player.TargetObject;
 
             GameNpcInventoryTemplate template = npc.Inventory as GameNpcInventoryTemplate;
             if (template == null) template = new GameNpcInventoryTemplate();
@@ -677,13 +677,13 @@ namespace DOL.GS.Commands
             return;
         }
 
-        private void Clear(GameNPC target)
+        private void Clear(GameNpc target)
         {
             target.Inventory = null;
             target.EquipmentTemplateID = null;
         }
 
-        private void Save(GameNPC target)
+        private void Save(GameNpc target)
         {
             String tn;
             do
@@ -694,7 +694,7 @@ namespace DOL.GS.Commands
             target.SaveIntoDatabase();
         }
         
-        private void Save(GameClient client, GameNPC target, string saveName)
+        private void Save(GameClient client, GameNpc target, string saveName)
         {
             String tn;
 			do

@@ -34,7 +34,7 @@ namespace DOL.GS
                 }
                 EffectService.RequestImmediateCancelEffect(this);
             }
-            else if (Owner is GameNPC)
+            else if (Owner is GameNpc)
             {
                 //check if we should do anything at all.
 
@@ -45,7 +45,7 @@ namespace DOL.GS
 
                 bool doAttackFriend = SpellHandler.Spell.Value < 0 && Util.Chance(Convert.ToInt32(Math.Abs(SpellHandler.Spell.Value)));
 
-                GameNPC npc = Owner as GameNPC;
+                GameNpc npc = Owner as GameNpc;
 
                 npc.IsConfused = true;
                 
@@ -83,7 +83,7 @@ namespace DOL.GS
                     }
                 }
 
-                foreach (GameNPC target in npc.GetNPCsInRadius(1000))
+                foreach (GameNpc target in npc.GetNPCsInRadius(1000))
                 {
                     //don't agro yourself.
                     if (target == npc)
@@ -113,9 +113,9 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
-            if (Owner != null && Owner is GameNPC)
+            if (Owner != null && Owner is GameNpc)
             {
-                GameNPC npc = Owner as GameNPC;
+                GameNpc npc = Owner as GameNpc;
                 npc.IsConfused = false;
             }
         }
@@ -124,7 +124,7 @@ namespace DOL.GS
         {
             if ((SpellHandler as ConfusionSpell).targetList.Count > 0)
             {
-                GameNPC npc = Owner as GameNPC;
+                GameNpc npc = Owner as GameNpc;
                 npc.StopAttack();
                 npc.StopCurrentSpellcast();
 

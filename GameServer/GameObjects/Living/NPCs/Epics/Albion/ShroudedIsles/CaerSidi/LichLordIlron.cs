@@ -88,7 +88,7 @@ namespace DOL.GS.Scripts
         {
             base.Die(killer);
 
-            foreach (GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNpc npc in GetNPCsInRadius(4000))
             {
                 if (npc.Brain is IlronImagesBrain)
                     npc.RemoveFromWorld();
@@ -120,7 +120,7 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 spawnimages = true;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                 {
                     if (npc.Brain is IlronImagesBrain)
                         npc.RemoveFromWorld();
@@ -135,7 +135,7 @@ namespace DOL.AI.Brain
             if (spawnimages)
             {
                 Spawn(); // spawn images
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(2000))
+                foreach (GameNpc mob_c in Body.GetNPCsInRadius(2000))
                 {
                     if (mob_c?.Brain is IlronImagesBrain && mob_c.IsAlive && mob_c.IsAvailable)
                     {
@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 
         public void Spawn()
         {
-            foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+            foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
             {
                 if (npc.Brain is IlronImagesBrain)
                 {
@@ -176,7 +176,7 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-    public class IlronImages : GameNPC
+    public class IlronImages : GameNpc
     {
         public override int MaxHealth
         {
@@ -215,7 +215,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             IsWorthReward = false; // worth no reward
-            Flags ^= eFlags.GHOST;
+            Flags ^= ENpcFlags.GHOST;
             Realm = ERealm.None;
             IlronImagesBrain adds = new IlronImagesBrain();
             LoadedFromScript = true;

@@ -208,7 +208,7 @@ namespace DOL.GS.Spells
 		/// <param name="arguments"></param>
 		protected virtual void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments)
 		{
-			if (sender is not GameNPC pet || pet.Brain is not IControlledBrain petBrain)
+			if (sender is not GameNpc pet || pet.Brain is not IControlledBrain petBrain)
 				return;
 
 			GameLiving petOwner = petBrain.Owner;

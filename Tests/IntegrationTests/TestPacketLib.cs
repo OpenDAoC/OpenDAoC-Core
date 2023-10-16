@@ -260,8 +260,8 @@ namespace DOL.Tests
 		{
 			if (SendEmoteAnimationMethod != null) SendEmoteAnimationMethod(this, obj, emote);
 		}
-		public Action<TestPacketLib, GameNPC> SendNPCCreateMethod { get; set; }
-		public void SendNPCCreate(GameNPC npc)
+		public Action<TestPacketLib, GameNpc> SendNPCCreateMethod { get; set; }
+		public void SendNPCCreate(GameNpc npc)
 		{
 			if (SendNPCCreateMethod != null) SendNPCCreateMethod(this, npc);
 		}
@@ -368,33 +368,33 @@ namespace DOL.Tests
 		{
 			if (SendGuildInviteCommandMethod != null) SendGuildInviteCommandMethod(this, invitingPlayer, inviteMessage);
 		}
-		public Action<TestPacketLib, GameNPC, GamePlayer, RewardQuest> SendQuestOfferWindowMethod { get; set; }
-		public void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest)
+		public Action<TestPacketLib, GameNpc, GamePlayer, RewardQuest> SendQuestOfferWindowMethod { get; set; }
+		public void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
 		{
 			if (SendQuestOfferWindowMethod != null) SendQuestOfferWindowMethod(this, questNPC, player, quest);
 		}
-		public Action<TestPacketLib, GameNPC, GamePlayer, RewardQuest> SendQuestRewardWindowMethod { get; set; }
-		public void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest)
+		public Action<TestPacketLib, GameNpc, GamePlayer, RewardQuest> SendQuestRewardWindowMethod { get; set; }
+		public void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
 		{
 			if (SendQuestRewardWindowMethod != null) SendQuestRewardWindowMethod(this, questNPC, player, quest);
 		}
-		public Action<TestPacketLib, GameNPC, GamePlayer, DataQuest> SendQuestOfferWindowDataMethod { get; set; }
-		public void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DataQuest quest)
+		public Action<TestPacketLib, GameNpc, GamePlayer, DataQuest> SendQuestOfferWindowDataMethod { get; set; }
+		public void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, DataQuest quest)
 		{
 			if (SendQuestOfferWindowDataMethod != null) SendQuestOfferWindowDataMethod(this, questNPC, player, quest);
 		}
-		public Action<TestPacketLib, GameNPC, GamePlayer, DataQuest> SendQuestRewardWindowDataMethod { get; set; }
-		public void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DataQuest quest)
+		public Action<TestPacketLib, GameNpc, GamePlayer, DataQuest> SendQuestRewardWindowDataMethod { get; set; }
+		public void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, DataQuest quest)
 		{
 			if (SendQuestRewardWindowDataMethod != null) SendQuestRewardWindowDataMethod(this, questNPC, player, quest);
 		}
-		public Action<TestPacketLib, GameNPC, ushort, string> SendQuestSubscribeCommandMethod { get; set; }
-		public void SendQuestSubscribeCommand(GameNPC invitingNPC, ushort questid, string inviteMessage)
+		public Action<TestPacketLib, GameNpc, ushort, string> SendQuestSubscribeCommandMethod { get; set; }
+		public void SendQuestSubscribeCommand(GameNpc invitingNPC, ushort questid, string inviteMessage)
 		{
 			if (SendQuestSubscribeCommandMethod != null) SendQuestSubscribeCommandMethod(this, invitingNPC, questid, inviteMessage);
 		}
-		public Action<TestPacketLib, GameNPC, ushort, string> SendQuestAbortCommandMethod { get; set; }
-		public void SendQuestAbortCommand(GameNPC abortingNPC, ushort questid, string abortMessage)
+		public Action<TestPacketLib, GameNpc, ushort, string> SendQuestAbortCommandMethod { get; set; }
+		public void SendQuestAbortCommand(GameNpc abortingNPC, ushort questid, string abortMessage)
 		{
 			if (SendQuestAbortCommandMethod != null) SendQuestAbortCommandMethod(this, abortingNPC, questid, abortMessage);
 		}
@@ -648,8 +648,8 @@ namespace DOL.Tests
 		{
 			if (SendPlaySoundMethod != null) SendPlaySoundMethod(this, soundType, soundID);
 		}
-		public Action<TestPacketLib, GameNPC, EQuestIndicator> SendNPCsQuestEffectMethod { get; set; }
-		public void SendNPCsQuestEffect(GameNPC npc, EQuestIndicator indicator)
+		public Action<TestPacketLib, GameNpc, EQuestIndicator> SendNPCsQuestEffectMethod { get; set; }
+		public void SendNPCsQuestEffect(GameNpc npc, EQuestIndicator indicator)
 		{
 			if (SendNPCsQuestEffectMethod != null) SendNPCsQuestEffectMethod(this, npc, indicator);
 		}

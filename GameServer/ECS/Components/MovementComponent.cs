@@ -31,7 +31,7 @@ namespace DOL.GS
 
         public static MovementComponent Create(GameLiving gameLiving)
         {
-            if (gameLiving is GameNPC gameNpc)
+            if (gameLiving is GameNpc gameNpc)
                 return new NpcMovementComponent(gameNpc);
             else
                 return new MovementComponent(gameLiving);

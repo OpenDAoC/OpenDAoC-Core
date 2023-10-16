@@ -20,10 +20,10 @@ public class LivingEffectiveLevelCalculator : PropertyCalculator
 		{
 			return living.Level + living.ItemBonus[(int)property] + living.BaseBuffBonusCategory[(int)property];
 		} 		
-		else if (living is GameNPC) 
+		else if (living is GameNpc) 
 		{
 			
-			IControlledBrain brain = ((GameNPC)living).Brain as IControlledBrain;
+			IControlledBrain brain = ((GameNpc)living).Brain as IControlledBrain;
 			if (brain != null && brain.Body.effectListComponent.ContainsEffectForEffectType(EEffect.Charm))
 				return brain.Owner.Level + living.ItemBonus[(int)property] + living.BaseBuffBonusCategory[(int)property];
 				

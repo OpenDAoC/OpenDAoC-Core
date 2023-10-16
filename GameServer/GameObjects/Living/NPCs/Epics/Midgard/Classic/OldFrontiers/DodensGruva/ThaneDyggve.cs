@@ -120,7 +120,7 @@ namespace DOL.GS.Scripts
 				{
 					if (Body.TargetObject != null)
 					{
-						foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+						foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 						{
 							if (npc != null && npc.IsAlive && npc.PackageID == "ThaneDyggveBaf")
 								AddAggroListTo(npc.Brain as StandardMobBrain);

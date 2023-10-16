@@ -129,7 +129,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
+            BodyType = (ushort)EBodyType.Humanoid;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(EInventorySlot.TorsoArmor, 46, 0, 0, 6);//modelID,color,effect,extension
@@ -166,7 +166,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Lady Darra", 277, (ERealm)0);
             if (npcs.Length == 0)
             {
@@ -277,7 +277,7 @@ namespace DOL.AI.Brain
                     if (SpectralPaladin.paladins_count <= 3)
                     {
                         LadyDarra.spawn_palas = false;
-                        foreach (GameNPC pala in Body.GetNPCsInRadius(2000))
+                        foreach (GameNpc pala in Body.GetNPCsInRadius(2000))
                         {
                             if (pala != null)
                             {
@@ -309,7 +309,7 @@ namespace DOL.AI.Brain
 //////////////////////////////////////////////////////////////////////////Spectral Paladins///////////////////////////////////////////////////////////////
 namespace DOL.GS
 {
-    public class SpectralPaladin : GameNPC
+    public class SpectralPaladin : GameNpc
     {
         public SpectralPaladin() : base()
         {
@@ -355,7 +355,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             RespawnInterval = -1;
-            Flags = eFlags.GHOST;
+            Flags = ENpcFlags.GHOST;
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(7710);
             LoadTemplate(npcTemplate);
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -401,7 +401,7 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
-                foreach(GameNPC Darra in Body.GetNPCsInRadius(2000))
+                foreach(GameNpc Darra in Body.GetNPCsInRadius(2000))
                 {
                     if(Darra != null)
                     {

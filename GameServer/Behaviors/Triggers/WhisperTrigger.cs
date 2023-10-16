@@ -12,7 +12,7 @@ namespace DOL.GS.Behaviour.Triggers
     /// Additional there are two variables to add the needed parameters for the triggertype (Item to give for GiveItem, NPC to interact for Interact, etc...). To fire a QuestAction at least one of the added triggers must be fulfilled. 
     /// </summary>
     [Trigger(Global = true,TriggerType = ETriggerType.Whisper, DefaultValueI = EDefaultValueConstants.NPC)]
-    public class WhisperTrigger : ATrigger<string,GameNPC>
+    public class WhisperTrigger : ATrigger<string,GameNpc>
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -23,7 +23,7 @@ namespace DOL.GS.Behaviour.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public WhisperTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
+        public WhisperTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
             : base(defaultNPC, notifyHandler, ETriggerType.Whisper, k, i)
         { }
 
@@ -34,7 +34,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="notifyHandler"></param>
         /// <param name="k"></param>
         /// <param name="i"></param>
-        public WhisperTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, string k, GameNPC i)
+        public WhisperTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, string k, GameNpc i)
             : this(defaultNPC,notifyHandler, (object)k,(object) i)
         { }
 

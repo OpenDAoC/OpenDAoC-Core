@@ -24,7 +24,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public EquippedItemRequirement(GameNPC defaultNPC,  Object n, Object v, EComparator comp)
+        public EquippedItemRequirement(GameNpc defaultNPC,  Object n, Object v, EComparator comp)
             : base(defaultNPC, ERequirementType.EquippedItem, n, v, comp)
 		{   			
 		}
@@ -34,7 +34,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// </summary>
 		/// <param name="defaultNPC">Parent defaultNPC of this Requirement</param>		
 		/// <param name="n">First Requirement Variable, meaning depends on RequirementType</param>				
-        public EquippedItemRequirement(GameNPC defaultNPC, DbItemTemplate n )
+        public EquippedItemRequirement(GameNpc defaultNPC, DbItemTemplate n )
             : this(defaultNPC,  (object)n, (object)null, EComparator.None)
 		{   			
 		}

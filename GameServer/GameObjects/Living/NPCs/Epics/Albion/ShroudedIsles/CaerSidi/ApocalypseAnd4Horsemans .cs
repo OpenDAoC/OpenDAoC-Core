@@ -10,7 +10,7 @@ using DOL.GS.PacketHandler;
 #region Apoc Initializator
 namespace DOL.GS
 {
-    public class ApocInitializator : GameNPC
+    public class ApocInitializator : GameNpc
     {
         public ApocInitializator() : base() { }
         public static bool spawn_apoc = false;
@@ -108,7 +108,7 @@ namespace DOL.GS
             Add.Y = Y;
             Add.Z = Z;
             Add.CurrentRegion = this.CurrentRegion;
-            Add.Flags = eFlags.PEACE;
+            Add.Flags = ENpcFlags.PEACE;
             Add.Heading = 4072;
             Add.AddToWorld();
             FamesWaitForText = true;
@@ -195,7 +195,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Apoc Initializator", 60, (ERealm)0);
             if (npcs.Length == 0)
             {
@@ -211,10 +211,10 @@ namespace DOL.GS
                 CO.Level = 50;
                 CO.Size = 50;
                 CO.CurrentRegionID = 60;//caer sidi
-                CO.Flags ^= eFlags.CANTTARGET;
-                CO.Flags ^= eFlags.FLYING;
-                CO.Flags ^= eFlags.DONTSHOWNAME;
-                CO.Flags ^= eFlags.PEACE;
+                CO.Flags ^= ENpcFlags.CANTTARGET;
+                CO.Flags ^= ENpcFlags.FLYING;
+                CO.Flags ^= ENpcFlags.DONTSHOWNAME;
+                CO.Flags ^= ENpcFlags.PEACE;
                 CO.Faction = FactionMgr.GetFactionByID(64);
                 CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
                 CO.X = 29462;
@@ -526,7 +526,7 @@ namespace DOL.AI.Brain
                 }
                 if (BafMobs == false)
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc != null)
                         {
@@ -620,7 +620,7 @@ namespace DOL.GS
                 prepareMorbus = true;
             }
 
-            foreach (GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNpc npc in GetNPCsInRadius(4000))
             {
                 if(npc != null)
                 {
@@ -747,7 +747,7 @@ namespace DOL.AI.Brain
                 SpawnWeapons = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                     {
                         if (npc != null)
                         {
@@ -829,7 +829,7 @@ namespace DOL.AI.Brain
 /////////////////////////////////////////////Bellum Adds flying weapons///////////////////////////
 namespace DOL.GS
 {
-    public class WarIncarnateCrush : GameNPC
+    public class WarIncarnateCrush : GameNpc
     {
         public WarIncarnateCrush() : base() { }
 
@@ -990,7 +990,7 @@ namespace DOL.AI.Brain
 #region Bellum adds slash dmg
 namespace DOL.GS
 {
-    public class WarIncarnateSlash : GameNPC
+    public class WarIncarnateSlash : GameNpc
     {
         public WarIncarnateSlash() : base() { }
         public override double GetArmorAF(EArmorSlot slot)
@@ -1168,7 +1168,7 @@ namespace DOL.AI.Brain
 #region Bellum adds thrust dmg
 namespace DOL.GS
 {
-    public class WarIncarnateThrust : GameNPC
+    public class WarIncarnateThrust : GameNpc
     {
         public WarIncarnateThrust() : base() { }
         public override double GetArmorAF(EArmorSlot slot)
@@ -1569,7 +1569,7 @@ namespace DOL.AI.Brain
                 message_warning1 = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                     {
                         if (npc != null)
                         {
@@ -1627,7 +1627,7 @@ namespace DOL.AI.Brain
                 }
                 if (BafMobs3 == false)
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc != null)
                         {
@@ -1645,7 +1645,7 @@ namespace DOL.AI.Brain
                     {
                         new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnSwarm), Util.Random(25000, 40000));//25s-40s
 
-                        foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                        foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                         {
                             if (npc != null)
                             {
@@ -1688,7 +1688,7 @@ namespace DOL.AI.Brain
 #region Morbus Swarm
 namespace DOL.GS
 {
-    public class MorbusSwarm : GameNPC
+    public class MorbusSwarm : GameNpc
     {
         public MorbusSwarm() : base() { }
         public override double AttackDamage(DbInventoryItem weapon)
@@ -2108,7 +2108,7 @@ namespace DOL.AI.Brain
                 StartedFunus = true;
                 if (BafMobs4 == false)
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc != null)
                         {
@@ -2188,7 +2188,7 @@ namespace DOL.GS
         public static bool ApocUP = true;
         public override void Die(GameObject killer)//on kill generate orbs
         {
-            foreach (GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNpc npc in GetNPCsInRadius(4000))
             {
                 if (npc != null)
                 {
@@ -2335,7 +2335,7 @@ namespace DOL.AI.Brain
 
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                     {
                         if (npc != null)
                         {
@@ -2394,7 +2394,7 @@ namespace DOL.AI.Brain
                     if (spawn_harbringers == false)
                     {
                         new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(SpawnHarbringers), 500);
-                        foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                        foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                         {
                             if (npc != null)
                             {
@@ -2742,10 +2742,10 @@ namespace DOL.GS
             Model = 665;
             PackageID = "RainOfFire";
 
-            Flags ^= eFlags.FLYING;
-            Flags ^= eFlags.CANTTARGET;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.STATUE;
+            Flags ^= ENpcFlags.FLYING;
+            Flags ^= ENpcFlags.CANTTARGET;
+            Flags ^= ENpcFlags.DONTSHOWNAME;
+            Flags ^= ENpcFlags.STATUE;
 
             Strength = 450;
             Constitution = 100;

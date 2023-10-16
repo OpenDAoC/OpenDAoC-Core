@@ -115,7 +115,7 @@ namespace DOL.GS.RealmAbilities
         protected void TakeDamageNPC(CoreEvent e, object sender, EventArgs args)
         {
             TakeDamageEventArgs targs = args as TakeDamageEventArgs;
-            GameNPC npc = sender as GameNPC;
+            GameNpc npc = sender as GameNpc;
 
             if (!npc.IsWithinRadius(m_owner, 2300))
                 return;
@@ -146,7 +146,7 @@ namespace DOL.GS.RealmAbilities
                 t_player.Out.SendSpellEffectAnimation(m_owner, npc, 8051, 0, false, 1);
             }
             GamePlayer petOwner = null;
-            petOwner = ((npc as GameNPC).Brain as IControlledBrain).Owner as GamePlayer;
+            petOwner = ((npc as GameNpc).Brain as IControlledBrain).Owner as GamePlayer;
             if (petOwner != null)
                 petOwner.Out.SendMessage("Your " + npc.Name + " was healed by the pool of healing for " + healamount + "!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 

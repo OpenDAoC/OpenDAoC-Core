@@ -48,7 +48,7 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (Body.TargetObject is GameNPC)
+            if (Body.TargetObject is GameNpc)
                 Body.TargetObject = null;
 
             if (Body.attackComponent.AttackState)

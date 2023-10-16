@@ -214,7 +214,7 @@ namespace DOL.GS
         }
 		private void SpawnFlame()
         {
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is FlameNormalBrain)
 					return;
@@ -316,7 +316,7 @@ namespace DOL.GS
 			Size = 200;
 			Level = 64;
 			MeleeDamageType = EDamageType.Thrust;
-			Flags = eFlags.GHOST;
+			Flags = ENpcFlags.GHOST;
 			RespawnInterval = -1;
 
 			FlameNormalBrain sbrain = new FlameNormalBrain();

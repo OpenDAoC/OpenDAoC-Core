@@ -36,12 +36,12 @@ namespace DOL.GS.Relics
 			set { }
 		}
 
-		private eDoorState m_pillarState;
+		private EDoorState m_pillarState;
 
 		/// <summary>
 		/// State of this pillar (up == closed, down == open).
 		/// </summary>
-		public override eDoorState State
+		public override EDoorState State
 		{
 			get { return m_pillarState; }
 			set
@@ -64,7 +64,7 @@ namespace DOL.GS.Relics
 		/// </summary>
 		public override void Open(GameLiving opener = null)
 		{
-			State = eDoorState.Open;
+			State = EDoorState.Open;
 		}
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace DOL.GS.Relics
 		/// </summary>
 		public override void Close(GameLiving closer = null)
 		{
-			State = eDoorState.Closed;
+			State = EDoorState.Closed;
 		}
 
 		/// <summary>
@@ -80,7 +80,7 @@ namespace DOL.GS.Relics
 		/// </summary>
 		/// <param name="npc"></param>
 		/// <param name="open"></param>
-		public override void NPCManipulateDoorRequest(GameNPC npc, bool open)
+		public override void NPCManipulateDoorRequest(GameNpc npc, bool open)
 		{
 		}
 	}

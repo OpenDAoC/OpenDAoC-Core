@@ -10,7 +10,7 @@ namespace DOL.GS
 		public static int KillsRequireToSpawn = 20;
 		public override bool AddToWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is DevelinBrain)
 					return false;
@@ -49,7 +49,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1000;
 		}
 		ushort oldModel;
-		GameNPC.eFlags oldFlags;
+		ENpcFlags oldFlags;
 		bool changed;
 		public override void Think()
 		{
@@ -67,9 +67,9 @@ namespace DOL.AI.Brain
 				if (changed == false)
 				{
 					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-					Body.Flags ^= GameNPC.eFlags.PEACE;
+					Body.Flags ^= ENpcFlags.CANTTARGET;
+					Body.Flags ^= ENpcFlags.DONTSHOWNAME;
+					Body.Flags ^= ENpcFlags.PEACE;
 
 					if (oldModel == 0)
 						oldModel = Body.Model;
@@ -80,7 +80,7 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(1000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is DevelinAddBrain brain)
 					{
@@ -97,7 +97,7 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-	public class DevelinAdd : GameNPC
+	public class DevelinAdd : GameNpc
 	{
 		public DevelinAdd() : base() { }
 

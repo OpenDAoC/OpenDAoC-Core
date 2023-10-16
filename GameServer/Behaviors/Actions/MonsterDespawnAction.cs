@@ -8,13 +8,13 @@ namespace DOL.GS.Behaviour.Actions
     public class MonsterDespawnAction : AAction<GameLiving,Unused>
     {               
 
-        public MonsterDespawnAction(GameNPC defaultNPC,  Object p, Object q)
+        public MonsterDespawnAction(GameNpc defaultNPC,  Object p, Object q)
             : base(defaultNPC, EActionType.MonsterUnspawn, p, q)
         {                
         }
 
 
-        public MonsterDespawnAction(GameNPC defaultNPC,  GameLiving monsterToUnspawn)
+        public MonsterDespawnAction(GameNpc defaultNPC,  GameLiving monsterToUnspawn)
             : this(defaultNPC, (object)monsterToUnspawn, (object)null) { }
         
 

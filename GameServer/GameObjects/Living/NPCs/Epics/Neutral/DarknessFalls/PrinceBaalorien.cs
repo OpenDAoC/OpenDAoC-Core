@@ -117,7 +117,7 @@ namespace DOL.AI.Brain
             }
             else
             {
-                foreach (GameNPC pet in Body.GetNPCsInRadius(2000))
+                foreach (GameNpc pet in Body.GetNPCsInRadius(2000))
                 {
                     if (pet.Brain is not IControlledBrain) continue;
                     Body.Health += pet.MaxHealth;

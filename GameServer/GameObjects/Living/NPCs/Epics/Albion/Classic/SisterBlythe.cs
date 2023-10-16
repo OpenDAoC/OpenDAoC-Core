@@ -87,7 +87,7 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is SisterBlytheBrain)
 					return false;
@@ -111,7 +111,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(4500))
+			foreach (GameNpc npc in GetNPCsInRadius(4500))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is FallenExecutionerBrain)
 					npc.Die(this);
@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
 						BroadcastMessage("The fallen executioner says, \"By your command!\"");
 					Message1 = true;
                 }
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is FallenExecutionerBrain brain)
 					{
@@ -243,7 +243,7 @@ namespace DOL.AI.Brain
 #region fallen executioners
 namespace DOL.GS
 {
-	public class FallenExecutioner : GameNPC
+	public class FallenExecutioner : GameNpc
 	{
 		public FallenExecutioner() : base() { }
 

@@ -63,7 +63,7 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Spawn_Lich_Lord = false;
-            foreach (GameNPC npc in GetNPCsInRadius(5000))
+            foreach (GameNpc npc in GetNPCsInRadius(5000))
             {
                 if (npc != null)
                 {
@@ -135,7 +135,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Lord Sanguis", 60, (ERealm) 0);
             if (npcs.Length == 0)
             {
@@ -201,7 +201,7 @@ namespace DOL.AI.Brain
                 BloodMage.MageCount = 0;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC mages in Body.GetNPCsInRadius(5000))
+                    foreach (GameNpc mages in Body.GetNPCsInRadius(5000))
                     {
                         if (mages != null)
                         {
@@ -305,7 +305,7 @@ namespace DOL.GS
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = EDamageType.Crush;
             Model = 952;
-            Flags = eFlags.GHOST;
+            Flags = ENpcFlags.GHOST;
             Name = "Lich Lord Sanguis";
             ParryChance = 35;
             RespawnInterval = -1;
@@ -363,7 +363,7 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                Body.Flags = GameNPC.eFlags.GHOST;
+                Body.Flags = ENpcFlags.GHOST;
                 set_flag = false;
             }
             if (Body.HealthPercent <= 5)
@@ -371,7 +371,7 @@ namespace DOL.AI.Brain
                 if (set_flag == false)
                 {
                     BroadcastMessage(String.Format(Body.Name + " becomes almost untouchable in his last act of agony!"));
-                    Body.Flags ^= GameNPC.eFlags.CANTTARGET;
+                    Body.Flags ^= ENpcFlags.CANTTARGET;
                     set_flag = true;
                 }
             }
@@ -383,7 +383,7 @@ namespace DOL.AI.Brain
 /////////////////////////////Blood Mages///////////////////////
 namespace DOL.GS
 {
-    public class BloodMage : GameNPC //thrust resist
+    public class BloodMage : GameNpc //thrust resist
     {
         public BloodMage() : base()
         {

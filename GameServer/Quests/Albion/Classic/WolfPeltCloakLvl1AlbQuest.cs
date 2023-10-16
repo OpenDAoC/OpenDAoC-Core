@@ -22,9 +22,9 @@ namespace DOL.GS.Quests.Albion
         protected const int MIN_LEVEL = 1;
         protected const int MAX_LEVEL = 11;
 
-        private static GameNPC _stewardWillie = null;
-        private static GameNPC _lynett = null;
-        private static GameNPC _don = null;
+        private static GameNpc _stewardWillie = null;
+        private static GameNpc _lynett = null;
+        private static GameNpc _don = null;
 
         private static DbItemTemplate _wolfPeltCloak = null;
         private static DbItemTemplate _wolfFur = null;
@@ -43,7 +43,7 @@ namespace DOL.GS.Quests.Albion
             if (log.IsInfoEnabled)
                 log.Info("Quest \"" + questTitle + "\" initializing ...");
 
-            GameNPC[] gameNpcQuery = WorldMgr.GetNPCsByName(stewardWillieNpcName, ERealm.Albion);
+            GameNpc[] gameNpcQuery = WorldMgr.GetNPCsByName(stewardWillieNpcName, ERealm.Albion);
             if (gameNpcQuery.Length == 0)
             {
                 _logReasonQuestCantBeImplemented(stewardWillieNpcName);

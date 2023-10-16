@@ -20,9 +20,9 @@ namespace DOL.GS.Quests.Hibernia
         protected const int minimumLevel = 1;
         protected const int maximumLevel = 50;
 
-        private static GameNPC Theresa = null; // Start + Finish NPC
-        private static GameNPC Karl = null; // Speak with Karl
-        private static GameNPC MobEffect = null; // Speak with Karl
+        private static GameNpc Theresa = null; // Start + Finish NPC
+        private static GameNpc Karl = null; // Speak with Karl
+        private static GameNpc MobEffect = null; // Speak with Karl
 
         private static DbItemTemplate theresas_doll = null;
         private static DbItemTemplate magical_theresas_doll = null;
@@ -53,10 +53,10 @@ namespace DOL.GS.Quests.Hibernia
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Theresa", ERealm.Hibernia);
+            GameNpc[] npcs = WorldMgr.GetNPCsByName("Theresa", ERealm.Hibernia);
 
             if (npcs.Length > 0)
-                foreach (GameNPC npc in npcs)
+                foreach (GameNpc npc in npcs)
                     if (npc.CurrentRegionID == 201 && npc.X == 31401 && npc.Y == 30076)
                     {
                         Theresa = npc;
@@ -67,7 +67,7 @@ namespace DOL.GS.Quests.Hibernia
             {
                 if (log.IsWarnEnabled)
                     log.Warn("Could not find Theresa, creating it ...");
-                Theresa = new GameNPC();
+                Theresa = new GameNpc();
                 Theresa.Model = 310;
                 Theresa.Name = "Theresa";
                 Theresa.GuildName = "";
@@ -88,7 +88,7 @@ namespace DOL.GS.Quests.Hibernia
             npcs = WorldMgr.GetNPCsByName("Karl", ERealm.Hibernia);
 
             if (npcs.Length > 0)
-                foreach (GameNPC npc in npcs)
+                foreach (GameNpc npc in npcs)
                     if (npc.CurrentRegionID == 200 && npc.X == 328521 && npc.Y == 518534)
                     {
                         Karl = npc;
@@ -99,7 +99,7 @@ namespace DOL.GS.Quests.Hibernia
             {
                 if (log.IsWarnEnabled)
                     log.Warn("Could not find Karl, creating it ...");
-                Karl = new GameNPC();
+                Karl = new GameNpc();
                 Karl.Model = 956;
                 Karl.Name = "Karl";
                 Karl.GuildName = "";
@@ -443,18 +443,18 @@ namespace DOL.GS.Quests.Hibernia
             int effectCount = 5;
             for (int i = 0; i <= effectCount; i++)
             {
-                MobEffect = new GameNPC();
+                MobEffect = new GameNpc();
                 MobEffect.Model = 1;
                 MobEffect.Name = "power of nature";
                 MobEffect.GuildName = "";
                 MobEffect.Realm = ERealm.Hibernia;
                 MobEffect.Race = 2007;
-                MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
+                MobEffect.BodyType = (ushort) EBodyType.Magical;
                 MobEffect.Size = 100;
                 MobEffect.Level = 65;
-                MobEffect.Flags ^= GameNPC.eFlags.CANTTARGET;
-                MobEffect.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-                MobEffect.Flags ^= GameNPC.eFlags.PEACE;
+                MobEffect.Flags ^= ENpcFlags.CANTTARGET;
+                MobEffect.Flags ^= ENpcFlags.DONTSHOWNAME;
+                MobEffect.Flags ^= ENpcFlags.PEACE;
                 switch (i)
                 {
                     case 0:
@@ -513,7 +513,7 @@ namespace DOL.GS.Quests.Hibernia
 
         private static int StartEffect(EcsGameTimer timer)
         {
-            foreach (GameNPC effect in Karl.GetNPCsInRadius(600))
+            foreach (GameNpc effect in Karl.GetNPCsInRadius(600))
             {
                 if (effect.Name.ToLower() == "power of nature")
                 {
@@ -539,7 +539,7 @@ namespace DOL.GS.Quests.Hibernia
         
         private static void RemoveEffectMob()
         {
-            foreach (GameNPC effect in Karl.GetNPCsInRadius(600))
+            foreach (GameNpc effect in Karl.GetNPCsInRadius(600))
             {
                 if (effect.Name.ToLower() == "power of nature")
                     effect.RemoveFromWorld();

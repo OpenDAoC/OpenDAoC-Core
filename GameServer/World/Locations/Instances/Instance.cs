@@ -100,7 +100,7 @@ namespace DOL.GS
 				obj.CurrentRegionID = ID;
 
 				//If its an npc, load from the npc template about now.
-				if ((GameNPC)obj != null && !string.IsNullOrEmpty(entry.NPCTemplate))
+				if ((GameNpc)obj != null && !string.IsNullOrEmpty(entry.NPCTemplate))
 				{
 					var listTemplate = Util.SplitCSV(entry.NPCTemplate, true);
 					int template = 0;
@@ -111,7 +111,7 @@ namespace DOL.GS
 						//we only want to load the template if one actually exists, or there could be trouble!
 						if (npcTemplate != null)
 						{
-							((GameNPC)obj).LoadTemplate(npcTemplate);
+							((GameNpc)obj).LoadTemplate(npcTemplate);
 						}
 					}
 				}

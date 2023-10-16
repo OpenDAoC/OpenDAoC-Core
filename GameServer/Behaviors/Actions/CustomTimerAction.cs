@@ -8,14 +8,14 @@ namespace DOL.GS.Behaviour.Actions
     public class CustomTimerAction : AAction<EcsGameTimer,int>
     {
 
-        public CustomTimerAction(GameNPC defaultNPC,  Object p, Object q)
+        public CustomTimerAction(GameNpc defaultNPC,  Object p, Object q)
             : base(defaultNPC, EActionType.CustomTimer, p, q)
         { 
             
         }
 
 
-        public CustomTimerAction(GameNPC defaultNPC, EcsGameTimer gameTimer, int delay)
+        public CustomTimerAction(GameNpc defaultNPC, EcsGameTimer gameTimer, int delay)
             : this(defaultNPC, (object) gameTimer,(object) delay) { }
         
 

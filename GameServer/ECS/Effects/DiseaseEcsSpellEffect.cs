@@ -39,9 +39,9 @@ namespace DOL.GS
 
 
             //Owner.StartInterruptTimer(Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
-            if (Owner is GameNPC)
+            if (Owner is GameNpc)
             {
-                IOldAggressiveBrain aggroBrain = ((GameNPC)Owner).Brain as IOldAggressiveBrain;
+                IOldAggressiveBrain aggroBrain = ((GameNpc)Owner).Brain as IOldAggressiveBrain;
                 if (aggroBrain != null)
                     aggroBrain.AddToAggroList(SpellHandler.Caster, 1);
             }

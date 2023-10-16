@@ -18,7 +18,7 @@ namespace DOL.GS.Quests.Albion
 		protected const int minimumLevel = 50;
 		protected const int maximumLevel = 50;
 
-		private static GameNPC Roben = null; // Start NPC
+		private static GameNpc Roben = null; // Start NPC
 		private static SisterBlythe Blythe = null; // Mob to kill
 
 		private static DbItemTemplate statue_of_arawn = null; //sealed pouch
@@ -61,10 +61,10 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Roben Fraomar", ERealm.Albion);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Roben Fraomar", ERealm.Albion);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 1 && npc.X == 408557 && npc.Y == 651675)
 					{
 						Roben = npc;
@@ -75,7 +75,7 @@ namespace DOL.GS.Quests.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Roben , creating it ...");
-				Roben = new GameNPC();
+				Roben = new GameNpc();
 				Roben.Model = 36;
 				Roben.Name = "Roben Fraomar";
 				Roben.GuildName = "";
@@ -97,7 +97,7 @@ namespace DOL.GS.Quests.Albion
 			npcs = WorldMgr.GetNPCsByName("Sister Blythe", ERealm.None);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 1 && npc.X == 322231 && npc.Y == 671546)
 					{
 						Blythe = npc as SisterBlythe;

@@ -66,7 +66,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)EBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 19, 0);
@@ -191,7 +191,7 @@ namespace DOL.AI.Brain
         {
             if (IsPulled == false)
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc != null)
                     {
@@ -431,7 +431,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer) //on kill generate orbs
         {
-            foreach (GameNPC npc in this.GetNPCsInRadius(5000))
+            foreach (GameNpc npc in this.GetNPCsInRadius(5000))
             {
                 if (npc != null)
                 {
@@ -456,7 +456,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)EBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 19, 0);
@@ -577,7 +577,7 @@ namespace DOL.AI.Brain
         {
             if (IsPulled2 == false)
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc != null)
                     {
@@ -609,7 +609,7 @@ namespace DOL.AI.Brain
                 RandomTarget2 = null;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                     {
                         if (npc != null)
                         {
@@ -808,7 +808,7 @@ namespace DOL.AI.Brain
 #region Frost Bomb
 namespace DOL.GS
 {
-    public class FrozenBomb : GameNPC
+    public class FrozenBomb : GameNpc
     {
         public FrozenBomb() : base()
         {

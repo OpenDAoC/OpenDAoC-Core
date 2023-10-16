@@ -54,7 +54,7 @@ namespace DOL.GS.Spells
 	        //Limit 2 Rams in a certain radius
 			int ramSummonRadius = 200;
             int ramsInRadius = 0;
-			foreach (GameNPC npc in Caster.GetNPCsInRadius((ushort) ramSummonRadius))
+			foreach (GameNpc npc in Caster.GetNPCsInRadius((ushort) ramSummonRadius))
 			{
 				if(npc is GameSiegeRam ram && ram.Realm == Caster.Realm)
 					ramsInRadius++;	

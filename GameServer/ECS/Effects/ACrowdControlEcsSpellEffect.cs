@@ -27,7 +27,7 @@ namespace DOL.GS
             Owner.attackComponent.StopAttack();
             Owner.StopCurrentSpellcast();
             Owner.DisableTurning(true);
-            if (Owner is GameNPC npc)
+            if (Owner is GameNpc npc)
                 npc.StopMoving();
             if(Owner.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(OfRaSpeedOfSoundEcsEffect)) == null)
                 UpdatePlayerStatus();

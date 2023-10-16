@@ -37,7 +37,7 @@ namespace DOL.GS.Scripts
 			MeleeDamageType = EDamageType.Slash;
 			Faction = FactionMgr.GetFactionByID(779);
 			
-			Flags |= eFlags.GHOST;
+			Flags |= ENpcFlags.GHOST;
 			// double-wielded
 			VisibleActiveWeaponSlots = 16;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
@@ -141,7 +141,7 @@ namespace DOL.GS.Scripts
 					{
 						if (_startAttack)
 						{
-							foreach (GameNPC vendos in Body.GetNPCsInRadius(1000))
+							foreach (GameNpc vendos in Body.GetNPCsInRadius(1000))
 							{
 								if (vendos == null) 
 									return;

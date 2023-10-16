@@ -138,7 +138,7 @@ namespace DOL.GS.RealmAbilities
 					DamageTarget(target);
 				}
 			}
-			foreach (GameNPC target in WorldMgr.GetNPCsCloseToSpot(region, traparea.X, traparea.Y, traparea.Z, 350))
+			foreach (GameNpc target in WorldMgr.GetNPCsCloseToSpot(region, traparea.X, traparea.Y, traparea.Z, 350))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(owner, target, true))
 				{

@@ -74,7 +74,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             MaxSpeedBase = 250;
-            Flags = eFlags.FLYING;
+            Flags = ENpcFlags.FLYING;
             RespawnInterval =ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             TorstBrain sbrain = new TorstBrain();
@@ -86,7 +86,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC npc in GetNPCsInRadius(5000))
+            foreach (GameNpc npc in GetNPCsInRadius(5000))
             {
                 if (npc != null && npc.IsAlive && npc.Brain is TorstEddiesBrain)
                     npc.RemoveFromWorld();
@@ -288,11 +288,11 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                Body.Flags = GameNPC.eFlags.FLYING; //fly
+                Body.Flags = ENpcFlags.FLYING; //fly
                 SpawnEddies = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                     {
                         if (npc != null && npc.IsAlive && npc.Brain is TorstEddiesBrain)
                             npc.RemoveFromWorld();
@@ -489,7 +489,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-            Flags = eFlags.FLYING;
+            Flags = ENpcFlags.FLYING;
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             HurikaBrain sbrain = new HurikaBrain();
@@ -635,7 +635,7 @@ namespace DOL.AI.Brain
                 //set state to RETURN TO SPAWN
                 FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
-                Body.Flags = GameNPC.eFlags.FLYING; //fly
+                Body.Flags = ENpcFlags.FLYING; //fly
                 IsTargetPicked = false;
                 RandomTarget = null;
                 if (Port_Enemys.Count > 0)
@@ -690,7 +690,7 @@ namespace DOL.AI.Brain
 #region Torst eddies
 namespace DOL.GS
 {
-    public class TorstEddies : GameNPC
+    public class TorstEddies : GameNpc
     {
         public TorstEddies() : base()
         {
@@ -757,7 +757,7 @@ namespace DOL.GS
             Level = (byte)Util.Random(55, 58);
             Size = 50;
             RespawnInterval = -1;
-            Flags = (GameNPC.eFlags)44;//noname notarget flying
+            Flags = (ENpcFlags)44;//noname notarget flying
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             MaxSpeedBase = 300;
@@ -808,8 +808,8 @@ namespace DOL.AI.Brain
         private protected bool Point2check = false;
         bool SetNpcTarget = false;
 
-        private protected static GameNPC trostnpc = null;
-        private protected static GameNPC TrostNpc
+        private protected static GameNpc trostnpc = null;
+        private protected static GameNpc TrostNpc
         {
             get { return trostnpc; }
             set { trostnpc = value; }
@@ -819,7 +819,7 @@ namespace DOL.AI.Brain
             Body.CurrentSpeed = 300;
             if (!SetNpcTarget)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(1500))
                 {
                     if (npc != null && npc.IsAlive && npc.Brain is TorstBrain)
                     {

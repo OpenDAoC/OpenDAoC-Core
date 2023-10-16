@@ -372,7 +372,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (player.CurrentRegion != null)
 				{
 					var npcs = player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE);
-					foreach (GameNPC npc in npcs)
+					foreach (GameNpc npc in npcs)
 					{
 						player.Out.SendNPCCreate(npc);
 						mobs++;

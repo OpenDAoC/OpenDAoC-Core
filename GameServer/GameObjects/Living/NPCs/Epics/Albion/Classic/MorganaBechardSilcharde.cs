@@ -9,7 +9,7 @@ using DOL.GS.ServerProperties;
 #region Morgana
 namespace DOL.GS
 {
-	public class Morgana : GameNPC
+	public class Morgana : GameNpc
 	{
 		public Morgana() : base() { }
 
@@ -27,7 +27,7 @@ namespace DOL.GS
 		public static int SilchardeDemonicMinionsCount = 0;
 		public override bool AddToWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc.Brain is MorganaBrain)
 					return false;
@@ -75,7 +75,7 @@ namespace DOL.AI.Brain
 			}
 		}
 		ushort oldModel;
-		GameNPC.eFlags oldFlags;
+		ENpcFlags oldFlags;
 		bool changed;
 
 		private bool Message = false;
@@ -130,8 +130,8 @@ namespace DOL.AI.Brain
 				if (changed == false)
 				{
 					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
+					Body.Flags ^= ENpcFlags.CANTTARGET;
+					Body.Flags ^= ENpcFlags.DONTSHOWNAME;
 					//Body.Flags ^= GameNPC.eFlags.PEACE;
 
 					if (oldModel == 0)
@@ -145,7 +145,7 @@ namespace DOL.AI.Brain
 			{
 				if (changed)
 				{
-					Body.Flags = (GameNPC.eFlags)npcTemplate.Flags;
+					Body.Flags = (ENpcFlags)npcTemplate.Flags;
 					Body.Model = Convert.ToUInt16(npcTemplate.Model);
 					SpawnBechard();
 					SpawnSilcharde();
@@ -187,7 +187,7 @@ namespace DOL.AI.Brain
 		{
 			if (Morgana.BechardCount == 0)
 			{
-				foreach (GameNPC mob in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc mob in Body.GetNPCsInRadius(5000))
 				{
 					if (mob.Brain is BechardBrain)
 						return;
@@ -205,7 +205,7 @@ namespace DOL.AI.Brain
 		{
 			if (Morgana.SilchardeCount == 0)
 			{
-				foreach (GameNPC mob in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc mob in Body.GetNPCsInRadius(5000))
 				{
 					if (mob.Brain is SilchardeBrain)
 						return;
@@ -373,7 +373,7 @@ namespace DOL.AI.Brain
 			if (HasAggro && Body.TargetObject != null)
             {
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach(GameNPC npc in Body.GetNPCsInRadius(2000))
+				foreach(GameNpc npc in Body.GetNPCsInRadius(2000))
                 {
 					if(npc != null && npc.IsAlive && npc.Brain is SilchardeBrain brain)
                     {
@@ -531,7 +531,7 @@ namespace DOL.AI.Brain
 			if (HasAggro && Body.TargetObject != null)
 			{
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is BechardBrain brain)
 					{
@@ -549,7 +549,7 @@ namespace DOL.AI.Brain
 #region demonic minion
 namespace DOL.GS
 {
-	public class DemonicMinion : GameNPC
+	public class DemonicMinion : GameNpc
 	{
 		public DemonicMinion() : base() { }
 
@@ -560,7 +560,7 @@ namespace DOL.GS
 			Model = 606;
 			RoamingRange = 200;
 			MaxSpeedBase = 245;
-			Flags = eFlags.FLYING;
+			Flags = ENpcFlags.FLYING;
 
 			DemonicMinionBrain sbrain = new DemonicMinionBrain();
 			SetOwnBrain(sbrain);

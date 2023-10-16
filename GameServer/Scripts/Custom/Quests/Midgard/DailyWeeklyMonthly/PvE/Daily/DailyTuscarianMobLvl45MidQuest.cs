@@ -23,7 +23,7 @@ namespace DOL.GS.DailyQuest.Midgard
         private int _deadTuscaMob = 0;
         private const int MAX_KILLGOAL = 3;
 
-        private static GameNPC Jarek = null; // Start NPC
+        private static GameNpc Jarek = null; // Start NPC
 
 
         // Constructors
@@ -61,10 +61,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Jarek", ERealm.Midgard);
+            GameNpc[] npcs = WorldMgr.GetNPCsByName("Jarek", ERealm.Midgard);
 
             if (npcs.Length > 0)
-                foreach (GameNPC npc in npcs)
+                foreach (GameNpc npc in npcs)
                     if (npc.CurrentRegionID == 151 && npc.X == 292291 && npc.Y == 354975)
                     {
                         Jarek = npc;
@@ -75,7 +75,7 @@ namespace DOL.GS.DailyQuest.Midgard
             {
                 if (log.IsWarnEnabled)
                     log.Warn("Could not find Jarek , creating it ...");
-                Jarek = new GameNPC();
+                Jarek = new GameNpc();
                 Jarek.Model = 774;
                 Jarek.Name = "Jarek";
                 Jarek.GuildName = "Advisor to the King";
@@ -329,7 +329,7 @@ namespace DOL.GS.DailyQuest.Midgard
                 return;
             
             // check if a GameNPC died + if its in Tuscaran Glacier
-            if (gArgs.Target.Realm == 0 && gArgs.Target is GameNPC && gArgs.Target.CurrentRegionID == 160)
+            if (gArgs.Target.Realm == 0 && gArgs.Target is GameNpc && gArgs.Target.CurrentRegionID == 160)
             {
                 _deadTuscaMob++;
                 player.Out.SendMessage(

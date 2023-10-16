@@ -26,7 +26,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 		// Quest Counter
 		private int DragonKilled = 0;
 		
-		private static GameNPC Isaac = null; // Start NPC
+		private static GameNpc Isaac = null; // Start NPC
 
 		// Constructors
 		public WeeklyDragonLvl45MidQuest() : base()
@@ -63,10 +63,10 @@ namespace DOL.GS.WeeklyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Isaac", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Isaac", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 766590 && npc.Y == 670407)
 					{
 						Isaac = npc;
@@ -77,7 +77,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Isaac , creating it ...");
-				Isaac = new GameNPC();
+				Isaac = new GameNpc();
 				Isaac.Model = 774;
 				Isaac.Name = "Isaac";
 				Isaac.GuildName = "Advisor to the King";

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Reflection;
@@ -25,31 +6,8 @@ using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Manages NPC templates data
-	/// </summary>
 	public sealed class NpcTemplateMgr
 	{
-		public enum eBodyType : int
-		{
-			None = 0,
-			Animal = 1,
-			Demon = 2,
-			Dragon = 3,
-			Elemental = 4,
-			Giant = 5,
-			Humanoid = 6,
-			Insect = 7,
-			Magical = 8,
-			Reptile = 9,
-			Plant = 10,
-			Undead = 11,
-			_Last = 11,
-		}
-
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>

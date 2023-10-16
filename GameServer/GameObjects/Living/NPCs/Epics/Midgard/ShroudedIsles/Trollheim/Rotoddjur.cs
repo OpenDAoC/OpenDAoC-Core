@@ -50,7 +50,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
 			{
 				if (npc != null)
 				{
@@ -107,7 +107,7 @@ namespace DOL.AI.Brain
 				IsPulled = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
 						if (npc != null)
 						{
@@ -209,7 +209,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-	public class RotoddjurAdd : GameNPC
+	public class RotoddjurAdd : GameNpc
 	{
 		public override int GetResist(EDamageType damageType)
 		{

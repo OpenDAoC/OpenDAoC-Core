@@ -88,7 +88,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC npc in GetNPCsInRadius(5000))
+            foreach (GameNpc npc in GetNPCsInRadius(5000))
             {
                 if (npc.Brain is YarAddBrain)
                 {
@@ -127,7 +127,7 @@ namespace DOL.AI.Brain
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
                 Body.Health = Body.MaxHealth;
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                 {
                     if (npc.Brain is YarAddBrain)
                     {
@@ -140,7 +140,7 @@ namespace DOL.AI.Brain
 
             if (Body.InCombat && HasAggro && Body.TargetObject != null)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(2000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(2000))
                 {
                     if (npc.Name.ToLower().Contains("drakulv"))
                     {
@@ -217,7 +217,7 @@ namespace DOL.AI.Brain
 
 namespace DOL.GS
 {
-    public class YarAdd : GameNPC
+    public class YarAdd : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -292,7 +292,7 @@ namespace DOL.GS
             return true;
         }
     }
-    public class YarAdd2 : GameNPC
+    public class YarAdd2 : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -367,7 +367,7 @@ namespace DOL.GS
             return true;
         }
     }
-    public class YarAdd3 : GameNPC
+    public class YarAdd3 : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

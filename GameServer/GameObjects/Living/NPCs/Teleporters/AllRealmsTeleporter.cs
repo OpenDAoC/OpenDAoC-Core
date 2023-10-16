@@ -9,10 +9,6 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Albion teleporter.
-	/// </summary>
-	/// <author>Aredhel</author>
 	public class AllRealmsTeleporter : GameTeleporter
 	{
 		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

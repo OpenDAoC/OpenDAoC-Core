@@ -5,16 +5,16 @@ using DOL.GS.Behaviour.Attributes;
 namespace DOL.GS.Behaviour.Actions
 {
     [Action(ActionType = EActionType.Whisper,DefaultValueQ=EDefaultValueConstants.NPC)]
-    public class WhisperAction : AAction<string,GameNPC>
+    public class WhisperAction : AAction<string,GameNpc>
     {
 
-        public WhisperAction(GameNPC defaultNPC,  Object p, Object q)
+        public WhisperAction(GameNpc defaultNPC,  Object p, Object q)
             : base(defaultNPC, EActionType.Whisper, p, q)
         {       
         }
 
 
-        public WhisperAction(GameNPC defaultNPC, String message, GameNPC npc)
+        public WhisperAction(GameNpc defaultNPC, String message, GameNpc npc)
             : this(defaultNPC, (object)message, (object)npc) { }
         
 

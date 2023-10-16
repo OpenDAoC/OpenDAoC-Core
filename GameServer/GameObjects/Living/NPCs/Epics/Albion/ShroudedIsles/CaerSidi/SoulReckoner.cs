@@ -117,7 +117,7 @@ namespace DOL.GS
 
         public override void Die(GameObject killer) //on kill generate orbs
         {
-            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            foreach (GameNpc npc in GetNPCsInRadius(8000))
             {
                 if (npc != null && npc.IsAlive)
                 {
@@ -261,7 +261,7 @@ namespace DOL.AI.Brain
                 }
                 if (BafMobs == false)
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc != null)
                         {
@@ -339,7 +339,7 @@ namespace DOL.AI.Brain
 ///////////////////////////////////////////////////Reckoned Soul//////////////////////////////
 namespace DOL.GS
 {
-    public class ReckonedSoul : GameNPC
+    public class ReckonedSoul : GameNpc
     {
         public ReckonedSoul() : base()
         {
@@ -398,7 +398,7 @@ namespace DOL.GS
             Size = 100;
             Level = 75;
             MaxSpeedBase = 230;
-            Flags = eFlags.GHOST;           
+            Flags = ENpcFlags.GHOST;           
 
             Faction = FactionMgr.GetFactionByID(64);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));

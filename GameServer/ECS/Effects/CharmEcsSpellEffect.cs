@@ -13,7 +13,7 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
-            if (SpellHandler.Caster is not GamePlayer casterPlayer || Owner is not GameNPC charmMob)
+            if (SpellHandler.Caster is not GamePlayer casterPlayer || Owner is not GameNpc charmMob)
                 return;
 
             CharmSpell charmSpellHandler = SpellHandler as CharmSpell;
@@ -63,7 +63,7 @@ namespace DOL.GS
         public override void OnStopEffect()
         {
             GamePlayer casterPlayer = SpellHandler.Caster as GamePlayer;
-            GameNPC charmMob = Owner as GameNPC;
+            GameNpc charmMob = Owner as GameNpc;
             CharmSpell charmSpellHandler = SpellHandler as CharmSpell;
             bool keepSongAlive = false;
 
@@ -111,7 +111,7 @@ namespace DOL.GS
                 // remove NPC with new brain from all attackers aggro list
                 foreach (GameLiving attacker in charmMob.attackComponent.Attackers.Keys)
                 {
-                    if (attacker is GameNPC npcAttacker && npcAttacker.Brain is IOldAggressiveBrain aggressiveBrain)
+                    if (attacker is GameNpc npcAttacker && npcAttacker.Brain is IOldAggressiveBrain aggressiveBrain)
                     {
                         aggressiveBrain.RemoveFromAggroList(charmMob);
                         aggressiveBrain.AddToAggroList(casterPlayer, casterPlayer.Level * 10);
@@ -122,7 +122,7 @@ namespace DOL.GS
 
                 charmSpellHandler.m_controlledBrain?.ClearAggroList();
                 charmMob.StopFollowing();
-                charmMob.TempProperties.SetProperty(GameNPC.CHARMED_TICK_PROP, charmMob.CurrentRegion.Time);
+                charmMob.TempProperties.SetProperty(GameNpc.CHARMED_TICK_PROP, charmMob.CurrentRegion.Time);
 
                 foreach (GamePlayer playerInRadius in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {

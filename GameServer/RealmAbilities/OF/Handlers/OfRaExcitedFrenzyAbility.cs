@@ -62,7 +62,7 @@ namespace DOL.GS.RealmAbilities
             CreateSpell();
             if (m_spell == null) return;
 
-            foreach (GameNPC npcs in m_player.GetNPCsInRadius((ushort)m_spell.Range))
+            foreach (GameNpc npcs in m_player.GetNPCsInRadius((ushort)m_spell.Range))
             {
                 if (npcs is GameSummonedPet pet)
                 {

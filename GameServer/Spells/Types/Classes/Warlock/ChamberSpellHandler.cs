@@ -205,7 +205,7 @@ namespace DOL.GS.Spells
 							if (sp.SpellType == m_spell.SpellType)
 								m_caster.DisableSkill(sp, sp.RecastDelay);
 				}
-				else if (m_caster is GameNPC)
+				else if (m_caster is GameNpc)
 					m_caster.DisableSkill(m_spell, m_spell.RecastDelay);
 			}
 			else

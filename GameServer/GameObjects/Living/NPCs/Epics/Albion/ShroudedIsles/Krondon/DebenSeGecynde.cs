@@ -113,7 +113,7 @@ namespace DOL.AI.Brain
 				IsPulled = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null)
 						{
@@ -129,7 +129,7 @@ namespace DOL.AI.Brain
 				RemoveAdds = false;
 				if(IsPulled==false)
                 {
-					foreach(GameNPC npc in Body.GetNPCsInRadius(2500))
+					foreach(GameNpc npc in Body.GetNPCsInRadius(2500))
                     {
 						if(npc != null)
                         {

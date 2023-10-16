@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private int x, y, z;
-		GameNPC summoned = null;
+		GameNpc summoned = null;
 		EcsGameTimer m_growTimer;
 		private const int C_GROWTIMER = 2000;
 		
@@ -54,7 +54,7 @@ namespace DOL.GS.Spells
 			CrystalTitanBrain controlledBrain = new CrystalTitanBrain(player);
 			controlledBrain.IsMainPet = false;
 			controlledBrain.WalkState = EWalkState.Stay;
-			summoned = new GameNPC(template);
+			summoned = new GameNpc(template);
 			summoned.SetOwnBrain(controlledBrain);
 			//Suncheck:
 			//	Is needed, else it can cause error (i.e. /cast-command)
@@ -69,7 +69,7 @@ namespace DOL.GS.Spells
 			summoned.CurrentSpeed = 0;
 			summoned.Size = 10;
 			summoned.Level = 100;
-			summoned.Flags |= GameNPC.eFlags.PEACE;
+			summoned.Flags |= ENpcFlags.PEACE;
 			summoned.AddToWorld();
 			controlledBrain.AggressionState = EAggressionState.Aggressive;
 			effect.Start(summoned);

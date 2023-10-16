@@ -75,7 +75,7 @@ namespace DOL.GS
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameNPC[] npcs;
+			GameNpc[] npcs;
 
 			npcs = WorldMgr.GetNPCsByNameFromRegion("Glacier Giant", 100, (ERealm)0);
 			if (npcs.Length == 0)
@@ -98,7 +98,7 @@ namespace DOL.GS
 				OF.Constitution = 100;
 				OF.Quickness = 125;
 				OF.Empathy = 300;
-				OF.BodyType = (ushort)NpcTemplateMgr.eBodyType.Magical;
+				OF.BodyType = (ushort)EBodyType.Magical;
 				OF.MeleeDamageType = EDamageType.Slash;
 
 				OF.X = 651517;

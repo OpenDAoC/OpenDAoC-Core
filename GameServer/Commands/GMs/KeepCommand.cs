@@ -2142,7 +2142,7 @@ namespace DOL.GS.Commands
 							d.Level = 0;
 							d.Model = 0xFFFF;
 							d.DoorID = door.DoorID;
-							d.State = eDoorState.Closed;
+							d.State = EDoorState.Closed;
 
 							DoorMgr.RegisterDoor(d);
 							d.AddToWorld();

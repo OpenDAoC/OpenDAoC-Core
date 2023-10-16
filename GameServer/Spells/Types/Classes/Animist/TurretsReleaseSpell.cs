@@ -53,7 +53,7 @@ namespace DOL.GS.Spells
             if (target == null || target.CurrentRegion == null)
                 return;
 
-            foreach (GameNPC npc in target.GetNPCsInRadius((ushort) Spell.Radius))
+            foreach (GameNpc npc in target.GetNPCsInRadius((ushort) Spell.Radius))
             {
                 if (npc is not TurretPet || !npc.IsAlive)
                     continue;

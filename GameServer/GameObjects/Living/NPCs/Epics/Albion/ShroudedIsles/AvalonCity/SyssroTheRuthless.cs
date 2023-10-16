@@ -58,7 +58,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach(GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			foreach(GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
 				if(npc != null)
                 {
@@ -303,7 +303,7 @@ namespace DOL.AI.Brain
                 }
 				if (IsPulled == false)
 				{
-					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
 						if (npc != null)
 						{
@@ -323,7 +323,7 @@ namespace DOL.AI.Brain
 //////////////////////////////////////////////////////////////////////Pit snare mobs//////////////////////////////////////
 namespace DOL.GS
 {
-	public class PitMonster : GameNPC
+	public class PitMonster : GameNpc
 	{
 		public PitMonster() : base() { }
 		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)

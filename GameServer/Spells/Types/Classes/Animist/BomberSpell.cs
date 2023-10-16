@@ -34,8 +34,8 @@ namespace DOL.GS.Spells
             {
                 m_pet.Level = m_pet.Owner?.Level ?? 1; // No bomber class to override SetPetLevel() in, so set level here.
                 m_pet.Name = Spell.Name;
-                m_pet.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-                m_pet.Flags ^= GameNPC.eFlags.PEACE;
+                m_pet.Flags ^= ENpcFlags.DONTSHOWNAME;
+                m_pet.Flags ^= ENpcFlags.PEACE;
                 m_pet.FixedSpeed = true;
                 m_pet.MaxSpeedBase = 350;
                 m_pet.TargetObject = target;

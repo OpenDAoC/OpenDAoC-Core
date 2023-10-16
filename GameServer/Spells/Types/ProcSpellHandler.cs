@@ -446,7 +446,7 @@ namespace DOL.GS.Spells
 			if (args == null || args.AttackData == null)
 				return;
 
-			GameNPC target = args.AttackData.Target as GameNPC;
+			GameNpc target = args.AttackData.Target as GameNpc;
 			
 			if(target != null && !(target.Brain is IControlledBrain && ((IControlledBrain)target.Brain).GetPlayerOwner() != null))
 				base.EventHandler(e, sender, arguments);

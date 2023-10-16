@@ -114,7 +114,7 @@ namespace DOL.GS
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameNPC[] npcs;
+			GameNpc[] npcs;
 
 			npcs = WorldMgr.GetNPCsByNameFromRegion("Summoner Roesia", 248, (ERealm)0);
 			if (npcs.Length == 0)
@@ -137,7 +137,7 @@ namespace DOL.GS
 				OF.Constitution = 100;
 				OF.Quickness = 125;
 				OF.Empathy = 300;
-				OF.BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
+				OF.BodyType = (ushort)EBodyType.Humanoid;
 				OF.MeleeDamageType = EDamageType.Crush;
 				OF.Faction = FactionMgr.GetFactionByID(187);
 				OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(206));

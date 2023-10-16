@@ -172,7 +172,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="mob"></param>
         /// <returns></returns>
-        public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+        public override LootList GenerateLoot(GameNpc mob, GameObject killer)
         {
             LootList loot = base.GenerateLoot(mob, killer);
 
@@ -180,8 +180,8 @@ namespace DOL.GS
             try
             {
                 GamePlayer player = killer as GamePlayer;
-                if (killer is GameNPC && ((GameNPC) killer).Brain is IControlledBrain)
-                    player = ((ControlledNpcBrain) ((GameNPC) killer).Brain).GetPlayerOwner();
+                if (killer is GameNpc && ((GameNpc) killer).Brain is IControlledBrain)
+                    player = ((ControlledNpcBrain) ((GameNpc) killer).Brain).GetPlayerOwner();
                 if (player == null)
                     return loot;
 
@@ -252,7 +252,7 @@ namespace DOL.GS
             return validClasses[Util.Random(validClasses.Count - 1)];
         }
 
-        public static bool IsMobInTOA(GameNPC mob)
+        public static bool IsMobInTOA(GameNpc mob)
         {
             //if (mob.CurrentRegion.Expansion == (int)eClientExpansion.TrialsOfAtlantis)
             //	return true;

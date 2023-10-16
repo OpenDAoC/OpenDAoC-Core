@@ -96,7 +96,7 @@ namespace DOL.AI.Brain
 									}
 
 									//Buff other minions
-									foreach (IControlledBrain icb in ((GameNPC)owner).ControlledNpcList)
+									foreach (IControlledBrain icb in ((GameNpc)owner).ControlledNpcList)
 									{
 										if (icb == null)
 											continue;

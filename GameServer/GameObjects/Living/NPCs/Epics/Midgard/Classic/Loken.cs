@@ -77,7 +77,7 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is LokenBrain)
 					return false;
@@ -101,7 +101,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach(GameNPC npc in GetNPCsInRadius(8000))
+			foreach(GameNpc npc in GetNPCsInRadius(8000))
             {
 				if (npc != null && npc.IsAlive && npc.Brain is LokenWolfBrain)
 					npc.Die(this);
@@ -161,7 +161,7 @@ namespace DOL.AI.Brain
             {
 				SpawnWolf = false;
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(1000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is LokenWolfBrain brian)
 					{
@@ -303,7 +303,7 @@ namespace DOL.AI.Brain
 #region Loken wolfs
 namespace DOL.GS
 {
-	public class LokenWolf : GameNPC
+	public class LokenWolf : GameNpc
 	{
 		public LokenWolf() : base() { }
 		#region Stats

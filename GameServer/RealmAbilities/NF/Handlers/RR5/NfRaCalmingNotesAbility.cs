@@ -17,7 +17,7 @@ namespace DOL.GS.RealmAbilities
 					 
  			if (spline != null && abSpell != null)
 			{        
-	            foreach (GameNPC enemy in living.GetNPCsInRadius(750))
+	            foreach (GameNpc enemy in living.GetNPCsInRadius(750))
 	            {
 	            	if (enemy.IsAlive && enemy.Brain!=null)
 	            		if(enemy.Brain is IControlledBrain)

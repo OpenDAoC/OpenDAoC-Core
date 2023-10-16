@@ -40,7 +40,7 @@ namespace DOL.GS.GameEvents
 					continue;
 				}
 				
-				GameNPC npc = new GameNPC(zp);
+				GameNpc npc = new GameNpc(zp);
 
 				npc.CurrentRegionID = z.SourceRegion;
 				npc.X = z.SourceX;

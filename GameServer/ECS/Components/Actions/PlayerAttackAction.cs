@@ -35,7 +35,7 @@ namespace DOL.GS
             else
                 attackTypeMsg = LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.Type.Shot");
 
-            if (attacker is GameNPC npcAttacker)
+            if (attacker is GameNpc npcAttacker)
                 _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true, _playerOwner.Client.Account.Language, npcAttacker), attackTypeMsg), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
             else
                 _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.Interrupted", attacker.GetName(0, true), attackTypeMsg), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);

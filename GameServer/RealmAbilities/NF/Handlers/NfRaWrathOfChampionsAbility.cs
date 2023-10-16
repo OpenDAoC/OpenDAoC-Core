@@ -54,7 +54,7 @@ namespace DOL.GS.RealmAbilities
 			}
 
 			//deal damage to npcs
-			foreach (GameNPC mob in caster.GetNPCsInRadius(200))
+			foreach (GameNpc mob in caster.GetNPCsInRadius(200))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(caster, mob, true) == false) continue;
 

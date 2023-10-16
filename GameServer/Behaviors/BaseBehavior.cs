@@ -33,7 +33,7 @@ namespace DOL.GS.Behaviour
 
         #region Variables
                         
-		private GameNPC npc;
+		private GameNpc npc;
 		
 		private List<IBehaviorRequirement> requirements;              
         private List<IBehaviorAction> actions;        
@@ -56,7 +56,7 @@ namespace DOL.GS.Behaviour
         /// <summary>
         /// NPC assigned with behaviour
         /// </summary>
-        public GameNPC NPC
+        public GameNpc NPC
         {
             get { return npc; }
             set { npc = value; }
@@ -101,7 +101,7 @@ namespace DOL.GS.Behaviour
         /// Creates a Behaviour for the given default npc.
         /// </summary>        
         /// <param name="npc">NPC associated with his behaviour typically NPC talking to or mob killing, etc...</param>                
-        public BaseBehavior(GameNPC npc)
+        public BaseBehavior(GameNpc npc)
         {            
             this.NPC = npc;
             NotifyHandler = new CoreEventHandler(this.Notify);

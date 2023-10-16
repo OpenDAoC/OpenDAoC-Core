@@ -324,7 +324,7 @@ namespace DOL.AI.Brain
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
 		public static bool checkForMessangers = false;
-		public static System.Collections.Generic.List<GameNPC> DragonAdds = new System.Collections.Generic.List<GameNPC>();
+		public static System.Collections.Generic.List<GameNpc> DragonAdds = new System.Collections.Generic.List<GameNpc>();
 		private List<Point3D> _roamingPathPoints = new List<Point3D>();
 		private int _lastRoamIndex = 0;
 
@@ -394,12 +394,12 @@ namespace DOL.AI.Brain
 				{
 					if (DragonAdds.Count > 0)
 					{
-						foreach (GameNPC messenger in DragonAdds)
+						foreach (GameNpc messenger in DragonAdds)
 						{
 							if (messenger != null && messenger.IsAlive && messenger.Brain is CuuldurachMessengerBrain)
 								messenger.RemoveFromWorld();
 						}
-						foreach (GameNPC glimmer in DragonAdds)
+						foreach (GameNpc glimmer in DragonAdds)
 						{
 							if (glimmer != null && glimmer.IsAlive && glimmer.Brain is CuuldurachSpawnedAdBrain)
 								glimmer.RemoveFromWorld();
@@ -434,7 +434,7 @@ namespace DOL.AI.Brain
 					player.Out.SendMessage($"{Body.Name} bellows from the skies, 'Let all who intrude into my domain pay heed. I will seek you out and cast you into the arms of Death if you remain here!'", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 				}
 
-				Body.Flags = GameNPC.eFlags.FLYING;//make dragon fly mode
+				Body.Flags = ENpcFlags.FLYING;//make dragon fly mode
 				ResetChecks = false;//reset it so can reset bools at end of path
 				LockIsRestless = true;
 			}
@@ -1008,7 +1008,7 @@ namespace DOL.AI.Brain
 #region Cuuldurach's messengers
 namespace DOL.GS
 {
-	public class CuuldurachMessenger : GameNPC
+	public class CuuldurachMessenger : GameNpc
 	{
 		public override bool IsVisibleToPlayers => true;
 
@@ -1334,7 +1334,7 @@ namespace DOL.AI.Brain
 #region Cuuldurach's  spawned adds
 namespace DOL.GS
 {
-	public class CuuldurachSpawnedAdd : GameNPC
+	public class CuuldurachSpawnedAdd : GameNpc
 	{
 		public CuuldurachSpawnedAdd() : base() { }
 

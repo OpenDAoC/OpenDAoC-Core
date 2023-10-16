@@ -22,7 +22,7 @@ namespace DOL.GS.Spells
         {
             
             var list = new List<GameLiving>(8);
-            foreach (GameNPC storms in Caster.GetNPCsInRadius(350))
+            foreach (GameNpc storms in Caster.GetNPCsInRadius(350))
             {
                 if ((storms is GameStorm) && (GameServer.ServerRules.IsSameRealm(storms, Caster, true))) list.Add(storms);
             }

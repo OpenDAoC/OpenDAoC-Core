@@ -16,7 +16,7 @@ namespace DOL.GS.GameEvents
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		//This is the NPC that will follow the player around
-		public class FollowingNPC : GameNPC
+		public class FollowingNPC : GameNpc
 		{
 			//The NPC will remember what player it is following
 			private GamePlayer m_playerToFollow;

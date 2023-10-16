@@ -130,7 +130,7 @@ namespace DOL.GS.Spells
                 player.Out.SendUpdateWeaponAndArmorStats();
             }
 
-            GameNPC npc = effect.Owner as GameNPC;
+            GameNpc npc = effect.Owner as GameNpc;
             if (npc != null)
             {
                 short maxSpeed = npc.MaxSpeed;

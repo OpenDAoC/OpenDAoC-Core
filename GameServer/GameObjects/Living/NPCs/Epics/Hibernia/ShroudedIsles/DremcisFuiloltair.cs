@@ -78,12 +78,12 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is FuilslathachBrain)
 					npc.RemoveFromWorld();
 			}
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is BeomarbhanBrain)
 					npc.Die(this);
@@ -117,7 +117,7 @@ namespace DOL.AI.Brain
 				CanSpawnBlobs = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is FuilslathachBrain)
 							npc.RemoveFromWorld();
@@ -139,7 +139,7 @@ namespace DOL.AI.Brain
 					CanSpawnStag = true;
 				}
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is FuilslathachBrain brain)
 					{
@@ -147,7 +147,7 @@ namespace DOL.AI.Brain
 							brain.AddToAggroList(target, 10);
 					}
 				}
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is BeomarbhanBrain brain)
 					{
@@ -160,7 +160,7 @@ namespace DOL.AI.Brain
 		}
 		private void SpawnStag()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 			{
 				if (npc.Brain is BeomarbhanBrain)
 					return;
@@ -175,7 +175,7 @@ namespace DOL.AI.Brain
 		}
 		private void SpawnBlobs()
         {
-			foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 			{
 				if (npc.Brain is FuilslathachBrain)
 					return;
@@ -297,7 +297,7 @@ namespace DOL.AI.Brain
 #region Dremcis Adds
 namespace DOL.GS
 {
-	public class Fuilslathach : GameNPC
+	public class Fuilslathach : GameNpc
 	{
 		public Fuilslathach() : base()
 		{

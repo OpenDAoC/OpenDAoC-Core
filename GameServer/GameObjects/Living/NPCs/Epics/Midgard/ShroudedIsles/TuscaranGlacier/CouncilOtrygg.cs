@@ -50,7 +50,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            foreach (GameNpc npc in GetNPCsInRadius(8000))
             {
                 if (npc == null) continue;
                 if (!npc.IsAlive) continue;
@@ -111,7 +111,7 @@ namespace DOL.AI.Brain
                 IsPulled = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
                     {
                         if (npc == null) continue;
                         if (!npc.IsAlive) continue;
@@ -173,7 +173,7 @@ namespace DOL.AI.Brain
 /////////////////////////////////////////////////////////////Adds//////////////////////////////////////////////////////////
 namespace DOL.GS
 {
-    public class OtryggAdd : GameNPC
+    public class OtryggAdd : GameNpc
     {
         public OtryggAdd() : base()
         {
@@ -268,7 +268,7 @@ namespace DOL.AI.Brain
         {
             if (HasAggro && Body.TargetObject != null)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                 {
                     if (npc == null) continue;
                     if (!npc.IsAlive) continue;

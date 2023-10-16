@@ -4,7 +4,7 @@ using log4net;
 
 namespace DOL.GS
 {
-    public class InstantRrNpc : GameNPC
+    public class InstantRrNpc : GameNpc
     {
         #region Options
         
@@ -20,7 +20,7 @@ namespace DOL.GS
 			Name = "Free Realm Ranks";
             Model = 1194;
             Size = 70;
-			Flags |= eFlags.PEACE;
+			Flags |= ENpcFlags.PEACE;
 			Level = 75;
 
             return base.AddToWorld();

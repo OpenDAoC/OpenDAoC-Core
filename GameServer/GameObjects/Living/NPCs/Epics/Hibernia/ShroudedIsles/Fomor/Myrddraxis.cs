@@ -63,7 +63,7 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			foreach (GameNPC heads in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			foreach (GameNpc heads in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
 			{
 				if (heads != null)
 				{
@@ -204,7 +204,7 @@ namespace DOL.GS
 			Add1.Z = 15931;
 			Add1.CurrentRegion = CurrentRegion;
 			Add1.Heading = 455;
-			Add1.Flags = eFlags.FLYING;
+			Add1.Flags = ENpcFlags.FLYING;
 			Add1.RespawnInterval = -1;
 			Add1.AddToWorld();
 
@@ -215,7 +215,7 @@ namespace DOL.GS
 			Add2.Z = 15961;
 			Add2.CurrentRegion = CurrentRegion;
 			Add2.Heading = 4095;
-			Add2.Flags = eFlags.FLYING;
+			Add2.Flags = ENpcFlags.FLYING;
 			Add2.RespawnInterval = -1;
 			Add2.AddToWorld();
 
@@ -226,7 +226,7 @@ namespace DOL.GS
 			Add3.Z = 15936;
 			Add3.CurrentRegion = CurrentRegion;
 			Add3.Heading = 971;
-			Add3.Flags = eFlags.FLYING;
+			Add3.Flags = ENpcFlags.FLYING;
 			Add3.RespawnInterval = -1;
 			Add3.AddToWorld();
 
@@ -237,7 +237,7 @@ namespace DOL.GS
 			Add4.Z = 15936;
 			Add4.CurrentRegion = CurrentRegion;
 			Add4.Heading = 4028;
-			Add4.Flags = eFlags.FLYING;
+			Add4.Flags = ENpcFlags.FLYING;
 			Add4.RespawnInterval = -1;
 			Add4.AddToWorld();
 		}
@@ -501,7 +501,7 @@ namespace DOL.AI.Brain
 				CanCastPBAOE3 = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null)
 						{
@@ -513,7 +513,7 @@ namespace DOL.AI.Brain
 								Add1.Z = 15931;
 								Add1.CurrentRegion = Body.CurrentRegion;
 								Add1.Heading = 455;
-								Add1.Flags = GameNPC.eFlags.FLYING;
+								Add1.Flags = ENpcFlags.FLYING;
 								Add1.RespawnInterval = -1;
 								Add1.AddToWorld();
 							}
@@ -525,7 +525,7 @@ namespace DOL.AI.Brain
 								Add2.Z = 15961;
 								Add2.CurrentRegion = Body.CurrentRegion;
 								Add2.Heading = 4095;
-								Add2.Flags = GameNPC.eFlags.FLYING;
+								Add2.Flags = ENpcFlags.FLYING;
 								Add2.RespawnInterval = -1;
 								Add2.AddToWorld();
 							}
@@ -537,7 +537,7 @@ namespace DOL.AI.Brain
 								Add3.Z = 15936;
 								Add3.CurrentRegion = Body.CurrentRegion;
 								Add3.Heading = 971;
-								Add3.Flags = GameNPC.eFlags.FLYING;
+								Add3.Flags = ENpcFlags.FLYING;
 								Add3.RespawnInterval = -1;
 								Add3.AddToWorld();
 							}
@@ -549,7 +549,7 @@ namespace DOL.AI.Brain
 								Add4.Z = 15936;
 								Add4.CurrentRegion = Body.CurrentRegion;
 								Add4.Heading = 4028;
-								Add4.Flags = GameNPC.eFlags.FLYING;
+								Add4.Flags = ENpcFlags.FLYING;
 								Add4.RespawnInterval = -1;
 								Add4.AddToWorld();
 							}
@@ -574,7 +574,7 @@ namespace DOL.AI.Brain
 				if (IsPulled == false)
 				{
 					GameLiving ptarget = Body.TargetObject as GameLiving;
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -585,7 +585,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -596,7 +596,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -607,7 +607,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -830,7 +830,7 @@ namespace DOL.AI.Brain
 #region 2nd Head of Myrddraxis
 namespace DOL.GS
 {
-	public class MyrddraxisSecondHead : GameNPC
+	public class MyrddraxisSecondHead : GameNpc
 	{
 		public MyrddraxisSecondHead() : base() { }
 
@@ -885,7 +885,7 @@ namespace DOL.GS
         {
 			if(ad != null)
             {
-				foreach(GameNPC hydra in GetNPCsInRadius(2000))
+				foreach(GameNpc hydra in GetNPCsInRadius(2000))
                 {
 					if(hydra != null)
                     {
@@ -895,7 +895,7 @@ namespace DOL.GS
                         }
                     }
                 }
-				foreach (GameNPC heads in GetNPCsInRadius(2000))
+				foreach (GameNpc heads in GetNPCsInRadius(2000))
 				{
 					if (heads != null)
 					{
@@ -961,7 +961,7 @@ namespace DOL.AI.Brain
 				if (IsPulled1==false)
 				{
 					GameLiving ptarget = Body.TargetObject as GameLiving;
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -972,7 +972,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -983,7 +983,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -994,7 +994,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1046,7 +1046,7 @@ namespace DOL.AI.Brain
 #region 3th Head of Myrddraxis
 namespace DOL.GS
 {
-	public class MyrddraxisThirdHead : GameNPC
+	public class MyrddraxisThirdHead : GameNpc
 	{
 		public MyrddraxisThirdHead() : base() { }
 
@@ -1101,7 +1101,7 @@ namespace DOL.GS
 		{
 			if (ad != null)
 			{
-				foreach (GameNPC hydra in GetNPCsInRadius(2000))
+				foreach (GameNpc hydra in GetNPCsInRadius(2000))
 				{
 					if (hydra != null)
 					{
@@ -1111,7 +1111,7 @@ namespace DOL.GS
 						}
 					}
 				}
-				foreach (GameNPC heads in GetNPCsInRadius(2000))
+				foreach (GameNpc heads in GetNPCsInRadius(2000))
 				{
 					if (heads != null)
 					{
@@ -1178,7 +1178,7 @@ namespace DOL.AI.Brain
 				if (IsPulled2==false)
 				{
 					GameLiving ptarget = Body.TargetObject as GameLiving;
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1189,7 +1189,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1200,7 +1200,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1211,7 +1211,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1263,7 +1263,7 @@ namespace DOL.AI.Brain
 #region 4th Head of Myrddraxis
 namespace DOL.GS
 {
-	public class MyrddraxisFourthHead : GameNPC
+	public class MyrddraxisFourthHead : GameNpc
 	{
 		public MyrddraxisFourthHead() : base() { }
 
@@ -1318,7 +1318,7 @@ namespace DOL.GS
 		{
 			if (ad != null)
 			{
-				foreach (GameNPC hydra in GetNPCsInRadius(2000))
+				foreach (GameNpc hydra in GetNPCsInRadius(2000))
 				{
 					if (hydra != null)
 					{
@@ -1328,7 +1328,7 @@ namespace DOL.GS
 						}
 					}
 				}
-				foreach (GameNPC heads in GetNPCsInRadius(2000))
+				foreach (GameNpc heads in GetNPCsInRadius(2000))
 				{
 					if (heads != null)
 					{
@@ -1395,7 +1395,7 @@ namespace DOL.AI.Brain
 				if (IsPulled3==false)
 				{
 					GameLiving ptarget = Body.TargetObject as GameLiving;
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1406,7 +1406,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1417,7 +1417,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1428,7 +1428,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1480,7 +1480,7 @@ namespace DOL.AI.Brain
 #region 5th Head of Myrddraxis
 namespace DOL.GS
 {
-	public class MyrddraxisFifthHead : GameNPC
+	public class MyrddraxisFifthHead : GameNpc
 	{
 		public MyrddraxisFifthHead() : base() { }
 
@@ -1535,7 +1535,7 @@ namespace DOL.GS
 		{
 			if (ad != null)
 			{
-				foreach (GameNPC hydra in GetNPCsInRadius(2000))
+				foreach (GameNpc hydra in GetNPCsInRadius(2000))
 				{
 					if (hydra != null)
 					{
@@ -1545,7 +1545,7 @@ namespace DOL.GS
 						}
 					}
 				}
-				foreach (GameNPC heads in GetNPCsInRadius(2000))
+				foreach (GameNpc heads in GetNPCsInRadius(2000))
 				{
 					if (heads != null)
 					{
@@ -1611,7 +1611,7 @@ namespace DOL.AI.Brain
 				if (IsPulled4==false)
 				{
 					GameLiving ptarget = Body.TargetObject as GameLiving;
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1622,7 +1622,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1633,7 +1633,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{
@@ -1644,7 +1644,7 @@ namespace DOL.AI.Brain
 							}
 						}
 					}
-					foreach (GameNPC head in Body.GetNPCsInRadius(2000))
+					foreach (GameNpc head in Body.GetNPCsInRadius(2000))
 					{
 						if (head != null)
 						{

@@ -82,7 +82,7 @@ namespace DOL.GS
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				GameNPC npc = new GameNPC();
+				GameNpc npc = new GameNpc();
 				INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160718);
 				npc.LoadTemplate(npcTemplate);
 				npc.X = X + Util.Random(-100, 100);
@@ -98,7 +98,7 @@ namespace DOL.GS
 		public override void Die(GameObject killer)
         {
 			RealCaithorUp = false;
-			foreach(GameNPC npc in GetNPCsInRadius(8000))
+			foreach(GameNpc npc in GetNPCsInRadius(8000))
             {
 				if (npc.IsAlive && npc != null && npc.PackageID == "RealCaithorDorocha")
 					npc.Die(this);
@@ -129,7 +129,7 @@ namespace DOL.AI.Brain
 			}
 			if(Body.TargetObject != null && HasAggro)
             {
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2000))
 				{
 					GameLiving target = Body.TargetObject as GameLiving;
 					if (npc != null && npc.IsAlive)
@@ -198,7 +198,7 @@ namespace DOL.GS
 		public static bool GhostCaithorUP = false;
 		public override bool AddToWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is GhostOfCaithorBrain)
 					return false;
@@ -265,7 +265,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		ushort oldModel;
-		GameNPC.eFlags oldFlags;
+		ENpcFlags oldFlags;
 		bool changed;
 		public static bool despawnGiantCaithor = false;
 		public static bool CanDespawn = false;
@@ -285,9 +285,9 @@ namespace DOL.AI.Brain
 				if (changed == false)
 				{
 					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-					Body.Flags ^= GameNPC.eFlags.PEACE;
+					Body.Flags ^= ENpcFlags.CANTTARGET;
+					Body.Flags ^= ENpcFlags.DONTSHOWNAME;
+					Body.Flags ^= ENpcFlags.PEACE;
 
 					if (oldModel == 0)
 						oldModel = Body.Model;
@@ -317,9 +317,9 @@ namespace DOL.AI.Brain
 				}				
 				CaithorDorocha.DorochaKilled = 0;
 				oldFlags = Body.Flags;
-				Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-				Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-				Body.Flags ^= GameNPC.eFlags.PEACE;
+				Body.Flags ^= ENpcFlags.CANTTARGET;
+				Body.Flags ^= ENpcFlags.DONTSHOWNAME;
+				Body.Flags ^= ENpcFlags.PEACE;
 
 				if (oldModel == 0)
 					oldModel = Body.Model;
@@ -337,7 +337,7 @@ namespace DOL.AI.Brain
 #region Caithor far dorochas
 namespace DOL.GS
 {
-	public class CaithorDorocha : GameNPC
+	public class CaithorDorocha : GameNpc
 	{
 		public CaithorDorocha() : base() { }
 

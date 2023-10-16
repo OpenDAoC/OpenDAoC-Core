@@ -37,7 +37,7 @@ namespace DOL.Tests.Integration.Server
 		[Test] 
 		public void TestLootGenerator()
 		{						
-			GameNPC mob = new GameNPC();
+			GameNpc mob = new GameNpc();
 			mob.Level = 6;
 			mob.Name="impling";
 

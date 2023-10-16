@@ -20,8 +20,8 @@ namespace DOL.GS.Quests.Albion
 		protected const int minimumLevel = 1;
 		protected const int maximumLevel = 50;
 
-		private static GameNPC SirLukas = null; // Start NPC
-		private static GameNPC Lukas = null; // Step 4 NPC
+		private static GameNpc SirLukas = null; // Start NPC
+		private static GameNpc Lukas = null; // Step 4 NPC
 		private static GameMerchant EllynWeyland = null; // Step 1, speak and get questitem
 
 		private static DbItemTemplate funeral_speech_scroll = null;
@@ -61,10 +61,10 @@ namespace DOL.GS.Quests.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Sir Lukas", ERealm.Albion);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Sir Lukas", ERealm.Albion);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 1 && npc.X == 505313 && npc.Y == 496252)
 					{
 						Lukas = npc;
@@ -75,7 +75,7 @@ namespace DOL.GS.Quests.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Lukas , creating it ...");
-				Lukas = new GameNPC();
+				Lukas = new GameNpc();
 				Lukas.Model = 33;
 				Lukas.Name = "Sir Lukas";
 				Lukas.GuildName = "Emissary of the King";
@@ -98,7 +98,7 @@ namespace DOL.GS.Quests.Albion
 			npcs = WorldMgr.GetNPCsByName("Sir Lukas", ERealm.Albion);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 10 && npc.X == 30763 && npc.Y == 29908)
 					{
 						SirLukas = npc;
@@ -109,7 +109,7 @@ namespace DOL.GS.Quests.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find SirLukas , creating it ...");
-				SirLukas = new GameNPC();
+				SirLukas = new GameNpc();
 				SirLukas.Model = 33;
 				SirLukas.Name = "Sir Lukas";
 				SirLukas.GuildName = "Emissary of the King";
@@ -133,7 +133,7 @@ namespace DOL.GS.Quests.Albion
 			npcs = WorldMgr.GetNPCsByName("Ellyn Weyland", ERealm.Albion);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC merchant in npcs)
+				foreach (GameNpc merchant in npcs)
 					if (merchant.CurrentRegionID == 1 && merchant.X == 561409 && merchant.Y == 509960)
 					{
 						EllynWeyland = (GameMerchant)merchant;
@@ -158,7 +158,7 @@ namespace DOL.GS.Quests.Albion
 				EllynWeyland.Y = 509960;
 				EllynWeyland.Z = 2423;
 				EllynWeyland.Heading = 115;
-				EllynWeyland.Flags ^= GameNPC.eFlags.PEACE;
+				EllynWeyland.Flags ^= ENpcFlags.PEACE;
 				EllynWeyland.MaxSpeedBase = 200;
 				EllynWeyland.AddToWorld();
 				if (SAVE_INTO_DATABASE)

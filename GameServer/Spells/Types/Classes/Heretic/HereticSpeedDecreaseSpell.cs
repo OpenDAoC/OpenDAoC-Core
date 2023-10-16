@@ -58,9 +58,9 @@ namespace DOL.GS.Spells
 			{
 				target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);
 			}
-			if(target is GameNPC) 
+			if(target is GameNpc) 
 			{
-				GameNPC npc = (GameNPC)target;
+				GameNpc npc = (GameNpc)target;
 				IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;
 				if (aggroBrain != null)
 					aggroBrain.AddToAggroList(Caster, 1);
@@ -201,7 +201,7 @@ namespace DOL.GS.Spells
 			if (player != null)
 				player.Out.SendUpdateMaxSpeed();
 
-			GameNPC npc = owner as GameNPC;
+			GameNpc npc = owner as GameNpc;
 			if (npc != null)
 			{
 				short maxSpeed = npc.MaxSpeed;

@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
-            if (selectedTarget is GameNPC == true)
+            if (selectedTarget is GameNpc == true)
             {
                 MessageToCaster("This spell works only on realm enemys.", EChatType.CT_SpellResisted);
                 return false;

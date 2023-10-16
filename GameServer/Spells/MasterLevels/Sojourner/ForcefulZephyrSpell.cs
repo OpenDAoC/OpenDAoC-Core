@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
     public class ForcefulZephyrSpell : MasterLevelSpellHandling
     {
         protected EcsGameTimer m_expireTimer;
-        protected GameNPC m_npc;
+        protected GameNpc m_npc;
         protected GamePlayer m_target;
         protected IPoint3D m_loc;
 
@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
                 return false;
             }
 
-            if (target is GameNPC == true)
+            if (target is GameNpc == true)
                 return false;
 
             if (!GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
@@ -47,7 +47,7 @@ namespace DOL.GS.Spells
             if (!target.IsAlive || target.ObjectState != GameObject.eObjectState.Active)
                 return;
 
-            GameNPC npc = new()
+            GameNpc npc = new()
             {
                 Realm = Caster.Realm,
                 Heading = Caster.Heading,
@@ -62,9 +62,9 @@ namespace DOL.GS.Spells
                 TargetObject = target
             };
 
-            npc.Flags |= GameNPC.eFlags.PEACE;
-            npc.Flags |= GameNPC.eFlags.DONTSHOWNAME;
-            npc.Flags |= GameNPC.eFlags.CANTTARGET;
+            npc.Flags |= ENpcFlags.PEACE;
+            npc.Flags |= ENpcFlags.DONTSHOWNAME;
+            npc.Flags |= ENpcFlags.CANTTARGET;
             npc.SetOwnBrain(new ZephyrBrain(ArriveAtTarget));
             npc.AddToWorld();
             npc.Follow(target, npc.movementComponent.FollowMinDistance, npc.movementComponent.FollowMaxDistance);
@@ -122,7 +122,7 @@ namespace DOL.GS.Spells
                 EChatType.CT_Spell);
         }
 
-        private void ArriveAtTarget(GameNPC zephyr)
+        private void ArriveAtTarget(GameNpc zephyr)
         {
             GamePlayer playerTarget = zephyr.TargetObject as GamePlayer;
 

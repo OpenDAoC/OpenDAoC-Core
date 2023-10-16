@@ -22,7 +22,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		// Capture Goal
 		private const int MAX_CAPTURED = 1;
 		
-		private static GameNPC Kelteen = null; // Start NPC
+		private static GameNpc Kelteen = null; // Start NPC
 
 		private int _isCaptured = 0;
 
@@ -61,10 +61,10 @@ namespace DOL.GS.MonthlyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Kelteen", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Kelteen", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 				{
 					if (npc.CurrentRegionID == 100 && npc.X == 765463 && npc.Y == 670000)
 					{
@@ -77,7 +77,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find KelteenMid, creating it ...");
-				Kelteen = new GameNPC();
+				Kelteen = new GameNpc();
 				Kelteen.Model = 164;
 				Kelteen.Name = "Kelteen";
 				Kelteen.GuildName = "Atlas Logistics";
@@ -90,7 +90,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 				Kelteen.Y = 670000;
 				Kelteen.Z = 5736;
 				Kelteen.Heading = 2245;
-				Kelteen.Flags |= GameNPC.eFlags.PEACE;
+				Kelteen.Flags |= ENpcFlags.PEACE;
 				GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
 				templateMid.AddNPCEquipment(EInventorySlot.Cloak, 1722);
 				templateMid.AddNPCEquipment(EInventorySlot.HeadArmor, 1288);

@@ -506,7 +506,7 @@ namespace DOL.GS
 				//we need an arbitrary player
 				foreach(GamePlayer player in source.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
-					if(player.ObjectState == GameNPC.eObjectState.Active) 
+					if(player.ObjectState == GameNpc.eObjectState.Active) 
 					{
 						// FIXME debug
 						if(LOSMGR_DEBUG_LEVEL >= LOSMGR_DEBUG_DEBUG)
@@ -527,7 +527,7 @@ namespace DOL.GS
 					//we need an arbitrary player
 					foreach(GamePlayer player in source.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					{
-						if(player.ObjectState == GameNPC.eObjectState.Active) 
+						if(player.ObjectState == GameNpc.eObjectState.Active) 
 						{
 							notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoop.GetCurrentTime(), los));
 							return;
@@ -571,9 +571,9 @@ namespace DOL.GS
 			}
 			
 			// check if source has an available owner
-			if(source is GameNPC && ((GameNPC)source).Brain != null && ((GameNPC)source).Brain is IControlledBrain)
+			if(source is GameNpc && ((GameNpc)source).Brain != null && ((GameNpc)source).Brain is IControlledBrain)
 			{
-				GamePlayer owner = ((IControlledBrain)((GameNPC)source).Brain).GetPlayerOwner();
+				GamePlayer owner = ((IControlledBrain)((GameNpc)source).Brain).GetPlayerOwner();
 				if(owner != null && IsAvailableForLosCheck(owner, source, target)) {
 					LosCheck(owner, source, target, notifier, cached, timeout);
 					return;
@@ -581,9 +581,9 @@ namespace DOL.GS
 			}
 			
 			// check if target has an available owner
-			if(target is GameNPC && ((GameNPC)target).Brain != null && ((GameNPC)target).Brain is IControlledBrain)
+			if(target is GameNpc && ((GameNpc)target).Brain != null && ((GameNpc)target).Brain is IControlledBrain)
 			{
-				GamePlayer tgtowner = ((IControlledBrain)((GameNPC)target).Brain).GetPlayerOwner();
+				GamePlayer tgtowner = ((IControlledBrain)((GameNpc)target).Brain).GetPlayerOwner();
 				if(tgtowner != null && IsAvailableForLosCheck(tgtowner, source, target)) {
 					LosCheck(tgtowner, source, target, notifier, cached, timeout);
 					return;
@@ -786,13 +786,13 @@ namespace DOL.GS
 		private void UpdateVincinityLosCache(GameObject source, GameObject target, bool losOK, long time)
 		{			
 			// Take NPCs in the largest Radius, should be EvE
-			foreach(GameNPC contamined in source.GetNPCsInRadius((ushort)LOSMGR_MAX_CONTAMINATION_RADIUS))
+			foreach(GameNpc contamined in source.GetNPCsInRadius((ushort)LOSMGR_MAX_CONTAMINATION_RADIUS))
 			{
 				if(contamined == source || contamined == target)
 					continue;
 				
 				// don't give LoS results to Peace NPC
-				if((contamined.Flags & GameNPC.eFlags.PEACE) == GameNPC.eFlags.PEACE)
+				if((contamined.Flags & ENpcFlags.PEACE) == ENpcFlags.PEACE)
 					continue;
 					
 				// player pet to player should use the special PET radius
@@ -934,7 +934,7 @@ namespace DOL.GS
 		/// <returns>True is this is related to a Player</returns>
 		private bool isObjectFromPlayer(GameObject obj)
 		{
-			return (obj is GameNPC && ((GameNPC)obj).Brain is IControlledBrain && ServerProperties.Properties.ALWAYS_CHECK_PET_LOS && ((IControlledBrain)((GameNPC)obj).Brain).GetPlayerOwner() != null)
+			return (obj is GameNpc && ((GameNpc)obj).Brain is IControlledBrain && ServerProperties.Properties.ALWAYS_CHECK_PET_LOS && ((IControlledBrain)((GameNpc)obj).Brain).GetPlayerOwner() != null)
 			   || obj is GamePlayer;
 		}
 		

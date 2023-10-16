@@ -5,7 +5,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public class ItemModel : GameNPC {
+    public class ItemModel : GameNpc {
         public string TempProperty = "ItemModel";
         public string DisplayedItem = "ItemDisplay";
         public string TempModelID = "TempModelID";
@@ -6819,7 +6819,7 @@ namespace DOL.GS
                               "If you repeatedly get this message, please file a bug ticket on how you recreate it.");
         }
         
-        private GameNPC CreateDisplayNPC(GamePlayer player, DbInventoryItem item)
+        private GameNpc CreateDisplayNPC(GamePlayer player, DbInventoryItem item)
         {
             var mob = new DisplayModel(player, item); 
                 
@@ -6849,7 +6849,7 @@ namespace DOL.GS
         
         private void DisplayReskinPreviewTo(GamePlayer player, DbInventoryItem item)
         {
-            GameNPC display = CreateDisplayNPC(player, item);
+            GameNpc display = CreateDisplayNPC(player, item);
             display.AddToWorld();
 
             var tempAd = new AttackData();
@@ -6865,7 +6865,7 @@ namespace DOL.GS
             ClientService.UpdateObjectForPlayer(player, display);
         }
 
-        private void LoopAnimation(GamePlayer player, DbInventoryItem item, GameNPC display,AttackData ad)
+        private void LoopAnimation(GamePlayer player, DbInventoryItem item, GameNpc display,AttackData ad)
         {
             var _lastAnimation = 0l;
             while (GameLoop.GameLoopTime < display.SpawnTick )

@@ -22,7 +22,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		// Capture Goal
 		private const int MAX_CAPTURED = 1;
 		
-		private static GameNPC Herou = null; // Start NPC
+		private static GameNpc Herou = null; // Start NPC
 
 		private int _isCaptured = 0;
 
@@ -61,10 +61,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Herou", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Herou", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
 					{
 						Herou = npc;
@@ -75,7 +75,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Herou , creating it ...");
-				Herou = new GameNPC();
+				Herou = new GameNpc();
 				Herou.Model = 142;
 				Herou.Name = "Herou";
 				Herou.GuildName = "Realm Logistics";

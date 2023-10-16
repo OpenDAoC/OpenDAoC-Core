@@ -110,7 +110,7 @@ namespace DOL.GS
         public static bool spawn_lights = false;
         public override void Die(GameObject killer)
         {
-            foreach(GameNPC lights in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+            foreach(GameNpc lights in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
                 if(lights != null)
                 {
@@ -155,7 +155,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
 
             npcs = WorldMgr.GetNPCsByNameFromRegion("Xaga", 191, (ERealm) 0);
             if (npcs.Length == 0)
@@ -231,7 +231,7 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc mob_c in Body.GetNPCsInRadius(4000))
                     {
                         if (mob_c != null)
                         {
@@ -253,7 +253,7 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
+                foreach (GameNpc mob_c in Body.GetNPCsInRadius(4000))
                 {
                     if (mob_c != null)
                     {
@@ -292,7 +292,7 @@ namespace DOL.GS
         {
             if (ad != null)
             {
-                foreach (GameNPC xaga in GetNPCsInRadius(8000))
+                foreach (GameNpc xaga in GetNPCsInRadius(8000))
                 {
                     if (xaga != null)
                     {
@@ -341,7 +341,7 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
-            Flags = eFlags.FLYING;
+            Flags = ENpcFlags.FLYING;
             BeathaBrain.path4 = false;
             BeathaBrain.path1 = false;
             BeathaBrain.path2 = false;
@@ -384,7 +384,7 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
+                foreach (GameNpc mob_c in Body.GetNPCsInRadius(4000))
                 {
                     if (mob_c != null)
                     {
@@ -554,7 +554,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-            Flags = eFlags.FLYING;
+            Flags = ENpcFlags.FLYING;
             TineBrain.path4_2 = false;
             TineBrain.path1_2 = false;
             TineBrain.path2_2 = false;
@@ -596,7 +596,7 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
-                foreach (GameNPC mob_c in Body.GetNPCsInRadius(4000))
+                foreach (GameNpc mob_c in Body.GetNPCsInRadius(4000))
                 {
                     if (mob_c != null)
                     {

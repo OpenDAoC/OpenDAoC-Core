@@ -82,14 +82,14 @@ namespace DOL.GS.Spells
 			if (Caster == null || Caster.ControlledBrain == null)
 				return;
 
-			GameNPC temppet = Caster.ControlledBrain.Body;
+			GameNpc temppet = Caster.ControlledBrain.Body;
 			//Lets let NPC's able to cast minions.  Here we make sure that the Caster is a GameNPC
 			//and that m_controlledNpc is initialized (since we aren't thread safe).
 			if (temppet == null)
 			{
-				if (Caster is GameNPC)
+				if (Caster is GameNpc)
 				{
-					temppet = (GameNPC)Caster;
+					temppet = (GameNpc)Caster;
 					//We'll give default NPCs 2 minions!
 					if (temppet.ControlledNpcList == null)
 						temppet.InitControlledBrainArray(2);
@@ -104,7 +104,7 @@ namespace DOL.GS.Spells
 				brain.SetAggressionState(EAggressionState.Passive);
 
 			// Assign weapons
-			if (m_pet is BDSubPet subPet)
+			if (m_pet is SubPet subPet)
 				switch (subPet.Brain)
 				{
 					case ArcherSubPetBrain archer:
@@ -135,7 +135,7 @@ namespace DOL.GS.Spells
 		/// <param name="arguments"></param>
 		protected override void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments)
 		{
-			GameNPC pet = sender as GameNPC;
+			GameNpc pet = sender as GameNpc;
 			if (pet == null)
 				return;
 
@@ -150,9 +150,9 @@ namespace DOL.GS.Spells
 
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			if ((effect.Owner is BDPet) && ((effect.Owner as BDPet).Brain is IControlledBrain) && (((effect.Owner as BDPet).Brain as IControlledBrain).Owner is CommanderPet))
+			if ((effect.Owner is BonedancerPet) && ((effect.Owner as BonedancerPet).Brain is IControlledBrain) && (((effect.Owner as BonedancerPet).Brain as IControlledBrain).Owner is CommanderPet))
 			{
-				BDPet pet = effect.Owner as BDPet;
+				BonedancerPet pet = effect.Owner as BonedancerPet;
 				CommanderPet commander = (pet.Brain as IControlledBrain).Owner as CommanderPet;
 				commander.RemoveControlledNpc(pet.Brain as IControlledBrain);
 			}
@@ -162,33 +162,33 @@ namespace DOL.GS.Spells
 		protected override IControlledBrain GetPetBrain(GameLiving owner)
 		{
 			IControlledBrain controlledBrain = null;
-			BDSubPet.SubPetType type = (BDSubPet.SubPetType)(byte)this.Spell.DamageType;
+			ESubPetType type = (ESubPetType)(byte)this.Spell.DamageType;
 			owner = owner.ControlledBrain.Body;
 
 			switch (type)
 			{
 				//Melee
-				case BDSubPet.SubPetType.Melee:
+				case ESubPetType.Melee:
 					controlledBrain = new MeleeSubPetBrain(owner);
 					break;
 				//Healer
-				case BDSubPet.SubPetType.Healer:
+				case ESubPetType.Healer:
 					controlledBrain = new HealerSubPetBrain(owner);
 					break;
 				//Mage
-				case BDSubPet.SubPetType.Caster:
+				case ESubPetType.Caster:
 					controlledBrain = new CasterSubPetBrain(owner);
 					break;
 				//Debuffer
-				case BDSubPet.SubPetType.Debuffer:
+				case ESubPetType.Debuffer:
 					controlledBrain = new DebufferSubPetBrain(owner);
 					break;
 				//Buffer
-				case BDSubPet.SubPetType.Buffer:
+				case ESubPetType.Buffer:
 					controlledBrain = new BufferSubPetBrain(owner);
 					break;
 				//Range
-				case BDSubPet.SubPetType.Archer:
+				case ESubPetType.Archer:
 					controlledBrain = new ArcherSubPetBrain(owner);
 					break;
 				//Other
@@ -202,7 +202,7 @@ namespace DOL.GS.Spells
 
 		protected override GameSummonedPet GetGamePet(INpcTemplate template)
 		{
-			return new BDSubPet(template);
+			return new SubPet(template);
 		}
 
 		protected override void SetBrainToOwner(IControlledBrain brain)

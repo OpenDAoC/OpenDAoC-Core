@@ -12,13 +12,13 @@ namespace DOL.GS.Behaviour.Actions
     public class TakeItemAction : AAction<DbItemTemplate, int>
     {
 
-        public TakeItemAction(GameNPC defaultNPC,  Object p, Object q)
+        public TakeItemAction(GameNpc defaultNPC,  Object p, Object q)
             : base(defaultNPC, EActionType.TakeItem, p, q)
         {
         }
 
 
-        public TakeItemAction(GameNPC defaultNPC,   DbItemTemplate itemTemplate, int quantity)
+        public TakeItemAction(GameNpc defaultNPC,   DbItemTemplate itemTemplate, int quantity)
             : this(defaultNPC, (object)itemTemplate,(object) quantity) { }
 
 

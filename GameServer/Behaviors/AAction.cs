@@ -19,7 +19,7 @@ namespace DOL.GS.Behaviour
         private EActionType actionType;
         private TypeQ q;
         private TypeP p;
-		private GameNPC defaultNPC;		
+		private GameNpc defaultNPC;		
         
         /// <summary>
         /// The action type
@@ -49,13 +49,13 @@ namespace DOL.GS.Behaviour
 		/// <summary>
 		/// returns the NPC of the action
 		/// </summary>
-		public GameNPC NPC
+		public GameNpc NPC
 		{
 			get { return defaultNPC; }
             set { defaultNPC = value; }
 		}
 
-        public AAction(GameNPC npc, EActionType actionType)
+        public AAction(GameNpc npc, EActionType actionType)
         {
             this.defaultNPC = npc;
             this.actionType = actionType;
@@ -68,7 +68,7 @@ namespace DOL.GS.Behaviour
 		/// <param name="actionType"></param>
 		/// <param name="p"></param>
 		/// <param name="q"></param>
-		public AAction(GameNPC npc, EActionType actionType, Object p, Object q) : this (npc,actionType)
+		public AAction(GameNpc npc, EActionType actionType, Object p, Object q) : this (npc,actionType)
 		{		
             ActionAttribute attr = BehaviorMgr.GetActionAttribute(this.GetType());
 

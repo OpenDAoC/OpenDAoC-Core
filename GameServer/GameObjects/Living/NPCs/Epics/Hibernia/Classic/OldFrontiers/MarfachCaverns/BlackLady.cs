@@ -146,7 +146,7 @@ namespace DOL.GS
         public override void Die(GameObject killer)
         {
             base.Die(killer);
-            foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+            foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
                 if (npc.Brain is OgressBrain)
                 {
@@ -154,7 +154,7 @@ namespace DOL.GS
                     Ogress.OgressCount = 0;
                 }
             }
-            foreach (GameNPC npc2 in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+            foreach (GameNpc npc2 in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
             {
                 if (npc2.Brain is AncientBlackOakBrain)
                 {
@@ -185,7 +185,7 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                    foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                     {
                         if (npc != null)
                         {
@@ -283,7 +283,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 { 
-    public class Ogress : GameNPC
+    public class Ogress : GameNpc
     {
         public Ogress() : base()
         {

@@ -21,8 +21,8 @@ namespace DOL.GS.Quests.Midgard
 		protected const int maximumLevel = 50;
 
 		private static bool IsSinging;
-		private static GameNPC VikingDextz = null; // Start NPC
-		private static GameNPC Freeya = null; // Finish NPC
+		private static GameNpc VikingDextz = null; // Start NPC
+		private static GameNpc Freeya = null; // Finish NPC
 		
 		private static DbWorldObject FreeyasGrave = null; // Object
 
@@ -58,10 +58,10 @@ namespace DOL.GS.Quests.Midgard
 
 			#region defineNPCs
 			//Freeya
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Freeya", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Freeya", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 763734 && npc.Y == 646142)
 					{
 						Freeya = npc;
@@ -73,13 +73,13 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find FreeyaMid , creating it ...");
-				Freeya = new GameNPC();
+				Freeya = new GameNpc();
 				Freeya.Model = 165;
 				Freeya.Name = "Freeya";
 				Freeya.GuildName = "Thor Boyaux";
 				Freeya.Realm = ERealm.Midgard;
 				Freeya.CurrentRegionID = 100;
-				Freeya.Flags += (ushort) GameNPC.eFlags.GHOST + (ushort) GameNPC.eFlags.PEACE + (ushort) GameNPC.eFlags.TORCH;
+				Freeya.Flags += (ushort) ENpcFlags.GHOST + (ushort) ENpcFlags.PEACE + (ushort) ENpcFlags.TORCH;
 				Freeya.Size = 50;
 				Freeya.RespawnInterval = 120000; //2min
 				Freeya.Level = 65;
@@ -111,7 +111,7 @@ namespace DOL.GS.Quests.Midgard
 			npcs = WorldMgr.GetNPCsByName("Viking Dextz", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 101 && npc.X == 30621 && npc.Y == 32310)
 					{
 						VikingDextz = npc;
@@ -123,13 +123,13 @@ namespace DOL.GS.Quests.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find VikingDextzMid , creating it ...");
-				VikingDextz = new GameNPC();
+				VikingDextz = new GameNpc();
 				VikingDextz.Model = 187;
 				VikingDextz.Name = "Viking Dextz";
 				VikingDextz.GuildName = "Thor Boyaux";
 				VikingDextz.Realm = ERealm.Midgard;
 				VikingDextz.CurrentRegionID = 101;
-				VikingDextz.Flags += (ushort) GameNPC.eFlags.PEACE + (ushort) GameNPC.eFlags.TORCH;
+				VikingDextz.Flags += (ushort) ENpcFlags.PEACE + (ushort) ENpcFlags.TORCH;
 				VikingDextz.Size = 52;
 				VikingDextz.Level = 63;
 				VikingDextz.X = 30621;

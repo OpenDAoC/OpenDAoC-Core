@@ -25,8 +25,8 @@ namespace DOL.GS.Effects
 			base.Start(target);
 
 			GamePlayer petOwner = null;
-			if (target is GameNPC && (target as GameNPC).Brain is IControlledBrain)
-				petOwner = ((target as GameNPC).Brain as IControlledBrain).Owner as GamePlayer;
+			if (target is GameNpc && (target as GameNpc).Brain is IControlledBrain)
+				petOwner = ((target as GameNpc).Brain as IControlledBrain).Owner as GamePlayer;
 
 			foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 			{
@@ -51,8 +51,8 @@ namespace DOL.GS.Effects
 			base.Stop();
 
 			GamePlayer petOwner = null;
-			if (Owner is GameNPC && (Owner as GameNPC).Brain is IControlledBrain)
-				petOwner = ((Owner as GameNPC).Brain as IControlledBrain).Owner as GamePlayer;
+			if (Owner is GameNpc && (Owner as GameNpc).Brain is IControlledBrain)
+				petOwner = ((Owner as GameNpc).Brain as IControlledBrain).Owner as GamePlayer;
 
 			foreach (GamePlayer player in Owner.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 			{

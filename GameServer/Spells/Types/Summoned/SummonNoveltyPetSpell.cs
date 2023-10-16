@@ -21,7 +21,7 @@ namespace DOL.GS.Spells
 
 			if (m_pet != null)
 			{
-				m_pet.Flags |= GameNPC.eFlags.PEACE; //must be peace!
+				m_pet.Flags |= ENpcFlags.PEACE; //must be peace!
 				m_pet.Name = $"{Caster.Name}'s {m_pet.Name}";
 
 				//No brain for now, so just follow owner.

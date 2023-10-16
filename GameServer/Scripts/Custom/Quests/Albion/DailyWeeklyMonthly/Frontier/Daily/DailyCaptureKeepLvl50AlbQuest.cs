@@ -22,7 +22,7 @@ namespace DOL.GS.DailyQuest.Albion
 		// Capture Goal
 		private const int MAX_CAPTURED = 1;
 		
-		private static GameNPC Haszan = null; // Start NPC
+		private static GameNpc Haszan = null; // Start NPC
 
 		private int _isCaptured = 0;
 
@@ -61,10 +61,10 @@ namespace DOL.GS.DailyQuest.Albion
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Haszan", ERealm.Albion);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Haszan", ERealm.Albion);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 1 && npc.X == 583866 && npc.Y == 477497)
 					{
 						Haszan = npc;
@@ -75,7 +75,7 @@ namespace DOL.GS.DailyQuest.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Haszan , creating it ...");
-				Haszan = new GameNPC();
+				Haszan = new GameNpc();
 				Haszan.Model = 51;
 				Haszan.Name = "Haszan";
 				Haszan.GuildName = "Realm Logistics";

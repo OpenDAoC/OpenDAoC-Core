@@ -44,7 +44,7 @@ namespace DOL.GS
         /// </summary>
         /// <param name="o"></param>
         /// <returns></returns>
-        public static bool IsSupported(GameNPC o)
+        public static bool IsSupported(GameNpc o)
         {
             return o?.CurrentZone != null && o.CurrentZone.IsPathingEnabled;
         }
@@ -52,7 +52,7 @@ namespace DOL.GS
         /// <summary>
         /// Owner to which this calculator belongs to. Used for calculating position offsets
         /// </summary>
-        public GameNPC Owner { get; private set; }
+        public GameNpc Owner { get; private set; }
 
         /// <summary>
         /// If set, contains the next door on the NPCs path
@@ -76,7 +76,7 @@ namespace DOL.GS
         /// Creates a path calculator for the given NPC
         /// </summary>
         /// <param name="owner"></param>
-        public PathCalculator(GameNPC owner)
+        public PathCalculator(GameNpc owner)
         {
             ForceReplot = true;
             Owner = owner;
@@ -109,11 +109,11 @@ namespace DOL.GS
         /// <param name="owner"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static bool ShouldPath(GameNPC owner, Vector3 target)
+        public static bool ShouldPath(GameNpc owner, Vector3 target)
         {
             if (owner.GetDistanceTo(target) < MIN_PATHING_DISTANCE)
                 return false; // too close to path
-            if (owner.Flags.HasFlag(GameNPC.eFlags.FLYING))
+            if (owner.Flags.HasFlag(ENpcFlags.FLYING))
                 return false;
             if (owner.Z <= 0)
                 return false; // this will probably result in some really awkward paths otherwise

@@ -31,7 +31,7 @@ namespace DOL.GS.PropertyCalc
 			int chance = living.BuffBonusCategory4[(int)property] + living.AbilityBonus[(int)property];
 
 			// Summoned or Charmed pet.
-			if (living is GameNPC npc && npc.Brain is IControlledBrain petBrain && petBrain.GetPlayerOwner() is GamePlayer player)
+			if (living is GameNpc npc && npc.Brain is IControlledBrain petBrain && petBrain.GetPlayerOwner() is GamePlayer player)
 			{
 				if (npc is NecromancerPet)
 					chance += 10;

@@ -107,7 +107,7 @@ namespace DOL.GS
 		/// Refresh the OTDs for this mob
 		/// </summary>
 		/// <param name="mob"></param>
-		public override void Refresh(GameNPC mob)
+		public override void Refresh(GameNpc mob)
 		{
 			if (mob == null)
 				return;
@@ -139,7 +139,7 @@ namespace DOL.GS
 		}
 
 
-		public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+		public override LootList GenerateLoot(GameNpc mob, GameObject killer)
 		{
 			LootList loot = base.GenerateLoot(mob, killer);
 			List<DbLootOtd> lootOTDs = null;
@@ -163,9 +163,9 @@ namespace DOL.GS
 							{
 								player = gainer as GamePlayer;
 							}
-							else if (gainer is GameNPC)
+							else if (gainer is GameNpc)
 							{
-								IControlledBrain brain = ((GameNPC)gainer).Brain as IControlledBrain;
+								IControlledBrain brain = ((GameNpc)gainer).Brain as IControlledBrain;
 								if (brain != null)
 								{
 									player = brain.GetPlayerOwner();

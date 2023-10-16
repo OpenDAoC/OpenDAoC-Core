@@ -23,7 +23,7 @@ namespace DOL.GS.SkillHandler
 		/// </summary>
 		public const int DURATION = 4000;
 
-		private List<GameNPC> m_distractedNPCs = new List<GameNPC>();
+		private List<GameNpc> m_distractedNPCs = new List<GameNpc>();
 
 		/// <summary>
 		/// Execute dirtytricks ability
@@ -80,9 +80,9 @@ namespace DOL.GS.SkillHandler
 				return;
 			}
 
-			m_distractedNPCs = new List<GameNPC>();
+			m_distractedNPCs = new List<GameNpc>();
 
-			foreach (GameNPC npc in player.GetNPCsInRadius(1500))
+			foreach (GameNpc npc in player.GetNPCsInRadius(1500))
 			{
 				if (npc.GetDistanceTo(GameLoc) < 400 && GameServer.ServerRules.IsAllowedToAttack(player, npc, true) && !(npc is GameTrainingDummy))
 				{

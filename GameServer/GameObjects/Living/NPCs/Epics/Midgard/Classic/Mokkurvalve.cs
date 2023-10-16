@@ -134,7 +134,7 @@ namespace DOL.AI.Brain
 				CanSpawnShard = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is MokkurvalveAddsBrain)
 							npc.Die(Body);
@@ -174,7 +174,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////////////////////////adds//////////////////////////////////////////
 namespace DOL.GS
 {
-	public class MokkurvalveAdds : GameNPC
+	public class MokkurvalveAdds : GameNpc
 	{
 		public MokkurvalveAdds() : base() { }
 		public override int GetResist(EDamageType damageType)

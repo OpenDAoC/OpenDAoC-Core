@@ -210,7 +210,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="killedNPC">npc that died</param>
 		/// <param name="killer">killer</param>
-		void OnNPCKilled(GameNPC killedNPC, GameObject killer);
+		void OnNPCKilled(GameNpc killedNPC, GameObject killer);
 
 		/// <summary>
 		/// Invoked on Player death and deals out
@@ -379,7 +379,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="source">The "looking" player</param>
 		/// <param name="target">The considered NPC</param>
 		/// <returns>The name of the target</returns>
-		string GetNPCName(GamePlayer source, GameNPC target);
+		string GetNPCName(GamePlayer source, GameNpc target);
 
 		/// <summary>
 		/// Gets the NPC guild name based on server type
@@ -387,7 +387,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="source">The "looking" player</param>
 		/// <param name="target">The considered NPC</param>
 		/// <returns>The guild name of the target</returns>
-		string GetNPCGuildName(GamePlayer source, GameNPC target);
+		string GetNPCGuildName(GamePlayer source, GameNpc target);
 
 		/// <summary>
 		/// Get the items (merchant) list name for a lot marker in the specified region
@@ -423,7 +423,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="heading"></param>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		GameNPC PlaceHousingNPC(DOL.GS.Housing.House house, DbItemTemplate item, IPoint3D location, ushort heading);
+		GameNpc PlaceHousingNPC(DOL.GS.Housing.House house, DbItemTemplate item, IPoint3D location, ushort heading);
 
 		/// <summary>
 		/// Get a static interior object for a house hookpoint

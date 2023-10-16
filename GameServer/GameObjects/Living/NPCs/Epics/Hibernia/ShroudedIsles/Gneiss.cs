@@ -100,7 +100,7 @@ namespace DOL.AI.Brain
 				CanSpawnAdd = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is GneissAddBrain)
 							npc.RemoveFromWorld();
@@ -111,7 +111,7 @@ namespace DOL.AI.Brain
 			if (HasAggro && Body.TargetObject != null)
 			{
 				RemoveAdds = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 				{
 					if (npc != null && npc.IsAlive && npc.PackageID == "GneissBaf")
 						AddAggroListTo(npc.Brain as StandardMobBrain);
@@ -133,7 +133,7 @@ namespace DOL.AI.Brain
 		}
 		private void SpawnAdd()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is GneissAddBrain)
 					return;
@@ -151,7 +151,7 @@ namespace DOL.AI.Brain
 #region Gneiss Add
 namespace DOL.GS
 {
-	public class GneissAdd : GameNPC
+	public class GneissAdd : GameNpc
 	{
 		public GneissAdd() : base()
 		{

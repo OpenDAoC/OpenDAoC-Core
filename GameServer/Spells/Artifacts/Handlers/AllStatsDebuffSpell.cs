@@ -72,9 +72,9 @@ namespace DOL.GS.Spells.Atlantis
 				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
 				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
 			}
-			if (target is GameNPC)
+			if (target is GameNpc)
 			{
-				var aggroBrain = ((GameNPC)target).Brain as StandardMobBrain;
+				var aggroBrain = ((GameNpc)target).Brain as StandardMobBrain;
 				if (aggroBrain != null)
 					aggroBrain.AddToAggroList(Caster, (int)Spell.Value);
 			}

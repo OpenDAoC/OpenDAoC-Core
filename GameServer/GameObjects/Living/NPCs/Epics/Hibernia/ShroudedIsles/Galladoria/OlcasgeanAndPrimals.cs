@@ -15,10 +15,10 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
-    public class OlcasgeanInitializator : GameNPC
+    public class OlcasgeanInitializator : GameNpc
     {
         public OlcasgeanInitializator() : base() { }
-        public static GameNPC Olcasgean_Initializator = new GameNPC();
+        public static GameNpc Olcasgean_Initializator = new GameNpc();
         public override int MaxHealth
         {
             get { return 10000; }
@@ -39,7 +39,7 @@ namespace DOL.GS
             Level = 50;
             Size = 50;
             CurrentRegionID = 191;//galladoria
-            Flags = (GameNPC.eFlags)60;
+            Flags = (ENpcFlags)60;
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             X = 41116;
@@ -365,7 +365,7 @@ namespace DOL.GS
         {
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             int damageDealt = damageAmount + criticalAmount;
-            foreach (GameNPC copy in GetNPCsInRadius(10000))
+            foreach (GameNpc copy in GetNPCsInRadius(10000))
             {
                 if (copy != null)
                 {
@@ -414,7 +414,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC npc in GetNPCsInRadius(10000))
+            foreach (GameNpc npc in GetNPCsInRadius(10000))
             {
                 if (npc != null)
                 {
@@ -475,14 +475,14 @@ namespace DOL.GS
             Heading = 102;
             CurrentRegionID = 191;         
 
-            Flags = (GameNPC.eFlags)156;
+            Flags = (ENpcFlags)156;
             RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
             OIBrain.startevent = false;
             OIBrain.DeadPrimalsCount = 0;
             OlcasgeanBrain.setbossflags = false;
             OlcasgeanBrain.wake_up_boss = false;
             OlcasgeanBrain.Spawn_Copy = false;
-            foreach (GameNPC npc in GetNPCsInRadius(5500))
+            foreach (GameNpc npc in GetNPCsInRadius(5500))
             {
                 if (npc != null && npc.IsAlive)
                 {
@@ -645,7 +645,7 @@ namespace DOL.AI.Brain
                 TeleportTarget = null;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                     {
                         if (npc.Brain is WaterfallAntipassBrain)
                             npc.RemoveFromWorld();
@@ -759,7 +759,7 @@ namespace DOL.AI.Brain
         }
         private void SpawnCopy()
         {
-            foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+            foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
             {
                 if (npc.Brain is OlcasgeanBrain2)
                     return;
@@ -910,7 +910,7 @@ namespace DOL.GS
         {
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             int damageDealt = damageAmount + criticalAmount;
-            foreach (GameNPC copy in GetNPCsInRadius(10000))
+            foreach (GameNpc copy in GetNPCsInRadius(10000))
             {
                 if (copy != null)
                 {
@@ -959,7 +959,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC npc in GetNPCsInRadius(10000))
+            foreach (GameNpc npc in GetNPCsInRadius(10000))
             {
                 if (npc != null)
                 {
@@ -1014,7 +1014,7 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
 
             OlcasgeanBrain2.wake_up_boss2 = false;
-            Flags = (GameNPC.eFlags)156;
+            Flags = (ENpcFlags)156;
             LoadedFromScript = true;
             RespawnInterval = -1;
 
@@ -1215,7 +1215,7 @@ namespace DOL.GS
             RespawnInterval = -1;//will not respawn
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
-            Flags = eFlags.FLYING;
+            Flags = ENpcFlags.FLYING;
 
             AirPrimalBrain sBrain = new AirPrimalBrain();
             SetOwnBrain(sBrain);
@@ -1682,7 +1682,7 @@ namespace DOL.GS
             WaterPrimalBrain.IsTargetTeleported = false;
 
             CurrentRegionID = 191;//galladoria
-            Flags ^= eFlags.GHOST;//ghost
+            Flags ^= ENpcFlags.GHOST;//ghost
 
             RespawnInterval = -1;//will not respawn
             Faction = FactionMgr.GetFactionByID(96);
@@ -1984,7 +1984,7 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             FirePrimalBrain.CanSpawnFire = false;
 
-            Flags ^= eFlags.FLYING;//flying
+            Flags ^= ENpcFlags.FLYING;//flying
             RespawnInterval = -1;//will not respawn
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
@@ -2147,7 +2147,7 @@ namespace DOL.AI.Brain
 #region trail of fire
 namespace DOL.GS
 {
-    public class TrailOfFire : GameNPC
+    public class TrailOfFire : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -2224,8 +2224,8 @@ namespace DOL.GS
         {
             Model = 2000;
             Name = "trail of fire";
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.CANTTARGET;
+            Flags ^= ENpcFlags.DONTSHOWNAME;
+            Flags ^= ENpcFlags.CANTTARGET;
             //Flags ^= eFlags.STATUE;
             MaxSpeedBase = 0;
             Level = 80;
@@ -2327,7 +2327,7 @@ namespace DOL.GS
         public override void Die(GameObject killer)
         {
             ++OIBrain.DeadPrimalsCount;
-            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            foreach (GameNpc npc in GetNPCsInRadius(8000))
             {
                 if (npc != null)
                 {
@@ -2511,7 +2511,7 @@ namespace DOL.AI.Brain
 #region Guardian Earthmender
 namespace DOL.GS
 {
-    public class GuardianEarthmender : GameNPC
+    public class GuardianEarthmender : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -2643,11 +2643,11 @@ namespace DOL.AI.Brain
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
         }
-        List<GameNPC> inRangeLiving;
+        List<GameNpc> inRangeLiving;
         public override void Think()
         {
             if (inRangeLiving == null)
-                inRangeLiving = new List<GameNPC>();
+                inRangeLiving = new List<GameNpc>();
 
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
@@ -2655,7 +2655,7 @@ namespace DOL.AI.Brain
             }
             if (Body.IsAlive)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(1000))
                 {
                     if (npc != null)
                     {
@@ -2719,7 +2719,7 @@ namespace DOL.AI.Brain
 #region Magical Earthmender
 namespace DOL.GS
 {
-    public class MagicalEarthmender : GameNPC
+    public class MagicalEarthmender : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -2854,11 +2854,11 @@ namespace DOL.AI.Brain
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
         }
-        List<GameNPC> inRangeLiving;
+        List<GameNpc> inRangeLiving;
         public override void Think()
         {
             if (inRangeLiving == null)
-                inRangeLiving = new List<GameNPC>();
+                inRangeLiving = new List<GameNpc>();
 
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
@@ -2866,7 +2866,7 @@ namespace DOL.AI.Brain
             }
             if (Body.IsAlive)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                 {
                     if (npc != null)
                     {
@@ -2930,7 +2930,7 @@ namespace DOL.AI.Brain
 #region Natural Earthmender
 namespace DOL.GS
 {
-    public class NaturalEarthmender : GameNPC
+    public class NaturalEarthmender : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -3062,11 +3062,11 @@ namespace DOL.AI.Brain
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
         }
-        List<GameNPC> inRangeLiving;
+        List<GameNpc> inRangeLiving;
         public override void Think()
         {
             if (inRangeLiving == null)
-                inRangeLiving = new List<GameNPC>();
+                inRangeLiving = new List<GameNpc>();
 
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
@@ -3074,7 +3074,7 @@ namespace DOL.AI.Brain
             }
             if (Body.IsAlive)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                 {
                     if (npc != null)
                     {
@@ -3138,7 +3138,7 @@ namespace DOL.AI.Brain
 #region Shadowy Earthmender
 namespace DOL.GS
 {
-    public class ShadowyEarthmender : GameNPC
+    public class ShadowyEarthmender : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -3270,11 +3270,11 @@ namespace DOL.AI.Brain
             if (oldTarget != null) Body.TargetObject = oldTarget;
             return 0;
         }
-        List<GameNPC> inRangeLiving;
+        List<GameNpc> inRangeLiving;
         public override void Think()
         {
             if (inRangeLiving == null)
-                inRangeLiving = new List<GameNPC>();
+                inRangeLiving = new List<GameNpc>();
 
             if (Body.InCombatInLast(30 * 1000) == false && this.Body.InCombatInLast(35 * 1000))
             {
@@ -3282,7 +3282,7 @@ namespace DOL.AI.Brain
             }
             if (Body.IsAlive)
             {
-                foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                 {
                     if (npc != null)
                     {
@@ -3345,7 +3345,7 @@ namespace DOL.AI.Brain
 #region Vortex
 namespace DOL.GS
 {
-    public class Vortex : GameNPC
+    public class Vortex : GameNpc
     {
         public Vortex() : base() { }
         public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
@@ -3404,7 +3404,7 @@ namespace DOL.GS
             Strength = 15;
             Intelligence = 200;
             Piety = 200;
-            Flags ^= eFlags.FLYING;
+            Flags ^= ENpcFlags.FLYING;
 
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
@@ -3478,7 +3478,7 @@ namespace DOL.AI.Brain
 #region Waterfall Anti-Pass
 namespace DOL.GS
 {
-    public class WaterfallAntipass : GameNPC
+    public class WaterfallAntipass : GameNpc
     {
         public WaterfallAntipass() : base() { }
         public override bool AddToWorld()
@@ -3488,9 +3488,9 @@ namespace DOL.GS
             Size = 50;
             Level = 50;
             MaxSpeedBase = 0;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.PEACE;
-            Flags ^= eFlags.CANTTARGET;
+            Flags ^= ENpcFlags.DONTSHOWNAME;
+            Flags ^= ENpcFlags.PEACE;
+            Flags ^= ENpcFlags.CANTTARGET;
 
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
@@ -3538,7 +3538,7 @@ namespace DOL.AI.Brain
 #region Visual Effects
 namespace DOL.GS
 {
-    public class OlcasgeanEffect : GameNPC
+    public class OlcasgeanEffect : GameNpc
     {
         public OlcasgeanEffect() : base() { }
         public override bool AddToWorld()
@@ -3548,9 +3548,9 @@ namespace DOL.GS
             Size = 70;
             Level = 50;
             MaxSpeedBase = 0;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.PEACE;
-            Flags ^= eFlags.CANTTARGET;
+            Flags ^= ENpcFlags.DONTSHOWNAME;
+            Flags ^= ENpcFlags.PEACE;
+            Flags ^= ENpcFlags.CANTTARGET;
 
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));

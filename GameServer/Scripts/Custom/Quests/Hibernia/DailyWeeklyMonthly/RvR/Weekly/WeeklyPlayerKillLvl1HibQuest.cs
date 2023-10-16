@@ -19,7 +19,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 		private const int minimumLevel = 1;
 		private const int maximumLevel = 50;
 
-		private static GameNPC ReyHib = null; // Start NPC
+		private static GameNpc ReyHib = null; // Start NPC
 
 		private int PlayersKilled = 0;
 		
@@ -62,10 +62,10 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", ERealm.Hibernia);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Rey", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 				{
 					if (npc.CurrentRegionID == 200 && npc.X == 334866 && npc.Y == 420749)
 					{
@@ -78,7 +78,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Rey , creating it ...");
-				ReyHib = new GameNPC();
+				ReyHib = new GameNpc();
 				ReyHib.Model = 26;
 				ReyHib.Name = "Rey";
 				ReyHib.GuildName = "Bone Collector";
@@ -91,7 +91,7 @@ namespace DOL.GS.WeeklyQuests.Hibernia
 				ReyHib.Y = 420749;
 				ReyHib.Z = 5184;
 				ReyHib.Heading = 1640;
-				ReyHib.Flags |= GameNPC.eFlags.PEACE;
+				ReyHib.Flags |= ENpcFlags.PEACE;
 				ReyHib.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{

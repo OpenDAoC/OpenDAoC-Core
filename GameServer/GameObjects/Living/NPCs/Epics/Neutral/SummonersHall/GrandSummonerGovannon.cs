@@ -91,7 +91,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(this.CurrentRegionID))
+			foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(this.CurrentRegionID))
 			{
 				if (npc != null)
 				{
@@ -139,7 +139,7 @@ namespace DOL.GS
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameNPC[] npcs;
+			GameNpc[] npcs;
 
 			npcs = WorldMgr.GetNPCsByNameFromRegion("Grand Summoner Govannon", 248, (ERealm)0);
 			if (npcs.Length == 0)
@@ -162,7 +162,7 @@ namespace DOL.GS
 				OF.Constitution = 100;
 				OF.Quickness = 125;
 				OF.Empathy = 300;
-				OF.BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
+				OF.BodyType = (ushort)EBodyType.Humanoid;
 				OF.MeleeDamageType = EDamageType.Crush;
 				OF.Faction = FactionMgr.GetFactionByID(206);
 				OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
@@ -255,7 +255,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
 						if (npc != null)
 						{
@@ -273,7 +273,7 @@ namespace DOL.AI.Brain
 					Body.CastSpell(GovannonDot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 
 				SpawnShadeOfAelfgar();
-				foreach (GameNPC shade in Body.GetNPCsInRadius(4000))
+				foreach (GameNpc shade in Body.GetNPCsInRadius(4000))
 				{
 					if (shade != null)
 					{
@@ -407,7 +407,7 @@ namespace DOL.AI.Brain
 #region Summoner Sacrifice
 namespace DOL.GS
 {
-	public class SummonedSacrifice : GameNPC
+	public class SummonedSacrifice : GameNpc
 	{
 		public override int MaxHealth
 		{
@@ -493,7 +493,7 @@ namespace DOL.AI.Brain
 #region Summoned Demon
 namespace DOL.GS
 {
-	public class SummonedDemon : GameNPC
+	public class SummonedDemon : GameNpc
 	{
 		public override int MaxHealth
 		{

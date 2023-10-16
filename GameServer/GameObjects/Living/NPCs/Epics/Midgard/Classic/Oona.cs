@@ -78,7 +78,7 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is OonaBrain)
 					return false;
@@ -104,7 +104,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is OonaUndeadAddBrain)
 					npc.Die(this);
@@ -151,7 +151,7 @@ namespace DOL.GS
 					npc.X = player.X;
 					npc.Y = player.Y;
 					npc.Z = player.Z;
-					npc.Flags = eFlags.GHOST;
+					npc.Flags = ENpcFlags.GHOST;
 					npc.Heading = player.Heading;
 					npc.CurrentRegion = CurrentRegion;
 					npc.AddToWorld();
@@ -190,7 +190,7 @@ namespace DOL.AI.Brain
 			if (Body.TargetObject != null && HasAggro)
 			{
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is OonaUndeadSoldierBrain brain)
 					{
@@ -198,7 +198,7 @@ namespace DOL.AI.Brain
 							brain.AddToAggroList(target, 100);
 					}
 				}
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is OonaUndeadAddBrain brain)
 					{
@@ -297,7 +297,7 @@ namespace DOL.AI.Brain
 #region Oona's Undead Soldiers
 namespace DOL.GS
 {
-	public class OonaUndeadSoldier : GameNPC
+	public class OonaUndeadSoldier : GameNpc
 	{
 		public OonaUndeadSoldier() : base() { }
 		public override bool AddToWorld()
@@ -341,7 +341,7 @@ namespace DOL.AI.Brain
 #region Oona's Undead adds
 namespace DOL.GS
 {
-	public class OonaUndeadAdd: GameNPC
+	public class OonaUndeadAdd: GameNpc
 	{
 		public OonaUndeadAdd() : base() { }
 		public override bool AddToWorld()

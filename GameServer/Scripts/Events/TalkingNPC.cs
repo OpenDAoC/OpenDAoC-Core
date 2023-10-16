@@ -17,7 +17,7 @@ namespace DOL.GS.GameEvents
 		//For our event we need a special npc that
 		//answers to the right click (interact) of players
 		//and also answers to talk.
-		public class TalkingNPC : GameNPC
+		public class TalkingNPC : GameNpc
 		{
 			public TalkingNPC() : base()
 			{

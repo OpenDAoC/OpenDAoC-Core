@@ -78,7 +78,7 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is KelicBrain)
 					return false;
@@ -123,7 +123,7 @@ namespace DOL.AI.Brain
 			if (Body.TargetObject != null && HasAggro)
 			{
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 				{
 					if (npc != null && npc.IsAlive && npc.Name.ToLower() == "servant of kelic" && npc.Brain is StandardMobBrain brain && npc != Body)
 					{

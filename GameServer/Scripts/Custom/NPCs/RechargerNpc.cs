@@ -7,8 +7,8 @@ using DOL.Language;
 
 namespace DOL.GS;
 
-[NPCGuildScript("Recharger")]
-public class RechargerNpc : GameNPC
+[NpcGuildScript("Recharger")]
+public class RechargerNpc : GameNpc
 {
     private const string RECHARGE_ITEM_WEAK = "recharged item";
     private const double RECHARGE_ALL_TAX = 0.20;

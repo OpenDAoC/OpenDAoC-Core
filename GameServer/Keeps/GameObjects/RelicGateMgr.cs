@@ -67,7 +67,7 @@ namespace DOL.GS.Keeps
 					continue;
 
 				//if the door is open, we see if we own a keep
-				if (door.State == eDoorState.Open)
+				if (door.State == EDoorState.Open)
 				{
 					if (keep.Realm != keep.OriginalRealm)
 						continue;

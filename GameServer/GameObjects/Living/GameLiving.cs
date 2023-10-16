@@ -21,10 +21,6 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// This class holds all information that each
-	/// living object in the world uses
-	/// </summary>
 	public abstract class GameLiving : GameObject
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -1355,9 +1351,9 @@ namespace DOL.GS
 				attackComponent.StopAttack();
 			}
 
-			if (this is GameNPC && ActiveWeaponSlot != EActiveWeaponSlot.Distance &&
-			    ((GameNPC)this).Inventory != null &&
-			    ((GameNPC)this).Inventory.GetItem(EInventorySlot.DistanceWeapon) != null)
+			if (this is GameNpc && ActiveWeaponSlot != EActiveWeaponSlot.Distance &&
+			    ((GameNpc)this).Inventory != null &&
+			    ((GameNpc)this).Inventory.GetItem(EInventorySlot.DistanceWeapon) != null)
 			{
 				SwitchWeapon(EActiveWeaponSlot.Distance);
 			}
@@ -1387,7 +1383,7 @@ namespace DOL.GS
 				else if (IsObjectInFront(ad.Attacker, 180) && (evadeBuff != null || player.HasAbility(Abilities.Evade)))
 					evadeChance = Math.Max(GetModified(EProperty.EvadeChance), 0);
 			}
-			else if (this is GameNPC && IsObjectInFront(ad.Attacker, 180))
+			else if (this is GameNpc && IsObjectInFront(ad.Attacker, 180))
 				evadeChance = GetModified(EProperty.EvadeChance);
 
 			if (evadeChance > 0 && !ad.Target.IsStunned && !ad.Target.IsSitting)
@@ -1487,7 +1483,7 @@ namespace DOL.GS
 						}
 					}
 				}
-				else if (this is GameNPC && IsObjectInFront(ad.Attacker, 120))
+				else if (this is GameNpc && IsObjectInFront(ad.Attacker, 120))
 					parryChance = GetModified(EProperty.ParryChance);
 
 				if (BladeBarrier != null && !ad.Target.IsStunned && !ad.Target.IsSitting)
@@ -1694,7 +1690,7 @@ namespace DOL.GS
 			#region PVP DAMAGE
 
 			// Is this a GamePlayer behind the source?
-			if (source is GamePlayer || (source is GameNPC && (source as GameNPC).Brain is IControlledBrain && ((source as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null) || source is GameSiegeWeapon)
+			if (source is GamePlayer || (source is GameNpc && (source as GameNpc).Brain is IControlledBrain && ((source as GameNpc).Brain as IControlledBrain).GetPlayerOwner() != null) || source is GameSiegeWeapon)
 			{
 				// Only apply to necropet.
 				if (this is NecromancerPet)
@@ -1702,8 +1698,8 @@ namespace DOL.GS
 					//And if a GamePlayer is behind
 					GamePlayer this_necro_pl = null;
 
-					if (this is GameNPC && (this as GameNPC).Brain is IControlledBrain)
-						this_necro_pl = ((this as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+					if (this is GameNpc && (this as GameNpc).Brain is IControlledBrain)
+						this_necro_pl = ((this as GameNpc).Brain as IControlledBrain).GetPlayerOwner();
 
 					if (this_necro_pl != null && this_necro_pl.Realm != source.Realm && source.Realm != 0)
 						DamageRvRMemory += (long)damageDealt + (long)criticalAmount;
@@ -1712,9 +1708,9 @@ namespace DOL.GS
 
 			#endregion PVP DAMAGE
 
-			if (source != null && source is GameNPC)
+			if (source != null && source is GameNpc)
 			{
-				IControlledBrain brain = ((GameNPC)source).Brain as IControlledBrain;
+				IControlledBrain brain = ((GameNpc)source).Brain as IControlledBrain;
 				if (brain != null)
 					source = brain.GetLivingOwner();
 			}
@@ -1881,7 +1877,7 @@ namespace DOL.GS
 				LastAttackTickPvE = GameLoop.GameLoopTime;
 			}
 
-			if (this is GameNPC npc)
+			if (this is GameNpc npc)
 			{
 				var brain = npc.Brain as ControlledNpcBrain;
 
@@ -1948,7 +1944,7 @@ namespace DOL.GS
 				//Notify(GameLivingEvent.AttackedByEnemy, this, new AttackedByEnemyEventArgs(ad));               
 				HandleMovementSpeedEffectsOnAttacked(ad);
 
-				if (this is GameNPC gameNpc && ActiveWeaponSlot == EActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
+				if (this is GameNpc gameNpc && ActiveWeaponSlot == EActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
 					gameNpc.SwitchToMelee(ad.Attacker);
 
 				attackComponent.AddAttacker(ad.Attacker);
@@ -2019,7 +2015,7 @@ namespace DOL.GS
 						(dProcEffects[i].SpellHandler as DefensiveProcSpell).EventHandler(ad);
 				}
 			}
-			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
+			else if (ad.IsSpellResisted && ad.Target is GameNpc npc)
 				npc.CancelReturnToSpawnPoint();
 		}
 
@@ -2097,7 +2093,7 @@ namespace DOL.GS
 					removeMez = true;
 				}
 				
-				if (this is GameNPC && ad.SpellHandler is not MesmerizeSpell)
+				if (this is GameNpc && ad.SpellHandler is not MesmerizeSpell)
 					removeMez = true;
 			}
 
@@ -2187,10 +2183,10 @@ namespace DOL.GS
 				}
             }
 
-			if (this is GameNPC npc && npc.Brain is ControlledNpcBrain || this is GameSummonedPet)
+			if (this is GameNpc npc && npc.Brain is ControlledNpcBrain || this is GameSummonedPet)
             {
 				List<EcsGameSpellEffect> ownerEffects;
-				ControlledNpcBrain pBrain = (this as GameNPC).Brain as ControlledNpcBrain;
+				ControlledNpcBrain pBrain = (this as GameNpc).Brain as ControlledNpcBrain;
 				GameSummonedPet pet = this as GameSummonedPet;
 
 				if (pBrain != null)
@@ -2322,7 +2318,7 @@ namespace DOL.GS
 		{
 			try
 			{
-				if (this is not GameNPC and not GamePlayer)
+				if (this is not GameNpc and not GamePlayer)
 				{
 					// deal out exp and realm points based on server rules
 					GameServer.ServerRules.OnLivingKilled(this, killer);
@@ -2342,7 +2338,7 @@ namespace DOL.GS
 
 					GamePlayer player = attacker as GamePlayer;
 
-					if (attacker is GameNPC npcAttacker && npcAttacker.Brain is IControlledBrain npcAttackerBrain)
+					if (attacker is GameNpc npcAttacker && npcAttacker.Brain is IControlledBrain npcAttackerBrain)
 					{
 						// Ok, we're a pet - if our Player owner isn't in the attacker list, let's make them a 'virtual' attacker
 						player = npcAttackerBrain.GetPlayerOwner();
@@ -2578,7 +2574,7 @@ namespace DOL.GS
 
 				case EActiveWeaponSlot.TwoHanded:
 					{
-						if (twoHandSlot != null && (twoHandSlot.Hand == 1 || this is GameNPC)) // 2h
+						if (twoHandSlot != null && (twoHandSlot.Hand == 1 || this is GameNpc)) // 2h
 						{
 							rightHand = leftHand = 0x02;
 							break;
@@ -2603,7 +2599,7 @@ namespace DOL.GS
 
 						if (distanceSlot == null)
 							rightHand = 0xFF;
-						else if (distanceSlot.Hand == 1 || this is GameNPC) // NPC equipment does not have hand so always assume 2 handed bow
+						else if (distanceSlot.Hand == 1 || this is GameNpc) // NPC equipment does not have hand so always assume 2 handed bow
 							rightHand = leftHand = 0x03; // bows use 2 hands, throwing axes 1h
 						else
 							rightHand = 0x03;
@@ -3758,9 +3754,9 @@ namespace DOL.GS
 			
 			Notify(GameLivingEvent.Say, this, new SayEventArgs(str));
 			
-			foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.SAY_DISTANCE))
+			foreach (GameNpc npc in GetNPCsInRadius(WorldMgr.SAY_DISTANCE))
 			{
-				GameNPC receiver = npc;
+				GameNpc receiver = npc;
 				// don't send say to the target, it will be whispered...
 				if (receiver != this && receiver != TargetObject)
 				{
@@ -3791,9 +3787,9 @@ namespace DOL.GS
 			}
 			
 			// whisper to Targeted NPC.
-			if (TargetObject != null && TargetObject is GameNPC)
+			if (TargetObject != null && TargetObject is GameNpc)
 			{
-				GameNPC targetNPC = (GameNPC)TargetObject;
+				GameNpc targetNPC = (GameNpc)TargetObject;
 				targetNPC.WhisperReceive(this, str);
 			}
 			
@@ -3832,9 +3828,9 @@ namespace DOL.GS
 			
 			Notify(GameLivingEvent.Yell, this, new YellEventArgs(str));
 			
-			foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.YELL_DISTANCE))
+			foreach (GameNpc npc in GetNPCsInRadius(WorldMgr.YELL_DISTANCE))
 			{
-				GameNPC receiver = npc;
+				GameNpc receiver = npc;
 				if (receiver != this)
 				{
 					receiver.YellReceive(this, str);
@@ -4593,7 +4589,7 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual bool IsControlledNPC(GameNPC npc)
+		public virtual bool IsControlledNPC(GameNpc npc)
 		{
 			if (npc == null)
 			{

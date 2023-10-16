@@ -58,7 +58,7 @@ namespace DOL.GS.Keeps
 					bool underAttack = false;
 					foreach (GameKeepDoor door in this.Doors.Values)
 					{
-						if (door.State == eDoorState.Open)
+						if (door.State == EDoorState.Open)
 						{
 							underAttack = true;
 							break;
@@ -493,7 +493,7 @@ namespace DOL.GS.Keeps
 				d.Model = door.Model;
 				d.Name = "door";
 				d.Realm = door.Realm;
-				d.State = eDoorState.Closed;
+				d.State = EDoorState.Closed;
 				d.X = door.X;
 				d.Y = door.Y;
 				d.Z = door.Z;
@@ -713,7 +713,7 @@ namespace DOL.GS.Keeps
 
 		protected void InitialiseTimers()
 		{
-			m_changeLevelTimer = new AuxECSGameTimer(new GameNPC());
+			m_changeLevelTimer = new AuxECSGameTimer(new GameNpc());
 			m_changeLevelTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(ChangeLevelTimerCallback);
 
 			//Commenting out claimTimer as we dont give RPs to guilds for holding onto claimed keeps currently.

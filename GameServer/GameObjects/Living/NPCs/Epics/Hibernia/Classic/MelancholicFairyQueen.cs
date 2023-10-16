@@ -74,7 +74,7 @@ namespace DOL.GS
 			Size = 50;
 			MaxDistance = 2500;
 			TetherRange = 2600;
-			Flags = eFlags.FLYING;
+			Flags = ENpcFlags.FLYING;
 			MaxSpeedBase = 250;
 			IsKilled = false;
 
@@ -89,7 +89,7 @@ namespace DOL.GS
         public override void Die(GameObject killer)
         {
 			IsKilled = true;
-			foreach (GameNPC adds in GetNPCsInRadius(8000))
+			foreach (GameNpc adds in GetNPCsInRadius(8000))
 			{
 				if (adds != null && adds.IsAlive && adds.Brain is MFQGuardsBrain)
 					adds.RemoveFromWorld();
@@ -110,7 +110,7 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		ushort oldModel;
-		GameNPC.eFlags oldFlags;
+		ENpcFlags oldFlags;
 		bool changed;
 		public void BroadcastMessage(String message)
 		{
@@ -126,15 +126,15 @@ namespace DOL.AI.Brain
 				if (changed == false)
 				{
 					oldFlags = Body.Flags;
-					Body.Flags ^= GameNPC.eFlags.CANTTARGET;
-					Body.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
-					Body.Flags ^= GameNPC.eFlags.PEACE;
+					Body.Flags ^= ENpcFlags.CANTTARGET;
+					Body.Flags ^= ENpcFlags.DONTSHOWNAME;
+					Body.Flags ^= ENpcFlags.PEACE;
 
 					if (oldModel == 0)
 						oldModel = Body.Model;
 
 					Body.Model = 1;
-					foreach (GameNPC adds in Body.GetNPCsInRadius(8000))
+					foreach (GameNpc adds in Body.GetNPCsInRadius(8000))
 					{
 						if (adds != null && adds.IsAlive && adds.Brain is MFQGuardsBrain)
 							adds.RemoveFromWorld();
@@ -162,7 +162,7 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is MFQGuardsBrain brain)
 					{
@@ -226,7 +226,7 @@ namespace DOL.AI.Brain
 #region Fairy Queen Guards
 namespace DOL.GS
 {
-	public class MFQGuards : GameNPC
+	public class MFQGuards : GameNpc
 	{
 		public MFQGuards() : base()
 		{
@@ -268,7 +268,7 @@ namespace DOL.GS
 			Size = (byte)Util.Random(50, 55);
 			RespawnInterval = -1;
 			RoamingRange = 200;
-			Flags = eFlags.FLYING;
+			Flags = ENpcFlags.FLYING;
 
 			LoadedFromScript = true;
 			MFQGuardsBrain sbrain = new MFQGuardsBrain();

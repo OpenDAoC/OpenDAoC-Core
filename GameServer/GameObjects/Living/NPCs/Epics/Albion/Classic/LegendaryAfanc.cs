@@ -82,7 +82,7 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null)
 				{
@@ -119,7 +119,7 @@ namespace DOL.AI.Brain
 				CanPort = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null)
 						{
@@ -189,7 +189,7 @@ namespace DOL.AI.Brain
 			{
 				for (int i = 0; i < Util.Random(2, 5); i++)
 				{
-					GameNPC add = new GameNPC();
+					GameNpc add = new GameNpc();
 					add.Name = Body.Name+"'s minion";
 					add.Model = 607;
 					add.Level = (byte)(Util.Random(38, 45));

@@ -120,13 +120,13 @@ namespace DOL.GS.Commands
 									catch { }
 									//If its an npc, load from the npc template about now.
 									//By default, we ignore npctemplate if its set to 0.
-									if ((GameNPC)obj != null && templateID != 0)
+									if ((GameNpc)obj != null && templateID != 0)
 									{
 										INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(templateID);
 										//we only want to load the template if one actually exists, or there could be trouble!
 										if (npcTemplate != null)
 										{
-											((GameNPC)obj).LoadTemplate(npcTemplate);
+											((GameNpc)obj).LoadTemplate(npcTemplate);
 										}
 									}
 								}
@@ -143,7 +143,7 @@ namespace DOL.GS.Commands
 								obj.CurrentRegion = client.Player.CurrentRegion;
 
 								// now make sure model is visible
-								if (obj is GameNPC && obj.Model == 0)
+								if (obj is GameNpc && obj.Model == 0)
 									obj.Model = 408; // red ball
 								else if (obj is GameStaticItem && obj.Model == 0)
 									obj.Model = 100; // bag

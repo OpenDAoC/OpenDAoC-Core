@@ -70,7 +70,7 @@ namespace DOL.GS.RealmAbilities
 					CastSpellOn(pl, caster);
 			}
 
-			foreach (GameNPC npc in caster.GetNPCsInRadius(m_range))
+			foreach (GameNpc npc in caster.GetNPCsInRadius(m_range))
 			{
 				CastSpellOn(npc, caster);
 			}

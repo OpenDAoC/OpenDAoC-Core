@@ -15,18 +15,18 @@ public class MlBrain : RealmGuardBrain
         if (Body.attackComponent.AttackState)
             return;
 
-        foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
+        foreach (GameNpc npc in Body.GetNPCsInRadius((ushort)AggroRange))
         {
             if (AggroTable.ContainsKey(npc))
                 continue; // add only new npcs
-            if ((npc.Flags & GameNPC.eFlags.FLYING) != 0)
+            if ((npc.Flags & ENpcFlags.FLYING) != 0)
                 continue; // let's not try to attack flying mobs
             if (!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
                 continue;
             if (!npc.IsWithinRadius(Body, AggroRange))
                 continue;
 
-            if (!(npc.Brain is IControlledBrain || npc is GameGuard))
+            if (!(npc.Brain is IControlledBrain || npc is GameRealmGuard))
                 continue;
 
             AddToAggroList(npc, npc.Level << 1);

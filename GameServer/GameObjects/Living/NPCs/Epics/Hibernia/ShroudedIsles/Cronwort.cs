@@ -97,7 +97,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC adds in GetNPCsInRadius(8000))
+			foreach (GameNpc adds in GetNPCsInRadius(8000))
 			{
 				if (adds != null && adds.IsAlive && adds.Brain is BreanwortBrain)
 					adds.RemoveFromWorld();
@@ -164,7 +164,7 @@ namespace DOL.AI.Brain
 			}
 			if(HasAggro && Body.TargetObject != null)
             {
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc.Brain is BreanwortBrain brain)
 					{
@@ -182,7 +182,7 @@ namespace DOL.AI.Brain
 #region Cronwort's adds
 namespace DOL.GS
 {
-	public class Breanwort : GameNPC
+	public class Breanwort : GameNpc
 	{
 		public Breanwort() : base()
 		{

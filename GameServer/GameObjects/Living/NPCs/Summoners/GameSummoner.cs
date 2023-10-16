@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using DOL.AI;
+﻿using DOL.AI;
 using DOL.AI.Brain;
 
 namespace DOL.GS
@@ -26,7 +7,7 @@ namespace DOL.GS
     /// An NPC which summons a pet based on PetTemplate when health is below SummonThreshold, 
     /// and releases it on death or when it heals to full.
     /// </summary>
-    public abstract class GameSummoner : GameNPC
+    public abstract class GameSummoner : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -52,7 +33,7 @@ namespace DOL.GS
         virtual public int PetSummonDistance {  get { return 100; } }
         virtual public long PetResummonTime { get { return 60000; } }
 
-        private GameNPC m_pet = null;
+        private GameNpc m_pet = null;
         private long m_resummonTime = 0;
 
         public GameSummoner() : base() { }
@@ -139,7 +120,7 @@ namespace DOL.GS
         {
             if (PetTemplate != null && PetLevel != 0 && m_pet == null)
             {
-                m_pet = new GameNPC(PetTemplate);
+                m_pet = new GameNpc(PetTemplate);
                 if (m_pet != null)
                 {
                     m_pet.CurrentRegion = CurrentRegion;

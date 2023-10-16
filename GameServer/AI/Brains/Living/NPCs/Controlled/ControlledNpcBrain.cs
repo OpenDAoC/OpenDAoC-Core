@@ -63,7 +63,7 @@ namespace DOL.AI.Brain
 			m_aggressionState = EAggressionState.Defensive;
 			m_walkState = EWalkState.Follow;
 
-			if (owner is GameNPC npcOwner && npcOwner.Brain is StandardMobBrain npcOwnerBrain)
+			if (owner is GameNpc npcOwner && npcOwner.Brain is StandardMobBrain npcOwnerBrain)
 				AggroLevel = npcOwnerBrain.AggroLevel;
 			else
 				AggroLevel = 99;
@@ -121,14 +121,14 @@ namespace DOL.AI.Brain
         {
             GameLiving owner = Owner;
             int i = 0;
-            while (owner is GameNPC && owner != null)
+            while (owner is GameNpc && owner != null)
             {
                 i++;
                 if (i > 50)
                     throw new Exception("GetPlayerOwner() from " + Owner.Name + "caused a cyclical loop.");
                 //If this is a pet, get its owner
-                if (((GameNPC)owner).Brain is IControlledBrain)
-                    owner = ((IControlledBrain)((GameNPC)owner).Brain).Owner;
+                if (((GameNpc)owner).Brain is IControlledBrain)
+                    owner = ((IControlledBrain)((GameNpc)owner).Brain).Owner;
                 //This isn't a pet, that means it's at the top of the tree.  This case will only happen if
                 //owner is not a GamePlayer
                 else
@@ -138,18 +138,18 @@ namespace DOL.AI.Brain
             if (owner is GamePlayer)
                 return (GamePlayer)owner;
             //If the root owner was not a player or npc then make sure we know that something went wrong!
-            if (!(owner is GameNPC))
+            if (!(owner is GameNpc))
                 throw new Exception("Unrecognized owner: " + owner.GetType().FullName);
             //No GamePlayer at the top of the tree
             return null;
         }
 
-        public virtual GameNPC GetNPCOwner()
+        public virtual GameNpc GetNPCOwner()
         {
-            if (!(Owner is GameNPC))
+            if (!(Owner is GameNpc))
                 return null;
 
-            GameNPC owner = Owner as GameNPC;
+            GameNpc owner = Owner as GameNpc;
 
             int i = 0;
             while (owner != null)
@@ -165,7 +165,7 @@ namespace DOL.AI.Brain
                     if ((owner.Brain as IControlledBrain).Owner is GamePlayer)
                         return null;
                     else
-                        owner = (owner.Brain as IControlledBrain).Owner as GameNPC;
+                        owner = (owner.Brain as IControlledBrain).Owner as GameNpc;
                 }
                 else
                     break;
@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
             if (player != null)
                 return player;
 
-            GameNPC npc = GetNPCOwner();
+            GameNpc npc = GetNPCOwner();
             if (npc != null)
                 return npc;
 
@@ -341,7 +341,7 @@ namespace DOL.AI.Brain
 			    && ((GamePlayer)Owner).PlayerClass.ID != (int)EPlayerClass.Animist
 			    && ((GamePlayer)Owner).PlayerClass.ID != (int)EPlayerClass.Theurgist)
 				Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
-			else if (Owner is GameNPC)
+			else if (Owner is GameNpc)
 				Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
 		}
 
@@ -634,7 +634,7 @@ namespace DOL.AI.Brain
 								break;
 							}
 
-							if (owner is GameNPC npc)
+							if (owner is GameNpc npc)
 							{
 								//Buff other minions
 								foreach (IControlledBrain icb in npc.ControlledNpcList)
@@ -904,7 +904,7 @@ namespace DOL.AI.Brain
 		public override bool CanAggroTarget(GameLiving target)
 		{
 			// Only attack if target (or target's owner) is green+ to our owner
-			if (target is GameNPC npc && npc.Brain is IControlledBrain controlledBrain && controlledBrain.Owner != null)
+			if (target is GameNpc npc && npc.Brain is IControlledBrain controlledBrain && controlledBrain.Owner != null)
 				target = controlledBrain.Owner;
 
 			if (!GameServer.ServerRules.IsAllowedToAttack(Body, target, true) || Owner.IsObjectGreyCon(target))
@@ -964,7 +964,7 @@ namespace DOL.AI.Brain
 			if (!IsActive || m_aggressionState == EAggressionState.Passive)
 				return;
 
-			GameNPC owner_npc = GetNPCOwner();
+			GameNpc owner_npc = GetNPCOwner();
 
 			if (owner_npc != null && owner_npc.Brain is StandardMobBrain)
 			{

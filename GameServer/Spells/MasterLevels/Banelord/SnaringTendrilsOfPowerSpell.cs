@@ -96,7 +96,7 @@ namespace DOL.GS.Spells
             }
             else
             {
-                GameNPC npc = effect.Owner as GameNPC;
+                GameNpc npc = effect.Owner as GameNpc;
                 if (npc != null)
                 {
                     IOldAggressiveBrain aggroBrain = npc.Brain as IOldAggressiveBrain;

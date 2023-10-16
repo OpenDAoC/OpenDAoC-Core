@@ -2,7 +2,7 @@ using DOL.GS.Quests;
 
 namespace DOL.GS
 {
-	public class TaskMaster : GameNPC
+	public class TaskMaster : GameNpc
 	{
 		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

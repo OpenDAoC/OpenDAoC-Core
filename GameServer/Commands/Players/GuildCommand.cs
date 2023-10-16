@@ -40,7 +40,7 @@ namespace DOL.GS.Commands
 		}
 		private static bool IsNearRegistrar(GamePlayer player)
 		{
-			foreach (GameNPC registrar in player.GetNPCsInRadius(500))
+			foreach (GameNpc registrar in player.GetNPCsInRadius(500))
 			{
 				if (registrar is GuildRegistrar)
 					return true;
@@ -1721,7 +1721,7 @@ namespace DOL.GS.Commands
 							}
 							if (client.Player.Guild.Emblem != 0)
 							{
-								if (client.Player.TargetObject is EmblemNPC == false)
+								if (client.Player.TargetObject is GuildEmblemeer == false)
 								{
 									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemAlready"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									return;
@@ -1729,7 +1729,7 @@ namespace DOL.GS.Commands
 								client.Out.SendCustomDialog(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemRedo"), new CustomDialogResponse(EmblemChange));
 								return;
 							}
-							if (client.Player.TargetObject is EmblemNPC == false)
+							if (client.Player.TargetObject is GuildEmblemeer == false)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.EmblemNPCNotSelected"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return;
@@ -2684,7 +2684,7 @@ namespace DOL.GS.Commands
 		{
 			if (reponse != 0x01)
 				return;
-			if (player.TargetObject is EmblemNPC == false)
+			if (player.TargetObject is GuildEmblemeer == false)
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.EmblemNeedNPC"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;

@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
 	public class SummonMasterySpell : MasterLevelSpellHandling
 		//public class Convoker9Handler : MasterlevelBuffHandling
 	{
-		private GameNPC m_living;
+		private GameNpc m_living;
 		private GamePlayer m_player;
 
 		//public override eProperty Property1 { get { return eProperty.MeleeDamage; } }

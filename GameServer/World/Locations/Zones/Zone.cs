@@ -633,7 +633,7 @@ namespace DOL.GS
         /// <summary>
         /// Get a random NPC belonging to a realm.
         /// </summary>
-        public GameNPC GetRandomNPC(ERealm realm)
+        public GameNpc GetRandomNPC(ERealm realm)
         {
             return GetRandomNPC(new ERealm[] { realm }, 0, 0);
         }
@@ -641,7 +641,7 @@ namespace DOL.GS
         /// <summary>
         /// Get a random NPC belonging to a realm between levels minlevel and maxlevel.
         /// </summary>
-        public GameNPC GetRandomNPC(ERealm realm, int minLevel, int maxLevel)
+        public GameNpc GetRandomNPC(ERealm realm, int minLevel, int maxLevel)
         {
             return GetRandomNPC(new ERealm[] { realm }, minLevel, maxLevel);
         }
@@ -649,7 +649,7 @@ namespace DOL.GS
         /// <summary>
         /// Get a random npc from zone with given realms.
         /// </summary>
-        public GameNPC GetRandomNPC(ERealm[] realms)
+        public GameNpc GetRandomNPC(ERealm[] realms)
         {
             return GetRandomNPC(realms, 0, 0);
         }
@@ -657,17 +657,17 @@ namespace DOL.GS
         /// <summary>
         /// Get a random npc from zone with given realms.
         /// </summary>
-        public GameNPC GetRandomNPC(ERealm[] realms, int minLevel, int maxLevel)
+        public GameNpc GetRandomNPC(ERealm[] realms, int minLevel, int maxLevel)
         {
-            List<GameNPC> npcs = GetNPCsOfZone(realms, minLevel, maxLevel, 0, 0, true);
-            GameNPC randomNPC = npcs.Count == 0 ? null : npcs[Util.Random(npcs.Count - 1)];
+            List<GameNpc> npcs = GetNPCsOfZone(realms, minLevel, maxLevel, 0, 0, true);
+            GameNpc randomNPC = npcs.Count == 0 ? null : npcs[Util.Random(npcs.Count - 1)];
             return randomNPC;
         }
 
         /// <summary>
         /// Gets all NPC's in zone.
         /// </summary>
-        public List<GameNPC> GetNPCsOfZone(ERealm realm)
+        public List<GameNpc> GetNPCsOfZone(ERealm realm)
         {
             return GetNPCsOfZone(new ERealm[] { realm }, 0, 0, 0, 0, false);
         }
@@ -675,13 +675,13 @@ namespace DOL.GS
         /// <summary>
         /// Get NPCs of a zone given various parameters.
         /// </summary>
-        public List<GameNPC> GetNPCsOfZone(ERealm[] realms, int minLevel, int maxLevel, int compareLevel, int conLevel, bool firstOnly)
+        public List<GameNpc> GetNPCsOfZone(ERealm[] realms, int minLevel, int maxLevel, int compareLevel, int conLevel, bool firstOnly)
         {
             if (!_initialized)
                 InitializeZone();
 
-            List<GameNPC> list = new();
-            GameNPC currentNPC;
+            List<GameNpc> list = new();
+            GameNpc currentNPC;
             bool addToList;
 
             try
@@ -692,7 +692,7 @@ namespace DOL.GS
 
                     for (LinkedListNode<GameObject> node = reader.Current(); node != null; node = reader.Next())
                     {
-                        currentNPC = (GameNPC) node.Value;
+                        currentNPC = (GameNpc) node.Value;
 
                         for (int i = 0; i < realms.Length; i++)
                         {

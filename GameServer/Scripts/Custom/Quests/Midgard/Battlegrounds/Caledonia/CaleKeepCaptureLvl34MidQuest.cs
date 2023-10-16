@@ -22,7 +22,7 @@ namespace DOL.GS.DailyQuest.Midgard
 		// Capture Goal
 		private const int MAX_CAPTURED = 1;
 		
-		private static GameNPC PazzMid = null; // Start NPC
+		private static GameNpc PazzMid = null; // Start NPC
 
 		private int _isCaptured = 0;
 
@@ -61,10 +61,10 @@ namespace DOL.GS.DailyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Pazz", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Pazz", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 				{
 					if (npc.CurrentRegionID == 250 && npc.X == 54259 && npc.Y == 25234)
 					{
@@ -77,7 +77,7 @@ namespace DOL.GS.DailyQuest.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find PazzMid, creating it ...");
-				PazzMid = new GameNPC();
+				PazzMid = new GameNpc();
 				PazzMid.Model = 26;
 				PazzMid.Name = "Pazz";
 				PazzMid.GuildName = "Bone Collector";
@@ -90,7 +90,7 @@ namespace DOL.GS.DailyQuest.Midgard
 				PazzMid.Y = 25234;
 				PazzMid.Z = 4319;
 				PazzMid.Heading = 1744;
-				PazzMid.Flags |= GameNPC.eFlags.PEACE;
+				PazzMid.Flags |= ENpcFlags.PEACE;
 				PazzMid.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{

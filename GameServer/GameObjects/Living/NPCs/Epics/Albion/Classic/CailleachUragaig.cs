@@ -87,7 +87,7 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is CailleachUragaigBrain)
 					return false;
@@ -112,7 +112,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is TorchOfLightBrain)
 					npc.RemoveFromWorld();
@@ -161,7 +161,7 @@ namespace DOL.AI.Brain
 
 				if (!RemoveAdds)
                 {
-					foreach(GameNPC npc in Body.GetNPCsInRadius(8000))
+					foreach(GameNpc npc in Body.GetNPCsInRadius(8000))
                     {
 						if (npc != null && npc.IsAlive && npc.Brain is TorchOfLightBrain)
 							npc.RemoveFromWorld();
@@ -176,7 +176,7 @@ namespace DOL.AI.Brain
                 {
 					SpawnTorchOfLight();
 					GameLiving target = Body.TargetObject as GameLiving;
-					foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is TorchOfLightBrain brain)
                         {
@@ -198,7 +198,7 @@ namespace DOL.AI.Brain
                 }
 				if (Body.HealthPercent <= 30)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null && npc.IsAlive && npc.PackageID == "CailleachUragaigBaf")
 							AddAggroListTo(npc.Brain as StandardMobBrain);
@@ -267,7 +267,7 @@ namespace DOL.AI.Brain
 		#endregion
 		private int ResetLights(EcsGameTimer timer)
         {
-			foreach (GameNPC npc in Body.GetNPCsInRadius(8000))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(8000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is TorchOfLightBrain)
 					npc.RemoveFromWorld();
@@ -317,7 +317,7 @@ namespace DOL.AI.Brain
 #region  Torch of Light
 namespace DOL.GS
 {
-	public class TorchOfLight : GameNPC
+	public class TorchOfLight : GameNpc
 	{
 		public TorchOfLight() : base() { }
 
@@ -333,7 +333,7 @@ namespace DOL.GS
 			Level = 65;
 			Model = 665;
 			Size = 45;
-			Flags = (GameNPC.eFlags)44;
+			Flags = (ENpcFlags)44;
 			TorchOfLightBrain sbrain = new TorchOfLightBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = true;

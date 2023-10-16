@@ -22,7 +22,7 @@ namespace DOL.GS.DailyQuest.Albion
 		// Capture Goal
 		private const int MAX_CAPTURED = 1;
 		
-		private static GameNPC PazzAlb = null; // Start NPC
+		private static GameNpc PazzAlb = null; // Start NPC
 
 		private int _isCaptured = 0;
 
@@ -60,10 +60,10 @@ namespace DOL.GS.DailyQuest.Albion
 			
 
 			#region defineNPCs
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Pazz", ERealm.Albion);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Pazz", ERealm.Albion);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 				{
 					if (npc.CurrentRegionID == 252 && npc.X == 37283 && npc.Y == 51881)
 					{
@@ -76,7 +76,7 @@ namespace DOL.GS.DailyQuest.Albion
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find PazzAlb, creating it ...");
-				PazzAlb = new GameNPC();
+				PazzAlb = new GameNpc();
 				PazzAlb.Model = 26;
 				PazzAlb.Name = "Pazz";
 				PazzAlb.GuildName = "Bone Collector";
@@ -89,7 +89,7 @@ namespace DOL.GS.DailyQuest.Albion
 				PazzAlb.Y = 51881;
 				PazzAlb.Z = 3944;
 				PazzAlb.Heading = 4090;
-				PazzAlb.Flags |= GameNPC.eFlags.PEACE;
+				PazzAlb.Flags |= ENpcFlags.PEACE;
 				PazzAlb.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{

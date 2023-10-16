@@ -67,7 +67,7 @@ namespace DOL.GS.Commands
 			}
 
 			if (client.Player.TargetObject != null &&
-			    (client.Player.TargetObject is GameNPC || client.Player.TargetObject is GamePlayer))
+			    (client.Player.TargetObject is GameNpc || client.Player.TargetObject is GamePlayer))
 			{
 				client.Out.SendMessage("You must target a door", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;

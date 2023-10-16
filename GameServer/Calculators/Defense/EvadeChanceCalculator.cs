@@ -27,7 +27,7 @@ public class EvadeChanceCalculator : PropertyCalculator
             chance += player.BuffBonusCategory4[(int) property] * 10;
             chance += player.AbilityBonus[(int) property] * 10;
         }
-        else if (living is GameNPC npc)
+        else if (living is GameNpc npc)
             chance += npc.AbilityBonus[(int)property] * 10 + npc.EvadeChance * 10;
 
         return chance;

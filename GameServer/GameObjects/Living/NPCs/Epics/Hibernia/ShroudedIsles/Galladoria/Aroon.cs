@@ -366,7 +366,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
 
             npcs = WorldMgr.GetNPCsByNameFromRegion("Aroon the Urlamhai", 191, (ERealm) 0);
             if (npcs.Length == 0)
@@ -467,7 +467,7 @@ namespace DOL.AI.Brain
                 spawn_guardians = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                     {
                         if (npc.Brain is CorpScaithBrain || npc.Brain is SpioradScaithBrain ||
                             npc.Brain is RopadhScaithBrain || npc.Brain is DamhnaScaithBrain
@@ -617,7 +617,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class CorpScaith : GameNPC
+    public class CorpScaith : GameNpc
     {
         public CorpScaith() : base()
         {
@@ -793,7 +793,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class SpioradScaith : GameNPC //thrust resist
+    public class SpioradScaith : GameNpc //thrust resist
     {
         public SpioradScaith() : base()
         {
@@ -989,7 +989,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class RopadhScaith : GameNPC //crush resist
+    public class RopadhScaith : GameNpc //crush resist
     {
         public RopadhScaith() : base()
         {
@@ -1190,7 +1190,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class DamhnaScaith : GameNPC //Body resist
+    public class DamhnaScaith : GameNpc //Body resist
     {
         public DamhnaScaith() : base()
         {
@@ -1391,7 +1391,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class FuinneamgScaith : GameNPC //Cold resist
+    public class FuinneamgScaith : GameNpc //Cold resist
     {
         public FuinneamgScaith() : base()
         {
@@ -1594,7 +1594,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class BruScaith : GameNPC //Energy resist
+    public class BruScaith : GameNpc //Energy resist
     {
         public BruScaith() : base()
         {
@@ -1797,7 +1797,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class FuarScaith : GameNPC //Heat resist
+    public class FuarScaith : GameNpc //Heat resist
     {
         public FuarScaith() : base()
         {
@@ -2000,7 +2000,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class TaesScaith : GameNPC //Matter resist
+    public class TaesScaith : GameNpc //Matter resist
     {
         public TaesScaith() : base()
         {
@@ -2204,7 +2204,7 @@ namespace DOL.AI.Brain
 /// </summary>
 namespace DOL.GS
 {
-    public class ScorScaith : GameNPC //Spirit resist
+    public class ScorScaith : GameNpc //Spirit resist
     {
         public ScorScaith() : base()
         {

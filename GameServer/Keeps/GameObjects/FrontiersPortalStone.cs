@@ -116,13 +116,13 @@ namespace DOL.GS.Keeps
 			_heading = originalHeading;
 		}
 
-		public class TeleporterEffect : GameNPC
+		public class TeleporterEffect : GameNpc
 		{
 			public TeleporterEffect()
 				: base()
 			{
 				m_name = "teleport spell effect";
-				m_flags = eFlags.PEACE | eFlags.DONTSHOWNAME;
+				m_flags = ENpcFlags.PEACE | ENpcFlags.DONTSHOWNAME;
 				m_size = 255;
 				m_model = 0x783;
 				MaxSpeedBase = 0;

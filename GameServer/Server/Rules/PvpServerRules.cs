@@ -129,18 +129,18 @@ namespace DOL.GS.ServerRules
 				return false;
 
 			// if controlled NPC - do checks for owner instead
-			if (attacker is GameNPC)
+			if (attacker is GameNpc)
 			{
-				IControlledBrain controlled = ((GameNPC)attacker).Brain as IControlledBrain;
+				IControlledBrain controlled = ((GameNpc)attacker).Brain as IControlledBrain;
 				if (controlled != null)
 				{
 					attacker = controlled.GetLivingOwner();
 					quiet = true; // silence all attacks by controlled npc
 				}
 			}
-			if (defender is GameNPC)
+			if (defender is GameNpc)
 			{
-				IControlledBrain controlled = ((GameNPC)defender).Brain as IControlledBrain;
+				IControlledBrain controlled = ((GameNpc)defender).Brain as IControlledBrain;
 				if (controlled != null)
                     defender = controlled.GetLivingOwner();
 			}
@@ -229,17 +229,17 @@ namespace DOL.GS.ServerRules
 			}
 
 			//allow confused mobs to attack same realm
-			if (attacker is GameNPC && (attacker as GameNPC).IsConfused && attacker.Realm == defender.Realm)
+			if (attacker is GameNpc && (attacker as GameNpc).IsConfused && attacker.Realm == defender.Realm)
 				return true;
 
 			// "friendly" NPCs can't attack "friendly" players
-			if (defender is GameNPC && defender.Realm != 0 && attacker.Realm != 0 && defender is GameKeepGuard == false && defender is GameFont == false)
+			if (defender is GameNpc && defender.Realm != 0 && attacker.Realm != 0 && defender is GameKeepGuard == false && defender is GameFont == false)
 			{
 				if (quiet == false) MessageToLiving(attacker, "You can't attack a friendly NPC!");
 				return false;
 			}
 			// "friendly" NPCs can't be attacked by "friendly" players
-			if (attacker is GameNPC && attacker.Realm != 0 && defender.Realm != 0 && attacker is GameKeepGuard == false)
+			if (attacker is GameNpc && attacker.Realm != 0 && defender.Realm != 0 && attacker is GameKeepGuard == false)
 			{
 				return false;
 			}
@@ -251,7 +251,7 @@ namespace DOL.GS.ServerRules
 				if (defender is GameKeepGuard)
 					return false;
 
-				if (defender is GameNPC && (defender as GameNPC).Brain is IControlledBrain == false)
+				if (defender is GameNpc && (defender as GameNpc).Brain is IControlledBrain == false)
 					return false;
 			}
 
@@ -315,18 +315,18 @@ namespace DOL.GS.ServerRules
 				return false;
 
 			// if controlled NPC - do checks for owner instead
-			if (source is GameNPC)
+			if (source is GameNpc)
 			{
-				IControlledBrain controlled = ((GameNPC)source).Brain as IControlledBrain;
+				IControlledBrain controlled = ((GameNpc)source).Brain as IControlledBrain;
 				if (controlled != null)
 				{
                     source = controlled.GetLivingOwner();
 					quiet = true; // silence all attacks by controlled npc
 				}
 			}
-			if (target is GameNPC)
+			if (target is GameNpc)
 			{
-				IControlledBrain controlled = ((GameNPC)target).Brain as IControlledBrain;
+				IControlledBrain controlled = ((GameNpc)target).Brain as IControlledBrain;
 				if (controlled != null)
                     target = controlled.GetLivingOwner();
 			}
@@ -367,18 +367,18 @@ namespace DOL.GS.ServerRules
 				return GameServer.KeepManager.IsEnemy(target as GameKeepComponent, source as GamePlayer);
 
 			//Peace flag NPCs are same realm
-			if (target is GameNPC)
-				if ((((GameNPC)target).Flags & GameNPC.eFlags.PEACE) != 0)
+			if (target is GameNpc)
+				if ((((GameNpc)target).Flags & ENpcFlags.PEACE) != 0)
 					return true;
 
-			if (source is GameNPC)
-				if ((((GameNPC)source).Flags & GameNPC.eFlags.PEACE) != 0)
+			if (source is GameNpc)
+				if ((((GameNpc)source).Flags & ENpcFlags.PEACE) != 0)
 					return true;
 
 			if (source is GamePlayer && target is GamePlayer)
 				return true;
 
-			if (source is GamePlayer && target is GameNPC && target.Realm != 0)
+			if (source is GamePlayer && target is GameNpc && target.Realm != 0)
 				return true;
 
 			if (quiet == false) MessageToLiving(source, target.GetName(0, true) + " is not a member of your realm!");
@@ -531,9 +531,9 @@ namespace DOL.GS.ServerRules
 					realm = (ERealm)group.Leader.Realm;
 				else realm = (ERealm)killer.Realm;
 			}
-			else if (killer is GameNPC && (killer as GameNPC).Brain is IControlledBrain)
+			else if (killer is GameNpc && (killer as GameNpc).Brain is IControlledBrain)
 			{
-				GamePlayer player = ((killer as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+				GamePlayer player = ((killer as GameNpc).Brain as IControlledBrain).GetPlayerOwner();
 				GroupUtil group = null;
 				if (player != null)
 					group = player.Group;

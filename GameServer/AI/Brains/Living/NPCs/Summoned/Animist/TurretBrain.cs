@@ -117,7 +117,7 @@ namespace DOL.AI.Brain
                     DefensiveSpellTargets.Add(player);
             }
 
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) spell.Range))
+            foreach (GameNpc npc in Body.GetNPCsInRadius((ushort) spell.Range))
             {
                 if (GameServer.ServerRules.IsAllowedToAttack(Body, npc, true) || !npc.IsAlive || LivingHasEffect(npc, spell))
                     continue;

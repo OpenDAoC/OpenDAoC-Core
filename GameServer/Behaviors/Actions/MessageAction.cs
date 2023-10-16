@@ -9,9 +9,9 @@ namespace DOL.GS.Behaviour.Actions
     [Action(ActionType = EActionType.Message)]
     public class MessageAction : AAction<string, ETextType>
     {
-        public MessageAction(GameNPC defaultNPC, object p, object q) : base(defaultNPC, EActionType.Message, p, q) { }
+        public MessageAction(GameNpc defaultNPC, object p, object q) : base(defaultNPC, EActionType.Message, p, q) { }
 
-        public MessageAction(GameNPC defaultNPC, string message, ETextType messageType) : this(defaultNPC, message, (object)messageType) { }
+        public MessageAction(GameNpc defaultNPC, string message, ETextType messageType) : this(defaultNPC, message, (object)messageType) { }
 
         public override void Perform(CoreEvent e, object sender, EventArgs args)
         {

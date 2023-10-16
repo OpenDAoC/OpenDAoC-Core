@@ -6,7 +6,7 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
-    public class GameEpicBoss : GameNPC
+    public class GameEpicBoss : GameNpc
     {
         public GameEpicBoss() : base()
         {

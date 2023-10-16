@@ -322,7 +322,7 @@ namespace DOL.AI.Brain
 		public static bool LockIsRestless = false;
 		public static bool LockEndRoute = false;
 		public static bool checkForMessangers = false;
-		public static List<GameNPC> DragonAdds = new List<GameNPC>();
+		public static List<GameNpc> DragonAdds = new List<GameNpc>();
 		private List<Point3D> _roamingPathPoints = new List<Point3D>();
 		private int _lastRoamIndex = 0;
 
@@ -392,12 +392,12 @@ namespace DOL.AI.Brain
 				{
 					if (DragonAdds.Count > 0)
 					{
-						foreach (GameNPC messenger in DragonAdds)
+						foreach (GameNpc messenger in DragonAdds)
 						{
 							if (messenger != null && messenger.IsAlive && messenger.Brain is GolestandtMessengerBrain)
 								messenger.RemoveFromWorld();
 						}
-						foreach (GameNPC granitegiant in DragonAdds)
+						foreach (GameNpc granitegiant in DragonAdds)
 						{
 							if (granitegiant != null && granitegiant.IsAlive && granitegiant.Brain is GolestandtSpawnedAdBrain)
 								granitegiant.RemoveFromWorld();
@@ -432,7 +432,7 @@ namespace DOL.AI.Brain
 					player.Out.SendMessage("A voice explodes across the land. You hear a roar in the distance, 'I will grind your bones and shred your flesh!'", EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 				}
 
-				Body.Flags = GameNPC.eFlags.FLYING;//make dragon fly mode
+				Body.Flags = ENpcFlags.FLYING;//make dragon fly mode
 				ResetChecks = false;//reset it so can reset bools at end of path
 				LockIsRestless = true;
 			}
@@ -1004,7 +1004,7 @@ namespace DOL.AI.Brain
 #region Golestandt's messengers
 namespace DOL.GS
 {
-	public class GolestandtMessenger : GameNPC
+	public class GolestandtMessenger : GameNpc
 	{
 		public override bool IsVisibleToPlayers => true;
 
@@ -1330,7 +1330,7 @@ namespace DOL.AI.Brain
 #region Golestandt's  spawned adds
 namespace DOL.GS
 {
-	public class GolestandtSpawnedAdd : GameNPC
+	public class GolestandtSpawnedAdd : GameNpc
 	{
 		public override bool IsVisibleToPlayers => true;
 

@@ -29,7 +29,7 @@ namespace DOL.AI.Brain
 			{
 				// We arrived at our target mob, let's have a look around
 				// and see if we can get multiple adds.
-				foreach (GameNPC npc in Body.GetNPCsInRadius(600))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(600))
 				{
 					if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable)
 						ReportTargets(npc);
@@ -135,7 +135,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// The NPC this scout has picked to help.
 		/// </summary>
-		private GameNPC m_helperNPC = null;
+		private GameNpc m_helperNPC = null;
 
 		/// <summary>
 		/// Look for potential adds in the area and be on your way.
@@ -150,7 +150,7 @@ namespace DOL.AI.Brain
 			// Find all mobs in scout range.
 
 			ArrayList addList = new ArrayList();
-			foreach (GameNPC npc in Body.GetNPCsInRadius(ScoutRange))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(ScoutRange))
 			{
 				if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable)
 					addList.Add(npc);
@@ -170,7 +170,7 @@ namespace DOL.AI.Brain
 			// Pick a random NPC from the list and go for it.
 
 			IsGettingHelp = true;
-			m_helperNPC = (GameNPC) addList[Util.Random(1, addList.Count)-1];
+			m_helperNPC = (GameNpc) addList[Util.Random(1, addList.Count)-1];
 			Body.Follow(m_helperNPC, 90, int.MaxValue);
 		}
 
@@ -178,7 +178,7 @@ namespace DOL.AI.Brain
 		/// Add targets to an NPC's aggro table.
 		/// </summary>
 		/// <param name="npc">The NPC to aggro on the targets.</param>
-		private void ReportTargets(GameNPC npc)
+		private void ReportTargets(GameNpc npc)
 		{
 			if (npc == null) return;
 

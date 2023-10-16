@@ -16,8 +16,8 @@ namespace DOL.GS.Quests.Hibernia
         protected const string QUEST_TITLE = "Wild Wilderness";
         protected const string QUEST_GIVER_NAME = "Miach";
         protected const string QUEST_FINISH_NAME = "Resalg";
-        private static GameNPC _miach = null;
-        private static GameNPC _resalg = null;
+        private static GameNpc _miach = null;
+        private static GameNpc _resalg = null;
         private static DbItemTemplate _lungerTail = null;
 
         public override string Name
@@ -53,10 +53,10 @@ namespace DOL.GS.Quests.Hibernia
                 return;
 
             #region initialize NPC
-            GameNPC[] npcs = WorldMgr.GetNPCsByName(QUEST_GIVER_NAME, ERealm.Hibernia);
+            GameNpc[] npcs = WorldMgr.GetNPCsByName(QUEST_GIVER_NAME, ERealm.Hibernia);
 
             if (npcs.Length > 0)
-                foreach (GameNPC npc in npcs)
+                foreach (GameNpc npc in npcs)
                     if (npc.CurrentRegionID == 181 && npc.X == 424066 && npc.Y == 446316)
                     {
                         _miach = (ForesterTrainer)npc;
@@ -100,7 +100,7 @@ namespace DOL.GS.Quests.Hibernia
             {
                 if (log.IsWarnEnabled)
                     log.Warn("Could not find Resalg, creating it ...");
-                _resalg = new GameNPC();
+                _resalg = new GameNpc();
                 _resalg.Model = 363;
                 _resalg.Name = "Resalg";
                 _resalg.GuildName = "";

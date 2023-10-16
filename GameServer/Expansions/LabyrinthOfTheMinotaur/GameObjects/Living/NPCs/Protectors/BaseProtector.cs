@@ -12,10 +12,10 @@
 
 namespace DOL.GS
 {
-    public class BaseProtector : GameNPC
+    public class BaseProtector : GameNpc
     {
         private static MinotaurRelic m_relic;
-        private static GameNPC m_lockedEffect;
+        private static GameNpc m_lockedEffect;
 
         public static MinotaurRelic Relic
         {
@@ -23,7 +23,7 @@ namespace DOL.GS
             set { m_relic = value; }
         }
 
-        public static GameNPC LockedEffect
+        public static GameNpc LockedEffect
         {
             get { return m_lockedEffect; }
             set { m_lockedEffect = value; }
@@ -46,7 +46,7 @@ namespace DOL.GS
             if (Relic == null)
                 return false;
 
-            LockedEffect = new GameNPC();
+            LockedEffect = new GameNpc();
             LockedEffect.Model = 1583;
             LockedEffect.Name = "LOCKED_RELIC";
             LockedEffect.X = Relic.X;
@@ -54,7 +54,7 @@ namespace DOL.GS
             LockedEffect.Z = Relic.Z;
             LockedEffect.Heading = Relic.Heading;
             LockedEffect.CurrentRegionID = Relic.CurrentRegionID;
-            LockedEffect.Flags = GameNPC.eFlags.CANTTARGET;
+            LockedEffect.Flags = ENpcFlags.CANTTARGET;
             LockedEffect.AddToWorld();
 
             return true;

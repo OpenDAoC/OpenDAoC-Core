@@ -58,7 +58,7 @@ namespace DOL.GS.Spells
             Npc.X = point.X;
             Npc.Y = point.Y;
             Npc.Z = m_caster.Z;
-            Npc.Flags += (byte) GameNPC.eFlags.GHOST + (byte) GameNPC.eFlags.PEACE;
+            Npc.Flags += (byte) ENpcFlags.GHOST + (byte) ENpcFlags.PEACE;
             Npc.CurrentRegion = m_caster.CurrentRegion;
             Npc.Heading = (ushort) ((m_caster.Heading + 2048)%4096);
             Npc.Realm = m_caster.Realm;

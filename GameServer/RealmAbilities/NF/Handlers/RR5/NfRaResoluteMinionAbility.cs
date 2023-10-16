@@ -29,8 +29,8 @@ namespace DOL.GS.Effects
 	public class ResoluteMinionEffect : TimedEffect
 	{
 		public ResoluteMinionEffect() : base(RealmAbilities.NfRaResoluteMinionAbility.DURATION) { }
-		private GameNPC m_pet;
-		public void Start(GameNPC controllednpc) { base.Start(controllednpc); m_pet = controllednpc; }
+		private GameNpc m_pet;
+		public void Start(GameNpc controllednpc) { base.Start(controllednpc); m_pet = controllednpc; }
 		public override void Stop()
 		{
 			if (m_pet != null)

@@ -73,7 +73,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = -1; 
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)EBodyType.Giant;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 573, 0);
@@ -386,7 +386,7 @@ namespace DOL.GS
             Faction = FactionMgr.GetFactionByID(140);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = -1;
-            BodyType = (ushort)NpcTemplateMgr.eBodyType.Giant;
+            BodyType = (ushort)EBodyType.Giant;
             HjalmarBrain.message1 = false;
             HjalmarBrain.message2 = false;
             HjalmarCount = 1;
@@ -484,7 +484,7 @@ namespace DOL.AI.Brain
                 message2 = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4500))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4500))
                     {
                         if (npc != null)
                         {
@@ -552,7 +552,7 @@ namespace DOL.AI.Brain
 ///////////////////////////////////////////////////////////Hjalmar adds/////////////////////////////////////////////////////////////////////////////
 namespace DOL.GS
 {
-    public class Morkimma : GameNPC
+    public class Morkimma : GameNpc
     {
         public Morkimma() : base()
         {
@@ -690,7 +690,7 @@ namespace DOL.AI.Brain
 #region Hjalmar and Suttung Controller
 namespace DOL.GS
 {
-    public class HjalmarSuttungController : GameNPC
+    public class HjalmarSuttungController : GameNpc
     {
         public HjalmarSuttungController() : base()
         {
@@ -703,7 +703,7 @@ namespace DOL.GS
             Level = 50;
             Model = 665;
             RespawnInterval = 5000;
-            Flags = (GameNPC.eFlags)28;
+            Flags = (ENpcFlags)28;
             SpawnBoss();
 
             HjalmarSuttungControllerBrain sbrain = new HjalmarSuttungControllerBrain();

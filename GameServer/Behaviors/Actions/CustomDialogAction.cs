@@ -9,13 +9,13 @@ namespace DOL.GS.Behaviour.Actions
     public class CustomDialogAction : AAction<string, CustomDialogResponse>
     {               
 
-        public CustomDialogAction(GameNPC defaultNPC, Object p, Object q)
+        public CustomDialogAction(GameNpc defaultNPC, Object p, Object q)
             : base(defaultNPC, EActionType.CustomDialog, p, q)
         {                
         }
 
 
-        public CustomDialogAction(GameNPC defaultNPC, string message, CustomDialogResponse customDialogResponse)
+        public CustomDialogAction(GameNpc defaultNPC, string message, CustomDialogResponse customDialogResponse)
             : this(defaultNPC,  (object)message, (object)customDialogResponse) { }
         
 

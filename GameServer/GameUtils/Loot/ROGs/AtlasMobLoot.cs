@@ -21,16 +21,16 @@ namespace DOL.GS {
         /// <param name="mob"></param>
         /// <param name="killer"></param>
         /// <returns></returns>
-        public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+        public override LootList GenerateLoot(GameNpc mob, GameObject killer)
         {
             LootList loot = base.GenerateLoot(mob, killer);
 
             try
             {
                 GamePlayer player = killer as GamePlayer;
-                if (killer is GameNPC && ((GameNPC)killer).Brain is IControlledBrain)
+                if (killer is GameNpc && ((GameNpc)killer).Brain is IControlledBrain)
                 {
-                    player = ((ControlledNpcBrain)((GameNPC)killer).Brain).GetPlayerOwner();
+                    player = ((ControlledNpcBrain)((GameNpc)killer).Brain).GetPlayerOwner();
                 }
 
                 if (player == null)

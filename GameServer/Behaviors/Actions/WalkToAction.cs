@@ -5,16 +5,16 @@ using DOL.GS.Behaviour.Attributes;
 namespace DOL.GS.Behaviour.Actions
 {
     [Action(ActionType = EActionType.WalkTo,DefaultValueQ=EDefaultValueConstants.NPC)]
-    public class WalkToAction : AAction<IPoint3D,GameNPC>
+    public class WalkToAction : AAction<IPoint3D,GameNpc>
     {
 
-        public WalkToAction(GameNPC defaultNPC,  Object p, Object q)
+        public WalkToAction(GameNpc defaultNPC,  Object p, Object q)
             : base(defaultNPC, EActionType.WalkTo, p, q)
         {                
             }
 
 
-        public WalkToAction(GameNPC defaultNPC,  IPoint3D destination, GameNPC npc)
+        public WalkToAction(GameNpc defaultNPC,  IPoint3D destination, GameNpc npc)
             : this(defaultNPC, (object) destination,(object) npc) { }
         
 

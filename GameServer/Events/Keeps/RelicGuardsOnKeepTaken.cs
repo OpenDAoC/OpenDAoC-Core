@@ -11,52 +11,52 @@ namespace DOL.GS.GameEvents
 
         #region Albion
 
-        private static GuardFighterRK BenoCE = null;
-        private static GuardFighterRK BenoCM = null;
-        private static GuardFighterRK SursCE = null;
-        private static GuardFighterRK SursCM = null;
-        private static GuardFighterRK ErasCE = null;
-        private static GuardFighterRK ErasCM = null;
-        private static GuardFighterRK BercCE = null;
-        private static GuardFighterRK BercCM = null;
-        private static GuardFighterRK BoldCE = null;
-        private static GuardFighterRK BoldCM = null;
-        private static GuardFighterRK RenaCE = null;
-        private static GuardFighterRK HurbuCM = null;
+        private static GuardFighterRelic BenoCE = null;
+        private static GuardFighterRelic BenoCM = null;
+        private static GuardFighterRelic SursCE = null;
+        private static GuardFighterRelic SursCM = null;
+        private static GuardFighterRelic ErasCE = null;
+        private static GuardFighterRelic ErasCM = null;
+        private static GuardFighterRelic BercCE = null;
+        private static GuardFighterRelic BercCM = null;
+        private static GuardFighterRelic BoldCE = null;
+        private static GuardFighterRelic BoldCM = null;
+        private static GuardFighterRelic RenaCE = null;
+        private static GuardFighterRelic HurbuCM = null;
 
         #endregion Albion
 
         #region Midgard
 
-        private static GuardFighterRK BledGF = null;
-        private static GuardFighterRK BledMF = null;
-        private static GuardFighterRK NottGF = null;
-        private static GuardFighterRK NottMF = null;
-        private static GuardFighterRK BlendGF = null;
-        private static GuardFighterRK BlendMF = null;
-        private static GuardFighterRK GlenGF = null;
-        private static GuardFighterRK GlenMF = null;
-        private static GuardFighterRK HlidGF = null;
-        private static GuardFighterRK HlidMF = null;
-        private static GuardFighterRK ArvaGF = null;
-        private static GuardFighterRK FensMF = null;
+        private static GuardFighterRelic BledGF = null;
+        private static GuardFighterRelic BledMF = null;
+        private static GuardFighterRelic NottGF = null;
+        private static GuardFighterRelic NottMF = null;
+        private static GuardFighterRelic BlendGF = null;
+        private static GuardFighterRelic BlendMF = null;
+        private static GuardFighterRelic GlenGF = null;
+        private static GuardFighterRelic GlenMF = null;
+        private static GuardFighterRelic HlidGF = null;
+        private static GuardFighterRelic HlidMF = null;
+        private static GuardFighterRelic ArvaGF = null;
+        private static GuardFighterRelic FensMF = null;
 
         #endregion Midgard
 
         #region Hibernia
 
-        private static GuardFighterRK CrauDL = null;
-        private static GuardFighterRK CrauDD = null;
-        private static GuardFighterRK AiliDL = null;
-        private static GuardFighterRK ScatDL = null;
-        private static GuardFighterRK BehnDL = null;
-        private static GuardFighterRK BehnDD = null;
-        private static GuardFighterRK BolgDL = null;
-        private static GuardFighterRK BolgDD = null;
-        private static GuardFighterRK CrimDL = null;
-        private static GuardFighterRK CrimDD = null;
-        private static GuardFighterRK nGedDL = null;
-        private static GuardFighterRK nGedDD = null;
+        private static GuardFighterRelic CrauDL = null;
+        private static GuardFighterRelic CrauDD = null;
+        private static GuardFighterRelic AiliDL = null;
+        private static GuardFighterRelic ScatDL = null;
+        private static GuardFighterRelic BehnDL = null;
+        private static GuardFighterRelic BehnDD = null;
+        private static GuardFighterRelic BolgDL = null;
+        private static GuardFighterRelic BolgDD = null;
+        private static GuardFighterRelic CrimDL = null;
+        private static GuardFighterRelic CrimDD = null;
+        private static GuardFighterRelic nGedDL = null;
+        private static GuardFighterRelic nGedDD = null;
 
         #endregion Hibernia
 
@@ -74,7 +74,7 @@ namespace DOL.GS.GameEvents
 
         public static void InitGuards()
         {
-            RenaCE = new GuardFighterRK();
+            RenaCE = new GuardFighterRelic();
             RenaCE.X = 601801;
             RenaCE.Y = 428234;
             RenaCE.Z = 5645;
@@ -95,7 +95,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(RenaCE);
 
-            HurbuCM = new GuardFighterRK();
+            HurbuCM = new GuardFighterRelic();
             HurbuCM.X = 508047;
             HurbuCM.Y = 310852;
             HurbuCM.Z = 6832;
@@ -116,7 +116,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(HurbuCM);
 
-            BercCE = new GuardFighterRK();
+            BercCE = new GuardFighterRelic();
             BercCE.X = 602200;
             BercCE.Y = 428233;
             BercCE.Z = 5539;
@@ -137,7 +137,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BercCE);
 
-            BercCM = new GuardFighterRK();
+            BercCM = new GuardFighterRelic();
             BercCM.X = 508642;
             BercCM.Y = 310348;
             BercCM.Z = 6832;
@@ -158,7 +158,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BercCM);
 
-            SursCE = new GuardFighterRK();
+            SursCE = new GuardFighterRelic();
             SursCE.X = 601527;
             SursCE.Y = 428233;
             SursCE.Z = 5628;
@@ -179,7 +179,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(SursCE);
 
-            SursCM = new GuardFighterRK();
+            SursCM = new GuardFighterRelic();
             SursCM.X = 507894;
             SursCM.Y = 310323;
             SursCM.Z = 6832;
@@ -200,7 +200,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(SursCM);
 
-            BoldCE = new GuardFighterRK();
+            BoldCE = new GuardFighterRelic();
             BoldCE.X = 601769;
             BoldCE.Y = 427991;
             BoldCE.Z = 5544;
@@ -221,7 +221,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BoldCE);
 
-            BoldCM = new GuardFighterRK();
+            BoldCM = new GuardFighterRelic();
             BoldCM.X = 508354;
             BoldCM.Y = 310593;
             BoldCM.Z = 6832;
@@ -242,7 +242,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BoldCM);
 
-            ErasCE = new GuardFighterRK();
+            ErasCE = new GuardFighterRelic();
             ErasCE.X = 601096;
             ErasCE.Y = 428255;
             ErasCE.Z = 5606;
@@ -263,7 +263,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(ErasCE);
 
-            ErasCM = new GuardFighterRK();
+            ErasCM = new GuardFighterRelic();
             ErasCM.X = 507705;
             ErasCM.Y = 311142;
             ErasCM.Z = 6832;
@@ -284,7 +284,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(ErasCM);
 
-            BenoCE = new GuardFighterRK();
+            BenoCE = new GuardFighterRelic();
             BenoCE.X = 601595;
             BenoCE.Y = 427989;
             BenoCE.Z = 5547;
@@ -305,7 +305,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BenoCE);
 
-            BenoCM = new GuardFighterRK();
+            BenoCM = new GuardFighterRelic();
             BenoCM.X = 508253;
             BenoCM.Y = 310751;
             BenoCM.Z = 6832;
@@ -326,7 +326,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BenoCM);
 
-            FensMF = new GuardFighterRK();
+            FensMF = new GuardFighterRelic();
             FensMF.X = 771263;
             FensMF.Y = 628729;
             FensMF.Z = 6992;
@@ -347,7 +347,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(FensMF);
 
-            ArvaGF = new GuardFighterRK();
+            ArvaGF = new GuardFighterRelic();
             ArvaGF.X = 678770;
             ArvaGF.Y = 710252;
             ArvaGF.Z = 6912;
@@ -368,7 +368,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(ArvaGF);
 
-            GlenGF = new GuardFighterRK();
+            GlenGF = new GuardFighterRelic();
             GlenGF.X = 679248;
             GlenGF.Y = 710497;
             GlenGF.Z = 6836;
@@ -389,7 +389,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(GlenGF);
 
-            GlenMF = new GuardFighterRK();
+            GlenMF = new GuardFighterRelic();
             GlenMF.X = 769816;
             GlenMF.Y = 627702;
             GlenMF.Z = 6992;
@@ -410,7 +410,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(GlenMF);
 
-            BlendGF = new GuardFighterRK();
+            BlendGF = new GuardFighterRelic();
             BlendGF.X = 679164;
             BlendGF.Y = 711149;
             BlendGF.Z = 6868;
@@ -431,7 +431,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BlendGF);
 
-            BlendMF = new GuardFighterRK();
+            BlendMF = new GuardFighterRelic();
             BlendMF.X = 770036;
             BlendMF.Y = 628191;
             BlendMF.Z = 6941;
@@ -452,7 +452,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BlendMF);
 
-            HlidGF = new GuardFighterRK();
+            HlidGF = new GuardFighterRelic();
             HlidGF.X = 679128;
             HlidGF.Y = 709873;
             HlidGF.Z = 6787;
@@ -473,7 +473,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(HlidGF);
 
-            HlidMF = new GuardFighterRK();
+            HlidMF = new GuardFighterRelic();
             HlidMF.X = 770615;
             HlidMF.Y = 628037;
             HlidMF.Z = 6992;
@@ -494,7 +494,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(HlidMF);
 
-            NottGF = new GuardFighterRK();
+            NottGF = new GuardFighterRelic();
             NottGF.X = 678654;
             NottGF.Y = 709122;
             NottGF.Z = 6912;
@@ -514,7 +514,7 @@ namespace DOL.GS.GameEvents
             }
 
             GuardTemplateMgr.RefreshTemplate(NottGF);
-            NottMF = new GuardFighterRK();
+            NottMF = new GuardFighterRelic();
             NottMF.X = 770531;
             NottMF.Y = 628482;
             NottMF.Z = 6985;
@@ -535,7 +535,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(NottMF);
 
-            BledGF = new GuardFighterRK();
+            BledGF = new GuardFighterRelic();
             BledGF.X = 679121;
             BledGF.Y = 710193;
             BledGF.Z = 6873;
@@ -556,7 +556,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BledGF);
 
-            BledMF = new GuardFighterRK();
+            BledMF = new GuardFighterRelic();
             BledMF.X = 770308;
             BledMF.Y = 628344;
             BledMF.Z = 6969;
@@ -577,7 +577,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BledMF);
 
-            AiliDL = new GuardFighterRK();
+            AiliDL = new GuardFighterRelic();
             AiliDL.X = 348542;
             AiliDL.Y = 371526;
             AiliDL.Z = 4880;
@@ -598,7 +598,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(AiliDL);
 
-            ScatDL = new GuardFighterRK();
+            ScatDL = new GuardFighterRelic();
             ScatDL.X = 401953;
             ScatDL.Y = 464351;
             ScatDL.Z = 2888;
@@ -619,7 +619,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(ScatDL);
 
-            nGedDL = new GuardFighterRK();
+            nGedDL = new GuardFighterRelic();
             nGedDL.X = 348211;
             nGedDL.Y = 370945;
             nGedDL.Z = 4784;
@@ -640,7 +640,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(nGedDL);
 
-            nGedDD = new GuardFighterRK();
+            nGedDD = new GuardFighterRelic();
             nGedDD.X = 402193;
             nGedDD.Y = 463725;
             nGedDD.Z = 2854;
@@ -661,7 +661,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(nGedDD);
 
-            BolgDL = new GuardFighterRK();
+            BolgDL = new GuardFighterRelic();
             BolgDL.X = 347374;
             BolgDL.Y = 371175;
             BolgDL.Z = 4809;
@@ -682,7 +682,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BolgDL);
 
-            BolgDD = new GuardFighterRK();
+            BolgDD = new GuardFighterRelic();
             BolgDD.X = 401172;
             BolgDD.Y = 463380;
             BolgDD.Z = 2884;
@@ -703,7 +703,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BolgDD);
 
-            BehnDL = new GuardFighterRK();
+            BehnDL = new GuardFighterRelic();
             BehnDL.X = 348841;
             BehnDL.Y = 371000;
             BehnDL.Z = 4688;
@@ -724,7 +724,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BehnDL);
 
-            BehnDD = new GuardFighterRK();
+            BehnDD = new GuardFighterRelic();
             BehnDD.X = 402899;
             BehnDD.Y = 465176;
             BehnDD.Z = 2848;
@@ -745,7 +745,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(BehnDD);
 
-            CrimDL = new GuardFighterRK();
+            CrimDL = new GuardFighterRelic();
             CrimDL.X = 349191;
             CrimDL.Y = 371458;
             CrimDL.Z = 4877;
@@ -766,7 +766,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(CrimDL);
 
-            CrimDD = new GuardFighterRK();
+            CrimDD = new GuardFighterRelic();
             CrimDD.X = 402337;
             CrimDD.Y = 463993;
             CrimDD.Z = 2862;
@@ -787,7 +787,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(CrimDD);
 
-            CrauDL = new GuardFighterRK();
+            CrauDL = new GuardFighterRelic();
             CrauDL.X = 348634;
             CrauDL.Y = 371189;
             CrauDL.Z = 4825;
@@ -808,7 +808,7 @@ namespace DOL.GS.GameEvents
 
             GuardTemplateMgr.RefreshTemplate(CrauDL);
 
-            CrauDD = new GuardFighterRK();
+            CrauDD = new GuardFighterRelic();
             CrauDD.X = 402670;
             CrauDD.Y = 464400;
             CrauDD.Z = 2888;
@@ -898,7 +898,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Renaris Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Renaris Knight", ERealm.Albion);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Renaris Knight", ERealm.Albion);
 
                 if (keep.Realm == keep.OriginalRealm)
                 {
@@ -967,7 +967,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Hurbury Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Hurbury Knight", ERealm.Albion);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Hurbury Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1032,7 +1032,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Berckstead Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Berckstead Knight", ERealm.Albion);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Berckstead Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1137,7 +1137,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Sursbrook Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Sursbrooke Knight", ERealm.Albion);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Sursbrooke Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1241,7 +1241,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Boldiam Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Boldiam Knight", ERealm.Albion);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Boldiam Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1345,7 +1345,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Erasleigh Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Erasleigh Knight", ERealm.Albion);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Erasleigh Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1449,7 +1449,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Benowyc Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Benowyc Knight", ERealm.Albion);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Benowyc Knight", ERealm.Albion);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1557,7 +1557,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Fensalir Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Fensalir Jarl", ERealm.Midgard);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Fensalir Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1622,7 +1622,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Arvakr Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Arvakr Jarl", ERealm.Midgard);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Arvakr Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1687,7 +1687,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Glenlock Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Glenlock Jarl", ERealm.Midgard);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Glenlock Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1791,7 +1791,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Blendrake Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Blendrake Jarl", ERealm.Midgard);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Blendrake Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1895,7 +1895,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Hlidskialf Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Hlidskialf Jarl", ERealm.Midgard);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Hlidskialf Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -1999,7 +1999,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Nottmoor Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Nottmoor Jarl", ERealm.Midgard);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Nottmoor Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2103,7 +2103,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Bledmeer Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Bledmeer Jarl", ERealm.Midgard);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Bledmeer Jarl", ERealm.Midgard);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2211,7 +2211,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Ailinne Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Ailinne Sentinel", ERealm.Hibernia);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Ailinne Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2276,7 +2276,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Scathaig Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Scathaig Sentinel", ERealm.Hibernia);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Scathaig Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2341,7 +2341,7 @@ namespace DOL.GS.GameEvents
             {
                 #region nGed Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("nGed Sentinel", ERealm.Hibernia);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("nGed Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2445,7 +2445,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Bolg Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Bolg Sentinel", ERealm.Hibernia);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Bolg Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2549,7 +2549,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Behnn Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Behnn Sentinel", ERealm.Hibernia);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Behnn Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2653,7 +2653,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Crimthain Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Crimthain Sentinel", ERealm.Hibernia);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Crimthain Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)
@@ -2757,7 +2757,7 @@ namespace DOL.GS.GameEvents
             {
                 #region Crauchon Add
 
-                GameNPC[] npcs = WorldMgr.GetNPCsByName("Crauchon Sentinel", ERealm.Hibernia);
+                GameNpc[] npcs = WorldMgr.GetNPCsByName("Crauchon Sentinel", ERealm.Hibernia);
                 if (keep.Realm == keep.OriginalRealm)
                 {
                     if (npcs.Length == 0)

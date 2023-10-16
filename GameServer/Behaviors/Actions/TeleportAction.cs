@@ -10,13 +10,13 @@ namespace DOL.GS.Behaviour.Actions
     public class TeleportAction : AAction<GameLocation,int>
     {               
 
-        public TeleportAction(GameNPC defaultNPC,  Object p, Object q)
+        public TeleportAction(GameNpc defaultNPC,  Object p, Object q)
             : base(defaultNPC, EActionType.Teleport, p, q)
         {            
             }
 
 
-        public TeleportAction(GameNPC defaultNPC,  GameLocation location, int fuzzyRadius)
+        public TeleportAction(GameNpc defaultNPC,  GameLocation location, int fuzzyRadius)
             : this(defaultNPC,  (object)location, (object)fuzzyRadius) { }
         
 

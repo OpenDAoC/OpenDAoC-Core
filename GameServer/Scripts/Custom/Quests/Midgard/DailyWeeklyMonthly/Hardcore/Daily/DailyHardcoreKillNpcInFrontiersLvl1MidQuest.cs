@@ -19,7 +19,7 @@ namespace DOL.GS.DailyQuest
 		private const int minimumLevel = 1;
 		private const int maximumLevel = 50;
 
-		private static GameNPC SucciMid = null; // Start NPC
+		private static GameNpc SucciMid = null; // Start NPC
 
 		private int FrontierMobsKilled = 0;
 		private int MAX_KillGoal = 25;
@@ -58,10 +58,10 @@ namespace DOL.GS.DailyQuest
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Succi", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Succi", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 				{
 					if (npc.CurrentRegionID == 100 && npc.X == 766767 && npc.Y == 670636)
 					{
@@ -74,7 +74,7 @@ namespace DOL.GS.DailyQuest
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find SucciMid , creating it ...");
-				SucciMid = new GameNPC();
+				SucciMid = new GameNpc();
 				SucciMid.Model = 902;
 				SucciMid.Name = "Succi";
 				SucciMid.GuildName = "Spectre of Death";
@@ -87,7 +87,7 @@ namespace DOL.GS.DailyQuest
 				SucciMid.Y = 670636;
 				SucciMid.Z = 5736;
 				SucciMid.Heading = 2536;
-				SucciMid.Flags |= GameNPC.eFlags.PEACE;
+				SucciMid.Flags |= ENpcFlags.PEACE;
 				SucciMid.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{
@@ -337,7 +337,7 @@ namespace DOL.GS.DailyQuest
 					{
 						if (living == player ||
 						    (player.ControlledBrain is {Body: { }} && player.ControlledBrain.Body == living) ||
-						    (living is BDPet bdpet &&
+						    (living is BonedancerPet bdpet &&
 						     (bdpet.Owner == player || bdpet.Owner == player.ControlledBrain?.Body)))
 							continue;
 

@@ -76,7 +76,7 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(2500))
+			foreach (GameNpc npc in GetNPCsInRadius(2500))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is BalereAddBrain)
 					npc.RemoveFromWorld();
@@ -108,7 +108,7 @@ namespace DOL.AI.Brain
 				spawnAdds = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is BalereAddBrain)
 							npc.RemoveFromWorld();
@@ -146,7 +146,7 @@ namespace DOL.AI.Brain
 #region Balere's adds
 namespace DOL.GS
 {
-	public class BalereAdd : GameNPC
+	public class BalereAdd : GameNpc
 	{
 		public BalereAdd() : base()
 		{

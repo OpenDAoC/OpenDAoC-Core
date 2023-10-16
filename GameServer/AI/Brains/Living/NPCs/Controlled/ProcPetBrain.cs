@@ -16,7 +16,7 @@ namespace DOL.AI.Brain
 			IsMainPet = false;
         }
 
-        public virtual GameNPC GetNPCOwner()
+        public virtual GameNpc GetNPCOwner()
         {
             return null;
         }
@@ -26,7 +26,7 @@ namespace DOL.AI.Brain
             if (player != null)
                 return player;
 
-            GameNPC npc = GetNPCOwner();
+            GameNpc npc = GetNPCOwner();
             if (npc != null)
                 return npc;
 

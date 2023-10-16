@@ -24,7 +24,7 @@ namespace DOL.GS.Quests.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public ContinueQuestTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, Object k, Object i)
+        public ContinueQuestTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, Object k, Object i)
             : base(defaultNPC,notifyHandler, ETriggerType.ContinueQuest, k, i)
         { }
 
@@ -35,7 +35,7 @@ namespace DOL.GS.Quests.Triggers
         /// <param name="defaultNPC"></param>
         /// <param name="notifyHandler"></param>
         /// <param name="questType"></param>
-        public ContinueQuestTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, Type questType)
+        public ContinueQuestTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, Type questType)
             : this(defaultNPC,notifyHandler, (object)null,(object) questType)
         { }
 

@@ -87,7 +87,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(2500))
+			foreach (GameNpc npc in GetNPCsInRadius(2500))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is CorruptorBodyguardBrain)
 					npc.RemoveFromWorld();
@@ -119,7 +119,7 @@ namespace DOL.AI.Brain
 				spawnAdds = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is CorruptorBodyguardBrain)
 							npc.RemoveFromWorld();
@@ -157,7 +157,7 @@ namespace DOL.AI.Brain
 #region Kontar's adds
 namespace DOL.GS
 {
-	public class CorruptorBodyguard : GameNPC
+	public class CorruptorBodyguard : GameNpc
 	{
 		public CorruptorBodyguard() : base()
 		{
@@ -273,7 +273,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && Body.TargetObject != null)
 			{
-				foreach(GameNPC npc in Body.GetNPCsInRadius(1500))
+				foreach(GameNpc npc in Body.GetNPCsInRadius(1500))
                 {
 					if(npc != null && npc.IsAlive && npc.Brain is KontarCorruptBrain && npc.HealthPercent < 100)
                     {					

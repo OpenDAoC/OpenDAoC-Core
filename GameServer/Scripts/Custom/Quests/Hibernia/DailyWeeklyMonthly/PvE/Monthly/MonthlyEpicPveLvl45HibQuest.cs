@@ -25,7 +25,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 		private int _balorKilled = 0;
 		private int _myrddraxisKilled = 0;
 
-		private static GameNPC Anthony = null; // Start NPC
+		private static GameNpc Anthony = null; // Start NPC
 
 		private const string Balor_NAME = "Balor";
 		private const string Myrddraxis_NAME = "Myrddraxis";
@@ -66,10 +66,10 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Anthony", ERealm.Hibernia);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Anthony", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 181 && npc.X == 422864 && npc.Y == 444362)
 					{
 						Anthony = npc;
@@ -80,7 +80,7 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Anthony , creating it ...");
-				Anthony = new GameNPC();
+				Anthony = new GameNpc();
 				Anthony.Model = 289;
 				Anthony.Name = "Anthony";
 				Anthony.GuildName = "Advisor to the King";
@@ -319,13 +319,13 @@ namespace DOL.GS.MonthlyQuest.Hibernia
 			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-			if (gArgs.Target.Name.ToLower() == Balor_NAME.ToLower() && gArgs.Target is GameNPC && _balorKilled < MAX_KILLED)
+			if (gArgs.Target.Name.ToLower() == Balor_NAME.ToLower() && gArgs.Target is GameNpc && _balorKilled < MAX_KILLED)
 			{
 				_balorKilled = 1;
 				player.Out.SendMessage("[Monthly] You killed " + Balor_NAME + ": (" + _balorKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == Myrddraxis_NAME.ToLower() && gArgs.Target is GameNPC && _myrddraxisKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == Myrddraxis_NAME.ToLower() && gArgs.Target is GameNpc && _myrddraxisKilled < MAX_KILLED)
 			{
 				_myrddraxisKilled = 1;
 				player.Out.SendMessage("[Monthly] You killed " + Myrddraxis_NAME + ": (" + _myrddraxisKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);

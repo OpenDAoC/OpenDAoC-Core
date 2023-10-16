@@ -20,7 +20,7 @@ namespace DOL.GS
 		private const int minimumLevel = 1;
 		private const int maximumLevel = 50;
 
-		private static GameNPC ReyMid = null; // Start NPC
+		private static GameNpc ReyMid = null; // Start NPC
 
 		private int PlayersKilled = 0;
 		private int KeepsTaken = 0;
@@ -71,10 +71,10 @@ namespace DOL.GS
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Rey", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Rey", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 				{
 					if (npc.CurrentRegionID == 100 && npc.X == 766491 && npc.Y == 670375)
 					{
@@ -87,7 +87,7 @@ namespace DOL.GS
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Rey , creating it ...");
-				ReyMid = new GameNPC();
+				ReyMid = new GameNpc();
 				ReyMid.Model = 26;
 				ReyMid.Name = "Rey";
 				ReyMid.GuildName = "Bone Collector";
@@ -100,7 +100,7 @@ namespace DOL.GS
 				ReyMid.Y = 670375;
 				ReyMid.Z = 5736;
 				ReyMid.Heading = 2358;
-				ReyMid.Flags |= GameNPC.eFlags.PEACE;
+				ReyMid.Flags |= ENpcFlags.PEACE;
 				ReyMid.AddToWorld();
 				if (SAVE_INTO_DATABASE)
 				{

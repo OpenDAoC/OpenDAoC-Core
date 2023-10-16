@@ -59,9 +59,9 @@ namespace DOL.GS.Spells
 		{
 			base.DamageTarget(ad, showEffectAnimation, attackResult);
 
-			if (ad.Target is GameNPC && Spell.Value > 0)
+			if (ad.Target is GameNpc && Spell.Value > 0)
 			{
-				IOldAggressiveBrain aggroBrain = ((GameNPC)ad.Target).Brain as IOldAggressiveBrain;
+				IOldAggressiveBrain aggroBrain = ((GameNpc)ad.Target).Brain as IOldAggressiveBrain;
 				if (aggroBrain != null)
 				{
 					// this amount is a wild guess - Tolakram

@@ -31,9 +31,6 @@ using log4net;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// This class represents a player inside the game
-    /// </summary>
     public class GamePlayer : GameLiving
     {
         private const int SECONDS_TO_QUIT_ON_LINKDEATH = 60;
@@ -355,7 +352,7 @@ namespace DOL.GS
         }
 
         #region Object Caches
-        public ConcurrentDictionary<GameNPC, ClientService.CachedNpcValues> NpcUpdateCache { get; private set; } = new();
+        public ConcurrentDictionary<GameNpc, ClientService.CachedNpcValues> NpcUpdateCache { get; private set; } = new();
         public ConcurrentDictionary<GameStaticItem, long> ItemUpdateCache { get; private set; } = new();
         public ConcurrentDictionary<GameDoorBase, long> DoorUpdateCache { get; private set; } = new();
         public ConcurrentDictionary<House, long> HouseUpdateCache { get; private set; } = new();
@@ -3503,7 +3500,7 @@ namespace DOL.GS
                 && ControlledBrain is IControlledBrain brain && brain.Body is GameSummonedPet pet
                 && pet.ControlledNpcList != null)
                 foreach (ABrain subBrain in pet.ControlledNpcList)
-                    if (subBrain != null && subBrain.Body is BDSubPet subPet && subPet.PetSpecLine == specLine.KeyName)
+                    if (subBrain != null && subBrain.Body is SubPet subPet && subPet.PetSpecLine == specLine.KeyName)
                         subPet.SortSpells();
 
             return specPoints;
@@ -6156,28 +6153,28 @@ namespace DOL.GS
                 // is done in game living because of guard
                 //case eAttackResult.Blocked : Out.SendMessage(ad.Attacker.GetName(0, true) + " attacks you and you block the blow!", eChatType.CT_Missed, eChatLoc.CL_SystemWindow); break;
                 case EAttackResult.Parried:
-                    if (ad.Attacker is GameNPC)
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Parry", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC))) + " (" + /*GetParryChance()*/ad.ParryChance.ToString("0.0") + "%)", EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
+                    if (ad.Attacker is GameNpc)
+                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Parry", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNpc))) + " (" + /*GetParryChance()*/ad.ParryChance.ToString("0.0") + "%)", EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                     else
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Parry", ad.Attacker.GetName(0, true)) + " (" + /*GetParryChance()*/ad.ParryChance.ToString("0.0") + "%)", EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                     break;
                 case EAttackResult.Evaded:
-                    if (ad.Attacker is GameNPC)
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Evade", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC))) + " (" + /*GetEvadeChance()*/ad.EvadeChance.ToString("0.0") + "%)", EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
+                    if (ad.Attacker is GameNpc)
+                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Evade", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNpc))) + " (" + /*GetEvadeChance()*/ad.EvadeChance.ToString("0.0") + "%)", EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                     else
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Evade", ad.Attacker.GetName(0, true)) + " (" + /*GetEvadeChance()*/ad.EvadeChance.ToString("0.0") + "%)", EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                     break;
                 case EAttackResult.Fumbled:
-                    if (ad.Attacker is GameNPC)
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Fumbled", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC))), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
+                    if (ad.Attacker is GameNpc)
+                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Fumbled", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNpc))), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                     else
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Fumbled", ad.Attacker.GetName(0, true)), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                     break;
                 case EAttackResult.Missed:
                     if (ad.AttackType == EAttackType.Spell)
                         break;
-                    if (ad.Attacker is GameNPC)
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Missed", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC))) + " (" + Math.Min(ad.MissRate, 100).ToString("0") + "%)", EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
+                    if (ad.Attacker is GameNpc)
+                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Missed", ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNpc))) + " (" + Math.Min(ad.MissRate, 100).ToString("0") + "%)", EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                     else
                         Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Missed", ad.Attacker.GetName(0, true)), EChatType.CT_Missed, EChatLoc.CL_SystemWindow);
                     break;
@@ -6219,18 +6216,18 @@ namespace DOL.GS
                         if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
                     }
 
-                    if (ad.Attacker is GameNPC)
+                    if (ad.Attacker is GameNpc)
                     {
                         if (hitLocName != null)
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.HitsYour",
-                                ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC)), hitLocName, ad.Damage, modmessage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
+                                ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNpc)), hitLocName, ad.Damage, modmessage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
                         else
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.HitsYou",
-                                ad.Attacker.IsAlive ? ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC)) : "A dead enemy", ad.Damage, modmessage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
+                                ad.Attacker.IsAlive ? ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNpc)) : "A dead enemy", ad.Damage, modmessage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 
                         if (ad.CriticalDamage > 0)
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.HitsYouCritical",
-                                ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNPC)), ad.CriticalDamage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
+                                ad.Attacker.GetName(0, true, Client.Account.Language, (ad.Attacker as GameNpc)), ad.CriticalDamage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
                     }
                     else
                     {
@@ -6392,7 +6389,7 @@ namespace DOL.GS
 
             #region PVP DAMAGE
 
-            if (source is GamePlayer || (source is GameNPC && (source as GameNPC).Brain is IControlledBrain && ((source as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null) || source is GameSiegeWeapon)
+            if (source is GamePlayer || (source is GameNpc && (source as GameNpc).Brain is IControlledBrain && ((source as GameNpc).Brain as IControlledBrain).GetPlayerOwner() != null) || source is GameSiegeWeapon)
             {
                 if (Realm != source.Realm && source.Realm != 0)
                     DamageRvRMemory += (long)(damageAmount + criticalAmount);
@@ -6835,8 +6832,8 @@ namespace DOL.GS
         public override void ProcessDeath(GameObject killer)
         {
             // Ambient trigger upon killing player
-            if (killer is GameNPC)
-                (killer as GameNPC).FireAmbientSentence(GameNPC.eAmbientTrigger.killing, killer as GameLiving);
+            if (killer is GameNpc)
+                (killer as GameNpc).FireAmbientSentence(EAmbientNpcTrigger.killing, killer as GameLiving);
 
             PlayerClass.Die(killer);
 
@@ -8845,9 +8842,9 @@ namespace DOL.GS
         /// <summary>
         /// Holds the Steed of this player
         /// </summary>
-        public GameNPC Steed
+        public GameNpc Steed
         {
-            get { return m_steed.Target as GameNPC; }
+            get { return m_steed.Target as GameNpc; }
             set { m_steed.Target = value; }
         }
 
@@ -8855,7 +8852,7 @@ namespace DOL.GS
         /// Delegate callback to be called when the player
         /// tries to mount a steed
         /// </summary>
-        public delegate bool MountSteedHandler(GamePlayer rider, GameNPC steed, bool forced);
+        public delegate bool MountSteedHandler(GamePlayer rider, GameNpc steed, bool forced);
 
         /// <summary>
         /// Event will be fired whenever the player tries to
@@ -8876,7 +8873,7 @@ namespace DOL.GS
         /// <param name="steed">the steed to mount</param>
         /// <param name="forced">true if the mounting can not be prevented by handlers</param>
         /// <returns>true if mounted successfully or false if not</returns>
-        public virtual bool MountSteed(GameNPC steed, bool forced)
+        public virtual bool MountSteed(GameNpc steed, bool forced)
         {
             // Sanity 'coherence' checks
             if (Steed != null)
@@ -8967,7 +8964,7 @@ namespace DOL.GS
 
             Out.SendMessage("You switch to seat " + slot + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
-            GameNPC steed = Steed;
+            GameNpc steed = Steed;
             steed.RiderDismount(true, this);
             steed.RiderMount(this, true, slot);
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -9231,7 +9228,7 @@ namespace DOL.GS
 
                     if (npc != null)
                     {
-                        GameNPC petBody = npc.Body;
+                        GameNpc petBody = npc.Body;
                         petBody.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort)((Heading + 2048) % 4096), false);
 
                         if (petBody != null && petBody.ControlledNpcList != null)
@@ -9240,7 +9237,7 @@ namespace DOL.GS
                             {
                                 if (controlledBrain != null && controlledBrain.Body != null)
                                 {
-                                    GameNPC petBody2 = controlledBrain.Body;
+                                    GameNpc petBody2 = controlledBrain.Body;
 
                                     if (petBody2 != null && originalPoint.IsWithinRadius(petBody2, 500))
                                         petBody2.MoveInRegion(CurrentRegionID, point.X, point.Y, Z + 10, (ushort)((Heading + 2048) % 4096), false);
@@ -9259,7 +9256,7 @@ namespace DOL.GS
         /// </summary>
         public virtual void RefreshWorld()
         {
-            foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE * 2))
+            foreach (GameNpc npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE * 2))
             {
                 Out.SendNPCCreate(npc);
                 if (npc.Inventory != null)
@@ -10848,8 +10845,8 @@ namespace DOL.GS
             }
             else
             {
-                if (source is GameNPC)
-                    Out.SendMessage(String.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ReceiveItem.ReceiveFrom", item.GetName(0, false), source.GetName(0, false, Client.Account.Language, (source as GameNPC)))), EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
+                if (source is GameNpc)
+                    Out.SendMessage(String.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ReceiveItem.ReceiveFrom", item.GetName(0, false), source.GetName(0, false, Client.Account.Language, (source as GameNpc)))), EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
                 else
                     Out.SendMessage(String.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ReceiveItem.ReceiveFrom", item.GetName(0, false), source.GetName(0, false))), EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
             }
@@ -11206,7 +11203,7 @@ namespace DOL.GS
                 return;
             }
 
-            if ((floorObject is GameNPC || floorObject is GameStaticItem) && floorObject.CurrentHouse != null)
+            if ((floorObject is GameNpc || floorObject is GameStaticItem) && floorObject.CurrentHouse != null)
             {
                 floorObject.CurrentHouse.EmptyHookpoint(this, floorObject);
                 return;
@@ -12334,7 +12331,7 @@ namespace DOL.GS
                 if (player.Client.Account.PrivLevel > 1)
                     return 0;
 
-                foreach (GameNPC npc in player.GetNPCsInRadius(1024))
+                foreach (GameNpc npc in player.GetNPCsInRadius(1024))
                 {
                     // Friendly mobs do not uncover stealthed players
                     if (!GameServer.ServerRules.IsAllowedToAttack(npc, player, true))

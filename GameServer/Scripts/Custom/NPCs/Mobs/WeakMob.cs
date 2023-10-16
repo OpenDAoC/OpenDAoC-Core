@@ -1,6 +1,6 @@
 ﻿namespace DOL.GS
 {
-    public class WeakMob : GameNPC {
+    public class WeakMob : GameNpc {
 
         public override int MaxHealth { get => 200; set { } }
 

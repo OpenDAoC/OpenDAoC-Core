@@ -40,7 +40,7 @@ namespace DOL.GS
         /// </summary>
         private GroupUtil m_playerGroup;
 
-        public override ushort Icon => Owner is GameNPC ? (ushort) 1001 : (ushort) 412;
+        public override ushort Icon => Owner is GameNpc ? (ushort) 1001 : (ushort) 412;
 
         public override string Name
         {

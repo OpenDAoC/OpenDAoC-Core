@@ -28,7 +28,7 @@ namespace DOL.GS.Spells
 		/// <param name="chatType"></param>
 		protected override void MessageToOwner(String message, EChatType chatType)
 		{
-			GameNPC npc = Caster as GameNPC;
+			GameNpc npc = Caster as GameNpc;
 			if (npc != null)
 			{
 				ControlledNpcBrain brain = npc.Brain as ControlledNpcBrain;

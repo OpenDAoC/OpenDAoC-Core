@@ -17,12 +17,12 @@ namespace DOL.GS.Quests.Hibernia
 		private const int minimumLevel = 48;
 		private const int maximumLevel = 50;
 
-		private static GameNPC OtaYrling = null; // Start NPC + Finish NPC
-		private static GameNPC Jaklyr = null; // 
-		private static GameNPC Longbeard = null; // 
-		private static GameNPC Styr = null; // 
+		private static GameNpc OtaYrling = null; // Start NPC + Finish NPC
+		private static GameNpc Jaklyr = null; // 
+		private static GameNpc Longbeard = null; // 
+		private static GameNpc Styr = null; // 
 		
-		private static GameNPC AncestralKeeper = null; //Mob to Kill
+		private static GameNpc AncestralKeeper = null; //Mob to Kill
 		
 		private static readonly GameLocation keeperLocation = new("Ancestral Keeper", 151, 363016, 310849, 3933);
 		
@@ -75,7 +75,7 @@ namespace DOL.GS.Quests.Hibernia
         {
             if (log.IsWarnEnabled)
                 log.Warn("Could not find Ota Yrling, creating it ...");
-            OtaYrling = new GameNPC();
+            OtaYrling = new GameNpc();
             OtaYrling.Model = 230;
             OtaYrling.Name = "Ota Yrling";
             OtaYrling.GuildName = "";
@@ -106,7 +106,7 @@ namespace DOL.GS.Quests.Hibernia
         {
             if (log.IsWarnEnabled)
                 log.Warn("Could not find Jaklyr , creating it ...");
-            Jaklyr = new GameNPC();
+            Jaklyr = new GameNpc();
             Jaklyr.Model = 203;
             Jaklyr.Name = "Jaklyr";
             Jaklyr.GuildName = "";
@@ -137,7 +137,7 @@ namespace DOL.GS.Quests.Hibernia
         {
             if (log.IsWarnEnabled)
                 log.Warn("Could not find Longbeard, creating it ...");
-            Longbeard = new GameNPC();
+            Longbeard = new GameNpc();
             Longbeard.LoadEquipmentTemplateFromDatabase("be600079-ca29-4093-953a-3ee3aa1552e8");
             Longbeard.Model = 232;
             Longbeard.Name = "Longbeard";
@@ -170,7 +170,7 @@ namespace DOL.GS.Quests.Hibernia
         {
 	        if (log.IsWarnEnabled)
 		        log.Warn("Could not find Styr, creating it ...");
-	        Styr = new GameNPC();
+	        Styr = new GameNpc();
 	        Styr.LoadEquipmentTemplateFromDatabase("dbdb0127-cbbe-42b5-b60a-3cdc27256ae9");
 	        Styr.Model = 235;
 	        Styr.Name = "Styr";
@@ -310,18 +310,18 @@ namespace DOL.GS.Quests.Hibernia
 
 		protected virtual void CreateAncestralKeeper(GamePlayer player)
 		{
-			foreach (GameNPC npc in WorldMgr.GetNPCsCloseToSpot(151, 363016, 310849, 3933, 8000))
+			foreach (GameNpc npc in WorldMgr.GetNPCsCloseToSpot(151, 363016, 310849, 3933, 8000))
 			{
 				if (npc.Brain is SiNecklaceBossBrain)
 					return;
 			}
-			AncestralKeeper = new SINeckBoss();
+			AncestralKeeper = new SiNecklaceBossNpc();
 			AncestralKeeper.Model = 951;
 			AncestralKeeper.Name = "Ancestral Keeper";
 			AncestralKeeper.GuildName = "";
 			AncestralKeeper.Realm = ERealm.None;
 			AncestralKeeper.Race = 2003;
-			AncestralKeeper.BodyType = (ushort) NpcTemplateMgr.eBodyType.Elemental;
+			AncestralKeeper.BodyType = (ushort) EBodyType.Elemental;
 			AncestralKeeper.CurrentRegionID = 151;
 			AncestralKeeper.Size = 140;
 			AncestralKeeper.Level = 65;

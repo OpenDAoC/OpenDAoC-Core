@@ -57,22 +57,22 @@ namespace DOL.GS
 		}
 		public override bool AddToWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc.Brain is GreenMawBrain)
 					return false;
 			}
-			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is GreenMawAddBrain)
 					npc.RemoveFromWorld();
 			}
-			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is GreenMawAdd2Brain)
 					npc.RemoveFromWorld();
 			}
-			foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
+			foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(CurrentRegionID))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is GreenMawAdd3Brain)
 					npc.RemoveFromWorld();
@@ -145,7 +145,7 @@ namespace DOL.AI.Brain
 #region Green maw Copies Red
 namespace DOL.GS
 {
-	public class GreenMawAdd : GameNPC
+	public class GreenMawAdd : GameNpc
 	{
 		public GreenMawAdd() : base() { }
 		public override int GetResist(EDamageType damageType)
@@ -246,7 +246,7 @@ namespace DOL.AI.Brain
 #region Green maw Copies Orange
 namespace DOL.GS
 {
-	public class GreenMawAdd2 : GameNPC
+	public class GreenMawAdd2 : GameNpc
 	{
 		public GreenMawAdd2() : base() { }
 		public override int GetResist(EDamageType damageType)
@@ -347,7 +347,7 @@ namespace DOL.AI.Brain
 #region Green maw Copies Yellow
 namespace DOL.GS
 {
-	public class GreenMawAdd3 : GameNPC
+	public class GreenMawAdd3 : GameNpc
 	{
 		public GreenMawAdd3() : base() { }
 		public override int GetResist(EDamageType damageType)

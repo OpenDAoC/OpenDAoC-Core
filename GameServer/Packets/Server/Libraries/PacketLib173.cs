@@ -496,7 +496,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendNPCsQuestEffect(GameNPC npc, EQuestIndicator indicator)
+		public override void SendNPCsQuestEffect(GameNpc npc, EQuestIndicator indicator)
 		{
 			if (m_gameClient.Player == null || npc == null)
 				return;

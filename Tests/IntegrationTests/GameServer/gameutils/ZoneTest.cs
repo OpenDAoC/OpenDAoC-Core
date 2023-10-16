@@ -86,7 +86,7 @@ namespace DOL.Tests.Integration.Server
 			Assert.IsNotNull(zone);
 
 			StartWatch();
-			GameNPC npc = zone.GetRandomNPC(ERealm.None, 5, 7);
+			GameNpc npc = zone.GetRandomNPC(ERealm.None, 5, 7);
 			// TODO(Blasnoc) the two following nullchecks always skip because there are no mobs in the db.
 			// 	this test should be enhanced with actual mobs.
 			if (npc != null)

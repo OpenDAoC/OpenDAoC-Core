@@ -36,7 +36,7 @@ namespace DOL.Tests.Integration.Server
 		public void AddObject()
 		{
 			Region region = WorldMgr.GetRegion(1);
-			GameObject obj = new GameNPC();
+			GameObject obj = new GameNpc();
 			obj.Name="TestObject";
 			obj.X = 400000;
 			obj.Y = 200000;

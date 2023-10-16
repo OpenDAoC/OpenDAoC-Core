@@ -26,7 +26,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 		private int _glacierGiantKilled = 0;
 		private int _greenKnightKilled = 0;
 		
-		private static GameNPC Herou = null; // Start NPC
+		private static GameNpc Herou = null; // Start NPC
 
 		private const string EVERN_NAME = "Evern";
 		private const string GREENKNIGHT_NAME = "Green Knight";
@@ -67,10 +67,10 @@ namespace DOL.GS.WeeklyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Herou", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Herou", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 100 && npc.X == 766401 && npc.Y == 670349)
 					{
 						Herou = npc;
@@ -81,7 +81,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Herou , creating it ...");
-				Herou = new GameNPC();
+				Herou = new GameNpc();
 				Herou.Model = 142;
 				Herou.Name = "Herou";
 				Herou.GuildName = "Realm Logistics";
@@ -318,19 +318,19 @@ namespace DOL.GS.WeeklyQuest.Midgard
 			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-			if (gArgs.Target.Name.ToLower() == EVERN_NAME.ToLower() && gArgs.Target is GameNPC && _evernKilled < MAX_KILLED)
+			if (gArgs.Target.Name.ToLower() == EVERN_NAME.ToLower() && gArgs.Target is GameNpc && _evernKilled < MAX_KILLED)
 			{
 				_evernKilled = 1;
 				player.Out.SendMessage("[Weekly] You killed " + EVERN_NAME + ": (" + _evernKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == GREENKNIGHT_NAME.ToLower() && gArgs.Target is GameNPC && _greenKnightKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == GREENKNIGHT_NAME.ToLower() && gArgs.Target is GameNpc && _greenKnightKilled < MAX_KILLED)
 			{
 				_greenKnightKilled = 1;
 				player.Out.SendMessage("[Weekly] You killed " + GREENKNIGHT_NAME + ": (" + _greenKnightKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == GLACIERGIANT_NAME.ToLower() && gArgs.Target is GameNPC && _glacierGiantKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == GLACIERGIANT_NAME.ToLower() && gArgs.Target is GameNpc && _glacierGiantKilled < MAX_KILLED)
 			{
 				_glacierGiantKilled = 1;
 				player.Out.SendMessage("[Weekly] You killed " + GLACIERGIANT_NAME + ": (" + _glacierGiantKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);

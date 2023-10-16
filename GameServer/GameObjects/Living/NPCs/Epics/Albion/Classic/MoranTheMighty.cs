@@ -134,7 +134,7 @@ namespace DOL.AI.Brain
                 {
                     if (_aggroStart)
                     {
-                        foreach (GameNPC npc in Body.GetNPCsInRadius(1500))
+                        foreach (GameNpc npc in Body.GetNPCsInRadius(1500))
                         {
                             foreach (GamePlayer player in Body.GetPlayersInRadius(2250))
                             {
@@ -198,7 +198,7 @@ namespace DOL.AI.Brain
                             BroadcastMessage(String.Format("{0} picked up {1} on gust of winds and tossed {2} away! ", Body.Name, portPlayer[ranPlayer].Name, gender));
                             portPlayer[ranPlayer].Out.SendSpellEffectAnimation(portPlayer[ranPlayer], portPlayer[ranPlayer], 1735, 0, false, 1);
                             portPlayer[ranPlayer].MoveTo(1, 401943, 753091, 222, 3499);
-                            foreach (GameNPC npc in portPlayer[ranPlayer].GetNPCsInRadius(2000))
+                            foreach (GameNpc npc in portPlayer[ranPlayer].GetNPCsInRadius(2000))
                             {
                                 npc.StartAttack(portPlayer[ranPlayer]);
                             }
@@ -208,7 +208,7 @@ namespace DOL.AI.Brain
                             BroadcastMessage(String.Format("{0} picked up {1} on gust of winds and tossed {2} away! ", Body.Name, portPlayer[ranPlayer].Name, gender));
                             portPlayer[ranPlayer].Out.SendSpellEffectAnimation(portPlayer[ranPlayer], portPlayer[ranPlayer], 1735, 0, false, 1);
                             portPlayer[ranPlayer].MoveTo(1, 406787, 749150, 213, 3926);
-                            foreach (GameNPC npc in portPlayer[ranPlayer].GetNPCsInRadius(2000))
+                            foreach (GameNpc npc in portPlayer[ranPlayer].GetNPCsInRadius(2000))
                             {
                                 npc.StartAttack(portPlayer[ranPlayer]);
                             }
@@ -218,7 +218,7 @@ namespace DOL.AI.Brain
                             BroadcastMessage(String.Format("{0} picked up {1} on gust of winds and tossed {2} away! ", Body.Name, portPlayer[ranPlayer].Name, gender));
                             portPlayer[ranPlayer].Out.SendSpellEffectAnimation(portPlayer[ranPlayer], portPlayer[ranPlayer], 1735, 0, false, 1);
                             portPlayer[ranPlayer].MoveTo(1, 401061, 755882, 469, 3050);
-                            foreach (GameNPC npc in portPlayer[ranPlayer].GetNPCsInRadius(2000))
+                            foreach (GameNpc npc in portPlayer[ranPlayer].GetNPCsInRadius(2000))
                             {
                                 npc.StartAttack(portPlayer[ranPlayer]);
                             }

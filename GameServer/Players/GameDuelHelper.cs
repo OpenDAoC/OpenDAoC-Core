@@ -119,7 +119,7 @@ namespace DOL.GS
 				return;
 
 			// check pets owner for my and enemy attacks
-			GameNPC npc = target as GameNPC;
+			GameNpc npc = target as GameNpc;
 			if (npc != null)
 			{
 				IControlledBrain brain = npc.Brain as IControlledBrain;

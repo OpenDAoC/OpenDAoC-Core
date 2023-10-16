@@ -85,7 +85,7 @@ namespace DOLGameServerConsole
 		public void SendModelAndSizeChange(GameObject obj, ushort newModel, byte newSize) { }
 		public void SendModelAndSizeChange(ushort objectId, ushort newModel, byte newSize) { }
 		public void SendEmoteAnimation(GameObject obj, EEmote emote) { }
-		public void SendNPCCreate(GameNPC npc) { }
+		public void SendNPCCreate(GameNpc npc) { }
 		public void SendLivingEquipmentUpdate(GameLiving living) { }
 		public void SendRegionChanged() { }
 		public void SendUpdatePoints() { }
@@ -103,12 +103,12 @@ namespace DOLGameServerConsole
 		public void SendGroupInviteCommand(GamePlayer invitingPlayer, string inviteMessage) { }
 		public void SendGuildLeaveCommand(GamePlayer invitingPlayer, string inviteMessage) { }
 		public void SendGuildInviteCommand(GamePlayer invitingPlayer, string inviteMessage) { }
-		public void SendQuestSubscribeCommand(GameNPC invitingNPC, ushort questid, string inviteMessage) { }
-		public void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest) { }
-		public void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest) { }
-		public void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DataQuest quest) { }
-		public void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DataQuest quest) { }
-		public void SendQuestAbortCommand(GameNPC abortingNPC, ushort questid, string abortMessage) { }
+		public void SendQuestSubscribeCommand(GameNpc invitingNPC, ushort questid, string inviteMessage) { }
+		public void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest) { }
+		public void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest) { }
+		public void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, DataQuest quest) { }
+		public void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, DataQuest quest) { }
+		public void SendQuestAbortCommand(GameNpc abortingNPC, ushort questid, string abortMessage) { }
 		public void SendGroupWindowUpdate() { }
 		public void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living) { }
 		public void SendGroupMembersUpdate(bool updateIcons, bool updateMap) { }
@@ -174,7 +174,7 @@ namespace DOLGameServerConsole
 		public void SendClearKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex) { }
 		public void SendHookPointStore(GameKeepHookPoint hookPoint) { }
 		public void SendPlaySound(ESoundType soundType, ushort soundID) { }
-        public void SendNPCsQuestEffect(GameNPC npc, EQuestIndicator indicator) { }
+        public void SendNPCsQuestEffect(GameNpc npc, EQuestIndicator indicator) { }
 		public void SendMasterLevelWindow(byte ml) { }
 		public void SendHexEffect(GamePlayer player, byte effect1, byte effect2, byte effect3, byte effect4, byte effect5) { }
 

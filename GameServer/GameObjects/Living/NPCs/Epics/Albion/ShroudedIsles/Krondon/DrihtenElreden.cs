@@ -153,13 +153,13 @@ namespace DOL.AI.Brain
 			ThinkInterval = 1500;
 		}
 		private bool canbringhelp = false;
-		List<GameNPC> CallHelp = new List<GameNPC>();
-		List<GameNPC> PulledMobs = new List<GameNPC>();
+		List<GameNpc> CallHelp = new List<GameNpc>();
+		List<GameNpc> PulledMobs = new List<GameNpc>();
 		public void BringHelp()
         {
 			if(HasAggro)
             {
-				foreach(GameNPC npc in Body.GetNPCsInRadius(2500))
+				foreach(GameNpc npc in Body.GetNPCsInRadius(2500))
                 {
 					if (npc == null) continue;
 					if(npc.IsAlive && npc.PackageID == "DrihtenBaf" && !CallHelp.Contains(npc) && !PulledMobs.Contains(npc))
@@ -168,7 +168,7 @@ namespace DOL.AI.Brain
             }
 			if(CallHelp.Count > 0)
             {
-				GameNPC friend = CallHelp[Util.Random(0, CallHelp.Count - 1)];
+				GameNpc friend = CallHelp[Util.Random(0, CallHelp.Count - 1)];
 				GameLiving target = Body.TargetObject as GameLiving;
 				if(target != null && target.IsAlive && friend != null && friend.Brain is StandardMobBrain brain)
                 {

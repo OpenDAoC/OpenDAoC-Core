@@ -23,7 +23,7 @@ namespace DOL.GS.Behaviour.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public LeaveAreaTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
+        public LeaveAreaTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
             : base(defaultNPC, notifyHandler, ETriggerType.LeaveArea, k, i)
         { }
 
@@ -33,7 +33,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="defaultNPC"></param>
         /// <param name="notifyHandler"></param>
         /// <param name="i"></param>
-        public LeaveAreaTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, IArea i)
+        public LeaveAreaTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, IArea i)
             : this(defaultNPC,notifyHandler,  (object)null,(object) i)
         { }
 

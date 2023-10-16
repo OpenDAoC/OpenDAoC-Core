@@ -9,7 +9,7 @@ namespace DOL.GS
     /// LootGeneratorDreadedSeal
     /// Adds Glowing Dreaded Seal to loot
     /// </summary>
-    public class DreadedSealCollector : GameNPC
+    public class DreadedSealCollector : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

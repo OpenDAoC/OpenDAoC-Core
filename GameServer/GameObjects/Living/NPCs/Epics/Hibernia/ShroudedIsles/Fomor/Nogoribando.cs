@@ -144,7 +144,7 @@ namespace DOL.AI.Brain
 			{
 				if (IsPulled == false)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null)
 						{

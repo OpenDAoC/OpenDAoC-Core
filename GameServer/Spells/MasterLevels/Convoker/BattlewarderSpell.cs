@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("Battlewarder")]
 	public class BattlewarderSpell : SpellHandler
 	{
-		private GameNPC warder;
+		private GameNpc warder;
 		private GameSpellEffect m_effect;
 
 		/// <summary>
@@ -101,7 +101,7 @@ namespace DOL.GS.Spells
 		// Event : Battle warder has died
 		private void BattleWarderDie(CoreEvent e, object sender, EventArgs args)
 		{
-			GameNPC kWarder = sender as GameNPC;
+			GameNpc kWarder = sender as GameNpc;
 			if (kWarder == null) return;
 			if (e == GameLivingEvent.Dying)
 			{
@@ -128,7 +128,7 @@ namespace DOL.GS.Spells
 		public BattlewarderSpell(GameLiving caster, Spell spell, SpellLine line)
 			: base(caster, spell, line)
 		{
-			warder = new GameNPC();
+			warder = new GameNpc();
 			//Fill the object variables
 			warder.CurrentRegion = caster.CurrentRegion;
 			warder.Heading = (ushort)((caster.Heading + 2048) % 4096);

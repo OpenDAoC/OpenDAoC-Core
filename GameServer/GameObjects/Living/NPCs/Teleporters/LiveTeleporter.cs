@@ -6,15 +6,9 @@ using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 
-/* Need to fix
- * EquipTemplate for Hib and Mid
- * Oceanus for all realms.
- * Kobold Undercity for Mid
- * personal guild and hearth teleports
- */
 namespace DOL.GS.Scripts
 {
-    public class LiveTeleporter : GameNPC
+    public class LiveTeleporter : GameNpc
     {
         /// <summary>
         /// The type of teleporter; this is used in order to be able to handle
@@ -81,7 +75,7 @@ namespace DOL.GS.Scripts
 
             Level = 60;
             Size = 50;
-            Flags |= GameNPC.eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
 
             return base.AddToWorld();
         }

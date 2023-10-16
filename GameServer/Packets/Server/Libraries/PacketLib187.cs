@@ -23,17 +23,17 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
-		public override void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest)
+		public override void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
 		{
 			SendQuestWindow(questNPC, player, quest, true);
 		}
 
-		public override void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest)
+		public override void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
 		{
 			SendQuestWindow(questNPC, player, quest, false);
 		}
 
-		protected override void SendQuestWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest,	bool offer)
+		protected override void SendQuestWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest,	bool offer)
 		{
 			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Dialog)))
 			{

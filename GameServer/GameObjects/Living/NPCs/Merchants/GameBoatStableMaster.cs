@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.Database;
 using DOL.GS.Movement;
@@ -26,7 +7,7 @@ using DOL.Language;
 namespace DOL.GS
 {
 	/// <summary>
-	/// Stable master that sells and takes horse route tickes
+	/// Stable master that sells and takes boat route tickets
 	/// </summary>
 	public class GameBoatStableMaster : GameMerchant
 	{
@@ -113,7 +94,7 @@ namespace DOL.GS
 
                 if (item.Name.ToLower().StartsWith(LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameStableMaster.ReceiveItem.TicketTo")) && item.Item_Type == 40)
 				{
-					foreach (GameNPC npc in GetNPCsInRadius(1500))
+					foreach (GameNpc npc in GetNPCsInRadius(1500))
 					{
 						if (npc is GameTaxiBoat)
 						{
@@ -165,14 +146,14 @@ namespace DOL.GS
 			/// <summary>
 			/// The target horse
 			/// </summary>
-			protected readonly GameNPC m_horse;
+			protected readonly GameNpc m_horse;
 
 			/// <summary>
 			/// Constructs a new MountHorseAction
 			/// </summary>
 			/// <param name="actionSource">The action source</param>
 			/// <param name="horse">The target horse</param>
-			public MountHorseAction(GamePlayer actionSource, GameNPC horse)
+			public MountHorseAction(GamePlayer actionSource, GameNpc horse)
 				: base(actionSource)
 			{
 				if (horse == null)
@@ -200,14 +181,14 @@ namespace DOL.GS
 			/// Constructs a new HorseStartAction
 			/// </summary>
 			/// <param name="actionSource"></param>
-			public HorseRideAction(GameNPC actionSource) : base(actionSource) { }
+			public HorseRideAction(GameNpc actionSource) : base(actionSource) { }
 
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
 			protected override int OnTick(EcsGameTimer timer)
 			{
-				GameNPC horse = (GameNPC) timer.Owner;
+				GameNpc horse = (GameNpc) timer.Owner;
 				horse.MoveOnPath(horse.MaxSpeed);
 				return 0;
 			}

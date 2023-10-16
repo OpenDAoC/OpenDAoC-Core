@@ -16,7 +16,7 @@ namespace DOL.GS.PropertyCalc
 	{
 		public override int CalcValue(GameLiving living, EProperty property)
 		{
-			if (living is GameNPC)
+			if (living is GameNpc)
 			{
 				// NPC buffs effects are halved compared to debuffs, so it takes 2% debuff to mitigate 1% buff
 				// See PropertyChangingSpell.ApplyNpcEffect() for details.

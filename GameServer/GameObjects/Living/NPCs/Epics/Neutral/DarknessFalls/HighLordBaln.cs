@@ -94,7 +94,7 @@ namespace DOL.GS
             if (!InCombat)
             {
                 var mobs = GetNPCsInRadius(3000);
-                foreach (GameNPC mob in mobs)
+                foreach (GameNpc mob in mobs)
                 {
                     if (!mob.InCombat)
                     {
@@ -144,7 +144,7 @@ namespace DOL.AI.Brain
                 Body.Health = Body.MaxHealth;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
                     {
                         if (npc != null)
                         {
@@ -170,7 +170,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-    public class BalnMinion : GameNPC
+    public class BalnMinion : GameNpc
     {
         public override int MaxHealth
         {

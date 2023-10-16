@@ -88,7 +88,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC add in GetNPCsInRadius(4000))
+			foreach (GameNpc add in GetNPCsInRadius(4000))
 			{
 				if (add == null) continue;
 				if (add.IsAlive && add.Brain is KrevoAddBrain)
@@ -130,7 +130,7 @@ namespace DOL.AI.Brain
 				Body.Health = Body.MaxHealth;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC add in Body.GetNPCsInRadius(4000))
+					foreach (GameNpc add in Body.GetNPCsInRadius(4000))
 					{
 						if (add == null) continue;
 						if (add.IsAlive && add.Brain is KrevoAddBrain)
@@ -145,7 +145,7 @@ namespace DOL.AI.Brain
 		}
 		public void SpawnGhost()
         {
-			foreach (GameNPC add in Body.GetNPCsInRadius(4000))
+			foreach (GameNpc add in Body.GetNPCsInRadius(4000))
 			{
 				if (add.Brain is KrevoAddBrain)
 				{

@@ -88,13 +88,13 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// door state (open or closed)
 		/// </summary>
-		protected eDoorState m_state;
+		protected EDoorState m_state;
 
 		/// <summary>
 		/// door state (open or closed)
 		/// call the broadcast of state in area
 		/// </summary>
-		public override eDoorState State
+		public override EDoorState State
 		{
 			get => m_state;
 			set
@@ -178,7 +178,7 @@ namespace DOL.GS.Keeps
 			{
 				base.Health = value;
 
-				if (HealthPercent > DOOR_CLOSE_THRESHOLD && m_state == eDoorState.Open)
+				if (HealthPercent > DOOR_CLOSE_THRESHOLD && m_state == EDoorState.Open)
 				{
 					CloseDoor();
 				}
@@ -353,7 +353,7 @@ namespace DOL.GS.Keeps
 				baseDamage = (baseDamage - (baseDamage * 5 * Component.Keep.Level / 100)) * toughness / 100;
 				styleDamage = (styleDamage - (styleDamage * 5 * Component.Keep.Level / 100)) * toughness / 100;
 			}
-			else if (source is GameNPC)
+			else if (source is GameNpc)
 			{
 				if (!Properties.DOORS_ALLOWPETATTACK)
 				{
@@ -366,9 +366,9 @@ namespace DOL.GS.Keeps
 					baseDamage = (baseDamage - (baseDamage * 5 * Component.Keep.Level / 100)) * toughness / 100;
 					styleDamage = (styleDamage - (styleDamage * 5 * Component.Keep.Level / 100)) * toughness / 100;
 
-					if (((GameNPC)source).Brain is AI.Brain.IControlledBrain)
+					if (((GameNpc)source).Brain is AI.Brain.IControlledBrain)
 					{
-						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNPC)source).Brain).Owner as GamePlayer);
+						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNpc)source).Brain).Owner as GamePlayer);
 						if (player != null)
 						{
 							// special considerations for pet spam classes
@@ -527,8 +527,8 @@ namespace DOL.GS.Keeps
 				// Attempt to fix issue where some players see door as closed when it should be broken open
 				// if you target a door it will re-broadcast it's state
 
-				if (Health <= 0 && State != eDoorState.Open)
-					State = eDoorState.Open;
+				if (Health <= 0 && State != EDoorState.Open)
+					State = EDoorState.Open;
 
 				ClientService.UpdateObjectForPlayer(player, this);
 			}
@@ -671,7 +671,7 @@ namespace DOL.GS.Keeps
 			// HealthPercent relies on MaxHealth, which returns 0 if used before adding the door to the world and setting Component.Keep
 			// Keep doors are always closed if they have more than DOOR_CLOSE_THRESHOLD% health. Otherwise the value is retrieved from the DB.
 			// Postern doors are always closed.
-			m_state = m_isPostern || HealthPercent > DOOR_CLOSE_THRESHOLD ? eDoorState.Closed : (eDoorState)Enum.ToObject(typeof(eDoorState), dbDoor.State);
+			m_state = m_isPostern || HealthPercent > DOOR_CLOSE_THRESHOLD ? EDoorState.Closed : (EDoorState)Enum.ToObject(typeof(EDoorState), dbDoor.State);
 
 			StartHealthRegeneration();
 			DoorMgr.RegisterDoor(this);
@@ -691,7 +691,7 @@ namespace DOL.GS.Keeps
 			m_oldHealthPercent = HealthPercent;
 			m_doorID = GenerateDoorID();
 			m_model = 0xFFFF;
-			m_state = eDoorState.Closed;
+			m_state = EDoorState.Closed;
 
 			if (AddToWorld())
 			{
@@ -772,7 +772,7 @@ namespace DOL.GS.Keeps
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 				player.Out.SendMessage($"The {Name} is broken!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
-			m_state = eDoorState.Open;
+			m_state = EDoorState.Open;
 			BroadcastDoorStatus();
 			SaveIntoDatabase();
 		}
@@ -782,7 +782,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public virtual void CloseDoor()
 		{
-			m_state = eDoorState.Closed;
+			m_state = EDoorState.Closed;
 			BroadcastDoorStatus();
 		}
 
@@ -882,6 +882,6 @@ namespace DOL.GS.Keeps
 			return true;
 		}
 
-		public override void NPCManipulateDoorRequest(GameNPC npc, bool open) { }
+		public override void NPCManipulateDoorRequest(GameNpc npc, bool open) { }
 	}
 }

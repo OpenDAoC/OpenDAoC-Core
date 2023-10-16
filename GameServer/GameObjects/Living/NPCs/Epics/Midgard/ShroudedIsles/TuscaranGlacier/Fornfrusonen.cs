@@ -59,7 +59,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer) //on kill generate orbs
         {
-            foreach (GameNPC npc in GetNPCsInRadius(4000))
+            foreach (GameNpc npc in GetNPCsInRadius(4000))
             {
                 if (npc != null && npc.IsAlive && npc.Brain is FornShardBrain)
                     npc.RemoveFromWorld();
@@ -183,7 +183,7 @@ namespace DOL.AI.Brain
                 SpamMessage = false;
                 if (!RemoveAdds)
                 {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(4000))
+                    foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
                     {
                         if (npc != null && npc.IsAlive)
                         {
@@ -237,7 +237,7 @@ namespace DOL.AI.Brain
 #region Forn Shards
 namespace DOL.GS
 {
-    public class FornfrusenenShard : GameNPC
+    public class FornfrusenenShard : GameNpc
     {
         public FornfrusenenShard() : base()
         {
@@ -304,7 +304,7 @@ namespace DOL.GS
 
         public override void Die(GameObject killer)
         {
-            foreach (GameNPC boss in GetNPCsInRadius(3000))
+            foreach (GameNpc boss in GetNPCsInRadius(3000))
             {
                 if (boss != null && boss.IsAlive && boss.Brain is FornfrusenenBrain)
                 {

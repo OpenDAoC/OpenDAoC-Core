@@ -81,7 +81,7 @@ namespace DOL.GS
         }
         public override bool AddToWorld()
         {
-            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            foreach (GameNpc npc in GetNPCsInRadius(8000))
             {
                 if (npc.Brain is TunnelsBrain)
                     npc.RemoveFromWorld();
@@ -125,7 +125,7 @@ namespace DOL.GS
         }
         private void SpawnAnnouncer()
         {
-            foreach (GameNPC npc in GetNPCsInRadius(8000))
+            foreach (GameNpc npc in GetNPCsInRadius(8000))
             {
                 if (npc.Brain is TunnelsBrain)
                     return;
@@ -182,7 +182,7 @@ namespace DOL.AI.Brain
             }
             if (IsPulled == false)
             {
-                foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+                foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
                 {
                     if (npc != null)
                     {
@@ -317,7 +317,7 @@ namespace DOL.AI.Brain
 #region Tunnels Announcer
 namespace DOL.GS
 {
-    public class Tunnels : GameNPC
+    public class Tunnels : GameNpc
     {
         public Tunnels() : base()
         {
@@ -332,7 +332,7 @@ namespace DOL.GS
             Name = "Tunnels Announce";
             GuildName = "DO NOT REMOVE";
             RespawnInterval = 5000;
-            Flags = (GameNPC.eFlags)28;
+            Flags = (ENpcFlags)28;
 
             Size = 50;
             Level = 50;

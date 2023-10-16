@@ -56,7 +56,7 @@ namespace DOL.GS.Effects
             if (player != null)
                 player.Out.SendUpdateMaxSpeed();
 
-            GameNPC npc = owner as GameNPC;
+            GameNpc npc = owner as GameNpc;
             if (npc != null)
             {
                 short maxSpeed = npc.MaxSpeed;

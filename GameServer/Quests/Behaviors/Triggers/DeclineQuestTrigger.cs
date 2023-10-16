@@ -24,14 +24,14 @@ namespace DOL.GS.Quests.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public DeclineQuestTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, Object k, Object i)
+        public DeclineQuestTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, Object k, Object i)
             : base(defaultNPC, notifyHandler, ETriggerType.DeclineQuest, k, i)
         { }
 
         /// <summary>
         /// Creates a new questtrigger and does some simple triggertype parameter compatibility checking
         /// </summary>        
-        public DeclineQuestTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, Type questType)
+        public DeclineQuestTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, Type questType)
             : this(defaultNPC,notifyHandler, (object)null,(object) questType)
         { }
 

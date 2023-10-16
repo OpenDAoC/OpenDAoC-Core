@@ -23,7 +23,7 @@ namespace DOL.GS.DailyQuest.Hibernia
         private int _deadGallaMob = 0;
         private const int MAX_KILLGOAL = 3;
 
-        private static GameNPC Anthony = null; // Start NPC
+        private static GameNpc Anthony = null; // Start NPC
 
 
         // Constructors
@@ -61,10 +61,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
             #region defineNPCs
 
-            GameNPC[] npcs = WorldMgr.GetNPCsByName("Anthony", ERealm.Hibernia);
+            GameNpc[] npcs = WorldMgr.GetNPCsByName("Anthony", ERealm.Hibernia);
 
             if (npcs.Length > 0)
-                foreach (GameNPC npc in npcs)
+                foreach (GameNpc npc in npcs)
                     if (npc.CurrentRegionID == 181 && npc.X == 422864 && npc.Y == 444362)
                     {
                         Anthony = npc;
@@ -75,7 +75,7 @@ namespace DOL.GS.DailyQuest.Hibernia
             {
                 if (log.IsWarnEnabled)
                     log.Warn("Could not find Anthony , creating it ...");
-                Anthony = new GameNPC();
+                Anthony = new GameNpc();
                 Anthony.Model = 289;
                 Anthony.Name = "Anthony";
                 Anthony.GuildName = "Advisor to the King";
@@ -327,7 +327,7 @@ namespace DOL.GS.DailyQuest.Hibernia
                 return;
             
             // check if a GameNPC died + if its in Galladoria
-            if (gArgs.Target.Realm != 0 || gArgs.Target is not GameNPC || gArgs.Target.CurrentRegionID != 191) return;
+            if (gArgs.Target.Realm != 0 || gArgs.Target is not GameNpc || gArgs.Target.CurrentRegionID != 191) return;
             _deadGallaMob++;
             player.Out.SendMessage(
                 "[Daily] Monsters killed in Galladoria: (" + _deadGallaMob + " | " + MAX_KILLGOAL + ")",

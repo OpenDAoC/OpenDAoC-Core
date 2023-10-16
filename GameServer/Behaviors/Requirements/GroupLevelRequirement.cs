@@ -23,7 +23,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public GroupLevelRequirement(GameNPC defaultNPC,  Object n, Object v, EComparator comp)
+        public GroupLevelRequirement(GameNpc defaultNPC,  Object n, Object v, EComparator comp)
             : base(defaultNPC, ERequirementType.GroupLevel, n, v, comp)
 		{   			
 		}
@@ -34,7 +34,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="defaultNPC">Parent defaultNPC of this Requirement</param>		
 		/// <param name="n">First Requirement Variable, meaning depends on RequirementType</param>		
 		/// <param name="comp">Comparator used if some values are veeing compared</param>
-        public GroupLevelRequirement(GameNPC defaultNPC, int n,  EComparator comp)
+        public GroupLevelRequirement(GameNpc defaultNPC, int n,  EComparator comp)
             : this(defaultNPC,  (object)n, (object)null, comp)
 		{   			
 		}

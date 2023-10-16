@@ -123,7 +123,7 @@ namespace DOL.GS.Quests
                 // TODO: Dirty Hack this should be done better
                 var mob = CoreDb<DbMob>.SelectObject(DB.Column("Mob_ID").IsEqualTo(tempID).Or(DB.Column("Name").IsEqualTo(tempID)));
 
-                GameNPC[] livings = WorldMgr.GetNPCsByName(mob.Name,(ERealm) mob.Realm);
+                GameNpc[] livings = WorldMgr.GetNPCsByName(mob.Name,(ERealm) mob.Realm);
 
                 if (livings.Length == 1)
                     living = livings[0];
@@ -155,7 +155,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="identifier">ID or Name of NPC to resolve</param>
 		/// <returns>NPC</returns>
-		public static GameNPC ResolveNPC(object identifier)
+		public static GameNpc ResolveNPC(object identifier)
 		{
 			return ResolveNPC(identifier,null, false);
 		}
@@ -165,7 +165,7 @@ namespace DOL.GS.Quests
 		/// <param name="identifier"></param>
 		/// <param name="defaultNPC"></param>
 		/// <returns></returns>
-		public static GameNPC ResolveNPC(object identifier, GameNPC defaultNPC)
+		public static GameNpc ResolveNPC(object identifier, GameNpc defaultNPC)
 		{
 			return ResolveNPC(identifier,defaultNPC, false);
 		}
@@ -176,9 +176,9 @@ namespace DOL.GS.Quests
 		/// <param name="defaultNPC"></param>
 		/// <param name="lookupDB"></param>
 		/// <returns></returns>
-		public static GameNPC ResolveNPC(object identifier, GameNPC defaultNPC, bool lookupDB)
+		public static GameNpc ResolveNPC(object identifier, GameNpc defaultNPC, bool lookupDB)
 		{
-			GameNPC npc = null;
+			GameNpc npc = null;
 
 			if (identifier is string || identifier is int)
 			{
@@ -186,7 +186,7 @@ namespace DOL.GS.Quests
 
                 var mob = CoreDb<DbMob>.SelectObject(DB.Column("Mob_ID").IsEqualTo(tempID).Or(DB.Column("Name").IsEqualTo(tempID)));
 
-				GameNPC[] npcs = WorldMgr.GetNPCsByName(mob.Name,(ERealm) mob.Realm);
+				GameNpc[] npcs = WorldMgr.GetNPCsByName(mob.Name,(ERealm) mob.Realm);
 
                 if (npcs.Length == 1)
                 {
@@ -203,9 +203,9 @@ namespace DOL.GS.Quests
                         log.Warn("Couldn't find NPC with id or name:" + tempID + " in WorldMgr");
                 }
 			}
-			else if (identifier is GameNPC)
+			else if (identifier is GameNpc)
 			{
-				npc =(GameNPC) identifier;
+				npc =(GameNpc) identifier;
 			}
 
 			// use default otherwise
@@ -272,7 +272,7 @@ namespace DOL.GS.Quests
 		/// <param name="source">The npc source</param>
 		/// <param name="target">The player who search a quest</param>
 		/// <returns>the number of time the quest can be done again</returns>
-		public static int CanGiveQuest(Type questType, GamePlayer target, GameNPC source)
+		public static int CanGiveQuest(Type questType, GamePlayer target, GameNpc source)
 		{
 			if(source != null)
 			{
@@ -291,7 +291,7 @@ namespace DOL.GS.Quests
 		/// <param name="player"></param>
 		/// <param name="source"></param>
 		/// <returns></returns>
-		public static bool ProposeQuestToPlayer(Type questType, string sentence, GamePlayer player, GameNPC source)
+		public static bool ProposeQuestToPlayer(Type questType, string sentence, GamePlayer player, GameNpc source)
 		{
 
             if (CanGiveQuest(questType, player, source) > 0)
@@ -335,7 +335,7 @@ namespace DOL.GS.Quests
         /// <param name="player"></param>
         /// <param name="source"></param>
         /// <returns></returns>
-        public static bool AbortQuestToPlayer(Type questType, string sentence, GamePlayer player,GameNPC source )
+        public static bool AbortQuestToPlayer(Type questType, string sentence, GamePlayer player,GameNpc source )
         {
             if (player.IsDoingQuest(questType) != null)
             {
@@ -366,7 +366,7 @@ namespace DOL.GS.Quests
 		/// <param name="player">The player to give the quest</param>
 		/// <param name="source">The npc who give the questw</param>
 		/// <returns>true if added</returns>
-		public static bool GiveQuestToPlayer(Type questType, GamePlayer player, GameNPC source)
+		public static bool GiveQuestToPlayer(Type questType, GamePlayer player, GameNpc source)
 		{
 			return GiveQuestToPlayer(questType, 1, player, source);
 		}
@@ -379,9 +379,9 @@ namespace DOL.GS.Quests
 		/// <param name="player">The player to give the quest</param>
 		/// <param name="source">The npc who give the questw</param>
 		/// <returns>true if added</returns>
-		public static bool GiveQuestToPlayer(Type questType, byte startingStep, GamePlayer player, GameNPC source)
+		public static bool GiveQuestToPlayer(Type questType, byte startingStep, GamePlayer player, GameNpc source)
 		{
-			if(source != null && QuestMgr.CanGiveQuest(questType, player, source as GameNPC)  <= 0)
+			if(source != null && QuestMgr.CanGiveQuest(questType, player, source as GameNpc)  <= 0)
 				return false;
 
 			if (player.IsDoingQuest(questType) != null)

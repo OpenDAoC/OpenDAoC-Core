@@ -113,7 +113,7 @@ namespace DOL.GS.PacketHandler
 		void SendModelAndSizeChange(GameObject obj, ushort newModel, byte newSize);
 		void SendModelAndSizeChange(ushort objectId, ushort newModel, byte newSize);
 		void SendEmoteAnimation(GameObject obj, EEmote emote);
-		void SendNPCCreate(GameNPC npc);
+		void SendNPCCreate(GameNpc npc);
 		void SendLivingEquipmentUpdate(GameLiving living);
 		void SendRegionChanged();
 		void SendUpdatePoints();
@@ -143,12 +143,12 @@ namespace DOL.GS.PacketHandler
 		void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback);
 		void SendGuildLeaveCommand(GamePlayer invitingPlayer, string inviteMessage);
 		void SendGuildInviteCommand(GamePlayer invitingPlayer, string inviteMessage);
-		void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest);
-		void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest);
-		void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DataQuest quest);
-		void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DataQuest quest);
-		void SendQuestSubscribeCommand(GameNPC invitingNPC, ushort questid, string inviteMessage);
-		void SendQuestAbortCommand(GameNPC abortingNPC, ushort questid, string abortMessage);
+		void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest);
+		void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest);
+		void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, DataQuest quest);
+		void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, DataQuest quest);
+		void SendQuestSubscribeCommand(GameNpc invitingNPC, ushort questid, string inviteMessage);
+		void SendQuestAbortCommand(GameNpc abortingNPC, ushort questid, string abortMessage);
 		void SendGroupWindowUpdate();
 		void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living);
 		void SendGroupMembersUpdate(bool updateIcons, bool updateMap);
@@ -199,7 +199,7 @@ namespace DOL.GS.PacketHandler
 		void SendChangeGroundTarget(Point3D newTarget);
 		void SendPetWindow(GameLiving pet, EPetWindowAction windowAction, EAggressionState aggroState, EWalkState walkState);
 		void SendPlaySound(ESoundType soundType, ushort soundID);
-		void SendNPCsQuestEffect(GameNPC npc, EQuestIndicator indicator);
+		void SendNPCsQuestEffect(GameNpc npc, EQuestIndicator indicator);
 		void SendMasterLevelWindow(byte ml);
 		void SendHexEffect(GamePlayer player, byte effect1, byte effect2, byte effect3, byte effect4, byte effect5);
 		void SendRvRGuildBanner(GamePlayer player, bool show);

@@ -83,7 +83,7 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "EmthoroAdd")
 					npc.Die(this);
@@ -146,7 +146,7 @@ namespace DOL.AI.Brain
 				Body.MaxSpeedBase = npcTemplate.MaxSpeed;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "EmthoroAdd")
 							npc.Die(Body);
@@ -158,7 +158,7 @@ namespace DOL.AI.Brain
 			{
 				RemoveAdds = false;
 				GameLiving target = Body.TargetObject as GameLiving;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(3000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(3000))
 				{
 					if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "EmthoroAdd")
 							AddAggroListTo(npc.Brain as StandardMobBrain);
@@ -186,7 +186,7 @@ namespace DOL.AI.Brain
         {
 			if (HasAggro && Body.IsAlive)
 			{
-				GameNPC add = new GameNPC();
+				GameNpc add = new GameNpc();
 				add.Name = Body.Name + "'s servant";
 				switch(Util.Random(1,2))
                 {

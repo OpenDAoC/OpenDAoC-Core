@@ -218,7 +218,7 @@ namespace DOL.GS.Commands
 
 			int count = 0;
 
-			foreach (GameNPC mob in WorldMgr.GetNPCsFromRegion(region))
+			foreach (GameNpc mob in WorldMgr.GetNPCsFromRegion(region))
 			{
 				if (!mob.LoadedFromScript)
 				{

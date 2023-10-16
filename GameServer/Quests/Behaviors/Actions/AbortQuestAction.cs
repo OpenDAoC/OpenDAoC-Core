@@ -9,11 +9,11 @@ namespace DOL.GS.Quests.Actions
     public class AbortQuestAction: AAction<Type,Unused>
     {
 
-        public AbortQuestAction(GameNPC defaultNPC, Object p, Object q)
+        public AbortQuestAction(GameNpc defaultNPC, Object p, Object q)
             : base(defaultNPC, EActionType.AbortQuest, p, q) 
         { }
 
-        public AbortQuestAction(GameNPC defaultNPC, Type questType)
+        public AbortQuestAction(GameNpc defaultNPC, Type questType)
             : this(defaultNPC, (object)questType, (object)null)
         { }
 

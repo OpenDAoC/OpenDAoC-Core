@@ -13,7 +13,7 @@ namespace DOL.GS.Behaviour.Triggers
     /// Additional there are two variables to add the needed parameters for the triggertype (Item to give for GiveItem, NPC to interact for Interact, etc...). To fire a QuestAction at least one of the added triggers must be fulfilled. 
     /// </summary>
     [Trigger(Global = true,TriggerType = ETriggerType.GiveItem, DefaultValueK = EDefaultValueConstants.NPC)]
-    public class GiveItemTrigger : ATrigger<GameNPC,DbItemTemplate>
+    public class GiveItemTrigger : ATrigger<GameNpc,DbItemTemplate>
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -24,7 +24,7 @@ namespace DOL.GS.Behaviour.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public GiveItemTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
+        public GiveItemTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
             : base(defaultNPC,notifyHandler, ETriggerType.GiveItem, k, i)
         { }
 
@@ -35,7 +35,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="notifyHandler"></param>
         /// <param name="k"></param>
         /// <param name="i"></param>
-        public GiveItemTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, GameNPC k, DbItemTemplate i)
+        public GiveItemTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, GameNpc k, DbItemTemplate i)
             : this(defaultNPC,notifyHandler,  (object)k,(object) i)
         { }
 

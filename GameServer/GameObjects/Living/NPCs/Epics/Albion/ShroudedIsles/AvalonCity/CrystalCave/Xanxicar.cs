@@ -327,7 +327,7 @@ namespace DOL.AI.Brain
 				XanxicarianChampion.XanxicarianChampionCount = 0;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
+					foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))
 					{
 						if (npc != null)
 						{

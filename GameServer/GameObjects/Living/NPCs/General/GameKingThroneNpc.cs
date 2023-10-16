@@ -24,7 +24,7 @@ using DOL.Language;
 namespace DOL.GS
 {
 	// This class has to be completed and may be inherited for scripting purpose (like quests)
-	public class KingNPC : GameNPC
+	public class KingNPC : GameNpc
 	{
 		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -105,7 +105,7 @@ namespace DOL.GS
 	}
 
 	// This class has to be completed and may be inherited for scripting purpose
-	public class CLWeaponNPC : GameNPC
+	public class CLWeaponNPC : GameNpc
 	{
 		public CLWeaponNPC()
 			: base()

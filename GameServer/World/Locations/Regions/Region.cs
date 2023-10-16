@@ -121,7 +121,7 @@ namespace DOL.GS
         /// <summary>
         /// The Region Mob's Respawn Timer Collection
         /// </summary>
-        protected readonly ConcurrentDictionary<GameNPC, int> m_mobsRespawning = new();
+        protected readonly ConcurrentDictionary<GameNpc, int> m_mobsRespawning = new();
 
         #endregion
 
@@ -643,7 +643,7 @@ namespace DOL.GS
             set { m_isNightTime = value; }
         }
 
-        public virtual ConcurrentDictionary<GameNPC, int> MobsRespawning
+        public virtual ConcurrentDictionary<GameNpc, int> MobsRespawning
         {
         	get
         	{
@@ -722,7 +722,7 @@ namespace DOL.GS
             {
                 foreach (DbMob mob in mobObjs)
                 {
-                    GameNPC myMob = null;
+                    GameNpc myMob = null;
                     string error = string.Empty;
   
                     // Default Classtype
@@ -744,7 +744,7 @@ namespace DOL.GS
                             try
                             {
                                 
-                                myMob = (GameNPC)type.Assembly.CreateInstance(type.FullName);
+                                myMob = (GameNpc)type.Assembly.CreateInstance(type.FullName);
                                	
                             }
                             catch (Exception e)
@@ -769,7 +769,7 @@ namespace DOL.GS
 
                         try
                         {
-                            myMob = (GameNPC)gasm.CreateInstance(classtype, false);
+                            myMob = (GameNpc)gasm.CreateInstance(classtype, false);
                         }
                         catch
                         {
@@ -782,7 +782,7 @@ namespace DOL.GS
                             {
                                 try
                                 {
-                                    myMob = (GameNPC)asm.CreateInstance(classtype, false);
+                                    myMob = (GameNpc)asm.CreateInstance(classtype, false);
                                     error = string.Empty;
                                 }
                                 catch
@@ -796,7 +796,7 @@ namespace DOL.GS
 
                             if (myMob == null)
                             {
-                                myMob = new GameNPC();
+                                myMob = new GameNpc();
                                 error = classtype;
                             }
                         }
@@ -1493,9 +1493,9 @@ namespace DOL.GS
             return GetInRadius<GameStaticItem>(point, EGameObjectType.ITEM, radius);
         }
 
-        public List<GameNPC> GetNPCsInRadius(Point3D point, ushort radius)
+        public List<GameNpc> GetNPCsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameNPC>(point, EGameObjectType.NPC, radius);
+            return GetInRadius<GameNpc>(point, EGameObjectType.NPC, radius);
         }
 
         public List<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius)
@@ -1533,13 +1533,13 @@ namespace DOL.GS
 	/// </summary>
 	public class NPCDistEntry
 	{
-		public NPCDistEntry(GameNPC o, int distance)
+		public NPCDistEntry(GameNpc o, int distance)
 		{
 			NPC = o;
 			Distance = distance;
 		}
 
-		public GameNPC NPC;
+		public GameNpc NPC;
 		public int Distance;
 	}
 

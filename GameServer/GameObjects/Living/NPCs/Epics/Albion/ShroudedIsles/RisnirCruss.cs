@@ -68,7 +68,7 @@ namespace DOL.GS
 			Empathy = npcTemplate.Empathy;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
-			Flags = eFlags.FLYING;
+			Flags = ENpcFlags.FLYING;
 			Faction = FactionMgr.GetFactionByID(20);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(20));
 
@@ -83,7 +83,7 @@ namespace DOL.GS
         {
 			if (enemy != null && enemy is GamePlayer)
             {
-				GameNPC add = new GameNPC();
+				GameNpc add = new GameNpc();
 				add.Name = "Apparition of " + enemy.Name;
 				add.Model = 902;
 				add.Size = (byte)Util.Random(45, 55);
@@ -111,7 +111,7 @@ namespace DOL.GS
         }
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "RisnirCrussAdd")
 					npc.Die(this);
@@ -140,8 +140,8 @@ namespace DOL.AI.Brain
 				//set state to RETURN TO SPAWN
 				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
-				if(Body.Flags != GameNPC.eFlags.FLYING)
-					Body.Flags = GameNPC.eFlags.FLYING;
+				if(Body.Flags != ENpcFlags.FLYING)
+					Body.Flags = ENpcFlags.FLYING;
 				if (NotInCombat == false)
 				{
 					new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(Show_Effect), 500);
@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 				}
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 					{
 						if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "RisnirCrussAdd")
 							npc.Die(Body);

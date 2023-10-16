@@ -133,7 +133,7 @@ namespace DOL.GS
             /// We cannot reliably check melee vs ranged here since archer pets don't necessarily have a proper weapon with the correct slot type assigned.
             /// Since Wild Minion is the only way for pets to crit and we (currently) want it to affect melee/ranged/spells, we can just rely on the Melee crit chance even for archery attacks
             /// and as a result we don't actually need to detect melee vs ranged to end up with the correct behavior since all attack types will have the same % chance to crit in the end.
-            if (owner is GameNPC npc)
+            if (owner is GameNpc npc)
             {
                 // Player-Summoned pet.
                 if (npc is GameSummonedPet summonedPet && summonedPet.Owner is GamePlayer)
@@ -179,8 +179,8 @@ namespace DOL.GS
                         return (EDamageType) weapon.Type_Damage;
                 }
             }
-            else if (owner is GameNPC)
-                return (owner as GameNPC).MeleeDamageType;
+            else if (owner is GameNpc)
+                return (owner as GameNpc).MeleeDamageType;
             else
                 return EDamageType.Natural;
         }
@@ -747,11 +747,11 @@ namespace DOL.GS
                             LanguageMgr.GetTranslation(player.Client.Account.Language,
                                 "GamePlayer.StartAttack.CombatNoTarget"), EChatType.CT_YouHit,
                             EChatLoc.CL_SystemWindow);
-                    else if (m_startAttackTarget is GameNPC)
+                    else if (m_startAttackTarget is GameNpc)
                     {
                         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                                 "GamePlayer.StartAttack.CombatTarget",
-                                m_startAttackTarget.GetName(0, false, player.Client.Account.Language, (m_startAttackTarget as GameNPC))),
+                                m_startAttackTarget.GetName(0, false, player.Client.Account.Language, (m_startAttackTarget as GameNpc))),
                             EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                     }
                     else
@@ -816,7 +816,7 @@ namespace DOL.GS
                     }
                 }
             }
-            else if (owner is GameNPC && m_startAttackTarget != null)
+            else if (owner is GameNpc && m_startAttackTarget != null)
                 NpcStartAttack(m_startAttackTarget);
             else
                 LivingStartAttack();
@@ -839,7 +839,7 @@ namespace DOL.GS
                 return false;
 
             // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
-            if (owner is GameNPC npcOwner && owner.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
+            if (owner is GameNpc npcOwner && owner.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
             {
                 if (!npcOwner.IsWithinRadius(npcOwner.TargetObject, npcOwner.attackComponent.AttackRange))
                     return false;
@@ -875,7 +875,7 @@ namespace DOL.GS
 
         private void NpcStartAttack(GameObject attackTarget)
         {
-            GameNPC npc = owner as GameNPC;
+            GameNpc npc = owner as GameNpc;
             npc.TargetObject = attackTarget;
             npc.StopMovingOnPath();
 
@@ -891,9 +891,9 @@ namespace DOL.GS
             {
                 // Archer mobs sometimes bug and keep trying to fire at max range unsuccessfully so force them to get just a tad closer.
                 if (npc.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
-                    npc.Follow(attackTarget, AttackRange - 30, GameNPC.STICK_MAXIMUM_RANGE);
+                    npc.Follow(attackTarget, AttackRange - 30, GameNpc.STICK_MAXIMUM_RANGE);
                 else
-                    npc.Follow(attackTarget, GameNPC.STICK_MINIMUM_RANGE, GameNPC.STICK_MAXIMUM_RANGE);
+                    npc.Follow(attackTarget, GameNpc.STICK_MINIMUM_RANGE, GameNpc.STICK_MAXIMUM_RANGE);
             }
         }
 
@@ -919,7 +919,7 @@ namespace DOL.GS
 
             if (owner is GamePlayer playerOwner && playerOwner.IsAlive)
                 playerOwner.Out.SendAttackMode(AttackState);
-            else if (owner is GameNPC npcOwner && npcOwner.Inventory?.GetItem(EInventorySlot.DistanceWeapon) != null && npcOwner.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
+            else if (owner is GameNpc npcOwner && npcOwner.Inventory?.GetItem(EInventorySlot.DistanceWeapon) != null && npcOwner.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
                 npcOwner.SwitchWeapon(EActiveWeaponSlot.Distance);
         }
 
@@ -993,7 +993,7 @@ namespace DOL.GS
 
                         // Camouflage will be disabled only when attacking a GamePlayer or ControlledNPC of a GamePlayer.
                         if ((target is GamePlayer && playerOwner.HasAbility(Abilities.Camouflage)) ||
-                            (target is GameNPC targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain && targetNpcBrain.GetPlayerOwner() != null))
+                            (target is GameNpc targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain && targetNpcBrain.GetPlayerOwner() != null))
                         {
                             CamouflageEcsAbilityEffect camouflage = (CamouflageEcsAbilityEffect) EffectListService.GetAbilityEffectOnTarget(playerOwner, EEffect.Camouflage);
 
@@ -1035,7 +1035,7 @@ namespace DOL.GS
                                 }
                             }
 
-                            foreach (GameNPC npcInRange in owner.GetNPCsInRadius((ushort) AttackRange))
+                            foreach (GameNpc npcInRange in owner.GetNPCsInRadius((ushort) AttackRange))
                             {
                                 if (GameServer.ServerRules.IsAllowedToAttack(owner, npcInRange, true))
                                     listAvailableTargets.Add(npcInRange);
@@ -1301,11 +1301,11 @@ namespace DOL.GS
                         damage *= 1 + owner.GetModified(EProperty.OffhandDamage) * 0.01;
 
                     // If the target is another player's pet, shouldn't 'PVP_MELEE_DAMAGE' be used?
-                    if (owner is GamePlayer || (owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0))
+                    if (owner is GamePlayer || (owner is GameNpc npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0))
                     {
                         if (target is GamePlayer)
                             damage = (int) (damage * Properties.PVP_MELEE_DAMAGE);
-                        else if (target is GameNPC)
+                        else if (target is GameNpc)
                             damage = (int) (damage * Properties.PVE_MELEE_DAMAGE);
                     }
 
@@ -1449,9 +1449,9 @@ namespace DOL.GS
                                     "StyleProcessor.ExecuteStyle.PerformPerfectly", ad.Style.Name, damageAmount),
                                 EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                         }
-                        else if (owner is GameNPC)
+                        else if (owner is GameNpc)
                         {
-                            ControlledNpcBrain brain = ((GameNPC) owner).Brain as ControlledNpcBrain;
+                            ControlledNpcBrain brain = ((GameNpc) owner).Brain as ControlledNpcBrain;
 
                             if (brain != null)
                             {
@@ -1552,9 +1552,9 @@ namespace DOL.GS
 
             #region controlled messages
 
-            if (ad.Attacker is GameNPC)
+            if (ad.Attacker is GameNpc)
             {
-                IControlledBrain brain = ((GameNPC) ad.Attacker).Brain as IControlledBrain;
+                IControlledBrain brain = ((GameNpc) ad.Attacker).Brain as IControlledBrain;
 
                 if (brain != null)
                 {
@@ -1609,9 +1609,9 @@ namespace DOL.GS
                 }
             }
 
-            if (ad.Target is GameNPC)
+            if (ad.Target is GameNpc)
             {
-                IControlledBrain brain = ((GameNPC) ad.Target).Brain as IControlledBrain;
+                IControlledBrain brain = ((GameNpc) ad.Target).Brain as IControlledBrain;
                 if (brain != null)
                 {
                     GameLiving owner_living = brain.GetLivingOwner();
@@ -1897,14 +1897,14 @@ namespace DOL.GS
             DbInventoryItem leftHand = guard.GuardSource.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
             DbInventoryItem rightHand = guard.GuardSource.ActiveWeapon;
 
-            if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || leftHand.Object_Type != (int) EObjectType.Shield) && guard.GuardSource is not GameNPC)
+            if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || leftHand.Object_Type != (int) EObjectType.Shield) && guard.GuardSource is not GameNpc)
                 return false;
 
             // TODO: Insert actual formula for guarding here, this is just a guessed one based on block.
             int guardLevel = guard.GuardSource.GetAbilityLevel(Abilities.Guard);
             double guardChance;
 
-            if (guard.GuardSource is GameNPC)
+            if (guard.GuardSource is GameNpc)
                 guardChance = guard.GuardSource.GetModified(EProperty.BlockChance);
             else
                 guardChance = guard.GuardSource.GetModified(EProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
@@ -2145,7 +2145,7 @@ namespace DOL.GS
             if (playerOwner != null)
             {
                 GameLiving attacker = ad.Attacker;
-                GamePlayer tempPlayerAttacker = playerAttacker ?? ((attacker as GameNPC)?.Brain as IControlledBrain)?.GetPlayerOwner();
+                GamePlayer tempPlayerAttacker = playerAttacker ?? ((attacker as GameNpc)?.Brain as IControlledBrain)?.GetPlayerOwner();
 
                 if (tempPlayerAttacker != null && action.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
                 {
@@ -2393,44 +2393,44 @@ namespace DOL.GS
 
                 GameObject target = ad.Target;
                 DbInventoryItem weapon = ad.Weapon;
-                if (ad.Target is GameNPC)
+                if (ad.Target is GameNpc)
                 {
                     switch (ad.AttackResult)
                     {
                         case EAttackResult.TargetNotVisible:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                     "GamePlayer.Attack.NotInView",
-                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))),
+                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNpc))),
                                 EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                             break;
                         case EAttackResult.OutOfRange:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                     "GamePlayer.Attack.TooFarAway",
-                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))),
+                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNpc))),
                                 EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                             break;
                         case EAttackResult.TargetDead:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                     "GamePlayer.Attack.AlreadyDead",
-                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))),
+                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNpc))),
                                 EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                             break;
                         case EAttackResult.Blocked:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                     "GamePlayer.Attack.Blocked",
-                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))),
+                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNpc))),
                                 EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                             break;
                         case EAttackResult.Parried:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                     "GamePlayer.Attack.Parried",
-                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))),
+                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNpc))),
                                 EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                             break;
                         case EAttackResult.Evaded:
                             p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                     "GamePlayer.Attack.Evaded",
-                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNPC))),
+                                    ad.Target.GetName(0, true, p.Client.Account.Language, (ad.Target as GameNpc))),
                                 EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                             break;
                         case EAttackResult.NoTarget:
@@ -2503,14 +2503,14 @@ namespace DOL.GS
                             else
                                 p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                     "GamePlayer.Attack.InterceptHit", attackTypeMsg,
-                                    ad.Target.GetName(0, false, p.Client.Account.Language, (ad.Target as GameNPC)),
+                                    ad.Target.GetName(0, false, p.Client.Account.Language, (ad.Target as GameNpc)),
                                     hitWeapon, ad.Damage, modmessage), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 
                             // critical hit
                             if (ad.CriticalDamage > 0)
                                 p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                         "GamePlayer.Attack.Critical",
-                                        ad.Target.GetName(0, false, p.Client.Account.Language, (ad.Target as GameNPC)),
+                                        ad.Target.GetName(0, false, p.Client.Account.Language, (ad.Target as GameNpc)),
                                         ad.CriticalDamage) + $" ({AttackCriticalChance(action, ad.Weapon)}%)",
                                     EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                             break;
@@ -2701,9 +2701,9 @@ namespace DOL.GS
             missChance -= ad.Attacker.GetModified(EProperty.ToHitBonus);
 
             // PVE group miss rate.
-            if (owner is GameNPC && ad.Attacker is GamePlayer playerAttacker && playerAttacker.Group != null && (int) (0.90 * playerAttacker.Group.Leader.Level) >= ad.Attacker.Level && ad.Attacker.IsWithinRadius(playerAttacker.Group.Leader, 3000))
+            if (owner is GameNpc && ad.Attacker is GamePlayer playerAttacker && playerAttacker.Group != null && (int) (0.90 * playerAttacker.Group.Leader.Level) >= ad.Attacker.Level && ad.Attacker.IsWithinRadius(playerAttacker.Group.Leader, 3000))
                 missChance -= (int) (5 * playerAttacker.Group.Leader.GetConLevel(owner));
-            else if (owner is GameNPC || ad.Attacker is GameNPC)
+            else if (owner is GameNpc || ad.Attacker is GameNpc)
             {
                 GameLiving misscheck = ad.Attacker;
 

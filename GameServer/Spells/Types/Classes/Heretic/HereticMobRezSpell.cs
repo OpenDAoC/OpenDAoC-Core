@@ -172,7 +172,7 @@ namespace DOL.GS.Spells
 					list.Add(player);
 				}
 			}
-			foreach (GameNPC npc in target.GetNPCsInRadius((ushort)Spell.Radius))
+			foreach (GameNpc npc in target.GetNPCsInRadius((ushort)Spell.Radius))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 				{
@@ -209,7 +209,7 @@ namespace DOL.GS.Spells
 					list.Add(player);
 				}
 			}
-			foreach (GameNPC npc in target.GetNPCsInRadius((ushort)Spell.Radius))
+			foreach (GameNpc npc in target.GetNPCsInRadius((ushort)Spell.Radius))
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 				{

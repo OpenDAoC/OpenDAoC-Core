@@ -30,7 +30,7 @@ public class SpeedCommand : ACommandHandler, ICommandHandler
         {
             target.MaxSpeedBase = speed;
 
-            GameNPC npc = target as GameNPC;
+            GameNpc npc = target as GameNpc;
 
             if ( npc == null )
             {

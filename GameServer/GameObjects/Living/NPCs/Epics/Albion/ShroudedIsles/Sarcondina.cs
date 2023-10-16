@@ -88,7 +88,7 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(5000))
+			foreach (GameNpc npc in GetNPCsInRadius(5000))
 			{
 				if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "SarcondinaAdd")
 					npc.Die(this);
@@ -166,7 +166,7 @@ namespace DOL.AI.Brain
 				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				CanSpawnAdd = false;
-				foreach (GameNPC npc in Body.GetNPCsInRadius(5000))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(5000))
 				{
 					if (npc != null && npc.IsAlive && npc.RespawnInterval == -1 && npc.PackageID == "SarcondinaAdd")
 						npc.Die(Body);
@@ -186,7 +186,7 @@ namespace DOL.AI.Brain
 		{
 			if (HasAggro && Body.IsAlive)
 			{
-				GameNPC add = new GameNPC();
+				GameNpc add = new GameNpc();
 				add.Name = Body.Name + "'s servant";
 				add.Model = 933;
 				add.Size = (byte)Util.Random(45, 55);

@@ -25,7 +25,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 		private int _iarnvidiurKilled = 0;
 		private int _nosdodenKilled = 0;
 
-		private static GameNPC Jarek = null; // Start NPC
+		private static GameNpc Jarek = null; // Start NPC
 
 		private const string Iarnvidiur_NAME = "Iarnvidiur";
 		private const string Nosdoden_NAME = "Nosdoden";
@@ -66,10 +66,10 @@ namespace DOL.GS.MonthlyQuest.Midgard
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Jarek", ERealm.Midgard);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Jarek", ERealm.Midgard);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 151 && npc.X == 292291 && npc.Y == 354975)
 					{
 						Jarek = npc;
@@ -80,7 +80,7 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Jarek , creating it ...");
-				Jarek = new GameNPC();
+				Jarek = new GameNpc();
 				Jarek.Model = 774;
 				Jarek.Name = "Jarek";
 				Jarek.GuildName = "Advisor to the King";
@@ -321,13 +321,13 @@ namespace DOL.GS.MonthlyQuest.Midgard
 			if (Step != 1 || e != GameLivingEvent.EnemyKilled) return;
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
 
-			if (gArgs.Target.Name.ToLower() == Iarnvidiur_NAME.ToLower() && gArgs.Target is GameNPC && _iarnvidiurKilled < MAX_KILLED)
+			if (gArgs.Target.Name.ToLower() == Iarnvidiur_NAME.ToLower() && gArgs.Target is GameNpc && _iarnvidiurKilled < MAX_KILLED)
 			{
 				_iarnvidiurKilled = 1;
 				player.Out.SendMessage("[Monthly] You killed " + Iarnvidiur_NAME + ": (" + _iarnvidiurKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
 				player.Out.SendQuestUpdate(this);
 			}
-			else if (gArgs.Target.Name.ToLower() == Nosdoden_NAME.ToLower() && gArgs.Target is GameNPC && _nosdodenKilled < MAX_KILLED)
+			else if (gArgs.Target.Name.ToLower() == Nosdoden_NAME.ToLower() && gArgs.Target is GameNpc && _nosdodenKilled < MAX_KILLED)
 			{
 				_nosdodenKilled = 1;
 				player.Out.SendMessage("[Monthly] You killed " + Nosdoden_NAME + ": (" + _nosdodenKilled + " | " + MAX_KILLED + ")", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);

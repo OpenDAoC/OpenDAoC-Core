@@ -87,7 +87,7 @@ namespace DOL.GS
 		}
         public override void Die(GameObject killer)
         {
-			foreach (GameNPC npc in GetNPCsInRadius(8000))
+			foreach (GameNpc npc in GetNPCsInRadius(8000))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is ColialtAddsBrain)
 					npc.Die(this);
@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 			}
 			if (HasAggro && Body.TargetObject != null)
 			{
-				foreach(GameNPC npc in Body.GetNPCsInRadius(3000))
+				foreach(GameNpc npc in Body.GetNPCsInRadius(3000))
                 {
 					if(npc != null && npc.IsAlive && npc.Brain is ColialtAddsBrain brain)
                     {
@@ -231,7 +231,7 @@ namespace DOL.AI.Brain
 /////////////////////////////////////////////////////////////////Colialt Adds///////////////////////////////////////////////////////////
 namespace DOL.GS
 {
-	public class ColialtAdds : GameNPC
+	public class ColialtAdds : GameNpc
 	{
 		public ColialtAdds() : base() { }
 		public override int GetResist(EDamageType damageType)

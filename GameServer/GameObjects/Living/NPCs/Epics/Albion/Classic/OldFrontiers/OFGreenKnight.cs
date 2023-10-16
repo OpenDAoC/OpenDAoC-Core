@@ -112,7 +112,7 @@ namespace DOL.GS
             OFGreenKnightBrain.CanHeal4 = false;
             OFGreenKnightBrain.PickPortPoint = false;
 
-            Flags = eFlags.PEACE;
+            Flags = ENpcFlags.PEACE;
             VisibleActiveWeaponSlots = 34;
             MeleeDamageType = EDamageType.Slash;
             OFGreenKnightBrain sbrain = new OFGreenKnightBrain();
@@ -125,7 +125,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Green Knight", 1, (ERealm) 0);
             if (npcs.Length == 0)
             {
@@ -143,7 +143,7 @@ namespace DOL.GS
                 OF.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
                 OF.Faction = FactionMgr.GetFactionByID(236);
                 OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(236));
-                OF.BodyType = (ushort) NpcTemplateMgr.eBodyType.Humanoid;
+                OF.BodyType = (ushort) EBodyType.Humanoid;
                 OF.MaxSpeedBase = 400;
 
                 OF.X = 592990;
@@ -591,10 +591,10 @@ namespace DOL.AI.Brain
             //we reset him so he return to his orginal peace flag and max health and reseting pickheal phases
             if (Body.InCombatInLast(60 * 1000) == false && Body.InCombatInLast(65 * 1000))
             {
-                Body.Flags = GameNPC.eFlags.PEACE;
+                Body.Flags = ENpcFlags.PEACE;
                 Body.Health = Body.MaxHealth;
                 Body.ReturnToSpawnPoint(400); //move boss back to his spawn point
-                foreach (GameNPC npc in Body.GetNPCsInRadius(6500))
+                foreach (GameNpc npc in Body.GetNPCsInRadius(6500))
                 {
                     if (npc.Brain is GKTreesBrain)
                         npc.RemoveFromWorld();//remove all trees
@@ -701,7 +701,7 @@ namespace DOL.AI.Brain
 }
 namespace DOL.GS
 {
-    public class GKTrees : GameNPC
+    public class GKTrees : GameNpc
     {
         public override double AttackDamage(DbInventoryItem weapon)
         {

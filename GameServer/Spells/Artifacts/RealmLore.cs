@@ -16,7 +16,7 @@ namespace DOL.GS.Spells
 			if(selectedTarget==null) 
 				return false;
 
-			if (selectedTarget is GameNPC)
+			if (selectedTarget is GameNpc)
 			{
 				MessageToCaster("This spell works only on players.", EChatType.CT_SpellResisted); return false;
 			}

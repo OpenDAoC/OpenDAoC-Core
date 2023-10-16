@@ -6,7 +6,7 @@ using DOL.GS;
 
 namespace DOL.GS
 {
-    public class EyesWatchingYouInit : GameNPC
+    public class EyesWatchingYouInit : GameNpc
     {
         public EyesWatchingYouInit() : base() { }
         public override int MaxHealth
@@ -26,7 +26,7 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
-            GameNPC[] npcs;
+            GameNpc[] npcs;
             npcs = WorldMgr.GetNPCsByNameFromRegion("Eyes Watching You Initializator", 191, (ERealm)0);
             if (npcs.Length == 0)
             {
@@ -42,10 +42,10 @@ namespace DOL.GS
                 CO.Level = 50;
                 CO.Size = 50;
                 CO.CurrentRegionID = 191;
-                CO.Flags ^= eFlags.CANTTARGET;
-                CO.Flags ^= eFlags.FLYING;
-                CO.Flags ^= eFlags.DONTSHOWNAME;
-                CO.Flags ^= eFlags.PEACE;
+                CO.Flags ^= ENpcFlags.CANTTARGET;
+                CO.Flags ^= ENpcFlags.FLYING;
+                CO.Flags ^= ENpcFlags.DONTSHOWNAME;
+                CO.Flags ^= ENpcFlags.PEACE;
                 CO.Faction = FactionMgr.GetFactionByID(64);
                 CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
                 CO.X = 37278;
@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 ////////////////////////////////////////////////////////////////////////////Effect Mob/////////////////////
 namespace DOL.GS
 {
-    public class EyesWatchingYouEffect : GameNPC
+    public class EyesWatchingYouEffect : GameNpc
     {
         public EyesWatchingYouEffect() : base() { }
         public override int MaxHealth
@@ -163,9 +163,9 @@ namespace DOL.GS
             Size = 100;
             Level = 50;
             MaxSpeedBase = 0;
-            Flags ^= eFlags.DONTSHOWNAME;
-            Flags ^= eFlags.PEACE;
-            Flags ^= eFlags.CANTTARGET;
+            Flags ^= ENpcFlags.DONTSHOWNAME;
+            Flags ^= ENpcFlags.PEACE;
+            Flags ^= ENpcFlags.CANTTARGET;
 
             Faction = FactionMgr.GetFactionByID(96);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));

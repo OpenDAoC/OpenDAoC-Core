@@ -6,7 +6,7 @@ using log4net;
 
 namespace DOL.GS.Scripts
 {
-    public class InstantLevelNpc : GameNPC
+    public class InstantLevelNpc : GameNpc
     {
         private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         
@@ -15,7 +15,7 @@ namespace DOL.GS.Scripts
 			Name = "Free Levels";
             Model = 1198;
             Size = 70;
-			Flags |= eFlags.PEACE;
+			Flags |= ENpcFlags.PEACE;
 			Level = 75;
 
 			return base.AddToWorld();

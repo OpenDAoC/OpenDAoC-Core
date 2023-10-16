@@ -307,7 +307,7 @@ namespace DOL.GS.Spells
 					if (spellDamage < 0)
 						spellDamage = 0;
 				}
-				else if (m_caster is GameNPC)
+				else if (m_caster is GameNpc)
 				{
 					int manaStatValue = m_caster.GetModified(EProperty.Intelligence);
 					spellDamage *= (manaStatValue + 200) / 275.0;

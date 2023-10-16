@@ -20,10 +20,10 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
     /// </summary>
     private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-    private static GameNPC Honaytrt; // Start NPC Honayt'rt
-    private static GameNPC Nchever; // N'chever
-    private static GameNPC Ohonat; // O'honat
-    private static GameNPC Nyaegha; // Nyaegha
+    private static GameNpc Honaytrt; // Start NPC Honayt'rt
+    private static GameNpc Nchever; // N'chever
+    private static GameNpc Ohonat; // O'honat
+    private static GameNpc Nyaegha; // Nyaegha
 
     private static readonly GameLocation demonLocation = new("Nyaegha", 51, 348381, 479838, 3320);
 
@@ -106,7 +106,7 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
         {
             if (log.IsWarnEnabled)
                 log.Warn("Could not find Honaytrt, creating it ...");
-            Honaytrt = new GameNPC();
+            Honaytrt = new GameNpc();
             Honaytrt.Model = 759;
             Honaytrt.Name = "Honayt\'rt";
             Honaytrt.GuildName = "";
@@ -137,7 +137,7 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
         {
             if (log.IsWarnEnabled)
                 log.Warn("Could not find Nchever , creating it ...");
-            Nchever = new GameNPC();
+            Nchever = new GameNpc();
             Nchever.Model = 752;
             Nchever.Name = "N\'chever";
             Nchever.GuildName = "";
@@ -169,7 +169,7 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
         {
             if (log.IsWarnEnabled)
                 log.Warn("Could not find Ohonat , creating it ...");
-            Ohonat = new GameNPC();
+            Ohonat = new GameNpc();
             Ohonat.LoadEquipmentTemplateFromDatabase("a58ef747-80e0-4cda-9052-15711ea0f4f7");
             Ohonat.Model = 761;
             Ohonat.Name = "O\'honat";
@@ -183,7 +183,7 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
             Ohonat.Z = 5192;
             Ohonat.Heading = 1037;
             Ohonat.VisibleActiveWeaponSlots = 51;
-            Ohonat.Flags ^= GameNPC.eFlags.PEACE;
+            Ohonat.Flags ^= ENpcFlags.PEACE;
             Ohonat.MaxSpeedBase = 200;
             Ohonat.AddToWorld();
             if (SAVE_INTO_DATABASE) Ohonat.SaveIntoDatabase();
@@ -308,14 +308,14 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
 
     protected virtual void CreateNyaegha(GamePlayer player)
     {
-        Nyaegha = new SINeckBoss();
+        Nyaegha = new SiNecklaceBossNpc();
         Nyaegha.LoadEquipmentTemplateFromDatabase("Nyaegha");
         Nyaegha.Model = 605;
         Nyaegha.Name = "Nyaegha";
         Nyaegha.GuildName = "";
         Nyaegha.Realm = ERealm.None;
         Nyaegha.Race = 2001;
-        Nyaegha.BodyType = (ushort) NpcTemplateMgr.eBodyType.Demon;
+        Nyaegha.BodyType = (ushort) EBodyType.Demon;
         Nyaegha.CurrentRegionID = 51;
         Nyaegha.Size = 150;
         Nyaegha.Level = 65;

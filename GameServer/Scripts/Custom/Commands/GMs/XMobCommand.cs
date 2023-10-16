@@ -26,23 +26,23 @@ namespace DOL.GS.Commands
 
         #region spot cache
 
-        private IDictionary<GameClient, IList<GameNPC>> m_spots = new Dictionary<GameClient, IList<GameNPC>>();
+        private IDictionary<GameClient, IList<GameNpc>> m_spots = new Dictionary<GameClient, IList<GameNpc>>();
 
-        private IList<GameNPC> GetClientSpot(GameClient client)
+        private IList<GameNpc> GetClientSpot(GameClient client)
         {
-            IList<GameNPC> spot = new List<GameNPC>();
-            foreach (KeyValuePair<GameClient, IList<GameNPC>> pair in m_spots)
+            IList<GameNpc> spot = new List<GameNpc>();
+            foreach (KeyValuePair<GameClient, IList<GameNpc>> pair in m_spots)
                 if (pair.Key == client) spot = pair.Value;
 
             return spot;
         }
 
-        private void AddClientSpot(GameClient client, IList<GameNPC> spot)
+        private void AddClientSpot(GameClient client, IList<GameNpc> spot)
         {
-            foreach (KeyValuePair<GameClient, IList<GameNPC>> pair in m_spots)
+            foreach (KeyValuePair<GameClient, IList<GameNpc>> pair in m_spots)
                 if (pair.Key == client)
                 {
-                    foreach (GameNPC m in spot)
+                    foreach (GameNpc m in spot)
                         pair.Value.Add(m);
 
                     return;
@@ -51,7 +51,7 @@ namespace DOL.GS.Commands
 
         private void ClearClientSpot(GameClient client)
         {
-            foreach (KeyValuePair<GameClient, IList<GameNPC>> pair in m_spots)
+            foreach (KeyValuePair<GameClient, IList<GameNpc>> pair in m_spots)
                 if (pair.Key == client) pair.Value.Clear();
         }
 
@@ -88,11 +88,11 @@ namespace DOL.GS.Commands
                             if (radius < 0) radius = 0;
                             if (radius > 5000) radius = 5000;
 
-                            IList<GameNPC> spot = new List<GameNPC>();
+                            IList<GameNpc> spot = new List<GameNpc>();
                             if (m_spots.TryGetValue(client, out spot))
                             {
-                                spot = new List<GameNPC>();
-                                foreach (GameNPC npc in player.GetNPCsInRadius(radius))
+                                spot = new List<GameNpc>();
+                                foreach (GameNpc npc in player.GetNPCsInRadius(radius))
                                     if (npc.Realm == ERealm.None)
                                         spot.Add(npc);
 
@@ -100,8 +100,8 @@ namespace DOL.GS.Commands
                             }
                             else
                             {
-                                spot = new List<GameNPC>();
-                                foreach (GameNPC npc in player.GetNPCsInRadius(radius))
+                                spot = new List<GameNpc>();
+                                foreach (GameNpc npc in player.GetNPCsInRadius(radius))
                                     if (npc.Realm == ERealm.None)
                                         spot.Add(npc);
                                 m_spots.Add(client, spot);
@@ -126,7 +126,7 @@ namespace DOL.GS.Commands
                         if (GetClientSpot(client).Count != 0)
                         {
                             DisplayMessage(player, "There are " + GetClientSpot(client).Count + " mobs loaded : ");
-                            foreach (GameNPC npc in GetClientSpot(client))
+                            foreach (GameNpc npc in GetClientSpot(client))
                                 DisplayMessage(player, npc.Name);
                         }
                         else
@@ -162,7 +162,7 @@ namespace DOL.GS.Commands
                                 if (radius < 0) radius = 0;
                                 if (radius > 5000) radius = 5000;
 
-                                foreach (GameNPC npc in GetClientSpot(client))
+                                foreach (GameNpc npc in GetClientSpot(client))
                                 {
                                     if (npc is GameSummonedPet) continue;
                                     
@@ -198,9 +198,9 @@ namespace DOL.GS.Commands
                             case "hib" : realm= ERealm.Hibernia; break;
                         }
 
-                        IList<GameNPC> setupmobs = new List<GameNPC>();
-                        GameNPC mob;
-                        GameNPC merchant;
+                        IList<GameNpc> setupmobs = new List<GameNpc>();
+                        GameNpc mob;
+                        GameNpc merchant;
 
                         #region load list
                         //base 
@@ -213,7 +213,7 @@ namespace DOL.GS.Commands
                         mob=new GuildRegistrar();
                         mob.GuildName = "Guild Registrar";
                         setupmobs.Add(mob);
-                        mob = new EmblemNPC();
+                        mob = new GuildEmblemeer();
                         mob.GuildName = "Emblem NPC";
                         setupmobs.Add(mob);
                         mob = new NameRegistrar();
@@ -250,11 +250,11 @@ namespace DOL.GS.Commands
                 case "copy":
                     {
                         #region copy
-                        GameNPC targetMob = null;
+                        GameNpc targetMob = null;
 
                         
-                        if (client.Player.TargetObject != null && client.Player.TargetObject is GameNPC)
-                            targetMob = (GameNPC)client.Player.TargetObject;
+                        if (client.Player.TargetObject != null && client.Player.TargetObject is GameNpc)
+                            targetMob = (GameNpc)client.Player.TargetObject;
 
                         int num;
 
@@ -270,7 +270,7 @@ namespace DOL.GS.Commands
                         {
                             copy(client, targetMob, 150);
                             #region old
-                            GameNPC mob = null;
+                            GameNpc mob = null;
 
                             if (targetMob == null)
                             {
@@ -281,7 +281,7 @@ namespace DOL.GS.Commands
 
                             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                             {
-                                mob = (GameNPC)assembly.CreateInstance(targetMob.GetType().FullName, true);
+                                mob = (GameNpc)assembly.CreateInstance(targetMob.GetType().FullName, true);
                                 if (mob != null)
                                     break;
                             }
@@ -369,7 +369,7 @@ namespace DOL.GS.Commands
                             mob.LoadedFromScript = false;
                             mob.SaveIntoDatabase();
                             client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, EChatType.CT_System, EChatLoc.CL_SystemWindow);
-                            if ((mob.Flags & GameNPC.eFlags.PEACE) != 0)
+                            if ((mob.Flags & ENpcFlags.PEACE) != 0)
                             {
                                 // because copying 100 mobs with their peace flag set is not fun
                                 client.Out.SendMessage("This mobs PEACE flag is set!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
@@ -399,7 +399,7 @@ namespace DOL.GS.Commands
                             if (newradius < 0) newradius = 0;
                             if (newradius > 5000) newradius = 5000;
 
-                            foreach (GameNPC npc in player.GetNPCsInRadius(radius))
+                            foreach (GameNpc npc in player.GetNPCsInRadius(radius))
                                 if (npc.Realm == ERealm.None)
                                     move(client, npc, newradius);
                         }
@@ -437,7 +437,7 @@ namespace DOL.GS.Commands
                                     if (max <= 1) max = 2;
                                     if (max > 255) min = 255;
 
-                                    foreach (GameNPC npc in player.GetNPCsInRadius(radius))
+                                    foreach (GameNpc npc in player.GetNPCsInRadius(radius))
                                         if (npc.Realm == ERealm.None)
                                         {
                                             npc.Level = (byte)Util.Random(min, max);
@@ -454,7 +454,7 @@ namespace DOL.GS.Commands
                                     if (nlvl < 0) nlvl = 1;
                                     if (nlvl > 255) nlvl = 255;
 
-                                    foreach (GameNPC npc in player.GetNPCsInRadius(radius))
+                                    foreach (GameNpc npc in player.GetNPCsInRadius(radius))
                                     {
                                         if (npc.Realm == ERealm.None)
                                         {
@@ -490,7 +490,7 @@ namespace DOL.GS.Commands
                             if (radius > 5000) radius = 5000;
                             if (realm < 0 && realm > 3) realm = 0;
 
-                            foreach (GameNPC npc in player.GetNPCsInRadius(radius))
+                            foreach (GameNpc npc in player.GetNPCsInRadius(radius))
                             {
                                 npc.Realm = (ERealm)realm;
                                 npc.SaveIntoDatabase();
@@ -510,7 +510,7 @@ namespace DOL.GS.Commands
                             if (radius < 0) radius = 0;
                             if (radius > 5000) radius = 5000;
 
-                            foreach (GameNPC npc in player.GetNPCsInRadius(radius))
+                            foreach (GameNpc npc in player.GetNPCsInRadius(radius))
                                 if (npc.Realm == ERealm.None && !(npc is GameTrainingDummy))
                                     remove(npc);
                         }
@@ -522,7 +522,7 @@ namespace DOL.GS.Commands
             }
         }
 
-        private void spawnsetupmob(GameClient client, GameNPC mob, ERealm realm,int x,int y, ushort h)
+        private void spawnsetupmob(GameClient client, GameNpc mob, ERealm realm,int x,int y, ushort h)
         {
             //Fill the object variables
             mob.X = x;
@@ -537,7 +537,7 @@ namespace DOL.GS.Commands
             else
             {
                 mob.Realm = realm;
-                mob.Flags |= GameNPC.eFlags.PEACE;
+                mob.Flags |= ENpcFlags.PEACE;
             }
             mob.CurrentSpeed = 0;
             mob.AddToWorld();
@@ -546,9 +546,9 @@ namespace DOL.GS.Commands
             client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 
-        private void copy(GameClient client,GameNPC targetMob,ushort radius)
+        private void copy(GameClient client,GameNpc targetMob,ushort radius)
         {
-                GameNPC mob = null;
+                GameNpc mob = null;
 
                 if (targetMob == null)
                 {
@@ -559,7 +559,7 @@ namespace DOL.GS.Commands
 
                 foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    mob = (GameNPC)assembly.CreateInstance(targetMob.GetType().FullName, true);
+                    mob = (GameNpc)assembly.CreateInstance(targetMob.GetType().FullName, true);
                     if (mob != null)
                         break;
                 }
@@ -647,14 +647,14 @@ namespace DOL.GS.Commands
                 mob.LoadedFromScript = false;
                 mob.SaveIntoDatabase();
                 client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, EChatType.CT_System, EChatLoc.CL_SystemWindow);
-                if ((mob.Flags & GameNPC.eFlags.PEACE) != 0)
+                if ((mob.Flags & ENpcFlags.PEACE) != 0)
                 {
                     // because copying 100 mobs with their peace flag set is not fun
                     client.Out.SendMessage("This mobs PEACE flag is set!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                 }
         }
 
-        private void remove(GameNPC targetMob)
+        private void remove(GameNpc targetMob)
         {
             targetMob.StopAttack();
             targetMob.StopCurrentSpellcast();
@@ -662,7 +662,7 @@ namespace DOL.GS.Commands
             targetMob.Delete();
         }
 
-        private void move(GameClient client, GameNPC targetMob, ushort radius)
+        private void move(GameClient client, GameNpc targetMob, ushort radius)
         {
 
             int X = Util.Random(client.Player.X - radius / 2, client.Player.X + radius / 2);

@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
 
             //Only allow one treb/catapult in the radius
             int trebSummonRadius = 500;
-			foreach (GameNPC npc in Caster.GetNPCsInRadius((ushort) trebSummonRadius))
+			foreach (GameNpc npc in Caster.GetNPCsInRadius((ushort) trebSummonRadius))
 			{
 				if (npc is GameSiegeCatapult)
 				{

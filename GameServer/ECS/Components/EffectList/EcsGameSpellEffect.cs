@@ -73,7 +73,7 @@ namespace DOL.GS
 
                     new EcsImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness, Icon);
                 }
-                else if (Owner is GameNPC)
+                else if (Owner is GameNpc)
                 {
                     if (EffectType == EEffect.Stun)
                     {

@@ -106,7 +106,7 @@ namespace DOL.GS
             {
                 foreach (DbMob mob in mobObjs)
                 {
-                    GameNPC myMob = null;
+                    GameNpc myMob = null;
                     string error = string.Empty;
   
                     // Default Classtype
@@ -128,7 +128,7 @@ namespace DOL.GS
                             try
                             {
                                 
-                                myMob = (GameNPC)type.Assembly.CreateInstance(type.FullName);
+                                myMob = (GameNpc)type.Assembly.CreateInstance(type.FullName);
                                	
                             }
                             catch (Exception e)
@@ -153,7 +153,7 @@ namespace DOL.GS
 
                         try
                         {
-                            myMob = (GameNPC)gasm.CreateInstance(classtype, false);
+                            myMob = (GameNpc)gasm.CreateInstance(classtype, false);
                         }
                         catch
                         {
@@ -166,7 +166,7 @@ namespace DOL.GS
                             {
                                 try
                                 {
-                                    myMob = (GameNPC)asm.CreateInstance(classtype, false);
+                                    myMob = (GameNpc)asm.CreateInstance(classtype, false);
                                     error = string.Empty;
                                 }
                                 catch
@@ -180,7 +180,7 @@ namespace DOL.GS
 
                             if (myMob == null)
                             {
-                                myMob = new GameNPC();
+                                myMob = new GameNpc();
                                 error = classtype;
                             }
                         }

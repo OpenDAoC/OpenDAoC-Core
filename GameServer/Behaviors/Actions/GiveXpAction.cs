@@ -8,12 +8,12 @@ namespace DOL.GS.Behaviour.Actions
     public class GiveXPAction : AAction<long,Unused>
     {               
 
-        public GiveXPAction(GameNPC defaultNPC,  Object p, Object q)
+        public GiveXPAction(GameNpc defaultNPC,  Object p, Object q)
             : base(defaultNPC, EActionType.GiveXP, p, q) {                
         }
 
 
-        public GiveXPAction(GameNPC defaultNPC, long p)
+        public GiveXPAction(GameNpc defaultNPC, long p)
             : this(defaultNPC, (object)p,(object) null) { }
         
 

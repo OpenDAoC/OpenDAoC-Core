@@ -22,7 +22,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 		// Kill Goal
 		private const int MAX_KILLED = 25;
 		
-		private static GameNPC Cola = null; // Start NPC
+		private static GameNpc Cola = null; // Start NPC
 
 		private int FrontierMobsKilled = 0;
 
@@ -61,10 +61,10 @@ namespace DOL.GS.DailyQuest.Hibernia
 
 			#region defineNPCs
 
-			GameNPC[] npcs = WorldMgr.GetNPCsByName("Cola", ERealm.Hibernia);
+			GameNpc[] npcs = WorldMgr.GetNPCsByName("Cola", ERealm.Hibernia);
 
 			if (npcs.Length > 0)
-				foreach (GameNPC npc in npcs)
+				foreach (GameNpc npc in npcs)
 					if (npc.CurrentRegionID == 200 && npc.X == 334793 && npc.Y == 420805)
 					{
 						Cola = npc;
@@ -75,7 +75,7 @@ namespace DOL.GS.DailyQuest.Hibernia
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Could not find Cola , creating it ...");
-				Cola = new GameNPC();
+				Cola = new GameNpc();
 				Cola.Model = 583;
 				Cola.Name = "Cola";
 				Cola.GuildName = "Realm Logistics";

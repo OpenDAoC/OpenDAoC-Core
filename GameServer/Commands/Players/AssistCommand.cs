@@ -160,7 +160,7 @@ public class AssistCommand : ACommandHandler, ICommandHandler
             }
 
             //Only assist npc's or players!
-            if(client.Player.TargetObject is GameNPC || client.Player.TargetObject is GamePlayer)
+            if(client.Player.TargetObject is GameNpc || client.Player.TargetObject is GamePlayer)
             {
                 //We cannot assist game objects!
                 if (client.Player.TargetObject is GameMovingObject)
@@ -201,14 +201,14 @@ public class AssistCommand : ACommandHandler, ICommandHandler
                                 return;
                             }
                                     
-                            if (client.Player.TargetObject is GameNPC)
+                            if (client.Player.TargetObject is GameNpc)
                             {
-                                if (!SameRealm(client, (client.Player.TargetObject as GameNPC), true))
+                                if (!SameRealm(client, (client.Player.TargetObject as GameNpc), true))
                                     return;
                                 else
                                 {
                                     //We cannot assist our target when it has no target.
-                                    if (!HasTarget(client, (client.Player.TargetObject as GameNPC)))
+                                    if (!HasTarget(client, (client.Player.TargetObject as GameNpc)))
                                         return;
 
                                     YouAssist(client, client.Player.TargetObject.GetName(0, true), (client.Player.TargetObject as GameLiving).TargetObject);
@@ -295,7 +295,7 @@ public class AssistCommand : ACommandHandler, ICommandHandler
                                 return;
                             }
                                     
-                            if(client.Player.TargetObject is GameNPC)
+                            if(client.Player.TargetObject is GameNpc)
                             {
                                 if(client.Player.TargetObject is GameSummonedPet)
                                 {
@@ -373,9 +373,9 @@ public class AssistCommand : ACommandHandler, ICommandHandler
                                         return;
                                     }
 
-                                    if(targetPet.Owner is GameNPC)
+                                    if(targetPet.Owner is GameNpc)
                                     {
-                                        if (!SameRealm(client, (targetPet.Owner as GameNPC), true))
+                                        if (!SameRealm(client, (targetPet.Owner as GameNpc), true))
                                             return;
                                         else
                                         {
@@ -436,14 +436,14 @@ public class AssistCommand : ACommandHandler, ICommandHandler
                                 }
 
                                 //We cannot assist npc's of an enemy realm.
-                                if (!SameRealm(client, client.Player.TargetObject as GameNPC, true))
+                                if (!SameRealm(client, client.Player.TargetObject as GameNpc, true))
                                     return;
 
                                 //We cannot assist our target when it has no target
-                                if (!HasTarget(client, (client.Player.TargetObject as GameNPC)))
+                                if (!HasTarget(client, (client.Player.TargetObject as GameNpc)))
                                     return;
 
-                                YouAssist(client, (client.Player.TargetObject as GameNPC).GetName(0, false), (client.Player.TargetObject as GameNPC).TargetObject);
+                                YouAssist(client, (client.Player.TargetObject as GameNpc).GetName(0, false), (client.Player.TargetObject as GameNpc).TargetObject);
                                 return;
                             }
                         } break;

@@ -23,7 +23,7 @@ namespace DOL.GS.Behaviour.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public EnemyKilledTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
+        public EnemyKilledTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
             : base(defaultNPC, notifyHandler, ETriggerType.EnemyKilled, k, i)
         { }
 
@@ -34,7 +34,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="notifyHandler"></param>
         /// <param name="k"></param>
         /// <param name="i"></param>
-        public EnemyKilledTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, string k, GameLiving i)
+        public EnemyKilledTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, string k, GameLiving i)
             : this(defaultNPC,notifyHandler,  (object)k,(object) i)
         { }
 

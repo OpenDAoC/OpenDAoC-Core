@@ -318,11 +318,11 @@ namespace DOL.GS.Commands
 							GameObject.FillDataQuestCache();
 							client.Player.TargetObject.LoadDataQuests();
 
-							if (client.Player.TargetObject is GameNPC)
+							if (client.Player.TargetObject is GameNpc)
 							{
 								foreach (GamePlayer player in client.Player.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 								{
-									player.Out.SendNPCsQuestEffect(client.Player.TargetObject as GameNPC, (client.Player.TargetObject as GameNPC).GetQuestIndicator(player));
+									player.Out.SendNPCsQuestEffect(client.Player.TargetObject as GameNpc, (client.Player.TargetObject as GameNpc).GetQuestIndicator(player));
 								}
 							}
 

@@ -9,7 +9,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
-    public class OldFrontierAssistant : GameNPC
+    public class OldFrontierAssistant : GameNpc
     {
         public override bool AddToWorld()
         {
@@ -17,7 +17,7 @@ namespace DOL.GS.Scripts
                 return false;
 
             Level = 100;
-            Flags |= eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
 
             if (Realm == ERealm.None)
                 Realm = ERealm.Albion;
@@ -61,7 +61,7 @@ namespace DOL.GS.Scripts
         }
     }
 
-    public class OldFrontierTeleporter : GameNPC
+    public class OldFrontierTeleporter : GameNpc
     {
         //Re-Port every 45 seconds.
         private int ReportInterval = ServerProperties.Properties.OF_REPORT_INTERVAL;
@@ -146,7 +146,7 @@ namespace DOL.GS.Scripts
             if (Assistants.Count < 5)
             {
                 //cache our assistants on first run
-                foreach (GameNPC assistant in GetNPCsInRadius(5000))
+                foreach (GameNpc assistant in GetNPCsInRadius(5000))
                 {
                     if (assistant is OldFrontierAssistant)
                     {

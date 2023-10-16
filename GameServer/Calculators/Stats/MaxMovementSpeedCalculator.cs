@@ -105,7 +105,7 @@ namespace DOL.GS.PropertyCalc
 
                 speed *= horseSpeed;
             }
-            else if (living is GameNPC npc)
+            else if (living is GameNpc npc)
             {
                 IControlledBrain brain = npc.Brain as IControlledBrain;
 
@@ -116,7 +116,7 @@ namespace DOL.GS.PropertyCalc
                         GameLiving owner = brain.Owner;
                         if (owner != null && owner == brain.Body.FollowTarget)
                         {
-                            if (owner is GameNPC)
+                            if (owner is GameNpc)
                                 owner = brain.GetPlayerOwner();
 
                             int distance = brain.Body.GetDistanceTo(owner);
@@ -149,7 +149,7 @@ namespace DOL.GS.PropertyCalc
 
                     if (owner != null && owner == brain.Body.FollowTarget)
                     {
-                        if (owner is GameNPC)
+                        if (owner is GameNpc)
                             owner = brain.GetPlayerOwner();
 
                         if (owner is GamePlayer playerOwner && playerOwner.IsSprinting)

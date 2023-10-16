@@ -40,7 +40,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (client.Player.Steed != null && client.Player.Steed.ObjectState == GameObject.eObjectState.Active)
 			{
 				GamePlayer rider = client.Player;
-				GameNPC steed = rider.Steed;
+				GameNpc steed = rider.Steed;
 
 				// The rider and their steed are never at the exact same position (made worse by a high latency).
 				// So the radius is arbitrary and must not be too low to avoid spamming packets.

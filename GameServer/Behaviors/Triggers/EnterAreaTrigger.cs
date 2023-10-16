@@ -23,7 +23,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="notifyHandler"></param>
         /// <param name="k">keyword (K), meaning depends on triggertype</param>
         /// <param name="i">variable (I), meaning depends on triggertype</param>
-        public EnterAreaTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
+        public EnterAreaTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
             : base(defaultNPC, notifyHandler, ETriggerType.EnterArea, k, i)
         { }
 
@@ -33,7 +33,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="defaultNPC"></param>
         /// <param name="notifyHandler"></param>
         /// <param name="i">variable (I), meaning depends on triggertype</param>
-        public EnterAreaTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, IArea i)
+        public EnterAreaTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, IArea i)
             : this(defaultNPC,notifyHandler,  (object)null,(object) i)
         { }
 

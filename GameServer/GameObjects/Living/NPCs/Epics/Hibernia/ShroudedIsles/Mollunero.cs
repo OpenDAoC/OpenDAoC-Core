@@ -79,7 +79,7 @@ namespace DOL.GS
 		}
 		public override void Die(GameObject killer)
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(2500))
+			foreach (GameNpc npc in GetNPCsInRadius(2500))
 			{
 				if (npc != null && npc.IsAlive && npc.Brain is MolluneroAddBrain)
 					npc.RemoveFromWorld();
@@ -147,7 +147,7 @@ namespace DOL.AI.Brain
 				spawnAdds = false;
 				if (!RemoveAdds)
 				{
-					foreach (GameNPC npc in Body.GetNPCsInRadius(2500))
+					foreach (GameNpc npc in Body.GetNPCsInRadius(2500))
 					{
 						if (npc != null && npc.IsAlive && npc.Brain is MolluneroAddBrain)
 							npc.RemoveFromWorld();
@@ -185,7 +185,7 @@ namespace DOL.AI.Brain
 #region Mollunero's adds
 namespace DOL.GS
 {
-	public class MolluneroAdd : GameNPC
+	public class MolluneroAdd : GameNpc
 	{
 		public MolluneroAdd() : base()
 		{

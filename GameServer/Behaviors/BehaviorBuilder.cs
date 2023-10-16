@@ -14,7 +14,7 @@ namespace DOL.GS.Behaviour
             //addActionMethod.Invoke(null, new object[] { questPart });
         }        
 
-        public BaseBehavior CreateBehaviour(GameNPC npc)
+        public BaseBehavior CreateBehaviour(GameNpc npc)
         {
             BaseBehavior behavior =  new BaseBehavior(npc);            
             return behavior;

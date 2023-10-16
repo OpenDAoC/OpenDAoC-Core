@@ -24,7 +24,7 @@ namespace DOL.GS.Behaviour.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public ItemUsedTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
+        public ItemUsedTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
             : base(defaultNPC, notifyHandler, ETriggerType.ItemUsed, k, i)
         { }
 
@@ -34,7 +34,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="defaultNPC"></param>
         /// <param name="notifyHandler"></param>
         /// <param name="i"></param>
-        public ItemUsedTrigger(GameNPC defaultNPC, CoreEventHandler notifyHandler, DbItemTemplate i)
+        public ItemUsedTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, DbItemTemplate i)
             : this(defaultNPC,notifyHandler, (object)null,(object) i)
         { }
 

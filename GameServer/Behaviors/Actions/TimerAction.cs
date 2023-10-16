@@ -17,14 +17,14 @@ namespace DOL.GS.Behaviour.Actions
         const string TIMER_SOURCE = "timersource";
 
 
-        public TimerAction(GameNPC defaultNPC,  Object p, Object q)
+        public TimerAction(GameNpc defaultNPC,  Object p, Object q)
             : base(defaultNPC, EActionType.Timer, p, q)
         { 
             
         }
 
 
-        public TimerAction(GameNPC defaultNPC,   string timerID, int delay)
+        public TimerAction(GameNpc defaultNPC,   string timerID, int delay)
             : this(defaultNPC, (object)timerID,(object) delay) { }
         
 

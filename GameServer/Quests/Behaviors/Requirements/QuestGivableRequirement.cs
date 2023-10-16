@@ -33,7 +33,7 @@ namespace DOL.GS.Quests.Requirements
 	/// additional parameters. To fire a QuestAction ALL requirements must be fulfilled.         
 	/// </summary>
     [Requirement(RequirementType=ERequirementType.QuestGivable,DefaultValueV=EDefaultValueConstants.NPC)]
-	public class QuestGivableRequirement : ARequirement<Type,GameNPC>
+	public class QuestGivableRequirement : ARequirement<Type,GameNpc>
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -44,7 +44,7 @@ namespace DOL.GS.Quests.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public QuestGivableRequirement(GameNPC defaultNPC, Object n, Object v, EComparator comp)
+        public QuestGivableRequirement(GameNpc defaultNPC, Object n, Object v, EComparator comp)
             : base(defaultNPC, ERequirementType.QuestGivable, n, v, comp)
 		{
 		}
@@ -56,7 +56,7 @@ namespace DOL.GS.Quests.Requirements
         /// <param name="questType"></param>
         /// <param name="v"></param>
         /// <param name="comp"></param>
-        public QuestGivableRequirement(GameNPC defaultNPC, Type questType, GameNPC v, EComparator comp)
+        public QuestGivableRequirement(GameNpc defaultNPC, Type questType, GameNpc v, EComparator comp)
             : this(defaultNPC, (object)questType, (object)v, comp)
 		{   			
 		}

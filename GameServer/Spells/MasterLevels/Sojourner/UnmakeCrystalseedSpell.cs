@@ -21,7 +21,7 @@ namespace DOL.GS.Spells
             if (target == null || !target.IsAlive)
                 return;
 
-            foreach (GameNPC item in target.GetNPCsInRadius((ushort)m_spell.Radius))
+            foreach (GameNpc item in target.GetNPCsInRadius((ushort)m_spell.Radius))
             {
                 if (item != null && item is GameMine)
                 {

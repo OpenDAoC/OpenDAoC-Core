@@ -88,7 +88,7 @@ namespace DOL.GS.Commands
                 if (MMerchantTemplate == null)
                 {
                     MMerchantTemplate = new NpcTemplate();
-                    MMerchantTemplate.Flags += (byte) GameNPC.eFlags.GHOST + (byte) GameNPC.eFlags.PEACE;
+                    MMerchantTemplate.Flags += (byte) ENpcFlags.GHOST + (byte) ENpcFlags.PEACE;
                     MMerchantTemplate.Name = "Merchant";
                     MMerchantTemplate.ClassType = "DOL.GS.Scripts.SummonedMerchant";
                     MMerchantTemplate.Model = "50";

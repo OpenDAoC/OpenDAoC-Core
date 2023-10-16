@@ -8,11 +8,11 @@ namespace DOL.GS.Behaviour.Actions
 	public class MoveToAction : AAction<GameLocation,GameLiving>
 	{
 
-		public MoveToAction(GameNPC defaultNPC,  Object p, Object q)
+		public MoveToAction(GameNpc defaultNPC,  Object p, Object q)
 			: base(defaultNPC, EActionType.MoveTo, p, q)
 		{ }
 
-		public MoveToAction(GameNPC defaultNPC, GameLocation location, GameLiving npc)
+		public MoveToAction(GameNpc defaultNPC, GameLocation location, GameLiving npc)
 			: this(defaultNPC, (object)location,(object) npc) { }
 		
 		public override void Perform(CoreEvent e, object sender, EventArgs args)
