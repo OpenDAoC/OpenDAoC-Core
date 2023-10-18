@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
 

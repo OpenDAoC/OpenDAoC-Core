@@ -1,7 +1,5 @@
 using DOL.Database;
 using DOL.GS;
-using DOL.GS.DOL.AI.Brain;
-using DOL.GS.DOL.GS;
 
 namespace DOL.AI.Brain;
 
