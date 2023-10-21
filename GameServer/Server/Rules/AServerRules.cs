@@ -4,19 +4,20 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Base.Enums;
+using Core.Database;
+using Core.Events;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.Scripts;
+using Core.GS.ServerProperties;
+using Core.Language;
 using ECS.Debug;
 using log4net;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
 	public abstract class AServerRules : IServerRules
 	{
@@ -2169,7 +2170,7 @@ namespace DOL.GS.ServerRules
 					foreach (KeyValuePair<GamePlayer, int> pair in playerKillers)
 					{
 
-						DOL.Database.DbPvpKillLog killLog = new DOL.Database.DbPvpKillLog();
+						DbPvpKillLog killLog = new DbPvpKillLog();
 						killLog.KilledIP = killedPlayer.Client.TcpEndpointAddress;
 						killLog.KilledName = killedPlayer.Name;
 						killLog.KilledRealm = GlobalConstants.RealmToName(killedPlayer.Realm);
@@ -2631,7 +2632,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="merchantType"></param>
-		public virtual void SendHousingMerchantWindow(GamePlayer player, DOL.GS.PacketHandler.EMerchantWindowType merchantType)
+		public virtual void SendHousingMerchantWindow(GamePlayer player, EMerchantWindowType merchantType)
 		{
 			switch (merchantType)
 			{
@@ -2702,7 +2703,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="slot"></param>
 		/// <param name="count"></param>
 		/// <param name="merchantType"></param>
-		public virtual void BuyHousingItem(GamePlayer player, ushort slot, byte count, DOL.GS.PacketHandler.EMerchantWindowType merchantType)
+		public virtual void BuyHousingItem(GamePlayer player, ushort slot, byte count, EMerchantWindowType merchantType)
 		{
 			MerchantTradeItems items = null;
 
@@ -2768,7 +2769,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="heading"></param>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		public virtual GameNpc PlaceHousingNPC(DOL.GS.Housing.House house, DbItemTemplate item, IPoint3D location, ushort heading)
+		public virtual GameNpc PlaceHousingNPC(House house, DbItemTemplate item, IPoint3D location, ushort heading)
 		{
 			NpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(item.Bonus);
 
@@ -2859,7 +2860,7 @@ namespace DOL.GS.ServerRules
 		}
 
 
-		public virtual GameStaticItem PlaceHousingInteriorItem(DOL.GS.Housing.House house, DbItemTemplate item, IPoint3D location, ushort heading)
+		public virtual GameStaticItem PlaceHousingInteriorItem(House house, DbItemTemplate item, IPoint3D location, ushort heading)
 		{
 			GameStaticItem hookpointObject = new GameStaticItem();
 			hookpointObject.CurrentHouse = house;

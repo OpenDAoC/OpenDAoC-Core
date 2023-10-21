@@ -3,16 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.GS;
+using Core.GS.Effects;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
+using Core.GS.SkillHandler;
+using Core.GS.Spells;
+using Core.Language;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
     /// <summary>
     /// Standard brain for standard mobs

@@ -1,4 +1,4 @@
-namespace DOL.GS.PlayerTitles
+namespace Core.GS.PlayerTitles
 {
 	/// <summary>
 	/// Base abstract class for simple player titles.

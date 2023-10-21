@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using DOL.Config;
+using Core.Config;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// InvalidNamesManager Check for In-Game Player Names/LastNames/GuildName/AllianceName restriction Policy.

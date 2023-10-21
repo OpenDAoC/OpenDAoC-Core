@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Description of RegionInstance.

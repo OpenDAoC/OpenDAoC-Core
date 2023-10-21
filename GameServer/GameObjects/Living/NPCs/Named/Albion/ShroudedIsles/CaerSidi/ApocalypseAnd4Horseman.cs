@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Apocalypse Initializer
 public class ApocalypseInitializer : GameNpc

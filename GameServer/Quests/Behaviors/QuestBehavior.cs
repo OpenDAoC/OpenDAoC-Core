@@ -1,10 +1,10 @@
 using System;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.Behaviour;
+using Core.Events;
+using Core.GS.Behaviour;
 using log4net;
 
-namespace DOL.GS.Quests
+namespace Core.GS.Quests
 {
 	/// <summary>
 	/// BaseQuestParts are the core element of the new questsystem,

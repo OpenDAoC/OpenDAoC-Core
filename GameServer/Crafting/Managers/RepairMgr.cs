@@ -1,11 +1,11 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// The class holding all repair functions

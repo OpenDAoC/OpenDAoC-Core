@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.GS.Keeps;
-using DOL.GS.ServerRules;
-using DOL.Language;
+using Core.GS.Keeps;
+using Core.GS.ServerRules;
+using Core.Language;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
    "&realm",

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Keeps;
+using Core.Database;
+using Core.GS.Keeps;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
     [PacketLib(1115, GameClient.eClientVersion.Version1115)]
     public class PacketLib1115 : PacketLib1114

@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.LookingForGroup, "handle Looking for a group", EClientStatus.PlayerInGame)]
 	public class LookingForAGroupHandler : IPacketHandler

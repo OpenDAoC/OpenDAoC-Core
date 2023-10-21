@@ -1,4 +1,4 @@
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Style combat speed debuff effect spell handler

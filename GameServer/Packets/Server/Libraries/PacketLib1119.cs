@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(1119, GameClient.eClientVersion.Version1119)]
 	public class PacketLib1119 : PacketLib1118

@@ -1,8 +1,9 @@
 ﻿using System.Text;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&train",
@@ -43,7 +44,7 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 
 		GameTrainer trainer = client.Player.TargetObject as GameTrainer;
 		// Make sure the player is at a trainer.
-		if (!DOL.GS.ServerProperties.Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player && (trainer == null || trainer.CanTrain(client.Player) == false))
+		if (!Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player && (trainer == null || trainer.CanTrain(client.Player) == false))
 		{
 			client.Out.SendMessage("You have to be at your trainer to use this command.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;

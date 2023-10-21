@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Events;
+using Core.Database;
+using Core.Events;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	/// <summary>
 	/// Enable Crafting Level Upon Character Creation

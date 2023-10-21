@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class Spell : Skill, ICustomParamsValuable
 	{

@@ -1,8 +1,8 @@
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
+using Core.Database;
+using Core.GS;
+using Core.AI.Brain;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 #region Oona
 public class OonaBrain : StandardMobBrain

@@ -1,12 +1,12 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.Database;
+using Core.Events;
+using Core.GS.ServerProperties;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	/// <summary>
 	/// This class makes sure that all the startup guilds are created in the database

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Allow to handle Custom Params Valuable Interface Member as typed generic imported from string collections.

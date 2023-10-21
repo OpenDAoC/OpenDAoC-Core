@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
-using DOL.AI.Brain;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
     /// <summary>
     /// Base class for all Atlantis scholar type NPCs.

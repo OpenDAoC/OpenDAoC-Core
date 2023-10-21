@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     /// <summary>
     /// Path calculator component that can be added to any NPC to calculate paths

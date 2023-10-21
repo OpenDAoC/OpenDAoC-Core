@@ -17,11 +17,11 @@
  *
  */
 using System;
-using DOL.GS;
-using DOL.Database;
+using Core.Database;
+using Core.GS;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Server
+namespace Core.Tests.Integration.Server
 {
 	public class TestInventory : GameLivingInventory
 	{

@@ -1,7 +1,7 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+﻿using Core.AI.Brain;
+using Core.Database;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class CryptLord : GameEpicBoss
 {

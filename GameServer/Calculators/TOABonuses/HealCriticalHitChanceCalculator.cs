@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.PropertyCalc;
 
 /// <summary>
 /// The critical heal chance calculator. Returns 0 .. 100 chance.

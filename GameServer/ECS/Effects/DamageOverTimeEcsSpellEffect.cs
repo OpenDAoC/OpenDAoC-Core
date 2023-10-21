@@ -1,7 +1,7 @@
-﻿using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+﻿using Core.GS.PacketHandler;
+using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class DamageOverTimeEcsSpellEffect : EcsGameSpellEffect
     {

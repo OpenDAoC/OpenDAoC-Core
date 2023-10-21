@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.GS.PlayerTitles;
+using Core.AI.Brain;
+using Core.GS.PlayerTitles;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(181, GameClient.eClientVersion.Version181)]
 	public class PacketLib181 : PacketLib180

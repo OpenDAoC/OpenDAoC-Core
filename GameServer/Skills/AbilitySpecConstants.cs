@@ -1,4 +1,4 @@
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// strong name constants for built in abilities

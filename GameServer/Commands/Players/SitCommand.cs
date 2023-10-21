@@ -1,4 +1,4 @@
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&sit", new string[] { "&rest" }, EPrivLevel.Player, "Sit", "/sit")]
 public class SitCommandHandler : ACommandHandler, ICommandHandler

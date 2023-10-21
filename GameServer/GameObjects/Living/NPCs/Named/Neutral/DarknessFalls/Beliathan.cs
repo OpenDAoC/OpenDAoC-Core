@@ -1,11 +1,11 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Beliathan Inizializator
 public class BeliathanInit : GameNpc

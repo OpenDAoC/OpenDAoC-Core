@@ -1,9 +1,10 @@
 using System;
-using DOL.GS.Keeps;
-using DOL.GS.RealmAbilities;
-using DOL.GS.ServerProperties;
+using Core.AI.Brain;
+using Core.GS.Keeps;
+using Core.GS.RealmAbilities;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS.PropertyCalc
+namespace Core.GS.PropertyCalc
 {
 	/// <summary>
 	/// The Max HP calculator
@@ -146,7 +147,7 @@ namespace DOL.GS.PropertyCalc
 						hp += 20;
 				}
 
-				if (ani.Brain != null && ani.Brain is DOL.AI.Brain.TurretFnfBrain)
+				if (ani.Brain != null && ani.Brain is TurretFnfBrain)
 					hp = (int)(hp * .8);
 
 				return hp;

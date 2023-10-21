@@ -1,10 +1,10 @@
 using System.Reflection;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
     [SkillHandler(Abilities.Bodyguard)]
     public class BodyguardAbilityHandler : IAbilityActionHandler

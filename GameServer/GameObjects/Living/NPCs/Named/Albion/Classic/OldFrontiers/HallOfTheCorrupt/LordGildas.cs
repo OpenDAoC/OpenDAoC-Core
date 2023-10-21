@@ -1,12 +1,12 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.Styles;
+using Core.GS;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class LordGildas : GameEpicBoss
 {

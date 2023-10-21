@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.GS.Effects;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	public abstract class RemoveSpellEffectHandler : SpellHandler
 	{

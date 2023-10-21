@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.CommandHandler, "Handles the players commands", EClientStatus.PlayerInGame)]
 	public class PlayerCommandHandler : IPacketHandler

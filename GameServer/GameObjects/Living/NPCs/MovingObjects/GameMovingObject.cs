@@ -1,4 +1,4 @@
-namespace DOL.GS;
+namespace Core.GS;
 
 /// <summary>
 /// GameMovingObject is a base class for boats and siege weapons.

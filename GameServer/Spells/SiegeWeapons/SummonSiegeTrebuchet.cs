@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DOL.GS.Keeps;
+using Core.GS.Keeps;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("SummonSiegeTrebuchet")]
     public class SummonSiegeTrebuchet : SpellHandler

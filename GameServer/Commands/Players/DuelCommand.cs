@@ -1,7 +1,8 @@
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Base;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	 "&duel",

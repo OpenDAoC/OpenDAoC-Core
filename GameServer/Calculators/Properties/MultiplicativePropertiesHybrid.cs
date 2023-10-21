@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 
-namespace DOL.GS.PropertyCalc
+namespace Core.GS.PropertyCalc
 {
 	/// <summary>
 	/// Implements multiplicative properties using HybridDictionary

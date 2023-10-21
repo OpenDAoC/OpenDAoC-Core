@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Effects;
+using Core.Database;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("PveResurrectionIllness")]
 	public class PveResurrectionSickness : AIllnessSpellHandler

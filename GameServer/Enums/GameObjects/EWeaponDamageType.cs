@@ -1,4 +1,4 @@
-﻿namespace DOL.GS;
+﻿namespace Core.GS;
 
 /// <summary>
 /// Holds the weapon damage type

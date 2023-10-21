@@ -1,4 +1,4 @@
-﻿namespace DOL.GS
+﻿namespace Core.GS
 {
     public class HitbackDummy : GameTrainingDummy {
         public override short MaxSpeedBase => 0;

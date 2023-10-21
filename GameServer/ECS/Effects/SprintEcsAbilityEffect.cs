@@ -1,9 +1,9 @@
 ﻿using System;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.GS.RealmAbilities;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class SprintEcsAbilityEffect : EcsGameAbilityEffect
 	{

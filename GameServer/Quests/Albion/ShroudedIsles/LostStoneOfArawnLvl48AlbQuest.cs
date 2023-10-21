@@ -1,13 +1,13 @@
 using System;
 using System.Reflection;
 using System.Threading;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Quests.Albion;
+namespace Core.GS.Quests.Albion;
 
 public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
 {

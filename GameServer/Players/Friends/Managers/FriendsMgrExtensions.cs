@@ -1,4 +1,4 @@
-﻿namespace DOL.GS.Friends
+﻿namespace Core.GS.Friends
 {
 	public static class FriendsMgrExtensions
 	{

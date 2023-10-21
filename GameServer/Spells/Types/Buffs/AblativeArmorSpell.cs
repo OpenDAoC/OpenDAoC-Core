@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.Language;
+using Core.Database;
+using Core.GS.Effects;
+using Core.Language;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	// Melee ablative.
 	[SpellHandler("AblativeArmor")]

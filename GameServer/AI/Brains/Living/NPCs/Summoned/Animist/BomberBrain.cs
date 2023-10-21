@@ -1,9 +1,9 @@
 using System.Reflection;
-using DOL.GS;
-using DOL.GS.Spells;
+using Core.GS;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
     public class BomberBrain : ControlledNpcBrain
     {

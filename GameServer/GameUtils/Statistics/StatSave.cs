@@ -1,12 +1,13 @@
 using System;
 using System.Reflection;
 using System.Threading;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PerformanceStatistics;
+using Core.Base;
+using Core.Database;
+using Core.Events;
+using Core.GS.PerformanceStatistics;
 using log4net;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
     public class StatSave
     {

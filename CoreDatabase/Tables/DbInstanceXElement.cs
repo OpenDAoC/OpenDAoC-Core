@@ -1,6 +1,6 @@
-﻿using DOL.Database.Attributes;
+﻿using Core.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// This table represents instances, with an entry for each element (instance type, objects, mobs, entrances, etc) in an instance.

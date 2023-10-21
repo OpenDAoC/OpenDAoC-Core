@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Versioning;
 
-namespace DOL.GS.PerformanceStatistics
+namespace Core.GS.PerformanceStatistics
 {
 #if NET
     [SupportedOSPlatform("Windows")]

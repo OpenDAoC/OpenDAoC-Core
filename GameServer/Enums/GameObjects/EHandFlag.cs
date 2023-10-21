@@ -1,4 +1,4 @@
-namespace DOL.GS.Keeps;
+namespace Core.GS.Keeps;
 
 /// <summary>
 /// This is a convieniance enum for for inventory item hand flag

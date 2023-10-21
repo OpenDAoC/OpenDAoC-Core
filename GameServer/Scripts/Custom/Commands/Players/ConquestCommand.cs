@@ -1,6 +1,6 @@
-﻿using DOL.GS.Commands;
+﻿using Core.GS.Commands;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     [Command(
        "&conquest",

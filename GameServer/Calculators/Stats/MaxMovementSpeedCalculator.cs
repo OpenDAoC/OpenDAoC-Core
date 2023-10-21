@@ -1,9 +1,9 @@
 using System.Linq;
-using DOL.AI.Brain;
-using DOL.GS.Effects;
-using DOL.GS.RealmAbilities;
+using Core.AI.Brain;
+using Core.GS.Effects;
+using Core.GS.RealmAbilities;
 
-namespace DOL.GS.PropertyCalc
+namespace Core.GS.PropertyCalc
 {
     /// <summary>
     /// The Max Speed calculator

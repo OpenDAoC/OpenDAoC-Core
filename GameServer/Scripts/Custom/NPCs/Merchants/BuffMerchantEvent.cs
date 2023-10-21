@@ -2,14 +2,14 @@
 using System.Collections;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     public class BuffMerchantEvent : GameMerchant
     {
@@ -1177,7 +1177,7 @@ namespace DOL.GS.Scripts
 #endregion
 
 #region Tokens
-namespace DOL.GS.Items
+namespace Core.GS.Items
 {
     public class BuffTokensEvent
     {

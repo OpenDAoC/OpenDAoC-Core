@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DOL.Events;
-using DOL.GS.RealmAbilities;
+using Core.Events;
+using Core.GS.RealmAbilities;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class NfRaOverwhelmEffect : TimedEffect
     {

@@ -2,12 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class AllRealmsTeleporter : GameTeleporter
 	{

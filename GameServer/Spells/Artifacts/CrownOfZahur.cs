@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("EfficientHealing")]
     public class EfficientHealing : SpellHandler

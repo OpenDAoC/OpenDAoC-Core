@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	/// <summary>
 	/// MiniDelveWriter is used to build v1.110+ hovering tool tip

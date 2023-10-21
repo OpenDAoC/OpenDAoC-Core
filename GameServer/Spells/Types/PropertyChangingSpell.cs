@@ -1,11 +1,11 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.PropertyCalc;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.GS.PropertyCalc;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Spell to change up to 3 property bonuses at once

@@ -1,11 +1,11 @@
 ﻿using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.Events;
+using Core.GS;
+using Core.GS.Spells;
 using NUnit.Framework;
 
-namespace DOL.Tests.Unit.Gameserver
+namespace Core.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_SpellHandler

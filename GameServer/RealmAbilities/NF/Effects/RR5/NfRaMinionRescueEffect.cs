@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Spells;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Spells;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class NfRaMinionRescueEffect : TimedEffect
     {

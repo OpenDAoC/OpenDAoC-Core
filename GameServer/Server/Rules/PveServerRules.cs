@@ -1,7 +1,8 @@
-using DOL.AI.Brain;
-using DOL.Database;
+using Core.AI.Brain;
+using Core.Base.Enums;
+using Core.Database;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
 	/// <summary>
 	/// Set of rules for "PvE" server type.

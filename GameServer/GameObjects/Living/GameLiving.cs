@@ -6,21 +6,22 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.PropertyCalc;
-using DOL.GS.Quests;
-using DOL.GS.RealmAbilities;
-using DOL.GS.ServerProperties;
-using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Base;
+using Core.Database;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.PropertyCalc;
+using Core.GS.Quests;
+using Core.GS.RealmAbilities;
+using Core.GS.ServerProperties;
+using Core.GS.SkillHandler;
+using Core.GS.Spells;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public abstract class GameLiving : GameObject
 	{

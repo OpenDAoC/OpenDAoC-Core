@@ -1,4 +1,4 @@
-namespace DOL.GS.Scripts;
+namespace Core.GS.Scripts;
 
 /// <summary>
 /// Represents an in-game GameHealer NPC

@@ -1,7 +1,7 @@
-﻿using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+﻿using Core.AI.Brain;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS {
+namespace Core.GS {
     public class LordOfBossTeleporter : GameTrainingDummy {
         
         public override bool AddToWorld()

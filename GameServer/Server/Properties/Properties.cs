@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS.ServerProperties
+namespace Core.GS.ServerProperties
 {
 	/// <summary>
 	/// The abstract ServerProperty class that also defines the

@@ -1,6 +1,6 @@
 using ECS.Debug;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class ConquestService
     {

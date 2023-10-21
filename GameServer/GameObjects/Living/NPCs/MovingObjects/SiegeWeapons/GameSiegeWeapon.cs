@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Commands;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Commands;
+using Core.GS.Effects;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	#region GameSiegeweapon
 	public class GameSiegeWeapon : GameMovingObject
@@ -621,7 +621,7 @@ namespace DOL.GS
 		}
 		#endregion
 		#region override function
-		public override bool ReceiveItem(GameLiving source, DOL.Database.DbInventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
 		{
 			//todo check if bullet
 			return base.ReceiveItem(source, item);

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DOL.GS.Keeps;
+using Core.GS.Keeps;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("SummonSiegeBallista")]
     public class SummonSiegeBallista : SpellHandler

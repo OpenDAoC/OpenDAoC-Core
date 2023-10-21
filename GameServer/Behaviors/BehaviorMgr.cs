@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
-using DOL.GS.Behaviour.Attributes;
+using Core.GS.Behaviour.Attributes;
 using log4net;
 
-namespace DOL.GS.Behaviour
+namespace Core.GS.Behaviour
 {				
 	/// <summary>
 	/// Declares the behaviours managed, all behaviourtypes instances

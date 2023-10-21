@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.Housing;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     public class OldFrontierAssistant : GameNpc
     {

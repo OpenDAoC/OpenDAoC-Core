@@ -1,10 +1,10 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.Styles;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Elder Icelord Hjalmar
 public class ElderIcelordHjalmar : GameEpicBoss
@@ -45,7 +45,7 @@ public class ElderIcelordHjalmar : GameEpicBoss
 
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == GS.Abilities.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

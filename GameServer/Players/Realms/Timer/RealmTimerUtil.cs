@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Utils;
+namespace Core.GS.Utils;
 
 //Utility class for checking realmtimer of a character/account and acting accordingly 
 public class RealmTimerUtil

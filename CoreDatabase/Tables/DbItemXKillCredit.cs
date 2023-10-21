@@ -1,6 +1,6 @@
-using DOL.Database.Attributes;
+using Core.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Table that holds the association between items and required  kill credits

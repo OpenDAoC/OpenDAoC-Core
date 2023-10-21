@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("DmgReductionAndPowerReturn")]
 	public class DamageReductionAndPowerReturnSpell : SpellHandler

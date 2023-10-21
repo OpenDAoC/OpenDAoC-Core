@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Base;
 
-namespace DOL.Events
+namespace Core.Events
 {
 	/// <summary>
 	/// The callback method for DOLEvents

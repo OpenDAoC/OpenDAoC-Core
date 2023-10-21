@@ -1,6 +1,6 @@
-using DOL.GS.Effects;
+using Core.GS.Effects;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	/// <summary>
 	/// Called when player removes concentration spell in conc window

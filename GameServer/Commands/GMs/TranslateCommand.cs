@@ -1,7 +1,7 @@
-﻿using DOL.Database;
-using DOL.Language;
+﻿using Core.Database;
+using Core.Language;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command("&translate", EPrivLevel.GM,
          "Use '/translate add [Language] [TranslationId] [Text]' to add a new translation.",

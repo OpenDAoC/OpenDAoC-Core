@@ -1,6 +1,6 @@
-using DOL.Events;
+using Core.Events;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
     [PacketHandler(EPacketHandlerType.TCP, EClientPackets.CharacterSelectRequest, "Handles setting SessionID", EClientStatus.LoggedIn)]
     public class CharacterSelectRequestHandler : IPacketHandler

@@ -1,9 +1,9 @@
 using System;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
 	[SkillHandler(Specs.Stealth)]
 	public class StealthSpecHandler : ISpecActionHandler

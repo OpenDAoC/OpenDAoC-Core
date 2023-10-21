@@ -1,6 +1,6 @@
-using DOL.AI.Brain;
+using Core.AI.Brain;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     public class RespecMerchant : GameMerchant
     {

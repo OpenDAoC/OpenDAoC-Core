@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class OfRaSpeedOfSoundEcsEffect : EcsGameAbilityEffect
     {

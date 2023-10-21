@@ -1,7 +1,7 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
 
 // Boss Mechanics
 // Changes form every ~20 seconds
@@ -13,7 +13,7 @@ using DOL.Events;
 // Form change accompanied by message, "A ring of magical energy emanates from Hurionthex."
 // Spell animation same as ice wizard PBAOE.
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Hurionthex : GameEpicBoss
 {

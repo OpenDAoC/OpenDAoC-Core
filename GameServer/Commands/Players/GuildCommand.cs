@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
+using Core.Language;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	/// <summary>
 	/// command handler for /gc command

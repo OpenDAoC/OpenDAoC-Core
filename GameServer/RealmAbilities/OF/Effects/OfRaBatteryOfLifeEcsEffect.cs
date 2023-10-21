@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class OfRaBatteryOfLifeEcsEffect : EcsGameAbilityEffect
     {

@@ -1,7 +1,7 @@
-using DOL.GS.Effects;
-using DOL.GS.Spells;
+using Core.GS.Effects;
+using Core.GS.Spells;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(169, GameClient.eClientVersion.Version169)]
 	public class PacketLib169 : PacketLib168

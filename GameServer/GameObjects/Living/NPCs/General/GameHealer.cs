@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Represents an in-game Healer NPC, which can remove resurrection illness and restore lost Constitution points.

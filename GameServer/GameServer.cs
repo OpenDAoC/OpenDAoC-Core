@@ -7,28 +7,30 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
-using DOL.Config;
-using DOL.Database;
-using DOL.Database.Attributes;
-using DOL.Events;
-using DOL.GS.Behaviour;
-using DOL.GS.DatabaseUpdate;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
-using DOL.GS.Quests;
-using DOL.GS.ServerProperties;
-using DOL.GS.ServerRules;
-using DOL.Language;
-using DOL.Mail;
-using DOL.Network;
+using Core.Base;
+using Core.Base.Enums;
+using Core.Config;
+using Core.Database;
+using Core.Database.Attributes;
+using Core.Events;
+using Core.GS.API;
+using Core.GS.Behaviour;
+using Core.GS.DatabaseUpdate;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.PlayerTitles;
+using Core.GS.Quests;
+using Core.GS.ServerProperties;
+using Core.GS.ServerRules;
+using Core.Language;
+using Core.Mail;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
 using log4net.Config;
 using log4net.Core;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Class encapsulates all game server functionality
@@ -847,7 +849,7 @@ namespace DOL.GS
 
 				if (Properties.ATLAS_API)
 				{
-					var webserver = new DOL.GS.API.ApiHost();
+					var webserver = new ApiHost();
 					log.Info("Game WebAPI open for connections.");
 				}
 				

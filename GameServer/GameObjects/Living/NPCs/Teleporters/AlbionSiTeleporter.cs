@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class AlbionSiTeleporter : GameTeleporter
 	{

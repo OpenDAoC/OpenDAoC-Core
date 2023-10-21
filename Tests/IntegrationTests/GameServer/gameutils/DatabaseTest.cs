@@ -17,11 +17,11 @@
  *
  */
 using System;
-using DOL.Database;
-using DOL.GS;
+using Core.Database;
+using Core.GS;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Server
+namespace Core.Tests.Integration.Server
 {
 	[TestFixture]
 	public class DatabaseTest : ServerTests

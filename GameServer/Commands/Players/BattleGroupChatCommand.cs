@@ -1,10 +1,10 @@
 using System.Reflection;
 using System.Text;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&battlechat",

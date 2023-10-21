@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.ServerProperties;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS.ServerProperties;
+using Core.GS;
 
 //Mob with packageid="HostBaf" in same region as bosss will come if he is pulled/aggroed
 //Make sure to add that packageid to Host rooms, unless it will not bring a friends!
 //DO NOT REMOVE Host Initializator from ingame or encounter will  not work!
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Host Initializer
 public class HostInitializer : GameNpc

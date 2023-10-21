@@ -1,8 +1,8 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	///Handlers for the savage's special endurance heal that takes health instead of mana

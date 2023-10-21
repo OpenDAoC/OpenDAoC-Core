@@ -1,6 +1,6 @@
-using DOL.Network;
+using Core.Base;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	/// <summary>
 	/// An outgoing TCP packet

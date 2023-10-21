@@ -1,10 +1,10 @@
-﻿using DOL.AI;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+﻿using Core.AI;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS;
+using Core.GS.PacketHandler;
 
-namespace DOL.Tests.Unit.Gameserver
+namespace Core.Tests.Unit.Gameserver
 {
     public class FakePlayer : GamePlayer
     {
@@ -68,7 +68,7 @@ namespace DOL.Tests.Unit.Gameserver
         }
         public override void StartHealthRegeneration() { }
         public override void StartEnduranceRegeneration() { }
-        public override void MessageToSelf(string message, DOL.GS.PacketHandler.EChatType chatType) { }
+        public override void MessageToSelf(string message, EChatType chatType) { }
         protected override void ResetInCombatTimer() { }
 
         public override bool TargetInView { get; set; } = true;

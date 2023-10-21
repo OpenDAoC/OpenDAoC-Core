@@ -1,7 +1,7 @@
-using DOL.AI.Brain;
-using DOL.GS.Effects;
+using Core.AI.Brain;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells.Atlantis
+namespace Core.GS.Spells.Atlantis
 {
 	[SpellHandler("AllStatsDebuff")]
 	public class AllStatsDebuffSpell : SpellHandler

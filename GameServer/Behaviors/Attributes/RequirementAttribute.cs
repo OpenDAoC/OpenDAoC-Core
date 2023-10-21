@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.Behaviour.Attributes
+namespace Core.GS.Behaviour.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class RequirementAttribute :Attribute

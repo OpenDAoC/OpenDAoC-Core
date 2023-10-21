@@ -1,6 +1,6 @@
-﻿using DOL.GS.PacketHandler;
+﻿using Core.GS.PacketHandler;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     /// <summary>
     /// Command handler for the /killself command

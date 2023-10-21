@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using DOL.Database;
-using DOL.Language;
+using Core.Database;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     /// <summary>
     /// This class represents one Zone in DAoC. It holds all relevant information that is needed to do different calculations.

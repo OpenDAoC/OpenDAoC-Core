@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Quests;
-using DOL.GS.RealmAbilities;
-using DOL.GS.Spells;
-using DOL.GS.Styles;
-using DOL.Language;
+using Core.Database;
+using Core.GS.Quests;
+using Core.GS.RealmAbilities;
+using Core.GS.Spells;
+using Core.GS.Styles;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
     [PacketHandler(EPacketHandlerType.TCP, EClientPackets.DetailRequest, "Handles detail display", EClientStatus.PlayerInGame)]
 	public class DetailDisplayHandler : IPacketHandler

@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Reflection;
-using DOL.Language;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.BonusesListRequest, "Handles player bonuses button clicks", EClientStatus.PlayerInGame)]
 	public class PlayerBonusesListRequestHandler : IPacketHandler

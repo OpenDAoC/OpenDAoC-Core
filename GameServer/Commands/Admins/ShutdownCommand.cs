@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.Base.Enums;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
+using Core.Language;
 using JNogueira.Discord.Webhook.Client;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
 	[Command(

@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS.Trainer;
 
 [NpcGuildScript("Necromancer Trainer", ERealm.Albion)]
 public class NecromancerTrainer : GameTrainer

@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Database.UniqueID;
+using Core.GS.Keeps;
+using Core.GS.Movement;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	/// <summary>
 	/// Various keep guard commands
@@ -258,7 +259,7 @@ namespace DOL.GS.Commands
 							guard.AddToWorld();
 
 							if (guard.Component != null && guard.Component.Keep != null)
-								guard.Component.Keep.Guards.Add(DOL.Database.UniqueID.IdGenerator.GenerateID(), guard);
+								guard.Component.Keep.Guards.Add(IdGenerator.GenerateID(), guard);
 						}
 
 						GuardPositionMgr.FillPositions();

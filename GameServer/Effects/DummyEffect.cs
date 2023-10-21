@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     /// <summary>
     /// Dummy effect for testing purposes (identifying buff icons and such).

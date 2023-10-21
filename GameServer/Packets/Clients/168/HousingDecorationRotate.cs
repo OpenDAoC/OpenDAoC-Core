@@ -1,6 +1,6 @@
-using DOL.GS.Housing;
+using Core.GS.Housing;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.HouseDecorationRotate, "Handles housing decoration rotation", EClientStatus.PlayerInGame)]
 	public class HousingDecorationRotateHandler : IPacketHandler

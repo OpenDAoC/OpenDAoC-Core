@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Quests
+namespace Core.GS.Quests
 {
     public abstract class MonthlyQuest : BaseQuest
     {

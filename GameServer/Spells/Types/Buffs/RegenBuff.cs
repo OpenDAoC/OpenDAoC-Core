@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Specialized;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.PropertyCalc;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.GS.PropertyCalc;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Health regeneration rate buff

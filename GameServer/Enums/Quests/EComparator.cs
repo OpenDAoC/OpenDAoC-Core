@@ -1,4 +1,4 @@
-namespace DOL.GS.Behaviour;
+namespace Core.GS.Behaviour;
 
 /// <summary>
 /// Comparator enume used within some of the requirement checks.

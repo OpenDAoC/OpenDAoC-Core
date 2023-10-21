@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("Loockout")]
     public class LookoutSpell : SpellHandler
@@ -64,7 +64,7 @@ namespace DOL.GS.Spells
 }
 
 //to show an Icon & informations to the caster
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class LookoutOwnerEffect : StaticEffect, IGameEffect
     {

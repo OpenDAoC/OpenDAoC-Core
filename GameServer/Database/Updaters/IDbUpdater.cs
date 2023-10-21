@@ -1,4 +1,4 @@
-namespace DOL.GS.DatabaseUpdate;
+namespace Core.GS.DatabaseUpdate;
 
 /// <summary>
 /// Interface for all database updaters

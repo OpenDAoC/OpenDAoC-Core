@@ -1,4 +1,4 @@
-namespace DOL.GS.Realm;
+namespace Core.GS.Realm;
 
 public enum EDAoCExpansion : byte
 {

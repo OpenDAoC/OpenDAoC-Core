@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     //shared timer 1 for 2 - shared timer 4 for 8
 

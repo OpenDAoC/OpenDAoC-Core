@@ -1,8 +1,10 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Keeps;
+using Core.Database;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
 	public interface IServerRules
 	{
@@ -402,7 +404,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="merchantType"></param>
-		void SendHousingMerchantWindow(GamePlayer player, DOL.GS.PacketHandler.EMerchantWindowType merchantType);
+		void SendHousingMerchantWindow(GamePlayer player, EMerchantWindowType merchantType);
 
 
 		/// <summary>
@@ -413,7 +415,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="slot"></param>
 		/// <param name="count"></param>
 		/// <param name="merchantType"></param>
-		void BuyHousingItem(GamePlayer player, ushort slot, byte count, DOL.GS.PacketHandler.EMerchantWindowType merchantType);
+		void BuyHousingItem(GamePlayer player, ushort slot, byte count, EMerchantWindowType merchantType);
 
 		/// <summary>
 		/// Get a housing hookpoint NPC
@@ -423,7 +425,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="heading"></param>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		GameNpc PlaceHousingNPC(DOL.GS.Housing.House house, DbItemTemplate item, IPoint3D location, ushort heading);
+		GameNpc PlaceHousingNPC(House house, DbItemTemplate item, IPoint3D location, ushort heading);
 
 		/// <summary>
 		/// Get a static interior object for a house hookpoint
@@ -433,7 +435,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="location"></param>
 		/// <param name="heading"></param>
 		/// <returns></returns>
-		GameStaticItem PlaceHousingInteriorItem(DOL.GS.Housing.House house, DbItemTemplate item, IPoint3D location, ushort heading);
+		GameStaticItem PlaceHousingInteriorItem(House house, DbItemTemplate item, IPoint3D location, ushort heading);
 
 		/// <summary>
 		/// Create a new consignment merchant for housing

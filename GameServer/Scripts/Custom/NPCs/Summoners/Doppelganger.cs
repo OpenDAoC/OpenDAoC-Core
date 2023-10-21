@@ -1,13 +1,13 @@
 ﻿using System.Reflection;
-using DOL.AI;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.PlayerClass;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.AI;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.GS.PlayerClass;
+using Core.GS.ServerProperties;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class Doppelganger : GameSummoner
     {

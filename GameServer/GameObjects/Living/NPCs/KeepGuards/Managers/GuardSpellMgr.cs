@@ -1,8 +1,8 @@
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	/// <summary>
 	/// Class to deal with spell casting for the guards

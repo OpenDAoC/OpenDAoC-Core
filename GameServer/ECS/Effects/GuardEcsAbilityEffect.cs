@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.GS.SkillHandler;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class GuardEcsAbilityEffect : EcsGameAbilityEffect
     {

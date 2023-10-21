@@ -1,4 +1,4 @@
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// interface for classes that represent a point in 2d space

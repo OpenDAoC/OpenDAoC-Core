@@ -1,8 +1,8 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
+using Core.AI.Brain;
+using Core.Database;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// At the moment this generator only adds AtlanteanGlass to the loot

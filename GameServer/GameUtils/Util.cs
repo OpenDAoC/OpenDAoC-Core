@@ -9,7 +9,7 @@ using System.Threading;
 using log4net;
 using Microsoft.Diagnostics.Runtime;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Generic purpose utility collection

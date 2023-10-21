@@ -1,6 +1,6 @@
-using DOL.AI.Brain;
+using Core.AI.Brain;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.PropertyCalc;
 
 /// <summary>
 /// The Living Effective Level calculator

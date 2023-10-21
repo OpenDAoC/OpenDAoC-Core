@@ -1,8 +1,8 @@
 using System.Reflection;
-using DOL.GS.Housing;
+using Core.GS.Housing;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.BuyRequest, "Handles player buy", EClientStatus.PlayerInGame)]
 	public class PlayerBuyRequestHandler : IPacketHandler

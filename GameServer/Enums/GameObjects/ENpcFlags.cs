@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 /// <summary>
 /// Various flags for this npc

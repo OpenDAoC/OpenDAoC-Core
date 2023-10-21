@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.RegionListRequest, "Handles sending the region overview", EClientStatus.None)]
 	public class RegionListRequestHandler : IPacketHandler

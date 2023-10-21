@@ -1,4 +1,4 @@
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Debuffs two stats at once, goes into specline bonus category

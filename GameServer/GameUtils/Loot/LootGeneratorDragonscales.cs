@@ -1,10 +1,10 @@
 using System;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
+using Core.AI.Brain;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// At the moment this generator only adds dragonscales to the loot

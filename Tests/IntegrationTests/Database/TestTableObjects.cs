@@ -17,11 +17,10 @@
  *
  */
 using System;
+using Core.Database;
+using Core.Database.Attributes;
 
-using DOL.Database;
-using DOL.Database.Attributes;
-
-namespace DOL.Tests.Integration.Database
+namespace Core.Tests.Integration.Database
 {
 	/// <summary>
 	/// Test Table with Multiple Overlapping Index

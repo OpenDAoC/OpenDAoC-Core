@@ -1,4 +1,4 @@
-﻿namespace DOL.GS;
+﻿namespace Core.GS;
 
 /// <summary>
 /// Object type sets the type of object, for example sword or shield

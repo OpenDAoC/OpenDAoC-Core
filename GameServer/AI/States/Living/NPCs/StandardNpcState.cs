@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Reflection;
-using DOL.GS;
-using DOL.GS.ServerProperties;
+using Core.GS;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 public class StandardNpcState : FsmState
 {

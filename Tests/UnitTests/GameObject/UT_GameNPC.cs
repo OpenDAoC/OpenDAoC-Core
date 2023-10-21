@@ -1,8 +1,8 @@
-﻿using NUnit.Framework;
-using DOL.GS;
-using DOL.GS.Keeps;
+﻿using Core.GS;
+using Core.GS.Keeps;
+using NUnit.Framework;
 
-namespace DOL.Tests.Unit.Gameserver
+namespace Core.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_GameNPC

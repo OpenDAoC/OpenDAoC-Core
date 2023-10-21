@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.UDP, EClientPackets.UDPInitRequest, "Handles UDP init", EClientStatus.None)]
 	public class UdpInitRequestHandler : IPacketHandler

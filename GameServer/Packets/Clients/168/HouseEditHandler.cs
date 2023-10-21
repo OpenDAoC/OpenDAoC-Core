@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.HouseEdit, "Change handler for outside/inside look (houses).", EClientStatus.PlayerInGame)]
 	public class HouseEditHandler : IPacketHandler

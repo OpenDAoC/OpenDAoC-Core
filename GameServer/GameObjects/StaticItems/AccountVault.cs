@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.GS;
+using Core.GS.Housing;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 
 public class AccountVault : GameHouseVault
 {

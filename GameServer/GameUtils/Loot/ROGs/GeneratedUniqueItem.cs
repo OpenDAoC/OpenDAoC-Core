@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.Events;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS 
+namespace Core.GS 
 {
     /// <summary>
     /// GeneratedUniqueItem is a subclass of UniqueItem used to create RoG object

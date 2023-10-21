@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.Housing
+namespace Core.GS.Housing
 {
 	public class HouseMgr
 	{

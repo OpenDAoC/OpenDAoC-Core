@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.GS;
+using Core.GS;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 #region Sys'sro the Ruthless
 public class SyssroRuthlessBrain : StandardMobBrain

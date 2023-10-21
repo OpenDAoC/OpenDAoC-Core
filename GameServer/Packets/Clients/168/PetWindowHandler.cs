@@ -1,8 +1,8 @@
 using System.Reflection;
-using DOL.AI.Brain;
+using Core.AI.Brain;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PetWindow, "Handle Pet Window Command", EClientStatus.PlayerInGame)]
 	public class PetWindowHandler : IPacketHandler

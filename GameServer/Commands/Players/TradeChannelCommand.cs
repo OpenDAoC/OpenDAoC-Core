@@ -1,9 +1,9 @@
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts.discord;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.GS.Scripts.discord;
+using Core.GS.ServerProperties;
+using Core.Language;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
      "&trade",

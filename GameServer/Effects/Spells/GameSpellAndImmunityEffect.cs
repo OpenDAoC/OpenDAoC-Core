@@ -1,7 +1,7 @@
 using System;
-using DOL.GS.Spells;
+using Core.GS.Spells;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	/// <summary>
 	/// Spell Effect assists SpellHandler with duration spells with immunity

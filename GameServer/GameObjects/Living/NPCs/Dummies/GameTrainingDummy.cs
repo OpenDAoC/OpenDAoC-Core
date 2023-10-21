@@ -1,8 +1,8 @@
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.PropertyCalc;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.PropertyCalc;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class GameTrainingDummy : GameNpc
     {

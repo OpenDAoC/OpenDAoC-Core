@@ -1,8 +1,8 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("PowerDrainPet")]
 	public class PowerDrainPetSpell : PowerDrainSpell

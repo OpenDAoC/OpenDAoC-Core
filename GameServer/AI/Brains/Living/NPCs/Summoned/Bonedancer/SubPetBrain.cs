@@ -1,8 +1,8 @@
 using System;
-using DOL.Events;
-using DOL.GS;
+using Core.Events;
+using Core.GS;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
     public abstract class SubPetBrain : ControlledNpcBrain
     {

@@ -1,10 +1,10 @@
-﻿using DOL.Database;
-using DOL.GS.Quests;
-using DOL.Tests.Unit.Gameserver;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Collections.Generic;
+using Core.Database;
+using Core.GS.Quests;
+using Core.Tests.Unit.Gameserver;
 
-namespace DOL.Tests.Integration.Gameserver
+namespace Core.Tests.Integration.Gameserver
 {
     [TestFixture]
     class Test_DataQuest

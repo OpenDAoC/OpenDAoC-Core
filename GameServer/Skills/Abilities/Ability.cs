@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// callback handler for an ability that is activated by clicking on an associated icon

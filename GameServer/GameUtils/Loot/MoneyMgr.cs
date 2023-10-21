@@ -1,8 +1,8 @@
 using System.Text;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.GS.ServerProperties;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// capsulate money operations

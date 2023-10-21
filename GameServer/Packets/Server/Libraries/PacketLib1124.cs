@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.Quests;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Base.Enums;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.GS.Quests;
+using Core.GS.Spells;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(1124, GameClient.eClientVersion.Version1124)]
 	public class PacketLib1124 : PacketLib1123

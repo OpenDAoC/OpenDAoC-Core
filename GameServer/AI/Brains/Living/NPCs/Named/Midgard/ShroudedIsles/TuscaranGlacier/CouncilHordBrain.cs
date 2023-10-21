@@ -1,10 +1,10 @@
 using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Events;
+using Core.GS;
+using Core.GS.PacketHandler;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 public class CouncilHordBrain : StandardMobBrain
 {

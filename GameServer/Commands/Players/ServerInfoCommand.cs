@@ -1,7 +1,7 @@
 using System;
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&serverinfo", //command to handle
     EPrivLevel.Player, //minimum privelege level

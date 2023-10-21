@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public interface IMasterLevelsSpecialization
 	{

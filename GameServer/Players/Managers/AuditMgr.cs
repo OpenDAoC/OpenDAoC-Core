@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Timers;
-using DOL.Database;
-using DOL.Database.Attributes;
+using Core.Base;
+using Core.Database;
+using Core.Database.Attributes;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Manages all audit entries.

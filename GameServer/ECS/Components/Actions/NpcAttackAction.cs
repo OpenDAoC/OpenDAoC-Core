@@ -1,9 +1,9 @@
-﻿using DOL.AI.Brain;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+﻿using Core.AI.Brain;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class NpcAttackAction : AttackAction
     {

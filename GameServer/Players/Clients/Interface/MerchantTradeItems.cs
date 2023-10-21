@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// This class represents a full merchant item list

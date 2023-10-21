@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.Styles;
+using Core.Database;
+using Core.GS.Styles;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
     public class OfRaRazorbackStyle : StyleRealmAbility
     {

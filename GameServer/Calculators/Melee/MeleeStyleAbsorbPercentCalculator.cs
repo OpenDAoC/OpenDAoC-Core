@@ -1,4 +1,4 @@
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.PropertyCalc;
 
 [PropertyCalculator(EProperty.StyleAbsorb)]
 public class MeleeStyleAbsorbPercentCalculator : PropertyCalculator

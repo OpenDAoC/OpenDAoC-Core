@@ -1,8 +1,8 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+﻿using Core.AI.Brain;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class AncientBlackOak : GameEpicBoss
 {
@@ -88,7 +88,7 @@ public class AncientBlackOak : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+        if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

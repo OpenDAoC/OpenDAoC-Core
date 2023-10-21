@@ -1,9 +1,9 @@
 using System.Collections;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	public class NfRaSpeedOfSoundAbility : TimedRealmAbility
 	{

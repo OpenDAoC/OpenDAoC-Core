@@ -1,10 +1,10 @@
 using System;
 using System.Text.RegularExpressions;
-using DOL.GS;
-using DOL.GS.Scripts;
-using DOL.GS.ServerProperties;
+using Core.GS;
+using Core.GS.Scripts;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class GameEpicBoss : GameNpc
     {
@@ -116,7 +116,7 @@ namespace DOL.GS
         }
     }
 }
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
     public class EpicBossBrain : StandardMobBrain
     {

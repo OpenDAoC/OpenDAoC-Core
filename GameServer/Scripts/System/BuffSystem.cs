@@ -1,4 +1,4 @@
-﻿namespace DOL.GS.Systems { 
+﻿namespace Core.GS.Systems { 
     public class BuffSystem
     {
         public void OnTick(GameLiving[] entities)

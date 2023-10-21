@@ -1,9 +1,9 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 using JNogueira.Discord.Webhook.Client;
 
-namespace DOL.GS.Scripts.discord
+namespace Core.GS.Scripts.discord
 {
     public static class WebhookMessage
     {

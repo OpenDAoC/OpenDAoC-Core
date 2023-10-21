@@ -1,4 +1,4 @@
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	/// <summary>
 	/// An effect that can be added to concentration list

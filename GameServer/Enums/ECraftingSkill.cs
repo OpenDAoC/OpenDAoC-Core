@@ -1,4 +1,4 @@
-namespace DOL.GS;
+namespace Core.GS;
 
 /// <summary>
 /// Enum of all crafting skill (related to client file)

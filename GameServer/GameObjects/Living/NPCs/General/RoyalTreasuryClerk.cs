@@ -1,4 +1,4 @@
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Special NPC for giving DR players items

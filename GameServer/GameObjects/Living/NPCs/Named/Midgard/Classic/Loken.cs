@@ -1,9 +1,9 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+﻿using Core.AI.Brain;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class Loken : GameEpicNPC
 	{
@@ -127,7 +127,7 @@ namespace DOL.GS
 
 
 #region Loken wolfs
-namespace DOL.GS
+namespace Core.GS
 {
 	public class LokenWolf : GameNpc
 	{

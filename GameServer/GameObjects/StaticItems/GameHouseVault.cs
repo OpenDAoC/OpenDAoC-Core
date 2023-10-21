@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Housing;
+using Core.Database;
+using Core.GS.Housing;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class GameHouseVault : GameVault, IHouseHookpointItem
 	{

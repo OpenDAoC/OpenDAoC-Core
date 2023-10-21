@@ -1,4 +1,4 @@
-﻿namespace DOL.GS;
+﻿namespace Core.GS;
 
 /// <summary>
 /// The possible states for a ranged attack

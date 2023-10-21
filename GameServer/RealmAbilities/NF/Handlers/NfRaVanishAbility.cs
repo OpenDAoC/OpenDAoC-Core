@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PropertyCalc;
-using DOL.GS.Spells;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.PropertyCalc;
+using Core.GS.Spells;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	public class NfRaVanishAbility : TimedRealmAbility
 	{		public NfRaVanishAbility(DbAbility dba, int level) : base(dba, level) { }

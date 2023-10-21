@@ -1,8 +1,8 @@
-using DOL.GS.PlayerClass;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.GS.PlayerClass;
+using Core.GS.ServerProperties;
+using Core.Language;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public class GuardCommander : GameKeepGuard
 	{

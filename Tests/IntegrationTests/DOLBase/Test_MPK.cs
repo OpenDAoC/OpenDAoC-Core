@@ -1,9 +1,9 @@
-﻿using DOL.MPK;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Text;
 using System.IO;
+using Core.Base;
 
-namespace DOL.Tests.Integration.DOLBase
+namespace Core.Tests.Integration.DOLBase
 {
     [TestFixture]
     class Test_MPK
@@ -29,7 +29,7 @@ namespace DOL.Tests.Integration.DOLBase
         [Test, Order(1)]
         public void Save_TestTxtToMPK_CorrectCRC()
         {
-            var newMPK = new MPK.MpkHandler(mpkFileLocation, true);
+            var newMPK = new MpkHandler(mpkFileLocation, true);
             var mpkFile = new MpkFile(textFileLocation);
             newMPK.AddFile(mpkFile);
             newMPK[textFileLocation].Header.TimeStamp = 0; //Make MPK creation deterministic
@@ -44,13 +44,13 @@ namespace DOL.Tests.Integration.DOLBase
         [Test, Order(2)]
         public void Open_TestMPK_NoExceptions()
         {
-            _ = new MPK.MpkHandler(mpkFileLocation, false);
+            _ = new MpkHandler(mpkFileLocation, false);
         }
 
         [Test, Order(3)]
         public void Extract_TestMPK_SameTxtContent()
         {
-            var mpk = new MPK.MpkHandler(mpkFileLocation, false);
+            var mpk = new MpkHandler(mpkFileLocation, false);
             mpk.Extract(extractPath);
 
             var actualFileText = File.ReadAllText(Path.Combine(extractPath,  textFileLocation));
@@ -64,5 +64,9 @@ namespace DOL.Tests.Integration.DOLBase
             Directory.SetCurrentDirectory("..");
             Directory.Delete(Path.Combine(testDirectory), true);
         }
+    }
+
+    internal class MPK
+    {
     }
 }

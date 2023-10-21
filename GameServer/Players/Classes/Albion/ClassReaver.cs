@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.GS.Realm;
+using Core.GS.Realm;
 
-namespace DOL.GS.PlayerClass
+namespace Core.GS.PlayerClass
 {
 	[PlayerClass((int)EPlayerClass.Reaver, "Reaver", "Fighter")]
 	public class ClassReaver : ClassFighter

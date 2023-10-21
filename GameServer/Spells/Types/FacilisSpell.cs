@@ -1,4 +1,4 @@
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("Facilis")]
 	public class FacilisSpell : SpellHandler

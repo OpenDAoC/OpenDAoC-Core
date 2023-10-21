@@ -6,11 +6,11 @@ using System.Linq;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
-using DOL.Database;
-using DOL.Database.Attributes;
+using Core.Database;
+using Core.Database.Attributes;
 using log4net;
 
-namespace DOL.GS.DatabaseUpdate
+namespace Core.GS.DatabaseUpdate
 {
 	/// <summary>
 	/// Tools for Loading and Unloading XML DataObjects.

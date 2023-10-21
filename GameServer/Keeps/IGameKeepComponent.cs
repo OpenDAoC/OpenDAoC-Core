@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public interface IGameKeepComponent
 	{

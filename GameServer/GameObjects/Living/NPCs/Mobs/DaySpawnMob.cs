@@ -1,9 +1,9 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class DaySpawnMob : GameNpc
     {
@@ -29,7 +29,7 @@ namespace DOL.GS
     }
 }
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
     public class DaySpawnBrain : StandardMobBrain
     {

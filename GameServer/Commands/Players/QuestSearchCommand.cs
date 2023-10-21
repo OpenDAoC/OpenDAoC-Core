@@ -1,6 +1,7 @@
-using DOL.GS.Quests;
+using Core.GS.PacketHandler;
+using Core.GS.Quests;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&search",
@@ -47,7 +48,7 @@ public class QuestSearchCommand : ACommandHandler, ICommandHandler
 
 		if (searched == false)
 		{
-			player.Out.SendMessage("You can't do that here!", DOL.GS.PacketHandler.EChatType.CT_Important, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("You can't do that here!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 	}
 }

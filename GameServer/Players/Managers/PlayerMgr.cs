@@ -1,7 +1,7 @@
 ﻿using System;
-using DOL.GS.Friends;
+using Core.GS.Friends;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// GameServer Manager to Handle Player Data and restriction for this GameServer.

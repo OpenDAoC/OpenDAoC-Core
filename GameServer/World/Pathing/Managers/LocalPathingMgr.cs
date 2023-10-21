@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class LocalPathingMgr : IPathingMgr
     {

@@ -1,8 +1,8 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerRules;
+using Core.GS.PacketHandler;
+using Core.GS.ServerRules;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command("&dfowner", EPrivLevel.Admin,
         "Changes the Realm owning access to Darkness Falls", "&dfowner <Realm>")]

@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&gmrelic",

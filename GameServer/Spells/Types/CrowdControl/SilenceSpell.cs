@@ -1,6 +1,6 @@
-using DOL.GS.Effects;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("Silence")]
 	public class SilenceSpell : SpellHandler

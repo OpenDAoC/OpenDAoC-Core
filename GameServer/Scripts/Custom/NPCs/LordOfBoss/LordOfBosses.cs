@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS {
+namespace Core.GS {
     public class LordOfBosses : GameTrainingDummy {
 	    
 	    public override bool AddToWorld()

@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Marks a class as a command handler

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
     /// <summary>
     /// This implementation uses LootTemplates to relate loots to a specific mob type.

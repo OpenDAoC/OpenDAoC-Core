@@ -1,9 +1,9 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.GS.PacketHandler;
 
 #region Tabor
-namespace DOL.GS
+namespace Core.GS
 {
 	public class Tabor : GameNpc
 	{
@@ -69,7 +69,7 @@ namespace DOL.GS
 #endregion
 
 #region Ghost of Tabor
-namespace DOL.GS
+namespace Core.GS
 {
     public class TaborGhost : GameNpc
 	{
@@ -121,7 +121,7 @@ namespace DOL.GS
 #endregion
 
 #region Swirl of Dirt
-namespace DOL.GS
+namespace Core.GS
 {
     public class SwirlDirt : GameNpc
 	{

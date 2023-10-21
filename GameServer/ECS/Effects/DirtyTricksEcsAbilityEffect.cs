@@ -1,7 +1,7 @@
-﻿using DOL.GS.PacketHandler;
-using DOL.Language;
+﻿using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class DirtyTricksEcsAbilityEffect : EcsGameAbilityEffect
     {
@@ -55,7 +55,7 @@ namespace DOL.GS
 	}
 }
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class DirtyTricksDetrimentalECSGameEffect : EcsGameAbilityEffect
     {

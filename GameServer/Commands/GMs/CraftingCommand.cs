@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Language;
+using Core.Database;
+using Core.Language;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		"&crafting",

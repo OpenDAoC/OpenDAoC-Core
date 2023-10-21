@@ -1,7 +1,7 @@
 using System;
-using DOL.Events;
+using Core.Events;
 
-namespace DOL.GS.Quests
+namespace Core.GS.Quests
 {
 	public class KillMission : AMission
 	{

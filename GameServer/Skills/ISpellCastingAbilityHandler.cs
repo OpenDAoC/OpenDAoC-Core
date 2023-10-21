@@ -1,4 +1,4 @@
-﻿namespace DOL.GS
+﻿namespace Core.GS
 {
 	/// <summary>
 	/// ISpellCastingAbilityHandler is an Interface for Providing Basic access to an Ability Casting a Spell

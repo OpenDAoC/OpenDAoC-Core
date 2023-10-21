@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.Database.Attributes
+namespace Core.Database.Attributes
 {
 	/// <summary>
 	/// Attribute to mark a Derived Class of DataObject as Table

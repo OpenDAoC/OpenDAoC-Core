@@ -1,7 +1,7 @@
-﻿using DOL.AI.Brain;
-using DOL.GS.PlayerClass;
+﻿using Core.AI.Brain;
+using Core.GS.PlayerClass;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public class GuardCurrencyMerchant : GameServerGuardMerchant
 	{

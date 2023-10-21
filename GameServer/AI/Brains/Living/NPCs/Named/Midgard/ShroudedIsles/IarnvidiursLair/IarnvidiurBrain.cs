@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
+using Core.Database;
+using Core.GS;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 public class IarnvidiurBrain : StandardMobBrain
 {

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.Housing;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class GameConsignmentMerchant : GameNpc, IGameInventoryObject
     {

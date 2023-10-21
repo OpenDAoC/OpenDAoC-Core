@@ -1,7 +1,7 @@
 using System;
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Handles power drain (conversion of target health to caster

@@ -1,8 +1,9 @@
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Base.Enums;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&assist", EPrivLevel.Player, "Assist your target", "/assist [playerName]")]
 public class AssistCommand : ACommandHandler, ICommandHandler

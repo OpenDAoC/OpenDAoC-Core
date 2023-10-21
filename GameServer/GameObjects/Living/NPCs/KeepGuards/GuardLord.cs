@@ -1,13 +1,14 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerClass;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Base.Enums;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.PlayerClass;
+using Core.GS.ServerProperties;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
     public class GuardLord : GameKeepGuard
     {

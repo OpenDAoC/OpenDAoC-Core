@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.AI.Brain;
-using DOL.GS.Effects;
+using Core.AI.Brain;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("Fear")]
 	public class FearSpell : SpellHandler 

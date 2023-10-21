@@ -1,4 +1,4 @@
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     /// <summary>
     /// They have less chance of landing melee attacks, and spells have a greater chance of affecting them.

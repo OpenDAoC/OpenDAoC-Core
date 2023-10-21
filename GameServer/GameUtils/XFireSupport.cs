@@ -1,7 +1,7 @@
 using System;
-using DOL.Events;
+using Core.Events;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	public class XFirePlayerEnterExit
 	{
@@ -41,7 +41,7 @@ namespace DOL.GS.GameEvents
 		}
 	}
 }
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&xfire", EPrivLevel.Player, "Xfire support", "/xfire <on|off>")]
 	public class CheckXFireCommandHandler : ACommandHandler, ICommandHandler

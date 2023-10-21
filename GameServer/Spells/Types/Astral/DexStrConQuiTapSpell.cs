@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.GS.Effects;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     /// <summary>
     /// Dex/Qui/Str/Con stat specline debuff and transfers them to the caster.

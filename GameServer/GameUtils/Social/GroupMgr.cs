@@ -21,7 +21,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// The GroupMgr holds pointers to all groups and to players

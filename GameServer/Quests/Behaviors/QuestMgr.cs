@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS.Quests
+namespace Core.GS.Quests
 {
 	/// <summary>
 	/// Declares the quest managed, all questDescriptor instances

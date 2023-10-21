@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// This implementation uses ItemTemplates to fetch a random item in the range of LEVEL_RANGE to moblevel   

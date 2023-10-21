@@ -1,8 +1,8 @@
 using System.Linq;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
 		"&jp",

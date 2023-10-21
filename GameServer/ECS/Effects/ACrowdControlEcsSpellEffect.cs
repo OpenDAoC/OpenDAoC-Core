@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.GS.Spells;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
+using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public abstract class ACrowdControlEcsSpellEffect : EcsGameSpellEffect
     {

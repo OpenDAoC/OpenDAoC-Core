@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Events;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     public class InstantLevelNpc : GameNpc
     {

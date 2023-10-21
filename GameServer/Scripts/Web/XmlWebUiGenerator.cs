@@ -1,13 +1,13 @@
 using System;
 using System.IO;
 using System.Reflection;
-using DOL.Database;
-using DOL.Database.Attributes;
-using DOL.Database.Connection;
-using DOL.Events;
+using Core.Database;
+using Core.Database.Attributes;
+using Core.Database.Connection;
+using Core.Events;
 using log4net;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
 	/// <summary>
 	/// Generates an XML version of the web ui

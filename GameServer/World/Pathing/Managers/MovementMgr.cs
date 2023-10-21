@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS.Movement
+namespace Core.GS.Movement
 {
     /// <summary>
     /// TODO: instead movement manager we need AI when npc should travel on path and attack 

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.RealmAbilities;
+using Core.Language;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class OfRaVolleyEcsEffect : EcsGameAbilityEffect
     {

@@ -1,8 +1,8 @@
-using DOL.Events;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
+using Core.Events;
+using Core.GS.Housing;
+using Core.GS.Keeps;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.DialogResponse, "Response Packet from a Question Dialog", EClientStatus.PlayerInGame)]
 	public class DialogResponseHandler : IPacketHandler

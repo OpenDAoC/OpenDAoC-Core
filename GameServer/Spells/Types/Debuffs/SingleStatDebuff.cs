@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Debuffs a single stat

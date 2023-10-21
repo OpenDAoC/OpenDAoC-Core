@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.Database.UniqueID
+namespace Core.Database.UniqueID
 {
 	/// <summary>
 	/// Generates an UniqeID for every Object.

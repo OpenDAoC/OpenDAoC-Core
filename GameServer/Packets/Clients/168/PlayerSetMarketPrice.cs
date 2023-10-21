@@ -1,7 +1,7 @@
 using System.Reflection;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
     [PacketHandler(EPacketHandlerType.TCP, EClientPackets.SetMarketPrice, "Set Market/Consignment Merchant Price.", EClientStatus.PlayerInGame)]
     public class PlayerSetMarketPriceHandler : IPacketHandler

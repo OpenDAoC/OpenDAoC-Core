@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     //http://www.camelotherald.com/masterlevels/ma.php?ml=Stormlord
     //shared timer 1

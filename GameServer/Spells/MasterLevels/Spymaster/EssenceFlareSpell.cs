@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("EssenceFlare")]
     public class EssenceFlareSpell : SummonItemSpellHandler

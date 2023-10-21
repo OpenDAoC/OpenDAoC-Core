@@ -18,10 +18,11 @@
  */
 
 using System;
-using DOL.GS;
+using Core.Database;
+using Core.GS;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Server
+namespace Core.Tests.Integration.Server
 {
 	/// <summary>
 	/// Unit tests for the Zone Class
@@ -54,8 +55,8 @@ namespace DOL.Tests.Integration.Server
 		testRegionData.DivingEnabled = false;
 		testRegionData.HousingEnabled = false;
 		testRegionData.Expansion = (int)EClientExpansion.None;
-		testRegionData.Mobs = new DOL.Database.DbMob[]{
-			new DOL.Database.DbMob() {},
+		testRegionData.Mobs = new DbMob[]{
+			new DbMob() {},
 		};
 
 		var testZoneData = new ZoneData(){

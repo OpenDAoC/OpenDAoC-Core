@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS.Trainer;
 
 [NpcGuildScript("Cleric Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Cleric Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class ClericTrainer : GameTrainer

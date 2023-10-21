@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.Spells;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
     public class NfRaBlissfulIgnoranceAbility : Rr5RealmAbility
     {

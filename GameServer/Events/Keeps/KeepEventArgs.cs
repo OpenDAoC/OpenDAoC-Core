@@ -1,8 +1,8 @@
 using System;
-using DOL.GS;
-using DOL.GS.Keeps;
+using Core.GS;
+using Core.GS.Keeps;
 
-namespace DOL.Events;
+namespace Core.Events;
 
 /// <summary>
 /// Holds the arguments for the Keep event

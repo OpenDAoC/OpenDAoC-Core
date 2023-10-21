@@ -1,6 +1,6 @@
-using DOL.Database.Attributes;
+using Core.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/*
 	 * 	public static readonly Dictionary<string, ushort> AbilitiesClientHardcodedIDs = new Dictionary<string, ushort>()

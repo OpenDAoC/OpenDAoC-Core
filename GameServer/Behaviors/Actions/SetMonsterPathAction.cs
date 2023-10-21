@@ -1,12 +1,12 @@
 using System;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.Behaviour.Attributes;
-using DOL.GS.Movement;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.Behaviour.Attributes;
+using Core.GS.Movement;
 using log4net;
 
-namespace DOL.GS.Behaviour.Actions
+namespace Core.GS.Behaviour.Actions
 {
     [Action(ActionType = EActionType.SetMonsterPath,DefaultValueP=EDefaultValueConstants.NPC)]
     public class SetMonsterPathAction : AAction<PathPoint,GameNpc>

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.PacketHandler.Client.v168;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.PacketHandler.Client.v168;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		"&door",

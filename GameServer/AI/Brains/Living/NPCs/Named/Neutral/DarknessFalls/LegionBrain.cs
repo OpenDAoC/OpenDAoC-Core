@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
+using Core.Database;
+using Core.GS;
+using Core.GS.PacketHandler;
+using Core.GS.Scripts;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 #region Legion
 public class LegionBrain : EpicBossBrain

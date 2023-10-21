@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
+using Core.Language;
 using ECS.Debug;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public static class EffectService
     {

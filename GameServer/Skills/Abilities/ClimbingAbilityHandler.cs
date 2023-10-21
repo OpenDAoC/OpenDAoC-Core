@@ -1,6 +1,6 @@
-﻿using DOL.Database;
+﻿using Core.Database;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
 	[SkillHandler(Abilities.ClimbSpikes)]
 	public class ClimbingAbilityHandler : SpellCastingAbilityHandler

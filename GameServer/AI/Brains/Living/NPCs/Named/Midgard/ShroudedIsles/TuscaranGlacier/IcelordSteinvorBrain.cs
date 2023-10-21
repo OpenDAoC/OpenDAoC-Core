@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.GS;
+using Core.GS.PacketHandler;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 #region Icelord Steinvor
 public class IcelordSteinvorBrain : StandardMobBrain

@@ -1,8 +1,8 @@
-﻿using NUnit.Framework;
-using DOL.GS;
-using DOL.GS.PropertyCalc;
+﻿using Core.GS;
+using Core.GS.PropertyCalc;
+using NUnit.Framework;
 
-namespace DOL.Tests.Unit.Gameserver.PropertyCalc
+namespace Core.Tests.Unit.Gameserver.PropertyCalc
 {
     [TestFixture]
     class UT_MeleeDamagePercentCalculator

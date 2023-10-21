@@ -1,6 +1,6 @@
-﻿using DOL.Database.Attributes;
+﻿using Core.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Stores the triggers with corresponding text for a mob, for example if the mob should say something when it dies.

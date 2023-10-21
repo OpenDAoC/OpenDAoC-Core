@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Parameter for Prepared Queries

@@ -1,8 +1,9 @@
 using System;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Base;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	[NpcGuildScript("Guild Emblemeer")]
 	public class GuildEmblemeer : GameNpc

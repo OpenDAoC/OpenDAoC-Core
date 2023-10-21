@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.PropertyCalc;
-using DOL.GS.RealmAbilities;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.GS.PropertyCalc;
+using Core.GS.RealmAbilities;
+using Core.GS.ServerProperties;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class NecromancerPet : GameSummonedPet
 	{

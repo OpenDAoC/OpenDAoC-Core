@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	public abstract class APacketLib
 	{

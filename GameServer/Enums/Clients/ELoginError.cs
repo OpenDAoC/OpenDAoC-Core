@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler;
+namespace Core.GS.PacketHandler;
 
 /// <summary>
 /// Enum for LoginDeny reasons

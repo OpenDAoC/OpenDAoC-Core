@@ -1,4 +1,4 @@
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&dropmr", //command to handle
     EPrivLevel.Player, //minimum privelege level

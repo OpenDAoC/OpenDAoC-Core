@@ -1,7 +1,7 @@
-﻿using DOL.AI;
-using DOL.AI.Brain;
+﻿using Core.AI;
+using Core.AI.Brain;
 
-namespace DOL.GS
+namespace Core.GS
 {
     /// <summary>
     /// An NPC which summons a pet based on PetTemplate when health is below SummonThreshold, 

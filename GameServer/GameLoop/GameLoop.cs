@@ -2,11 +2,11 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
-using DOL.GS.Scripts;
+using Core.GS.Scripts;
 using ECS.Debug;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public static class GameLoop
     {

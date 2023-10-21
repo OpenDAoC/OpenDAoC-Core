@@ -1,4 +1,4 @@
-namespace DOL.GS
+namespace Core.GS
 {
   /// <summary>
   /// Reason for why no path was found

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.GS.Styles;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class LiveChampionLevelsSpecialization : CareerSpecialization
 	{
@@ -84,7 +85,7 @@ namespace DOL.GS
 		/// <param name="living"></param>
 		/// <param name="level"></param>
 		/// <returns></returns>
-		protected override List<DOL.GS.Styles.Style> GetStylesForLiving(GameLiving living, int level)
+		protected override List<Style> GetStylesForLiving(GameLiving living, int level)
 		{
 			if (living is GamePlayer)
 			{
@@ -92,16 +93,16 @@ namespace DOL.GS
 				
 				var specs = player.GetSpecList().Where(sp => sp is LiveChampionLevelsLineSpec).Cast<LiveChampionLevelsLineSpec>();
 				
-				var result = new List<DOL.GS.Styles.Style>();
+				var result = new List<Style>();
 				
 				foreach (var spec in specs)
 				{
-					var skills = spec.GetMiniLineSkillsForLiving(living, spec.GetSpecLevelForLiving(living)).Where(e => e.Item1 is DOL.GS.Styles.Style);
+					var skills = spec.GetMiniLineSkillsForLiving(living, spec.GetSpecLevelForLiving(living)).Where(e => e.Item1 is Style);
 					
 					foreach (var elem in skills)
 					{
 						elem.Item1.Level = player.MaxLevel;
-						result.Add((DOL.GS.Styles.Style)elem.Item1);
+						result.Add((Style)elem.Item1);
 					}
 				}
 				
@@ -110,7 +111,7 @@ namespace DOL.GS
 			else
 			{
 				// Unsupported specs for livings...
-				return new List<DOL.GS.Styles.Style>();
+				return new List<Style>();
 			}
 		}
 		

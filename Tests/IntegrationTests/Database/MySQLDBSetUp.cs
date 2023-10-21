@@ -19,13 +19,11 @@
 using System;
 using System.IO;
 using System.Reflection;
-
-using DOL.Database;
-using DOL.Database.Connection;
-
+using Core.Database;
+using Core.Database.Connection;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Database.MySQL
+namespace Core.Tests.Integration.Database.MySQL
 {
 	[SetUpFixture]
 	public class MySQLDBSetUp

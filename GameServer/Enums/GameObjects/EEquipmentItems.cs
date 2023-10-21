@@ -1,4 +1,4 @@
-﻿namespace DOL.GS;
+﻿namespace Core.GS;
 
 /// <summary>
 /// This enumeration holds all equipment

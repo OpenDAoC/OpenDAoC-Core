@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.Events;
-using DOL.Language;
+using Core.Base;
+using Core.Database;
+using Core.Events;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// This class represents a static Item in the game world

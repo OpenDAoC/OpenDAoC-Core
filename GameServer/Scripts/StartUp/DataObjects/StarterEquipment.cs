@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.Database.Attributes;
+using Core.Database;
+using Core.Database.Attributes;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	/// <summary>
 	/// Holds starter equipment

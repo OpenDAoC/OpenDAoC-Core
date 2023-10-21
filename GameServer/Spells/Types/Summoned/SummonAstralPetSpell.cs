@@ -1,8 +1,9 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Events;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("AstralPetSummon")]
     public class SummonAstralPetSpell : SummonSpellHandler
@@ -30,7 +31,7 @@ namespace DOL.GS.Spells
 
             GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new CoreEventHandler(OnNpcReleaseCommand));
 
-            DOL.GS.Effects.GameSpellEffect effect = FindEffectOnTarget(pet, this);
+            GameSpellEffect effect = FindEffectOnTarget(pet, this);
             if (effect != null)
                 effect.Cancel(false);
         }
@@ -46,7 +47,7 @@ namespace DOL.GS.Spells
     }
 }
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class AstralPet : GameSummonedPet
     {

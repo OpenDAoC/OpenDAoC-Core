@@ -1,4 +1,4 @@
-﻿namespace DOL.GS;
+﻿namespace Core.GS;
 
 /// <summary>
 /// all available and buffable/bonusable properties on livings

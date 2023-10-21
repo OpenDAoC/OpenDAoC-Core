@@ -20,11 +20,11 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-
-using DOL.Database;
+using Core.Database;
+using Core.Database.UniqueID;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Database
+namespace Core.Tests.Integration.Database
 {
 	[TestFixture]
 	public class InterfaceTests
@@ -713,7 +713,7 @@ namespace DOL.Tests.Integration.Database
 		{
 			Database.RegisterDataObject(typeof(TestTablePrimaryKey));
 			
-			var obj = new TestTablePrimaryKey { PrimaryKey = DOL.Database.UniqueID.IdGenerator.GenerateID(), TestField = "Test For Single Find Object By Primary Key" };
+			var obj = new TestTablePrimaryKey { PrimaryKey = IdGenerator.GenerateID(), TestField = "Test For Single Find Object By Primary Key" };
 			
 			var inserted = Database.AddObject(obj);
 			
@@ -740,7 +740,7 @@ namespace DOL.Tests.Integration.Database
 		{
 			Database.RegisterDataObject(typeof(TestTablePrimaryKey));
 			
-			var objs = Enumerable.Range(0, 10).Select(i => new TestTablePrimaryKey { PrimaryKey = DOL.Database.UniqueID.IdGenerator.GenerateID(),
+			var objs = Enumerable.Range(0, 10).Select(i => new TestTablePrimaryKey { PrimaryKey = IdGenerator.GenerateID(),
 			                                          	TestField = string.Format("Test For Multiple Find Objects By Key #{0}", i) }).ToArray();
 			
 			var inserted = Database.AddObject(objs);

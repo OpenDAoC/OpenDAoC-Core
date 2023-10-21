@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.Language;
+using Core.Language;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	/// <summary>
 	/// Base for all GuildBannerEffects. Use CreateEffectOfClass to get instances.

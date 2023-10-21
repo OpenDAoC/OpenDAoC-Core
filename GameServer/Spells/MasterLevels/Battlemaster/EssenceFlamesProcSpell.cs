@@ -1,8 +1,8 @@
 using System;
-using DOL.Database;
-using DOL.Events;
+using Core.Database;
+using Core.Events;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     //ml5 in database Target shood be Group if PvP..Realm if RvR..Value = spell proc'd (a.k the 80value dd proc)
 

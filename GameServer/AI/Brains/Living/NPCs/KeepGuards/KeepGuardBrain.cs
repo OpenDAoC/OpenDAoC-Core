@@ -1,8 +1,8 @@
-using DOL.GS;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.GS;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
 	/// <summary>
 	/// Brain Class for Area Capture Guards

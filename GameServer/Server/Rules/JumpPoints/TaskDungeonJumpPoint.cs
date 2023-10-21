@@ -1,8 +1,8 @@
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.Quests;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
 	/// <summary>
 	/// Handles task dungeon jump points

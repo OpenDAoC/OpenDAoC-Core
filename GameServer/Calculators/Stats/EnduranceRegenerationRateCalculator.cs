@@ -1,6 +1,6 @@
-using DOL.GS.RealmAbilities;
+using Core.GS.RealmAbilities;
 
-namespace DOL.GS.PropertyCalc
+namespace Core.GS.PropertyCalc
 {
 	/// <summary>
 	/// The health regen rate calculator

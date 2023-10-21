@@ -1,10 +1,10 @@
 using System;
 using System.Threading;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Events;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class GuildPlayerEvent : GamePlayerEvent
 	{

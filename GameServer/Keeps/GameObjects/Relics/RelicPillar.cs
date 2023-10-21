@@ -1,4 +1,4 @@
-namespace DOL.GS.Relics
+namespace Core.GS.Relics
 {
 	public class RelicPillar : GameDoorBase
 	{

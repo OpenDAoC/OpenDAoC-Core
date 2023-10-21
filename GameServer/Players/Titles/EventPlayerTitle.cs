@@ -1,7 +1,7 @@
 using System;
-using DOL.Events;
+using Core.Events;
 
-namespace DOL.GS.PlayerTitles
+namespace Core.GS.PlayerTitles
 {
 	/// <summary>
 	/// Base abstract class for typical player titles based on events.

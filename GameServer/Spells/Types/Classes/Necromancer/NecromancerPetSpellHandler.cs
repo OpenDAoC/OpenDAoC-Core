@@ -1,9 +1,9 @@
 using System;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     /// <summary>
     /// Handler for spells that are issued by the player, but cast

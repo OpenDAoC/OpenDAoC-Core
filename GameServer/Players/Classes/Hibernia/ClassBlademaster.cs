@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.GS.Realm;
+using Core.GS.Realm;
 
-namespace DOL.GS.PlayerClass
+namespace Core.GS.PlayerClass
 {
 	[PlayerClass((int)EPlayerClass.Blademaster, "Blademaster", "Guardian")]
 	public class ClassBlademaster : ClassGuardian

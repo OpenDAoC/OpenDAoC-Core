@@ -1,9 +1,9 @@
 using System;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.PlayerTitles;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&nohelp",

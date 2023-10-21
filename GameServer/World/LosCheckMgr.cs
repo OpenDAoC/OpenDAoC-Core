@@ -2,12 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// LosCheckMgr is a class designed to handle LoS Checks and cache them.

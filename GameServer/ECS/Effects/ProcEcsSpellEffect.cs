@@ -1,6 +1,6 @@
-﻿using DOL.GS.PacketHandler;
+﻿using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class ProcEcsSpellEffect : EcsGameSpellEffect
     {

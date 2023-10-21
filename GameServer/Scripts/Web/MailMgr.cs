@@ -7,11 +7,12 @@ using System.Net.Mail;
 using System.Reflection;
 using System.Threading;
 using System.Xml;
-using DOL.Config;
-using DOL.GS;
+using Core.Config;
+using Core.GS;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.Mail
+namespace Core.Mail
 {
 	/// <summary>
 	/// Contains functions to compress with the gzip algorithm.
@@ -146,8 +147,8 @@ namespace DOL.Mail
 			SmtpClient.EnableSsl = m_ssl;
 			SmtpClient.Credentials = new NetworkCredential(m_username, m_password);
 
-			if (DOL.GS.ServerProperties.Properties.LOG_EMAIL_ADDRESSES != "")
-				SendLogs(DOL.GS.ServerProperties.Properties.LOG_EMAIL_ADDRESSES);
+			if (Properties.LOG_EMAIL_ADDRESSES != "")
+				SendLogs(Properties.LOG_EMAIL_ADDRESSES);
 
 			if (m_enable)
 			{

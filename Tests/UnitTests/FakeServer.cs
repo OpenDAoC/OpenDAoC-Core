@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS;
+using Core.GS.PacketHandler;
 
-namespace DOL.Tests.Unit.Gameserver
+namespace Core.Tests.Unit.Gameserver
 {
     public class FakePacketLib : PacketLib1124
     {

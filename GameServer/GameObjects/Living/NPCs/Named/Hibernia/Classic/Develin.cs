@@ -1,6 +1,6 @@
-﻿using DOL.AI.Brain;
+﻿using Core.AI.Brain;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Develin
 public class Develin : GameEpicNPC

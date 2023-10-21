@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public struct WrappedPathingResult
 	{

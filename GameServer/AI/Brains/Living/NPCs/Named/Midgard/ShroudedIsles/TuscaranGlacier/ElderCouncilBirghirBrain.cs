@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS;
+using Core.GS.PacketHandler;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 public class ElderCouncilBirghirBrain : StandardMobBrain
 {

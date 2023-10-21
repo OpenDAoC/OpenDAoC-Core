@@ -1,6 +1,6 @@
-using DOL.GS;
+using Core.GS;
 
-namespace DOL.Events;
+namespace Core.Events;
 
 /// <summary>
 /// This class holds all possible region events.

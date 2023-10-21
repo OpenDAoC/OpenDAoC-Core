@@ -1,4 +1,4 @@
-namespace DOL.Events;
+namespace Core.Events;
 
 public class PlayerInventoryEvent : CoreEvent
 {

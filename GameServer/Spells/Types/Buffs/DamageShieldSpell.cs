@@ -1,13 +1,13 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.Language;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.Keeps;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Effect that stays on target and does addition

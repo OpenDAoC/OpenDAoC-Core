@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using DOL.Language;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class ZoneBonus
     {

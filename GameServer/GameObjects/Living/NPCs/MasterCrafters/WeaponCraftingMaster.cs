@@ -1,6 +1,6 @@
-using DOL.Language;
+using Core.Language;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 [NpcGuildScript("Weaponsmiths Master")]
 public class WeaponCraftingMaster : CraftMasterNpc

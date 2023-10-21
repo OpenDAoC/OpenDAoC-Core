@@ -1,4 +1,4 @@
-﻿namespace DOL.GS
+﻿namespace Core.GS
 {
     /// <summary>
     /// Alluvian is a mob that spawns Alluvian Globules mobs. With a maximum of 12

@@ -17,7 +17,7 @@
  * 
  */
 
-namespace DOL.GS;
+namespace Core.GS;
 
 //all classes should inherit from BaseProtector.
 public class ArrektosProtector : BaseProtector

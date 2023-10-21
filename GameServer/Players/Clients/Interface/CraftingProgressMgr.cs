@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS {
+namespace Core.GS {
     public static class CraftingProgressMgr {
         private static IDictionary<GamePlayer, Dictionary<ECraftingSkill, int>> _craftingChanges = new Dictionary<GamePlayer, Dictionary<ECraftingSkill, int>>();
         private static readonly object _lockObject = new();

@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	/// <summary>
 	/// Handles spell cast requests from client

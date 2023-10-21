@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// ReaderWriterHashSet is a ISet implementaiton with ReaderWriterLockSlim for concurrent acess.

@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.Base.Enums;
+using Core.Database;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS.Housing
+namespace Core.GS.Housing
 {
     public sealed class HouseTemplateMgr
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	/// <summary>
 	/// Denotes a class as a packet lib.

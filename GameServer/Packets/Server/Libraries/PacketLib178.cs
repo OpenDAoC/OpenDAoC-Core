@@ -1,7 +1,7 @@
 using System.Reflection;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(178, GameClient.eClientVersion.Version178)]
 	public class PacketLib178 : PacketLib177

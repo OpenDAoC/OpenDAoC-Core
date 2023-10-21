@@ -1,4 +1,4 @@
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	/*
 	public class L1RealmAbility : TimedRealmAbility

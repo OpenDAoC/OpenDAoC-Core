@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     //no shared timer
     #region Stormlord-2

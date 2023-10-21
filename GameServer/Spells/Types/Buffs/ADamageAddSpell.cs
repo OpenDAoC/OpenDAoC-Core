@@ -1,13 +1,13 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.GS.Keeps;
+using Core.Language;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Contains all common code for damage add and shield spell handlers

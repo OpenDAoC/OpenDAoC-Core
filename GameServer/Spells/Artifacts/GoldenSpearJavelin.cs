@@ -1,8 +1,8 @@
 using System;
-using DOL.Database;
-using DOL.Events;
+using Core.Database;
+using Core.Events;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     /// <summary>
     /// NOTE: PLEASE CHECK YOUR SPELL ID FOR JAVELIN OR CREATE YOUR OWN ITEM

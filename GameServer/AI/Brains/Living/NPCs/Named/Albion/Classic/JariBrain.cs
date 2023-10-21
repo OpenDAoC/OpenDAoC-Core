@@ -1,4 +1,4 @@
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 public class JariBrain : StandardMobBrain
 {

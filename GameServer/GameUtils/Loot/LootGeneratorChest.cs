@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Adds money chests to a Mobs droppable loot based on a chance set in server properties

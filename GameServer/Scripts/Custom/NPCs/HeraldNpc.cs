@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     public class HeraldNpc : GameNpc
     {

@@ -1,10 +1,10 @@
 using System;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.Behaviour.Attributes;
+using Core.Events;
+using Core.GS.Behaviour.Attributes;
 using log4net;
 
-namespace DOL.GS.Behaviour.Actions
+namespace Core.GS.Behaviour.Actions
 {
 	[Action(ActionType = EActionType.TrainerWindow, IsNullableP = true)]
 	public class TrainerWindowAction : AAction<int?, GameNpc>

@@ -1,11 +1,11 @@
 using System;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	/// <summary>
 	/// Class Handling Respec Granting on player Level Up.

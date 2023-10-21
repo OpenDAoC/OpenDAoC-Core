@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&ServerReboot",EPrivLevel.GM,"Restarts the server instantly!!")]
 public class ServerRebootCommand : ACommandHandler, ICommandHandler

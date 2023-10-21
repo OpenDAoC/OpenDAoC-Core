@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace DOL.GS
+namespace Core.GS
 {
     static class PathingExtensions
     {

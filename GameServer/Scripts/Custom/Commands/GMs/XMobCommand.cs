@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+using Core.AI;
+using Core.AI.Brain;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command("&xmob", //command to handle
          EPrivLevel.GM, //minimum privelege level

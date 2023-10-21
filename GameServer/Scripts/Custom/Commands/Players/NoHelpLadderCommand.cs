@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 		"&sololadder",

@@ -18,7 +18,7 @@
  */
 
 using System;
-using DOL.Events;
+using Core.Events;
 
 namespace GameServerScripts.Titles
 {
@@ -30,7 +30,7 @@ namespace GameServerScripts.Titles
 	{
 		public override CoreEvent Event { get { return GamePlayerEvent.KillsLegionChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Demon.DemonSlayer", "Titles.Kills.Demon.DemonSlayer"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsLegion >= 10 && player.KillsLegion < 25; }}
+		protected override Func<Core.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsLegion >= 10 && player.KillsLegion < 25; }}
 	}
 	/// <summary>
 	/// "Demon Bane" title granted to everyone who kills Legion 25+ times.
@@ -39,7 +39,7 @@ namespace GameServerScripts.Titles
 	{
 		public override CoreEvent Event { get { return GamePlayerEvent.KillsLegionChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Demon.DemonBane", "Titles.Kills.Demon.DemonBane"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsLegion >= 25 && player.KillsLegion < 250; }}
+		protected override Func<Core.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsLegion >= 25 && player.KillsLegion < 250; }}
 	}
 	/// <summary>
 	/// "Demon Scourge" title granted to everyone who kills Legion 250+ times.
@@ -48,7 +48,7 @@ namespace GameServerScripts.Titles
 	{
 		public override CoreEvent Event { get { return GamePlayerEvent.KillsLegionChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Demon.DemonScourge", "Titles.Kills.Demon.DemonScourge"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsLegion >= 250 && player.KillsLegion < 1000; }}
+		protected override Func<Core.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsLegion >= 250 && player.KillsLegion < 1000; }}
 	}
 	/// <summary>
 	/// "Dread Vanquisher of Legion" title granted to everyone who kills Legion 1000+ times.
@@ -57,7 +57,7 @@ namespace GameServerScripts.Titles
 	{
 		public override CoreEvent Event { get { return GamePlayerEvent.KillsLegionChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Demon.DreadVanquisher", "Titles.Kills.Demon.DreadVanquisher"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsLegion >= 1000; }}
+		protected override Func<Core.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsLegion >= 1000; }}
 	}
 	#endregion
 	
@@ -69,7 +69,7 @@ namespace GameServerScripts.Titles
 	{
 		public override CoreEvent Event { get { return GamePlayerEvent.KillsDragonChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Dragon.DragonFoe", "Titles.Kills.Dragon.DragonFoe"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsDragon >= 10 && player.KillsDragon < 50; }}
+		protected override Func<Core.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsDragon >= 10 && player.KillsDragon < 50; }}
 	}
 	/// <summary>
 	/// "Dragon Scourge" title granted to everyone who kills the dragon 50+ times.
@@ -78,7 +78,7 @@ namespace GameServerScripts.Titles
 	{
 		public override CoreEvent Event { get { return GamePlayerEvent.KillsDragonChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Dragon.DragonScourge", "Titles.Kills.Dragon.DragonScourge"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsDragon >= 50 && player.KillsDragon < 100; }}
+		protected override Func<Core.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsDragon >= 50 && player.KillsDragon < 100; }}
 	}
 	/// <summary>
 	/// "Dragon Slayer" title granted to everyone who kills the dragon 100+ times.
@@ -87,7 +87,7 @@ namespace GameServerScripts.Titles
 	{
 		public override CoreEvent Event { get { return GamePlayerEvent.KillsDragonChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Dragon.DragonSlayer", "Titles.Kills.Dragon.DragonSlayer"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsDragon >= 100 && player.KillsDragon < 500; }}
+		protected override Func<Core.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsDragon >= 100 && player.KillsDragon < 500; }}
 	}
 	/// <summary>
 	/// "Dread Vanquisher of Legion" title granted to everyone who the dragon Legion 500+ times.
@@ -96,7 +96,7 @@ namespace GameServerScripts.Titles
 	{
 		public override CoreEvent Event { get { return GamePlayerEvent.KillsDragonChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Dragon Bane", "Dragon Bane"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsDragon >= 500; }}
+		protected override Func<Core.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsDragon >= 500; }}
 	}
 	#endregion
 	#region epic
@@ -107,7 +107,7 @@ namespace GameServerScripts.Titles
 	{
 		public override CoreEvent Event { get { return GamePlayerEvent.KillsEpicBossChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Epic.EpicChallenger", "Titles.Kills.Epic.EpicChallenger"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsEpicBoss >= 10 && player.KillsEpicBoss < 50; }}
+		protected override Func<Core.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsEpicBoss >= 10 && player.KillsEpicBoss < 50; }}
 	}
 	/// <summary>
 	/// "Epic Victor" title granted to everyone who kills the Epic Dungeon Boss 50+ times.
@@ -116,7 +116,7 @@ namespace GameServerScripts.Titles
 	{
 		public override CoreEvent Event { get { return GamePlayerEvent.KillsEpicBossChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Epic.EpicVictor", "Titles.Kills.Epic.EpicVictor"); }}
-		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsEpicBoss >= 50; }}
+		protected override Func<Core.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsEpicBoss >= 50; }}
 	}
 	#endregion
 }

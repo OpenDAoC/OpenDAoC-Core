@@ -2,13 +2,13 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Utils;
-using DOL.Language;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.Utils;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PositionUpdate, "Handles player position updates", EClientStatus.PlayerInGame)]
 	public class PlayerPositionUpdateHandler : IPacketHandler

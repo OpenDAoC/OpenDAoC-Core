@@ -1,7 +1,7 @@
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&bang", EPrivLevel.Player, "Bang on your shield", "/bang")]
 	[Command("&beckon", EPrivLevel.Player, "Makes a beckoning gesture with character's hand", "/beckon")]

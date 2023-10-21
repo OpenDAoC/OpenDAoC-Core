@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
+using Core.AI.Brain;
+using Core.Database;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
     public class NfRaCalmingNotesAbility : Rr5RealmAbility
     {

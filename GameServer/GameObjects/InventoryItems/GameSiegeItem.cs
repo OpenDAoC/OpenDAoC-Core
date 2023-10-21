@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
         /// <summary>
         /// Items of this class will proc on GameKeepComponent and GameKeepDoors, checked for in GameLiving-CheckWeaponMagicalEffect

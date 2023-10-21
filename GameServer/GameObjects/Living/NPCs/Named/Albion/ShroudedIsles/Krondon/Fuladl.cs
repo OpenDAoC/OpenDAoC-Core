@@ -1,10 +1,10 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Fuladl
 public class Fuladl : GameEpicBoss

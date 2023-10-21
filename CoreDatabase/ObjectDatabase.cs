@@ -3,14 +3,12 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-
-using DOL.Database.Attributes;
-using DOL.Database.Connection;
-using DOL.Database.Handlers;
-
+using Core.Database.Attributes;
+using Core.Database.Connection;
+using Core.Database.Handlers;
 using log4net;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Default Object Database Base Implementation

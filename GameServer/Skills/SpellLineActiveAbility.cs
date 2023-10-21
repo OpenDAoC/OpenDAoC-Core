@@ -1,6 +1,6 @@
-﻿using DOL.Database;
+﻿using Core.Database;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Active Spell Line Ability Handler.

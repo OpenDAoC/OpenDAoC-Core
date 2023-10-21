@@ -2,11 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command("&spammob", //command to handle
         EPrivLevel.GM, //minimum privelege level
@@ -208,7 +208,7 @@ namespace DOL.GS.Commands
     }
 }
 
-namespace DOL.GS.SpamMob
+namespace Core.GS.SpamMob
 {
     public class SpamMobBrain : StandardMobBrain
     {

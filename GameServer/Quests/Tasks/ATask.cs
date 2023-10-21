@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
 using System.Text;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Quests
+namespace Core.GS.Quests
 {
     public class ATask
     {

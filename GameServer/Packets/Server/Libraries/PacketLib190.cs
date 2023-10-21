@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
-using DOL.GS.Effects;
+using Core.GS.Effects;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(190, GameClient.eClientVersion.Version190)]
 	public class PacketLib190 : PacketLib189

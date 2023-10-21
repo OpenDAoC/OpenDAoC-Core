@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Quests.Albion
+namespace Core.GS.Quests.Albion
 {
     public class WolfPeltCloakLvl1AlbQuest : BaseQuest
     {

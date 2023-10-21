@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.PropertyCalc
+namespace Core.GS.PropertyCalc
 {
     [PropertyCalculator(EProperty.Resist_First, EProperty.Resist_Last)]
     public class ResistsCalculator : PropertyCalculator

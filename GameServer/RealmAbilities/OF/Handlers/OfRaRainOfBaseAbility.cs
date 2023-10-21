@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.Spells;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
     public abstract class OfRaRainOfBaseAbility : TimedRealmAbility
     {

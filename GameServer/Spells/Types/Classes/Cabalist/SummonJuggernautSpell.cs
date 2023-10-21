@@ -1,9 +1,9 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.Effects;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Spell handler to summon a bonedancer pet.

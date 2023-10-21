@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("SummonSiegeRam")]
     public class SummonSiegeRam : SpellHandler

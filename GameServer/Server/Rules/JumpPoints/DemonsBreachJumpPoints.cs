@@ -1,8 +1,8 @@
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
 	public class NergalsBreachJumpPoint : IJumpPointHandler
 	{

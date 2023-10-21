@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
+using Core.GS.PacketHandler;
+using Core.GS.PlayerTitles;
+using Core.Database;
+using Core.Events;
 using log4net;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
         "&hardcore",

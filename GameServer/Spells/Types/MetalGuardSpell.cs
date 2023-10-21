@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.AI.Brain;
+using Core.AI.Brain;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("MetalGuard")]
     public class MetalGuardSpell : ArmorAbsorptionBuff

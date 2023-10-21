@@ -1,4 +1,4 @@
-namespace DOL.GS.Behaviour;
+namespace Core.GS.Behaviour;
 
 /// <summary>
 /// Actiontype defines a list of actiontypes to be used qith questparts.

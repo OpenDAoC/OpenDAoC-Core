@@ -1,6 +1,6 @@
-﻿using DOL.GS.PacketHandler;
+﻿using Core.GS.PacketHandler;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS.Scripts;
 
 public class BountyPointMob : GameNpc
 {

@@ -1,8 +1,8 @@
-﻿using DOL.GS.Commands;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+﻿using Core.GS.Commands;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     [Command(
         "&bounty",

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
+using Core.Database;
+using Core.Events;
+using Core.GS;
 using ECS.Debug;
 
 namespace ECS.Debug
@@ -217,7 +217,7 @@ namespace ECS.Debug
     }
 }
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
     "&diag",

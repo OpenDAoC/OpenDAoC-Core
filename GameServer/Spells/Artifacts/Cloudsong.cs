@@ -1,4 +1,4 @@
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("CloudsongAura")]
     public class CloudsongAuraSpellHandler : DualStatBuff

@@ -1,6 +1,6 @@
-﻿using DOL.AI.Brain;
+﻿using Core.AI.Brain;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Tan pixie
 public class RainbowSpriteTan : GameNpc

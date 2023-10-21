@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
 	/// <summary>
 	/// Abstract Vampiir Ability using Level Based Ability to enable stat changing with Ratio Preset.

@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.PropertyCalc
+namespace Core.GS.PropertyCalc
 {
 	/// <summary>
 	/// Denotes a class as a property calculator. Must also implement IPropertyCalculator.

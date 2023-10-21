@@ -1,7 +1,7 @@
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS.DatabaseConverters;
+namespace Core.GS.DatabaseConverters;
 
 /// <summary>
 /// Converts the database format to the version 2

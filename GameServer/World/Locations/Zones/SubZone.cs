@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace DOL.GS
+namespace Core.GS
 {
     // A 'SubZone' inside a 'Zone', holding linked lists of 'GameObject'.
     // To preserve thread safety, the list returned by 'GetObjects' must be iterated with 'ConcurrentLinkedList.Reader'.

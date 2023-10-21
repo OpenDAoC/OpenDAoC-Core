@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.Events;
+namespace Core.Events;
 
 /// <summary>
 /// This attribute can be applied to static methods to automatically

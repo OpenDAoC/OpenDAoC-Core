@@ -1,5 +1,5 @@
-using DOL.AI.Brain;
-using DOL.GS;
+using Core.AI.Brain;
+using Core.GS;
 
 public class MlBrain : RealmGuardBrain
 {

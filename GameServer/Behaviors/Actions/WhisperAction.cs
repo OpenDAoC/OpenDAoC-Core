@@ -1,8 +1,8 @@
 using System;
-using DOL.Events;
-using DOL.GS.Behaviour.Attributes;
+using Core.Events;
+using Core.GS.Behaviour.Attributes;
 
-namespace DOL.GS.Behaviour.Actions
+namespace Core.GS.Behaviour.Actions
 {
     [Action(ActionType = EActionType.Whisper,DefaultValueQ=EDefaultValueConstants.NPC)]
     public class WhisperAction : AAction<string,GameNpc>

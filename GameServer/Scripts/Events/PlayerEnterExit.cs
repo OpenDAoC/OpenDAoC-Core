@@ -1,9 +1,10 @@
 using System;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Base.Enums;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	/// <summary>
 	/// Spams everyone online with player enter/exit messages

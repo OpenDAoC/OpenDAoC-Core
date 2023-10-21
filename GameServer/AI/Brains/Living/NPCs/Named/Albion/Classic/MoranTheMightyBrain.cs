@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Events;
+using Core.GS;
+using Core.GS.PacketHandler;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 public class MoranTheMightyBrain : StandardMobBrain
 {

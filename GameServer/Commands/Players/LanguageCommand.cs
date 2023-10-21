@@ -1,7 +1,8 @@
 using System.Linq;
-using DOL.Language;
+using Core.GS.ServerProperties;
+using Core.Language;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&language", EPrivLevel.Player, "Change your language.",
     "Use '/language current' to see your current used language.",
@@ -16,7 +17,7 @@ public class LanguageCommand : ACommandHandler, ICommandHandler
             return;
 
         if (client.Account.PrivLevel == (uint)EPrivLevel.Player &&
-            !DOL.GS.ServerProperties.Properties.ALLOW_CHANGE_LANGUAGE)
+            !Properties.ALLOW_CHANGE_LANGUAGE)
         {
             DisplayMessage(client, "This server does not support changing languages.");
             return;

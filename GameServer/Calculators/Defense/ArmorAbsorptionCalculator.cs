@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.PropertyCalc;
 
 [PropertyCalculator(EProperty.ArmorAbsorption)]
 public class ArmorAbsorptionCalculator : PropertyCalculator

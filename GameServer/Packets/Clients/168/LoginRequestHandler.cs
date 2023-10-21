@@ -7,11 +7,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.Base.Enums;
+using Core.Database;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	/// <summary>
 	/// Handles the login request packet.

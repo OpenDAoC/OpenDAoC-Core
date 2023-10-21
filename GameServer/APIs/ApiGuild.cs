@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace DOL.GS.API;
+namespace Core.GS.API;
 
 public class ApiGuild
 {

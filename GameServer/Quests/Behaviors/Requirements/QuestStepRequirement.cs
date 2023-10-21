@@ -1,11 +1,11 @@
 using System;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.Behaviour;
-using DOL.GS.Behaviour.Attributes;
+using Core.Events;
+using Core.GS.Behaviour;
+using Core.GS.Behaviour.Attributes;
 using log4net;
 
-namespace DOL.GS.Quests.Requirements
+namespace Core.GS.Quests.Requirements
 {
 
 	/// <summary>

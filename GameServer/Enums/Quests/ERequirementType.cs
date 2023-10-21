@@ -1,4 +1,4 @@
-namespace DOL.GS.Behaviour;
+namespace Core.GS.Behaviour;
 
 /// <summary>
 /// Requirementtype defines a list of requirements to be used with questparts.

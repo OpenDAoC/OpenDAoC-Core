@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     #region MasterlevelBase
     /// <summary>
@@ -737,7 +737,7 @@ namespace DOL.GS.Spells
     #endregion
 }
 
-namespace DOL.GS
+namespace Core.GS
 {
     #region Decoy
     public class GameDecoy : GameNpc

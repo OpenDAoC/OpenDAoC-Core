@@ -1,9 +1,9 @@
 using System;
 using System.Reflection;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class AreaMgr
 	{

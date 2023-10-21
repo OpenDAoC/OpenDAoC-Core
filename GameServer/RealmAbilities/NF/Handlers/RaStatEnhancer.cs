@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Language;
+using Core.Database;
+using Core.Language;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	public class RaStatEnhancer : L5RealmAbility
 	{

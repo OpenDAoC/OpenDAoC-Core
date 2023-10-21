@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Base.Enums;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class GuildUtil
 	{
@@ -493,7 +494,7 @@ namespace DOL.GS
 			{
 				if (player == member) continue;
 				if (player.ShowGuildLogins)
-					player.Out.SendMessage("Guild member " + member.Name + " has logged in!", DOL.GS.PacketHandler.EChatType.CT_System, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Guild member " + member.Name + " has logged in!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -621,7 +622,7 @@ namespace DOL.GS
 				member.Out.SendObjectGuildID(member, member.Guild);
 				// Send message to removerClient about successful removal
 				if (removername == member.Name)
-					member.Out.SendMessage("You leave the guild.", DOL.GS.PacketHandler.EChatType.CT_System, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
+					member.Out.SendMessage("You leave the guild.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				else
 					member.Out.SendMessage(removername + " removed you from " + this.Name, PacketHandler.EChatType.CT_System, PacketHandler.EChatLoc.CL_SystemWindow);
 			}

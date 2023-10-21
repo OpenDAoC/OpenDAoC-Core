@@ -1,7 +1,7 @@
 using System.Reflection;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
     [PacketHandler(EPacketHandlerType.TCP, EClientPackets.CreatePlayerRequest, "Handles requests for players(0x7C) in game", EClientStatus.PlayerInGame)]
     public class PlayerCreationRequestHandler : IPacketHandler

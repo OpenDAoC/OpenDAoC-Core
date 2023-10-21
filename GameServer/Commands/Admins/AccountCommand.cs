@@ -1,9 +1,9 @@
 using System;
 using System.Text.RegularExpressions;
-using DOL.Database;
-using DOL.GS.PacketHandler.Client.v168;
+using Core.Database;
+using Core.GS.PacketHandler.Client.v168;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
 	[Command(

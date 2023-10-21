@@ -1,9 +1,9 @@
 ﻿using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.Events;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	/// <summary>
 	/// This class hold the Character Creation Custom Settings

@@ -1,10 +1,10 @@
 ﻿using System;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
-using DOL.Language;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.SkillHandler;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class ProtectEcsAbilityEffect : EcsGameAbilityEffect
     {

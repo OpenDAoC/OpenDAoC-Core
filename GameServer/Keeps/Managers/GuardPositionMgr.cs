@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.Movement;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	/// <summary>
 	/// Class to manage the guards Positions

@@ -1,10 +1,11 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.Base.Enums;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.GS.ServerProperties;
+using Core.Language;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.DoorRequest, "Door Interact Request Handler", EClientStatus.PlayerInGame)]
 	public class DoorRequestHandler : IPacketHandler

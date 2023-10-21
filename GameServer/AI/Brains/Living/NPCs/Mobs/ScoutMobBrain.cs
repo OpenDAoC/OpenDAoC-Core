@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.Effects;
+using Core.Events;
+using Core.GS;
+using Core.GS.Effects;
 using log4net;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
 	/// <summary>
 	/// Brain for scout mobs. Scout mobs are NPCs that will not aggro

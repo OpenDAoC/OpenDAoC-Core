@@ -1,4 +1,4 @@
-﻿namespace DOL.Database.Transaction
+﻿namespace Core.Database.Transaction
 {
 	/// <summary>
 	/// Connection isolation levels

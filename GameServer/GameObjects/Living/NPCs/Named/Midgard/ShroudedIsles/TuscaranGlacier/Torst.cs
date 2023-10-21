@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Torst
 public class Torst : GameEpicBoss

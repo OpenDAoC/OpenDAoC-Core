@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.Effects;
+using Core.Database;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Increases the target's movement speed.

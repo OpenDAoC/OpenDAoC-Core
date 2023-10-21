@@ -1,9 +1,9 @@
 using System.Reflection;
-using DOL.GS;
-using DOL.GS.RealmAbilities;
+using Core.GS;
+using Core.GS.RealmAbilities;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 /// <summary>
 /// A brain that can be controlled

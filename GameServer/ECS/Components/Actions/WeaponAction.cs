@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.GS.Styles;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
+using Core.GS.Styles;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class WeaponAction
     {

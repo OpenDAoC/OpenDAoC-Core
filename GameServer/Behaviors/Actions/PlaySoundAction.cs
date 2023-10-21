@@ -1,9 +1,9 @@
 using System;
-using DOL.Events;
-using DOL.GS.Behaviour.Attributes;
-using DOL.GS.PacketHandler;
+using Core.Events;
+using Core.GS.Behaviour.Attributes;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Behaviour.Actions
+namespace Core.GS.Behaviour.Actions
 {
 	[Action(ActionType = EActionType.PlaySound, IsNullableQ = true)]
 	public class PlaySoundAction : AAction<ushort, ESoundType>

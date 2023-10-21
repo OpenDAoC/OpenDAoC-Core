@@ -1,8 +1,8 @@
 using System;
-using DOL.GS;
-using DOL.GS.Spells;
+using Core.GS;
+using Core.GS.Spells;
 
-namespace DOL.Events;
+namespace Core.Events;
 
 /// <summary>
 /// Holds the arguments for the CastSpell event of GameLivings

@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.Quests;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.Quests;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	/// <summary>
 	/// The RegionEntry structure

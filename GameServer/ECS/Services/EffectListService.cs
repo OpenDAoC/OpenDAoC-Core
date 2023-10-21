@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
 using ECS.Debug;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public static class EffectListService
     {

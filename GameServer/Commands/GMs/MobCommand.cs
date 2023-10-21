@@ -3,15 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.AI;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Housing;
+using Core.GS.Movement;
+using Core.GS.PacketHandler;
+using Core.GS.Quests;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&mob", //command to handle
 	     EPrivLevel.GM, //minimum privelege level
@@ -519,8 +519,8 @@ namespace DOL.GS.Commands
 				GameNpc mob = new GameNpc();
 
 				//Fill the object variables
-				int x = client.Player.X + DOL.GS.Util.Random(-radius, radius);
-				int y = client.Player.Y + DOL.GS.Util.Random(-radius, radius);
+				int x = client.Player.X + Util.Random(-radius, radius);
+				int y = client.Player.Y + Util.Random(-radius, radius);
 				mob.X = Math.Abs(x);
 				mob.Y = Math.Abs(y);
 				mob.Z = client.Player.Z;

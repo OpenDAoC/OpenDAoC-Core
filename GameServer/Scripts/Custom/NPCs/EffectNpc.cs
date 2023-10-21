@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using DOL.Database;
-using DOL.Database.UniqueID;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Database.UniqueID;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
     [NpcGuildScript("Effect Master")]
     public class EffectNpc : GameNpc {

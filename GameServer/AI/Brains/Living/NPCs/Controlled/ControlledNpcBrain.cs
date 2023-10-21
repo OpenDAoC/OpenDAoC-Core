@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
-using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
+using Core.Events;
+using Core.GS;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.GS.RealmAbilities;
+using Core.GS.SkillHandler;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
 	/// <summary>
 	/// A brain that can be controlled

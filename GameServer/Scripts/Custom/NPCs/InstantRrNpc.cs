@@ -1,8 +1,8 @@
 using System.Reflection;
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class InstantRrNpc : GameNpc
     {

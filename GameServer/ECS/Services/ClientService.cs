@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.ServerProperties;
+using Core.Base;
+using Core.Database;
+using Core.GS.Housing;
+using Core.GS.ServerProperties;
 using ECS.Debug;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public static class ClientService
     {

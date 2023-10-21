@@ -1,4 +1,4 @@
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.PropertyCalc;
 
 /// <summary>
 /// The evade chance calculator. Returns 0 .. 1000 chance.

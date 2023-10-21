@@ -1,8 +1,8 @@
 using System;
-using DOL.Database;
-using DOL.GS;
+using Core.Database;
+using Core.GS;
 
-namespace DOL.Events;
+namespace Core.Events;
 
 /// <summary>
 /// Holds the arguments for the GiveItem event of GamePlayer

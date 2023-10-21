@@ -1,7 +1,7 @@
 using System;
-using DOL.Database.Attributes;
+using Core.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Table that holds the crafting skills for each account-realm combination

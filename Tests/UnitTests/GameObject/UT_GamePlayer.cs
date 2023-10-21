@@ -1,7 +1,7 @@
-﻿using DOL.GS;
+﻿using Core.GS;
 using NUnit.Framework;
 
-namespace DOL.Tests.Unit.Gameserver
+namespace Core.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_GamePlayer

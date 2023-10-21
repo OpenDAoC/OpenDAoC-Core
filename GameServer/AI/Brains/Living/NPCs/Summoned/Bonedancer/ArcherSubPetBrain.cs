@@ -1,8 +1,8 @@
 using System.Reflection;
-using DOL.GS;
+using Core.GS;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 /// <summary>
 /// A brain that can be controlled

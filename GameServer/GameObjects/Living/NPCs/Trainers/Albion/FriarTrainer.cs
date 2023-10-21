@@ -1,9 +1,9 @@
 using System;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS.Trainer;
 
 [NpcGuildScript("Friar Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Friar Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class FriarTrainer : GameTrainer

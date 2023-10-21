@@ -5,19 +5,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
-using DOL.GS.ServerProperties;
-using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
-using DOL.GS.Styles;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.RealmAbilities;
+using Core.GS.ServerProperties;
+using Core.GS.SkillHandler;
+using Core.GS.Spells;
+using Core.GS.Styles;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class AttackComponent : IManagedEntity
     {

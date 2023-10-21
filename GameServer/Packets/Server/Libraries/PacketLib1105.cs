@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.GS.RealmAbilities;
-using DOL.GS.Styles;
+using Core.GS.RealmAbilities;
+using Core.GS.Styles;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(1105, GameClient.eClientVersion.Version1105)]
 	public class PacketLib1105 : PacketLib1104

@@ -1,4 +1,4 @@
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
     [SkillHandler(Abilities.MetalGuard)]
     public class MetalGuardAbilityHandler : SpellCastingAbilityHandler

@@ -1,4 +1,4 @@
-﻿namespace DOL.GS.PacketHandler
+﻿namespace Core.GS.PacketHandler
 {
 	[PacketLib(1116, GameClient.eClientVersion.Version1116)]
 	public class PacketLib1116 : PacketLib1115

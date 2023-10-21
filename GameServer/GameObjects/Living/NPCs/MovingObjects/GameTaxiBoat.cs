@@ -1,6 +1,6 @@
-using DOL.AI.Brain;
+using Core.AI.Brain;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 /*
  * These boats are very fast, and can carry up to sixteen passengers.

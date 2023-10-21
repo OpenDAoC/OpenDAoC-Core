@@ -1,9 +1,10 @@
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.PlayerClass;
+using Core.AI;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.PlayerClass;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// The Bonedancer character class.
@@ -38,8 +39,8 @@ namespace DOL.GS
 
 			// BD subpet spells can be scaled with the BD's spec as a cap, so when a BD
 			//	trains, we have to re-scale spells for subpets from that spec.
-			if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0
-				&& DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
+			if (Properties.PET_SCALE_SPELL_MAX_LEVEL > 0
+				&& Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
 				&& player.ControlledBrain != null && player.ControlledBrain.Body is GameSummonedPet pet
 				&& pet.ControlledNpcList != null)
 					foreach (ABrain subBrain in pet.ControlledNpcList)

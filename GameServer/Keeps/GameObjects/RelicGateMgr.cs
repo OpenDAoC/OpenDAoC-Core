@@ -1,4 +1,4 @@
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public class RelicGateMgr
 	{

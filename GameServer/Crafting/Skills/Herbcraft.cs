@@ -1,6 +1,6 @@
-using DOL.Language;
+using Core.Language;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Herbcraft : ACraftingSkill
 {

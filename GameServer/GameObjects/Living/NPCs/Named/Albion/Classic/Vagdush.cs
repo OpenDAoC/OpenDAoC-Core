@@ -1,7 +1,7 @@
 ﻿using System;
-using DOL.AI.Brain;
+using Core.AI.Brain;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Vagdush : GameNpc
 {

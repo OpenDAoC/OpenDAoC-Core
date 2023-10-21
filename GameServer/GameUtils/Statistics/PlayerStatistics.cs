@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class PlayerStatistics : IPlayerStatistics
     {
@@ -327,7 +327,7 @@ namespace DOL.GS
     }
 }
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
     public class PlayerStatisticsEvent
     {

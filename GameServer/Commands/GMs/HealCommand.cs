@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&heal",

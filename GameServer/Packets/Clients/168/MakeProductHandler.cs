@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.CraftRequest, "Handles the crafted product answer", EClientStatus.PlayerInGame)]
 	public class MakeProductHandler : IPacketHandler

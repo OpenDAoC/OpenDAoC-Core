@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.Events;
+using Core.Database;
+using Core.Events;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	public class ZonePointEffect
 	{

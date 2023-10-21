@@ -18,11 +18,12 @@
  */
 
 using System;
-using DOL.GS;
-using DOL.GS.Scheduler;
+using Core.GS;
+using Core.GS.Scheduler;
+using Core.GS.ServerProperties;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Managers
+namespace Core.Tests.Integration.Managers
 {
 	/// <summary>
 	/// Unit Tests for WeatherManagerTest.
@@ -50,8 +51,8 @@ namespace DOL.Tests.Integration.Managers
 		
 		Region FakeRegion()
 		{
-			DOL.GS.ServerProperties.Properties.DISABLED_REGIONS = string.Empty;
-			DOL.GS.ServerProperties.Properties.DISABLED_EXPANSIONS = string.Empty;
+			Properties.DISABLED_REGIONS = string.Empty;
+			Properties.DISABLED_EXPANSIONS = string.Empty;
 			var region = Region.Create(new RegionData { Id = 1 });
 			region.Zones.Add(new Zone(region, 1, string.Empty, 0, 0, 65535, 65535, 1, false, 0, false, 0, 0, 0, 0, 1));
 			return region;

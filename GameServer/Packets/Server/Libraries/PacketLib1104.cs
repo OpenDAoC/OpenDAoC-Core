@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(1104, GameClient.eClientVersion.Version1104)]
 	public class PacketLib1104 : PacketLib1103
@@ -259,12 +259,12 @@ namespace DOL.GS.PacketHandler
 							pak.WriteShortLowEndian((ushort)(twoHandWeapon != null ? twoHandWeapon.Model : 0));
 							pak.WriteShortLowEndian((ushort)(distanceWeapon != null ? distanceWeapon.Model : 0));
 
-							if (c.ActiveWeaponSlot == (byte)DOL.GS.EActiveWeaponSlot.TwoHanded)
+							if (c.ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 							{
 								pak.WriteByte(0x02);
 								pak.WriteByte(0x02);
 							}
-							else if (c.ActiveWeaponSlot == (byte)DOL.GS.EActiveWeaponSlot.Distance)
+							else if (c.ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 							{
 								pak.WriteByte(0x03);
 								pak.WriteByte(0x03);

@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using DOL.Database;
-using DOL.GS;
+using Core.Database;
+using Core.GS;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.Language
+namespace Core.Language
 {
     public class LanguageMgr
     {
@@ -181,7 +182,7 @@ namespace DOL.Language
                 return false;
             }
 
-            if (DOL.GS.ServerProperties.Properties.USE_DBLANGUAGE)
+            if (Properties.USE_DBLANGUAGE)
             {
                 int newEntries = 0;
                 int updatedEntries = 0;

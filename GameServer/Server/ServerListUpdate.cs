@@ -3,11 +3,11 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using DOL.Events;
-using DOL.GS.ServerProperties;
+using Core.Events;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	public class ServerListUpdate
 	{

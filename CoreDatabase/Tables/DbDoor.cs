@@ -1,6 +1,6 @@
-using DOL.Database.Attributes;
+using Core.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// DBDoor is database of door with state of door and X,Y,Z

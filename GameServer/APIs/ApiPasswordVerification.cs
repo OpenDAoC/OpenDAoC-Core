@@ -1,6 +1,6 @@
-﻿using DOL.GS.ServerProperties;
+﻿using Core.GS.ServerProperties;
 
-namespace DOL.GS.API;
+namespace Core.GS.API;
 
 public class ApiPasswordVerification
 {

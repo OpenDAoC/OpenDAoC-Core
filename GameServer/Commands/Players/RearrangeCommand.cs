@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&rearrange", EPrivLevel.Player, "Allows you to rearrange your character overview.",
     "/rearrange list - Shows a list with all to this account assigned characters and their slots.",

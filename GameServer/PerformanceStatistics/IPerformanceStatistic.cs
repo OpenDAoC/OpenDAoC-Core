@@ -1,4 +1,4 @@
-﻿namespace DOL.GS.PerformanceStatistics
+﻿namespace Core.GS.PerformanceStatistics
 {
     public interface IPerformanceStatistic
     {

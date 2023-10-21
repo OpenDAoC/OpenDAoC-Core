@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.Housing;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     public class LiveTeleporter : GameNpc
     {

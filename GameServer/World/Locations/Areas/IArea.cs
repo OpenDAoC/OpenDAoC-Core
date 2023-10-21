@@ -1,7 +1,7 @@
-using DOL.Events;
-using DOL.Language;
+using Core.Events;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {	
 	/// <summary>
 	/// Interface for areas within game, extend this or AbstractArea if you need to define a new area shape that isn't already defined.

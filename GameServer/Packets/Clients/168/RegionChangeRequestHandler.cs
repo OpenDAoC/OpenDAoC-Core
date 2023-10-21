@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Quests;
-using DOL.GS.ServerRules;
+using Core.Database;
+using Core.GS.Quests;
+using Core.GS.ServerRules;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerRegionChangeRequest, "Player Region Change Request handler.", EClientStatus.PlayerInGame)]
 	public class PlayerRegionChangeRequestHandler : IPacketHandler

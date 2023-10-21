@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class CryptLib168
 	{

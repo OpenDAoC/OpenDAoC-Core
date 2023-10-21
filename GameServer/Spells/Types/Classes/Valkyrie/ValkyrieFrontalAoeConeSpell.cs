@@ -1,4 +1,6 @@
-namespace DOL.GS.Spells
+using Core.GS.Effects;
+
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Handler to make the frontal pulsing cone show the effect animation on every pulse
@@ -8,7 +10,7 @@ namespace DOL.GS.Spells
 	{
 		public ValkyrieFrontalAoeConeSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-		public override void OnSpellPulse(DOL.GS.Effects.PulsingSpellEffect effect)
+		public override void OnSpellPulse(PulsingSpellEffect effect)
 		{
 			SendCastAnimation();
 			base.OnSpellPulse(effect);

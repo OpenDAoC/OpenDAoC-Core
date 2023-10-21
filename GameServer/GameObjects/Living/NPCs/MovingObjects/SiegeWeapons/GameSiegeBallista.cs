@@ -1,4 +1,5 @@
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 
 /*1,Ballista,1,ammo,0.46,1
 2,Catapult,2,ammo,0.39,1
@@ -17,7 +18,7 @@ using DOL.GS.PacketHandler;
 9,Ram High,0,12,13,80,
 10,Ram Mid,0,12,13,80,
 11,Ram Low,0,12,13,80,*/
-namespace DOL.GS;
+namespace Core.GS;
 
 public class GameSiegeBallista : GameSiegeWeapon
 {
@@ -139,7 +140,7 @@ public class GameSiegeBallista : GameSiegeWeapon
 			return BaseDamage;
 	}
 
-	public override bool ReceiveItem(GameLiving source, DOL.Database.DbInventoryItem item)
+	public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
 	{
 		//todo check if bullet
 		return base.ReceiveItem(source, item);

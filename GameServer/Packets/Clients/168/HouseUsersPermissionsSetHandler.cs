@@ -1,6 +1,6 @@
-using DOL.GS.Housing;
+using Core.GS.Housing;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.HouseUserPermissionSet, "Handles housing Users permissions requests", EClientStatus.PlayerInGame)]
 	public class HouseUsersPermissionsSetHandler : IPacketHandler

@@ -1,8 +1,8 @@
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
+using Core.GS;
+using Core.GS.PacketHandler;
+using Core.GS.Scripts;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 public class GnatBrain : StandardMobBrain
 {

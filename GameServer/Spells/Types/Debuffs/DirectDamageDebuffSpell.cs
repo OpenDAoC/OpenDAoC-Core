@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Damages the target and lowers their resistance to the spell's type.

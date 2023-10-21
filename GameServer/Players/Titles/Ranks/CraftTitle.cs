@@ -17,9 +17,9 @@
  *
  */
 
-using DOL.Language;
+using Core.Language;
 
-namespace DOL.GS.PlayerTitles
+namespace Core.GS.PlayerTitles
 {
   	/// <summary>
 	/// Craft Title Handler

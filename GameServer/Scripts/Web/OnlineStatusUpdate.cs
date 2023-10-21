@@ -3,10 +3,10 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using DOL.Events;
+using Core.Events;
 using log4net;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	public class OnlineStatusUpdate
 	{

@@ -1,7 +1,7 @@
 using System;
-using DOL.GS.Keeps;
+using Core.GS.Keeps;
 
-namespace DOL.GS.PropertyCalc
+namespace Core.GS.PropertyCalc
 {
     /// <summary>
     /// The Armor Factor calculator

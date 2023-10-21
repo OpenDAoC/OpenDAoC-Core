@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.Housing;
+namespace Core.GS.Housing;
 
 [Flags]
 public enum EDecorationPermissions : byte

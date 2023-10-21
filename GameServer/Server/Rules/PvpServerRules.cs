@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Base.Enums;
+using Core.Database;
+using Core.Events;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
 	[ServerRules(EGameServerType.GST_PvP)]
 	public class PvpServerRules : AServerRules

@@ -1,8 +1,8 @@
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.Scripts;
+using Core.Database;
+using Core.GS;
+using Core.GS.Scripts;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 #region Lich Lord Ilron
 public class LichLordIlronBrain : StandardMobBrain

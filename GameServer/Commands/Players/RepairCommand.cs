@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.Keeps;
+using Core.Database;
+using Core.GS.Keeps;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&repair",

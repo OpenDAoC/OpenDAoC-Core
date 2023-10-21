@@ -18,8 +18,8 @@
  */
 
 using System;
-using DOL.Events;
-using DOL.GS;
+using Core.Events;
+using Core.GS;
 
 namespace GameServerScripts.Titles
 {

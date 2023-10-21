@@ -2,11 +2,12 @@ using System;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using DOL.Events;
-using DOL.GS.PerformanceStatistics;
+using Core.Base;
+using Core.Events;
+using Core.GS.PerformanceStatistics;
 using log4net;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
     public class StatPrint
     {

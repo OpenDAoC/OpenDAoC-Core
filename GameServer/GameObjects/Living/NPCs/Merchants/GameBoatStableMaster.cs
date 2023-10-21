@@ -1,10 +1,10 @@
 using System;
-using DOL.Database;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.GS.Movement;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Stable master that sells and takes boat route tickets

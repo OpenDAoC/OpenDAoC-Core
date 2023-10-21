@@ -1,8 +1,8 @@
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class GameSiegeCauldron : GameSiegeWeapon
 	{
@@ -71,7 +71,7 @@ namespace DOL.GS
 	}
 }
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     /// <summary>
     /// 

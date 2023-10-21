@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// RegionWeather keeps track of ongoing Weather in a Region

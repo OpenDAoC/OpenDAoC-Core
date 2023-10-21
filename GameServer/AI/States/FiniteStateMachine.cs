@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DOL.GS;
+using Core.GS;
 
-namespace DOL.AI;
+namespace Core.AI;
 
 public class FiniteStateMachine
 {

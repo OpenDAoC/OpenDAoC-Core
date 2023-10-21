@@ -1,4 +1,4 @@
-namespace DOL.GS.SpellEffects
+namespace Core.GS.SpellEffects
 {
     public interface IEffectComponent
     {

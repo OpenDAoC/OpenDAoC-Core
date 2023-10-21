@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
     public class OfRaFalconsEyeAbility : RaPropertyEnhancer // We don't want to piggyback on the NF FalconsEye because it increases spell crit chance and not archery for some reason...
     {

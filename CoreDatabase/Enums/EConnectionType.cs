@@ -1,4 +1,4 @@
-namespace DOL.Database.Connection
+namespace Core.Database.Connection
 {
 	/// <summary>
 	/// Enum what Datatstorage should be used

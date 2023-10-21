@@ -1,55 +1,54 @@
 ﻿using System;
 using System.Threading;
 
-namespace DOL
+namespace Core.Base;
+
+// A wrapper for a `ReaderWriterLockSlim`.
+// Call `GetRead` or `GetWrite` with the using keyword.
+// Recursion, upgrades, tries are not supported.
+public class SimpleDisposableLock
 {
-    // A wrapper for a `ReaderWriterLockSlim`.
-    // Call `GetRead` or `GetWrite` with the using keyword.
-    // Recursion, upgrades, tries are not supported.
-    public class SimpleDisposableLock
+    private ReaderWriterLockSlim _lock = new();
+
+    public Read GetRead()
     {
-        private ReaderWriterLockSlim _lock = new();
+        return new Read(_lock);
+    }
 
-        public Read GetRead()
+    public Write GetWrite()
+    {
+        return new Write(_lock);
+    }
+
+    public sealed class Read : IDisposable
+    {
+        private ReaderWriterLockSlim _lock;
+
+        public Read(ReaderWriterLockSlim @lock)
         {
-            return new Read(_lock);
+            _lock = @lock;
+            _lock.EnterReadLock();
         }
 
-        public Write GetWrite()
+        public void Dispose()
         {
-            return new Write(_lock);
+            _lock.ExitReadLock();
+        }
+    }
+
+    public sealed class Write : IDisposable
+    {
+        private ReaderWriterLockSlim _lock;
+
+        public Write(ReaderWriterLockSlim @lock)
+        {
+            _lock = @lock;
+            _lock.EnterWriteLock();
         }
 
-        public sealed class Read : IDisposable
+        public void Dispose()
         {
-            private ReaderWriterLockSlim _lock;
-
-            public Read(ReaderWriterLockSlim @lock)
-            {
-                _lock = @lock;
-                _lock.EnterReadLock();
-            }
-
-            public void Dispose()
-            {
-                _lock.ExitReadLock();
-            }
-        }
-
-        public sealed class Write : IDisposable
-        {
-            private ReaderWriterLockSlim _lock;
-
-            public Write(ReaderWriterLockSlim @lock)
-            {
-                _lock = @lock;
-                _lock.EnterWriteLock();
-            }
-
-            public void Dispose()
-            {
-                _lock.ExitWriteLock();
-            }
+            _lock.ExitWriteLock();
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+﻿using Core.AI.Brain;
+using Core.Database;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class MaldaharTheGlimmerPrince : GameEpicBoss
 {
@@ -50,7 +50,7 @@ public class MaldaharTheGlimmerPrince : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == GS.Abilities.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

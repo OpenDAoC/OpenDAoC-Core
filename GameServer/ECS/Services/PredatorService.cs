@@ -1,8 +1,8 @@
 using System.Linq;
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 using ECS.Debug;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class PredatorService
 {

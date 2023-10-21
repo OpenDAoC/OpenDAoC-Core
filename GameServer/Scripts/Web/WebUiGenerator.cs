@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
+using Core.Database;
+using Core.Events;
 using log4net;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
 	/// <summary>
 	/// Summary description for DefWebUIGenerator. This is a self contained script within the scripts assembly.

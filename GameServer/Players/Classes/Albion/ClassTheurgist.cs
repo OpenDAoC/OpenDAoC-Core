@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.Realm;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.Realm;
 
-namespace DOL.GS.PlayerClass
+namespace Core.GS.PlayerClass
 {
 	[PlayerClass((int)EPlayerClass.Theurgist, "Theurgist", "Elementalist")]
 	public class ClassTheurgist : ClassElementalist

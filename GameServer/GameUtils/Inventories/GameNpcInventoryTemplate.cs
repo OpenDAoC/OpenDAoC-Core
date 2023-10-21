@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class GameNpcInventoryTemplate : GameLivingInventory
 	{

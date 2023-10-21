@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class ConquestMgr
 {

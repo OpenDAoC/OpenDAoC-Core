@@ -1,6 +1,6 @@
-using DOL.GS.Effects;
+using Core.GS.Effects;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
     [SkillHandler(Abilities.Remedy)]
 	public class NfRaRemedyAbility : IAbilityActionHandler

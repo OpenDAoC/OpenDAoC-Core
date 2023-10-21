@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.GS.ServerProperties;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace DOL.GS.API;
+namespace Core.GS.API;
 
 public class ApiUtils
 {

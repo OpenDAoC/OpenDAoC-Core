@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 /// <summary>
 /// All property types for check using SkillBase.CheckPropertyType. Must be unique bits set.

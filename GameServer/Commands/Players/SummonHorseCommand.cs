@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&summon", EPrivLevel.Player,"Summon horse","/summon")]
 public class SummonHorseCommand : ACommandHandler, ICommandHandler

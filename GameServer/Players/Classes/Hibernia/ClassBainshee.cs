@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DOL.Events;
-using DOL.GS.Realm;
+using Core.Events;
+using Core.GS.Realm;
 
-namespace DOL.GS.PlayerClass
+namespace Core.GS.PlayerClass
 {
 	[PlayerClass((int)EPlayerClass.Bainshee, "Bainshee", "Magician")]
 	public class ClassBainshee : ClassMagician

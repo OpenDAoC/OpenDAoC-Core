@@ -1,6 +1,6 @@
-using DOL.GS.Effects;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells.Atlantis
+namespace Core.GS.Spells.Atlantis
 {
     [SpellHandler("Arrogance")]
     public class Arrogance : SpellHandler

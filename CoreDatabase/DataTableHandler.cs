@@ -3,10 +3,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
+using Core.Database.Attributes;
 using DataTable = System.Data.DataTable;
-using DOL.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// DataTableHandler that keep tracks of DataObjects Definition for matching Database schema. 

@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public struct EcsGameEffectInitParams
     {

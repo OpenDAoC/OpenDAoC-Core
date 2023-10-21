@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.Base;
+using Core.Database;
+using Core.GS.Housing;
+using Core.GS.ServerProperties;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.HousePlaceItem, "Handles things like placing indoor/outdoor items.", EClientStatus.PlayerInGame)]
 	public class HousingPlaceItemHandler : IPacketHandler

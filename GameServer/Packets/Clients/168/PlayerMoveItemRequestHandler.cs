@@ -1,10 +1,10 @@
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.Language;
+using Core.Database;
+using Core.Events;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerMoveItem, "Handle Moving Items Request", EClientStatus.PlayerInGame)]
 	public class PlayerMoveItemRequestHandler : IPacketHandler

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Base.Enums;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
     public class OfRaVolleyAbility : TimedRealmAbility
     {

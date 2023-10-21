@@ -1,7 +1,7 @@
-﻿using DOL.Database;
-using DOL.Database.Attributes;
+﻿using Core.Database;
+using Core.Database.Attributes;
 
-namespace DOL.GS.DatabaseUpdate
+namespace Core.GS.DatabaseUpdate
 {
 	/// <summary>
 	/// DataTable to track already registered XML Loading Files Played

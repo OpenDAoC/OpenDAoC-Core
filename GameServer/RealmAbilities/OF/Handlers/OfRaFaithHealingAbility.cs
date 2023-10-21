@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	public class OfRaFaithHealingAbility : TimedRealmAbility
 	{

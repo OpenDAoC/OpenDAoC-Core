@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
+using Core.Database;
+using Core.Events;
 
-namespace DOL.GS
+namespace Core.GS
 {
     /// <summary>
     /// The instance object is a dynamic region that is designed to be adventured by a select few.
@@ -244,7 +245,7 @@ namespace DOL.GS
 				m_delayCloseRegionTimer = null;
 			}
 
-			DOL.Events.GameEventMgr.RemoveAllHandlersForObject(this);
+			GameEventMgr.RemoveAllHandlersForObject(this);
 			
 			m_zoneSkinMap.Clear();
 

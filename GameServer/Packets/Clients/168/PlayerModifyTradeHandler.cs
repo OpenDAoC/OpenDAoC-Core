@@ -1,7 +1,7 @@
 using System.Collections;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.ModifyTrade, "Player Accepts Trade", EClientStatus.PlayerInGame)]
 	public class PlayerModifyTradeHandler : IPacketHandler

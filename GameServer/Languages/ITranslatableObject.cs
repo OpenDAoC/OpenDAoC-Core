@@ -1,6 +1,6 @@
-﻿using DOL.Database;
+﻿using Core.Database;
 
-namespace DOL.Language;
+namespace Core.Language;
 
 public interface ITranslatableObject
 {

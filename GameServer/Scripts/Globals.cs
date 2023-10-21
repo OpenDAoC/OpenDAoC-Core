@@ -1,7 +1,7 @@
 using System.Collections;
 using System.IO;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
 	/// <summary>
 	/// The hand flag for an item

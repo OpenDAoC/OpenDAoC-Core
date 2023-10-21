@@ -17,11 +17,10 @@
  *
  */
 using System;
+using Core.Database;
+using Core.Database.Attributes;
 
-using DOL.Database;
-using DOL.Database.Attributes;
-
-namespace DOL.Tests.Integration.Database
+namespace Core.Tests.Integration.Database
 {
 	/// <summary>
 	/// Complex Table Implementing All Type Non Nullable

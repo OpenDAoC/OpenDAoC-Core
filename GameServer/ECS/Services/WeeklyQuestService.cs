@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 using ECS.Debug;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class WeeklyQuestService
     {

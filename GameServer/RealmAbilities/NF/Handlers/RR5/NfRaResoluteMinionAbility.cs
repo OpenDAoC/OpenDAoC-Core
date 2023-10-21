@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.Effects;
+using Core.Database;
+using Core.GS.Effects;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	public class NfRaResoluteMinionAbility : Rr5RealmAbility
     {
@@ -24,7 +24,7 @@ namespace DOL.GS.RealmAbilities
     }
 }
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	public class ResoluteMinionEffect : TimedEffect
 	{

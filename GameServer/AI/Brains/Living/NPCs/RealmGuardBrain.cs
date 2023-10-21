@@ -1,7 +1,7 @@
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.GS;
+using Core.GS.PacketHandler;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 public class RealmGuardBrain : StandardMobBrain
 {

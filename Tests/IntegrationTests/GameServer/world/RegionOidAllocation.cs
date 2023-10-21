@@ -19,11 +19,12 @@
 
 using System;
 using System.Threading;
-using DOL.Database;
-using DOL.GS;
+using Core.Database;
+using Core.GS;
+using Core.GS.ServerProperties;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Server
+namespace Core.Tests.Integration.Server
 {
 	/// <summary>
 	/// Unit Test for Region OID Allocation
@@ -77,7 +78,7 @@ namespace DOL.Tests.Integration.Server
 //					Console.Out.WriteLine("add "+i);
 					GameNpc mob = mobs[i];
 					Assert.IsTrue(mob.AddToWorld(), "failed to add {0} to the world", mob.Name);
-					Assert.IsTrue(mob.ObjectID > 0 && mob.ObjectID <= DOL.GS.ServerProperties.Properties.REGION_MAX_OBJECTS, "{0} oid={1}", mob.Name, mob.ObjectID);
+					Assert.IsTrue(mob.ObjectID > 0 && mob.ObjectID <= Properties.REGION_MAX_OBJECTS, "{0} oid={1}", mob.Name, mob.ObjectID);
 				}
 				
 				for (int i = count-x; i >= 0; i--)

@@ -1,9 +1,9 @@
 ﻿using System;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     /// <summary>
     /// A command to manage teleport destinations.

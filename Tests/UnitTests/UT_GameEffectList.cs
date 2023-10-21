@@ -1,10 +1,10 @@
-﻿using DOL.Database;
-using DOL.GS;
-using DOL.GS.Effects;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Collections.Generic;
+using Core.Database;
+using Core.GS;
+using Core.GS.Effects;
 
-namespace DOL.Tests.Unit.Gameserver
+namespace Core.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_GameEffectList

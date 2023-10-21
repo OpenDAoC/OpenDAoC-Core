@@ -13,11 +13,12 @@
 
 using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Commands;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class LootGeneratorUniqueItem : LootGeneratorBase
     {
@@ -25,8 +26,8 @@ namespace DOL.GS
             "&genuniques",
             EPrivLevel.GM,
             "/genuniques ([TOA] || [L51] || [self] || [suit] || [objecttype]) [itemtype] : generate 8 unique items")]
-        public class LootGeneratorUniqueObjectCommandHandler : DOL.GS.Commands.ACommandHandler,
-            DOL.GS.Commands.ICommandHandler
+        public class LootGeneratorUniqueObjectCommandHandler : ACommandHandler,
+            ICommandHandler
         {
             public void OnCommand(GameClient client, string[] args)
             {
@@ -133,8 +134,8 @@ namespace DOL.GS
             "&clearinventory",
             EPrivLevel.GM,
             "/clearinventory YES - clears your entire inventory!")]
-        public class ClearInventoryCommandHandler : DOL.GS.Commands.ACommandHandler,
-            DOL.GS.Commands.ICommandHandler
+        public class ClearInventoryCommandHandler : ACommandHandler,
+            ICommandHandler
         {
             public void OnCommand(GameClient client, string[] args)
             {

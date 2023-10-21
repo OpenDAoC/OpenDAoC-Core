@@ -1,9 +1,9 @@
 using System;
 using System.Text;
-using DOL.Events;
-using DOL.GS;
+using Core.Events;
+using Core.GS;
 
-namespace DOL.AI;
+namespace Core.AI;
 
 /// <summary>
 /// This class is the base of all artificial intelligence in game objects

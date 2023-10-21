@@ -1,6 +1,6 @@
-using DOL.GS.Keeps;
+using Core.GS.Keeps;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.KeepComponentInteract, "Keep component interact", EClientStatus.PlayerInGame)]
 	public class KeepComponentInteractHandler : IPacketHandler

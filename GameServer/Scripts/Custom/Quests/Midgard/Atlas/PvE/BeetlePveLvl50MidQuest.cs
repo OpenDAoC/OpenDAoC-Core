@@ -1,12 +1,12 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.Quests;
 using log4net;
 
-namespace DOL.GS.AtlasQuest.Midgard
+namespace Core.GS.AtlasQuest.Midgard
 {
 	public class BeetlePveLvl50MidQuest : Quests.CoreQuest
 	{

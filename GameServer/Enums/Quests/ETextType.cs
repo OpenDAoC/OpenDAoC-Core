@@ -1,4 +1,4 @@
-namespace DOL.GS.Behaviour;
+namespace Core.GS.Behaviour;
 
 /// <summary>
 /// Type of textoutput this one is used for general text messages within questpart.   

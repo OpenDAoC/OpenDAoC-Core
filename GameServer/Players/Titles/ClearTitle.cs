@@ -1,4 +1,4 @@
-namespace DOL.GS.PlayerTitles
+namespace Core.GS.PlayerTitles
 {
 	/// <summary>
 	/// Special "empty" player title, always first in the list.

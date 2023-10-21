@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Interface for Handling Object Database API

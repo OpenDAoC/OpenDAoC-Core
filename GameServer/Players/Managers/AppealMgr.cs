@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.Appeal
+namespace Core.GS.Appeal
 {
 	public static class AppealMgr
 	{

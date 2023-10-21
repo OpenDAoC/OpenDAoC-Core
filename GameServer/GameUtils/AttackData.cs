@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.GS.Styles;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
+using Core.GS.Styles;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Holds all data for an Attack

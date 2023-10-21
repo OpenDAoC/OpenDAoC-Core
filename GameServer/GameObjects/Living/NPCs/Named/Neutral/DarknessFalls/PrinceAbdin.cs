@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
 using log4net;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class PrinceAbdin : GameEpicBoss
 {

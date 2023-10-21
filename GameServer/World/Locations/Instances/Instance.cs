@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// The Instance is an implementation of BaseInstance that contains additional functionality to load

@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.Spells;
 
-namespace DOL.GS.RealmAbilities.Statics 
+namespace Core.GS.RealmAbilities.Statics 
 {
     public class StaticTempestBase : GenericBase  
     {

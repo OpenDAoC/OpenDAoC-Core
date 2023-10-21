@@ -1,8 +1,8 @@
-﻿using DOL.GS.Appeal;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+﻿using Core.GS.Appeal;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 //The appeal command is really just a tool to redirect the players concerns to the proper command.
 //most of it's functionality is built into the client.

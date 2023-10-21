@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Specialized;
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class ChatGroupUtil
 	{

@@ -7,10 +7,11 @@
 
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Events;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command("&ngg", //command to handle
        EPrivLevel.GM, //minimum privelege level
@@ -703,7 +704,7 @@ namespace DOL.GS.Commands
             } while (!target.Inventory.SaveIntoDatabase(tn));
             target.EquipmentTemplateID = tn;
             target.SaveIntoDatabase();
-            client.Player.Out.SendMessage("Equipment template saved as: " +saveName, DOL.GS.PacketHandler.EChatType.CT_System, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage("Equipment template saved as: " +saveName, EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
     }
 }

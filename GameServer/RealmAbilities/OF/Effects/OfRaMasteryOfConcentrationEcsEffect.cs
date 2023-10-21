@@ -1,5 +1,5 @@
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class OfRaMasteryOfConcentrationEcsEffect : EcsGameAbilityEffect
     {

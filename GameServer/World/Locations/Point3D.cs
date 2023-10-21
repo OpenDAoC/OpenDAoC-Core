@@ -1,7 +1,7 @@
 using System;
 using System.Numerics;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Defines a 3D point

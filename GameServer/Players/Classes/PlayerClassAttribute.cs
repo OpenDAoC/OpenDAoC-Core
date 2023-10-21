@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Denotes a class as a player class

@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.DestroyItemRequest, "Handles destroy item requests from client", EClientStatus.PlayerInGame)]
 	public class DestroyItemRequestHandler : IPacketHandler

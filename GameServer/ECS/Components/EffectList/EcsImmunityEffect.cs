@@ -1,6 +1,6 @@
-﻿using DOL.GS.Spells;
+﻿using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class EcsImmunityEffect : EcsGameSpellEffect
     {

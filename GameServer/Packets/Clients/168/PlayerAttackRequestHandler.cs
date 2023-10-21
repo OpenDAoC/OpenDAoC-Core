@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerAttackRequest, "Handles Player Attack Request", EClientStatus.PlayerInGame)]
 	public class PlayerAttackRequestHandler : IPacketHandler

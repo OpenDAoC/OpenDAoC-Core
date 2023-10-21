@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Threading;
-using DOL.DOLServer.Actions;
+using Core.DOLServer.Actions;
 
-namespace DOL.DOLServer
+namespace Core.DOLServer
 {
 	/// <summary>
 	/// Just a test to run DOL in console mode

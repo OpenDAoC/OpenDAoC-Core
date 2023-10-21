@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scheduler;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.Scheduler;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     static class ZoneBonusRotator
     {

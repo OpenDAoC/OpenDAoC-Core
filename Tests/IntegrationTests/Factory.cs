@@ -19,11 +19,10 @@
 using System;
 using System.IO;
 using System.Reflection;
+using Core.Database;
+using Core.Database.Connection;
 
-using DOL.Database;
-using DOL.Database.Connection;
-
-namespace DOL.Tests.Integration
+namespace Core.Tests.Integration
 {
     public partial class Create
     {

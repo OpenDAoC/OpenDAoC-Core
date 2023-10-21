@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using Core.Base;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
      "&sameip",

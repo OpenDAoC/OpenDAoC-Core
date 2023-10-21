@@ -27,7 +27,7 @@ using System.Timers;
 
 using log4net;
 
-namespace DOL.GS.Scheduler
+namespace Core.GS.Scheduler
 {
 	/// <summary>
 	/// Simple Timer Based Scheduler Running Tasks Concurrently.

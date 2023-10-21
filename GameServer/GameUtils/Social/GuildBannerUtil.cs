@@ -1,11 +1,11 @@
 using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class GuildBannerUtil
     {

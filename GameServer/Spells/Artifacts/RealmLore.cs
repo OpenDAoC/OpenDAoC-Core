@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
+using Core.GS.PacketHandler;
+using Core.GS.RealmAbilities;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("RealmLore")]
 	public class RealmLore : SpellHandler

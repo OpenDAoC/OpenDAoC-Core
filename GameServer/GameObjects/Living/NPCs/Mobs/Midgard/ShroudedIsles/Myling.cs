@@ -1,6 +1,6 @@
-﻿using DOL.AI;
+﻿using Core.AI;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     public class Myling : GameNpc
     {

@@ -1,7 +1,7 @@
 using System;
-using DOL.Events;
+using Core.Events;
 
-namespace DOL.GS.Behaviour
+namespace Core.GS.Behaviour
 {
     /// <summary>
     /// A trigger defines the circumstances under which a certain QuestAction is fired.

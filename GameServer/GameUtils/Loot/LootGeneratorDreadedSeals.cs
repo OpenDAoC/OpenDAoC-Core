@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Keeps;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Keeps;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     /// <summary>
     /// At the moment this generator only adds dreaded seals to the loot

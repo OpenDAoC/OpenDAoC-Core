@@ -1,4 +1,4 @@
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Contains all common code for illness spell handlers (and negative spell effects without animation) 

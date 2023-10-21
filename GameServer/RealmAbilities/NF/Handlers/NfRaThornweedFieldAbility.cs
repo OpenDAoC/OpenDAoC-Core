@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	public class NfRaThornweedFieldAbility : TimedRealmAbility
 	{

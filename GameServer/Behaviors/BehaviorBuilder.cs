@@ -1,6 +1,6 @@
-using DOL.GS.Quests;
+using Core.GS.Quests;
 
-namespace DOL.GS.Behaviour
+namespace Core.GS.Behaviour
 {
     public class BehaviorBuilder
     {

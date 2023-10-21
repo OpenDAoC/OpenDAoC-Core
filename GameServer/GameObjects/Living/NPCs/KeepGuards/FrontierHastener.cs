@@ -1,8 +1,8 @@
 using System.Collections;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.GS.ServerProperties;
+using Core.Language;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public class FrontierHastener : GameKeepGuard
 	{

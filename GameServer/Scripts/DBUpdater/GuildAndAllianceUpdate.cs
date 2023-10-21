@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS.DatabaseUpdate
+namespace Core.GS.DatabaseUpdate
 {
 	[DbUpdate]
 	public class GuildAndAllianceUpdate : IDbUpdater

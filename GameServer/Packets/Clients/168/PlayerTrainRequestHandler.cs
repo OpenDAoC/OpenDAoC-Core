@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.GS.Commands;
-using DOL.GS.RealmAbilities;
+using Core.GS.Commands;
+using Core.GS.RealmAbilities;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	/// <summary>
 	/// handles Train clicks from Trainer Window
@@ -22,9 +23,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
-            if (!DOL.GS.ServerProperties.Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
+            if (!Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
             {
-                GameTrainer trainer = client.Player.TargetObject as DOL.GS.GameTrainer;
+                GameTrainer trainer = client.Player.TargetObject as GameTrainer;
                 if (trainer == null || (trainer.CanTrain(client.Player) == false && trainer.CanTrainChampionLevels(client.Player) == false))
                 {
                     client.Out.SendMessage("You must select a valid trainer for your class.", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
@@ -178,10 +179,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 	{
 		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
-            if (!DOL.GS.ServerProperties.Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
+            if (!Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
             {
                 // A trainer of the appropriate class must be around (or global trainer, with TrainedClass = eCharacterClass.Unknow
-                GameTrainer trainer = client.Player.TargetObject as DOL.GS.GameTrainer;
+                GameTrainer trainer = client.Player.TargetObject as GameTrainer;
                 if (trainer == null || (trainer.CanTrain(client.Player) == false && trainer.CanTrainChampionLevels(client.Player) == false))
                 {
                     client.Out.SendMessage("You must select a valid trainer for your class.", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
@@ -328,9 +329,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 		{
 			public void HandlePacket(GameClient client, GsPacketIn packet)
 			{
-				if (!DOL.GS.ServerProperties.Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
+				if (!Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
                 {
-                    GameTrainer trainer = client.Player.TargetObject as DOL.GS.GameTrainer;
+                    GameTrainer trainer = client.Player.TargetObject as GameTrainer;
                     if (trainer == null || (trainer.CanTrain(client.Player) == false && trainer.CanTrainChampionLevels(client.Player) == false))
                     {
                         client.Out.SendMessage("You must select a valid trainer for your class.", EChatType.CT_Important, EChatLoc.CL_ChatWindow);

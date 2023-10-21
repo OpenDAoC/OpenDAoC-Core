@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&clientlist",

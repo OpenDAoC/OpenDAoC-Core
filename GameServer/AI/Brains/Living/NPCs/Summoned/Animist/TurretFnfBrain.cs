@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.GS;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
     public class TurretFnfBrain : TurretBrain
     {

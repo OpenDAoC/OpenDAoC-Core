@@ -1,7 +1,7 @@
-using DOL.GS;
-using DOL.GS.Movement;
+using Core.GS;
+using Core.GS.Movement;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
 	/// <summary>
 	/// A brain that make npc walk on rounds with way point

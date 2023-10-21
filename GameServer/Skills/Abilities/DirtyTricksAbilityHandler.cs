@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
 	[SkillHandler(Abilities.DirtyTricks)]
 	public class DirtyTricksAbilityHandler : IAbilityActionHandler
@@ -67,7 +67,7 @@ namespace DOL.GS.SkillHandler
 	}
 }
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	/// <summary>
 	/// TripleWield
@@ -143,7 +143,7 @@ namespace DOL.GS.Effects
 	}
 }
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	/// <summary>
 	/// The helper class for the berserk ability

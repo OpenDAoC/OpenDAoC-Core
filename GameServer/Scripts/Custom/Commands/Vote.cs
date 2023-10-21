@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using DOL.Database;
-using DOL.Database.Attributes;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
+using Core.Database;
+using Core.Database.Attributes;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.Scripts;
 
 /*Example for making/creating/stopping a voting session.
  * /gmvote create - /gmvote add 1vs1 (first choice will be 1vs1) /gmvote add 2vs2 (second choice will ve 2vs2) etc.
@@ -18,7 +18,7 @@ using DOL.GS.Scripts;
 
 #region database table and object Voting
 
-namespace DOL.Database
+namespace Core.Database
 {
     [DataTable(TableName = "Voting")]
     public class DBVoting : DataObject
@@ -107,7 +107,7 @@ namespace DOL.Database
 
 #region PS Voting Manager
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     public class VotingMgr
     {
@@ -392,7 +392,7 @@ namespace DOL.GS.Scripts
 
 #region register/handling of events and callbacks
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
     public class VotingEvents
     {
@@ -413,7 +413,7 @@ namespace DOL.GS.GameEvents
 
 #region player command /vote
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
         "&vote",
@@ -456,7 +456,7 @@ namespace DOL.GS.Commands
 
 #region gm-command /gmvote
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
         "&gmvote",

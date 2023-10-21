@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Spells;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	/// <summary>
 	/// Holds and manages multiple effects on livings

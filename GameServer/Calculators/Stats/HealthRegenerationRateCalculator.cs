@@ -1,6 +1,6 @@
-using DOL.GS.Keeps;
+using Core.GS.Keeps;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.PropertyCalc;
 
 /// <summary>
 /// The health regen rate calculator

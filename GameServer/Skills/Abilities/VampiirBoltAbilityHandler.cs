@@ -1,4 +1,4 @@
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
 	[SkillHandler(Abilities.VampiirBolt)]
 	public class VampiirBoltAbilityHandler : SpellCastingAbilityHandler

@@ -1,6 +1,6 @@
-using DOL.GS.Quests;
+using Core.GS.Quests;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class TaskMaster : GameNpc
 	{

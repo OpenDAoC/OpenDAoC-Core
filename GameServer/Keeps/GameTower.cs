@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public class GameKeepTower : AGameKeep
 	{

@@ -1,4 +1,4 @@
-﻿namespace DOL.Database
+﻿namespace Core.Database
 {
     // data table attribute not set until item translations are supported.
     class DbLanguageGameItem : LanguageDataObject

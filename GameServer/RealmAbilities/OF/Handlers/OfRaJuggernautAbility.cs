@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
     public class OfRaJuggernautAbility : TimedRealmAbility
     {

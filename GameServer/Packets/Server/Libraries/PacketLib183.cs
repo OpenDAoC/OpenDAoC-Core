@@ -1,8 +1,8 @@
 using System.Reflection;
-using DOL.GS.Quests;
+using Core.GS.Quests;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(183, GameClient.eClientVersion.Version183)]
 	public class PacketLib183 : PacketLib182

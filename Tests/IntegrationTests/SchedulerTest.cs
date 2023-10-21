@@ -18,12 +18,10 @@
  */
 using System;
 using System.Linq;
-
+using Core.GS.Scheduler;
 using NUnit.Framework;
 
-using DOL.GS.Scheduler;
-
-namespace DOL.Tests.Integration.Utils
+namespace Core.Tests.Integration.Utils
 {
 	/// <summary>
 	/// DOL Simple Scheduler Unit Test.

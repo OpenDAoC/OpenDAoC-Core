@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.ServerProperties;
+using Core.Base.Enums;
+using Core.Database;
+using Core.Events;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	//TODO : find all skin of keep door to load it from here
 	public class GameKeepComponent : GameLiving, IComparable, IGameKeepComponent

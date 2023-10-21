@@ -19,10 +19,10 @@
 
 using System;
 using System.Linq;
-using DOL.Events;
-using DOL.Language;
+using Core.Events;
+using Core.Language;
 
-namespace DOL.GS.PlayerTitles
+namespace Core.GS.PlayerTitles
 {
   	/// <summary>
 	/// Master Level Title Handler

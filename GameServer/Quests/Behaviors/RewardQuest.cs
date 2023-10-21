@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Quests
+namespace Core.GS.Quests
 {
 	public class RewardQuest : BaseQuest
 	{

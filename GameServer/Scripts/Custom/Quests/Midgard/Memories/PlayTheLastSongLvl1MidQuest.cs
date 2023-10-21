@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.PlayerTitles;
 using log4net;
 
-namespace DOL.GS.Quests.Midgard
+namespace Core.GS.Quests.Midgard
 {
 	public class PlayTheLastSongLvl1MidQuest : BaseQuest
 	{

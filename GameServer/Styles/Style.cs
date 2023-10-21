@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Styles
+namespace Core.GS.Styles
 {
     /// <summary>
     /// Holds all information needed for a Style in game.

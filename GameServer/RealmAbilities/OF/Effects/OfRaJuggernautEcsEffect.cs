@@ -1,6 +1,6 @@
-using DOL.AI.Brain;
+using Core.AI.Brain;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class OfRaJuggernautEcsEffect : EcsGameAbilityEffect
     {

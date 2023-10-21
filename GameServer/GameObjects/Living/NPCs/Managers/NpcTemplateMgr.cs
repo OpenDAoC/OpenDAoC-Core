@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Reflection;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public sealed class NpcTemplateMgr
 	{

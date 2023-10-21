@@ -1,4 +1,4 @@
-namespace DOL.Database;
+namespace Core.Database;
 
 /// <summary>
 /// Skin types to use for this keep

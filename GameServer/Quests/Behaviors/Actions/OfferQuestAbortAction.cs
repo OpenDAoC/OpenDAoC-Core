@@ -1,9 +1,9 @@
 using System;
-using DOL.Events;
-using DOL.GS.Behaviour;
-using DOL.GS.Behaviour.Attributes;
+using Core.Events;
+using Core.GS.Behaviour;
+using Core.GS.Behaviour.Attributes;
 
-namespace DOL.GS.Quests.Actions
+namespace Core.GS.Quests.Actions
 {
     [Action(ActionType = EActionType.OfferQuestAbort)]
     public class OfferQuestAbortAction : AAction<Type,String>

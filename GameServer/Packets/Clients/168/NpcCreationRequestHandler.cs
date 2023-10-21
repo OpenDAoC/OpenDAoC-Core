@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.CreateNPCRequest, "Handles requests for npcs(0x72) in game", EClientStatus.PlayerInGame)]
 	public class NpcCreationRequestHandler : IPacketHandler

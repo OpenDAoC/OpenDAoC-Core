@@ -1,10 +1,10 @@
 using System;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.Behaviour.Attributes;
+using Core.Events;
+using Core.GS.Behaviour.Attributes;
 using log4net;
 
-namespace DOL.GS.Behaviour.Requirements
+namespace Core.GS.Behaviour.Requirements
 {
 	/// <summary>
 	/// Requirements describe what must be true to allow a QuestAction to fire.

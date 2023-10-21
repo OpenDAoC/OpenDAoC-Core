@@ -1,4 +1,4 @@
-namespace DOL.GS.Behaviour;
+namespace Core.GS.Behaviour;
 
 /// <summary>
 /// Triggertype defines a list of available triggers to use within questparts.

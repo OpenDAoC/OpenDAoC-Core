@@ -1,7 +1,7 @@
-using DOL.GS.Housing;
-using DOL.Language;
+using Core.GS.Housing;
+using Core.Language;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
   "&boot",

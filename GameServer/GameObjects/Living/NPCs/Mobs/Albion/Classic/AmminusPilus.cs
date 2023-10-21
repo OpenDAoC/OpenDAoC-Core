@@ -1,6 +1,6 @@
-﻿using DOL.AI.Brain;
+﻿using Core.AI.Brain;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class AmminusPilus : GameNpc
 	{
@@ -77,7 +77,7 @@ namespace DOL.GS
 }
 
 #region Pilus adds
-namespace DOL.GS
+namespace Core.GS
 {
     public class PilusAdd : GameNpc
 	{

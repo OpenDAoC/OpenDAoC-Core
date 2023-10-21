@@ -1,8 +1,8 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerClass;
+using Core.GS.PacketHandler;
+using Core.GS.PlayerClass;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     /// <summary>
     /// Buffs a single stat,

@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using DOL.GS.Housing;
+using Core.GS.Housing;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&house",

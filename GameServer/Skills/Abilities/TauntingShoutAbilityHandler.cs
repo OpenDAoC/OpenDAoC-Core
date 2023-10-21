@@ -1,4 +1,4 @@
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
     [SkillHandler(Abilities.TauntingShout)]
     public class TauntingShoutAbilityHandler : SpellCastingAbilityHandler

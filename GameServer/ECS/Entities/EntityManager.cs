@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.AI;
+using Core.AI;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public static class EntityManager
     {

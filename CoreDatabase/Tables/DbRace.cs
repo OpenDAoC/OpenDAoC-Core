@@ -1,6 +1,6 @@
-﻿using DOL.Database.Attributes;
+﻿using Core.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	[DataTable( TableName = "Race" )]
 	public class DbRace : DataObject

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// 

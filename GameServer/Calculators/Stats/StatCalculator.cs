@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.PropertyCalc
+namespace Core.GS.PropertyCalc
 {
     [PropertyCalculator(EProperty.Stat_First, EProperty.Stat_Last)]
     public class StatCalculator : PropertyCalculator

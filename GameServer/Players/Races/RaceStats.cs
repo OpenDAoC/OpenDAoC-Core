@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DOL.GS.Realm
+namespace Core.GS.Realm
 {
 	public class RaceStats
 	{

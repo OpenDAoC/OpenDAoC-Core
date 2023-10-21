@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel;
-using DOL.Database.Attributes;
-using DOL.Database.UniqueID;
+using Core.Database.Attributes;
+using Core.Database.UniqueID;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Abstract Baseclass for all DataObject's. All Classes that are derived from this class

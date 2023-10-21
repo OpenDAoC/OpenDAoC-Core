@@ -6,11 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS.DatabaseUpdate
+namespace Core.GS.DatabaseUpdate
 {
 	/// <summary>
 	/// Automated Database Updater target at XML Package File

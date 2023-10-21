@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
-using DOL.Language;
+using Core.Base;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.Quests;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	[NpcGuildScript("Enchanter")]
 	public class Enchanter : GameNpc

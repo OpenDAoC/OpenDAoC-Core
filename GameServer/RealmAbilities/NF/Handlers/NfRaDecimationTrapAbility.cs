@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	public class NfRaDecimationTrapAbility : TimedRealmAbility
 	{

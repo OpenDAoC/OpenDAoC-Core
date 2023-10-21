@@ -1,8 +1,8 @@
 using System.Reflection;
-using DOL.GS.PlayerTitles;
+using Core.GS.PlayerTitles;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
     [PacketLib(1113, GameClient.eClientVersion.Version1113)]
     public class PacketLib1113 : PacketLib1112

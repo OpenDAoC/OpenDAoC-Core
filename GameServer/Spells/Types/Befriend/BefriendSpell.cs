@@ -1,11 +1,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.AI.Brain;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("BeFriend")]
 	public class BefriendSpell : SpellHandler 

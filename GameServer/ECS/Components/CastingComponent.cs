@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Concurrent;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.Commands;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.Commands;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
     // This component will hold all data related to casting spells.
     public class CastingComponent : IManagedEntity

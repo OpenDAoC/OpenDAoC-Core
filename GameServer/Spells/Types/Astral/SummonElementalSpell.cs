@@ -1,9 +1,9 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     /// <summary>
     /// Summons a Elemental that follows the target and attacks the target.

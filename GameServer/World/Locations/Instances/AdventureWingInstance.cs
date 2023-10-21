@@ -1,7 +1,7 @@
-﻿using DOL.Database;
+﻿using Core.Database;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Description of AdventureWingInstance. Based on Catacombs Instances Implementation

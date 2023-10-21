@@ -1,4 +1,4 @@
-namespace DOL.GS.Quests;
+namespace Core.GS.Quests;
 
 public enum EStepCheckType : int
 {

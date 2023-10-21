@@ -20,15 +20,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.Quests;
 
-namespace DOL.Tests
+namespace Core.Tests
 {
 	/// <summary>
 	/// PacketLib Implementation for Unit Tests

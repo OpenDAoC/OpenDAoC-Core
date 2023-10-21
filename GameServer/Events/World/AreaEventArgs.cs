@@ -1,7 +1,7 @@
 using System;
-using DOL.GS;
+using Core.GS;
 
-namespace DOL.Events;
+namespace Core.Events;
 
 /// <summary>
 /// Holds the arguments for AreaEvents, this one can be used for either player, NPCs or mob Enter/Leave

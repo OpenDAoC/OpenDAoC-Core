@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
+using Core.Language;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     /// <summary>
     /// Summon a fnf animist pet.

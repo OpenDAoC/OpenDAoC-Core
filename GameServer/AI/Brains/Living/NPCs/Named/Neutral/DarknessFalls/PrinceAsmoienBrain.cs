@@ -1,9 +1,9 @@
 using System.Reflection;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.GS;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 public class PrinceAsmoienBrain : StandardMobBrain
 {

@@ -1,4 +1,4 @@
-namespace DOL;
+namespace Core.Base.Enums;
 
 /// <summary>
 /// The different game server types

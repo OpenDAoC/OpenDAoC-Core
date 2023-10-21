@@ -1,9 +1,9 @@
 using System.Reflection;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
     [SkillHandler(Abilities.Engage)]
     public class EngageAbilityHandler : IAbilityActionHandler

@@ -1,6 +1,6 @@
-using DOL.GS;
+using Core.GS;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 #region Queen Qunilaria
 public class QueenQunilariaBrain : StandardMobBrain

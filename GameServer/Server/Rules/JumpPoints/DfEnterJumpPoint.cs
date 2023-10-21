@@ -1,10 +1,11 @@
 using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Base.Enums;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
 using JNogueira.Discord.Webhook.Client;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
 	/// <summary>
 	/// Handles DF entrance jump point allowing only one realm to enter on Normal server type.

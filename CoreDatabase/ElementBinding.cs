@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using System.Linq;
+using Core.Database.Attributes;
 
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Data Element Binding

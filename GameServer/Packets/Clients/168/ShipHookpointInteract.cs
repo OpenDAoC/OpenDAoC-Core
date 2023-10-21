@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.ShipHookPoint, "Handles Ship hookpoint interact", EClientStatus.PlayerInGame)]
 	public class ShipHookpointInteractHandler : IPacketHandler

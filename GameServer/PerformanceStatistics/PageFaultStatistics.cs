@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace DOL.GS.PerformanceStatistics
+namespace Core.GS.PerformanceStatistics
 {
     public class PageFaultsPerSecondStatistic : IPerformanceStatistic
     {

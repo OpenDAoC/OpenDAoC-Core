@@ -1,8 +1,8 @@
 using System;
-using DOL.Database;
-using DOL.Events;
+using Core.Database;
+using Core.Events;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("AtensShield")]
 	public class AtensShield : SummonItemSpellHandler

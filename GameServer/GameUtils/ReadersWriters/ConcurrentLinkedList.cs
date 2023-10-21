@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class ConcurrentLinkedList<T> where T : class
     {

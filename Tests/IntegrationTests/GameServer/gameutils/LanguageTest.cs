@@ -17,10 +17,10 @@
  *
  */
 using System;
-using DOL.Language;
+using Core.Language;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Server
+namespace Core.Tests.Integration.Server
 {
 	[TestFixture]
 	public class LanguageTest: ServerTests

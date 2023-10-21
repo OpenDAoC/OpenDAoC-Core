@@ -1,4 +1,4 @@
-namespace DOL.GS.PlayerTitles
+namespace Core.GS.PlayerTitles
 {
 	/// <summary>
 	/// Denotes a class as a player title.

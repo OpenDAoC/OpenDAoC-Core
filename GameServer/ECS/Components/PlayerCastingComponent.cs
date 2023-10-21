@@ -1,7 +1,7 @@
-﻿using DOL.GS.PacketHandler;
-using DOL.Language;
+﻿using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
     // This component will hold all data related to casting spells.
     public class PlayerCastingComponent : CastingComponent

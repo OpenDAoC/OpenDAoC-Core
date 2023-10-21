@@ -1,7 +1,7 @@
-using DOL.AI.Brain;
-using DOL.GS.Effects;
+using Core.AI.Brain;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("AllStatsPercentDebuff")]
 	public class AllStatsPercentDebuffSpell : SpellHandler

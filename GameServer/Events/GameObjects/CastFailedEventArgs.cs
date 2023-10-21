@@ -1,6 +1,6 @@
-using DOL.GS.Spells;
+using Core.GS.Spells;
 
-namespace DOL.Events;
+namespace Core.Events;
 
 /// <summary>
 /// Arguments for a cast failed event, stating the reason

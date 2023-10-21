@@ -3,17 +3,17 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerClass;
-using DOL.GS.ServerProperties;
-using DOL.GS.SkillHandler;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.GS.PlayerClass;
+using Core.GS.ServerProperties;
+using Core.GS.SkillHandler;
+using Core.Language;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	public class SpellHandler : ISpellHandler
 	{

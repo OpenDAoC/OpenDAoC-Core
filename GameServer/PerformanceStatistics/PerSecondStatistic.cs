@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DOL.GS.PerformanceStatistics
+namespace Core.GS.PerformanceStatistics
 {
     public class PerSecondStatistic : IPerformanceStatistic
     {

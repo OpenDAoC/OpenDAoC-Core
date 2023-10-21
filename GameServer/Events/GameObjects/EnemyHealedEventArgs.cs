@@ -1,7 +1,7 @@
 using System;
-using DOL.GS;
+using Core.GS;
 
-namespace DOL.Events;
+namespace Core.Events;
 
 /// <summary>
 /// Holds the arguments for the EnemyHealed event of GameLivings

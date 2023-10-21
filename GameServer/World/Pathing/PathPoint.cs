@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Movement
+namespace Core.GS.Movement
 {
 	/// <summary>
 	/// represents a point in a way path

@@ -1,8 +1,8 @@
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
     public class CasterGuardBrain : KeepGuardBrain
     {

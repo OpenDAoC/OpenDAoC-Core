@@ -5,21 +5,23 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.Housing;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
-using DOL.GS.ServerProperties;
-using DOL.GS.Styles;
-using DOL.Language;
+using Core.AI;
+using Core.AI.Brain;
+using Core.Base.Enums;
+using Core.Database;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.Movement;
+using Core.GS.PacketHandler;
+using Core.GS.Quests;
+using Core.GS.ServerProperties;
+using Core.GS.Styles;
+using Core.Language;
 using ECS.Debug;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// This class is the baseclass for all Non Player Characters like
@@ -3259,9 +3261,9 @@ namespace DOL.GS
 						}
 					}
 
-					if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.EKeepBonusType.Coin_Drop_5, (ERealm)killer.Realm))
+					if (Keeps.KeepBonusMgr.RealmHasBonus(EKeepBonusType.Coin_Drop_5, (ERealm)killer.Realm))
 						value += (value / 100) * 5;
-					else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.EKeepBonusType.Coin_Drop_3, (ERealm)killer.Realm))
+					else if (Keeps.KeepBonusMgr.RealmHasBonus(EKeepBonusType.Coin_Drop_3, (ERealm)killer.Realm))
 						value += (value / 100) * 3;
 
 					//this will need to be changed when the ML for increasing money is added

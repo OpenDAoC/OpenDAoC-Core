@@ -1,4 +1,4 @@
-namespace DOL.Events;
+namespace Core.Events;
 
 /// <summary>
 /// This class defines an abstract event in DOL

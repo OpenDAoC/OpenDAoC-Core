@@ -1,7 +1,7 @@
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
+using Core.GS.Housing;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&housefriend",

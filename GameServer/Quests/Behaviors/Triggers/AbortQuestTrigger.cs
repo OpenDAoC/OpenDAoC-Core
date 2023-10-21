@@ -1,11 +1,11 @@
 using System;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.Behaviour;
-using DOL.GS.Behaviour.Attributes;
+using Core.Events;
+using Core.GS.Behaviour;
+using Core.GS.Behaviour.Attributes;
 using log4net;
 
-namespace DOL.GS.Quests.Triggers
+namespace Core.GS.Quests.Triggers
 {	
     /// <summary>
     /// A trigger defines the circumstances under which a certain QuestAction is fired.

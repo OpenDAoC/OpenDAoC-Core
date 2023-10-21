@@ -1,7 +1,7 @@
-﻿using DOL.GS.Effects;
-using DOL.GS.Spells;
+﻿using Core.GS.Effects;
+using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class EcsPulseEffect : EcsGameSpellEffect, IConcentrationEffect
     {

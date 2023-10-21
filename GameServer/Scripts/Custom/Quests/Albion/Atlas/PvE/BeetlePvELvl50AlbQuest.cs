@@ -1,12 +1,12 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.Quests;
 using log4net;
 
-namespace DOL.GS.AtlasQuest.Albion
+namespace Core.GS.AtlasQuest.Albion
 {
 	public class BeetlePveLvl50AlbQuest : Quests.CoreQuest
 	{

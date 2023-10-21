@@ -2,12 +2,12 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using DOL.Database.Attributes;
-using DOL.GS.Commands;
-using DOL.GS.ServerProperties;
+using Core.Database.Attributes;
+using Core.GS.Commands;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS.DatabaseUpdate
+namespace Core.GS.DatabaseUpdate
 {
 	/// <summary>
 	/// UnloadXMLCommandHandler is used to Fully unload DataBase or DataTable to a Local XML file.

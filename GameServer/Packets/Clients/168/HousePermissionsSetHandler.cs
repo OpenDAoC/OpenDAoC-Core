@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.Housing;
+using Core.Database;
+using Core.GS.Housing;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.HousePermissionSet, "Handles housing permissions changes", EClientStatus.PlayerInGame)]
 	public class HousePermissionsSetHandler : IPacketHandler

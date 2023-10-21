@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using DOL.GS.PlayerClass;
-using DOL.GS.PropertyCalc;
-using DOL.GS.Spells;
+using Core.GS.PlayerClass;
+using Core.GS.PropertyCalc;
+using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class StatDebuffEcsSpellEffect : EcsGameSpellEffect
     {

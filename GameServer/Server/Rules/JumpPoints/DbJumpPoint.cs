@@ -1,9 +1,9 @@
 using System;
-using DOL.Database.Attributes;
-using DOL.Events;
-using DOL.GS;
+using Core.Database.Attributes;
+using Core.Events;
+using Core.GS;
 
-namespace DOL.Database
+namespace Core.Database
 {
     [DataTable(TableName = "JumpPoint")]
     public class DbJumpPoint : DataObject

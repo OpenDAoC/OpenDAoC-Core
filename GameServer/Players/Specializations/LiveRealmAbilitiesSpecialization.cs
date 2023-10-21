@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Core.GS.Styles;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// LiveRealmAbilitiesSpecialization is targeted at Realm Ability Granting through RP's awarding.
@@ -70,9 +71,9 @@ namespace DOL.GS
 		/// <param name="living"></param>
 		/// <param name="level"></param>
 		/// <returns></returns>
-		protected override List<DOL.GS.Styles.Style> GetStylesForLiving(GameLiving living, int level)
+		protected override List<Style> GetStylesForLiving(GameLiving living, int level)
 		{
-			return new List<DOL.GS.Styles.Style>();
+			return new List<Style>();
 		}
 	}
 }

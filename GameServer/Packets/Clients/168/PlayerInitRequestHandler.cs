@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.Utils;
-using DOL.Language;
+using Core.Events;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.Utils;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerInitRequest, "Region Entering Init Request", EClientStatus.PlayerInGame)]
 	public class PlayerInitRequestHandler : IPacketHandler

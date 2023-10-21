@@ -1,4 +1,4 @@
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 /// <summary>
 /// Defines walk state when brain is not in combat

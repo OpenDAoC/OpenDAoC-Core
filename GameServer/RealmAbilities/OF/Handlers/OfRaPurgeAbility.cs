@@ -1,7 +1,7 @@
 using System.Collections;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
     public class OfRaPurgeAbility : NfRaPurgeAbility
     {

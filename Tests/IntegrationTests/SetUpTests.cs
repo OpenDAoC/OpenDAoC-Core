@@ -20,14 +20,13 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Linq;
-
+using Core.Database;
+using Core.Database.Attributes;
+using Core.Database.Connection;
+using Core.GS;
 using NUnit.Framework;
-using DOL.GS;
-using DOL.Database;
-using DOL.Database.Connection;
-using DOL.Database.Attributes;
 
-namespace DOL.Tests.Integration
+namespace Core.Tests.Integration
 {
 	/// <summary>
 	/// SetUpTests Start The Needed Environnement for Unit Tests

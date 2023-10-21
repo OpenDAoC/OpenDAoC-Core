@@ -1,4 +1,4 @@
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Holds a static item in the world that will disappear after some interval

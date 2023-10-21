@@ -1,9 +1,9 @@
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS
 {
     /// <summary>
     /// Spell-Based Effect

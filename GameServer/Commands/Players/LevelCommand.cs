@@ -1,9 +1,9 @@
 using System;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.Scripts;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&level", //command to handle
 EPrivLevel.Player, //minimum privelege level

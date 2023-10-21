@@ -1,7 +1,7 @@
-using DOL.GS.RealmAbilities;
-using DOL.Language;
+using Core.GS.RealmAbilities;
+using Core.Language;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	public sealed class SprintEffect : StaticEffect, IGameEffect
 	{

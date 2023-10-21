@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class MarketSearch
 	{

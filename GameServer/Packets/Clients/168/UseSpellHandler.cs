@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.GS.Commands;
+using Core.GS.Commands;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.UseSpell, "Handles Player Use Spell Request.", EClientStatus.PlayerInGame)]
 	public class UseSpellHandler : ACommandHandler, IPacketHandler

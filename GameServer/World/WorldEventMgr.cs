@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// GameServer Manager to Handle World Data and Region events for this GameServer.

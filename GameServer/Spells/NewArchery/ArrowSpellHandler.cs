@@ -1,10 +1,10 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.SkillHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Spell Handler for firing arrows

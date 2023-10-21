@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using DOL.GS.PacketHandler.Client.v168;
-using DOL.GS.Styles;
+using Core.GS.PacketHandler.Client.v168;
+using Core.GS.Styles;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("StyleHandler")]
 	public class StyleHandler : SpellHandler

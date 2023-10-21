@@ -2,12 +2,12 @@
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Friends
+namespace Core.GS.Friends
 {
 	public sealed class FriendsMgr
 	{

@@ -2,12 +2,13 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Base.Enums;
+using Core.GS;
+using Core.GS.PacketHandler;
 using DOLGameServerConsole;
 using log4net;
 
-namespace DOL.DOLServer.Actions
+namespace Core.DOLServer.Actions
 {
 	/// <summary>
 	/// Handles console start requests of the gameserver

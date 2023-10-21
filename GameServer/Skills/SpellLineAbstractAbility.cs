@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Abstract Spell Line Ability Class is a base Class to get Ability Effects based on Spell Line constraints

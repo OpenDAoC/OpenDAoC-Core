@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.GS.Effects;
+using Core.GS.Effects;
 using log4net;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	public class ConcentrationList : IEnumerable<IConcentrationEffect>
 	{

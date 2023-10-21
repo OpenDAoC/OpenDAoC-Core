@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.Movement;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		"&path",

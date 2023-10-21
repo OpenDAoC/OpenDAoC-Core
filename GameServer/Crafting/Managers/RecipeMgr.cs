@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class RecipeMgr
     {

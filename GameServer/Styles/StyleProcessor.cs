@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
+using Core.GS.Spells;
+using Core.Language;
 
-namespace DOL.GS.Styles
+namespace Core.GS.Styles
 {
 	public class StyleProcessor
 	{

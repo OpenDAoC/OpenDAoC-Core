@@ -1,7 +1,7 @@
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&backupstyle", EPrivLevel.Player, "Modify automatic backup style.", "/backupstyle <set|clear>")]
 public class BackupStyleCommand : ACommandHandler, ICommandHandler

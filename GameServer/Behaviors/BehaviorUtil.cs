@@ -1,11 +1,11 @@
 using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.Events;
+using Core.GS.Movement;
+using Core.GS.PacketHandler;
+using Core.GS.Quests;
 
-namespace DOL.GS.Behaviour
+namespace Core.GS.Behaviour
 {
     public enum EDefaultValueConstants
     {

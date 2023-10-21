@@ -1,8 +1,8 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS.Trainer;
 
 [NpcGuildScript("Bonedancer Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Bonedancer Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class BonedancerTrainer : GameTrainer

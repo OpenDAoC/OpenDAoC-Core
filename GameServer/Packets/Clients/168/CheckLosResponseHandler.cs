@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.CheckLOSRequest, "Handles a LoS Check Response", EClientStatus.PlayerInGame)]
 	public class CheckLosResponseHandler : IPacketHandler

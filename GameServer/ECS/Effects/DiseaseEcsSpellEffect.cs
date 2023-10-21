@@ -1,7 +1,7 @@
-using DOL.AI.Brain;
-using DOL.GS.Spells;
+using Core.AI.Brain;
+using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class DiseaseEcsSpellEffect : EcsGameSpellEffect
     {

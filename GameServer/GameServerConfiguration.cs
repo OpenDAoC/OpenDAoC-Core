@@ -22,11 +22,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Linq;
+using Core.Base;
+using Core.Base.Enums;
+using Core.Database.Connection;
 
-using DOL.Config;
-using DOL.Database.Connection;
-
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// This is the game server configuration

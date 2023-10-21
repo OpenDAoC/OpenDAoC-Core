@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class CraftComponent : IManagedEntity
     {

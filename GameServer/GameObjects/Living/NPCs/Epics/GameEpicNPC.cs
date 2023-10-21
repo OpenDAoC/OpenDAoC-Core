@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Text.RegularExpressions;
-using DOL.GS.ServerProperties;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class GameEpicNPC : GameNpc
     {

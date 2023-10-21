@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, 0x6A ^ 168, "Checks for bad character names")]
 	public class BadNameCheckRequestHandler : IPacketHandler

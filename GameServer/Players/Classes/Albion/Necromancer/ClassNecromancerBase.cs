@@ -1,10 +1,10 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerClass;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.PlayerClass;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// The necromancer character class.

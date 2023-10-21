@@ -2,11 +2,11 @@
    Written by Gavinius */
 
 using System.Collections;
-using DOL.GS.Commands;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.Commands;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	[NpcGuildScript("Name Registrar")]
 	public class NameRegistrar : GameNpc

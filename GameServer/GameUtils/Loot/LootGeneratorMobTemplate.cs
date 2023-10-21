@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
+using Core.AI.Brain;
+using Core.Database;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// This implementation uses LootTemplates to relate loots to a specific mob type.

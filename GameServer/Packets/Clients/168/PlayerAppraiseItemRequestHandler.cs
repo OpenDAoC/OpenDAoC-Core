@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.Housing;
+using Core.Database;
+using Core.GS.Housing;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerAppraiseItemRequest, "Player Appraise Item Request handler.", EClientStatus.PlayerInGame)]
 	public class PlayerAppraiseItemRequestHandler : IPacketHandler

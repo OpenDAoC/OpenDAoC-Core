@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using ECS.Debug;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public static class AttackService
     {

@@ -1,7 +1,7 @@
-﻿using DOL.Database;
+﻿using Core.Database;
 using log4net;
 
-namespace DOL.GS.DatabaseUpdate
+namespace Core.GS.DatabaseUpdate
 {
     [DbUpdate]
     public class ServerPropertiesUpdate : IDbUpdater

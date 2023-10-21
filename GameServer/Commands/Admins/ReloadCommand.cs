@@ -1,10 +1,10 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&Reload",
 		EPrivLevel.Admin,

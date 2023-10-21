@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
+using Core.Language;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
     /// <summary>
     /// Class for the GateKeeper In the Keep (for leave)

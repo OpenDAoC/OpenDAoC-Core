@@ -1,6 +1,6 @@
-﻿using DOL.Database;
+﻿using Core.Database;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
     /// <summary>
     /// Handles doors inside of instances.

@@ -1,7 +1,7 @@
 ﻿using System;
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.PlayerTitles
+namespace Core.GS.PlayerTitles
 {
     /// <summary>
     /// Example...

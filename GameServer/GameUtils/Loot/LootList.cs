@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// List containing all possible candidates for loot drop

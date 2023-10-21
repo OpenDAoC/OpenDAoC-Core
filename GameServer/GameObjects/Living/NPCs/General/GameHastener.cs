@@ -1,9 +1,9 @@
 using System.Collections;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class GameHastener : GameNpc
 	{

@@ -1,6 +1,6 @@
-using DOL.GS.Effects;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Base class for spells with immunity like mez/root/stun/nearsight

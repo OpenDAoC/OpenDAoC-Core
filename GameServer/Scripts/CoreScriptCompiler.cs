@@ -9,7 +9,7 @@ using log4net;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class CoreScriptCompiler
     {

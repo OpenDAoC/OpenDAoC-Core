@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS;
+using Core.Database;
+using Core.GS;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 #region Badb
 public class BadbBrain : StandardMobBrain

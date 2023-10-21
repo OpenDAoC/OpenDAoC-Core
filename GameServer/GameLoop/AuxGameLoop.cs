@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     // AuxGameLoop's purpose is to run services that can run concurrently with GameLoop.
     public static class AuxGameLoop

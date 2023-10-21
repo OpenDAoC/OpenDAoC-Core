@@ -1,14 +1,14 @@
 using System;
 using System.Reflection;
 using System.Text;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerClass;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.PlayerClass;
+using Core.GS.Quests;
 using log4net;
 
-namespace DOL.GS.DailyQuest.Albion
+namespace Core.GS.DailyQuest.Albion
 {
 	public class DailyTeamBuildingLvl1AlbQuest : Quests.DailyQuest
 	{

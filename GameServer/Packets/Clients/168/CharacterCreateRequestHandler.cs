@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.Events;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
     /// <summary>
     /// Character Create and Customization handler.  Please maintain all commented debug statements

@@ -1,7 +1,7 @@
 ﻿using System;
-using DOL.Events;
+using Core.Events;
 
-namespace DOL.GS
+namespace Core.GS
 {
     /// <summary>
     /// Ancient bound djinn (Atlantis teleporter).

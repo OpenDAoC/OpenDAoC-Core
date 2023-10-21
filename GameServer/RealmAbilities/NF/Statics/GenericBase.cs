@@ -1,7 +1,7 @@
 using System;
-using DOL.Events;
+using Core.Events;
 
-namespace DOL.GS.RealmAbilities.Statics
+namespace Core.GS.RealmAbilities.Statics
 {
 	public abstract class GenericBase : GameStaticItem 
     {

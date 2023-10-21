@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Appeal;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.GS.Appeal;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
         "&gmappeal",

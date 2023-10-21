@@ -1,7 +1,7 @@
-﻿using DOL.AI;
-using DOL.AI.Brain;
+﻿using Core.AI;
+using Core.AI.Brain;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS.Scripts;
 
 public class BotonidSeedling : GameNpc
 {

@@ -1,4 +1,6 @@
-namespace DOL.GS.Commands;
+using Core.GS.Housing;
+
+namespace Core.GS.Commands;
 
 /// <summary>
 /// Command handler to remove House player
@@ -17,6 +19,6 @@ public class RemoveHouseCommand : ACommandHandler, ICommandHandler
 	/// <returns></returns>
 	public void OnCommand(GameClient client, string[] args)
 	{
-		DOL.GS.Housing.HouseMgr.RemoveHouse(client.Player.CurrentHouse);
+		HouseMgr.RemoveHouse(client.Player.CurrentHouse);
 	}
 }

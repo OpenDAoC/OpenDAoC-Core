@@ -1,8 +1,9 @@
 using System.Collections;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class GameSiegeCatapult : GameSiegeWeapon
 	{
@@ -250,7 +251,7 @@ namespace DOL.GS
 		}
 
 		
-		public override bool ReceiveItem(GameLiving source, DOL.Database.DbInventoryItem item)
+		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
 		{
 			//todo check if bullet
 			return base.ReceiveItem(source, item);

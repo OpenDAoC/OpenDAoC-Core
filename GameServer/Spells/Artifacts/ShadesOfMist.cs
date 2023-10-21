@@ -1,9 +1,9 @@
 ﻿using System;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("ShadesOfMist")]
     public class ShadeOfMistDefensiveProcSpell : SpellHandler
@@ -25,7 +25,7 @@ namespace DOL.GS.Spells
                         Effect.SpellHandler.Spell.SpellType.Equals("AtlantisTabletMorph") ||
                         Effect.SpellHandler.Spell.SpellType.Equals("AlvarusMorph"))
                     {
-                        player.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.EChatType.CT_SpellResisted, DOL.GS.PacketHandler.EChatLoc.CL_ChatWindow);
+                        player.Out.SendMessage("You already have an active morph!", EChatType.CT_SpellResisted, EChatLoc.CL_ChatWindow);
                         return;
                     }
                 }

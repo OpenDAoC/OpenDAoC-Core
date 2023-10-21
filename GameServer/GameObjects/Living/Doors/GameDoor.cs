@@ -1,8 +1,9 @@
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Base.Enums;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class GameDoor : GameDoorBase
     {

@@ -1,6 +1,6 @@
-using DOL.Language;
+using Core.Language;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 [NpcGuildScript("Siegecrafting Master")]
 public class SiegecraftingMaster : CraftMasterNpc

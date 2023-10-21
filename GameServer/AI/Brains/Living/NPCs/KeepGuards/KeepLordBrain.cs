@@ -1,8 +1,9 @@
 using System;
-using DOL.GS;
-using DOL.GS.Keeps;
+using Core.Base.Enums;
+using Core.GS;
+using Core.GS.Keeps;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
 	/// <summary>
 	/// The Brain for the Area Lord

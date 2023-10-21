@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
+using Core.Database;
+using Core.GS;
+using Core.GS.PacketHandler;
+using Core.GS.Styles;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 #region Nosdoden
 public class NosdodenBrain : StandardMobBrain

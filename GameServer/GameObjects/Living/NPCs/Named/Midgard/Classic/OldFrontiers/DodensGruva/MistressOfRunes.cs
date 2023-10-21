@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS;
+using Core.GS.Effects;
+using Core.GS.Scripts;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
 	public class MistressOfRunes : GameEpicBoss
 	{

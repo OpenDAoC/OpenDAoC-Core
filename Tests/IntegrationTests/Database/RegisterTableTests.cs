@@ -19,14 +19,12 @@
 using System;
 using System.Linq;
 using System.Reflection;
-
-using DOL.Database;
-using DOL.Database.Connection;
-using DOL.Database.Attributes;
-
+using Core.Database;
+using Core.Database.Attributes;
+using Core.Database.Connection;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Database
+namespace Core.Tests.Integration.Database
 {
 	[TestFixture]
 	public class RegisterTableTests

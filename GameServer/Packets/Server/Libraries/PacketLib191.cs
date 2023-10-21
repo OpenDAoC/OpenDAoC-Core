@@ -1,9 +1,9 @@
 using System.Reflection;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
+using Core.GS.Effects;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(191, GameClient.eClientVersion.Version191)]
 	public class PacketLib191 : PacketLib190

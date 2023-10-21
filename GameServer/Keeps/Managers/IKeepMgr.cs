@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public class KeepManagerAttribute : Attribute

@@ -1,7 +1,7 @@
-﻿using DOL.Database;
-using DOL.GS.Spells;
+﻿using Core.Database;
+using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// SpellLinePassiveAbility is a Specific Ability that Will trigger Self-Buff when activated based on Attached Spell Line

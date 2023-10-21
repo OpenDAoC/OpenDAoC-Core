@@ -17,11 +17,10 @@
  *
  */
 using NUnit.Framework;
-
-using DOL.Database;
 using System;
+using Core.Database;
 
-namespace DOL.Tests.Unit.Database
+namespace Core.Tests.Unit.Database
 {
     [TestFixture]
     class UT_WhereClause

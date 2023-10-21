@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Trainer;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.Trainer;
 using log4net;
 
-namespace DOL.GS.Quests.Hibernia
+namespace Core.GS.Quests.Hibernia
 {
     public class WildWildernessLvl1AlbQuest : BaseQuest
     {

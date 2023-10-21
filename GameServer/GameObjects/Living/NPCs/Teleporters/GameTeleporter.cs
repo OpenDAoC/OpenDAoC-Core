@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class GameTeleporter : GameNpc
 	{

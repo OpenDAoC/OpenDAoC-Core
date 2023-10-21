@@ -1,6 +1,6 @@
-using DOL.Language;
+using Core.Language;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&cancelstyle", EPrivLevel.Player, "Toggle cancelstyle flag.", "/cancelstyle")]
 public class CancelStyleCommand : ACommandHandler, ICommandHandler

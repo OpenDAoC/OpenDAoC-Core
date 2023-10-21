@@ -17,13 +17,13 @@
  *
  */
 using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.Events;
+using Core.GS;
+using Core.GS.Quests;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Server
+namespace Core.Tests.Integration.Server
 {
 	/// <summary>
 	/// Unit Test for Money Task.

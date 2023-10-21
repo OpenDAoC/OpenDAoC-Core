@@ -1,6 +1,6 @@
-﻿using DOL.Database;
+﻿using Core.Database;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
 	/// <summary>
 	/// Ability which Level is based on Owner Level instead of Skill Level

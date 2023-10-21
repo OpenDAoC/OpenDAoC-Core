@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
-using DOL.GS.Spells;
-using DOL.GS;
-using DOL.Database;
+﻿using Core.Database;
+using Core.GS;
+using Core.GS.Spells;
+using NUnit.Framework;
 
-namespace DOL.Tests.Unit.Gameserver
+namespace Core.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_HereticFocusSpells

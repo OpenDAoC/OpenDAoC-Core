@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("VampiirSkillBonusDeBuff")]
 	public class VampiirSkillBonusDeBuffSpell : SpellHandler

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using log4net;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	/// <summary>
 	/// Sends updates only for changed effects

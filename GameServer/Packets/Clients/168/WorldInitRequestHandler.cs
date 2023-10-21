@@ -1,8 +1,8 @@
 using System.Reflection;
-using DOL.Database;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
     [PacketHandler(EPacketHandlerType.TCP, EClientPackets.WorldInitRequest, "Handles world init replies", EClientStatus.LoggedIn)]
     public class WorldInitRequestHandler : IPacketHandler

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&chainactions", EPrivLevel.Player, "Chain multiple actions.", "/chainactions <create|save|clear>")]
 public class ChainActionsCommand : ACommandHandler, ICommandHandler

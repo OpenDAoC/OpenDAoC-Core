@@ -1,7 +1,7 @@
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
 	public class SpellCastingAbilityHandler : IAbilityActionHandler, ISpellCastingAbilityHandler
 	{

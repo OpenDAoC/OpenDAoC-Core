@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Behaviour;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS.Behaviour;
+using Core.GS.PacketHandler;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.Quests
+namespace Core.GS.Quests
 {
 	/// <summary>
 	/// This represents a data driven quest

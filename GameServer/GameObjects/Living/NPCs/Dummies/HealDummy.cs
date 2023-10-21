@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class HealDummy : GameTrainingDummy {
         Int32 Healing = 0;

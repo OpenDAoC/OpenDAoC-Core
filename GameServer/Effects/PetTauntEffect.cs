@@ -1,8 +1,8 @@
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	/// <summary>
 	/// Pet taunt effect. While active, the pet will keep trying

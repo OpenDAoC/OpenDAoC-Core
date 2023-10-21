@@ -1,7 +1,7 @@
 using System;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Housing;
+namespace Core.GS.Housing;
 
 public interface IHouseHookpointItem
 {

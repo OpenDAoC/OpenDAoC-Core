@@ -1,12 +1,12 @@
 using System;
 using System.Reflection;
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.AI;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS.Scripts;
 
 public abstract class GameEpicAros : GameEpicBoss
 {

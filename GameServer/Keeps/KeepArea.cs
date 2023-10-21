@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public class KeepArea : Area.Circle
 	{

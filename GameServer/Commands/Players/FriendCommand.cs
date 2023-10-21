@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using DOL.GS.Friends;
+using Core.GS.Friends;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&friend",

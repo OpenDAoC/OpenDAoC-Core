@@ -1,9 +1,9 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts.discord;
-using DOL.GS.ServerProperties;
+using Core.GS.PacketHandler;
+using Core.GS.Scripts.discord;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&advice",

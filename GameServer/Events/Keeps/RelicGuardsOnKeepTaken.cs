@@ -1,8 +1,8 @@
 using System;
-using DOL.Events;
-using DOL.GS.Keeps;
+using Core.Events;
+using Core.GS.Keeps;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
     public class RelicGuardManager
     {

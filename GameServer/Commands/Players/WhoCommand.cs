@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Text;
+using Core.Base.Enums;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&who",

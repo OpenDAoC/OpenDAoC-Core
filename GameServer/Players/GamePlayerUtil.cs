@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.Language;
+using Core.Database;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public static class GamePlayerUtil
 	{

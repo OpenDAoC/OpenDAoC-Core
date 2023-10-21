@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerGroundTarget, "Handles Player Ground Target Settings", EClientStatus.PlayerInGame)]
 	public class PlayerGroundTargetHandler : IPacketHandler

@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// represents a point in 2 dimensional space

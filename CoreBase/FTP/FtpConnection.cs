@@ -6,8 +6,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Core.Base.Enums;
 
-namespace DOL.FTP
+namespace Core.Base
 {
 	/// <summary>
 	/// Summary description for FTPConnection.

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
     public class OfRaConcentrationAbility : NfRaConcentrationAbility
 	{

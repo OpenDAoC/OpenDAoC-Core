@@ -1,7 +1,7 @@
 using System;
-using DOL.Events;
+using Core.Events;
 
-namespace DOL.GS.Behaviour
+namespace Core.GS.Behaviour
 {
     /// <summary>
     /// If one trigger and all requirements are fulfilled the corresponding actions of

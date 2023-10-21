@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("EnduranceDrain")]
 	public class EnduranceDrainSpell : SpellHandler

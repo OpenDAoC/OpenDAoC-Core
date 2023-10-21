@@ -1,7 +1,7 @@
 ﻿using System;
-using DOL.Database.Attributes;
+using Core.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Tracks and holds generic audit history (account changes, chat history, etc) across the game server.

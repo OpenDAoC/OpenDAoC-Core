@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	public class NfRaChargeEffect : StaticEffect, IGameEffect
 	{

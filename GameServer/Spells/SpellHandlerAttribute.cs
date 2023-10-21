@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 	public class SpellHandlerAttribute : Attribute

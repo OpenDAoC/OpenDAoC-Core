@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.Effects;
+using Core.Database;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("AfHitsBuff")]
     public class AfHitsBuffSpell : SpellHandler

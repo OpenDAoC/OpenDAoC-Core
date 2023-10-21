@@ -17,14 +17,12 @@
  *
  */
 using System.Diagnostics;
-
+using Core.Database;
+using Core.GS;
+using Core.Tests.Unit.Gameserver;
 using NUnit.Framework;
 
-using DOL.Database;
-using DOL.GS;
-using DOL.Tests.Unit.Gameserver;
-
-namespace DOL.Tests.Integration.Performance
+namespace Core.Tests.Integration.Performance
 {
     [TestFixture, Explicit]
     class Test_GamePlayerCraftItem

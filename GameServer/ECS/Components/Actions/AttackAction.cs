@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.Styles;
+using Core.Database;
+using Core.GS.Styles;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public abstract class AttackAction
     {

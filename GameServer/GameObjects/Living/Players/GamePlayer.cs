@@ -5,31 +5,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Commands;
-using DOL.GS.Effects;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.PacketHandler.Client.v168;
-using DOL.GS.PlayerClass;
-using DOL.GS.PlayerTitles;
-using DOL.GS.PropertyCalc;
-using DOL.GS.Quests;
-using DOL.GS.RealmAbilities;
-using DOL.GS.ServerProperties;
-using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
-using DOL.GS.Styles;
-using DOL.GS.Utils;
-using DOL.Language;
+using Core.AI;
+using Core.AI.Brain;
+using Core.Base;
+using Core.Base.Enums;
+using Core.Database;
+using Core.Events;
+using Core.GS.Commands;
+using Core.GS.Effects;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.PacketHandler.Client.v168;
+using Core.GS.PlayerClass;
+using Core.GS.PlayerTitles;
+using Core.GS.PropertyCalc;
+using Core.GS.Quests;
+using Core.GS.RealmAbilities;
+using Core.GS.ServerProperties;
+using Core.GS.SkillHandler;
+using Core.GS.Spells;
+using Core.GS.Styles;
+using Core.GS.Utils;
+using Core.Language;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class GamePlayer : GameLiving
     {
@@ -3495,8 +3497,8 @@ namespace DOL.GS
             // If BD subpet spells scaled and capped by BD spec, respecing a spell line
             //	requires re-scaling the spells for all subpets from that line.
             if (PlayerClass is ClassBonedancerBase
-                && DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0
-                && DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
+                && Properties.PET_SCALE_SPELL_MAX_LEVEL > 0
+                && Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
                 && ControlledBrain is IControlledBrain brain && brain.Body is GameSummonedPet pet
                 && pet.ControlledNpcList != null)
                 foreach (ABrain subBrain in pet.ControlledNpcList)
@@ -5729,12 +5731,12 @@ namespace DOL.GS
             }
 
             // Level up pets and subpets
-            if (DOL.GS.ServerProperties.Properties.PET_LEVELS_WITH_OWNER &&
+            if (Properties.PET_LEVELS_WITH_OWNER &&
                 ControlledBrain is ControlledNpcBrain brain && brain.Body is GameSummonedPet pet)
             {
                 if (pet.SetPetLevel())
                 {
-                    if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0 && pet.Spells.Count > 0)
+                    if (Properties.PET_SCALE_SPELL_MAX_LEVEL > 0 && pet.Spells.Count > 0)
                         pet.SortSpells();
 
                     brain.UpdatePetWindow();
@@ -5745,7 +5747,7 @@ namespace DOL.GS
                     foreach (ABrain subBrain in pet.ControlledNpcList)
                         if (subBrain != null && subBrain.Body is GameSummonedPet subPet)
                             if (subPet.SetPetLevel()) // Levels up subpet
-                                if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
+                                if (Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
                                     subPet.SortSpells();
             }
 
@@ -13203,9 +13205,9 @@ namespace DOL.GS
                             {
                                 if (IsCraftingSkillDefined(Convert.ToInt32(values[0])))
                                 {
-                                    if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
+                                    if (Properties.CRAFTING_MAX_SKILLS)
                                     {
-                                        m_craftingSkills.Add((ECraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
+                                        m_craftingSkills.Add((ECraftingSkill)Convert.ToInt32(values[0]), Properties.CRAFTING_MAX_SKILLS_AMOUNT);
                                     }
                                     else
                                     {
@@ -13223,9 +13225,9 @@ namespace DOL.GS
                         {
                             if(IsCraftingSkillDefined(Convert.ToInt32(values[0])))
                             {
-                                if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
+                                if (Properties.CRAFTING_MAX_SKILLS)
                                 {
-                                    m_craftingSkills.Add((ECraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
+                                    m_craftingSkills.Add((ECraftingSkill)Convert.ToInt32(values[0]), Properties.CRAFTING_MAX_SKILLS_AMOUNT);
                                 }
                                 else
                                 {

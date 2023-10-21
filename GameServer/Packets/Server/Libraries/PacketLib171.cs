@@ -1,13 +1,13 @@
 using System;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.Quests;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.GS.Quests;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(171, GameClient.eClientVersion.Version171)]
 	public class PacketLib171 : PacketLib170

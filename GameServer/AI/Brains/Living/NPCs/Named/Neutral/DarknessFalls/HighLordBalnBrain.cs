@@ -1,8 +1,8 @@
 using System.Reflection;
-using DOL.GS;
+using Core.GS;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 #region High Lord Baln
 public class HighLordBalnBrain : StandardMobBrain

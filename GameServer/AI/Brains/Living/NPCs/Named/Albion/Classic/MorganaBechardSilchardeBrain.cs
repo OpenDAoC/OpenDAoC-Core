@@ -1,9 +1,9 @@
 using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.GS;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 
-namespace DOL.AI.Brain;
+namespace Core.AI.Brain;
 
 #region Morgana
 public class MorganaBrain : StandardMobBrain

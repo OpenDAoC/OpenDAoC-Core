@@ -9,12 +9,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Timers;
-using DOL.GS.ServerProperties;
-using DOL.Network;
+using Core.Base;
+using Core.GS.ServerProperties;
 using log4net;
 using Timer = System.Timers.Timer;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
     /// <summary>
     /// This class handles the packets, receiving and sending

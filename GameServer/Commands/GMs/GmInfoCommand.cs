@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler.Client.v168;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler.Client.v168;
+using Core.Language;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&GMinfo", EPrivLevel.GM, "Various Information", "'/GMinfo (select a target or not)")]
 	public class GmInfoCommand : ACommandHandler, ICommandHandler

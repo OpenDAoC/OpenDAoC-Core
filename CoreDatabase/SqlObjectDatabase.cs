@@ -3,11 +3,11 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using DOL.Database.Connection;
-using DOL.Database.Attributes;
-using DOL.Database.UniqueID;
+using Core.Database.Attributes;
+using Core.Database.Connection;
+using Core.Database.UniqueID;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Abstract Base Class for SQL based Database Connector

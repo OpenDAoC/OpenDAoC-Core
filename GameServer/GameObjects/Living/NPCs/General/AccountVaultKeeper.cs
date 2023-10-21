@@ -5,11 +5,11 @@
  */
 
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.Housing;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class AccountVaultKeeper : GameNpc
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.Events;
+namespace Core.Events;
 
 class TetherEventArgs : EventArgs
 {

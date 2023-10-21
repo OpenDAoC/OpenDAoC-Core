@@ -1,8 +1,8 @@
 using System;
-using DOL.Events;
-using DOL.GS.Behaviour.Attributes;
+using Core.Events;
+using Core.GS.Behaviour.Attributes;
 
-namespace DOL.GS.Behaviour.Actions
+namespace Core.GS.Behaviour.Actions
 {
     // NOTE it is important that we look into the database for the npc because since it's not spawn at the moment the WorldMgr cant find it!!!
     [Action(ActionType = EActionType.MonsterSpawn,DefaultValueP=EDefaultValueConstants.NPC)]

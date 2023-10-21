@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DOL.GS.Spells;
+using Core.GS.Spells;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts
 {
     /// <summary>
     /// 

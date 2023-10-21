@@ -1,8 +1,8 @@
 using System;
 using System.Text;
-using DOL.GS.Spells;
+using Core.GS.Spells;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	/// <summary>
 	/// Assists SpellHandler with pulsing spells 

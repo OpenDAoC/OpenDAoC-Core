@@ -1,9 +1,9 @@
 using System;
 using System.Reflection;
-using DOL.Database.Attributes;
+using Core.Database.Attributes;
 using log4net;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	[DataTable(TableName = "ItemTemplate", PreCache = true)]
 	public class DbItemTemplate : DataObject

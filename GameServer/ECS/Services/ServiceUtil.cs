@@ -2,7 +2,7 @@
 using System.Reflection;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public static class ServiceUtil
     {

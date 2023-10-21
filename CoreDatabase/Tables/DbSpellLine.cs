@@ -1,6 +1,6 @@
-using DOL.Database.Attributes;
+using Core.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Spell Lines Tables Referencing Spell from Base or Spec Lines, Attach to Specialization using Spec KeyName

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using log4net;
 
-namespace DOL.GS.PlayerTitles
+namespace Core.GS.PlayerTitles
 {
 	public static class PlayerTitleMgr
 	{

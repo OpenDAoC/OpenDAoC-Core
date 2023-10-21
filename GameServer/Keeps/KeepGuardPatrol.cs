@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Movement;
+using Core.Database;
+using Core.Database.UniqueID;
+using Core.GS.Movement;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public class KeepGuardPatrol
 	{
@@ -49,7 +50,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// The Patrol ID, consider this a template ID
 		/// </summary>
-		public string PatrolID = DOL.Database.UniqueID.IdGenerator.GenerateID();
+		public string PatrolID = IdGenerator.GenerateID();
 		/// <summary>
 		/// The Guard Types that make up the Patrol
 		/// </summary>

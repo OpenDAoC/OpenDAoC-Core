@@ -18,7 +18,7 @@
  */
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Net
+namespace Core.Tests.Integration.Net
 {
 	[TestFixture]
 	public class uPnP

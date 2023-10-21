@@ -25,10 +25,10 @@
  */
 
 using System;
-using DOL.Events;
-using DOL.Language;
+using Core.Events;
+using Core.Language;
 
-namespace DOL.GS.PlayerTitles
+namespace Core.GS.PlayerTitles
 {
   	/// <summary>
 	/// Example...

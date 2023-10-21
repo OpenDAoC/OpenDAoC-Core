@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 /// <summary>
 /// SinglePermission is special permission of command for player

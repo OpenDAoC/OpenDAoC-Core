@@ -1,8 +1,8 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
+﻿using Core.AI.Brain;
+using Core.Database;
+using Core.GS;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS.Scripts;
 
 public class BaneOfHope : GameEpicBoss
 {

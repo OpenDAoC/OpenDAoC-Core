@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.PropertyCalc;
 
 [PropertyCalculator(EProperty.WeaponSkill)]
 public class WeaponSkillPercentCalculator : PropertyCalculator

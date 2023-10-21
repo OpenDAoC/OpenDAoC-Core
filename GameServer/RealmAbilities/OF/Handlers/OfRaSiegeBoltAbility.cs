@@ -1,8 +1,8 @@
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
     public class OfRaSiegeBoltAbility : TimedRealmAbility, ISpellCastingAbilityHandler
     {

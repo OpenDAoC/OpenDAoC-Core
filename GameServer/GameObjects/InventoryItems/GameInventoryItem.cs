@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class GameInventoryItem : DbInventoryItem, IGameInventoryItem, ITranslatableObject {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

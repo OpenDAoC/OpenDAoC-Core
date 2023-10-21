@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	public interface IGameEffect
 	{

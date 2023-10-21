@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.Spells;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&morph", //command to handle

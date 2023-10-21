@@ -1,9 +1,9 @@
 using System;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.GS.Effects;
+using Core.GS.Spells;
+using Core.Language;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&cast",

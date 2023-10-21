@@ -1,6 +1,6 @@
-using DOL.Language;
+using Core.Language;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PickUpRequest, "Handles Pick up object request", EClientStatus.PlayerInGame)]
 	public class PlayerPickUpRequestHandler : IPacketHandler

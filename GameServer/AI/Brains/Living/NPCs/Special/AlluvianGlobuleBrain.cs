@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using DOL.GS;
-using DOL.GS.Scheduler;
+using Core.GS;
+using Core.GS.Scheduler;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
 	/// <summary>
 	/// Brains for Alluvian mob in Albion SI Avalon Isle

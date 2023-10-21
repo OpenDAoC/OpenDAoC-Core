@@ -1,4 +1,4 @@
-﻿namespace DOL.GS.Spells
+﻿namespace Core.GS.Spells
 {
 	[SpellHandler("BloodRage")]
 	public class BloodRageSpell : SpellHandler

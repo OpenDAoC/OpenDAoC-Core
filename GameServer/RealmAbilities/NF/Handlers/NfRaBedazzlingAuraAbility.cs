@@ -1,9 +1,9 @@
 using System.Collections;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	public class NfRaBedazzlingAuraAbility : TimedRealmAbility
 	{

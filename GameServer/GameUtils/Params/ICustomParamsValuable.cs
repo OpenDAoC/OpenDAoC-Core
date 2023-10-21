@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// This interface allow to add extension methods to Object that handle Custom Parmeters in string form.

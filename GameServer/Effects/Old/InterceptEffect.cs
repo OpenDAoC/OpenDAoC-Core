@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.SkillHandler;
+using Core.Language;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	public class InterceptEffect : StaticEffect, IGameEffect
 	{

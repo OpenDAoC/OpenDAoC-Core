@@ -18,11 +18,10 @@
  */
 using System;
 using System.Linq;
-
-using DOL.Database;
+using Core.Database;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Database
+namespace Core.Tests.Integration.Database
 {
 	[TestFixture]
 	public class DatabaseTypeTests

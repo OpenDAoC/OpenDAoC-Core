@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.GS.Housing;
-using DOL.GS.PlayerTitles;
+using Core.GS.Housing;
+using Core.GS.PlayerTitles;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(175, GameClient.eClientVersion.Version175)]
 	public class PacketLib175 : PacketLib174

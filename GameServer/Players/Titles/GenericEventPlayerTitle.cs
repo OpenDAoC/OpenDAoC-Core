@@ -1,7 +1,7 @@
 ﻿using System;
-using DOL.GS;
-using DOL.GS.PlayerTitles;
-using DOL.Language;
+using Core.GS;
+using Core.GS.PlayerTitles;
+using Core.Language;
 
 namespace GameServerScripts.Titles
 {

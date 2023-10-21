@@ -1,4 +1,4 @@
-namespace DOL.GS;
+namespace Core.GS;
 
 /// <summary>
 /// Used for that formation type if a GameNPC has a formation

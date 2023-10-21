@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
-using DOL.Database;
-using DOL.Database.Attributes;
+using Core.Database.Attributes;
+using Core.Database;
 using log4net;
 
-namespace DOL.Database
+namespace Core.Database
 {
     /// <summary>
     /// The InventoryItem table holds all Items of the SkinVendor

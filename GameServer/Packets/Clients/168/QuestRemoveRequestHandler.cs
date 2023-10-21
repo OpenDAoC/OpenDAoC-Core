@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
     [PacketHandler(EPacketHandlerType.TCP, EClientPackets.RemoveQuestRequest, "Quest Remove request Handler.", EClientStatus.PlayerInGame)]
     public class QuestRemoveRequestHandler : IPacketHandler

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Numerics;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Movement;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Movement;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class NpcMovementComponent : MovementComponent
     {

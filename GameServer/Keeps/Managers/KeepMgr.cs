@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
+using Core.Base.Enums;
+using Core.Database;
 using log4net;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	/// <summary>
 	/// The default KeepManager

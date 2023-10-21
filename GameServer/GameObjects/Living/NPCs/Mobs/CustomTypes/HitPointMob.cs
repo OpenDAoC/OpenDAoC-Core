@@ -1,4 +1,4 @@
-﻿namespace DOL.GS.Scripts;
+﻿namespace Core.GS.Scripts;
 
 public class HitPointMob : GameNpc
 {

@@ -6,16 +6,18 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using DOL.AI.Brain;
-using DOL.Config;
-using DOL.Events;
-using DOL.GS.Commands;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerRules;
-using DOL.GS.Spells;
+using Core.AI.Brain;
+using Core.Base;
+using Core.Base.Enums;
+using Core.Config;
+using Core.Events;
+using Core.GS.Commands;
+using Core.GS.PacketHandler;
+using Core.GS.ServerRules;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class ScriptMgr
 	{
@@ -384,7 +386,7 @@ namespace DOL.GS
 			}
 			if (client.Player != null)
 			{
-				client.Player.Notify(DOL.Events.GamePlayerEvent.ExecuteCommand, new ExecuteCommandEventArgs(client.Player, myCommand, pars));
+				client.Player.Notify(GamePlayerEvent.ExecuteCommand, new ExecuteCommandEventArgs(client.Player, myCommand, pars));
 			}
 			myCommand.m_cmdHandler.OnCommand(client, pars);
 		}

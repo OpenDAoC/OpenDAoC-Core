@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public sealed class BoatMgr
     {

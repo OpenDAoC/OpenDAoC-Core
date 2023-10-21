@@ -1,8 +1,8 @@
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.PlayerClass;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.PlayerClass;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class ClassAnimistBase : ClassForester
 	{

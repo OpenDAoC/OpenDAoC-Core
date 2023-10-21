@@ -1,7 +1,7 @@
 using System;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
 	//Memories of War: Upon reaching level 41, the Hero, Warrior and Armsman will begin to gain more magic resistance
 	//(spell damage reduction only) as they progress towards level 50. At each level beyond 41 they gain 2% extra

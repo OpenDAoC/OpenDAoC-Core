@@ -1,4 +1,4 @@
-namespace DOL.GS.Keeps;
+namespace Core.GS.Keeps;
 
 /// <summary>
 /// The type of interaction we check for to handle lord permission checks

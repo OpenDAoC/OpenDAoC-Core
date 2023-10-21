@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Linq;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Keeps;
+using Core.AI.Brain;
+using Core.Base.Enums;
+using Core.Database;
+using Core.GS.Keeps;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
 	[ServerRules(EGameServerType.GST_Normal)]
 	public class NormalServerRules : AServerRules

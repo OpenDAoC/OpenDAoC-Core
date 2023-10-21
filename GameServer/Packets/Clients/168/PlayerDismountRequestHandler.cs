@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerDismountRequest, "Handles Player Dismount Request.", EClientStatus.PlayerInGame)]
 	public class PlayerDismountRequestHandler : IPacketHandler

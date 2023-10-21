@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.Events;
+using Core.GS.Spells;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class NfRaSearingPetEffect : TimedEffect
     {

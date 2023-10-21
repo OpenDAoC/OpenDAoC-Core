@@ -1,8 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&email",

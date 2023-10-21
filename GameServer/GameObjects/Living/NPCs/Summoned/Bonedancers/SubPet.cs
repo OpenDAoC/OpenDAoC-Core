@@ -1,8 +1,8 @@
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class SubPet : BonedancerPet
 {

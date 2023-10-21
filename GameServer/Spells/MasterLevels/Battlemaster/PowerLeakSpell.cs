@@ -1,4 +1,4 @@
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     [SpellHandler("MLManadrain")]
     public class PowerLeakSpell : MasterLevelSpellHandling

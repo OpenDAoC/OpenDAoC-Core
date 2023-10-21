@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace DOL.DOLServer
+namespace Core.DOLServer
 {
 	/// <summary>
 	/// Defines the interface for server actions

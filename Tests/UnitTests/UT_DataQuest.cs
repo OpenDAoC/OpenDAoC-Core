@@ -1,12 +1,12 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PlayerClass;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.GS;
+using Core.GS.PlayerClass;
+using Core.GS.Quests;
 using NUnit.Framework;
 
-namespace DOL.Tests.Unit.Gameserver
+namespace Core.Tests.Unit.Gameserver
 {
     [TestFixture]
     class UT_DataQuest

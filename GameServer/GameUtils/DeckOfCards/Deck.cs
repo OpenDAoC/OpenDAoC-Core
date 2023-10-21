@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace DOL.GS.Utils
+namespace Core.GS.Utils
 {
     public class PlayerDeck
     {

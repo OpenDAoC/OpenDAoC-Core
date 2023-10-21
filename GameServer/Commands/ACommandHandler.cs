@@ -1,7 +1,7 @@
 using System.Reflection;
 using log4net;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	/// <summary>
 	/// Providing some basic command handler functionality

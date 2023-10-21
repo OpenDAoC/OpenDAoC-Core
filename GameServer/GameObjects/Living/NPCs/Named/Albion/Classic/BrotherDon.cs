@@ -1,8 +1,8 @@
 ﻿using System;
-using DOL.Database;
-using DOL.Events;
+using Core.Database;
+using Core.Events;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS.Scripts;
 
 public class BrotherDon : GameNpc
 {

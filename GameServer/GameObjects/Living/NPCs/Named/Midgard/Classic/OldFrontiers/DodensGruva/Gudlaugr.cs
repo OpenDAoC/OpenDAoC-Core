@@ -1,9 +1,9 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS.Scripts;
 
 public class Gudlaugr : GameEpicBoss
 {

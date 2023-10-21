@@ -17,11 +17,11 @@
  *
  */
 using System;
-using DOL.Events;
-using DOL.GS;
+using Core.Events;
+using Core.GS;
 using NUnit.Framework;
 
-namespace DOL.Tests.Integration.Server
+namespace Core.Tests.Integration.Server
 {
 	[TestFixture]
 	public class RegionTest : ServerTests

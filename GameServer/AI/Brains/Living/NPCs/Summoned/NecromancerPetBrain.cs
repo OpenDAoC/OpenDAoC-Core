@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Events;
+using Core.GS;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
     /// <summary>
     /// A brain for the necromancer pets.

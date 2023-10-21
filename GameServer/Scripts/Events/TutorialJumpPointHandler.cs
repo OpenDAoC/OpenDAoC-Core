@@ -1,7 +1,7 @@
-using DOL.Database;
-using DOL.GS.ServerRules;
+using Core.Database;
+using Core.GS.ServerRules;
 
-namespace DOL.GS.GameEvents
+namespace Core.GS.GameEvents
 {
 	public class TutorialJumpPointHandler : IJumpPointHandler
 	{

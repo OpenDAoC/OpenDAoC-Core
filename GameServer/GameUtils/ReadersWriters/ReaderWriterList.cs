@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// ReaderWriterList is a IList implementaiton with ReaderWriterLockSlim for concurrent acess.

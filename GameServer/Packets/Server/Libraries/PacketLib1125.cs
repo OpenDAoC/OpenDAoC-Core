@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.Housing;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(1125, GameClient.eClientVersion.Version1125)]
 	public class PacketLib1125 : PacketLib1124

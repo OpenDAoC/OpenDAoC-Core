@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	/// <summary>
 	/// Handles preprocessing for incoming game packets.

@@ -1,8 +1,8 @@
 using System.Reflection;
-using DOL.Network;
+using Core.Base;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// Game server specific packet

@@ -1,7 +1,7 @@
-using DOL.AI.Brain;
-using DOL.GS.Effects;
+using Core.AI.Brain;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
     //for ML9 in the database u have to add  EssenceDampenHandler  in type (its a new method customly made) 
     #region Battlemaster-9

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.GS.ServerProperties;
-using DOL.GS.Styles;
+using Core.GS.ServerProperties;
+using Core.GS.Styles;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.UseSkill, "Handles Player Use Skill Request.", EClientStatus.PlayerInGame)]
 	public class UseSkillHandler : IPacketHandler

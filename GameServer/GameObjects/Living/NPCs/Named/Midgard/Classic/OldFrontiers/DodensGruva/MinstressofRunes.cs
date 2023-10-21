@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
+using Core.GS;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class MistressRunes : GameEpicBoss
 	{
@@ -78,7 +78,7 @@ namespace DOL.GS
 		}
 	}
 }
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
 	public class MistressRunesBrain : StandardMobBrain
 	{

@@ -1,4 +1,4 @@
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&namemount", EPrivLevel.Player,"Name your hourse","/namemount")]
 public class NameMountCommand : ACommandHandler, ICommandHandler

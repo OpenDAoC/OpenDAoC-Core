@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Housing
+namespace Core.GS.Housing
 {
 	public class GameLotMarker : GameStaticItem
 	{

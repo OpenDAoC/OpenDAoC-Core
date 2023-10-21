@@ -1,6 +1,6 @@
-using DOL.AI.Brain;
+using Core.AI.Brain;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public class GuardStaticArcher : GuardArcher
 	{

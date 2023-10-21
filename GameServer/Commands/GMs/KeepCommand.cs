@@ -1,9 +1,9 @@
 using System;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.Language;
+using Core.Database;
+using Core.GS.Keeps;
+using Core.Language;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		"&keep",

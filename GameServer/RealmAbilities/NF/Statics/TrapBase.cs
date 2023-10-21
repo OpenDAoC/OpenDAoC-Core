@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.RealmAbilities.Statics
+namespace Core.GS.RealmAbilities.Statics
 {
 	public class TrapBase : GenericBase 
     {

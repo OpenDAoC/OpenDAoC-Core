@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.Events;
+using Core.GS.Keeps;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class GameRelic : GameStaticItem
 	{

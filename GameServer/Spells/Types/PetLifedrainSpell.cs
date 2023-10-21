@@ -1,9 +1,9 @@
-using DOL.AI.Brain;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+using Core.AI.Brain;
+using Core.GS;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
 
-namespace DOL.spells
+namespace Core.spells
 {
     /// <summary>
     /// Return life to Player Owner

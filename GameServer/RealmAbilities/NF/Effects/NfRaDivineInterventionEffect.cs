@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	public class NfRaDivineInterventionEffect : TimedEffect, IGameEffect
 	{

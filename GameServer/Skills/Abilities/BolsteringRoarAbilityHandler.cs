@@ -1,8 +1,8 @@
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.SkillHandler
 {
     [SkillHandler(Abilities.BolsteringRoar)]
     public class BolsteringRoarAbilityHandler : SpellCastingAbilityHandler

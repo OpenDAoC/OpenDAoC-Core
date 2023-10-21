@@ -1,11 +1,11 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Behaviour;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.GS.Behaviour;
+using Core.GS.Quests;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(194, GameClient.eClientVersion.Version194)]
 	public class PacketLib194 : PacketLib193

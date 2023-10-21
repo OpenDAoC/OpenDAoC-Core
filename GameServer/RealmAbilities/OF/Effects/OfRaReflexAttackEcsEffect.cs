@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class OfRaReflexAttackEcsEffect : EcsGameAbilityEffect
     {

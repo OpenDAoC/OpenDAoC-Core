@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using DOL.Database;
-using DOL.Events;
+using Core.Database;
+using Core.Events;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public sealed class MinotaurRelicMgr
     {

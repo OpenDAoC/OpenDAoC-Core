@@ -10,7 +10,7 @@
  * the Unlock/Lock Functions work properly!
  */
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class BaseProtector : GameNpc
     {

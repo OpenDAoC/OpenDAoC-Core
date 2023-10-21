@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class PropertyCollection
     {

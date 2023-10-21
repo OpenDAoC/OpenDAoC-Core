@@ -1,9 +1,9 @@
 using System;
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.Housing;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&bountyrent", //command to handle
 	EPrivLevel.Player, //minimum privelege level

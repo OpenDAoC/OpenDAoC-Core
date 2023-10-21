@@ -1,8 +1,8 @@
 using System.Collections;
-using DOL.Database;
-using DOL.GS.Effects;
+using Core.Database;
+using Core.GS.Effects;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities
 {
 	public class NfRaSoldiersBarricadeAbility : TimedRealmAbility
 	{

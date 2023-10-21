@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.Events;
+using Core.Events;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
     public class NfRaRezDmgImmunityEffect : TimedEffect
     {

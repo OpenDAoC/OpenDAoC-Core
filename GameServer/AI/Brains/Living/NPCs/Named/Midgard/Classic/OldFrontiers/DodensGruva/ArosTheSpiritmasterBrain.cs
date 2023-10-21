@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.Scripts;
+using Core.Events;
+using Core.GS;
+using Core.GS.Effects;
+using Core.GS.Scripts;
 using log4net;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
     public class ArosTheSpiritmasterBrain : StandardMobBrain
     {
@@ -168,7 +168,7 @@ namespace DOL.AI.Brain
         /// <param name="e">The event that occured.</param>
         /// <param name="sender">The source of the event.</param>
         /// <param name="args">The event details.</param>
-        public override void Notify(DOL.Events.CoreEvent e, object sender, EventArgs args)
+        public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
             base.Notify(e, sender, args);
             if (sender == Body)

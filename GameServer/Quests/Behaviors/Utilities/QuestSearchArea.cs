@@ -1,9 +1,9 @@
 using System;
 using System.Reflection;
-using DOL.GS.PacketHandler;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Quests
+namespace Core.GS.Quests
 {
 	public class QuestSearchArea : Area.Circle
 	{

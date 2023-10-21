@@ -1,11 +1,11 @@
 using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Behaviour.Attributes;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Events;
+using Core.GS.Behaviour.Attributes;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS.Behaviour.Actions
+namespace Core.GS.Behaviour.Actions
 {
     [Action(ActionType = EActionType.DropItem)]
     public class DropItemAction : AAction<DbItemTemplate,Unused>

@@ -1,8 +1,8 @@
 using System;
-using DOL.Events;
-using DOL.GS.Effects;
+using Core.Events;
+using Core.GS.Effects;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("RangeShield")]
 	public class RangeShieldSpell : BladeturnSpell 

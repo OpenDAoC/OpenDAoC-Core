@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Database Oriented Tools for custom uses.

@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Keeps;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.Events;
+using Core.GS.Keeps;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     /// <summary>
     /// This class represents a region in DAOC. A region is everything where you
@@ -280,7 +280,7 @@ namespace DOL.GS
 
             m_graveStones.Clear();
 
-            DOL.Events.GameEventMgr.RemoveAllHandlersForObject(this);
+            GameEventMgr.RemoveAllHandlersForObject(this);
         }
 
 

@@ -1,4 +1,4 @@
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.PropertyCalc;
 
 [PropertyCalculator(EProperty.Skill_First, EProperty.Skill_Last)]
 public class SkillLevelCalculator : PropertyCalculator

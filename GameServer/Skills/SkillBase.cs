@@ -5,13 +5,13 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using DOL.Database;
-using DOL.GS.RealmAbilities;
-using DOL.GS.Styles;
-using DOL.Language;
+using Core.Database;
+using Core.GS.RealmAbilities;
+using Core.GS.Styles;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class SkillBase
 	{

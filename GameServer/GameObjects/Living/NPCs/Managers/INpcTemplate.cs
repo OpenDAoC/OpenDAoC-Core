@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 /// <summary>
 /// Interface for all NPC templates

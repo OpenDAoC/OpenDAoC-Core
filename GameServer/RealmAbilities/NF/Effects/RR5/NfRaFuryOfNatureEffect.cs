@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Events;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	public class NfRaFuryOfNatureEffect : TimedEffect
 	{

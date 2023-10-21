@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Events;
+using Core.GS.PacketHandler;
 using log4net;
 
-namespace DOL.GS.Quests
+namespace Core.GS.Quests
 {
 	public class AMission
 	{

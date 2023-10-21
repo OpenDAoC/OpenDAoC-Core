@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&speclock",

@@ -1,7 +1,7 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+﻿using Core.AI.Brain;
+using Core.Database;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS.Scripts;
 
 public class WarlordDorinakka : GameEpicBoss
 {

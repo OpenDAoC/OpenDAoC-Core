@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.ServerProperties
+namespace Core.GS.ServerProperties
 {
 	/// <summary>
 	/// The server property attribute

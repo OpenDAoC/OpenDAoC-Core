@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Events;
+using Core.Events;
 using log4net;
 
-namespace DOL.GS.Behaviour
+namespace Core.GS.Behaviour
 {    
         			
 	/// <summary>

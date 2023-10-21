@@ -4,21 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.PlayerTitles;
-using DOL.GS.Quests;
-using DOL.GS.RealmAbilities;
-using DOL.GS.ServerProperties;
-using DOL.GS.Spells;
-using DOL.GS.Styles;
-using DOL.Language;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.Housing;
+using Core.GS.Keeps;
+using Core.GS.PlayerTitles;
+using Core.GS.Quests;
+using Core.GS.RealmAbilities;
+using Core.GS.ServerProperties;
+using Core.GS.Spells;
+using Core.GS.Styles;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(168, GameClient.eClientVersion.Version168)]
 	public class PacketLib168 : APacketLib, IPacketLib

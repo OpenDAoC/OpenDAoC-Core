@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
 	/// <summary>
 	/// Denotes a class as a jump point handler

@@ -1,9 +1,9 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
+using Core.AI.Brain;
+using Core.Database;
+using Core.Events;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Skoll : GameEpicBoss
 {
@@ -60,7 +60,7 @@ public class Skoll : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == GS.Abilities.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);

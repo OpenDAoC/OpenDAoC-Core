@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Events;
-using DOL.GS.Keeps;
+using Core.Events;
+using Core.GS.Keeps;
 
-namespace DOL.GS.Quests
+namespace Core.GS.Quests
 {
 	public class RazeMission : AMission
 	{

@@ -1,4 +1,4 @@
-namespace DOL.GS.DatabaseConverters;
+namespace Core.GS.DatabaseConverters;
 
 /// <summary>
 /// Interface for all database format converters

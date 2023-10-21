@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Any exception that occurs in the O-R persistence layer.

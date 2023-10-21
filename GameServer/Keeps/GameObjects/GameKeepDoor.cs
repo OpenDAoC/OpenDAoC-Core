@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public class GameKeepDoor : GameDoorBase, IKeepItem
 	{

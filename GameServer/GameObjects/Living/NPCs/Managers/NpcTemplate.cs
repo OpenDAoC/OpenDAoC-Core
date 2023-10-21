@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Styles;
+using Core.Database;
+using Core.GS.Styles;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// A npc template

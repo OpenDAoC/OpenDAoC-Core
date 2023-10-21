@@ -1,4 +1,4 @@
-﻿namespace DOL.Database
+﻿namespace Core.Database
 {
     // data table attribute not set until door translations are supported.
     class DbLanguageGameDoor : LanguageDataObject

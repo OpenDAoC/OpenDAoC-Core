@@ -1,9 +1,9 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+using Core.AI.Brain;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
 
-namespace DOL.GS.spells
+namespace Core.GS.spells
 {
 	/// <summary>
 	/// Power Rend is a style effect unique to the Valkyrie's sword specialization line.

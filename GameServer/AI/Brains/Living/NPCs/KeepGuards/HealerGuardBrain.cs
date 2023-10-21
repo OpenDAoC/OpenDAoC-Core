@@ -1,6 +1,6 @@
-using DOL.Events;
+using Core.Events;
 
-namespace DOL.AI.Brain
+namespace Core.AI.Brain
 {
 	/// <summary>
 	/// Healer Guard Brain

@@ -17,11 +17,11 @@
  *
  */
 
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.Language;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	// This class has to be completed and may be inherited for scripting purpose (like quests)
 	public class KingNPC : GameNpc

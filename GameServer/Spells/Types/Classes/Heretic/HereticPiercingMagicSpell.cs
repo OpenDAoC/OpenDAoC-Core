@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.Events;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	[SpellHandler("HereticPiercingMagic")]
 	public class HereticPiercingMagicSpell : SpellHandler

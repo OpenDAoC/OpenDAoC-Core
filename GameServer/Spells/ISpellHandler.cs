@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Effects;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	public interface ISpellHandler
 	{
@@ -221,7 +222,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <returns>Modified Spell Range</returns>
 		int CalculateSpellRange();
-		void TooltipDelve(ref DOL.GS.PacketHandler.MiniDelveWriter dw);
+		void TooltipDelve(ref MiniDelveWriter dw);
 	}
 
 	/// <summary>

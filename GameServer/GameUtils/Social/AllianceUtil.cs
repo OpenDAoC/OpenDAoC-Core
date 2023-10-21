@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class AllianceUtil
 	{

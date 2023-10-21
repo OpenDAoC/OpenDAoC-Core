@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using DOL.Database;
-using DOL.Database.Attributes;
+using Core.Database;
+using Core.Database.Attributes;
 using log4net;
 
-namespace DOL.GS.DatabaseUpdate
+namespace Core.GS.DatabaseUpdate
 {
     [DbUpdate]
     public class LanguageSystemUpdate : IDbUpdater

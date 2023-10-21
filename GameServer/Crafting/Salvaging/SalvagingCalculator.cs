@@ -94,10 +94,10 @@ Update databasename.itemtemplate set Extension = 3 where Id_nb like "%superior_w
  */
 
 using System.Text.RegularExpressions;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.GS.ServerProperties;
 
-namespace DOL.GS.SalvageCalc
+namespace Core.GS.SalvageCalc
 {
     public struct SalvageReturn
     {

@@ -1,8 +1,8 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
+﻿using Core.AI.Brain;
+using Core.Database;
+using Core.GS;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Giant Sporite Cluster
 public class GiantSporiteCluster : GameEpicBoss

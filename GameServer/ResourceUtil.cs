@@ -19,7 +19,7 @@
 using System.Reflection;
 using System.IO;
 
-namespace DOL.Config
+namespace Core.Config
 {
 	/// <summary>
 	/// Helps managing embedded resources

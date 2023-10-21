@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+using Core.Database;
+using Core.GS.PacketHandler;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class GameMythirian : GameInventoryItem
 	{

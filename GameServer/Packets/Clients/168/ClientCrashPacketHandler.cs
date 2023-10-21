@@ -1,9 +1,9 @@
 using System.Reflection;
-using DOL.GS.ServerProperties;
-using DOL.Network;
+using Core.Base;
+using Core.GS.ServerProperties;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
     [PacketHandler(EPacketHandlerType.TCP, EClientPackets.ClientCrash, "Handles client crash packets", EClientStatus.None)]
     public class ClientCrashPacketHandler : IPacketHandler

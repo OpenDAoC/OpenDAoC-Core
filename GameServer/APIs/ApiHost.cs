@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using DOL.GS.ServerProperties;
+using Core.GS.ServerProperties;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 
-namespace DOL.GS.API
+namespace Core.GS.API
 {
     internal class ApiHost
     {

@@ -1,6 +1,6 @@
-using DOL.GS.Scripts;
+using Core.GS.Scripts;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&zonebonus",

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	public interface IGameKeep
 	{

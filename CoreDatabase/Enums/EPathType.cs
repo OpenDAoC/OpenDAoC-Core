@@ -1,4 +1,4 @@
-namespace DOL.Database;
+namespace Core.Database;
 
 public enum EPathType : int
 {

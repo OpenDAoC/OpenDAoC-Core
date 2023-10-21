@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.GameOpenRequest, "Checks if UDP is working for the client", EClientStatus.None)]
 	public class GameOpenRequestHandler : IPacketHandler

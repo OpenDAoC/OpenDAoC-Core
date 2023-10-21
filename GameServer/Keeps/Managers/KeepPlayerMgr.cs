@@ -1,9 +1,9 @@
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.PacketHandler;
+using Core.Language;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	/// <summary>
 	/// Class to manage all the dealings with Players

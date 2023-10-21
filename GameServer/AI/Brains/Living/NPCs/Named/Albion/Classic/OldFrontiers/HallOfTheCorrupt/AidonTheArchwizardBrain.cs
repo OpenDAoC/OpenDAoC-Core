@@ -1,10 +1,10 @@
 #region Aidon The Archwizard
 
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.AI.Brain;
+using Core.Database;
+using Core.GS;
+using Core.GS.PacketHandler;
 
 public class AidonTheArchwizardBrain : StandardMobBrain
 {

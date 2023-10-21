@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Reflection;
 using System.Text;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.Events;
+using Core.GS.PacketHandler;
+using Core.GS.Quests;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	public class LaunchLvl1QuestAlb : Quests.BaseQuest
 	{

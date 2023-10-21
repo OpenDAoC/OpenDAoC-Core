@@ -1,8 +1,8 @@
 using System;
-using DOL.Database;
-using DOL.Language;
+using Core.Database;
+using Core.Language;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Alchemy : AdvancedCraftingSkill
 {

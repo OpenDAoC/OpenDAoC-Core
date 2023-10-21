@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.ServerRules
+namespace Core.GS.ServerRules
 {
 	/// <summary>
 	/// Handles Adventure Wings (Catacombs) Instance Jump Point.

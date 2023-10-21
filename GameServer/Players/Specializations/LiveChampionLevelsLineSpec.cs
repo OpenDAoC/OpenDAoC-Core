@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.GS.Styles;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// MiniLineSpecialization are "Mini-Spec" Used to match Sub-Spec (CL ~ Subclass) Skills
@@ -54,9 +55,9 @@ namespace DOL.GS
 		/// <param name="living"></param>
 		/// <param name="level"></param>
 		/// <returns></returns>
-		public override List<DOL.GS.Styles.Style> GetStylesForLiving(GameLiving living)
+		public override List<Style> GetStylesForLiving(GameLiving living)
 		{
-			return new List<DOL.GS.Styles.Style>();
+			return new List<Style>();
 		}
 		
 		/// <summary>

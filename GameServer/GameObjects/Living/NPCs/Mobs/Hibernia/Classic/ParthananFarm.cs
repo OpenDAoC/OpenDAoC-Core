@@ -1,8 +1,8 @@
-﻿using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+﻿using Core.AI.Brain;
+using Core.GS.PacketHandler;
 
 #region Amalgamate Parthanan
-namespace DOL.GS;
+namespace Core.GS;
 
 public class AmalgamateParthanan : GameNpc
 {

@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.Quests;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.Database;
+using Core.GS.Effects;
+using Core.GS.Keeps;
+using Core.GS.Quests;
+using Core.GS.Spells;
+using Core.Language;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.PacketHandler
 {
 	[PacketLib(173, GameClient.eClientVersion.Version173)]
 	public class PacketLib173 : PacketLib172

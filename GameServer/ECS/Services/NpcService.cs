@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using DOL.AI;
-using DOL.AI.Brain;
+using Core.AI;
+using Core.AI.Brain;
 using ECS.Debug;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public static class NpcService
     {

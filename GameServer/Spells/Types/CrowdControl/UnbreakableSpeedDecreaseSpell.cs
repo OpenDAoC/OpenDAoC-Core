@@ -1,8 +1,8 @@
 using System.Text;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.GS.Effects;
+using Core.GS.PacketHandler;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	/// <summary>
 	/// Spell handler for unbreakable speed decreasing spells
