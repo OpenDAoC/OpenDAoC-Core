@@ -1,997 +1,992 @@
 using System;
 using System.Reflection;
 using System.Threading;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
-using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using log4net;
 
-namespace Core.GS.Quests.Hibernia
+namespace Core.GS.Quests;
+
+public class AncestralSecretsLvl48MidQuest : BaseQuest
 {
-	public class AncestralSecretsLvl48MidQuest : BaseQuest
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	private const string questTitle = "Ancestral Secrets";
+	private const int minimumLevel = 48;
+	private const int maximumLevel = 50;
+
+	private static GameNpc OtaYrling = null; // Start NPC + Finish NPC
+	private static GameNpc Jaklyr = null; // 
+	private static GameNpc Longbeard = null; // 
+	private static GameNpc Styr = null; // 
+	
+	private static GameNpc AncestralKeeper = null; //Mob to Kill
+	
+	private static readonly GameLocation keeperLocation = new("Ancestral Keeper", 151, 363016, 310849, 3933);
+	
+	private static AbstractArea keeperArea;
+
+	private static DbItemTemplate beaded_resisting_stone;
+	private static DbItemTemplate stone_pendant;
+	private static DbItemTemplate quest_pendant;
+	
+	// Constructors
+	public AncestralSecretsLvl48MidQuest() : base()
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+	}
 
-		private const string questTitle = "Ancestral Secrets";
-		private const int minimumLevel = 48;
-		private const int maximumLevel = 50;
+	public AncestralSecretsLvl48MidQuest(GamePlayer questingPlayer) : base(questingPlayer)
+	{
+	}
 
-		private static GameNpc OtaYrling = null; // Start NPC + Finish NPC
-		private static GameNpc Jaklyr = null; // 
-		private static GameNpc Longbeard = null; // 
-		private static GameNpc Styr = null; // 
+	public AncestralSecretsLvl48MidQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+	{
+	}
+
+	public AncestralSecretsLvl48MidQuest(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
+	{
+	}
+
+	public override int Level =>
+		// Quest Level
+		minimumLevel;
+
+	[ScriptLoadedEvent]
+	public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
+	{
+		if (!ServerProperties.Properties.LOAD_QUESTS)
+			return;
+
+		#region defineNPCs
 		
-		private static GameNpc AncestralKeeper = null; //Mob to Kill
-		
-		private static readonly GameLocation keeperLocation = new("Ancestral Keeper", 151, 363016, 310849, 3933);
-		
-		private static AbstractArea keeperArea;
+		 var npcs = WorldMgr.GetNPCsByName("Ota Yrling", ERealm.Midgard);
 
-		private static DbItemTemplate beaded_resisting_stone;
-		private static DbItemTemplate stone_pendant;
-		private static DbItemTemplate quest_pendant;
-		
-		// Constructors
-		public AncestralSecretsLvl48MidQuest() : base()
-		{
-		}
+    if (npcs.Length > 0)
+        foreach (var npc in npcs)
+            if (npc.CurrentRegionID == 151 && npc.X == 291615 && npc.Y == 354310)
+            {
+                OtaYrling = npc;
+                break;
+            }
 
-		public AncestralSecretsLvl48MidQuest(GamePlayer questingPlayer) : base(questingPlayer)
-		{
-		}
+    if (OtaYrling == null)
+    {
+        if (log.IsWarnEnabled)
+            log.Warn("Could not find Ota Yrling, creating it ...");
+        OtaYrling = new GameNpc();
+        OtaYrling.Model = 230;
+        OtaYrling.Name = "Ota Yrling";
+        OtaYrling.GuildName = "";
+        OtaYrling.Realm = ERealm.Midgard;
+        OtaYrling.CurrentRegionID = 151;
+        OtaYrling.LoadEquipmentTemplateFromDatabase("95ff9192-4787-4dca-bcbb-7a081d801074");
+        OtaYrling.Size = 49;
+        OtaYrling.Level = 50;
+        OtaYrling.X = 291615;
+        OtaYrling.Y = 354310;
+        OtaYrling.Z = 3866;
+        OtaYrling.Heading = 739;
+        OtaYrling.AddToWorld();
+        if (SAVE_INTO_DATABASE) OtaYrling.SaveIntoDatabase();
+    }
 
-		public AncestralSecretsLvl48MidQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
-		{
-		}
+    npcs = WorldMgr.GetNPCsByName("Jaklyr", ERealm.Midgard);
 
-		public AncestralSecretsLvl48MidQuest(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
-		{
-		}
+    if (npcs.Length > 0)
+        foreach (var npc in npcs)
+            if (npc.CurrentRegionID == 151 && npc.X == 289376 && npc.Y == 304521)
+            {
+                Jaklyr = npc;
+                break;
+            }
 
-		public override int Level =>
-			// Quest Level
-			minimumLevel;
+    if (Jaklyr == null)
+    {
+        if (log.IsWarnEnabled)
+            log.Warn("Could not find Jaklyr , creating it ...");
+        Jaklyr = new GameNpc();
+        Jaklyr.Model = 203;
+        Jaklyr.Name = "Jaklyr";
+        Jaklyr.GuildName = "";
+        Jaklyr.Realm = ERealm.Midgard;
+        Jaklyr.CurrentRegionID = 151;
+        Jaklyr.LoadEquipmentTemplateFromDatabase("MidTownsperson4");
+        Jaklyr.Size = 52;
+        Jaklyr.Level = 60;
+        Jaklyr.X = 289376;
+        Jaklyr.Y = 304521;
+        Jaklyr.Z = 4253;
+        Jaklyr.Heading = 1841;
+        Jaklyr.AddToWorld();
+        if (SAVE_INTO_DATABASE) Jaklyr.SaveIntoDatabase();
+    }
+    // end npc
 
-		[ScriptLoadedEvent]
-		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
-		{
-			if (!ServerProperties.Properties.LOAD_QUESTS)
-				return;
+    npcs = WorldMgr.GetNPCsByName("Longbeard", ERealm.Midgard);
+    if (npcs.Length > 0)
+        foreach (var npc in npcs)
+            if (npc.CurrentRegionID == 151 && npc.X == 290742 && npc.Y == 355471)
+            {
+                Longbeard = npc;
+                break;
+            }
 
-			#region defineNPCs
-			
-			 var npcs = WorldMgr.GetNPCsByName("Ota Yrling", ERealm.Midgard);
+    if (Longbeard == null)
+    {
+        if (log.IsWarnEnabled)
+            log.Warn("Could not find Longbeard, creating it ...");
+        Longbeard = new GameNpc();
+        Longbeard.LoadEquipmentTemplateFromDatabase("be600079-ca29-4093-953a-3ee3aa1552e8");
+        Longbeard.Model = 232;
+        Longbeard.Name = "Longbeard";
+        Longbeard.GuildName = "";
+        Longbeard.Realm = ERealm.Midgard;
+        Longbeard.CurrentRegionID = 151;
+        Longbeard.Size = 53;
+        Longbeard.Level = 50;
+        Longbeard.X = 290742;
+        Longbeard.Y = 355471;
+        Longbeard.Z = 3867;
+        Longbeard.Heading = 1695;
+        Longbeard.VisibleActiveWeaponSlots = 34;
+        Longbeard.MaxSpeedBase = 200;
+        Longbeard.AddToWorld();
+        if (SAVE_INTO_DATABASE) Longbeard.SaveIntoDatabase();
+    }
+    // end npc
 
-        if (npcs.Length > 0)
-            foreach (var npc in npcs)
-                if (npc.CurrentRegionID == 151 && npc.X == 291615 && npc.Y == 354310)
-                {
-	                OtaYrling = npc;
-                    break;
-                }
+    npcs = WorldMgr.GetNPCsByName("Styr", ERealm.Midgard);
+    if (npcs.Length > 0)
+        foreach (var npc in npcs)
+	        if (npc.CurrentRegionID == 151 && npc.X == 290643 && npc.Y == 355275)
+	        {
+		        Styr = npc;
+		        break;
+	        }
 
-        if (OtaYrling == null)
-        {
-            if (log.IsWarnEnabled)
-                log.Warn("Could not find Ota Yrling, creating it ...");
-            OtaYrling = new GameNpc();
-            OtaYrling.Model = 230;
-            OtaYrling.Name = "Ota Yrling";
-            OtaYrling.GuildName = "";
-            OtaYrling.Realm = ERealm.Midgard;
-            OtaYrling.CurrentRegionID = 151;
-            OtaYrling.LoadEquipmentTemplateFromDatabase("95ff9192-4787-4dca-bcbb-7a081d801074");
-            OtaYrling.Size = 49;
-            OtaYrling.Level = 50;
-            OtaYrling.X = 291615;
-            OtaYrling.Y = 354310;
-            OtaYrling.Z = 3866;
-            OtaYrling.Heading = 739;
-            OtaYrling.AddToWorld();
-            if (SAVE_INTO_DATABASE) OtaYrling.SaveIntoDatabase();
-        }
+    if (Styr == null)
+    {
+        if (log.IsWarnEnabled)
+	        log.Warn("Could not find Styr, creating it ...");
+        Styr = new GameNpc();
+        Styr.LoadEquipmentTemplateFromDatabase("dbdb0127-cbbe-42b5-b60a-3cdc27256ae9");
+        Styr.Model = 235;
+        Styr.Name = "Styr";
+        Styr.GuildName = "";
+        Styr.Realm = ERealm.Midgard;
+        Styr.CurrentRegionID = 151;
+        Styr.Size = 51;
+        Styr.Level = 50;
+        Styr.X = 290643;
+        Styr.Y = 355275;
+        Styr.Z = 3867;
+        Styr.Heading = 3725;
+        Styr.VisibleActiveWeaponSlots = 34;
+        Styr.MaxSpeedBase = 200;
+        Styr.AddToWorld();
+        if (SAVE_INTO_DATABASE) Styr.SaveIntoDatabase();
+    }
+    // end npc
+		#endregion
 
-        npcs = WorldMgr.GetNPCsByName("Jaklyr", ERealm.Midgard);
+		#region defineItems
+		beaded_resisting_stone = GameServer.Database.FindObjectByKey<DbItemTemplate>("Beaded Resisting Stones");
 
-        if (npcs.Length > 0)
-            foreach (var npc in npcs)
-                if (npc.CurrentRegionID == 151 && npc.X == 289376 && npc.Y == 304521)
-                {
-	                Jaklyr = npc;
-                    break;
-                }
-
-        if (Jaklyr == null)
-        {
-            if (log.IsWarnEnabled)
-                log.Warn("Could not find Jaklyr , creating it ...");
-            Jaklyr = new GameNpc();
-            Jaklyr.Model = 203;
-            Jaklyr.Name = "Jaklyr";
-            Jaklyr.GuildName = "";
-            Jaklyr.Realm = ERealm.Midgard;
-            Jaklyr.CurrentRegionID = 151;
-            Jaklyr.LoadEquipmentTemplateFromDatabase("MidTownsperson4");
-            Jaklyr.Size = 52;
-            Jaklyr.Level = 60;
-            Jaklyr.X = 289376;
-            Jaklyr.Y = 304521;
-            Jaklyr.Z = 4253;
-            Jaklyr.Heading = 1841;
-            Jaklyr.AddToWorld();
-            if (SAVE_INTO_DATABASE) Jaklyr.SaveIntoDatabase();
-        }
-        // end npc
-
-        npcs = WorldMgr.GetNPCsByName("Longbeard", ERealm.Midgard);
-        if (npcs.Length > 0)
-            foreach (var npc in npcs)
-                if (npc.CurrentRegionID == 151 && npc.X == 290742 && npc.Y == 355471)
-                {
-	                Longbeard = npc;
-                    break;
-                }
-
-        if (Longbeard == null)
-        {
-            if (log.IsWarnEnabled)
-                log.Warn("Could not find Longbeard, creating it ...");
-            Longbeard = new GameNpc();
-            Longbeard.LoadEquipmentTemplateFromDatabase("be600079-ca29-4093-953a-3ee3aa1552e8");
-            Longbeard.Model = 232;
-            Longbeard.Name = "Longbeard";
-            Longbeard.GuildName = "";
-            Longbeard.Realm = ERealm.Midgard;
-            Longbeard.CurrentRegionID = 151;
-            Longbeard.Size = 53;
-            Longbeard.Level = 50;
-            Longbeard.X = 290742;
-            Longbeard.Y = 355471;
-            Longbeard.Z = 3867;
-            Longbeard.Heading = 1695;
-            Longbeard.VisibleActiveWeaponSlots = 34;
-            Longbeard.MaxSpeedBase = 200;
-            Longbeard.AddToWorld();
-            if (SAVE_INTO_DATABASE) Longbeard.SaveIntoDatabase();
-        }
-        // end npc
-
-        npcs = WorldMgr.GetNPCsByName("Styr", ERealm.Midgard);
-        if (npcs.Length > 0)
-	        foreach (var npc in npcs)
-		        if (npc.CurrentRegionID == 151 && npc.X == 290643 && npc.Y == 355275)
-		        {
-			        Styr = npc;
-			        break;
-		        }
-
-        if (Styr == null)
+		quest_pendant = GameServer.Database.FindObjectByKey<DbItemTemplate>("quest_pendant");
+        if (quest_pendant == null)
         {
 	        if (log.IsWarnEnabled)
-		        log.Warn("Could not find Styr, creating it ...");
-	        Styr = new GameNpc();
-	        Styr.LoadEquipmentTemplateFromDatabase("dbdb0127-cbbe-42b5-b60a-3cdc27256ae9");
-	        Styr.Model = 235;
-	        Styr.Name = "Styr";
-	        Styr.GuildName = "";
-	        Styr.Realm = ERealm.Midgard;
-	        Styr.CurrentRegionID = 151;
-	        Styr.Size = 51;
-	        Styr.Level = 50;
-	        Styr.X = 290643;
-	        Styr.Y = 355275;
-	        Styr.Z = 3867;
-	        Styr.Heading = 3725;
-	        Styr.VisibleActiveWeaponSlots = 34;
-	        Styr.MaxSpeedBase = 200;
-	        Styr.AddToWorld();
-	        if (SAVE_INTO_DATABASE) Styr.SaveIntoDatabase();
+		        log.Warn("Could not find Lightly Decorated Pendant, creating it ...");
+	        quest_pendant = new DbItemTemplate();
+	        quest_pendant.Id_nb = "quest_pendant";
+	        quest_pendant.Name = "Lightly Decorated Pendant";
+	        quest_pendant.Level = 50;
+	        quest_pendant.Item_Type = 0;
+	        quest_pendant.Model = 101;
+	        quest_pendant.IsDropable = true;
+	        quest_pendant.IsTradable = false;
+	        quest_pendant.IsIndestructible = true;
+	        quest_pendant.IsPickable = true;
+	        quest_pendant.DPS_AF = 0;
+	        quest_pendant.SPD_ABS = 0;
+	        quest_pendant.Object_Type = 0;
+	        quest_pendant.Hand = 0;
+	        quest_pendant.Type_Damage = 0;
+	        quest_pendant.Quality = 100;
+	        quest_pendant.Weight = 1;
+	        quest_pendant.Description = "A lightly decorated pendant with slight rusted spots.";
+	        if (SAVE_INTO_DATABASE) GameServer.Database.AddObject(quest_pendant);
         }
-        // end npc
-			#endregion
-
-			#region defineItems
-			beaded_resisting_stone = GameServer.Database.FindObjectByKey<DbItemTemplate>("Beaded Resisting Stones");
-
-			quest_pendant = GameServer.Database.FindObjectByKey<DbItemTemplate>("quest_pendant");
-	        if (quest_pendant == null)
-	        {
-		        if (log.IsWarnEnabled)
-			        log.Warn("Could not find Lightly Decorated Pendant, creating it ...");
-		        quest_pendant = new DbItemTemplate();
-		        quest_pendant.Id_nb = "quest_pendant";
-		        quest_pendant.Name = "Lightly Decorated Pendant";
-		        quest_pendant.Level = 50;
-		        quest_pendant.Item_Type = 0;
-		        quest_pendant.Model = 101;
-		        quest_pendant.IsDropable = true;
-		        quest_pendant.IsTradable = false;
-		        quest_pendant.IsIndestructible = true;
-		        quest_pendant.IsPickable = true;
-		        quest_pendant.DPS_AF = 0;
-		        quest_pendant.SPD_ABS = 0;
-		        quest_pendant.Object_Type = 0;
-		        quest_pendant.Hand = 0;
-		        quest_pendant.Type_Damage = 0;
-		        quest_pendant.Quality = 100;
-		        quest_pendant.Weight = 1;
-		        quest_pendant.Description = "A lightly decorated pendant with slight rusted spots.";
-		        if (SAVE_INTO_DATABASE) GameServer.Database.AddObject(quest_pendant);
-	        }
-	        
-	        stone_pendant = GameServer.Database.FindObjectByKey<DbItemTemplate>("stone_pendant");
-	        if (stone_pendant == null)
-	        {
-		        if (log.IsWarnEnabled)
-			        log.Warn("Could not find Stone Pendant, creating it ...");
-		        stone_pendant = new DbItemTemplate();
-		        stone_pendant.Id_nb = "stone_pendant";
-		        stone_pendant.Name = "Stone Pendant";
-		        stone_pendant.Level = 50;
-		        stone_pendant.Item_Type = 0;
-		        stone_pendant.Model = 624;
-		        stone_pendant.IsDropable = true;
-		        stone_pendant.IsTradable = false;
-		        stone_pendant.IsIndestructible = true;
-		        stone_pendant.IsPickable = true;
-		        stone_pendant.DPS_AF = 0;
-		        stone_pendant.SPD_ABS = 0;
-		        stone_pendant.Object_Type = 0;
-		        stone_pendant.Hand = 0;
-		        stone_pendant.Type_Damage = 0;
-		        stone_pendant.Quality = 100;
-		        stone_pendant.Weight = 1;
-		        stone_pendant.Description = "A stone pendant with magical decorative writings.";
-		        if (SAVE_INTO_DATABASE) GameServer.Database.AddObject(stone_pendant);
-	        }
-			#endregion
-
-			const int radius = 1000;
-			var region = WorldMgr.GetRegion(keeperLocation.RegionID);
-			keeperArea = new Area.Circle("cursed crystals", keeperLocation.X, keeperLocation.Y, keeperLocation.Z,
-				radius);
-			keeperArea.CanBroadcast = false;
-			keeperArea.DisplayMessage = false;
-			region.AddArea(keeperArea);
-			keeperArea.RegisterPlayerEnter(PlayerEnterKeeperArea);
-			
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
-			
-			GameEventMgr.AddHandler(OtaYrling, GameObjectEvent.Interact, TalkToOtaYrling);
-			GameEventMgr.AddHandler(OtaYrling, GameLivingEvent.WhisperReceive, TalkToOtaYrling);
-
-			GameEventMgr.AddHandler(Jaklyr, GameObjectEvent.Interact, TalkToJaklyr);
-			GameEventMgr.AddHandler(Jaklyr, GameLivingEvent.WhisperReceive, TalkToJaklyr);
-
-			GameEventMgr.AddHandler(Longbeard, GameObjectEvent.Interact, TalkToLongbeard);
-			GameEventMgr.AddHandler(Longbeard, GameLivingEvent.WhisperReceive, TalkToLongbeard);
-			
-			GameEventMgr.AddHandler(Styr, GameObjectEvent.Interact, TalkToStyr);
-			GameEventMgr.AddHandler(Styr, GameLivingEvent.WhisperReceive, TalkToStyr);
-			
-			/* Now we bring to Ota Yrling the possibility to give this quest to players */
-			OtaYrling?.AddQuestToGive(typeof (AncestralSecretsLvl48MidQuest));
-
-			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initialized");
-		}
-
-		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
-		{
-			//if not loaded, don't worry
-			if (OtaYrling == null)
-				return;
-			
-			// remove handlers
-			keeperArea.UnRegisterPlayerEnter(PlayerEnterKeeperArea);
-			WorldMgr.GetRegion(keeperLocation.RegionID).RemoveArea(keeperArea);
-			
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
-			
-			GameEventMgr.RemoveHandler(OtaYrling, GameObjectEvent.Interact, TalkToOtaYrling);
-			GameEventMgr.RemoveHandler(OtaYrling, GameLivingEvent.WhisperReceive, TalkToOtaYrling);
-
-			GameEventMgr.RemoveHandler(Jaklyr, GameObjectEvent.Interact, TalkToJaklyr);
-			GameEventMgr.RemoveHandler(Jaklyr, GameLivingEvent.WhisperReceive, TalkToJaklyr);
-
-			GameEventMgr.RemoveHandler(Longbeard, GameObjectEvent.Interact, TalkToLongbeard);
-			GameEventMgr.RemoveHandler(Longbeard, GameLivingEvent.WhisperReceive, TalkToLongbeard);
-			
-			GameEventMgr.RemoveHandler(Styr, GameObjectEvent.Interact, TalkToStyr);
-			GameEventMgr.RemoveHandler(Styr, GameLivingEvent.WhisperReceive, TalkToStyr);
-			
-			/* Now we remove to Ota Yrling the possibility to give this quest to players */
-			OtaYrling.RemoveQuestToGive(typeof (AncestralSecretsLvl48MidQuest));
-		}
-
-		protected virtual void CreateAncestralKeeper(GamePlayer player)
-		{
-			foreach (GameNpc npc in WorldMgr.GetNPCsCloseToSpot(151, 363016, 310849, 3933, 8000))
-			{
-				if (npc.Brain is SiNecklaceBossBrain)
-					return;
-			}
-			AncestralKeeper = new SiNecklaceBossNpc();
-			AncestralKeeper.Model = 951;
-			AncestralKeeper.Name = "Ancestral Keeper";
-			AncestralKeeper.GuildName = "";
-			AncestralKeeper.Realm = ERealm.None;
-			AncestralKeeper.Race = 2003;
-			AncestralKeeper.BodyType = (ushort) EBodyType.Elemental;
-			AncestralKeeper.CurrentRegionID = 151;
-			AncestralKeeper.Size = 140;
-			AncestralKeeper.Level = 65;
-			AncestralKeeper.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
-			AncestralKeeper.X = player.X;
-			AncestralKeeper.Y = player.Y;
-			AncestralKeeper.Z = player.Z;
-			AncestralKeeper.MaxSpeedBase = 250;
-			//AncestralKeeper.AddToWorld();
-
-			var brain = new SiNecklaceBossBrain();
-			brain.AggroLevel = 200;
-			brain.AggroRange = 500;
-			AncestralKeeper.SetOwnBrain(brain);
-
-			AncestralKeeper.AddToWorld();
-
-			AncestralKeeper.StartAttack(player);
-			
-			GameEventMgr.AddHandler(AncestralKeeper, GameLivingEvent.Dying, AncestralKeeperDying);
-		}
-		private void AncestralKeeperDying(CoreEvent e, object sender, EventArgs arguments)
-		{
-			var args = (DyingEventArgs) arguments;
         
-			var player = args.Killer as GamePlayer;
+        stone_pendant = GameServer.Database.FindObjectByKey<DbItemTemplate>("stone_pendant");
+        if (stone_pendant == null)
+        {
+	        if (log.IsWarnEnabled)
+		        log.Warn("Could not find Stone Pendant, creating it ...");
+	        stone_pendant = new DbItemTemplate();
+	        stone_pendant.Id_nb = "stone_pendant";
+	        stone_pendant.Name = "Stone Pendant";
+	        stone_pendant.Level = 50;
+	        stone_pendant.Item_Type = 0;
+	        stone_pendant.Model = 624;
+	        stone_pendant.IsDropable = true;
+	        stone_pendant.IsTradable = false;
+	        stone_pendant.IsIndestructible = true;
+	        stone_pendant.IsPickable = true;
+	        stone_pendant.DPS_AF = 0;
+	        stone_pendant.SPD_ABS = 0;
+	        stone_pendant.Object_Type = 0;
+	        stone_pendant.Hand = 0;
+	        stone_pendant.Type_Damage = 0;
+	        stone_pendant.Quality = 100;
+	        stone_pendant.Weight = 1;
+	        stone_pendant.Description = "A stone pendant with magical decorative writings.";
+	        if (SAVE_INTO_DATABASE) GameServer.Database.AddObject(stone_pendant);
+        }
+		#endregion
 
-			if (args.Killer is GameSummonedPet pet)
-			{
-				if(pet != null && pet.Owner != null)
-                {
-					GamePlayer pet_owner = pet.Owner as GamePlayer;
-					if (pet_owner != null && pet_owner.IsAlive)
-					{
-						if (pet_owner.Group != null)
-						{
-							foreach (var gpl in pet_owner.Group.GetPlayersInTheGroup())//gain credit for every one in petowner grp
-							{
-								AdvanceAfterKill(gpl);
-							}
-						}
-						else//player not in grp
-						{
-							AdvanceAfterKill(pet_owner);
-						}
-					}
-				}
-			}
-
-			if (player == null)
-            {
-				AncestralKeeper.Delete();
-				GameEventMgr.RemoveHandler(AncestralKeeper, GameLivingEvent.Dying, AncestralKeeperDying);
-				return;
-			}
-
-			if (player.Group != null)
-			{
-				foreach (var gpl in player.Group.GetPlayersInTheGroup())
-				{
-					AdvanceAfterKill(gpl);
-				}
-			}
-			else
-			{
-				AdvanceAfterKill(player);
-			}
-        
-			GameEventMgr.RemoveHandler(AncestralKeeper, GameLivingEvent.Dying, AncestralKeeperDying);
-			AncestralKeeper.Delete();
-		}
-		private static void AdvanceAfterKill(GamePlayer player)
-		{
-			var quest = player.IsDoingQuest(typeof(AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
-			if (quest is not {Step: 4}) return;
-			RemoveItem(player, quest_pendant);
-			SendMessage(player,"You feel the curse lift and the pendant turn into a powerful chain.", 0, EChatType.CT_System, EChatLoc.CL_SystemWindow);
-			GiveItem(player, stone_pendant);
-			quest.Step = 5;
-		}
+		const int radius = 1000;
+		var region = WorldMgr.GetRegion(keeperLocation.RegionID);
+		keeperArea = new Area.Circle("cursed crystals", keeperLocation.X, keeperLocation.Y, keeperLocation.Z,
+			radius);
+		keeperArea.CanBroadcast = false;
+		keeperArea.DisplayMessage = false;
+		region.AddArea(keeperArea);
+		keeperArea.RegisterPlayerEnter(PlayerEnterKeeperArea);
 		
-		private static void PlayerEnterKeeperArea(CoreEvent e, object sender, EventArgs args)
+		GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+		GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
+		
+		GameEventMgr.AddHandler(OtaYrling, GameObjectEvent.Interact, TalkToOtaYrling);
+		GameEventMgr.AddHandler(OtaYrling, GameLivingEvent.WhisperReceive, TalkToOtaYrling);
+
+		GameEventMgr.AddHandler(Jaklyr, GameObjectEvent.Interact, TalkToJaklyr);
+		GameEventMgr.AddHandler(Jaklyr, GameLivingEvent.WhisperReceive, TalkToJaklyr);
+
+		GameEventMgr.AddHandler(Longbeard, GameObjectEvent.Interact, TalkToLongbeard);
+		GameEventMgr.AddHandler(Longbeard, GameLivingEvent.WhisperReceive, TalkToLongbeard);
+		
+		GameEventMgr.AddHandler(Styr, GameObjectEvent.Interact, TalkToStyr);
+		GameEventMgr.AddHandler(Styr, GameLivingEvent.WhisperReceive, TalkToStyr);
+		
+		/* Now we bring to Ota Yrling the possibility to give this quest to players */
+		OtaYrling?.AddQuestToGive(typeof (AncestralSecretsLvl48MidQuest));
+
+		if (log.IsInfoEnabled)
+			log.Info("Quest \"" + questTitle + "\" initialized");
+	}
+
+	[ScriptUnloadedEvent]
+	public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
+	{
+		//if not loaded, don't worry
+		if (OtaYrling == null)
+			return;
+		
+		// remove handlers
+		keeperArea.UnRegisterPlayerEnter(PlayerEnterKeeperArea);
+		WorldMgr.GetRegion(keeperLocation.RegionID).RemoveArea(keeperArea);
+		
+		GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+		GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
+		
+		GameEventMgr.RemoveHandler(OtaYrling, GameObjectEvent.Interact, TalkToOtaYrling);
+		GameEventMgr.RemoveHandler(OtaYrling, GameLivingEvent.WhisperReceive, TalkToOtaYrling);
+
+		GameEventMgr.RemoveHandler(Jaklyr, GameObjectEvent.Interact, TalkToJaklyr);
+		GameEventMgr.RemoveHandler(Jaklyr, GameLivingEvent.WhisperReceive, TalkToJaklyr);
+
+		GameEventMgr.RemoveHandler(Longbeard, GameObjectEvent.Interact, TalkToLongbeard);
+		GameEventMgr.RemoveHandler(Longbeard, GameLivingEvent.WhisperReceive, TalkToLongbeard);
+		
+		GameEventMgr.RemoveHandler(Styr, GameObjectEvent.Interact, TalkToStyr);
+		GameEventMgr.RemoveHandler(Styr, GameLivingEvent.WhisperReceive, TalkToStyr);
+		
+		/* Now we remove to Ota Yrling the possibility to give this quest to players */
+		OtaYrling.RemoveQuestToGive(typeof (AncestralSecretsLvl48MidQuest));
+	}
+
+	protected virtual void CreateAncestralKeeper(GamePlayer player)
+	{
+		foreach (GameNpc npc in WorldMgr.GetNPCsCloseToSpot(151, 363016, 310849, 3933, 8000))
 		{
-			var aargs = args as AreaEventArgs;
-			var player = aargs?.GameObject as GamePlayer;
-
-			if (player == null)
+			if (npc.Brain is SiNecklaceBossBrain)
 				return;
+		}
+		AncestralKeeper = new SiNecklaceBossNpc();
+		AncestralKeeper.Model = 951;
+		AncestralKeeper.Name = "Ancestral Keeper";
+		AncestralKeeper.GuildName = "";
+		AncestralKeeper.Realm = ERealm.None;
+		AncestralKeeper.Race = 2003;
+		AncestralKeeper.BodyType = (ushort) EBodyType.Elemental;
+		AncestralKeeper.CurrentRegionID = 151;
+		AncestralKeeper.Size = 140;
+		AncestralKeeper.Level = 65;
+		AncestralKeeper.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
+		AncestralKeeper.X = player.X;
+		AncestralKeeper.Y = player.Y;
+		AncestralKeeper.Z = player.Z;
+		AncestralKeeper.MaxSpeedBase = 250;
+		//AncestralKeeper.AddToWorld();
 
-			var quest = player.IsDoingQuest(typeof(AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
+		var brain = new SiNecklaceBossBrain();
+		brain.AggroLevel = 200;
+		brain.AggroRange = 500;
+		AncestralKeeper.SetOwnBrain(brain);
 
-			if (quest is not {Step: 4}) return;
-			
-			var existingCopy = WorldMgr.GetNPCsByName("Ancestral Keeper", ERealm.None);
+		AncestralKeeper.AddToWorld();
 
-			if (existingCopy.Length > 0) return;
+		AncestralKeeper.StartAttack(player);
+		
+		GameEventMgr.AddHandler(AncestralKeeper, GameLivingEvent.Dying, AncestralKeeperDying);
+	}
+	private void AncestralKeeperDying(CoreEvent e, object sender, EventArgs arguments)
+	{
+		var args = (DyingEventArgs) arguments;
+    
+		var player = args.Killer as GamePlayer;
 
-
-			//only try to spawn him once per trigger even if multiple people enter at the same time
-			if (Monitor.TryEnter(spawnLock))
-			{
-				try
+		if (args.Killer is GameSummonedPet pet)
+		{
+			if(pet != null && pet.Owner != null)
+            {
+				GamePlayer pet_owner = pet.Owner as GamePlayer;
+				if (pet_owner != null && pet_owner.IsAlive)
 				{
-					// player near ancestral keeper           
-					SendSystemMessage(player,
-						"The Crystal Breaks and The Ancestral Keeper comes alive!");
-					player.Out.SendMessage("Ancestral Keeper ambushes you!", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
-					quest.CreateAncestralKeeper(player);
+					if (pet_owner.Group != null)
+					{
+						foreach (var gpl in pet_owner.Group.GetPlayersInTheGroup())//gain credit for every one in petowner grp
+						{
+							AdvanceAfterKill(gpl);
+						}
+					}
+					else//player not in grp
+					{
+						AdvanceAfterKill(pet_owner);
+					}
 				}
-				finally
+			}
+		}
+
+		if (player == null)
+        {
+			AncestralKeeper.Delete();
+			GameEventMgr.RemoveHandler(AncestralKeeper, GameLivingEvent.Dying, AncestralKeeperDying);
+			return;
+		}
+
+		if (player.Group != null)
+		{
+			foreach (var gpl in player.Group.GetPlayersInTheGroup())
+			{
+				AdvanceAfterKill(gpl);
+			}
+		}
+		else
+		{
+			AdvanceAfterKill(player);
+		}
+    
+		GameEventMgr.RemoveHandler(AncestralKeeper, GameLivingEvent.Dying, AncestralKeeperDying);
+		AncestralKeeper.Delete();
+	}
+	private static void AdvanceAfterKill(GamePlayer player)
+	{
+		var quest = player.IsDoingQuest(typeof(AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
+		if (quest is not {Step: 4}) return;
+		RemoveItem(player, quest_pendant);
+		SendMessage(player,"You feel the curse lift and the pendant turn into a powerful chain.", 0, EChatType.CT_System, EChatLoc.CL_SystemWindow);
+		GiveItem(player, stone_pendant);
+		quest.Step = 5;
+	}
+	
+	private static void PlayerEnterKeeperArea(CoreEvent e, object sender, EventArgs args)
+	{
+		var aargs = args as AreaEventArgs;
+		var player = aargs?.GameObject as GamePlayer;
+
+		if (player == null)
+			return;
+
+		var quest = player.IsDoingQuest(typeof(AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
+
+		if (quest is not {Step: 4}) return;
+		
+		var existingCopy = WorldMgr.GetNPCsByName("Ancestral Keeper", ERealm.None);
+
+		if (existingCopy.Length > 0) return;
+
+
+		//only try to spawn him once per trigger even if multiple people enter at the same time
+		if (Monitor.TryEnter(spawnLock))
+		{
+			try
+			{
+				// player near ancestral keeper           
+				SendSystemMessage(player,
+					"The Crystal Breaks and The Ancestral Keeper comes alive!");
+				player.Out.SendMessage("Ancestral Keeper ambushes you!", EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
+				quest.CreateAncestralKeeper(player);
+			}
+			finally
+			{
+				Monitor.Exit(spawnLock);
+			}
+		}
+		else
+		{
+			return;
+		}
+	}
+
+	static object spawnLock = new object();
+
+	protected static void TalkToOtaYrling(CoreEvent e, object sender, EventArgs args)
+	{
+		//We get the player from the event arguments and check if he qualifies		
+		GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+		if (player == null)
+			return;
+
+		if(OtaYrling.CanGiveQuest(typeof (AncestralSecretsLvl48MidQuest), player)  <= 0)
+			return;
+
+		//We also check if the player is already doing the quest
+		AncestralSecretsLvl48MidQuest quest = player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
+
+		if (e == GameObjectEvent.Interact)
+		{
+			if (quest != null)
+			{
+				switch (quest.Step)
 				{
-					Monitor.Exit(spawnLock);
+					case 1:
+						OtaYrling.SayTo(player, "Once densely populated by dwarves, this changed with the [impact] of a meteorite. " +
+						                        "Wide areas were devastated and forests were set on fire. Even today, the wounds of this event are still clearly visible.");
+						break;
+					case 2:
+						OtaYrling.SayTo(player, "Hey "+player.Name+", don't listen to Longbeard and his friend Styr, they came from Dellingstad and fled.");
+						
+						int random = Util.Random(0, 3);
+						var message = "";
+						switch (random)
+						{
+							case 0:
+								Longbeard.Emote(EEmote.Laugh);
+								Longbeard.TurnTo(player);
+								Styr.Emote(EEmote.Laugh);
+								message = "Longbeard yells, \"Haha, another idiot trying to help Ota Yrling\".";
+								break;
+							case 1: 
+								Longbeard.Emote(EEmote.Rofl);
+								Longbeard.TurnTo(player);
+								Styr.Emote(EEmote.Laugh);
+								message = $"Longbeard yells, \"Haha, Styr look at this \"{player.PlayerClass.Name}\"";
+								break;
+							case 2: 
+								Longbeard.Emote(EEmote.Laugh);
+								Styr.TurnTo(player);
+								Styr.Emote(EEmote.Rofl);
+								message = $"Styr yells, \"Haha, Longbeard look at this \"{player.PlayerClass.Name}\"";
+								break;
+							case 3: 
+								Longbeard.Emote(EEmote.Laugh);
+								Styr.TurnTo(player);
+								Styr.Emote(EEmote.Laugh);
+								message = "Styr yells, \"Haha, another idiot trying to help Ota Yrling\".";
+								break;
+						}
+						SendMessage(player, message, 0,EChatType.CT_Say, EChatLoc.CL_ChatWindow);
+						break;
+					case 3:
+						OtaYrling.SayTo(player, "Hey "+player.Name+", please visit Jaklyr in Bjarken and tell him that I sent you, he will understand.");
+						break;
+					case 4:
+						OtaYrling.SayTo(player, "Greetings, thank you for your courage, I am with you mentally. Jaklyr might told you how you find the Delling Crater, right?");
+						break;
+					case 5:
+						OtaYrling.SayTo(player, "God dag my friend, I am happy that you did it, please bring this magical pendant to Jaklyr in Bjarken.");
+						break;
+					case 6:
+						OtaYrling.SayTo(player, "Many Years have passed and you made it, not only me but all of Midgard thanks you! You deserved your [reward]!");
+						break;
 				}
 			}
 			else
 			{
-				return;
+				OtaYrling.SayTo(player, "Hello " + player.Name +
+				                        ", I need to talk to you, do you have a moment?\n" +
+				                        "Many Dwarfs can't work in the Delling Crater anymore. " +
+				                        "I heard that there is a creature which kills everything that comes close to it. It is like a [Curse].");
 			}
 		}
-
-		static object spawnLock = new object();
-
-		protected static void TalkToOtaYrling(CoreEvent e, object sender, EventArgs args)
+			// The player whispered to the NPC
+		else if (e == GameLivingEvent.WhisperReceive)
 		{
-			//We get the player from the event arguments and check if he qualifies		
-			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
-			if (player == null)
-				return;
-
-			if(OtaYrling.CanGiveQuest(typeof (AncestralSecretsLvl48MidQuest), player)  <= 0)
-				return;
-
-			//We also check if the player is already doing the quest
-			AncestralSecretsLvl48MidQuest quest = player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
-
-			if (e == GameObjectEvent.Interact)
+			WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+			if (quest == null)
 			{
-				if (quest != null)
+				switch (wArgs.Text)
 				{
-					switch (quest.Step)
-					{
-						case 1:
-							OtaYrling.SayTo(player, "Once densely populated by dwarves, this changed with the [impact] of a meteorite. " +
-							                        "Wide areas were devastated and forests were set on fire. Even today, the wounds of this event are still clearly visible.");
-							break;
-						case 2:
-							OtaYrling.SayTo(player, "Hey "+player.Name+", don't listen to Longbeard and his friend Styr, they came from Dellingstad and fled.");
-							
-							int random = Util.Random(0, 3);
-							var message = "";
-							switch (random)
-							{
-								case 0:
-									Longbeard.Emote(EEmote.Laugh);
-									Longbeard.TurnTo(player);
-									Styr.Emote(EEmote.Laugh);
-									message = "Longbeard yells, \"Haha, another idiot trying to help Ota Yrling\".";
-									break;
-								case 1: 
-									Longbeard.Emote(EEmote.Rofl);
-									Longbeard.TurnTo(player);
-									Styr.Emote(EEmote.Laugh);
-									message = $"Longbeard yells, \"Haha, Styr look at this \"{player.PlayerClass.Name}\"";
-									break;
-								case 2: 
-									Longbeard.Emote(EEmote.Laugh);
-									Styr.TurnTo(player);
-									Styr.Emote(EEmote.Rofl);
-									message = $"Styr yells, \"Haha, Longbeard look at this \"{player.PlayerClass.Name}\"";
-									break;
-								case 3: 
-									Longbeard.Emote(EEmote.Laugh);
-									Styr.TurnTo(player);
-									Styr.Emote(EEmote.Laugh);
-									message = "Styr yells, \"Haha, another idiot trying to help Ota Yrling\".";
-									break;
-							}
-							SendMessage(player, message, 0,EChatType.CT_Say, EChatLoc.CL_ChatWindow);
-							break;
-						case 3:
-							OtaYrling.SayTo(player, "Hey "+player.Name+", please visit Jaklyr in Bjarken and tell him that I sent you, he will understand.");
-							break;
-						case 4:
-							OtaYrling.SayTo(player, "Greetings, thank you for your courage, I am with you mentally. Jaklyr might told you how you find the Delling Crater, right?");
-							break;
-						case 5:
-							OtaYrling.SayTo(player, "God dag my friend, I am happy that you did it, please bring this magical pendant to Jaklyr in Bjarken.");
-							break;
-						case 6:
-							OtaYrling.SayTo(player, "Many Years have passed and you made it, not only me but all of Midgard thanks you! You deserved your [reward]!");
-							break;
-					}
-				}
-				else
-				{
-					OtaYrling.SayTo(player, "Hello " + player.Name +
-					                        ", I need to talk to you, do you have a moment?\n" +
-					                        "Many Dwarfs can't work in the Delling Crater anymore. " +
-					                        "I heard that there is a creature which kills everything that comes close to it. It is like a [Curse].");
+					case "Curse":
+						player.Out.SendQuestSubscribeCommand(OtaYrling, QuestMgr.GetIDForQuestType(typeof(AncestralSecretsLvl48MidQuest)), "Will you help Ota Yrling find [Ancestral Secrets]?");
+						break;
 				}
 			}
-				// The player whispered to the NPC
-			else if (e == GameLivingEvent.WhisperReceive)
+			else
 			{
-				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
-				if (quest == null)
+				switch (wArgs.Text)
 				{
-					switch (wArgs.Text)
-					{
-						case "Curse":
-							player.Out.SendQuestSubscribeCommand(OtaYrling, QuestMgr.GetIDForQuestType(typeof(AncestralSecretsLvl48MidQuest)), "Will you help Ota Yrling find [Ancestral Secrets]?");
-							break;
-					}
-				}
-				else
-				{
-					switch (wArgs.Text)
-					{
-						case "impact":
-							OtaYrling.SayTo(player, player.Name+", we need your help finding [secrets] in the Delling Crater.");
-							break;
-						case "secrets":
-							if (quest.Step == 1)
-							{
-								OtaYrling.SayTo(player, "Please visit Jaklyr in Bjarken and tell him that I se... Oh no Longbeard and his friend Styr...");
-								Longbeard.Yell("Haha, you need help from this "+player.PlayerClass.Name+" Ota Yrling?");
-								Longbeard.Emote(EEmote.Laugh);
-								Styr.Emote(EEmote.Laugh);
-								quest.Step = 2;
-							}
-							break;
-						case "reward":
-							if (quest.Step == 6)
-							{
-								Longbeard.Yell("Hey "+player.Name+", thank you for your help in Delling Crater!");
-								Longbeard.Emote(EEmote.Clap);
-								Styr.Emote(EEmote.Cheer);
-								quest.FinishQuest();
-							}
-							break;
-						case "abort":
-							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
-							break;
-					}
-				}
-			}
-			else if (e == GameLivingEvent.ReceiveItem)
-			{
-				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
-				if (quest != null)
-					if (rArgs.Item.Id_nb == stone_pendant.Id_nb)
-					{
+					case "impact":
+						OtaYrling.SayTo(player, player.Name+", we need your help finding [secrets] in the Delling Crater.");
+						break;
+					case "secrets":
+						if (quest.Step == 1)
+						{
+							OtaYrling.SayTo(player, "Please visit Jaklyr in Bjarken and tell him that I se... Oh no Longbeard and his friend Styr...");
+							Longbeard.Yell("Haha, you need help from this "+player.PlayerClass.Name+" Ota Yrling?");
+							Longbeard.Emote(EEmote.Laugh);
+							Styr.Emote(EEmote.Laugh);
+							quest.Step = 2;
+						}
+						break;
+					case "reward":
 						if (quest.Step == 6)
 						{
-							OtaYrling.SayTo(player, "Many Years have passed and you made it, not only me but all of Midgard thanks you! You have deserved your [reward]!");
+							Longbeard.Yell("Hey "+player.Name+", thank you for your help in Delling Crater!");
+							Longbeard.Emote(EEmote.Clap);
+							Styr.Emote(EEmote.Cheer);
+							quest.FinishQuest();
 						}
-					}
+						break;
+					case "abort":
+						player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
+						break;
+				}
 			}
 		}
-		
-		protected static void TalkToJaklyr(CoreEvent e, object sender, EventArgs args)
+		else if (e == GameLivingEvent.ReceiveItem)
 		{
-			//We get the player from the event arguments and check if he qualifies		
-			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
-			if (player == null)
-				return;
-
-			if(OtaYrling.CanGiveQuest(typeof (AncestralSecretsLvl48MidQuest), player)  <= 0)
-				return;
-
-			//We also check if the player is already doing the quest
-			AncestralSecretsLvl48MidQuest quest = player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
-
-			if (e == GameObjectEvent.Interact)
-			{
-				if (quest != null)
+			ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+			if (quest != null)
+				if (rArgs.Item.Id_nb == stone_pendant.Id_nb)
 				{
-					switch (quest.Step)
+					if (quest.Step == 6)
 					{
-						case 1:
-							Jaklyr.SayTo(player, "Hello Adventurer, great to see more people in our town. Can I help you?");
-							break;
-						case 2:
-							Jaklyr.SayTo(player, "Hey "+player.PlayerClass.Name+", did you hear about two dwarfs who fled from Dellingstad and living now in Aegirhamn? " +
-							                     "Ota Yrling said that they are annoying.");
-							break;
-						case 3:
-							Jaklyr.SayTo(player, "Hey "+player.PlayerClass.Name+", how can I help you? Did someone [sent] you?");
-							break;
-						case 4:
-							Jaklyr.SayTo(player, "I wish you all the strength you need for your adventure!");
-							Jaklyr.SayTo(player,
-								"Please head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards Delling Crater. " +
-								"Search for Ancestral Keeper in the crater and kill it.");
-							break;
-						case 5:
-							Jaklyr.SayTo(player, "You did it! Outstanding my friend! Please hand me the [pendant]!");
-							break;
-						case 6:
-							Jaklyr.SayTo(player, "");
-							break;
+						OtaYrling.SayTo(player, "Many Years have passed and you made it, not only me but all of Midgard thanks you! You have deserved your [reward]!");
 					}
 				}
-				else
+		}
+	}
+	
+	protected static void TalkToJaklyr(CoreEvent e, object sender, EventArgs args)
+	{
+		//We get the player from the event arguments and check if he qualifies		
+		GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+		if (player == null)
+			return;
+
+		if(OtaYrling.CanGiveQuest(typeof (AncestralSecretsLvl48MidQuest), player)  <= 0)
+			return;
+
+		//We also check if the player is already doing the quest
+		AncestralSecretsLvl48MidQuest quest = player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
+
+		if (e == GameObjectEvent.Interact)
+		{
+			if (quest != null)
+			{
+				switch (quest.Step)
 				{
-					Jaklyr.SayTo(player, "");
+					case 1:
+						Jaklyr.SayTo(player, "Hello Adventurer, great to see more people in our town. Can I help you?");
+						break;
+					case 2:
+						Jaklyr.SayTo(player, "Hey "+player.PlayerClass.Name+", did you hear about two dwarfs who fled from Dellingstad and living now in Aegirhamn? " +
+						                     "Ota Yrling said that they are annoying.");
+						break;
+					case 3:
+						Jaklyr.SayTo(player, "Hey "+player.PlayerClass.Name+", how can I help you? Did someone [sent] you?");
+						break;
+					case 4:
+						Jaklyr.SayTo(player, "I wish you all the strength you need for your adventure!");
+						Jaklyr.SayTo(player,
+							"Please head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards Delling Crater. " +
+							"Search for Ancestral Keeper in the crater and kill it.");
+						break;
+					case 5:
+						Jaklyr.SayTo(player, "You did it! Outstanding my friend! Please hand me the [pendant]!");
+						break;
+					case 6:
+						Jaklyr.SayTo(player, "");
+						break;
 				}
 			}
-			// The player whispered to the NPC
-			else if (e == GameLivingEvent.WhisperReceive)
+			else
 			{
-				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
-				if (quest == null)
+				Jaklyr.SayTo(player, "");
+			}
+		}
+		// The player whispered to the NPC
+		else if (e == GameLivingEvent.WhisperReceive)
+		{
+			WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+			if (quest == null)
+			{
+				switch (wArgs.Text)
 				{
-					switch (wArgs.Text)
-					{
-					}
-				}
-				else
-				{
-					switch (wArgs.Text)
-					{
-						case "sent":
-							Jaklyr.SayTo(player, "Oh, Ota Yrling sent you, I know why...\n" +
-							                     "After the meteorite impact, complications arose that did not exist before. The dwarves of Dellingstad were once friendly and helpful. " +
-							                     "Now you have to kill elemental creatures to be accepted. I heard of a creature named Ancestral Keeper. Times are dark at [Delling Crater]. " +
-							                     "I want you to set out and pursue this.");
-							break;
-						case "Delling Crater":
-							if (quest.Step == 3)
-							{
-								if (player.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack,
-									    EInventorySlot.LastBackpack))
-								{
-									Jaklyr.SayTo(player, "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards Delling Crater. " +
-									                     "Search for Ancestral Keeper in the crater and kill it. " +
-									                     "Take this pendant with you as lucky charm!");
-									GiveItem(player, quest_pendant);
-									quest.Step = 4;
-								}
-								else
-								{
-									Jaklyr.SayTo(player, "Please make room in your inventory for a lucky charm!");
-								}
-							}
-							break;
-						case "pendant":
-							RemoveItem(player, stone_pendant);
-							Jaklyr.SayTo(player, "I knew it, the Ancestral Keeper has lost its magic and is now [trapped] in this pendant.");
-							Jaklyr.Emote(EEmote.Cheer);
-							break;
-						case "trapped":
-							if (quest.Step == 5)
-							{
-								Jaklyr.SayTo(player, "Take it back and return to Ota Yrling in Aegirhamn. Bring her the pendant as a gift!");
-								GiveItem(player, stone_pendant);
-								quest.Step = 6;
-							}
-							break;
-					}
 				}
 			}
-			else if (e == GameLivingEvent.ReceiveItem)
+			else
 			{
-				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
-				if (quest != null)
-					if (rArgs.Item.Id_nb == stone_pendant.Id_nb)
-					{
+				switch (wArgs.Text)
+				{
+					case "sent":
+						Jaklyr.SayTo(player, "Oh, Ota Yrling sent you, I know why...\n" +
+						                     "After the meteorite impact, complications arose that did not exist before. The dwarves of Dellingstad were once friendly and helpful. " +
+						                     "Now you have to kill elemental creatures to be accepted. I heard of a creature named Ancestral Keeper. Times are dark at [Delling Crater]. " +
+						                     "I want you to set out and pursue this.");
+						break;
+					case "Delling Crater":
+						if (quest.Step == 3)
+						{
+							if (player.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack,
+								    EInventorySlot.LastBackpack))
+							{
+								Jaklyr.SayTo(player, "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards Delling Crater. " +
+								                     "Search for Ancestral Keeper in the crater and kill it. " +
+								                     "Take this pendant with you as lucky charm!");
+								GiveItem(player, quest_pendant);
+								quest.Step = 4;
+							}
+							else
+							{
+								Jaklyr.SayTo(player, "Please make room in your inventory for a lucky charm!");
+							}
+						}
+						break;
+					case "pendant":
+						RemoveItem(player, stone_pendant);
+						Jaklyr.SayTo(player, "I knew it, the Ancestral Keeper has lost its magic and is now [trapped] in this pendant.");
+						Jaklyr.Emote(EEmote.Cheer);
+						break;
+					case "trapped":
 						if (quest.Step == 5)
 						{
-							Jaklyr.SayTo(player, "I knew it, the Ancestral Keeper has lost its magic and is now [trapped] in this pendant.");
-							Jaklyr.Emote(EEmote.Cheer);
+							Jaklyr.SayTo(player, "Take it back and return to Ota Yrling in Aegirhamn. Bring her the pendant as a gift!");
+							GiveItem(player, stone_pendant);
+							quest.Step = 6;
 						}
-					}
+						break;
+				}
 			}
 		}
-		
-		protected static void TalkToLongbeard(CoreEvent e, object sender, EventArgs args)
+		else if (e == GameLivingEvent.ReceiveItem)
 		{
-			//We get the player from the event arguments and check if he qualifies		
-			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
-			if (player == null)
-				return;
-
-			if(OtaYrling.CanGiveQuest(typeof (AncestralSecretsLvl48MidQuest), player)  <= 0)
-				return;
-
-			//We also check if the player is already doing the quest
-			AncestralSecretsLvl48MidQuest quest = player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
-
-			if (e == GameObjectEvent.Interact)
-			{
-				if (quest != null)
+			ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+			if (quest != null)
+				if (rArgs.Item.Id_nb == stone_pendant.Id_nb)
 				{
-					switch (quest.Step)
+					if (quest.Step == 5)
 					{
-						case 1:
-							Longbeard.SayTo(player, "Yes, I am a Dwarf from Dellingstad, do you have a problem with that?");
-							break;
-						case 2:
-							Longbeard.SayTo(player, "You are kidding me right? Nobody came back, just [don't try] it kid.");
-							break;
-						case 3:
-							Longbeard.SayTo(player, "Hey "+player.PlayerClass.Name+", have you visited Jaklyr in Bjarken yet? I thought you want to go to Delling Crater.");
-							break;
-						case 4:
-							Longbeard.SayTo(player, "I wish you good luck my friend! It's not an easy mission.");
-							break;
-						case 5:
-							Longbeard.SayTo(player, "Wow, I really never thought that you will do it. That's great my friend! Does Jaklyr know about it yet?");
-							break;
-						case 6:
-							Longbeard.SayTo(player, "Congratulations "+player.Name+", you will get your recognition!");
-							break;
+						Jaklyr.SayTo(player, "I knew it, the Ancestral Keeper has lost its magic and is now [trapped] in this pendant.");
+						Jaklyr.Emote(EEmote.Cheer);
 					}
 				}
-				else
+		}
+	}
+	
+	protected static void TalkToLongbeard(CoreEvent e, object sender, EventArgs args)
+	{
+		//We get the player from the event arguments and check if he qualifies		
+		GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+		if (player == null)
+			return;
+
+		if(OtaYrling.CanGiveQuest(typeof (AncestralSecretsLvl48MidQuest), player)  <= 0)
+			return;
+
+		//We also check if the player is already doing the quest
+		AncestralSecretsLvl48MidQuest quest = player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
+
+		if (e == GameObjectEvent.Interact)
+		{
+			if (quest != null)
+			{
+				switch (quest.Step)
 				{
-					Longbeard.SayTo(player, "Hey, do you have a boar pelt? I would buy it.");
+					case 1:
+						Longbeard.SayTo(player, "Yes, I am a Dwarf from Dellingstad, do you have a problem with that?");
+						break;
+					case 2:
+						Longbeard.SayTo(player, "You are kidding me right? Nobody came back, just [don't try] it kid.");
+						break;
+					case 3:
+						Longbeard.SayTo(player, "Hey "+player.PlayerClass.Name+", have you visited Jaklyr in Bjarken yet? I thought you want to go to Delling Crater.");
+						break;
+					case 4:
+						Longbeard.SayTo(player, "I wish you good luck my friend! It's not an easy mission.");
+						break;
+					case 5:
+						Longbeard.SayTo(player, "Wow, I really never thought that you will do it. That's great my friend! Does Jaklyr know about it yet?");
+						break;
+					case 6:
+						Longbeard.SayTo(player, "Congratulations "+player.Name+", you will get your recognition!");
+						break;
 				}
 			}
-			// The player whispered to the NPC
-			else if (e == GameLivingEvent.WhisperReceive)
+			else
 			{
-				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
-				if (quest == null)
+				Longbeard.SayTo(player, "Hey, do you have a boar pelt? I would buy it.");
+			}
+		}
+		// The player whispered to the NPC
+		else if (e == GameLivingEvent.WhisperReceive)
+		{
+			WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+			if (quest == null)
+			{
+				switch (wArgs.Text)
 				{
-					switch (wArgs.Text)
-					{
-					}
-				}
-				else
-				{
-					switch (wArgs.Text)
-					{
-						case "don't try":
-							Longbeard.SayTo(player, "You'll never come back alive. " +
-							                        "There has been a curse since [the crater] has formed.");
-							break;
-						case "the crater":
-							Longbeard.SayTo(player, "Yeah a crater, many years ago a meteorite fell from the sky. It's right next to Dellingstad, that's why its called Delling Crater." +
-							                        "Everyone in Dellingstad started to get weird. They hardly ate anymore and they began hunting certain creatures. Styr and I fled." +
-							                        "If you are intelligent enough, then you shouldn't accept this [challenge].");
-							Longbeard.Emote(EEmote.Induct);
-							break;
-						case "challenge":
-							if (quest.Step == 2)
-							{
-								Longbeard.SayTo(player, "Okay Adventurer, I warned you, but if you need help, then visit Jaklyr in Bjarken, he knows as much as I do about this event.\nHa det!");
-								Longbeard.Emote(EEmote.Wave);
-								quest.Step = 3;
-							}
-							break;
-					}
 				}
 			}
-			else if (e == GameLivingEvent.ReceiveItem)
+			else
 			{
-				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
-				if (quest != null)
+				switch (wArgs.Text)
 				{
+					case "don't try":
+						Longbeard.SayTo(player, "You'll never come back alive. " +
+						                        "There has been a curse since [the crater] has formed.");
+						break;
+					case "the crater":
+						Longbeard.SayTo(player, "Yeah a crater, many years ago a meteorite fell from the sky. It's right next to Dellingstad, that's why its called Delling Crater." +
+						                        "Everyone in Dellingstad started to get weird. They hardly ate anymore and they began hunting certain creatures. Styr and I fled." +
+						                        "If you are intelligent enough, then you shouldn't accept this [challenge].");
+						Longbeard.Emote(EEmote.Induct);
+						break;
+					case "challenge":
+						if (quest.Step == 2)
+						{
+							Longbeard.SayTo(player, "Okay Adventurer, I warned you, but if you need help, then visit Jaklyr in Bjarken, he knows as much as I do about this event.\nHa det!");
+							Longbeard.Emote(EEmote.Wave);
+							quest.Step = 3;
+						}
+						break;
+				}
+			}
+		}
+		else if (e == GameLivingEvent.ReceiveItem)
+		{
+			ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+			if (quest != null)
+			{
+				
+			}
+		}
+	}
+	
+	protected static void TalkToStyr(CoreEvent e, object sender, EventArgs args)
+	{
+		//We get the player from the event arguments and check if he qualifies		
+		GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+		if (player == null)
+			return;
+
+		if(OtaYrling.CanGiveQuest(typeof (AncestralSecretsLvl48MidQuest), player)  <= 0)
+			return;
+
+		//We also check if the player is already doing the quest
+		AncestralSecretsLvl48MidQuest quest = player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
+
+		if (e == GameObjectEvent.Interact)
+		{
+			if (quest != null)
+			{
+				switch (quest.Step)
+				{
+					case 1:
+						Styr.SayTo(player, "Hey Adventurer, I am Styr and you?");
+						break;
+					case 2:
+						Styr.SayTo(player, "Do you really think that this mission is easy?");
+						break;
+					case 3:
+						Styr.SayTo(player, "Jaklyr will indeed help you, but it will be difficult!");
+						break;
+					case 4:
+						Styr.SayTo(player, "Good luck my friend, you will need it for this mission.");
+						break;
+					case 5:
+						Styr.SayTo(player, "Wait, you did it? Does Jaklyr knows about it already?");
+						break;
+					case 6:
+						Styr.SayTo(player, "I'm sorry for my laughter, you are great!");
+						break;
 					
 				}
 			}
-		}
-		
-		protected static void TalkToStyr(CoreEvent e, object sender, EventArgs args)
-		{
-			//We get the player from the event arguments and check if he qualifies		
-			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
-			if (player == null)
-				return;
-
-			if(OtaYrling.CanGiveQuest(typeof (AncestralSecretsLvl48MidQuest), player)  <= 0)
-				return;
-
-			//We also check if the player is already doing the quest
-			AncestralSecretsLvl48MidQuest quest = player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
-
-			if (e == GameObjectEvent.Interact)
+			else
 			{
-				if (quest != null)
-				{
-					switch (quest.Step)
-					{
-						case 1:
-							Styr.SayTo(player, "Hey Adventurer, I am Styr and you?");
-							break;
-						case 2:
-							Styr.SayTo(player, "Do you really think that this mission is easy?");
-							break;
-						case 3:
-							Styr.SayTo(player, "Jaklyr will indeed help you, but it will be difficult!");
-							break;
-						case 4:
-							Styr.SayTo(player, "Good luck my friend, you will need it for this mission.");
-							break;
-						case 5:
-							Styr.SayTo(player, "Wait, you did it? Does Jaklyr knows about it already?");
-							break;
-						case 6:
-							Styr.SayTo(player, "I'm sorry for my laughter, you are great!");
-							break;
-						
-					}
-				}
-				else
-				{
-					Styr.SayTo(player, "Greetings, sometimes I need my walk at the port.");
-				}
-			}
-			// The player whispered to the NPC
-			else if (e == GameLivingEvent.WhisperReceive)
-			{
-				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
-				if (quest == null)
-				{
-					switch (wArgs.Text)
-					{
-					}
-				}
-				else
-				{
-					switch (wArgs.Text)
-					{
-					}
-				}
-			}
-			else if (e == GameLivingEvent.ReceiveItem)
-			{
-				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
-				if (quest != null){}
-
+				Styr.SayTo(player, "Greetings, sometimes I need my walk at the port.");
 			}
 		}
-		
-		public override bool CheckQuestQualification(GamePlayer player)
+		// The player whispered to the NPC
+		else if (e == GameLivingEvent.WhisperReceive)
 		{
-			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) != null)
-				return true;
-
-			if (player.Level < minimumLevel || player.Level > maximumLevel)
-				return false;
-
-			return true;
-		}
-
-		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
-		{
-			AncestralSecretsLvl48MidQuest quest = player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
-
+			WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
 			if (quest == null)
-				return;
-
-			if (response == 0x00)
 			{
-				SendSystemMessage(player, "Good, now go out there and finish your work!");
-			}
-			else
-			{
-				SendSystemMessage(player, "Aborting Quest " + questTitle + ". You can start over again if you want.");
-				quest.AbortQuest();
-			}
-		}
-
-		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
-		{
-			QuestEventArgs qargs = args as QuestEventArgs;
-			if (qargs == null)
-				return;
-
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(AncestralSecretsLvl48MidQuest)))
-				return;
-
-			if (e == GamePlayerEvent.AcceptQuest)
-				CheckPlayerAcceptQuest(qargs.Player, 0x01);
-			else if (e == GamePlayerEvent.DeclineQuest)
-				CheckPlayerAcceptQuest(qargs.Player, 0x00);
-		}
-
-		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
-		{
-			if(OtaYrling.CanGiveQuest(typeof (AncestralSecretsLvl48MidQuest), player)  <= 0)
-				return;
-
-			if(player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) != null)
-				return;
-
-			if (response == 0x00)
-			{
-				OtaYrling.SayTo(player, "Please come back, if you want to help me!");
-			}
-			else
-			{
-				//Check if we can add the quest!
-				if (!OtaYrling.GiveQuest(typeof (AncestralSecretsLvl48MidQuest), player, 1))
-					return;
-			}
-			OtaYrling.SayTo(player, "Thanks "+player.Name+", finally someone helps me!");
-			OtaYrling.SayTo(player, "Once densely populated by dwarves, this changed with the [impact] of a meteorite. " +
-			                        "Wide areas were devastated and forests were set on fire. Even today, the wounds of this event are clearly visible.");
-			
-		}
-
-		//Set quest name
-		public override string Name
-		{
-			get { return questTitle; }
-		}
-
-		// Define Steps
-		public override string Description
-		{
-			get
-			{
-				switch (Step)
+				switch (wArgs.Text)
 				{
-					case 1:
-						return "Speak to Ota Yrling in Aegirhamn.";
-					case 2:
-						return "Face the statements from Longbeard and Styr in Aegirhamn.";
-					case 3:
-						return "Speak to Jaklyr in Bjarken.";
-					case 4:
-						return "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards Delling Crater." +
-						       "Search for Ancestral Keeper in the crater and kill it.";
-					case 5:
-						return "Return the Stone Pendant to Jaklyr in Bjarken.";
-					case 6:
-						return "Return to Ota Yrling in Aegirhamn.";
 				}
-				return base.Description;
 			}
-		}
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-			RemoveItem(m_questPlayer, quest_pendant);
-			RemoveItem(m_questPlayer, stone_pendant);
-		}
-
-		public override void FinishQuest()
-		{
-			if (m_questPlayer.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
-			{
-				if (m_questPlayer.Level >= 49)
-					m_questPlayer.GainExperience(EXpSource.Quest,
-						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 3, false);
-				else
-					m_questPlayer.GainExperience(EXpSource.Quest,
-						(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
-				RemoveItem(m_questPlayer, stone_pendant);
-				GiveItem(m_questPlayer, beaded_resisting_stone);
-				m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
-
-
-				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-			} 
 			else
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!",
-					EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+				switch (wArgs.Text)
+				{
+				}
 			}
+		}
+		else if (e == GameLivingEvent.ReceiveItem)
+		{
+			ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+			if (quest != null){}
+
+		}
+	}
+	
+	public override bool CheckQuestQualification(GamePlayer player)
+	{
+		// if the player is already doing the quest his level is no longer of relevance
+		if (player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) != null)
+			return true;
+
+		if (player.Level < minimumLevel || player.Level > maximumLevel)
+			return false;
+
+		return true;
+	}
+
+	private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+	{
+		AncestralSecretsLvl48MidQuest quest = player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) as AncestralSecretsLvl48MidQuest;
+
+		if (quest == null)
+			return;
+
+		if (response == 0x00)
+		{
+			SendSystemMessage(player, "Good, now go out there and finish your work!");
+		}
+		else
+		{
+			SendSystemMessage(player, "Aborting Quest " + questTitle + ". You can start over again if you want.");
+			quest.AbortQuest();
+		}
+	}
+
+	protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
+	{
+		QuestEventArgs qargs = args as QuestEventArgs;
+		if (qargs == null)
+			return;
+
+		if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(AncestralSecretsLvl48MidQuest)))
+			return;
+
+		if (e == GamePlayerEvent.AcceptQuest)
+			CheckPlayerAcceptQuest(qargs.Player, 0x01);
+		else if (e == GamePlayerEvent.DeclineQuest)
+			CheckPlayerAcceptQuest(qargs.Player, 0x00);
+	}
+
+	private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
+	{
+		if(OtaYrling.CanGiveQuest(typeof (AncestralSecretsLvl48MidQuest), player)  <= 0)
+			return;
+
+		if(player.IsDoingQuest(typeof (AncestralSecretsLvl48MidQuest)) != null)
+			return;
+
+		if (response == 0x00)
+		{
+			OtaYrling.SayTo(player, "Please come back, if you want to help me!");
+		}
+		else
+		{
+			//Check if we can add the quest!
+			if (!OtaYrling.GiveQuest(typeof (AncestralSecretsLvl48MidQuest), player, 1))
+				return;
+		}
+		OtaYrling.SayTo(player, "Thanks "+player.Name+", finally someone helps me!");
+		OtaYrling.SayTo(player, "Once densely populated by dwarves, this changed with the [impact] of a meteorite. " +
+		                        "Wide areas were devastated and forests were set on fire. Even today, the wounds of this event are clearly visible.");
+		
+	}
+
+	//Set quest name
+	public override string Name
+	{
+		get { return questTitle; }
+	}
+
+	// Define Steps
+	public override string Description
+	{
+		get
+		{
+			switch (Step)
+			{
+				case 1:
+					return "Speak to Ota Yrling in Aegirhamn.";
+				case 2:
+					return "Face the statements from Longbeard and Styr in Aegirhamn.";
+				case 3:
+					return "Speak to Jaklyr in Bjarken.";
+				case 4:
+					return "Head to the Caldera in Delling Crater. Follow the road west and at the crossroads go north towards Delling Crater." +
+					       "Search for Ancestral Keeper in the crater and kill it.";
+				case 5:
+					return "Return the Stone Pendant to Jaklyr in Bjarken.";
+				case 6:
+					return "Return to Ota Yrling in Aegirhamn.";
+			}
+			return base.Description;
+		}
+	}
+	public override void AbortQuest()
+	{
+		base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+		RemoveItem(m_questPlayer, quest_pendant);
+		RemoveItem(m_questPlayer, stone_pendant);
+	}
+
+	public override void FinishQuest()
+	{
+		if (m_questPlayer.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
+		{
+			if (m_questPlayer.Level >= 49)
+				m_questPlayer.GainExperience(EXpSource.Quest,
+					(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 3, false);
+			else
+				m_questPlayer.GainExperience(EXpSource.Quest,
+					(m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel) / 2, false);
+			RemoveItem(m_questPlayer, stone_pendant);
+			GiveItem(m_questPlayer, beaded_resisting_stone);
+			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0, 0, 121, 41, Util.Random(50)), "You receive {0} as a reward.");
+
+
+			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+		} 
+		else
+		{
+			m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!",
+				EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 	}
 }

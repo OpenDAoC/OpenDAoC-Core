@@ -1,6 +1,7 @@
 using System;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.Quests;
 using Core.GS.ServerProperties;
 
 namespace Core.GS.AI.Brains;
@@ -46,7 +47,7 @@ public class MorganaBrain : StandardMobBrain
 			{
 				if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
 				{
-					GS.Quests.Albion.AcademyLvl50EpicAlbQuest quest = player.IsDoingQuest(typeof(GS.Quests.Albion.AcademyLvl50EpicAlbQuest)) as GS.Quests.Albion.AcademyLvl50EpicAlbQuest;
+					AcademyLvl50EpicAlbQuest quest = player.IsDoingQuest(typeof(AcademyLvl50EpicAlbQuest)) as AcademyLvl50EpicAlbQuest;
 					if (quest != null && quest.Step == 1)
 					{
 						SpawnDemons = true;

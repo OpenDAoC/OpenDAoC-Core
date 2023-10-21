@@ -1,10 +1,7 @@
 using System;
 using System.Reflection;
 using System.Threading;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -12,7 +9,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using log4net;
 
-namespace Core.GS.Quests.Albion;
+namespace Core.GS.Quests;
 
 public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
 {

@@ -1,152 +1,150 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 
-namespace Core.GS.Quests
+namespace Core.GS.Quests;
+
+public class CaptureMission : AMission
 {
-	public class CaptureMission : AMission
+	private AGameKeep m_keep = null;
+
+	public CaptureMission(ECaptureType type, object owner, string hint)
+		: base(owner)
 	{
-		private AGameKeep m_keep = null;
+		ERealm realm = ERealm.None;
+		if (owner is GroupUtil)
+			realm = (owner as GroupUtil).Leader.Realm;
+		else if (owner is GamePlayer)
+			realm = (owner as GamePlayer).Realm;
 
-		public CaptureMission(ECaptureType type, object owner, string hint)
-			: base(owner)
+		ArrayList list = new ArrayList();
+
+		switch (type)
 		{
-			ERealm realm = ERealm.None;
-			if (owner is GroupUtil)
-				realm = (owner as GroupUtil).Leader.Realm;
-			else if (owner is GamePlayer)
-				realm = (owner as GamePlayer).Realm;
-
-			ArrayList list = new ArrayList();
-
-			switch (type)
-			{
-				case ECaptureType.Tower:
-					{
-						ICollection<AGameKeep> keeps;
-						if (owner is GroupUtil)
-							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
-						else if (owner is GamePlayer)
-							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
-						else keeps = new List<AGameKeep>();
-
-						foreach (AGameKeep keep in keeps)
-						{
-							if (keep.IsPortalKeep)
-								continue;
-							if (keep is GameKeepTower && keep.Realm != realm)
-								list.Add(keep);
-						}
-						break;
-					}
-				case ECaptureType.Keep:
-					{
-						ICollection<AGameKeep> keeps;
-						if (owner is GroupUtil)
-							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
-						else if (owner is GamePlayer)
-							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
-						else keeps = new List<AGameKeep>();
-
-						foreach (AGameKeep keep in keeps)
-						{
-							if (keep.IsPortalKeep)
-								continue;
-							if (keep is GameKeep && keep.Realm != realm)
-								list.Add(keep);
-						}
-						break;
-					}
-			}
-
-			if (list.Count > 0)
-			{
-				if (hint != "")
+			case ECaptureType.Tower:
 				{
-					foreach (AGameKeep keep in list)
+					ICollection<AGameKeep> keeps;
+					if (owner is GroupUtil)
+						keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
+					else if (owner is GamePlayer)
+						keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
+					else keeps = new List<AGameKeep>();
+
+					foreach (AGameKeep keep in keeps)
 					{
-						if (keep.Name.ToLower().Contains(hint))
-						{
-							m_keep = keep;
-							break;
-						}
+						if (keep.IsPortalKeep)
+							continue;
+						if (keep is GameKeepTower && keep.Realm != realm)
+							list.Add(keep);
 					}
+					break;
 				}
+			case ECaptureType.Keep:
+				{
+					ICollection<AGameKeep> keeps;
+					if (owner is GroupUtil)
+						keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
+					else if (owner is GamePlayer)
+						keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
+					else keeps = new List<AGameKeep>();
 
-				if (m_keep == null)
-					m_keep = list[Util.Random(list.Count - 1)] as AGameKeep;
-			}
-
-			GameEventMgr.AddHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
+					foreach (AGameKeep keep in keeps)
+					{
+						if (keep.IsPortalKeep)
+							continue;
+						if (keep is GameKeep && keep.Realm != realm)
+							list.Add(keep);
+					}
+					break;
+				}
 		}
 
-		public override void Notify(CoreEvent e, object sender, EventArgs args)
+		if (list.Count > 0)
 		{
-			if (e != KeepEvent.KeepTaken)
-				return;
-
-			KeepEventArgs kargs = args as KeepEventArgs;
-
-			if (kargs.Keep != m_keep)
-				return;
-
-			GamePlayer testPlayer = null;
-			if (m_owner is GamePlayer)
-				testPlayer = m_owner as GamePlayer;
-			else if (m_owner is GroupUtil)
-				testPlayer = (m_owner as GroupUtil).Leader;
-
-			if (testPlayer != null)
+			if (hint != "")
 			{
-				foreach (AbstractArea area in testPlayer.CurrentAreas)
+				foreach (AGameKeep keep in list)
 				{
-					if (area is KeepArea && (area as KeepArea).Keep == m_keep)
+					if (keep.Name.ToLower().Contains(hint))
 					{
-						FinishMission();
+						m_keep = keep;
+						break;
 					}
 				}
 			}
 
-			ExpireMission();
+			if (m_keep == null)
+				m_keep = list[Util.Random(list.Count - 1)] as AGameKeep;
 		}
 
-		public override void FinishMission()
-		{
-			base.FinishMission();
-			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
-		}
+		GameEventMgr.AddHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
+	}
 
-		public override void ExpireMission()
-		{
-			base.ExpireMission();
-			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
-		}
+	public override void Notify(CoreEvent e, object sender, EventArgs args)
+	{
+		if (e != KeepEvent.KeepTaken)
+			return;
 
-		public override string Description
+		KeepEventArgs kargs = args as KeepEventArgs;
+
+		if (kargs.Keep != m_keep)
+			return;
+
+		GamePlayer testPlayer = null;
+		if (m_owner is GamePlayer)
+			testPlayer = m_owner as GamePlayer;
+		else if (m_owner is GroupUtil)
+			testPlayer = (m_owner as GroupUtil).Leader;
+
+		if (testPlayer != null)
 		{
-			get
+			foreach (AbstractArea area in testPlayer.CurrentAreas)
 			{
-				if (m_keep == null)
-					return "Keep is null when trying to send the description";
-				else return "Capture " + m_keep.Name;
+				if (area is KeepArea && (area as KeepArea).Keep == m_keep)
+				{
+					FinishMission();
+				}
 			}
 		}
 
-		public override long RewardRealmPoints
+		ExpireMission();
+	}
+
+	public override void FinishMission()
+	{
+		base.FinishMission();
+		GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
+	}
+
+	public override void ExpireMission()
+	{
+		base.ExpireMission();
+		GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
+	}
+
+	public override string Description
+	{
+		get
 		{
-			get
-			{
-				if (m_keep is GameKeep)
-					return 1500;
-				else if (m_keep is GameKeepTower)
-					return 250 + (m_keep.Level * 50);
-				else return 0;
-			}
+			if (m_keep == null)
+				return "Keep is null when trying to send the description";
+			else return "Capture " + m_keep.Name;
+		}
+	}
+
+	public override long RewardRealmPoints
+	{
+		get
+		{
+			if (m_keep is GameKeep)
+				return 1500;
+			else if (m_keep is GameKeepTower)
+				return 250 + (m_keep.Level * 50);
+			else return 0;
 		}
 	}
 }
