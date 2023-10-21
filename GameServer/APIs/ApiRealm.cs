@@ -4,7 +4,7 @@ using Core.GS.Keeps;
 using Core.GS.ServerRules;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Core.GS.API;
+namespace Core.GS.APIs;
 
 public class ApiRealm
 {

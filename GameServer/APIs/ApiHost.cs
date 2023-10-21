@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 
-namespace Core.GS.API
+namespace Core.GS.APIs
 {
     internal class ApiHost
     {

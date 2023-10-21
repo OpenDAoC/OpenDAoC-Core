@@ -12,7 +12,7 @@ using Core.Base.Enums;
 using Core.Config;
 using Core.Database;
 using Core.Events;
-using Core.GS.API;
+using Core.GS.APIs;
 using Core.GS.Behaviour;
 using Core.GS.DatabaseUpdate;
 using Core.GS.Housing;

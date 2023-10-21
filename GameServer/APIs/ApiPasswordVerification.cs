@@ -1,6 +1,6 @@
 ﻿using Core.GS.ServerProperties;
 
-namespace Core.GS.API;
+namespace Core.GS.APIs;
 
 public class ApiPasswordVerification
 {

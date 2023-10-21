@@ -5,7 +5,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Core.GS.API;
+namespace Core.GS.APIs;
 
 public class ApiPlayer
 {
