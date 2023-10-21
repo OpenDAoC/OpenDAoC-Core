@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
@@ -82,7 +63,7 @@ namespace DOL.GS.Movement
 		{
 			log.DebugFormat("Updating path {0} in path cache.", pathID);
 
-			var dbpath = DOLDB<DbPath>.SelectObject(DB.Column("PathID").IsEqualTo(pathID));
+			var dbpath = CoreDb<DbPath>.SelectObject(DB.Column("PathID").IsEqualTo(pathID));
 			if (dbpath != null)
 			{
 				if (m_pathCache.ContainsKey(pathID))
@@ -95,7 +76,7 @@ namespace DOL.GS.Movement
 				}
 			}
 
-			var pathPoints = DOLDB<DbPathPoint>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID));
+			var pathPoints = CoreDb<DbPathPoint>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID));
 			SortedList<int, DbPathPoint> pList = new SortedList<int, DbPathPoint>();
 			if (m_pathpointCache.ContainsKey(pathID))
 			{
@@ -191,13 +172,13 @@ namespace DOL.GS.Movement
 
 			// First delete any path with this pathID from the database
 
-			var dbpath = DOLDB<DbPath>.SelectObject(DB.Column("PathID").IsEqualTo(pathID));
+			var dbpath = CoreDb<DbPath>.SelectObject(DB.Column("PathID").IsEqualTo(pathID));
 			if (dbpath != null)
 			{
 				GameServer.Database.DeleteObject(dbpath);
 			}
 
-			GameServer.Database.DeleteObject(DOLDB<DbPathPoint>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID)));
+			GameServer.Database.DeleteObject(CoreDb<DbPathPoint>.SelectObjects(DB.Column("PathID").IsEqualTo(pathID)));
 
 			// Now add this path and iterate through the PathPoint linked list to add all the path points
 

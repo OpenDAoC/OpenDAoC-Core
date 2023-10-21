@@ -17,7 +17,7 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<AttackComponent> list = EntityManager.UpdateAndGetAll<AttackComponent>(EntityManager.EntityType.AttackComponent, out int lastValidIndex);
+            List<AttackComponent> list = EntityManager.UpdateAndGetAll<AttackComponent>(EEntityType.AttackComponent, out int lastValidIndex);
 
             Parallel.For(0, lastValidIndex + 1, i =>
             {
@@ -36,7 +36,7 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, attackComponent, attackComponent.owner);
+                    ServiceUtil.HandleServiceException(e, SERVICE_NAME, attackComponent, attackComponent.owner);
                 }
             });
 

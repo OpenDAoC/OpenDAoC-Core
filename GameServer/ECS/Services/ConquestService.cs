@@ -6,12 +6,12 @@ namespace DOL.GS
     {
         private const string SERVICE_NAME = "ConquestService";
 
-        public static ConquestManager ConquestManager;
+        public static ConquestMgr ConquestManager;
         private static long lastCheckTick;
 
         static ConquestService()
         {
-            ConquestManager = new ConquestManager();
+            ConquestManager = new ConquestMgr();
             ConquestManager.StartConquest();
         }
 

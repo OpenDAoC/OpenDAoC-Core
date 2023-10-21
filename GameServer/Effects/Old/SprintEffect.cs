@@ -1,36 +1,14 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.GS.RealmAbilities;
 using DOL.Language;
 
 namespace DOL.GS.Effects
 {
-	/// <summary>
-	/// The helper class for sprint ability
-	/// </summary>
 	public sealed class SprintEffect : StaticEffect, IGameEffect
 	{
 		/// <summary>
 		/// The timer that reduce the endurance every interval
 		/// </summary>
-		ECSGameTimer m_tickTimer;
+		EcsGameTimer m_tickTimer;
 
 		/// <summary>
 		/// The amount of timer ticks player was not moving
@@ -48,8 +26,8 @@ namespace DOL.GS.Effects
 				m_tickTimer.Stop();
 				m_tickTimer = null;
 			}
-			m_tickTimer = new ECSGameTimer(target);
-			m_tickTimer.Callback = new ECSGameTimer.ECSTimerCallback(PulseCallback);
+			m_tickTimer = new EcsGameTimer(target);
+			m_tickTimer.Callback = new EcsGameTimer.EcsTimerCallback(PulseCallback);
 			m_tickTimer.Start(1);
             target.StartEnduranceRegeneration();
 		}
@@ -72,7 +50,7 @@ namespace DOL.GS.Effects
 		/// </summary>
 		/// <param name="callingTimer"></param>
 		/// <returns></returns>
-		public int PulseCallback(ECSGameTimer callingTimer)
+		public int PulseCallback(EcsGameTimer callingTimer)
 		{
 			int nextInterval;
 
@@ -92,7 +70,7 @@ namespace DOL.GS.Effects
 				{
 					int amount = 5;
 
-					AtlasOF_LongWindAbility ra = m_owner.GetAbility<AtlasOF_LongWindAbility>();
+					OfRaLongWindAbility ra = m_owner.GetAbility<OfRaLongWindAbility>();
 					if (ra != null)
 						amount = 5 - ra.GetAmountForLevel(ra.Level);
 

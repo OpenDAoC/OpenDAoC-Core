@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Database;
@@ -25,9 +6,6 @@ using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// This class represents an inventory item
-	/// </summary>
 	public class GuildBannerItem : GameInventoryItem
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -40,7 +18,7 @@ namespace DOL.GS
 		}
 
 
-		private Guild m_ownerGuild = null;
+		private GuildUtil m_ownerGuild = null;
 		private GamePlayer m_summonPlayer = null;
 		private eStatus m_status = eStatus.Active;
 
@@ -64,7 +42,7 @@ namespace DOL.GS
 		/// <summary>
 		/// What guild owns this banner
 		/// </summary>
-		public Guild OwnerGuild
+		public GuildUtil OwnerGuild
 		{
 			get { return m_ownerGuild; }
 			set { m_ownerGuild = value; }
@@ -94,21 +72,21 @@ namespace DOL.GS
 			player.Inventory.RemoveItem(this);
 
 			int trophyModel = 0;
-			eRealm realm = eRealm.None;
+			ERealm realm = ERealm.None;
 
 			switch (Model)
 			{
 				case 3223:
 					trophyModel = 3359;
-					realm = eRealm.Albion;
+					realm = ERealm.Albion;
 					break;
 				case 3224:
 					trophyModel = 3361;
-					realm = eRealm.Midgard;
+					realm = ERealm.Midgard;
 					break;
 				case 3225:
 					trophyModel = 3360;
-					realm = eRealm.Hibernia;
+					realm = ERealm.Hibernia;
 					break;
 			}
 
@@ -123,8 +101,8 @@ namespace DOL.GS
 
 				GameServer.Database.AddObject(template);
 				GameInventoryItem trophy = new GameInventoryItem(template);
-                player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, trophy);
-				OwnerGuild.SendMessageToGuildMembers(player.Name + " of " + GlobalConstants.RealmToName(player.Realm) + " has captured your guild banner!", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+                player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, trophy);
+				OwnerGuild.SendMessageToGuildMembers(player.Name + " of " + GlobalConstants.RealmToName(player.Realm) + " has captured your guild banner!", EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 				OwnerGuild.GuildBannerLostTime = DateTime.Now;
 			}
 			else
@@ -134,7 +112,7 @@ namespace DOL.GS
 				// A friendly player has picked up the banner.
 				if (OwnerGuild != null)
 				{
-					OwnerGuild.SendMessageToGuildMembers(player.Name + " has recovered your guild banner!", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+					OwnerGuild.SendMessageToGuildMembers(player.Name + " has recovered your guild banner!", EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 				}
 
 				if (SummonPlayer != null)
@@ -184,7 +162,7 @@ namespace DOL.GS
 				{
 					// banner was dropped and not picked up, must be re-purchased
 					OwnerGuild.GuildBanner = false;
-					OwnerGuild.SendMessageToGuildMembers("Your guild banner has been lost!", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+					OwnerGuild.SendMessageToGuildMembers("Your guild banner has been lost!", EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 					OwnerGuild = null;
 				}
 			}

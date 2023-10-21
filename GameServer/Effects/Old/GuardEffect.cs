@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.Events;
@@ -26,9 +7,6 @@ using DOL.Language;
 
 namespace DOL.GS.Effects
 {
-	/// <summary>
-	/// The helper class for the guard ability
-	/// </summary>
 	public class GuardEffect : StaticEffect, IGameEffect
 	{
 		/// <summary>
@@ -60,7 +38,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// Holds player group
 		/// </summary>
-		private Group m_playerGroup;
+		private GroupUtil m_playerGroup;
 
 		/// <summary>
 		/// Creates a new guard effect
@@ -84,7 +62,7 @@ namespace DOL.GS.Effects
 				m_playerGroup = ((GamePlayer)guardSource).Group;
 				if (m_playerGroup == null) return;
 				if (m_playerGroup != guardTarget.Group)	return;
-				GameEventMgr.AddHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
+				GameEventMgr.AddHandler(m_playerGroup, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback));
 			}
 
 			m_guardSource = guardSource;
@@ -94,16 +72,16 @@ namespace DOL.GS.Effects
 			if (!guardSource.IsWithinRadius(guardTarget, GuardAbilityHandler.GUARD_DISTANCE))
 			{
 				if(guardSource is GamePlayer)
-					((GamePlayer)guardSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)guardSource).Client, "Effects.GuardEffect.YouAreNowGuardingYBut", guardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)guardSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)guardSource).Client, "Effects.GuardEffect.YouAreNowGuardingYBut", guardTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				if(guardSource is GamePlayer&&guardTarget is GamePlayer)
-					((GamePlayer)guardTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)guardTarget).Client, "Effects.GuardEffect.XIsNowGuardingYouBut", guardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)guardTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)guardTarget).Client, "Effects.GuardEffect.XIsNowGuardingYouBut", guardSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else
 			{
 				if(guardSource is GamePlayer)
-					((GamePlayer)guardSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)guardSource).Client, "Effects.GuardEffect.YouAreNowGuardingY", guardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)guardSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)guardSource).Client, "Effects.GuardEffect.YouAreNowGuardingY", guardTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				if(guardSource is GamePlayer&&guardTarget is GamePlayer)
-					((GamePlayer)guardTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)guardTarget).Client, "Effects.GuardEffect.XIsNowGuardingYou", guardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)guardTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)guardTarget).Client, "Effects.GuardEffect.XIsNowGuardingYou", guardSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			
 			m_guardSource.EffectList.Add(this);
@@ -116,7 +94,7 @@ namespace DOL.GS.Effects
 		/// <param name="e"></param>
 		/// <param name="sender">The group</param>
 		/// <param name="args"></param>
-		protected void GroupDisbandCallback(DOLEvent e, object sender, EventArgs args)
+		protected void GroupDisbandCallback(CoreEvent e, object sender, EventArgs args)
 		{
 			MemberDisbandedEventArgs eArgs = args as MemberDisbandedEventArgs;
 			if (eArgs == null) return;
@@ -133,16 +111,16 @@ namespace DOL.GS.Effects
 		{
 			if(m_guardSource is GamePlayer && m_guardTarget is GamePlayer)
 			{
-				GameEventMgr.RemoveHandler(m_playerGroup, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
+				GameEventMgr.RemoveHandler(m_playerGroup, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback));
 				m_playerGroup = null;
 			}
 			m_guardSource.EffectList.Remove(this);
 			m_guardTarget.EffectList.Remove(this);
 
 			if(m_guardSource is GamePlayer)
-				((GamePlayer)m_guardSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_guardSource).Client, "Effects.GuardEffect.YourNoLongerGuardingY", m_guardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				((GamePlayer)m_guardSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_guardSource).Client, "Effects.GuardEffect.YourNoLongerGuardingY", m_guardTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			if(m_guardSource is GamePlayer&&m_guardTarget is GamePlayer)
-				((GamePlayer)m_guardTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_guardTarget).Client, "Effects.GuardEffect.XNoLongerGuardingYoy", m_guardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				((GamePlayer)m_guardTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_guardTarget).Client, "Effects.GuardEffect.XNoLongerGuardingYoy", m_guardSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>
@@ -177,7 +155,7 @@ namespace DOL.GS.Effects
 		{
 			get
 			{
-				if (m_owner is GameNPC)
+				if (m_owner is GameNpc)
 					return 1001;
 				return 412;
 			}

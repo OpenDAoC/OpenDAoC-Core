@@ -74,21 +74,21 @@ namespace DOL.GS.Scripts
         private static int PvETickTime = 7200;
 
         [GameServerStartedEvent]
-        public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)
+        public static void OnServerStart(CoreEvent e, object sender, EventArgs arguments)
         {
             Initialize();
-            GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
+            GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEntered));
             
         }
 
         [GameServerStoppedEvent]
-        public static void OnServerStopped(DOLEvent e, object sender, EventArgs arguments)
+        public static void OnServerStopped(CoreEvent e, object sender, EventArgs arguments)
         {
             // Should be changed to keep data saved in DB for restart
             ClearPvEZones();
             ClearRvRZones();
 
-            GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEntered));
+            GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEntered));
         }
 
         public static void Initialize()
@@ -111,46 +111,46 @@ namespace DOL.GS.Scripts
         public static void GetZones()
         {
             // Get Albion ZoneID's
-            foreach (DbZone zone in DOLDB<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(ALBION_CLASSIC_ID)))
+            foreach (DbZone zone in CoreDb<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(ALBION_CLASSIC_ID)))
             {
                 if (!albionRvRZones.Contains(zone.ZoneID))
                 {
                     albionClassicZones.Add(zone.ZoneID);
                 }
             }
-            foreach (DbZone zone in DOLDB<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(ALBION_SI_ID)))
+            foreach (DbZone zone in CoreDb<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(ALBION_SI_ID)))
             {
                 albionSIZones.Add(zone.ZoneID);
             }
 
             // Get Midgard ZoneID's
-            foreach (DbZone zone in DOLDB<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(MIDGARD_CLASSIC_ID)))
+            foreach (DbZone zone in CoreDb<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(MIDGARD_CLASSIC_ID)))
             {
                 if (!midgardRvRZones.Contains(zone.ZoneID))
                 {
                     midgardClassicZones.Add(zone.ZoneID);
                 }
             }
-            foreach (DbZone zone in DOLDB<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(MIDGARD_SI_ID)))
+            foreach (DbZone zone in CoreDb<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(MIDGARD_SI_ID)))
             {
                 midgardSIZones.Add(zone.ZoneID);
             }
 
             // Get Hibernia ZoneID's
-            foreach (DbZone zone in DOLDB<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(HIBERNIA_CLASSIC_ID)))
+            foreach (DbZone zone in CoreDb<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(HIBERNIA_CLASSIC_ID)))
             {
                 if (!hiberniaRvRZones.Contains(zone.ZoneID))
                 {
                     hiberniaClassicZones.Add(zone.ZoneID);
                 }
             }
-            foreach (DbZone zone in DOLDB<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(HIBERNIA_SI_ID)))
+            foreach (DbZone zone in CoreDb<DbZone>.SelectObjects(DB.Column("RegionID").IsEqualTo(HIBERNIA_SI_ID)))
             {
                 hiberniaSIZones.Add(zone.ZoneID);
             }
         }
 
-        public static void PlayerEntered(DOLEvent e, object sender, EventArgs arguments)
+        public static void PlayerEntered(CoreEvent e, object sender, EventArgs arguments)
         {
             TellPlayer(sender as GamePlayer);
         }
@@ -163,12 +163,12 @@ namespace DOL.GS.Scripts
 
             GetNextPvEZones();
 
-            albDBZone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZone));
-            albDBZoneSI = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZoneSI));
-            midDBZone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZone));
-            midDBZoneSI = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZoneSI));
-            hibDBZone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZone));
-            hibDBZoneSI = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZoneSI));
+            albDBZone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZone));
+            albDBZoneSI = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZoneSI));
+            midDBZone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZone));
+            midDBZoneSI = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZoneSI));
+            hibDBZone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZone));
+            hibDBZoneSI = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZoneSI));
 
             // Set XP Bonuses in DB
             albDBZone.Experience = PvEExperienceBonusAmount;
@@ -216,7 +216,7 @@ namespace DOL.GS.Scripts
                 case 1:
                     foreach (int i in albionRvRZones)
                     {
-                        DbZone zone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
+                        DbZone zone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
                         zone.Experience = RvRExperienceBonusAmount;
                         zone.Realmpoints = RPBonusAmount;
                         zone.Bountypoints = BPBonusAmount;
@@ -230,7 +230,7 @@ namespace DOL.GS.Scripts
                 case 2:
                     foreach (int i in midgardRvRZones)
                     {
-                        DbZone zone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
+                        DbZone zone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
                         zone.Experience = RvRExperienceBonusAmount;
                         zone.Realmpoints = RPBonusAmount;
                         zone.Bountypoints = BPBonusAmount;
@@ -244,7 +244,7 @@ namespace DOL.GS.Scripts
                 case 3:
                     foreach (int i in hiberniaRvRZones)
                     {
-                        DbZone zone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
+                        DbZone zone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
                         zone.Experience = RvRExperienceBonusAmount;
                         zone.Realmpoints = RPBonusAmount;
                         zone.Bountypoints = BPBonusAmount;
@@ -453,7 +453,7 @@ namespace DOL.GS.Scripts
 
         private static void TellPlayer(GamePlayer player)
         {
-            player.Out.SendMessage("Bonus zones updated.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage("Bonus zones updated.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
         }
 
         private static string GetLevelRange(int zoneID)
@@ -593,9 +593,9 @@ namespace DOL.GS.Scripts
             return temp;
         }
 
-        public static eRealm GetCurrentBonusRealm()
+        public static ERealm GetCurrentBonusRealm()
         {
-            return (eRealm) currentRvRRealm;
+            return (ERealm) currentRvRRealm;
         }
 
         private static void ClearRvRZones()
@@ -606,7 +606,7 @@ namespace DOL.GS.Scripts
                 case 1:
                     foreach (int i in albionRvRZones)
                     {
-                        DbZone zone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
+                        DbZone zone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
                         zone.Experience = 0;
                         zone.Realmpoints = 0;
                         zone.Bountypoints = 0;
@@ -620,7 +620,7 @@ namespace DOL.GS.Scripts
                 case 2:
                     foreach (int i in midgardRvRZones)
                     {
-                        DbZone zone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
+                        DbZone zone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
                         zone.Experience = 0;
                         zone.Realmpoints = 0;
                         zone.Bountypoints = 0;
@@ -634,7 +634,7 @@ namespace DOL.GS.Scripts
                 case 3:
                     foreach (int i in hiberniaRvRZones)
                     {
-                        DbZone zone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
+                        DbZone zone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(i));
                         zone.Experience = 0;
                         zone.Realmpoints = 0;
                         zone.Bountypoints = 0;
@@ -651,12 +651,12 @@ namespace DOL.GS.Scripts
         private static void ClearPvEZones()
         {
             // Clear PvE Zones
-            albDBZone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZone));
-            albDBZoneSI = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZoneSI));
-            midDBZone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZone));
-            midDBZoneSI = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZoneSI));
-            hibDBZone = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZone));
-            hibDBZoneSI = DOLDB<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZoneSI));
+            albDBZone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZone));
+            albDBZoneSI = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentAlbionZoneSI));
+            midDBZone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZone));
+            midDBZoneSI = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentMidgardZoneSI));
+            hibDBZone = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZone));
+            hibDBZoneSI = CoreDb<DbZone>.SelectObject(DB.Column("ZoneID").IsEqualTo(currentHiberniaZoneSI));
 
             albDBZone.Experience = 0;
             albDBZoneSI.Experience = 0;

@@ -13,16 +13,16 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Base class for proc spell handler
 	/// </summary>
-	public abstract class BaseProcSpellHandler : SpellHandler
+	public abstract class BaseProcSpell : SpellHandler
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new ProcECSGameEffect(initParams);
+			new ProcEcsSpellEffect(initParams);
 		}
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace DOL.GS.Spells
 		/// <param name="caster"></param>
 		/// <param name="spell"></param>
 		/// <param name="spellLine"></param>
-		protected BaseProcSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine)
+		protected BaseProcSpell(GameLiving caster, Spell spell, SpellLine spellLine)
 			: base(caster, spell, spellLine)
 		{
 			m_procSpellLine = SkillBase.GetSpellLine(SubSpellLineName);
@@ -41,7 +41,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>
-		protected abstract DOLEvent EventType { get; }
+		protected abstract CoreEvent EventType { get; }
 
 		/// <summary>
 		/// The spell line name of the proc spell
@@ -51,7 +51,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// The event handler of given event type
 		/// </summary>
-		protected abstract void EventHandler(DOLEvent e, object sender, EventArgs arguments);
+		protected abstract void EventHandler(CoreEvent e, object sender, EventArgs arguments);
 
 		/// <summary>
 		/// Holds the proc spell
@@ -81,7 +81,7 @@ namespace DOL.GS.Spells
 		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
 		{
 			double duration = Spell.Duration;
-			duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
+			duration *= (1.0 + m_caster.GetModified(EProperty.SpellDuration) * 0.01);
 			return (int)duration;
 		}
 
@@ -154,7 +154,7 @@ namespace DOL.GS.Spells
 
 			return true;
 		}
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(EcsGameSpellEffect compare)
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
@@ -190,7 +190,7 @@ namespace DOL.GS.Spells
         /// </summary>        
         public override void OnEffectRestored(GameSpellEffect effect, int[] vars)
         {
-            GameEventMgr.AddHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
+            GameEventMgr.AddHandler(effect.Owner, EventType, new CoreEventHandler(EventHandler));
         }
 
         /// <summary>
@@ -198,11 +198,11 @@ namespace DOL.GS.Spells
         /// </summary>        
         public override int OnRestoredEffectExpires(GameSpellEffect effect, int[] vars, bool noMessages)
         {
-            GameEventMgr.RemoveHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
+            GameEventMgr.RemoveHandler(effect.Owner, EventType, new CoreEventHandler(EventHandler));
             if (!noMessages && Spell.Pulse == 0)
             {
-                MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-                Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+                MessageToLiving(effect.Owner, Spell.Message3, EChatType.CT_SpellExpires);
+                MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), EChatType.CT_SpellExpires, effect.Owner);
             }
             return 0;
         }
@@ -280,14 +280,14 @@ namespace DOL.GS.Spells
 	/// This class contains data for OffensiveProc spells
 	/// </summary>
 	[SpellHandler("OffensiveProc")]
-	public class OffensiveProcSpellHandler : BaseProcSpellHandler
+	public class OffensiveProcSpell : BaseProcSpell
 	{
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>
-		protected override DOLEvent EventType
+		protected override CoreEvent EventType
 		{
 			get { return GameLivingEvent.AttackFinished; }
 		}
@@ -306,7 +306,7 @@ namespace DOL.GS.Spells
         ///// <param name="e"></param>
         ///// <param name="sender"></param>
         ///// <param name="arguments"></param>
-        protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments) { }
+        protected override void EventHandler(CoreEvent e, object sender, EventArgs arguments) { }
 
         public  void EventHandler(AttackData ad)
         {
@@ -316,12 +316,12 @@ namespace DOL.GS.Spells
             //    return;
 
             //AttackData ad = args.AttackData;
-            if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
+            if (ad.AttackResult != EAttackResult.HitUnstyled && ad.AttackResult != EAttackResult.HitStyle)
                 return;
 
             int baseChance = Spell.Frequency / 100;
 
-            if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+            if (ad.AttackType == EAttackType.MeleeDualWield)
                 baseChance /= 2;
 
             if (baseChance < 1)
@@ -337,7 +337,7 @@ namespace DOL.GS.Spells
 
                     switch (m_procSpell.Target)
                     {
-                        case eSpellTarget.ENEMY:
+                        case ESpellTarget.ENEMY:
                         {
                             handler.StartSpell(ad.Target);
                             break;
@@ -353,19 +353,19 @@ namespace DOL.GS.Spells
         }
 
         // constructor
-        public OffensiveProcSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        public OffensiveProcSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 
 	/// <summary>
 	/// This class contains data for DefensiveProc spells
 	/// </summary>
 	[SpellHandler("DefensiveProc")]
-	public class DefensiveProcSpellHandler : BaseProcSpellHandler
+	public class DefensiveProcSpell : BaseProcSpell
 	{
 		/// <summary>
 		/// The event type to hook on
 		/// </summary>
-		protected override DOLEvent EventType
+		protected override CoreEvent EventType
 		{
 			get { return GameLivingEvent.AttackedByEnemy; }
 		}
@@ -384,7 +384,7 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void EventHandler(DOLEvent e, object sender, EventArgs arguments) { }
+		protected override void EventHandler(CoreEvent e, object sender, EventArgs arguments) { }
 
 		public void EventHandler(AttackData ad)
 		{
@@ -393,12 +393,12 @@ namespace DOL.GS.Spells
 			//	return;
 
 			//AttackData ad = args.AttackData;
-			if (ad.AttackResult != eAttackResult.HitUnstyled && ad.AttackResult != eAttackResult.HitStyle)
+			if (ad.AttackResult != EAttackResult.HitUnstyled && ad.AttackResult != EAttackResult.HitStyle)
 				return;
 
 			int baseChance = Spell.Frequency / 100;
 
-			if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+			if (ad.AttackType == EAttackType.MeleeDualWield)
 				baseChance /= 2;
 
 			if (baseChance < 1)
@@ -412,7 +412,7 @@ namespace DOL.GS.Spells
 				{
 					switch (m_procSpell.Target)
 					{
-						case eSpellTarget.ENEMY:
+						case ESpellTarget.ENEMY:
 						{
 							handler.StartSpell(ad.Attacker);
 							break;
@@ -428,11 +428,11 @@ namespace DOL.GS.Spells
 		}
 
 		// constructor
-		public DefensiveProcSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		public DefensiveProcSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 	
 	[SpellHandler( "OffensiveProcPvE" )]
-	public class OffensiveProcPvESpellHandler : OffensiveProcSpellHandler
+	public class OffensiveProcPveSpell : OffensiveProcSpell
 	{
 		/// <summary>
 		/// Handler fired whenever effect target is attacked
@@ -440,18 +440,18 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected override void EventHandler( DOLEvent e, object sender, EventArgs arguments )
+		protected override void EventHandler( CoreEvent e, object sender, EventArgs arguments )
 		{
 			AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
 			if (args == null || args.AttackData == null)
 				return;
 
-			GameNPC target = args.AttackData.Target as GameNPC;
+			GameNpc target = args.AttackData.Target as GameNpc;
 			
 			if(target != null && !(target.Brain is IControlledBrain && ((IControlledBrain)target.Brain).GetPlayerOwner() != null))
 				base.EventHandler(e, sender, arguments);
 		}
 
-		public OffensiveProcPvESpellHandler( GameLiving caster, Spell spell, SpellLine line ) : base( caster, spell, line ) { }
+		public OffensiveProcPveSpell( GameLiving caster, Spell spell, SpellLine line ) : base( caster, spell, line ) { }
 	}
 }

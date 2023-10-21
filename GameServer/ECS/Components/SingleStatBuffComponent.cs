@@ -4,12 +4,12 @@
     {
         public GameLiving owner;
         public bool isApplied;
-        public eStat statToModify;
+        public EStat statToModify;
         public int buffValue;
         public int timeSinceApplication;
         public int maxDuration;
 
-        public SingleStatBuffComponent(GameLiving owner, eStat stat, int buffValue, int maxDuration)
+        public SingleStatBuffComponent(GameLiving owner, EStat stat, int buffValue, int maxDuration)
         {
             this.owner = owner;
             this.statToModify = stat;

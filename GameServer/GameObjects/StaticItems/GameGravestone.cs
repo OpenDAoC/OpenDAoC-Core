@@ -1,30 +1,7 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.Language;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// This class holds all information that
-	/// EVERY object in the game world needs!
-	/// </summary>
 	public class GameGravestone : GameStaticItem
 	{
 		/// <summary>
@@ -48,11 +25,11 @@ namespace DOL.GS
 			CurrentRegionID = player.CurrentRegionID;
 			m_level = 0;
 
-			if (player.Realm == eRealm.Albion)
+			if (player.Realm == ERealm.Albion)
 				m_model = 145; //Albion Gravestone
-			else if (player.Realm == eRealm.Midgard)
+			else if (player.Realm == ERealm.Midgard)
 				m_model = 636; //Midgard Gravestone
-			else if (player.Realm == eRealm.Hibernia)
+			else if (player.Realm == ERealm.Hibernia)
 				m_model = 637; //Hibernia Gravestone
 
 			m_xpValue = xpValue;

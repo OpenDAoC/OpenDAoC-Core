@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using DOL.Database;
@@ -29,7 +10,7 @@ namespace DOL.GS.Quests
 	/// Declares a Craft task.
 	/// craft Item for NPC
 	/// </summary>
-	public class CraftTask : AbstractTask
+	public class CraftTask : ATask
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -119,7 +100,7 @@ namespace DOL.GS.Quests
 		/// <param name="e">The event type</param>
 		/// <param name="sender">The sender of the event</param>
 		/// <param name="args">The event arguments</param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			// Filter only the events from task owner
 			if (sender != m_taskPlayer)
@@ -141,7 +122,7 @@ namespace DOL.GS.Quests
 				if (player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
 				{
 					player.Inventory.RemoveItem(item);
-                    InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
+                    InventoryLogging.LogInventoryAction(player, target, EInventoryActionType.Quest, item.Template, item.Count);
 					FinishTask();
 				}
 			}
@@ -158,7 +139,7 @@ namespace DOL.GS.Quests
 			int lowLevel = mediumCraftingLevel - 20;
 			int highLevel = mediumCraftingLevel + 20;
 
-			var craftitem = DOLDB<DbCraftedItem>.SelectObjects(DB.Column("CraftingSkillType").IsEqualTo((int)player.CraftingPrimarySkill)
+			var craftitem = CoreDb<DbCraftedItem>.SelectObjects(DB.Column("CraftingSkillType").IsEqualTo((int)player.CraftingPrimarySkill)
 				.And(DB.Column("CraftingLevel").IsGreatherThan(lowLevel).And(DB.Column("CraftingLevel").IsLessThan(highLevel))));
 			int craftrnd = Util.Random(craftitem.Count);
 
@@ -176,10 +157,10 @@ namespace DOL.GS.Quests
 			if (source == null)
 				return false;
 
-			GameNPC NPC = GetRandomNPC(player);
+			GameNpc NPC = GetRandomNPC(player);
 			if (NPC == null)
 			{
-				player.Out.SendMessage("I have no task for you, come back some time later.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("I have no task for you, come back some time later.", EChatType.CT_System, EChatLoc.CL_PopupWindow);
 				return false;
 			}
 
@@ -187,7 +168,7 @@ namespace DOL.GS.Quests
 
 			if (taskItem == null)
 			{
-				player.Out.SendMessage("I can't think of anything for you to make, perhaps you should ask again.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("I can't think of anything for you to make, perhaps you should ask again.", EChatType.CT_System, EChatLoc.CL_PopupWindow);
 				log.ErrorFormat("Craft task item is null for player {0} at level {1}.", player.Name, player.Level);
 				return false;
 			}
@@ -204,7 +185,7 @@ namespace DOL.GS.Quests
 
 			player.Task = craftTask;
 
-			player.Out.SendMessage("Craft " + taskItem.GetName(0, false) + " for " + NPC.Name + " in " + NPC.CurrentZone.Description, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage("Craft " + taskItem.GetName(0, false) + " for " + NPC.Name + " in " + NPC.CurrentZone.Description, EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 			return true;
 
 		}
@@ -214,9 +195,9 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="Player">The GamePlayer Object</param>		
 		/// <returns>The GameNPC Searched</returns>
-		public static GameNPC GetRandomNPC(GamePlayer Player)
+		public static GameNpc GetRandomNPC(GamePlayer Player)
 		{
-			return Player.CurrentZone.GetRandomNPC(new eRealm[] { eRealm.Albion, eRealm.Hibernia, eRealm.Midgard });
+			return Player.CurrentZone.GetRandomNPC(new ERealm[] { ERealm.Albion, ERealm.Hibernia, ERealm.Midgard });
 		}
 
 		public new static bool CheckAvailability(GamePlayer player, GameLiving target)
@@ -224,10 +205,10 @@ namespace DOL.GS.Quests
 			if (target == null)
 				return false;
 
-			if (target is CraftNPC)
+			if (target is CraftMasterNpc)
 			{
-				if (((target as CraftNPC).TheCraftingSkill == player.CraftingPrimarySkill))
-					return AbstractTask.CheckAvailability(player, target, CHANCE);
+				if (((target as CraftMasterNpc).TheCraftingSkill == player.CraftingPrimarySkill))
+					return ATask.CheckAvailability(player, target, CHANCE);
 			}
 			return false;//else return false
 		}

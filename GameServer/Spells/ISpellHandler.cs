@@ -6,11 +6,11 @@ namespace DOL.GS.Spells
 {
 	public interface ISpellHandler
 	{
-		eCastState CastState { get; set; }
+		ECastState CastState { get; set; }
 		GameLiving Target { get; set; }
 		bool HasLos { get; set; }
 
-		void CreateECSEffect(ECSGameEffectInitParams initParams);
+		void CreateECSEffect(EcsGameEffectInitParams initParams);
 
 		/// <summary>
 		/// Starts the spell, without displaying cast message etc.
@@ -98,7 +98,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		bool IsOverwritable(ECSGameSpellEffect compare);
+		bool IsOverwritable(EcsGameSpellEffect compare);
 		/// <summary>
 		/// Determines wether new spell is better than old spell and should disable it
 		/// </summary>

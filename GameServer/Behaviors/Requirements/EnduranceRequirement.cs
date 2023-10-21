@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Events;
@@ -25,14 +6,13 @@ using log4net;
 
 namespace DOL.GS.Behaviour.Requirements
 {
-
 	/// <summary>
 	/// Requirements describe what must be true to allow a QuestAction to fire.
 	/// Level of player, Step of Quest, Class of Player, etc... There are also some variables to add
 	/// additional parameters. To fire a QuestAction ALL requirements must be fulfilled.         
 	/// </summary>
-    [Requirement(RequirementType=eRequirementType.Endurance)]
-	public class EnduranceRequirement : AbstractRequirement<int,Unused>
+    [Requirement(RequirementType=ERequirementType.Endurance)]
+	public class EnduranceRequirement : ARequirement<int,Unused>
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -43,8 +23,8 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public EnduranceRequirement(GameNPC defaultNPC,  Object n, Object v, eComparator comp)
-            : base(defaultNPC, eRequirementType.Endurance, n, v, comp)
+        public EnduranceRequirement(GameNpc defaultNPC,  Object n, Object v, EComparator comp)
+            : base(defaultNPC, ERequirementType.Endurance, n, v, comp)
 		{   			
 		}
 
@@ -54,7 +34,7 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="defaultNPC">Parent defaultNPC of this Requirement</param>		
 		/// <param name="n">First Requirement Variable, meaning depends on RequirementType</param>		
 		/// <param name="comp">Comparator used if some values are veeing compared</param>
-        public EnduranceRequirement(GameNPC defaultNPC,int n,  eComparator comp)
+        public EnduranceRequirement(GameNpc defaultNPC,int n,  EComparator comp)
             : this(defaultNPC, (object)n, (object)null, comp)
 		{   			
 		}
@@ -66,10 +46,10 @@ namespace DOL.GS.Behaviour.Requirements
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		/// <returns></returns>
-		public override bool Check(DOLEvent e, object sender, EventArgs args)
+		public override bool Check(CoreEvent e, object sender, EventArgs args)
 		{
 			bool result = true;
-            GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
+            GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
 
             result = compare(player.Endurance, N, Comparator);
 

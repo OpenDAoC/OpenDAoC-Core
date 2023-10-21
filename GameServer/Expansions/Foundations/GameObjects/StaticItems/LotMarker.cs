@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using DOL.Database;
@@ -49,7 +30,7 @@ namespace DOL.GS.Housing
 
 			if (string.IsNullOrEmpty(DatabaseItem.OwnerID))
 			{
-				list.Add(" It can be bought for " + Money.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + ".");
+				list.Add(" It can be bought for " + MoneyMgr.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + ".");
 			}
 			else if (!string.IsNullOrEmpty(DatabaseItem.Name))
 			{
@@ -69,7 +50,7 @@ namespace DOL.GS.Housing
 			if (house != null)
 			{
 				//the player might be targeting a lot he already purchased that has no house on it yet
-				if (house.HouseNumber != DatabaseItem.HouseNumber && player.Client.Account.PrivLevel != (int)ePrivLevel.Admin)
+				if (house.HouseNumber != DatabaseItem.HouseNumber && player.Client.Account.PrivLevel != (int)EPrivLevel.Admin)
 				{
 					ChatUtil.SendSystemMessage(player, "You already own a house!");
 					return false;
@@ -78,13 +59,13 @@ namespace DOL.GS.Housing
 
 			if (string.IsNullOrEmpty(DatabaseItem.OwnerID))
 			{
-				player.Out.SendCustomDialog("Do you want to buy this lot?\r\n It costs " + Money.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + "!", BuyLot);
+				player.Out.SendCustomDialog("Do you want to buy this lot?\r\n It costs " + MoneyMgr.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + "!", BuyLot);
 			}
 			else
 			{
 				if (HouseMgr.IsOwner(DatabaseItem, player))
 				{
-					player.Out.SendMerchantWindow(HouseTemplateMgr.GetLotMarkerItems(this), eMerchantWindowType.Normal);
+					player.Out.SendMerchantWindow(HouseTemplateMgr.GetLotMarkerItems(this), EMerchantWindowType.Normal);
 				}
 				else
 				{
@@ -105,7 +86,7 @@ namespace DOL.GS.Housing
 				if (!string.IsNullOrEmpty(DatabaseItem.OwnerID))
 					return;
 
-				if (HouseMgr.GetHouseNumberByPlayer(player) != 0 && player.Client.Account.PrivLevel != (int)ePrivLevel.Admin)
+				if (HouseMgr.GetHouseNumberByPlayer(player) != 0 && player.Client.Account.PrivLevel != (int)EPrivLevel.Admin)
 				{
 					ChatUtil.SendMerchantMessage(player, "You already own another lot or house (Number " + HouseMgr.GetHouseNumberByPlayer(player) + ").");
 					return;
@@ -113,9 +94,9 @@ namespace DOL.GS.Housing
 
 			    long totalCost = HouseTemplateMgr.GetLotPrice(DatabaseItem);
 				if (player.RemoveMoney(totalCost, "You just bought this lot for {0}.",
-				                       eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
+				                       EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
 				{
-                    InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, totalCost);
+                    InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, totalCost);
 					DatabaseItem.LastPaid = DateTime.Now;
 					DatabaseItem.OwnerID = player.ObjectId;
 					CreateHouse(player, 0);
@@ -184,7 +165,7 @@ namespace DOL.GS.Housing
 				player.Inventory.RemoveItem(item);
 
 				// Tolakram:  Is this always null when purchasing a house?
-				InventoryLogging.LogInventoryAction(player, "(HOUSE;" + (CurrentHouse == null ? DatabaseItem.HouseNumber : CurrentHouse.HouseNumber) + ")", eInventoryActionType.Other, item.Template, item.Count);
+				InventoryLogging.LogInventoryAction(player, "(HOUSE;" + (CurrentHouse == null ? DatabaseItem.HouseNumber : CurrentHouse.HouseNumber) + ")", EInventoryActionType.Other, item.Template, item.Count);
 
 				return true;
 			}

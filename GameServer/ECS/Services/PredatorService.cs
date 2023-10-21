@@ -25,7 +25,7 @@ public class PredatorService
         {
             _lastUpdate = tick;
             //Console.WriteLine($"Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
-            foreach (var activePreds in PredatorManager.ActiveBounties.ToList())
+            foreach (var activePreds in PredatorMgr.ActiveBounties.ToList())
             {
                 GamePlayer activePlayer = activePreds.Predator;
                 
@@ -38,11 +38,11 @@ public class PredatorService
                 if (ConquestService.ConquestManager.IsPlayerInSafeZone(activePlayer))
                 {
                     if(!activePlayer.PredatorTimeoutTimer.IsAlive)
-                        PredatorManager.StartTimeoutCountdownFor(activePlayer);
+                        PredatorMgr.StartTimeoutCountdownFor(activePlayer);
                 }
                 else if(activePlayer.PredatorTimeoutTimer.IsAlive)
                 {
-                    PredatorManager.StopTimeoutCountdownFor(activePlayer);
+                    PredatorMgr.StopTimeoutCountdownFor(activePlayer);
                 }
             }
         }
@@ -50,17 +50,17 @@ public class PredatorService
         if (tick - _lastMessage > _messageBroadcastInterval)
         {
             _lastMessage = tick;
-            foreach (var activePreds in PredatorManager.ActiveBounties.ToList())
+            foreach (var activePreds in PredatorMgr.ActiveBounties.ToList())
             {
                 if (activePreds.Predator != null && activePreds.Prey != null &&
                     activePreds.Predator.GetDistance(activePreds.Prey) <= WorldMgr.VISIBILITY_DISTANCE)
                 {
                     if (!activePreds.Predator.InCombat)
                         activePreds.Predator.Out.SendMessage($"Your prey is within sight.",
-                            eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_ScreenCenterSmaller_And_CT_System, EChatLoc.CL_SystemWindow);
                     if (!activePreds.Prey.InCombat)
                         activePreds.Prey.Out.SendMessage($"Your senses tingle. A hunter is near.",
-                            eChatType.CT_ScreenCenterSmaller_And_CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_ScreenCenterSmaller_And_CT_System, EChatLoc.CL_SystemWindow);
                 }
                 else
                 {
@@ -73,9 +73,9 @@ public class PredatorService
         if (tick - _lastInsert > _insertInterval)
         {
             _lastInsert = tick;
-            PredatorManager.InsertQueuedPlayers();
-            PredatorManager.InsertFreshKillers();
-            PredatorManager.TryFillEmptyPrey();
+            PredatorMgr.InsertQueuedPlayers();
+            PredatorMgr.InsertFreshKillers();
+            PredatorMgr.TryFillEmptyPrey();
             //Console.WriteLine($"INSERTING Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
         }
 

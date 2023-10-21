@@ -19,8 +19,8 @@ namespace DOL.GS
         public short CurrentSpeed { get; set; }
         public short MaxSpeedBase { get; set; } // Currently unused for players.
         public long MovementStartTick { get; set; }
-        public bool IsTurningDisabled => !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound) && _turningDisabledCount > 0;
-        public short MaxSpeed => FixedSpeed ? MaxSpeedBase : (short) Owner.GetModified(eProperty.MaxSpeed);
+        public bool IsTurningDisabled => !Owner.effectListComponent.ContainsEffectForEffectType(EEffect.SpeedOfSound) && _turningDisabledCount > 0;
+        public short MaxSpeed => FixedSpeed ? MaxSpeedBase : (short) Owner.GetModified(EProperty.MaxSpeed);
         public bool IsMoving => CurrentSpeed > 0;
         public long MovementElapsedTicks => IsMoving ? GameLoop.GameLoopTime - MovementStartTick : 0;
 
@@ -31,7 +31,7 @@ namespace DOL.GS
 
         public static MovementComponent Create(GameLiving gameLiving)
         {
-            if (gameLiving is GameNPC gameNpc)
+            if (gameLiving is GameNpc gameNpc)
                 return new NpcMovementComponent(gameNpc);
             else
                 return new MovementComponent(gameLiving);

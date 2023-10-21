@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Specialized;
@@ -26,15 +7,6 @@ using log4net;
 
 namespace DOL.GS
 {
-	public enum eMerchantWindowSlot : int
-	{
-		FirstEmptyInPage = -2,
-		Invalid = -1,
-
-		FirstInPage = 0,
-		LastInPage = MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS - 1,
-	}
-
 	/// <summary>
 	/// This class represents a full merchant item list
 	/// and contains functions that can be used to
@@ -100,7 +72,7 @@ namespace DOL.GS
 		/// <param name="page">Zero-based page number</param>
 		/// <param name="slot">Zero-based slot number</param>
 		/// <param name="item">The item template to add</param>
-		public virtual bool AddTradeItem(int page, eMerchantWindowSlot slot, DbItemTemplate item)
+		public virtual bool AddTradeItem(int page, EMerchantWindowSlot slot, DbItemTemplate item)
 		{
 			lock (m_usedItemsTemplates.SyncRoot)
 			{
@@ -109,9 +81,9 @@ namespace DOL.GS
 					return false;
 				}
 
-				eMerchantWindowSlot pageSlot = GetValidSlot(page, slot);
+				EMerchantWindowSlot pageSlot = GetValidSlot(page, slot);
 
-				if (pageSlot == eMerchantWindowSlot.Invalid)
+				if (pageSlot == EMerchantWindowSlot.Invalid)
 				{
 					log.ErrorFormat("Invalid slot {0} specified for page {1} of TradeItemList {2}", slot, page, ItemsListID);
 					return false;
@@ -129,12 +101,12 @@ namespace DOL.GS
 		/// <param name="page">Zero-based page number</param>
 		/// <param name="slot">Zero-based slot number</param>
 		/// <returns>true if removed</returns>
-		public virtual bool RemoveTradeItem(int page, eMerchantWindowSlot slot)
+		public virtual bool RemoveTradeItem(int page, EMerchantWindowSlot slot)
 		{
 			lock (m_usedItemsTemplates.SyncRoot)
 			{
 				slot = GetValidSlot(page, slot);
-				if (slot == eMerchantWindowSlot.Invalid) return false;
+				if (slot == EMerchantWindowSlot.Invalid) return false;
 				if (!m_usedItemsTemplates.Contains((page*MAX_ITEM_IN_TRADEWINDOWS)+(int)slot)) return false;
 				m_usedItemsTemplates.Remove((page*MAX_ITEM_IN_TRADEWINDOWS)+(int)slot);
 				return true;
@@ -155,7 +127,7 @@ namespace DOL.GS
 				HybridDictionary itemsInPage = new HybridDictionary(MAX_ITEM_IN_TRADEWINDOWS);
 				if (m_itemsListID != null && m_itemsListID.Length > 0)
 				{
-					var itemList = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(m_itemsListID).And(DB.Column("PageNumber").IsEqualTo(page)));
+					var itemList = CoreDb<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(m_itemsListID).And(DB.Column("PageNumber").IsEqualTo(page)));
 					foreach (DbMerchantItem merchantitem in itemList)
 					{
 						DbItemTemplate item = GameServer.Database.FindObjectByKey<DbItemTemplate>(merchantitem.ItemTemplateID);
@@ -202,12 +174,12 @@ namespace DOL.GS
 		/// <param name="page">The item page</param>
 		/// <param name="slot">The item slot</param>
 		/// <returns>Item template or null</returns>
-		public virtual DbItemTemplate GetItem(int page, eMerchantWindowSlot slot)
+		public virtual DbItemTemplate GetItem(int page, EMerchantWindowSlot slot)
 		{
 			try
 			{
 				slot = GetValidSlot(page, slot);
-				if (slot == eMerchantWindowSlot.Invalid) return null;
+				if (slot == EMerchantWindowSlot.Invalid) return null;
 
 				DbItemTemplate item;
 				lock (m_usedItemsTemplates.SyncRoot)
@@ -218,7 +190,7 @@ namespace DOL.GS
 
 				if (m_itemsListID != null && m_itemsListID.Length > 0)
 				{
-					var itemToFind = DOLDB<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(m_itemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo((int)slot)));
+					var itemToFind = CoreDb<DbMerchantItem>.SelectObject(DB.Column("ItemListID").IsEqualTo(m_itemsListID).And(DB.Column("PageNumber").IsEqualTo(page)).And(DB.Column("SlotPosition").IsEqualTo((int)slot)));
 					if (itemToFind != null)
 					{
 						item = GameServer.Database.FindObjectByKey<DbItemTemplate>(itemToFind.ItemTemplateID);
@@ -245,7 +217,7 @@ namespace DOL.GS
 				Hashtable allItems = new Hashtable();
 				if (m_itemsListID != null && m_itemsListID.Length > 0)
 				{
-					var itemList = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(m_itemsListID));
+					var itemList = CoreDb<DbMerchantItem>.SelectObjects(DB.Column("ItemListID").IsEqualTo(m_itemsListID));
 					foreach (DbMerchantItem merchantitem in itemList)
 					{
 						DbItemTemplate item = GameServer.Database.FindObjectByKey<DbItemTemplate>(merchantitem.ItemTemplateID);
@@ -287,23 +259,23 @@ namespace DOL.GS
 		/// <param name="page">Zero-based page number</param>
 		/// <param name="slot">SlotPosition to check</param>
 		/// <returns>the slot if it's valid or eMerchantWindowSlot.Invalid if not</returns>
-		public virtual eMerchantWindowSlot GetValidSlot(int page, eMerchantWindowSlot slot)
+		public virtual EMerchantWindowSlot GetValidSlot(int page, EMerchantWindowSlot slot)
 		{
-			if (page < 0 || page >= MAX_PAGES_IN_TRADEWINDOWS) return eMerchantWindowSlot.Invalid;
+			if (page < 0 || page >= MAX_PAGES_IN_TRADEWINDOWS) return EMerchantWindowSlot.Invalid;
 
-			if (slot == eMerchantWindowSlot.FirstEmptyInPage)
+			if (slot == EMerchantWindowSlot.FirstEmptyInPage)
 			{
 				IDictionary itemsInPage = GetItemsInPage(page);
-				for (int i = (int)eMerchantWindowSlot.FirstInPage; i < (int)eMerchantWindowSlot.LastInPage; i++)
+				for (int i = (int)EMerchantWindowSlot.FirstInPage; i < (int)EMerchantWindowSlot.LastInPage; i++)
 				{
 					if (!itemsInPage.Contains(i))
-						return ((eMerchantWindowSlot)i);
+						return ((EMerchantWindowSlot)i);
 				}
-				return eMerchantWindowSlot.Invalid;
+				return EMerchantWindowSlot.Invalid;
 			}
 
-			if (slot < eMerchantWindowSlot.FirstInPage || slot > eMerchantWindowSlot.LastInPage)
-				return eMerchantWindowSlot.Invalid;
+			if (slot < EMerchantWindowSlot.FirstInPage || slot > EMerchantWindowSlot.LastInPage)
+				return EMerchantWindowSlot.Invalid;
 
 			return slot;
 		}

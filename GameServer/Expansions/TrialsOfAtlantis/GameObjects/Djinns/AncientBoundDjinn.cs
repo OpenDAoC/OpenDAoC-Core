@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -26,7 +7,6 @@ namespace DOL.GS
     /// <summary>
     /// Ancient bound djinn (Atlantis teleporter).
     /// </summary>
-    /// <author>Aredhel</author>
     public abstract class AncientBoundDjinn : GameTeleporter
     {
         private const int NpcTemplateId = 3000;      
@@ -46,8 +26,8 @@ namespace DOL.GS
 
             CurrentRegion = djinnStone.CurrentRegion;
             Heading = djinnStone.Heading;
-            Realm = eRealm.None;
-            Flags ^= GameNPC.eFlags.FLYING | GameNPC.eFlags.PEACE;
+            Realm = ERealm.None;
+            Flags ^= ENpcFlags.FLYING | ENpcFlags.PEACE;
             X = djinnStone.X;
             Y = djinnStone.Y;
             Z = djinnStone.Z + HoverHeight;
@@ -81,7 +61,7 @@ namespace DOL.GS
         /// <summary>
         /// The destination realm.
         /// </summary>
-        protected override eRealm DestinationRealm
+        protected override ERealm DestinationRealm
         {
             get
             {
@@ -171,17 +151,17 @@ namespace DOL.GS
 
             switch (player.Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     destinations = String.Format("[Castle Sauvage], [Oceanus], [Stygia], [Volcanus], [Aerus], the [dungeons of Atlantis], {0} {1}",
                         "[Snowdonia Fortress], [Camelot], [Gothwaite Harbor], [Inconnu Crypt], your [Guild] house, your",
                         "[Personal] house, your [Hearth] bind, or to the [Caerwent] housing area?");
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     destinations = String.Format("[Svasud Faste], [Oceanus], [Stygia], [Volcanus], [Aerus], the [dungeons of Atlantis], {0} {1}",
                         "[Vindsaul Faste], [Jordheim], [Aegirhamn], [Kobold] Undercity, your [Guild] house, your",
                         "[Personal] house, your [Hearth] bind, or to the [Erikstaad] housing area?");
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     destinations = String.Format("[Druim Ligen], [Oceanus], [Stygia], [Volcanus], [Aerus], the [dungeons of Atlantis], {0} {1}",
                         "[Druim Cain], the [Grove of Domnann], [Tir na Nog], [Shar Labyrinth], your [Guild] house, your",
                         "[Personal] house, your [Hearth] bind, or to the [Meath] housing area?");
@@ -359,21 +339,21 @@ namespace DOL.GS
                 case "hesperos":
                     {
                         player.Out.SendMessage(String.Format(teleportInfo, Name, "Oceanus"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         base.OnTeleport(player, destination);
                         return;
                     }
                 case "delta":
                     {
                         player.Out.SendMessage(String.Format(teleportInfo, Name, "Stygia"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         base.OnTeleport(player, destination);
                         return;
                     }
                 case "green glades":
                     {
                         player.Out.SendMessage(String.Format(teleportInfo, Name, "Aerus"),
-                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         base.OnTeleport(player, destination);
                         return;
                     }
@@ -390,7 +370,7 @@ namespace DOL.GS
         protected override void OnTeleport(GamePlayer player, DbTeleport destination)
         {
             player.Out.SendMessage("There is an odd distortion in the air around you...", 
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
             base.OnTeleport(player, destination);
         }
@@ -404,7 +384,7 @@ namespace DOL.GS
         {
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.SAY_DISTANCE))
 			{
-				player.Out.SendMessage(String.Format("The {0} says, \"{1}\"", this.Name, message), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(String.Format("The {0} says, \"{1}\"", this.Name, message), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 
             return true;

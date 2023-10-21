@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using DOL.Database;
@@ -29,9 +10,9 @@ using DOL.Language;
 namespace DOL.GS
 {
 	/// <summary>
-	/// Stable master that sells and takes horse route tickes
+	/// Stable master that sells and takes horse route tickets
 	/// </summary>
-	[NPCGuildScript("Stable Master", eRealm.None)]
+	[NpcGuildScript("Stable Master", ERealm.None)]
 	public class GameStableMaster : GameMerchant
 	{
 		/// <summary>
@@ -53,7 +34,7 @@ namespace DOL.GS
 			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (eMerchantWindowSlot)slotnumber);
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
 			if (template == null) return;
 
 			//Calculate the amout of items
@@ -73,35 +54,35 @@ namespace DOL.GS
 
 				if (player.GetCurrentMoney() < totalValue)
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", Money.GetString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 
-				if (!player.Inventory.AddTemplate(item, amountToBuy, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				if (!player.Inventory.AddTemplate(item, amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
-				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Merchant, template, amountToBuy);
+				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
 				//Generate the buy message
 				string message;
 				if (amountToBuy > 1)
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), Money.GetString(totalValue));
+					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), MoneyMgr.GetString(totalValue));
 				else
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), Money.GetString(totalValue));
+					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), MoneyMgr.GetString(totalValue));
 
 				// Check if player has enough money and subtract the money
-				if (!player.RemoveMoney(totalValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
+				if (!player.RemoveMoney(totalValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
 				{
 					throw new Exception("Money amount changed while adding items.");
 				}
-				InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, totalValue);
+				InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, totalValue);
 			}
 
 			if (item.Name.ToUpper().Contains("TICKET TO") || item.Description.ToUpper() == "TICKET")
 			{
 				// Give the ticket to the merchant
-				DbInventoryItem ticket = player.Inventory.GetFirstItemByName(item.Name, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+				DbInventoryItem ticket = player.Inventory.GetFirstItemByName(item.Name, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 				if (ticket != null)
 					ReceiveItem(player, ticket);
 			}
@@ -137,7 +118,7 @@ namespace DOL.GS
 					if ((path != null) && ((Math.Abs(path.X - this.X)) < 500) && ((Math.Abs(path.Y - this.Y)) < 500))
 					{
 						player.Inventory.RemoveCountFromStack(item, 1);
-                        InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
+                        InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
 
 						GameTaxi mount;
 						
@@ -151,7 +132,7 @@ namespace DOL.GS
 						{
                             mount = new GameTaxi();
 
-                            foreach (GameNPC npc in GetNPCsInRadius(400))
+                            foreach (GameNpc npc in GetNPCsInRadius(400))
                             { 
                                 if (npc.Name == LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameStableMaster.ReceiveItem.HorseName"))
                                 {
@@ -162,69 +143,69 @@ namespace DOL.GS
                             }
 						}
 						
-						switch ((eRace)player.Race)
+						switch ((ERace)player.Race)
 						{
-							case eRace.Lurikeen:
+							case ERace.Lurikeen:
 								mount.Size = 38;
 								break;
-							case eRace.Kobold:
+							case ERace.Kobold:
 								mount.Size = 38;
 								break;
-							case eRace.Dwarf:
+							case ERace.Dwarf:
 								mount.Size = 42;
 								break;
-							case eRace.Inconnu:
+							case ERace.Inconnu:
 								mount.Size = 45;
 								break;
-							case eRace.Frostalf:
+							case ERace.Frostalf:
 								mount.Size = 48;
 								break;
-							case eRace.Shar:
+							case ERace.Shar:
 								mount.Size = 48;
 								break;
-							case eRace.Briton:
+							case ERace.Briton:
 								mount.Size = 50;
 								break;
-							case eRace.Saracen:
+							case ERace.Saracen:
 								mount.Size = 48;
 								break;
-							case eRace.Celt:
+							case ERace.Celt:
 								mount.Size = 50;
 								break;
-							case eRace.Valkyn:
+							case ERace.Valkyn:
 								mount.Size = 52;
 								break;
-							case eRace.Avalonian:
+							case ERace.Avalonian:
 								mount.Size = 52;
 								break;
-							case eRace.Highlander:
+							case ERace.Highlander:
 								mount.Size = 55;
 								break;
-							case eRace.Norseman:
+							case ERace.Norseman:
 								mount.Size = 50;
 								break;
-							case eRace.Elf:
+							case ERace.Elf:
 								mount.Size = 52;
 								break;
-							case eRace.Sylvan:
+							case ERace.Sylvan:
 								mount.Size = 55;
 								break;
-							case eRace.Firbolg:
+							case ERace.Firbolg:
 								mount.Size = 62;
 								break;
-							case eRace.HalfOgre:
+							case ERace.HalfOgre:
 								mount.Size = 62;
 								break;
-							case eRace.AlbionMinotaur:
+							case ERace.AlbionMinotaur:
 								mount.Size = 65;
 								break;
-							case eRace.MidgardMinotaur:
+							case ERace.MidgardMinotaur:
 								mount.Size = 65;
 								break;
-							case eRace.HiberniaMinotaur:
+							case ERace.HiberniaMinotaur:
 								mount.Size = 65;
 								break;
-							case eRace.Troll:
+							case ERace.Troll:
 								mount.Size = 67;
 								break;
 							default:
@@ -249,7 +230,7 @@ namespace DOL.GS
 				}
 				else
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameStableMaster.ReceiveItem.UnknownWay"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameStableMaster.ReceiveItem.UnknownWay"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 			}
 			return false;
@@ -277,19 +258,19 @@ namespace DOL.GS
 		/// <summary>
 		/// Handles delayed player mount on horse
 		/// </summary>
-		protected class MountHorseAction : ECSGameTimerWrapperBase
+		protected class MountHorseAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The target horse
 			/// </summary>
-			protected readonly GameNPC m_horse;
+			protected readonly GameNpc m_horse;
 
 			/// <summary>
 			/// Constructs a new MountHorseAction
 			/// </summary>
 			/// <param name="actionSource">The action source</param>
 			/// <param name="horse">The target horse</param>
-			public MountHorseAction(GamePlayer actionSource, GameNPC horse) : base(actionSource)
+			public MountHorseAction(GamePlayer actionSource, GameNpc horse) : base(actionSource)
 			{
 				if (horse == null)
 					throw new ArgumentNullException("horse");
@@ -299,7 +280,7 @@ namespace DOL.GS
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 				player.MountSteed(m_horse, true);
@@ -310,20 +291,20 @@ namespace DOL.GS
 		/// <summary>
 		/// Handles delayed horse ride actions
 		/// </summary>
-		protected class HorseRideAction : ECSGameTimerWrapperBase
+		protected class HorseRideAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Constructs a new HorseStartAction
 			/// </summary>
 			/// <param name="actionSource"></param>
-			public HorseRideAction(GameNPC actionSource) : base(actionSource) { }
+			public HorseRideAction(GameNpc actionSource) : base(actionSource) { }
 
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
-				GameNPC horse = (GameNPC) timer.Owner;
+				GameNpc horse = (GameNpc) timer.Owner;
 				horse.MoveOnPath(horse.MaxSpeed);
 				return 0;
 			}

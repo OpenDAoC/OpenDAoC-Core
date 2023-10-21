@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Contains all common code for Banelord Spells
     /// </summary>
-    public class MasterlevelHandling : SpellHandler
+    public class MasterLevelSpellHandling : SpellHandler
     {
         public override bool HasPositiveEffect
         {
@@ -49,7 +49,7 @@ namespace DOL.GS.Spells
             switch (spell.Target)
             {
                 //GTAoE
-                case eSpellTarget.AREA:
+                case ESpellTarget.AREA:
                 {
                     if (spell.Radius > 0)
                     {
@@ -62,7 +62,7 @@ namespace DOL.GS.Spells
 
                     break;
                 }
-                case eSpellTarget.PET:
+                case ESpellTarget.PET:
                 {
                     if (caster is GamePlayer player)
                     {
@@ -74,7 +74,7 @@ namespace DOL.GS.Spells
 
                     break;
                 }
-                case eSpellTarget.ENEMY:
+                case ESpellTarget.ENEMY:
                 {
                     if (spell.Radius > 0)
                     {
@@ -93,7 +93,7 @@ namespace DOL.GS.Spells
 
                     break;
                 }
-                case eSpellTarget.REALM:
+                case ESpellTarget.REALM:
                 {
                     if (spell.Radius > 0)
                     {
@@ -114,7 +114,7 @@ namespace DOL.GS.Spells
 
                     break;
                 }
-                case eSpellTarget.SELF:
+                case ESpellTarget.SELF:
                 {
                     if (spell.Radius > 0)
                     {
@@ -132,9 +132,9 @@ namespace DOL.GS.Spells
 
                     break;
                 }
-                case eSpellTarget.GROUP:
+                case ESpellTarget.GROUP:
                 {
-                    Group group = caster.Group;
+                    GroupUtil group = caster.Group;
                     int spellRange = spellHandler.CalculateSpellRange();
 
                     if (spellRange == 0)
@@ -200,13 +200,13 @@ namespace DOL.GS.Spells
             }
         }
 
-        public MasterlevelHandling(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+        public MasterLevelSpellHandling(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
     #endregion
 
     #region Stylhandler
     [SpellHandler("MLStyleHandler")]
-    public class MLStyleHandler : MasterlevelHandling
+    public class MLStyleHandler : MasterLevelSpellHandling
     {
         public MLStyleHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
@@ -219,7 +219,7 @@ namespace DOL.GS.Spells
     public abstract class MasterlevelDebuffHandling : SingleStatDebuff
     {
         // bonus category
-        public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.Debuff; } }
+        public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.Debuff; } }
 
         public override bool HasPositiveEffect
         {
@@ -255,7 +255,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
+            return MasterLevelSpellHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -280,10 +280,10 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Contains all common code for Banelord Spells
     /// </summary>
-    public abstract class MasterlevelBuffHandling : SingleStatBuff
+    public abstract class MasterLevelBuffHandling : SingleStatBuff
     {
         // bonus category
-        public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
+        public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 
         public override int CalculateSpellResistChance(GameLiving target)
         {
@@ -309,7 +309,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
+            return MasterLevelSpellHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -326,7 +326,7 @@ namespace DOL.GS.Spells
             }
         }
 
-        protected MasterlevelBuffHandling(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
+        protected MasterLevelBuffHandling(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
     }
     #endregion
 
@@ -337,8 +337,8 @@ namespace DOL.GS.Spells
     public abstract class MasterlevelDualBuffHandling : DualStatBuff
     {
         // bonus category
-        public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-        public override eBuffBonusCategory BonusCategory2 { get { return eBuffBonusCategory.SpecBuff; } }
+        public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
+        public override EBuffBonusCategory BonusCategory2 { get { return EBuffBonusCategory.SpecBuff; } }
 
         public override int CalculateSpellResistChance(GameLiving target)
         {
@@ -364,7 +364,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
+            return MasterLevelSpellHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -389,7 +389,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Contains all common code for Banelord Spells
     /// </summary>
-    public class BanelordSnare : UnbreakableSpeedDecreaseSpellHandler
+    public class BanelordSnare : UnbreakableSpeedDecreaseSpell
     {
         private const string EFFECT_PROPERTY = "BanelordSnareProperty";
 
@@ -410,15 +410,15 @@ namespace DOL.GS.Spells
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            ECSGameTimer timer = effect.Owner.TempProperties.GetProperty<ECSGameTimer>(EFFECT_PROPERTY, null);
+            EcsGameTimer timer = effect.Owner.TempProperties.GetProperty<EcsGameTimer>(EFFECT_PROPERTY, null);
             effect.Owner.TempProperties.RemoveProperty(EFFECT_PROPERTY);
             timer.Stop();
 
-            effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, effect);
+            effect.Owner.BuffBonusMultCategory1.Remove((int)EProperty.MaxSpeed, effect);
 
             SendUpdates(effect.Owner);
-            MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-            Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
+            MessageToLiving(effect.Owner, Spell.Message3, EChatType.CT_SpellExpires);
+            MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), EChatType.CT_SpellExpires, effect.Owner);
 
             return 0;
         }
@@ -442,7 +442,7 @@ namespace DOL.GS.Spells
         /// <returns></returns>
         public override IList<GameLiving> SelectTargets(GameObject castTarget)
         {
-            return MasterlevelHandling.SelectTargets(this, castTarget as GameLiving);
+            return MasterLevelSpellHandling.SelectTargets(this, castTarget as GameLiving);
         }
         #endregion
 
@@ -464,7 +464,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Fontbase
-    public class FontSpellHandler : DoTSpellHandler
+    public class FontSpellHandler : DamageOverTimeSpell
     {
         protected GameFont font;
         protected DbSpell dbs;
@@ -476,7 +476,7 @@ namespace DOL.GS.Spells
         protected bool Friendly = true;
         protected ushort sRadius = 350;
 
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(EcsGameSpellEffect compare)
         {
             return false;
         }
@@ -512,7 +512,7 @@ namespace DOL.GS.Spells
                     heal.StartSpell((GameLiving)player);
             }
             if (!ApplyOnNPC) return;
-            foreach (GameNPC npc in font.GetNPCsInRadius(sRadius))
+            foreach (GameNpc npc in font.GetNPCsInRadius(sRadius))
             {
                 if (!Friendly && npc.IsAlive && GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true) && (!npc.InCombat || ApplyOnCombat))
                     heal.StartSpell((GameLiving)npc);
@@ -534,7 +534,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Trapbase
-    public class MineSpellHandler : DoTSpellHandler
+    public class MineSpellHandler : DamageOverTimeSpell
     {
         protected GameMine mine;
         protected ISpellHandler trap;
@@ -546,7 +546,7 @@ namespace DOL.GS.Spells
         protected bool DestroyOnEffect = true;
         protected ushort sRadius = 350;
         
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(EcsGameSpellEffect compare)
         {
             return false;
         }
@@ -660,7 +660,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region SummonItemBase
-    public class SummonItemSpellHandler : MasterlevelHandling
+    public class SummonItemSpellHandler : MasterLevelSpellHandling
     {
         protected IList<DbInventoryItem> items;
 
@@ -692,11 +692,11 @@ namespace DOL.GS.Spells
 
                 foreach (DbInventoryItem item in items)
                 {
-                    if (targetPlayer.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item))
+                    if (targetPlayer.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, item))
                     {
 
-                        InventoryLogging.LogInventoryAction(Caster, targetPlayer, eInventoryActionType.Other, item.Template, item.Count);
-                        targetPlayer.Out.SendMessage("Item created: " + item.GetName(0, false), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        InventoryLogging.LogInventoryAction(Caster, targetPlayer, EInventoryActionType.Other, item.Template, item.Count);
+                        targetPlayer.Out.SendMessage("Item created: " + item.GetName(0, false), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     }
                 }
             }
@@ -713,7 +713,7 @@ namespace DOL.GS.Spells
 
     #region TargetModifier
     [SpellHandler("TargetModifier")]
-    public class TargetModifierSpellHandler : MasterlevelHandling
+    public class TargetModifierSpellHandler : MasterLevelSpellHandling
     {
         public override bool HasPositiveEffect
         {
@@ -725,7 +725,7 @@ namespace DOL.GS.Spells
 
     #region Passive
     [SpellHandler("PassiveSpell")]
-    public class PassiveSpellHandler : MasterlevelHandling
+    public class PassiveSpellHandler : MasterLevelSpellHandling
     {
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
@@ -740,7 +740,7 @@ namespace DOL.GS.Spells
 namespace DOL.GS
 {
     #region Decoy
-    public class GameDecoy : GameNPC
+    public class GameDecoy : GameNpc
     {
         public GameDecoy()
         {
@@ -774,7 +774,7 @@ namespace DOL.GS
             this.Realm = 0;
             this.Level = 1;
             this.MaxSpeedBase = 0;
-            this.Flags |= GameNPC.eFlags.DONTSHOWNAME;
+            this.Flags |= ENpcFlags.DONTSHOWNAME;
             this.Health = this.MaxHealth;
         }
 
@@ -792,16 +792,16 @@ namespace DOL.GS
         {
             int spellLevel = m_owner.Level;
             GameLiving caster = m_owner as GameLiving;
-            int spellbonus = m_owner.GetModified(eProperty.SpellLevel);
+            int spellbonus = m_owner.GetModified(EProperty.SpellLevel);
             spellLevel += spellbonus;
             if (spellLevel > 50)
                 spellLevel = 50;
             int hitchance = 85 + ((spellLevel - target.Level) / 2);
             return hitchance;
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (damageType == eDamageType.Slash || damageType == eDamageType.Crush || damageType == eDamageType.Thrust)
+            if (damageType == EDamageType.Slash || damageType == EDamageType.Crush || damageType == EDamageType.Thrust)
             {
                 damageAmount /= 10;
                 criticalAmount /= 10;
@@ -843,14 +843,14 @@ namespace DOL.GS
         {
             int spellLevel = m_owner.Level;
             GameLiving caster = m_owner as GameLiving;
-            int spellbonus = m_owner.GetModified(eProperty.SpellLevel);
+            int spellbonus = m_owner.GetModified(EProperty.SpellLevel);
             spellLevel += spellbonus;
             if (spellLevel > 50)
                 spellLevel = 50;
             int hitchance = 85 + ((spellLevel - target.Level) / 2);
             return hitchance;
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer)
             {
@@ -877,8 +877,8 @@ namespace DOL.GS
             this.MaxSpeedBase = 191;
             this.Model = 3457;
             this.Name = "Storm";
-            this.Flags |= GameNPC.eFlags.DONTSHOWNAME;
-            this.Flags |= GameNPC.eFlags.CANTTARGET;
+            this.Flags |= ENpcFlags.DONTSHOWNAME;
+            this.Flags |= ENpcFlags.CANTTARGET;
             this.Movable = true;
         }
 
@@ -910,14 +910,14 @@ namespace DOL.GS
         {
             int spellLevel = m_owner.Level;
             GameLiving caster = m_owner as GameLiving;
-            int spellbonus = m_owner.GetModified(eProperty.SpellLevel);
+            int spellbonus = m_owner.GetModified(EProperty.SpellLevel);
             spellLevel += spellbonus;
             if (spellLevel > 50)
                 spellLevel = 50;
             int hitchance = 85 + ((spellLevel - target.Level) / 2);
             return hitchance;
         }
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
         }
     }

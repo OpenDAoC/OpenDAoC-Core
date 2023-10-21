@@ -6,7 +6,7 @@ using log4net;
 
 namespace DOL.GS.Scripts
 {
-	public class EpicTeleporter: GameNPC
+	public class EpicTeleporter: GameNpc
 	{
 		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -15,21 +15,21 @@ namespace DOL.GS.Scripts
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
             switch (Realm)
             {
-                case eRealm.Albion:
-                    template.AddNPCEquipment(eInventorySlot.TorsoArmor, 2230); break;
-                case eRealm.Midgard:
-                    template.AddNPCEquipment(eInventorySlot.TorsoArmor, 2232);
-                    template.AddNPCEquipment(eInventorySlot.ArmsArmor, 2233);
-                    template.AddNPCEquipment(eInventorySlot.LegsArmor, 2234);
-                    template.AddNPCEquipment(eInventorySlot.HandsArmor, 2235);
-                    template.AddNPCEquipment(eInventorySlot.FeetArmor, 2236);
+                case ERealm.Albion:
+                    template.AddNPCEquipment(EInventorySlot.TorsoArmor, 2230); break;
+                case ERealm.Midgard:
+                    template.AddNPCEquipment(EInventorySlot.TorsoArmor, 2232);
+                    template.AddNPCEquipment(EInventorySlot.ArmsArmor, 2233);
+                    template.AddNPCEquipment(EInventorySlot.LegsArmor, 2234);
+                    template.AddNPCEquipment(EInventorySlot.HandsArmor, 2235);
+                    template.AddNPCEquipment(EInventorySlot.FeetArmor, 2236);
                     break;
-                case eRealm.Hibernia:
-                    template.AddNPCEquipment(eInventorySlot.TorsoArmor, 2231); ; break;
+                case ERealm.Hibernia:
+                    template.AddNPCEquipment(EInventorySlot.TorsoArmor, 2231); ; break;
             }
 
             Inventory = template.CloseTemplate();
-            Flags |= eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
             Name = "Celestius Teleporter";
             GuildName = "GM Only Please";
             Model = 342;
@@ -40,7 +40,7 @@ namespace DOL.GS.Scripts
 		{
 			if (!base.Interact(player)) return false;
 			//TurnTo(player.X,player.Y);
-			player.Out.SendMessage("Hello "+player.Name+"! I can teleport you to [Celestius]", eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage("Hello "+player.Name+"! I can teleport you to [Celestius]", EChatType.CT_Say,EChatLoc.CL_PopupWindow);
 			return true;
 		}
 		public override bool WhisperReceive(GameLiving source, string str)
@@ -73,10 +73,10 @@ namespace DOL.GS.Scripts
 			{
 				target.Client.Out.SendMessage(
 					msg,
-					eChatType.CT_Say,eChatLoc.CL_PopupWindow);
+					EChatType.CT_Say,EChatLoc.CL_PopupWindow);
 			}
 		[ScriptLoadedEvent]
-        public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
         {
             log.Info("\tTeleporter initialized: true");
         }	

@@ -4,13 +4,13 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Spells
 {
 	[SpellHandler("DoomHammer")]
-	public class DoomHammerSpellHandler : DirectDamageSpellHandler
+	public class DoomHammerSpell : DirectDamageSpell
 	{
 		public override bool CheckBeginCast(GameLiving selectedTarget)
 		{
 			if(Caster.IsDisarmed)
 			{
-				MessageToCaster("You are disarmed and can't use this spell!",eChatType.CT_SpellResisted);
+				MessageToCaster("You are disarmed and can't use this spell!",EChatType.CT_SpellResisted);
 				return false;
 			}
 			return base.CheckBeginCast(selectedTarget);
@@ -31,7 +31,7 @@ namespace DOL.GS.Spells
 					visPlayer.Out.SendSpellEffectAnimation(Caster, target, (ushort) Spell.ResurrectMana, 0, false, 0x01);
 			}
 
-			if ((Spell.Duration > 0 && Spell.Target != eSpellTarget.AREA) || Spell.Concentration>0)
+			if ((Spell.Duration > 0 && Spell.Target != ESpellTarget.AREA) || Spell.Concentration>0)
 				OnDirectEffect(target);
 		}
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
@@ -39,6 +39,6 @@ namespace DOL.GS.Spells
 			//Caster.IsDisarmed=false;
 			return base.OnEffectExpires(effect,noMessages);
 		}
-		public DoomHammerSpellHandler(GameLiving caster,Spell spell,SpellLine line) : base(caster,spell,line) {}
+		public DoomHammerSpell(GameLiving caster,Spell spell,SpellLine line) : base(caster,spell,line) {}
 	}
 }

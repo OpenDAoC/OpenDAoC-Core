@@ -47,7 +47,7 @@ namespace DOL.GS
                     GameServer.Database.AddObject(newTime);
                 }
 
-                List<GameClient> clients = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out int lastValidIndex);
+                List<GameClient> clients = EntityManager.UpdateAndGetAll<GameClient>(EEntityType.Client, out int lastValidIndex);
 
                 for (int i = 0; i < lastValidIndex + 1; i++)
                 {

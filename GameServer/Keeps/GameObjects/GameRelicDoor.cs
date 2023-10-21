@@ -1,31 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// relic keep door in world
-	/// </summary>
 	public class GameRelicDoor : GameDoorBase
 	{
 		#region properties
@@ -55,13 +33,13 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// door state (open or closed)
 		/// </summary>
-		private eDoorState m_state;
+		private EDoorState m_state;
 
 		/// <summary>
 		/// door state (open or closed)
 		/// call the broadcast of state in area
 		/// </summary>
-		public override eDoorState State
+		public override EDoorState State
 		{
 			get => m_state;
 			set
@@ -106,12 +84,12 @@ namespace DOL.GS.Keeps
 		/// <param name="damageType">the damage type</param>
 		/// <param name="damageAmount">the amount of damage</param>
 		/// <param name="criticalAmount">the amount of critical damage</param>
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			return;
 		}
 
-		public override int ChangeHealth(GameObject changeSource, eHealthChangeType healthChangeType, int changeAmount)
+		public override int ChangeHealth(GameObject changeSource, EHealthChangeType healthChangeType, int changeAmount)
 		{
 			return 0;
 		}
@@ -129,13 +107,13 @@ namespace DOL.GS.Keeps
 
 			if (player.IsMezzed)
 			{
-				player.Out.SendMessage("You are mesmerized!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You are mesmerized!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (player.IsStunned)
 			{
-				player.Out.SendMessage("You are stunned!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You are stunned!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -240,7 +218,7 @@ namespace DOL.GS.Keeps
 			m_level = 0;
 			m_model = 0xFFFF;
 			m_doorID = door.InternalID;
-			m_state = eDoorState.Closed;
+			m_state = EDoorState.Closed;
 			this.AddToWorld();
 
 			m_health = MaxHealth;
@@ -265,7 +243,7 @@ namespace DOL.GS.Keeps
 
 		public virtual void OpenDoor()
 		{
-			m_state = eDoorState.Open;
+			m_state = EDoorState.Open;
 			BroadcastDoorStatus();
 		}
 
@@ -274,7 +252,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public virtual void CloseDoor()
 		{
-			m_state = eDoorState.Closed;
+			m_state = EDoorState.Closed;
 			BroadcastDoorStatus();
 		}
 
@@ -324,6 +302,6 @@ namespace DOL.GS.Keeps
 			return true;
 		}
 
-		public override void NPCManipulateDoorRequest(GameNPC npc, bool open) { }
+		public override void NPCManipulateDoorRequest(GameNpc npc, bool open) { }
 	}
 }

@@ -11,9 +11,6 @@ using log4net;
 namespace DOL.GS.Keeps
 {
 	//TODO : find all skin of keep door to load it from here
-	/// <summary>
-	/// A keepComponent
-	/// </summary>
 	public class GameKeepComponent : GameLiving, IComparable, IGameKeepComponent
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -51,15 +48,15 @@ namespace DOL.GS.Keeps
 
 		#region properties
 		[Obsolete("Use Keep instead")]
-		public AbstractGameKeep AbstractKeep
+		public AGameKeep AbstractKeep
 		{
 			get { return Keep; }
 			set { Keep = value; }
 		}
 
-		public AbstractGameKeep Keep { get; set; }
+		public AGameKeep Keep { get; set; }
 
-		public override eGameObjectType GameObjectType => eGameObjectType.KEEP_COMPONENT;
+		public override EGameObjectType GameObjectType => EGameObjectType.KEEP_COMPONENT;
 
 		public int ID { get; set; }
 
@@ -102,12 +99,12 @@ namespace DOL.GS.Keeps
 
 		public override byte Level => (byte)(Keep.BaseLevel-10 + (Keep.Level * 3));
 
-		public override eRealm Realm
+		public override ERealm Realm
 		{
 			get
 			{
 				if (Keep != null) return Keep.Realm;
-				return eRealm.None;
+				return ERealm.None;
 			}
 		}
 
@@ -154,8 +151,8 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public override void StartHealthRegeneration()
 		{
-			m_repairTimer = new ECSGameTimer(this);
-			m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
+			m_repairTimer = new EcsGameTimer(this);
+			m_repairTimer.Callback = new EcsGameTimer.EcsTimerCallback(RepairTimerCallback);
 			m_repairTimer.Interval = repairInterval;
 			m_repairTimer.Start(1);
 		}
@@ -178,7 +175,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// load component from db object
 		/// </summary>
-		public virtual void LoadFromDatabase(DbKeepComponent component, AbstractGameKeep keep)
+		public virtual void LoadFromDatabase(DbKeepComponent component, AGameKeep keep)
 		{
 			Region myregion = WorldMgr.GetRegion((ushort)keep.Region);
 			if (myregion == null)
@@ -240,7 +237,7 @@ namespace DOL.GS.Keeps
 				// Battlegrounds, ignore all but GameKeepDoor
 				whereClause = whereClause.And(DB.Column("ClassType").IsEqualTo("DOL.GS.Keeps.GameKeepDoor"));
 			}
-			var DBPositions = DOLDB<DbKeepPosition>.SelectObjects(whereClause);
+			var DBPositions = CoreDb<DbKeepPosition>.SelectObjects(whereClause);
 
 			foreach (DbKeepPosition position in DBPositions)
 			{
@@ -284,10 +281,10 @@ namespace DOL.GS.Keeps
 									create = true;
 								break;
 							case "DOL.GS.Keeps.Patrol":
-								if ((position.KeepType == (int)AbstractGameKeep.eKeepType.Any || position.KeepType == (int)Keep.KeepType)
+								if ((position.KeepType == (int)AGameKeep.eKeepType.Any || position.KeepType == (int)Keep.KeepType)
 									&& Keep.Patrols.ContainsKey(sKey) == false)
 								{
-									Patrol p = new Patrol(this);
+									KeepGuardPatrol p = new KeepGuardPatrol(this);
 									p.SpawnPosition = position;
 									p.PatrolID = position.TemplateID;
 									p.InitialiseGuards();
@@ -445,7 +442,7 @@ namespace DOL.GS.Keeps
 			base.SaveIntoDatabase();
 		}
 
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (damageAmount > 0)
 			{
@@ -469,7 +466,7 @@ namespace DOL.GS.Keeps
 		public override void ModifyAttack(AttackData attackData)
 		{
 			// Allow a GM to use commands to damage components, regardless of toughness setting
-			if (attackData.DamageType == eDamageType.GM)
+			if (attackData.DamageType == EDamageType.GM)
 				return;
 
 			int toughness = Properties.SET_STRUCTURES_TOUGHNESS;
@@ -484,26 +481,26 @@ namespace DOL.GS.Keeps
 				baseDamage = (baseDamage - (baseDamage * 5 * Keep.Level / 100)) * toughness / 100;
 				styleDamage = (styleDamage - (styleDamage * 5 * Keep.Level / 100)) * toughness / 100;
 			}
-			else if (source is GameNPC)
+			else if (source is GameNpc)
 			{
 				if (!Properties.STRUCTURES_ALLOWPETATTACK)
 				{
 					baseDamage = 0;
 					styleDamage = 0;
-					attackData.AttackResult = eAttackResult.NotAllowed_ServerRules;
+					attackData.AttackResult = EAttackResult.NotAllowed_ServerRules;
 				}
 				else
 				{
 					baseDamage = (baseDamage - (baseDamage * 5 * Keep.Level / 100)) * toughness / 100;
 					styleDamage = (styleDamage - (styleDamage * 5 * Keep.Level / 100)) * toughness / 100;
 
-					if (((GameNPC)source).Brain is AI.Brain.IControlledBrain)
+					if (((GameNpc)source).Brain is AI.Brain.IControlledBrain)
 					{
-						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNPC)source).Brain).Owner as GamePlayer);
+						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNpc)source).Brain).Owner as GamePlayer);
 						if (player != null)
 						{
 							// special considerations for pet spam classes
-							if (player.CharacterClass.ID == (int)eCharacterClass.Theurgist || player.CharacterClass.ID == (int)eCharacterClass.Animist)
+							if (player.PlayerClass.ID == (int)EPlayerClass.Theurgist || player.PlayerClass.ID == (int)EPlayerClass.Animist)
 							{
 								baseDamage = (int)(baseDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
 								styleDamage = (int)(styleDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
@@ -645,10 +642,10 @@ namespace DOL.GS.Keeps
 
 		public int RepairedHealth = 0;
 
-		protected ECSGameTimer m_repairTimer;
+		protected EcsGameTimer m_repairTimer;
 		protected static int repairInterval = 30 * 60 * 1000;
 
-		public virtual int RepairTimerCallback(ECSGameTimer timer)
+		public virtual int RepairTimerCallback(EcsGameTimer timer)
 		{
 			if (HealthPercent == 100 || Keep.InCombat)
 				return repairInterval;

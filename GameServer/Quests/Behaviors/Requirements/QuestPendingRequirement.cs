@@ -32,8 +32,8 @@ namespace DOL.GS.Quests.Requirements
 	/// Level of player, Step of Quest, Class of Player, etc... There are also some variables to add
 	/// additional parameters. To fire a QuestAction ALL requirements must be fulfilled.         
 	/// </summary>
-    [Requirement(RequirementType=eRequirementType.QuestPending)]
-	public class QuestPendingRequirement : AbstractRequirement<Type,Unused>
+    [Requirement(RequirementType=ERequirementType.QuestPending)]
+	public class QuestPendingRequirement : ARequirement<Type,Unused>
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -44,8 +44,8 @@ namespace DOL.GS.Quests.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public QuestPendingRequirement(GameNPC defaultNPC, Object n, Object v, eComparator comp)
-            : base(defaultNPC,eRequirementType.QuestPending, n, v, comp)
+        public QuestPendingRequirement(GameNpc defaultNPC, Object n, Object v, EComparator comp)
+            : base(defaultNPC,ERequirementType.QuestPending, n, v, comp)
 		{   			
 		}
 
@@ -55,7 +55,7 @@ namespace DOL.GS.Quests.Requirements
         /// <param name="defaultNPC"></param>
         /// <param name="questType"></param>
         /// <param name="comp"></param>
-        public QuestPendingRequirement(GameNPC defaultNPC, Type questType, eComparator comp)
+        public QuestPendingRequirement(GameNpc defaultNPC, Type questType, EComparator comp)
             : this(defaultNPC, (object)questType, (object)null, comp)
 		{   			
 		}
@@ -67,12 +67,12 @@ namespace DOL.GS.Quests.Requirements
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		/// <returns></returns>
-		public override bool Check(DOLEvent e, object sender, EventArgs args)
+		public override bool Check(CoreEvent e, object sender, EventArgs args)
 		{
 			bool result = true;
-            GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
+            GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
             
-            if (Comparator == eComparator.Not)
+            if (Comparator == EComparator.Not)
                 result = player.IsDoingQuest(N) == null;
             else
                 result = player.IsDoingQuest(N) != null;

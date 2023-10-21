@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Reflection;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -24,9 +5,6 @@ using log4net;
 
 namespace DOL.GS.SkillHandler
 {
-	/// <summary>
-	/// Handler for Stag Ability clicks
-	/// </summary>
 	[SkillHandler(Abilities.Stag)]
 	public class StagAbilityHandler : IAbilityActionHandler
 	{
@@ -56,7 +34,7 @@ namespace DOL.GS.SkillHandler
 
             if (!player.IsAlive)
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseDead"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseDead"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
             //if (player.IsMezzed)
@@ -71,19 +49,19 @@ namespace DOL.GS.SkillHandler
             //}
             if (player.IsSitting)
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStanding"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStanding"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
             }
 			//Cancel old stag effects on player
-			StagECSGameEffect stag = (StagECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.Stag);
+			StagEcsAbilityEffect stag = (StagEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(player, EEffect.Stag);
 			if (stag != null)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseAlreadyActive"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseAlreadyActive"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			player.DisableSkill(ab, REUSE_TIMER);
 
-			new StagECSGameEffect(new ECSGameEffectInitParams(player, DURATION, 1), ab.Level);
+			new StagEcsAbilityEffect(new EcsGameEffectInitParams(player, DURATION, 1), ab.Level);
 		}
 	}
 }

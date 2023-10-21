@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Linq;
 using System.Reflection;
 using DOL.GS.PacketHandler;
@@ -25,9 +6,6 @@ using log4net;
 
 namespace DOL.GS.SkillHandler
 {
-	/// <summary>
-	/// Handler for Intercept ability clicks
-	/// </summary>
 	[SkillHandler(Abilities.Intercept)]
 	public class InterceptAbilityHandler : IAbilityActionHandler
 	{
@@ -64,42 +42,42 @@ namespace DOL.GS.SkillHandler
 			if (targetObject == null)
 			{
 				//foreach (InterceptEffect intercept in player.EffectList.GetAllOfType<InterceptEffect>())
-				foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
+				foreach (InterceptEcsAbilityEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == EEffect.Intercept))
 				{
 					if (intercept.InterceptSource != player)
 						continue;
 					intercept.Cancel(false);
 				}
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CancelTargetNull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CancelTargetNull"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 
 			// Only attacks on other players may be intercepted. 
 			// You cannot intercept attacks on yourself            
-			Group group = player.Group;
+			GroupUtil group = player.Group;
 			GamePlayer interceptTarget = targetObject as GamePlayer;
 			if (interceptTarget == null || group == null || !group.IsInTheGroup(interceptTarget) || interceptTarget == player)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CannotUse.NotInGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CannotUse.NotInGroup"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 
 			// check if someone is already intercepting for that target
 			//foreach (InterceptEffect intercept in interceptTarget.EffectList.GetAllOfType<InterceptEffect>())
-			foreach (InterceptECSGameEffect intercept in interceptTarget.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
+			foreach (InterceptEcsAbilityEffect intercept in interceptTarget.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == EEffect.Intercept))
 			{
 				if (intercept.InterceptTarget != interceptTarget)
 					continue;
-				if (intercept.InterceptSource != player && !(intercept.InterceptSource is GameNPC))
+				if (intercept.InterceptSource != player && !(intercept.InterceptSource is GameNpc))
 				{
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CannotUse.InterceptTargetAlreadyInterceptedEffect", intercept.InterceptSource.GetName(0, true), intercept.InterceptTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CannotUse.InterceptTargetAlreadyInterceptedEffect", intercept.InterceptSource.GetName(0, true), intercept.InterceptTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
 				}
 			}
 
 			// cancel all intercepts by this player
 			//foreach (InterceptEffect intercept in player.EffectList.GetAllOfType<InterceptEffect>())
-			foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
+			foreach (InterceptEcsAbilityEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == EEffect.Intercept))
 			{
 				if (intercept.InterceptSource != player)
 					continue;
@@ -109,7 +87,7 @@ namespace DOL.GS.SkillHandler
 			player.DisableSkill(ab, REUSE_TIMER);
 
 			//new InterceptEffect().Start(player, interceptTarget);
-			new InterceptECSGameEffect(new ECSGameEffectInitParams(player, 0, 1), player, (GameLiving)player.TargetObject);
+			new InterceptEcsAbilityEffect(new EcsGameEffectInitParams(player, 0, 1), player, (GameLiving)player.TargetObject);
 		}
 	}
 }

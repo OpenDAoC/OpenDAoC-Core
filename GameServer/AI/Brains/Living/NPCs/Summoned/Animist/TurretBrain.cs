@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
 using System.Linq;
 using DOL.GS;
@@ -37,16 +18,16 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (AggressionState == eAggressionState.Aggressive)
+            if (AggressionState == EAggressionState.Aggressive)
                 CheckProximityAggro();
 
-            if (!CheckSpells(eCheckSpellType.Defensive))
-                CheckSpells(eCheckSpellType.Offensive);
+            if (!CheckSpells(ECheckSpellType.Defensive))
+                CheckSpells(ECheckSpellType.Offensive);
         }
 
-        public override bool CheckSpells(eCheckSpellType type)
+        public override bool CheckSpells(ECheckSpellType type)
         {
-            if (Body == null || AggressionState == eAggressionState.Passive || ((TurretPet)Body).TurretSpell == null)
+            if (Body == null || AggressionState == EAggressionState.Passive || ((TurretPet)Body).TurretSpell == null)
                 return false;
 
             Spell spell = ((TurretPet)Body).TurretSpell;
@@ -58,10 +39,10 @@ namespace DOL.AI.Brain
 
             switch (type)
             {
-                case eCheckSpellType.Defensive:
+                case ECheckSpellType.Defensive:
                     casted = CheckDefensiveSpells(spell);
                     break;
-                case eCheckSpellType.Offensive:
+                case ECheckSpellType.Offensive:
                     casted = CheckOffensiveSpells(spell);
                     break;
             }
@@ -73,11 +54,11 @@ namespace DOL.AI.Brain
         {
             switch (spell.SpellType)
             {
-                case eSpellType.HeatColdMatterBuff:
-                case eSpellType.BodySpiritEnergyBuff:
-                case eSpellType.ArmorAbsorptionBuff:
-                case eSpellType.AblativeArmor:
-                    return TrustCast(spell, eCheckSpellType.Defensive, GetDefensiveTarget(spell));
+                case ESpellType.HeatColdMatterBuff:
+                case ESpellType.BodySpiritEnergyBuff:
+                case ESpellType.ArmorAbsorptionBuff:
+                case ESpellType.AblativeArmor:
+                    return TrustCast(spell, ECheckSpellType.Defensive, GetDefensiveTarget(spell));
             }
 
             return false;
@@ -87,18 +68,18 @@ namespace DOL.AI.Brain
         {
             switch (spell.SpellType)
             {
-                case eSpellType.DirectDamage:
-                case eSpellType.DamageSpeedDecrease:
-                case eSpellType.SpeedDecrease:
-                case eSpellType.Taunt:
-                case eSpellType.MeleeDamageDebuff:
-                    return TrustCast(spell, eCheckSpellType.Offensive, CalculateNextAttackTarget());
+                case ESpellType.DirectDamage:
+                case ESpellType.DamageSpeedDecrease:
+                case ESpellType.SpeedDecrease:
+                case ESpellType.Taunt:
+                case ESpellType.MeleeDamageDebuff:
+                    return TrustCast(spell, ECheckSpellType.Offensive, CalculateNextAttackTarget());
             }
 
             return false;
         }
 
-        protected virtual bool TrustCast(Spell spell, eCheckSpellType type, GameLiving target)
+        protected virtual bool TrustCast(Spell spell, ECheckSpellType type, GameLiving target)
         {
             if (spell.IsPBAoE)
                 return Body.CastSpell(spell, m_mobSpellLine);
@@ -136,7 +117,7 @@ namespace DOL.AI.Brain
                     DefensiveSpellTargets.Add(player);
             }
 
-            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) spell.Range))
+            foreach (GameNpc npc in Body.GetNPCsInRadius((ushort) spell.Range))
             {
                 if (GameServer.ServerRules.IsAllowedToAttack(Body, npc, true) || !npc.IsAlive || LivingHasEffect(npc, spell))
                     continue;

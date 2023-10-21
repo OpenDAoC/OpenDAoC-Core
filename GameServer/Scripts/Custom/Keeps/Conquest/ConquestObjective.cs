@@ -7,20 +7,20 @@ namespace DOL.GS;
 
 public class ConquestObjective
 {
-    public AbstractGameKeep Keep;
+    public AGameKeep Keep;
     public long LastRolloverTick = 0;
     public long StartTick;
 
     private int _realmPointTickAward = ServerProperties.Properties.SUBTICK_RP_AWARD;
 
-    public SubObjective ObjectiveOne;
-    public SubObjective ObjectiveTwo;
-    public SubObjective ObjectiveThree;
-    public SubObjective ObjectiveFour;
+    public ConquestSubObjective ObjectiveOne;
+    public ConquestSubObjective ObjectiveTwo;
+    public ConquestSubObjective ObjectiveThree;
+    public ConquestSubObjective ObjectiveFour;
 
     public bool ActiveFlags => ObjectiveOne != null && ObjectiveTwo != null && ObjectiveThree != null && ObjectiveFour != null;
 
-    public ConquestObjective(AbstractGameKeep keep)
+    public ConquestObjective(AGameKeep keep)
     {
         Keep = keep;
     }
@@ -32,16 +32,16 @@ public class ConquestObjective
         LastRolloverTick = StartTick;
     }
 
-    private void InitializeFlags(AbstractGameKeep keep)
+    private void InitializeFlags(AGameKeep keep)
     {
         var locs = GetFlagLocsForKeep(keep);
-        ObjectiveOne = new SubObjective(locs[0].X, locs[0].Y, locs[0].Z, keep, 1);
-        ObjectiveTwo = new SubObjective(locs[1].X, locs[1].Y, locs[1].Z, keep, 2);
-        ObjectiveThree = new SubObjective(locs[2].X, locs[2].Y, locs[2].Z, keep, 3);
-        ObjectiveFour = new SubObjective(locs[3].X, locs[3].Y, locs[3].Z, keep, 4);
+        ObjectiveOne = new ConquestSubObjective(locs[0].X, locs[0].Y, locs[0].Z, keep, 1);
+        ObjectiveTwo = new ConquestSubObjective(locs[1].X, locs[1].Y, locs[1].Z, keep, 2);
+        ObjectiveThree = new ConquestSubObjective(locs[2].X, locs[2].Y, locs[2].Z, keep, 3);
+        ObjectiveFour = new ConquestSubObjective(locs[3].X, locs[3].Y, locs[3].Z, keep, 4);
     }
 
-    private List<Point3D> GetFlagLocsForKeep(AbstractGameKeep keep)
+    private List<Point3D> GetFlagLocsForKeep(AGameKeep keep)
     {
         List<Point3D> flagLocs = new List<Point3D>();
 
@@ -144,7 +144,7 @@ public class ConquestObjective
         return flagLocs;
     }
 
-    public List<String> GetPlayerCoordsForKeep(AbstractGameKeep keep)
+    public List<String> GetPlayerCoordsForKeep(AGameKeep keep)
     {
         List<String> flagLocs = new List<String>();
 
@@ -276,14 +276,14 @@ public class ConquestObjective
         foreach (GamePlayer player in ConquestService.ConquestManager.GetContributors())
         {
             if (player.CurrentRegion != Keep.CurrentRegion || player.Level < 40) continue;
-            player.Out.SendMessage($"The realm thanks you for your efforts in the conquest.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage($"The realm thanks you for your efforts in the conquest.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
             int RPBase = _realmPointTickAward;
             double flagMod = 1 + 0.25 * GetNumFlagsOwnedByRealm(player.Realm);
             player.GainRealmPoints((long)(RPBase * flagMod), false);
         }
     }
 
-    public int GetNumFlagsOwnedByRealm(eRealm realm)
+    public int GetNumFlagsOwnedByRealm(ERealm realm)
     {
         int output = 0;
         if (ObjectiveOne.OwningRealm == realm) output++;
@@ -301,7 +301,7 @@ public class ConquestObjective
         ObjectiveFour?.CheckNearbyPlayers();
     }
 
-    public SubObjective GetObjective(int objectiveNumber)
+    public ConquestSubObjective GetObjective(int objectiveNumber)
     {
         switch (objectiveNumber)
         {

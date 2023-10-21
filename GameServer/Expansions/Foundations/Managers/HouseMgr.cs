@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -104,7 +85,7 @@ namespace DOL.GS.Housing
 				log.Info("[Housing] Loaded " + houses + " houses and " + lotmarkers + " lotmarkers in " + regions + " regions!");
 
 			if (client != null)
-				client.Out.SendMessage("Loaded " + houses + " houses and " + lotmarkers + " lotmarkers in " + regions + " regions!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Loaded " + houses + " houses and " + lotmarkers + " lotmarkers in " + regions + " regions!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			if (CheckRentTimer == null)
 			{
@@ -123,7 +104,7 @@ namespace DOL.GS.Housing
 		public static string LoadHousingForRegion(ushort regionID)
 		{
 			string result = "";
-			var regionHousing = DOLDB<DbHouse>.SelectObjects(DB.Column("RegionID").IsEqualTo(regionID));
+			var regionHousing = CoreDb<DbHouse>.SelectObjects(DB.Column("RegionID").IsEqualTo(regionID));
 
 			if (regionHousing == null || regionHousing.Count == 0)
 				return "No housing found for region.";
@@ -401,7 +382,7 @@ namespace DOL.GS.Housing
 			}
 
 			// if there is a consignment merchant, we have to re-initialize since we changed the house
-			var merchant = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
+			var merchant = CoreDb<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
 			long oldMerchantMoney = 0;
 			if (merchant != null)
 			{
@@ -477,15 +458,15 @@ namespace DOL.GS.Housing
 		{
 			house.RemoveConsignmentMerchant();
 
-			IList<DbHouseIndoorItem> iobjs = DOLDB<DbHouseIndoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
+			IList<DbHouseIndoorItem> iobjs = CoreDb<DbHouseIndoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
 			GameServer.Database.DeleteObject(iobjs);
 			house.IndoorItems.Clear();
 
-			IList<DbHouseOutdoorItem> oobjs = DOLDB<DbHouseOutdoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
+			IList<DbHouseOutdoorItem> oobjs = CoreDb<DbHouseOutdoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
 			GameServer.Database.DeleteObject(oobjs);
 			house.OutdoorItems.Clear();
 
-			IList<DbHouseHookPointItem> hpobjs = DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
+			IList<DbHouseHookPointItem> hpobjs = CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
 			GameServer.Database.DeleteObject(hpobjs);
 
 			foreach (DbHouseHookPointItem item in house.HousepointItems.Values)
@@ -503,7 +484,7 @@ namespace DOL.GS.Housing
 			// clear the house number for the guild if this is a guild house
 			if (house.DatabaseItem.GuildHouse)
 			{
-				Guild guild = GuildMgr.GetGuildByName(house.DatabaseItem.GuildName);
+				GuildUtil guild = GuildMgr.GetGuildByName(house.DatabaseItem.GuildName);
 				if (guild != null)
 				{
 					guild.GuildHouseNumber = 0;
@@ -513,11 +494,11 @@ namespace DOL.GS.Housing
 			house.DatabaseItem.GuildHouse = false;
 			house.DatabaseItem.GuildName = null;
 
-			IList<DbHousePermissions> pobjs = DOLDB<DbHousePermissions>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
+			IList<DbHousePermissions> pobjs = CoreDb<DbHousePermissions>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
 			GameServer.Database.DeleteObject(pobjs);
 			house.PermissionLevels.Clear();
 
-			IList<DbHouseCharsXPerms> cpobjs = DOLDB<DbHouseCharsXPerms>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
+			IList<DbHouseCharsXPerms> cpobjs = CoreDb<DbHouseCharsXPerms>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber));
 			GameServer.Database.DeleteObject(cpobjs);
 			house.CharXPermissions.Clear();
 		}
@@ -564,7 +545,7 @@ namespace DOL.GS.Housing
 			// 1) belongs to the guild and is 2) a GM in the guild
 			if (player.Guild != null && house.GuildHouse)
 			{
-				if (player.Guild.Name == house.GuildName && player.Guild.HasRank(player, Guild.eRank.Leader))
+				if (player.Guild.Name == house.GuildName && player.Guild.HasRank(player, EGuildRank.Leader))
 					return true;
 			}
 			else
@@ -681,7 +662,7 @@ namespace DOL.GS.Housing
 			}
 
 			// player needs to be a GM in the guild to xfer his personal house to the guild
-			if (player.Guild.HasRank(player, Guild.eRank.Leader) == false)
+			if (player.Guild.HasRank(player, EGuildRank.Leader) == false)
 			{
 				ChatUtil.SendSystemMessage(player, "You are not the leader of a guild!");
 				return false;
@@ -726,7 +707,7 @@ namespace DOL.GS.Housing
 			// notify guild members of the guild house acquisition
 			player.Guild.SendMessageToGuildMembers(
 				LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Housing.GuildNowOwns", player.Guild.Name, player.Name),
-				eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 
 			// save the guild and broadcast updates
 			player.Guild.SaveIntoDatabase();
@@ -837,12 +818,12 @@ namespace DOL.GS.Housing
 		}
 
 
-		public static void SendHousingMerchantWindow(GamePlayer player, eMerchantWindowType merchantType)
+		public static void SendHousingMerchantWindow(GamePlayer player, EMerchantWindowType merchantType)
 		{
 			GameServer.ServerRules.SendHousingMerchantWindow(player, merchantType);
 		}
 
-		public static void BuyHousingItem(GamePlayer player, ushort slot, byte count, eMerchantWindowType merchantType)
+		public static void BuyHousingItem(GamePlayer player, ushort slot, byte count, EMerchantWindowType merchantType)
 		{
 			GameServer.ServerRules.BuyHousingItem(player, slot, count, merchantType);
 		}

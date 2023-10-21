@@ -190,9 +190,9 @@ namespace DOL.Tests.Unit.Gameserver
         public void CheckQuestQualification_PlayerIsPaladinAndAllowedClassIsCleric_False()
         {
             var player = NewFakePlayer();
-            player.fakeCharacterClass = new ClassPaladin();
+            player.FakePlayerClass = new ClassPaladin();
             var dbDataQuest = new DbDataQuest();
-            var clericClassID = (int)eCharacterClass.Cleric;
+            var clericClassID = (int)EPlayerClass.Cleric;
             dbDataQuest.AllowedClasses = clericClassID.ToString();
             var dataQuest = NewDataQuest(dbDataQuest);
 
@@ -352,9 +352,9 @@ namespace DOL.Tests.Unit.Gameserver
 
         private class FakeQuestPlayer : FakePlayer
         {
-            public ConcurrentDictionary<AbstractQuest, byte> fakeQuestList = new();
+            public ConcurrentDictionary<AQuest, byte> fakeQuestList = new();
 
-            public override ConcurrentDictionary<AbstractQuest, byte> QuestList => fakeQuestList;
+            public override ConcurrentDictionary<AQuest, byte> QuestList => fakeQuestList;
         }
 
         private class DataQuestSpy : DataQuest

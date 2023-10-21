@@ -148,7 +148,7 @@ namespace DOL.GS.Effects
 			if (player == null || player.DBCharacter == null || GameServer.Database == null)
 				return;
 
-			var effs = DOLDB<DbPlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
+			var effs = CoreDb<DbPlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
 			if (effs == null)
 				return;
 
@@ -283,9 +283,9 @@ namespace DOL.GS.Effects
 		/// </summary>
 		protected virtual void UpdateChangedEffects()
 		{
-			if (m_owner is GameNPC)
+			if (m_owner is GameNpc)
 			{
-				IControlledBrain npc = ((GameNPC)m_owner).Brain as IControlledBrain;
+				IControlledBrain npc = ((GameNpc)m_owner).Brain as IControlledBrain;
 				if (npc != null)
 					npc.UpdatePetWindow();
 			}

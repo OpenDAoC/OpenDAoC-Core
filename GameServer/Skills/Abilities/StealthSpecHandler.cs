@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
@@ -24,9 +5,6 @@ using DOL.Language;
 
 namespace DOL.GS.SkillHandler
 {
-	/// <summary>
-	/// Handler for Stealth Spec clicks
-	/// </summary>
 	[SkillHandler(Specs.Stealth)]
 	public class StealthSpecHandler : ISpecActionHandler
 	{
@@ -38,22 +16,22 @@ namespace DOL.GS.SkillHandler
 		public void Execute(Specialization spec, GamePlayer player)
 		{
 			// Can't stealth while in combat
-			if(player.InCombat && !player.IsStealthed && player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+			if(player.InCombat && !player.IsStealthed && player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseInCombat"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
-			ECSGameEffect volley = EffectListService.GetEffectOnTarget(player, eEffect.Volley);
+			EcsGameEffect volley = EffectListService.GetEffectOnTarget(player, EEffect.Volley);
 			if (volley != null)
 			{
-				player.Out.SendMessage("You can't stealth while you have active Volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You can't stealth while you have active Volley!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			long stealthChangeTick = player.TempProperties.GetProperty<long>(GamePlayer.STEALTH_CHANGE_TICK);
 			long changeTime = player.CurrentRegion.Time - stealthChangeTick;
 			if(changeTime < 2000)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseStealthChangeTick", ((2000 - changeTime) / 1000).ToString()), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseStealthChangeTick", ((2000 - changeTime) / 1000).ToString()), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			player.TempProperties.SetProperty(GamePlayer.STEALTH_CHANGE_TICK, player.CurrentRegion.Time);
@@ -63,14 +41,14 @@ namespace DOL.GS.SkillHandler
 				// Dead can't stealth
 				if(!player.IsAlive)
 				{
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseDead"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseDead"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
 				}
 
 				// Can't stealth if in attack mode
 				if(player.attackComponent.AttackState || player.IsCasting)
 				{
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseCombatState"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseCombatState"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
 				}
 
@@ -80,7 +58,7 @@ namespace DOL.GS.SkillHandler
 
 				if (player.effectListComponent.GetAllPulseEffects().Count > 0)
 				{
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseActivePulsingSpell"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseActivePulsingSpell"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
 				}
 
@@ -88,13 +66,13 @@ namespace DOL.GS.SkillHandler
 
 				if (player.IsMezzed)
 				{
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseMezzed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseMezzed"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     return;
 				}
 
 				if (player.IsStunned)
 				{
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseStunned"), eChatType.CT_System, eChatLoc.CL_SystemWindow); 
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseStunned"), EChatType.CT_System, EChatLoc.CL_SystemWindow); 
                     return;
 				}
 
@@ -121,12 +99,12 @@ namespace DOL.GS.SkillHandler
 					//Range check
 					if (!IsObjectTooClose(ply, player)) continue;
 
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseToCloseAnEnemy"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseToCloseAnEnemy"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 
 				// Check if enemy NPC is close
-				foreach (GameNPC npc in player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GameNpc npc in player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
 					if (npc.ObjectState != GameObject.eObjectState.Active) continue;
 
@@ -139,7 +117,7 @@ namespace DOL.GS.SkillHandler
 					//Range check
 					if (!IsObjectTooClose(npc, player)) continue;
 
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseToCloseAnEnemy"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Stealth.CannotUseToCloseAnEnemy"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
@@ -157,7 +135,7 @@ namespace DOL.GS.SkillHandler
 
 					if (attacker is GamePlayer playerAttacker)
 						playerAttacker.Out.SendChangeTarget(null);
-					if (attacker is GameNPC npcAttacker)
+					if (attacker is GameNpc npcAttacker)
 					{
 						if (npcAttacker.Brain is IOldAggressiveBrain npcAttackerBrain)
 						{

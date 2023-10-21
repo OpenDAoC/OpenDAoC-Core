@@ -9,9 +9,6 @@ using log4net;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// Pathing
-    /// </summary>
     public class LocalPathingMgr : IPathingMgr
     {
         public const float CONVERSION_FACTOR = 1.0f / 32f;
@@ -204,7 +201,7 @@ namespace DOL.GS
             if (!_navmeshPtrs.ContainsKey(zone.ID))
                 return new WrappedPathingResult
                 {
-                    Error = PathingError.NoPathFound,
+                    Error = EPathingError.NoPathFound,
                     Points = null,
                 };
 
@@ -229,7 +226,7 @@ namespace DOL.GS
             var status = PathStraight(query, startFloats, endFloats, polyExt, filter, options, ref numNodes, buffer, flags);
             if ((status & dtStatus.DT_SUCCESS) == 0)
             {
-                result.Error = PathingError.NoPathFound;
+                result.Error = EPathingError.NoPathFound;
                 result.Points = null;
                 return result;
             }
@@ -244,9 +241,9 @@ namespace DOL.GS
             }
 
             if ((status & dtStatus.DT_PARTIAL_RESULT) == 0)
-                result.Error = PathingError.PathFound;
+                result.Error = EPathingError.PathFound;
             else
-                result.Error = PathingError.PathFound;
+                result.Error = EPathingError.PathFound;
             result.Points = points;
 
             return result;

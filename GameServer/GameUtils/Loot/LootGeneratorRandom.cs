@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.Database;
@@ -24,7 +5,6 @@ using DOL.Database;
 namespace DOL.GS
 {
 	/// <summary>
-	/// LootGeneratorRandom
 	/// This implementation uses ItemTemplates to fetch a random item in the range of LEVEL_RANGE to moblevel   
 	/// </summary>
 	public class LootGeneratorRandom : LootGeneratorBase
@@ -61,8 +41,8 @@ namespace DOL.GS
 				{
 					var filterLevel = DB.Column("Level").IsGreaterOrEqualTo(i * LEVEL_RANGE).And(DB.Column("Level").IsLessOrEqualTo((i + 1) * LEVEL_RANGE));
 					var filterByFlags = DB.Column("IsPickable").IsEqualTo(1).And(DB.Column("IsDropable").IsEqualTo(1)).And(DB.Column("CanDropAsLoot").IsEqualTo(1));
-					var filterBySlot = DB.Column("Item_Type").IsGreaterOrEqualTo((int)eInventorySlot.MinEquipable).And(DB.Column("Item_Type").IsLessOrEqualTo((int)eInventorySlot.MaxEquipable));
-					itemTemplates = DOLDB<DbItemTemplate>.SelectObjects(filterLevel.And(filterByFlags).And(filterBySlot));
+					var filterBySlot = DB.Column("Item_Type").IsGreaterOrEqualTo((int)EInventorySlot.MinEquipable).And(DB.Column("Item_Type").IsLessOrEqualTo((int)EInventorySlot.MaxEquipable));
+					itemTemplates = CoreDb<DbItemTemplate>.SelectObjects(filterLevel.And(filterByFlags).And(filterBySlot));
 				}
 				catch (Exception e)
 				{
@@ -79,13 +59,13 @@ namespace DOL.GS
 				{
 					switch (itemTemplate.Realm)
 					{
-						case (int)eRealm.Albion:
+						case (int)ERealm.Albion:
 							templatesAlb.Add(itemTemplate);
 							break;
-						case (int)eRealm.Hibernia:
+						case (int)ERealm.Hibernia:
 							templatesHib.Add(itemTemplate);
 							break;
-						case (int)eRealm.Midgard:
+						case (int)ERealm.Midgard:
 							templatesMid.Add(itemTemplate);
 							break;
 						default:
@@ -102,7 +82,7 @@ namespace DOL.GS
 			} // for
 		}
 
-		public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+		public override LootList GenerateLoot(GameNpc mob, GameObject killer)
 		{
 			LootList loot = base.GenerateLoot(mob, killer);
 
@@ -110,26 +90,26 @@ namespace DOL.GS
 			{
 				DbItemTemplate[] itemTemplates = null;
 
-				eRealm realm = mob.CurrentZone.Realm;
+				ERealm realm = mob.CurrentZone.Realm;
 
-				if (realm < eRealm._FirstPlayerRealm || realm > eRealm._LastPlayerRealm)
-					realm = (eRealm)Util.Random((int)eRealm._FirstPlayerRealm, (int)eRealm._LastPlayerRealm);
+				if (realm < ERealm._FirstPlayerRealm || realm > ERealm._LastPlayerRealm)
+					realm = (ERealm)Util.Random((int)ERealm._FirstPlayerRealm, (int)ERealm._LastPlayerRealm);
 
 				switch (realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						{
 							int index = Math.Min(m_itemTemplatesAlb.Length - 1, mob.Level / LEVEL_RANGE);
 							itemTemplates = m_itemTemplatesAlb[index];
 						}
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						{
 							int index = Math.Min(m_itemTemplatesHib.Length - 1, mob.Level / LEVEL_RANGE);
 							itemTemplates = m_itemTemplatesHib[index];
 							break;
 						}
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						{
 							int index = Math.Min(m_itemTemplatesHib.Length - 1, mob.Level / LEVEL_RANGE);
 							itemTemplates = m_itemTemplatesMid[index];

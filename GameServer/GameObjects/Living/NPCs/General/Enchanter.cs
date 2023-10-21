@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using DOL.Database;
@@ -27,8 +8,8 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-	[NPCGuildScript("Enchanter")]
-	public class Enchanter : GameNPC
+	[NpcGuildScript("Enchanter")]
+	public class Enchanter : GameNpc
 	{
 		private const string ENCHANT_ITEM_WEAK = "enchanting item";
 		private int[] BONUS_TABLE = new int[] {5, 5, 10, 15, 20, 25, 30, 30};
@@ -112,13 +93,13 @@ namespace DOL.GS
 			
 			if (item.Level >= 10 && item.IsCrafted)
 			{
-				if (item.Object_Type != (int) eObjectType.Magical && item.Object_Type != (int) eObjectType.Bolt && item.Object_Type != (int) eObjectType.Poison)
+				if (item.Object_Type != (int) EObjectType.Magical && item.Object_Type != (int) EObjectType.Bolt && item.Object_Type != (int) EObjectType.Poison)
 				{
 					if (item.Bonus == 0)
 					{
 						player.TempProperties.SetProperty(ENCHANT_ITEM_WEAK, new WeakRef(item));
 						// Message: It will cost {0} to enchant that. Do you accept?
-                        player.Client.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client, "GameNPC.Enchanter.ReceiveItem.Cost", Money.GetString(CalculEnchantPrice(item))), new CustomDialogResponse(EnchanterDialogResponse));
+                        player.Client.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client, "GameNPC.Enchanter.ReceiveItem.Cost", MoneyMgr.GetString(CalculEnchantPrice(item))), new CustomDialogResponse(EnchanterDialogResponse));
                     }
 					else
 						// Message: {0} says, "That is already enchanted."
@@ -162,7 +143,7 @@ namespace DOL.GS
 				return;
 			}
 
-			if (item == null || item.SlotPosition == (int) eInventorySlot.Ground
+			if (item == null || item.SlotPosition == (int) EInventorySlot.Ground
 			                 || item.OwnerID == null || item.OwnerID != player.InternalID)
 			{
 				// Message: {0} says, "I can't enchant that."
@@ -178,7 +159,7 @@ namespace DOL.GS
 				// Message: {0} says, "It costs {1} to enchant {2}. You don't have that much."
 				ChatUtil.SendSayMessage(player, "GameNPC.Enchanter.Response.NotEnoughMoney", 
 					GetName(0, true), 
-					Money.GetString(Fee), 
+					MoneyMgr.GetString(Fee), 
 					item.GetName(0, false));
                 //SayTo(player, eChatLoc.CL_SystemWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Enchanter.Response.NotEnoughMoney", Money.GetString(Fee)));
                 return;
@@ -195,11 +176,11 @@ namespace DOL.GS
             // Message: You give {0} {1}.
             ChatUtil.SendSayMessage(player, "GameNPC.Enchanter.Response.YouGive",
 	            GetName(0, true),
-	            Money.GetString(Fee));
+	            MoneyMgr.GetString(Fee));
             //player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Enchanter.Response.YouGive", 
                                     //GetName(0, false, player.Client.Account.Language, this), Money.GetString(Fee)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             player.RemoveMoney(Fee, null);
-            InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, Fee);
+            InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, Fee);
             // Message: {0} says, "There, it is now {1}!"
             ChatUtil.SendSayMessage(player, "GameNPC.Enchanter.Response.NowEnchanted", 
 	            GetName(0, true),

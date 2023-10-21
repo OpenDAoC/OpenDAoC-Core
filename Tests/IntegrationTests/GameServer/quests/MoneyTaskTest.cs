@@ -42,7 +42,7 @@ namespace DOL.Tests.Integration.Server
 
 			GameMerchant merchant = new GameMerchant();
 			merchant.Name = "Tester";
-			merchant.Realm = eRealm.Albion;
+			merchant.Realm = ERealm.Albion;
 			Console.WriteLine(player.Name);
 
 			if (MoneyTask.CheckAvailability(player, merchant))
@@ -62,7 +62,7 @@ namespace DOL.Tests.Integration.Server
 					DbInventoryItem item = GameInventoryItem.Create(new DbItemTemplate());
 					item.Name = task.ItemName;
 
-					GameNPC npc = new GameNPC();
+					GameNpc npc = new GameNpc();
 					npc.Name = task.ReceiverName;
 					task.Notify(GamePlayerEvent.GiveItem, player, new GiveItemEventArgs(player, npc, item));
 

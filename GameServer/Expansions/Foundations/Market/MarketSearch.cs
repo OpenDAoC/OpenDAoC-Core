@@ -1,27 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-// MarketSearch by Tolakram.  Donated from Storm
-// Based on MarketNPC by Etaew, rewritten by Tolakram for new Inventory system
-
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DOL.Database;
 using log4net;
 
@@ -681,7 +658,7 @@ namespace DOL.GS
 			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
 			{
 				log.DebugFormat("Market Explorer Search for items on slot '{0}' and for item '{1}'", slot, item.Name);
-				log.DebugFormat("Market Explorer Search current item '{0}' as itemType '{1}' comparing with '{2}'.", item.Name, item.Item_Type, (int)eInventorySlot.ArmsArmor);
+				log.DebugFormat("Market Explorer Search current item '{0}' as itemType '{1}' comparing with '{2}'.", item.Name, item.Item_Type, (int)EInventorySlot.ArmsArmor);
 				log.DebugFormat("Market Explorer Search for items on slot '{0}' and for item.Type '{1}'.", slot, item.Item_Type);
 			}
 
@@ -710,25 +687,25 @@ namespace DOL.GS
 					// 106 - Wieldable
 					// 13 - Wrist
 
-					case 1: return item.Item_Type == (int)eInventorySlot.HeadArmor;
-					case 2: return item.Item_Type == (int)eInventorySlot.HandsArmor;
-					case 3: return item.Item_Type == (int)eInventorySlot.FeetArmor;
-					case 4: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Jewellery;
-					case 5: return item.Item_Type == (int)eInventorySlot.TorsoArmor;
-					case 6: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Cloak;
-					case 7: return item.Item_Type == (int)eInventorySlot.LegsArmor;
-					case 8: return item.Item_Type == (int)eInventorySlot.ArmsArmor;
-					case 9: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Neck;
-					case 12: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Waist;
-					case 13: return item.Object_Type == (int)eObjectType.Magical && (item.Item_Type == (int)eInventorySlot.RightBracer || item.Item_Type == (int)eInventorySlot.LeftBracer);
-					case 15: return item.Object_Type == (int)eObjectType.Magical && (item.Item_Type == (int)eInventorySlot.RightRing || item.Item_Type == (int)eInventorySlot.LeftRing);					
-					case 100: return item.Item_Type == (int)eInventorySlot.RightHandWeapon || item.Item_Type == (int)eInventorySlot.LeftHandWeapon || item.Item_Type == (int)eInventorySlot.TwoHandWeapon;
-					case 101: return item.Item_Type == (int)eInventorySlot.LeftHandWeapon;
-					case 102: return item.Item_Type == (int)eInventorySlot.TwoHandWeapon;
-					case 103: return item.Item_Type == (int)eInventorySlot.DistanceWeapon;
-					case 104: return item.Object_Type == (int)eObjectType.Instrument && item.Item_Type == (int)eInventorySlot.RightHandWeapon;
-					case 105: return item.Object_Type == (int)eObjectType.Shield && item.Item_Type == (int)eInventorySlot.LeftHandWeapon;					
-					case 106: return item.Object_Type == (int)eObjectType.GenericItem;
+					case 1: return item.Item_Type == (int)EInventorySlot.HeadArmor;
+					case 2: return item.Item_Type == (int)EInventorySlot.HandsArmor;
+					case 3: return item.Item_Type == (int)EInventorySlot.FeetArmor;
+					case 4: return item.Object_Type == (int)EObjectType.Magical && item.Item_Type == (int)EInventorySlot.Jewellery;
+					case 5: return item.Item_Type == (int)EInventorySlot.TorsoArmor;
+					case 6: return item.Object_Type == (int)EObjectType.Magical && item.Item_Type == (int)EInventorySlot.Cloak;
+					case 7: return item.Item_Type == (int)EInventorySlot.LegsArmor;
+					case 8: return item.Item_Type == (int)EInventorySlot.ArmsArmor;
+					case 9: return item.Object_Type == (int)EObjectType.Magical && item.Item_Type == (int)EInventorySlot.Neck;
+					case 12: return item.Object_Type == (int)EObjectType.Magical && item.Item_Type == (int)EInventorySlot.Waist;
+					case 13: return item.Object_Type == (int)EObjectType.Magical && (item.Item_Type == (int)EInventorySlot.RightBracer || item.Item_Type == (int)EInventorySlot.LeftBracer);
+					case 15: return item.Object_Type == (int)EObjectType.Magical && (item.Item_Type == (int)EInventorySlot.RightRing || item.Item_Type == (int)EInventorySlot.LeftRing);					
+					case 100: return item.Item_Type == (int)EInventorySlot.RightHandWeapon || item.Item_Type == (int)EInventorySlot.LeftHandWeapon || item.Item_Type == (int)EInventorySlot.TwoHandWeapon;
+					case 101: return item.Item_Type == (int)EInventorySlot.LeftHandWeapon;
+					case 102: return item.Item_Type == (int)EInventorySlot.TwoHandWeapon;
+					case 103: return item.Item_Type == (int)EInventorySlot.DistanceWeapon;
+					case 104: return item.Object_Type == (int)EObjectType.Instrument && item.Item_Type == (int)EInventorySlot.RightHandWeapon;
+					case 105: return item.Object_Type == (int)EObjectType.Shield && item.Item_Type == (int)EInventorySlot.LeftHandWeapon;					
+					case 106: return item.Object_Type == (int)EObjectType.GenericItem;
 
 					default:
 
@@ -747,17 +724,17 @@ namespace DOL.GS
 		{
 			if (hp > 0)
 			{
-				if ((item.ExtraBonusType == (int)eProperty.MaxHealth && item.ExtraBonus >= hp) ||
-					(item.Bonus1Type == (int)eProperty.MaxHealth && item.Bonus1 >= hp) ||
-					(item.Bonus2Type == (int)eProperty.MaxHealth && item.Bonus2 >= hp) ||
-					(item.Bonus3Type == (int)eProperty.MaxHealth && item.Bonus3 >= hp) ||
-					(item.Bonus4Type == (int)eProperty.MaxHealth && item.Bonus4 >= hp) ||
-					(item.Bonus5Type == (int)eProperty.MaxHealth && item.Bonus5 >= hp) ||
-					(item.Bonus6Type == (int)eProperty.MaxHealth && item.Bonus6 >= hp) ||
-					(item.Bonus7Type == (int)eProperty.MaxHealth && item.Bonus7 >= hp) ||
-					(item.Bonus8Type == (int)eProperty.MaxHealth && item.Bonus8 >= hp) ||
-					(item.Bonus9Type == (int)eProperty.MaxHealth && item.Bonus9 >= hp) ||
-					(item.Bonus10Type == (int)eProperty.MaxHealth && item.Bonus10 >= hp))
+				if ((item.ExtraBonusType == (int)EProperty.MaxHealth && item.ExtraBonus >= hp) ||
+					(item.Bonus1Type == (int)EProperty.MaxHealth && item.Bonus1 >= hp) ||
+					(item.Bonus2Type == (int)EProperty.MaxHealth && item.Bonus2 >= hp) ||
+					(item.Bonus3Type == (int)EProperty.MaxHealth && item.Bonus3 >= hp) ||
+					(item.Bonus4Type == (int)EProperty.MaxHealth && item.Bonus4 >= hp) ||
+					(item.Bonus5Type == (int)EProperty.MaxHealth && item.Bonus5 >= hp) ||
+					(item.Bonus6Type == (int)EProperty.MaxHealth && item.Bonus6 >= hp) ||
+					(item.Bonus7Type == (int)EProperty.MaxHealth && item.Bonus7 >= hp) ||
+					(item.Bonus8Type == (int)EProperty.MaxHealth && item.Bonus8 >= hp) ||
+					(item.Bonus9Type == (int)EProperty.MaxHealth && item.Bonus9 >= hp) ||
+					(item.Bonus10Type == (int)EProperty.MaxHealth && item.Bonus10 >= hp))
 					return true;
 			}
 
@@ -768,17 +745,17 @@ namespace DOL.GS
 		{
 			if (power > 0)
 			{
-				if ((item.ExtraBonusType == (int)eProperty.MaxMana && item.ExtraBonus >= power) ||
-					(item.Bonus1Type == (int)eProperty.MaxMana && item.Bonus1 >= power) ||
-					(item.Bonus2Type == (int)eProperty.MaxMana && item.Bonus2 >= power) ||
-					(item.Bonus3Type == (int)eProperty.MaxMana && item.Bonus3 >= power) ||
-					(item.Bonus4Type == (int)eProperty.MaxMana && item.Bonus4 >= power) ||
-					(item.Bonus5Type == (int)eProperty.MaxMana && item.Bonus5 >= power) ||
-					(item.Bonus6Type == (int)eProperty.MaxMana && item.Bonus6 >= power) ||
-					(item.Bonus7Type == (int)eProperty.MaxMana && item.Bonus7 >= power) ||
-					(item.Bonus8Type == (int)eProperty.MaxMana && item.Bonus8 >= power) ||
-					(item.Bonus9Type == (int)eProperty.MaxMana && item.Bonus9 >= power) ||
-					(item.Bonus10Type == (int)eProperty.MaxMana && item.Bonus10 >= power))
+				if ((item.ExtraBonusType == (int)EProperty.MaxMana && item.ExtraBonus >= power) ||
+					(item.Bonus1Type == (int)EProperty.MaxMana && item.Bonus1 >= power) ||
+					(item.Bonus2Type == (int)EProperty.MaxMana && item.Bonus2 >= power) ||
+					(item.Bonus3Type == (int)EProperty.MaxMana && item.Bonus3 >= power) ||
+					(item.Bonus4Type == (int)EProperty.MaxMana && item.Bonus4 >= power) ||
+					(item.Bonus5Type == (int)EProperty.MaxMana && item.Bonus5 >= power) ||
+					(item.Bonus6Type == (int)EProperty.MaxMana && item.Bonus6 >= power) ||
+					(item.Bonus7Type == (int)EProperty.MaxMana && item.Bonus7 >= power) ||
+					(item.Bonus8Type == (int)EProperty.MaxMana && item.Bonus8 >= power) ||
+					(item.Bonus9Type == (int)EProperty.MaxMana && item.Bonus9 >= power) ||
+					(item.Bonus10Type == (int)EProperty.MaxMana && item.Bonus10 >= power))
 					return true;
 			}
 
@@ -791,31 +768,31 @@ namespace DOL.GS
 			{
 				case 1:
 
-					return item.Object_Type == (int)eObjectType.Cloth;
+					return item.Object_Type == (int)EObjectType.Cloth;
 
 				case 2:
 
-					return item.Object_Type == (int)eObjectType.Leather;
+					return item.Object_Type == (int)EObjectType.Leather;
 
 				case 3:
 
-					return item.Object_Type == (int)eObjectType.Studded;
+					return item.Object_Type == (int)EObjectType.Studded;
 
 				case 4:
 
-					return item.Object_Type == (int)eObjectType.Chain;
+					return item.Object_Type == (int)EObjectType.Chain;
 
 				case 5:
 
-					return item.Object_Type == (int)eObjectType.Plate;
+					return item.Object_Type == (int)EObjectType.Plate;
 
 				case 6:
 
-					return item.Object_Type == (int)eObjectType.Reinforced;
+					return item.Object_Type == (int)EObjectType.Reinforced;
 
 				case 7:
 
-					return item.Object_Type == (int)eObjectType.Scale;
+					return item.Object_Type == (int)EObjectType.Scale;
 
 				default:
 
@@ -830,15 +807,15 @@ namespace DOL.GS
 		{
 			switch (resist)
 			{
-				case 0: return CheckForProperty(item, (int)eProperty.Resist_Body);
-				case 1: return CheckForProperty(item, (int)eProperty.Resist_Cold);
-				case 2: return CheckForProperty(item, (int)eProperty.Resist_Heat);
-				case 3: return CheckForProperty(item, (int)eProperty.Resist_Energy);
-				case 4: return CheckForProperty(item, (int)eProperty.Resist_Matter);
-				case 5: return CheckForProperty(item, (int)eProperty.Resist_Spirit);
-				case 6: return CheckForProperty(item, (int)eProperty.Resist_Thrust);
-				case 7: return CheckForProperty(item, (int)eProperty.Resist_Crush);
-				case 8: return CheckForProperty(item, (int)eProperty.Resist_Slash);
+				case 0: return CheckForProperty(item, (int)EProperty.Resist_Body);
+				case 1: return CheckForProperty(item, (int)EProperty.Resist_Cold);
+				case 2: return CheckForProperty(item, (int)EProperty.Resist_Heat);
+				case 3: return CheckForProperty(item, (int)EProperty.Resist_Energy);
+				case 4: return CheckForProperty(item, (int)EProperty.Resist_Matter);
+				case 5: return CheckForProperty(item, (int)EProperty.Resist_Spirit);
+				case 6: return CheckForProperty(item, (int)EProperty.Resist_Thrust);
+				case 7: return CheckForProperty(item, (int)EProperty.Resist_Crush);
+				case 8: return CheckForProperty(item, (int)EProperty.Resist_Slash);
 
 				default:
 
@@ -858,184 +835,184 @@ namespace DOL.GS
 			{
 				switch (skill)
 				{
-					case 1: return CheckForProperty(item, (int)eProperty.Skill_Slashing);
-					case 2: return CheckForProperty(item, (int)eProperty.Skill_Thrusting);
-					case 8: return CheckForProperty(item, (int)eProperty.Skill_Parry);
-					case 14: return CheckForProperty(item, (int)eProperty.Skill_Sword);
-					case 16: return CheckForProperty(item, (int)eProperty.Skill_Hammer);
-					case 17: return CheckForProperty(item, (int)eProperty.Skill_Axe);
-					case 18: return CheckForProperty(item, (int)eProperty.Skill_Left_Axe);
-					case 19: return CheckForProperty(item, (int)eProperty.Skill_Stealth);
-					case 26: return CheckForProperty(item, (int)eProperty.Skill_Spear);
-					case 29: return CheckForProperty(item, (int)eProperty.Skill_Mending);
-					case 30: return CheckForProperty(item, (int)eProperty.Skill_Augmentation);
-					case 33: return CheckForProperty(item, (int)eProperty.Skill_Crushing);
-					case 34: return CheckForProperty(item, (int)eProperty.Skill_Pacification);
-					case 37: return CheckForProperty(item, (int)eProperty.Skill_Subterranean); // this is cave magic
-					case 38: return CheckForProperty(item, (int)eProperty.Skill_Darkness);
-					case 39: return CheckForProperty(item, (int)eProperty.Skill_Suppression);
-					case 42: return CheckForProperty(item, (int)eProperty.Skill_Runecarving);
-					case 43: return CheckForProperty(item, (int)eProperty.Skill_Shields);
-					case 46: return CheckForProperty(item, (int)eProperty.Skill_Flexible_Weapon);
-					case 47: return CheckForProperty(item, (int)eProperty.Skill_Staff);
-					case 48: return CheckForProperty(item, (int)eProperty.Skill_Summoning);
-					case 50: return CheckForProperty(item, (int)eProperty.Skill_Stormcalling);
-					case 62: return CheckForProperty(item, (int)eProperty.Skill_BeastCraft);
-					case 64: return CheckForProperty(item, (int)eProperty.Skill_Polearms);
-					case 65: return CheckForProperty(item, (int)eProperty.Skill_Two_Handed);
-					case 66: return CheckForProperty(item, (int)eProperty.Skill_Fire);
-					case 67: return CheckForProperty(item, (int)eProperty.Skill_Wind);
-					case 68: return CheckForProperty(item, (int)eProperty.Skill_Cold);
-					case 69: return CheckForProperty(item, (int)eProperty.Skill_Earth);
-					case 70: return CheckForProperty(item, (int)eProperty.Skill_Light);
-					case 71: return CheckForProperty(item, (int)eProperty.Skill_Matter);
-					case 72: return CheckForProperty(item, (int)eProperty.Skill_Body);
-					case 73: return CheckForProperty(item, (int)eProperty.Skill_Spirit);
-					case 74: return CheckForProperty(item, (int)eProperty.Skill_Mind);
-					case 75: return CheckForProperty(item, (int)eProperty.Skill_Void);
-					case 76: return CheckForProperty(item, (int)eProperty.Skill_Mana);
-					case 77: return CheckForProperty(item, (int)eProperty.Skill_Dual_Wield);
-					case 78: return CheckForProperty(item, (int)eProperty.Skill_Archery); // was composite bow
-					case 82: return CheckForProperty(item, (int)eProperty.Skill_Battlesongs);
-					case 83: return CheckForProperty(item, (int)eProperty.Skill_Enhancement);
-					case 84: return CheckForProperty(item, (int)eProperty.Skill_Enchantments);
-					case 88: return CheckForProperty(item, (int)eProperty.Skill_Rejuvenation);
-					case 89: return CheckForProperty(item, (int)eProperty.Skill_Smiting);
+					case 1: return CheckForProperty(item, (int)EProperty.Skill_Slashing);
+					case 2: return CheckForProperty(item, (int)EProperty.Skill_Thrusting);
+					case 8: return CheckForProperty(item, (int)EProperty.Skill_Parry);
+					case 14: return CheckForProperty(item, (int)EProperty.Skill_Sword);
+					case 16: return CheckForProperty(item, (int)EProperty.Skill_Hammer);
+					case 17: return CheckForProperty(item, (int)EProperty.Skill_Axe);
+					case 18: return CheckForProperty(item, (int)EProperty.Skill_Left_Axe);
+					case 19: return CheckForProperty(item, (int)EProperty.Skill_Stealth);
+					case 26: return CheckForProperty(item, (int)EProperty.Skill_Spear);
+					case 29: return CheckForProperty(item, (int)EProperty.Skill_Mending);
+					case 30: return CheckForProperty(item, (int)EProperty.Skill_Augmentation);
+					case 33: return CheckForProperty(item, (int)EProperty.Skill_Crushing);
+					case 34: return CheckForProperty(item, (int)EProperty.Skill_Pacification);
+					case 37: return CheckForProperty(item, (int)EProperty.Skill_Subterranean); // this is cave magic
+					case 38: return CheckForProperty(item, (int)EProperty.Skill_Darkness);
+					case 39: return CheckForProperty(item, (int)EProperty.Skill_Suppression);
+					case 42: return CheckForProperty(item, (int)EProperty.Skill_Runecarving);
+					case 43: return CheckForProperty(item, (int)EProperty.Skill_Shields);
+					case 46: return CheckForProperty(item, (int)EProperty.Skill_Flexible_Weapon);
+					case 47: return CheckForProperty(item, (int)EProperty.Skill_Staff);
+					case 48: return CheckForProperty(item, (int)EProperty.Skill_Summoning);
+					case 50: return CheckForProperty(item, (int)EProperty.Skill_Stormcalling);
+					case 62: return CheckForProperty(item, (int)EProperty.Skill_BeastCraft);
+					case 64: return CheckForProperty(item, (int)EProperty.Skill_Polearms);
+					case 65: return CheckForProperty(item, (int)EProperty.Skill_Two_Handed);
+					case 66: return CheckForProperty(item, (int)EProperty.Skill_Fire);
+					case 67: return CheckForProperty(item, (int)EProperty.Skill_Wind);
+					case 68: return CheckForProperty(item, (int)EProperty.Skill_Cold);
+					case 69: return CheckForProperty(item, (int)EProperty.Skill_Earth);
+					case 70: return CheckForProperty(item, (int)EProperty.Skill_Light);
+					case 71: return CheckForProperty(item, (int)EProperty.Skill_Matter);
+					case 72: return CheckForProperty(item, (int)EProperty.Skill_Body);
+					case 73: return CheckForProperty(item, (int)EProperty.Skill_Spirit);
+					case 74: return CheckForProperty(item, (int)EProperty.Skill_Mind);
+					case 75: return CheckForProperty(item, (int)EProperty.Skill_Void);
+					case 76: return CheckForProperty(item, (int)EProperty.Skill_Mana);
+					case 77: return CheckForProperty(item, (int)EProperty.Skill_Dual_Wield);
+					case 78: return CheckForProperty(item, (int)EProperty.Skill_Archery); // was composite bow
+					case 82: return CheckForProperty(item, (int)EProperty.Skill_Battlesongs);
+					case 83: return CheckForProperty(item, (int)EProperty.Skill_Enhancement);
+					case 84: return CheckForProperty(item, (int)EProperty.Skill_Enchantments);
+					case 88: return CheckForProperty(item, (int)EProperty.Skill_Rejuvenation);
+					case 89: return CheckForProperty(item, (int)EProperty.Skill_Smiting);
 
-					case 90: return CheckForProperty(item, (int)eProperty.Skill_Long_bows) || 
-									CheckForProperty(item, (int)eProperty.Skill_Composite) || 
-									CheckForProperty(item, (int)eProperty.Skill_RecurvedBow); //  archery?  
+					case 90: return CheckForProperty(item, (int)EProperty.Skill_Long_bows) || 
+									CheckForProperty(item, (int)EProperty.Skill_Composite) || 
+									CheckForProperty(item, (int)EProperty.Skill_RecurvedBow); //  archery?  
 
-					case 91: return CheckForProperty(item, (int)eProperty.Skill_Cross_Bows);
-					case 97: return CheckForProperty(item, (int)eProperty.Skill_Chants); // chants?
-					case 98: return CheckForProperty(item, (int)eProperty.Skill_Instruments);
-					case 101: return CheckForProperty(item, (int)eProperty.Skill_Blades);
-					case 102: return CheckForProperty(item, (int)eProperty.Skill_Blunt);
-					case 103: return CheckForProperty(item, (int)eProperty.Skill_Piercing);
-					case 104: return CheckForProperty(item, (int)eProperty.Skill_Large_Weapon);
-					case 105: return CheckForProperty(item, (int)eProperty.Skill_Mentalism);
-					case 106: return CheckForProperty(item, (int)eProperty.Skill_Regrowth);
-					case 107: return CheckForProperty(item, (int)eProperty.Skill_Nurture);
-					case 108: return CheckForProperty(item, (int)eProperty.Skill_Nature);
-					case 109: return CheckForProperty(item, (int)eProperty.Skill_Music);
-					case 110: return CheckForProperty(item, (int)eProperty.Skill_Celtic_Dual);
-					case 112: return CheckForProperty(item, (int)eProperty.Skill_Celtic_Spear);
-					case 113: return CheckForProperty(item, (int)eProperty.Skill_Archery); // was recurve bow
-					case 114: return CheckForProperty(item, (int)eProperty.Skill_Valor);
-					case 116: return CheckForProperty(item, (int)eProperty.Skill_Pathfinding);
-					case 117: return CheckForProperty(item, (int)eProperty.Skill_Envenom);
-					case 118: return CheckForProperty(item, (int)eProperty.Skill_Critical_Strike);
-					case 120: return CheckForProperty(item, (int)eProperty.Skill_DeathSight);
-					case 121: return CheckForProperty(item, (int)eProperty.Skill_Pain_working);
-					case 122: return CheckForProperty(item, (int)eProperty.Skill_Death_Servant);
-					case 123: return CheckForProperty(item, (int)eProperty.Skill_SoulRending);
-					case 124: return CheckForProperty(item, (int)eProperty.Skill_HandToHand);
-					case 125: return CheckForProperty(item, (int)eProperty.Skill_Scythe);
-					case 126: return CheckForProperty(item, (int)eProperty.Skill_BoneArmy);
-					case 127: return CheckForProperty(item, (int)eProperty.Skill_Arboreal);
-					case 129: return CheckForProperty(item, (int)eProperty.Skill_Creeping);
-					case 130: return CheckForProperty(item, (int)eProperty.Skill_Verdant);
-					case 133: return CheckForProperty(item, (int)eProperty.Skill_OdinsWill);
-					case 134: return CheckForProperty(item, (int)eProperty.Skill_SpectralGuard) || CheckForProperty(item, (int)eProperty.Skill_SpectralForce);
-					case 135: return CheckForProperty(item, (int)eProperty.Skill_PhantasmalWail);
-					case 136: return CheckForProperty(item, (int)eProperty.Skill_EtherealShriek);
-					case 137: return CheckForProperty(item, (int)eProperty.Skill_ShadowMastery);
-					case 138: return CheckForProperty(item, (int)eProperty.Skill_VampiiricEmbrace);
-					case 139: return CheckForProperty(item, (int)eProperty.Skill_Dementia);
-					case 140: return CheckForProperty(item, (int)eProperty.Skill_Witchcraft);
-					case 141: return CheckForProperty(item, (int)eProperty.Skill_Cursing);
-					case 142: return CheckForProperty(item, (int)eProperty.Skill_Hexing);
-					case 147: return CheckForProperty(item, (int)eProperty.Skill_FistWraps);
-					case 148: return CheckForProperty(item, (int)eProperty.Skill_MaulerStaff);
+					case 91: return CheckForProperty(item, (int)EProperty.Skill_Cross_Bows);
+					case 97: return CheckForProperty(item, (int)EProperty.Skill_Chants); // chants?
+					case 98: return CheckForProperty(item, (int)EProperty.Skill_Instruments);
+					case 101: return CheckForProperty(item, (int)EProperty.Skill_Blades);
+					case 102: return CheckForProperty(item, (int)EProperty.Skill_Blunt);
+					case 103: return CheckForProperty(item, (int)EProperty.Skill_Piercing);
+					case 104: return CheckForProperty(item, (int)EProperty.Skill_Large_Weapon);
+					case 105: return CheckForProperty(item, (int)EProperty.Skill_Mentalism);
+					case 106: return CheckForProperty(item, (int)EProperty.Skill_Regrowth);
+					case 107: return CheckForProperty(item, (int)EProperty.Skill_Nurture);
+					case 108: return CheckForProperty(item, (int)EProperty.Skill_Nature);
+					case 109: return CheckForProperty(item, (int)EProperty.Skill_Music);
+					case 110: return CheckForProperty(item, (int)EProperty.Skill_Celtic_Dual);
+					case 112: return CheckForProperty(item, (int)EProperty.Skill_Celtic_Spear);
+					case 113: return CheckForProperty(item, (int)EProperty.Skill_Archery); // was recurve bow
+					case 114: return CheckForProperty(item, (int)EProperty.Skill_Valor);
+					case 116: return CheckForProperty(item, (int)EProperty.Skill_Pathfinding);
+					case 117: return CheckForProperty(item, (int)EProperty.Skill_Envenom);
+					case 118: return CheckForProperty(item, (int)EProperty.Skill_Critical_Strike);
+					case 120: return CheckForProperty(item, (int)EProperty.Skill_DeathSight);
+					case 121: return CheckForProperty(item, (int)EProperty.Skill_Pain_working);
+					case 122: return CheckForProperty(item, (int)EProperty.Skill_Death_Servant);
+					case 123: return CheckForProperty(item, (int)EProperty.Skill_SoulRending);
+					case 124: return CheckForProperty(item, (int)EProperty.Skill_HandToHand);
+					case 125: return CheckForProperty(item, (int)EProperty.Skill_Scythe);
+					case 126: return CheckForProperty(item, (int)EProperty.Skill_BoneArmy);
+					case 127: return CheckForProperty(item, (int)EProperty.Skill_Arboreal);
+					case 129: return CheckForProperty(item, (int)EProperty.Skill_Creeping);
+					case 130: return CheckForProperty(item, (int)EProperty.Skill_Verdant);
+					case 133: return CheckForProperty(item, (int)EProperty.Skill_OdinsWill);
+					case 134: return CheckForProperty(item, (int)EProperty.Skill_SpectralGuard) || CheckForProperty(item, (int)EProperty.Skill_SpectralForce);
+					case 135: return CheckForProperty(item, (int)EProperty.Skill_PhantasmalWail);
+					case 136: return CheckForProperty(item, (int)EProperty.Skill_EtherealShriek);
+					case 137: return CheckForProperty(item, (int)EProperty.Skill_ShadowMastery);
+					case 138: return CheckForProperty(item, (int)EProperty.Skill_VampiiricEmbrace);
+					case 139: return CheckForProperty(item, (int)EProperty.Skill_Dementia);
+					case 140: return CheckForProperty(item, (int)EProperty.Skill_Witchcraft);
+					case 141: return CheckForProperty(item, (int)EProperty.Skill_Cursing);
+					case 142: return CheckForProperty(item, (int)EProperty.Skill_Hexing);
+					case 147: return CheckForProperty(item, (int)EProperty.Skill_FistWraps);
+					case 148: return CheckForProperty(item, (int)EProperty.Skill_MaulerStaff);
 
-					case 300: return CheckForProperty(item, (int)eProperty.Skill_Slashing) ||
-										CheckForProperty(item, (int)eProperty.Skill_Thrusting) ||
-										CheckForProperty(item, (int)eProperty.Skill_Crushing) ||
-										CheckForProperty(item, (int)eProperty.Skill_Shields) ||
-										CheckForProperty(item, (int)eProperty.Skill_Flexible_Weapon) ||
-										CheckForProperty(item, (int)eProperty.Skill_Staff) ||
-										CheckForProperty(item, (int)eProperty.Skill_Polearms) ||
-										CheckForProperty(item, (int)eProperty.Skill_Two_Handed) ||
-										CheckForProperty(item, (int)eProperty.Skill_Dual_Wield) ||
-										CheckForProperty(item, (int)eProperty.Skill_Long_bows) ||
-										CheckForProperty(item, (int)eProperty.Skill_Composite) ||
-										CheckForProperty(item, (int)eProperty.Skill_RecurvedBow) ||
-										CheckForProperty(item, (int)eProperty.Skill_Cross_Bows) ||
-										CheckForProperty(item, (int)eProperty.Skill_FistWraps) ||
-										CheckForProperty(item, (int)eProperty.Skill_Sword) ||
-										CheckForProperty(item, (int)eProperty.Skill_Hammer) ||
-										CheckForProperty(item, (int)eProperty.Skill_Axe) ||
-										CheckForProperty(item, (int)eProperty.Skill_Left_Axe) ||
-										CheckForProperty(item, (int)eProperty.Skill_Spear) ||
-										CheckForProperty(item, (int)eProperty.Skill_Archery) ||
-										CheckForProperty(item, (int)eProperty.Skill_Blades) ||
-										CheckForProperty(item, (int)eProperty.Skill_Blunt) ||
-										CheckForProperty(item, (int)eProperty.Skill_Piercing) ||
-										CheckForProperty(item, (int)eProperty.Skill_Large_Weapon) ||
-										CheckForProperty(item, (int)eProperty.Skill_Celtic_Dual) ||
-										CheckForProperty(item, (int)eProperty.Skill_Celtic_Spear) ||
-										CheckForProperty(item, (int)eProperty.Skill_Critical_Strike) ||
-										CheckForProperty(item, (int)eProperty.Skill_HandToHand) ||
-										CheckForProperty(item, (int)eProperty.Skill_Archery) ||
-										CheckForProperty(item, (int)eProperty.Skill_Scythe) ||
-										CheckForProperty(item, (int)eProperty.AllMeleeWeaponSkills) ||
-										CheckForProperty(item, (int)eProperty.AllDualWieldingSkills) ||
-										CheckForProperty(item, (int)eProperty.AllArcherySkills) ||
-										CheckForProperty(item, (int)eProperty.Skill_MaulerStaff);
+					case 300: return CheckForProperty(item, (int)EProperty.Skill_Slashing) ||
+										CheckForProperty(item, (int)EProperty.Skill_Thrusting) ||
+										CheckForProperty(item, (int)EProperty.Skill_Crushing) ||
+										CheckForProperty(item, (int)EProperty.Skill_Shields) ||
+										CheckForProperty(item, (int)EProperty.Skill_Flexible_Weapon) ||
+										CheckForProperty(item, (int)EProperty.Skill_Staff) ||
+										CheckForProperty(item, (int)EProperty.Skill_Polearms) ||
+										CheckForProperty(item, (int)EProperty.Skill_Two_Handed) ||
+										CheckForProperty(item, (int)EProperty.Skill_Dual_Wield) ||
+										CheckForProperty(item, (int)EProperty.Skill_Long_bows) ||
+										CheckForProperty(item, (int)EProperty.Skill_Composite) ||
+										CheckForProperty(item, (int)EProperty.Skill_RecurvedBow) ||
+										CheckForProperty(item, (int)EProperty.Skill_Cross_Bows) ||
+										CheckForProperty(item, (int)EProperty.Skill_FistWraps) ||
+										CheckForProperty(item, (int)EProperty.Skill_Sword) ||
+										CheckForProperty(item, (int)EProperty.Skill_Hammer) ||
+										CheckForProperty(item, (int)EProperty.Skill_Axe) ||
+										CheckForProperty(item, (int)EProperty.Skill_Left_Axe) ||
+										CheckForProperty(item, (int)EProperty.Skill_Spear) ||
+										CheckForProperty(item, (int)EProperty.Skill_Archery) ||
+										CheckForProperty(item, (int)EProperty.Skill_Blades) ||
+										CheckForProperty(item, (int)EProperty.Skill_Blunt) ||
+										CheckForProperty(item, (int)EProperty.Skill_Piercing) ||
+										CheckForProperty(item, (int)EProperty.Skill_Large_Weapon) ||
+										CheckForProperty(item, (int)EProperty.Skill_Celtic_Dual) ||
+										CheckForProperty(item, (int)EProperty.Skill_Celtic_Spear) ||
+										CheckForProperty(item, (int)EProperty.Skill_Critical_Strike) ||
+										CheckForProperty(item, (int)EProperty.Skill_HandToHand) ||
+										CheckForProperty(item, (int)EProperty.Skill_Archery) ||
+										CheckForProperty(item, (int)EProperty.Skill_Scythe) ||
+										CheckForProperty(item, (int)EProperty.AllMeleeWeaponSkills) ||
+										CheckForProperty(item, (int)EProperty.AllDualWieldingSkills) ||
+										CheckForProperty(item, (int)EProperty.AllArcherySkills) ||
+										CheckForProperty(item, (int)EProperty.Skill_MaulerStaff);
 
-					case 303: return CheckForProperty(item, (int)eProperty.Skill_Fire) ||
-										CheckForProperty(item, (int)eProperty.Skill_Wind) ||
-										CheckForProperty(item, (int)eProperty.Skill_Cold) ||
-										CheckForProperty(item, (int)eProperty.Skill_Earth) ||
-										CheckForProperty(item, (int)eProperty.Skill_Matter) ||
-										CheckForProperty(item, (int)eProperty.Skill_Body) ||
-										CheckForProperty(item, (int)eProperty.Skill_Spirit) ||
-										CheckForProperty(item, (int)eProperty.Skill_Mind) ||
-										CheckForProperty(item, (int)eProperty.Skill_Enhancement) ||
-										CheckForProperty(item, (int)eProperty.Skill_Rejuvenation) ||
-										CheckForProperty(item, (int)eProperty.Skill_Smiting) ||
-										CheckForProperty(item, (int)eProperty.Skill_Chants) ||
-										CheckForProperty(item, (int)eProperty.Skill_DeathSight) ||
-										CheckForProperty(item, (int)eProperty.Skill_Pain_working) ||
-										CheckForProperty(item, (int)eProperty.Skill_Death_Servant) ||
-										CheckForProperty(item, (int)eProperty.Skill_SoulRending) ||
-										CheckForProperty(item, (int)eProperty.Skill_Mending) ||
-										CheckForProperty(item, (int)eProperty.Skill_Augmentation) ||
-										CheckForProperty(item, (int)eProperty.Skill_Pacification) ||
-										CheckForProperty(item, (int)eProperty.Skill_Subterranean) ||
-										CheckForProperty(item, (int)eProperty.Skill_Darkness) ||
-										CheckForProperty(item, (int)eProperty.Skill_Suppression) ||
-										CheckForProperty(item, (int)eProperty.Skill_Runecarving) ||
-										CheckForProperty(item, (int)eProperty.Skill_Summoning) ||
-										CheckForProperty(item, (int)eProperty.Skill_Stormcalling) ||
-										CheckForProperty(item, (int)eProperty.Skill_BeastCraft) ||
-										CheckForProperty(item, (int)eProperty.Skill_Light) ||
-										CheckForProperty(item, (int)eProperty.Skill_Void) ||
-										CheckForProperty(item, (int)eProperty.Skill_Mana) ||
-										CheckForProperty(item, (int)eProperty.Skill_Mentalism) ||
-										CheckForProperty(item, (int)eProperty.Skill_Regrowth) ||
-										CheckForProperty(item, (int)eProperty.Skill_Nurture) ||
-										CheckForProperty(item, (int)eProperty.Skill_Nature) ||
-										CheckForProperty(item, (int)eProperty.Skill_Music) ||
-										CheckForProperty(item, (int)eProperty.Skill_Valor) ||
-										CheckForProperty(item, (int)eProperty.Skill_Pathfinding) ||
-										CheckForProperty(item, (int)eProperty.Skill_Envenom) ||
-										CheckForProperty(item, (int)eProperty.Skill_BoneArmy) ||
-										CheckForProperty(item, (int)eProperty.Skill_Arboreal) ||
-										CheckForProperty(item, (int)eProperty.Skill_Creeping) ||
-										CheckForProperty(item, (int)eProperty.Skill_Verdant) ||
-										CheckForProperty(item, (int)eProperty.Skill_OdinsWill) ||
-										CheckForProperty(item, (int)eProperty.Skill_SpectralGuard) ||
-										CheckForProperty(item, (int)eProperty.Skill_SpectralForce) ||
-										CheckForProperty(item, (int)eProperty.Skill_PhantasmalWail) ||
-										CheckForProperty(item, (int)eProperty.Skill_EtherealShriek) ||
-										CheckForProperty(item, (int)eProperty.Skill_ShadowMastery) ||
-										CheckForProperty(item, (int)eProperty.Skill_VampiiricEmbrace) ||
-										CheckForProperty(item, (int)eProperty.Skill_Dementia) ||
-										CheckForProperty(item, (int)eProperty.Skill_Witchcraft) ||
-										CheckForProperty(item, (int)eProperty.Skill_Cursing) ||
-										CheckForProperty(item, (int)eProperty.Skill_Hexing) ||
-										CheckForProperty(item, (int)eProperty.AllMagicSkills);
+					case 303: return CheckForProperty(item, (int)EProperty.Skill_Fire) ||
+										CheckForProperty(item, (int)EProperty.Skill_Wind) ||
+										CheckForProperty(item, (int)EProperty.Skill_Cold) ||
+										CheckForProperty(item, (int)EProperty.Skill_Earth) ||
+										CheckForProperty(item, (int)EProperty.Skill_Matter) ||
+										CheckForProperty(item, (int)EProperty.Skill_Body) ||
+										CheckForProperty(item, (int)EProperty.Skill_Spirit) ||
+										CheckForProperty(item, (int)EProperty.Skill_Mind) ||
+										CheckForProperty(item, (int)EProperty.Skill_Enhancement) ||
+										CheckForProperty(item, (int)EProperty.Skill_Rejuvenation) ||
+										CheckForProperty(item, (int)EProperty.Skill_Smiting) ||
+										CheckForProperty(item, (int)EProperty.Skill_Chants) ||
+										CheckForProperty(item, (int)EProperty.Skill_DeathSight) ||
+										CheckForProperty(item, (int)EProperty.Skill_Pain_working) ||
+										CheckForProperty(item, (int)EProperty.Skill_Death_Servant) ||
+										CheckForProperty(item, (int)EProperty.Skill_SoulRending) ||
+										CheckForProperty(item, (int)EProperty.Skill_Mending) ||
+										CheckForProperty(item, (int)EProperty.Skill_Augmentation) ||
+										CheckForProperty(item, (int)EProperty.Skill_Pacification) ||
+										CheckForProperty(item, (int)EProperty.Skill_Subterranean) ||
+										CheckForProperty(item, (int)EProperty.Skill_Darkness) ||
+										CheckForProperty(item, (int)EProperty.Skill_Suppression) ||
+										CheckForProperty(item, (int)EProperty.Skill_Runecarving) ||
+										CheckForProperty(item, (int)EProperty.Skill_Summoning) ||
+										CheckForProperty(item, (int)EProperty.Skill_Stormcalling) ||
+										CheckForProperty(item, (int)EProperty.Skill_BeastCraft) ||
+										CheckForProperty(item, (int)EProperty.Skill_Light) ||
+										CheckForProperty(item, (int)EProperty.Skill_Void) ||
+										CheckForProperty(item, (int)EProperty.Skill_Mana) ||
+										CheckForProperty(item, (int)EProperty.Skill_Mentalism) ||
+										CheckForProperty(item, (int)EProperty.Skill_Regrowth) ||
+										CheckForProperty(item, (int)EProperty.Skill_Nurture) ||
+										CheckForProperty(item, (int)EProperty.Skill_Nature) ||
+										CheckForProperty(item, (int)EProperty.Skill_Music) ||
+										CheckForProperty(item, (int)EProperty.Skill_Valor) ||
+										CheckForProperty(item, (int)EProperty.Skill_Pathfinding) ||
+										CheckForProperty(item, (int)EProperty.Skill_Envenom) ||
+										CheckForProperty(item, (int)EProperty.Skill_BoneArmy) ||
+										CheckForProperty(item, (int)EProperty.Skill_Arboreal) ||
+										CheckForProperty(item, (int)EProperty.Skill_Creeping) ||
+										CheckForProperty(item, (int)EProperty.Skill_Verdant) ||
+										CheckForProperty(item, (int)EProperty.Skill_OdinsWill) ||
+										CheckForProperty(item, (int)EProperty.Skill_SpectralGuard) ||
+										CheckForProperty(item, (int)EProperty.Skill_SpectralForce) ||
+										CheckForProperty(item, (int)EProperty.Skill_PhantasmalWail) ||
+										CheckForProperty(item, (int)EProperty.Skill_EtherealShriek) ||
+										CheckForProperty(item, (int)EProperty.Skill_ShadowMastery) ||
+										CheckForProperty(item, (int)EProperty.Skill_VampiiricEmbrace) ||
+										CheckForProperty(item, (int)EProperty.Skill_Dementia) ||
+										CheckForProperty(item, (int)EProperty.Skill_Witchcraft) ||
+										CheckForProperty(item, (int)EProperty.Skill_Cursing) ||
+										CheckForProperty(item, (int)EProperty.Skill_Hexing) ||
+										CheckForProperty(item, (int)EProperty.AllMagicSkills);
 
 					default:
 
@@ -1057,25 +1034,25 @@ namespace DOL.GS
 			{
 				switch (bonus)
 				{
-					case 0: return CheckForProperty(item, (int)eProperty.Strength);
-					case 1: return CheckForProperty(item, (int)eProperty.Constitution);
-					case 2: return CheckForProperty(item, (int)eProperty.Dexterity);
-					case 3: return CheckForProperty(item, (int)eProperty.Quickness);
-					case 4: return CheckForProperty(item, (int)eProperty.Piety);
-					case 5: return CheckForProperty(item, (int)eProperty.Empathy);
-					case 6: return CheckForProperty(item, (int)eProperty.Intelligence);
-					case 7: return CheckForProperty(item, (int)eProperty.Charisma);
+					case 0: return CheckForProperty(item, (int)EProperty.Strength);
+					case 1: return CheckForProperty(item, (int)EProperty.Constitution);
+					case 2: return CheckForProperty(item, (int)EProperty.Dexterity);
+					case 3: return CheckForProperty(item, (int)EProperty.Quickness);
+					case 4: return CheckForProperty(item, (int)EProperty.Piety);
+					case 5: return CheckForProperty(item, (int)EProperty.Empathy);
+					case 6: return CheckForProperty(item, (int)EProperty.Intelligence);
+					case 7: return CheckForProperty(item, (int)EProperty.Charisma);
 
-					case 8: return CheckForProperty(item, (int)eProperty.Dexterity) ||
-									CheckForProperty(item, (int)eProperty.Intelligence) ||
-									CheckForProperty(item, (int)eProperty.Charisma) ||
-									CheckForProperty(item, (int)eProperty.Acuity) ||
-									CheckForProperty(item, (int)eProperty.Empathy) ||
-									CheckForProperty(item, (int)eProperty.Piety);
+					case 8: return CheckForProperty(item, (int)EProperty.Dexterity) ||
+									CheckForProperty(item, (int)EProperty.Intelligence) ||
+									CheckForProperty(item, (int)EProperty.Charisma) ||
+									CheckForProperty(item, (int)EProperty.Acuity) ||
+									CheckForProperty(item, (int)EProperty.Empathy) ||
+									CheckForProperty(item, (int)EProperty.Piety);
 
 					case 9:
 						{
-							for (int i = (int)eProperty.ToABonus_First; i <= (int)eProperty.ToABonus_Last; i++)
+							for (int i = (int)EProperty.ToABonus_First; i <= (int)EProperty.ToABonus_Last; i++)
 							{
 								if (CheckForProperty(item, i))
 									return true;
@@ -1084,47 +1061,47 @@ namespace DOL.GS
 							return false;
 						}
 
-					case 10: return CheckForProperty(item, (int)eProperty.PowerPool);
-					case 11: return CheckForProperty(item, (int)eProperty.HealingEffectiveness);
-					case 12: return CheckForProperty(item, (int)eProperty.SpellDuration);
-					case 13: return CheckForProperty(item, (int)eProperty.ArmorFactor);
-					case 14: return CheckForProperty(item, (int)eProperty.CastingSpeed);
-					case 15: return CheckForProperty(item, (int)eProperty.MeleeSpeed);
-					case 16: return CheckForProperty(item, (int)eProperty.ArcherySpeed);
+					case 10: return CheckForProperty(item, (int)EProperty.PowerPool);
+					case 11: return CheckForProperty(item, (int)EProperty.HealingEffectiveness);
+					case 12: return CheckForProperty(item, (int)EProperty.SpellDuration);
+					case 13: return CheckForProperty(item, (int)EProperty.ArmorFactor);
+					case 14: return CheckForProperty(item, (int)EProperty.CastingSpeed);
+					case 15: return CheckForProperty(item, (int)EProperty.MeleeSpeed);
+					case 16: return CheckForProperty(item, (int)EProperty.ArcherySpeed);
 
-					case 17: return CheckForProperty(item, (int)eProperty.StrCapBonus) ||
-									CheckForProperty(item, (int)eProperty.DexCapBonus) ||
-									CheckForProperty(item, (int)eProperty.ConCapBonus) ||
-									CheckForProperty(item, (int)eProperty.QuiCapBonus) ||
-									CheckForProperty(item, (int)eProperty.IntCapBonus) ||
-									CheckForProperty(item, (int)eProperty.PieCapBonus) ||
-									CheckForProperty(item, (int)eProperty.EmpCapBonus) ||
-									CheckForProperty(item, (int)eProperty.ChaCapBonus) ||
-									CheckForProperty(item, (int)eProperty.AcuCapBonus) ||
-									CheckForProperty(item, (int)eProperty.MaxHealthCapBonus) ||
-									CheckForProperty(item, (int)eProperty.PowerPoolCapBonus);
+					case 17: return CheckForProperty(item, (int)EProperty.StrCapBonus) ||
+									CheckForProperty(item, (int)EProperty.DexCapBonus) ||
+									CheckForProperty(item, (int)EProperty.ConCapBonus) ||
+									CheckForProperty(item, (int)EProperty.QuiCapBonus) ||
+									CheckForProperty(item, (int)EProperty.IntCapBonus) ||
+									CheckForProperty(item, (int)EProperty.PieCapBonus) ||
+									CheckForProperty(item, (int)EProperty.EmpCapBonus) ||
+									CheckForProperty(item, (int)EProperty.ChaCapBonus) ||
+									CheckForProperty(item, (int)EProperty.AcuCapBonus) ||
+									CheckForProperty(item, (int)EProperty.MaxHealthCapBonus) ||
+									CheckForProperty(item, (int)EProperty.PowerPoolCapBonus);
 
-					case 18: return CheckForProperty(item, (int)eProperty.MaxHealthCapBonus);
-					case 19: return CheckForProperty(item, (int)eProperty.BuffEffectiveness);
+					case 18: return CheckForProperty(item, (int)EProperty.MaxHealthCapBonus);
+					case 19: return CheckForProperty(item, (int)EProperty.BuffEffectiveness);
 
 					case 20:
 						{
 							// Catacombs - for DOL this is customized to special skills not included 
 							// in other searches -Tolakram
 
-							for (int i = (int)eProperty.MaxSpeed; i <= (int)eProperty.Acuity; i++)
+							for (int i = (int)EProperty.MaxSpeed; i <= (int)EProperty.Acuity; i++)
 							{
 								if (CheckForProperty(item, i))
 									return true;
 							}
 
-							for (int i = (int)eProperty.EvadeChance; i <= (int)eProperty.ToHitBonus; i++)
+							for (int i = (int)EProperty.EvadeChance; i <= (int)EProperty.ToHitBonus; i++)
 							{
 								if (CheckForProperty(item, i))
 									return true;
 							}
 
-							for (int i = (int)eProperty.DPS; i <= (int)eProperty.MaxProperty; i++)
+							for (int i = (int)EProperty.DPS; i <= (int)EProperty.MaxProperty; i++)
 							{
 								if (CheckForProperty(item, i))
 									return true;

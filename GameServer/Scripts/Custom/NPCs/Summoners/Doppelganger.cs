@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System.Reflection;
+﻿using System.Reflection;
 using DOL.AI;
 using DOL.Database;
 using DOL.GS.Keeps;
@@ -49,7 +30,7 @@ namespace DOL.GS
 
         static Doppelganger()
         {
-           DbNpcTemplate chthonian = DOLDB<DbNpcTemplate>.SelectObject(DB.Column("Name").IsEqualTo("chthonian crawler"));
+           DbNpcTemplate chthonian = CoreDb<DbNpcTemplate>.SelectObject(DB.Column("Name").IsEqualTo("chthonian crawler"));
             if (chthonian != null)
                 m_petTemplate = new NpcTemplate(chthonian);
         }
@@ -91,7 +72,7 @@ namespace DOL.GS
                 {
                     Model = doppelModel;
                     Name = "doppelganger";
-                    Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
+                    Inventory = new GameNpcInventory(GameNpcInventoryTemplate.EmptyTemplate);
                     BroadcastLivingEquipmentUpdate();
                 }
             }
@@ -115,22 +96,22 @@ namespace DOL.GS
         public override void StartAttack(GameObject target)
         {
             // Don't allow ranged attacks
-            if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            if (ActiveWeaponSlot == EActiveWeaponSlot.Distance)
             {
-                bool standard = Inventory.GetItem(eInventorySlot.RightHandWeapon) != null;
-                bool twoHanded = Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null;
+                bool standard = Inventory.GetItem(EInventorySlot.RightHandWeapon) != null;
+                bool twoHanded = Inventory.GetItem(EInventorySlot.TwoHandWeapon) != null;
 
                 if (standard && twoHanded)
                 {
                     if (Util.Random(1) < 1)
-                        SwitchWeapon(eActiveWeaponSlot.Standard);
+                        SwitchWeapon(EActiveWeaponSlot.Standard);
                     else
-                        SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                        SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                 }
                 else if (twoHanded)
-                    SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                    SwitchWeapon(EActiveWeaponSlot.TwoHanded);
                 else
-                    SwitchWeapon(eActiveWeaponSlot.Standard);
+                    SwitchWeapon(EActiveWeaponSlot.Standard);
             }
 
             base.StartAttack(target);
@@ -142,11 +123,11 @@ namespace DOL.GS
         protected void Disguise()
         {
             if (Util.Chance(50))
-                Gender = eGender.Male;
+                Gender = EGender.Male;
             else
-                Gender = eGender.Female;
+                Gender = EGender.Female;
 
-            ICharacterClass characterClass = new DefaultCharacterClass();
+            IPlayerClass playerClass = new DefaultPlayerClass();
 
             switch (Util.Random(2))
             {
@@ -157,24 +138,24 @@ namespace DOL.GS
                     {
                         case 0: // Archer
                             Inventory = ClothingMgr.Albion_Archer.CloneTemplate();
-                            SwitchWeapon(eActiveWeaponSlot.Distance);
-                            characterClass = new ClassScout();
+                            SwitchWeapon(EActiveWeaponSlot.Distance);
+                            playerClass = new ClassScout();
                             break;
                         case 1: // Caster
                             Inventory = ClothingMgr.Albion_Caster.CloneTemplate();
-                            characterClass = new ClassTheurgist();
+                            playerClass = new ClassTheurgist();
                             break;
                         case 2: // Fighter
                             Inventory = ClothingMgr.Albion_Fighter.CloneTemplate();
-                            characterClass = new ClassArmsman();
+                            playerClass = new ClassArmsman();
                             break;
                         case 3: // GuardHealer
                             Inventory = ClothingMgr.Albion_Healer.CloneTemplate();
-                            characterClass = new ClassCleric();
+                            playerClass = new ClassCleric();
                             break;
                         case 4: // Stealther
                             Inventory = ClothingMgr.Albion_Stealther.CloneTemplate();
-                            characterClass = new ClassInfiltrator();
+                            playerClass = new ClassInfiltrator();
                             break;
                     }
                     break;
@@ -185,24 +166,24 @@ namespace DOL.GS
                     {
                         case 0: // Archer
                             Inventory = ClothingMgr.Hibernia_Archer.CloneTemplate();
-                            SwitchWeapon(eActiveWeaponSlot.Distance);
-                            characterClass = new ClassRanger();
+                            SwitchWeapon(EActiveWeaponSlot.Distance);
+                            playerClass = new ClassRanger();
                             break;
                         case 1: // Caster
                             Inventory = ClothingMgr.Hibernia_Caster.CloneTemplate();
-                            characterClass = new ClassEldritch();
+                            playerClass = new ClassEldritch();
                             break;
                         case 2: // Fighter
                             Inventory = ClothingMgr.Hibernia_Fighter.CloneTemplate();
-                            characterClass = new ClassArmsman();
+                            playerClass = new ClassArmsman();
                             break;
                         case 3: // GuardHealer
                             Inventory = ClothingMgr.Hibernia_Healer.CloneTemplate();
-                            characterClass = new ClassDruid();
+                            playerClass = new ClassDruid();
                             break;
                         case 4: // Stealther
                             Inventory = ClothingMgr.Hibernia_Stealther.CloneTemplate();
-                            characterClass = new ClassNightshade();
+                            playerClass = new ClassNightshade();
                             break;
                     }
                     break;
@@ -213,50 +194,50 @@ namespace DOL.GS
                     {
                         case 0: // Archer
                             Inventory = ClothingMgr.Midgard_Archer.CloneTemplate();
-                            SwitchWeapon(eActiveWeaponSlot.Distance);
-                            characterClass = new ClassHunter();
+                            SwitchWeapon(EActiveWeaponSlot.Distance);
+                            playerClass = new ClassHunter();
                             break;
                         case 1: // Caster
                             Inventory = ClothingMgr.Midgard_Caster.CloneTemplate();
-                            characterClass = new ClassRunemaster();
+                            playerClass = new ClassRunemaster();
                             break;
                         case 2: // Fighter
                             Inventory = ClothingMgr.Midgard_Fighter.CloneTemplate();
-                            characterClass = new ClassWarrior();
+                            playerClass = new ClassWarrior();
                             break;
                         case 3: // GuardHealer
                             Inventory = ClothingMgr.Midgard_Healer.CloneTemplate();
-                            characterClass = new ClassHealer();
+                            playerClass = new ClassHealer();
                             break;
                         case 4: // Stealther
                             Inventory = ClothingMgr.Midgard_Stealther.CloneTemplate();
-                            characterClass = new ClassShadowblade();
+                            playerClass = new ClassShadowblade();
                             break;
                     }
                     break;
             }
 
-            var possibleRaces = characterClass.EligibleRaces;
+            var possibleRaces = playerClass.EligibleRaces;
             var indexPick = Util.Random(0, possibleRaces.Count - 1);
             Model = (ushort)possibleRaces[indexPick].GetModel(Gender);
 
-            bool distance = Inventory.GetItem(eInventorySlot.DistanceWeapon) != null;
-            bool standard = Inventory.GetItem(eInventorySlot.RightHandWeapon) != null;
-            bool twoHanded = Inventory.GetItem(eInventorySlot.TwoHandWeapon) != null;
+            bool distance = Inventory.GetItem(EInventorySlot.DistanceWeapon) != null;
+            bool standard = Inventory.GetItem(EInventorySlot.RightHandWeapon) != null;
+            bool twoHanded = Inventory.GetItem(EInventorySlot.TwoHandWeapon) != null;
 
             if (distance)
-                SwitchWeapon(eActiveWeaponSlot.Distance);
+                SwitchWeapon(EActiveWeaponSlot.Distance);
             else if (standard && twoHanded)
             {
                 if (Util.Random(1) < 1)
-                    SwitchWeapon(eActiveWeaponSlot.Standard);
+                    SwitchWeapon(EActiveWeaponSlot.Standard);
                 else
-                    SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                    SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             }
             else if (twoHanded)
-                SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+                SwitchWeapon(EActiveWeaponSlot.TwoHanded);
             else
-                SwitchWeapon(eActiveWeaponSlot.Standard);
+                SwitchWeapon(EActiveWeaponSlot.Standard);
             
         }
     }

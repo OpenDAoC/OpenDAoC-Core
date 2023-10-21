@@ -124,22 +124,22 @@ namespace DOL.GS
 
 		#region Event handling
 
-		public void UnRegisterPlayerEnter(DOLEventHandler callback)
+		public void UnRegisterPlayerEnter(CoreEventHandler callback)
 		{
 			GameEventMgr.RemoveHandler(this, AreaEvent.PlayerEnter, callback);
 		}
 
-		public void UnRegisterPlayerLeave(DOLEventHandler callback)
+		public void UnRegisterPlayerLeave(CoreEventHandler callback)
 		{
 			GameEventMgr.RemoveHandler(this, AreaEvent.PlayerLeave, callback);
 		}
 
-		public void RegisterPlayerEnter(DOLEventHandler callback)
+		public void RegisterPlayerEnter(CoreEventHandler callback)
 		{
 			GameEventMgr.AddHandler(this, AreaEvent.PlayerEnter, callback);
 		}
 
-		public void RegisterPlayerLeave(DOLEventHandler callback)
+		public void RegisterPlayerLeave(CoreEventHandler callback)
 		{
 			GameEventMgr.AddHandler(this, AreaEvent.PlayerLeave, callback);
 		}
@@ -173,7 +173,7 @@ namespace DOL.GS
 		{
             if (m_displayMessage && Description != null && Description != "")
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractArea.Left", Description),
-                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			player.Notify(AreaEvent.PlayerLeave, this, new AreaEventArgs(this, player));
 		}
@@ -200,11 +200,11 @@ namespace DOL.GS
                 }
 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractArea.Entered", description),
-                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 				//Changed by Apo 9. August 2010: Areas never send an screen description, but we will support it with an server property
                 if (ServerProperties.Properties.DISPLAY_AREA_ENTER_SCREEN_DESC)
-                    player.Out.SendMessage(screenDescription, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(screenDescription, EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow);
 			}
 			if (Sound != 0)
 			{

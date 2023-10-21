@@ -35,7 +35,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadContainsAndCheckOneString_Match()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "Bob" } );
 			
 			Assert.IsTrue(manager["bob"], "'bob' should match 'Bob' Pattern with case insensitive...");
@@ -46,7 +46,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadContainsAndCheckOneString_NoMatch()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "Bob" } );
 			
 			Assert.IsFalse(manager["john"], "'john' should not match 'Bob' Pattern...");
@@ -57,7 +57,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadContainsAndCheckTwoString_Match()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "Bob" } );
 			
 			Assert.IsTrue(manager["bo", "b"], "'bo' 'b' should match 'Bob' Pattern with case insensitive...");
@@ -68,7 +68,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadContainsAndCheckTwoString_NoMatch()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "Bob" } );
 			
 			Assert.IsFalse(manager["jo", "hn"], "'jo' 'hn' should not match 'Bob' Pattern...");
@@ -79,7 +79,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadRegexAndCheckOneString_Match()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/" } );
 			
 			Assert.IsTrue(manager["bob"], "'bob' should match '/B.*o.*b/' Pattern with case insensitive...");
@@ -91,7 +91,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadRegexAndCheckOneString_NoMatch()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/" } );
 			
 			Assert.IsFalse(manager["john"], "'john' should not match '/B.*o.*b/' Pattern...");
@@ -103,7 +103,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadRegexAndCheckTwoString_Match()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/" } );
 			
 			Assert.IsTrue(manager["bo", "b"], "'bo' 'b' should match '/B.*o.*b/' Pattern with case insensitive...");
@@ -115,7 +115,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadRegexAndCheckTwoString_NoMatch()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/" } );
 			
 			Assert.IsFalse(manager["jo", "hn"], "'jo' 'hn' should not match '/B.*o.*b/' Pattern...");
@@ -127,7 +127,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadMultiConstraintsCheckOneString_Match()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/", "/B.*a.*r/", "FOO", "Luke" } );
 			
 			Assert.IsTrue(manager["bar"], "'bar' should match '/B.*a.*r/' Pattern with case insensitive...");
@@ -139,7 +139,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadMultiConstraintsCheckOneString_NoMatch()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/", "/B.*a.*r/", "FOO", "Luke" } );
 			
 			Assert.IsFalse(manager["john"], "'john' should not match any Pattern...");
@@ -151,7 +151,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadMultiConstraintsCheckTwoString_Match()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/", "/B.*a.*r/", "FOO", "Luke" } );
 			
 			Assert.IsTrue(manager["ba", "r"], "'ba' 'r' should match '/B.*a.*r/' Pattern with case insensitive...");
@@ -163,7 +163,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadMultiConstraintsCheckTwoString_NoMatch()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/", "/B.*a.*r/", "FOO", "Luke" } );
 			
 			Assert.IsFalse(manager["jo", "hn"], "'jo' 'hn' should not match any Pattern...");
@@ -175,7 +175,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadCommentCheckOneString_NoMatch()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "BA #R", "#Luke", "bob" } );
 			
 			Assert.IsFalse(manager["Luke"], "'Luke' should not match any Pattern...");
@@ -186,7 +186,7 @@ namespace DOL.Tests.Integration.Managers
 		[Test]
 		public void InvalidNamesManager_LoadCommentCheckOneString_Match()
 		{
-			var manager = new InvalidNamesManager(string.Empty);
+			var manager = new InvalidNamesMgr(string.Empty);
 			manager.LoadFromLines(new [] { "BA #R", "#Luke", "bob" } );
 			
 			Assert.IsTrue(manager["Bob"], "'Bob' should match 'Bob' Pattern...");

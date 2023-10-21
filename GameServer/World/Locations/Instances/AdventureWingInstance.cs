@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using DOL.Database;
+﻿using DOL.Database;
 using log4net;
 
 namespace DOL.GS
@@ -39,12 +20,12 @@ namespace DOL.GS
 		/// <summary>
 		/// Group Owner
 		/// </summary>
-		private Group m_group;
+		private GroupUtil m_group;
 		
 		/// <summary>
 		/// Group Owner
 		/// </summary>
-		public Group Group
+		public GroupUtil Group
         {
             get { return m_group; }
             set { m_group = value; }
@@ -84,7 +65,7 @@ namespace DOL.GS
         	
         	//search vars
         	GamePlayer arbitraryplayer = null;
-            Group arbitrarygroup = null;
+            GroupUtil arbitrarygroup = null;
             bool stillOwner = false;
             
             // group instance
@@ -155,7 +136,7 @@ namespace DOL.GS
 			base.LoadFromDatabase(mobObjs, ref mobCount, ref merchantCount, ref itemCount, ref bindCount);
 			
 			// Set respawn to false
-			foreach(GameNPC mob in GetMobsInsideInstance(true))
+			foreach(GameNpc mob in GetMobsInsideInstance(true))
 			{
 				mob.RespawnInterval = -1;
 			}
@@ -191,7 +172,7 @@ namespace DOL.GS
             else
             {
             	// check if there is still alive mobs
-            	foreach (GameNPC mob in GetMobsInsideInstance(true))
+            	foreach (GameNpc mob in GetMobsInsideInstance(true))
             	{
             		// there is still something => standard autoclosure + break;
 	            	log.Warn("Instance now empty, will destroy instance " + Description + ", ID: " + ID + ", type=" + GetType().ToString() + ". In " + ServerProperties.Properties.ADVENTUREWING_TIME_TO_DESTROY + " min.");

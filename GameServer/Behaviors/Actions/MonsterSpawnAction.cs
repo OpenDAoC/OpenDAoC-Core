@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.Events;
 using DOL.GS.Behaviour.Attributes;
@@ -24,20 +5,20 @@ using DOL.GS.Behaviour.Attributes;
 namespace DOL.GS.Behaviour.Actions
 {
     // NOTE it is important that we look into the database for the npc because since it's not spawn at the moment the WorldMgr cant find it!!!
-    [Action(ActionType = eActionType.MonsterSpawn,DefaultValueP=eDefaultValueConstants.NPC)]
-    public class MonsterSpawnAction : AbstractAction<GameLiving,Unused>
+    [Action(ActionType = EActionType.MonsterSpawn,DefaultValueP=EDefaultValueConstants.NPC)]
+    public class MonsterSpawnAction : AAction<GameLiving,Unused>
     {               
 
-        public MonsterSpawnAction(GameNPC defaultNPC,  Object p, Object q)
-            : base(defaultNPC, eActionType.MonsterSpawn, p, q)
+        public MonsterSpawnAction(GameNpc defaultNPC,  Object p, Object q)
+            : base(defaultNPC, EActionType.MonsterSpawn, p, q)
         {                
         }
 
 
-        public MonsterSpawnAction(GameNPC defaultNPC,  GameLiving npcToSpawn)
+        public MonsterSpawnAction(GameNpc defaultNPC,  GameLiving npcToSpawn)
             : this(defaultNPC,  (object)npcToSpawn, (object)null) { }
 
-        public override void Perform(DOLEvent e, object sender, EventArgs args)
+        public override void Perform(CoreEvent e, object sender, EventArgs args)
         {            
             if (P.AddToWorld())
             {

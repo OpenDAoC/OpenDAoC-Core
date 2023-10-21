@@ -6,22 +6,16 @@ using DOL.GS.Keeps;
 
 namespace DOL.GS.Quests
 {
-	public class CaptureMission : AbstractMission
+	public class CaptureMission : AMission
 	{
-		private AbstractGameKeep m_keep = null;
+		private AGameKeep m_keep = null;
 
-		public enum eCaptureType : int
-		{ 
-			Tower = 1,
-			Keep = 2,
-		}
-
-		public CaptureMission(eCaptureType type, object owner, string hint)
+		public CaptureMission(ECaptureType type, object owner, string hint)
 			: base(owner)
 		{
-			eRealm realm = eRealm.None;
-			if (owner is Group)
-				realm = (owner as Group).Leader.Realm;
+			ERealm realm = ERealm.None;
+			if (owner is GroupUtil)
+				realm = (owner as GroupUtil).Leader.Realm;
 			else if (owner is GamePlayer)
 				realm = (owner as GamePlayer).Realm;
 
@@ -29,16 +23,16 @@ namespace DOL.GS.Quests
 
 			switch (type)
 			{
-				case eCaptureType.Tower:
+				case ECaptureType.Tower:
 					{
-						ICollection<AbstractGameKeep> keeps;
-						if (owner is Group)
-							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as Group).Leader.CurrentRegionID);
+						ICollection<AGameKeep> keeps;
+						if (owner is GroupUtil)
+							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
 						else if (owner is GamePlayer)
 							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
-						else keeps = new List<AbstractGameKeep>();
+						else keeps = new List<AGameKeep>();
 
-						foreach (AbstractGameKeep keep in keeps)
+						foreach (AGameKeep keep in keeps)
 						{
 							if (keep.IsPortalKeep)
 								continue;
@@ -47,16 +41,16 @@ namespace DOL.GS.Quests
 						}
 						break;
 					}
-				case eCaptureType.Keep:
+				case ECaptureType.Keep:
 					{
-						ICollection<AbstractGameKeep> keeps;
-						if (owner is Group)
-							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as Group).Leader.CurrentRegionID);
+						ICollection<AGameKeep> keeps;
+						if (owner is GroupUtil)
+							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
 						else if (owner is GamePlayer)
 							keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
-						else keeps = new List<AbstractGameKeep>();
+						else keeps = new List<AGameKeep>();
 
-						foreach (AbstractGameKeep keep in keeps)
+						foreach (AGameKeep keep in keeps)
 						{
 							if (keep.IsPortalKeep)
 								continue;
@@ -71,7 +65,7 @@ namespace DOL.GS.Quests
 			{
 				if (hint != "")
 				{
-					foreach (AbstractGameKeep keep in list)
+					foreach (AGameKeep keep in list)
 					{
 						if (keep.Name.ToLower().Contains(hint))
 						{
@@ -82,13 +76,13 @@ namespace DOL.GS.Quests
 				}
 
 				if (m_keep == null)
-					m_keep = list[Util.Random(list.Count - 1)] as AbstractGameKeep;
+					m_keep = list[Util.Random(list.Count - 1)] as AGameKeep;
 			}
 
-			GameEventMgr.AddHandler(KeepEvent.KeepTaken, new DOLEventHandler(Notify));
+			GameEventMgr.AddHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			if (e != KeepEvent.KeepTaken)
 				return;
@@ -101,8 +95,8 @@ namespace DOL.GS.Quests
 			GamePlayer testPlayer = null;
 			if (m_owner is GamePlayer)
 				testPlayer = m_owner as GamePlayer;
-			else if (m_owner is Group)
-				testPlayer = (m_owner as Group).Leader;
+			else if (m_owner is GroupUtil)
+				testPlayer = (m_owner as GroupUtil).Leader;
 
 			if (testPlayer != null)
 			{
@@ -121,13 +115,13 @@ namespace DOL.GS.Quests
 		public override void FinishMission()
 		{
 			base.FinishMission();
-			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new DOLEventHandler(Notify));
+			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
 		}
 
 		public override void ExpireMission()
 		{
 			base.ExpireMission();
-			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new DOLEventHandler(Notify));
+			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
 		}
 
 		public override string Description

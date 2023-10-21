@@ -18,10 +18,10 @@ namespace DOL.GS.RealmAbilities.Statics
 			dbs.Icon = GetStaticEffect();
 			dbs.ClientEffect = GetStaticEffect();
 			dbs.Damage = 0;
-			dbs.DamageType = (int)eDamageType.Energy;
+			dbs.DamageType = (int)EDamageType.Energy;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = eSpellType.UnresistableStun.ToString();
+			dbs.Type = ESpellType.UnresistableStun.ToString();
 			dbs.Value = 0;
 			dbs.Duration = stunDuration;
 			dbs.Pulse = 0;
@@ -42,4 +42,3 @@ namespace DOL.GS.RealmAbilities.Statics
 		}
 	}
 }
-

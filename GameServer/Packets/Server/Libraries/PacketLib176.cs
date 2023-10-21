@@ -28,7 +28,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.FindGroupUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.FindGroupUpdate)))
 			{
 				if (list != null)
 				{
@@ -47,7 +47,7 @@ namespace DOL.GS.PacketHandler
 						}
 						pak.WriteByte(player.Level);
 						pak.WritePascalString(player.Name);
-						pak.WriteString(player.CharacterClass.Name, 4);
+						pak.WriteString(player.PlayerClass.Name, 4);
 						//Dinberg:Instances - We use ZoneSkinID to bluff our way to victory and
 						//trick the client for positioning objects (as IDs are hard coded).
 						if (player.CurrentZone != null)
@@ -78,7 +78,7 @@ namespace DOL.GS.PacketHandler
 			if (obj.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ObjectCreate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.ObjectCreate)))
 			{
 				pak.WriteShort((ushort)obj.ObjectID);
 
@@ -95,7 +95,7 @@ namespace DOL.GS.PacketHandler
 				ushort model = obj.Model;
 				if (obj.IsUnderwater)
 				{
-					if (obj is GameNPC)
+					if (obj is GameNpc)
 						model |= 0x8000;
 					else
 						flag |= 0x01; // Underwater
@@ -144,9 +144,9 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendInventorySlotsUpdateRange(ICollection<int> slots, eInventoryWindowType windowType)
+		protected override void SendInventorySlotsUpdateRange(ICollection<int> slots, EInventoryWindowType windowType)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.InventoryUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.InventoryUpdate)))
 			{
 				pak.WriteByte((byte)(slots == null ? 0 : slots.Count));
 				pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
@@ -156,12 +156,12 @@ namespace DOL.GS.PacketHandler
 				{
 					foreach (int updatedSlot in slots)
 					{
-						if (updatedSlot >= (int)eInventorySlot.Consignment_First && updatedSlot <= (int)eInventorySlot.Consignment_Last)
-							pak.WriteByte((byte)(updatedSlot - (int)eInventorySlot.Consignment_First + (int)eInventorySlot.HousingInventory_First));
+						if (updatedSlot >= (int)EInventorySlot.Consignment_First && updatedSlot <= (int)EInventorySlot.Consignment_Last)
+							pak.WriteByte((byte)(updatedSlot - (int)EInventorySlot.Consignment_First + (int)EInventorySlot.HousingInventory_First));
 						else
 							pak.WriteByte((byte)(updatedSlot));
 						DbInventoryItem item = null;
-						item = m_gameClient.Player.Inventory.GetItem((eInventorySlot)updatedSlot);
+						item = m_gameClient.Player.Inventory.GetItem((EInventorySlot)updatedSlot);
 
 						if (item == null)
 						{
@@ -175,39 +175,39 @@ namespace DOL.GS.PacketHandler
 						int value2; // some object types use this field to display count
 						switch (item.Object_Type)
 						{
-							case (int)eObjectType.GenericItem:
+							case (int)EObjectType.GenericItem:
 								value1 = item.Count & 0xFF;
 								value2 = (item.Count >> 8) & 0xFF;
 								break;
-							case (int)eObjectType.Arrow:
-							case (int)eObjectType.Bolt:
-							case (int)eObjectType.Poison:
+							case (int)EObjectType.Arrow:
+							case (int)EObjectType.Bolt:
+							case (int)EObjectType.Poison:
 								value1 = item.Count;
 								value2 = item.SPD_ABS;
 								break;
-							case (int)eObjectType.Thrown:
+							case (int)EObjectType.Thrown:
 								value1 = item.DPS_AF;
 								value2 = item.Count;
 								break;
-							case (int)eObjectType.Instrument:
+							case (int)EObjectType.Instrument:
 								value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF);
 								value2 = 0;
 								break; // unused
-							case (int)eObjectType.Shield:
+							case (int)EObjectType.Shield:
 								value1 = item.Type_Damage;
 								value2 = item.DPS_AF;
 								break;
-							case (int)eObjectType.AlchemyTincture:
-							case (int)eObjectType.SpellcraftGem:
+							case (int)EObjectType.AlchemyTincture:
+							case (int)EObjectType.SpellcraftGem:
 								value1 = 0;
 								value2 = 0;
 								/*
 								must contain the quality of gem for spell craft and think same for tincture
 								*/
 								break;
-							case (int)eObjectType.HouseWallObject:
-							case (int)eObjectType.HouseFloorObject:
-							case (int)eObjectType.GardenObject:
+							case (int)EObjectType.HouseWallObject:
+							case (int)EObjectType.HouseFloorObject:
+							case (int)EObjectType.GardenObject:
 								value1 = 0;
 								value2 = item.SPD_ABS;
 								/*
@@ -226,7 +226,7 @@ namespace DOL.GS.PacketHandler
 						pak.WriteByte((byte)value1);
 						pak.WriteByte((byte)value2);
 
-						if (item.Object_Type == (int)eObjectType.GardenObject)
+						if (item.Object_Type == (int)EObjectType.GardenObject)
 							pak.WriteByte((byte)(item.DPS_AF));
 						else
 							pak.WriteByte((byte)(item.Hand << 6));
@@ -255,7 +255,7 @@ namespace DOL.GS.PacketHandler
 							if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 	                            name += "[" + item.SellPrice.ToString() + " BP]";
 	                        else
-	                            name += "[" + Money.GetString(item.SellPrice) + "]";
+	                            name += "[" + MoneyMgr.GetString(item.SellPrice) + "]";
 	                    }
 						pak.WritePascalString(name);
 					}
@@ -269,7 +269,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || living.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.EquipmentUpdate)))
 			{
 				ICollection<DbInventoryItem> items = null;
 				if (living.Inventory != null)
@@ -342,7 +342,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendHouse(House house)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseCreate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HouseCreate)))
 			{
 				pak.WriteShort((ushort)house.HouseNumber);
 				pak.WriteShort((ushort)house.Z);
@@ -368,7 +368,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendEnterHouse(House house)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseEnter)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HouseEnter)))
 			{
 
 				pak.WriteShort((ushort)house.HouseNumber);
@@ -395,7 +395,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void WriteHouseFurniture(GSTCPPacketOut pak, IndoorItem item, int index)
+		protected override void WriteHouseFurniture(GsTcpPacketOut pak, IndoorItem item, int index)
 		{
 			pak.WriteByte((byte)index);
 			byte type = 0;
@@ -436,7 +436,7 @@ namespace DOL.GS.PacketHandler
 			//cannot show banners for players that have no guild.
 			if (show && player.Guild == null)
 				return;
-			GSTCPPacketOut pak = new GSTCPPacketOut((byte)eServerPackets.VisualEffect);
+			GsTcpPacketOut pak = new GsTcpPacketOut((byte)EServerPackets.VisualEffect);
 			pak.WriteShort((ushort)player.ObjectID);
 			pak.WriteByte(0xC); // show Banner
 			pak.WriteByte((byte)((show) ? 0 : 1)); // 0-enable, 1-disable

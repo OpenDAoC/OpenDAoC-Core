@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Reflection;
@@ -27,7 +8,7 @@ using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.PlayerRegionChangeRequest, "Player Region Change Request handler.", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerRegionChangeRequest, "Player Region Change Request handler.", EClientStatus.PlayerInGame)]
 	public class PlayerRegionChangeRequestHandler : IPacketHandler
 	{
 		/// <summary>
@@ -40,14 +21,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		protected readonly Hashtable m_customJumpPointHandlers = new Hashtable();
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			ushort zonePointId = client.Version >= GameClient.eClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
-			eRealm playerRealm = client.Player.Realm;
+			ERealm playerRealm = client.Player.Realm;
 
 			// If we are in TrialsOfAtlantis then base the target jump on the current region realm instead of the players realm.
 			// This is only used if zone table has the proper realms defined, otherwise it reverts to old behavior.
-			if (client.Player.CurrentRegion.Expansion == (int) eClientExpansion.TrialsOfAtlantis && client.Player.CurrentZone.Realm != eRealm.None)
+			if (client.Player.CurrentRegion.Expansion == (int) EClientExpansion.TrialsOfAtlantis && client.Player.CurrentZone.Realm != ERealm.None)
 				playerRealm = client.Player.CurrentZone.Realm;
 
 			WhereClause whereClause = DB.Column("Id").IsEqualTo(zonePointId);
@@ -58,7 +39,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				whereClause = whereClause.And(realmFilter);
 			}
 
-			DbZonePoint zonePoint = DOLDB<DbZonePoint>.SelectObject(whereClause);
+			DbZonePoint zonePoint = CoreDb<DbZonePoint>.SelectObject(whereClause);
 
 			if (zonePoint == null)
 			{
@@ -88,7 +69,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						if (client.Player.Mission is not TaskDungeonMission taskDungeonMission || taskDungeonMission.TaskRegion.Skin != reg.Skin)
 						{
-							client.Out.SendMessage("This region has been disabled!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage("This region has been disabled!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 							if (client.Account.PrivLevel == 1)
 								return;
@@ -150,7 +131,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player region change requests
 		/// </summary>
-		protected class RegionChangeRequestHandler : ECSGameTimerWrapperBase
+		protected class RegionChangeRequestHandler : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Checks whether player is allowed to jump
@@ -177,14 +158,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 				Region reg = WorldMgr.GetRegion(m_zonePoint.TargetRegion);
 
 				if (reg != null && reg.Expansion > (int)player.Client.ClientType)
 				{
-					player.Out.SendMessage("Destination region (" + reg.Description + ") is not supported by your client type.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Destination region (" + reg.Description + ") is not supported by your client type.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return 0;
 				}
 
@@ -218,7 +199,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (Log.IsErrorEnabled)
 							Log.Error("Jump point handler (" + m_zonePoint.ClassType + ")", e);
 
-						player.Out.SendMessage("exception in jump point (" + m_zonePoint.Id + ") handler...", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("exception in jump point (" + m_zonePoint.Id + ") handler...", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						return 0;
 					}
 				}

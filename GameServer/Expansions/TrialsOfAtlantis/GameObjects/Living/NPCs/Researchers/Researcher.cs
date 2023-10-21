@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using DOL.AI.Brain;
@@ -27,8 +8,7 @@ namespace DOL.GS
     /// <summary>
     /// Base class for all Atlantis scholar type NPCs.
     /// </summary>
-    /// <author>Aredhel</author>
-    public class Researcher : GameNPC
+    public class Researcher : GameNpc
     {
         public Researcher()
             : base() { }
@@ -49,21 +29,21 @@ namespace DOL.GS
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			switch (Realm)
 			{
-				case eRealm.Albion: 
-					template.AddNPCEquipment(eInventorySlot.TorsoArmor, 2230); break;
-				case eRealm.Midgard:
-					template.AddNPCEquipment(eInventorySlot.TorsoArmor, 2232);
-					template.AddNPCEquipment(eInventorySlot.ArmsArmor, 2233);
-					template.AddNPCEquipment(eInventorySlot.LegsArmor, 2234);
-					template.AddNPCEquipment(eInventorySlot.HandsArmor, 2235);
-					template.AddNPCEquipment(eInventorySlot.FeetArmor, 2236);
+				case ERealm.Albion: 
+					template.AddNPCEquipment(EInventorySlot.TorsoArmor, 2230); break;
+				case ERealm.Midgard:
+					template.AddNPCEquipment(EInventorySlot.TorsoArmor, 2232);
+					template.AddNPCEquipment(EInventorySlot.ArmsArmor, 2233);
+					template.AddNPCEquipment(EInventorySlot.LegsArmor, 2234);
+					template.AddNPCEquipment(EInventorySlot.HandsArmor, 2235);
+					template.AddNPCEquipment(EInventorySlot.FeetArmor, 2236);
 					break;
-				case eRealm.Hibernia:
-					template.AddNPCEquipment(eInventorySlot.TorsoArmor, 2231); ; break;
+				case ERealm.Hibernia:
+					template.AddNPCEquipment(EInventorySlot.TorsoArmor, 2231); ; break;
 			}
 
             Inventory = template.CloseTemplate();
-            Flags = eFlags.PEACE;	// Peace flag.
+            Flags = ENpcFlags.PEACE;	// Peace flag.
             return base.AddToWorld();
         }
 

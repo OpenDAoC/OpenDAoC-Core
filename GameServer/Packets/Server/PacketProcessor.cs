@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 #define LOGACTIVESTACKS
 
 using System;
@@ -308,7 +289,7 @@ namespace DOL.GS.PacketHandler
         /// Sends a packet via TCP
         /// </summary>
         /// <param name="packet">The packet to be sent</param>
-        public void SendTCP(GSTCPPacketOut packet)
+        public void SendTCP(GsTcpPacketOut packet)
         {
             packet.WritePacketLength();
             SavePacket(packet);
@@ -334,7 +315,7 @@ namespace DOL.GS.PacketHandler
                     if (Properties.IGNORE_TOO_LONG_OUTCOMING_PACKET)
                     {
                         log.Error("ALERT: Oversize packet detected and discarded.");
-                        m_client.Out.SendMessage("ALERT: Error sending an update to your client. Oversize packet detected and discarded. Please /report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+                        m_client.Out.SendMessage("ALERT: Error sending an update to your client. Oversize packet detected and discarded. Please /report this issue!", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
                     }
                     else
                         GameServer.Instance.Disconnect(m_client);
@@ -458,7 +439,7 @@ namespace DOL.GS.PacketHandler
         /// Send the packet via TCP without changing any portion of the packet
         /// </summary>
         /// <param name="packet">Packet to send</param>
-        public void SendTCPRaw(GSTCPPacketOut packet)
+        public void SendTCPRaw(GsTcpPacketOut packet)
         {
             SendTCP((byte[]) packet.GetBuffer().Clone());
         }
@@ -497,7 +478,7 @@ namespace DOL.GS.PacketHandler
         /// </summary>
         /// <param name="packet">Packet to be sent</param>
         /// <param name="isForced">Force UDP packet if <code>true</code>, else packet can be sent over TCP</param>
-        public virtual void SendUDP(GSUDPPacketOut packet, bool isForced)
+        public virtual void SendUDP(GsUdpPacketOut packet, bool isForced)
         {
             //Fix the packet size
             packet.WritePacketLength();
@@ -623,7 +604,7 @@ namespace DOL.GS.PacketHandler
         /// Send the UDP packet without changing any portion of the packet
         /// </summary>
         /// <param name="packet">Packet to be sent</param>
-        public void SendUDPRaw(GSUDPPacketOut packet)
+        public void SendUDPRaw(GsUdpPacketOut packet)
         {
             SendUDP((byte[]) packet.GetBuffer().Clone(), false);
         }
@@ -644,7 +625,7 @@ namespace DOL.GS.PacketHandler
                 int bufferSize = m_client.ReceiveBufferOffset + numBytes;
 
                 //Size < minimum
-                if (bufferSize < GSPacketIn.HDR_SIZE)
+                if (bufferSize < GsPacketIn.HDR_SIZE)
                 {
                     m_client.ReceiveBufferOffset = bufferSize; // undo buffer read
                     return;
@@ -658,7 +639,7 @@ namespace DOL.GS.PacketHandler
 
                 do
                 {
-                    int packetLength = (buffer[curOffset] << 8) + buffer[curOffset + 1] + GSPacketIn.HDR_SIZE;
+                    int packetLength = (buffer[curOffset] << 8) + buffer[curOffset + 1] + GsPacketIn.HDR_SIZE;
                     int dataLeft = bufferSize - curOffset;
 
                     if (dataLeft < packetLength)
@@ -707,7 +688,7 @@ namespace DOL.GS.PacketHandler
                         return;
                     }
 
-                    var pak = new GSPacketIn(packetLength - GSPacketIn.HDR_SIZE);
+                    var pak = new GsPacketIn(packetLength - GsPacketIn.HDR_SIZE);
                     pak.Load(buffer, curOffset, packetLength);
 
                     try
@@ -826,7 +807,7 @@ namespace DOL.GS.PacketHandler
         }
 
 
-        public void HandlePacket(GSPacketIn packet)
+        public void HandlePacket(GsPacketIn packet)
         {
             if (packet == null || m_client == null)
                 return;

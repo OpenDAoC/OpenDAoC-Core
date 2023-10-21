@@ -6,29 +6,29 @@ using DOL.GS.Keeps;
 
 namespace DOL.GS.Quests
 {
-	public class ScoutMission : AbstractMission
+	public class ScoutMission : AMission
 	{
-		private AbstractGameKeep m_keep = null;
+		private AGameKeep m_keep = null;
 
 		public ScoutMission(object owner)
 			: base(owner)
 		{
-			eRealm realm = 0;
-			if (owner is Group)
-				realm = (owner as Group).Leader.Realm;
+			ERealm realm = 0;
+			if (owner is GroupUtil)
+				realm = (owner as GroupUtil).Leader.Realm;
 			else if (owner is GamePlayer)
 				realm = (owner as GamePlayer).Realm;
 
 			ArrayList list = new ArrayList();
 
-			ICollection<AbstractGameKeep> keeps;
-			if (owner is Group)
-				keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as Group).Leader.CurrentRegionID);
+			ICollection<AGameKeep> keeps;
+			if (owner is GroupUtil)
+				keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GroupUtil).Leader.CurrentRegionID);
 			else if (owner is GamePlayer)
 				keeps = GameServer.KeepManager.GetKeepsOfRegion((owner as GamePlayer).CurrentRegionID);
-			else keeps = new List<AbstractGameKeep>();
+			else keeps = new List<AGameKeep>();
 
-			foreach (AbstractGameKeep keep in keeps)
+			foreach (AGameKeep keep in keeps)
 			{
 				if (keep.IsPortalKeep)
 					continue;
@@ -37,13 +37,13 @@ namespace DOL.GS.Quests
 			}
 
 			if (list.Count > 0)
-				m_keep = list[Util.Random(list.Count - 1)] as AbstractGameKeep;
+				m_keep = list[Util.Random(list.Count - 1)] as AGameKeep;
 
-			GameEventMgr.AddHandler(AreaEvent.PlayerEnter, new DOLEventHandler(Notify));
-			GameEventMgr.AddHandler(KeepEvent.KeepTaken, new DOLEventHandler(Notify));
+			GameEventMgr.AddHandler(AreaEvent.PlayerEnter, new CoreEventHandler(Notify));
+			GameEventMgr.AddHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
 		}
 
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			if (e == AreaEvent.PlayerEnter)
 			{
@@ -75,15 +75,15 @@ namespace DOL.GS.Quests
 		public override void FinishMission()
 		{
 			base.FinishMission();
-			GameEventMgr.RemoveHandler(AreaEvent.PlayerEnter, new DOLEventHandler(Notify));
-			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new DOLEventHandler(Notify));
+			GameEventMgr.RemoveHandler(AreaEvent.PlayerEnter, new CoreEventHandler(Notify));
+			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
 		}
 
 		public override void ExpireMission()
 		{
 			base.ExpireMission();
-			GameEventMgr.RemoveHandler(AreaEvent.PlayerEnter, new DOLEventHandler(Notify));
-			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new DOLEventHandler(Notify));
+			GameEventMgr.RemoveHandler(AreaEvent.PlayerEnter, new CoreEventHandler(Notify));
+			GameEventMgr.RemoveHandler(KeepEvent.KeepTaken, new CoreEventHandler(Notify));
 		}
 
 		public override string Description

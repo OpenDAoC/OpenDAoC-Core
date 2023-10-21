@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.AI.Brain;
 using DOL.GS.PlayerClass;
@@ -26,9 +7,6 @@ using DOL.Language;
 
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// Represents a mission master
-	/// </summary>
 	public class MissionMaster : GameKeepGuard
 	{
 		public override bool Interact(GamePlayer player)
@@ -37,7 +15,7 @@ namespace DOL.GS.Keeps
 				return false;
 
 			if (Component == null)
-				SayTo(player, "Greetings, " + player.Name + ". We have put out the call far and wide for heroes such as yourself to aid us in our ongoing struggle. It warms my heart good to to see a great " + player.CharacterClass.Name + " such as yourself willing to lay their life on the line in defence of the [realm].");
+				SayTo(player, "Greetings, " + player.Name + ". We have put out the call far and wide for heroes such as yourself to aid us in our ongoing struggle. It warms my heart good to to see a great " + player.PlayerClass.Name + " such as yourself willing to lay their life on the line in defence of the [realm].");
 			else SayTo(player, "Hail and well met, " + player.Name + "! As the leader of our forces, I am calling upon our finest warriors to aid in the vanquishing of our enemies. Do you wish to do your duty in defence of our [realm]?");
 			return true;
 		}
@@ -71,7 +49,7 @@ namespace DOL.GS.Keeps
 					if (player.Group.Mission != null)
 						player.Group.Mission.ExpireMission();
 
-					player.Group.Mission = new CaptureMission(CaptureMission.eCaptureType.Tower, player.Group, str.ToLower().Replace("tower capture", "").Trim());
+					player.Group.Mission = new CaptureMission(ECaptureType.Tower, player.Group, str.ToLower().Replace("tower capture", "").Trim());
 				}
 			}
 			else if (str.ToLower().StartsWith("keep capture"))
@@ -89,7 +67,7 @@ namespace DOL.GS.Keeps
 					if (player.Group.Mission != null)
 						player.Group.Mission.ExpireMission();
 
-					player.Group.Mission = new CaptureMission(CaptureMission.eCaptureType.Keep, player.Group, str.ToLower().Replace("keep capture", "").Trim());
+					player.Group.Mission = new CaptureMission(ECaptureType.Keep, player.Group, str.ToLower().Replace("keep capture", "").Trim());
 				}
 			}
 			else
@@ -164,7 +142,7 @@ namespace DOL.GS.Keeps
 								SayTo(player, "You are not the leader of your group!");
 								break;
 							}
-							player.Group.Mission = new RaizeMission(player.Group);
+							player.Group.Mission = new RazeMission(player.Group);
 							break;
 						}
 					case "tower capture":
@@ -237,7 +215,7 @@ namespace DOL.GS.Keeps
 								return false;
 							}
 
-							if (!player.Guild.HasRank(player, Guild.eRank.OcSpeak))
+							if (!player.Guild.HasRank(player, EGuildRank.OcSpeak))
 							{
 								SayTo(player, "You are not high enough rank in your guild!");
 								return false;
@@ -259,12 +237,12 @@ namespace DOL.GS.Keeps
 			return true;
 		}
 
-		protected override ICharacterClass GetClass()
+		protected override IPlayerClass GetClass()
 		{
-			if (ModelRealm == eRealm.Albion) return new ClassArmsman();
-			else if (ModelRealm == eRealm.Midgard) return new ClassWarrior();
-			else if (ModelRealm == eRealm.Hibernia) return new ClassHero();
-			return new DefaultCharacterClass();
+			if (ModelRealm == ERealm.Albion) return new ClassArmsman();
+			else if (ModelRealm == ERealm.Midgard) return new ClassWarrior();
+			else if (ModelRealm == ERealm.Hibernia) return new ClassHero();
+			return new DefaultPlayerClass();
 		}
 
 		protected override void SetBlockEvadeParryChance()
@@ -274,7 +252,7 @@ namespace DOL.GS.Keeps
 			BlockChance = 15;
 			ParryChance = 15;
 
-			if (ModelRealm != eRealm.Albion)
+			if (ModelRealm != ERealm.Albion)
 			{
 				EvadeChance = 10;
 				ParryChance = 5;
@@ -283,7 +261,7 @@ namespace DOL.GS.Keeps
 
 		protected override void SetRespawnTime()
 		{
-			if (Realm == eRealm.None && (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE ||
+			if (Realm == ERealm.None && (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE ||
 			GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP))
 			{
 				// In PvE & PvP servers, lords are really just mobs farmed for seals.
@@ -306,19 +284,19 @@ namespace DOL.GS.Keeps
 		{
 			switch (ModelRealm)
 			{
-				case eRealm.None:
-				case eRealm.Albion:
+				case ERealm.None:
+				case ERealm.Albion:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.CaptainCommander");
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.HersirCommander");
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.ChampionCommander");
 					break;
 			}
 
-			if (Realm == eRealm.None)
+			if (Realm == ERealm.None)
 			{
 				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
 			}

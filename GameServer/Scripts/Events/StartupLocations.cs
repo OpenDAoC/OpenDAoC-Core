@@ -29,10 +29,10 @@ namespace DOL.GS.GameEvents
 		private const int TUTORIAL_REGIONID = 27;
 		
 		[ScriptLoadedEvent]
-		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(CharacterCreation));
-			GameEventMgr.AddHandler(DatabaseEvent.CharacterSelected, new DOLEventHandler(CharacterSelection));
+			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(CharacterCreation));
+			GameEventMgr.AddHandler(DatabaseEvent.CharacterSelected, new CoreEventHandler(CharacterSelection));
 			
 			InitStartupLocation();
 			
@@ -41,10 +41,10 @@ namespace DOL.GS.GameEvents
 		}
 
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(CharacterCreation));
-			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterSelected, new DOLEventHandler(CharacterSelection));
+			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(CharacterCreation));
+			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterSelected, new CoreEventHandler(CharacterSelection));
 		}
 		
 		/// <summary>
@@ -62,7 +62,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Change location on character creation
 		/// </summary>
-		public static void CharacterCreation(DOLEvent ev, object sender, EventArgs args)
+		public static void CharacterCreation(CoreEvent ev, object sender, EventArgs args)
 		{
 			// Check Args
 			var chArgs = args as CharacterEventArgs;
@@ -89,7 +89,7 @@ namespace DOL.GS.GameEvents
 				if (dbStartupLocation == null)
 				{
 					log.WarnFormat("startup location not found: account={0}; char name={1}; region={2}; realm={3}; class={4} ({5}); race={6} ({7}); version={8}",
-					             ch.AccountName, ch.Name, ch.Region, ch.Realm, ch.Class, (eCharacterClass) ch.Class, ch.Race, (eRace)ch.Race, chArgs.GameClient.Version);
+					             ch.AccountName, ch.Name, ch.Region, ch.Realm, ch.Class, (EPlayerClass) ch.Class, ch.Race, (ERace)ch.Race, chArgs.GameClient.Version);
 				}
 				else
 				{
@@ -100,21 +100,21 @@ namespace DOL.GS.GameEvents
 					ch.Direction = dbStartupLocation.Heading;
 					BindCharacter(ch);
 					Console.WriteLine("startup location: account={0}; char name={1}; region={2}; realm={3}; class={4} ({5}); race={6} ({7}); version={8}",
-						ch.AccountName, ch.Name, ch.Region, ch.Realm, ch.Class, (eCharacterClass) ch.Class, ch.Race, (eRace)ch.Race, chArgs.GameClient.Version); 
+						ch.AccountName, ch.Name, ch.Region, ch.Realm, ch.Class, (EPlayerClass) ch.Class, ch.Race, (ERace)ch.Race, chArgs.GameClient.Version); 
 				}				
 			}
 			catch (Exception e)
 			{
 				if (log.IsErrorEnabled)
 					log.ErrorFormat("StartupLocations script: error changing location. account={0}; char name={1}; region={2}; realm={3}; class={4} ({5}); race={6} ({7}); version={8}; {9}",
-					                ch.AccountName, ch.Name, ch.Region, ch.Realm, ch.Class, (eCharacterClass) ch.Class, ch.Race, (eRace)ch.Race, chArgs.GameClient.Version, e);
+					                ch.AccountName, ch.Name, ch.Region, ch.Realm, ch.Class, (EPlayerClass) ch.Class, ch.Race, (ERace)ch.Race, chArgs.GameClient.Version, e);
 			}
 		}
 
 		/// <summary>
 		/// Change location on character selection if it has any wrong values...
 		/// </summary>
-		public static void CharacterSelection(DOLEvent ev, object sender, EventArgs args)
+		public static void CharacterSelection(CoreEvent ev, object sender, EventArgs args)
 		{
 			// Check Args
 			var chArgs = args as CharacterEventArgs;

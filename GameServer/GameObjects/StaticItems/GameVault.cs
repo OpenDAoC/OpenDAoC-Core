@@ -1,33 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-
-	/// <summary>
-	/// A vault.
-	/// </summary>
-	/// <author>Aredhel, Tolakram</author>
 	public class GameVault : GameStaticItem, IGameInventoryObject
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -79,7 +55,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int FirstClientSlot
 		{
-			get { return (int)eInventorySlot.HousingInventory_First; }
+			get { return (int)EInventorySlot.HousingInventory_First; }
 		}
 
 		/// <summary>
@@ -87,7 +63,7 @@ namespace DOL.GS
 		/// </summary>
 		public int LastClientSlot
 		{
-			get { return (int)eInventorySlot.HousingInventory_Last; }
+			get { return (int)EInventorySlot.HousingInventory_Last; }
 		}
 
 		/// <summary>
@@ -95,7 +71,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int FirstDBSlot
 		{
-			get { return (int)(eInventorySlot.HouseVault_First) + VaultSize * Index; }
+			get { return (int)(EInventorySlot.HouseVault_First) + VaultSize * Index; }
 		}
 
 		/// <summary>
@@ -103,7 +79,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int LastDBSlot
 		{
-			get { return (int)(eInventorySlot.HouseVault_First) + VaultSize * (Index + 1) - 1; }
+			get { return (int)(EInventorySlot.HouseVault_First) + VaultSize * (Index + 1) - 1; }
 		}
 
 		public virtual string GetOwner(GamePlayer player = null)
@@ -131,7 +107,7 @@ namespace DOL.GS
 		public virtual Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player)
 		{
 			var inventory = new Dictionary<int, DbInventoryItem>();
-			int slotOffset = -FirstDBSlot + (int)(eInventorySlot.HousingInventory_First);
+			int slotOffset = -FirstDBSlot + (int)(EInventorySlot.HousingInventory_First);
 			foreach (DbInventoryItem item in DBItems(player))
 			{
 				if (item != null)
@@ -162,7 +138,7 @@ namespace DOL.GS
 
 			if (!CanView(player))
 			{
-				player.Out.SendMessage("You don't have permission to view this vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You don't have permission to view this vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -172,7 +148,7 @@ namespace DOL.GS
 			}
 
 			player.ActiveInventoryObject = this;
-			player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.HouseVault);
+			player.Out.SendInventoryItemsUpdate(GetClientInventory(player), EInventoryWindowType.HouseVault);
 
 			return true;
 		}
@@ -183,7 +159,7 @@ namespace DOL.GS
 		public IList<DbInventoryItem> DBItems(GamePlayer player = null)
 		{
 			var filterBySlot = DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDBSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDBSlot));
-			return DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(filterBySlot));
+			return CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(filterBySlot));
 		}
 
 		/// <summary>
@@ -201,13 +177,13 @@ namespace DOL.GS
 			bool canHandle = false;
 
 			// House Vaults and GameConsignmentMerchant Merchants deliver the same slot numbers
-			if (fromSlot >= (ushort)eInventorySlot.HousingInventory_First &&
-				fromSlot <= (ushort)eInventorySlot.HousingInventory_Last)
+			if (fromSlot >= (ushort)EInventorySlot.HousingInventory_First &&
+				fromSlot <= (ushort)EInventorySlot.HousingInventory_Last)
 			{
 				canHandle = true;
 			}
-			else if (toSlot >= (ushort)eInventorySlot.HousingInventory_First &&
-				toSlot <= (ushort)eInventorySlot.HousingInventory_Last)
+			else if (toSlot >= (ushort)EInventorySlot.HousingInventory_First &&
+				toSlot <= (ushort)EInventorySlot.HousingInventory_Last)
 			{
 				canHandle = true;
 			}
@@ -225,8 +201,8 @@ namespace DOL.GS
 				return false;
 			}
 
-			bool fromHousing = (fromSlot >= (ushort)eInventorySlot.HousingInventory_First && fromSlot <= (ushort)eInventorySlot.HousingInventory_Last);
-			bool toHousing = (toSlot >= (ushort)eInventorySlot.HousingInventory_First && toSlot <= (ushort)eInventorySlot.HousingInventory_Last);
+			bool fromHousing = (fromSlot >= (ushort)EInventorySlot.HousingInventory_First && fromSlot <= (ushort)EInventorySlot.HousingInventory_Last);
+			bool toHousing = (toSlot >= (ushort)EInventorySlot.HousingInventory_First && toSlot <= (ushort)EInventorySlot.HousingInventory_Last);
 
 			if (fromHousing == false && toHousing == false)
 			{
@@ -236,30 +212,30 @@ namespace DOL.GS
 			GameVault gameVault = player.ActiveInventoryObject as GameVault;
 			if (gameVault == null)
 			{
-				player.Out.SendMessage("You are not actively viewing a vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You are not actively viewing a vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				player.Out.SendInventoryItemsUpdate(null);
 				return false;
 			}
 
 			if (toHousing && gameVault.CanAddItems(player) == false)
 			{
-				player.Out.SendMessage("You don't have permission to add items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You don't have permission to add items!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (fromHousing && gameVault.CanRemoveItems(player) == false)
 			{
-				player.Out.SendMessage("You don't have permission to remove items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You don't have permission to remove items!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
-			DbInventoryItem itemInFromSlot = player.Inventory.GetItem((eInventorySlot)fromSlot);
-			DbInventoryItem itemInToSlot = player.Inventory.GetItem((eInventorySlot)toSlot);
+			DbInventoryItem itemInFromSlot = player.Inventory.GetItem((EInventorySlot)fromSlot);
+			DbInventoryItem itemInToSlot = player.Inventory.GetItem((EInventorySlot)toSlot);
 
 			// Check for a swap to get around not allowing non-tradables in a housing vault - Tolakram
 			if (fromHousing && itemInToSlot != null && itemInToSlot.IsTradable == false && !(this is AccountVault))
 			{
-				player.Out.SendMessage("You cannot swap with an untradable item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot swap with an untradable item!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				log.DebugFormat("GameVault: {0} attempted to swap untradable item {2} with {1}", player.Name, itemInFromSlot.Name, itemInToSlot.Name);
 				player.Out.SendInventoryItemsUpdate(null);
 				return false;
@@ -269,7 +245,7 @@ namespace DOL.GS
 			// block placing untradables into housing vaults from any source - Tolakram
 			if (toHousing && itemInFromSlot != null && itemInFromSlot.IsTradable == false && !(this is AccountVault))
 			{
-				player.Out.SendMessage("You can not put this item into a House Vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You can not put this item into a House Vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				player.Out.SendInventoryItemsUpdate(null);
 				return false;
 			}
@@ -282,16 +258,16 @@ namespace DOL.GS
 				{
 					if (toHousing)
 					{
-						NotifyObservers(player, this.MoveItemInsideObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
+						NotifyObservers(player, this.MoveItemInsideObject(player, (EInventorySlot)fromSlot, (EInventorySlot)toSlot));
 					}
 					else
 					{
-						NotifyObservers(player, this.MoveItemFromObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
+						NotifyObservers(player, this.MoveItemFromObject(player, (EInventorySlot)fromSlot, (EInventorySlot)toSlot));
 					}
 				}
 				else if (toHousing)
 				{
-					NotifyObservers(player, this.MoveItemToObject(player, (eInventorySlot)fromSlot, (eInventorySlot)toSlot));
+					NotifyObservers(player, this.MoveItemToObject(player, (EInventorySlot)fromSlot, (EInventorySlot)toSlot));
 				}
 			}
 
@@ -331,7 +307,7 @@ namespace DOL.GS
 		/// <param name="updateItems"></param>
 		protected virtual void NotifyObservers(GamePlayer player, IDictionary<int, DbInventoryItem> updateItems)
 		{
-			player.Client.Out.SendInventoryItemsUpdate(updateItems, eInventoryWindowType.Update);
+			player.Client.Out.SendInventoryItemsUpdate(updateItems, EInventoryWindowType.Update);
 		}
 
 		/// <summary>

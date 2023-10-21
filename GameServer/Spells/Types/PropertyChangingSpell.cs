@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -30,14 +11,13 @@ namespace DOL.GS.Spells
 	/// Spell to change up to 3 property bonuses at once
 	/// in one their specific given bonus category
 	/// </summary>
-
 	public abstract class PropertyChangingSpell : SpellHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new StatBuffECSEffect(initParams);
+			new StatBuffEcsSpellEffect(initParams);
 		}
 
 		/// <summary>
@@ -61,7 +41,7 @@ namespace DOL.GS.Spells
 			double duration = Spell.Duration;
 			if (HasPositiveEffect)
 			{	
-				duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
+				duration *= (1.0 + m_caster.GetModified(EProperty.SpellDuration) * 0.01);
 				if (Spell.InstrumentRequirement != 0)
 				{
 					DbInventoryItem instrument = Caster.ActiveWeapon;
@@ -127,7 +107,7 @@ namespace DOL.GS.Spells
 					    (Caster as GamePlayer).Group == null ||
 					    (Caster as GamePlayer).Group != (target as GamePlayer).Group)
 					{
-						MessageToCaster("That player does not want assistance", eChatType.CT_SpellResisted);
+						MessageToCaster("That player does not want assistance", EChatType.CT_SpellResisted);
 						return;
 					}
 				}
@@ -140,12 +120,12 @@ namespace DOL.GS.Spells
 						//GameSpellEffect Matter = FindEffectOnTarget(player, "MatterResistBuff");
 						//GameSpellEffect Cold = FindEffectOnTarget(player, "ColdResistBuff");
 						//GameSpellEffect Heat = FindEffectOnTarget(player, "HeatResistBuff");
-						ECSGameEffect Matter = EffectListService.GetEffectOnTarget(player, eEffect.MatterResistBuff);
-						ECSGameEffect Cold = EffectListService.GetEffectOnTarget(player, eEffect.ColdResistBuff);
-						ECSGameEffect Heat = EffectListService.GetEffectOnTarget(player, eEffect.HeatResistBuff);
+						EcsGameEffect Matter = EffectListService.GetEffectOnTarget(player, EEffect.MatterResistBuff);
+						EcsGameEffect Cold = EffectListService.GetEffectOnTarget(player, EEffect.ColdResistBuff);
+						EcsGameEffect Heat = EffectListService.GetEffectOnTarget(player, EEffect.HeatResistBuff);
 						if (Matter != null || Cold != null || Heat != null)
 						{
-							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);
+							MessageToCaster(target.Name + " already has this effect", EChatType.CT_SpellResisted);
 							return;
 						}
 					}
@@ -158,12 +138,12 @@ namespace DOL.GS.Spells
 						//GameSpellEffect Body = FindEffectOnTarget(player, "BodyResistBuff");
 						//GameSpellEffect Spirit = FindEffectOnTarget(player, "SpiritResistBuff");
 						//GameSpellEffect Energy = FindEffectOnTarget(player, "EnergyResistBuff");
-						ECSGameEffect Body = EffectListService.GetEffectOnTarget(player, eEffect.BodyResistBuff);
-						ECSGameEffect Spirit = EffectListService.GetEffectOnTarget(player, eEffect.SpiritResistBuff);
-						ECSGameEffect Energy = EffectListService.GetEffectOnTarget(player, eEffect.EnergyResistBuff);
+						EcsGameEffect Body = EffectListService.GetEffectOnTarget(player, EEffect.BodyResistBuff);
+						EcsGameEffect Spirit = EffectListService.GetEffectOnTarget(player, EEffect.SpiritResistBuff);
+						EcsGameEffect Energy = EffectListService.GetEffectOnTarget(player, EEffect.EnergyResistBuff);
 						if (Body != null || Spirit != null || Energy != null)
 						{
-							MessageToCaster(target.Name + " already has this effect", eChatType.CT_SpellResisted);
+							MessageToCaster(target.Name + " already has this effect", EChatType.CT_SpellResisted);
 							return;
 						}
 					}
@@ -192,21 +172,21 @@ namespace DOL.GS.Spells
 
 			SendUpdates(effect.Owner);
 
-			eChatType toLiving = eChatType.CT_SpellPulse;
-			eChatType toOther = eChatType.CT_SpellPulse;
+			EChatType toLiving = EChatType.CT_SpellPulse;
+			EChatType toOther = EChatType.CT_SpellPulse;
 			if (Spell.Pulse == 0 || !HasPositiveEffect)
 			{
-				toLiving = eChatType.CT_Spell;
-				toOther = eChatType.CT_System;
+				toLiving = EChatType.CT_Spell;
+				toOther = EChatType.CT_System;
 				SendEffectAnimation(effect.Owner, 0, false, 1);
 			}
 
 			GameLiving player = null;
 
-			if (Caster is GameNPC && (Caster as GameNPC).Brain is IControlledBrain)
-				player = ((Caster as GameNPC).Brain as IControlledBrain).Owner;
-			else if (effect.Owner is GameNPC && (effect.Owner as GameNPC).Brain is IControlledBrain)
-				player = ((effect.Owner as GameNPC).Brain as IControlledBrain).Owner;
+			if (Caster is GameNpc && (Caster as GameNpc).Brain is IControlledBrain)
+				player = ((Caster as GameNpc).Brain as IControlledBrain).Owner;
+			else if (effect.Owner is GameNpc && (effect.Owner as GameNpc).Brain is IControlledBrain)
+				player = ((effect.Owner as GameNpc).Brain as IControlledBrain).Owner;
 
 			if (player != null)
 			{
@@ -225,7 +205,7 @@ namespace DOL.GS.Spells
 			else
 			{
 				MessageToLiving(effect.Owner, Spell.Message1, toLiving);
-				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), toOther, effect.Owner);
 			}
 
 		}
@@ -243,8 +223,8 @@ namespace DOL.GS.Spells
 		{
 			if (!noMessages && Spell.Pulse == 0)
 			{
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+				MessageToLiving(effect.Owner, Spell.Message3, EChatType.CT_SpellExpires);
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), EChatType.CT_SpellExpires, effect.Owner);
 			}
 
 			ApplyBonus(effect.Owner, BonusCategory1, Property1, (int)(Spell.Value * effect.Effectiveness), true);
@@ -274,27 +254,27 @@ namespace DOL.GS.Spells
 		{
 		}
 
-		protected IPropertyIndexer GetBonusCategory(GameLiving target, eBuffBonusCategory categoryid)
+		protected IPropertyIndexer GetBonusCategory(GameLiving target, EBuffBonusCategory categoryid)
 		{
 			IPropertyIndexer bonuscat = null;
 			switch (categoryid)
 			{
-				case eBuffBonusCategory.BaseBuff:
+				case EBuffBonusCategory.BaseBuff:
 					bonuscat = target.BaseBuffBonusCategory;
 					break;
-				case eBuffBonusCategory.SpecBuff:
+				case EBuffBonusCategory.SpecBuff:
 					bonuscat = target.SpecBuffBonusCategory;
 					break;
-				case eBuffBonusCategory.Debuff:
+				case EBuffBonusCategory.Debuff:
 					bonuscat = target.DebuffCategory;
 					break;
-				case eBuffBonusCategory.Other:
+				case EBuffBonusCategory.Other:
 					bonuscat = target.BuffBonusCategory4;
 					break;
-				case eBuffBonusCategory.SpecDebuff:
+				case EBuffBonusCategory.SpecDebuff:
 					bonuscat = target.SpecDebuffCategory;
 					break;
-				case eBuffBonusCategory.AbilityBuff:
+				case EBuffBonusCategory.AbilityBuff:
 					bonuscat = target.AbilityBonus;
 					break;
 				default:
@@ -308,157 +288,157 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Property 1 which bonus value has to be changed
 		/// </summary>
-		public abstract eProperty Property1 { get; }
+		public abstract EProperty Property1 { get; }
 
 		/// <summary>
 		/// Property 2 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property2
+		public virtual EProperty Property2
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 3 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property3
+		public virtual EProperty Property3
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 4 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property4
+		public virtual EProperty Property4
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 		/// <summary>
 		/// Property 5 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property5
+		public virtual EProperty Property5
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 6 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property6
+		public virtual EProperty Property6
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 7 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property7
+		public virtual EProperty Property7
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 8 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property8
+		public virtual EProperty Property8
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 9 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property9
+		public virtual EProperty Property9
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Property 10 which bonus value has to be changed
 		/// </summary>
-		public virtual eProperty Property10
+		public virtual EProperty Property10
 		{
-			get { return eProperty.Undefined; }
+			get { return EProperty.Undefined; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property1
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory1
+		public virtual EBuffBonusCategory BonusCategory1
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property2
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory2
+		public virtual EBuffBonusCategory BonusCategory2
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property3
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory3
+		public virtual EBuffBonusCategory BonusCategory3
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property4
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory4
+		public virtual EBuffBonusCategory BonusCategory4
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property5
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory5
+		public virtual EBuffBonusCategory BonusCategory5
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property6
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory6
+		public virtual EBuffBonusCategory BonusCategory6
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property7
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory7
+		public virtual EBuffBonusCategory BonusCategory7
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property8
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory8
+		public virtual EBuffBonusCategory BonusCategory8
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property9
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory9
+		public virtual EBuffBonusCategory BonusCategory9
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		/// <summary>
 		/// Bonus Category where to change the Property10
 		/// </summary>
-		public virtual eBuffBonusCategory BonusCategory10
+		public virtual EBuffBonusCategory BonusCategory10
 		{
-			get { return eBuffBonusCategory.BaseBuff; }
+			get { return EBuffBonusCategory.BaseBuff; }
 		}
 
 		public override void OnEffectRestored(GameSpellEffect effect, int[] vars)
@@ -482,8 +462,8 @@ namespace DOL.GS.Spells
 		{
 			if (!noMessages && Spell.Pulse == 0)
 			{
-				MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
-				Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), eChatType.CT_SpellExpires, effect.Owner);
+				MessageToLiving(effect.Owner, Spell.Message3, EChatType.CT_SpellExpires);
+				MessageUtil.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, false)), EChatType.CT_SpellExpires, effect.Owner);
 			}
 
 			ApplyBonus(effect.Owner, BonusCategory1, Property1, vars[1], true);
@@ -510,10 +490,10 @@ namespace DOL.GS.Spells
 		/// <param name="Property"></param>
 		/// <param name="Value"></param>
 		/// <param name="IsSubstracted"></param>
-		protected void ApplyBonus(GameLiving owner,  eBuffBonusCategory BonusCat, eProperty Property, int Value, bool IsSubstracted)
+		protected void ApplyBonus(GameLiving owner,  EBuffBonusCategory BonusCat, EProperty Property, int Value, bool IsSubstracted)
 		{
 			IPropertyIndexer tblBonusCat;
-			if (Property != eProperty.Undefined)
+			if (Property != EProperty.Undefined)
 			{
 				tblBonusCat = GetBonusCategory(owner, BonusCat);
 				if (IsSubstracted)
@@ -529,7 +509,7 @@ namespace DOL.GS.Spells
 		}
 	}
 
-	public class BuffCheckAction : ECSGameTimerWrapperBase
+	public class BuffCheckAction : EcsGameTimerWrapperBase
 	{
 		public const int BUFFCHECKINTERVAL = 60000;//60 seconds
 
@@ -548,7 +528,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Called on every timer tick
 		/// </summary>
-		protected override int OnTick(ECSGameTimer timer)
+		protected override int OnTick(EcsGameTimer timer)
 		{
 			if (m_caster == null ||
 			    m_owner == null ||

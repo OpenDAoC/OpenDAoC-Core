@@ -5,14 +5,14 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
-    [Cmd(
+    [Command(
         "&summonmerchant",
-        ePrivLevel.Admin, // Set to player.
+        EPrivLevel.Admin, // Set to player.
         "/summonmerchant - summon a merchant at the cost of 10g")]
-    public class SummonMerchantCommandHandler : AbstractCommandHandler, ICommandHandler
+    public class SummonMerchantCommand : ACommandHandler, ICommandHandler
     {
         [ScriptLoadedEvent]
-        public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
         {
             Spell load;
             load = MerchantSpell;
@@ -31,7 +31,7 @@ namespace DOL.GS.Commands
             {
                 player.Out.SendMessage(
                     "You must wait " + ((30000 - changeTime)/1000) + " more second to attempt to use this command!",
-                    eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    EChatType.CT_System, EChatLoc.CL_ChatWindow);
                 return;
             }
             player.TempProperties.SetProperty(SummonMerch, GameLoop.GameLoopTime);
@@ -44,8 +44,8 @@ namespace DOL.GS.Commands
             var spellHandler = ScriptMgr.CreateSpellHandler(client.Player, MerchantSpell, line);
             if (spellHandler != null)
                 spellHandler.StartSpell(client.Player);
-            client.Player.Out.SendMessage("You have summoned a merchant!", eChatType.CT_Important,
-                eChatLoc.CL_SystemWindow);
+            client.Player.Out.SendMessage("You have summoned a merchant!", EChatType.CT_Important,
+                EChatLoc.CL_SystemWindow);
 
             #endregion command spell loader
         }
@@ -88,7 +88,7 @@ namespace DOL.GS.Commands
                 if (MMerchantTemplate == null)
                 {
                     MMerchantTemplate = new NpcTemplate();
-                    MMerchantTemplate.Flags += (byte) GameNPC.eFlags.GHOST + (byte) GameNPC.eFlags.PEACE;
+                    MMerchantTemplate.Flags += (byte) ENpcFlags.GHOST + (byte) ENpcFlags.PEACE;
                     MMerchantTemplate.Name = "Merchant";
                     MMerchantTemplate.ClassType = "DOL.GS.Scripts.SummonedMerchant";
                     MMerchantTemplate.Model = "50";

@@ -7,7 +7,6 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-    //handled in HealSpellHandler
     [SpellHandler("EfficientHealing")]
     public class EfficientHealing : SpellHandler
     {
@@ -106,7 +105,7 @@ namespace DOL.GS.Spells
     [SpellHandler("Powershield")]
     public class Powershield : SpellHandler
     {
-        public void AttackedEvent(DOLEvent e, object sender, EventArgs arguments)
+        public void AttackedEvent(CoreEvent e, object sender, EventArgs arguments)
         {
             GamePlayer player = (GamePlayer)sender;
             AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
@@ -122,22 +121,22 @@ namespace DOL.GS.Spells
                 {
                     player.Health += player.Mana;
                     player.Mana -= (int)ManaHeal;
-                    player.Out.SendMessage("You convert "+player.Mana+" power into hit points!", eChatType.CT_Spell, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage("You convert "+player.Mana+" power into hit points!", EChatType.CT_Spell, EChatLoc.CL_ChatWindow);
                     return;
                 }
                 player.Health += (int)ManaHeal;
                 player.Mana -= (int)ManaHeal;
-                player.Out.SendMessage("You convert " + ManaHeal + " power into hit points!", eChatType.CT_Spell, eChatLoc.CL_ChatWindow);
+                player.Out.SendMessage("You convert " + ManaHeal + " power into hit points!", EChatType.CT_Spell, EChatLoc.CL_ChatWindow);
                 return;
             }
         }
         public override void OnEffectStart(GameSpellEffect effect)
         {
-            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(AttackedEvent));
+            GameEventMgr.AddHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(AttackedEvent));
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(AttackedEvent));
+            GameEventMgr.RemoveHandler(m_caster, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(AttackedEvent));
             return 0;
         }
         #region Devle Info

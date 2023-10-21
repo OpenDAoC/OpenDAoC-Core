@@ -1,31 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.Database;
 using DOL.Events;
 
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// A keepComponent
-	/// </summary>
 	public class GameKeepHookPoint : Point3D
 	{
 		public GameKeepHookPoint(int id, GameKeepComponent component)
@@ -107,24 +85,24 @@ namespace DOL.GS.Keeps
 				if (value != null)
 				{
 					m_hookpointTimer.Start(1800000);//30*60*1000 = 30 min
-					GameEventMgr.AddHandler(value, GameLivingEvent.Dying, new DOLEventHandler(ObjectDie));
+					GameEventMgr.AddHandler(value, GameLivingEvent.Dying, new CoreEventHandler(ObjectDie));
 				}
 			}
 		}
 
 		#endregion
 
-		private void ObjectDie(DOLEvent e, object sender, EventArgs arguments)
+		private void ObjectDie(CoreEvent e, object sender, EventArgs arguments)
 		{
 			m_hookpointTimer.Start(300000);//5*60*1000 = 5 min
-			GameEventMgr.RemoveHandler(m_object, GameLivingEvent.Dying, new DOLEventHandler(ObjectDie));
-			var item = DOLDB<DbKeepHookPointItem>.SelectObject(DB.Column("KeepID").IsEqualTo(Component.Keep.KeepID).And(DB.Column("ComponentID").IsEqualTo(Component.ID)).And(DB.Column("HookPointID").IsEqualTo(ID)));
+			GameEventMgr.RemoveHandler(m_object, GameLivingEvent.Dying, new CoreEventHandler(ObjectDie));
+			var item = CoreDb<DbKeepHookPointItem>.SelectObject(DB.Column("KeepID").IsEqualTo(Component.Keep.KeepID).And(DB.Column("ComponentID").IsEqualTo(Component.ID)).And(DB.Column("HookPointID").IsEqualTo(ID)));
 			if (item != null)
 				GameServer.Database.DeleteObject(item);
 		}
 	}
 
-	public class HookpointTimer : ECSGameTimerWrapperBase
+	public class HookpointTimer : EcsGameTimerWrapperBase
 	{
 		private GameKeepHookPoint m_hookpoint;
 
@@ -134,7 +112,7 @@ namespace DOL.GS.Keeps
 			m_hookpoint = hookpoint;
 		}
 
-		protected override int OnTick(ECSGameTimer timer)
+		protected override int OnTick(EcsGameTimer timer)
 		{
 			if (m_hookpoint.Object is GameSiegeWeapon)
 				(m_hookpoint.Object as GameSiegeWeapon).ReleaseControl();

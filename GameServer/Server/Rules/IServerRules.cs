@@ -1,31 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Keeps;
 
 namespace DOL.GS.ServerRules
 {
-	/// <summary>
-	/// Interface for custom server rules
-	/// </summary>
 	public interface IServerRules
 	{
 		/// <summary>
@@ -107,7 +85,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="source"></param>
 		/// <param name="guild"></param>
 		/// <returns></returns>
-		bool IsAllowedToJoinGuild(GamePlayer source, Guild guild);
+		bool IsAllowedToJoinGuild(GamePlayer source, GuildUtil guild);
 
 		/// <summary>
 		/// Is source allowed to trade with target.
@@ -208,7 +186,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="type1"></param>
 		/// <param name="type2"></param>
 		/// <returns>true if equals</returns>
-		bool IsObjectTypesEqual(eObjectType type1, eObjectType type2);
+		bool IsObjectTypesEqual(EObjectType type1, EObjectType type2);
 
 		/// <summary>
 		/// Get object specialization level based on server type
@@ -216,7 +194,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player">player whom specializations are checked</param>
 		/// <param name="objectType">object type</param>
 		/// <returns>specialization in object or 0</returns>
-		int GetObjectSpecLevel(GamePlayer player, eObjectType objectType);
+		int GetObjectSpecLevel(GamePlayer player, EObjectType objectType);
 
 		/// <summary>
 		/// Get object specialization level based on server type
@@ -224,7 +202,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player">player whom specializations are checked</param>
 		/// <param name="objectType">object type</param>
 		/// <returns>specialization in object or 0</returns>
-		int GetBaseObjectSpecLevel(GamePlayer player, eObjectType objectType);
+		int GetBaseObjectSpecLevel(GamePlayer player, EObjectType objectType);
 
 		/// <summary>
 		/// Invoked on NPC death and deals out
@@ -232,7 +210,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="killedNPC">npc that died</param>
 		/// <param name="killer">killer</param>
-		void OnNPCKilled(GameNPC killedNPC, GameObject killer);
+		void OnNPCKilled(GameNpc killedNPC, GameObject killer);
 
 		/// <summary>
 		/// Invoked on Player death and deals out
@@ -347,7 +325,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		long GetExperienceForKeep(AbstractGameKeep keep);
+		long GetExperienceForKeep(AGameKeep keep);
 
 
 		/// <summary>
@@ -357,28 +335,28 @@ namespace DOL.GS.ServerRules
 		/// etc
 		/// </summary>
 		/// <returns></returns>
-		double GetExperienceCapForKeep(AbstractGameKeep keep);
+		double GetExperienceCapForKeep(AGameKeep keep);
 
 		/// <summary>
 		/// Realm points a keep is worth when captured
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		int GetRealmPointsForKeep(AbstractGameKeep keep);
+		int GetRealmPointsForKeep(AGameKeep keep);
 
 		/// <summary>
 		/// Bounty points a keep is worth when captured
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		int GetBountyPointsForKeep(AbstractGameKeep keep);
+		int GetBountyPointsForKeep(AGameKeep keep);
 
 		/// <summary>
 		/// How much money does this keep reward when captured
 		/// </summary>
 		/// <param name="keep"></param>
 		/// <returns></returns>
-		long GetMoneyValueForKeep(AbstractGameKeep keep);
+		long GetMoneyValueForKeep(AGameKeep keep);
 
 		/// <summary>
 		/// Is the player allowed to generate news
@@ -401,7 +379,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="source">The "looking" player</param>
 		/// <param name="target">The considered NPC</param>
 		/// <returns>The name of the target</returns>
-		string GetNPCName(GamePlayer source, GameNPC target);
+		string GetNPCName(GamePlayer source, GameNpc target);
 
 		/// <summary>
 		/// Gets the NPC guild name based on server type
@@ -409,7 +387,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="source">The "looking" player</param>
 		/// <param name="target">The considered NPC</param>
 		/// <returns>The guild name of the target</returns>
-		string GetNPCGuildName(GamePlayer source, GameNPC target);
+		string GetNPCGuildName(GamePlayer source, GameNpc target);
 
 		/// <summary>
 		/// Get the items (merchant) list name for a lot marker in the specified region
@@ -424,7 +402,7 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="player"></param>
 		/// <param name="merchantType"></param>
-		void SendHousingMerchantWindow(GamePlayer player, DOL.GS.PacketHandler.eMerchantWindowType merchantType);
+		void SendHousingMerchantWindow(GamePlayer player, DOL.GS.PacketHandler.EMerchantWindowType merchantType);
 
 
 		/// <summary>
@@ -435,7 +413,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="slot"></param>
 		/// <param name="count"></param>
 		/// <param name="merchantType"></param>
-		void BuyHousingItem(GamePlayer player, ushort slot, byte count, DOL.GS.PacketHandler.eMerchantWindowType merchantType);
+		void BuyHousingItem(GamePlayer player, ushort slot, byte count, DOL.GS.PacketHandler.EMerchantWindowType merchantType);
 
 		/// <summary>
 		/// Get a housing hookpoint NPC
@@ -445,7 +423,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="heading"></param>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		GameNPC PlaceHousingNPC(DOL.GS.Housing.House house, DbItemTemplate item, IPoint3D location, ushort heading);
+		GameNpc PlaceHousingNPC(DOL.GS.Housing.House house, DbItemTemplate item, IPoint3D location, ushort heading);
 
 		/// <summary>
 		/// Get a static interior object for a house hookpoint

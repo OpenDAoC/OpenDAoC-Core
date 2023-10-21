@@ -6,15 +6,9 @@ using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 
-/* Need to fix
- * EquipTemplate for Hib and Mid
- * Oceanus for all realms.
- * Kobold Undercity for Mid
- * personal guild and hearth teleports
- */
 namespace DOL.GS.Scripts
 {
-    public class InlandTeleporter : GameNPC
+    public class InlandTeleporter : GameNpc
     {
         /// <summary>
         /// The type of teleporter; this is used in order to be able to handle
@@ -28,7 +22,7 @@ namespace DOL.GS.Scripts
         /// <summary>
         /// The destination realm. 
         /// </summary>
-        protected virtual eRealm DestinationRealm
+        protected virtual ERealm DestinationRealm
         {
             get { return Realm; }
         }
@@ -37,51 +31,51 @@ namespace DOL.GS.Scripts
         {
             switch (Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     Name = "Young Elementalist";
                     GuildName = "Visurs Apprentice";
                     Model = 61;
 
                     GameNpcInventoryTemplate templateAlb = new GameNpcInventoryTemplate();
-                    templateAlb.AddNPCEquipment(eInventorySlot.Cloak, 57, 66);
-                    templateAlb.AddNPCEquipment(eInventorySlot.TorsoArmor, 1005, 86);
-                    templateAlb.AddNPCEquipment(eInventorySlot.LegsArmor, 140, 6);
-                    templateAlb.AddNPCEquipment(eInventorySlot.ArmsArmor, 141, 6);
-                    templateAlb.AddNPCEquipment(eInventorySlot.HandsArmor, 142, 6);
-                    templateAlb.AddNPCEquipment(eInventorySlot.FeetArmor, 143, 6);
-                    templateAlb.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 1166);
+                    templateAlb.AddNPCEquipment(EInventorySlot.Cloak, 57, 66);
+                    templateAlb.AddNPCEquipment(EInventorySlot.TorsoArmor, 1005, 86);
+                    templateAlb.AddNPCEquipment(EInventorySlot.LegsArmor, 140, 6);
+                    templateAlb.AddNPCEquipment(EInventorySlot.ArmsArmor, 141, 6);
+                    templateAlb.AddNPCEquipment(EInventorySlot.HandsArmor, 142, 6);
+                    templateAlb.AddNPCEquipment(EInventorySlot.FeetArmor, 143, 6);
+                    templateAlb.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 1166);
                     Inventory = templateAlb.CloseTemplate();
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     Name = "Young Gothi";
                     GuildName = "Annarks Apprentice";
                     Model = 215;
 
                     GameNpcInventoryTemplate templateMid = new GameNpcInventoryTemplate();
-                    templateMid.AddNPCEquipment(eInventorySlot.Cloak, 57, 26);
-                    templateMid.AddNPCEquipment(eInventorySlot.TorsoArmor, 245, 26);
-                    templateMid.AddNPCEquipment(eInventorySlot.LegsArmor, 246, 26);
-                    templateMid.AddNPCEquipment(eInventorySlot.HandsArmor, 248, 26);
-                    templateMid.AddNPCEquipment(eInventorySlot.FeetArmor, 249, 26);
+                    templateMid.AddNPCEquipment(EInventorySlot.Cloak, 57, 26);
+                    templateMid.AddNPCEquipment(EInventorySlot.TorsoArmor, 245, 26);
+                    templateMid.AddNPCEquipment(EInventorySlot.LegsArmor, 246, 26);
+                    templateMid.AddNPCEquipment(EInventorySlot.HandsArmor, 248, 26);
+                    templateMid.AddNPCEquipment(EInventorySlot.FeetArmor, 249, 26);
                     Inventory = templateMid.CloseTemplate();
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     Name = "Young Seoltoir";
                     GuildName = "Glasnys Apprentice";
                     Model = 342;
 
                     GameNpcInventoryTemplate templateHib = new GameNpcInventoryTemplate();
-                    templateHib.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008);
-                    templateHib.AddNPCEquipment(eInventorySlot.HandsArmor, 396);
-                    templateHib.AddNPCEquipment(eInventorySlot.FeetArmor, 402);
-                    templateHib.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468);
+                    templateHib.AddNPCEquipment(EInventorySlot.TorsoArmor, 1008);
+                    templateHib.AddNPCEquipment(EInventorySlot.HandsArmor, 396);
+                    templateHib.AddNPCEquipment(EInventorySlot.FeetArmor, 402);
+                    templateHib.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 468);
                     Inventory = templateHib.CloseTemplate();
                     break;
             }
 
             Level = 55;
             Size = 41;
-            Flags |= GameNPC.eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
 
             return base.AddToWorld();
         }
@@ -107,7 +101,7 @@ namespace DOL.GS.Scripts
 
             switch (Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
 
                     message = "Greetings, " + player.Name +
                               " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
@@ -120,7 +114,7 @@ namespace DOL.GS.Scripts
                               //"For this event duration, I can send you to [Darkness Falls]";
                     break;
 
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     
                     message = "Greetings, " + player.Name +
                               " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
@@ -132,7 +126,7 @@ namespace DOL.GS.Scripts
                               "or one of the many [towns] throughout Midgard.";
                     break;
 
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     
                     message = "Greetings, " + player.Name +
                               " I am able to channel energy to transport you to distant lands. I can send you to the following locations:\n\n" +
@@ -176,7 +170,7 @@ namespace DOL.GS.Scripts
         {
             switch (Realm) // Only offer locations based on what realm i am set at.
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     
                     if (text.ToLower() == "shrouded isles")
                     {
@@ -225,7 +219,7 @@ namespace DOL.GS.Scripts
                     
                     break;
                 
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     
                     if (text.ToLower() == "shrouded isles")
                     {
@@ -259,7 +253,7 @@ namespace DOL.GS.Scripts
                     
                     break;
                 
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     
                     if (text.ToLower() == "shrouded isles")
                     {
@@ -412,13 +406,13 @@ namespace DOL.GS.Scripts
             {
                 switch (player.Realm)
                 {
-                    case eRealm.Albion:
+                    case ERealm.Albion:
                         GetTeleportLocation(player, "Caer Sidi");
                         return true;
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                         GetTeleportLocation(player, "Tuscaran Glacier");
                         return true;
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                         GetTeleportLocation(player, "Galladoria");
                         return false;
                 }
@@ -456,14 +450,14 @@ namespace DOL.GS.Scripts
 
             if (region == null || region.IsDisabled)
             {
-                player.Out.SendMessage("This destination is not available.", eChatType.CT_System,
-                    eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("This destination is not available.", EChatType.CT_System,
+                    EChatLoc.CL_SystemWindow);
                 return;
             }
             
             var message = $"{Name} says, \"I'm now teleporting you to {destination.TeleportID}.\"";
             
-            player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+            player.Out.SendMessage(message, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
             
             OnTeleportSpell(player, destination);
         }
@@ -492,7 +486,7 @@ namespace DOL.GS.Scripts
 
             if (spell != null)
             {
-                UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
+                UniPortalSpell portalHandler = new UniPortalSpell(this, spell, spellLine, destination);
                 portalHandler.StartSpell(player);
                 return;
             }
@@ -501,7 +495,7 @@ namespace DOL.GS.Scripts
 
             if (player.Client.Account.PrivLevel > 1)
                 player.Out.SendMessage("Uni-Portal spell not found.",
-                    eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+                    EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
 
 
             this.OnTeleport(player, destination);

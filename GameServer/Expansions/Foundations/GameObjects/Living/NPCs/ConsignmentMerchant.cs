@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DOL.Database;
@@ -27,7 +8,7 @@ using log4net;
 
 namespace DOL.GS
 {
-    public class GameConsignmentMerchant : GameNPC, IGameInventoryObject
+    public class GameConsignmentMerchant : GameNpc, IGameInventoryObject
     {
 		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -51,7 +32,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int FirstClientSlot
 		{
-			get { return (int)eInventorySlot.HousingInventory_First; }
+			get { return (int)EInventorySlot.HousingInventory_First; }
 		}
 
 		/// <summary>
@@ -59,7 +40,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int LastClientSlot
 		{
-			get { return (int)eInventorySlot.HousingInventory_Last; }
+			get { return (int)EInventorySlot.HousingInventory_Last; }
 		}
 
         /// <summary>
@@ -67,7 +48,7 @@ namespace DOL.GS
         /// </summary>
 		public virtual int FirstDBSlot
         {
-            get { return (int)eInventorySlot.Consignment_First; }
+            get { return (int)EInventorySlot.Consignment_First; }
         }
 
         /// <summary>
@@ -75,7 +56,7 @@ namespace DOL.GS
         /// </summary>
 		public virtual int LastDBSlot
         {
-            get { return (int)eInventorySlot.Consignment_Last; }
+            get { return (int)EInventorySlot.Consignment_Last; }
         }
 
         #region Token return
@@ -130,7 +111,7 @@ namespace DOL.GS
 
             if (!player.IsWithinRadius(this, 500))
             {
-                ((GamePlayer)source).Out.SendMessage("You are to far away to give anything to " + this.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                ((GamePlayer)source).Out.SendMessage("You are to far away to give anything to " + this.Name + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return false;
             }
 
@@ -141,7 +122,7 @@ namespace DOL.GS
                 {
                     player.MoveTo(destination);
                     player.Inventory.RemoveItem(item);
-                    InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template, item.Count);
+                    InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template, item.Count);
                     player.SaveIntoDatabase();
                     return true;
                 }
@@ -205,7 +186,7 @@ namespace DOL.GS
                 {
                     m_totalMoney = value;
 
-                    var merchant = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+                    var merchant = CoreDb<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
                     merchant.Money = m_totalMoney;
                     GameServer.Database.SaveObject(merchant);
                 }
@@ -280,7 +261,7 @@ namespace DOL.GS
 						// ... consignment merchant
 						if (HasPermissionToMove(player))
 						{
-							NotifyObservers(player, this.MoveItemInsideObject(player, (eInventorySlot)fromClientSlot, (eInventorySlot)toClientSlot));
+							NotifyObservers(player, this.MoveItemInsideObject(player, (EInventorySlot)fromClientSlot, (EInventorySlot)toClientSlot));
 						}
 						else
 						{
@@ -291,28 +272,28 @@ namespace DOL.GS
 					{
 						// ... player
 
-						DbInventoryItem toItem = player.Inventory.GetItem((eInventorySlot)toClientSlot);
+						DbInventoryItem toItem = player.Inventory.GetItem((EInventorySlot)toClientSlot);
 
 						if (toItem != null)
 						{
-							player.Client.Out.SendMessage("You can only move an item to an empty slot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Client.Out.SendMessage("You can only move an item to an empty slot!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return false;
 						}
 
 						if (HasPermissionToMove(player) == false)
 						{
 							// Move must be an attempt to buy
-							OnPlayerBuy(player, (eInventorySlot)fromClientSlot, (eInventorySlot)toClientSlot);
+							OnPlayerBuy(player, (EInventorySlot)fromClientSlot, (EInventorySlot)toClientSlot);
 						}
 						else if (player.TargetObject == this)
 						{
 							// Allow a move only if the player with permission is standing in front of the CM.
 							// This prevents moves if player has owner permission but is viewing from the Market Explorer
-							NotifyObservers(player, this.MoveItemFromObject(player, (eInventorySlot)fromClientSlot, (eInventorySlot)toClientSlot));
+							NotifyObservers(player, this.MoveItemFromObject(player, (EInventorySlot)fromClientSlot, (EInventorySlot)toClientSlot));
 						}
 						else
 						{
-							player.Client.Out.SendMessage("You can't buy items from yourself!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Client.Out.SendMessage("You can't buy items from yourself!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return false;
 						}
 					}
@@ -322,16 +303,16 @@ namespace DOL.GS
 					// moving an item from the client to the consignment merchant
 					if (HasPermissionToMove(player))
 					{
-						DbInventoryItem toItem = player.Inventory.GetItem((eInventorySlot)toClientSlot);
+						DbInventoryItem toItem = player.Inventory.GetItem((EInventorySlot)toClientSlot);
 
 						if (toItem != null)
 						{
 							// in most clients this is actually handled ON the client, but just in case...
-							player.Client.Out.SendMessage("You can only move an item to an empty slot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Client.Out.SendMessage("You can only move an item to an empty slot!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return false;
 						}
 
-						NotifyObservers(player, this.MoveItemToObject(player, (eInventorySlot)fromClientSlot, (eInventorySlot)toClientSlot));
+						NotifyObservers(player, this.MoveItemToObject(player, (EInventorySlot)fromClientSlot, (EInventorySlot)toClientSlot));
 					}
 					else
 					{
@@ -413,7 +394,7 @@ namespace DOL.GS
 				item.OwnerID = conMerchant.GetOwner(player);
 				GameServer.Database.SaveObject(item);
 				ChatUtil.SendDebugMessage(player, item.Name + " SellPrice=" + price + ", OwnerLot=" + item.OwnerLot + ", OwnerID=" + item.OwnerID);
-				player.Out.SendMessage("Price set!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Price set!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
 				{
@@ -442,7 +423,7 @@ namespace DOL.GS
         /// <param name="playerInventory"></param>
         /// <param name="fromClientSlot"></param>
         /// <param name="toClientSlot"></param>
-		public virtual void OnPlayerBuy(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, bool usingMarketExplorer = false)
+		public virtual void OnPlayerBuy(GamePlayer player, EInventorySlot fromClientSlot, EInventorySlot toClientSlot, bool usingMarketExplorer = false)
         {
 			IDictionary<int, DbInventoryItem> clientInventory = GetClientInventory(player);
 
@@ -521,7 +502,7 @@ namespace DOL.GS
 
 		protected virtual void BuyItem(GamePlayer player, bool usingMarketExplorer = false)
 		{
-			eInventorySlot fromClientSlot = player.TempProperties.GetProperty<eInventorySlot>(CONSIGNMENT_BUY_ITEM, eInventorySlot.Invalid);
+			EInventorySlot fromClientSlot = player.TempProperties.GetProperty<EInventorySlot>(CONSIGNMENT_BUY_ITEM, EInventorySlot.Invalid);
 			player.TempProperties.RemoveProperty(CONSIGNMENT_BUY_ITEM);
 
 			DbInventoryItem item = null;
@@ -529,7 +510,7 @@ namespace DOL.GS
 			lock (LockObject())
 			{
 
-				if (fromClientSlot != eInventorySlot.Invalid)
+				if (fromClientSlot != EInventorySlot.Invalid)
 				{
 					IDictionary<int, DbInventoryItem> clientInventory = GetClientInventory(player);
 
@@ -576,14 +557,14 @@ namespace DOL.GS
 					{
 						if (player.GetCurrentMoney() < purchasePrice)
 						{
-							ChatUtil.SendSystemMessage(player, "GameMerchant.OnPlayerBuy.YouNeed", Money.GetString(purchasePrice));
+							ChatUtil.SendSystemMessage(player, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(purchasePrice));
 							return;
 						}
 					}
 
-					eInventorySlot toClientSlot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+					EInventorySlot toClientSlot = player.Inventory.FindFirstEmptySlot(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
-					if (toClientSlot == eInventorySlot.Invalid)
+					if (toClientSlot == EInventorySlot.Invalid)
 					{
 						ChatUtil.SendSystemMessage(player, "GameMerchant.OnPlayerBuy.NotInventorySpace", null);
 						return;
@@ -599,8 +580,8 @@ namespace DOL.GS
 					{
 						if (player.RemoveMoney(purchasePrice))
 						{
-							InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, purchasePrice);
-							ChatUtil.SendMerchantMessage(player, "GameMerchant.OnPlayerBuy.Bought", item.GetName(1, false), Money.GetString(purchasePrice));
+							InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, purchasePrice);
+							ChatUtil.SendMerchantMessage(player, "GameMerchant.OnPlayerBuy.Bought", item.GetName(1, false), MoneyMgr.GetString(purchasePrice));
 						}
 						else
 						{
@@ -669,12 +650,12 @@ namespace DOL.GS
                     continue;
                 }
 
-                observer.Client.Out.SendInventoryItemsUpdate(updateItems, eInventoryWindowType.Update);
+                observer.Client.Out.SendInventoryItemsUpdate(updateItems, EInventoryWindowType.Update);
 
 				// The above code is suspect, it seems to work 80% of the time, so let's make sure we update the player doing the move - Tolakram
 				if (hasUpdatedPlayer == false)
 				{
-					player.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.eInventoryWindowType.Update);
+					player.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.EInventoryWindowType.Update);
 				}
 			}
 
@@ -711,21 +692,21 @@ namespace DOL.GS
             if (house == null)
                 return false;
 
-            if (house.CanUseConsignmentMerchant(player, ConsignmentPermissions.Any))
+            if (house.CanUseConsignmentMerchant(player, EConsignmentPermissions.Any))
             {
-				player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.ConsignmentOwner);
+				player.Out.SendInventoryItemsUpdate(GetClientInventory(player), EInventoryWindowType.ConsignmentOwner);
 
                 long amount = m_totalMoney;
                 player.Out.SendConsignmentMerchantMoney(amount);
 
 				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
                 {
-                    player.Out.SendMessage("Your merchant currently holds " + amount + " BountyPoints.", eChatType.CT_Important, eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage("Your merchant currently holds " + amount + " BountyPoints.", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
                 }
             }
             else
             {
-				player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.ConsignmentViewer);
+				player.Out.SendInventoryItemsUpdate(GetClientInventory(player), EInventoryWindowType.ConsignmentViewer);
             }
 
             return true;
@@ -743,7 +724,7 @@ namespace DOL.GS
 
 			SetInventoryTemplate();
 
-			var houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+			var houseCM = CoreDb<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (houseCM != null)
 			{
 				TotalMoney = houseCM.Money;
@@ -775,7 +756,7 @@ namespace DOL.GS
 
 			bool isFixed = false;
 
-			var items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(house.OwnerID).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDBSlot)).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDBSlot)).And(DB.Column("OwnerLot").IsEqualTo(0)));
+			var items = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(house.OwnerID).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDBSlot)).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDBSlot)).And(DB.Column("OwnerLot").IsEqualTo(0)));
 
 			foreach (DbInventoryItem item in items)
 			{
@@ -797,60 +778,60 @@ namespace DOL.GS
 			var template = new GameNpcInventoryTemplate();
 			switch (Realm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					{
 						Model = 92;
-						template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 310, 81);
-						template.AddNPCEquipment(eInventorySlot.FeetArmor, 1301);
-						template.AddNPCEquipment(eInventorySlot.LegsArmor, 1312);
+						template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 310, 81);
+						template.AddNPCEquipment(EInventorySlot.FeetArmor, 1301);
+						template.AddNPCEquipment(EInventorySlot.LegsArmor, 1312);
 
 						if (Util.Chance(50))
 						{
-							template.AddNPCEquipment(eInventorySlot.TorsoArmor, 1005, 67);
+							template.AddNPCEquipment(EInventorySlot.TorsoArmor, 1005, 67);
 						}
 						else
 						{
-							template.AddNPCEquipment(eInventorySlot.TorsoArmor, 1313);
+							template.AddNPCEquipment(EInventorySlot.TorsoArmor, 1313);
 						}
 
-						template.AddNPCEquipment(eInventorySlot.Cloak, 669, 65);
+						template.AddNPCEquipment(EInventorySlot.Cloak, 669, 65);
 					}
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					{
 						Model = 156;
-						template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 321, 81);
-						template.AddNPCEquipment(eInventorySlot.FeetArmor, 1301);
-						template.AddNPCEquipment(eInventorySlot.LegsArmor, 1303);
+						template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 321, 81);
+						template.AddNPCEquipment(EInventorySlot.FeetArmor, 1301);
+						template.AddNPCEquipment(EInventorySlot.LegsArmor, 1303);
 
 						if (Util.Chance(50))
 						{
-							template.AddNPCEquipment(eInventorySlot.TorsoArmor, 1300);
+							template.AddNPCEquipment(EInventorySlot.TorsoArmor, 1300);
 						}
 						else
 						{
-							template.AddNPCEquipment(eInventorySlot.TorsoArmor, 993);
+							template.AddNPCEquipment(EInventorySlot.TorsoArmor, 993);
 						}
 
-						template.AddNPCEquipment(eInventorySlot.Cloak, 669, 51);
+						template.AddNPCEquipment(EInventorySlot.Cloak, 669, 51);
 					}
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					{
 						Model = 335;
-						template.AddNPCEquipment(eInventorySlot.RightHandWeapon, 457, 81);
-						template.AddNPCEquipment(eInventorySlot.FeetArmor, 1333);
+						template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 457, 81);
+						template.AddNPCEquipment(EInventorySlot.FeetArmor, 1333);
 
 						if (Util.Chance(50))
 						{
-							template.AddNPCEquipment(eInventorySlot.TorsoArmor, 1336);
+							template.AddNPCEquipment(EInventorySlot.TorsoArmor, 1336);
 						}
 						else
 						{
-							template.AddNPCEquipment(eInventorySlot.TorsoArmor, 1008);
+							template.AddNPCEquipment(EInventorySlot.TorsoArmor, 1008);
 						}
 
-						template.AddNPCEquipment(eInventorySlot.Cloak, 669);
+						template.AddNPCEquipment(EInventorySlot.Cloak, 669);
 					}
 					break;
 			}
@@ -872,10 +853,10 @@ namespace DOL.GS
 
             if (house.DatabaseItem.GuildHouse)
             {
-            	var guild = DOLDB<DbGuild>.SelectObject(DB.Column("GuildName").IsEqualTo(house.DatabaseItem.GuildName));
+            	var guild = CoreDb<DbGuild>.SelectObject(DB.Column("GuildName").IsEqualTo(house.DatabaseItem.GuildName));
                 int emblem = guild.Emblem;
 
-                DbInventoryItem cloak = Inventory.GetItem(eInventorySlot.Cloak);
+                DbInventoryItem cloak = Inventory.GetItem(EInventorySlot.Cloak);
                 if (cloak != null)
                 {
                     cloak.Emblem = emblem;

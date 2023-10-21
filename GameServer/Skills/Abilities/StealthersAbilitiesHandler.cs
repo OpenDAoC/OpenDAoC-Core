@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
@@ -25,17 +6,17 @@ using log4net;
 
 namespace DOL.GS
 {
-	public class StealtherAbilities
+	public class StealtherAbilityHandlers
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		[ScriptLoadedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.AddHandler(GamePlayerEvent.KillsTotalDeathBlowsChanged, new DOLEventHandler(AssassinsAbilities));
+			GameEventMgr.AddHandler(GamePlayerEvent.KillsTotalDeathBlowsChanged, new CoreEventHandler(AssassinsAbilities));
 		}
 		
-		private static void AssassinsAbilities(DOLEvent e, object sender, EventArgs arguments)
+		private static void AssassinsAbilities(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GamePlayer player = sender as GamePlayer;
 			
@@ -74,7 +55,7 @@ namespace DOL.GS
 					spell.Duration = 60;
 					spell.SpellID = 900090;
 					spell.Target = "Self";
-					spell.Type = eSpellType.BloodRage.ToString();
+					spell.Type = ESpellType.BloodRage.ToString();
 					Blood_Rage = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Reserved_Spells, Blood_Rage);
 				}
@@ -104,7 +85,7 @@ namespace DOL.GS
 					spell.Duration = 60;
 					spell.SpellID = 900091;
 					spell.Target = "Self";
-					spell.Type = eSpellType.HeightenedAwareness.ToString();
+					spell.Type = ESpellType.HeightenedAwareness.ToString();
 					Heightened_Awareness = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Reserved_Spells, Heightened_Awareness);
 				}
@@ -134,7 +115,7 @@ namespace DOL.GS
 					spell.Duration = 60;
 					spell.SpellID = 900092;
 					spell.Target = "Self";
-					spell.Type = eSpellType.SubtleKills.ToString();
+					spell.Type = ESpellType.SubtleKills.ToString();
 					Subtle_Kills = new Spell(spell, 50);
 					SkillBase.AddScriptedSpell(GlobalSpellsLines.Reserved_Spells, Subtle_Kills);
 				}

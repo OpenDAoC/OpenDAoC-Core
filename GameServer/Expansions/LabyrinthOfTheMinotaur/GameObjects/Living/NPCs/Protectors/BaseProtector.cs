@@ -1,21 +1,4 @@
 ﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- * 
  * [NOTE:StephenxPimentel] The Die/AddToWorld functions are just an example.
  * Although this is a great base for individual Relic Protector Classes, and
  * it would be a very good idea for new classes to be derived from this
@@ -29,10 +12,10 @@
 
 namespace DOL.GS
 {
-    public class BaseProtector : GameNPC
+    public class BaseProtector : GameNpc
     {
         private static MinotaurRelic m_relic;
-        private static GameNPC m_lockedEffect;
+        private static GameNpc m_lockedEffect;
 
         public static MinotaurRelic Relic
         {
@@ -40,7 +23,7 @@ namespace DOL.GS
             set { m_relic = value; }
         }
 
-        public static GameNPC LockedEffect
+        public static GameNpc LockedEffect
         {
             get { return m_lockedEffect; }
             set { m_lockedEffect = value; }
@@ -63,7 +46,7 @@ namespace DOL.GS
             if (Relic == null)
                 return false;
 
-            LockedEffect = new GameNPC();
+            LockedEffect = new GameNpc();
             LockedEffect.Model = 1583;
             LockedEffect.Name = "LOCKED_RELIC";
             LockedEffect.X = Relic.X;
@@ -71,7 +54,7 @@ namespace DOL.GS
             LockedEffect.Z = Relic.Z;
             LockedEffect.Heading = Relic.Heading;
             LockedEffect.CurrentRegionID = Relic.CurrentRegionID;
-            LockedEffect.Flags = GameNPC.eFlags.CANTTARGET;
+            LockedEffect.Flags = ENpcFlags.CANTTARGET;
             LockedEffect.AddToWorld();
 
             return true;

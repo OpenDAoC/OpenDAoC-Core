@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.Database;
@@ -35,7 +16,6 @@ namespace DOL.GS
 	/// 
 	/// You can whisper refresh to this teleporter to reload the teleport locations
 	/// </summary>
-	/// <author>Tolakram; from SI teleporter created by Aredhel</author>
 	public class SimpleTeleporter : GameTeleporter
 	{
 		protected override string Type
@@ -72,10 +52,10 @@ namespace DOL.GS
 			if (player.InCombat)
 				return false;
 
-			if (GameServer.ServerRules.IsSameRealm(this, player, true) == false && player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+			if (GameServer.ServerRules.IsSameRealm(this, player, true) == false && player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
 				return false;
 
-			if ((GuildName == null || GuildName.Length == 0) && player.Client.Account.PrivLevel > (int)ePrivLevel.Player)
+			if ((GuildName == null || GuildName.Length == 0) && player.Client.Account.PrivLevel > (int)EPrivLevel.Player)
 			{
 				SayTo(player, "I have not been set up properly, I need a guild name in order to work.");
 				SayTo(player, "You can set what I say to players by setting the packageid with /mob package \"Some Text\"");
@@ -90,17 +70,17 @@ namespace DOL.GS
 			}
 			else
 			{
-				SayTo(player, $"Hello {player.CharacterClass.Name}, choose a destination:");
+				SayTo(player, $"Hello {player.PlayerClass.Name}, choose a destination:");
 			}
 
 			int numDestinations = 0;
 			foreach (DbTeleport destination in m_destinations)
 			{
-				player.Out.SendMessage(String.Format("[{0}]", destination.TeleportID), eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage(String.Format("[{0}]", destination.TeleportID), EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				numDestinations++;
 			}
 
-			if (numDestinations == 0 && player.Client.Account.PrivLevel > (int)ePrivLevel.Player)
+			if (numDestinations == 0 && player.Client.Account.PrivLevel > (int)EPrivLevel.Player)
 			{
 				SayTo(player, "I have not been set up properly, I need teleport locations.  Do /teleport add \"Destination Name\" \"" + GuildName + "\"");
 			}
@@ -116,7 +96,7 @@ namespace DOL.GS
 			if (m_destinations.Count > 0 || GuildName == null || GuildName.Length == 0)
 				return;
 
-			m_destinations.AddRange(DOLDB<DbTeleport>.SelectObjects(DB.Column("Type").IsEqualTo(GuildName)));
+			m_destinations.AddRange(CoreDb<DbTeleport>.SelectObjects(DB.Column("Type").IsEqualTo(GuildName)));
 		}
 
 		public override bool WhisperReceive(GameLiving source, string text)
@@ -135,7 +115,7 @@ namespace DOL.GS
 				return false;
 			}
 
-			if (GameServer.ServerRules.IsSameRealm(this, player, true) == false && player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+			if (GameServer.ServerRules.IsSameRealm(this, player, true) == false && player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
 				return false;
 
 			DbTeleport destination = null;

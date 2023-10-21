@@ -71,7 +71,7 @@ namespace DOL.GS
 
         private void SaveFactionAggroToPlayer(GamePlayer player)
         {
-            DbFactionAggroLevel dbFactionAggroLevel = DOLDB<DbFactionAggroLevel>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.ObjectId).And(DB.Column("FactionID").IsEqualTo(Id)));
+            DbFactionAggroLevel dbFactionAggroLevel = CoreDb<DbFactionAggroLevel>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.ObjectId).And(DB.Column("FactionID").IsEqualTo(Id)));
 
             if (dbFactionAggroLevel == null)
             {
@@ -117,7 +117,7 @@ namespace DOL.GS
                 AggroToPlayers[player.ObjectId] = newAggro;
 
             string message = $"Your relationship with {Name} has {(amount > 0 ? "decreased" : "increased")}";
-            player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 
         public int GetAggroToFaction(GamePlayer player)

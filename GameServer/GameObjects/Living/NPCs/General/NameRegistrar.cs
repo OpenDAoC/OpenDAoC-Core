@@ -8,8 +8,8 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-	[NPCGuildScript("Name Registrar")]
-	public class NameRegistrar : GameNPC
+	[NpcGuildScript("Name Registrar")]
+	public class NameRegistrar : GameNpc
 	{
 		public override IList GetExamineMessages(GamePlayer player)
 		{
@@ -24,14 +24,14 @@ namespace DOL.GS
 			{
 				/* Get primary crafting skill (if any) */
 				int CraftSkill = 0;
-				if (player.CraftingPrimarySkill != eCraftingSkill.NoCrafting)
+				if (player.CraftingPrimarySkill != ECraftingSkill.NoCrafting)
 					CraftSkill = player.GetCraftingSkillValue(player.CraftingPrimarySkill);
 
 				/* Check if level and/or crafting skill let you have a lastname */
-				if (player.Level < LastnameCommandHandler.LASTNAME_MIN_LEVEL && CraftSkill < LastnameCommandHandler.LASTNAME_MIN_CRAFTSKILL)
-					SayTo(player, eChatLoc.CL_SystemWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "NameRegistrar.ReturnToMe", LastnameCommandHandler.LASTNAME_MIN_LEVEL));
+				if (player.Level < LastNameCommand.LASTNAME_MIN_LEVEL && CraftSkill < LastNameCommand.LASTNAME_MIN_CRAFTSKILL)
+					SayTo(player, EChatLoc.CL_SystemWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "NameRegistrar.ReturnToMe", LastNameCommand.LASTNAME_MIN_LEVEL));
 				else
-                    SayTo(player, eChatLoc.CL_SystemWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "NameRegistrar.LastName"));
+                    SayTo(player, EChatLoc.CL_SystemWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "NameRegistrar.LastName"));
                 return true;
 			}
 			return false;

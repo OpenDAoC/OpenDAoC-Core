@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Reflection;
@@ -36,7 +17,7 @@ namespace DOL.GS.Keeps
 		/// <param name="sender">the object sender</param>
 		/// <param name="args">the event arguments</param>
 		[GameServerStartedEvent]
-		public static void OnServerStarted(DOLEvent e, object sender, EventArgs args)
+		public static void OnServerStarted(CoreEvent e, object sender, EventArgs args)
 		{
 			if (ServerProperties.Properties.LOAD_HOOKPOINTS)
 			{
@@ -220,7 +201,7 @@ namespace DOL.GS.Keeps
 		{
 			if (!hookpoint.IsFree)
 			{
-				player.Out.SendMessage("The hookpoint is already used!", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("The hookpoint is already used!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			//1=or 2=BP 3=GuildBP 4=contract
@@ -231,8 +212,8 @@ namespace DOL.GS.Keeps
 					{
 						if (!player.RemoveMoney(Gold * 100 * 100, "You buy " + this.GetName(1, false) + "."))
 						{
-                            InventoryLogging.LogInventoryAction(player, "(keep)", eInventoryActionType.Merchant, Gold * 10000);
-							player.Out.SendMessage("You dont have enough money!", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+                            InventoryLogging.LogInventoryAction(player, "(keep)", EInventoryActionType.Merchant, Gold * 10000);
+							player.Out.SendMessage("You dont have enough money!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 							return;
 						}
 					} break;
@@ -240,7 +221,7 @@ namespace DOL.GS.Keeps
 					{
 						if (!player.RemoveBountyPoints(Gold, "You buy " + this.GetName(1, false) + "."))
 						{
-							player.Out.SendMessage("You dont have enough bounty point!", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("You dont have enough bounty point!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 							return;
 						}
 					} break;
@@ -249,16 +230,16 @@ namespace DOL.GS.Keeps
 						if (player.Guild == null) return;
 						if (!player.Guild.RemoveBountyPoints(Gold))
 						{
-							player.Out.SendMessage("You dont have enough bounty point!", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("You dont have enough bounty point!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 							return;
 						}
 						else
-							player.Out.SendMessage("You buy " + this.GetName(1, false) + ".", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("You buy " + this.GetName(1, false) + ".", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 
 					} break;
 				case 4:
 					{
-						player.Out.SendMessage("NOT IMPLEMENTED YET, SORRY", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage("NOT IMPLEMENTED YET, SORRY", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 						return;
 					}
 
@@ -289,9 +270,9 @@ namespace DOL.GS.Keeps
 				(hookPointObj as GameKeepGuard).HookPoint = hookpoint;
 				(hookPointObj as GameKeepGuard).RefreshTemplate();
 			}
-			if (hookPointObj is GameNPC)
+			if (hookPointObj is GameNpc)
 			{
-				((GameNPC)hookPointObj).RespawnInterval = -1;//do not respawn
+				((GameNpc)hookPointObj).RespawnInterval = -1;//do not respawn
 			}
 			hookPointObj.AddToWorld();
 			if (hookPointObj is GameKeepGuard guard)
@@ -342,9 +323,9 @@ namespace DOL.GS.Keeps
 			if (ServerProperties.Properties.ENABLE_DEBUG)
 				hookPointObj.Name += " hookpoint " + hookpoint.ID.ToString();
 
-			if (hookPointObj is GameNPC)
+			if (hookPointObj is GameNpc)
 			{
-				((GameNPC)hookPointObj).RespawnInterval = -1;//do not respawn
+				((GameNpc)hookPointObj).RespawnInterval = -1;//do not respawn
 			}
 			hookPointObj.AddToWorld();
 			if (hookPointObj is GameKeepGuard guard)

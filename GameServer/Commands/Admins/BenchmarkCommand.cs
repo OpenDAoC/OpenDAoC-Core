@@ -1,58 +1,14 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-/* <--- SendMessage Standardization --->
-*  All messages now use translation IDs to both
-*  centralize their location and standardize the method
-*  of message calls used throughout this project. All messages affected
-*  are in English. Other languages are not yet supported.
-* 
-*  To  find a message at its source location, either use
-*  the message body contained in the comment above the return
-*  (e.g., // Message: "This is a message.") or the
-*  translation ID (e.g., "AdminCommands.Account.Description").
-* 
-*  To perform message changes, take note of your server settings.
-*  If the `serverproperty` table setting `use_dblanguage`
-*  is set to `True`, you must make your changes from the
-*  `languagesystem` DB table.
-* 
-*  If the `serverproperty` table setting
-*  `update_existing_db_system_sentences_from_files` is set to `True`,
-*  perform changes to messages from this file at "GameServer >
-*  language > EN > Commands > AdminCommands.txt".
-*
-*  OPTIONAL: After changing a message, paste the new content
-*  into the comment above the affected message return(s). This is
-*  done for ease of reference. */
-
-using System.Linq;
+﻿using System.Linq;
 
 namespace DOL.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
-	[Cmd(
+	[Command(
 		// Enter '/benchmark' to list all commands
 		"&benchmark",
 		// Message: <----- '/benchmark' Commands (plvl 3) ----->
 		"AdminCommands.Header.Syntax.Benchmark",
-		ePrivLevel.Admin,
+		EPrivLevel.Admin,
 		// Message: "Performs a system benchmark of the specified type. This is used to gauge overall system performance."
 		"AdminCommands.Benchmark.Description",
 		// Syntax: /benchmark listskills
@@ -63,7 +19,7 @@ namespace DOL.GS.Commands
 		"AdminCommands.Benchmark.Syntax.Listspells",
 		// Message: "Tests the total amount of time (in milliseconds) the system takes to list a sec number of cached spells."
 		"AdminCommands.Benchmark.Usage.Listspells")]
-	public class BenchmarkCommand : AbstractCommandHandler, ICommandHandler
+	public class BenchmarkCommand : ACommandHandler, ICommandHandler
 	{		
 		public void OnCommand(GameClient client, string[] args)
 		{

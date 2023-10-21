@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
@@ -25,7 +6,7 @@ namespace DOL.GS.Spells
 	/// 
 	/// </summary>
 	[SpellHandler("DamageSpeedDecreaseNoVariance")]
-    public class DamageSpeedDecreaseNoVarianceSpellHandler : DamageSpeedDecreaseSpellHandler
+    public class DamageSpeedDecreaseNoVarianceSpell : DamageSpeedDecreaseSpell
 	{
 		public override double CalculateDamageBase(GameLiving target)
 		{
@@ -36,7 +17,7 @@ namespace DOL.GS.Spells
 			min = 1.00;
 			max = 1.00;
 		}
-        public DamageSpeedDecreaseNoVarianceSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        public DamageSpeedDecreaseNoVarianceSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 }
 
@@ -46,7 +27,7 @@ namespace DOL.GS.Spells
     /// 
     /// </summary>
     [SpellHandler("DirectDamageNoVariance")]
-    public class DirectDamageNoVarianceSpellHandler : DirectDamageSpellHandler
+    public class DirectDamageNoVarianceSpell : DirectDamageSpell
     {
 		public override double CalculateDamageBase(GameLiving target)
         {
@@ -57,7 +38,7 @@ namespace DOL.GS.Spells
             min = 1.00;
             max = 1.00;
         }
-        public DirectDamageNoVarianceSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        public DirectDamageNoVarianceSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 }
 
@@ -67,7 +48,7 @@ namespace DOL.GS.Spells
 	/// UnresistableStun 
 	/// </summary>
 	[SpellHandler("UnresistableStun")]
-	public class UnresistableStunSpellHandler : StunSpellHandler
+	public class UnresistableStunSpell : StunSpell
 	{
 
 		public override int CalculateSpellResistChance(GameLiving target)
@@ -87,6 +68,6 @@ namespace DOL.GS.Spells
 		{
 			return Spell.Duration;
 		}
-		public UnresistableStunSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		public UnresistableStunSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 }

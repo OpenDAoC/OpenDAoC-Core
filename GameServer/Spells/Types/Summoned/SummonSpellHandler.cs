@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,9 +40,9 @@ namespace DOL.GS.Spells
 
 		public SummonSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new PetECSGameEffect(initParams);
+			new PetEcsSpellEffect(initParams);
 		}
 
 		/// <summary>
@@ -72,7 +53,7 @@ namespace DOL.GS.Spells
 			foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 			{
 				if (player != m_caster)
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Casting.CastsASpell", m_caster.GetName(0, true)), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Casting.CastsASpell", m_caster.GetName(0, true)), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 			}
 
 			m_caster.Mana -= PowerCost(target);
@@ -85,10 +66,10 @@ namespace DOL.GS.Spells
 			if (Spell.Message1 == string.Empty)
 			{
 				if (m_isSilent == false)
-					MessageToCaster(string.Format("The {0} is now under your control.", m_pet.Name), eChatType.CT_Spell);
+					MessageToCaster(string.Format("The {0} is now under your control.", m_pet.Name), EChatType.CT_Spell);
 			}
 			else
-				MessageToCaster(Spell.Message1, eChatType.CT_Spell);
+				MessageToCaster(Spell.Message1, EChatType.CT_Spell);
 		}
 
 		#region ApplyEffectOnTarget Gets
@@ -120,7 +101,7 @@ namespace DOL.GS.Spells
 
 		protected virtual void AddHandlers()
 		{
-			GameEventMgr.AddHandler(m_pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
+			GameEventMgr.AddHandler(m_pet, GameLivingEvent.PetReleased, new CoreEventHandler(OnNpcReleaseCommand));
 		}
 
 		#endregion
@@ -133,7 +114,7 @@ namespace DOL.GS.Spells
 			{
 				if (log.IsWarnEnabled)
 					log.WarnFormat("NPC template {0} not found! Spell: {1}", Spell.LifeDrainReturn, Spell.ToString());
-				MessageToCaster("NPC template " + Spell.LifeDrainReturn + " not found!", eChatType.CT_System);
+				MessageToCaster("NPC template " + Spell.LifeDrainReturn + " not found!", EChatType.CT_System);
 				return;
 			}
 
@@ -178,7 +159,7 @@ namespace DOL.GS.Spells
 			
 			// Check for buffs
 			if (brain is ControlledNpcBrain)
-				(brain as ControlledNpcBrain).CheckSpells(StandardMobBrain.eCheckSpellType.Defensive);
+				(brain as ControlledNpcBrain).CheckSpells(ECheckSpellType.Defensive);
 
 			AddHandlers();
 			SetBrainToOwner(brain);
@@ -187,7 +168,7 @@ namespace DOL.GS.Spells
 			m_pet.Health = m_pet.MaxHealth;
 			m_pet.Spells = template.Spells; // Have to sort spells again now that the pet level has been assigned.
 
-			CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target, Effectiveness), Effectiveness, this));
+			CreateECSEffect(new EcsGameEffectInitParams(m_pet, CalculateEffectDuration(target, Effectiveness), Effectiveness, this));
 			Caster.OnPetSummoned(m_pet);
 		}
 
@@ -225,9 +206,9 @@ namespace DOL.GS.Spells
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected virtual void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
+		protected virtual void OnNpcReleaseCommand(CoreEvent e, object sender, EventArgs arguments)
 		{
-			if (sender is not GameNPC pet || pet.Brain is not IControlledBrain petBrain)
+			if (sender is not GameNpc pet || pet.Brain is not IControlledBrain petBrain)
 				return;
 
 			GameLiving petOwner = petBrain.Owner;
@@ -237,11 +218,11 @@ namespace DOL.GS.Spells
 
 			foreach (var ability in pet.effectListComponent.GetAbilityEffects())
 			{
-				if (ability is InterceptECSGameEffect interceptEffect && interceptEffect.InterceptSource == pet && interceptEffect.InterceptTarget == petOwner)
+				if (ability is InterceptEcsAbilityEffect interceptEffect && interceptEffect.InterceptSource == pet && interceptEffect.InterceptTarget == petOwner)
 					interceptEffect.Cancel(false);
 			}
 
-			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
+			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new CoreEventHandler(OnNpcReleaseCommand));
 			
 			if (pet.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(Spell), out var petEffect))
 				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
@@ -285,7 +266,7 @@ namespace DOL.GS.Spells
 					list.Add("Concentration cost: " + Spell.Concentration);
 				if (Spell.Radius != 0)
 					list.Add("Radius: " + Spell.Radius);
-				if (Spell.DamageType != eDamageType.Natural)
+				if (Spell.DamageType != EDamageType.Natural)
 					list.Add("Damage: " + GlobalConstants.DamageTypeToName(Spell.DamageType));
 
 				return list;

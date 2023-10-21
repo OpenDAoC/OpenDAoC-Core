@@ -30,7 +30,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PositionAndObjectID)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PositionAndObjectID)))
 			{
 				pak.WriteShort((ushort)m_gameClient.Player.ObjectID); //This is the player's objectid not Sessionid!!!
 				pak.WriteShort((ushort)m_gameClient.Player.Z);
@@ -63,7 +63,7 @@ namespace DOL.GS.PacketHandler
 			if (obj.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ObjectCreate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.ObjectCreate)))
 			{
 				pak.WriteShort((ushort)obj.ObjectID);
 				if (obj is GameStaticItem)
@@ -77,7 +77,7 @@ namespace DOL.GS.PacketHandler
 				ushort model = obj.Model;
 				if (obj.IsUnderwater)
 				{
-					if (obj is GameNPC)
+					if (obj is GameNpc)
 						model |= 0x8000;
 					else
 						flag |= 0x01; // Underwater
@@ -121,7 +121,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendNPCCreate(GameNPC npc)
+		public override void SendNPCCreate(GameNpc npc)
 		{
 
 			if (m_gameClient.Player == null || npc.IsVisibleTo(m_gameClient.Player) == false)
@@ -142,7 +142,7 @@ namespace DOL.GS.PacketHandler
 				return;
 			}
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.NPCCreate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.NPCCreate)))
 			{
 				short speed = 0;
 				ushort speedZ = 0;
@@ -163,18 +163,18 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(npc.Model);
 				pak.WriteByte(npc.Size);
 				byte level = npc.GetDisplayLevel(m_gameClient.Player);
-				if((npc.Flags&GameNPC.eFlags.STATUE)!=0)
+				if((npc.Flags&ENpcFlags.STATUE)!=0)
 				{
 					level |= 0x80;
 				}
 				pak.WriteByte(level);
 
 				byte flags = (byte)(GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, npc) << 6);
-				if ((npc.Flags & GameNPC.eFlags.GHOST) != 0) flags |= 0x01;
+				if ((npc.Flags & ENpcFlags.GHOST) != 0) flags |= 0x01;
 				if (npc.Inventory != null) flags |= 0x02; //If mob has equipment, then only show it after the client gets the 0xBD packet
-				if ((npc.Flags & GameNPC.eFlags.PEACE) != 0) flags |= 0x10;
-				if ((npc.Flags & GameNPC.eFlags.FLYING) != 0) flags |= 0x20;
-				if((npc.Flags & GameNPC.eFlags.TORCH) != 0) flags |= 0x04;
+				if ((npc.Flags & ENpcFlags.PEACE) != 0) flags |= 0x10;
+				if ((npc.Flags & ENpcFlags.FLYING) != 0) flags |= 0x20;
+				if((npc.Flags & ENpcFlags.TORCH) != 0) flags |= 0x04;
 
 				pak.WriteByte(flags);
 				pak.WriteByte(0x20); //TODO this is the default maxstick distance
@@ -189,21 +189,21 @@ namespace DOL.GS.PacketHandler
 						flags2 |= 0x80; // have Owner
 					}
 				}
-				if ((npc.Flags & GameNPC.eFlags.CANTTARGET) != 0)
+				if ((npc.Flags & ENpcFlags.CANTTARGET) != 0)
 					if (m_gameClient.Account.PrivLevel > 1) add += "-DOR"; // indicates DOR flag for GMs
 				else flags2 |= 0x01;
-				if ((npc.Flags & GameNPC.eFlags.DONTSHOWNAME) != 0)
+				if ((npc.Flags & ENpcFlags.DONTSHOWNAME) != 0)
 					if (m_gameClient.Account.PrivLevel > 1) add += "-NON"; // indicates NON flag for GMs
 				else flags2 |= 0x02;
 
-				if( ( npc.Flags & GameNPC.eFlags.STEALTH ) > 0 )
+				if( ( npc.Flags & ENpcFlags.STEALTH ) > 0 )
 					flags2 |= 0x04;
 
-				eQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);
+				EQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);
 
-				if (questIndicator == eQuestIndicator.Available)
+				if (questIndicator == EQuestIndicator.Available)
 					flags2 |= 0x08;//hex 8 - quest available
-				if (questIndicator == eQuestIndicator.Finish)
+				if (questIndicator == EQuestIndicator.Finish)
 					flags2 |= 0x10;//hex 16 - quest finish
 				//flags2 |= 0x20;//hex 32 - water mob?
 				//flags2 |= 0x40;//hex 64 - unknown
@@ -213,9 +213,9 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(flags2); // flags 2
 
 				byte flags3 = 0x00;
-				if (questIndicator == eQuestIndicator.Lesson)
+				if (questIndicator == EQuestIndicator.Lesson)
 					flags3 |= 0x01;
-				if (questIndicator == eQuestIndicator.Lore)
+				if (questIndicator == EQuestIndicator.Lore)
 					flags3 |= 0x02;
 				pak.WriteByte(flags3); // new in 1.71 (region instance ID from StoC_0x20) OR flags 3?
 				pak.WriteShort(0x00); // new in 1.71 unknown
@@ -252,7 +252,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendFindGroupWindowUpdate(GamePlayer[] list)
 		{
 			if (m_gameClient.Player == null) return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.FindGroupUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.FindGroupUpdate)))
 			{
 				if (list != null)
 				{
@@ -271,7 +271,7 @@ namespace DOL.GS.PacketHandler
 						}
 						pak.WriteByte(player.Level);
 						pak.WritePascalString(player.Name);
-						pak.WriteString(player.CharacterClass.Name, 4);
+						pak.WriteString(player.PlayerClass.Name, 4);
 						//Dinberg:Instances - you know the score by now ;)
 						//ZoneSkinID for clientside positioning of objects.
 						if (player.CurrentZone != null)
@@ -294,9 +294,9 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, byte index)
+		protected override void SendQuestPacket(AQuest quest, byte index)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 			{
 				pak.WriteByte(index);
 				if (quest.Step <= 0)
@@ -336,7 +336,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLivingDataUpdate(GameLiving living, bool updateStrings)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ObjectDataUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.ObjectDataUpdate)))
 			{
 				pak.WriteShort((ushort)living.ObjectID);
 				pak.WriteByte(0);
@@ -364,7 +364,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendPlayerFreeLevelUpdate()
 		{
 			GamePlayer player = m_gameClient.Player;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VisualEffect)))
 			{
 				pak.WriteShort((ushort)player.ObjectID);
 				pak.WriteByte(0x09); // subcode
@@ -377,13 +377,13 @@ namespace DOL.GS.PacketHandler
 				//time is in minutes
 				switch (player.Realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						time = (ushort)((ServerProperties.Properties.FREELEVEL_DAYS_ALBION * 24 * 60) - t.TotalMinutes);
 						break;
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						time = (ushort)((ServerProperties.Properties.FREELEVEL_DAYS_MIDGARD * 24 * 60) - t.TotalMinutes);
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						time = (ushort)((ServerProperties.Properties.FREELEVEL_DAYS_HIBERNIA * 24 * 60) - t.TotalMinutes);
 						break;
 				}
@@ -398,7 +398,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendRegionColorScheme(byte color)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VisualEffect)))
 			{
 				pak.WriteShort(0); // not used
 				pak.WriteByte(0x05); // subcode

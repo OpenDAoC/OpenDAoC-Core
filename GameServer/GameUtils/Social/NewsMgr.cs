@@ -7,21 +7,14 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public enum eNewsType : byte
-    {
-        RvRGlobal = 0,
-        RvRLocal = 1,
-        PvE = 2,
-    }
-
     public class NewsMgr
     {
-        public static void CreateNews(string message, eRealm realm, eNewsType type, bool sendMessage)
+        public static void CreateNews(string message, ERealm realm, ENewsType type, bool sendMessage)
         {
             if (sendMessage)
             {
                 foreach (GamePlayer player in ClientService.GetPlayersOfRealm(realm))
-                    player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
             }
 
             if (ServerProperties.Properties.RECORD_NEWS)
@@ -49,9 +42,9 @@ namespace DOL.GS
                 IList<DbNews> newsList;
 
                 if (type > 0)
-                    newsList = DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(type).And(DB.Column("Realm").IsEqualTo(0).Or(DB.Column("Realm").IsEqualTo(realm))));
+                    newsList = CoreDb<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(type).And(DB.Column("Realm").IsEqualTo(0).Or(DB.Column("Realm").IsEqualTo(realm))));
                 else
-                    newsList = DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(type));
+                    newsList = CoreDb<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(type));
 
                 newsList = newsList.OrderByDescending(it => it.CreationDate).Take(5).ToArray();
                 int n = newsList.Count;
@@ -60,7 +53,7 @@ namespace DOL.GS
                 {
                     n--;
                     DbNews news = newsList[n];
-                    client.Out.SendMessage(string.Format("N,{0},{1},{2},\"{3}\"", news.Type, index++, RetElapsedTime(news.CreationDate), news.Text), eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage(string.Format("N,{0},{1},{2},\"{3}\"", news.Type, index++, RetElapsedTime(news.CreationDate), news.Text), EChatType.CT_SocialInterface, EChatLoc.CL_SystemWindow);
                 }
             }
         }

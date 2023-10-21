@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -28,7 +9,7 @@ using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.HousePlaceItem, "Handles things like placing indoor/outdoor items.", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.HousePlaceItem, "Handles things like placing indoor/outdoor items.", EClientStatus.PlayerInGame)]
 	public class HousingPlaceItemHandler : IPacketHandler
 	{
 		private const string DeedWeak = "deedItem";
@@ -36,7 +17,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		private int _position;
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			try
 			{
@@ -103,7 +84,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 
 				// make sure the item dropped still exists
-				DbInventoryItem orgitem = client.Player.Inventory.GetItem((eInventorySlot)slot);
+				DbInventoryItem orgitem = client.Player.Inventory.GetItem((EInventorySlot)slot);
 				if (orgitem == null)
 				{
 					client.Player.Out.SendInventorySlotsUpdate(null);
@@ -143,7 +124,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					client.Player.TempProperties.SetProperty(DeedWeak, new WeakRef(orgitem));
 					client.Player.TempProperties.SetProperty(TargetHouse, house);
-					client.Player.Out.SendMessage("Warning:\n This will remove *all* items from your current house!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					client.Player.Out.SendMessage("Warning:\n This will remove *all* items from your current house!", EChatType.CT_System, EChatLoc.CL_PopupWindow);
 					client.Player.Out.SendCustomDialog("Are you sure you want to upgrade your House?", HouseUpgradeDialog);
 
 					return;
@@ -176,7 +157,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 
 					// player needs to be a GM in the guild to xfer his personal house to the guild
-					if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.Leader))
+					if (!client.Player.Guild.HasRank(client.Player, EGuildRank.Leader))
 					{
 						client.Out.SendInventorySlotsUpdate(new[] { slot });
 						ChatUtil.SendSystemMessage(client, "You are not the leader of a guild.");
@@ -188,13 +169,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 						// This will still take the item even if player answers NO to confirmation.
  						// I'm fixing consignment, not housing, and frankly I'm sick of fixing stuff!  :)  - tolakram
 						client.Player.Inventory.RemoveItem(orgitem);
-						InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+						InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 						client.Player.Guild.UpdateGuildWindow();
 					}
 					return;
 				}
 
-				if (house.CanChangeInterior(client.Player, DecorationPermissions.Remove))
+				if (house.CanChangeInterior(client.Player, EDecorationPermissions.Remove))
 				{
 					if (orgitem.Name == "interior banner removal")
 					{
@@ -266,7 +247,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					method = 5;
 				}
-				else if (objType == (int)eObjectType.HouseVault)
+				else if (objType == (int)EObjectType.HouseVault)
 				{
 					method = 7;
 				}
@@ -285,7 +266,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							}
 
 							// no permissions to add to the garden, return
-							if (!house.CanChangeGarden(client.Player, DecorationPermissions.Add))
+							if (!house.CanChangeGarden(client.Player, EDecorationPermissions.Add))
 							{
 								client.Out.SendInventorySlotsUpdate(new[] { slot });
 								return;
@@ -319,7 +300,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 							// remove the item from the player's inventory
 							client.Player.Inventory.RemoveItem(orgitem);
-							InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+							InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 
 							//add item to outdooritems
 							house.OutdoorItems.Add(pos, oitem);
@@ -348,7 +329,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							}
 
 							// no permission to add to the interior, return
-							if (!house.CanChangeInterior(client.Player, DecorationPermissions.Add))
+							if (!house.CanChangeInterior(client.Player, EDecorationPermissions.Add))
 							{
 								client.Out.SendInventorySlotsUpdate(new[] { slot });
 								return;
@@ -412,7 +393,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								//its a housing item, so lets take it!
 								client.Player.Inventory.RemoveItem(orgitem);
-								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 
 								//set right base item, so we can recreate it on take.
 								if (orgitem.Id_nb.Contains("GuildBanner"))
@@ -456,7 +437,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					case 4: // PORCH
 						{
 							// no permission to add to the garden, return
-							if (!house.CanChangeGarden(client.Player, DecorationPermissions.Add))
+							if (!house.CanChangeGarden(client.Player, EDecorationPermissions.Add))
 							{
 								client.Out.SendInventorySlotsUpdate(new[] { slot });
 								return;
@@ -470,7 +451,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									{
 										// remove the original item from the player's inventory
 										client.Player.Inventory.RemoveItem(orgitem);
-										InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+										InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 									}
 									else
 									{
@@ -491,7 +472,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									{
 										// remove the original item from the player's inventory
 										client.Player.Inventory.RemoveItem(orgitem);
-										InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+										InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 									}
 									else
 									{
@@ -514,7 +495,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 										{
 											// remove the original item from the player's inventory
 											client.Player.Inventory.RemoveItem(orgitem);
-											InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+											InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 										}
 										else
 										{
@@ -538,7 +519,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							}
 
 							// no permission to add to the interior, return
-							if (!house.CanChangeInterior(client.Player, DecorationPermissions.Add))
+							if (!house.CanChangeInterior(client.Player, EDecorationPermissions.Add))
 							{
 								client.Out.SendInventorySlotsUpdate(new[] { slot });
 								return;
@@ -556,7 +537,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								client.Out.SendInventorySlotsUpdate(new[] { slot });
 
-								if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
+								if (client.Account.PrivLevel == (int)EPrivLevel.Admin)
 								{
 									if (client.Player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
 									{
@@ -582,7 +563,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 												};
 
 								// If we already have soemthing here, do not place more
-								foreach (var hpitem in DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber)))
+								foreach (var hpitem in CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber)))
 								{
 									if (hpitem.HookpointID == point.HookpointID)
 									{
@@ -610,7 +591,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								// remove the original item from the player's inventory
 								client.Player.Inventory.RemoveItem(orgitem);
-								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.HookPointAdded", null);
 
@@ -641,28 +622,28 @@ namespace DOL.GS.PacketHandler.Client.v168
 								house.OutdoorGuildBanner = true;
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.OutdoorBannersAdded", null);
 								client.Player.Inventory.RemoveItem(orgitem);
-								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 							}
 							else if (objType == 58) // We have outdoor shield
 							{
 								house.OutdoorGuildShield = true;
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.OutdoorShieldsAdded", null);
 								client.Player.Inventory.RemoveItem(orgitem);
-								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 							}
 							else if (objType == 66) // We have indoor banner
 							{
 								house.IndoorGuildBanner = true;
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.InteriorBannersAdded", null);
 								client.Player.Inventory.RemoveItem(orgitem);
-								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 							}
 							else if (objType == 67) // We have indoor shield
 							{
 								house.IndoorGuildShield = true;
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.InteriorShieldsAdded", null);
 								client.Player.Inventory.RemoveItem(orgitem);
-								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+								InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 							}
 							else
 							{
@@ -699,7 +680,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								client.Out.SendInventorySlotsUpdate(new[] { slot });
 
-								if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
+								if (client.Account.PrivLevel == (int)EPrivLevel.Admin)
 								{
 									if (client.Player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
 									{
@@ -722,15 +703,15 @@ namespace DOL.GS.PacketHandler.Client.v168
 							int vaultIndex = house.GetFreeVaultNumber();
 							if (vaultIndex < 0)
 							{
-								client.Player.Out.SendMessage("You can't add any more vaults to this house!", eChatType.CT_System,
-															  eChatLoc.CL_SystemWindow);
+								client.Player.Out.SendMessage("You can't add any more vaults to this house!", EChatType.CT_System,
+															  EChatLoc.CL_SystemWindow);
 								client.Out.SendInventorySlotsUpdate(new[] { slot });
 
 								return;
 							}
 
 							// If we already have soemthing here, do not place more
-							foreach (var hpitem in DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber)))
+							foreach (var hpitem in CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber)))
 							{
 								if (hpitem.HookpointID == _position)
 								{
@@ -746,7 +727,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 							// remove the original item from the player's inventory
 							client.Player.Inventory.RemoveItem(orgitem);
-							InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
+							InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", EInventoryActionType.Other, orgitem.Template, orgitem.Count);
 
 							// save the house and broadcast uodates
 							house.SaveIntoDatabase();
@@ -764,7 +745,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			catch (Exception ex)
 			{
 				log.Error("HousingPlaceItemHandler", ex);
-				client.Out.SendMessage("Error processing housing action; the error has been logged!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Error processing housing action; the error has been logged!", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 				client.Out.SendInventorySlotsUpdate(null);
 			}
 		}
@@ -773,32 +754,32 @@ namespace DOL.GS.PacketHandler.Client.v168
 		{
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.HouseWallObject:
-				case (int)eObjectType.Axe:
-				case (int)eObjectType.Blades:
-				case (int)eObjectType.Blunt:
-				case (int)eObjectType.CelticSpear:
-				case (int)eObjectType.CompositeBow:
-				case (int)eObjectType.Crossbow:
-				case (int)eObjectType.Flexible:
-				case (int)eObjectType.Hammer:
-				case (int)eObjectType.HandToHand:
-				case (int)eObjectType.LargeWeapons:
-				case (int)eObjectType.LeftAxe:
-				case (int)eObjectType.Longbow:
-				case (int)eObjectType.MaulerStaff:
-				case (int)eObjectType.Piercing:
-				case (int)eObjectType.PolearmWeapon:
-				case (int)eObjectType.RecurvedBow:
-				case (int)eObjectType.Scythe:
-				case (int)eObjectType.Shield:
-				case (int)eObjectType.SlashingWeapon:
-				case (int)eObjectType.Spear:
-				case (int)eObjectType.Staff:
-				case (int)eObjectType.Sword:
-				case (int)eObjectType.Thrown:
-				case (int)eObjectType.ThrustWeapon:
-				case (int)eObjectType.TwoHandedWeapon:
+				case (int)EObjectType.HouseWallObject:
+				case (int)EObjectType.Axe:
+				case (int)EObjectType.Blades:
+				case (int)EObjectType.Blunt:
+				case (int)EObjectType.CelticSpear:
+				case (int)EObjectType.CompositeBow:
+				case (int)EObjectType.Crossbow:
+				case (int)EObjectType.Flexible:
+				case (int)EObjectType.Hammer:
+				case (int)EObjectType.HandToHand:
+				case (int)EObjectType.LargeWeapons:
+				case (int)EObjectType.LeftAxe:
+				case (int)EObjectType.Longbow:
+				case (int)EObjectType.MaulerStaff:
+				case (int)EObjectType.Piercing:
+				case (int)EObjectType.PolearmWeapon:
+				case (int)EObjectType.RecurvedBow:
+				case (int)EObjectType.Scythe:
+				case (int)EObjectType.Shield:
+				case (int)EObjectType.SlashingWeapon:
+				case (int)EObjectType.Spear:
+				case (int)EObjectType.Staff:
+				case (int)EObjectType.Sword:
+				case (int)EObjectType.Thrown:
+				case (int)EObjectType.ThrustWeapon:
+				case (int)EObjectType.TwoHandedWeapon:
 					return true;
 				default:
 					return false;
@@ -810,10 +791,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 		{
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.HouseVault:
-				case (int)eObjectType.HouseNPC:
-				case (int)eObjectType.HouseBindstone:
-				case (int)eObjectType.HouseInteriorObject:
+				case (int)EObjectType.HouseVault:
+				case (int)EObjectType.HouseNPC:
+				case (int)EObjectType.HouseBindstone:
+				case (int)EObjectType.HouseInteriorObject:
 					return true;
 				default:
 					return false;
@@ -930,7 +911,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				return;
 			}
 
-			if (item == null || item.SlotPosition == (int)eInventorySlot.Ground
+			if (item == null || item.SlotPosition == (int)EInventorySlot.Ground
 				|| item.OwnerID == null || item.OwnerID != player.InternalID)
 			{
 				ChatUtil.SendSystemMessage(player, "You need a House Removal Deed for this.");
@@ -949,7 +930,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			player.Inventory.RemoveItem(item);
 			log.WarnFormat("HOUSING: {0}:{1} is removing house from lot {2} owned by {3}", player.Name, player.Client.Account.Name, house.HouseNumber, house.OwnerID);
-			InventoryLogging.LogInventoryAction(player, "(HOUSE;" + house.HouseNumber + ")", eInventoryActionType.Other, item.Template, item.Count);
+			InventoryLogging.LogInventoryAction(player, "(HOUSE;" + house.HouseNumber + ")", EInventoryActionType.Other, item.Template, item.Count);
 			HouseMgr.RemoveHouse(house);
 
 			ChatUtil.SendSystemMessage(player, "Your house has been removed!");
@@ -973,7 +954,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				return;
 			}
 
-			if (item == null || item.SlotPosition == (int)eInventorySlot.Ground
+			if (item == null || item.SlotPosition == (int)EInventorySlot.Ground
 				|| item.OwnerID == null || item.OwnerID != player.InternalID)
 			{
 				ChatUtil.SendSystemMessage(player, "This does not work without a House Deed.");
@@ -983,7 +964,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (HouseMgr.UpgradeHouse(house, item))
 			{
 				player.Inventory.RemoveItem(item);
-				InventoryLogging.LogInventoryAction(player, "(HOUSE;" + house.HouseNumber + ")", eInventoryActionType.Other, item.Template, item.Count);
+				InventoryLogging.LogInventoryAction(player, "(HOUSE;" + house.HouseNumber + ")", EInventoryActionType.Other, item.Template, item.Count);
 			}
 		}
 	}

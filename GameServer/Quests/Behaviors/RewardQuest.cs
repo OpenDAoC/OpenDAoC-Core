@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.Database;
@@ -26,16 +7,11 @@ using DOL.Language;
 
 namespace DOL.GS.Quests
 {
-	/// <summary>
-	/// A quest type with basic and optional item rewards using
-	/// the enhanced quest dialog.
-	/// </summary>
-	/// <author>Aredhel</author>
 	public class RewardQuest : BaseQuest
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		private GameNPC m_questGiver;
+		private GameNpc m_questGiver;
 		private List<QuestGoal> m_goals;
 		private QuestRewards m_rewards;
 
@@ -110,7 +86,7 @@ namespace DOL.GS.Quests
 		/// <summary>
 		/// The NPC giving the quest.
 		/// </summary>
-		public GameNPC QuestGiver
+		public GameNpc QuestGiver
 		{
 			get { return m_questGiver; }
 			set { m_questGiver = value; }
@@ -187,7 +163,7 @@ namespace DOL.GS.Quests
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			base.Notify(e, sender, args);
 			if (e == GamePlayerEvent.QuestRewardChosen)
@@ -207,7 +183,7 @@ namespace DOL.GS.Quests
                 //k109: Handle the player not choosing a reward.
                 if (Rewards.ChoiceOf > 0 && rewardArgs.CountChosen <= 0)
                 {
-                    QuestPlayer.Out.SendMessage(LanguageMgr.GetTranslation(QuestPlayer.Client, "RewardQuest.Notify"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    QuestPlayer.Out.SendMessage(LanguageMgr.GetTranslation(QuestPlayer.Client, "RewardQuest.Notify"), EChatType.CT_System, EChatLoc.CL_ChatWindow);
                     return;
                 }
 
@@ -221,7 +197,7 @@ namespace DOL.GS.Quests
 		/// <param name="player"></param>
 		public override void OnQuestAssigned(GamePlayer player)
 		{
-            player.Out.SendMessage(String.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "RewardQuest.OnQuestAssigned", Name)), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage(String.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "RewardQuest.OnQuestAssigned", Name)), EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
             player.Out.SendSoundEffect(7, 0, 0, 0, 0, 0);
 		}
 
@@ -232,13 +208,13 @@ namespace DOL.GS.Quests
 		{
 			int inventorySpaceRequired = Rewards.BasicItems.Count + Rewards.ChosenItems.Count;
 
-			if (QuestPlayer.Inventory.IsSlotsFree(inventorySpaceRequired, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (QuestPlayer.Inventory.IsSlotsFree(inventorySpaceRequired, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
 				base.FinishQuest();
 				QuestPlayer.Out.SendSoundEffect(11, 0, 0, 0, 0, 0);
 				QuestPlayer.ForceGainExperience(Rewards.Experience);
 				QuestPlayer.AddMoney(Rewards.Money);
-                InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", QuestPlayer, eInventoryActionType.Quest, Rewards.Money);
+                InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", QuestPlayer, EInventoryActionType.Quest, Rewards.Money);
 				if (Rewards.GiveBountyPoints > 0)
 					QuestPlayer.GainBountyPoints(Rewards.GiveBountyPoints);
 				if (Rewards.GiveRealmPoints > 0)
@@ -258,7 +234,7 @@ namespace DOL.GS.Quests
 			}
 			else
 			{
-				QuestPlayer.Out.SendMessage(string.Format("Your inventory is full, you need {0} free slot(s) to complete this quest.", inventorySpaceRequired), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				QuestPlayer.Out.SendMessage(string.Format("Your inventory is full, you need {0} free slot(s) to complete this quest.", inventorySpaceRequired), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				Rewards.ChosenItems.Clear();
 			}
 		}
@@ -414,8 +390,8 @@ namespace DOL.GS.Quests
 				if (Current < Target)
 				{
 					Current++;
-					m_quest.QuestPlayer.Out.SendMessage(Description, eChatType.CT_ScreenCenter, 
-						eChatLoc.CL_SystemWindow);
+					m_quest.QuestPlayer.Out.SendMessage(Description, EChatType.CT_ScreenCenter, 
+						EChatLoc.CL_SystemWindow);
 					m_quest.QuestPlayer.Out.SendQuestUpdate(m_quest);
 					
 					// Check for updates

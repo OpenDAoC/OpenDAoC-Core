@@ -1,27 +1,5 @@
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// Bonus for owning certain amount of keeps
-	/// The int value is the amount of keeps needed
-	/// </summary>
-	public enum eKeepBonusType : int
-	{
-		Coin_Drop_3 = 8,
-		Experience_3 = 9,
-		Bounty_Points_3 = 10,
-		Craft_Timers_3 = 11,
-		Coin_Drop_5 = 12,
-		Experience_5 = 13,
-		Bounty_Points_5 = 14,
-		Craft_Timers_5 = 15,
-		Power_Pool = 16,
-		Endurance_Pool = 17,
-		Power_Regeneration = 18,
-		Health_Regeneration = 19,
-		Melee_Critical = 20,
-		Spell_Critical = 30
-	}
-
 	public class KeepBonusMgr
 	{
 		private static int albCount = 0;
@@ -34,20 +12,20 @@ namespace DOL.GS.Keeps
 		/// <param name="type">the type of bonus</param>
 		/// <param name="realm">the realm</param>
 		/// <returns>true if the realm has the required amount of keeps</returns>
-		public static bool RealmHasBonus(eKeepBonusType type, eRealm realm)
+		public static bool RealmHasBonus(EKeepBonusType type, ERealm realm)
 		{
 			if (!ServerProperties.Properties.USE_LIVE_KEEP_BONUSES)
 				return false;
 
-			if (realm == eRealm.None)
+			if (realm == ERealm.None)
 				return false;
 
 			int count = 0;
 			switch (realm)
 			{
-				case eRealm.Albion: count = albCount; break;
-				case eRealm.Midgard: count = midCount; break;
-				case eRealm.Hibernia: count = hibCount; break;
+				case ERealm.Albion: count = albCount; break;
+				case ERealm.Midgard: count = midCount; break;
+				case ERealm.Hibernia: count = hibCount; break;
 			}
 
 			return count >= (int)type;
@@ -59,9 +37,9 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public static void UpdateCounts()
 		{
-			albCount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Albion);
-			midCount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Midgard);
-			hibCount = GameServer.KeepManager.GetKeepCountByRealm(eRealm.Hibernia);
+			albCount = GameServer.KeepManager.GetKeepCountByRealm(ERealm.Albion);
+			midCount = GameServer.KeepManager.GetKeepCountByRealm(ERealm.Midgard);
+			hibCount = GameServer.KeepManager.GetKeepCountByRealm(ERealm.Hibernia);
 		}
 	}
 }

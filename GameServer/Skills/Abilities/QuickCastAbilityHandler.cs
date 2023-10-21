@@ -1,30 +1,8 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.SkillHandler
 {
-	/// <summary>
-	/// Handler for Quick Cast Ability clicks
-	/// </summary>
 	[SkillHandler(Abilities.Quickcast)]
 	public class QuickCastAbilityHandler : IAbilityActionHandler
 	{
@@ -43,11 +21,11 @@ namespace DOL.GS.SkillHandler
 			// Cannot change QC state if already casting a spell (can't turn it off!)
 			if(player.CurrentSpellHandler != null)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.QuickCast.CannotUseIsCasting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.QuickCast.CannotUseIsCasting"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 
-			QuickCastECSGameEffect quickcast = (QuickCastECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.QuickCast);
+			QuickCastEcsAbilityEffect quickcast = (QuickCastEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(player, EEffect.QuickCast);
 			if (quickcast!=null)
 			{
 				quickcast.Cancel(true);
@@ -57,14 +35,14 @@ namespace DOL.GS.SkillHandler
 			// Dead can't quick cast
 			if(!player.IsAlive)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.QuickCast.CannotUseDead"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.QuickCast.CannotUseDead"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 
 			// Can't quick cast if in attack mode
 			if(player.attackComponent.AttackState)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.QuickCast.CannotUseInMeleeCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.QuickCast.CannotUseInMeleeCombat"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 
@@ -72,7 +50,7 @@ namespace DOL.GS.SkillHandler
 			long changeTime = player.CurrentRegion.Time - quickcastChangeTick;
 			if(changeTime < DISABLE_DURATION)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.QuickCast.CannotUseChangeTick", ((DISABLE_DURATION - changeTime) / 1000)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.QuickCast.CannotUseChangeTick", ((DISABLE_DURATION - changeTime) / 1000)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 //30 sec is time between 2 quick cast 
 				return;
 			}
@@ -81,7 +59,7 @@ namespace DOL.GS.SkillHandler
 
 			//player.DisableSkill(ab,DURATION / 10);
 
-			new QuickCastECSGameEffect(new ECSGameEffectInitParams(player, QuickCastECSGameEffect.DURATION, 1));
+			new QuickCastEcsAbilityEffect(new EcsGameEffectInitParams(player, QuickCastEcsAbilityEffect.DURATION, 1));
 		}
 	}
 }

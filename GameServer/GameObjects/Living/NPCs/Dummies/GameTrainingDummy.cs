@@ -1,32 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.PropertyCalc;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// Training Dummy: Can't move, fight back, or die
-    /// </summary>
-    public class GameTrainingDummy : GameNPC
+    public class GameTrainingDummy : GameNpc
     {
         public GameTrainingDummy() : base()
         {
@@ -84,12 +62,12 @@ namespace DOL.GS
             return true;
         }
 
-        protected static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value, double Effectiveness, bool IsSubstracted)
+        protected static void ApplyBonus(GameLiving owner, EBuffBonusCategory BonusCat, EProperty Property, double Value, double Effectiveness, bool IsSubstracted)
         {
             int effectiveValue = (int)(Value * Effectiveness);
 
             IPropertyIndexer tblBonusCat;
-            if (Property != eProperty.Undefined)
+            if (Property != EProperty.Undefined)
             {
                 tblBonusCat = GetBonusCategory(owner, BonusCat);
                 //Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
@@ -101,27 +79,27 @@ namespace DOL.GS
             }
         }
 
-        private static IPropertyIndexer GetBonusCategory(GameLiving target, eBuffBonusCategory categoryid)
+        private static IPropertyIndexer GetBonusCategory(GameLiving target, EBuffBonusCategory categoryid)
         {
             IPropertyIndexer bonuscat = null;
             switch (categoryid)
             {
-                case eBuffBonusCategory.BaseBuff:
+                case EBuffBonusCategory.BaseBuff:
                     bonuscat = target.BaseBuffBonusCategory;
                     break;
-                case eBuffBonusCategory.SpecBuff:
+                case EBuffBonusCategory.SpecBuff:
                     bonuscat = target.SpecBuffBonusCategory;
                     break;
-                case eBuffBonusCategory.Debuff:
+                case EBuffBonusCategory.Debuff:
                     bonuscat = target.DebuffCategory;
                     break;
-                case eBuffBonusCategory.Other:
+                case EBuffBonusCategory.Other:
                     bonuscat = target.BuffBonusCategory4;
                     break;
-                case eBuffBonusCategory.SpecDebuff:
+                case EBuffBonusCategory.SpecDebuff:
                     bonuscat = target.SpecDebuffCategory;
                     break;
-                case eBuffBonusCategory.AbilityBuff:
+                case EBuffBonusCategory.AbilityBuff:
                     bonuscat = target.AbilityBonus;
                     break;
                 default:

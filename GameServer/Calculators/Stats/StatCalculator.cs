@@ -1,27 +1,8 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 
 namespace DOL.GS.PropertyCalc
 {
-    [PropertyCalculator(eProperty.Stat_First, eProperty.Stat_Last)]
+    [PropertyCalculator(EProperty.Stat_First, EProperty.Stat_Last)]
     public class StatCalculator : PropertyCalculator
     {
         public const double SPEC_DEBUFF_VS_BUFF_MODIFIER = 0.5;
@@ -39,7 +20,7 @@ namespace DOL.GS.PropertyCalc
 
         // DebuffCategory has 100% effectiveness against buffs, 50% effectiveness against item and base stats.
         // SpecDebuffs (includes Champion's only) have 200% effectiveness against buffs.
-        public override int CalcValue(GameLiving living, eProperty property)
+        public override int CalcValue(GameLiving living, EProperty property)
         {
             int propertyIndex = (int) property;
             int abilityBonus = 0;
@@ -48,10 +29,10 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GamePlayer player)
             {
-                if (property == (eProperty) player.CharacterClass.ManaStat)
+                if (property == (EProperty) player.PlayerClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
-                        abilityBonus += player.AbilityBonus[(int)eProperty.Acuity];
+                    if (IsClassAffectedByAcuityAbility(player.PlayerClass))
+                        abilityBonus += player.AbilityBonus[(int)EProperty.Acuity];
                 }
 
                 deathConDebuff = player.TotalConstitutionLostAtDeath;
@@ -62,7 +43,7 @@ namespace DOL.GS.PropertyCalc
             else
                 livingToCheck = living;
 
-            int baseStat = living.GetBaseStat((eStat) property);
+            int baseStat = living.GetBaseStat((EStat) property);
             int itemBonus = CalcValueFromItems(livingToCheck, property);
             int buffBonus = CalcValueFromBuffs(living, property);
             int baseDebuff = Math.Abs(living.DebuffCategory[propertyIndex]);
@@ -72,11 +53,11 @@ namespace DOL.GS.PropertyCalc
             ApplyDebuffs(ref baseDebuff, ref specDebuff, ref buffBonus, ref baseAndItemStat);
             int stat = baseAndItemStat + buffBonus + abilityBonus;
             stat = (int) (stat * living.BuffBonusMultCategory1.Get((int) property));
-            stat -= (property == eProperty.Constitution) ? deathConDebuff : 0;
+            stat -= (property == EProperty.Constitution) ? deathConDebuff : 0;
             return Math.Max(1, stat);
         }
 
-        public override int CalcValueFromBuffs(GameLiving living, eProperty property)
+        public override int CalcValueFromBuffs(GameLiving living, EProperty property)
         {
             if (living == null)
                 return 0;
@@ -87,10 +68,10 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GamePlayer player)
             {
-                if (property == (eProperty) player.CharacterClass.ManaStat)
+                if (property == (EProperty) player.PlayerClass.ManaStat)
                 {
-                    if (player.CharacterClass.ClassType == eClassType.ListCaster)
-                        specBuffBonus += player.BaseBuffBonusCategory[(int)eProperty.Acuity];
+                    if (player.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+                        specBuffBonus += player.BaseBuffBonusCategory[(int)EProperty.Acuity];
                 }
             }
 
@@ -103,7 +84,7 @@ namespace DOL.GS.PropertyCalc
             return baseBuffBonus + specBuffBonus;
         }
 
-        public override int CalcValueFromItems(GameLiving living, eProperty property)
+        public override int CalcValueFromItems(GameLiving living, EProperty property)
         {
             if (living == null)
                 return 0;
@@ -113,10 +94,10 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GamePlayer player)
             {
-                if (property == (eProperty) player.CharacterClass.ManaStat)
+                if (property == (EProperty) player.PlayerClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
-                        itemBonus += living.ItemBonus[(int)eProperty.Acuity];
+                    if (IsClassAffectedByAcuityAbility(player.PlayerClass))
+                        itemBonus += living.ItemBonus[(int)EProperty.Acuity];
                 }
             }
 
@@ -130,41 +111,41 @@ namespace DOL.GS.PropertyCalc
             return living == null ? 0 : (int) (living.Level * 1.5);
         }
 
-        public static int GetItemBonusCapIncrease(GameLiving living, eProperty property)
+        public static int GetItemBonusCapIncrease(GameLiving living, EProperty property)
         {
             if (living == null)
                 return 0;
 
             int itemBonusCapIncreaseCap = GetItemBonusCapIncreaseCap(living);
-            int itemBonusCapIncrease = living.ItemBonus[(int)(eProperty.StatCapBonus_First - eProperty.Stat_First + property)];
+            int itemBonusCapIncrease = living.ItemBonus[(int)(EProperty.StatCapBonus_First - EProperty.Stat_First + property)];
 
             if (living is GamePlayer player)
             {
-                if (property == (eProperty) player.CharacterClass.ManaStat)
+                if (property == (EProperty) player.PlayerClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
-                        itemBonusCapIncrease += living.ItemBonus[(int)eProperty.AcuCapBonus];
+                    if (IsClassAffectedByAcuityAbility(player.PlayerClass))
+                        itemBonusCapIncrease += living.ItemBonus[(int)EProperty.AcuCapBonus];
                 }
             }
 
             return Math.Min(itemBonusCapIncrease, itemBonusCapIncreaseCap);
         }
 
-        public static int GetMythicalItemBonusCapIncrease(GameLiving living, eProperty property)
+        public static int GetMythicalItemBonusCapIncrease(GameLiving living, EProperty property)
         {
             if (living == null)
                 return 0;
 
             int mythicalItemBonusCapIncreaseCap = GetMythicalItemBonusCapIncreaseCap(living);
-            int mythicalItemBonusCapIncrease = living.ItemBonus[(int) (eProperty.MythicalStatCapBonus_First - eProperty.Stat_First + property)];
+            int mythicalItemBonusCapIncrease = living.ItemBonus[(int) (EProperty.MythicalStatCapBonus_First - EProperty.Stat_First + property)];
             int itemBonusCapIncrease = GetItemBonusCapIncrease(living, property);
 
             if (living is GamePlayer player)
             {
-                if (property == (eProperty) player.CharacterClass.ManaStat)
+                if (property == (EProperty) player.PlayerClass.ManaStat)
                 {
-                    if (IsClassAffectedByAcuityAbility(player.CharacterClass))
-                        mythicalItemBonusCapIncrease += living.ItemBonus[(int) eProperty.MythicalAcuCapBonus];
+                    if (IsClassAffectedByAcuityAbility(player.PlayerClass))
+                        mythicalItemBonusCapIncrease += living.ItemBonus[(int) EProperty.MythicalAcuCapBonus];
                 }
             }
 
@@ -184,13 +165,13 @@ namespace DOL.GS.PropertyCalc
             return living == null ? 0 : 52;
         }
 
-        public static bool IsClassAffectedByAcuityAbility(ICharacterClass characterClass)
+        public static bool IsClassAffectedByAcuityAbility(IPlayerClass playerClass)
         {
-            return (eCharacterClass) characterClass.ID is
-                not eCharacterClass.Scout and
-                not eCharacterClass.Hunter and
-                not eCharacterClass.Ranger and
-                not eCharacterClass.Nightshade;
+            return (EPlayerClass) playerClass.ID is
+                not EPlayerClass.Scout and
+                not EPlayerClass.Hunter and
+                not EPlayerClass.Ranger and
+                not EPlayerClass.Nightshade;
         }
 
         public static void ApplyDebuffs(ref int baseDebuff, ref int specDebuff, ref int buffBonus, ref int baseAndItemStat)
@@ -225,7 +206,7 @@ namespace DOL.GS.PropertyCalc
         }
 
         // Intended to be used by NPCs to calculate ABS or resist bonus / malus from the difference between currently applied buffs and debuffs.
-        public static double CalculateBuffContributionToAbsorbOrResist(GameLiving living, eProperty stat)
+        public static double CalculateBuffContributionToAbsorbOrResist(GameLiving living, EProperty stat)
         {
             int buff = living.BaseBuffBonusCategory[stat] + living.SpecBuffBonusCategory[stat];
             int baseDebuff = Math.Abs(living.DebuffCategory[stat]);

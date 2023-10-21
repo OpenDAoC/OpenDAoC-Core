@@ -12,7 +12,7 @@ namespace DOL.GS
         private const int NPC_VICINITY_CHECK_INTERVAL = 1000;
         private const int PET_LOS_CHECK_INTERVAL = 1000;
 
-        private GameNPC _npcOwner;
+        private GameNpc _npcOwner;
         private bool _isGuardArcher;
         // Next check for NPCs in attack range to hit while on the way to main target.
         private long _nextVicinityCheck = 0;
@@ -20,7 +20,7 @@ namespace DOL.GS
         private int _petLosCheckInterval = PET_LOS_CHECK_INTERVAL;
         private bool _hasLos;
 
-        public NpcAttackAction(GameNPC npcOwner) : base(npcOwner)
+        public NpcAttackAction(GameNpc npcOwner) : base(npcOwner)
         {
             _npcOwner = npcOwner;
             _isGuardArcher = _npcOwner is GuardArcher;
@@ -28,7 +28,7 @@ namespace DOL.GS
             if (Properties.ALWAYS_CHECK_PET_LOS && npcOwner.Brain is IControlledBrain npcOwnerBrain)
             {
                 _npcOwnerOwner = npcOwnerBrain.GetPlayerOwner();
-                new ECSGameTimer(_npcOwner, new ECSGameTimer.ECSTimerCallback(CheckLos), 1);
+                new EcsGameTimer(_npcOwner, new EcsGameTimer.EcsTimerCallback(CheckLos), 1);
             }
             else
                 _hasLos = true;
@@ -52,7 +52,7 @@ namespace DOL.GS
 
             // NPCs try to switch to their ranged weapon whenever possible.
             if (!_npcOwner.IsBeingInterrupted &&
-                _npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null &&
+                _npcOwner.Inventory?.GetItem(EInventorySlot.DistanceWeapon) != null &&
                 !_npcOwner.IsWithinRadius(_target, 500))
             {
                 _npcOwner.SwitchToRanged(_target);
@@ -99,7 +99,7 @@ namespace DOL.GS
                     // Set the next check for NPCs. Will be in a range from 100ms -> NPC_VICINITY_CHECK_DELAY.
                     _nextVicinityCheck = GameLoop.GameLoopTime + Util.Random(100, NPC_VICINITY_CHECK_INTERVAL);
 
-                    foreach (GameNPC npcInRadius in _npcOwner.GetNPCsInRadius((ushort)_attackComponent.AttackRange))
+                    foreach (GameNpc npcInRadius in _npcOwner.GetNPCsInRadius((ushort)_attackComponent.AttackRange))
                     {
                         if (npcBrain.AggroTable.ContainsKey(npcInRadius))
                         {
@@ -165,13 +165,13 @@ namespace DOL.GS
             base.CleanUp();
         }
 
-        private int CheckLos(ECSGameTimer timer)
+        private int CheckLos(EcsGameTimer timer)
         {
             if (_target == null)
                 _hasLos = false;
-            else if (_npcOwner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+            else if (_npcOwner.ActiveWeaponSlot != EActiveWeaponSlot.Distance)
                 _hasLos = true;
-            else if (_target is GamePlayer || (_target is GameNPC _targetNpc &&
+            else if (_target is GamePlayer || (_target is GameNpc _targetNpc &&
                                               _targetNpc.Brain is IControlledBrain _targetNpcBrain &&
                                               _targetNpcBrain.GetPlayerOwner() != null))
                 // Target is either a player or a pet owned by a player.

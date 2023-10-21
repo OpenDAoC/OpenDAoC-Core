@@ -5,7 +5,7 @@ namespace DOL.GS.Keeps
 {
 	public class KeepArea : Area.Circle
 	{
-		public AbstractGameKeep Keep = null;
+		public AGameKeep Keep = null;
 		private const int PK_RADIUS = 4000;
 		private const int KEEP_RADIUS = 3000;
 		private const int TOWER_RADIUS = 1500;
@@ -14,7 +14,7 @@ namespace DOL.GS.Keeps
 			: base()
 		{ }
 
-		public KeepArea(AbstractGameKeep keep)
+		public KeepArea(AGameKeep keep)
 			: base(keep.Name, keep.X, keep.Y, 0, keep.IsPortalKeep ? PK_RADIUS : (keep is GameKeepTower ? TOWER_RADIUS : KEEP_RADIUS)
 )		{
 			Keep = keep;
@@ -29,7 +29,7 @@ namespace DOL.GS.Keeps
 			}
 			base.OnPlayerEnter(player);
 			if (Keep.Guild != null)
-				player.Out.SendMessage("Controlled by " + Keep.Guild.Name + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Controlled by " + Keep.Guild.Name + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		public void ChangeRadius(int newRadius)

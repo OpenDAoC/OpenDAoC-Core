@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +11,7 @@ namespace DOL.GS
 	/// <summary>
 	/// The mother class for all class trainers
 	/// </summary>
-	public class GameTrainer : GameNPC
+	public class GameTrainer : GameNpc
 	{
 		// List of disabled classes
 		private static List<string> disabled_classes = null;
@@ -59,9 +40,9 @@ namespace DOL.GS
 		// What kind of Champion trainer is this
 		protected eChampionTrainerType m_championTrainerType = eChampionTrainerType.None;
 
-		public virtual eCharacterClass TrainedClass
+		public virtual EPlayerClass TrainedClass
 		{
-			get { return eCharacterClass.Unknown; }
+			get { return EPlayerClass.Unknown; }
 		}
 		/// <summary>
 		/// Constructs a new GameTrainer
@@ -130,7 +111,7 @@ namespace DOL.GS
 
 		public virtual bool CanTrain(GamePlayer player)
 		{
-			return player.CharacterClass.ID == (int)TrainedClass || TrainedClass == eCharacterClass.Unknown;
+			return player.PlayerClass.ID == (int)TrainedClass || TrainedClass == EPlayerClass.Unknown;
 		}
 
 		/// <summary>
@@ -150,7 +131,7 @@ namespace DOL.GS
 			{
 				player.Out.SendTrainerWindow();
 				
-				player.GainExperience(eXPSource.Other, 0);//levelup
+				player.GainExperience(EXpSource.Other, 0);//levelup
 
 				if (player.FreeLevelState == 2)
 				{
@@ -158,7 +139,7 @@ namespace DOL.GS
 					//long xp = GameServer.ServerRules.GetExperienceForLevel(player.PlayerCharacter.LastFreeLevel + 3) - GameServer.ServerRules.GetExperienceForLevel(player.PlayerCharacter.LastFreeLevel + 2);
 					long xp = player.GetExperienceNeededForLevel(player.LastFreeLevel + 1) - player.GetExperienceNeededForLevel(player.LastFreeLevel);
 					//player.PlayerCharacter.LastFreeLevel = player.Level;
-					player.GainExperience(eXPSource.Other, xp);
+					player.GainExperience(EXpSource.Other, xp);
 					player.LastFreeLeveled = DateTime.Now;
 					player.Out.SendPlayerFreeLevelUpdate();
 				}
@@ -179,7 +160,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual bool CanTrainChampionLevels(GamePlayer player)
 		{
-			return player.Level >= player.MaxLevel && player.Champion && m_championTrainerType != eChampionTrainerType.None && m_championTrainerType != player.CharacterClass.ChampionTrainerType();
+			return player.Level >= player.MaxLevel && player.Champion && m_championTrainerType != eChampionTrainerType.None && m_championTrainerType != player.PlayerClass.ChampionTrainerType();
 		}
 
 		/// <summary>
@@ -207,7 +188,7 @@ namespace DOL.GS
 					if (player.SkillSpecialtyPoints > specPoints)
 					{
 						player.styleComponent.RemoveAllStyles(); // Kill styles
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Interact.RegainPoints", (player.SkillSpecialtyPoints - specPoints)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Interact.RegainPoints", (player.SkillSpecialtyPoints - specPoints)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 					player.RefreshSpecDependantSkills(false);
 					// Notify Player of points
@@ -234,7 +215,7 @@ namespace DOL.GS
 		{
 			player.Out.SendMessage(String.Format(LanguageMgr.GetTranslation
 			                                     (player.Client, "GameTrainer.Interact.Respecialize", this.Name, player.Name)),
-			                       eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			                       EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 		}
 
 		/// <summary>
@@ -249,15 +230,15 @@ namespace DOL.GS
 				foreach (DbInventoryItem item in player.Inventory.EquippedItems)
 				{
 					if (!player.HasAbilityToUseItem(item.Template))
-						if (player.Inventory.IsSlotsFree(item.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == true)
+						if (player.Inventory.IsSlotsFree(item.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) == true)
 					{
-						player.Inventory.MoveItem((eInventorySlot)item.SlotPosition, player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack), item.Count);
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.CheckAbilityToUseItem.Text1", item.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Inventory.MoveItem((EInventorySlot)item.SlotPosition, player.Inventory.FindFirstEmptySlot(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack), item.Count);
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.CheckAbilityToUseItem.Text1", item.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 					else
 					{
-						player.Inventory.MoveItem((eInventorySlot)item.SlotPosition, eInventorySlot.Ground, item.Count);
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.CheckAbilityToUseItem.Text1", item.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Inventory.MoveItem((EInventorySlot)item.SlotPosition, EInventorySlot.Ground, item.Count);
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.CheckAbilityToUseItem.Text1", item.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 				}
 			}
@@ -281,25 +262,25 @@ namespace DOL.GS
 					case "respec_single":
 						{
 							player.Inventory.RemoveCountFromStack(item, 1);
-							InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
+							InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
 							player.RespecAmountSingleSkill++;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecSingle"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecSingle"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							return true;
 						}
 					case "respec_full":
 						{
 							player.Inventory.RemoveCountFromStack(item, 1);
-							InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
+							InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
 							player.RespecAmountAllSkill++;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecFull", item.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecFull", item.Name), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							return true;
 						}
 					case "respec_realm":
 						{
 							player.Inventory.RemoveCountFromStack(item, 1);
-							InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template);
+							InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template);
 							player.RespecAmountRealmSkill++;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecRealm"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.ReceiveItem.RespecRealm"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							return true;
 						}
 				}
@@ -309,7 +290,7 @@ namespace DOL.GS
 
 		public void PromotePlayer(GamePlayer player)
 		{
-			if (TrainedClass != eCharacterClass.Unknown)
+			if (TrainedClass != EPlayerClass.Unknown)
 				PromotePlayer(player, (int)TrainedClass, "", null);
 		}
 		
@@ -320,13 +301,13 @@ namespace DOL.GS
 		public virtual bool CanPromotePlayer(GamePlayer player)
 		{
 			var baseClass = ScriptMgr.FindCharacterBaseClass((int)TrainedClass);
-			ICharacterClass pickedClass = ScriptMgr.FindCharacterClass((int)TrainedClass);
+			IPlayerClass pickedClass = ScriptMgr.FindCharacterClass((int)TrainedClass);
 
 			// Error or Base Trainer...
 			if (baseClass == null || baseClass.ID == (int)TrainedClass)
 				return false;
 			
-			if (player.Level < 5 || player.CharacterClass.ID != baseClass.ID)
+			if (player.Level < 5 || player.PlayerClass.ID != baseClass.ID)
 				return false;
 			
 			if(pickedClass.EligibleRaces.Exists(s => (short)s.ID == player.Race))
@@ -359,10 +340,10 @@ namespace DOL.GS
 				player.RemoveAllSpellLines();
 
 				if (messageToPlayer != "")
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Says", this.Name, messageToPlayer), eChatType.CT_System, eChatLoc.CL_PopupWindow);
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Upgraded", player.CharacterClass.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Says", this.Name, messageToPlayer), EChatType.CT_System, EChatLoc.CL_PopupWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Upgraded", player.PlayerClass.Name), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
-				player.CharacterClass.OnLevelUp(player, player.Level);
+				player.PlayerClass.OnLevelUp(player, player.Level);
 				player.RefreshSpecDependantSkills(true);
 				player.StartPowerRegeneration();
 				player.Out.SendUpdatePlayerSkills();
@@ -380,7 +361,7 @@ namespace DOL.GS
 				}
 
 				// after gifts
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Accepted", player.CharacterClass.Profession), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Accepted", player.PlayerClass.Profession), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				player.SaveIntoDatabase();
 				return true;
 			}
@@ -399,12 +380,12 @@ namespace DOL.GS
 			DbItemTemplate temp = GameServer.Database.FindObjectByKey<DbItemTemplate>(template);
 			if (temp != null)
 			{
-				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(temp), 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(temp), 1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.AddGift.NotEnoughSpace"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.AddGift.NotEnoughSpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return false;
 				}
-				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Other, temp);
+				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Other, temp);
 			}
 			return true;
 		}
@@ -421,7 +402,7 @@ namespace DOL.GS
 				var triggers = GameServer.Instance.NpcManager.AmbientBehaviour[base.Name];
 				// If the NPC has no ambient trigger message assigned, then return this message
 				if (triggers == null || triggers.Length == 0)
-					SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.SeekElsewhere"));
+					SayTo(player, EChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.SeekElsewhere"));
 			}
 		}
 
@@ -431,7 +412,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		protected virtual void OfferTraining(GamePlayer player)
 		{
-			SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.WouldYouLikeTo"));
+			SayTo(player, EChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.Train.WouldYouLikeTo"));
 		}
 		
 		/// <summary>

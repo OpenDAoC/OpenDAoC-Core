@@ -1,28 +1,5 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 namespace DOL.GS.Relics
 {
-	/// <summary>
-	/// Class representing a relic pad.
-	/// </summary>
-	/// <author>Aredhel</author>
 	public class RelicPad : GameObject
 	{
 		/// <summary>
@@ -30,7 +7,7 @@ namespace DOL.GS.Relics
 		/// </summary>
 		private RelicPillar m_relicPillar;
 
-		public override eGameObjectType GameObjectType => eGameObjectType.KEEP_COMPONENT;
+		public override EGameObjectType GameObjectType => EGameObjectType.KEEP_COMPONENT;
 
 		public RelicPad(RelicPillar relicPillar)
 		{
@@ -61,9 +38,9 @@ namespace DOL.GS.Relics
 				m_playersOnPad = value;
 
 				if (m_playersOnPad >= ServerProperties.Properties.RELIC_PLAYERS_REQUIRED_ON_PAD &&
-					m_relicPillar.State == eDoorState.Closed)
+					m_relicPillar.State == EDoorState.Closed)
 					m_relicPillar.Open();
-				else if (m_relicPillar.State == eDoorState.Open && m_playersOnPad <= 0)
+				else if (m_relicPillar.State == EDoorState.Open && m_playersOnPad <= 0)
 					m_relicPillar.Close();
 			}
 		}

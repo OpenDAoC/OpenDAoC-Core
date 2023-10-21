@@ -2,9 +2,9 @@
 
 namespace DOL.GS
 {
-    public class HealOverTimeECSGameEffect : ECSGameSpellEffect
+    public class HealOverTimeEcsSpellEffect : EcsGameSpellEffect
     {
-        public HealOverTimeECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) 
+        public HealOverTimeEcsSpellEffect(EcsGameEffectInitParams initParams) : base(initParams) 
         {
             NextTick = StartTick;
         }
@@ -25,7 +25,7 @@ namespace DOL.GS
 
         public override void OnEffectPulse()
         {
-            ((HoTSpellHandler)SpellHandler).OnDirectEffect(Owner);
+            ((HealOverTimeSpell)SpellHandler).OnDirectEffect(Owner);
             NextTick += PulseFreq;
         }
     }

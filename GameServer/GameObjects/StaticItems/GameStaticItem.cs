@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using DOL.Database;
@@ -26,7 +7,7 @@ using DOL.Language;
 namespace DOL.GS
 {
 	/// <summary>
-	/// This class represents a static Item in the gameworld
+	/// This class represents a static Item in the game world
 	/// </summary>
 	public class GameStaticItem : GameObject , ITranslatableObject
 	{
@@ -46,7 +27,7 @@ namespace DOL.GS
 			set	{ m_respawnInterval = value; }
 		}
 
-		public override eGameObjectType GameObjectType => eGameObjectType.ITEM;
+		public override EGameObjectType GameObjectType => EGameObjectType.ITEM;
 
 		/// <summary>
 		/// Constructs a new GameStaticItem
@@ -198,7 +179,7 @@ namespace DOL.GS
             ExamineArticle = item.ExamineArticle;
 			Model = item.Model;
 			Emblem = item.Emblem;
-			Realm = (eRealm)item.Realm;
+			Realm = (ERealm)item.Realm;
 			Heading = item.Heading;
 			X = item.X;
 			Y = item.Y;
@@ -239,7 +220,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the realm of this item
 		/// </summary>
-		public override eRealm Realm
+		public override ERealm Realm
 		{
 			get { return base.Realm; }
 			set

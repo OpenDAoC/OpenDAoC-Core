@@ -1,55 +1,18 @@
-﻿/*
-* DAWN OF LIGHT - The first free open source DAoC server emulator
-* 
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*/
-
-
-//
-// This is a class writen from the Storm Unique Object Generator.
-//
-// Original version by Etaew
-// Modified by Tolakram to add live like names and item models
-//
-// Released to the public on July 12th, 2010
-//
-// Updating to Class by Leodagan on Aug 2013.
-//
-//
-// **** Atlas ROG Generation system ****
-//
-//	Based on the above mentioned software releases
-//	Converted for use by Atlas server by Fen - Sept 2021 - Dec 21
-//
-
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.ServerProperties;
 
-namespace DOL.GS {
+namespace DOL.GS 
+{
     /// <summary>
     /// GeneratedUniqueItem is a subclass of UniqueItem used to create RoG object
     /// Using it as a class is much more extendable to other usage than just loot and inventory
     /// </summary>
-    public class GeneratedUniqueItem : DbItemUnique {
-        
+    public class GeneratedUniqueItem : DbItemUnique 
+    {
         //The following properties are weights for each roll
         //It is *not* a direct chance to receive the item. It is instead
         //a chance for that item type to be randomly selected as a valid generation type
@@ -72,75 +35,75 @@ namespace DOL.GS {
         //base Chance to get a magical RoG item, PlayerLevel*2 is added to get final value
         private static int MagicalItemOffset = Properties.ROG_MAGICAL_ITEM_OFFSET;
 
-        private eCharacterClass charClass = eCharacterClass.Unknown;
+        private EPlayerClass charClass = EPlayerClass.Unknown;
 
         private static Dictionary<int,Spell> ProcSpells = new Dictionary<int,Spell>();
 
-        protected static Dictionary<eProperty, string> hPropertyToMagicPrefix = new Dictionary<eProperty, string>();
+        protected static Dictionary<EProperty, string> hPropertyToMagicPrefix = new Dictionary<EProperty, string>();
 
         [ScriptLoadedEvent]
-        public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
         { 
             InitializeHashtables();
         }
 
         public GeneratedUniqueItem()
-            : this((eRealm)Util.Random(1, 3), (eCharacterClass)Util.Random(1, 32), (byte)Util.Random(1, 50))
+            : this((ERealm)Util.Random(1, 3), (EPlayerClass)Util.Random(1, 32), (byte)Util.Random(1, 50))
         {
 
         }
 
         #region Constructor Randomized
 
-        public GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, int minUtility = 15)
+        public GeneratedUniqueItem(ERealm realm, EPlayerClass charClass, byte level, int minUtility = 15)
             : this(realm, charClass, level, GenerateObjectType(realm, charClass, level), minUtility)
         {
 
         }
 
-        public GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, int minUtility = 15)
+        public GeneratedUniqueItem(ERealm realm, EPlayerClass charClass, byte level, EObjectType type, int minUtility = 15)
             : this(realm, charClass, level, type, GenerateItemType(type), minUtility)
         {
 
         }
 
-        public GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot, int minUtility = 15)
+        public GeneratedUniqueItem(ERealm realm, EPlayerClass charClass, byte level, EObjectType type, EInventorySlot slot, int minUtility = 15)
             : this(realm, charClass, level, type, slot, GenerateDamageType(type, charClass), minUtility)
         {
 
         }
 
-        public GeneratedUniqueItem(eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot, eDamageType dmg, int minUtility = 15)
+        public GeneratedUniqueItem(ERealm realm, EPlayerClass charClass, byte level, EObjectType type, EInventorySlot slot, EDamageType dmg, int minUtility = 15)
             : this(false, realm, charClass, level, type, slot, dmg, minUtility)
         {
 
         }
 
         public GeneratedUniqueItem(bool toa)
-            : this(toa, (eRealm)Util.Random(1, 3), (eCharacterClass)Util.Random(1, 32), (byte)Util.Random(1, 50))
+            : this(toa, (ERealm)Util.Random(1, 3), (EPlayerClass)Util.Random(1, 32), (byte)Util.Random(1, 50))
         {
 
         }
 
-        public GeneratedUniqueItem(bool toa, eRealm realm, eCharacterClass charClass, byte level)
+        public GeneratedUniqueItem(bool toa, ERealm realm, EPlayerClass charClass, byte level)
             : this(toa, realm, charClass, level, GenerateObjectType(realm, charClass, level))
         {
 
         }
 
-        public GeneratedUniqueItem(bool toa, eRealm realm, eCharacterClass charClass, byte level, eObjectType type)
+        public GeneratedUniqueItem(bool toa, ERealm realm, EPlayerClass charClass, byte level, EObjectType type)
             : this(toa, realm, charClass, level, type, GenerateItemType(type))
         {
 
         }
 
-        public GeneratedUniqueItem(bool toa, eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot)
+        public GeneratedUniqueItem(bool toa, ERealm realm, EPlayerClass charClass, byte level, EObjectType type, EInventorySlot slot)
             : this(toa, realm, charClass, level, type, slot, GenerateDamageType(type, charClass))
         {
 
         }
 
-        public GeneratedUniqueItem(bool toa, eRealm realm, eCharacterClass charClass, byte level, eObjectType type, eInventorySlot slot, eDamageType dmg, int utilityMinimum = 15)
+        public GeneratedUniqueItem(bool toa, ERealm realm, EPlayerClass charClass, byte level, EObjectType type, EInventorySlot slot, EDamageType dmg, int utilityMinimum = 15)
             : base()
         {
             this.Realm = (int)realm;
@@ -221,7 +184,7 @@ namespace DOL.GS {
 
             this.Quality = Util.Random(minQuality, maxQuality);
 
-            this.Price = Money.SetAutoPrice(this.Level, this.Quality);
+            this.Price = MoneyMgr.SetAutoPrice(this.Level, this.Quality);
             this.Price /= 8;
             if (this.Price <= 0)
                 this.Price = 2; // 2c as sell price is 50%
@@ -236,70 +199,70 @@ namespace DOL.GS {
                 this.Level = 51;
             }
 
-            eObjectType type = (eObjectType)this.Object_Type;
+            EObjectType type = (EObjectType)this.Object_Type;
 
             //special property for instrument
-            if (type == eObjectType.Instrument)
+            if (type == EObjectType.Instrument)
                 this.DPS_AF = Util.Random(0, 3);
 
             //set hand
             switch (type)
             {
                 //two handed weapons
-                case eObjectType.CelticSpear:
-                case eObjectType.CompositeBow:
-                case eObjectType.Crossbow:
-                case eObjectType.Fired:
-                case eObjectType.Instrument:
-                case eObjectType.LargeWeapons:
-                case eObjectType.Longbow:
-                case eObjectType.PolearmWeapon:
-                case eObjectType.RecurvedBow:
-                case eObjectType.Scythe:
-                case eObjectType.Spear:
-                case eObjectType.Staff:
-                case eObjectType.TwoHandedWeapon:
-                case eObjectType.MaulerStaff: //Maulers
+                case EObjectType.CelticSpear:
+                case EObjectType.CompositeBow:
+                case EObjectType.Crossbow:
+                case EObjectType.Fired:
+                case EObjectType.Instrument:
+                case EObjectType.LargeWeapons:
+                case EObjectType.Longbow:
+                case EObjectType.PolearmWeapon:
+                case EObjectType.RecurvedBow:
+                case EObjectType.Scythe:
+                case EObjectType.Spear:
+                case EObjectType.Staff:
+                case EObjectType.TwoHandedWeapon:
+                case EObjectType.MaulerStaff: //Maulers
                     {
                         this.Hand = 1;
                         break;
                     }
                 //right or left handed weapons
-                case eObjectType.Blades:
-                case eObjectType.Blunt:
-                case eObjectType.CrushingWeapon:
-                case eObjectType.HandToHand:
-                case eObjectType.Piercing:
-                case eObjectType.SlashingWeapon:
-                case eObjectType.ThrustWeapon:
-                case eObjectType.FistWraps: //Maulers
+                case EObjectType.Blades:
+                case EObjectType.Blunt:
+                case EObjectType.CrushingWeapon:
+                case EObjectType.HandToHand:
+                case EObjectType.Piercing:
+                case EObjectType.SlashingWeapon:
+                case EObjectType.ThrustWeapon:
+                case EObjectType.FistWraps: //Maulers
                     {
-                        if ((eInventorySlot)this.Item_Type == eInventorySlot.LeftHandWeapon)
+                        if ((EInventorySlot)this.Item_Type == EInventorySlot.LeftHandWeapon)
                             this.Hand = 2;
                         break;
                     }
                 //left handed weapons
-                case eObjectType.LeftAxe:
-                case eObjectType.Shield:
+                case EObjectType.LeftAxe:
+                case EObjectType.Shield:
                     {
                         this.Hand = 2;
                         break;
                     }
                 //right or two handed weapons
-                case eObjectType.Sword:
-                case eObjectType.Hammer:
-                case eObjectType.Axe:
+                case EObjectType.Sword:
+                case EObjectType.Hammer:
+                case EObjectType.Axe:
                     {
-                        if ((eInventorySlot)this.Item_Type == eInventorySlot.TwoHandWeapon)
+                        if ((EInventorySlot)this.Item_Type == EInventorySlot.TwoHandWeapon)
                             this.Hand = 1;
                         break;
                     }
             }
 
             //set dps_af and spd_abs
-            if ((int)type >= (int)eObjectType._FirstArmor && (int)type <= (int)eObjectType._LastArmor)
+            if ((int)type >= (int)EObjectType._FirstArmor && (int)type <= (int)EObjectType._LastArmor)
             {
-                if (type == eObjectType.Cloth)
+                if (type == EObjectType.Cloth)
                     this.DPS_AF = this.Level;
                 else this.DPS_AF = this.Level * 2;
                 this.SPD_ABS = GetAbsorb(type);
@@ -307,33 +270,33 @@ namespace DOL.GS {
 
             switch (type)
             {
-                case eObjectType.Axe:
-                case eObjectType.Blades:
-                case eObjectType.Blunt:
-                case eObjectType.CelticSpear:
-                case eObjectType.CompositeBow:
-                case eObjectType.Crossbow:
-                case eObjectType.CrushingWeapon:
-                case eObjectType.Fired:
-                case eObjectType.Flexible:
-                case eObjectType.Hammer:
-                case eObjectType.HandToHand:
-                case eObjectType.LargeWeapons:
-                case eObjectType.LeftAxe:
-                case eObjectType.Longbow:
-                case eObjectType.Piercing:
-                case eObjectType.PolearmWeapon:
-                case eObjectType.RecurvedBow:
-                case eObjectType.Scythe:
-                case eObjectType.Shield:
-                case eObjectType.SlashingWeapon:
-                case eObjectType.Spear:
-                case eObjectType.Staff:
-                case eObjectType.Sword:
-                case eObjectType.ThrustWeapon:
-                case eObjectType.TwoHandedWeapon:
-                case eObjectType.MaulerStaff: //Maulers
-                case eObjectType.FistWraps: //Maulers
+                case EObjectType.Axe:
+                case EObjectType.Blades:
+                case EObjectType.Blunt:
+                case EObjectType.CelticSpear:
+                case EObjectType.CompositeBow:
+                case EObjectType.Crossbow:
+                case EObjectType.CrushingWeapon:
+                case EObjectType.Fired:
+                case EObjectType.Flexible:
+                case EObjectType.Hammer:
+                case EObjectType.HandToHand:
+                case EObjectType.LargeWeapons:
+                case EObjectType.LeftAxe:
+                case EObjectType.Longbow:
+                case EObjectType.Piercing:
+                case EObjectType.PolearmWeapon:
+                case EObjectType.RecurvedBow:
+                case EObjectType.Scythe:
+                case EObjectType.Shield:
+                case EObjectType.SlashingWeapon:
+                case EObjectType.Spear:
+                case EObjectType.Staff:
+                case EObjectType.Sword:
+                case EObjectType.ThrustWeapon:
+                case EObjectType.TwoHandedWeapon:
+                case EObjectType.MaulerStaff: //Maulers
+                case EObjectType.FistWraps: //Maulers
                     {
                         this.DPS_AF = (int)(((this.Level * 0.3) + 1.2) * 10);
                         SetWeaponSpeed();
@@ -348,12 +311,12 @@ namespace DOL.GS {
         private void GenerateProc()
         {
             if (!Util.Chance(1)) return;
-            if (this.Object_Type == (int)eObjectType.Magical)
+            if (this.Object_Type == (int)EObjectType.Magical)
                 return;
 
             this.ProcChance = 10;
 
-            if(((this.Object_Type >= (int)eObjectType._FirstWeapon && this.Object_Type <= (int)eObjectType._LastWeapon) || this.Object_Type == (int)eObjectType.Shield))
+            if(((this.Object_Type >= (int)EObjectType._FirstWeapon && this.Object_Type <= (int)EObjectType._LastWeapon) || this.Object_Type == (int)EObjectType.Shield))
             {
                 if (Util.Chance(50))
                 {
@@ -444,7 +407,7 @@ namespace DOL.GS {
                     }
                 }
             }
-            else if(this.Object_Type >= (int)eObjectType._FirstArmor && this.Object_Type <= (int)eObjectType._LastArmor && this.Item_Type == Slot.TORSO)
+            else if(this.Object_Type >= (int)EObjectType._FirstArmor && this.Object_Type <= (int)EObjectType._LastArmor && this.Item_Type == Slot.TORSO)
             {
                 if (Util.Chance(50))
                 {
@@ -538,7 +501,7 @@ namespace DOL.GS {
             }
         }
 
-        private int GetRandomColorForRealm(eRealm realm)
+        private int GetRandomColorForRealm(ERealm realm)
         {
             List<int> validColors = new List<int>();
             validColors.Add(0); //white
@@ -580,7 +543,7 @@ namespace DOL.GS {
             }
             
             switch(realm){
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     if (Level > 10)
                     {
                         validColors.Add(2); //old green
@@ -611,7 +574,7 @@ namespace DOL.GS {
                         validColors.Add(142); //forest green
                     }
                     break;
-                case eRealm.Albion:
+                case ERealm.Albion:
                     if (Level > 10)
                     {
                         validColors.Add(1); //old red
@@ -642,7 +605,7 @@ namespace DOL.GS {
                         validColors.Add(143); //burgundy
                     }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     if (Level > 10)
                     {
                         validColors.Add(3); //old red
@@ -693,7 +656,7 @@ namespace DOL.GS {
             if (this.Level > 80 && Util.Chance(80)) number++;
             // END
 
-            if (Util.Chance(MagicalItemOffset + this.Level * 2) || (eObjectType)Object_Type == eObjectType.Magical) // 100% magical starting at level 40
+            if (Util.Chance(MagicalItemOffset + this.Level * 2) || (EObjectType)Object_Type == EObjectType.Magical) // 100% magical starting at level 40
             {
                 //1
                 number++;
@@ -723,7 +686,7 @@ namespace DOL.GS {
 
 
             // Magical items have at least 1 bonus
-            if (this.Object_Type == (int)eObjectType.Magical && number < 1)
+            if (this.Object_Type == (int)EObjectType.Magical && number < 1)
                 number = 1;
 
 
@@ -742,7 +705,7 @@ namespace DOL.GS {
             for (int i = 0; i < number; i++)
             {
                 eBonusType type = this.GetPropertyType(toa);
-                eProperty property = this.GetProperty(type);
+                EProperty property = this.GetProperty(type);
                 double tmpMulti = multiplier;
                 if (type == eBonusType.Stat)
                     tmpMulti = 1;
@@ -764,7 +727,7 @@ namespace DOL.GS {
                 this.Name = this.Name.ToLower();
         }
 
-        private eProperty GetPropertyFromBonusLine(int BonusLine)
+        private EProperty GetPropertyFromBonusLine(int BonusLine)
         {
             int property = 0;
 
@@ -805,7 +768,7 @@ namespace DOL.GS {
                     break;
             }
 
-            return (eProperty)property;
+            return (EProperty)property;
         }
 
         private eBonusType GetPropertyType(bool toa)
@@ -873,12 +836,12 @@ namespace DOL.GS {
 
         private bool CanAddFocus()
         {
-            if (this.Object_Type == (int)eObjectType.Staff)
+            if (this.Object_Type == (int)EObjectType.Staff)
             {
                 if (this.Bonus1Type != 0)
                     return false;
 
-                if (this.Realm == (int)eRealm.Albion && this.Description == "friar")
+                if (this.Realm == (int)ERealm.Albion && this.Description == "friar")
                     return false;
 
                 return true;
@@ -889,17 +852,17 @@ namespace DOL.GS {
         #endregion
 
         #region check valid stat
-        private eProperty GetProperty(eBonusType type)
+        private EProperty GetProperty(eBonusType type)
         {
             switch (type)
             {
                 case eBonusType.Focus:
                     {
-                        return eProperty.AllFocusLevels;
+                        return EProperty.AllFocusLevels;
                     }
                 case eBonusType.Resist:
                     {
-                        return (eProperty)Util.Random((int)eProperty.Resist_First, (int)eProperty.Resist_Last);
+                        return (EProperty)Util.Random((int)EProperty.Resist_First, (int)EProperty.Resist_Last);
                     }
                 case eBonusType.Skill:
                     {
@@ -909,18 +872,18 @@ namespace DOL.GS {
                         bool fIndividualSkill = false;
 
                         // All Skills is never combined with any other skill
-                        if (!BonusExists(eProperty.AllSkills))
+                        if (!BonusExists(EProperty.AllSkills))
                         {
                             // All type skills never combined with individual skills
-                            if (!BonusExists(eProperty.AllMagicSkills) &&
-                                !BonusExists(eProperty.AllMeleeWeaponSkills) &&
-                                !BonusExists(eProperty.AllDualWieldingSkills) &&
-                                !BonusExists(eProperty.AllArcherySkills))
+                            if (!BonusExists(EProperty.AllMagicSkills) &&
+                                !BonusExists(EProperty.AllMeleeWeaponSkills) &&
+                                !BonusExists(EProperty.AllDualWieldingSkills) &&
+                                !BonusExists(EProperty.AllArcherySkills))
                             {
                                 // individual realm specific skills
-                                if ((eRealm)this.Realm == eRealm.Albion)
+                                if ((ERealm)this.Realm == ERealm.Albion)
                                 {
-                                    foreach (eProperty property in AlbSkillBonus)
+                                    foreach (EProperty property in AlbSkillBonus)
                                     {
                                         if (!BonusExists(property) && SkillIsValidForClass(property) && !IsCompetingSkillLine(property))
                                         {
@@ -931,9 +894,9 @@ namespace DOL.GS {
                                             fIndividualSkill = true;
                                     }
                                 }
-                                else if ((eRealm)this.Realm == eRealm.Hibernia)
+                                else if ((ERealm)this.Realm == ERealm.Hibernia)
                                 {
-                                    foreach (eProperty property in HibSkillBonus)
+                                    foreach (EProperty property in HibSkillBonus)
                                     {
                                         if (!BonusExists(property) && SkillIsValidForClass(property) && !IsCompetingSkillLine(property))
                                         {
@@ -944,9 +907,9 @@ namespace DOL.GS {
                                             fIndividualSkill = true;
                                     }
                                 }
-                                else if ((eRealm)this.Realm == eRealm.Midgard)
+                                else if ((ERealm)this.Realm == ERealm.Midgard)
                                 {
-                                    foreach (eProperty property in MidSkillBonus)
+                                    foreach (EProperty property in MidSkillBonus)
                                     {
                                         if (!BonusExists(property) && SkillIsValidForClass(property) && !IsCompetingSkillLine(property))
                                         {
@@ -961,25 +924,25 @@ namespace DOL.GS {
                                 if (!fIndividualSkill)
                                 {
                                     // ok to add AllSkills, but reduce the chance
-                                    if (SkillIsValidForObjectType(eProperty.AllSkills) && Util.Chance(ItemAllSkillWeight))
-                                        validSkills.Add(eProperty.AllSkills);
+                                    if (SkillIsValidForObjectType(EProperty.AllSkills) && Util.Chance(ItemAllSkillWeight))
+                                        validSkills.Add(EProperty.AllSkills);
                                 }
                             }
 
                             // All type skills never combined with individual skills
                             if (!fIndividualSkill)
                             {
-                                if (!BonusExists(eProperty.AllMagicSkills) && SkillIsValidForObjectType(eProperty.AllMagicSkills) && Util.Chance(ItemAllSkillWeight))
-                                    validSkills.Add(eProperty.AllMagicSkills);
+                                if (!BonusExists(EProperty.AllMagicSkills) && SkillIsValidForObjectType(EProperty.AllMagicSkills) && Util.Chance(ItemAllSkillWeight))
+                                    validSkills.Add(EProperty.AllMagicSkills);
 
-                                if (!BonusExists(eProperty.AllMeleeWeaponSkills) && SkillIsValidForObjectType(eProperty.AllMeleeWeaponSkills) && Util.Chance(ItemAllSkillWeight))
-                                    validSkills.Add(eProperty.AllMeleeWeaponSkills);
+                                if (!BonusExists(EProperty.AllMeleeWeaponSkills) && SkillIsValidForObjectType(EProperty.AllMeleeWeaponSkills) && Util.Chance(ItemAllSkillWeight))
+                                    validSkills.Add(EProperty.AllMeleeWeaponSkills);
 
-                                if (!BonusExists(eProperty.AllDualWieldingSkills) && SkillIsValidForObjectType(eProperty.AllDualWieldingSkills) && Util.Chance(ItemAllSkillWeight))
-                                    validSkills.Add(eProperty.AllDualWieldingSkills);
+                                if (!BonusExists(EProperty.AllDualWieldingSkills) && SkillIsValidForObjectType(EProperty.AllDualWieldingSkills) && Util.Chance(ItemAllSkillWeight))
+                                    validSkills.Add(EProperty.AllDualWieldingSkills);
 
-                                if (!BonusExists(eProperty.AllArcherySkills) && SkillIsValidForObjectType(eProperty.AllArcherySkills) && Util.Chance(ItemAllSkillWeight))
-                                    validSkills.Add(eProperty.AllArcherySkills);
+                                if (!BonusExists(EProperty.AllArcherySkills) && SkillIsValidForObjectType(EProperty.AllArcherySkills) && Util.Chance(ItemAllSkillWeight))
+                                    validSkills.Add(EProperty.AllArcherySkills);
                             }
 
                         }
@@ -995,19 +958,19 @@ namespace DOL.GS {
                             switch (Util.Random(0, 4))
                             {
                                 case 0:
-                                    return eProperty.MaxHealth;
+                                    return EProperty.MaxHealth;
                                 case 1:
-                                    return eProperty.Strength;
+                                    return EProperty.Strength;
                                 case 2:
-                                    return eProperty.Dexterity;
+                                    return EProperty.Dexterity;
                                 case 3:
-                                    return eProperty.Quickness;
+                                    return EProperty.Quickness;
                                 case 4:
-                                    return eProperty.Constitution;
+                                    return EProperty.Constitution;
                             }
                         }
 
-                        return (eProperty)validSkills[Util.Random(0, index)];
+                        return (EProperty)validSkills[Util.Random(0, index)];
                     }
                 case eBonusType.Stat:
                     {
@@ -1029,80 +992,80 @@ namespace DOL.GS {
                     {
                         // ToDo: this does not check for duplicates like INT and Acuity
                         ArrayList validStats = new ArrayList();
-                        foreach (eProperty property in AdvancedStats)
+                        foreach (EProperty property in AdvancedStats)
                         {
                             if (!BonusExists(property) && StatIsValidForObjectType(property) && StatIsValidForRealm(property))
                                 validStats.Add(property);
                         }
-                        return (eProperty)validStats[Util.Random(0, validStats.Count - 1)];
+                        return (EProperty)validStats[Util.Random(0, validStats.Count - 1)];
                     }
             }
-            return eProperty.MaxHealth;
+            return EProperty.MaxHealth;
         }
 
-        private bool IsCompetingSkillLine(eProperty prop)
+        private bool IsCompetingSkillLine(EProperty prop)
         {
-            List<eProperty> skillsToCheck = new List<eProperty>();
-            if(prop == eProperty.Skill_Slashing || prop == eProperty.Skill_Thrusting || prop == eProperty.Skill_Crushing)
+            List<EProperty> skillsToCheck = new List<EProperty>();
+            if(prop == EProperty.Skill_Slashing || prop == EProperty.Skill_Thrusting || prop == EProperty.Skill_Crushing)
             {
-                skillsToCheck.Add(eProperty.Skill_Slashing);
-                skillsToCheck.Add(eProperty.Skill_Thrusting);
-                skillsToCheck.Add(eProperty.Skill_Crushing);
+                skillsToCheck.Add(EProperty.Skill_Slashing);
+                skillsToCheck.Add(EProperty.Skill_Thrusting);
+                skillsToCheck.Add(EProperty.Skill_Crushing);
             }
-            if (prop == eProperty.Skill_Blades || prop == eProperty.Skill_Piercing || prop == eProperty.Skill_Blunt)
+            if (prop == EProperty.Skill_Blades || prop == EProperty.Skill_Piercing || prop == EProperty.Skill_Blunt)
             {
-                skillsToCheck.Add(eProperty.Skill_Blades);
-                skillsToCheck.Add(eProperty.Skill_Piercing);
-                skillsToCheck.Add(eProperty.Skill_Blunt);
+                skillsToCheck.Add(EProperty.Skill_Blades);
+                skillsToCheck.Add(EProperty.Skill_Piercing);
+                skillsToCheck.Add(EProperty.Skill_Blunt);
             }
-            if (prop == eProperty.Skill_Axe || prop == eProperty.Skill_Sword || prop == eProperty.Skill_Hammer)
+            if (prop == EProperty.Skill_Axe || prop == EProperty.Skill_Sword || prop == EProperty.Skill_Hammer)
             {
-                skillsToCheck.Add(eProperty.Skill_Axe);
-                skillsToCheck.Add(eProperty.Skill_Sword);
-                skillsToCheck.Add(eProperty.Skill_Hammer);
+                skillsToCheck.Add(EProperty.Skill_Axe);
+                skillsToCheck.Add(EProperty.Skill_Sword);
+                skillsToCheck.Add(EProperty.Skill_Hammer);
             }
 
-            if (prop == eProperty.Skill_Matter || prop == eProperty.Skill_Body || prop == eProperty.Skill_Spirit || prop == eProperty.Skill_Mind)
+            if (prop == EProperty.Skill_Matter || prop == EProperty.Skill_Body || prop == EProperty.Skill_Spirit || prop == EProperty.Skill_Mind)
             {
-                skillsToCheck.Add(eProperty.Skill_Matter);
-                skillsToCheck.Add(eProperty.Skill_Body);
-                skillsToCheck.Add(eProperty.Skill_Spirit);
-                skillsToCheck.Add(eProperty.Skill_Mind);
+                skillsToCheck.Add(EProperty.Skill_Matter);
+                skillsToCheck.Add(EProperty.Skill_Body);
+                skillsToCheck.Add(EProperty.Skill_Spirit);
+                skillsToCheck.Add(EProperty.Skill_Mind);
             }
-            if (prop == eProperty.Skill_Earth || prop == eProperty.Skill_Cold || prop == eProperty.Skill_Fire || prop == eProperty.Skill_Wind)
+            if (prop == EProperty.Skill_Earth || prop == EProperty.Skill_Cold || prop == EProperty.Skill_Fire || prop == EProperty.Skill_Wind)
             {
-                skillsToCheck.Add(eProperty.Skill_Earth);
-                skillsToCheck.Add(eProperty.Skill_Cold);
-                skillsToCheck.Add(eProperty.Skill_Fire);
-                skillsToCheck.Add(eProperty.Skill_Wind);
+                skillsToCheck.Add(EProperty.Skill_Earth);
+                skillsToCheck.Add(EProperty.Skill_Cold);
+                skillsToCheck.Add(EProperty.Skill_Fire);
+                skillsToCheck.Add(EProperty.Skill_Wind);
             }
-            if (prop == eProperty.Skill_DeathSight || prop == eProperty.Skill_Death_Servant || prop == eProperty.Skill_Pain_working)
+            if (prop == EProperty.Skill_DeathSight || prop == EProperty.Skill_Death_Servant || prop == EProperty.Skill_Pain_working)
             {
-                skillsToCheck.Add(eProperty.Skill_DeathSight);
-                skillsToCheck.Add(eProperty.Skill_Death_Servant);
-                skillsToCheck.Add(eProperty.Skill_Pain_working);
+                skillsToCheck.Add(EProperty.Skill_DeathSight);
+                skillsToCheck.Add(EProperty.Skill_Death_Servant);
+                skillsToCheck.Add(EProperty.Skill_Pain_working);
             }
-            if (prop == eProperty.Skill_Light || prop == eProperty.Skill_Mana || prop == eProperty.Skill_Void || prop == eProperty.Skill_Enchantments || prop == eProperty.Skill_Mentalism)
+            if (prop == EProperty.Skill_Light || prop == EProperty.Skill_Mana || prop == EProperty.Skill_Void || prop == EProperty.Skill_Enchantments || prop == EProperty.Skill_Mentalism)
             {
-                skillsToCheck.Add(eProperty.Skill_Light);
-                skillsToCheck.Add(eProperty.Skill_Mana);
-                skillsToCheck.Add(eProperty.Skill_Void);
-                skillsToCheck.Add(eProperty.Skill_Enchantments);
-                skillsToCheck.Add(eProperty.Skill_Mentalism);
+                skillsToCheck.Add(EProperty.Skill_Light);
+                skillsToCheck.Add(EProperty.Skill_Mana);
+                skillsToCheck.Add(EProperty.Skill_Void);
+                skillsToCheck.Add(EProperty.Skill_Enchantments);
+                skillsToCheck.Add(EProperty.Skill_Mentalism);
             }
-            if (prop == eProperty.Skill_Arboreal || prop == eProperty.Skill_Creeping || prop == eProperty.Skill_Verdant)
+            if (prop == EProperty.Skill_Arboreal || prop == EProperty.Skill_Creeping || prop == EProperty.Skill_Verdant)
             {
-                skillsToCheck.Add(eProperty.Skill_Arboreal);
-                skillsToCheck.Add(eProperty.Skill_Creeping);
-                skillsToCheck.Add(eProperty.Skill_Verdant);
+                skillsToCheck.Add(EProperty.Skill_Arboreal);
+                skillsToCheck.Add(EProperty.Skill_Creeping);
+                skillsToCheck.Add(EProperty.Skill_Verdant);
             }
-            if (prop == eProperty.Skill_Darkness || prop == eProperty.Skill_Suppression || prop == eProperty.Skill_Runecarving || prop == eProperty.Skill_Summoning || prop == eProperty.Skill_BoneArmy)
+            if (prop == EProperty.Skill_Darkness || prop == EProperty.Skill_Suppression || prop == EProperty.Skill_Runecarving || prop == EProperty.Skill_Summoning || prop == EProperty.Skill_BoneArmy)
             {
-                skillsToCheck.Add(eProperty.Skill_Darkness);
-                skillsToCheck.Add(eProperty.Skill_Suppression);
-                skillsToCheck.Add(eProperty.Skill_Runecarving);
-                skillsToCheck.Add(eProperty.Skill_Summoning);
-                skillsToCheck.Add(eProperty.Skill_BoneArmy);
+                skillsToCheck.Add(EProperty.Skill_Darkness);
+                skillsToCheck.Add(EProperty.Skill_Suppression);
+                skillsToCheck.Add(EProperty.Skill_Runecarving);
+                skillsToCheck.Add(EProperty.Skill_Summoning);
+                skillsToCheck.Add(EProperty.Skill_BoneArmy);
             }
 
 
@@ -1135,672 +1098,672 @@ namespace DOL.GS {
             return false;
         }
 
-        private eProperty GetWeightedStatForClass(eCharacterClass charClass)
+        private EProperty GetWeightedStatForClass(EPlayerClass charClass)
         {
             if (Util.Chance(10))
-                return eProperty.MaxHealth;
+                return EProperty.MaxHealth;
 
             int rand = Util.Random(100);
             switch (charClass)
             {
-                case eCharacterClass.Armsman:
-                case eCharacterClass.Mercenary:
-                case eCharacterClass.Infiltrator:
-                case eCharacterClass.Scout:
-                case eCharacterClass.Blademaster:
-                case eCharacterClass.Hero:
-                case eCharacterClass.Berserker:
-                case eCharacterClass.Warrior:
-                case eCharacterClass.Savage:
-                case eCharacterClass.Hunter:
-                case eCharacterClass.Shadowblade:
-                case eCharacterClass.Nightshade:
-                case eCharacterClass.Ranger:
+                case EPlayerClass.Armsman:
+                case EPlayerClass.Mercenary:
+                case EPlayerClass.Infiltrator:
+                case EPlayerClass.Scout:
+                case EPlayerClass.Blademaster:
+                case EPlayerClass.Hero:
+                case EPlayerClass.Berserker:
+                case EPlayerClass.Warrior:
+                case EPlayerClass.Savage:
+                case EPlayerClass.Hunter:
+                case EPlayerClass.Shadowblade:
+                case EPlayerClass.Nightshade:
+                case EPlayerClass.Ranger:
                     //25% chance of getting any useful stat
                     //for classes who do not need mana/acuity/casting stats
                     if (rand <= 25)
-                        return eProperty.Strength;
+                        return EProperty.Strength;
                     else if (rand <= 50)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 75)
-                        return eProperty.Constitution;
-                    else return eProperty.Quickness;
+                        return EProperty.Constitution;
+                    else return EProperty.Quickness;
 
-                case eCharacterClass.Cabalist:
-                case eCharacterClass.Sorcerer:
-                case eCharacterClass.Theurgist:
-                case eCharacterClass.Wizard:
-                case eCharacterClass.Necromancer:
-                case eCharacterClass.Eldritch:
-                case eCharacterClass.Enchanter:
-                case eCharacterClass.Mentalist:
-                case eCharacterClass.Animist:
+                case EPlayerClass.Cabalist:
+                case EPlayerClass.Sorcerer:
+                case EPlayerClass.Theurgist:
+                case EPlayerClass.Wizard:
+                case EPlayerClass.Necromancer:
+                case EPlayerClass.Eldritch:
+                case EPlayerClass.Enchanter:
+                case EPlayerClass.Mentalist:
+                case EPlayerClass.Animist:
                     if (Util.Chance(20))
-                        return eProperty.MaxMana;
+                        return EProperty.MaxMana;
                     
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 40)
-                        return eProperty.Strength;
+                        return EProperty.Strength;
                     else if (rand <= 70)
-                        return eProperty.Intelligence;
+                        return EProperty.Intelligence;
                     else if (rand <= 80)
-                        return eProperty.Quickness;
-                    else return eProperty.Constitution;
+                        return EProperty.Quickness;
+                    else return EProperty.Constitution;
 
-                case eCharacterClass.Runemaster:
-                case eCharacterClass.Spiritmaster:
-                case eCharacterClass.Bonedancer:
+                case EPlayerClass.Runemaster:
+                case EPlayerClass.Spiritmaster:
+                case EPlayerClass.Bonedancer:
                     if (Util.Chance(20))
-                        return eProperty.MaxMana;
+                        return EProperty.MaxMana;
                     //weight stats for casters towards dex, acu, con
                     //keep some 10% chance of str or quick since useful for carrying/occasional melee
                     if (rand <= 30)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 40)
-                        return eProperty.Strength;
+                        return EProperty.Strength;
                     else if (rand <= 70)
-                        return eProperty.Piety;
+                        return EProperty.Piety;
                     else if (rand <= 80)
-                        return eProperty.Quickness;
-                    else return eProperty.Constitution;
+                        return EProperty.Quickness;
+                    else return EProperty.Constitution;
 
-                case eCharacterClass.Paladin:
+                case EPlayerClass.Paladin:
                     if (rand <= 25)
-                        return eProperty.Strength;
+                        return EProperty.Strength;
                     else if (rand <= 40)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 60)
-                        return eProperty.Quickness;
+                        return EProperty.Quickness;
                     else if (rand <= 75)
-                        return eProperty.Piety;
-                    else return eProperty.Constitution;
+                        return EProperty.Piety;
+                    else return EProperty.Constitution;
                 
-                case eCharacterClass.Cleric:
-                case eCharacterClass.Shaman:
+                case EPlayerClass.Cleric:
+                case EPlayerClass.Shaman:
                     if (Util.Chance(20))
-                        return eProperty.MaxMana;
+                        return EProperty.MaxMana;
                     if (rand <= 10)
-                        return eProperty.Strength;
+                        return EProperty.Strength;
                     else if (rand <= 40)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 50)
-                        return eProperty.Quickness;
+                        return EProperty.Quickness;
                     else if (rand <= 80)
-                        return eProperty.Piety;
-                    else return eProperty.Constitution;
+                        return EProperty.Piety;
+                    else return EProperty.Constitution;
                 
-                case eCharacterClass.Thane:
-                case eCharacterClass.Reaver:
+                case EPlayerClass.Thane:
+                case EPlayerClass.Reaver:
                     if (Util.Chance(20))
-                        return eProperty.MaxMana;
+                        return EProperty.MaxMana;
                     if (rand <= 20)
-                        return eProperty.Strength;
+                        return EProperty.Strength;
                     else if (rand <= 40)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 65)
-                        return eProperty.Quickness;
+                        return EProperty.Quickness;
                     else if (rand <= 80)
-                        return eProperty.Piety;
-                    else return eProperty.Constitution;
+                        return EProperty.Piety;
+                    else return EProperty.Constitution;
 
-                case eCharacterClass.Friar:
+                case EPlayerClass.Friar:
                     if (Util.Chance(20))
-                        return eProperty.MaxMana;
+                        return EProperty.MaxMana;
                     if (rand <= 25)
-                        return eProperty.Piety;
+                        return EProperty.Piety;
                     else if (rand <= 50)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 75)
-                        return eProperty.Constitution;
-                    else return eProperty.Quickness;
+                        return EProperty.Constitution;
+                    else return EProperty.Quickness;
 
                 
-                case eCharacterClass.Druid:
+                case EPlayerClass.Druid:
                     if (Util.Chance(20))
-                        return eProperty.MaxMana;
+                        return EProperty.MaxMana;
                     if (rand <= 10)
-                        return eProperty.Strength;
+                        return EProperty.Strength;
                     else if (rand <= 40)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 50)
-                        return eProperty.Quickness;
+                        return EProperty.Quickness;
                     else if (rand <= 80)
-                        return eProperty.Empathy;
-                    else return eProperty.Constitution;
+                        return EProperty.Empathy;
+                    else return EProperty.Constitution;
 
-                case eCharacterClass.Warden:
+                case EPlayerClass.Warden:
                     if (Util.Chance(10))
-                        return eProperty.MaxMana;
+                        return EProperty.MaxMana;
                     if (rand <= 20)
-                        return eProperty.Strength;
+                        return EProperty.Strength;
                     else if (rand <= 40)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 60)
-                        return eProperty.Quickness;
+                        return EProperty.Quickness;
                     else if (rand <= 80)
-                        return eProperty.Empathy;
-                    else return eProperty.Constitution;
+                        return EProperty.Empathy;
+                    else return EProperty.Constitution;
 
-                case eCharacterClass.Champion:
-                case eCharacterClass.Valewalker:
+                case EPlayerClass.Champion:
+                case EPlayerClass.Valewalker:
                     if (Util.Chance(10))
-                        return eProperty.MaxMana;
+                        return EProperty.MaxMana;
                     if (rand <= 22)
-                        return eProperty.Strength;
+                        return EProperty.Strength;
                     else if (rand <= 44)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 66)
-                        return eProperty.Quickness;
+                        return EProperty.Quickness;
                     else if (rand <= 88)
-                        return eProperty.Constitution;
-                    else return eProperty.Intelligence;
+                        return EProperty.Constitution;
+                    else return EProperty.Intelligence;
 
-                case eCharacterClass.Bard:
-                case eCharacterClass.Skald:
-                case eCharacterClass.Minstrel:
+                case EPlayerClass.Bard:
+                case EPlayerClass.Skald:
+                case EPlayerClass.Minstrel:
                     if (Util.Chance(20))
-                        return eProperty.MaxMana;
+                        return EProperty.MaxMana;
                     if (rand <= 22)
-                        return eProperty.Strength;
+                        return EProperty.Strength;
                     else if (rand <= 44)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 66)
-                        return eProperty.Quickness;
+                        return EProperty.Quickness;
                     else if (rand <= 88)
-                        return eProperty.Constitution;
-                    else return eProperty.Charisma;
+                        return EProperty.Constitution;
+                    else return EProperty.Charisma;
 
-                case eCharacterClass.Healer:
+                case EPlayerClass.Healer:
                     if (Util.Chance(15))
-                        return eProperty.MaxMana;
+                        return EProperty.MaxMana;
                     if (rand <= 30)
-                        return eProperty.Dexterity;
+                        return EProperty.Dexterity;
                     else if (rand <= 60)
-                        return eProperty.Piety;
+                        return EProperty.Piety;
                     else if (rand <= 80)
-                        return eProperty.Constitution;
-                    else return eProperty.Strength;
+                        return EProperty.Constitution;
+                    else return EProperty.Strength;
             }
-            return eProperty.Constitution;
+            return EProperty.Constitution;
 
         }
 
-        private bool SkillIsValidForClass(eProperty property)
+        private bool SkillIsValidForClass(EProperty property)
         {
             switch (charClass)
             {
-                case eCharacterClass.Paladin:
-                    if (property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Slashing ||
-                        property == eProperty.Skill_Crushing ||
-                        property == eProperty.Skill_Thrusting ||
-                        property == eProperty.Skill_Two_Handed ||
-                        property == eProperty.Skill_Shields ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Paladin:
+                    if (property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Slashing ||
+                        property == EProperty.Skill_Crushing ||
+                        property == EProperty.Skill_Thrusting ||
+                        property == EProperty.Skill_Two_Handed ||
+                        property == EProperty.Skill_Shields ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Armsman:
-                    if (property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Slashing ||
-                        property == eProperty.Skill_Crushing ||
-                        property == eProperty.Skill_Thrusting ||
-                        property == eProperty.Skill_Two_Handed ||
-                        property == eProperty.Skill_Shields ||
-                        property == eProperty.Skill_Polearms ||
-                        property == eProperty.Skill_Cross_Bows ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Armsman:
+                    if (property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Slashing ||
+                        property == EProperty.Skill_Crushing ||
+                        property == EProperty.Skill_Thrusting ||
+                        property == EProperty.Skill_Two_Handed ||
+                        property == EProperty.Skill_Shields ||
+                        property == EProperty.Skill_Polearms ||
+                        property == EProperty.Skill_Cross_Bows ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Reaver:
-                    if (property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Slashing ||
-                        property == eProperty.Skill_Crushing ||
-                        property == eProperty.Skill_Thrusting ||
-                        property == eProperty.Skill_Flexible_Weapon ||
-                        property == eProperty.Skill_Shields ||
-                        property == eProperty.Skill_SoulRending ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Reaver:
+                    if (property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Slashing ||
+                        property == EProperty.Skill_Crushing ||
+                        property == EProperty.Skill_Thrusting ||
+                        property == EProperty.Skill_Flexible_Weapon ||
+                        property == EProperty.Skill_Shields ||
+                        property == EProperty.Skill_SoulRending ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Mercenary:
-                    if (property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Slashing ||
-                        property == eProperty.Skill_Crushing ||
-                        property == eProperty.Skill_Thrusting ||
-                        property == eProperty.Skill_Shields ||
-                        property == eProperty.Skill_Dual_Wield ||
-                        property == eProperty.AllDualWieldingSkills ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Mercenary:
+                    if (property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Slashing ||
+                        property == EProperty.Skill_Crushing ||
+                        property == EProperty.Skill_Thrusting ||
+                        property == EProperty.Skill_Shields ||
+                        property == EProperty.Skill_Dual_Wield ||
+                        property == EProperty.AllDualWieldingSkills ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Cleric:
-                    if (property == eProperty.Skill_Rejuvenation ||
-                        property == eProperty.Skill_Enhancement ||
-                        property == eProperty.Skill_Smiting ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Cleric:
+                    if (property == EProperty.Skill_Rejuvenation ||
+                        property == EProperty.Skill_Enhancement ||
+                        property == EProperty.Skill_Smiting ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Friar:
-                    if (property == eProperty.Skill_Rejuvenation ||
-                        property == eProperty.Skill_Enhancement ||
-                        property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Staff ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Friar:
+                    if (property == EProperty.Skill_Rejuvenation ||
+                        property == EProperty.Skill_Enhancement ||
+                        property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Staff ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Infiltrator:
-                    if (property == eProperty.Skill_Stealth ||
-                        property == eProperty.Skill_Envenom ||
-                        property == eProperty.Skill_Slashing ||
-                        property == eProperty.Skill_Thrusting ||
-                        property == eProperty.Skill_Critical_Strike ||
-                        property == eProperty.Skill_Dual_Wield ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllDualWieldingSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Infiltrator:
+                    if (property == EProperty.Skill_Stealth ||
+                        property == EProperty.Skill_Envenom ||
+                        property == EProperty.Skill_Slashing ||
+                        property == EProperty.Skill_Thrusting ||
+                        property == EProperty.Skill_Critical_Strike ||
+                        property == EProperty.Skill_Dual_Wield ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllDualWieldingSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Minstrel:
-                    if (property == eProperty.Skill_Stealth ||
-                        property == eProperty.Skill_Instruments ||
-                        property == eProperty.Skill_Slashing ||
-                        property == eProperty.Skill_Thrusting ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Minstrel:
+                    if (property == EProperty.Skill_Stealth ||
+                        property == EProperty.Skill_Instruments ||
+                        property == EProperty.Skill_Slashing ||
+                        property == EProperty.Skill_Thrusting ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Scout:
-                    if (property == eProperty.Skill_Stealth ||
-                        property == eProperty.Skill_Slashing ||
-                        property == eProperty.Skill_Thrusting ||
-                        property == eProperty.Skill_Shields ||
-                        property == eProperty.Skill_Long_bows ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllArcherySkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Scout:
+                    if (property == EProperty.Skill_Stealth ||
+                        property == EProperty.Skill_Slashing ||
+                        property == EProperty.Skill_Thrusting ||
+                        property == EProperty.Skill_Shields ||
+                        property == EProperty.Skill_Long_bows ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllArcherySkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Cabalist:
-                    if (property == eProperty.Skill_Matter ||
-                        property == eProperty.Skill_Body ||
-                        property == eProperty.Skill_Spirit ||
-                        property == eProperty.Focus_Matter ||
-                        property == eProperty.Focus_Body ||
-                        property == eProperty.Focus_Spirit ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Cabalist:
+                    if (property == EProperty.Skill_Matter ||
+                        property == EProperty.Skill_Body ||
+                        property == EProperty.Skill_Spirit ||
+                        property == EProperty.Focus_Matter ||
+                        property == EProperty.Focus_Body ||
+                        property == EProperty.Focus_Spirit ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Sorcerer:
-                    if (property == eProperty.Skill_Matter ||
-                        property == eProperty.Skill_Body ||
-                        property == eProperty.Skill_Mind ||
-                        property == eProperty.Focus_Matter ||
-                        property == eProperty.Focus_Body ||
-                        property == eProperty.Focus_Mind ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Sorcerer:
+                    if (property == EProperty.Skill_Matter ||
+                        property == EProperty.Skill_Body ||
+                        property == EProperty.Skill_Mind ||
+                        property == EProperty.Focus_Matter ||
+                        property == EProperty.Focus_Body ||
+                        property == EProperty.Focus_Mind ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Theurgist:
-                    if (property == eProperty.Skill_Earth ||
-                        property == eProperty.Skill_Cold ||
-                        property == eProperty.Skill_Wind ||
-                        property == eProperty.Focus_Earth ||
-                        property == eProperty.Focus_Cold ||
-                        property == eProperty.Focus_Air ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Theurgist:
+                    if (property == EProperty.Skill_Earth ||
+                        property == EProperty.Skill_Cold ||
+                        property == EProperty.Skill_Wind ||
+                        property == EProperty.Focus_Earth ||
+                        property == EProperty.Focus_Cold ||
+                        property == EProperty.Focus_Air ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Wizard:
-                    if (property == eProperty.Skill_Earth ||
-                        property == eProperty.Skill_Cold ||
-                        property == eProperty.Skill_Fire ||
-                        property == eProperty.Focus_Earth ||
-                        property == eProperty.Focus_Cold ||
-                        property == eProperty.Focus_Fire ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Wizard:
+                    if (property == EProperty.Skill_Earth ||
+                        property == EProperty.Skill_Cold ||
+                        property == EProperty.Skill_Fire ||
+                        property == EProperty.Focus_Earth ||
+                        property == EProperty.Focus_Cold ||
+                        property == EProperty.Focus_Fire ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Necromancer:
-                    if (property == eProperty.Skill_DeathSight ||
-                        property == eProperty.Skill_Death_Servant ||
-                        property == eProperty.Skill_Pain_working ||
-                        property == eProperty.Focus_Earth ||
-                        property == eProperty.Focus_Cold ||
-                        property == eProperty.Focus_Air ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Necromancer:
+                    if (property == EProperty.Skill_DeathSight ||
+                        property == EProperty.Skill_Death_Servant ||
+                        property == EProperty.Skill_Pain_working ||
+                        property == EProperty.Focus_Earth ||
+                        property == EProperty.Focus_Cold ||
+                        property == EProperty.Focus_Air ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Bard:
-                    if (property == eProperty.Skill_Regrowth ||
-                        property == eProperty.Skill_Nurture ||
-                        property == eProperty.Skill_Music ||
-                        property == eProperty.Skill_Blunt ||
-                        property == eProperty.Skill_Blades ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Bard:
+                    if (property == EProperty.Skill_Regrowth ||
+                        property == EProperty.Skill_Nurture ||
+                        property == EProperty.Skill_Music ||
+                        property == EProperty.Skill_Blunt ||
+                        property == EProperty.Skill_Blades ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Druid:
-                    if (property == eProperty.Skill_Regrowth ||
-                        property == eProperty.Skill_Nurture ||
-                        property == eProperty.Skill_Nature ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Druid:
+                    if (property == EProperty.Skill_Regrowth ||
+                        property == EProperty.Skill_Nurture ||
+                        property == EProperty.Skill_Nature ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Warden:
-                    if (property == eProperty.Skill_Regrowth ||
-                        property == eProperty.Skill_Nurture ||
-                        property == eProperty.Skill_Blunt ||
-                        property == eProperty.Skill_Blades ||
-                        property == eProperty.Skill_Parry ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Warden:
+                    if (property == EProperty.Skill_Regrowth ||
+                        property == EProperty.Skill_Nurture ||
+                        property == EProperty.Skill_Blunt ||
+                        property == EProperty.Skill_Blades ||
+                        property == EProperty.Skill_Parry ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Blademaster:
-                    if (property == eProperty.Skill_Blunt ||
-                        property == eProperty.Skill_Blades ||
-                        property == eProperty.Skill_Piercing ||
-                        property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Shields ||
-                        property == eProperty.Skill_Celtic_Dual ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllDualWieldingSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Blademaster:
+                    if (property == EProperty.Skill_Blunt ||
+                        property == EProperty.Skill_Blades ||
+                        property == EProperty.Skill_Piercing ||
+                        property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Shields ||
+                        property == EProperty.Skill_Celtic_Dual ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllDualWieldingSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Hero:
-                    if (property == eProperty.Skill_Blunt ||
-                        property == eProperty.Skill_Blades ||
-                        property == eProperty.Skill_Piercing ||
-                        property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Shields ||
-                        property == eProperty.Skill_Celtic_Spear ||
-                        property == eProperty.Skill_Large_Weapon ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Hero:
+                    if (property == EProperty.Skill_Blunt ||
+                        property == EProperty.Skill_Blades ||
+                        property == EProperty.Skill_Piercing ||
+                        property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Shields ||
+                        property == EProperty.Skill_Celtic_Spear ||
+                        property == EProperty.Skill_Large_Weapon ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Champion:
-                    if (property == eProperty.Skill_Blunt ||
-                        property == eProperty.Skill_Blades ||
-                        property == eProperty.Skill_Piercing ||
-                        property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Shields ||
-                        property == eProperty.Skill_Valor ||
-                        property == eProperty.Skill_Large_Weapon ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Champion:
+                    if (property == EProperty.Skill_Blunt ||
+                        property == EProperty.Skill_Blades ||
+                        property == EProperty.Skill_Piercing ||
+                        property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Shields ||
+                        property == EProperty.Skill_Valor ||
+                        property == EProperty.Skill_Large_Weapon ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Eldritch:
-                    if (property == eProperty.Skill_Light ||
-                        property == eProperty.Skill_Mana ||
-                        property == eProperty.Skill_Void ||
-                        property == eProperty.Focus_Light ||
-                        property == eProperty.Focus_Mana ||
-                        property == eProperty.Focus_Void ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Eldritch:
+                    if (property == EProperty.Skill_Light ||
+                        property == EProperty.Skill_Mana ||
+                        property == EProperty.Skill_Void ||
+                        property == EProperty.Focus_Light ||
+                        property == EProperty.Focus_Mana ||
+                        property == EProperty.Focus_Void ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Enchanter:
-                    if (property == eProperty.Skill_Light ||
-                        property == eProperty.Skill_Mana ||
-                        property == eProperty.Skill_Enchantments ||
-                        property == eProperty.Focus_Light ||
-                        property == eProperty.Focus_Mana ||
-                        property == eProperty.Focus_Enchantments ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Enchanter:
+                    if (property == EProperty.Skill_Light ||
+                        property == EProperty.Skill_Mana ||
+                        property == EProperty.Skill_Enchantments ||
+                        property == EProperty.Focus_Light ||
+                        property == EProperty.Focus_Mana ||
+                        property == EProperty.Focus_Enchantments ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Mentalist:
-                    if (property == eProperty.Skill_Light ||
-                        property == eProperty.Skill_Mana ||
-                        property == eProperty.Skill_Mentalism ||
-                        property == eProperty.Focus_Light ||
-                        property == eProperty.Focus_Mana ||
-                        property == eProperty.Focus_Mentalism ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Mentalist:
+                    if (property == EProperty.Skill_Light ||
+                        property == EProperty.Skill_Mana ||
+                        property == EProperty.Skill_Mentalism ||
+                        property == EProperty.Focus_Light ||
+                        property == EProperty.Focus_Mana ||
+                        property == EProperty.Focus_Mentalism ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Nightshade:
-                    if (property == eProperty.Skill_Envenom ||
-                        property == eProperty.Skill_Blades ||
-                        property == eProperty.Skill_Piercing ||
-                        property == eProperty.Skill_Stealth ||
-                        property == eProperty.Skill_Critical_Strike ||
-                        property == eProperty.Skill_Celtic_Dual ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllDualWieldingSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Nightshade:
+                    if (property == EProperty.Skill_Envenom ||
+                        property == EProperty.Skill_Blades ||
+                        property == EProperty.Skill_Piercing ||
+                        property == EProperty.Skill_Stealth ||
+                        property == EProperty.Skill_Critical_Strike ||
+                        property == EProperty.Skill_Celtic_Dual ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllDualWieldingSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Ranger:
-                    if (property == eProperty.Skill_RecurvedBow ||
-                        property == eProperty.Skill_Blades ||
-                        property == eProperty.Skill_Piercing ||
-                        property == eProperty.Skill_Celtic_Dual ||
-                        property == eProperty.Skill_Stealth ||
-                        property == eProperty.AllArcherySkills ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllDualWieldingSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Ranger:
+                    if (property == EProperty.Skill_RecurvedBow ||
+                        property == EProperty.Skill_Blades ||
+                        property == EProperty.Skill_Piercing ||
+                        property == EProperty.Skill_Celtic_Dual ||
+                        property == EProperty.Skill_Stealth ||
+                        property == EProperty.AllArcherySkills ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllDualWieldingSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Animist:
-                    if (property == eProperty.Skill_Arboreal ||
-                        property == eProperty.Skill_Creeping ||
-                        property == eProperty.Skill_Verdant ||
-                        property == eProperty.Focus_Arboreal ||
-                        property == eProperty.Focus_CreepingPath ||
-                        property == eProperty.Focus_Verdant ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Animist:
+                    if (property == EProperty.Skill_Arboreal ||
+                        property == EProperty.Skill_Creeping ||
+                        property == EProperty.Skill_Verdant ||
+                        property == EProperty.Focus_Arboreal ||
+                        property == EProperty.Focus_CreepingPath ||
+                        property == EProperty.Focus_Verdant ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Valewalker:
-                    if (property == eProperty.Skill_Arboreal ||
-                        property == eProperty.Skill_Scythe ||
-                        property == eProperty.Skill_Parry ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Valewalker:
+                    if (property == EProperty.Skill_Arboreal ||
+                        property == EProperty.Skill_Scythe ||
+                        property == EProperty.Skill_Parry ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Berserker:
-                    if (property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Sword ||
-                        property == eProperty.Skill_Axe ||
-                        property == eProperty.Skill_Hammer ||
-                        property == eProperty.Skill_Left_Axe ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Berserker:
+                    if (property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Sword ||
+                        property == EProperty.Skill_Axe ||
+                        property == EProperty.Skill_Hammer ||
+                        property == EProperty.Skill_Left_Axe ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Warrior:
-                    if (property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Sword ||
-                        property == eProperty.Skill_Axe ||
-                        property == eProperty.Skill_Hammer ||
-                        property == eProperty.Skill_Shields ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Warrior:
+                    if (property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Sword ||
+                        property == EProperty.Skill_Axe ||
+                        property == EProperty.Skill_Hammer ||
+                        property == EProperty.Skill_Shields ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Skald:
-                    if (property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Sword ||
-                        property == eProperty.Skill_Axe ||
-                        property == eProperty.Skill_Hammer ||
-                        property == eProperty.Skill_Battlesongs ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Skald:
+                    if (property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Sword ||
+                        property == EProperty.Skill_Axe ||
+                        property == EProperty.Skill_Hammer ||
+                        property == EProperty.Skill_Battlesongs ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Thane:
-                    if (property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Sword ||
-                        property == eProperty.Skill_Axe ||
-                        property == eProperty.Skill_Hammer ||
-                        property == eProperty.Skill_Stormcalling ||
-                        property == eProperty.Skill_Shields ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Thane:
+                    if (property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Sword ||
+                        property == EProperty.Skill_Axe ||
+                        property == EProperty.Skill_Hammer ||
+                        property == EProperty.Skill_Stormcalling ||
+                        property == EProperty.Skill_Shields ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Savage:
-                    if (property == eProperty.Skill_Parry ||
-                        property == eProperty.Skill_Sword ||
-                        property == eProperty.Skill_Axe ||
-                        property == eProperty.Skill_Hammer ||
-                        property == eProperty.Skill_Savagery ||
-                        property == eProperty.Skill_HandToHand ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Savage:
+                    if (property == EProperty.Skill_Parry ||
+                        property == EProperty.Skill_Sword ||
+                        property == EProperty.Skill_Axe ||
+                        property == EProperty.Skill_Hammer ||
+                        property == EProperty.Skill_Savagery ||
+                        property == EProperty.Skill_HandToHand ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Healer:
-                    if (property == eProperty.Skill_Mending ||
-                        property == eProperty.Skill_Augmentation ||
-                        property == eProperty.Skill_Pacification ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Healer:
+                    if (property == EProperty.Skill_Mending ||
+                        property == EProperty.Skill_Augmentation ||
+                        property == EProperty.Skill_Pacification ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Shaman:
-                    if (property == eProperty.Skill_Mending ||
-                        property == eProperty.Skill_Augmentation ||
-                        property == eProperty.Skill_Subterranean ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Shaman:
+                    if (property == EProperty.Skill_Mending ||
+                        property == EProperty.Skill_Augmentation ||
+                        property == EProperty.Skill_Subterranean ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Hunter:
-                    if (property == eProperty.Skill_BeastCraft ||
-                        property == eProperty.Skill_Stealth ||
-                        property == eProperty.Skill_Sword ||
-                        property == eProperty.Skill_Composite ||
-                        property == eProperty.Skill_Spear ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Hunter:
+                    if (property == EProperty.Skill_BeastCraft ||
+                        property == EProperty.Skill_Stealth ||
+                        property == EProperty.Skill_Sword ||
+                        property == EProperty.Skill_Composite ||
+                        property == EProperty.Skill_Spear ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Shadowblade:
-                    if (property == eProperty.Skill_Envenom ||
-                        property == eProperty.Skill_Stealth ||
-                        property == eProperty.Skill_Sword ||
-                        property == eProperty.Skill_Axe ||
-                        property == eProperty.Skill_Left_Axe ||
-                        property == eProperty.Skill_Critical_Strike ||
-                        property == eProperty.AllMeleeWeaponSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Shadowblade:
+                    if (property == EProperty.Skill_Envenom ||
+                        property == EProperty.Skill_Stealth ||
+                        property == EProperty.Skill_Sword ||
+                        property == EProperty.Skill_Axe ||
+                        property == EProperty.Skill_Left_Axe ||
+                        property == EProperty.Skill_Critical_Strike ||
+                        property == EProperty.AllMeleeWeaponSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Runemaster:
-                    if (property == eProperty.Skill_Darkness ||
-                        property == eProperty.Skill_Suppression ||
-                        property == eProperty.Skill_Runecarving ||
-                        property == eProperty.Focus_Darkness ||
-                        property == eProperty.Focus_Suppression ||
-                        property == eProperty.Focus_Runecarving ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Runemaster:
+                    if (property == EProperty.Skill_Darkness ||
+                        property == EProperty.Skill_Suppression ||
+                        property == EProperty.Skill_Runecarving ||
+                        property == EProperty.Focus_Darkness ||
+                        property == EProperty.Focus_Suppression ||
+                        property == EProperty.Focus_Runecarving ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Spiritmaster:
-                    if (property == eProperty.Skill_Darkness ||
-                        property == eProperty.Skill_Suppression ||
-                        property == eProperty.Skill_Summoning ||
-                        property == eProperty.Focus_Darkness ||
-                        property == eProperty.Focus_Suppression ||
-                        property == eProperty.Focus_Summoning ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Spiritmaster:
+                    if (property == EProperty.Skill_Darkness ||
+                        property == EProperty.Skill_Suppression ||
+                        property == EProperty.Skill_Summoning ||
+                        property == EProperty.Focus_Darkness ||
+                        property == EProperty.Focus_Suppression ||
+                        property == EProperty.Focus_Summoning ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
-                case eCharacterClass.Bonedancer:
-                    if (property == eProperty.Skill_Darkness ||
-                        property == eProperty.Skill_Suppression ||
-                        property == eProperty.Skill_BoneArmy ||
-                        property == eProperty.Focus_Darkness ||
-                        property == eProperty.Focus_Suppression ||
-                        property == eProperty.Focus_BoneArmy ||
-                        property == eProperty.AllFocusLevels ||
-                        property == eProperty.AllMagicSkills ||
-                        property == eProperty.AllSkills
+                case EPlayerClass.Bonedancer:
+                    if (property == EProperty.Skill_Darkness ||
+                        property == EProperty.Skill_Suppression ||
+                        property == EProperty.Skill_BoneArmy ||
+                        property == EProperty.Focus_Darkness ||
+                        property == EProperty.Focus_Suppression ||
+                        property == EProperty.Focus_BoneArmy ||
+                        property == EProperty.AllFocusLevels ||
+                        property == EProperty.AllMagicSkills ||
+                        property == EProperty.AllSkills
                         )
                         return true;
                     return false;
@@ -1809,95 +1772,95 @@ namespace DOL.GS {
             return false;
         }
 
-        private bool StatIsValidForObjectType(eProperty property)
+        private bool StatIsValidForObjectType(EProperty property)
         {
-            switch ((eObjectType)this.Object_Type)
+            switch ((EObjectType)this.Object_Type)
             {
-                case eObjectType.Magical:
+                case EObjectType.Magical:
                     return StatIsValidForRealm(property) && StatIsValidForClass(property);
-                case eObjectType.Cloth:
-                case eObjectType.Leather:
-                case eObjectType.Studded:
-                case eObjectType.Reinforced:
-                case eObjectType.Chain:
-                case eObjectType.Scale:
-                case eObjectType.Plate:
+                case EObjectType.Cloth:
+                case EObjectType.Leather:
+                case EObjectType.Studded:
+                case EObjectType.Reinforced:
+                case EObjectType.Chain:
+                case EObjectType.Scale:
+                case EObjectType.Plate:
                     return StatIsValidForArmor(property) && StatIsValidForClass(property);
-                case eObjectType.Axe:
-                case eObjectType.Blades:
-                case eObjectType.Blunt:
-                case eObjectType.CelticSpear:
-                case eObjectType.CompositeBow:
-                case eObjectType.Crossbow:
-                case eObjectType.CrushingWeapon:
-                case eObjectType.Fired:
-                case eObjectType.Flexible:
-                case eObjectType.Hammer:
-                case eObjectType.HandToHand:
-                case eObjectType.Instrument:
-                case eObjectType.LargeWeapons:
-                case eObjectType.LeftAxe:
-                case eObjectType.Longbow:
-                case eObjectType.Piercing:
-                case eObjectType.PolearmWeapon:
-                case eObjectType.RecurvedBow:
-                case eObjectType.Scythe:
-                case eObjectType.Shield:
-                case eObjectType.SlashingWeapon:
-                case eObjectType.Spear:
-                case eObjectType.Staff:
-                case eObjectType.Sword:
-                case eObjectType.ThrustWeapon:
-                case eObjectType.FistWraps: //Maulers
-                case eObjectType.MaulerStaff: //Maulers
-                case eObjectType.TwoHandedWeapon:
+                case EObjectType.Axe:
+                case EObjectType.Blades:
+                case EObjectType.Blunt:
+                case EObjectType.CelticSpear:
+                case EObjectType.CompositeBow:
+                case EObjectType.Crossbow:
+                case EObjectType.CrushingWeapon:
+                case EObjectType.Fired:
+                case EObjectType.Flexible:
+                case EObjectType.Hammer:
+                case EObjectType.HandToHand:
+                case EObjectType.Instrument:
+                case EObjectType.LargeWeapons:
+                case EObjectType.LeftAxe:
+                case EObjectType.Longbow:
+                case EObjectType.Piercing:
+                case EObjectType.PolearmWeapon:
+                case EObjectType.RecurvedBow:
+                case EObjectType.Scythe:
+                case EObjectType.Shield:
+                case EObjectType.SlashingWeapon:
+                case EObjectType.Spear:
+                case EObjectType.Staff:
+                case EObjectType.Sword:
+                case EObjectType.ThrustWeapon:
+                case EObjectType.FistWraps: //Maulers
+                case EObjectType.MaulerStaff: //Maulers
+                case EObjectType.TwoHandedWeapon:
                     return StatIsValidForWeapon(property) && StatIsValidForClass(property);
             }
             return true;
         }
 
-        private bool StatIsValidForClass(eProperty property)
+        private bool StatIsValidForClass(EProperty property)
         {
             switch (property)
             {
-                case eProperty.MaxMana: //mana isn't a thing!! >:(
-                case eProperty.PowerPool:
-                    if (charClass == eCharacterClass.Armsman ||
-                        charClass == eCharacterClass.Mercenary ||
-                        charClass == eCharacterClass.Infiltrator ||
-                        charClass == eCharacterClass.Scout ||
-                        charClass == eCharacterClass.Paladin ||
-                        charClass == eCharacterClass.Blademaster ||
-                        charClass == eCharacterClass.Hero ||
-                        charClass == eCharacterClass.Nightshade ||
-                        charClass == eCharacterClass.Ranger ||
-                        charClass == eCharacterClass.Berserker ||
-                        charClass == eCharacterClass.Warrior ||
-                        charClass == eCharacterClass.Savage ||
-                        charClass == eCharacterClass.Shadowblade)
+                case EProperty.MaxMana: //mana isn't a thing!! >:(
+                case EProperty.PowerPool:
+                    if (charClass == EPlayerClass.Armsman ||
+                        charClass == EPlayerClass.Mercenary ||
+                        charClass == EPlayerClass.Infiltrator ||
+                        charClass == EPlayerClass.Scout ||
+                        charClass == EPlayerClass.Paladin ||
+                        charClass == EPlayerClass.Blademaster ||
+                        charClass == EPlayerClass.Hero ||
+                        charClass == EPlayerClass.Nightshade ||
+                        charClass == EPlayerClass.Ranger ||
+                        charClass == EPlayerClass.Berserker ||
+                        charClass == EPlayerClass.Warrior ||
+                        charClass == EPlayerClass.Savage ||
+                        charClass == EPlayerClass.Shadowblade)
                     {
                         return false;
                     }
                     return true;
 
-                case eProperty.Acuity:
-                    if (charClass == eCharacterClass.Armsman ||
-                        charClass == eCharacterClass.Mercenary ||
-                        charClass == eCharacterClass.Paladin ||
-                        charClass == eCharacterClass.Reaver ||
-                        charClass == eCharacterClass.Infiltrator ||
-                        charClass == eCharacterClass.Scout ||
-                        charClass == eCharacterClass.Warden ||
-                        charClass == eCharacterClass.Champion ||
-                        charClass == eCharacterClass.Nightshade ||
-                        charClass == eCharacterClass.Ranger ||
-                        charClass == eCharacterClass.Blademaster ||
-                        charClass == eCharacterClass.Hero ||
-                        charClass == eCharacterClass.Hunter ||
-                        charClass == eCharacterClass.Berserker ||
-                        charClass == eCharacterClass.Warrior ||
-                        charClass == eCharacterClass.Savage ||
-                        charClass == eCharacterClass.Shadowblade)
+                case EProperty.Acuity:
+                    if (charClass == EPlayerClass.Armsman ||
+                        charClass == EPlayerClass.Mercenary ||
+                        charClass == EPlayerClass.Paladin ||
+                        charClass == EPlayerClass.Reaver ||
+                        charClass == EPlayerClass.Infiltrator ||
+                        charClass == EPlayerClass.Scout ||
+                        charClass == EPlayerClass.Warden ||
+                        charClass == EPlayerClass.Champion ||
+                        charClass == EPlayerClass.Nightshade ||
+                        charClass == EPlayerClass.Ranger ||
+                        charClass == EPlayerClass.Blademaster ||
+                        charClass == EPlayerClass.Hero ||
+                        charClass == EPlayerClass.Hunter ||
+                        charClass == EPlayerClass.Berserker ||
+                        charClass == EPlayerClass.Warrior ||
+                        charClass == EPlayerClass.Savage ||
+                        charClass == EPlayerClass.Shadowblade)
                     {
                         return false;
                     }
@@ -1907,125 +1870,125 @@ namespace DOL.GS {
             }
         }
 
-        private bool SkillIsValidForObjectType(eProperty property)
+        private bool SkillIsValidForObjectType(EProperty property)
         {
-            switch ((eObjectType)this.Object_Type)
+            switch ((EObjectType)this.Object_Type)
             {
-                case eObjectType.Magical:
+                case EObjectType.Magical:
                     return SkillIsValidForMagical(property);
-                case eObjectType.Cloth:
-                case eObjectType.Leather:
-                case eObjectType.Studded:
-                case eObjectType.Reinforced:
-                case eObjectType.Chain:
-                case eObjectType.Scale:
-                case eObjectType.Plate:
+                case EObjectType.Cloth:
+                case EObjectType.Leather:
+                case EObjectType.Studded:
+                case EObjectType.Reinforced:
+                case EObjectType.Chain:
+                case EObjectType.Scale:
+                case EObjectType.Plate:
                     return SkillIsValidForArmor(property);
-                case eObjectType.Axe:
-                case eObjectType.Blades:
-                case eObjectType.Blunt:
-                case eObjectType.CelticSpear:
-                case eObjectType.CompositeBow:
-                case eObjectType.Crossbow:
-                case eObjectType.CrushingWeapon:
-                case eObjectType.Fired:
-                case eObjectType.Flexible:
-                case eObjectType.Hammer:
-                case eObjectType.HandToHand:
-                case eObjectType.Instrument:
-                case eObjectType.LargeWeapons:
-                case eObjectType.LeftAxe:
-                case eObjectType.Longbow:
-                case eObjectType.Piercing:
-                case eObjectType.PolearmWeapon:
-                case eObjectType.RecurvedBow:
-                case eObjectType.Scythe:
-                case eObjectType.Shield:
-                case eObjectType.SlashingWeapon:
-                case eObjectType.Spear:
-                case eObjectType.Staff:
-                case eObjectType.Sword:
-                case eObjectType.ThrustWeapon:
-                case eObjectType.MaulerStaff:
-                case eObjectType.FistWraps:
-                case eObjectType.TwoHandedWeapon:
+                case EObjectType.Axe:
+                case EObjectType.Blades:
+                case EObjectType.Blunt:
+                case EObjectType.CelticSpear:
+                case EObjectType.CompositeBow:
+                case EObjectType.Crossbow:
+                case EObjectType.CrushingWeapon:
+                case EObjectType.Fired:
+                case EObjectType.Flexible:
+                case EObjectType.Hammer:
+                case EObjectType.HandToHand:
+                case EObjectType.Instrument:
+                case EObjectType.LargeWeapons:
+                case EObjectType.LeftAxe:
+                case EObjectType.Longbow:
+                case EObjectType.Piercing:
+                case EObjectType.PolearmWeapon:
+                case EObjectType.RecurvedBow:
+                case EObjectType.Scythe:
+                case EObjectType.Shield:
+                case EObjectType.SlashingWeapon:
+                case EObjectType.Spear:
+                case EObjectType.Staff:
+                case EObjectType.Sword:
+                case EObjectType.ThrustWeapon:
+                case EObjectType.MaulerStaff:
+                case EObjectType.FistWraps:
+                case EObjectType.TwoHandedWeapon:
                     return SkillIsValidForWeapon(property);
             }
             return true;
         }
 
-        private bool SkillIsValidForMagical(eProperty property)
+        private bool SkillIsValidForMagical(EProperty property)
         {
             int level = this.Level;
-            eRealm realm = (eRealm)this.Realm;
-            eObjectType type = (eObjectType)this.Object_Type;
-            eCharacterClass charClass = this.charClass;
+            ERealm realm = (ERealm)this.Realm;
+            EObjectType type = (EObjectType)this.Object_Type;
+            EPlayerClass charClass = this.charClass;
 
             switch (property)
             {
-                case eProperty.Skill_Augmentation:
+                case EProperty.Skill_Augmentation:
                     {
-                        if (charClass != eCharacterClass.Healer &&
-                            charClass != eCharacterClass.Shaman)
+                        if (charClass != EPlayerClass.Healer &&
+                            charClass != EPlayerClass.Shaman)
                         {
                             return false;
                         }
                         else { return true; }
 
                     }
-                case eProperty.Skill_Axe:
+                case EProperty.Skill_Axe:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
 
                         return true;
                     }
-                case eProperty.Skill_Battlesongs:
+                case EProperty.Skill_Battlesongs:
                     {
-                        if (charClass != eCharacterClass.Skald)
+                        if (charClass != EPlayerClass.Skald)
                         {
                             return false;
                         }
 
                         return true;
                     }
-                case eProperty.Skill_Pathfinding:
-                case eProperty.Skill_BeastCraft:
+                case EProperty.Skill_Pathfinding:
+                case EProperty.Skill_BeastCraft:
                     {
-                        if (charClass != eCharacterClass.Hunter)
+                        if (charClass != EPlayerClass.Hunter)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Blades:
+                case EProperty.Skill_Blades:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
 
                         return true;
                     }
-                case eProperty.Skill_Blunt:
+                case EProperty.Skill_Blunt:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Bard &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
@@ -2033,53 +1996,53 @@ namespace DOL.GS {
                     }
                 //Cloth skills
                 //witchcraft is unused except as a goto target for cloth checks
-                case eProperty.Skill_Arboreal:
-                    if (charClass != eCharacterClass.Valewalker &&
-                        charClass != eCharacterClass.Animist)
+                case EProperty.Skill_Arboreal:
+                    if (charClass != EPlayerClass.Valewalker &&
+                        charClass != EPlayerClass.Animist)
                     {
                         return false;
                     }
                     return true;
-                case eProperty.Skill_Matter:
-                case eProperty.Skill_Body:
+                case EProperty.Skill_Matter:
+                case EProperty.Skill_Body:
                     {
-                        if (charClass != eCharacterClass.Cabalist &&
-                            charClass != eCharacterClass.Sorcerer)
+                        if (charClass != EPlayerClass.Cabalist &&
+                            charClass != EPlayerClass.Sorcerer)
                         {
                             return false;
                         }
                         return true;
                     }
 
-                case eProperty.Skill_Earth:
-                case eProperty.Skill_Cold:
+                case EProperty.Skill_Earth:
+                case EProperty.Skill_Cold:
                     {
-                        if (charClass != eCharacterClass.Theurgist &&
-                            charClass != eCharacterClass.Wizard)
+                        if (charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard)
                         {
                             return false;
                         }
                         return true;
                     }
 
-                case eProperty.Skill_Suppression:
-                case eProperty.Skill_Darkness:
+                case EProperty.Skill_Suppression:
+                case EProperty.Skill_Darkness:
                     {
-                        if (charClass != eCharacterClass.Spiritmaster &&
-                            charClass != eCharacterClass.Runemaster &&
-                            charClass != eCharacterClass.Bonedancer)
+                        if (charClass != EPlayerClass.Spiritmaster &&
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Bonedancer)
                         {
                             return false;
                         }
                         return true;
                     }
 
-                case eProperty.Skill_Light:
-                case eProperty.Skill_Mana:
+                case EProperty.Skill_Light:
+                case EProperty.Skill_Mana:
                     {
-                        if (charClass != eCharacterClass.Enchanter &&
-                            charClass != eCharacterClass.Eldritch &&
-                            charClass != eCharacterClass.Mentalist)
+                        if (charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Mentalist)
                         {
                             return false;
                         }
@@ -2087,500 +2050,500 @@ namespace DOL.GS {
                     }
 
 
-                case eProperty.Skill_Mind:
-                    if (charClass != eCharacterClass.Sorcerer) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Spirit:
-                    if (charClass != eCharacterClass.Cabalist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Wind:
-                    if (charClass != eCharacterClass.Theurgist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Fire:
-                    if (charClass != eCharacterClass.Wizard) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Death_Servant:
-                case eProperty.Skill_DeathSight:
-                case eProperty.Skill_Pain_working:
-                    if (charClass != eCharacterClass.Necromancer) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
+                case EProperty.Skill_Mind:
+                    if (charClass != EPlayerClass.Sorcerer) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Spirit:
+                    if (charClass != EPlayerClass.Cabalist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Wind:
+                    if (charClass != EPlayerClass.Theurgist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Fire:
+                    if (charClass != EPlayerClass.Wizard) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Death_Servant:
+                case EProperty.Skill_DeathSight:
+                case EProperty.Skill_Pain_working:
+                    if (charClass != EPlayerClass.Necromancer) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
 
-                case eProperty.Skill_Summoning:
-                    if (charClass != eCharacterClass.Spiritmaster) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Runecarving:
-                    if (charClass != eCharacterClass.Runemaster) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_BoneArmy:
-                    if (charClass != eCharacterClass.Bonedancer) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
+                case EProperty.Skill_Summoning:
+                    if (charClass != EPlayerClass.Spiritmaster) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Runecarving:
+                    if (charClass != EPlayerClass.Runemaster) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_BoneArmy:
+                    if (charClass != EPlayerClass.Bonedancer) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
 
-                case eProperty.Skill_Void:
-                    if (charClass != eCharacterClass.Eldritch) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Enchantments:
-                    if (charClass != eCharacterClass.Enchanter) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Mentalism:
-                    if (charClass != eCharacterClass.Mentalist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Creeping:
-                case eProperty.Skill_Verdant:
-                    if (charClass != eCharacterClass.Animist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
+                case EProperty.Skill_Void:
+                    if (charClass != EPlayerClass.Eldritch) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Enchantments:
+                    if (charClass != EPlayerClass.Enchanter) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Mentalism:
+                    if (charClass != EPlayerClass.Mentalist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Creeping:
+                case EProperty.Skill_Verdant:
+                    if (charClass != EPlayerClass.Animist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
 
 
 
-                case eProperty.Skill_Hexing:
-                case eProperty.Skill_Cursing:
-                case eProperty.Skill_EtherealShriek:
-                case eProperty.Skill_PhantasmalWail:
-                case eProperty.Skill_SpectralForce:
+                case EProperty.Skill_Hexing:
+                case EProperty.Skill_Cursing:
+                case EProperty.Skill_EtherealShriek:
+                case EProperty.Skill_PhantasmalWail:
+                case EProperty.Skill_SpectralForce:
                     return false;
 
-                case eProperty.Skill_Witchcraft:
+                case EProperty.Skill_Witchcraft:
                     {
                         return true;
                     }
-                case eProperty.Skill_Celtic_Dual:
+                case EProperty.Skill_Celtic_Dual:
                     {
-                        if (charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Nightshade)
+                        if (charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade)
                         {
                             return false;
                         }
 
                         return true;
                     }
-                case eProperty.Skill_Celtic_Spear:
+                case EProperty.Skill_Celtic_Spear:
                     {
-                        if (charClass != eCharacterClass.Hero)
+                        if (charClass != EPlayerClass.Hero)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Chants:
+                case EProperty.Skill_Chants:
                     {
-                        if (charClass != eCharacterClass.Paladin)
+                        if (charClass != EPlayerClass.Paladin)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Composite:
-                case eProperty.Skill_RecurvedBow:
-                case eProperty.Skill_Long_bows:
-                case eProperty.Skill_Archery:
+                case EProperty.Skill_Composite:
+                case EProperty.Skill_RecurvedBow:
+                case EProperty.Skill_Long_bows:
+                case EProperty.Skill_Archery:
                     {
-                        if (charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Scout &&
-                            charClass != eCharacterClass.Hunter)
+                        if (charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout &&
+                            charClass != EPlayerClass.Hunter)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Critical_Strike:
-                case eProperty.Skill_Envenom:
-                case eProperty.Skill_Dementia:
-                case eProperty.Skill_Nightshade:
-                case eProperty.Skill_ShadowMastery:
-                case eProperty.Skill_VampiiricEmbrace:
+                case EProperty.Skill_Critical_Strike:
+                case EProperty.Skill_Envenom:
+                case EProperty.Skill_Dementia:
+                case EProperty.Skill_Nightshade:
+                case EProperty.Skill_ShadowMastery:
+                case EProperty.Skill_VampiiricEmbrace:
                     {
-                        if (charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Cross_Bows:
+                case EProperty.Skill_Cross_Bows:
                     {
-                        if (charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Scout)
-                        {
-                            return false;
-                        }
-
-                        return true;
-                    }
-                case eProperty.Skill_Crushing:
-                    {
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver)
-                        {
-                            return false;
-                        }
-                        return true;
-                    }
-                case eProperty.Skill_Dual_Wield:
-                    {
-                        if (charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary)
+                        if (charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
 
                         return true;
                     }
-                case eProperty.Skill_Enhancement:
+                case EProperty.Skill_Crushing:
                     {
-                        if (charClass != eCharacterClass.Friar &&
-                            charClass != eCharacterClass.Cleric)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Flexible_Weapon:
+                case EProperty.Skill_Dual_Wield:
                     {
-                        if (charClass != eCharacterClass.Reaver) { return false; }
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary)
+                        {
+                            return false;
+                        }
+
                         return true;
                     }
-                case eProperty.Skill_Hammer:
+                case EProperty.Skill_Enhancement:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Cleric)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_HandToHand:
+                case EProperty.Skill_Flexible_Weapon:
                     {
-                        if (charClass != eCharacterClass.Savage) { return false; }
+                        if (charClass != EPlayerClass.Reaver) { return false; }
                         return true;
                     }
-                case eProperty.Skill_Instruments:
+                case EProperty.Skill_Hammer:
                     {
-                        if (charClass != eCharacterClass.Minstrel) { return false; }
-                        return true;
-                    }
-                case eProperty.Skill_Large_Weapon:
-                    {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Left_Axe:
+                case EProperty.Skill_HandToHand:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Savage) { return false; }
+                        return true;
+                    }
+                case EProperty.Skill_Instruments:
+                    {
+                        if (charClass != EPlayerClass.Minstrel) { return false; }
+                        return true;
+                    }
+                case EProperty.Skill_Large_Weapon:
+                    {
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Music:
+                case EProperty.Skill_Left_Axe:
                     {
-                        if (charClass != eCharacterClass.Bard) { return false; }
-                        return true;
-                    }
-                case eProperty.Skill_Nature:
-                    {
-                        if (charClass != eCharacterClass.Druid) { return false; }
-                        return true;
-                    }
-                case eProperty.Skill_Nurture:
-                case eProperty.Skill_Regrowth:
-                    {
-                        if (charClass != eCharacterClass.Bard &&
-                            charClass != eCharacterClass.Warden &&
-                            charClass != eCharacterClass.Druid)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_OdinsWill:
+                case EProperty.Skill_Music:
+                    {
+                        if (charClass != EPlayerClass.Bard) { return false; }
+                        return true;
+                    }
+                case EProperty.Skill_Nature:
+                    {
+                        if (charClass != EPlayerClass.Druid) { return false; }
+                        return true;
+                    }
+                case EProperty.Skill_Nurture:
+                case EProperty.Skill_Regrowth:
+                    {
+                        if (charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Druid)
+                        {
+                            return false;
+                        }
+                        return true;
+                    }
+                case EProperty.Skill_OdinsWill:
                     {
                         return false;
                     }
-                case eProperty.Skill_Pacification:
+                case EProperty.Skill_Pacification:
                     {
-                        if (charClass != eCharacterClass.Healer) { return false; }
+                        if (charClass != EPlayerClass.Healer) { return false; }
                         return true;
                     }
-                case eProperty.Skill_Parry:
+                case EProperty.Skill_Parry:
                     {
-                        if (charClass != eCharacterClass.Berserker && //midgard
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Champion && //hibernia
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Valewalker &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Warden &&
-                            charClass != eCharacterClass.Armsman && //albion
-                            charClass != eCharacterClass.Friar &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver)
+                        if (charClass != EPlayerClass.Berserker && //midgard
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Champion && //hibernia
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver)
                         {
                             return false;
                         }
 
                         return true;
                     }
-                case eProperty.Skill_Piercing:
+                case EProperty.Skill_Piercing:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Polearms:
+                case EProperty.Skill_Polearms:
                     {
-                        if (charClass != eCharacterClass.Armsman) { return false; }
+                        if (charClass != EPlayerClass.Armsman) { return false; }
                         return true;
                     }
-                case eProperty.Skill_Rejuvenation:
+                case EProperty.Skill_Rejuvenation:
                     {
-                        if (charClass != eCharacterClass.Friar &&
-                            charClass != eCharacterClass.Cleric)
+                        if (charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Cleric)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Savagery:
+                case EProperty.Skill_Savagery:
                     {
-                        if (charClass != eCharacterClass.Savage) { return false; }
+                        if (charClass != EPlayerClass.Savage) { return false; }
                         return true;
                     }
-                case eProperty.Skill_Scythe:
+                case EProperty.Skill_Scythe:
                     {
-                        if (charClass != eCharacterClass.Valewalker) { return false; }
+                        if (charClass != EPlayerClass.Valewalker) { return false; }
                         return true;
                     }
-                case eProperty.Skill_Shields:
+                case EProperty.Skill_Shields:
                     {
-                        if (charClass != eCharacterClass.Thane &&  //midgard
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Champion && //hibernia
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Armsman && //albion
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Thane &&  //midgard
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Champion && //hibernia
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_ShortBow:
+                case EProperty.Skill_ShortBow:
                     {
                         return false;
                     }
-                case eProperty.Skill_Smiting:
+                case EProperty.Skill_Smiting:
                     {
-                        if (charClass != eCharacterClass.Cleric) { return false; }
+                        if (charClass != EPlayerClass.Cleric) { return false; }
                         return true;
                     }
-                case eProperty.Skill_SoulRending:
+                case EProperty.Skill_SoulRending:
                     {
-                        if (charClass != eCharacterClass.Reaver) { return false; }
+                        if (charClass != EPlayerClass.Reaver) { return false; }
                         return true;
                     }
-                case eProperty.Skill_Spear:
+                case EProperty.Skill_Spear:
                     {
-                        if (charClass != eCharacterClass.Hunter) { return false; }
+                        if (charClass != EPlayerClass.Hunter) { return false; }
                         return true;
                     }
-                case eProperty.Skill_Staff:
+                case EProperty.Skill_Staff:
                     {
-                        if (charClass != eCharacterClass.Friar) { return false; }
+                        if (charClass != EPlayerClass.Friar) { return false; }
                         return true;
                     }
-                case eProperty.Skill_Stealth:
+                case EProperty.Skill_Stealth:
                     {
-                        if (charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Stormcalling:
+                case EProperty.Skill_Stormcalling:
                     {
-                        if (charClass != eCharacterClass.Thane) { return false; }
+                        if (charClass != EPlayerClass.Thane) { return false; }
                         return true;
                     }
-                case eProperty.Skill_Subterranean:
+                case EProperty.Skill_Subterranean:
                     {
-                        if (charClass != eCharacterClass.Shaman) { return false; }
+                        if (charClass != EPlayerClass.Shaman) { return false; }
                         return true;
                     }
-                case eProperty.Skill_Sword:
+                case EProperty.Skill_Sword:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
                         return true;
                     }
-                case eProperty.Skill_Slashing:
+                case EProperty.Skill_Slashing:
                     {
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
-                        {
-                            return false;
-                        }
-
-                        return true;
-                    }
-                case eProperty.Skill_Thrusting:
-                    {
-
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
 
                         return true;
                     }
-                case eProperty.Skill_Two_Handed:
+                case EProperty.Skill_Thrusting:
                     {
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Paladin)
-                        {
-                            return false;
-                        }
-                        return true;
-                    }
-                case eProperty.Skill_Valor:
-                    {
-                        if (charClass != eCharacterClass.Champion) { return false; }
-                        return true;
-                    }
-                case eProperty.AllArcherySkills:
-                    {
-                        if (charClass != eCharacterClass.Scout &&
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Ranger)
-                        {
-                            return false;
-                        }
-                        return true;
-                    }
-                case eProperty.AllDualWieldingSkills:
-                    {
-                        if (charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary)
-                        {
-                            return false;
-                        }
-                        return true;
-                    }
-                case eProperty.AllMagicSkills:
-                    {
-                        if (charClass != eCharacterClass.Cabalist && //albion
-                            charClass != eCharacterClass.Cleric &&
-                            charClass != eCharacterClass.Necromancer &&
-                            charClass != eCharacterClass.Sorcerer &&
-                            charClass != eCharacterClass.Theurgist &&
-                            charClass != eCharacterClass.Wizard &&
-                            charClass != eCharacterClass.Animist && //hibernia
-                            charClass != eCharacterClass.Eldritch &&
-                            charClass != eCharacterClass.Enchanter &&
-                            charClass != eCharacterClass.Mentalist &&
-                            charClass != eCharacterClass.Valewalker &&
-                            charClass != eCharacterClass.Bonedancer && //midgard
-                            charClass != eCharacterClass.Runemaster &&
-                            charClass != eCharacterClass.Spiritmaster)
+
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
 
                         return true;
                     }
-                case eProperty.AllMeleeWeaponSkills:
+                case EProperty.Skill_Two_Handed:
                     {
-                        if (charClass != eCharacterClass.Berserker &&  //midgard
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Blademaster && //hibernia
-                            charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Valewalker &&
-                            charClass != eCharacterClass.Warden &&
-                            charClass != eCharacterClass.Armsman && //albion
-                            charClass != eCharacterClass.Friar &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Paladin)
+                        {
+                            return false;
+                        }
+                        return true;
+                    }
+                case EProperty.Skill_Valor:
+                    {
+                        if (charClass != EPlayerClass.Champion) { return false; }
+                        return true;
+                    }
+                case EProperty.AllArcherySkills:
+                    {
+                        if (charClass != EPlayerClass.Scout &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger)
+                        {
+                            return false;
+                        }
+                        return true;
+                    }
+                case EProperty.AllDualWieldingSkills:
+                    {
+                        if (charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary)
+                        {
+                            return false;
+                        }
+                        return true;
+                    }
+                case EProperty.AllMagicSkills:
+                    {
+                        if (charClass != EPlayerClass.Cabalist && //albion
+                            charClass != EPlayerClass.Cleric &&
+                            charClass != EPlayerClass.Necromancer &&
+                            charClass != EPlayerClass.Sorcerer &&
+                            charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard &&
+                            charClass != EPlayerClass.Animist && //hibernia
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Mentalist &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Bonedancer && //midgard
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Spiritmaster)
                         {
                             return false;
                         }
 
                         return true;
                     }
-                case eProperty.AllSkills:
+                case EProperty.AllMeleeWeaponSkills:
+                    {
+                        if (charClass != EPlayerClass.Berserker &&  //midgard
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Blademaster && //hibernia
+                            charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    }
+                case EProperty.AllSkills:
                     {
                         return true;
                     }
-                case eProperty.Skill_Power_Strikes:
-                case eProperty.Skill_Magnetism:
-                case eProperty.Skill_MaulerStaff:
-                case eProperty.Skill_Aura_Manipulation:
-                case eProperty.Skill_FistWraps:
+                case EProperty.Skill_Power_Strikes:
+                case EProperty.Skill_Magnetism:
+                case EProperty.Skill_MaulerStaff:
+                case EProperty.Skill_Aura_Manipulation:
+                case EProperty.Skill_FistWraps:
                     {
                         return false;
                     }
@@ -2591,337 +2554,337 @@ namespace DOL.GS {
         }
 
 
-        private bool SkillIsValidForArmor(eProperty property)
+        private bool SkillIsValidForArmor(EProperty property)
         {
             int level = this.Level;
-            eRealm realm = (eRealm)this.Realm;
-            eObjectType type = (eObjectType)this.Object_Type;
-            eCharacterClass charClass = this.charClass;
+            ERealm realm = (ERealm)this.Realm;
+            EObjectType type = (EObjectType)this.Object_Type;
+            EPlayerClass charClass = this.charClass;
 
             switch (property)
             {
-                case eProperty.Skill_Mending:
-                case eProperty.Skill_Augmentation:
+                case EProperty.Skill_Mending:
+                case EProperty.Skill_Augmentation:
                     {
-                        if (charClass != eCharacterClass.Healer &&
-                            charClass != eCharacterClass.Shaman)
+                        if (charClass != EPlayerClass.Healer &&
+                            charClass != EPlayerClass.Shaman)
                         {
                             return false;
                         }
                         if (level < 10)
                         {
-                            if (type == eObjectType.Leather)
+                            if (type == EObjectType.Leather)
                                 return true;
                             return false;
                         }
                         else if (level < 20)
                         {
-                            if (type == eObjectType.Studded)
+                            if (type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Chain)
+                            if (type == EObjectType.Chain)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Axe:
+                case EProperty.Skill_Axe:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Leather || type == eObjectType.Studded)
+                        if (type == EObjectType.Leather || type == EObjectType.Studded)
                             return true;
-                        else if (type == eObjectType.Chain && level >= 10)
+                        else if (type == EObjectType.Chain && level >= 10)
                             return true;
 
                         return false;
                     }
-                case eProperty.Skill_Battlesongs:
+                case EProperty.Skill_Battlesongs:
                     {
-                        if (charClass != eCharacterClass.Skald)
+                        if (charClass != EPlayerClass.Skald)
                         {
                             return false;
                         }
                         if (level < 20)
                         {
-                            if (type == eObjectType.Studded)
+                            if (type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Chain)
+                            if (type == EObjectType.Chain)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Pathfinding:
-                case eProperty.Skill_BeastCraft:
+                case EProperty.Skill_Pathfinding:
+                case EProperty.Skill_BeastCraft:
                     {
-                        if (charClass != eCharacterClass.Hunter)
+                        if (charClass != EPlayerClass.Hunter)
                         {
                             return false;
                         }
                         if (level < 10)
                         {
-                            if (type == eObjectType.Leather)
+                            if (type == EObjectType.Leather)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Studded)
+                            if (type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Blades:
+                case EProperty.Skill_Blades:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Bard &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
 
-                        if (type == eObjectType.Leather || type == eObjectType.Reinforced || type == eObjectType.Scale)
+                        if (type == EObjectType.Leather || type == EObjectType.Reinforced || type == EObjectType.Scale)
                             return true;
                         return false;
                     }
-                case eProperty.Skill_Blunt:
+                case EProperty.Skill_Blunt:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Bard &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
 
-                        if (type == eObjectType.Leather && level < 10)
+                        if (type == EObjectType.Leather && level < 10)
                             return true;
-                        else if (type == eObjectType.Reinforced || type == eObjectType.Scale)
+                        else if (type == EObjectType.Reinforced || type == EObjectType.Scale)
                             return true;
                         return false;
                     }
                 //Cloth skills
                 //witchcraft is unused except as a goto target for cloth checks
-                case eProperty.Skill_Arboreal:
-                    if (charClass != eCharacterClass.Valewalker &&
-                        charClass != eCharacterClass.Animist)
+                case EProperty.Skill_Arboreal:
+                    if (charClass != EPlayerClass.Valewalker &&
+                        charClass != EPlayerClass.Animist)
                     {
                         return false;
                     }
-                    goto case eProperty.Skill_Witchcraft;
+                    goto case EProperty.Skill_Witchcraft;
 
 
-                case eProperty.Skill_Matter:
-                case eProperty.Skill_Body:
+                case EProperty.Skill_Matter:
+                case EProperty.Skill_Body:
                     {
-                        if (charClass != eCharacterClass.Cabalist &&
-                            charClass != eCharacterClass.Sorcerer)
+                        if (charClass != EPlayerClass.Cabalist &&
+                            charClass != EPlayerClass.Sorcerer)
                         {
                             return false;
                         }
-                        goto case eProperty.Skill_Witchcraft;
+                        goto case EProperty.Skill_Witchcraft;
                     }
 
-                case eProperty.Skill_Earth:
-                case eProperty.Skill_Cold:
+                case EProperty.Skill_Earth:
+                case EProperty.Skill_Cold:
                     {
-                        if (charClass != eCharacterClass.Theurgist &&
-                            charClass != eCharacterClass.Wizard)
+                        if (charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard)
                         {
                             return false;
                         }
-                        goto case eProperty.Skill_Witchcraft;
+                        goto case EProperty.Skill_Witchcraft;
                     }
 
-                case eProperty.Skill_Suppression:
-                case eProperty.Skill_Darkness:
+                case EProperty.Skill_Suppression:
+                case EProperty.Skill_Darkness:
                     {
-                        if (charClass != eCharacterClass.Spiritmaster &&
-                            charClass != eCharacterClass.Runemaster &&
-                            charClass != eCharacterClass.Bonedancer)
+                        if (charClass != EPlayerClass.Spiritmaster &&
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Bonedancer)
                         {
                             return false;
                         }
-                        goto case eProperty.Skill_Witchcraft;
+                        goto case EProperty.Skill_Witchcraft;
                     }
 
-                case eProperty.Skill_Light:
-                case eProperty.Skill_Mana:
+                case EProperty.Skill_Light:
+                case EProperty.Skill_Mana:
                     {
-                        if (charClass != eCharacterClass.Enchanter &&
-                            charClass != eCharacterClass.Eldritch &&
-                            charClass != eCharacterClass.Mentalist)
+                        if (charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Mentalist)
                         {
                             return false;
                         }
-                        goto case eProperty.Skill_Witchcraft;
+                        goto case EProperty.Skill_Witchcraft;
                     }
 
 
-                case eProperty.Skill_Mind:
-                    if (charClass != eCharacterClass.Sorcerer) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Spirit:
-                    if (charClass != eCharacterClass.Cabalist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Wind:
-                    if (charClass != eCharacterClass.Theurgist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Fire:
-                    if (charClass != eCharacterClass.Wizard) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Death_Servant:
-                case eProperty.Skill_DeathSight:
-                case eProperty.Skill_Pain_working:
-                    if (charClass != eCharacterClass.Necromancer) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
+                case EProperty.Skill_Mind:
+                    if (charClass != EPlayerClass.Sorcerer) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Spirit:
+                    if (charClass != EPlayerClass.Cabalist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Wind:
+                    if (charClass != EPlayerClass.Theurgist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Fire:
+                    if (charClass != EPlayerClass.Wizard) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Death_Servant:
+                case EProperty.Skill_DeathSight:
+                case EProperty.Skill_Pain_working:
+                    if (charClass != EPlayerClass.Necromancer) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
 
-                case eProperty.Skill_Summoning:
-                    if (charClass != eCharacterClass.Spiritmaster) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Runecarving:
-                    if (charClass != eCharacterClass.Runemaster) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_BoneArmy:
-                    if (charClass != eCharacterClass.Bonedancer) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
+                case EProperty.Skill_Summoning:
+                    if (charClass != EPlayerClass.Spiritmaster) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Runecarving:
+                    if (charClass != EPlayerClass.Runemaster) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_BoneArmy:
+                    if (charClass != EPlayerClass.Bonedancer) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
 
-                case eProperty.Skill_Void:
-                    if (charClass != eCharacterClass.Eldritch) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Enchantments:
-                    if (charClass != eCharacterClass.Enchanter) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Mentalism:
-                    if (charClass != eCharacterClass.Mentalist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Creeping:
-                case eProperty.Skill_Verdant:
-                    if (charClass != eCharacterClass.Animist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
+                case EProperty.Skill_Void:
+                    if (charClass != EPlayerClass.Eldritch) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Enchantments:
+                    if (charClass != EPlayerClass.Enchanter) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Mentalism:
+                    if (charClass != EPlayerClass.Mentalist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Creeping:
+                case EProperty.Skill_Verdant:
+                    if (charClass != EPlayerClass.Animist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
 
 
 
-                case eProperty.Skill_Hexing:
-                case eProperty.Skill_Cursing:
-                case eProperty.Skill_EtherealShriek:
-                case eProperty.Skill_PhantasmalWail:
-                case eProperty.Skill_SpectralForce:
+                case EProperty.Skill_Hexing:
+                case EProperty.Skill_Cursing:
+                case EProperty.Skill_EtherealShriek:
+                case EProperty.Skill_PhantasmalWail:
+                case EProperty.Skill_SpectralForce:
                     return false;
 
-                case eProperty.Skill_Witchcraft:
+                case EProperty.Skill_Witchcraft:
                     {
-                        if (property == eProperty.Skill_Witchcraft)
+                        if (property == EProperty.Skill_Witchcraft)
                         {
                             return false; //we don't want actual Witchcraft skills
                         }
-                        if (type == eObjectType.Cloth)
+                        if (type == EObjectType.Cloth)
                             return true;
                         return false;
                     }
-                case eProperty.Skill_Celtic_Dual:
+                case EProperty.Skill_Celtic_Dual:
                     {
-                        if (charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Nightshade)
+                        if (charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade)
                         {
                             return false;
                         }
 
-                        if (type == eObjectType.Leather ||
-                            type == eObjectType.Reinforced)
+                        if (type == EObjectType.Leather ||
+                            type == EObjectType.Reinforced)
                             return true;
                         return false;
                     }
-                case eProperty.Skill_Celtic_Spear:
+                case EProperty.Skill_Celtic_Spear:
                     {
-                        if (charClass != eCharacterClass.Hero)
+                        if (charClass != EPlayerClass.Hero)
                         {
                             return false;
                         }
                         if (level < 15)
                         {
-                            if (type == eObjectType.Reinforced)
+                            if (type == EObjectType.Reinforced)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Scale)
+                            if (type == EObjectType.Scale)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Chants:
+                case EProperty.Skill_Chants:
                     {
-                        if (charClass != eCharacterClass.Paladin)
+                        if (charClass != EPlayerClass.Paladin)
                         {
                             return false;
                         }
                         return false;
                     }
-                case eProperty.Skill_Composite:
-                case eProperty.Skill_RecurvedBow:
-                case eProperty.Skill_Long_bows:
-                case eProperty.Skill_Archery:
+                case EProperty.Skill_Composite:
+                case EProperty.Skill_RecurvedBow:
+                case EProperty.Skill_Long_bows:
+                case EProperty.Skill_Archery:
                     {
-                        if (charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Scout &&
-                            charClass != eCharacterClass.Hunter)
+                        if (charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout &&
+                            charClass != EPlayerClass.Hunter)
                         {
                             return false;
                         }
                         if (level < 10)
                         {
-                            if (type == eObjectType.Leather)
+                            if (type == EObjectType.Leather)
                                 return true;
 
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Studded || type == eObjectType.Reinforced)
+                            if (type == EObjectType.Studded || type == EObjectType.Reinforced)
                                 return true;
 
                             return false;
                         }
                     }
-                case eProperty.Skill_Critical_Strike:
-                case eProperty.Skill_Envenom:
-                case eProperty.Skill_Dementia:
-                case eProperty.Skill_Nightshade:
-                case eProperty.Skill_ShadowMastery:
-                case eProperty.Skill_VampiiricEmbrace:
+                case EProperty.Skill_Critical_Strike:
+                case EProperty.Skill_Envenom:
+                case EProperty.Skill_Dementia:
+                case EProperty.Skill_Nightshade:
+                case EProperty.Skill_ShadowMastery:
+                case EProperty.Skill_VampiiricEmbrace:
                     {
-                        if (charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Leather)
+                        if (type == EObjectType.Leather)
                             return true;
                         return false;
                     }
-                case eProperty.Skill_Cross_Bows:
+                case EProperty.Skill_Cross_Bows:
                     {
                         return false; // disabled for armor
 
@@ -2938,683 +2901,683 @@ namespace DOL.GS {
                         //							return false;
                         //						}
                     }
-                case eProperty.Skill_Crushing:
+                case EProperty.Skill_Crushing:
                     {
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver)
                         {
                             return false;
                         }
-                        if (realm == eRealm.Albion && type == eObjectType.Cloth) // heretic
+                        if (realm == ERealm.Albion && type == EObjectType.Cloth) // heretic
                             return true;
 
                         if (level < 15)
                         {
-                            if (type == eObjectType.Studded)
+                            if (type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Chain || type == eObjectType.Plate)
+                            if (type == EObjectType.Chain || type == EObjectType.Plate)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Dual_Wield:
+                case EProperty.Skill_Dual_Wield:
                     {
-                        if (charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary)
                         {
                             return false;
                         }
 
                         if (level < 20)
                         {
-                            if (type == eObjectType.Leather || type == eObjectType.Studded)
+                            if (type == EObjectType.Leather || type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Leather || type == eObjectType.Chain)
+                            if (type == EObjectType.Leather || type == EObjectType.Chain)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Enhancement:
+                case EProperty.Skill_Enhancement:
                     {
-                        if (charClass != eCharacterClass.Friar &&
-                            charClass != eCharacterClass.Cleric)
+                        if (charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Cleric)
                         {
                             return false;
                         }
                         // friar
-                        if (type == eObjectType.Leather)
+                        if (type == EObjectType.Leather)
                             return true;
 
                         if (level < 20)
                         {
-                            if (type == eObjectType.Studded)
+                            if (type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Chain)
+                            if (type == EObjectType.Chain)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Flexible_Weapon:
+                case EProperty.Skill_Flexible_Weapon:
                     {
-                        if (charClass != eCharacterClass.Reaver) { return false; }
-                        if (type == eObjectType.Cloth) // Heretic
+                        if (charClass != EPlayerClass.Reaver) { return false; }
+                        if (type == EObjectType.Cloth) // Heretic
                             return true;
 
                         if (level < 10)
                         {
-                            if (type == eObjectType.Studded)
+                            if (type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Chain)
+                            if (type == EObjectType.Chain)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Hammer:
+                case EProperty.Skill_Hammer:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
                         if (level < 10)
                         {
-                            if (type == eObjectType.Leather)
+                            if (type == EObjectType.Leather)
                                 return true;
                             return false;
                         }
                         if (level < 20)
                         {
-                            if (type == eObjectType.Studded)
+                            if (type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Chain)
+                            if (type == EObjectType.Chain)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_HandToHand:
+                case EProperty.Skill_HandToHand:
                     {
-                        if (charClass != eCharacterClass.Savage) { return false; }
-                        if (type == eObjectType.Studded)
+                        if (charClass != EPlayerClass.Savage) { return false; }
+                        if (type == EObjectType.Studded)
                             return true;
                         return false;
                     }
-                case eProperty.Skill_Instruments:
+                case EProperty.Skill_Instruments:
                     {
-                        if (charClass != eCharacterClass.Minstrel) { return false; }
+                        if (charClass != EPlayerClass.Minstrel) { return false; }
                         if (level < 10)
                         {
-                            if (type == eObjectType.Leather)
+                            if (type == EObjectType.Leather)
                                 return true;
                             return false;
                         }
                         else if (level < 20)
                         {
-                            if (type == eObjectType.Studded)
+                            if (type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Chain)
+                            if (type == EObjectType.Chain)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Large_Weapon:
+                case EProperty.Skill_Large_Weapon:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero)
                         {
                             return false;
                         }
                         if (level < 15)
                         {
-                            if (type == eObjectType.Reinforced)
+                            if (type == EObjectType.Reinforced)
                                 return true;
 
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Scale)
+                            if (type == EObjectType.Scale)
                                 return true;
 
                             return false;
                         }
                     }
-                case eProperty.Skill_Left_Axe:
+                case EProperty.Skill_Left_Axe:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Leather || type == eObjectType.Studded)
+                        if (type == EObjectType.Leather || type == EObjectType.Studded)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Music:
+                case EProperty.Skill_Music:
                     {
-                        if (charClass != eCharacterClass.Bard) { return false; }
+                        if (charClass != EPlayerClass.Bard) { return false; }
                         if (level < 15)
                         {
-                            if (type == eObjectType.Leather)
+                            if (type == EObjectType.Leather)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Reinforced)
+                            if (type == EObjectType.Reinforced)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Nature:
+                case EProperty.Skill_Nature:
                     {
-                        if (charClass != eCharacterClass.Druid) { return false; }
+                        if (charClass != EPlayerClass.Druid) { return false; }
                         if (level < 10)
                         {
-                            if (type == eObjectType.Leather)
+                            if (type == EObjectType.Leather)
                                 return true;
                             return false;
                         }
                         else if (level < 20)
                         {
-                            if (type == eObjectType.Reinforced)
+                            if (type == EObjectType.Reinforced)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Scale)
+                            if (type == EObjectType.Scale)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Nurture:
-                case eProperty.Skill_Regrowth:
+                case EProperty.Skill_Nurture:
+                case EProperty.Skill_Regrowth:
                     {
-                        if (charClass != eCharacterClass.Bard &&
-                            charClass != eCharacterClass.Warden &&
-                            charClass != eCharacterClass.Druid)
+                        if (charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Druid)
                         {
                             return false;
                         }
                         if (level < 10)
                         {
-                            if (type == eObjectType.Leather)
+                            if (type == EObjectType.Leather)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Reinforced || type == eObjectType.Scale)
+                            if (type == EObjectType.Reinforced || type == EObjectType.Scale)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_OdinsWill:
+                case EProperty.Skill_OdinsWill:
                     {
                         return false;
                         if (level < 10)
                         {
-                            if (type == eObjectType.Studded)
+                            if (type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Chain)
+                            if (type == EObjectType.Chain)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Pacification:
+                case EProperty.Skill_Pacification:
                     {
-                        if (charClass != eCharacterClass.Healer) { return false; }
+                        if (charClass != EPlayerClass.Healer) { return false; }
                         if (level < 10)
                         {
-                            if (type == eObjectType.Leather)
+                            if (type == EObjectType.Leather)
                                 return true;
                             return false;
                         }
                         else if (level < 20)
                         {
-                            if (type == eObjectType.Studded)
+                            if (type == EObjectType.Studded)
                                 return true;
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Chain)
+                            if (type == EObjectType.Chain)
                                 return true;
                             return false;
                         }
                     }
-                case eProperty.Skill_Parry:
+                case EProperty.Skill_Parry:
                     {
-                        if (charClass != eCharacterClass.Berserker && //midgard
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Champion && //hibernia
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Valewalker &&
-                            charClass != eCharacterClass.Warden &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Armsman && //albion
-                            charClass != eCharacterClass.Friar &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver)
+                        if (charClass != EPlayerClass.Berserker && //midgard
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Champion && //hibernia
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver)
                         {
                             return false;
                         }
 
-                        if (type == eObjectType.Cloth && realm == eRealm.Hibernia && level >= 5)
+                        if (type == EObjectType.Cloth && realm == ERealm.Hibernia && level >= 5)
                             return true;
-                        else if (realm == eRealm.Hibernia && level < 2)
+                        else if (realm == ERealm.Hibernia && level < 2)
                             return false;
-                        else if (realm == eRealm.Albion && level < 5)
+                        else if (realm == ERealm.Albion && level < 5)
                             return false;
-                        else if (realm == eRealm.Albion && level < 10 && type == eObjectType.Studded)
+                        else if (realm == ERealm.Albion && level < 10 && type == EObjectType.Studded)
                             return true;
-                        else if (realm == eRealm.Albion && level >= 10 && (type == eObjectType.Leather || type == eObjectType.Chain || type == eObjectType.Plate))
+                        else if (realm == ERealm.Albion && level >= 10 && (type == EObjectType.Leather || type == EObjectType.Chain || type == EObjectType.Plate))
                             return true;
-                        else if (realm == eRealm.Hibernia && level < 20 && type == eObjectType.Reinforced)
+                        else if (realm == ERealm.Hibernia && level < 20 && type == EObjectType.Reinforced)
                             return true;
-                        else if (realm == eRealm.Hibernia && level >= 15 && type == eObjectType.Scale)
+                        else if (realm == ERealm.Hibernia && level >= 15 && type == EObjectType.Scale)
                             return true;
-                        else if (realm == eRealm.Midgard && (type == eObjectType.Studded || type == eObjectType.Chain))
+                        else if (realm == ERealm.Midgard && (type == EObjectType.Studded || type == EObjectType.Chain))
                             return true;
 
                         break;
                     }
-                case eProperty.Skill_Piercing:
+                case EProperty.Skill_Piercing:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Leather || type == eObjectType.Reinforced || type == eObjectType.Scale)
+                        if (type == EObjectType.Leather || type == EObjectType.Reinforced || type == EObjectType.Scale)
                             return true;
                         return false;
                     }
-                case eProperty.Skill_Polearms:
+                case EProperty.Skill_Polearms:
                     {
-                        if (charClass != eCharacterClass.Armsman) { return false; }
-                        if (level < 5 && type == eObjectType.Studded)
+                        if (charClass != EPlayerClass.Armsman) { return false; }
+                        if (level < 5 && type == EObjectType.Studded)
                         {
                             return true;
                         }
                         else if (level < 15)
                         {
-                            if (type == eObjectType.Chain)
+                            if (type == EObjectType.Chain)
                                 return true;
 
                             return false;
                         }
                         else
                         {
-                            if (type == eObjectType.Plate)
+                            if (type == EObjectType.Plate)
                                 return true;
 
                             return false;
                         }
                     }
-                case eProperty.Skill_Rejuvenation:
+                case EProperty.Skill_Rejuvenation:
                     {
-                        if (charClass != eCharacterClass.Friar &&
-                            charClass != eCharacterClass.Cleric)
+                        if (charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Cleric)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Cloth)
+                        if (type == EObjectType.Cloth)
                             return true;
-                        else if (type == eObjectType.Leather)
+                        else if (type == EObjectType.Leather)
                             return true;
-                        else if (type == eObjectType.Studded && level >= 10 && level < 20)
+                        else if (type == EObjectType.Studded && level >= 10 && level < 20)
                             return true;
-                        else if (type == eObjectType.Chain && level >= 20)
-                            return true;
-                        break;
-                    }
-                case eProperty.Skill_Savagery:
-                    {
-                        if (charClass != eCharacterClass.Savage) { return false; }
-                        if (type == eObjectType.Studded)
+                        else if (type == EObjectType.Chain && level >= 20)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Scythe:
+                case EProperty.Skill_Savagery:
                     {
-                        if (charClass != eCharacterClass.Valewalker) { return false; }
-                        if (type == eObjectType.Cloth)
+                        if (charClass != EPlayerClass.Savage) { return false; }
+                        if (type == EObjectType.Studded)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Shields:
+                case EProperty.Skill_Scythe:
                     {
-                        if (charClass != eCharacterClass.Thane &&  //midgard
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Champion && //hibernia
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Armsman && //albion
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Valewalker) { return false; }
+                        if (type == EObjectType.Cloth)
+                            return true;
+                        break;
+                    }
+                case EProperty.Skill_Shields:
+                    {
+                        if (charClass != EPlayerClass.Thane &&  //midgard
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Champion && //hibernia
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Cloth && realm == eRealm.Albion)
+                        if (type == EObjectType.Cloth && realm == ERealm.Albion)
                             return true;
-                        else if (type == eObjectType.Studded || type == eObjectType.Chain || type == eObjectType.Reinforced || type == eObjectType.Scale || type == eObjectType.Plate)
+                        else if (type == EObjectType.Studded || type == EObjectType.Chain || type == EObjectType.Reinforced || type == EObjectType.Scale || type == EObjectType.Plate)
                             return true;
                         break;
                     }
-                case eProperty.Skill_ShortBow:
+                case EProperty.Skill_ShortBow:
                     {
                         return false;
                     }
-                case eProperty.Skill_Smiting:
+                case EProperty.Skill_Smiting:
                     {
-                        if (charClass != eCharacterClass.Cleric) { return false; }
-                        if (type == eObjectType.Leather && level < 10)
+                        if (charClass != EPlayerClass.Cleric) { return false; }
+                        if (type == EObjectType.Leather && level < 10)
                             return true;
-                        else if (type == eObjectType.Studded && level < 20)
+                        else if (type == EObjectType.Studded && level < 20)
                             return true;
-                        else if (type == eObjectType.Chain && level >= 20)
+                        else if (type == EObjectType.Chain && level >= 20)
                             return true;
                         break;
                     }
-                case eProperty.Skill_SoulRending:
+                case EProperty.Skill_SoulRending:
                     {
-                        if (charClass != eCharacterClass.Reaver) { return false; }
-                        if (type == eObjectType.Studded && level < 10)
+                        if (charClass != EPlayerClass.Reaver) { return false; }
+                        if (type == EObjectType.Studded && level < 10)
                             return true;
-                        else if (type == eObjectType.Chain && level >= 10)
+                        else if (type == EObjectType.Chain && level >= 10)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Spear:
+                case EProperty.Skill_Spear:
                     {
-                        if (charClass != eCharacterClass.Hunter) { return false; }
-                        if (type == eObjectType.Leather && level < 10)
+                        if (charClass != EPlayerClass.Hunter) { return false; }
+                        if (type == EObjectType.Leather && level < 10)
                             return true;
-                        else if (type == eObjectType.Studded)
+                        else if (type == EObjectType.Studded)
                             return true;
-                        else if (type == eObjectType.Chain && level >= 10)
+                        else if (type == EObjectType.Chain && level >= 10)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Staff:
+                case EProperty.Skill_Staff:
                     {
-                        if (charClass != eCharacterClass.Friar) { return false; }
-                        if (type == eObjectType.Leather && realm == eRealm.Albion)
+                        if (charClass != EPlayerClass.Friar) { return false; }
+                        if (type == EObjectType.Leather && realm == ERealm.Albion)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Stealth:
+                case EProperty.Skill_Stealth:
                     {
-                        if (charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Leather || type == eObjectType.Studded || type == eObjectType.Reinforced)
+                        if (type == EObjectType.Leather || type == EObjectType.Studded || type == EObjectType.Reinforced)
                             return true;
-                        else if (realm == eRealm.Albion && level >= 20 && type == eObjectType.Chain)
-                            return true;
-                        break;
-                    }
-                case eProperty.Skill_Stormcalling:
-                    {
-                        if (charClass != eCharacterClass.Thane) { return false; }
-                        if (type == eObjectType.Studded && level < 10)
-                            return true;
-                        else if (type == eObjectType.Chain && level >= 10)
+                        else if (realm == ERealm.Albion && level >= 20 && type == EObjectType.Chain)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Subterranean:
+                case EProperty.Skill_Stormcalling:
                     {
-                        if (charClass != eCharacterClass.Shaman) { return false; }
-                        if (type == eObjectType.Leather && level < 10)
+                        if (charClass != EPlayerClass.Thane) { return false; }
+                        if (type == EObjectType.Studded && level < 10)
                             return true;
-                        else if (type == eObjectType.Studded && level < 20)
-                            return true;
-                        else if (type == eObjectType.Chain && level >= 20)
+                        else if (type == EObjectType.Chain && level >= 10)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Sword:
+                case EProperty.Skill_Subterranean:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Shaman) { return false; }
+                        if (type == EObjectType.Leather && level < 10)
+                            return true;
+                        else if (type == EObjectType.Studded && level < 20)
+                            return true;
+                        else if (type == EObjectType.Chain && level >= 20)
+                            return true;
+                        break;
+                    }
+                case EProperty.Skill_Sword:
+                    {
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Studded || type == eObjectType.Chain)
+                        if (type == EObjectType.Studded || type == EObjectType.Chain)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Slashing:
+                case EProperty.Skill_Slashing:
                     {
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
-                        {
-                            return false;
-                        }
-
-                        if (type == eObjectType.Leather || type == eObjectType.Studded || type == eObjectType.Chain || type == eObjectType.Plate)
-                            return true;
-                        break;
-                    }
-                case eProperty.Skill_Thrusting:
-                    {
-
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
 
-                        if (type == eObjectType.Leather || type == eObjectType.Studded || type == eObjectType.Chain || type == eObjectType.Plate)
+                        if (type == EObjectType.Leather || type == EObjectType.Studded || type == EObjectType.Chain || type == EObjectType.Plate)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Two_Handed:
+                case EProperty.Skill_Thrusting:
                     {
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Paladin)
+
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Studded && level < 10)
-                            return true;
-                        else if (type == eObjectType.Chain && level < 20)
-                            return true;
-                        else if (type == eObjectType.Plate)
+
+                        if (type == EObjectType.Leather || type == EObjectType.Studded || type == EObjectType.Chain || type == EObjectType.Plate)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Valor:
+                case EProperty.Skill_Two_Handed:
                     {
-                        if (charClass != eCharacterClass.Champion) { return false; }
-                        if (type == eObjectType.Reinforced && level < 20)
-                            return true;
-                        else if (type == eObjectType.Scale)
-                            return true;
-                        break;
-                    }
-                case eProperty.AllArcherySkills:
-                    {
-                        if (charClass != eCharacterClass.Scout &&
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Paladin)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Leather && level < 10)
+                        if (type == EObjectType.Studded && level < 10)
                             return true;
-                        else if (level >= 10 && (type == eObjectType.Reinforced || type == eObjectType.Studded))
+                        else if (type == EObjectType.Chain && level < 20)
+                            return true;
+                        else if (type == EObjectType.Plate)
+                            return true;
+                        break;
+                    }
+                case EProperty.Skill_Valor:
+                    {
+                        if (charClass != EPlayerClass.Champion) { return false; }
+                        if (type == EObjectType.Reinforced && level < 20)
+                            return true;
+                        else if (type == EObjectType.Scale)
+                            return true;
+                        break;
+                    }
+                case EProperty.AllArcherySkills:
+                    {
+                        if (charClass != EPlayerClass.Scout &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger)
+                        {
+                            return false;
+                        }
+                        if (type == EObjectType.Leather && level < 10)
+                            return true;
+                        else if (level >= 10 && (type == EObjectType.Reinforced || type == EObjectType.Studded))
                             return true;
 
                         break;
                     }
-                case eProperty.AllDualWieldingSkills:
+                case EProperty.AllDualWieldingSkills:
                     {
-                        if (charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary)
+                        if (charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary)
                         {
                             return false;
                         }
                         //Dualwielders are always above level 4 and can wear better than cloth from the start.
-                        if (type == eObjectType.Cloth)
+                        if (type == EObjectType.Cloth)
                             return false;
                         //mercs are the only dualwielder who can wear chain
-                        else if (realm == eRealm.Albion && type == eObjectType.Studded && level < 10)
+                        else if (realm == ERealm.Albion && type == EObjectType.Studded && level < 10)
                             return true;
-                        else if (realm == eRealm.Albion && type == eObjectType.Chain)
+                        else if (realm == ERealm.Albion && type == EObjectType.Chain)
                             return true;
                         //all assassins wear leather, blademasters and zerks wear studded.
-                        else if (type == eObjectType.Leather || type == eObjectType.Reinforced || (type == eObjectType.Studded && realm == eRealm.Midgard))
+                        else if (type == EObjectType.Leather || type == EObjectType.Reinforced || (type == EObjectType.Studded && realm == ERealm.Midgard))
                             return true;
                         break;
                     }
-                case eProperty.AllMagicSkills:
+                case EProperty.AllMagicSkills:
                     {
-                        if (charClass != eCharacterClass.Cabalist && //albion
-                            charClass != eCharacterClass.Cleric &&
-                            charClass != eCharacterClass.Necromancer &&
-                            charClass != eCharacterClass.Sorcerer &&
-                            charClass != eCharacterClass.Theurgist &&
-                            charClass != eCharacterClass.Wizard &&
-                            charClass != eCharacterClass.Animist && //hibernia
-                            charClass != eCharacterClass.Eldritch &&
-                            charClass != eCharacterClass.Enchanter &&
-                            charClass != eCharacterClass.Mentalist &&
-                            charClass != eCharacterClass.Valewalker &&
-                            charClass != eCharacterClass.Bonedancer && //midgard
-                            charClass != eCharacterClass.Runemaster &&
-                            charClass != eCharacterClass.Spiritmaster)
+                        if (charClass != EPlayerClass.Cabalist && //albion
+                            charClass != EPlayerClass.Cleric &&
+                            charClass != EPlayerClass.Necromancer &&
+                            charClass != EPlayerClass.Sorcerer &&
+                            charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard &&
+                            charClass != EPlayerClass.Animist && //hibernia
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Mentalist &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Bonedancer && //midgard
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Spiritmaster)
                         {
                             return false;
                         }
 
                         // not for scouts
-                        if (realm == eRealm.Albion && type == eObjectType.Studded && level >= 20)
+                        if (realm == ERealm.Albion && type == EObjectType.Studded && level >= 20)
                             return false;
                         // Paladins can't use + magic skills
-                        if (realm == eRealm.Albion && type == eObjectType.Plate)
+                        if (realm == ERealm.Albion && type == EObjectType.Plate)
                             return false;
 
                         return true;
                     }
-                case eProperty.AllMeleeWeaponSkills:
+                case EProperty.AllMeleeWeaponSkills:
                     {
-                        if (charClass != eCharacterClass.Berserker &&  //midgard
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Blademaster && //hibernia
-                            charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Valewalker &&
-                            charClass != eCharacterClass.Warden &&
-                            charClass != eCharacterClass.Armsman && //albion
-                            charClass != eCharacterClass.Friar &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Berserker &&  //midgard
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Blademaster && //hibernia
+                            charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
 
-                        if (realm == eRealm.Midgard && type == eObjectType.Cloth)
+                        if (realm == ERealm.Midgard && type == EObjectType.Cloth)
                             return false;
                         else if (level >= 5)
                             return true;
 
                         break;
                     }
-                case eProperty.AllSkills:
+                case EProperty.AllSkills:
                     {
                         return true;
                     }
-                case eProperty.Skill_Power_Strikes:
-                case eProperty.Skill_Magnetism:
-                case eProperty.Skill_MaulerStaff:
-                case eProperty.Skill_Aura_Manipulation:
-                case eProperty.Skill_FistWraps:
+                case EProperty.Skill_Power_Strikes:
+                case EProperty.Skill_Magnetism:
+                case EProperty.Skill_MaulerStaff:
+                case EProperty.Skill_Aura_Manipulation:
+                case EProperty.Skill_FistWraps:
                     {
                         return false;
                         //Maulers
-                        if (type == eObjectType.Leather) //Maulers can only wear leather.
+                        if (type == EObjectType.Leather) //Maulers can only wear leather.
                             return true;
 
                         break;
@@ -3625,764 +3588,764 @@ namespace DOL.GS {
             return false;
         }
 
-        private bool SkillIsValidForWeapon(eProperty property)
+        private bool SkillIsValidForWeapon(EProperty property)
         {
             int level = this.Level;
-            eRealm realm = (eRealm)this.Realm;
-            eObjectType type = (eObjectType)this.Object_Type;
+            ERealm realm = (ERealm)this.Realm;
+            EObjectType type = (EObjectType)this.Object_Type;
 
             switch (property)
             {
-                case eProperty.Skill_SpectralForce:
-                case eProperty.Skill_EtherealShriek:
-                case eProperty.Skill_PhantasmalWail:
-                case eProperty.Skill_Hexing:
-                case eProperty.Skill_Cursing:
+                case EProperty.Skill_SpectralForce:
+                case EProperty.Skill_EtherealShriek:
+                case EProperty.Skill_PhantasmalWail:
+                case EProperty.Skill_Hexing:
+                case EProperty.Skill_Cursing:
                     return false;
 
-                case eProperty.Skill_Arboreal:
-                    if (charClass != eCharacterClass.Valewalker &&
-                        charClass != eCharacterClass.Animist)
+                case EProperty.Skill_Arboreal:
+                    if (charClass != EPlayerClass.Valewalker &&
+                        charClass != EPlayerClass.Animist)
                     {
                         return false;
                     }
-                    goto case eProperty.Skill_Witchcraft;
+                    goto case EProperty.Skill_Witchcraft;
 
 
-                case eProperty.Skill_Matter:
-                case eProperty.Skill_Body:
+                case EProperty.Skill_Matter:
+                case EProperty.Skill_Body:
                     {
-                        if (charClass != eCharacterClass.Cabalist &&
-                            charClass != eCharacterClass.Sorcerer)
+                        if (charClass != EPlayerClass.Cabalist &&
+                            charClass != EPlayerClass.Sorcerer)
                         {
                             return false;
                         }
-                        goto case eProperty.Skill_Witchcraft;
+                        goto case EProperty.Skill_Witchcraft;
                     }
 
-                case eProperty.Skill_Earth:
-                case eProperty.Skill_Cold:
+                case EProperty.Skill_Earth:
+                case EProperty.Skill_Cold:
                     {
-                        if (charClass != eCharacterClass.Theurgist &&
-                            charClass != eCharacterClass.Wizard)
+                        if (charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard)
                         {
                             return false;
                         }
-                        goto case eProperty.Skill_Witchcraft;
+                        goto case EProperty.Skill_Witchcraft;
                     }
 
-                case eProperty.Skill_Suppression:
-                case eProperty.Skill_Darkness:
+                case EProperty.Skill_Suppression:
+                case EProperty.Skill_Darkness:
                     {
-                        if (charClass != eCharacterClass.Spiritmaster &&
-                            charClass != eCharacterClass.Runemaster &&
-                            charClass != eCharacterClass.Bonedancer)
+                        if (charClass != EPlayerClass.Spiritmaster &&
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Bonedancer)
                         {
                             return false;
                         }
-                        goto case eProperty.Skill_Witchcraft;
+                        goto case EProperty.Skill_Witchcraft;
                     }
 
-                case eProperty.Skill_Light:
-                case eProperty.Skill_Mana:
+                case EProperty.Skill_Light:
+                case EProperty.Skill_Mana:
                     {
-                        if (charClass != eCharacterClass.Enchanter &&
-                            charClass != eCharacterClass.Eldritch &&
-                            charClass != eCharacterClass.Mentalist)
+                        if (charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Mentalist)
                         {
                             return false;
                         }
-                        goto case eProperty.Skill_Witchcraft;
+                        goto case EProperty.Skill_Witchcraft;
                     }
 
 
-                case eProperty.Skill_Mind:
-                    if (charClass != eCharacterClass.Sorcerer) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Spirit:
-                    if (charClass != eCharacterClass.Cabalist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Wind:
-                    if (charClass != eCharacterClass.Theurgist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Fire:
-                    if (charClass != eCharacterClass.Wizard) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Death_Servant:
-                case eProperty.Skill_DeathSight:
-                case eProperty.Skill_Pain_working:
-                    if (charClass != eCharacterClass.Necromancer) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
+                case EProperty.Skill_Mind:
+                    if (charClass != EPlayerClass.Sorcerer) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Spirit:
+                    if (charClass != EPlayerClass.Cabalist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Wind:
+                    if (charClass != EPlayerClass.Theurgist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Fire:
+                    if (charClass != EPlayerClass.Wizard) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Death_Servant:
+                case EProperty.Skill_DeathSight:
+                case EProperty.Skill_Pain_working:
+                    if (charClass != EPlayerClass.Necromancer) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
 
-                case eProperty.Skill_Summoning:
-                    if (charClass != eCharacterClass.Spiritmaster) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Runecarving:
-                    if (charClass != eCharacterClass.Runemaster) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_BoneArmy:
-                    if (charClass != eCharacterClass.Bonedancer) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
+                case EProperty.Skill_Summoning:
+                    if (charClass != EPlayerClass.Spiritmaster) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Runecarving:
+                    if (charClass != EPlayerClass.Runemaster) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_BoneArmy:
+                    if (charClass != EPlayerClass.Bonedancer) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
 
-                case eProperty.Skill_Void:
-                    if (charClass != eCharacterClass.Eldritch) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Enchantments:
-                    if (charClass != eCharacterClass.Enchanter) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Mentalism:
-                    if (charClass != eCharacterClass.Mentalist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
-                case eProperty.Skill_Creeping:
-                case eProperty.Skill_Verdant:
-                    if (charClass != eCharacterClass.Animist) { return false; }
-                    goto case eProperty.Skill_Witchcraft;
+                case EProperty.Skill_Void:
+                    if (charClass != EPlayerClass.Eldritch) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Enchantments:
+                    if (charClass != EPlayerClass.Enchanter) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Mentalism:
+                    if (charClass != EPlayerClass.Mentalist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
+                case EProperty.Skill_Creeping:
+                case EProperty.Skill_Verdant:
+                    if (charClass != EPlayerClass.Animist) { return false; }
+                    goto case EProperty.Skill_Witchcraft;
 
-                case eProperty.Skill_Witchcraft:
+                case EProperty.Skill_Witchcraft:
                     {
-                        if (property == eProperty.Skill_Witchcraft)
+                        if (property == EProperty.Skill_Witchcraft)
                         {
                             return false; //we don't want actual Witchcraft skills
                         }
-                        if (type == eObjectType.Staff && this.Description != "friar")
+                        if (type == EObjectType.Staff && this.Description != "friar")
                             return true;
                         break;
                     }
                 //healer things
-                case eProperty.Skill_Smiting:
+                case EProperty.Skill_Smiting:
                     {
-                        if (((type == eObjectType.Shield && this.Type_Damage < 3) || type == eObjectType.CrushingWeapon)
-                            && charClass == eCharacterClass.Cleric)
+                        if (((type == EObjectType.Shield && this.Type_Damage < 3) || type == EObjectType.CrushingWeapon)
+                            && charClass == EPlayerClass.Cleric)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Enhancement:
-                case eProperty.Skill_Rejuvenation:
+                case EProperty.Skill_Enhancement:
+                case EProperty.Skill_Rejuvenation:
                     {
-                        if (realm != eRealm.Albion || (charClass != eCharacterClass.Cleric && charClass != eCharacterClass.Friar)) { return false; }
-                        if ((type == eObjectType.Staff && this.Description == "friar") || (type == eObjectType.Shield && this.Type_Damage < 3) || type == eObjectType.CrushingWeapon)
+                        if (realm != ERealm.Albion || (charClass != EPlayerClass.Cleric && charClass != EPlayerClass.Friar)) { return false; }
+                        if ((type == EObjectType.Staff && this.Description == "friar") || (type == EObjectType.Shield && this.Type_Damage < 3) || type == EObjectType.CrushingWeapon)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Augmentation:
-                case eProperty.Skill_Mending:
+                case EProperty.Skill_Augmentation:
+                case EProperty.Skill_Mending:
                     {
-                        if (realm != eRealm.Midgard || (charClass != eCharacterClass.Healer && charClass != eCharacterClass.Shaman)) { return false; }
-                        if ((type == eObjectType.Shield && this.Type_Damage < 2) || type == eObjectType.Hammer)
+                        if (realm != ERealm.Midgard || (charClass != EPlayerClass.Healer && charClass != EPlayerClass.Shaman)) { return false; }
+                        if ((type == EObjectType.Shield && this.Type_Damage < 2) || type == EObjectType.Hammer)
                         {
                             return true;
                         }
                         break;
                     }
-                case eProperty.Skill_Subterranean:
+                case EProperty.Skill_Subterranean:
                     {
-                        if (realm != eRealm.Midgard || charClass != eCharacterClass.Shaman) { return false; }
-                        if ((type == eObjectType.Shield && this.Type_Damage < 2) || type == eObjectType.Hammer)
+                        if (realm != ERealm.Midgard || charClass != EPlayerClass.Shaman) { return false; }
+                        if ((type == EObjectType.Shield && this.Type_Damage < 2) || type == EObjectType.Hammer)
                         {
                             return true;
                         }
                         break;
                     }
-                case eProperty.Skill_Nurture:
-                case eProperty.Skill_Nature:
-                case eProperty.Skill_Regrowth:
+                case EProperty.Skill_Nurture:
+                case EProperty.Skill_Nature:
+                case EProperty.Skill_Regrowth:
                     {
-                        if (realm != eRealm.Hibernia) { return false; }
-                        if (type == eObjectType.Blunt || type == eObjectType.Blades || (type == eObjectType.Shield && this.Type_Damage < 2))
+                        if (realm != ERealm.Hibernia) { return false; }
+                        if (type == EObjectType.Blunt || type == EObjectType.Blades || (type == EObjectType.Shield && this.Type_Damage < 2))
                             return true;
                         break;
                     }
                 //archery things
-                case eProperty.Skill_Archery:
-                    if (type == eObjectType.CompositeBow || type == eObjectType.RecurvedBow || type == eObjectType.Longbow)
+                case EProperty.Skill_Archery:
+                    if (type == EObjectType.CompositeBow || type == EObjectType.RecurvedBow || type == EObjectType.Longbow)
                         return true;
                     break;
-                case eProperty.Skill_Composite:
+                case EProperty.Skill_Composite:
                     {
-                        if (type == eObjectType.CompositeBow)
+                        if (type == EObjectType.CompositeBow)
                             return true;
                         break;
                     }
-                case eProperty.Skill_RecurvedBow:
+                case EProperty.Skill_RecurvedBow:
                     {
-                        if (type == eObjectType.RecurvedBow)
+                        if (type == EObjectType.RecurvedBow)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Long_bows:
+                case EProperty.Skill_Long_bows:
                     {
-                        if (type == eObjectType.Longbow)
+                        if (type == EObjectType.Longbow)
                             return true;
                         break;
                     }
                 //other specifics
-                case eProperty.Skill_Staff:
+                case EProperty.Skill_Staff:
                     {
-                        if (type == eObjectType.Staff && this.Description == "friar")
+                        if (type == EObjectType.Staff && this.Description == "friar")
                             return true;
                         break;
                     }
-                case eProperty.Skill_Axe:
+                case EProperty.Skill_Axe:
                     {
-                        if (realm != eRealm.Midgard) { return false; }
-                        if (type == eObjectType.Axe || type == eObjectType.LeftAxe)
+                        if (realm != ERealm.Midgard) { return false; }
+                        if (type == EObjectType.Axe || type == EObjectType.LeftAxe)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Battlesongs:
+                case EProperty.Skill_Battlesongs:
                     {
-                        if (charClass != eCharacterClass.Skald) { return false; }
-                        if (type == eObjectType.Sword || type == eObjectType.Axe || type == eObjectType.Hammer || (type == eObjectType.Shield && this.Type_Damage < 3))
+                        if (charClass != EPlayerClass.Skald) { return false; }
+                        if (type == EObjectType.Sword || type == EObjectType.Axe || type == EObjectType.Hammer || (type == EObjectType.Shield && this.Type_Damage < 3))
                             return true;
                         break;
                     }
-                case eProperty.Skill_BeastCraft:
+                case EProperty.Skill_BeastCraft:
                     {
-                        if (charClass != eCharacterClass.Hunter) { return false; }
-                        if (type == eObjectType.Spear)
+                        if (charClass != EPlayerClass.Hunter) { return false; }
+                        if (type == EObjectType.Spear)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Blades:
+                case EProperty.Skill_Blades:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
 
-                        if (type == eObjectType.Blades)
+                        if (type == EObjectType.Blades)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Blunt:
+                case EProperty.Skill_Blunt:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Bard &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Warden)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Bard &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Warden)
                         {
                             return false;
                         }
 
-                        if (type == eObjectType.Blunt)
+                        if (type == EObjectType.Blunt)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Celtic_Dual:
+                case EProperty.Skill_Celtic_Dual:
                     {
-                        if (charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Blademaster)
+                        if (charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Piercing || type == eObjectType.Blades || type == eObjectType.Blunt)
+                        if (type == EObjectType.Piercing || type == EObjectType.Blades || type == EObjectType.Blunt)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Celtic_Spear:
+                case EProperty.Skill_Celtic_Spear:
                     {
-                        if (charClass != eCharacterClass.Hero) { return false; }
-                        if (type == eObjectType.CelticSpear)
+                        if (charClass != EPlayerClass.Hero) { return false; }
+                        if (type == EObjectType.CelticSpear)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Chants:
+                case EProperty.Skill_Chants:
                     {
                         return false;
                     }
-                case eProperty.Skill_Critical_Strike:
+                case EProperty.Skill_Critical_Strike:
                     {
-                        if (charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Piercing || type == eObjectType.SlashingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.Blades || type == eObjectType.Sword || type == eObjectType.Axe || type == eObjectType.LeftAxe)
+                        if (type == EObjectType.Piercing || type == EObjectType.SlashingWeapon || type == EObjectType.ThrustWeapon || type == EObjectType.Blades || type == EObjectType.Sword || type == EObjectType.Axe || type == EObjectType.LeftAxe)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Cross_Bows:
+                case EProperty.Skill_Cross_Bows:
                     {
-                        if (type == eObjectType.Crossbow)
+                        if (type == EObjectType.Crossbow)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Crushing:
+                case EProperty.Skill_Crushing:
                     {
-                        if (realm != eRealm.Albion || type == eObjectType.Flexible) { return false; }
-                        if (type == eObjectType.CrushingWeapon ||
-                            ((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Crush))
+                        if (realm != ERealm.Albion || type == EObjectType.Flexible) { return false; }
+                        if (type == EObjectType.CrushingWeapon ||
+                            ((type == EObjectType.TwoHandedWeapon || type == EObjectType.PolearmWeapon) && this.Type_Damage == (int)EDamageType.Crush))
                             return true;
                         break;
                     }
-                case eProperty.Skill_Dual_Wield:
+                case EProperty.Skill_Dual_Wield:
                     {
-                        if (charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Berserker)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Berserker)
                         {
                             return false;
                         }
 
-                        if (type == eObjectType.SlashingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.CrushingWeapon)
+                        if (type == EObjectType.SlashingWeapon || type == EObjectType.ThrustWeapon || type == EObjectType.CrushingWeapon)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Envenom:
+                case EProperty.Skill_Envenom:
                     {
-                        if (charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
-                        if (type == eObjectType.SlashingWeapon || type == eObjectType.ThrustWeapon)
+                        if (type == EObjectType.SlashingWeapon || type == EObjectType.ThrustWeapon)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Flexible_Weapon:
+                case EProperty.Skill_Flexible_Weapon:
                     {
-                        if (charClass != eCharacterClass.Reaver) { return false; }
-                        if (type == eObjectType.Flexible || type == eObjectType.Shield)
+                        if (charClass != EPlayerClass.Reaver) { return false; }
+                        if (type == EObjectType.Flexible || type == EObjectType.Shield)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Hammer:
+                case EProperty.Skill_Hammer:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Hammer)
+                        if (type == EObjectType.Hammer)
                             return true;
                         break;
                     }
-                case eProperty.Skill_HandToHand:
+                case EProperty.Skill_HandToHand:
                     {
-                        if (charClass != eCharacterClass.Savage) { return false; }
-                        if (type == eObjectType.HandToHand)
+                        if (charClass != EPlayerClass.Savage) { return false; }
+                        if (type == EObjectType.HandToHand)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Instruments:
+                case EProperty.Skill_Instruments:
                     {
-                        if (charClass != eCharacterClass.Minstrel) { return false; }
-                        if (type == eObjectType.Instrument)
+                        if (charClass != EPlayerClass.Minstrel) { return false; }
+                        if (type == EObjectType.Instrument)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Large_Weapon:
+                case EProperty.Skill_Large_Weapon:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero)
                         {
                             return false;
                         }
-                        if (type == eObjectType.LargeWeapons)
+                        if (type == EObjectType.LargeWeapons)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Left_Axe:
+                case EProperty.Skill_Left_Axe:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Shadowblade)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Shadowblade)
                         {
                             return false;
                         }
                         if (this.Item_Type == Slot.TWOHAND) return false;
-                        if (type == eObjectType.Axe || type == eObjectType.LeftAxe)
+                        if (type == EObjectType.Axe || type == EObjectType.LeftAxe)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Music:
+                case EProperty.Skill_Music:
                     {
-                        if (charClass != eCharacterClass.Bard)
+                        if (charClass != EPlayerClass.Bard)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Blades || type == eObjectType.Blunt || (type == eObjectType.Shield && this.Type_Damage == 1) || type == eObjectType.Instrument)
+                        if (type == EObjectType.Blades || type == EObjectType.Blunt || (type == EObjectType.Shield && this.Type_Damage == 1) || type == EObjectType.Instrument)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Nightshade:
+                case EProperty.Skill_Nightshade:
                     {
-                        if (charClass != eCharacterClass.Nightshade)
+                        if (charClass != EPlayerClass.Nightshade)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Blades || type == eObjectType.Piercing || type == eObjectType.Shield)
+                        if (type == EObjectType.Blades || type == EObjectType.Piercing || type == EObjectType.Shield)
                             return true;
                         break;
                     }
-                case eProperty.Skill_OdinsWill:
+                case EProperty.Skill_OdinsWill:
                     {
                         return false;
-                        if (type == eObjectType.Sword || type == eObjectType.Spear || type == eObjectType.Shield)
+                        if (type == EObjectType.Sword || type == EObjectType.Spear || type == EObjectType.Shield)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Parry:
-                    if (charClass != eCharacterClass.Berserker &&  //midgard
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Blademaster && //hibernia
-                            charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Valewalker &&
-                            charClass != eCharacterClass.Warden &&
-                            charClass != eCharacterClass.Armsman && //albion
-                            charClass != eCharacterClass.Friar &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver)
+                case EProperty.Skill_Parry:
+                    if (charClass != EPlayerClass.Berserker &&  //midgard
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Blademaster && //hibernia
+                            charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver)
                     {
                         return false;
                     }
                     return true;
-                case eProperty.Skill_Pathfinding:
+                case EProperty.Skill_Pathfinding:
                     {
-                        if (charClass != eCharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
-                        if (type == eObjectType.RecurvedBow || type == eObjectType.Piercing || type == eObjectType.Blades)
+                        if (type == EObjectType.RecurvedBow || type == EObjectType.Piercing || type == EObjectType.Blades)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Piercing:
+                case EProperty.Skill_Piercing:
                     {
-                        if (charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Piercing)
+                        if (type == EObjectType.Piercing)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Polearms:
+                case EProperty.Skill_Polearms:
                     {
-                        if (charClass != eCharacterClass.Armsman) { return false; }
-                        if (type == eObjectType.PolearmWeapon)
+                        if (charClass != EPlayerClass.Armsman) { return false; }
+                        if (type == EObjectType.PolearmWeapon)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Savagery:
+                case EProperty.Skill_Savagery:
                     {
-                        if (charClass != eCharacterClass.Savage) { return false; }
-                        if (type == eObjectType.Sword || type == eObjectType.Axe || type == eObjectType.Hammer || type == eObjectType.HandToHand)
+                        if (charClass != EPlayerClass.Savage) { return false; }
+                        if (type == EObjectType.Sword || type == EObjectType.Axe || type == EObjectType.Hammer || type == EObjectType.HandToHand)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Scythe:
+                case EProperty.Skill_Scythe:
                     {
-                        if (charClass != eCharacterClass.Valewalker) { return false; }
-                        if (type == eObjectType.Scythe)
+                        if (charClass != EPlayerClass.Valewalker) { return false; }
+                        if (type == EObjectType.Scythe)
                             return true;
                         break;
                     }
 
-                case eProperty.Skill_VampiiricEmbrace:
-                case eProperty.Skill_ShadowMastery:
+                case EProperty.Skill_VampiiricEmbrace:
+                case EProperty.Skill_ShadowMastery:
                     {
                         return false;
-                        if (type == eObjectType.Piercing)
+                        if (type == EObjectType.Piercing)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Shields:
+                case EProperty.Skill_Shields:
                     {
-                        if (charClass != eCharacterClass.Thane &&  //midgard
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Champion && //hibernia
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Armsman && //albion
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Thane &&  //midgard
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Champion && //hibernia
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Shield)
+                        if (type == EObjectType.Shield)
                             return true;
                         break;
                     }
-                case eProperty.Skill_ShortBow:
+                case EProperty.Skill_ShortBow:
                     {
                         return false;
                     }
-                case eProperty.Skill_Slashing:
+                case EProperty.Skill_Slashing:
                     {
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
 
-                        if (type == eObjectType.Flexible)
+                        if (type == EObjectType.Flexible)
                             return false;
-                        if (type == eObjectType.SlashingWeapon ||
-                            ((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Slash))
+                        if (type == EObjectType.SlashingWeapon ||
+                            ((type == EObjectType.TwoHandedWeapon || type == EObjectType.PolearmWeapon) && this.Type_Damage == (int)EDamageType.Slash))
                             return true;
                         break;
                     }
-                case eProperty.Skill_SoulRending:
+                case EProperty.Skill_SoulRending:
                     {
-                        if (charClass != eCharacterClass.Reaver) { return false; }
-                        if (type == eObjectType.SlashingWeapon || type == eObjectType.CrushingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.Flexible || type == eObjectType.Shield)
+                        if (charClass != EPlayerClass.Reaver) { return false; }
+                        if (type == EObjectType.SlashingWeapon || type == EObjectType.CrushingWeapon || type == EObjectType.ThrustWeapon || type == EObjectType.Flexible || type == EObjectType.Shield)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Spear:
+                case EProperty.Skill_Spear:
                     {
-                        if (charClass != eCharacterClass.Hunter) { return false; }
-                        if (type == eObjectType.Spear)
+                        if (charClass != EPlayerClass.Hunter) { return false; }
+                        if (type == EObjectType.Spear)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Stealth:
+                case EProperty.Skill_Stealth:
                     {
-                        if (charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Longbow || type == eObjectType.RecurvedBow || type == eObjectType.CompositeBow || (realm == eRealm.Albion && type == eObjectType.Shield && this.Type_Damage == 1) || type == eObjectType.Spear || type == eObjectType.Sword || type == eObjectType.Axe || type == eObjectType.LeftAxe || type == eObjectType.SlashingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.Piercing || type == eObjectType.Blades || (realm == eRealm.Albion && type == eObjectType.Instrument))
+                        if (type == EObjectType.Longbow || type == EObjectType.RecurvedBow || type == EObjectType.CompositeBow || (realm == ERealm.Albion && type == EObjectType.Shield && this.Type_Damage == 1) || type == EObjectType.Spear || type == EObjectType.Sword || type == EObjectType.Axe || type == EObjectType.LeftAxe || type == EObjectType.SlashingWeapon || type == EObjectType.ThrustWeapon || type == EObjectType.Piercing || type == EObjectType.Blades || (realm == ERealm.Albion && type == EObjectType.Instrument))
                             return true;
                         break;
                     }
-                case eProperty.Skill_Stormcalling:
+                case EProperty.Skill_Stormcalling:
                     {
-                        if (charClass != eCharacterClass.Thane) { return false; }
-                        if (type == eObjectType.Sword || type == eObjectType.Axe || type == eObjectType.Hammer || type == eObjectType.Shield)
+                        if (charClass != EPlayerClass.Thane) { return false; }
+                        if (type == EObjectType.Sword || type == EObjectType.Axe || type == EObjectType.Hammer || type == EObjectType.Shield)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Sword:
+                case EProperty.Skill_Sword:
                     {
-                        if (charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior)
+                        if (charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Sword)
+                        if (type == EObjectType.Sword)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Thrusting:
+                case EProperty.Skill_Thrusting:
                     {
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Flexible)
+                        if (type == EObjectType.Flexible)
                             return false;
-                        if (type == eObjectType.ThrustWeapon ||
-                            ((type == eObjectType.TwoHandedWeapon || type == eObjectType.PolearmWeapon) && this.Type_Damage == (int)eDamageType.Thrust))
+                        if (type == EObjectType.ThrustWeapon ||
+                            ((type == EObjectType.TwoHandedWeapon || type == EObjectType.PolearmWeapon) && this.Type_Damage == (int)EDamageType.Thrust))
                             return true;
                         break;
                     }
-                case eProperty.Skill_Two_Handed:
+                case EProperty.Skill_Two_Handed:
                     {
-                        if (charClass != eCharacterClass.Armsman &&
-                            charClass != eCharacterClass.Paladin)
+                        if (charClass != EPlayerClass.Armsman &&
+                            charClass != EPlayerClass.Paladin)
                         {
                             return false;
                         }
-                        if (type == eObjectType.TwoHandedWeapon)
+                        if (type == EObjectType.TwoHandedWeapon)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Valor:
+                case EProperty.Skill_Valor:
                     {
-                        if (charClass != eCharacterClass.Champion) { return false; }
-                        if (type == eObjectType.Blades || type == eObjectType.Piercing || type == eObjectType.Blunt || type == eObjectType.LargeWeapons || type == eObjectType.Shield)
+                        if (charClass != EPlayerClass.Champion) { return false; }
+                        if (type == EObjectType.Blades || type == EObjectType.Piercing || type == EObjectType.Blunt || type == EObjectType.LargeWeapons || type == EObjectType.Shield)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Thrown_Weapons:
+                case EProperty.Skill_Thrown_Weapons:
                     {
                         return false;
                     }
-                case eProperty.Skill_Pacification:
+                case EProperty.Skill_Pacification:
                     {
-                        if (charClass != eCharacterClass.Healer) { return false; }
-                        if (type == eObjectType.Hammer)
+                        if (charClass != EPlayerClass.Healer) { return false; }
+                        if (type == EObjectType.Hammer)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Dementia:
+                case EProperty.Skill_Dementia:
                     {
                         return false;
-                        if (type == eObjectType.Piercing)
+                        if (type == EObjectType.Piercing)
                             return true;
                         break;
                     }
-                case eProperty.AllArcherySkills:
+                case EProperty.AllArcherySkills:
                     {
-                        if (charClass != eCharacterClass.Scout &&
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Ranger)
+                        if (charClass != EPlayerClass.Scout &&
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Ranger)
                         {
                             return false;
                         }
-                        if (type == eObjectType.CompositeBow || type == eObjectType.Longbow || type == eObjectType.RecurvedBow)
+                        if (type == EObjectType.CompositeBow || type == EObjectType.Longbow || type == EObjectType.RecurvedBow)
                             return true;
                         break;
                     }
-                case eProperty.AllDualWieldingSkills:
+                case EProperty.AllDualWieldingSkills:
                     {
-                        if (charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Berserker &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Blademaster &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary)
+                        if (charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Berserker &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Blademaster &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Axe || type == eObjectType.Sword || type == eObjectType.Hammer || type == eObjectType.LeftAxe || type == eObjectType.SlashingWeapon || type == eObjectType.CrushingWeapon || type == eObjectType.ThrustWeapon || type == eObjectType.Piercing || type == eObjectType.Blades || type == eObjectType.Blunt)
+                        if (type == EObjectType.Axe || type == EObjectType.Sword || type == EObjectType.Hammer || type == EObjectType.LeftAxe || type == EObjectType.SlashingWeapon || type == EObjectType.CrushingWeapon || type == EObjectType.ThrustWeapon || type == EObjectType.Piercing || type == EObjectType.Blades || type == EObjectType.Blunt)
                             return true;
                         break;
                     }
-                case eProperty.AllMagicSkills:
+                case EProperty.AllMagicSkills:
                     {
-                        if (charClass != eCharacterClass.Cabalist && //albion
-                            charClass != eCharacterClass.Cleric &&
-                            charClass != eCharacterClass.Necromancer &&
-                            charClass != eCharacterClass.Sorcerer &&
-                            charClass != eCharacterClass.Theurgist &&
-                            charClass != eCharacterClass.Wizard &&
-                            charClass != eCharacterClass.Animist && //hibernia
-                            charClass != eCharacterClass.Eldritch &&
-                            charClass != eCharacterClass.Enchanter &&
-                            charClass != eCharacterClass.Mentalist &&
-                            charClass != eCharacterClass.Valewalker &&
-                            charClass != eCharacterClass.Bonedancer && //midgard
-                            charClass != eCharacterClass.Runemaster &&
-                            charClass != eCharacterClass.Spiritmaster)
+                        if (charClass != EPlayerClass.Cabalist && //albion
+                            charClass != EPlayerClass.Cleric &&
+                            charClass != EPlayerClass.Necromancer &&
+                            charClass != EPlayerClass.Sorcerer &&
+                            charClass != EPlayerClass.Theurgist &&
+                            charClass != EPlayerClass.Wizard &&
+                            charClass != EPlayerClass.Animist && //hibernia
+                            charClass != EPlayerClass.Eldritch &&
+                            charClass != EPlayerClass.Enchanter &&
+                            charClass != EPlayerClass.Mentalist &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Bonedancer && //midgard
+                            charClass != EPlayerClass.Runemaster &&
+                            charClass != EPlayerClass.Spiritmaster)
                         {
                             return false;
                         }
                         //scouts, armsmen, paladins, mercs, blademasters, heroes, zerks, warriors do not need this.
-                        if (type == eObjectType.Longbow || type == eObjectType.CelticSpear || type == eObjectType.PolearmWeapon || type == eObjectType.TwoHandedWeapon || type == eObjectType.Crossbow || (type == eObjectType.Shield && this.Type_Damage > 2))
+                        if (type == EObjectType.Longbow || type == EObjectType.CelticSpear || type == EObjectType.PolearmWeapon || type == EObjectType.TwoHandedWeapon || type == EObjectType.Crossbow || (type == EObjectType.Shield && this.Type_Damage > 2))
                             return false;
                         else
                             return true;
                     }
-                case eProperty.AllMeleeWeaponSkills:
+                case EProperty.AllMeleeWeaponSkills:
                     {
-                        if (charClass != eCharacterClass.Berserker &&  //midgard
-                            charClass != eCharacterClass.Hunter &&
-                            charClass != eCharacterClass.Savage &&
-                            charClass != eCharacterClass.Shadowblade &&
-                            charClass != eCharacterClass.Skald &&
-                            charClass != eCharacterClass.Thane &&
-                            charClass != eCharacterClass.Warrior &&
-                            charClass != eCharacterClass.Blademaster && //hibernia
-                            charClass != eCharacterClass.Champion &&
-                            charClass != eCharacterClass.Hero &&
-                            charClass != eCharacterClass.Nightshade &&
-                            charClass != eCharacterClass.Ranger &&
-                            charClass != eCharacterClass.Valewalker &&
-                            charClass != eCharacterClass.Warden &&
-                            charClass != eCharacterClass.Armsman && //albion
-                            charClass != eCharacterClass.Friar &&
-                            charClass != eCharacterClass.Infiltrator &&
-                            charClass != eCharacterClass.Mercenary &&
-                            charClass != eCharacterClass.Minstrel &&
-                            charClass != eCharacterClass.Paladin &&
-                            charClass != eCharacterClass.Reaver &&
-                            charClass != eCharacterClass.Scout)
+                        if (charClass != EPlayerClass.Berserker &&  //midgard
+                            charClass != EPlayerClass.Hunter &&
+                            charClass != EPlayerClass.Savage &&
+                            charClass != EPlayerClass.Shadowblade &&
+                            charClass != EPlayerClass.Skald &&
+                            charClass != EPlayerClass.Thane &&
+                            charClass != EPlayerClass.Warrior &&
+                            charClass != EPlayerClass.Blademaster && //hibernia
+                            charClass != EPlayerClass.Champion &&
+                            charClass != EPlayerClass.Hero &&
+                            charClass != EPlayerClass.Nightshade &&
+                            charClass != EPlayerClass.Ranger &&
+                            charClass != EPlayerClass.Valewalker &&
+                            charClass != EPlayerClass.Warden &&
+                            charClass != EPlayerClass.Armsman && //albion
+                            charClass != EPlayerClass.Friar &&
+                            charClass != EPlayerClass.Infiltrator &&
+                            charClass != EPlayerClass.Mercenary &&
+                            charClass != EPlayerClass.Minstrel &&
+                            charClass != EPlayerClass.Paladin &&
+                            charClass != EPlayerClass.Reaver &&
+                            charClass != EPlayerClass.Scout)
                         {
                             return false;
                         }
-                        if (type == eObjectType.Staff && realm != eRealm.Albion)
+                        if (type == EObjectType.Staff && realm != ERealm.Albion)
                             return false;
-                        else if (type == eObjectType.Staff && this.Description != "friar") // do not add if caster staff
+                        else if (type == EObjectType.Staff && this.Description != "friar") // do not add if caster staff
                             return false;
-                        else if (type == eObjectType.Longbow || type == eObjectType.CompositeBow || type == eObjectType.RecurvedBow || type == eObjectType.Crossbow || type == eObjectType.Fired || type == eObjectType.Instrument)
+                        else if (type == EObjectType.Longbow || type == EObjectType.CompositeBow || type == EObjectType.RecurvedBow || type == EObjectType.Crossbow || type == EObjectType.Fired || type == EObjectType.Instrument)
                             return false;
                         else
                             return true;
                     }
-                case eProperty.Skill_Aura_Manipulation: //Maulers
+                case EProperty.Skill_Aura_Manipulation: //Maulers
                     {
                         return false;
-                        if (type == eObjectType.MaulerStaff || type == eObjectType.FistWraps)
+                        if (type == EObjectType.MaulerStaff || type == EObjectType.FistWraps)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Magnetism: //Maulers
+                case EProperty.Skill_Magnetism: //Maulers
                     {
                         return false;
-                        if (type == eObjectType.FistWraps || type == eObjectType.MaulerStaff)
+                        if (type == EObjectType.FistWraps || type == EObjectType.MaulerStaff)
                             return true;
                         break;
                     }
-                case eProperty.Skill_MaulerStaff: //Maulers
+                case EProperty.Skill_MaulerStaff: //Maulers
                     {
                         return false;
-                        if (type == eObjectType.MaulerStaff)
+                        if (type == EObjectType.MaulerStaff)
                             return true;
                         break;
                     }
-                case eProperty.Skill_Power_Strikes: //Maulers
+                case EProperty.Skill_Power_Strikes: //Maulers
                     {
                         return false;
-                        if (type == eObjectType.MaulerStaff || type == eObjectType.FistWraps)
+                        if (type == EObjectType.MaulerStaff || type == EObjectType.FistWraps)
                             return true;
                         break;
                     }
-                case eProperty.Skill_FistWraps: //Maulers
+                case EProperty.Skill_FistWraps: //Maulers
                     {
                         return false;
-                        if (type == eObjectType.FistWraps)
+                        if (type == EObjectType.FistWraps)
                             return true;
                         break;
                     }
@@ -4390,28 +4353,28 @@ namespace DOL.GS {
             return false;
         }
 
-        private bool StatIsValidForRealm(eProperty property)
+        private bool StatIsValidForRealm(EProperty property)
         {
             switch (property)
             {
-                case eProperty.Piety:
-                case eProperty.PieCapBonus:
+                case EProperty.Piety:
+                case EProperty.PieCapBonus:
                     {
-                        if (this.Realm == (int)eRealm.Hibernia)
+                        if (this.Realm == (int)ERealm.Hibernia)
                             return false;
                         break;
                     }
-                case eProperty.Empathy:
-                case eProperty.EmpCapBonus:
+                case EProperty.Empathy:
+                case EProperty.EmpCapBonus:
                     {
-                        if (this.Realm == (int)eRealm.Midgard || this.Realm == (int)eRealm.Albion)
+                        if (this.Realm == (int)ERealm.Midgard || this.Realm == (int)ERealm.Albion)
                             return false;
                         break;
                     }
-                case eProperty.Intelligence:
-                case eProperty.IntCapBonus:
+                case EProperty.Intelligence:
+                case EProperty.IntCapBonus:
                     {
-                        if (this.Realm == (int)eRealm.Midgard)
+                        if (this.Realm == (int)ERealm.Midgard)
                             return false;
                         break;
                     }
@@ -4419,122 +4382,122 @@ namespace DOL.GS {
             return true;
         }
 
-        private bool StatIsValidForArmor(eProperty property)
+        private bool StatIsValidForArmor(EProperty property)
         {
-            eRealm realm = (eRealm)this.Realm;
-            eObjectType type = (eObjectType)this.Object_Type;
+            ERealm realm = (ERealm)this.Realm;
+            EObjectType type = (EObjectType)this.Object_Type;
 
             switch (property)
             {
-                case eProperty.Intelligence:
-                case eProperty.IntCapBonus:
+                case EProperty.Intelligence:
+                case EProperty.IntCapBonus:
                     {
-                        if (realm == eRealm.Midgard)
+                        if (realm == ERealm.Midgard)
                             return false;
 
-                        if (realm == eRealm.Hibernia && this.Level < 20 && type != eObjectType.Reinforced && type != eObjectType.Cloth)
+                        if (realm == ERealm.Hibernia && this.Level < 20 && type != EObjectType.Reinforced && type != EObjectType.Cloth)
                             return false;
 
-                        if (realm == eRealm.Hibernia && this.Level >= 20 && type != eObjectType.Scale && type != eObjectType.Cloth)
+                        if (realm == ERealm.Hibernia && this.Level >= 20 && type != EObjectType.Scale && type != EObjectType.Cloth)
                             return false;
 
-                        if (type != eObjectType.Cloth)
+                        if (type != EObjectType.Cloth)
                             return false;
 
                         break;
                     }
-                case eProperty.Acuity:
-                case eProperty.AcuCapBonus:
-                case eProperty.PowerPool:
-                case eProperty.PowerPoolCapBonus:
+                case EProperty.Acuity:
+                case EProperty.AcuCapBonus:
+                case EProperty.PowerPool:
+                case EProperty.PowerPoolCapBonus:
                     {
-                        if (realm == eRealm.Albion && this.Level >= 20 && type == eObjectType.Studded)
+                        if (realm == ERealm.Albion && this.Level >= 20 && type == EObjectType.Studded)
                             return false;
 
-                        if (realm == eRealm.Midgard && this.Level >= 10 && type == eObjectType.Leather)
+                        if (realm == ERealm.Midgard && this.Level >= 10 && type == EObjectType.Leather)
                             return false;
 
-                        if (realm == eRealm.Midgard && this.Level >= 20 && type == eObjectType.Studded)
+                        if (realm == ERealm.Midgard && this.Level >= 20 && type == EObjectType.Studded)
                             return false;
 
                         break;
                     }
-                case eProperty.Piety:
-                case eProperty.PieCapBonus:
+                case EProperty.Piety:
+                case EProperty.PieCapBonus:
                     {
-                        if (realm == eRealm.Albion)
+                        if (realm == ERealm.Albion)
                         {
-                            if (type == eObjectType.Leather && this.Level >= 10)
+                            if (type == EObjectType.Leather && this.Level >= 10)
                                 return false;
 
-                            if (type == eObjectType.Studded && this.Level >= 20)
+                            if (type == EObjectType.Studded && this.Level >= 20)
                                 return false;
 
-                            if (type == eObjectType.Chain && this.Level < 10)
+                            if (type == EObjectType.Chain && this.Level < 10)
                                 return false;
                         }
-                        else if (realm == eRealm.Midgard)
+                        else if (realm == ERealm.Midgard)
                         {
-                            if (type == eObjectType.Leather && this.Level >= 10)
+                            if (type == EObjectType.Leather && this.Level >= 10)
                                 return false;
 
-                            if (type == eObjectType.Studded && this.Level >= 20)
+                            if (type == EObjectType.Studded && this.Level >= 20)
                                 return false;
 
-                            if (type == eObjectType.Chain && this.Level < 10)
+                            if (type == EObjectType.Chain && this.Level < 10)
                                 return false;
                         }
-                        else if (realm == eRealm.Hibernia)
+                        else if (realm == ERealm.Hibernia)
                         {
                             return false;
                         }
                         break;
                     }
-                case eProperty.Charisma:
-                case eProperty.ChaCapBonus:
+                case EProperty.Charisma:
+                case EProperty.ChaCapBonus:
                     {
-                        if (realm == eRealm.Albion)
+                        if (realm == ERealm.Albion)
                         {
-                            if (type == eObjectType.Leather && this.Level >= 10)
+                            if (type == EObjectType.Leather && this.Level >= 10)
                                 return false;
 
-                            if (type == eObjectType.Studded && this.Level >= 20)
+                            if (type == EObjectType.Studded && this.Level >= 20)
                                 return false;
 
-                            if (type == eObjectType.Chain && this.Level < 20)
+                            if (type == EObjectType.Chain && this.Level < 20)
                                 return false;
                         }
-                        if (realm == eRealm.Midgard)
+                        if (realm == ERealm.Midgard)
                         {
-                            if (type == eObjectType.Studded && this.Level >= 20)
+                            if (type == EObjectType.Studded && this.Level >= 20)
                                 return false;
 
-                            if (type == eObjectType.Chain && this.Level < 20)
+                            if (type == EObjectType.Chain && this.Level < 20)
                                 return false;
                         }
-                        else if (realm == eRealm.Hibernia)
+                        else if (realm == ERealm.Hibernia)
                         {
-                            if (type == eObjectType.Leather && this.Level >= 15)
+                            if (type == EObjectType.Leather && this.Level >= 15)
                                 return false;
 
-                            if (type == eObjectType.Reinforced && this.Level < 15)
+                            if (type == EObjectType.Reinforced && this.Level < 15)
                                 return false;
                         }
                         break;
                     }
-                case eProperty.Empathy:
-                case eProperty.EmpCapBonus:
+                case EProperty.Empathy:
+                case EProperty.EmpCapBonus:
                     {
-                        if (realm != eRealm.Hibernia)
+                        if (realm != ERealm.Hibernia)
                             return false;
 
-                        if (type == eObjectType.Leather && this.Level >= 10)
+                        if (type == EObjectType.Leather && this.Level >= 10)
                             return false;
 
-                        if (type == eObjectType.Reinforced && this.Level >= 20)
+                        if (type == EObjectType.Reinforced && this.Level >= 20)
                             return false;
 
-                        if (type == eObjectType.Scale && this.Level < 20)
+                        if (type == EObjectType.Scale && this.Level < 20)
                             return false;
 
                         break;
@@ -4543,106 +4506,106 @@ namespace DOL.GS {
             return true;
         }
 
-        private bool StatIsValidForWeapon(eProperty property)
+        private bool StatIsValidForWeapon(EProperty property)
         {
-            eRealm realm = (eRealm)this.Realm;
-            eObjectType type = (eObjectType)this.Object_Type;
+            ERealm realm = (ERealm)this.Realm;
+            EObjectType type = (EObjectType)this.Object_Type;
 
             switch (type)
             {
-                case eObjectType.Staff:
+                case EObjectType.Staff:
                     {
-                        if ((property == eProperty.Piety || property == eProperty.PieCapBonus) && realm == eRealm.Hibernia)
+                        if ((property == EProperty.Piety || property == EProperty.PieCapBonus) && realm == ERealm.Hibernia)
                             return false;
-                        else if ((property == eProperty.Piety || property == eProperty.PieCapBonus) && realm == eRealm.Albion && this.Description != "friar")
+                        else if ((property == EProperty.Piety || property == EProperty.PieCapBonus) && realm == ERealm.Albion && this.Description != "friar")
                             return false; // caster staff
-                        else if (property == eProperty.Charisma || property == eProperty.Empathy || property == eProperty.ChaCapBonus || property == eProperty.EmpCapBonus)
+                        else if (property == EProperty.Charisma || property == EProperty.Empathy || property == EProperty.ChaCapBonus || property == EProperty.EmpCapBonus)
                             return false;
-                        else if ((property == eProperty.Intelligence || property == eProperty.IntCapBonus || property == eProperty.AcuCapBonus) && this.Description == "friar")
+                        else if ((property == EProperty.Intelligence || property == EProperty.IntCapBonus || property == EProperty.AcuCapBonus) && this.Description == "friar")
                             return false;
                         break;
                     }
 
-                case eObjectType.Shield:
+                case EObjectType.Shield:
                     {
-                        if ((realm == eRealm.Albion || realm == eRealm.Midgard) && (property == eProperty.Intelligence || property == eProperty.IntCapBonus || property == eProperty.Empathy || property == eProperty.EmpCapBonus))
+                        if ((realm == ERealm.Albion || realm == ERealm.Midgard) && (property == EProperty.Intelligence || property == EProperty.IntCapBonus || property == EProperty.Empathy || property == EProperty.EmpCapBonus))
                             return false;
-                        else if (realm == eRealm.Hibernia && (property == eProperty.Piety || property == eProperty.PieCapBonus))
+                        else if (realm == ERealm.Hibernia && (property == EProperty.Piety || property == EProperty.PieCapBonus))
                             return false;
-                        else if ((realm == eRealm.Albion || realm == eRealm.Hibernia) && this.Type_Damage > 1 && (property == eProperty.Charisma || property == eProperty.ChaCapBonus))
+                        else if ((realm == ERealm.Albion || realm == ERealm.Hibernia) && this.Type_Damage > 1 && (property == EProperty.Charisma || property == EProperty.ChaCapBonus))
                             return false;
-                        else if (realm == eRealm.Midgard && this.Type_Damage > 2 && (property == eProperty.Charisma || property == eProperty.ChaCapBonus))
+                        else if (realm == ERealm.Midgard && this.Type_Damage > 2 && (property == EProperty.Charisma || property == EProperty.ChaCapBonus))
                             return false;
-                        else if (this.Type_Damage > 2 && property == eProperty.MaxMana)
+                        else if (this.Type_Damage > 2 && property == EProperty.MaxMana)
                             return false;
 
                         break;
                     }
-                case eObjectType.Blades:
-                case eObjectType.Blunt:
+                case EObjectType.Blades:
+                case EObjectType.Blunt:
                     {
-                        if (property == eProperty.Piety || property == eProperty.PieCapBonus)
+                        if (property == EProperty.Piety || property == EProperty.PieCapBonus)
                             return false;
                         break;
                     }
-                case eObjectType.LargeWeapons:
-                case eObjectType.Piercing:
-                case eObjectType.Scythe:
+                case EObjectType.LargeWeapons:
+                case EObjectType.Piercing:
+                case EObjectType.Scythe:
                     {
-                        if (property == eProperty.Piety || property == eProperty.Empathy || property == eProperty.Charisma)
+                        if (property == EProperty.Piety || property == EProperty.Empathy || property == EProperty.Charisma)
                             return false;
                         break;
                     }
-                case eObjectType.CrushingWeapon:
+                case EObjectType.CrushingWeapon:
                     {
-                        if (property == eProperty.Intelligence || property == eProperty.IntCapBonus || property == eProperty.Empathy || property == eProperty.EmpCapBonus || property == eProperty.Charisma || property == eProperty.ChaCapBonus)
+                        if (property == EProperty.Intelligence || property == EProperty.IntCapBonus || property == EProperty.Empathy || property == EProperty.EmpCapBonus || property == EProperty.Charisma || property == EProperty.ChaCapBonus)
                             return false;
                         break;
                     }
-                case eObjectType.SlashingWeapon:
-                case eObjectType.ThrustWeapon:
-                case eObjectType.Hammer:
-                case eObjectType.Sword:
-                case eObjectType.Axe:
+                case EObjectType.SlashingWeapon:
+                case EObjectType.ThrustWeapon:
+                case EObjectType.Hammer:
+                case EObjectType.Sword:
+                case EObjectType.Axe:
                     {
-                        if (property == eProperty.Intelligence || property == eProperty.IntCapBonus || property == eProperty.Empathy || property == eProperty.EmpCapBonus || property == eProperty.AcuCapBonus || property == eProperty.Acuity)
+                        if (property == EProperty.Intelligence || property == EProperty.IntCapBonus || property == EProperty.Empathy || property == EProperty.EmpCapBonus || property == EProperty.AcuCapBonus || property == EProperty.Acuity)
                             return false;
                         break;
                     }
-                case eObjectType.TwoHandedWeapon:
-                case eObjectType.Flexible:
+                case EObjectType.TwoHandedWeapon:
+                case EObjectType.Flexible:
                     {
-                        if (property == eProperty.Intelligence || property == eProperty.IntCapBonus || property == eProperty.Empathy || property == eProperty.EmpCapBonus || property == eProperty.Charisma || property == eProperty.ChaCapBonus)
+                        if (property == EProperty.Intelligence || property == EProperty.IntCapBonus || property == EProperty.Empathy || property == EProperty.EmpCapBonus || property == EProperty.Charisma || property == EProperty.ChaCapBonus)
                             return false;
                         break;
                     }
-                case eObjectType.RecurvedBow:
-                case eObjectType.CompositeBow:
-                case eObjectType.Longbow:
-                case eObjectType.Crossbow:
-                case eObjectType.Fired:
+                case EObjectType.RecurvedBow:
+                case EObjectType.CompositeBow:
+                case EObjectType.Longbow:
+                case EObjectType.Crossbow:
+                case EObjectType.Fired:
                     {
-                        if (property == eProperty.Intelligence || property == eProperty.IntCapBonus || property == eProperty.Empathy || property == eProperty.EmpCapBonus || property == eProperty.Charisma || property == eProperty.ChaCapBonus ||
-                            property == eProperty.MaxMana || property == eProperty.PowerPool || property == eProperty.PowerPoolCapBonus || property == eProperty.AcuCapBonus || property == eProperty.Acuity || property == eProperty.Piety || property == eProperty.PieCapBonus)
+                        if (property == EProperty.Intelligence || property == EProperty.IntCapBonus || property == EProperty.Empathy || property == EProperty.EmpCapBonus || property == EProperty.Charisma || property == EProperty.ChaCapBonus ||
+                            property == EProperty.MaxMana || property == EProperty.PowerPool || property == EProperty.PowerPoolCapBonus || property == EProperty.AcuCapBonus || property == EProperty.Acuity || property == EProperty.Piety || property == EProperty.PieCapBonus)
                             return false;
                         break;
                     }
-                case eObjectType.Spear:
-                case eObjectType.CelticSpear:
-                case eObjectType.LeftAxe:
-                case eObjectType.PolearmWeapon:
-                case eObjectType.HandToHand:
-                case eObjectType.FistWraps: //Maulers
-                case eObjectType.MaulerStaff: //Maulers
+                case EObjectType.Spear:
+                case EObjectType.CelticSpear:
+                case EObjectType.LeftAxe:
+                case EObjectType.PolearmWeapon:
+                case EObjectType.HandToHand:
+                case EObjectType.FistWraps: //Maulers
+                case EObjectType.MaulerStaff: //Maulers
                     {
-                        if (property == eProperty.Intelligence || property == eProperty.IntCapBonus || property == eProperty.Empathy || property == eProperty.EmpCapBonus || property == eProperty.Charisma || property == eProperty.ChaCapBonus ||
-                            property == eProperty.MaxMana || property == eProperty.PowerPool || property == eProperty.PowerPoolCapBonus || property == eProperty.AcuCapBonus || property == eProperty.Acuity || property == eProperty.Piety || property == eProperty.PieCapBonus)
+                        if (property == EProperty.Intelligence || property == EProperty.IntCapBonus || property == EProperty.Empathy || property == EProperty.EmpCapBonus || property == EProperty.Charisma || property == EProperty.ChaCapBonus ||
+                            property == EProperty.MaxMana || property == EProperty.PowerPool || property == EProperty.PowerPoolCapBonus || property == EProperty.AcuCapBonus || property == EProperty.Acuity || property == EProperty.Piety || property == EProperty.PieCapBonus)
                             return false;
                         break;
                     }
-                case eObjectType.Instrument:
+                case EObjectType.Instrument:
                     {
-                        if (property == eProperty.Intelligence || property == eProperty.IntCapBonus || property == eProperty.Empathy || property == eProperty.EmpCapBonus || property == eProperty.Piety || property == eProperty.PieCapBonus)
+                        if (property == EProperty.Intelligence || property == EProperty.IntCapBonus || property == EProperty.Empathy || property == EProperty.EmpCapBonus || property == EProperty.Piety || property == EProperty.PieCapBonus)
                             return false;
                         break;
                     }
@@ -4650,9 +4613,9 @@ namespace DOL.GS {
             return true;
         }
 
-        private void WriteBonus(eProperty property, int amount)
+        private void WriteBonus(EProperty property, int amount)
         {
-            if (property == eProperty.AllFocusLevels)
+            if (property == EProperty.AllFocusLevels)
             {
                 amount = Math.Min(50, amount);
             }
@@ -4662,7 +4625,7 @@ namespace DOL.GS {
                 this.Bonus1 = amount;
                 this.Bonus1Type = (int)property;
 
-                if (property == eProperty.AllFocusLevels)
+                if (property == EProperty.AllFocusLevels)
                     this.Name = "Focus " + this.Name;
             }
             else if (this.Bonus2 == 0)
@@ -4687,7 +4650,7 @@ namespace DOL.GS {
             }
         }
 
-        private bool BonusExists(eProperty property)
+        private bool BonusExists(EProperty property)
         {
             if (this.Bonus1Type == (int)property ||
                 this.Bonus2Type == (int)property ||
@@ -4699,7 +4662,7 @@ namespace DOL.GS {
             return false;
         }
 
-        private int GetBonusAmount(eBonusType type, eProperty property)
+        private int GetBonusAmount(eBonusType type, EProperty property)
         {
             switch (type)
             {
@@ -4715,22 +4678,22 @@ namespace DOL.GS {
                 case eBonusType.Skill:
                     {
                         int max = (int)Util.Random(1, 4);
-                        if (property == eProperty.AllSkills ||
-                            property == eProperty.AllMagicSkills ||
-                            property == eProperty.AllDualWieldingSkills ||
-                            property == eProperty.AllMeleeWeaponSkills ||
-                            property == eProperty.AllArcherySkills)
+                        if (property == EProperty.AllSkills ||
+                            property == EProperty.AllMagicSkills ||
+                            property == EProperty.AllDualWieldingSkills ||
+                            property == EProperty.AllMeleeWeaponSkills ||
+                            property == EProperty.AllArcherySkills)
                             max = (int)Math.Ceiling((double)max / 2.0);
                         return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
                     }
                 case eBonusType.Stat:
                     {
-                        if (property == eProperty.MaxHealth)
+                        if (property == EProperty.MaxHealth)
                         {
                             int max = (int)Math.Ceiling(((double)this.Level * 4.0) / 4);
                             return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
                         }
-                        else if (property == eProperty.MaxMana)
+                        else if (property == EProperty.MaxMana)
                         {
                             int max = (int)Math.Ceiling(((double)this.Level / 2.0 + 1) / 4);
                             return Util.Random((int)Math.Ceiling((double)max / 2.0), max);
@@ -4743,9 +4706,9 @@ namespace DOL.GS {
                     }
                 case eBonusType.AdvancedStat:
                     {
-                        if (property == eProperty.MaxHealthCapBonus)
+                        if (property == EProperty.MaxHealthCapBonus)
                             return Util.Random(5, 25); // cap is 400
-                        else if (property == eProperty.PowerPoolCapBonus)
+                        else if (property == EProperty.PowerPoolCapBonus)
                             return Util.Random(1, 10); // cap is 50
                         else
                             return Util.Random(1, 6); // cap is 26
@@ -4898,7 +4861,7 @@ namespace DOL.GS {
             //Console.WriteLine($"Capped Uti: {GetTotalUtility()}");
             //write name of item based off of capped lines
             int utiLine = GetHighestUtilitySingleLine();
-            eProperty bonus = GetPropertyFromBonusLine(utiLine);
+            EProperty bonus = GetPropertyFromBonusLine(utiLine);
             //Console.WriteLine($"HighUti: {utiLine} bonus: {bonus}");
             WriteMagicalName(bonus);
             //Console.WriteLine($"Item name: {Name}");
@@ -5578,13 +5541,13 @@ namespace DOL.GS {
         #region generate item type
 
 
-        private static eObjectType GenerateObjectType(eRealm realm, eCharacterClass charClass, byte level)
+        private static EObjectType GenerateObjectType(ERealm realm, EPlayerClass charClass, byte level)
         {
             eGenerateType type = GetObjectTypeByWeight(level);
 
-            switch ((eRealm)realm)
+            switch ((ERealm)realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     {
                         int maxArmor = AlbionArmor.Length - 1;
                         int maxWeapon = AlbionWeapons.Length - 1;
@@ -5602,11 +5565,11 @@ namespace DOL.GS {
                         {
                             case eGenerateType.Armor: return GetAlbionArmorType(charClass, level);//AlbionArmor[Util.Random(0, maxArmor)];
                             case eGenerateType.Weapon: return GetAlbionWeapon(charClass);//AlbionWeapons[Util.Random(0, maxWeapon)];
-                            case eGenerateType.Magical: return eObjectType.Magical;
+                            case eGenerateType.Magical: return EObjectType.Magical;
                         }
                         break;
                     }
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     {
                         int maxArmor = MidgardArmor.Length - 1;
                         int maxWeapon = MidgardWeapons.Length - 1;
@@ -5623,11 +5586,11 @@ namespace DOL.GS {
                         {
                             case eGenerateType.Armor: return GetMidgardArmorType(charClass, level); //MidgardArmor[Util.Random(0, maxArmor)];
                             case eGenerateType.Weapon: return GetMidgardWeapon(charClass); //MidgardWeapons[Util.Random(0, maxWeapon)];
-                            case eGenerateType.Magical: return eObjectType.Magical;
+                            case eGenerateType.Magical: return EObjectType.Magical;
                         }
                         break;
                     }
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     {
                         int maxArmor = HiberniaArmor.Length - 1;
                         int maxWeapon = HiberniaWeapons.Length - 1;
@@ -5644,12 +5607,12 @@ namespace DOL.GS {
                         {
                             case eGenerateType.Armor: return GetHiberniaArmorType(charClass, level);//HiberniaArmor[Util.Random(0, maxArmor)];
                             case eGenerateType.Weapon: return GetHiberniaWeapon(charClass);//HiberniaWeapons[Util.Random(0, maxWeapon)];
-                            case eGenerateType.Magical: return eObjectType.Magical;
+                            case eGenerateType.Magical: return EObjectType.Magical;
                         }
                         break;
                     }
             }
-            return eObjectType.GenericItem;
+            return EObjectType.GenericItem;
         }
 
         private static eGenerateType GetObjectTypeByWeight(byte level)
@@ -5690,9 +5653,9 @@ namespace DOL.GS {
             return genTypes[Util.Random(genTypes.Count - 1)];
         }
 
-        public static eObjectType GetAlbionWeapon(eCharacterClass charClass)
+        public static EObjectType GetAlbionWeapon(EPlayerClass charClass)
         {
-            List<eObjectType> weaponTypes = new List<eObjectType>();
+            List<EObjectType> weaponTypes = new List<EObjectType>();
             /*
 			 * Albion Weapons
 			eObjectType.ThrustWeapon,
@@ -5712,108 +5675,108 @@ namespace DOL.GS {
             switch (charClass)
             {
                 //staff classes
-                case eCharacterClass.Cabalist:
-                case eCharacterClass.Necromancer:
-                case eCharacterClass.Sorcerer:
-                case eCharacterClass.Theurgist:
-                case eCharacterClass.Wizard:
-                    weaponTypes.Add(eObjectType.Staff);
+                case EPlayerClass.Cabalist:
+                case EPlayerClass.Necromancer:
+                case EPlayerClass.Sorcerer:
+                case EPlayerClass.Theurgist:
+                case EPlayerClass.Wizard:
+                    weaponTypes.Add(EObjectType.Staff);
                     break;
-                case eCharacterClass.Friar:
-                    weaponTypes.Add(eObjectType.Staff);
-                    weaponTypes.Add(eObjectType.Staff);
-                    weaponTypes.Add(eObjectType.Staff);
-                    weaponTypes.Add(eObjectType.CrushingWeapon);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Friar:
+                    weaponTypes.Add(EObjectType.Staff);
+                    weaponTypes.Add(EObjectType.Staff);
+                    weaponTypes.Add(EObjectType.Staff);
+                    weaponTypes.Add(EObjectType.CrushingWeapon);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Armsman:
-                    weaponTypes.Add(eObjectType.PolearmWeapon);
-                    weaponTypes.Add(eObjectType.PolearmWeapon);
-                    weaponTypes.Add(eObjectType.PolearmWeapon);
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.CrushingWeapon);
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.CrushingWeapon);
-                    weaponTypes.Add(eObjectType.TwoHandedWeapon);
-                    weaponTypes.Add(eObjectType.TwoHandedWeapon);
-                    weaponTypes.Add(eObjectType.Crossbow);
-                    weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Armsman:
+                    weaponTypes.Add(EObjectType.PolearmWeapon);
+                    weaponTypes.Add(EObjectType.PolearmWeapon);
+                    weaponTypes.Add(EObjectType.PolearmWeapon);
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.CrushingWeapon);
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.CrushingWeapon);
+                    weaponTypes.Add(EObjectType.TwoHandedWeapon);
+                    weaponTypes.Add(EObjectType.TwoHandedWeapon);
+                    weaponTypes.Add(EObjectType.Crossbow);
+                    weaponTypes.Add(EObjectType.Shield);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Paladin:
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.CrushingWeapon);
-                    weaponTypes.Add(eObjectType.TwoHandedWeapon);
-                    weaponTypes.Add(eObjectType.TwoHandedWeapon);
-                    weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Paladin:
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.CrushingWeapon);
+                    weaponTypes.Add(EObjectType.TwoHandedWeapon);
+                    weaponTypes.Add(EObjectType.TwoHandedWeapon);
+                    weaponTypes.Add(EObjectType.Shield);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Reaver:
-                    weaponTypes.Add(eObjectType.Flexible);
-                    weaponTypes.Add(eObjectType.Flexible);
-                    weaponTypes.Add(eObjectType.Flexible);
-                    weaponTypes.Add(eObjectType.Flexible);
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.CrushingWeapon);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Reaver:
+                    weaponTypes.Add(EObjectType.Flexible);
+                    weaponTypes.Add(EObjectType.Flexible);
+                    weaponTypes.Add(EObjectType.Flexible);
+                    weaponTypes.Add(EObjectType.Flexible);
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.CrushingWeapon);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Minstrel:
-                    weaponTypes.Add(eObjectType.Instrument);
-                    weaponTypes.Add(eObjectType.Instrument);
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Minstrel:
+                    weaponTypes.Add(EObjectType.Instrument);
+                    weaponTypes.Add(EObjectType.Instrument);
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Infiltrator:
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.Crossbow);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Infiltrator:
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.Crossbow);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Scout:
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.Longbow);
-                    weaponTypes.Add(eObjectType.Longbow);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Scout:
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.Longbow);
+                    weaponTypes.Add(EObjectType.Longbow);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Mercenary:
-                    weaponTypes.Add(eObjectType.Fired); //shortbow
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.CrushingWeapon);
-                    weaponTypes.Add(eObjectType.SlashingWeapon);
-                    weaponTypes.Add(eObjectType.ThrustWeapon);
-                    weaponTypes.Add(eObjectType.CrushingWeapon);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Mercenary:
+                    weaponTypes.Add(EObjectType.Fired); //shortbow
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.CrushingWeapon);
+                    weaponTypes.Add(EObjectType.SlashingWeapon);
+                    weaponTypes.Add(EObjectType.ThrustWeapon);
+                    weaponTypes.Add(EObjectType.CrushingWeapon);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Cleric:
-                    weaponTypes.Add(eObjectType.CrushingWeapon);
-                    weaponTypes.Add(eObjectType.Staff);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Cleric:
+                    weaponTypes.Add(EObjectType.CrushingWeapon);
+                    weaponTypes.Add(EObjectType.Staff);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
                 default:
-                    return eObjectType.Staff;
+                    return EObjectType.Staff;
             }
 
             //this list nonsense is kind of weird but we need to duplicate the 
             //items in the list to avoid apparent mid-number bias for random number gen
 
             //clone existing list
-            List<eObjectType> outputList = new List<eObjectType>(weaponTypes);
+            List<EObjectType> outputList = new List<EObjectType>(weaponTypes);
 
             //add duplicate values
-            foreach (eObjectType type in weaponTypes)
+            foreach (EObjectType type in weaponTypes)
             {
                 outputList.Add(type);
             }
@@ -5826,105 +5789,105 @@ namespace DOL.GS {
 
         }
 
-        public static eObjectType GetAlbionArmorType(eCharacterClass charClass, byte level)
+        public static EObjectType GetAlbionArmorType(EPlayerClass charClass, byte level)
         {
 
             switch (charClass)
             {
                 //staff classes
-                case eCharacterClass.Cabalist:
-                case eCharacterClass.Necromancer:
-                case eCharacterClass.Sorcerer:
-                case eCharacterClass.Theurgist:
-                case eCharacterClass.Wizard:
-                    return eObjectType.Cloth;
+                case EPlayerClass.Cabalist:
+                case EPlayerClass.Necromancer:
+                case EPlayerClass.Sorcerer:
+                case EPlayerClass.Theurgist:
+                case EPlayerClass.Wizard:
+                    return EObjectType.Cloth;
 
-                case eCharacterClass.Friar:
-                case eCharacterClass.Infiltrator:
-                    return eObjectType.Leather;
+                case EPlayerClass.Friar:
+                case EPlayerClass.Infiltrator:
+                    return EObjectType.Leather;
 
-                case eCharacterClass.Armsman:
+                case EPlayerClass.Armsman:
                     if (level < 5)
                     {
-                        return eObjectType.Studded;
+                        return EObjectType.Studded;
                     }
                     else if (level < 15)
                     {
-                        return eObjectType.Chain;
+                        return EObjectType.Chain;
                     }
                     else
                     {
-                        return eObjectType.Plate;
+                        return EObjectType.Plate;
                     }
 
-                case eCharacterClass.Paladin:
+                case EPlayerClass.Paladin:
                     if (level < 10)
                     {
-                        return eObjectType.Studded;
+                        return EObjectType.Studded;
                     }
                     else if (level < 20)
                     {
-                        return eObjectType.Chain;
+                        return EObjectType.Chain;
                     }
                     else
                     {
-                        return eObjectType.Plate;
+                        return EObjectType.Plate;
                     }
 
-                case eCharacterClass.Reaver:
-                case eCharacterClass.Mercenary:
+                case EPlayerClass.Reaver:
+                case EPlayerClass.Mercenary:
                     if (level < 10)
                     {
-                        return eObjectType.Studded;
+                        return EObjectType.Studded;
                     }
                     else
                     {
-                        return eObjectType.Chain;
+                        return EObjectType.Chain;
                     }
 
-                case eCharacterClass.Minstrel:
+                case EPlayerClass.Minstrel:
                     if (level < 10)
                     {
-                        return eObjectType.Leather;
+                        return EObjectType.Leather;
                     }
                     else if (level < 20)
                     {
-                        return eObjectType.Studded;
+                        return EObjectType.Studded;
                     }
                     else
                     {
-                        return eObjectType.Chain;
+                        return EObjectType.Chain;
                     }
 
-                case eCharacterClass.Scout:
+                case EPlayerClass.Scout:
                     if (level < 10)
                     {
-                        return eObjectType.Leather;
+                        return EObjectType.Leather;
                     }
-                    else { return eObjectType.Studded; }
+                    else { return EObjectType.Studded; }
 
-                case eCharacterClass.Cleric:
+                case EPlayerClass.Cleric:
                     if (level < 10)
                     {
-                        return eObjectType.Leather;
+                        return EObjectType.Leather;
                     }
                     else if (level < 20)
                     {
-                        return eObjectType.Studded;
+                        return EObjectType.Studded;
                     }
                     else
                     {
-                        return eObjectType.Chain;
+                        return EObjectType.Chain;
                     }
                 default:
-                    return eObjectType.Cloth;
+                    return EObjectType.Cloth;
             }
         }
 
-        public static eObjectType GetMidgardWeapon(eCharacterClass charClass)
+        public static EObjectType GetMidgardWeapon(EPlayerClass charClass)
         {
 
-            List<eObjectType> weaponTypes = new List<eObjectType>();
+            List<EObjectType> weaponTypes = new List<EObjectType>();
             /*
 			 * Midgard Weapons
 			eObjectType.Sword,
@@ -5942,94 +5905,94 @@ namespace DOL.GS {
             switch (charClass)
             {
                 //staff classes
-                case eCharacterClass.Bonedancer:
-                case eCharacterClass.Runemaster:
-                case eCharacterClass.Spiritmaster:
-                    weaponTypes.Add(eObjectType.Staff);
+                case EPlayerClass.Bonedancer:
+                case EPlayerClass.Runemaster:
+                case EPlayerClass.Spiritmaster:
+                    weaponTypes.Add(EObjectType.Staff);
                     break;
-                case eCharacterClass.Healer:
-                case eCharacterClass.Shaman:
-                    weaponTypes.Add(eObjectType.Staff);
-                    weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Healer:
+                case EPlayerClass.Shaman:
+                    weaponTypes.Add(EObjectType.Staff);
+                    weaponTypes.Add(EObjectType.Hammer);
+                    weaponTypes.Add(EObjectType.Hammer);
+                    weaponTypes.Add(EObjectType.Hammer);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Hunter:
-                    weaponTypes.Add(eObjectType.Spear);
-                    weaponTypes.Add(eObjectType.CompositeBow);
-                    weaponTypes.Add(eObjectType.Spear);
-                    weaponTypes.Add(eObjectType.CompositeBow);
-                    weaponTypes.Add(eObjectType.Sword);
+                case EPlayerClass.Hunter:
+                    weaponTypes.Add(EObjectType.Spear);
+                    weaponTypes.Add(EObjectType.CompositeBow);
+                    weaponTypes.Add(EObjectType.Spear);
+                    weaponTypes.Add(EObjectType.CompositeBow);
+                    weaponTypes.Add(EObjectType.Sword);
                     break;
-                case eCharacterClass.Savage:
-                    weaponTypes.Add(eObjectType.HandToHand);
-                    weaponTypes.Add(eObjectType.HandToHand);
-                    weaponTypes.Add(eObjectType.HandToHand);
-                    weaponTypes.Add(eObjectType.HandToHand);
-                    weaponTypes.Add(eObjectType.HandToHand);
-                    weaponTypes.Add(eObjectType.HandToHand);
-                    weaponTypes.Add(eObjectType.Sword);
-                    weaponTypes.Add(eObjectType.Axe);
-                    weaponTypes.Add(eObjectType.Hammer);
+                case EPlayerClass.Savage:
+                    weaponTypes.Add(EObjectType.HandToHand);
+                    weaponTypes.Add(EObjectType.HandToHand);
+                    weaponTypes.Add(EObjectType.HandToHand);
+                    weaponTypes.Add(EObjectType.HandToHand);
+                    weaponTypes.Add(EObjectType.HandToHand);
+                    weaponTypes.Add(EObjectType.HandToHand);
+                    weaponTypes.Add(EObjectType.Sword);
+                    weaponTypes.Add(EObjectType.Axe);
+                    weaponTypes.Add(EObjectType.Hammer);
                     break;
-                case eCharacterClass.Shadowblade:
-                    weaponTypes.Add(eObjectType.Sword);
-                    weaponTypes.Add(eObjectType.Axe);
-                    weaponTypes.Add(eObjectType.Sword);
-                    weaponTypes.Add(eObjectType.Axe);
-                    weaponTypes.Add(eObjectType.LeftAxe);
-                    weaponTypes.Add(eObjectType.LeftAxe);
-                    weaponTypes.Add(eObjectType.LeftAxe);
-                    weaponTypes.Add(eObjectType.LeftAxe);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Shadowblade:
+                    weaponTypes.Add(EObjectType.Sword);
+                    weaponTypes.Add(EObjectType.Axe);
+                    weaponTypes.Add(EObjectType.Sword);
+                    weaponTypes.Add(EObjectType.Axe);
+                    weaponTypes.Add(EObjectType.LeftAxe);
+                    weaponTypes.Add(EObjectType.LeftAxe);
+                    weaponTypes.Add(EObjectType.LeftAxe);
+                    weaponTypes.Add(EObjectType.LeftAxe);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Berserker:
-                    weaponTypes.Add(eObjectType.LeftAxe);
-                    weaponTypes.Add(eObjectType.LeftAxe);
-                    weaponTypes.Add(eObjectType.LeftAxe);
-                    weaponTypes.Add(eObjectType.LeftAxe);
-                    weaponTypes.Add(eObjectType.Sword);
-                    weaponTypes.Add(eObjectType.Axe);
-                    weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Sword);
-                    weaponTypes.Add(eObjectType.Axe);
-                    weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Berserker:
+                    weaponTypes.Add(EObjectType.LeftAxe);
+                    weaponTypes.Add(EObjectType.LeftAxe);
+                    weaponTypes.Add(EObjectType.LeftAxe);
+                    weaponTypes.Add(EObjectType.LeftAxe);
+                    weaponTypes.Add(EObjectType.Sword);
+                    weaponTypes.Add(EObjectType.Axe);
+                    weaponTypes.Add(EObjectType.Hammer);
+                    weaponTypes.Add(EObjectType.Sword);
+                    weaponTypes.Add(EObjectType.Axe);
+                    weaponTypes.Add(EObjectType.Hammer);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Thane:
-                case eCharacterClass.Warrior:
-                    weaponTypes.Add(eObjectType.Sword);
-                    weaponTypes.Add(eObjectType.Axe);
-                    weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Sword);
-                    weaponTypes.Add(eObjectType.Axe);
-                    weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Thane:
+                case EPlayerClass.Warrior:
+                    weaponTypes.Add(EObjectType.Sword);
+                    weaponTypes.Add(EObjectType.Axe);
+                    weaponTypes.Add(EObjectType.Hammer);
+                    weaponTypes.Add(EObjectType.Sword);
+                    weaponTypes.Add(EObjectType.Axe);
+                    weaponTypes.Add(EObjectType.Hammer);
+                    weaponTypes.Add(EObjectType.Shield);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Skald:
+                case EPlayerClass.Skald:
                     //hi Catkain <3
-                    weaponTypes.Add(eObjectType.Sword);
-                    weaponTypes.Add(eObjectType.Axe);
-                    weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Sword);
-                    weaponTypes.Add(eObjectType.Axe);
-                    weaponTypes.Add(eObjectType.Hammer);
-                    weaponTypes.Add(eObjectType.Shield);
+                    weaponTypes.Add(EObjectType.Sword);
+                    weaponTypes.Add(EObjectType.Axe);
+                    weaponTypes.Add(EObjectType.Hammer);
+                    weaponTypes.Add(EObjectType.Sword);
+                    weaponTypes.Add(EObjectType.Axe);
+                    weaponTypes.Add(EObjectType.Hammer);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
                 default:
-                    return eObjectType.Staff;
+                    return EObjectType.Staff;
             }
 
             //this list nonsense is kind of weird but we need to duplicate the 
             //items in the list to avoid apparent mid-number bias for random number gen
 
             //clone existing list
-            List<eObjectType> outputList = new List<eObjectType>(weaponTypes);
+            List<EObjectType> outputList = new List<EObjectType>(weaponTypes);
 
             //add duplicate values
-            foreach (eObjectType type in weaponTypes)
+            foreach (EObjectType type in weaponTypes)
             {
                 outputList.Add(type);
             }
@@ -6043,81 +6006,81 @@ namespace DOL.GS {
 
         }
 
-        public static eObjectType GetMidgardArmorType(eCharacterClass charClass, byte level)
+        public static EObjectType GetMidgardArmorType(EPlayerClass charClass, byte level)
         {
 
             switch (charClass)
             {
                 //staff classes
-                case eCharacterClass.Bonedancer:
-                case eCharacterClass.Runemaster:
-                case eCharacterClass.Spiritmaster:
-                    return eObjectType.Cloth;
+                case EPlayerClass.Bonedancer:
+                case EPlayerClass.Runemaster:
+                case EPlayerClass.Spiritmaster:
+                    return EObjectType.Cloth;
 
-                case eCharacterClass.Shadowblade:
-                    return eObjectType.Leather;
+                case EPlayerClass.Shadowblade:
+                    return EObjectType.Leather;
 
-                case eCharacterClass.Hunter:
+                case EPlayerClass.Hunter:
                     if (level < 10)
                     {
-                        return eObjectType.Leather;
+                        return EObjectType.Leather;
                     }
                     else
                     {
-                        return eObjectType.Studded;
+                        return EObjectType.Studded;
                     }
 
-                case eCharacterClass.Berserker:
-                case eCharacterClass.Savage:
-                    return eObjectType.Studded;
+                case EPlayerClass.Berserker:
+                case EPlayerClass.Savage:
+                    return EObjectType.Studded;
 
-                case eCharacterClass.Shaman:
-                case eCharacterClass.Healer:
+                case EPlayerClass.Shaman:
+                case EPlayerClass.Healer:
                     if (level < 10)
                     {
-                        return eObjectType.Leather;
+                        return EObjectType.Leather;
                     }
                     else if (level < 20)
                     {
-                        return eObjectType.Studded;
+                        return EObjectType.Studded;
                     }
                     else
                     {
-                        return eObjectType.Chain;
+                        return EObjectType.Chain;
                     }
 
-                case eCharacterClass.Skald:
+                case EPlayerClass.Skald:
                     if (level < 20)
                     {
-                        return eObjectType.Studded;
+                        return EObjectType.Studded;
                     }
-                    else { return eObjectType.Chain; }
+                    else { return EObjectType.Chain; }
 
-                case eCharacterClass.Warrior:
+                case EPlayerClass.Warrior:
                     if (level < 10)
                     {
-                        return eObjectType.Studded;
+                        return EObjectType.Studded;
                     }
-                    else { return eObjectType.Chain; }
+                    else { return EObjectType.Chain; }
 
-                case eCharacterClass.Thane:
+                case EPlayerClass.Thane:
                     if (level < 12)
                     {
-                        return eObjectType.Studded;
+                        return EObjectType.Studded;
                     }
                     else
                     {
-                        return eObjectType.Chain;
+                        return EObjectType.Chain;
                     }
 
                 default:
-                    return eObjectType.Cloth;
+                    return EObjectType.Cloth;
             }
         }
 
-        public static eObjectType GetHiberniaWeapon(eCharacterClass charClass)
+        public static EObjectType GetHiberniaWeapon(EPlayerClass charClass)
         {
-            List<eObjectType> weaponTypes = new List<eObjectType>();
+            List<EObjectType> weaponTypes = new List<EObjectType>();
             /*
 			 * Hibernia Weapons
 			eObjectType.Blades,
@@ -6136,103 +6099,103 @@ namespace DOL.GS {
             switch (charClass)
             {
                 //staff classes
-                case eCharacterClass.Eldritch:
-                case eCharacterClass.Enchanter:
-                case eCharacterClass.Mentalist:
-                case eCharacterClass.Animist:
-                    weaponTypes.Add(eObjectType.Staff);
+                case EPlayerClass.Eldritch:
+                case EPlayerClass.Enchanter:
+                case EPlayerClass.Mentalist:
+                case EPlayerClass.Animist:
+                    weaponTypes.Add(EObjectType.Staff);
                     break;
-                case eCharacterClass.Valewalker:
-                    weaponTypes.Add(eObjectType.Scythe);
+                case EPlayerClass.Valewalker:
+                    weaponTypes.Add(EObjectType.Scythe);
                     break;
-                case eCharacterClass.Nightshade:
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Nightshade:
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Piercing);
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Piercing);
+                    weaponTypes.Add(EObjectType.Piercing);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Ranger:
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.RecurvedBow);
-                    weaponTypes.Add(eObjectType.RecurvedBow);
-                    weaponTypes.Add(eObjectType.RecurvedBow);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Ranger:
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Piercing);
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Piercing);
+                    weaponTypes.Add(EObjectType.RecurvedBow);
+                    weaponTypes.Add(EObjectType.RecurvedBow);
+                    weaponTypes.Add(EObjectType.RecurvedBow);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Champion:
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.Blunt);
-                    weaponTypes.Add(eObjectType.LargeWeapons);
-                    weaponTypes.Add(eObjectType.LargeWeapons);
-                    weaponTypes.Add(eObjectType.LargeWeapons);
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Champion:
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Piercing);
+                    weaponTypes.Add(EObjectType.Blunt);
+                    weaponTypes.Add(EObjectType.LargeWeapons);
+                    weaponTypes.Add(EObjectType.LargeWeapons);
+                    weaponTypes.Add(EObjectType.LargeWeapons);
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Hero:
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.Blunt);
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.Blunt);
-                    weaponTypes.Add(eObjectType.LargeWeapons);
-                    weaponTypes.Add(eObjectType.CelticSpear);
-                    weaponTypes.Add(eObjectType.LargeWeapons);
-                    weaponTypes.Add(eObjectType.CelticSpear);
-                    weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Fired); //shortbow
+                case EPlayerClass.Hero:
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Piercing);
+                    weaponTypes.Add(EObjectType.Blunt);
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Piercing);
+                    weaponTypes.Add(EObjectType.Blunt);
+                    weaponTypes.Add(EObjectType.LargeWeapons);
+                    weaponTypes.Add(EObjectType.CelticSpear);
+                    weaponTypes.Add(EObjectType.LargeWeapons);
+                    weaponTypes.Add(EObjectType.CelticSpear);
+                    weaponTypes.Add(EObjectType.Shield);
+                    weaponTypes.Add(EObjectType.Shield);
+                    weaponTypes.Add(EObjectType.Shield);
+                    weaponTypes.Add(EObjectType.Fired); //shortbow
                     break;
-                case eCharacterClass.Blademaster:
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.Blunt);
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Piercing);
-                    weaponTypes.Add(eObjectType.Blunt);
-                    weaponTypes.Add(eObjectType.Fired); //shortbow
-                    weaponTypes.Add(eObjectType.Shield);
+                case EPlayerClass.Blademaster:
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Piercing);
+                    weaponTypes.Add(EObjectType.Blunt);
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Piercing);
+                    weaponTypes.Add(EObjectType.Blunt);
+                    weaponTypes.Add(EObjectType.Fired); //shortbow
+                    weaponTypes.Add(EObjectType.Shield);
                     break;
-                case eCharacterClass.Warden:
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Blunt);
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Blunt);
-                    weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Fired); //shortbow
+                case EPlayerClass.Warden:
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Blunt);
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Blunt);
+                    weaponTypes.Add(EObjectType.Shield);
+                    weaponTypes.Add(EObjectType.Fired); //shortbow
                     break;
-                case eCharacterClass.Druid:
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Blunt);
-                    weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Staff);
+                case EPlayerClass.Druid:
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Blunt);
+                    weaponTypes.Add(EObjectType.Shield);
+                    weaponTypes.Add(EObjectType.Staff);
                     break;
-                case eCharacterClass.Bard:
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Blunt);
-                    weaponTypes.Add(eObjectType.Blades);
-                    weaponTypes.Add(eObjectType.Blunt);
-                    weaponTypes.Add(eObjectType.Shield);
-                    weaponTypes.Add(eObjectType.Instrument);
-                    weaponTypes.Add(eObjectType.Instrument);
+                case EPlayerClass.Bard:
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Blunt);
+                    weaponTypes.Add(EObjectType.Blades);
+                    weaponTypes.Add(EObjectType.Blunt);
+                    weaponTypes.Add(EObjectType.Shield);
+                    weaponTypes.Add(EObjectType.Instrument);
+                    weaponTypes.Add(EObjectType.Instrument);
                     break;
                 default:
-                    return eObjectType.Staff;
+                    return EObjectType.Staff;
             }
 
             //this list nonsense is kind of weird but we need to duplicate the 
             //items in the list to avoid apparent mid-number bias for random number gen
 
             //clone existing list
-            List<eObjectType> outputList = new List<eObjectType>(weaponTypes);
+            List<EObjectType> outputList = new List<EObjectType>(weaponTypes);
 
             //add duplicate values
-            foreach (eObjectType type in weaponTypes)
+            foreach (EObjectType type in weaponTypes)
             {
                 outputList.Add(type);
             }
@@ -6246,7 +6209,7 @@ namespace DOL.GS {
 
         }
 
-        public static eObjectType GetHiberniaArmorType(eCharacterClass charClass, byte level)
+        public static EObjectType GetHiberniaArmorType(EPlayerClass charClass, byte level)
         {
 
             /* Hib Armor
@@ -6258,183 +6221,183 @@ namespace DOL.GS {
             switch (charClass)
             {
                 //staff classes
-                case eCharacterClass.Valewalker:
-                case eCharacterClass.Animist:
-                case eCharacterClass.Mentalist:
-                case eCharacterClass.Enchanter:
-                case eCharacterClass.Eldritch:
-                    return eObjectType.Cloth;
+                case EPlayerClass.Valewalker:
+                case EPlayerClass.Animist:
+                case EPlayerClass.Mentalist:
+                case EPlayerClass.Enchanter:
+                case EPlayerClass.Eldritch:
+                    return EObjectType.Cloth;
 
-                case eCharacterClass.Nightshade:
-                    return eObjectType.Leather;
+                case EPlayerClass.Nightshade:
+                    return EObjectType.Leather;
 
-                case eCharacterClass.Blademaster:
-                    return eObjectType.Reinforced;
+                case EPlayerClass.Blademaster:
+                    return EObjectType.Reinforced;
 
-                case eCharacterClass.Ranger:
+                case EPlayerClass.Ranger:
                     if (level < 10)
                     {
-                        return eObjectType.Leather;
+                        return EObjectType.Leather;
                     }
                     else
                     {
-                        return eObjectType.Reinforced;
+                        return EObjectType.Reinforced;
                     }
 
-                case eCharacterClass.Champion:
+                case EPlayerClass.Champion:
                     if (level < 20)
                     {
-                        return eObjectType.Reinforced;
+                        return EObjectType.Reinforced;
                     }
-                    else { return eObjectType.Scale; }
+                    else { return EObjectType.Scale; }
 
-                case eCharacterClass.Hero:
+                case EPlayerClass.Hero:
                     if (level < 15)
                     {
-                        return eObjectType.Reinforced;
+                        return EObjectType.Reinforced;
                     }
-                    else { return eObjectType.Scale; }
+                    else { return EObjectType.Scale; }
 
-                case eCharacterClass.Warden:
+                case EPlayerClass.Warden:
                     if (level < 10)
                     {
-                        return eObjectType.Leather;
+                        return EObjectType.Leather;
                     }
                     else if (level < 20)
                     {
-                        return eObjectType.Reinforced;
+                        return EObjectType.Reinforced;
                     }
-                    else { return eObjectType.Scale; }
+                    else { return EObjectType.Scale; }
 
-                case eCharacterClass.Druid:
+                case EPlayerClass.Druid:
                     if (level < 10)
                     {
-                        return eObjectType.Leather;
+                        return EObjectType.Leather;
                     }
                     else if (level < 20)
                     {
-                        return eObjectType.Reinforced;
+                        return EObjectType.Reinforced;
                     }
-                    else { return eObjectType.Scale; }
+                    else { return EObjectType.Scale; }
 
-                case eCharacterClass.Bard:
+                case EPlayerClass.Bard:
                     if (level < 15)
                     {
-                        return eObjectType.Leather;
+                        return EObjectType.Leather;
                     }
-                    else { return eObjectType.Reinforced; }
+                    else { return EObjectType.Reinforced; }
 
                 default:
-                    return eObjectType.Cloth;
+                    return EObjectType.Cloth;
             }
         }
 
-        public static eInventorySlot GenerateItemType(eObjectType type)
+        public static EInventorySlot GenerateItemType(EObjectType type)
         {
-            if ((int)type >= (int)eObjectType._FirstArmor && (int)type <= (int)eObjectType._LastArmor)
-                return (eInventorySlot)ArmorSlots[Util.Random(0, ArmorSlots.Length - 1)];
+            if ((int)type >= (int)EObjectType._FirstArmor && (int)type <= (int)EObjectType._LastArmor)
+                return (EInventorySlot)ArmorSlots[Util.Random(0, ArmorSlots.Length - 1)];
             switch (type)
             {
                 //left or right standard
                 //tolakram - left hand usable now set based on speed
-                case eObjectType.HandToHand:
-                case eObjectType.Piercing:
-                case eObjectType.Blades:
-                case eObjectType.Blunt:
-                case eObjectType.SlashingWeapon:
-                case eObjectType.CrushingWeapon:
-                case eObjectType.ThrustWeapon:
-                case eObjectType.FistWraps: //Maulers
-                case eObjectType.Flexible:
-                    return (eInventorySlot)Slot.RIGHTHAND;
+                case EObjectType.HandToHand:
+                case EObjectType.Piercing:
+                case EObjectType.Blades:
+                case EObjectType.Blunt:
+                case EObjectType.SlashingWeapon:
+                case EObjectType.CrushingWeapon:
+                case EObjectType.ThrustWeapon:
+                case EObjectType.FistWraps: //Maulers
+                case EObjectType.Flexible:
+                    return (EInventorySlot)Slot.RIGHTHAND;
                 //left or right or twohand
-                case eObjectType.Sword:
-                case eObjectType.Axe:
-                case eObjectType.Hammer:
+                case EObjectType.Sword:
+                case EObjectType.Axe:
+                case EObjectType.Hammer:
                     if (Util.Random(100) >= 50)
-                        return (eInventorySlot)Slot.RIGHTHAND;
+                        return (EInventorySlot)Slot.RIGHTHAND;
                     else
-                        return (eInventorySlot)Slot.TWOHAND;
+                        return (EInventorySlot)Slot.TWOHAND;
                 //left
-                case eObjectType.LeftAxe:
-                case eObjectType.Shield:
-                    return (eInventorySlot)Slot.LEFTHAND;
+                case EObjectType.LeftAxe:
+                case EObjectType.Shield:
+                    return (EInventorySlot)Slot.LEFTHAND;
                 //twohanded
-                case eObjectType.LargeWeapons:
-                case eObjectType.CelticSpear:
-                case eObjectType.PolearmWeapon:
-                case eObjectType.Spear:
-                case eObjectType.Staff:
-                case eObjectType.Scythe:
-                case eObjectType.TwoHandedWeapon:
-                case eObjectType.MaulerStaff:
-                    return (eInventorySlot)Slot.TWOHAND;
+                case EObjectType.LargeWeapons:
+                case EObjectType.CelticSpear:
+                case EObjectType.PolearmWeapon:
+                case EObjectType.Spear:
+                case EObjectType.Staff:
+                case EObjectType.Scythe:
+                case EObjectType.TwoHandedWeapon:
+                case EObjectType.MaulerStaff:
+                    return (EInventorySlot)Slot.TWOHAND;
                 //ranged
-                case eObjectType.CompositeBow:
-                case eObjectType.Fired:
-                case eObjectType.Longbow:
-                case eObjectType.RecurvedBow:
-                case eObjectType.Crossbow:
-                    return (eInventorySlot)Slot.RANGED;
-                case eObjectType.Magical:
-                    return (eInventorySlot)MagicalSlots[Util.Random(0, MagicalSlots.Length - 1)];
-                case eObjectType.Instrument:
-                    return (eInventorySlot)Slot.RANGED;
+                case EObjectType.CompositeBow:
+                case EObjectType.Fired:
+                case EObjectType.Longbow:
+                case EObjectType.RecurvedBow:
+                case EObjectType.Crossbow:
+                    return (EInventorySlot)Slot.RANGED;
+                case EObjectType.Magical:
+                    return (EInventorySlot)MagicalSlots[Util.Random(0, MagicalSlots.Length - 1)];
+                case EObjectType.Instrument:
+                    return (EInventorySlot)Slot.RANGED;
             }
-            return eInventorySlot.FirstEmptyBackpack;
+            return EInventorySlot.FirstEmptyBackpack;
         }
 
-        private static eDamageType GenerateDamageType(eObjectType type, eCharacterClass charClass)
+        private static EDamageType GenerateDamageType(EObjectType type, EPlayerClass charClass)
         {
             switch (type)
             {
                 //all
-                case eObjectType.TwoHandedWeapon:
-                case eObjectType.PolearmWeapon:
-                case eObjectType.Instrument:
-                    return (eDamageType)Util.Random(1, 3);
+                case EObjectType.TwoHandedWeapon:
+                case EObjectType.PolearmWeapon:
+                case EObjectType.Instrument:
+                    return (EDamageType)Util.Random(1, 3);
                 //slash
-                case eObjectType.Axe:
-                case eObjectType.Blades:
-                case eObjectType.SlashingWeapon:
-                case eObjectType.LeftAxe:
-                case eObjectType.Sword:
-                case eObjectType.Scythe:
-                    return eDamageType.Slash;
+                case EObjectType.Axe:
+                case EObjectType.Blades:
+                case EObjectType.SlashingWeapon:
+                case EObjectType.LeftAxe:
+                case EObjectType.Sword:
+                case EObjectType.Scythe:
+                    return EDamageType.Slash;
                 //thrust
-                case eObjectType.ThrustWeapon:
-                case eObjectType.Piercing:
-                case eObjectType.CelticSpear:
-                case eObjectType.Longbow:
-                case eObjectType.RecurvedBow:
-                case eObjectType.CompositeBow:
-                case eObjectType.Fired:
-                case eObjectType.Crossbow:
-                    return eDamageType.Thrust;
+                case EObjectType.ThrustWeapon:
+                case EObjectType.Piercing:
+                case EObjectType.CelticSpear:
+                case EObjectType.Longbow:
+                case EObjectType.RecurvedBow:
+                case EObjectType.CompositeBow:
+                case EObjectType.Fired:
+                case EObjectType.Crossbow:
+                    return EDamageType.Thrust;
                 //crush
-                case eObjectType.Hammer:
-                case eObjectType.CrushingWeapon:
-                case eObjectType.Blunt:
-                case eObjectType.MaulerStaff: //Maulers
-                case eObjectType.FistWraps: //Maulers
-                case eObjectType.Staff:
-                    return eDamageType.Crush;
+                case EObjectType.Hammer:
+                case EObjectType.CrushingWeapon:
+                case EObjectType.Blunt:
+                case EObjectType.MaulerStaff: //Maulers
+                case EObjectType.FistWraps: //Maulers
+                case EObjectType.Staff:
+                    return EDamageType.Crush;
                 //specifics
-                case eObjectType.HandToHand:
-                case eObjectType.Spear:
-                    return (eDamageType)Util.Random(2, 3);
-                case eObjectType.LargeWeapons:
-                case eObjectType.Flexible:
-                    return (eDamageType)Util.Random(1, 2);
+                case EObjectType.HandToHand:
+                case EObjectType.Spear:
+                    return (EDamageType)Util.Random(2, 3);
+                case EObjectType.LargeWeapons:
+                case EObjectType.Flexible:
+                    return (EDamageType)Util.Random(1, 2);
                 //do shields return the shield size?
-                case eObjectType.Shield:
-                    return (eDamageType)Util.Random(1, GetMaxShieldSizeFromClass(charClass));
+                case EObjectType.Shield:
+                    return (EDamageType)Util.Random(1, GetMaxShieldSizeFromClass(charClass));
                     //return (eDamageType)Util.Random(1, 3);
             }
-            return eDamageType.Natural;
+            return EDamageType.Natural;
         }
 
-        private static int GetMaxShieldSizeFromClass(eCharacterClass charClass)
+        private static int GetMaxShieldSizeFromClass(EPlayerClass charClass)
         {
             //shield size is based off of damage type
             //1 = small shield
@@ -6442,34 +6405,34 @@ namespace DOL.GS {
             //3 = large
             switch (charClass)
             {
-                case eCharacterClass.Berserker:
-                case eCharacterClass.Skald:
-                case eCharacterClass.Savage:
-                case eCharacterClass.Healer:
-                case eCharacterClass.Shaman:
-                case eCharacterClass.Shadowblade:
-                case eCharacterClass.Bard:
-                case eCharacterClass.Druid:
-                case eCharacterClass.Nightshade:
-                case eCharacterClass.Ranger:
-                case eCharacterClass.Infiltrator:
-                case eCharacterClass.Minstrel:
-                case eCharacterClass.Scout:
+                case EPlayerClass.Berserker:
+                case EPlayerClass.Skald:
+                case EPlayerClass.Savage:
+                case EPlayerClass.Healer:
+                case EPlayerClass.Shaman:
+                case EPlayerClass.Shadowblade:
+                case EPlayerClass.Bard:
+                case EPlayerClass.Druid:
+                case EPlayerClass.Nightshade:
+                case EPlayerClass.Ranger:
+                case EPlayerClass.Infiltrator:
+                case EPlayerClass.Minstrel:
+                case EPlayerClass.Scout:
                     return 1;
 
-                case eCharacterClass.Thane:
-                case eCharacterClass.Warden:
-                case eCharacterClass.Blademaster:
-                case eCharacterClass.Champion:
-                case eCharacterClass.Mercenary:
-                case eCharacterClass.Cleric:
+                case EPlayerClass.Thane:
+                case EPlayerClass.Warden:
+                case EPlayerClass.Blademaster:
+                case EPlayerClass.Champion:
+                case EPlayerClass.Mercenary:
+                case EPlayerClass.Cleric:
                     return 2;
 
-                case eCharacterClass.Warrior:
-                case eCharacterClass.Hero:
-                case eCharacterClass.Armsman:
-                case eCharacterClass.Paladin:
-                case eCharacterClass.Reaver:
+                case EPlayerClass.Warrior:
+                case EPlayerClass.Hero:
+                case EPlayerClass.Armsman:
+                case EPlayerClass.Paladin:
+                case EPlayerClass.Reaver:
                     return 3;
                 default: return 1;
             }
@@ -6479,17 +6442,17 @@ namespace DOL.GS {
 
         #region generate item speed and abs
 
-        private static int GetAbsorb(eObjectType type)
+        private static int GetAbsorb(EObjectType type)
         {
             switch (type)
             {
-                case eObjectType.Cloth: return 0;
-                case eObjectType.Leather: return 10;
-                case eObjectType.Studded: return 19;
-                case eObjectType.Reinforced: return 19;
-                case eObjectType.Chain: return 27;
-                case eObjectType.Scale: return 27;
-                case eObjectType.Plate: return 34;
+                case EObjectType.Cloth: return 0;
+                case EObjectType.Leather: return 10;
+                case EObjectType.Studded: return 19;
+                case EObjectType.Reinforced: return 19;
+                case EObjectType.Chain: return 27;
+                case EObjectType.Scale: return 27;
+                case EObjectType.Plate: return 34;
                 default: return 0;
             }
         }
@@ -6499,64 +6462,64 @@ namespace DOL.GS {
             // tolakram - reset speeds based on data from allakhazam 1-26-2008
             // removed specific left hand speed - left hand usable set based on speed in GenerateItemNameModel
 
-            switch ((eObjectType)this.Object_Type)
+            switch ((EObjectType)this.Object_Type)
             {
-                case eObjectType.SlashingWeapon:
+                case EObjectType.SlashingWeapon:
                     {
                         this.SPD_ABS = Util.Random(26, 39);
                         return;
                     }
-                case eObjectType.CrushingWeapon:
+                case EObjectType.CrushingWeapon:
                     {
                         this.SPD_ABS = Util.Random(30, 40);
                         return;
                     }
-                case eObjectType.ThrustWeapon:
+                case EObjectType.ThrustWeapon:
                     {
                         this.SPD_ABS = Util.Random(25, 37);
                         return;
                     }
-                case eObjectType.Fired:
+                case EObjectType.Fired:
                     {
                         this.SPD_ABS = Util.Random(40, 46);
                         return;
                     }
-                case eObjectType.TwoHandedWeapon:
+                case EObjectType.TwoHandedWeapon:
                     {
                         this.SPD_ABS = Util.Random(43, 51);
                         return;
                     }
-                case eObjectType.PolearmWeapon:
+                case EObjectType.PolearmWeapon:
                     {
                         this.SPD_ABS = Util.Random(53, 56);
                         return;
                     }
-                case eObjectType.Staff:
+                case EObjectType.Staff:
                     {
                         this.SPD_ABS = Util.Random(30, 50);
                         return;
                     }
-                case eObjectType.MaulerStaff: //Maulers
+                case EObjectType.MaulerStaff: //Maulers
                     {
                         this.SPD_ABS = Util.Random(34, 54);
                         return;
                     }
-                case eObjectType.Longbow:
+                case EObjectType.Longbow:
                     {
                         this.SPD_ABS = Util.Random(40, 52);
                         return;
                     }
-                case eObjectType.Crossbow:
+                case EObjectType.Crossbow:
                     {
                         this.SPD_ABS = Util.Random(33, 54);
                         return;
                     }
-                case eObjectType.Flexible:
+                case EObjectType.Flexible:
                     {
                         this.SPD_ABS = Util.Random(33, 39);
                         return;
                     }
-                case eObjectType.Sword:
+                case EObjectType.Sword:
                     if (this.Hand == 1)
                     {
                         this.SPD_ABS = Util.Random(46, 51);  // two handed
@@ -6567,7 +6530,7 @@ namespace DOL.GS {
                         this.SPD_ABS = Util.Random(25, 38); // one handed
                         return;
                     }
-                case eObjectType.Hammer:
+                case EObjectType.Hammer:
                     {
                         if (this.Hand == 1)
                         {
@@ -6580,7 +6543,7 @@ namespace DOL.GS {
                             return;
                         }
                     }
-                case eObjectType.Axe:
+                case EObjectType.Axe:
                     {
                         if (this.Hand == 1)
                         {
@@ -6593,67 +6556,67 @@ namespace DOL.GS {
                             return;
                         }
                     }
-                case eObjectType.Spear:
+                case EObjectType.Spear:
                     {
                         this.SPD_ABS = Util.Random(43, 52);
                         return;
                     }
-                case eObjectType.CompositeBow:
+                case EObjectType.CompositeBow:
                     {
                         this.SPD_ABS = Util.Random(40, 47);
                         return;
                     }
-                case eObjectType.LeftAxe:
+                case EObjectType.LeftAxe:
                     {
                         this.SPD_ABS = Util.Random(27, 31);
                         return;
                     }
-                case eObjectType.HandToHand:
+                case EObjectType.HandToHand:
                     {
                         this.SPD_ABS = Util.Random(27, 37);
                         return;
                     }
-                case eObjectType.FistWraps:
+                case EObjectType.FistWraps:
                     {
                         this.SPD_ABS = Util.Random(28, 41);
                         return;
                     }
-                case eObjectType.RecurvedBow:
+                case EObjectType.RecurvedBow:
                     {
                         this.SPD_ABS = Util.Random(45, 52);
                         return;
                     }
-                case eObjectType.Blades:
+                case EObjectType.Blades:
                     {
                         this.SPD_ABS = Util.Random(27, 39);
                         return;
                     }
-                case eObjectType.Blunt:
+                case EObjectType.Blunt:
                     {
                         this.SPD_ABS = Util.Random(30, 40);
                         return;
                     }
-                case eObjectType.Piercing:
+                case EObjectType.Piercing:
                     {
                         this.SPD_ABS = Util.Random(25, 36);
                         return;
                     }
-                case eObjectType.LargeWeapons:
+                case EObjectType.LargeWeapons:
                     {
                         this.SPD_ABS = Util.Random(47, 53);
                         return;
                     }
-                case eObjectType.CelticSpear:
+                case EObjectType.CelticSpear:
                     {
                         this.SPD_ABS = Util.Random(40, 56);
                         return;
                     }
-                case eObjectType.Scythe:
+                case EObjectType.Scythe:
                     {
                         this.SPD_ABS = Util.Random(40, 53);
                         return;
                     }
-                case eObjectType.Shield:
+                case EObjectType.Shield:
                     {
                         switch (this.Type_Damage)
                         {
@@ -6691,128 +6654,128 @@ namespace DOL.GS {
 
         public void GenerateItemWeight()
         {
-            eObjectType type = (eObjectType)this.Object_Type;
-            eInventorySlot slot = (eInventorySlot)this.Item_Type;
+            EObjectType type = (EObjectType)this.Object_Type;
+            EInventorySlot slot = (EInventorySlot)this.Item_Type;
 
             switch (type)
             {
-                case eObjectType.LeftAxe:
-                case eObjectType.Flexible:
-                case eObjectType.Axe:
-                case eObjectType.Blades:
-                case eObjectType.HandToHand:
-                case eObjectType.FistWraps: //Maulers
+                case EObjectType.LeftAxe:
+                case EObjectType.Flexible:
+                case EObjectType.Axe:
+                case EObjectType.Blades:
+                case EObjectType.HandToHand:
+                case EObjectType.FistWraps: //Maulers
                     this.Weight = 20;
                     return;
-                case eObjectType.CompositeBow:
-                case eObjectType.RecurvedBow:
-                case eObjectType.Longbow:
-                case eObjectType.Blunt:
-                case eObjectType.CrushingWeapon:
-                case eObjectType.Fired:
-                case eObjectType.Hammer:
-                case eObjectType.Piercing:
-                case eObjectType.SlashingWeapon:
-                case eObjectType.Sword:
-                case eObjectType.ThrustWeapon:
+                case EObjectType.CompositeBow:
+                case EObjectType.RecurvedBow:
+                case EObjectType.Longbow:
+                case EObjectType.Blunt:
+                case EObjectType.CrushingWeapon:
+                case EObjectType.Fired:
+                case EObjectType.Hammer:
+                case EObjectType.Piercing:
+                case EObjectType.SlashingWeapon:
+                case EObjectType.Sword:
+                case EObjectType.ThrustWeapon:
                     this.Weight = 30;
                     return;
-                case eObjectType.Crossbow:
-                case eObjectType.Spear:
-                case eObjectType.CelticSpear:
-                case eObjectType.Staff:
-                case eObjectType.TwoHandedWeapon:
-                case eObjectType.MaulerStaff: //Maulers
+                case EObjectType.Crossbow:
+                case EObjectType.Spear:
+                case EObjectType.CelticSpear:
+                case EObjectType.Staff:
+                case EObjectType.TwoHandedWeapon:
+                case EObjectType.MaulerStaff: //Maulers
                     this.Weight = 40;
                     return;
-                case eObjectType.Scale:
-                case eObjectType.Chain:
+                case EObjectType.Scale:
+                case EObjectType.Chain:
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: this.Weight = 48; return;
-                            case eInventorySlot.FeetArmor: this.Weight = 32; return;
-                            case eInventorySlot.HandsArmor: this.Weight = 32; return;
-                            case eInventorySlot.HeadArmor: this.Weight = 32; return;
-                            case eInventorySlot.LegsArmor: this.Weight = 56; return;
-                            case eInventorySlot.TorsoArmor: this.Weight = 80; return;
+                            case EInventorySlot.ArmsArmor: this.Weight = 48; return;
+                            case EInventorySlot.FeetArmor: this.Weight = 32; return;
+                            case EInventorySlot.HandsArmor: this.Weight = 32; return;
+                            case EInventorySlot.HeadArmor: this.Weight = 32; return;
+                            case EInventorySlot.LegsArmor: this.Weight = 56; return;
+                            case EInventorySlot.TorsoArmor: this.Weight = 80; return;
                         }
                         this.Weight = 0;
                         return;
                     }
-                case eObjectType.Cloth:
+                case EObjectType.Cloth:
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: this.Weight = 8; return;
-                            case eInventorySlot.FeetArmor: this.Weight = 8; return;
-                            case eInventorySlot.HandsArmor: this.Weight = 8; return;
-                            case eInventorySlot.HeadArmor: this.Weight = 32; return;
-                            case eInventorySlot.LegsArmor: this.Weight = 14; return;
-                            case eInventorySlot.TorsoArmor: this.Weight = 20; return;
+                            case EInventorySlot.ArmsArmor: this.Weight = 8; return;
+                            case EInventorySlot.FeetArmor: this.Weight = 8; return;
+                            case EInventorySlot.HandsArmor: this.Weight = 8; return;
+                            case EInventorySlot.HeadArmor: this.Weight = 32; return;
+                            case EInventorySlot.LegsArmor: this.Weight = 14; return;
+                            case EInventorySlot.TorsoArmor: this.Weight = 20; return;
                         }
                         this.Weight = 0;
                         return;
                     }
-                case eObjectType.Instrument:
+                case EObjectType.Instrument:
                     this.Weight = 15;
                     return;
-                case eObjectType.LargeWeapons:
+                case EObjectType.LargeWeapons:
                     this.Weight = 50;
                     return;
-                case eObjectType.Leather:
+                case EObjectType.Leather:
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: this.Weight = 24; return;
-                            case eInventorySlot.FeetArmor: this.Weight = 16; return;
-                            case eInventorySlot.HandsArmor: this.Weight = 16; return;
-                            case eInventorySlot.HeadArmor: this.Weight = 16; return;
-                            case eInventorySlot.LegsArmor: this.Weight = 28; return;
-                            case eInventorySlot.TorsoArmor: this.Weight = 40; return;
+                            case EInventorySlot.ArmsArmor: this.Weight = 24; return;
+                            case EInventorySlot.FeetArmor: this.Weight = 16; return;
+                            case EInventorySlot.HandsArmor: this.Weight = 16; return;
+                            case EInventorySlot.HeadArmor: this.Weight = 16; return;
+                            case EInventorySlot.LegsArmor: this.Weight = 28; return;
+                            case EInventorySlot.TorsoArmor: this.Weight = 40; return;
                         }
                         this.Weight = 0;
                         return;
                     }
-                case eObjectType.Magical:
+                case EObjectType.Magical:
                     this.Weight = 5;
                     return;
-                case eObjectType.Plate:
+                case EObjectType.Plate:
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: this.Weight = 54; return;
-                            case eInventorySlot.FeetArmor: this.Weight = 36; return;
-                            case eInventorySlot.HandsArmor: this.Weight = 36; return;
-                            case eInventorySlot.HeadArmor: this.Weight = 40; return;
-                            case eInventorySlot.LegsArmor: this.Weight = 63; return;
-                            case eInventorySlot.TorsoArmor: this.Weight = 90; return;
+                            case EInventorySlot.ArmsArmor: this.Weight = 54; return;
+                            case EInventorySlot.FeetArmor: this.Weight = 36; return;
+                            case EInventorySlot.HandsArmor: this.Weight = 36; return;
+                            case EInventorySlot.HeadArmor: this.Weight = 40; return;
+                            case EInventorySlot.LegsArmor: this.Weight = 63; return;
+                            case EInventorySlot.TorsoArmor: this.Weight = 90; return;
                         }
                         this.Weight = 0;
                         return;
                     }
-                case eObjectType.PolearmWeapon:
+                case EObjectType.PolearmWeapon:
                     this.Weight = 60;
                     return;
-                case eObjectType.Reinforced:
-                case eObjectType.Studded:
+                case EObjectType.Reinforced:
+                case EObjectType.Studded:
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: this.Weight = 36; return;
-                            case eInventorySlot.FeetArmor: this.Weight = 24; return;
-                            case eInventorySlot.HandsArmor: this.Weight = 24; return;
-                            case eInventorySlot.HeadArmor: this.Weight = 24; return;
-                            case eInventorySlot.LegsArmor: this.Weight = 42; return;
-                            case eInventorySlot.TorsoArmor: this.Weight = 60; return;
+                            case EInventorySlot.ArmsArmor: this.Weight = 36; return;
+                            case EInventorySlot.FeetArmor: this.Weight = 24; return;
+                            case EInventorySlot.HandsArmor: this.Weight = 24; return;
+                            case EInventorySlot.HeadArmor: this.Weight = 24; return;
+                            case EInventorySlot.LegsArmor: this.Weight = 42; return;
+                            case EInventorySlot.TorsoArmor: this.Weight = 60; return;
                         }
                         this.Weight = 0;
                         return;
                     }
-                case eObjectType.Scythe:
+                case EObjectType.Scythe:
                     this.Weight = 40;
                     return;
-                case eObjectType.Shield:
+                case EObjectType.Shield:
                     switch (this.Type_Damage)
                     {
                         case 1:
@@ -6835,7 +6798,7 @@ namespace DOL.GS {
         #endregion
         bool m_named = false;
         #region Naming and Modeling
-        public bool WriteMagicalName(eProperty property)
+        public bool WriteMagicalName(EProperty property)
         {
             if (hPropertyToMagicPrefix.ContainsKey(property) && !m_named)
             {
@@ -6854,10 +6817,10 @@ namespace DOL.GS {
 
         private void GenerateItemNameModel()
         {
-            eInventorySlot slot = (eInventorySlot)this.Item_Type;
-            eDamageType damage = (eDamageType)this.Type_Damage;
-            eRealm realm = (eRealm)this.Realm;
-            eObjectType type = (eObjectType)this.Object_Type;
+            EInventorySlot slot = (EInventorySlot)this.Item_Type;
+            EDamageType damage = (EDamageType)this.Type_Damage;
+            ERealm realm = (ERealm)this.Realm;
+            EObjectType type = (EObjectType)this.Object_Type;
 
             string name = "No Name";
             int model = 488;
@@ -6866,26 +6829,26 @@ namespace DOL.GS {
             switch (type)
             {
                 //armor
-                case eObjectType.Cloth:
+                case EObjectType.Cloth:
                     {
                         name = "Cloth " + ArmorSlotToName(slot, type);
 
                         switch (realm)
                         {
-                            case eRealm.Albion:
+                            case ERealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 141; break;
-                                    case eInventorySlot.LegsArmor: model = 140; break;
-                                    case eInventorySlot.FeetArmor: model = 143; break;
-                                    case eInventorySlot.HeadArmor:
+                                    case EInventorySlot.ArmsArmor: model = 141; break;
+                                    case EInventorySlot.LegsArmor: model = 140; break;
+                                    case EInventorySlot.FeetArmor: model = 143; break;
+                                    case EInventorySlot.HeadArmor:
                                         if (Util.Chance(30))
                                             model = 1278; //30% chance of wizard hat
                                         else
                                             model = 822;
                                         break;
-                                    case eInventorySlot.HandsArmor: model = 142; break;
-                                    case eInventorySlot.TorsoArmor:
+                                    case EInventorySlot.HandsArmor: model = 142; break;
+                                    case EInventorySlot.TorsoArmor:
                                         if (Util.Chance(60))
                                         {
                                             model = 139;
@@ -6905,20 +6868,20 @@ namespace DOL.GS {
                                 }
                                 break;
 
-                            case eRealm.Midgard:
+                            case ERealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 247; break;
-                                    case eInventorySlot.LegsArmor: model = 246; break;
-                                    case eInventorySlot.FeetArmor: model = 249; break;
-                                    case eInventorySlot.HeadArmor:
+                                    case EInventorySlot.ArmsArmor: model = 247; break;
+                                    case EInventorySlot.LegsArmor: model = 246; break;
+                                    case EInventorySlot.FeetArmor: model = 249; break;
+                                    case EInventorySlot.HeadArmor:
                                         if (Util.Chance(30))
                                             model = 1280; //30% chance of wizard hat
                                         else
                                             model = 825;
                                         break;
-                                    case eInventorySlot.HandsArmor: model = 248; break;
-                                    case eInventorySlot.TorsoArmor:
+                                    case EInventorySlot.HandsArmor: model = 248; break;
+                                    case EInventorySlot.TorsoArmor:
                                         if (Util.Chance(60))
                                         {
                                             model = 245;
@@ -6938,20 +6901,20 @@ namespace DOL.GS {
                                 }
                                 break;
 
-                            case eRealm.Hibernia:
+                            case ERealm.Hibernia:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = 380; break;
-                                    case eInventorySlot.LegsArmor: model = 379; break;
-                                    case eInventorySlot.FeetArmor: model = 382; break;
-                                    case eInventorySlot.HeadArmor:
+                                    case EInventorySlot.ArmsArmor: model = 380; break;
+                                    case EInventorySlot.LegsArmor: model = 379; break;
+                                    case EInventorySlot.FeetArmor: model = 382; break;
+                                    case EInventorySlot.HeadArmor:
                                         if (Util.Chance(30))
                                             model = 1279; //30% chance of wizard hat
                                         else
                                             model = 826;
                                         break;
-                                    case eInventorySlot.HandsArmor: model = 381; break;
-                                    case eInventorySlot.TorsoArmor:
+                                    case EInventorySlot.HandsArmor: model = 381; break;
+                                    case EInventorySlot.TorsoArmor:
                                         if (Util.Chance(60))
                                         {
                                             model = 378;
@@ -6973,193 +6936,193 @@ namespace DOL.GS {
 
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
                     }
-                case eObjectType.Leather:
+                case EObjectType.Leather:
                     {
                         name = "Leather " + ArmorSlotToName(slot, type);
 
                         switch (realm)
                         {
-                            case eRealm.Albion:
+                            case ERealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, eRealm.Albion); break;
+                                    case EInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, ERealm.Albion); break;
                                 }
                                 break;
 
-                            case eRealm.Midgard:
+                            case ERealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, eRealm.Midgard); break;
+                                    case EInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, ERealm.Midgard); break;
                                 }
                                 break;
 
-                            case eRealm.Hibernia:
+                            case ERealm.Hibernia:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, eRealm.Hibernia); break;
-                                    case eInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, eRealm.Hibernia); break;
-                                    case eInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, eRealm.Hibernia); break;
-                                    case eInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, eRealm.Hibernia); break;
-                                    case eInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, eRealm.Hibernia); break;
-                                    case eInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, eRealm.Hibernia); break;
+                                    case EInventorySlot.ArmsArmor: model = GetLeatherSleevesForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.LegsArmor: model = GetLeatherPantsForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.FeetArmor: model = GetLeatherBootsForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.HeadArmor: model = GetLeatherHelmForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.TorsoArmor: model = GetLeatherTorsoForLevel(Level, ERealm.Hibernia); break;
+                                    case EInventorySlot.HandsArmor: model = GetLeatherHandsForLevel(Level, ERealm.Hibernia); break;
                                 }
                                 break;
 
                         }
 
-                        if (slot != eInventorySlot.HeadArmor
-                            && slot != eInventorySlot.ArmsArmor
-                            && slot != eInventorySlot.LegsArmor)
+                        if (slot != EInventorySlot.HeadArmor
+                            && slot != EInventorySlot.ArmsArmor
+                            && slot != EInventorySlot.LegsArmor)
                             canAddExtension = true;
 
                         break;
                     }
-                case eObjectType.Studded:
+                case EObjectType.Studded:
                     {
                         name = "Studded " + ArmorSlotToName(slot, type);
                         switch (realm)
                         {
-                            case eRealm.Albion:
+                            case ERealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetStuddedSleevesForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.LegsArmor: model = GetStuddedPantsForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.FeetArmor: model = GetStuddedBootsForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HeadArmor: model = GetStuddedHelmForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.TorsoArmor: model = GetStuddedTorsoForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HandsArmor: model = GetStuddedHandsForLevel(Level, eRealm.Albion); break;
+                                    case EInventorySlot.ArmsArmor: model = GetStuddedSleevesForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.LegsArmor: model = GetStuddedPantsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.FeetArmor: model = GetStuddedBootsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HeadArmor: model = GetStuddedHelmForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.TorsoArmor: model = GetStuddedTorsoForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HandsArmor: model = GetStuddedHandsForLevel(Level, ERealm.Albion); break;
                                 }
                                 break;
 
-                            case eRealm.Midgard:
+                            case ERealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetStuddedSleevesForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.LegsArmor: model = GetStuddedPantsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.FeetArmor: model = GetStuddedBootsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HeadArmor: model = GetStuddedHelmForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.TorsoArmor: model = GetStuddedTorsoForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HandsArmor: model = GetStuddedHandsForLevel(Level, eRealm.Midgard); break;
+                                    case EInventorySlot.ArmsArmor: model = GetStuddedSleevesForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.LegsArmor: model = GetStuddedPantsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.FeetArmor: model = GetStuddedBootsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HeadArmor: model = GetStuddedHelmForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.TorsoArmor: model = GetStuddedTorsoForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HandsArmor: model = GetStuddedHandsForLevel(Level, ERealm.Midgard); break;
                                 }
                                 break;
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
                     }
-                case eObjectType.Plate:
+                case EObjectType.Plate:
                     {
                         name = "Plate " + ArmorSlotToName(slot, type);
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = GetPlateSleevesForLevel(Level, eRealm.Albion); break;
-                            case eInventorySlot.LegsArmor: model = GetPlatePantsForLevel(Level, eRealm.Albion); break;
-                            case eInventorySlot.FeetArmor: model = GetPlateBootsForLevel(Level, eRealm.Albion); break;
-                            case eInventorySlot.HeadArmor:
-                                model = GetPlateHelmForLevel(Level, eRealm.Albion);
+                            case EInventorySlot.ArmsArmor: model = GetPlateSleevesForLevel(Level, ERealm.Albion); break;
+                            case EInventorySlot.LegsArmor: model = GetPlatePantsForLevel(Level, ERealm.Albion); break;
+                            case EInventorySlot.FeetArmor: model = GetPlateBootsForLevel(Level, ERealm.Albion); break;
+                            case EInventorySlot.HeadArmor:
+                                model = GetPlateHelmForLevel(Level, ERealm.Albion);
                                 if (model == 93 || model == 95)
                                     name = "Plate Full Helm";
                                 break;
-                            case eInventorySlot.TorsoArmor: model = GetPlateTorsoForLevel(Level, eRealm.Albion); break;
-                            case eInventorySlot.HandsArmor: model = GetPlateHandsForLevel(Level, eRealm.Albion); break;
+                            case EInventorySlot.TorsoArmor: model = GetPlateTorsoForLevel(Level, ERealm.Albion); break;
+                            case EInventorySlot.HandsArmor: model = GetPlateHandsForLevel(Level, ERealm.Albion); break;
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
                     }
-                case eObjectType.Chain:
+                case EObjectType.Chain:
                     {
                         name = "Chain " + ArmorSlotToName(slot, type);
                         switch (realm)
                         {
-                            case eRealm.Albion:
+                            case ERealm.Albion:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetChainSleevesForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.LegsArmor: model = GetChainPantsForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.FeetArmor: model = GetChainBootsForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HeadArmor: model = GetChainHelmForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.TorsoArmor: model = GetChainTorsoForLevel(Level, eRealm.Albion); break;
-                                    case eInventorySlot.HandsArmor: model = GetChainHandsForLevel(Level, eRealm.Albion); break;
+                                    case EInventorySlot.ArmsArmor: model = GetChainSleevesForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.LegsArmor: model = GetChainPantsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.FeetArmor: model = GetChainBootsForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HeadArmor: model = GetChainHelmForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.TorsoArmor: model = GetChainTorsoForLevel(Level, ERealm.Albion); break;
+                                    case EInventorySlot.HandsArmor: model = GetChainHandsForLevel(Level, ERealm.Albion); break;
                                 }
                                 break;
 
-                            case eRealm.Midgard:
+                            case ERealm.Midgard:
                                 switch (slot)
                                 {
-                                    case eInventorySlot.ArmsArmor: model = GetChainSleevesForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.LegsArmor: model = GetChainPantsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.FeetArmor: model = GetChainBootsForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HeadArmor: model = GetChainHelmForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.TorsoArmor: model = GetChainTorsoForLevel(Level, eRealm.Midgard); break;
-                                    case eInventorySlot.HandsArmor: model = GetChainHandsForLevel(Level, eRealm.Midgard); break;
+                                    case EInventorySlot.ArmsArmor: model = GetChainSleevesForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.LegsArmor: model = GetChainPantsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.FeetArmor: model = GetChainBootsForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HeadArmor: model = GetChainHelmForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.TorsoArmor: model = GetChainTorsoForLevel(Level, ERealm.Midgard); break;
+                                    case EInventorySlot.HandsArmor: model = GetChainHandsForLevel(Level, ERealm.Midgard); break;
                                 }
                                 break;
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
                     }
-                case eObjectType.Reinforced:
+                case EObjectType.Reinforced:
                     {
                         name = "Reinforced " + ArmorSlotToName(slot, type);
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = GetReinforcedSleevesForLevel(Level, eRealm.Hibernia); break;
-                            case eInventorySlot.LegsArmor: model = GetReinforcedPantsForLevel(Level, eRealm.Hibernia); break;
-                            case eInventorySlot.FeetArmor: model = GetReinforcedBootsForLevel(Level, eRealm.Hibernia); break;
-                            case eInventorySlot.HeadArmor: model = GetReinforcedHelmForLevel(Level, eRealm.Hibernia); break;
-                            case eInventorySlot.TorsoArmor: model = GetReinforcedTorsoForLevel(Level, eRealm.Hibernia); break;
-                            case eInventorySlot.HandsArmor: model = GetReinforcedHandsForLevel(Level, eRealm.Hibernia); break;
+                            case EInventorySlot.ArmsArmor: model = GetReinforcedSleevesForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.LegsArmor: model = GetReinforcedPantsForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.FeetArmor: model = GetReinforcedBootsForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.HeadArmor: model = GetReinforcedHelmForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.TorsoArmor: model = GetReinforcedTorsoForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.HandsArmor: model = GetReinforcedHandsForLevel(Level, ERealm.Hibernia); break;
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
                     }
-                case eObjectType.Scale:
+                case EObjectType.Scale:
                     {
                         name = "Scale " + ArmorSlotToName(slot, type);
                         switch (slot)
                         {
-                            case eInventorySlot.ArmsArmor: model = GetScaleSleevesForLevel(Level, eRealm.Hibernia); break;
-                            case eInventorySlot.LegsArmor: model = GetScalePantsForLevel(Level, eRealm.Hibernia); break;
-                            case eInventorySlot.FeetArmor: model = GetScaleBootsForLevel(Level, eRealm.Hibernia); break;
-                            case eInventorySlot.HeadArmor: model = GetScaleHelmForLevel(Level, eRealm.Hibernia); break;
-                            case eInventorySlot.TorsoArmor: model = GetScaleTorsoForLevel(Level, eRealm.Hibernia); break;
-                            case eInventorySlot.HandsArmor: model = GetScaleHandsForLevel(Level, eRealm.Hibernia); break;
+                            case EInventorySlot.ArmsArmor: model = GetScaleSleevesForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.LegsArmor: model = GetScalePantsForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.FeetArmor: model = GetScaleBootsForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.HeadArmor: model = GetScaleHelmForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.TorsoArmor: model = GetScaleTorsoForLevel(Level, ERealm.Hibernia); break;
+                            case EInventorySlot.HandsArmor: model = GetScaleHandsForLevel(Level, ERealm.Hibernia); break;
                         }
 
-                        if (slot != eInventorySlot.HeadArmor)
+                        if (slot != EInventorySlot.HeadArmor)
                             canAddExtension = true;
 
                         break;
                     }
 
                 //weapons
-                case eObjectType.Axe:
+                case EObjectType.Axe:
                     {
                         if (this.Hand == 1)
                         {
@@ -7173,9 +7136,9 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.Blades:
+                case EObjectType.Blades:
                     {
-                        model = GetBladeModelForLevel(Level, eRealm.Hibernia);
+                        model = GetBladeModelForLevel(Level, ERealm.Hibernia);
                         // Blades; speed 22 - 45; Short Sword (445), Falcata (444), Broadsword (447), Longsword (446), Bastard Sword (473)
                         if (this.SPD_ABS <= 27)
                         {
@@ -7195,10 +7158,10 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.Blunt:
+                case EObjectType.Blunt:
                     {
                         // Blunt; speed 22 - 45; Club (449), Mace (450), Hammer (461), Spiked Mace (451), Pick Hammer (641)
-                        model = GetBluntModelForLevel(Level, eRealm.Hibernia);
+                        model = GetBluntModelForLevel(Level, ERealm.Hibernia);
                         if (this.SPD_ABS < 31)
                         {
                             name = GetNameFromId(model);
@@ -7228,9 +7191,9 @@ namespace DOL.GS {
                             model = 3458; //1% chance of being a rolling pin
                         break;
                     }
-                case eObjectType.CelticSpear:
+                case EObjectType.CelticSpear:
                     {
-                        model = GetSpearModelForLevel(Level, eRealm.Hibernia);
+                        model = GetSpearModelForLevel(Level, ERealm.Hibernia);
                         // Short Spear (470), Spear (469), Long Spear (476), War Spear (477)
                         if (this.SPD_ABS < 35)
                         {
@@ -7250,25 +7213,25 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.CompositeBow:
+                case EObjectType.CompositeBow:
                     {
                         if (this.SPD_ABS > 40)
                             name = "Great Composite Bow";
                         else
                             name = "Composite Bow";
 
-                        model = GetBowModelForLevel(Level, eRealm.Midgard);
+                        model = GetBowModelForLevel(Level, ERealm.Midgard);
                         break;
                     }
-                case eObjectType.Crossbow:
+                case EObjectType.Crossbow:
                     {
                         name = "Crossbow";
-                        model = GetCrossbowModelForLevel(Level, eRealm.Albion);
+                        model = GetCrossbowModelForLevel(Level, ERealm.Albion);
                         break;
                     }
-                case eObjectType.CrushingWeapon:
+                case EObjectType.CrushingWeapon:
                     {
-                        model = GetBluntModelForLevel(Level, eRealm.Albion);
+                        model = GetBluntModelForLevel(Level, ERealm.Albion);
                         // Hammer (12), Mace (13), Flanged Mace (14), War Hammer (15)
                         if (this.SPD_ABS < 33)
                         {
@@ -7292,9 +7255,9 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.Fired:
+                case EObjectType.Fired:
                     {
-                        if (realm == eRealm.Albion)
+                        if (realm == ERealm.Albion)
                         {
                             name = "Short Bow";
                             model = 569;
@@ -7306,12 +7269,12 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.Flexible:
+                case EObjectType.Flexible:
                     {
-                        model = GetFlexModelForLevel(Level, eRealm.Albion, damage);
+                        model = GetFlexModelForLevel(Level, ERealm.Albion, damage);
                         switch (damage)
                         {
-                            case eDamageType.Crush:
+                            case EDamageType.Crush:
                                 {
                                     if (this.SPD_ABS < 33)
                                     {
@@ -7327,7 +7290,7 @@ namespace DOL.GS {
                                     }
                                     break;
                                 }
-                            case eDamageType.Slash:
+                            case EDamageType.Slash:
                                 {
                                     if (this.SPD_ABS < 33)
                                     {
@@ -7347,31 +7310,31 @@ namespace DOL.GS {
                         break;
 
                     }
-                case eObjectType.Hammer:
+                case EObjectType.Hammer:
                     {
                         if (this.Hand == 1)
                         {
-                            model = Get2HHammerForLevel(Level, eRealm.Midgard);
+                            model = Get2HHammerForLevel(Level, ERealm.Midgard);
                             name = GetNameFromId(model);
                         }
                         else
                         {
-                            model = GetBluntModelForLevel(Level, eRealm.Midgard);
+                            model = GetBluntModelForLevel(Level, ERealm.Midgard);
                             name = GetNameFromId(model);
                         }
                         break;
                     }
-                case eObjectType.HandToHand:
+                case EObjectType.HandToHand:
                     {
-                        model = GetH2HModelForLevel(Level, eRealm.Midgard, damage);
+                        model = GetH2HModelForLevel(Level, ERealm.Midgard, damage);
                         switch (damage)
                         {
-                            case eDamageType.Slash:
+                            case EDamageType.Slash:
                                 {
                                     name = GetNameFromId(model);
                                     break;
                                 }
-                            case eDamageType.Thrust:
+                            case EDamageType.Thrust:
                                 {
                                     name = GetNameFromId(model);
                                     break;
@@ -7382,7 +7345,7 @@ namespace DOL.GS {
                         this.Item_Type = Slot.LEFTHAND;
                         break;
                     }
-                case eObjectType.Instrument:
+                case EObjectType.Instrument:
                     {
                         switch (this.DPS_AF)
                         {
@@ -7416,19 +7379,19 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.LargeWeapons:
+                case EObjectType.LargeWeapons:
                     {
                         switch (damage)
                         {
-                            case eDamageType.Slash:
+                            case EDamageType.Slash:
                                 {
-                                    model = Get2HSwordForLevel(Level, eRealm.Hibernia);
+                                    model = Get2HSwordForLevel(Level, ERealm.Hibernia);
                                     name = GetNameFromId(model);
                                     break;
                                 }
-                            case eDamageType.Crush:
+                            case EDamageType.Crush:
                                 {
-                                    model = Get2HHammerForLevel(Level, eRealm.Hibernia);
+                                    model = Get2HHammerForLevel(Level, ERealm.Hibernia);
                                     if (model == 474 || model == 912)
                                     {
                                         name = "Big Shillelagh";
@@ -7442,9 +7405,9 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.LeftAxe:
+                case EObjectType.LeftAxe:
                     {
-                        model = GetAxeModelForLevel(Level, eRealm.Midgard);
+                        model = GetAxeModelForLevel(Level, ERealm.Midgard);
                         if (this.SPD_ABS < 25)
                         {
                             name = "Hand Axe";
@@ -7459,9 +7422,9 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.Longbow:
+                case EObjectType.Longbow:
                     {
-                        model = GetBowModelForLevel(Level, eRealm.Albion);
+                        model = GetBowModelForLevel(Level, ERealm.Albion);
                         if (this.SPD_ABS < 44)
                         {
                             name = "Hunting Bow";
@@ -7476,11 +7439,11 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.Magical:
+                case EObjectType.Magical:
                     {
                         switch (slot)
                         {
-                            case eInventorySlot.Cloak:
+                            case EInventorySlot.Cloak:
                                 {
                                     if (Util.Chance(50))
                                         name = "Mantle";
@@ -7496,7 +7459,7 @@ namespace DOL.GS {
 
                                     break;
                                 }
-                            case eInventorySlot.Waist:
+                            case EInventorySlot.Waist:
                                 {
                                     if (Util.Chance(50))
                                         name = "Belt";
@@ -7506,7 +7469,7 @@ namespace DOL.GS {
                                     model = 597;
                                     break;
                                 }
-                            case eInventorySlot.Neck:
+                            case EInventorySlot.Neck:
                                 {
                                     if (Util.Chance(50))
                                         name = "Choker";
@@ -7516,7 +7479,7 @@ namespace DOL.GS {
                                     model = 101;
                                     break;
                                 }
-                            case eInventorySlot.Jewellery:
+                            case EInventorySlot.Jewellery:
                                 {
                                     if (Util.Chance(50))
                                         name = "Gem";
@@ -7526,8 +7489,8 @@ namespace DOL.GS {
                                     model = Util.Random(110, 119);
                                     break;
                                 }
-                            case eInventorySlot.LeftBracer:
-                            case eInventorySlot.RightBracer:
+                            case EInventorySlot.LeftBracer:
+                            case EInventorySlot.RightBracer:
                                 {
                                     if (Util.Chance(50))
                                     {
@@ -7542,8 +7505,8 @@ namespace DOL.GS {
 
                                     break;
                                 }
-                            case eInventorySlot.LeftRing:
-                            case eInventorySlot.RightRing:
+                            case EInventorySlot.LeftRing:
+                            case EInventorySlot.RightRing:
                                 {
                                     if (Util.Chance(50))
                                         name = "Ring";
@@ -7556,9 +7519,9 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.Piercing:
+                case EObjectType.Piercing:
                     {
-                        model = GetThrustModelForLevel(Level, eRealm.Hibernia);
+                        model = GetThrustModelForLevel(Level, ERealm.Hibernia);
                         if (this.SPD_ABS < 24)
                         {
                             name = GetNameFromId(model);
@@ -7581,22 +7544,22 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.PolearmWeapon:
+                case EObjectType.PolearmWeapon:
                     {
-                        model = GetPolearmModelForLevel(Level, eRealm.Albion, damage);
+                        model = GetPolearmModelForLevel(Level, ERealm.Albion, damage);
                         switch (damage)
                         {
-                            case eDamageType.Slash:
+                            case EDamageType.Slash:
                                 {
                                     name = "Lochaber Axe";
                                     break;
                                 }
-                            case eDamageType.Thrust:
+                            case EDamageType.Thrust:
                                 {
                                     name = "Pike";
                                     break;
                                 }
-                            case eDamageType.Crush:
+                            case EDamageType.Crush:
                                 {
                                     name = "Lucerne Hammer";
                                     break;
@@ -7604,9 +7567,9 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.RecurvedBow:
+                case EObjectType.RecurvedBow:
                     {
-                        model = GetBowModelForLevel(Level, eRealm.Hibernia);
+                        model = GetBowModelForLevel(Level, ERealm.Hibernia);
                         if (this.SPD_ABS > 49)
                         {
                             name = "Great Recurve Bow";
@@ -7617,9 +7580,9 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.Scythe:
+                case EObjectType.Scythe:
                     {
-                        model = GetScytheModelForLevel(Level, eRealm.Hibernia);
+                        model = GetScytheModelForLevel(Level, ERealm.Hibernia);
                         if (this.SPD_ABS < 47)
                         {
                             name = "Scythe";
@@ -7634,7 +7597,7 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.Shield:
+                case EObjectType.Shield:
                     {
                         model = GetShieldModelForLevel(Level, realm, (int)damage);
                         switch ((int)damage)
@@ -7657,9 +7620,9 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.SlashingWeapon:
+                case EObjectType.SlashingWeapon:
                     {
-                        model = GetBladeModelForLevel(Level, eRealm.Albion);
+                        model = GetBladeModelForLevel(Level, ERealm.Albion);
                         if (this.SPD_ABS < 26)
                         {
                             name = GetNameFromId(model);
@@ -7690,24 +7653,24 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.Spear:
+                case EObjectType.Spear:
                     {
-                        model = GetSpearModelForLevel(Level, eRealm.Midgard);
+                        model = GetSpearModelForLevel(Level, ERealm.Midgard);
                         name = GetNameFromId(model);
                         break;
                     }
-                case eObjectType.MaulerStaff:
+                case EObjectType.MaulerStaff:
                     {
                         name = "Mauler Staff";
                         model = 19;
                         break;
                     }
-                case eObjectType.Staff:
+                case EObjectType.Staff:
                     {
                         model = GetStaffModelForLevel(Level, realm);
                         switch (realm)
                         {
-                            case eRealm.Albion:
+                            case ERealm.Albion:
 
                                 if (Util.Chance(20))
                                 {
@@ -7732,33 +7695,33 @@ namespace DOL.GS {
                                 }
                                 break;
 
-                            case eRealm.Midgard:
+                            case ERealm.Midgard:
                                 name = GetNameFromId(model);
                                 break;
 
-                            case eRealm.Hibernia:
+                            case ERealm.Hibernia:
                                 name = GetNameFromId(model);
                                 break;
                         }
                         break;
                     }
-                case eObjectType.Sword:
+                case EObjectType.Sword:
                     {
                         if (this.Hand == 1)
                         {
-                            model = Get2HSwordForLevel(Level, eRealm.Midgard);
+                            model = Get2HSwordForLevel(Level, ERealm.Midgard);
                             name = GetNameFromId(model);
                         }
                         else
                         {
-                            model = GetBladeModelForLevel(Level, eRealm.Midgard);
+                            model = GetBladeModelForLevel(Level, ERealm.Midgard);
                             name = GetNameFromId(model);
                         }
                         break;
                     }
-                case eObjectType.ThrustWeapon:
+                case EObjectType.ThrustWeapon:
                     {
-                        model = GetThrustModelForLevel(Level, eRealm.Albion);
+                        model = GetThrustModelForLevel(Level, ERealm.Albion);
                         if (this.SPD_ABS < 24)
                         {
                             name = GetNameFromId(model);
@@ -7787,32 +7750,32 @@ namespace DOL.GS {
                         }
                         break;
                     }
-                case eObjectType.TwoHandedWeapon:
+                case EObjectType.TwoHandedWeapon:
                     {
                         switch (damage)
                         {
-                            case eDamageType.Slash:
+                            case EDamageType.Slash:
                                 {
-                                    model = Get2HSwordForLevel(Level, eRealm.Albion);
+                                    model = Get2HSwordForLevel(Level, ERealm.Albion);
                                     name = GetNameFromId(model);
                                     break;
                                 }
-                            case eDamageType.Crush:
+                            case EDamageType.Crush:
                                 {
-                                    model = Get2HHammerForLevel(Level, eRealm.Albion);
+                                    model = Get2HHammerForLevel(Level, ERealm.Albion);
                                     name = GetNameFromId(model);
                                     break;
                                 }
-                            case eDamageType.Thrust:
+                            case EDamageType.Thrust:
                                 {
-                                    model = Get2HThrustForLevel(Level, eRealm.Albion);
+                                    model = Get2HThrustForLevel(Level, ERealm.Albion);
                                     name = GetNameFromId(model);
                                     break;
                                 }
                         }
                         break;
                     }
-                case eObjectType.FistWraps: // Maulers
+                case EObjectType.FistWraps: // Maulers
                     {
                         string str = "Fist";
 
@@ -7847,11 +7810,11 @@ namespace DOL.GS {
             }
 
             //each realm has a chance for special helmets during generation
-            if (slot == eInventorySlot.HeadArmor)
+            if (slot == EInventorySlot.HeadArmor)
             {
                 switch (realm)
                 {
-                    case eRealm.Albion:
+                    case ERealm.Albion:
                         if (Util.Chance(1))
                             model = 1284; //1% chance of tarboosh
                         else if (Util.Chance(1))
@@ -7859,7 +7822,7 @@ namespace DOL.GS {
                         else if (Util.Chance(1))
                             model = 1287; //1% chance of jester hat
                         break;
-                    case eRealm.Hibernia:
+                    case ERealm.Hibernia:
                         if (Util.Chance(1))
                             model = 1282; //1% chance of robin hood hat
                         else if (Util.Chance(1))
@@ -7867,7 +7830,7 @@ namespace DOL.GS {
                         else if (Util.Chance(1))
                             model = 1288; //1% chance of stag helm
                         break;
-                    case eRealm.Midgard:
+                    case ERealm.Midgard:
                         if (Util.Chance(1))
                             model = 1289; //1% chance of wolf hat
                         else if (Util.Chance(1))
@@ -7886,10 +7849,10 @@ namespace DOL.GS {
             if (canAddExtension)
             {
                 byte ext = 0;
-                if (slot == eInventorySlot.HandsArmor ||
-                     slot == eInventorySlot.FeetArmor)
+                if (slot == EInventorySlot.HandsArmor ||
+                     slot == EInventorySlot.FeetArmor)
                     ext = GetNonTorsoExtensionForLevel(Level);
-                else if (slot == eInventorySlot.TorsoArmor)
+                else if (slot == EInventorySlot.TorsoArmor)
                     ext = GetTorsoExtensionForLevel(Level);
 
                 this.Extension = ext;
@@ -7898,12 +7861,12 @@ namespace DOL.GS {
         }
 
         #region Leather Model Generation
-        private static int GetLeatherTorsoForLevel(int Level, eRealm realm)
+        private static int GetLeatherTorsoForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(31);
                     if (Level > 20)
                         validModels.Add(36);
@@ -7914,7 +7877,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2797);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(240);
                     if (Level > 20)
                         validModels.Add(260);
@@ -7925,7 +7888,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2859);
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(373);
                     if (Level >= 10)
                         validModels.Add(393);
@@ -7943,12 +7906,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetLeatherPantsForLevel(int Level, eRealm realm)
+        private static int GetLeatherPantsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(32);
                     if (Level > 20)
                         validModels.Add(37);
@@ -7959,7 +7922,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2798);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(241);
                     if (Level > 20)
                         validModels.Add(261);
@@ -7970,7 +7933,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2860);
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(374);
                     if (Level >= 10)
                         validModels.Add(394);
@@ -7988,12 +7951,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetLeatherSleevesForLevel(int Level, eRealm realm)
+        private static int GetLeatherSleevesForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(33);
                     if (Level > 20)
                         validModels.Add(38);
@@ -8004,7 +7967,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2799);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(242);
                     if (Level > 20)
                         validModels.Add(262);
@@ -8015,7 +7978,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2861);
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(375);
                     if (Level >= 10)
                         validModels.Add(395);
@@ -8033,12 +7996,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetLeatherHandsForLevel(int Level, eRealm realm)
+        private static int GetLeatherHandsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(34);
                     if (Level > 20)
                         validModels.Add(39);
@@ -8049,7 +8012,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2802);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(243);
                     if (Level > 20)
                         validModels.Add(263);
@@ -8060,7 +8023,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2864);
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(376);
                     if (Level >= 10)
                         validModels.Add(396);
@@ -8078,12 +8041,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetLeatherBootsForLevel(int Level, eRealm realm)
+        private static int GetLeatherBootsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(40);
                     if (Level > 20)
                         validModels.Add(133);
@@ -8094,7 +8057,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2801);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(244);
                     if (Level > 20)
                         validModels.Add(264);
@@ -8105,7 +8068,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2863);
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(377);
                     if (Level >= 10)
                         validModels.Add(397);
@@ -8123,12 +8086,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetLeatherHelmForLevel(int Level, eRealm realm)
+        private static int GetLeatherHelmForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(62);
                     if (Level > 35)
                         validModels.Add(1231);
@@ -8137,7 +8100,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(1232);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(335);
                     if (Level > 35)
                         validModels.Add(336);
@@ -8146,7 +8109,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(1214);
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(438);
                     if (Level > 35)
                         validModels.Add(439);
@@ -8162,12 +8125,12 @@ namespace DOL.GS {
         #endregion
 
         #region Studded Model Generation
-        private static int GetStuddedTorsoForLevel(int Level, eRealm realm)
+        private static int GetStuddedTorsoForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(51);
                     if (Level > 20)
                         validModels.Add(81);
@@ -8178,7 +8141,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2803);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(230);
                     if (Level > 20)
                         validModels.Add(250);
@@ -8197,12 +8160,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetStuddedPantsForLevel(int Level, eRealm realm)
+        private static int GetStuddedPantsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(52);
                     if (Level > 20)
                         validModels.Add(82);
@@ -8213,7 +8176,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2804);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(231);
                     if (Level > 20)
                         validModels.Add(251);
@@ -8232,12 +8195,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetStuddedSleevesForLevel(int Level, eRealm realm)
+        private static int GetStuddedSleevesForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(53);
                     if (Level > 20)
                         validModels.Add(83);
@@ -8248,7 +8211,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2805);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(232);
                     if (Level > 20)
                         validModels.Add(252);
@@ -8267,12 +8230,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetStuddedHandsForLevel(int Level, eRealm realm)
+        private static int GetStuddedHandsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(80);
                     if (Level > 20)
                         validModels.Add(85);
@@ -8283,7 +8246,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2808);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(233);
                     if (Level > 20)
                         validModels.Add(253);
@@ -8302,12 +8265,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetStuddedBootsForLevel(int Level, eRealm realm)
+        private static int GetStuddedBootsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(54);
                     if (Level > 20)
                         validModels.Add(84);
@@ -8318,7 +8281,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(2807);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(234);
                     if (Level > 20)
                         validModels.Add(254);
@@ -8337,12 +8300,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetStuddedHelmForLevel(int Level, eRealm realm)
+        private static int GetStuddedHelmForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(824);
                     if (Level > 35)
                         validModels.Add(1233);
@@ -8351,7 +8314,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(1235);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(829);
                     if (Level > 35)
                         validModels.Add(830);
@@ -8370,12 +8333,12 @@ namespace DOL.GS {
         #endregion
 
         #region Chain Model Generation
-        private static int GetChainTorsoForLevel(int Level, eRealm realm)
+        private static int GetChainTorsoForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(41);
                     if (Level > 10)
                         validModels.Add(181);
@@ -8388,7 +8351,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(1246);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(235);
                     if (Level > 10)
                         validModels.Add(255);
@@ -8409,12 +8372,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetChainPantsForLevel(int Level, eRealm realm)
+        private static int GetChainPantsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(42);
                     if (Level > 10)
                         validModels.Add(1252);
@@ -8427,7 +8390,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(1247);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(236);
                     if (Level > 20)
                         validModels.Add(256);
@@ -8446,12 +8409,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetChainSleevesForLevel(int Level, eRealm realm)
+        private static int GetChainSleevesForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(43);
                     if (Level > 20)
                         validModels.Add(183);
@@ -8462,7 +8425,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(1265);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(237);
                     if (Level > 20)
                         validModels.Add(257);
@@ -8481,12 +8444,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetChainHandsForLevel(int Level, eRealm realm)
+        private static int GetChainHandsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(44);
                     if (Level > 20)
                         validModels.Add(184);
@@ -8497,7 +8460,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(1249);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(238);
                     if (Level > 20)
                         validModels.Add(258);
@@ -8516,12 +8479,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetChainBootsForLevel(int Level, eRealm realm)
+        private static int GetChainBootsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(45);
                     if (Level > 20)
                         validModels.Add(185);
@@ -8532,7 +8495,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(1255);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(239);
                     if (Level > 20)
                         validModels.Add(259);
@@ -8551,19 +8514,19 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetChainHelmForLevel(int Level, eRealm realm)
+        private static int GetChainHelmForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(1236);
                     if (Level > 35)
                         validModels.Add(63);
                     if (Level > 45)
                         validModels.Add(2812);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(832);
                     if (Level > 35)
                         validModels.Add(833);
@@ -8582,12 +8545,12 @@ namespace DOL.GS {
         #endregion
 
         #region Plate Model Generation
-        private static int GetPlateTorsoForLevel(int Level, eRealm realm)
+        private static int GetPlateTorsoForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(46);
                     if (Level > 20)
                         validModels.Add(86);
@@ -8609,12 +8572,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetPlatePantsForLevel(int Level, eRealm realm)
+        private static int GetPlatePantsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(47);
                     if (Level > 20)
                         validModels.Add(87);
@@ -8636,12 +8599,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetPlateSleevesForLevel(int Level, eRealm realm)
+        private static int GetPlateSleevesForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(48);
                     if (Level > 20)
                         validModels.Add(88);
@@ -8663,12 +8626,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetPlateHandsForLevel(int Level, eRealm realm)
+        private static int GetPlateHandsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(49);
                     if (Level > 20)
                         validModels.Add(89);
@@ -8687,12 +8650,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetPlateBootsForLevel(int Level, eRealm realm)
+        private static int GetPlateBootsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(50);
                     if (Level > 20)
                         validModels.Add(90);
@@ -8711,12 +8674,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetPlateHelmForLevel(int Level, eRealm realm)
+        private static int GetPlateHelmForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(64);
                     if (Level > 10)
                         validModels.Add(93);
@@ -8737,12 +8700,12 @@ namespace DOL.GS {
         #endregion
 
         #region Reinforced Model Generation
-        private static int GetReinforcedTorsoForLevel(int Level, eRealm realm)
+        private static int GetReinforcedTorsoForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(363);
                     if (Level > 10)
                         validModels.Add(383);
@@ -8763,12 +8726,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetReinforcedPantsForLevel(int Level, eRealm realm)
+        private static int GetReinforcedPantsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(364);
                     if (Level > 10)
                         validModels.Add(384);
@@ -8789,12 +8752,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetReinforcedSleevesForLevel(int Level, eRealm realm)
+        private static int GetReinforcedSleevesForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(365);
                     if (Level > 10)
                         validModels.Add(385);
@@ -8815,12 +8778,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetReinforcedHandsForLevel(int Level, eRealm realm)
+        private static int GetReinforcedHandsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(366);
                     if (Level > 10)
                         validModels.Add(386);
@@ -8841,12 +8804,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetReinforcedBootsForLevel(int Level, eRealm realm)
+        private static int GetReinforcedBootsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(367);
                     if (Level > 10)
                         validModels.Add(387);
@@ -8867,12 +8830,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetReinforcedHelmForLevel(int Level, eRealm realm)
+        private static int GetReinforcedHelmForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(835);
                     if (Level > 10)
                         validModels.Add(836);
@@ -8893,12 +8856,12 @@ namespace DOL.GS {
         #endregion
 
         #region Scale Model Generation
-        private static int GetScaleTorsoForLevel(int Level, eRealm realm)
+        private static int GetScaleTorsoForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(368);
                     if (Level > 10)
                         validModels.Add(388);
@@ -8919,12 +8882,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetScalePantsForLevel(int Level, eRealm realm)
+        private static int GetScalePantsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(369);
                     if (Level > 10)
                         validModels.Add(389);
@@ -8945,12 +8908,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetScaleSleevesForLevel(int Level, eRealm realm)
+        private static int GetScaleSleevesForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(370);
                     if (Level > 10)
                         validModels.Add(390);
@@ -8971,12 +8934,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetScaleHandsForLevel(int Level, eRealm realm)
+        private static int GetScaleHandsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(371);
                     if (Level > 10)
                         validModels.Add(391);
@@ -8997,12 +8960,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetScaleBootsForLevel(int Level, eRealm realm)
+        private static int GetScaleBootsForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(372);
                     if (Level > 10)
                         validModels.Add(392);
@@ -9023,12 +8986,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetScaleHelmForLevel(int Level, eRealm realm)
+        private static int GetScaleHelmForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(838);
                     if (Level > 10)
                         validModels.Add(839);
@@ -9050,19 +9013,19 @@ namespace DOL.GS {
 
         #region Weapon Model Generation
 
-        private static int Get2HAxeModelForLevel(int Level, eRealm realm)
+        private static int Get2HAxeModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(9);
                     if (Level > 10)
                         validModels.Add(72);
                     if (Level > 30)
                         validModels.Add(73);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(317);
                     if (Level > 10)
                     {
@@ -9102,12 +9065,12 @@ namespace DOL.GS {
 
             return validModels[Util.Random(validModels.Count - 1)];
         }
-        private static int GetAxeModelForLevel(int Level, eRealm realm)
+        private static int GetAxeModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(2);
                     if (Level > 10)
                         validModels.Add(878);
@@ -9118,7 +9081,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(3724);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(315);
                     validModels.Add(316);
                     if (Level > 10)
@@ -9178,12 +9141,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int Get2HSwordForLevel(int Level, eRealm realm)
+        private static int Get2HSwordForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(459);
                     if (Level > 10)
                         validModels.Add(448);
@@ -9202,7 +9165,7 @@ namespace DOL.GS {
                         validModels.Add(3701);
                     }
                     break;
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(6);
                     if (Level > 10)
                         validModels.Add(7);
@@ -9224,7 +9187,7 @@ namespace DOL.GS {
 
                     }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(314);
                     if (Level > 10)
                         validModels.Add(572);
@@ -9261,12 +9224,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetBladeModelForLevel(int Level, eRealm realm)
+        private static int GetBladeModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(444);
                     validModels.Add(445);
                     if (Level > 10)
@@ -9288,7 +9251,7 @@ namespace DOL.GS {
                         validModels.Add(473);                        
                     }
                     break;
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(1);
                     validModels.Add(3);
                     if (Level > 10)
@@ -9312,7 +9275,7 @@ namespace DOL.GS {
                         validModels.Add(879);
                     }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(311);
                     if (Level > 10)
                     {
@@ -9357,12 +9320,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int Get2HHammerForLevel(int Level, eRealm realm)
+        private static int Get2HHammerForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(474);
                     validModels.Add(463);
                     if (Level > 10)
@@ -9391,7 +9354,7 @@ namespace DOL.GS {
                         validModels.Add(3704);
                     }
                     break;
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(16);
 
                     if (Level > 20)
@@ -9403,7 +9366,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(844);
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(574);
                     if (Level > 10)
                         validModels.Add(575);
@@ -9445,12 +9408,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetBluntModelForLevel(int Level, eRealm realm)
+        private static int GetBluntModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(449);
                     validModels.Add(450);
                     if (Level > 10)
@@ -9470,7 +9433,7 @@ namespace DOL.GS {
                         validModels.Add(915);
                     }
                     break;
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(11);
                     validModels.Add(12);
                     if (Level > 10)
@@ -9496,7 +9459,7 @@ namespace DOL.GS {
                         validModels.Add(856);
                     }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(320);
                     validModels.Add(321);
                     if (Level > 10)
@@ -9544,12 +9507,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int Get2HThrustForLevel(int Level, eRealm realm)
+        private static int Get2HThrustForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(846);
 
                     if (Level > 20)
@@ -9588,12 +9551,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetThrustModelForLevel(int Level, eRealm realm)
+        private static int GetThrustModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(71);
                     validModels.Add(454);
                     if (Level > 10)
@@ -9631,7 +9594,7 @@ namespace DOL.GS {
                         validModels.Add(2209);
                     }
                     break;
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(21);
                     validModels.Add(71);
                     if (Level > 10)
@@ -9683,15 +9646,15 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetPolearmModelForLevel(int Level, eRealm realm, eDamageType dtype)
+        private static int GetPolearmModelForLevel(int Level, ERealm realm, EDamageType dtype)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     switch (dtype)
                     {
-                        case eDamageType.Slash:
+                        case EDamageType.Slash:
                             validModels.Add(67);
                             if (Level > 10)
                                 validModels.Add(68);
@@ -9718,7 +9681,7 @@ namespace DOL.GS {
                                 }
                             }
                             break;
-                        case eDamageType.Crush:
+                        case EDamageType.Crush:
                             validModels.Add(70);
                             if (Level > 10)
                                 validModels.Add(650);
@@ -9735,7 +9698,7 @@ namespace DOL.GS {
                                 validModels.Add(3716);
                             }
                             break;
-                        case eDamageType.Thrust:
+                        case EDamageType.Thrust:
                             validModels.Add(26);
                             if (Level > 10)
                                 validModels.Add(69);
@@ -9772,12 +9735,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetSpearModelForLevel(int Level, eRealm realm)
+        private static int GetSpearModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(556);
                     validModels.Add(469);
                     if (Level > 10)
@@ -9809,7 +9772,7 @@ namespace DOL.GS {
                         validModels.Add(2689);
                     }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(328);
                     if (Level > 10)
                         validModels.Add(329);
@@ -9848,12 +9811,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetBowModelForLevel(int Level, eRealm realm)
+        private static int GetBowModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(471);
                     if (Level > 10)
                         validModels.Add(918);
@@ -9872,7 +9835,7 @@ namespace DOL.GS {
                         validModels.Add(925);
                     }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(564);
                     if (Level > 30)
                         validModels.Add(1037);
@@ -9881,7 +9844,7 @@ namespace DOL.GS {
                     if (Level > 50)
                         validModels.Add(1039);
                     break;
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(132);
                     if (Level > 10)
                         validModels.Add(570);
@@ -9919,15 +9882,15 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetFlexModelForLevel(int Level, eRealm realm, eDamageType dtype)
+        private static int GetFlexModelForLevel(int Level, ERealm realm, EDamageType dtype)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     switch (dtype)
                     {
-                        case eDamageType.Crush:
+                        case EDamageType.Crush:
                             validModels.Add(861);
                             if (Level > 10)
                                 validModels.Add(862);
@@ -9949,7 +9912,7 @@ namespace DOL.GS {
                                 validModels.Add(3952);
                             }
                             break;
-                        case eDamageType.Slash:
+                        case EDamageType.Slash:
                             validModels.Add(857);
                             validModels.Add(859);
                             validModels.Add(865);
@@ -9982,15 +9945,15 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetH2HModelForLevel(int Level, eRealm realm, eDamageType dtype)
+        private static int GetH2HModelForLevel(int Level, ERealm realm, EDamageType dtype)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     switch (dtype)
                     {
-                        case eDamageType.Thrust:
+                        case EDamageType.Thrust:
                             validModels.Add(960);
                             validModels.Add(962);
                             validModels.Add(964);
@@ -10023,7 +9986,7 @@ namespace DOL.GS {
                                 }                                
                             }
                             break;
-                        case eDamageType.Slash:
+                        case EDamageType.Slash:
                             validModels.Add(959);
                             validModels.Add(961);
                             validModels.Add(963);
@@ -10066,12 +10029,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetCrossbowModelForLevel(int Level, eRealm realm)
+        private static int GetCrossbowModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(226);
                     if (Level > 10)
                         validModels.Add(890);
@@ -10106,12 +10069,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetScytheModelForLevel(int Level, eRealm realm)
+        private static int GetScytheModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(931);
                     if (Level > 10)
                         validModels.Add(929);
@@ -10143,12 +10106,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetStaffModelForLevel(int Level, eRealm realm)
+        private static int GetStaffModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     validModels.Add(19);
                     if (Level > 10)
                         validModels.Add(442);
@@ -10173,7 +10136,7 @@ namespace DOL.GS {
                         validModels.Add(1170); 
                     }
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     validModels.Add(1180);
                     if (Level > 10)
                         validModels.Add(1181);
@@ -10193,7 +10156,7 @@ namespace DOL.GS {
                         validModels.Add(1173);
                     }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     validModels.Add(327);
                     if (Level > 10)
                         validModels.Add(565);
@@ -10228,12 +10191,12 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetShieldModelForLevel(int Level, eRealm realm, int size)
+        private static int GetShieldModelForLevel(int Level, ERealm realm, int size)
         {
             List<int> validModels = new List<int>();
             switch (realm)
             {
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     switch (size)
                     {
                         case 1:
@@ -10325,7 +10288,7 @@ namespace DOL.GS {
                             break;
                     }
                     break;
-                case eRealm.Albion:
+                case ERealm.Albion:
                     switch (size)
                     {
                         case 1:
@@ -10411,7 +10374,7 @@ namespace DOL.GS {
                             break;
                     }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     switch (size)
                     {
                         case 1:
@@ -10505,7 +10468,7 @@ namespace DOL.GS {
             return validModels[Util.Random(validModels.Count - 1)];
         }
 
-        private static int GetInstrumentModelForLevel(int Level, eRealm realm)
+        private static int GetInstrumentModelForLevel(int Level, ERealm realm)
         {
             List<int> validModels = new List<int>();
             validModels.Add(227);
@@ -10525,12 +10488,12 @@ namespace DOL.GS {
             }
             if (Level > 30)
             {
-                if(realm == eRealm.Albion)
+                if(realm == ERealm.Albion)
                 {
                     validModels.Add(2976);
                     validModels.Add(2977);
                     validModels.Add(2978);
-                } else if (realm == eRealm.Hibernia)
+                } else if (realm == ERealm.Hibernia)
                 {
                     validModels.Add(2979);
                     validModels.Add(2980);
@@ -10552,16 +10515,16 @@ namespace DOL.GS {
                 validModels.Add(3848);
                 if (Util.Chance(50))
                 {
-                    if (realm == eRealm.Albion)
+                    if (realm == ERealm.Albion)
                         validModels.Add(3985);
-                    if (realm == eRealm.Hibernia)
+                    if (realm == ERealm.Hibernia)
                         validModels.Add(3908);
                 }
                 if (Util.Chance(5))
                 {
-                    if (realm == eRealm.Albion)
+                    if (realm == ERealm.Albion)
                         validModels.Add(3280);
-                    if (realm == eRealm.Hibernia)
+                    if (realm == ERealm.Hibernia)
                         validModels.Add(3239);
                 }
             }
@@ -11011,47 +10974,47 @@ namespace DOL.GS {
             return appliedExtension;
         }
 
-        private static string ArmorSlotToName(eInventorySlot slot, eObjectType type)
+        private static string ArmorSlotToName(EInventorySlot slot, EObjectType type)
         {
             switch (slot)
             {
-                case eInventorySlot.ArmsArmor:
-                    if (type == eObjectType.Plate)
+                case EInventorySlot.ArmsArmor:
+                    if (type == EObjectType.Plate)
                         return "Arms";
                     else
                         return "Sleeves";
 
-                case eInventorySlot.FeetArmor:
+                case EInventorySlot.FeetArmor:
                     return "Boots";
 
-                case eInventorySlot.HandsArmor:
-                    if (type == eObjectType.Plate)
+                case EInventorySlot.HandsArmor:
+                    if (type == EObjectType.Plate)
                         return "Gauntlets";
                     else
                         return "Gloves";
 
-                case eInventorySlot.HeadArmor:
-                    if (type == eObjectType.Cloth)
+                case EInventorySlot.HeadArmor:
+                    if (type == EObjectType.Cloth)
                         return "Cap";
-                    else if (type == eObjectType.Scale)
+                    else if (type == EObjectType.Scale)
                         return "Coif";
                     else
                         return "Helm";
 
-                case eInventorySlot.LegsArmor:
-                    if (type == eObjectType.Cloth)
+                case EInventorySlot.LegsArmor:
+                    if (type == EObjectType.Cloth)
                         return "Pants";
-                    else if (type == eObjectType.Plate)
+                    else if (type == EObjectType.Plate)
                         return "Legs";
                     else
                         return "Leggings";
 
-                case eInventorySlot.TorsoArmor:
-                    if (type == eObjectType.Chain || type == eObjectType.Scale)
+                case EInventorySlot.TorsoArmor:
+                    if (type == EObjectType.Chain || type == EObjectType.Scale)
                         return "Hauberk";
-                    else if (type == eObjectType.Plate)
+                    else if (type == EObjectType.Plate)
                         return "Breastplate";
-                    else if ((type == eObjectType.Leather || type == eObjectType.Studded) && Util.Chance(50))
+                    else if ((type == EObjectType.Leather || type == EObjectType.Studded) && Util.Chance(50))
                         return "Jerkin";
                     else
                         return "Vest";
@@ -11134,85 +11097,85 @@ namespace DOL.GS {
             None,
         }
 
-        private static eProperty[] StatBonus = new eProperty[]
+        private static EProperty[] StatBonus = new EProperty[]
         {
-            eProperty.Strength,
-            eProperty.Dexterity,
-            eProperty.Constitution,
-            eProperty.Quickness,
+            EProperty.Strength,
+            EProperty.Dexterity,
+            EProperty.Constitution,
+            EProperty.Quickness,
 			//eProperty.Intelligence,
 			//eProperty.Piety,
 			//eProperty.Empathy,
 			//eProperty.Charisma,
-			eProperty.MaxMana,
-            eProperty.MaxHealth,
-            eProperty.Acuity,
+			EProperty.MaxMana,
+            EProperty.MaxHealth,
+            EProperty.Acuity,
         };
 
-        private static eProperty[] AdvancedStats = new eProperty[]
+        private static EProperty[] AdvancedStats = new EProperty[]
         {
-            eProperty.PowerPool,
-            eProperty.PowerPoolCapBonus,
-            eProperty.StrCapBonus,
-            eProperty.DexCapBonus,
-            eProperty.ConCapBonus,
-            eProperty.QuiCapBonus,
+            EProperty.PowerPool,
+            EProperty.PowerPoolCapBonus,
+            EProperty.StrCapBonus,
+            EProperty.DexCapBonus,
+            EProperty.ConCapBonus,
+            EProperty.QuiCapBonus,
 			//eProperty.IntCapBonus,
 			//eProperty.PieCapBonus,
 			//eProperty.EmpCapBonus,
 			//eProperty.ChaCapBonus,
-			eProperty.MaxHealthCapBonus,
-            eProperty.AcuCapBonus,
+			EProperty.MaxHealthCapBonus,
+            EProperty.AcuCapBonus,
         };
 
-        private static eProperty[] ResistBonus = new eProperty[]
+        private static EProperty[] ResistBonus = new EProperty[]
         {
-            eProperty.Resist_Body,
-            eProperty.Resist_Cold,
-            eProperty.Resist_Crush,
-            eProperty.Resist_Energy,
-            eProperty.Resist_Heat,
-            eProperty.Resist_Matter,
-            eProperty.Resist_Slash,
-            eProperty.Resist_Spirit,
-            eProperty.Resist_Thrust,
+            EProperty.Resist_Body,
+            EProperty.Resist_Cold,
+            EProperty.Resist_Crush,
+            EProperty.Resist_Energy,
+            EProperty.Resist_Heat,
+            EProperty.Resist_Matter,
+            EProperty.Resist_Slash,
+            EProperty.Resist_Spirit,
+            EProperty.Resist_Thrust,
         };
 
 
-        private static eProperty[] AlbSkillBonus = new eProperty[]
+        private static EProperty[] AlbSkillBonus = new EProperty[]
         {
-            eProperty.Skill_Two_Handed,
-            eProperty.Skill_Body,
+            EProperty.Skill_Two_Handed,
+            EProperty.Skill_Body,
 	        //eProperty.Skill_Chants, // bonus not used
-	        eProperty.Skill_Critical_Strike,
-            eProperty.Skill_Cross_Bows,
-            eProperty.Skill_Crushing,
-            eProperty.Skill_Death_Servant,
-            eProperty.Skill_DeathSight,
-            eProperty.Skill_Dual_Wield,
-            eProperty.Skill_Earth,
-            eProperty.Skill_Enhancement,
-            eProperty.Skill_Envenom,
-            eProperty.Skill_Fire,
-            eProperty.Skill_Flexible_Weapon,
-            eProperty.Skill_Cold,
-            eProperty.Skill_Instruments,
-            eProperty.Skill_Long_bows,
-            eProperty.Skill_Matter,
-            eProperty.Skill_Mind,
-            eProperty.Skill_Pain_working,
-            eProperty.Skill_Parry,
-            eProperty.Skill_Polearms,
-            eProperty.Skill_Rejuvenation,
-            eProperty.Skill_Shields,
-            eProperty.Skill_Slashing,
-            eProperty.Skill_Smiting,
-            eProperty.Skill_SoulRending,
-            eProperty.Skill_Spirit,
-            eProperty.Skill_Staff,
-            eProperty.Skill_Stealth,
-            eProperty.Skill_Thrusting,
-            eProperty.Skill_Wind,
+	        EProperty.Skill_Critical_Strike,
+            EProperty.Skill_Cross_Bows,
+            EProperty.Skill_Crushing,
+            EProperty.Skill_Death_Servant,
+            EProperty.Skill_DeathSight,
+            EProperty.Skill_Dual_Wield,
+            EProperty.Skill_Earth,
+            EProperty.Skill_Enhancement,
+            EProperty.Skill_Envenom,
+            EProperty.Skill_Fire,
+            EProperty.Skill_Flexible_Weapon,
+            EProperty.Skill_Cold,
+            EProperty.Skill_Instruments,
+            EProperty.Skill_Long_bows,
+            EProperty.Skill_Matter,
+            EProperty.Skill_Mind,
+            EProperty.Skill_Pain_working,
+            EProperty.Skill_Parry,
+            EProperty.Skill_Polearms,
+            EProperty.Skill_Rejuvenation,
+            EProperty.Skill_Shields,
+            EProperty.Skill_Slashing,
+            EProperty.Skill_Smiting,
+            EProperty.Skill_SoulRending,
+            EProperty.Skill_Spirit,
+            EProperty.Skill_Staff,
+            EProperty.Skill_Stealth,
+            EProperty.Skill_Thrusting,
+            EProperty.Skill_Wind,
             //eProperty.Skill_Aura_Manipulation, //Maulers
             //eProperty.Skill_FistWraps, //Maulers
             //eProperty.Skill_MaulerStaff, //Maulers
@@ -11221,33 +11184,33 @@ namespace DOL.GS {
         };
 
 
-        private static eProperty[] HibSkillBonus = new eProperty[]
+        private static EProperty[] HibSkillBonus = new EProperty[]
         {
-            eProperty.Skill_Critical_Strike,
-            eProperty.Skill_Envenom,
-            eProperty.Skill_Parry,
-            eProperty.Skill_Shields,
-            eProperty.Skill_Stealth,
-            eProperty.Skill_Light,
-            eProperty.Skill_Void,
-            eProperty.Skill_Mana,
-            eProperty.Skill_Blades,
-            eProperty.Skill_Blunt,
-            eProperty.Skill_Piercing,
-            eProperty.Skill_Large_Weapon,
-            eProperty.Skill_Mentalism,
-            eProperty.Skill_Regrowth,
-            eProperty.Skill_Nurture,
-            eProperty.Skill_Nature,
-            eProperty.Skill_Music,
-            eProperty.Skill_Celtic_Dual,
-            eProperty.Skill_Celtic_Spear,
-            eProperty.Skill_RecurvedBow,
-            eProperty.Skill_Valor,
-            eProperty.Skill_Verdant,
-            eProperty.Skill_Creeping,
-            eProperty.Skill_Arboreal,
-            eProperty.Skill_Scythe,
+            EProperty.Skill_Critical_Strike,
+            EProperty.Skill_Envenom,
+            EProperty.Skill_Parry,
+            EProperty.Skill_Shields,
+            EProperty.Skill_Stealth,
+            EProperty.Skill_Light,
+            EProperty.Skill_Void,
+            EProperty.Skill_Mana,
+            EProperty.Skill_Blades,
+            EProperty.Skill_Blunt,
+            EProperty.Skill_Piercing,
+            EProperty.Skill_Large_Weapon,
+            EProperty.Skill_Mentalism,
+            EProperty.Skill_Regrowth,
+            EProperty.Skill_Nurture,
+            EProperty.Skill_Nature,
+            EProperty.Skill_Music,
+            EProperty.Skill_Celtic_Dual,
+            EProperty.Skill_Celtic_Spear,
+            EProperty.Skill_RecurvedBow,
+            EProperty.Skill_Valor,
+            EProperty.Skill_Verdant,
+            EProperty.Skill_Creeping,
+            EProperty.Skill_Arboreal,
+            EProperty.Skill_Scythe,
             //eProperty.Skill_Nightshade, // bonus not used
             //eProperty.Skill_Pathfinding, // bonus not used
             //eProperty.Skill_Dementia,
@@ -11263,39 +11226,39 @@ namespace DOL.GS {
             //eProperty.Skill_Power_Strikes, //Maulers
         };
 
-        private static eProperty[] MidSkillBonus = new eProperty[]
+        private static EProperty[] MidSkillBonus = new EProperty[]
         {
-            eProperty.Skill_Critical_Strike,
-            eProperty.Skill_Envenom,
-            eProperty.Skill_Parry,
-            eProperty.Skill_Shields,
-            eProperty.Skill_Stealth,
-            eProperty.Skill_Sword,
-            eProperty.Skill_Hammer,
-            eProperty.Skill_Axe,
-            eProperty.Skill_Left_Axe,
-            eProperty.Skill_Spear,
-            eProperty.Skill_Mending,
-            eProperty.Skill_Augmentation,
+            EProperty.Skill_Critical_Strike,
+            EProperty.Skill_Envenom,
+            EProperty.Skill_Parry,
+            EProperty.Skill_Shields,
+            EProperty.Skill_Stealth,
+            EProperty.Skill_Sword,
+            EProperty.Skill_Hammer,
+            EProperty.Skill_Axe,
+            EProperty.Skill_Left_Axe,
+            EProperty.Skill_Spear,
+            EProperty.Skill_Mending,
+            EProperty.Skill_Augmentation,
 	        //Skill_Cave_Magic = 59,
-	        eProperty.Skill_Darkness,
-            eProperty.Skill_Suppression,
-            eProperty.Skill_Runecarving,
-            eProperty.Skill_Stormcalling,
+	        EProperty.Skill_Darkness,
+            EProperty.Skill_Suppression,
+            EProperty.Skill_Runecarving,
+            EProperty.Skill_Stormcalling,
 	        //eProperty.Skill_BeastCraft, // bonus not used
-			eProperty.Skill_Composite,
-            eProperty.Skill_Battlesongs,
-            eProperty.Skill_Subterranean,
-            eProperty.Skill_BoneArmy,
-            eProperty.Skill_Thrown_Weapons,
-            eProperty.Skill_HandToHand,
+			EProperty.Skill_Composite,
+            EProperty.Skill_Battlesongs,
+            EProperty.Skill_Subterranean,
+            EProperty.Skill_BoneArmy,
+            EProperty.Skill_Thrown_Weapons,
+            EProperty.Skill_HandToHand,
     		//eProperty.Skill_Pacification,
 	        //eProperty.Skill_Savagery,
 	        //eProperty.Skill_OdinsWill,
 	        //eProperty.Skill_Cursing,
 	        //eProperty.Skill_Hexing,
 	        //eProperty.Skill_Witchcraft,
-    		eProperty.Skill_Summoning,
+    		EProperty.Skill_Summoning,
             //eProperty.Skill_Aura_Manipulation, //Maulers
             //eProperty.Skill_FistWraps, //Maulers
             //eProperty.Skill_MaulerStaff, //Maulers
@@ -11311,121 +11274,121 @@ namespace DOL.GS {
         // the following are doubled up to work around an apparent mid-number bias to the random number generator
 
         // note that weapon array has been adjusted to add weight to more commonly used items
-        private static eObjectType[] AlbionWeapons = new eObjectType[]
+        private static EObjectType[] AlbionWeapons = new EObjectType[]
         {
-            eObjectType.ThrustWeapon,
-            eObjectType.CrushingWeapon,
-            eObjectType.SlashingWeapon,
-            eObjectType.Shield,
-            eObjectType.Staff,
-            eObjectType.TwoHandedWeapon,
-            eObjectType.Longbow,
-            eObjectType.Flexible,
-            eObjectType.PolearmWeapon,
-            eObjectType.FistWraps, //Maulers
-			eObjectType.MaulerStaff,//Maulers
-			eObjectType.Instrument,
-            eObjectType.Crossbow,
-            eObjectType.ThrustWeapon,
-            eObjectType.CrushingWeapon,
-            eObjectType.SlashingWeapon,
-            eObjectType.Shield,
-            eObjectType.Staff,
-            eObjectType.TwoHandedWeapon,
-            eObjectType.Longbow,
-            eObjectType.Flexible,
-            eObjectType.PolearmWeapon,
-            eObjectType.FistWraps, //Maulers
-			eObjectType.MaulerStaff,//Maulers
-			eObjectType.Instrument,
-            eObjectType.Crossbow,
+            EObjectType.ThrustWeapon,
+            EObjectType.CrushingWeapon,
+            EObjectType.SlashingWeapon,
+            EObjectType.Shield,
+            EObjectType.Staff,
+            EObjectType.TwoHandedWeapon,
+            EObjectType.Longbow,
+            EObjectType.Flexible,
+            EObjectType.PolearmWeapon,
+            EObjectType.FistWraps, //Maulers
+			EObjectType.MaulerStaff,//Maulers
+			EObjectType.Instrument,
+            EObjectType.Crossbow,
+            EObjectType.ThrustWeapon,
+            EObjectType.CrushingWeapon,
+            EObjectType.SlashingWeapon,
+            EObjectType.Shield,
+            EObjectType.Staff,
+            EObjectType.TwoHandedWeapon,
+            EObjectType.Longbow,
+            EObjectType.Flexible,
+            EObjectType.PolearmWeapon,
+            EObjectType.FistWraps, //Maulers
+			EObjectType.MaulerStaff,//Maulers
+			EObjectType.Instrument,
+            EObjectType.Crossbow,
         };
 
-        private static eObjectType[] AlbionArmor = new eObjectType[]
+        private static EObjectType[] AlbionArmor = new EObjectType[]
         {
-            eObjectType.Cloth,
-            eObjectType.Leather,
-            eObjectType.Studded,
-            eObjectType.Chain,
-            eObjectType.Plate,
-            eObjectType.Cloth,
-            eObjectType.Leather,
-            eObjectType.Studded,
-            eObjectType.Chain,
-            eObjectType.Plate,
+            EObjectType.Cloth,
+            EObjectType.Leather,
+            EObjectType.Studded,
+            EObjectType.Chain,
+            EObjectType.Plate,
+            EObjectType.Cloth,
+            EObjectType.Leather,
+            EObjectType.Studded,
+            EObjectType.Chain,
+            EObjectType.Plate,
         };
-        private static eObjectType[] MidgardWeapons = new eObjectType[]
+        private static EObjectType[] MidgardWeapons = new EObjectType[]
         {
-            eObjectType.Sword,
-            eObjectType.Hammer,
-            eObjectType.Axe,
-            eObjectType.Shield,
-            eObjectType.Staff,
-            eObjectType.Spear,
-            eObjectType.CompositeBow ,
-            eObjectType.LeftAxe,
-            eObjectType.HandToHand,
-            eObjectType.Sword,
-            eObjectType.Hammer,
-            eObjectType.Axe,
-            eObjectType.Shield,
-            eObjectType.Staff,
-            eObjectType.Spear,
-            eObjectType.CompositeBow ,
-            eObjectType.LeftAxe,
-            eObjectType.HandToHand,
-        };
-
-        private static eObjectType[] MidgardArmor = new eObjectType[]
-        {
-            eObjectType.Cloth,
-            eObjectType.Leather,
-            eObjectType.Studded,
-            eObjectType.Chain,
-            eObjectType.Cloth,
-            eObjectType.Leather,
-            eObjectType.Studded,
-            eObjectType.Chain,
+            EObjectType.Sword,
+            EObjectType.Hammer,
+            EObjectType.Axe,
+            EObjectType.Shield,
+            EObjectType.Staff,
+            EObjectType.Spear,
+            EObjectType.CompositeBow ,
+            EObjectType.LeftAxe,
+            EObjectType.HandToHand,
+            EObjectType.Sword,
+            EObjectType.Hammer,
+            EObjectType.Axe,
+            EObjectType.Shield,
+            EObjectType.Staff,
+            EObjectType.Spear,
+            EObjectType.CompositeBow ,
+            EObjectType.LeftAxe,
+            EObjectType.HandToHand,
         };
 
-        private static eObjectType[] HiberniaWeapons = new eObjectType[]
+        private static EObjectType[] MidgardArmor = new EObjectType[]
         {
-            eObjectType.Blades,
-            eObjectType.Blunt,
-            eObjectType.Piercing,
-            eObjectType.Shield,
-            eObjectType.Staff,
-            eObjectType.LargeWeapons,
-            eObjectType.CelticSpear,
-            eObjectType.Scythe,
-            eObjectType.RecurvedBow,
-            eObjectType.Instrument,
-            eObjectType.FistWraps,//Maulers
-			eObjectType.MaulerStaff,//Maulers
-			eObjectType.Blades,
-            eObjectType.Blunt,
-            eObjectType.Piercing,
-            eObjectType.Shield,
-            eObjectType.Staff,
-            eObjectType.LargeWeapons,
-            eObjectType.CelticSpear,
-            eObjectType.Scythe,
-            eObjectType.RecurvedBow,
-            eObjectType.Instrument,
-            eObjectType.FistWraps,//Maulers
-			eObjectType.MaulerStaff,//Maulers
+            EObjectType.Cloth,
+            EObjectType.Leather,
+            EObjectType.Studded,
+            EObjectType.Chain,
+            EObjectType.Cloth,
+            EObjectType.Leather,
+            EObjectType.Studded,
+            EObjectType.Chain,
         };
 
-        private static eObjectType[] HiberniaArmor = new eObjectType[]
+        private static EObjectType[] HiberniaWeapons = new EObjectType[]
         {
-            eObjectType.Cloth,
-            eObjectType.Leather,
-            eObjectType.Reinforced,
-            eObjectType.Scale,
-            eObjectType.Cloth,
-            eObjectType.Leather,
-            eObjectType.Reinforced,
-            eObjectType.Scale,
+            EObjectType.Blades,
+            EObjectType.Blunt,
+            EObjectType.Piercing,
+            EObjectType.Shield,
+            EObjectType.Staff,
+            EObjectType.LargeWeapons,
+            EObjectType.CelticSpear,
+            EObjectType.Scythe,
+            EObjectType.RecurvedBow,
+            EObjectType.Instrument,
+            EObjectType.FistWraps,//Maulers
+			EObjectType.MaulerStaff,//Maulers
+			EObjectType.Blades,
+            EObjectType.Blunt,
+            EObjectType.Piercing,
+            EObjectType.Shield,
+            EObjectType.Staff,
+            EObjectType.LargeWeapons,
+            EObjectType.CelticSpear,
+            EObjectType.Scythe,
+            EObjectType.RecurvedBow,
+            EObjectType.Instrument,
+            EObjectType.FistWraps,//Maulers
+			EObjectType.MaulerStaff,//Maulers
+        };
+
+        private static EObjectType[] HiberniaArmor = new EObjectType[]
+        {
+            EObjectType.Cloth,
+            EObjectType.Leather,
+            EObjectType.Reinforced,
+            EObjectType.Scale,
+            EObjectType.Cloth,
+            EObjectType.Leather,
+            EObjectType.Reinforced,
+            EObjectType.Scale,
         };
 
         #endregion definitions
@@ -11434,141 +11397,141 @@ namespace DOL.GS {
         {
             // Magic Prefix
 
-            hPropertyToMagicPrefix.Add(eProperty.Strength, "Mighty");
-            hPropertyToMagicPrefix.Add(eProperty.Dexterity, "Adroit");
-            hPropertyToMagicPrefix.Add(eProperty.Constitution, "Fortifying");
-            hPropertyToMagicPrefix.Add(eProperty.Quickness, "Speedy");
-            hPropertyToMagicPrefix.Add(eProperty.Intelligence, "Insightful");
-            hPropertyToMagicPrefix.Add(eProperty.Piety, "Willful");
-            hPropertyToMagicPrefix.Add(eProperty.Empathy, "Attuned");
-            hPropertyToMagicPrefix.Add(eProperty.Charisma, "Glib");
-            hPropertyToMagicPrefix.Add(eProperty.MaxMana, "Arcane");
-            hPropertyToMagicPrefix.Add(eProperty.MaxHealth, "Sturdy");
-            hPropertyToMagicPrefix.Add(eProperty.PowerPool, "Arcane");
+            hPropertyToMagicPrefix.Add(EProperty.Strength, "Mighty");
+            hPropertyToMagicPrefix.Add(EProperty.Dexterity, "Adroit");
+            hPropertyToMagicPrefix.Add(EProperty.Constitution, "Fortifying");
+            hPropertyToMagicPrefix.Add(EProperty.Quickness, "Speedy");
+            hPropertyToMagicPrefix.Add(EProperty.Intelligence, "Insightful");
+            hPropertyToMagicPrefix.Add(EProperty.Piety, "Willful");
+            hPropertyToMagicPrefix.Add(EProperty.Empathy, "Attuned");
+            hPropertyToMagicPrefix.Add(EProperty.Charisma, "Glib");
+            hPropertyToMagicPrefix.Add(EProperty.MaxMana, "Arcane");
+            hPropertyToMagicPrefix.Add(EProperty.MaxHealth, "Sturdy");
+            hPropertyToMagicPrefix.Add(EProperty.PowerPool, "Arcane");
 
-            hPropertyToMagicPrefix.Add(eProperty.Resist_Body, "Bodybender");
-            hPropertyToMagicPrefix.Add(eProperty.Resist_Cold, "Icebender");
-            hPropertyToMagicPrefix.Add(eProperty.Resist_Crush, "Bluntbender");
-            hPropertyToMagicPrefix.Add(eProperty.Resist_Energy, "Energybender");
-            hPropertyToMagicPrefix.Add(eProperty.Resist_Heat, "Heatbender");
-            hPropertyToMagicPrefix.Add(eProperty.Resist_Matter, "Matterbender");
-            hPropertyToMagicPrefix.Add(eProperty.Resist_Slash, "Edgebender");
-            hPropertyToMagicPrefix.Add(eProperty.Resist_Spirit, "Spiritbender");
-            hPropertyToMagicPrefix.Add(eProperty.Resist_Thrust, "Thrustbender");
+            hPropertyToMagicPrefix.Add(EProperty.Resist_Body, "Bodybender");
+            hPropertyToMagicPrefix.Add(EProperty.Resist_Cold, "Icebender");
+            hPropertyToMagicPrefix.Add(EProperty.Resist_Crush, "Bluntbender");
+            hPropertyToMagicPrefix.Add(EProperty.Resist_Energy, "Energybender");
+            hPropertyToMagicPrefix.Add(EProperty.Resist_Heat, "Heatbender");
+            hPropertyToMagicPrefix.Add(EProperty.Resist_Matter, "Matterbender");
+            hPropertyToMagicPrefix.Add(EProperty.Resist_Slash, "Edgebender");
+            hPropertyToMagicPrefix.Add(EProperty.Resist_Spirit, "Spiritbender");
+            hPropertyToMagicPrefix.Add(EProperty.Resist_Thrust, "Thrustbender");
 
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Two_Handed, "Sundering");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Body, "Soul Crusher");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Critical_Strike, "Lifetaker");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Cross_Bows, "Truefire");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Crushing, "Battering");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Death_Servant, "Death Binder");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_DeathSight, "Minionbound");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Dual_Wield, "Whirling");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Earth, "Earthborn");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Enhancement, "Fervent");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Envenom, "Venomous");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Fire, "Flameborn");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Flexible_Weapon, "Tensile");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Cold, "Iceborn");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Instruments, "Melodic");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Long_bows, "Winged");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Matter, "Earthsplitter");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Mind, "Dominating");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Pain_working, "Painbound");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Parry, "Bladeblocker");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Polearms, "Decimator");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Rejuvenation, "Rejuvenating");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Shields, "Protector's");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Slashing, "Honed");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Smiting, "Earthshaker");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_SoulRending, "Soul Taker");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Spirit, "Spiritbound");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Staff, "Thunderer");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Stealth, "Shadowwalker");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Thrusting, "Perforator");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Wind, "Airy");
-
-
-            hPropertyToMagicPrefix.Add(eProperty.AllMagicSkills, "Mystical");
-            hPropertyToMagicPrefix.Add(eProperty.AllMeleeWeaponSkills, "Gladiator");
-            hPropertyToMagicPrefix.Add(eProperty.AllSkills, "Skillful");
-            hPropertyToMagicPrefix.Add(eProperty.AllDualWieldingSkills, "Duelist");
-            hPropertyToMagicPrefix.Add(eProperty.AllArcherySkills, "Bowmaster");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Two_Handed, "Sundering");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Body, "Soul Crusher");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Critical_Strike, "Lifetaker");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Cross_Bows, "Truefire");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Crushing, "Battering");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Death_Servant, "Death Binder");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_DeathSight, "Minionbound");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Dual_Wield, "Whirling");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Earth, "Earthborn");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Enhancement, "Fervent");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Envenom, "Venomous");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Fire, "Flameborn");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Flexible_Weapon, "Tensile");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Cold, "Iceborn");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Instruments, "Melodic");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Long_bows, "Winged");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Matter, "Earthsplitter");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Mind, "Dominating");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Pain_working, "Painbound");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Parry, "Bladeblocker");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Polearms, "Decimator");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Rejuvenation, "Rejuvenating");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Shields, "Protector's");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Slashing, "Honed");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Smiting, "Earthshaker");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_SoulRending, "Soul Taker");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Spirit, "Spiritbound");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Staff, "Thunderer");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Stealth, "Shadowwalker");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Thrusting, "Perforator");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Wind, "Airy");
 
 
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Sword, "Serrated");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Hammer, "Demolishing");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Axe, "Swathe Cutter's");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Left_Axe, "Cleaving");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Spear, "Impaling");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Mending, "Bodymender");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Augmentation, "Empowering");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Darkness, "Shadowbender");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Suppression, "Spiritbinder");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Runecarving, "Runebender");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Stormcalling, "Stormcaller");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_BeastCraft, "Lifebender");
+            hPropertyToMagicPrefix.Add(EProperty.AllMagicSkills, "Mystical");
+            hPropertyToMagicPrefix.Add(EProperty.AllMeleeWeaponSkills, "Gladiator");
+            hPropertyToMagicPrefix.Add(EProperty.AllSkills, "Skillful");
+            hPropertyToMagicPrefix.Add(EProperty.AllDualWieldingSkills, "Duelist");
+            hPropertyToMagicPrefix.Add(EProperty.AllArcherySkills, "Bowmaster");
 
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Light, "Lightbender");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Void, "Voidbender");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Mana, "Starbinder");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Enchantments, "Chanter");
 
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Blades, "Razored");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Blunt, "Crushing");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Piercing, "Lancenator");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Large_Weapon, "Sundering");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Mentalism, "Mindbinder");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Regrowth, "Forestbound");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Nurture, "Plantbound");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Nature, "Animalbound");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Music, "Resonant");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Celtic_Dual, "Whirling");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Celtic_Spear, "Impaling");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_RecurvedBow, "Hawk");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Valor, "Courageous");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Subterranean, "Ancestral");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_BoneArmy, "Blighted");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Verdant, "Vale Defender");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Sword, "Serrated");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Hammer, "Demolishing");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Axe, "Swathe Cutter's");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Left_Axe, "Cleaving");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Spear, "Impaling");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Mending, "Bodymender");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Augmentation, "Empowering");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Darkness, "Shadowbender");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Suppression, "Spiritbinder");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Runecarving, "Runebender");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Stormcalling, "Stormcaller");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_BeastCraft, "Lifebender");
 
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Battlesongs, "Motivating");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Composite, "Dragon");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Creeping, "Withering");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Arboreal, "Arbor Defender");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Scythe, "Reaper's");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Thrown_Weapons, "Catapult");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_HandToHand, "Martial");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Pacification, "Pacifying");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Savagery, "Savage");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Nightshade, "Nightshade");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Pathfinding, "Trail");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Summoning, "Soulbinder");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Light, "Lightbender");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Void, "Voidbender");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Mana, "Starbinder");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Enchantments, "Chanter");
 
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Dementia, "Feverish");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_ShadowMastery, "Ominous");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_VampiiricEmbrace, "Deathly");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_EtherealShriek, "Shrill");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_PhantasmalWail, "Keening");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_SpectralForce, "Uncanny");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_OdinsWill, "Ardent");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Cursing, "Infernal");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Hexing, "Bedeviled");
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Witchcraft, "Diabolic");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Blades, "Razored");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Blunt, "Crushing");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Piercing, "Lancenator");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Large_Weapon, "Sundering");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Mentalism, "Mindbinder");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Regrowth, "Forestbound");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Nurture, "Plantbound");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Nature, "Animalbound");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Music, "Resonant");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Celtic_Dual, "Whirling");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Celtic_Spear, "Impaling");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_RecurvedBow, "Hawk");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Valor, "Courageous");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Subterranean, "Ancestral");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_BoneArmy, "Blighted");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Verdant, "Vale Defender");
+
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Battlesongs, "Motivating");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Composite, "Dragon");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Creeping, "Withering");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Arboreal, "Arbor Defender");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Scythe, "Reaper's");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Thrown_Weapons, "Catapult");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_HandToHand, "Martial");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Pacification, "Pacifying");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Savagery, "Savage");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Nightshade, "Nightshade");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Pathfinding, "Trail");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Summoning, "Soulbinder");
+
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Dementia, "Feverish");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_ShadowMastery, "Ominous");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_VampiiricEmbrace, "Deathly");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_EtherealShriek, "Shrill");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_PhantasmalWail, "Keening");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_SpectralForce, "Uncanny");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_OdinsWill, "Ardent");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Cursing, "Infernal");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Hexing, "Bedeviled");
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Witchcraft, "Diabolic");
 
             // Mauler - live mauler prefixes do not exist, as lame as that sounds.
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Aura_Manipulation, string.Empty);
-            hPropertyToMagicPrefix.Add(eProperty.Skill_FistWraps, string.Empty);
-            hPropertyToMagicPrefix.Add(eProperty.Skill_MaulerStaff, string.Empty);
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Magnetism, string.Empty);
-            hPropertyToMagicPrefix.Add(eProperty.Skill_Power_Strikes, string.Empty);
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Aura_Manipulation, string.Empty);
+            hPropertyToMagicPrefix.Add(EProperty.Skill_FistWraps, string.Empty);
+            hPropertyToMagicPrefix.Add(EProperty.Skill_MaulerStaff, string.Empty);
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Magnetism, string.Empty);
+            hPropertyToMagicPrefix.Add(EProperty.Skill_Power_Strikes, string.Empty);
         }
 
         private static void CacheProcSpells()
         {
             //LT spells
-            DbSpell Level5Lifetap = DOLDB<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8010));
-            DbSpell Level10Lifetap = DOLDB<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8011));
-            DbSpell Level15Lifetap = DOLDB<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8012));
+            DbSpell Level5Lifetap = CoreDb<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8010));
+            DbSpell Level10Lifetap = CoreDb<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8011));
+            DbSpell Level15Lifetap = CoreDb<DbSpell>.SelectObject(DB.Column("Spell_ID").IsEqualTo(8012));
 
             ProcSpells.Add(8010, new Spell(Level5Lifetap, 0));
             ProcSpells.Add(8011, new Spell(Level10Lifetap, 0));

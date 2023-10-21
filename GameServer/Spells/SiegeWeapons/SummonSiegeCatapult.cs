@@ -13,7 +13,7 @@ namespace DOL.GS.Spells
         {
             if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon)
             {
-			    MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
+			    MessageToCaster("You cannot use siege weapons here!", PacketHandler.EChatType.CT_SpellResisted);
 			    return false;
 		    }
             
@@ -23,7 +23,7 @@ namespace DOL.GS.Spells
 	            {
 		            if (((KeepArea)area).Keep.IsPortalKeep)
 		            {
-			            MessageToCaster("You cannot use siege weapons here (PK)!", PacketHandler.eChatType.CT_SpellResisted);
+			            MessageToCaster("You cannot use siege weapons here (PK)!", PacketHandler.EChatType.CT_SpellResisted);
 			            return false;
 		            }
 	            }
@@ -31,11 +31,11 @@ namespace DOL.GS.Spells
 
             //Only allow one treb/catapult in the radius
             ushort catapultSummonRadius = 500;
-			foreach (GameNPC npc in Caster.GetNPCsInRadius(catapultSummonRadius))
+			foreach (GameNpc npc in Caster.GetNPCsInRadius(catapultSummonRadius))
 			{
 				if (npc is GameSiegeCatapult)
 				{
-					MessageToCaster("You are too close to another trebuchet or catapult and cannot summon here!", PacketHandler.eChatType.CT_SpellResisted);
+					MessageToCaster("You are too close to another trebuchet or catapult and cannot summon here!", PacketHandler.EChatType.CT_SpellResisted);
                     return false;
 				}
 			}
@@ -47,7 +47,7 @@ namespace DOL.GS.Spells
         {
 	        
 	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
-		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
+		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.EChatType.CT_SpellResisted);
 		        return;
 	        }
 	        
@@ -72,7 +72,7 @@ namespace DOL.GS.Spells
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
 	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
-		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.eChatType.CT_SpellResisted);
+		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.EChatType.CT_SpellResisted);
 		        return false;
 	        }
 

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,11 +9,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Base class for all teleporter type NPCs.
-	/// </summary>
-	/// <author>Aredhel</author>
-	public class GameTeleporter : GameNPC
+	public class GameTeleporter : GameNpc
 	{
 		public GameTeleporter()
 			: base() { }
@@ -49,7 +26,7 @@ namespace DOL.GS
         /// <summary>
         /// The destination realm. 
         /// </summary>
-        protected virtual eRealm DestinationRealm
+        protected virtual ERealm DestinationRealm
         {
             get { return Realm; }
         }
@@ -95,13 +72,13 @@ namespace DOL.GS
 			// the level of the player, so let's deal with that first.
 			if (text.ToLower() == "battlegrounds")
 			{
-				if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)ePrivLevel.Player)
+				if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
 				{
 					SayTo(player, ServerProperties.Properties.BG_ZONES_CLOSED_MESSAGE);
 				}
 				else
 				{
-					AbstractGameKeep portalKeep = GameServer.KeepManager.GetBGPK(player);
+					AGameKeep portalKeep = GameServer.KeepManager.GetBGPK(player);
 					if (portalKeep != null)
 					{
 						DbTeleport teleport = new DbTeleport();
@@ -117,9 +94,9 @@ namespace DOL.GS
 					}
 					else
 					{
-						if (player.Client.Account.PrivLevel > (uint)ePrivLevel.Player)
+						if (player.Client.Account.PrivLevel > (uint)EPrivLevel.Player)
 						{
-							player.Out.SendMessage("No portal keep found.", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("No portal keep found.", EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
 						}
 						return true;
 					}
@@ -272,7 +249,7 @@ namespace DOL.GS
 
 			if (region == null || region.IsDisabled)
 			{
-				player.Out.SendMessage("This destination is not available.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("This destination is not available.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -303,7 +280,7 @@ namespace DOL.GS
 
 			if (spell != null)
 			{
-				UniPortal portalHandler = new UniPortal(this, spell, spellLine, destination);
+				UniPortalSpell portalHandler = new UniPortalSpell(this, spell, spellLine, destination);
 				portalHandler.StartSpell(player);
 				return;
 			}
@@ -312,7 +289,7 @@ namespace DOL.GS
 
 			if (player.Client.Account.PrivLevel > 1)
 				player.Out.SendMessage("Uni-Portal spell not found.",
-					eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+					EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
 			
 			this.OnTeleport(player, destination);
 		}

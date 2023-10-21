@@ -1,74 +1,73 @@
 ﻿using DOL.GS;
 
-namespace DOL.AI.Brain
+namespace DOL.AI.Brain;
+
+public class NecromancerPetStateWakingUp : ControlledNpcStateWakingUp
 {
-    public class NecromancerPetState_WAKING_UP : ControlledNPCState_WAKING_UP
+    public NecromancerPetStateWakingUp(NecromancerPetBrain brain) : base(brain)
     {
-        public NecromancerPetState_WAKING_UP(NecromancerPetBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.WAKING_UP;
-        }
-
-        public override void Think()
-        {
-            base.Think();
-        }
+        StateType = EFSMStateType.WAKING_UP;
     }
 
-    public class NecromancerPetState_DEFENSIVE : ControlledNPCState_DEFENSIVE
+    public override void Think()
     {
-        public NecromancerPetState_DEFENSIVE(NecromancerPetBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.IDLE;
-        }
+        base.Think();
+    }
+}
 
-        public override void Think()
-        {
-            NecromancerPetBrain brain = (NecromancerPetBrain) _brain;
-
-            // If spells are queued then handle them first.
-            if (brain.HasSpellsQueued())
-                brain.CheckSpellQueue();
-
-            base.Think();
-        }
+public class NecromancerPetStateDefensive : ControlledNpcStateDefensive
+{
+    public NecromancerPetStateDefensive(NecromancerPetBrain brain) : base(brain)
+    {
+        StateType = EFSMStateType.IDLE;
     }
 
-    public class NecromancerPetState_AGGRO : ControlledNPCState_AGGRO
+    public override void Think()
     {
-        public NecromancerPetState_AGGRO(NecromancerPetBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.AGGRO;
-        }
+        NecromancerPetBrain brain = (NecromancerPetBrain) _brain;
 
-        public override void Think()
-        {
-            NecromancerPetBrain brain = (NecromancerPetBrain) _brain;
+        // If spells are queued then handle them first.
+        if (brain.HasSpellsQueued())
+            brain.CheckSpellQueue();
 
-            // If spells are queued then handle them first.
-            if (brain.HasSpellsQueued())
-                brain.CheckSpellQueue();
+        base.Think();
+    }
+}
 
-            base.Think();
-        }
+public class NecromancerPetStateAggro : ControlledNpcStateAggro
+{
+    public NecromancerPetStateAggro(NecromancerPetBrain brain) : base(brain)
+    {
+        StateType = EFSMStateType.AGGRO;
     }
 
-    public class NecromancerPetState_PASSIVE : ControlledNPCState_PASSIVE
+    public override void Think()
     {
-        public NecromancerPetState_PASSIVE(NecromancerPetBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.PASSIVE;
-        }
+        NecromancerPetBrain brain = (NecromancerPetBrain) _brain;
 
-        public override void Think()
-        {
-            NecromancerPetBrain brain = (NecromancerPetBrain) _brain;
+        // If spells are queued then handle them first.
+        if (brain.HasSpellsQueued())
+            brain.CheckSpellQueue();
 
-            // If spells are queued then handle them first.
-            if (brain.HasSpellsQueued())
-                brain.CheckSpellQueue();
+        base.Think();
+    }
+}
 
-            base.Think();
-        }
+public class NecromancerPetStatePassive : ControlledNpcStatePassive
+{
+    public NecromancerPetStatePassive(NecromancerPetBrain brain) : base(brain)
+    {
+        StateType = EFSMStateType.PASSIVE;
+    }
+
+    public override void Think()
+    {
+        NecromancerPetBrain brain = (NecromancerPetBrain) _brain;
+
+        // If spells are queued then handle them first.
+        if (brain.HasSpellsQueued())
+            brain.CheckSpellQueue();
+
+        base.Think();
     }
 }

@@ -33,7 +33,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendWarlockChamberEffect(GamePlayer player)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VisualEffect)))
 			{
 				pak.WriteShort((ushort)player.ObjectID);
 				pak.WriteByte((byte)3);
@@ -51,7 +51,7 @@ namespace DOL.GS.PacketHandler
 						if (fx is GameSpellEffect)
 						{
 							GameSpellEffect effect = (GameSpellEffect)fx;
-							if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == eSpellType.Chamber))
+							if (effect.SpellHandler.Spell != null && (effect.SpellHandler.Spell.SpellType == ESpellType.Chamber))
 							{
 								ChamberSpellHandler chamber = (ChamberSpellHandler)effect.SpellHandler;
 								sortList[chamber.EffectSlot] = effect;
@@ -73,19 +73,19 @@ namespace DOL.GS.PacketHandler
 							}
 							else if (chamber.PrimarySpell != null && chamber.SecondarySpell != null)
 							{
-								if (chamber.SecondarySpell.SpellType == eSpellType.Lifedrain)
+								if (chamber.SecondarySpell.SpellType == ESpellType.Lifedrain)
 									pak.WriteByte(0x11);
 								else if (chamber.SecondarySpell.SpellType.ToString().IndexOf("SpeedDecrease") != -1)
 									pak.WriteByte(0x33);
-								else if (chamber.SecondarySpell.SpellType == eSpellType.PowerRegenBuff)
+								else if (chamber.SecondarySpell.SpellType == ESpellType.PowerRegenBuff)
 									pak.WriteByte(0x77);
-								else if (chamber.SecondarySpell.SpellType == eSpellType.DirectDamage)
+								else if (chamber.SecondarySpell.SpellType == ESpellType.DirectDamage)
 									pak.WriteByte(0x66);
-								else if (chamber.SecondarySpell.SpellType == eSpellType.SpreadHeal)
+								else if (chamber.SecondarySpell.SpellType == ESpellType.SpreadHeal)
 									pak.WriteByte(0x55);
-								else if (chamber.SecondarySpell.SpellType == eSpellType.Nearsight)
+								else if (chamber.SecondarySpell.SpellType == ESpellType.Nearsight)
 									pak.WriteByte(0x44);
-								else if (chamber.SecondarySpell.SpellType == eSpellType.DamageOverTime)
+								else if (chamber.SecondarySpell.SpellType == ESpellType.DamageOverTime)
 									pak.WriteByte(0x22);
 							}
 						}
@@ -112,7 +112,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.UpdateIcons)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.UpdateIcons)))
 			{
 				long initPos = pak.Position;
 
@@ -186,7 +186,7 @@ namespace DOL.GS.PacketHandler
 				Region region = WorldMgr.GetRegion((ushort)m_gameClient.Player.CurrentRegionID);
 				if (region == null)
 					return;
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(0xB1))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(0xB1))
 				{
 					//				pak.WriteByte((byte)((region.Expansion + 1) << 4)); // Must be expansion
 					pak.WriteByte(0); // but this packet sended when client in old region. but this field must show expanstion for jump destanation region
@@ -212,7 +212,7 @@ namespace DOL.GS.PacketHandler
 				int count = entries.Length;
 				while (entries != null && count > index)
 				{
-					using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ClientRegions)))
+					using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.ClientRegions)))
 					{
 						for (int i = 0; i < 4; i++)
 						{
@@ -248,18 +248,18 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendCharacterOverview(eRealm realm)
+		public override void SendCharacterOverview(ERealm realm)
 		{
 			int firstAccountSlot;
 			switch (realm)
 			{
-				case eRealm.Albion: firstAccountSlot = 100; break;
-				case eRealm.Midgard: firstAccountSlot = 200; break;
-				case eRealm.Hibernia: firstAccountSlot = 300; break;
+				case ERealm.Albion: firstAccountSlot = 100; break;
+				case ERealm.Midgard: firstAccountSlot = 200; break;
+				case ERealm.Hibernia: firstAccountSlot = 300; break;
 				default: throw new Exception("CharacterOverview requested for unknown realm " + realm);
 			}
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CharacterOverview)))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
 				IList<DbInventoryItem> items;
@@ -277,7 +277,7 @@ namespace DOL.GS.PacketHandler
 							if (characters[j].AccountSlot == i)
 							{
 								pak.FillString(characters[j].Name, 24);
-								items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
+								items = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
 								byte ExtensionTorso = 0;
 								byte ExtensionGloves = 0;
 								byte ExtensionBoots = 0;
@@ -324,7 +324,7 @@ namespace DOL.GS.PacketHandler
 								if (characters[j].Class == 0)
 									pak.FillString("", 24); //Class name
 								else
-									pak.FillString(((eCharacterClass)characters[j].Class).ToString(), 24); //Class name
+									pak.FillString(((EPlayerClass)characters[j].Class).ToString(), 24); //Class name
 
 								//pak.FillString(GamePlayer.RACENAMES[characters[j].Race], 24);
 	                            pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
@@ -370,7 +370,7 @@ namespace DOL.GS.PacketHandler
 									int l;
 									if (k == 0x15 + 3)
 										//shield emblem
-										l = (int)eInventorySlot.LeftHandWeapon;
+										l = (int)EInventorySlot.LeftHandWeapon;
 									else
 										l = k;
 
@@ -404,12 +404,12 @@ namespace DOL.GS.PacketHandler
 									if (found == 0)
 										pak.WriteShort(0x00);
 								}
-								if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+								if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 								{
 									pak.WriteByte(0x02);
 									pak.WriteByte(0x02);
 								}
-								else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+								else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 								{
 									pak.WriteByte(0x03);
 									pak.WriteByte(0x03);
@@ -420,16 +420,16 @@ namespace DOL.GS.PacketHandler
 									byte lefthand = 0xFF;
 									foreach (DbInventoryItem item in items)
 									{
-										if (item.SlotPosition == (int)eInventorySlot.RightHandWeapon)
+										if (item.SlotPosition == (int)EInventorySlot.RightHandWeapon)
 											righthand = 0x00;
-										if (item.SlotPosition == (int)eInventorySlot.LeftHandWeapon)
+										if (item.SlotPosition == (int)EInventorySlot.LeftHandWeapon)
 											lefthand = 0x01;
 									}
 									if (righthand == lefthand)
 									{
-										if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+										if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 											righthand = lefthand = 0x02;
-										else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+										else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 											righthand = lefthand = 0x03;
 									}
 									pak.WriteByte(righthand);
@@ -459,7 +459,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepInfo)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepInfo)))
 			{
 
 				pak.WriteShort((ushort)keep.KeepID);
@@ -482,7 +482,7 @@ namespace DOL.GS.PacketHandler
 			if (player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VisualEffect)))
 			{
 				pak.WriteShort((ushort)player.ObjectID);
 				pak.WriteByte(0x3); // show Hex
@@ -496,12 +496,12 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendNPCsQuestEffect(GameNPC npc, eQuestIndicator indicator)
+		public override void SendNPCsQuestEffect(GameNpc npc, EQuestIndicator indicator)
 		{
 			if (m_gameClient.Player == null || npc == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VisualEffect)))
 			{
 
 				pak.WriteShort((ushort)npc.ObjectID);
@@ -513,12 +513,12 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendMessage(string msg, eChatType type, eChatLoc loc)
+		public override void SendMessage(string msg, EChatType type, EChatLoc loc)
 		{
 			if (m_gameClient.ClientState == GameClient.eClientState.CharScreen)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Message)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Message)))
 			{
 				pak.WriteShort(0xFFFF);
 				pak.WriteShort((ushort)m_gameClient.SessionID);
@@ -526,9 +526,9 @@ namespace DOL.GS.PacketHandler
 				pak.Fill(0x0, 3);
 
 				string str;
-				if (loc == eChatLoc.CL_ChatWindow)
+				if (loc == EChatLoc.CL_ChatWindow)
 					str = "@@";
-				else if (loc == eChatLoc.CL_PopupWindow)
+				else if (loc == EChatLoc.CL_PopupWindow)
 					str = "##";
 				else
 					str = "";
@@ -559,7 +559,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendQuestUpdate(AbstractQuest quest)
+		public override void SendQuestUpdate(AQuest quest)
 		{
 			if (m_gameClient.Player.QuestList.TryGetValue(quest, out byte index))
 				SendQuestPacket(quest, (byte) (index + 1));
@@ -575,7 +575,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 			SendRegions(m_gameClient.Player.CurrentRegion.Skin);
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.RegionChanged)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.RegionChanged)))
 			{
 
 	            //Dinberg - Changing to allow instances...
@@ -587,9 +587,9 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, byte index)
+		protected override void SendQuestPacket(AQuest quest, byte index)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 			{
 				pak.WriteByte(index);
 				if (quest.Step <= 0)
@@ -631,7 +631,7 @@ namespace DOL.GS.PacketHandler
 		{
 			string name = BuildTaskString();
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 			{
 				pak.WriteByte(0); //index
 				pak.WriteShortLowEndian((ushort)name.Length);
@@ -644,7 +644,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendSiegeWeaponInterface(GameSiegeWeapon siegeWeapon, int time)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SiegeWeaponInterface)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.SiegeWeaponInterface)))
 			{
 				ushort flag = (ushort)((siegeWeapon.EnableToMove ? 1 : 0) | siegeWeapon.AmmoType << 8);
 				pak.WriteShort(flag); //byte Ammo,  byte SiegeMoving(1/0)

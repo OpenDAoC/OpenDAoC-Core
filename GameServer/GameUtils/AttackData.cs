@@ -13,15 +13,15 @@ namespace DOL.GS
 	{
 		private GameLiving m_attacker = null;
 		private GameLiving m_target = null;
-		private eArmorSlot m_hitArmorSlot = eArmorSlot.NOTSET;
+		private EArmorSlot m_hitArmorSlot = EArmorSlot.NOTSET;
 		private int m_damage = 0;
 		private int m_critdamage = 0;
 		private int m_styledamage = 0;
 		private int m_modifier = 0;
-		private eDamageType m_damageType = 0;
+		private EDamageType m_damageType = 0;
 		private Style m_style = null;
-		private eAttackType m_attackType = eAttackType.Unknown;
-		private eAttackResult m_attackResult = eAttackResult.Any;
+		private EAttackType m_attackType = EAttackType.Unknown;
+		private EAttackResult m_attackResult = EAttackResult.Any;
 		private ISpellHandler m_spellHandler;
 		private List<ISpellHandler> m_styleEffects;
 		private int m_animationId;
@@ -106,7 +106,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Sets or gets the armor hit location
 		/// </summary>
-		public eArmorSlot ArmorHitLocation
+		public EArmorSlot ArmorHitLocation
 		{
 			get { return m_hitArmorSlot; }
 			set { m_hitArmorSlot = value; }
@@ -142,7 +142,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Sets or gets the damage type
 		/// </summary>
-		public eDamageType DamageType
+		public EDamageType DamageType
 		{
 			get { return m_damageType; }
 			set { m_damageType = value; }
@@ -160,7 +160,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Sets or gets the attack result
 		/// </summary>
-		public eAttackResult AttackResult
+		public EAttackResult AttackResult
 		{
 			get { return m_attackResult; }
 			set { m_attackResult = value; }
@@ -199,9 +199,9 @@ namespace DOL.GS
 		{
 			get
 			{
-				return m_attackType == eAttackType.MeleeOneHand
-					|| m_attackType == eAttackType.MeleeTwoHand
-					|| m_attackType == eAttackType.MeleeDualWield;
+				return m_attackType == EAttackType.MeleeOneHand
+					|| m_attackType == EAttackType.MeleeTwoHand
+					|| m_attackType == EAttackType.MeleeDualWield;
 			}
 		}
 
@@ -218,40 +218,9 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// The type of attack
-		/// </summary>
-		public enum eAttackType : int
-		{
-			/// <summary>
-			/// Attack type has not been set yet
-			/// </summary>
-			Unknown = -1,
-			/// <summary>
-			/// Attack is done using a weapon in one hand
-			/// </summary>
-			MeleeOneHand = 1,
-			/// <summary>
-			/// Attack is done using one weapon in each hand
-			/// </summary>
-			MeleeDualWield = 2,
-			/// <summary>
-			/// Attack is done using one same weapon in both hands
-			/// </summary>
-			MeleeTwoHand = 3,
-			/// <summary>
-			/// Attack is done using a weapon in ranged slot
-			/// </summary>
-			Ranged = 4,
-			/// <summary>
-			/// Attack is done with a spell
-			/// </summary>
-			Spell = 5,
-		}
-
-		/// <summary>
 		/// Sets or gets the attack type
 		/// </summary>
-		public eAttackType AttackType
+		public EAttackType AttackType
 		{
 			get { return m_attackType; }
 			set { m_attackType = value; }
@@ -276,13 +245,13 @@ namespace DOL.GS
 			{
 				switch (m_attackResult)
 				{
-					case eAttackResult.HitUnstyled:
-					case eAttackResult.HitStyle:
-					case eAttackResult.Missed:
-					case eAttackResult.Blocked:
-					case eAttackResult.Evaded:
-					case eAttackResult.Fumbled:
-					case eAttackResult.Parried: return true;
+					case EAttackResult.HitUnstyled:
+					case EAttackResult.HitStyle:
+					case EAttackResult.Missed:
+					case EAttackResult.Blocked:
+					case EAttackResult.Evaded:
+					case EAttackResult.Fumbled:
+					case EAttackResult.Parried: return true;
 					default: return false;
 				}
 			}
@@ -302,7 +271,7 @@ namespace DOL.GS
 					fumbleRoll = Util.CryptoNextDouble();
 
 				if (playerAttacker?.UseDetailedCombatLog == true)
-					playerAttacker.Out.SendMessage($"Your chance to fumble: {fumbleChance * 100:0.##}% rand: {fumbleRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerAttacker.Out.SendMessage($"Your chance to fumble: {fumbleChance * 100:0.##}% rand: {fumbleRoll * 100:0.##}", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
 
 				return IsMeleeAttack && fumbleChance > fumbleRoll;
 			}

@@ -6,7 +6,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Scripts
 {
-	public class Archilus : GameNPC
+	public class Archilus : GameNpc
 	{
 		protected String m_SpawnAnnounce;
 
@@ -24,7 +24,7 @@ namespace DOL.GS.Scripts
 			this.Model = 817;
 			this.Size = 100;
 			this.Level = 58;
-			this.Realm = eRealm.None;
+			this.Realm = ERealm.None;
 			base.AddToWorld();
 			return true;
 		}
@@ -37,13 +37,13 @@ namespace DOL.GS.Scripts
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
 			{
-				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
+				player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
 			}
 		}
 		
 		public void Spawn(GamePlayer player)
 		{
-			GameNPC mob = new GameNPC();
+			GameNpc mob = new GameNpc();
 			SetVariables(mob);
 			//Level Range of 40-45
 			int level = Util.Random(40, 45);
@@ -54,7 +54,7 @@ namespace DOL.GS.Scripts
 			mob.StartAttack(player);
 		}
 
-		public void SetVariables(GameNPC mob)
+		public void SetVariables(GameNpc mob)
 		{
 			mob.X = this.X + 350;
 			mob.Y = this.Y + 350;
@@ -122,7 +122,7 @@ namespace DOL.GS.Scripts
 			this.Level = 60;
 			this.Size = 100;
 			base.Die(killer);
-			foreach (GameNPC npc in this.GetNPCsInRadius(5000))
+			foreach (GameNpc npc in this.GetNPCsInRadius(5000))
 			{
 				if (npc.Name.Contains("young death shroud"))
 				{
@@ -131,14 +131,14 @@ namespace DOL.GS.Scripts
 			}
 		}
 
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			GamePlayer player = source as GamePlayer;
 			if (player != null)
 			{
 				if (this.HealthPercent < 90)
 				{
-					new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(timer => CastShroud(timer, player)), 1000);
+					new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(timer => CastShroud(timer, player)), 1000);
 					
 				}
 			}
@@ -146,7 +146,7 @@ namespace DOL.GS.Scripts
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 		}
 
-		private int CastShroud(ECSGameTimer timer, GamePlayer player)
+		private int CastShroud(EcsGameTimer timer, GamePlayer player)
 		{
 			Spawn(player);
 			return 0;
@@ -154,7 +154,7 @@ namespace DOL.GS.Scripts
 		
 		public void SendReply(GamePlayer player, string msg)
 		{
-			player.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage(msg, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 		}
 		
 	}

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.GS.PacketHandler;
@@ -25,9 +6,6 @@ using DOL.Language;
 
 namespace DOL.GS.Effects
 {
-	/// <summary>
-	/// The helper class for the stag ability
-	/// </summary>
 	public class StagEffect : TimedEffect, IGameEffect
 	{
 		/*
@@ -80,7 +58,7 @@ namespace DOL.GS.Effects
 			//TODO differentiate model between Lurikeens and other races
 			if (living is GamePlayer)
 			{
-				if ((living as GamePlayer).Race == (int)eRace.Lurikeen)
+				if ((living as GamePlayer).Race == (int)ERace.Lurikeen)
 					living.Model = 13;
 				else living.Model = 4;
 			}			
@@ -88,19 +66,19 @@ namespace DOL.GS.Effects
 
 			double m_amountPercent = (m_level + 0.5 + Util.RandomDouble()) / 10; //+-5% random
 			if (living is GamePlayer)
-				m_amount = (int)((living as GamePlayer).CalculateMaxHealth(living.Level, living.GetModified(eProperty.Constitution)) * m_amountPercent);
+				m_amount = (int)((living as GamePlayer).CalculateMaxHealth(living.Level, living.GetModified(EProperty.Constitution)) * m_amountPercent);
 			else m_amount = (int)(living.MaxHealth * m_amountPercent);
 
-			living.BaseBuffBonusCategory[(int)eProperty.MaxHealth] += m_amount;
-			living.Health += (int)(living.GetModified(eProperty.MaxHealth) * m_amountPercent);
+			living.BaseBuffBonusCategory[(int)EProperty.MaxHealth] += m_amount;
+			living.Health += (int)(living.GetModified(EProperty.MaxHealth) * m_amountPercent);
 			if (living.Health > living.MaxHealth) living.Health = living.MaxHealth;
 
-			living.Emote(eEmote.StagFrenzy);
+			living.Emote(EEmote.StagFrenzy);
 
 			if (living is GamePlayer)
 			{
 				(living as GamePlayer).Out.SendUpdatePlayer();
-				(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.StagEffect.HuntsSpiritChannel"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.StagEffect.HuntsSpiritChannel"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -109,9 +87,9 @@ namespace DOL.GS.Effects
 			base.Stop();
 			m_owner.Model = m_originalModel;
 
-			double m_amountPercent = m_amount / m_owner.GetModified(eProperty.MaxHealth);
+			double m_amountPercent = m_amount / m_owner.GetModified(EProperty.MaxHealth);
 			int playerHealthPercent = m_owner.HealthPercent;
-			m_owner.BaseBuffBonusCategory[(int)eProperty.MaxHealth] -= m_amount;
+			m_owner.BaseBuffBonusCategory[(int)EProperty.MaxHealth] -= m_amount;
 			if (m_owner.IsAlive)
 				m_owner.Health = (int)Math.Max(1, 0.01 * m_owner.MaxHealth * playerHealthPercent);
 
@@ -119,7 +97,7 @@ namespace DOL.GS.Effects
 			{
 				(m_owner as GamePlayer).Out.SendUpdatePlayer();
 				// there is no animation on end of the effect
-				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.StagEffect.YourHuntsSpiritEnds"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.StagEffect.YourHuntsSpiritEnds"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 			}
 		}
 

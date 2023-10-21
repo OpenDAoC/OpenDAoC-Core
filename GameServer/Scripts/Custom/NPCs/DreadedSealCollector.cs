@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -28,7 +9,7 @@ namespace DOL.GS
     /// LootGeneratorDreadedSeal
     /// Adds Glowing Dreaded Seal to loot
     /// </summary>
-    public class DreadedSealCollector : GameNPC
+    public class DreadedSealCollector : GameNpc
     {
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -83,7 +64,7 @@ namespace DOL.GS
 
         private void SendReply(GamePlayer target, string msg)
         {
-            target.Out.SendMessage(msg, eChatType.CT_System, eChatLoc.CL_ChatWindow);
+            target.Out.SendMessage(msg, EChatType.CT_System, EChatLoc.CL_ChatWindow);
         }
 
         public override bool Interact(GamePlayer player)
@@ -103,7 +84,7 @@ namespace DOL.GS
                 response = "Hand me Dreaded Seals and I'll give you Realm points!";
             else
                 response = "Sorry, no dreaded seal types are defined so I cannot accept seals at this time.";
-            player.Out.SendMessage(response, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+            player.Out.SendMessage(response, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 
             return true;
         }
@@ -115,14 +96,14 @@ namespace DOL.GS
                 if (GetDistanceTo(player) > WorldMgr.INTERACT_DISTANCE)
                 {
                     ((GamePlayer)source).Out.SendMessage("You are too far away to give anything to me "
-                    + player.Name + ". Come a little closer.", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                    + player.Name + ". Come a little closer.", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                     return false;
                 }
 
                 if (m_levelMultipliers.Count < 1)
                 {
                     ((GamePlayer)source).Out.SendMessage("Sorry, no level multipliers are defined so I cannot accept seals at this time.",
-                        eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                        EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                     return false;
                 }
 
@@ -137,7 +118,7 @@ namespace DOL.GS
                 if (bpMultiplier < 1 && rpMultiplier < 1)
                 {
                     ((GamePlayer)source).Out.SendMessage("Sorry, I cannot accept items of that type.",
-                        eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                        EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                     return false;
                 }
                 else
@@ -159,7 +140,7 @@ namespace DOL.GS
                     if (levelMultiplier <= 0)
                     {
                         ((GamePlayer)source).Out.SendMessage("You are too young yet to make use of these items "
-                        + player.Name + ". Come back in " + (nextLevel - player.Level) + " levels.", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                        + player.Name + ". Come back in " + (nextLevel - player.Level) + " levels.", EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 
                         return false;
                     }

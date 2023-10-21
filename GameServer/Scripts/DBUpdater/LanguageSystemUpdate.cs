@@ -5,8 +5,8 @@ using log4net;
 
 namespace DOL.GS.DatabaseUpdate
 {
-    [DatabaseUpdate]
-    public class LanguageSystemUpdate : IDatabaseUpdater
+    [DbUpdate]
+    public class LanguageSystemUpdate : IDbUpdater
     {
         #region DBLanguage table structure
         private class language : DataObject

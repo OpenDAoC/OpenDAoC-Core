@@ -1,29 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Reflection;
 using DOL.AI.Brain;
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.PetWindow, "Handle Pet Window Command", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PetWindow, "Handle Pet Window Command", EClientStatus.PlayerInGame)]
 	public class PetWindowHandler : IPacketHandler
 	{
 		/// <summary>
@@ -31,7 +12,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			var aggroState = (byte) packet.ReadByte(); // 1-Aggressive, 2-Deffensive, 3-Passive
 			var walkState = (byte) packet.ReadByte(); // 1-Follow, 2-Stay, 3-GoTarg, 4-Here
@@ -40,17 +21,17 @@ namespace DOL.GS.PacketHandler.Client.v168
 			//[Ganrod] Nidel: Animist can removed his TurretFnF without MainPet. Theurgist pets can also be removed.
 			if (client.Player.TargetObject != null && command == 2 && client.Player.ControlledBrain == null)
 			{
-				if (client.Player.CharacterClass.ID == (int)eCharacterClass.Animist)
+				if (client.Player.PlayerClass.ID == (int)EPlayerClass.Animist)
 				{
 					var turret = client.Player.TargetObject as TurretPet;
-					if (turret != null && turret.Brain is TurretFNFBrain && client.Player.IsControlledNPC(turret))
+					if (turret != null && turret.Brain is TurretFnfBrain && client.Player.IsControlledNPC(turret))
 					{
 						//release
 						new HandlePetCommandAction(client.Player, 0, 0, 2).Start(1);
 						return;
 					}
 				}
-				else if (client.Player.CharacterClass.ID == (int)eCharacterClass.Theurgist)
+				else if (client.Player.PlayerClass.ID == (int)EPlayerClass.Theurgist)
                 {
 					var tPet = client.Player.TargetObject as TheurgistPet;
 					if (tPet != null && tPet.Brain is TheurgistPetBrain && client.Player.IsControlledNPC(tPet))
@@ -73,7 +54,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles pet command actions
 		/// </summary>
-		protected class HandlePetCommandAction : ECSGameTimerWrapperBase
+		protected class HandlePetCommandAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The pet aggro state
@@ -108,7 +89,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 

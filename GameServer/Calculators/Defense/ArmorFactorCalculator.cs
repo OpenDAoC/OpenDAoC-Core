@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.GS.Keeps;
 
@@ -32,10 +13,10 @@ namespace DOL.GS.PropertyCalc
     /// BuffBonusMultCategory1 unused
     /// ItemBonus is used for players TOA bonuse, living.Level cap
     /// </summary>
-    [PropertyCalculator(eProperty.ArmorFactor)]
+    [PropertyCalculator(EProperty.ArmorFactor)]
     public class ArmorFactorCalculator : PropertyCalculator
     {
-        public override int CalcValue(GameLiving living, eProperty property)
+        public override int CalcValue(GameLiving living, EProperty property)
         {
             switch (living)
             {
@@ -58,7 +39,7 @@ namespace DOL.GS.PropertyCalc
             }
         }
 
-        private static int CalculatePlayerArmorFactor(GameLiving living, eProperty property)
+        private static int CalculatePlayerArmorFactor(GameLiving living, EProperty property)
         {
             // Base AF buffs are calculated in the item's armor calc since they have the same cap.
             int armorFactor = Math.Min((int) (living.Level * 1.875), living.SpecBuffBonusCategory[(int) property]);
@@ -69,7 +50,7 @@ namespace DOL.GS.PropertyCalc
             return Math.Max(1, armorFactor);
         }
 
-        private static int CalculateLivingArmorFactor(GameLiving living, eProperty property, double factor, double divisor, bool useBaseBuff)
+        private static int CalculateLivingArmorFactor(GameLiving living, EProperty property, double factor, double divisor, bool useBaseBuff)
         {
             int armorFactor = (int) ((1 + living.Level / divisor) * (living.Level * factor));
 

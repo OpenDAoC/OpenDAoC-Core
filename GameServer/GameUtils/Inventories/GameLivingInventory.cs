@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,57 +6,54 @@ using DOL.Database;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Description rsume de GameLivingInventory.
-	/// </summary>
 	public abstract class GameLivingInventory : IGameInventory
 	{
 		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public static readonly eInventorySlot[] EQUIP_SLOTS =
+		public static readonly EInventorySlot[] EQUIP_SLOTS =
 		{
-			eInventorySlot.Horse,
-			eInventorySlot.HorseArmor,
-			eInventorySlot.HorseBarding,
-			eInventorySlot.RightHandWeapon,
-			eInventorySlot.LeftHandWeapon,
-			eInventorySlot.TwoHandWeapon,
-			eInventorySlot.DistanceWeapon,
-			eInventorySlot.FirstQuiver,
-			eInventorySlot.SecondQuiver,
-			eInventorySlot.ThirdQuiver,
-			eInventorySlot.FourthQuiver,
-			eInventorySlot.HeadArmor,
-			eInventorySlot.HandsArmor,
-			eInventorySlot.FeetArmor,
-			eInventorySlot.Jewellery,
-			eInventorySlot.TorsoArmor,
-			eInventorySlot.Cloak,
-			eInventorySlot.LegsArmor,
-			eInventorySlot.ArmsArmor,
-			eInventorySlot.Neck,
-			eInventorySlot.Waist,
-			eInventorySlot.LeftBracer,
-			eInventorySlot.RightBracer,
-			eInventorySlot.LeftRing,
-			eInventorySlot.RightRing,
-			eInventorySlot.Mythical,
+			EInventorySlot.Horse,
+			EInventorySlot.HorseArmor,
+			EInventorySlot.HorseBarding,
+			EInventorySlot.RightHandWeapon,
+			EInventorySlot.LeftHandWeapon,
+			EInventorySlot.TwoHandWeapon,
+			EInventorySlot.DistanceWeapon,
+			EInventorySlot.FirstQuiver,
+			EInventorySlot.SecondQuiver,
+			EInventorySlot.ThirdQuiver,
+			EInventorySlot.FourthQuiver,
+			EInventorySlot.HeadArmor,
+			EInventorySlot.HandsArmor,
+			EInventorySlot.FeetArmor,
+			EInventorySlot.Jewellery,
+			EInventorySlot.TorsoArmor,
+			EInventorySlot.Cloak,
+			EInventorySlot.LegsArmor,
+			EInventorySlot.ArmsArmor,
+			EInventorySlot.Neck,
+			EInventorySlot.Waist,
+			EInventorySlot.LeftBracer,
+			EInventorySlot.RightBracer,
+			EInventorySlot.LeftRing,
+			EInventorySlot.RightRing,
+			EInventorySlot.Mythical,
 		};
 
 		//Defines the visible slots that will be displayed to players
-		protected static readonly eInventorySlot[] VISIBLE_SLOTS =
+		protected static readonly EInventorySlot[] VISIBLE_SLOTS =
 		{
-			eInventorySlot.RightHandWeapon,
-			eInventorySlot.LeftHandWeapon,
-			eInventorySlot.TwoHandWeapon,
-			eInventorySlot.DistanceWeapon,
-			eInventorySlot.HeadArmor,
-			eInventorySlot.HandsArmor,
-			eInventorySlot.FeetArmor,
-			eInventorySlot.TorsoArmor,
-			eInventorySlot.Cloak,
-			eInventorySlot.LegsArmor,
-			eInventorySlot.ArmsArmor
+			EInventorySlot.RightHandWeapon,
+			EInventorySlot.LeftHandWeapon,
+			EInventorySlot.TwoHandWeapon,
+			EInventorySlot.DistanceWeapon,
+			EInventorySlot.HeadArmor,
+			EInventorySlot.HandsArmor,
+			EInventorySlot.FeetArmor,
+			EInventorySlot.TorsoArmor,
+			EInventorySlot.Cloak,
+			EInventorySlot.LegsArmor,
+			EInventorySlot.ArmsArmor
 		};
 
 		#region Constructor/Declaration/LoadDatabase/SaveDatabase
@@ -85,12 +63,12 @@ namespace DOL.GS
 		/// for players the vault, the equipped items and the backpack
 		/// and for mob the quest drops ect ...
 		/// </summary>
-		protected readonly Dictionary<eInventorySlot, DbInventoryItem> m_items;
+		protected readonly Dictionary<EInventorySlot, DbInventoryItem> m_items;
 
 		/// <summary>
 		/// Holds all changed slots
 		/// </summary>
-		protected List<eInventorySlot> m_changedSlots;
+		protected List<EInventorySlot> m_changedSlots;
 
 		/// <summary>
 		/// Holds the begin changes counter for slot updates
@@ -102,8 +80,8 @@ namespace DOL.GS
 		/// </summary>
 		protected GameLivingInventory()
 		{
-			m_items = new Dictionary<eInventorySlot, DbInventoryItem>();
-			m_changedSlots = new List<eInventorySlot>();
+			m_items = new Dictionary<EInventorySlot, DbInventoryItem>();
+			m_changedSlots = new List<EInventorySlot>();
 		}
 
 		/// <summary>
@@ -136,12 +114,12 @@ namespace DOL.GS
 		/// <param name="minSlot"></param>
 		/// <param name="maxSlot"></param>
 		/// <returns></returns>
-		public int CountSlots(bool countUsed, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public int CountSlots(bool countUsed, EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			// If lower slot is greater than upper slot, flip the values.
 			if (minSlot > maxSlot)
 			{
-				eInventorySlot tmp = minSlot;
+				EInventorySlot tmp = minSlot;
 				minSlot = maxSlot;
 				maxSlot = tmp;
 			}
@@ -150,7 +128,7 @@ namespace DOL.GS
 
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 			{
-				for (eInventorySlot i = minSlot; i <= maxSlot; i++)
+				for (EInventorySlot i = minSlot; i <= maxSlot; i++)
 				{
 					if (m_items.ContainsKey(i))
 					{
@@ -175,7 +153,7 @@ namespace DOL.GS
 		/// <param name="minSlot">first slot</param>
 		/// <param name="maxSlot">last slot</param>
 		/// <returns>number of matched items found</returns>
-		public int CountItemTemplate(string itemtemplateID, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public int CountItemTemplate(string itemtemplateID, EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 			{
@@ -184,14 +162,14 @@ namespace DOL.GS
 				// If lower slot is greater than upper slot, flip the values.
 				if (minSlot > maxSlot)
 				{
-					eInventorySlot tmp = minSlot;
+					EInventorySlot tmp = minSlot;
 					minSlot = maxSlot;
 					maxSlot = tmp;
 				}
 
 				DbInventoryItem item;
 
-				for (eInventorySlot i = minSlot; i <= maxSlot; i++)
+				for (EInventorySlot i = minSlot; i <= maxSlot; i++)
 				{
 					if (m_items.TryGetValue(i, out item) && item.Id_nb == itemtemplateID)
 					{
@@ -210,7 +188,7 @@ namespace DOL.GS
 		/// <param name="minSlot"></param>
 		/// <param name="maxSlot"></param>
 		/// <returns></returns>
-		public bool IsSlotsFree(int count, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public bool IsSlotsFree(int count, EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			if (count < 1)
 				return true;
@@ -218,14 +196,14 @@ namespace DOL.GS
 			// If lower slot is greater than upper slot, flip the values.
 			if (minSlot > maxSlot)
 			{
-				eInventorySlot tmp = minSlot;
+				EInventorySlot tmp = minSlot;
 				minSlot = maxSlot;
 				maxSlot = tmp;
 			}
 
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 			{
-				for (eInventorySlot i = minSlot; i <= maxSlot; i++)
+				for (EInventorySlot i = minSlot; i <= maxSlot; i++)
 				{
 					if (m_items.ContainsKey(i))
 						continue;
@@ -246,7 +224,7 @@ namespace DOL.GS
 		/// <param name="first">SlotPosition to start the search</param>
 		/// <param name="last">SlotPosition to stop the search</param>
 		/// <returns>the empty inventory slot or eInventorySlot.Invalid if they are all full</returns>
-		public virtual eInventorySlot FindFirstEmptySlot(eInventorySlot first, eInventorySlot last)
+		public virtual EInventorySlot FindFirstEmptySlot(EInventorySlot first, EInventorySlot last)
 		{
 			return FindSlot(first, last, true, true);
 		}
@@ -257,7 +235,7 @@ namespace DOL.GS
 		/// <param name="first">SlotPosition to start the search</param>
 		/// <param name="last">SlotPosition to stop the search</param>
 		/// <returns>the empty inventory slot or eInventorySlot.Invalid</returns>
-		public virtual eInventorySlot FindLastEmptySlot(eInventorySlot first, eInventorySlot last)
+		public virtual EInventorySlot FindLastEmptySlot(EInventorySlot first, EInventorySlot last)
 		{
 			return FindSlot(first, last, false, true);
 		}
@@ -268,7 +246,7 @@ namespace DOL.GS
 		/// <param name="first">SlotPosition to start the search</param>
 		/// <param name="last">SlotPosition to stop the search</param>
 		/// <returns>the empty inventory slot or eInventorySlot.Invalid</returns>
-		public virtual eInventorySlot FindFirstFullSlot(eInventorySlot first, eInventorySlot last)
+		public virtual EInventorySlot FindFirstFullSlot(EInventorySlot first, EInventorySlot last)
 		{
 			return FindSlot(first, last, true, false);
 		}
@@ -279,7 +257,7 @@ namespace DOL.GS
 		/// <param name="first">SlotPosition to start the search</param>
 		/// <param name="last">SlotPosition to stop the search</param>
 		/// <returns>the empty inventory slot or eInventorySlot.Invalid</returns>
-		public virtual eInventorySlot FindLastFullSlot(eInventorySlot first, eInventorySlot last)
+		public virtual EInventorySlot FindLastFullSlot(EInventorySlot first, EInventorySlot last)
 		{
 			return FindSlot(first, last, false, false);
 		}
@@ -289,18 +267,18 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="slot">SlotPosition to check</param>
 		/// <returns>the slot if it's valid or eInventorySlot.Invalid if not</returns>
-		protected virtual eInventorySlot GetValidInventorySlot(eInventorySlot slot)
+		protected virtual EInventorySlot GetValidInventorySlot(EInventorySlot slot)
 		{
-			if ((slot >= eInventorySlot.RightHandWeapon && slot <= eInventorySlot.FourthQuiver)
-			    || (slot >= eInventorySlot.HeadArmor && slot <= eInventorySlot.Neck)
-			    || (slot >= eInventorySlot.HorseArmor && slot <= eInventorySlot.Horse)
-			    || (slot >= eInventorySlot.Waist && slot <= eInventorySlot.Mythical)
-			    || (slot == eInventorySlot.Ground)
+			if ((slot >= EInventorySlot.RightHandWeapon && slot <= EInventorySlot.FourthQuiver)
+			    || (slot >= EInventorySlot.HeadArmor && slot <= EInventorySlot.Neck)
+			    || (slot >= EInventorySlot.HorseArmor && slot <= EInventorySlot.Horse)
+			    || (slot >= EInventorySlot.Waist && slot <= EInventorySlot.Mythical)
+			    || (slot == EInventorySlot.Ground)
 			    // INVENTAIRE DES CHEVAUX
-			    || (slot >= eInventorySlot.FirstBagHorse && slot <= eInventorySlot.LastBagHorse))
+			    || (slot >= EInventorySlot.FirstBagHorse && slot <= EInventorySlot.LastBagHorse))
 				return slot;
 
-			return eInventorySlot.Invalid;
+			return EInventorySlot.Invalid;
 		}
 
 		/// <summary>
@@ -311,15 +289,15 @@ namespace DOL.GS
 		/// <param name="searchFirst"></param>
 		/// <param name="searchNull"></param>
 		/// <returns></returns>
-		protected virtual eInventorySlot FindSlot(eInventorySlot first, eInventorySlot last, bool searchFirst, bool searchNull)
+		protected virtual EInventorySlot FindSlot(EInventorySlot first, EInventorySlot last, bool searchFirst, bool searchNull)
 		{
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 			{
 				first = GetValidInventorySlot(first);
 				last = GetValidInventorySlot(last);
 
-				if (first == eInventorySlot.Invalid || last == eInventorySlot.Invalid)
-					return eInventorySlot.Invalid;
+				if (first == EInventorySlot.Invalid || last == EInventorySlot.Invalid)
+					return EInventorySlot.Invalid;
 
 				// If first/last slots are identical, check to see if the slot is full/empty and return based on
 				// whether we instructed to find an empty or a full slot.
@@ -327,13 +305,13 @@ namespace DOL.GS
 				{
 					// If slot is empty, and we wanted an empty slot, or if slot is full, and we wanted
 					// a full slot, return the given slot, otherwise return invalid.
-					return !m_items.ContainsKey(first) == searchNull ? first : eInventorySlot.Invalid;
+					return !m_items.ContainsKey(first) == searchNull ? first : EInventorySlot.Invalid;
 				}
 
 				// If lower slot is greater than upper slot, flip the values.
 				if (first > last)
 				{
-					eInventorySlot tmp = first;
+					EInventorySlot tmp = first;
 					first = last;
 					last = tmp;
 				}
@@ -342,11 +320,11 @@ namespace DOL.GS
 				{
 					var testSlot = (int) (searchFirst ? (first + i) : (last - i));
 
-					if (!m_items.ContainsKey((eInventorySlot) testSlot) == searchNull)
-						return (eInventorySlot) testSlot;
+					if (!m_items.ContainsKey((EInventorySlot) testSlot) == searchNull)
+						return (EInventorySlot) testSlot;
 				}
 
-				return eInventorySlot.Invalid;
+				return EInventorySlot.Invalid;
 			}
 		}
 
@@ -360,17 +338,17 @@ namespace DOL.GS
 		/// <param name="minSlot">Slot Position where begin the search</param>
 		/// <param name="maxSlot">Slot Position where stop the search</param>
 		/// <returns>all items found</returns>
-		public virtual ICollection<DbInventoryItem> GetItemRange(eInventorySlot minSlot, eInventorySlot maxSlot)
+		public virtual ICollection<DbInventoryItem> GetItemRange(EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			minSlot = GetValidInventorySlot(minSlot);
 			maxSlot = GetValidInventorySlot(maxSlot);
-			if (minSlot == eInventorySlot.Invalid || maxSlot == eInventorySlot.Invalid)
+			if (minSlot == EInventorySlot.Invalid || maxSlot == EInventorySlot.Invalid)
 				return null;
 
 			// If lower slot is greater than upper slot, flip the values.
 			if (minSlot > maxSlot)
 			{
-				eInventorySlot tmp = minSlot;
+				EInventorySlot tmp = minSlot;
 				minSlot = maxSlot;
 				maxSlot = tmp;
 			}
@@ -381,7 +359,7 @@ namespace DOL.GS
 			{
 				DbInventoryItem item;
 
-				for (eInventorySlot i = minSlot; i <= maxSlot; i++)
+				for (EInventorySlot i = minSlot; i <= maxSlot; i++)
 				{
 					if (m_items.TryGetValue(i, out item))
 					{
@@ -401,17 +379,17 @@ namespace DOL.GS
 		/// <param name="minSlot">fist slot for search</param>
 		/// <param name="maxSlot">last slot for search</param>
 		/// <returns>found item or null</returns>
-		public DbInventoryItem GetFirstItemByID(string uniqueID, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public DbInventoryItem GetFirstItemByID(string uniqueID, EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			minSlot = GetValidInventorySlot(minSlot);
 			maxSlot = GetValidInventorySlot(maxSlot);
-			if (minSlot == eInventorySlot.Invalid || maxSlot == eInventorySlot.Invalid)
+			if (minSlot == EInventorySlot.Invalid || maxSlot == EInventorySlot.Invalid)
 				return null;
 
 			// If lower slot is greater than upper slot, flip the values.
 			if (minSlot > maxSlot)
 			{
-				eInventorySlot tmp = minSlot;
+				EInventorySlot tmp = minSlot;
 				minSlot = maxSlot;
 				maxSlot = tmp;
 			}
@@ -420,7 +398,7 @@ namespace DOL.GS
 			{
 				DbInventoryItem item;
 
-				for (eInventorySlot i = minSlot; i <= maxSlot; i++)
+				for (EInventorySlot i = minSlot; i <= maxSlot; i++)
 				{
 					if (m_items.TryGetValue(i, out item))
 					{
@@ -441,17 +419,17 @@ namespace DOL.GS
 		/// <param name="minSlot">fist slot for search</param>
 		/// <param name="maxSlot">last slot for search</param>
 		/// <returns>found item or null</returns>
-		public DbInventoryItem GetFirstItemByObjectType(int objectType, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public DbInventoryItem GetFirstItemByObjectType(int objectType, EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			minSlot = GetValidInventorySlot(minSlot);
 			maxSlot = GetValidInventorySlot(maxSlot);
-			if (minSlot == eInventorySlot.Invalid || maxSlot == eInventorySlot.Invalid)
+			if (minSlot == EInventorySlot.Invalid || maxSlot == EInventorySlot.Invalid)
 				return null;
 
 			// If lower slot is greater than upper slot, flip the values.
 			if (minSlot > maxSlot)
 			{
-				eInventorySlot tmp = minSlot;
+				EInventorySlot tmp = minSlot;
 				minSlot = maxSlot;
 				maxSlot = tmp;
 			}
@@ -460,7 +438,7 @@ namespace DOL.GS
 			{
 				DbInventoryItem item;
 
-				for (eInventorySlot i = minSlot; i <= maxSlot; i++)
+				for (EInventorySlot i = minSlot; i <= maxSlot; i++)
 				{
 					if (m_items.TryGetValue(i, out item))
 					{
@@ -481,17 +459,17 @@ namespace DOL.GS
 		/// <param name="minSlot">fist slot for search</param>
 		/// <param name="maxSlot">last slot for search</param>
 		/// <returns>found item or null</returns>
-		public DbInventoryItem GetFirstItemByName(string name, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public DbInventoryItem GetFirstItemByName(string name, EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			minSlot = GetValidInventorySlot(minSlot);
 			maxSlot = GetValidInventorySlot(maxSlot);
-			if (minSlot == eInventorySlot.Invalid || maxSlot == eInventorySlot.Invalid)
+			if (minSlot == EInventorySlot.Invalid || maxSlot == EInventorySlot.Invalid)
 				return null;
 
 			// If lower slot is greater than upper slot, flip the values.
 			if (minSlot > maxSlot)
 			{
-				eInventorySlot tmp = minSlot;
+				EInventorySlot tmp = minSlot;
 				minSlot = maxSlot;
 				maxSlot = tmp;
 			}
@@ -500,7 +478,7 @@ namespace DOL.GS
 			{
 				DbInventoryItem item;
 
-				for (eInventorySlot i = minSlot; i <= maxSlot; i++)
+				for (EInventorySlot i = minSlot; i <= maxSlot; i++)
 				{
 					if (m_items.TryGetValue(i, out item))
 					{
@@ -523,7 +501,7 @@ namespace DOL.GS
 		/// <param name="slot"></param>
 		/// <param name="item"></param>
 		/// <returns>The eInventorySlot where the item has been added</returns>
-		public virtual bool AddItem(eInventorySlot slot, DbInventoryItem item)
+		public virtual bool AddItem(EInventorySlot slot, DbInventoryItem item)
 		{
 			if (item == null)
 				return false;
@@ -531,7 +509,7 @@ namespace DOL.GS
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 			{
 				slot = GetValidInventorySlot(slot);
-				if (slot == eInventorySlot.Invalid) return false;
+				if (slot == EInventorySlot.Invalid) return false;
 
 				if (m_items.ContainsKey(slot))
 				{
@@ -560,7 +538,7 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual bool AddTradeItem(eInventorySlot slot, DbInventoryItem item)
+		public virtual bool AddTradeItem(EInventorySlot slot, DbInventoryItem item)
 		{
 			return false;
 		}
@@ -595,7 +573,7 @@ namespace DOL.GS
 				if (item == null)
 					return false;
 
-				var slot = (eInventorySlot) item.SlotPosition;
+				var slot = (EInventorySlot) item.SlotPosition;
 
 				if (m_items.ContainsKey(slot))
 				{
@@ -638,7 +616,7 @@ namespace DOL.GS
 
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 			{
-				var slot = (eInventorySlot) item.SlotPosition;
+				var slot = (EInventorySlot) item.SlotPosition;
 
 				if (m_items.ContainsKey(slot))
 				{
@@ -675,7 +653,7 @@ namespace DOL.GS
 
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 			{
-				var slot = (eInventorySlot) item.SlotPosition;
+				var slot = (EInventorySlot) item.SlotPosition;
 
 				if (m_items.ContainsKey(slot))
 				{
@@ -708,10 +686,10 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="slot">SlotPosition</param>
 		/// <returns>the item in the specified slot if the slot is valid and null if not</returns>
-		public virtual DbInventoryItem GetItem(eInventorySlot slot)
+		public virtual DbInventoryItem GetItem(EInventorySlot slot)
 		{
 			slot = GetValidInventorySlot(slot);
-			if (slot == eInventorySlot.Invalid)
+			if (slot == EInventorySlot.Invalid)
 				return null;
 
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
@@ -731,13 +709,13 @@ namespace DOL.GS
 		/// <param name="toSlot">Destination slot</param>
 		/// <param name="itemCount"></param>
 		/// <returns>true if successfull false if not</returns>
-		public virtual bool MoveItem(eInventorySlot fromSlot, eInventorySlot toSlot, int itemCount)
+		public virtual bool MoveItem(EInventorySlot fromSlot, EInventorySlot toSlot, int itemCount)
 		{
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 			{
 				fromSlot = GetValidInventorySlot(fromSlot);
 				toSlot = GetValidInventorySlot(toSlot);
-				if (fromSlot == eInventorySlot.Invalid || toSlot == eInventorySlot.Invalid)
+				if (fromSlot == EInventorySlot.Invalid || toSlot == EInventorySlot.Invalid)
 					return false;
 
 				DbInventoryItem fromItem;
@@ -775,7 +753,7 @@ namespace DOL.GS
 
 				lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 				{
-					foreach (eInventorySlot slot in VISIBLE_SLOTS)
+					foreach (EInventorySlot slot in VISIBLE_SLOTS)
 					{
 						DbInventoryItem item;
 
@@ -801,7 +779,7 @@ namespace DOL.GS
 
 				lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 				{
-					foreach (eInventorySlot slot in EQUIP_SLOTS)
+					foreach (EInventorySlot slot in EQUIP_SLOTS)
 					{
 						DbInventoryItem item;
 
@@ -837,7 +815,7 @@ namespace DOL.GS
 		/// <param name="minSlot">The first slot</param>
 		/// <param name="maxSlot">The last slot</param>
 		/// <returns>True if all items were added</returns>
-		public virtual bool AddTemplate(DbInventoryItem sourceItem, int count, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public virtual bool AddTemplate(DbInventoryItem sourceItem, int count, EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			// Make sure template isn't null.
 			if (sourceItem == null)
@@ -850,32 +828,32 @@ namespace DOL.GS
 			// If lower slot is greater than upper slot, flip the values.
 			if (minSlot > maxSlot)
 			{
-				eInventorySlot tmp = minSlot;
+				EInventorySlot tmp = minSlot;
 				minSlot = maxSlot;
 				maxSlot = tmp;
 			}
 
 			// Make sure lower slot is within inventory bounds.
-			if (minSlot < eInventorySlot.Min_Inv)
+			if (minSlot < EInventorySlot.Min_Inv)
 				return false;
 
 			// Make sure upper slot is within inventory bounds.
-			if (maxSlot > eInventorySlot.Max_Inv)
+			if (maxSlot > EInventorySlot.Max_Inv)
 				return false;
 
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 			{
-				var changedSlots = new Dictionary<eInventorySlot, int>(); // value: <0 = new item count; >0 = add to old
+				var changedSlots = new Dictionary<EInventorySlot, int>(); // value: <0 = new item count; >0 = add to old
 				bool fits = false;
 				int itemcount = count;
-				eInventorySlot i = minSlot;
+				EInventorySlot i = minSlot;
 
 				// Find open slots/existing stacks to fit in these items.
 				do
 				{
 					// Get the current slot, make sure it's valid.
-					eInventorySlot curSlot = GetValidInventorySlot(i);
-					if (curSlot == eInventorySlot.Invalid)
+					EInventorySlot curSlot = GetValidInventorySlot(i);
+					if (curSlot == EInventorySlot.Invalid)
 						continue;
 
 					DbInventoryItem curItem;
@@ -927,8 +905,8 @@ namespace DOL.GS
 					for (i = minSlot; i <= maxSlot; i++)
 					{
 						// Get the current slot, make sure it's valid.
-						eInventorySlot curSlot = GetValidInventorySlot(i);
-						if (curSlot == eInventorySlot.Invalid)
+						EInventorySlot curSlot = GetValidInventorySlot(i);
+						if (curSlot == EInventorySlot.Invalid)
 							continue;
 
 						// Skip any slots we already found as being occupied.
@@ -978,7 +956,7 @@ namespace DOL.GS
 					foreach (var slot in changedSlots)
 					{
 						DbInventoryItem item;
-						eInventorySlot itemSlot = slot.Key;
+						EInventorySlot itemSlot = slot.Key;
 						int itemCount = slot.Value;
 
 						if (itemCount > 0) // existing item should be changed
@@ -1022,7 +1000,7 @@ namespace DOL.GS
 		/// <param name="minSlot">The first slot</param>
 		/// <param name="maxSlot">The last slot</param>
 		/// <returns>True if all items were added</returns>
-		public virtual bool RemoveTemplate(string templateID, int count, eInventorySlot minSlot, eInventorySlot maxSlot)
+		public virtual bool RemoveTemplate(string templateID, int count, EInventorySlot minSlot, EInventorySlot maxSlot)
 		{
 			if (templateID == null)
 				return false;
@@ -1032,13 +1010,13 @@ namespace DOL.GS
 
 			if (minSlot > maxSlot)
 			{
-				eInventorySlot tmp = minSlot;
+				EInventorySlot tmp = minSlot;
 				minSlot = maxSlot;
 				maxSlot = tmp;
 			}
 
-			if (minSlot < eInventorySlot.Min_Inv) return false;
-			if (maxSlot > eInventorySlot.Max_Inv) return false;
+			if (minSlot < EInventorySlot.Min_Inv) return false;
+			if (maxSlot > EInventorySlot.Max_Inv) return false;
 
 			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
 			{
@@ -1046,7 +1024,7 @@ namespace DOL.GS
 				// value: null = remove item completely; >0 = remove count from stack
 				bool remove = false;
 
-				for (eInventorySlot slot = minSlot; slot <= maxSlot; slot++)
+				for (EInventorySlot slot = minSlot; slot <= maxSlot; slot++)
 				{
 					DbInventoryItem item;
 
@@ -1136,7 +1114,7 @@ namespace DOL.GS
 		/// <param name="toSlot">Second SlotPosition</param>
 		/// <param name="itemCount">How many items to move</param>
 		/// <returns>true if items stacked successfully</returns>
-		protected virtual bool StackItems(eInventorySlot fromSlot, eInventorySlot toSlot, int itemCount)
+		protected virtual bool StackItems(EInventorySlot fromSlot, EInventorySlot toSlot, int itemCount)
 		{
 			return false;
 		}
@@ -1147,7 +1125,7 @@ namespace DOL.GS
 		/// <param name="fromSlot">First SlotPosition</param>
 		/// <param name="toSlot">Second SlotPosition</param>
 		/// <returns>true if items exchanged successfully</returns>
-		protected virtual bool ExchangeItems(eInventorySlot fromSlot, eInventorySlot toSlot)
+		protected virtual bool ExchangeItems(EInventorySlot fromSlot, EInventorySlot toSlot)
 		{
 			DbInventoryItem newFromItem;
 			DbInventoryItem newToItem;
@@ -1206,9 +1184,9 @@ namespace DOL.GS
 				
 				foreach (var item in items)
 				{
-					if (!EQUIP_SLOTS.Contains((eInventorySlot)item.SlotPosition))
+					if (!EQUIP_SLOTS.Contains((EInventorySlot)item.SlotPosition))
 						continue;
-					if ((eInventorySlot) item.SlotPosition is eInventorySlot.FirstQuiver or eInventorySlot.SecondQuiver or eInventorySlot.ThirdQuiver or eInventorySlot.FourthQuiver)
+					if ((EInventorySlot) item.SlotPosition is EInventorySlot.FirstQuiver or EInventorySlot.SecondQuiver or EInventorySlot.ThirdQuiver or EInventorySlot.FourthQuiver)
 						continue;
 					weight += item.Weight;
 				}

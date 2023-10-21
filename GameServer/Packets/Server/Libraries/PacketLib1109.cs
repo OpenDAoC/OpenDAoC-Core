@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Reflection;
@@ -47,7 +28,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player.TradeWindow == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.TradeWindow)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.TradeWindow)))
 			{
 				lock (m_gameClient.Player.TradeWindow.Sync)
 				{
@@ -58,18 +39,18 @@ namespace DOL.GS.PacketHandler
 					pak.Fill(0x00, 10 - m_gameClient.Player.TradeWindow.TradeItems.Count);
 
 					pak.WriteShort(0x0000);
-					pak.WriteShort((ushort)Money.GetMithril(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetPlatinum(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetGold(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetSilver(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetCopper(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetMithril(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetPlatinum(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetGold(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetSilver(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetCopper(m_gameClient.Player.TradeWindow.TradeMoney));
 
 					pak.WriteShort(0x0000);
-					pak.WriteShort((ushort)Money.GetMithril(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetPlatinum(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetGold(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetSilver(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetCopper(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetMithril(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetPlatinum(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetGold(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetSilver(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort((ushort)MoneyMgr.GetCopper(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
 
 					pak.WriteShort(0x0000);
 					ArrayList items = m_gameClient.Player.TradeWindow.PartnerTradeItems;
@@ -106,7 +87,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="pak"></param>
 		/// <param name="item"></param>
-		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
+		protected override void WriteItemData(GsTcpPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{
@@ -123,39 +104,39 @@ namespace DOL.GS.PacketHandler
 			int value2; // some object types use this field to display count
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.GenericItem:
+				case (int)EObjectType.GenericItem:
 					value1 = item.Count & 0xFF;
 					value2 = (item.Count >> 8) & 0xFF;
 					break;
-				case (int)eObjectType.Arrow:
-				case (int)eObjectType.Bolt:
-				case (int)eObjectType.Poison:
+				case (int)EObjectType.Arrow:
+				case (int)EObjectType.Bolt:
+				case (int)EObjectType.Poison:
 					value1 = item.Count;
 					value2 = item.SPD_ABS;
 					break;
-				case (int)eObjectType.Thrown:
+				case (int)EObjectType.Thrown:
 					value1 = item.DPS_AF;
 					value2 = item.Count;
 					break;
-				case (int)eObjectType.Instrument:
+				case (int)EObjectType.Instrument:
 					value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF);
 					value2 = 0;
 					break; // unused
-				case (int)eObjectType.Shield:
+				case (int)EObjectType.Shield:
 					value1 = item.Type_Damage;
 					value2 = item.DPS_AF;
 					break;
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.SpellcraftGem:
 					value1 = 0;
 					value2 = 0;
 					/*
 					must contain the quality of gem for spell craft and think same for tincture
 					*/
 					break;
-				case (int)eObjectType.HouseWallObject:
-				case (int)eObjectType.HouseFloorObject:
-				case (int)eObjectType.GardenObject:
+				case (int)EObjectType.HouseWallObject:
+				case (int)EObjectType.HouseFloorObject:
+				case (int)EObjectType.GardenObject:
 					value1 = 0;
 					value2 = item.SPD_ABS;
 					/*
@@ -174,7 +155,7 @@ namespace DOL.GS.PacketHandler
 			pak.WriteByte((byte)value1);
 			pak.WriteByte((byte)value2);
 
-			if (item.Object_Type == (int)eObjectType.GardenObject)
+			if (item.Object_Type == (int)EObjectType.GardenObject)
 				pak.WriteByte((byte)(item.DPS_AF));
 			else
 				pak.WriteByte((byte)(item.Hand << 6));
@@ -201,15 +182,15 @@ namespace DOL.GS.PacketHandler
 			flag |= 0x02; // enable salvage button
 
 			// Enable craft button if the item can be modified and the player has alchemy or spellcrafting
-			eCraftingSkill skill = CraftingMgr.GetCraftingSkill(item);
+			ECraftingSkill skill = CraftingMgr.GetCraftingSkill(item);
 			switch (skill)
 			{
-				case eCraftingSkill.ArmorCrafting:
-				case eCraftingSkill.Fletching:
-				case eCraftingSkill.Tailoring:
-				case eCraftingSkill.WeaponCrafting:
-					if (m_gameClient.Player.CraftingSkills.ContainsKey(eCraftingSkill.Alchemy)
-						|| m_gameClient.Player.CraftingSkills.ContainsKey(eCraftingSkill.SpellCrafting))
+				case ECraftingSkill.ArmorCrafting:
+				case ECraftingSkill.Fletching:
+				case ECraftingSkill.Tailoring:
+				case ECraftingSkill.WeaponCrafting:
+					if (m_gameClient.Player.CraftingSkills.ContainsKey(ECraftingSkill.Alchemy)
+						|| m_gameClient.Player.CraftingSkills.ContainsKey(ECraftingSkill.SpellCrafting))
 						flag |= 0x04; // enable craft button
 					break;
 
@@ -221,7 +202,7 @@ namespace DOL.GS.PacketHandler
 			ushort icon2 = 0;
 			string spell_name1 = "";
 			string spell_name2 = "";
-			if (item.Object_Type != (int)eObjectType.AlchemyTincture)
+			if (item.Object_Type != (int)EObjectType.AlchemyTincture)
 			{
 				SpellLine chargeEffectsLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
 
@@ -269,7 +250,7 @@ namespace DOL.GS.PacketHandler
 				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 					name += "[" + item.SellPrice.ToString() + " BP]";
 				else
-					name += "[" + Money.GetShortString(item.SellPrice) + "]";
+					name += "[" + MoneyMgr.GetShortString(item.SellPrice) + "]";
 			}
 
 			if (name.Length > MAX_NAME_LENGTH)
@@ -278,7 +259,7 @@ namespace DOL.GS.PacketHandler
 			pak.WritePascalString(name);
 		}
 
-		protected override void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)
+		protected override void WriteTemplateData(GsTcpPacketOut pak, DbItemTemplate template, int count)
 		{
 			if (template == null)
 			{
@@ -293,34 +274,34 @@ namespace DOL.GS.PacketHandler
 
 			switch (template.Object_Type)
 			{
-				case (int)eObjectType.Arrow:
-				case (int)eObjectType.Bolt:
-				case (int)eObjectType.Poison:
-				case (int)eObjectType.GenericItem:
+				case (int)EObjectType.Arrow:
+				case (int)EObjectType.Bolt:
+				case (int)EObjectType.Poison:
+				case (int)EObjectType.GenericItem:
 					value1 = count; // Count
 					value2 = template.SPD_ABS;
 					break;
-				case (int)eObjectType.Thrown:
+				case (int)EObjectType.Thrown:
 					value1 = template.DPS_AF;
 					value2 = count; // Count
 					break;
-				case (int)eObjectType.Instrument:
+				case (int)EObjectType.Instrument:
 					value1 = (template.DPS_AF == 2 ? 0 : template.DPS_AF);
 					value2 = 0;
 					break;
-				case (int)eObjectType.Shield:
+				case (int)EObjectType.Shield:
 					value1 = template.Type_Damage;
 					value2 = template.DPS_AF;
 					break;
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.SpellcraftGem:
 					value1 = 0;
 					value2 = 0;
 					/*
 					must contain the quality of gem for spell craft and think same for tincture
 					*/
 					break;
-				case (int)eObjectType.GardenObject:
+				case (int)EObjectType.GardenObject:
 					value1 = 0;
 					value2 = template.SPD_ABS;
 					/*
@@ -339,7 +320,7 @@ namespace DOL.GS.PacketHandler
 			pak.WriteByte((byte)value1);
 			pak.WriteByte((byte)value2);
 
-			if (template.Object_Type == (int)eObjectType.GardenObject)
+			if (template.Object_Type == (int)EObjectType.GardenObject)
 				pak.WriteByte((byte)(template.DPS_AF));
 			else
 				pak.WriteByte((byte)(template.Hand << 6));

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -26,10 +7,10 @@ namespace DOL.GS
 	/// <summary>
 	/// AdvancedCraftingSkill is the skill for alchemy and spellcrafting whitch add all combine system
 	/// </summary>
-	public abstract class AdvancedCraftingSkill : AbstractProfession
+	public abstract class AdvancedCraftingSkill : AProfession
     {
 		#region Classic craft function
-		protected override bool CheckForTools(GamePlayer player, Recipe recipe)
+		protected override bool CheckForTools(GamePlayer player, RecipeMgr recipe)
 		{
 			foreach (GameStaticItem item in player.GetItemsInRadius(CRAFT_DISTANCE))
 			{
@@ -39,8 +20,8 @@ namespace DOL.GS
 				}
 			}
 
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Crafting.CheckTool.NotHaveTools", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Crafting.CheckTool.FindAlchemyTable"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Crafting.CheckTool.NotHaveTools", recipe.Product.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Crafting.CheckTool.FindAlchemyTable"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			if (player.Client.Account.PrivLevel > 1)
 				return true;
@@ -63,7 +44,7 @@ namespace DOL.GS
 		{
 			if(player.TradeWindow.PartnerTradeItems == null || player.TradeWindow.PartnerItemsCount != 1)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.CombineItems.OnlyCombine"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.CombineItems.OnlyCombine"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -91,44 +72,44 @@ namespace DOL.GS
 			
 			if(player.TradeWindow.ItemsCount <= 0)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.Imbue", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.Imbue", item.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;	
 			}
 
 			if(!item.IsCrafted)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.CraftedItems"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.CraftedItems"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 
             DbInventoryItem itemToCombine = (DbInventoryItem)player.TradeWindow.TradeItems[0];
 
-            if (itemToCombine.Object_Type == (int)eObjectType.AlchemyTincture)
+            if (itemToCombine.Object_Type == (int)EObjectType.AlchemyTincture)
             {
-                if (item.Object_Type != (int)eObjectType.Instrument) // Only check for non instruments
+                if (item.Object_Type != (int)EObjectType.Instrument) // Only check for non instruments
                 {
                     switch (itemToCombine.Type_Damage)
                     {
                         case 0: //Type damage 0 = armors
                             if (!GlobalConstants.IsArmor(item.Object_Type))
                             {
-                                if (item.Object_Type == (int)eObjectType.Shield) // think shield can do armor and weapon ? not verified.
+                                if (item.Object_Type == (int)EObjectType.Shield) // think shield can do armor and weapon ? not verified.
                                     return true;
 
-                                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.NoGoodCombine"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.NoGoodCombine"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                 return false;
                             }
                             break;
                         case 1: //Type damage 1 = weapons
                             if (!GlobalConstants.IsWeapon(item.Object_Type))
                             {
-                                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.NoGoodCombine"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.NoGoodCombine"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                 return false;
                             }
                             break;
                         default:
-                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.ProblemCombine"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.ProblemCombine"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                             return false;
                     }
                 }
@@ -136,15 +117,15 @@ namespace DOL.GS
                 {
                     if (itemToCombine.Type_Damage != 0) //think instrument can do only armorproc ? not verified.
                     {
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.NoGoodCombine"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.NoGoodCombine"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         return false;
                     }
                 }
             }
 
-            if (!GlobalConstants.IsArmor(item.Object_Type) && !GlobalConstants.IsWeapon(item.Object_Type) && item.Object_Type != (int)eObjectType.Instrument)
+            if (!GlobalConstants.IsArmor(item.Object_Type) && !GlobalConstants.IsWeapon(item.Object_Type) && item.Object_Type != (int)EObjectType.Instrument)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.NoEnchanted"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AdvancedCraftingSkill.IsAllowedToCombine.NoEnchanted"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;	
 			}
 

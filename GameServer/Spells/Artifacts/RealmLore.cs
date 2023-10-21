@@ -16,9 +16,9 @@ namespace DOL.GS.Spells
 			if(selectedTarget==null) 
 				return false;
 
-			if (selectedTarget is GameNPC)
+			if (selectedTarget is GameNpc)
 			{
-				MessageToCaster("This spell works only on players.", eChatType.CT_SpellResisted); return false;
+				MessageToCaster("This spell works only on players.", EChatType.CT_SpellResisted); return false;
 			}
 
 			if(selectedTarget as GamePlayer==null) 
@@ -26,7 +26,7 @@ namespace DOL.GS.Spells
 
 			if(!m_caster.IsWithinRadius(selectedTarget, Spell.Range))
 			{
-				MessageToCaster("Your target is too far away.", eChatType.CT_SpellResisted); return false;
+				MessageToCaster("Your target is too far away.", EChatType.CT_SpellResisted); return false;
 			}
 
             return true;
@@ -38,7 +38,7 @@ namespace DOL.GS.Spells
 				return;
 
 			var text = new List<string>();
-			text.Add("Class: "+player.CharacterClass.Name);
+			text.Add("Class: "+player.PlayerClass.Name);
 			text.Add("Realmpoints: "+player.RealmPoints+" = "+string.Format("{0:#L#} {1}",player.RealmLevel+10,player.RealmRankTitle(player.Client.Account.Language)));
 			text.Add("----------------------------------------------------");
 			text.Add("Str: "+player.Strength+" Dex: "+player.Dexterity+" Con: "+player.Constitution);
@@ -52,11 +52,11 @@ namespace DOL.GS.Spells
 			text.Add("----------------------------------------------------");
 			IList abilities = player.GetAllAbilities();
 			foreach(Ability ab in abilities)
-				if(ab is RealmAbility && ab is RR5RealmAbility == false)
+				if(ab is RealmAbility && ab is Rr5RealmAbility == false)
 					text.Add(((RealmAbility)ab).Name);
 
 			(m_caster as GamePlayer).Out.SendCustomTextWindow("Realm Lore [ "+player.Name+" ]",text);
-			(m_caster as GamePlayer).Out.SendMessage("Realm Lore [ "+player.Name+" ]\n"+text,eChatType.CT_System,eChatLoc.CL_SystemWindow);
+			(m_caster as GamePlayer).Out.SendMessage("Realm Lore [ "+player.Name+" ]\n"+text,EChatType.CT_System,EChatLoc.CL_SystemWindow);
 		}
 		public RealmLore(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
     }

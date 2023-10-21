@@ -92,7 +92,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the instance of the current keep manager
 		/// </summary>
-		protected IKeepManager m_keepManager;
+		protected IKeepMgr m_keepManager;
 
 		/// <summary>
 		/// Holds the startSystemTick when server is up.
@@ -166,12 +166,12 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the server WorldManager
 		/// </summary>
-		public WorldManager WorldManager { get; protected set; }
+		public WorldEventMgr WorldManager { get; protected set; }
 
 		/// <summary>
 		/// Gets the server PlayerManager
 		/// </summary>
-		public PlayerManager PlayerManager { get; protected set; }
+		public PlayerMgr PlayerManager { get; protected set; }
 
 		/// <summary>
 		/// Gets the server NpcManager
@@ -206,7 +206,7 @@ namespace DOL.GS
 		/// </summary>
 		public static IServerRules ServerRules => m_instance.ServerRulesImpl;
 
-		public static IKeepManager KeepManager
+		public static IKeepMgr KeepManager
 		{
 			get
 			{
@@ -411,7 +411,7 @@ namespace DOL.GS
 						{
 							var sender = (IPEndPoint)(tempRemoteEP);
 
-							var pakin = new GSPacketIn(read - GSPacketIn.HDR_SIZE);
+							var pakin = new GsPacketIn(read - GsPacketIn.HDR_SIZE);
 							pakin.Load(server.UDPBuffer, 0, read);
 
 							//Get the next message
@@ -634,12 +634,12 @@ namespace DOL.GS
 
 				//---------------------------------------------------------------
 				//Try to initialize the WorldManager
-				if (!InitComponent(() => WorldManager = new WorldManager(this), "Instancied World Manager Initialization"))
+				if (!InitComponent(() => WorldManager = new WorldEventMgr(this), "Instancied World Manager Initialization"))
 					return false;
 
 				//---------------------------------------------------------------
 				//Try to initialize the PlayerManager
-				if (!InitComponent(() => PlayerManager = new PlayerManager(this), "Player Manager Initialization"))
+				if (!InitComponent(() => PlayerManager = new PlayerMgr(this), "Player Manager Initialization"))
 					return false;
 
 				//---------------------------------------------------------------
@@ -767,7 +767,7 @@ namespace DOL.GS
 
 				//---------------------------------------------------------------
 				//Load behaviour manager
-				if (!InitComponent(BehaviourMgr.Init(), "Behaviour Manager"))
+				if (!InitComponent(BehaviorMgr.Init(), "Behaviour Manager"))
 					return false;
 
 				//Load the quest managers if enabled
@@ -1090,7 +1090,7 @@ namespace DOL.GS
 			{
 				try
 				{
-					IKeepManager manager = Activator.CreateInstance(keepManager, null) as IKeepManager;
+					IKeepMgr manager = Activator.CreateInstance(keepManager, null) as IKeepMgr;
 
 					if (log.IsInfoEnabled)
 						log.Info("Found KeepManager " + manager.GetType().FullName);
@@ -1106,7 +1106,7 @@ namespace DOL.GS
 
 			if (m_keepManager == null)
 			{
-				m_keepManager = new DefaultKeepManager();
+				m_keepManager = new KeepMgr();
 
 				if (m_keepManager != null)
 				{
@@ -1140,16 +1140,16 @@ namespace DOL.GS
 					{
 						if (!type.IsClass)
 							continue;
-						if (!typeof(IDatabaseUpdater).IsAssignableFrom(type))
+						if (!typeof(IDbUpdater).IsAssignableFrom(type))
 							continue;
 
-						object[] attributes = type.GetCustomAttributes(typeof(DatabaseUpdateAttribute), false);
+						object[] attributes = type.GetCustomAttributes(typeof(DbUpdateAttribute), false);
 						if (attributes.Length <= 0)
 							continue;
 
 						try
 						{
-							var instance = Activator.CreateInstance(type) as IDatabaseUpdater;
+							var instance = Activator.CreateInstance(type) as IDbUpdater;
 							instance.Update();
 						}
 						catch (Exception uex)

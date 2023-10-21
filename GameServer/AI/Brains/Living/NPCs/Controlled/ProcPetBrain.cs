@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.GS;
 
 namespace DOL.AI.Brain
@@ -35,7 +16,7 @@ namespace DOL.AI.Brain
 			IsMainPet = false;
         }
 
-        public virtual GameNPC GetNPCOwner()
+        public virtual GameNpc GetNPCOwner()
         {
             return null;
         }
@@ -45,20 +26,18 @@ namespace DOL.AI.Brain
             if (player != null)
                 return player;
 
-            GameNPC npc = GetNPCOwner();
+            GameNpc npc = GetNPCOwner();
             if (npc != null)
                 return npc;
 
             return null;
         }
 
-		
-
 		public override int ThinkInterval { get { return 1500; } }
 
 		public override void Think() { AttackMostWanted(); }
 
-		public void SetAggressionState(eAggressionState state) { }
+		public void SetAggressionState(EAggressionState state) { }
 
 		public override void AttackMostWanted()
 		{
@@ -75,8 +54,8 @@ namespace DOL.AI.Brain
 		}
 
 		#region IControlledBrain Members
-		public eWalkState WalkState { get { return eWalkState.Stay; } }
-		public eAggressionState AggressionState { get { return eAggressionState.Aggressive; } set { } }
+		public EWalkState WalkState { get { return EWalkState.Stay; } }
+		public EAggressionState AggressionState { get { return EAggressionState.Aggressive; } set { } }
 		public GameLiving Owner { get { return m_owner; } }
 		public void Attack(GameObject target) { }
 		public void Disengage() { }

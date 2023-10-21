@@ -12,20 +12,19 @@ namespace DOL.AI.Brain
     /// <summary>
     /// A brain for the necromancer pets.
     /// </summary>
-    /// <author>Aredhel</author>
     public class NecromancerPetBrain : ControlledNpcBrain
     {
         public NecromancerPetBrain(GameLiving owner) : base(owner)
         {
-            FSM.ClearStates();
+            FiniteStateMachine.ClearStates();
 
-            FSM.Add(new NecromancerPetState_WAKING_UP(this));
-            FSM.Add(new NecromancerPetState_DEFENSIVE(this));
-            FSM.Add(new NecromancerPetState_AGGRO(this));
-            FSM.Add(new NecromancerPetState_PASSIVE(this));
-            FSM.Add(new StandardMobState_DEAD(this));
+            FiniteStateMachine.Add(new NecromancerPetStateWakingUp(this));
+            FiniteStateMachine.Add(new NecromancerPetStateDefensive(this));
+            FiniteStateMachine.Add(new NecromancerPetStateAggro(this));
+            FiniteStateMachine.Add(new NecromancerPetStatePassive(this));
+            FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-            FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+            FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
         }
 
         public override int ThinkInterval => 500;
@@ -36,7 +35,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             CheckTether();
-            FSM.Think();
+            FiniteStateMachine.Think();
         }
 
         #region Events
@@ -47,7 +46,7 @@ namespace DOL.AI.Brain
 
             if (!m_spellQueue.IsEmpty)
             {
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.CastSpellAfterAction", Body.Name), eChatType.CT_System, Owner as GamePlayer);
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.CastSpellAfterAction", Body.Name), EChatType.CT_System, Owner as GamePlayer);
                 hadQueuedSpells = true;
             }
 
@@ -81,14 +80,14 @@ namespace DOL.AI.Brain
             if (spellLine.Name != NecromancerPet.PetInstaSpellLine)
             {
                 Owner.Notify(GameLivingEvent.CastStarting, Body, new CastingEventArgs(Body.CurrentSpellHandler));
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.PetCastingSpell", Body.Name), eChatType.CT_System, Owner as GamePlayer);
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.PetCastingSpell", Body.Name), EChatType.CT_System, Owner as GamePlayer);
             }
         }
 
         /// <summary>
         /// Process events.
         /// </summary>
-        public override void Notify(DOLEvent e, object sender, EventArgs args)
+        public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
             base.Notify(e, sender, args);
 
@@ -134,18 +133,18 @@ namespace DOL.AI.Brain
                 {
                     case CastFailedEventArgs.Reasons.TargetTooFarAway:
                         MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, 
-                            "AI.Brain.Necromancer.ServantFarAwayToCast"), eChatType.CT_SpellResisted, Owner as GamePlayer);
+                            "AI.Brain.Necromancer.ServantFarAwayToCast"), EChatType.CT_SpellResisted, Owner as GamePlayer);
                         break;
 
                     case CastFailedEventArgs.Reasons.TargetNotInView:
                         MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, 
-                            "AI.Brain.Necromancer.PetCantSeeTarget", Body.Name), eChatType.CT_SpellResisted, Owner as GamePlayer);
+                            "AI.Brain.Necromancer.PetCantSeeTarget", Body.Name), EChatType.CT_SpellResisted, Owner as GamePlayer);
                         break;
 
                     case CastFailedEventArgs.Reasons.NotEnoughPower:
                         RemoveSpellFromQueue();
                         MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                            "AI.Brain.Necromancer.NoPower", Body.Name), eChatType.CT_SpellResisted, Owner as GamePlayer);
+                            "AI.Brain.Necromancer.NoPower", Body.Name), EChatType.CT_SpellResisted, Owner as GamePlayer);
                         break;
                 }
             }
@@ -238,7 +237,7 @@ namespace DOL.AI.Brain
             GameLiving spellTarget = target as GameLiving;
 
             // Target must be alive, or this is a self spell, or this is a pbaoe spell.
-            if ((spellTarget != null && spellTarget.IsAlive) || spell.Target == eSpellTarget.SELF || spell.Range == 0)
+            if ((spellTarget != null && spellTarget.IsAlive) || spell.Target == ESpellTarget.SELF || spell.Range == 0)
             {
                 if (spell.CastTime > 0)
                     Body.attackComponent.StopAttack();
@@ -369,7 +368,7 @@ namespace DOL.AI.Brain
                 m_spellQueue.TryDequeue(out spellQueueEntry);
 
             if (spellQueueEntry != null)
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.SpellNoLongerInQueue", spellQueueEntry.Spell.Name, Body.Name), eChatType.CT_Spell, Owner as GamePlayer);
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.SpellNoLongerInQueue", spellQueueEntry.Spell.Name, Body.Name), EChatType.CT_Spell, Owner as GamePlayer);
 
             DebugMessageToOwner(string.Format("Adding spell '{0}' to the end of the queue", spell.Name));
             m_spellQueue.Enqueue(new SpellQueueEntry(spell, spellLine, target));
@@ -390,7 +389,7 @@ namespace DOL.AI.Brain
                 m_attackSpellQueue.TryDequeue(out spellQueueEntry);
 
             if (spellQueueEntry != null)
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.SpellNoLongerInQueue", spellQueueEntry.Spell.Name, Body.Name), eChatType.CT_Spell, Owner as GamePlayer);
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.SpellNoLongerInQueue", spellQueueEntry.Spell.Name, Body.Name), EChatType.CT_Spell, Owner as GamePlayer);
 
             DebugMessageToOwner(string.Format("Adding spell '{0}' to the end of the queue", spell.Name));
             m_attackSpellQueue.Enqueue(new SpellQueueEntry(spell, spellLine, target));
@@ -421,7 +420,7 @@ namespace DOL.AI.Brain
                 {
                     // Pet just went out of range, start the timer.
                     m_tetherTimer = new TetherTimer(Body as NecromancerPet);
-                    m_tetherTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowCallback);
+                    m_tetherTimer.Callback = new EcsGameTimer.EcsTimerCallback(FollowCallback);
                     m_tetherTimer.Start(1);
                     followSeconds = 10;
                 }
@@ -441,7 +440,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Timer for pet out of tether range.
         /// </summary>
-        private class TetherTimer : ECSGameTimer
+        private class TetherTimer : EcsGameTimer
         {
             private NecromancerPet m_pet;
             private int m_seconds = 10;
@@ -467,7 +466,7 @@ namespace DOL.AI.Brain
 
         private int followSeconds = 10;
 
-        private int FollowCallback(ECSGameTimer timer)
+        private int FollowCallback(EcsGameTimer timer)
         {
             if (followSeconds > 0)
             {
@@ -478,7 +477,7 @@ namespace DOL.AI.Brain
             {
                 Stop();
                 MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                    "AI.Brain.Necromancer.HaveLostBondToPet"), eChatType.CT_System, Owner as GamePlayer);
+                    "AI.Brain.Necromancer.HaveLostBondToPet"), EChatType.CT_System, Owner as GamePlayer);
                 (Body as NecromancerPet)?.CutTether();
                 return 0;
             }
@@ -493,19 +492,19 @@ namespace DOL.AI.Brain
 
             if (secondsRemaining == 10)
                 MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                    "AI.Brain.Necromancer.PetTooFarBeLostSecIm", secondsRemaining), eChatType.CT_System, Owner as GamePlayer);
+                    "AI.Brain.Necromancer.PetTooFarBeLostSecIm", secondsRemaining), EChatType.CT_System, Owner as GamePlayer);
             else if (secondsRemaining == 5)
                 MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                    "AI.Brain.Necromancer.PetTooFarBeLostSec", secondsRemaining), eChatType.CT_System, Owner as GamePlayer);
+                    "AI.Brain.Necromancer.PetTooFarBeLostSec", secondsRemaining), EChatType.CT_System, Owner as GamePlayer);
         }
 
         /// <summary>
         /// Send a message to the shade.
         /// </summary>
-        public static void MessageToOwner(string message, eChatType chatType, GamePlayer owner)
+        public static void MessageToOwner(string message, EChatType chatType, GamePlayer owner)
         {
             if ((owner != null) && (message.Length > 0))
-                owner.Out.SendMessage(message, chatType, eChatLoc.CL_SystemWindow);
+                owner.Out.SendMessage(message, chatType, EChatLoc.CL_SystemWindow);
         }
 
         /// <summary>
@@ -519,7 +518,7 @@ namespace DOL.AI.Brain
                 long seconds = tick / 1000;
                 long minutes = seconds / 60;
 
-                MessageToOwner(string.Format("[{0:00}:{1:00}.{2:000}] {3}", minutes % 60, seconds % 60, tick % 1000, message), eChatType.CT_Staff, Owner as GamePlayer);
+                MessageToOwner(string.Format("[{0:00}:{1:00}.{2:000}] {3}", minutes % 60, seconds % 60, tick % 1000, message), EChatType.CT_Staff, Owner as GamePlayer);
             }
         }
 

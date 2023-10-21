@@ -4,7 +4,7 @@ using DOL.Database;
 
 namespace DOL.GS {
     public static class CraftingProgressMgr {
-        private static IDictionary<GamePlayer, Dictionary<eCraftingSkill, int>> _craftingChanges = new Dictionary<GamePlayer, Dictionary<eCraftingSkill, int>>();
+        private static IDictionary<GamePlayer, Dictionary<ECraftingSkill, int>> _craftingChanges = new Dictionary<GamePlayer, Dictionary<ECraftingSkill, int>>();
         private static readonly object _lockObject = new();
 
         /// <summary>
@@ -14,7 +14,7 @@ namespace DOL.GS {
         /// <param name="gamePlayer"></param>
         /// <param name="craftSkill"></param>
         /// <param name="amount"></param>
-        public static void TrackChange(GamePlayer gamePlayer, Dictionary<eCraftingSkill, int> craftingChanges) {
+        public static void TrackChange(GamePlayer gamePlayer, Dictionary<ECraftingSkill, int> craftingChanges) {
             lock (_lockObject) {
                 if (_craftingChanges.ContainsKey(gamePlayer)) {
                     _craftingChanges[gamePlayer] = craftingChanges;
@@ -64,12 +64,12 @@ namespace DOL.GS {
         /// Single Instance
         /// </summary>
         /// <param name="change"></param>
-        private static void _saveInstance(GamePlayer player, Dictionary<eCraftingSkill, int> change) {
-            DbAccountXCrafting craftingForRealm = DOLDB<DbAccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(player.AccountName)
+        private static void _saveInstance(GamePlayer player, Dictionary<ECraftingSkill, int> change) {
+            DbAccountXCrafting craftingForRealm = CoreDb<DbAccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(player.AccountName)
                 .And(DB.Column("Realm").IsEqualTo(player.Realm)));
             craftingForRealm.CraftingPrimarySkill = (byte)player.CraftingPrimarySkill;
             string cs = string.Empty;
-            if (player.CraftingPrimarySkill != eCraftingSkill.NoCrafting) {
+            if (player.CraftingPrimarySkill != ECraftingSkill.NoCrafting) {
                 lock (_lockObject) {
                     foreach (var de in change) {
                         if (cs.Length > 0) cs += ";";

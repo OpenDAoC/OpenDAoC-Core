@@ -38,15 +38,15 @@ namespace DOL.GS
 
         protected override bool CanCastSpell()
         {
-            if (_playerOwner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+            if (_playerOwner.effectListComponent.ContainsEffectForEffectType(EEffect.Volley))
             {
-                _playerOwner.Out.SendMessage("You can't cast spells while Volley is active!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                _playerOwner.Out.SendMessage("You can't cast spells while Volley is active!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return false;
             }
 
             if (_playerOwner.IsCrafting)
             {
-                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 _playerOwner.craftComponent.StopCraft();
                 _playerOwner.CraftTimer = null;
                 _playerOwner.Out.SendCloseTimerWindow();
@@ -54,7 +54,7 @@ namespace DOL.GS
 
             if (_playerOwner.IsSalvagingOrRepairing)
             {
-                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.Attack.InterruptedCrafting"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 _playerOwner.CraftTimer.Stop();
                 _playerOwner.CraftTimer = null;
                 _playerOwner.Out.SendCloseTimerWindow();
@@ -62,19 +62,19 @@ namespace DOL.GS
 
             if (_playerOwner.IsStunned)
             {
-                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.CastSpell.CantCastStunned"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.CastSpell.CantCastStunned"), EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                 return false;
             }
 
             if (_playerOwner.IsMezzed)
             {
-                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.CastSpell.CantCastMezzed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.CastSpell.CantCastMezzed"), EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                 return false;
             }
 
             if (_playerOwner.IsSilenced)
             {
-                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.CastSpell.CantCastFumblingWords"), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.CastSpell.CantCastFumblingWords"), EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
                 return false;
             }
 

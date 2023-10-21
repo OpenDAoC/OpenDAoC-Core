@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.GS.Effects;
@@ -27,13 +8,13 @@ namespace DOL.GS.Spells
 {
 	
     // Main class for savage buffs
-	public abstract class AbstractSavageBuff : PropertyChangingSpell
+	public abstract class ASavageBuff : PropertyChangingSpell
 	{
-		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
+		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override void CreateECSEffect(EcsGameEffectInitParams initParams)
 		{
-			new SavageBuffECSGameEffect(initParams);
+			new SavageBuffEcsEffect(initParams);
 		}
 
 		public override bool CheckBeginCast(GameLiving selectedTarget)
@@ -41,7 +22,7 @@ namespace DOL.GS.Spells
 			int cost = PowerCost(Caster);
 			if (Caster.Health < cost)
 			{
-				MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SavageEnduranceHeal.CheckBeginCast.InsuffiscientHealth"), eChatType.CT_SpellResisted);
+				MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SavageEnduranceHeal.CheckBeginCast.InsuffiscientHealth"), EChatType.CT_SpellResisted);
 				return false;
 			}
 			return base.CheckBeginCast(selectedTarget);
@@ -106,7 +87,7 @@ namespace DOL.GS.Spells
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.ConcentrationCost", Spell.Concentration));
                 if (Spell.Radius != 0)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Radius", Spell.Radius));
-                if (Spell.DamageType != eDamageType.Natural)
+                if (Spell.DamageType != EDamageType.Natural)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
                 if (Spell.IsFocus)
                     list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Focus"));
@@ -140,10 +121,10 @@ namespace DOL.GS.Spells
 		}
 
 		// constructor
-		public AbstractSavageBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}		
+		public ASavageBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}		
 	}
 	
-	public abstract class AbstractSavageStatBuff : AbstractSavageBuff
+	public abstract class ASavageStatBuff : ASavageBuff
 	{
 		/// <summary>
         /// Sends needed updates on start/stop
@@ -161,9 +142,9 @@ namespace DOL.GS.Spells
 			}
 		}
 		// constructor
-		public AbstractSavageStatBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}				
+		public ASavageStatBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}				
 	}
-	public abstract class AbstractSavageResistBuff : AbstractSavageBuff
+	public abstract class ASavageResistBuff : ASavageBuff
 	{
 		/// <summary>
         /// Sends needed updates on start/stop
@@ -179,64 +160,64 @@ namespace DOL.GS.Spells
 			}
 		}
 		// constructor
-		public AbstractSavageResistBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}				
+		public ASavageResistBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}				
 	}
 	
 	[SpellHandler("SavageParryBuff")]
-	public class SavageParryBuff : AbstractSavageStatBuff
+	public class SavageParryBuffSpell : ASavageStatBuff
 	{
-		public override eProperty Property1 { get { return eProperty.ParryChance; } }
+		public override EProperty Property1 { get { return EProperty.ParryChance; } }
 
 		// constructor
-		public SavageParryBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageParryBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 	[SpellHandler("SavageEvadeBuff")]
-	public class SavageEvadeBuff : AbstractSavageStatBuff
+	public class SavageEvadeBuffSpell : ASavageStatBuff
 	{
-		public override eProperty Property1 { get { return eProperty.EvadeChance; } }
+		public override EProperty Property1 { get { return EProperty.EvadeChance; } }
 
 		// constructor
-		public SavageEvadeBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageEvadeBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 	[SpellHandler("SavageCombatSpeedBuff")]
-	public class SavageCombatSpeedBuff : AbstractSavageStatBuff
+	public class SavageCombatSpeedBuffSpell : ASavageStatBuff
 	{
-		public override eProperty Property1 { get { return eProperty.MeleeSpeed; } }
+		public override EProperty Property1 { get { return EProperty.MeleeSpeed; } }
 
 		// constructor
-		public SavageCombatSpeedBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageCombatSpeedBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 	[SpellHandler("SavageDPSBuff")]
-	public class SavageDPSBuff : AbstractSavageStatBuff
+	public class SavageDpsBuffSpell : ASavageStatBuff
 	{
-		public override eProperty Property1 { get { return eProperty.MeleeDamage; } }
+		public override EProperty Property1 { get { return EProperty.MeleeDamage; } }
 
 		// constructor
-		public SavageDPSBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageDpsBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}	
 	[SpellHandler("SavageSlashResistanceBuff")]
-	public class SavageSlashResistanceBuff : AbstractSavageResistBuff
+	public class SavageSlashResistanceBuffSpell : ASavageResistBuff
 	{
-		public override eProperty Property1 { get { return eProperty.Resist_Slash; } }
+		public override EProperty Property1 { get { return EProperty.Resist_Slash; } }
 
 		// constructor
-		public SavageSlashResistanceBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageSlashResistanceBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 	[SpellHandler("SavageThrustResistanceBuff")]
-	public class SavageThrustResistanceBuff : AbstractSavageResistBuff
+	public class SavageThrustResistanceBuffSpell : ASavageResistBuff
 	{
-		public override eProperty Property1 { get { return eProperty.Resist_Thrust; } }
+		public override EProperty Property1 { get { return EProperty.Resist_Thrust; } }
 
 		// constructor
-		public SavageThrustResistanceBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageThrustResistanceBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 	[SpellHandler("SavageCrushResistanceBuff")]
-	public class SavageCrushResistanceBuff : AbstractSavageResistBuff
+	public class SavageCrushResistanceBuffSpell : ASavageResistBuff
 	{
-		public override eProperty Property1 { get { return eProperty.Resist_Crush; } }
+		public override EProperty Property1 { get { return EProperty.Resist_Crush; } }
 
 		// constructor
-		public SavageCrushResistanceBuff(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
+		public SavageCrushResistanceBuffSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 }
 

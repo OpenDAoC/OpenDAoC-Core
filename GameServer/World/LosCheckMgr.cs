@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,12 +89,12 @@ namespace DOL.GS
 		/// <summary>
 		/// Dictionary holding a list of object needing Notify
 		/// </summary>
-		private Dictionary<Tuple<GameObject, GameObject>, List<IDOLEventHandler>> m_registeredLosEvents = new Dictionary<Tuple<GameObject, GameObject>, List<IDOLEventHandler>>();
+		private Dictionary<Tuple<GameObject, GameObject>, List<ICoreEventHandler>> m_registeredLosEvents = new Dictionary<Tuple<GameObject, GameObject>, List<ICoreEventHandler>>();
 		
 		/// <summary>
 		/// Dictionary holding a list of object needing Notify
 		/// </summary>
-		private Dictionary<Tuple<GameObject, GameObject>, List<IDOLEventHandler>> RegisteredLosEvents
+		private Dictionary<Tuple<GameObject, GameObject>, List<ICoreEventHandler>> RegisteredLosEvents
 		{
 			get
 			{
@@ -402,7 +383,7 @@ namespace DOL.GS
 		/// <param name="notifier">GameObject to Notify when Check is made</param>
 		/// <param name="cached">Use a cached result</param>
 		/// <param name="timeout">Cache Timeout, 0 = default</param>
-		public void LosCheck(GamePlayer player, GameObject source, GameObject target, IDOLEventHandler notifier, bool cached = true, int timeout = 0)
+		public void LosCheck(GamePlayer player, GameObject source, GameObject target, ICoreEventHandler notifier, bool cached = true, int timeout = 0)
 		{			
 			if(player == null || source == null || target == null)
 				throw new LosUnavailableException();
@@ -510,7 +491,7 @@ namespace DOL.GS
 		/// <param name="notifier">GameObject to Notify when Check is made</param>
 		/// <param name="cached">Use a cached result</param>
 		/// <param name="timeout">Cache Timeout, 0 = default</param>
-		public void LosCheckVincinity(GameObject source, GameObject target, IDOLEventHandler notifier, bool cached = true, int timeout = 0) 
+		public void LosCheckVincinity(GameObject source, GameObject target, ICoreEventHandler notifier, bool cached = true, int timeout = 0) 
 		{			
 			// FIXME debug
 			if(LOSMGR_DEBUG_LEVEL >= LOSMGR_DEBUG_WARN)
@@ -525,7 +506,7 @@ namespace DOL.GS
 				//we need an arbitrary player
 				foreach(GamePlayer player in source.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
-					if(player.ObjectState == GameNPC.eObjectState.Active) 
+					if(player.ObjectState == GameNpc.eObjectState.Active) 
 					{
 						// FIXME debug
 						if(LOSMGR_DEBUG_LEVEL >= LOSMGR_DEBUG_DEBUG)
@@ -546,7 +527,7 @@ namespace DOL.GS
 					//we need an arbitrary player
 					foreach(GamePlayer player in source.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					{
-						if(player.ObjectState == GameNPC.eObjectState.Active) 
+						if(player.ObjectState == GameNpc.eObjectState.Active) 
 						{
 							notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoop.GetCurrentTime(), los));
 							return;
@@ -590,9 +571,9 @@ namespace DOL.GS
 			}
 			
 			// check if source has an available owner
-			if(source is GameNPC && ((GameNPC)source).Brain != null && ((GameNPC)source).Brain is IControlledBrain)
+			if(source is GameNpc && ((GameNpc)source).Brain != null && ((GameNpc)source).Brain is IControlledBrain)
 			{
-				GamePlayer owner = ((IControlledBrain)((GameNPC)source).Brain).GetPlayerOwner();
+				GamePlayer owner = ((IControlledBrain)((GameNpc)source).Brain).GetPlayerOwner();
 				if(owner != null && IsAvailableForLosCheck(owner, source, target)) {
 					LosCheck(owner, source, target, notifier, cached, timeout);
 					return;
@@ -600,9 +581,9 @@ namespace DOL.GS
 			}
 			
 			// check if target has an available owner
-			if(target is GameNPC && ((GameNPC)target).Brain != null && ((GameNPC)target).Brain is IControlledBrain)
+			if(target is GameNpc && ((GameNpc)target).Brain != null && ((GameNpc)target).Brain is IControlledBrain)
 			{
-				GamePlayer tgtowner = ((IControlledBrain)((GameNPC)target).Brain).GetPlayerOwner();
+				GamePlayer tgtowner = ((IControlledBrain)((GameNpc)target).Brain).GetPlayerOwner();
 				if(tgtowner != null && IsAvailableForLosCheck(tgtowner, source, target)) {
 					LosCheck(tgtowner, source, target, notifier, cached, timeout);
 					return;
@@ -761,12 +742,12 @@ namespace DOL.GS
 		/// <param name="notifiers">Enumerable of Registered Object</param>
 		/// <param name="player">player who made the check</param>
 		/// <param name="data">Check data for Args</param>
-		private static void NotifyObjects(IList<IDOLEventHandler> notifiers, GamePlayer player, LosCheckData data) 
+		private static void NotifyObjects(IList<ICoreEventHandler> notifiers, GamePlayer player, LosCheckData data) 
 		{
 			// Lock notifiers list.
 			lock(((ICollection)notifiers).SyncRoot)
 			{
-				foreach(IDOLEventHandler notifier in notifiers)
+				foreach(ICoreEventHandler notifier in notifiers)
 				{
 					notifier.Notify(GameObjectEvent.FinishedLosCheck, player, data);
 				}
@@ -781,13 +762,13 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="key">Key to Register to</param>
 		/// <param name="notifier">Event handler Object</param>
-		private void AddRegisteredEvent(Tuple<GameObject, GameObject> key, IDOLEventHandler notifier)
+		private void AddRegisteredEvent(Tuple<GameObject, GameObject> key, ICoreEventHandler notifier)
 		{
 			lock(((ICollection)RegisteredLosEvents).SyncRoot)
 			{
 				if(!RegisteredLosEvents.ContainsKey(key) || RegisteredLosEvents[key] == null) 
 				{
-					RegisteredLosEvents[key] = new List<IDOLEventHandler>();
+					RegisteredLosEvents[key] = new List<ICoreEventHandler>();
 				}
 
 				RegisteredLosEvents[key].Add(notifier);
@@ -805,13 +786,13 @@ namespace DOL.GS
 		private void UpdateVincinityLosCache(GameObject source, GameObject target, bool losOK, long time)
 		{			
 			// Take NPCs in the largest Radius, should be EvE
-			foreach(GameNPC contamined in source.GetNPCsInRadius((ushort)LOSMGR_MAX_CONTAMINATION_RADIUS))
+			foreach(GameNpc contamined in source.GetNPCsInRadius((ushort)LOSMGR_MAX_CONTAMINATION_RADIUS))
 			{
 				if(contamined == source || contamined == target)
 					continue;
 				
 				// don't give LoS results to Peace NPC
-				if((contamined.Flags & GameNPC.eFlags.PEACE) == GameNPC.eFlags.PEACE)
+				if((contamined.Flags & ENpcFlags.PEACE) == ENpcFlags.PEACE)
 					continue;
 					
 				// player pet to player should use the special PET radius
@@ -953,7 +934,7 @@ namespace DOL.GS
 		/// <returns>True is this is related to a Player</returns>
 		private bool isObjectFromPlayer(GameObject obj)
 		{
-			return (obj is GameNPC && ((GameNPC)obj).Brain is IControlledBrain && ServerProperties.Properties.ALWAYS_CHECK_PET_LOS && ((IControlledBrain)((GameNPC)obj).Brain).GetPlayerOwner() != null)
+			return (obj is GameNpc && ((GameNpc)obj).Brain is IControlledBrain && ServerProperties.Properties.ALWAYS_CHECK_PET_LOS && ((IControlledBrain)((GameNpc)obj).Brain).GetPlayerOwner() != null)
 			   || obj is GamePlayer;
 		}
 		
@@ -1420,7 +1401,7 @@ namespace DOL.GS
 	/// <summary>
 	/// Default Class implementing IDOLEventHandler with a callback to replace old Los Check callbacks.
 	/// </summary>
-	public class LosMgrResponseHandler : IDOLEventHandler
+	public class LosMgrResponseHandler : ICoreEventHandler
 	{
 		private readonly LosMgrResponse m_delegate;
 		
@@ -1442,7 +1423,7 @@ namespace DOL.GS
 			m_delegate = deleg;
 		}
 		
-		public void Notify(DOLEvent e, object sender, EventArgs args)
+		public void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			m_delegate((GamePlayer)sender, ((LosCheckData)args).SourceObject, ((LosCheckData)args).TargetObject, ((LosCheckData)args).LosOK, args, TempProperties);
 		}

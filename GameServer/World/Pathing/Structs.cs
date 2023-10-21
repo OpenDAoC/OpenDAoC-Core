@@ -5,7 +5,7 @@ namespace DOL.GS
 {
 	public struct WrappedPathingResult
 	{
-		public PathingError Error;
+		public EPathingError Error;
 		public WrappedPathPoint[] Points;
 	}
 
@@ -33,14 +33,5 @@ namespace DOL.GS
 		DOOR_MID = 0x40,
 		DOOR_HIB = 0x80,
 		ALL = 0xffff // All abilities.
-	}
-
-	public enum PathingError
-	{
-		UNKNOWN = 0,
-		PathFound = 1,
-		PartialPathFound = 2,
-		NoPathFound = 3,
-		NavmeshUnavailable = 4
 	}
 }

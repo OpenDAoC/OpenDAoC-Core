@@ -1,28 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
     [SpellHandler("Tartaros")]
-    public class Tartaros : LifedrainSpellHandler
+    public class TartarosGift : LifedrainSpell
     {
 		public override int CalculateSpellResistChance(GameLiving target)
 		{
@@ -42,43 +23,43 @@ namespace DOL.GS.Spells
 
             if (Caster.IsDiseased)
             {
-                MessageToCaster("You are diseased!", eChatType.CT_SpellResisted);
+                MessageToCaster("You are diseased!", EChatType.CT_SpellResisted);
                 heal >>= 1;
             }
             if (heal <= 0) return;            
-            heal = Caster.ChangeHealth(Caster, eHealthChangeType.Spell, heal);
+            heal = Caster.ChangeHealth(Caster, EHealthChangeType.Spell, heal);
             if (heal > 0)
             {
-                MessageToCaster("You drain " + heal + " hit point" + (heal == 1 ? "." : "s."), eChatType.CT_Spell);
+                MessageToCaster("You drain " + heal + " hit point" + (heal == 1 ? "." : "s."), EChatType.CT_Spell);
             }
             else
             {
-                MessageToCaster("You cannot absorb any more life.", eChatType.CT_SpellResisted);
+                MessageToCaster("You cannot absorb any more life.", EChatType.CT_SpellResisted);
             }
             
             if (mana <=0) return;
-            mana = Caster.ChangeMana(Caster,eManaChangeType.Spell,mana);
+            mana = Caster.ChangeMana(Caster,EPowerChangeType.Spell,mana);
             if (mana > 0)
             {
-                MessageToCaster("You drain " + mana + " power point" + (mana == 1 ? "." : "s."), eChatType.CT_Spell);
+                MessageToCaster("You drain " + mana + " power point" + (mana == 1 ? "." : "s."), EChatType.CT_Spell);
             }
             else
             {
-                MessageToCaster("You cannot absorb any more power.", eChatType.CT_SpellResisted);
+                MessageToCaster("You cannot absorb any more power.", EChatType.CT_SpellResisted);
             }     
             
             if (endu <=0) return;
-            endu = Caster.ChangeEndurance(Caster,eEnduranceChangeType.Spell,endu);            
+            endu = Caster.ChangeEndurance(Caster,EEnduranceChangeType.Spell,endu);            
             if (heal > 0)
             {
-                MessageToCaster("You drain " + endu + " endurance point" + (endu == 1 ? "." : "s."), eChatType.CT_Spell);
+                MessageToCaster("You drain " + endu + " endurance point" + (endu == 1 ? "." : "s."), EChatType.CT_Spell);
             }
             else
             {
-                MessageToCaster("You cannot absorb any more endurance.", eChatType.CT_SpellResisted);
+                MessageToCaster("You cannot absorb any more endurance.", EChatType.CT_SpellResisted);
             }
         }
 
-        public Tartaros(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        public TartarosGift(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 }

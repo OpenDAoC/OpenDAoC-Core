@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Database;
@@ -31,8 +12,8 @@ namespace DOL.GS.Behaviour.Triggers
     /// This can be eTriggerAction.Interact, eTriggerAction.GiveItem, eTriggerAction.Attack, etc...
     /// Additional there are two variables to add the needed parameters for the triggertype (Item to give for GiveItem, NPC to interact for Interact, etc...). To fire a QuestAction at least one of the added triggers must be fulfilled. 
     /// </summary>
-    [Trigger(TriggerType=eTriggerType.ItemUsed,DefaultValueI=eDefaultValueConstants.NPC)]
-    public class ItemUsedTrigger : AbstractTrigger<Unused,DbItemTemplate>
+    [Trigger(TriggerType=ETriggerType.ItemUsed,DefaultValueI=EDefaultValueConstants.NPC)]
+    public class ItemUsedTrigger : ATrigger<Unused,DbItemTemplate>
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -43,8 +24,8 @@ namespace DOL.GS.Behaviour.Triggers
 		/// <param name="notifyHandler"></param>
 		/// <param name="k"></param>
 		/// <param name="i"></param>
-        public ItemUsedTrigger(GameNPC defaultNPC, DOLEventHandler notifyHandler,  Object k, Object i)
-            : base(defaultNPC, notifyHandler, eTriggerType.ItemUsed, k, i)
+        public ItemUsedTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler,  Object k, Object i)
+            : base(defaultNPC, notifyHandler, ETriggerType.ItemUsed, k, i)
         { }
 
         /// <summary>
@@ -53,7 +34,7 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="defaultNPC"></param>
         /// <param name="notifyHandler"></param>
         /// <param name="i"></param>
-        public ItemUsedTrigger(GameNPC defaultNPC, DOLEventHandler notifyHandler, DbItemTemplate i)
+        public ItemUsedTrigger(GameNpc defaultNPC, CoreEventHandler notifyHandler, DbItemTemplate i)
             : this(defaultNPC,notifyHandler, (object)null,(object) i)
         { }
 
@@ -65,15 +46,15 @@ namespace DOL.GS.Behaviour.Triggers
         /// <param name="sender">Sender of notify call</param>
         /// <param name="args">EventArgs of notify call</param>        
         /// <returns>true if QuestPart should be executes, else false</returns>
-        public override bool Check(DOLEvent e, object sender, EventArgs args)
+        public override bool Check(CoreEvent e, object sender, EventArgs args)
         {
             bool result = false;
-            GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
+            GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
 
             if (e == GamePlayerEvent.UseSlot)
             {
                 UseSlotEventArgs uArgs = (UseSlotEventArgs)args;
-                DbInventoryItem item = player.Inventory.GetItem((eInventorySlot)uArgs.Slot) as DbInventoryItem;
+                DbInventoryItem item = player.Inventory.GetItem((EInventorySlot)uArgs.Slot) as DbInventoryItem;
 				if (item != null && I != null)
 					result = I.Name == item.Name;
             }

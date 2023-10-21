@@ -25,25 +25,25 @@ namespace DOL.GS.Scripts.discord
             //TODO: Possibly implement this to have all other discord messages delegate through something like this
         }
         
-        public static void LogChatMessage(GamePlayer player, eChatType chatType, String message)
+        public static void LogChatMessage(GamePlayer player, EChatType chatType, String message)
         {
             // Format message
             String formattedMessage = "";
             switch (chatType)
             {
-                case eChatType.CT_Broadcast:
+                case EChatType.CT_Broadcast:
                     formattedMessage = "**[REGION - " + player.CurrentZone.Description + "] ";
                     break;
-                case eChatType.CT_Help:
+                case EChatType.CT_Help:
                     formattedMessage = "**[HELP] ";
                     break;
-                case eChatType.CT_Advise:
+                case EChatType.CT_Advise:
                     formattedMessage = "**[ADVICE] ";
                     break;
-                case eChatType.CT_LFG:
-                    formattedMessage = "**[LFG] (" + player.CharacterClass.Name + " " + player.Level + ") ";
+                case EChatType.CT_LFG:
+                    formattedMessage = "**[LFG] (" + player.PlayerClass.Name + " " + player.Level + ") ";
                     break;
-                case eChatType.CT_Trade:
+                case EChatType.CT_Trade:
                     formattedMessage = "**[TRADE] ";
                     break;
                 default:
@@ -58,21 +58,21 @@ namespace DOL.GS.Scripts.discord
             // Send to Discord
             switch (player.Realm)
             {
-                case eRealm.Albion:
+                case ERealm.Albion:
                     if (!string.IsNullOrEmpty(Properties.DISCORD_ALBCHAT_WEBHOOK_ID))
                     {
                         avatar = "";
                         SendMessage(Properties.DISCORD_ALBCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;
-                case eRealm.Hibernia:
+                case ERealm.Hibernia:
                     if (!string.IsNullOrEmpty(Properties.DISCORD_HIBCHAT_WEBHOOK_ID))
                     {
                         avatar = "";
                         SendMessage(Properties.DISCORD_HIBCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;
-                case eRealm.Midgard:
+                case ERealm.Midgard:
                     if (!string.IsNullOrEmpty(Properties.DISCORD_MIDCHAT_WEBHOOK_ID))
                     {
                         avatar = "";

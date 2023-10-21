@@ -1,36 +1,12 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-    /// <summary>
-    /// Shades of Mist spell handler: Shape change (shade) on self with
-    /// a defensive proc (200 pt. melee health buffer).
-    /// </summary>
-    /// <author>Aredhel</author>
     [SpellHandler("ShadesOfMist")]
-    public class ShadeOfMistDefensiveProcSpellHandler : SpellHandler
+    public class ShadeOfMistDefensiveProcSpell : SpellHandler
     {
         private int ablativehp = 0;
         public override void OnEffectStart(GameSpellEffect effect)
@@ -49,13 +25,13 @@ namespace DOL.GS.Spells
                         Effect.SpellHandler.Spell.SpellType.Equals("AtlantisTabletMorph") ||
                         Effect.SpellHandler.Spell.SpellType.Equals("AlvarusMorph"))
                     {
-                        player.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.eChatType.CT_SpellResisted, DOL.GS.PacketHandler.eChatLoc.CL_ChatWindow);
+                        player.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.EChatType.CT_SpellResisted, DOL.GS.PacketHandler.EChatLoc.CL_ChatWindow);
                         return;
                     }
                 }
                 player.Model = player.ShadeModel;
                 player.Out.SendUpdatePlayer();
-                GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(EventHandler));
+                GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(EventHandler));
             }
         }
 
@@ -67,20 +43,20 @@ namespace DOL.GS.Spells
                 player.Model = player.CreationModel;
                 player.Out.SendUpdatePlayer();
             }
-            GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(EventHandler));
+            GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new CoreEventHandler(EventHandler));
             return base.OnEffectExpires(effect, noMessages);
             
         }
 
-        public void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+        public void EventHandler(CoreEvent e, object sender, EventArgs arguments)
         {
             AttackedByEnemyEventArgs args = arguments as AttackedByEnemyEventArgs;
             if (args == null) return;
             
             if (args.AttackData == null) return;
             if (args.AttackData.SpellHandler != null) return;
-            if (args.AttackData.AttackResult != eAttackResult.HitUnstyled
-                && args.AttackData.AttackResult != eAttackResult.HitStyle)
+            if (args.AttackData.AttackResult != EAttackResult.HitUnstyled
+                && args.AttackData.AttackResult != EAttackResult.HitStyle)
                 return;
 
             int baseChance = Spell.Frequency / 100;
@@ -112,8 +88,8 @@ namespace DOL.GS.Spells
                 OnDamageAbsorbed(ad, damageAbsorbed);
 
                 //TODO correct messages
-                MessageToLiving(ad.Target, string.Format("Your ablative absorbs {0} damage!", damageAbsorbed), eChatType.CT_Spell);//since its not always Melee absorbing
-                MessageToLiving(ad.Attacker, string.Format("A barrier absorbs {0} damage of your attack!", damageAbsorbed), eChatType.CT_Spell);  
+                MessageToLiving(ad.Target, string.Format("Your ablative absorbs {0} damage!", damageAbsorbed), EChatType.CT_Spell);//since its not always Melee absorbing
+                MessageToLiving(ad.Attacker, string.Format("A barrier absorbs {0} damage of your attack!", damageAbsorbed), EChatType.CT_Spell);  
             }
             
         }
@@ -126,15 +102,15 @@ namespace DOL.GS.Spells
         protected virtual bool MatchingDamageType(ref AttackData ad)
         {
 
-            if (ad == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
+            if (ad == null || (ad.AttackResult != EAttackResult.HitStyle && ad.AttackResult != EAttackResult.HitUnstyled))
                 return false;
-            if (!ad.IsMeleeAttack && ad.AttackType != AttackData.eAttackType.Ranged)
+            if (!ad.IsMeleeAttack && ad.AttackType != EAttackType.Ranged)
                 return false;
 
             return true;
         }
 
-        public ShadeOfMistDefensiveProcSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        public ShadeOfMistDefensiveProcSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 
 }

@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DOL.Database;
 
 namespace DOL.GS.PacketHandler
@@ -37,7 +18,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// New item data packet for 1.119
 		/// </summary>
-		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
+		protected override void WriteItemData(GsTcpPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{
@@ -51,39 +32,39 @@ namespace DOL.GS.PacketHandler
 			int value2; // some object types use this field to display count
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.GenericItem:
+				case (int)EObjectType.GenericItem:
 					value1 = item.Count & 0xFF;
 					value2 = (item.Count >> 8) & 0xFF;
 					break;
-				case (int)eObjectType.Arrow:
-				case (int)eObjectType.Bolt:
-				case (int)eObjectType.Poison:
+				case (int)EObjectType.Arrow:
+				case (int)EObjectType.Bolt:
+				case (int)EObjectType.Poison:
 					value1 = item.Count;
 					value2 = item.SPD_ABS;
 					break;
-				case (int)eObjectType.Thrown:
+				case (int)EObjectType.Thrown:
 					value1 = item.DPS_AF;
 					value2 = item.Count;
 					break;
-				case (int)eObjectType.Instrument:
+				case (int)EObjectType.Instrument:
 					value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF);
 					value2 = 0;
 					break; // unused
-				case (int)eObjectType.Shield:
+				case (int)EObjectType.Shield:
 					value1 = item.Type_Damage;
 					value2 = item.DPS_AF;
 					break;
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.SpellcraftGem:
 					value1 = 0;
 					value2 = 0;
 					/*
 					must contain the quality of gem for spell craft and think same for tincture
 					*/
 					break;
-				case (int)eObjectType.HouseWallObject:
-				case (int)eObjectType.HouseFloorObject:
-				case (int)eObjectType.GardenObject:
+				case (int)EObjectType.HouseWallObject:
+				case (int)EObjectType.HouseFloorObject:
+				case (int)EObjectType.GardenObject:
 					value1 = 0;
 					value2 = item.SPD_ABS;
 					/*
@@ -102,7 +83,7 @@ namespace DOL.GS.PacketHandler
 			pak.WriteByte((byte)value1);
 			pak.WriteByte((byte)value2);
 
-			if (item.Object_Type == (int)eObjectType.GardenObject)
+			if (item.Object_Type == (int)EObjectType.GardenObject)
 				pak.WriteByte((byte)(item.DPS_AF));
 			else
 				pak.WriteByte((byte)(item.Hand << 6));
@@ -133,15 +114,15 @@ namespace DOL.GS.PacketHandler
 			flag |= 0x02; // enable salvage button
 
 			// Enable craft button if the item can be modified and the player has alchemy or spellcrafting
-			eCraftingSkill skill = CraftingMgr.GetCraftingSkill(item);
+			ECraftingSkill skill = CraftingMgr.GetCraftingSkill(item);
 			switch (skill)
 			{
-				case eCraftingSkill.ArmorCrafting:
-				case eCraftingSkill.Fletching:
-				case eCraftingSkill.Tailoring:
-				case eCraftingSkill.WeaponCrafting:
-					if (m_gameClient.Player.CraftingSkills.ContainsKey(eCraftingSkill.Alchemy)
-						|| m_gameClient.Player.CraftingSkills.ContainsKey(eCraftingSkill.SpellCrafting))
+				case ECraftingSkill.ArmorCrafting:
+				case ECraftingSkill.Fletching:
+				case ECraftingSkill.Tailoring:
+				case ECraftingSkill.WeaponCrafting:
+					if (m_gameClient.Player.CraftingSkills.ContainsKey(ECraftingSkill.Alchemy)
+						|| m_gameClient.Player.CraftingSkills.ContainsKey(ECraftingSkill.SpellCrafting))
 						flag |= 0x04; // enable craft button
 					break;
 
@@ -153,7 +134,7 @@ namespace DOL.GS.PacketHandler
 			ushort icon2 = 0;
 			string spell_name1 = "";
 			string spell_name2 = "";
-			if (item.Object_Type != (int)eObjectType.AlchemyTincture)
+			if (item.Object_Type != (int)EObjectType.AlchemyTincture)
 			{
 				if (item.SpellID > 0/* && item.Charges > 0*/)
 				{
@@ -212,7 +193,7 @@ namespace DOL.GS.PacketHandler
 				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 					name += "[" + item.SellPrice.ToString() + " BP]";
 				else
-					name += "[" + Money.GetString(item.SellPrice) + "]";
+					name += "[" + MoneyMgr.GetString(item.SellPrice) + "]";
 			}
 			if (name == null) name = "";
 			if (name.Length > 55)

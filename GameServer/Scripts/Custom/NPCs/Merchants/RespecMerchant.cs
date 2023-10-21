@@ -25,7 +25,7 @@ namespace DOL.GS.Scripts
             Size = 80;
             TradeItems = new MerchantTradeItems("alpha_respecstones");
             MaxSpeedBase = 0;
-            Flags |= eFlags.PEACE;
+            Flags |= ENpcFlags.PEACE;
 
             return base.AddToWorld();
         }

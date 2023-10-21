@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,9 +19,6 @@ namespace DOL.GS
 {
 	public class ScriptMgr
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static Dictionary<string, Assembly> m_compiledScripts = new();
@@ -148,7 +126,7 @@ namespace DOL.GS
 		/// <param name="plvl">plvl of the commands to get</param>
 		/// <param name="addDesc"></param>
 		/// <returns></returns>
-		public static string[] GetCommandList(ePrivLevel plvl, bool addDesc)
+		public static string[] GetCommandList(EPrivLevel plvl, bool addDesc)
 		{
 			return m_gameCommands.Where(kv => kv.Value != null && kv.Key != null && (uint)plvl > kv.Value.m_lvl)
 				.Select(kv => string.Format("/{0}{2}{1}", kv.Key.Remove(0, 1), addDesc ? kv.Value.m_desc : string.Empty, addDesc ? " - " : string.Empty))
@@ -194,8 +172,8 @@ namespace DOL.GS
 
 					try
 					{
-						object[] objs = type.GetCustomAttributes(typeof(CmdAttribute), false);
-						foreach (CmdAttribute attrib in objs)
+						object[] objs = type.GetCustomAttributes(typeof(CommandAttribute), false);
+						foreach (CommandAttribute attrib in objs)
 						{
 							bool disabled = false;
 							foreach (string str in disabledarray)
@@ -265,13 +243,13 @@ namespace DOL.GS
 
 				if (client.Account.PrivLevel < myCommand.m_lvl)
 				{
-					if (!SinglePermission.HasPermission(client.Player, pars[0].Substring(1, pars[0].Length - 1)))
+					if (!SingleCommandPermission.HasPermission(client.Player, pars[0].Substring(1, pars[0].Length - 1)))
 					{
 						if (pars[0][0] == '&')
 							pars[0] = '/' + pars[0].Remove(0, 1);
 						//client.Out.SendMessage("You do not have enough priveleges to use " + pars[0], eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 						//why should a player know the existing commands..
-						client.Out.SendMessage("No such command (" + pars[0] + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Out.SendMessage("No such command (" + pars[0] + ")", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						return true;
 					}
 					//else execute the command
@@ -518,7 +496,7 @@ namespace DOL.GS
 			var compilationSuccessful = false;
 			try
 			{
-				var compiler = new DOLScriptCompiler();
+				var compiler = new CoreScriptCompiler();
 				if (compileVB) compiler.SetToVisualBasicNet();
 
 				var compiledAssembly = compiler.Compile(outputFile, files);
@@ -691,7 +669,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="id">the classid to search</param>
 		/// <returns>ClassSpec that was found or null if not found</returns>
-		public static ICharacterClass FindCharacterClass(int id)
+		public static IPlayerClass FindCharacterClass(int id)
 		{
 			foreach (Assembly asm in GameServerScripts)
 			{
@@ -704,12 +682,12 @@ namespace DOL.GS
 
 					try
 					{
-						object[] objs = type.GetCustomAttributes(typeof(CharacterClassAttribute), false);
-						foreach (CharacterClassAttribute attrib in objs)
+						object[] objs = type.GetCustomAttributes(typeof(PlayerClassAttribute), false);
+						foreach (PlayerClassAttribute attrib in objs)
 						{
 							if (attrib.ID == id)
 							{
-								return (ICharacterClass)Activator.CreateInstance(type);
+								return (IPlayerClass)Activator.CreateInstance(type);
 							}
 						}
 					}
@@ -728,7 +706,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="id">the classid to search</param>
 		/// <returns>Base ClassSpec that was found or null if not found</returns>
-		public static ICharacterClass FindCharacterBaseClass(int id)
+		public static IPlayerClass FindCharacterBaseClass(int id)
 		{
 			var charClass = FindCharacterClass(id);
 
@@ -740,8 +718,8 @@ namespace DOL.GS
 
 			try
 			{
-				object[] objs = charClass.GetType().BaseType.GetCustomAttributes(typeof(CharacterClassAttribute), true);
-				foreach (CharacterClassAttribute attrib in objs)
+				object[] objs = charClass.GetType().BaseType.GetCustomAttributes(typeof(PlayerClassAttribute), true);
+				foreach (PlayerClassAttribute attrib in objs)
 				{
 					if (attrib.Name.Equals(charClass.BaseName, StringComparison.OrdinalIgnoreCase))
 					{
@@ -768,7 +746,7 @@ namespace DOL.GS
 		/// <returns>
 		/// all handlers that were found, guildname(string) => classtype(Type)
 		/// </returns>
-		protected static Hashtable FindAllNPCGuildScriptClasses(eRealm realm, Assembly asm)
+		protected static Hashtable FindAllNPCGuildScriptClasses(ERealm realm, Assembly asm)
 		{
 			Hashtable ht = new Hashtable();
 			if (asm != null)
@@ -777,16 +755,16 @@ namespace DOL.GS
 				{
 					// Pick up a class
 					if (type.IsClass != true) continue;
-					if (!type.IsSubclassOf(typeof(GameNPC))) continue;
+					if (!type.IsSubclassOf(typeof(GameNpc))) continue;
 
 					try
 					{
-						object[] objs = type.GetCustomAttributes(typeof(NPCGuildScriptAttribute), false);
+						object[] objs = type.GetCustomAttributes(typeof(NpcGuildScriptAttribute), false);
 						if (objs.Length == 0) continue;
 
-						foreach (NPCGuildScriptAttribute attrib in objs)
+						foreach (NpcGuildScriptAttribute attrib in objs)
 						{
-							if (attrib.Realm == eRealm.None || attrib.Realm == realm)
+							if (attrib.Realm == ERealm.None || attrib.Realm == realm)
 							{
 								ht[attrib.GuildName] = type;
 							}
@@ -803,8 +781,8 @@ namespace DOL.GS
 			return ht;
 		}
 
-		protected static Hashtable[] m_gs_guilds = new Hashtable[(int)eRealm._Last + 1];
-		protected static Hashtable[] m_script_guilds = new Hashtable[(int)eRealm._Last + 1];
+		protected static Hashtable[] m_gs_guilds = new Hashtable[(int)ERealm._Last + 1];
+		protected static Hashtable[] m_script_guilds = new Hashtable[(int)ERealm._Last + 1];
 
 		/// <summary>
 		/// searches for a npc guild script
@@ -812,7 +790,7 @@ namespace DOL.GS
 		/// <param name="guild"></param>
 		/// <param name="realm"></param>
 		/// <returns>type of class for searched npc guild or null</returns>
-		public static Type FindNPCGuildScriptClass(string guild, eRealm realm)
+		public static Type FindNPCGuildScriptClass(string guild, ERealm realm)
 		{
 			if (string.IsNullOrEmpty(guild)) return null;
 

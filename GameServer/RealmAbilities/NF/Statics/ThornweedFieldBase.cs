@@ -18,10 +18,10 @@ namespace DOL.GS.RealmAbilities.Statics
 			dbs.Icon = GetStaticEffect();
 			dbs.ClientEffect = GetStaticEffect();
 			dbs.Damage = damage;
-			dbs.DamageType = (int)eDamageType.Natural;
+			dbs.DamageType = (int)EDamageType.Natural;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
+			dbs.Type = ESpellType.DamageSpeedDecreaseNoVariance.ToString();
 			dbs.Value = 50;
 			dbs.Duration = 5;
 			dbs.Pulse = 0;

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -49,7 +30,7 @@ namespace DOL.GS.Keeps
 			if (component.Keep.DBKeep.BaseLevel < 50)
 				return;
 			m_component = component;
-			PositionMgr.LoadKeepItemPosition(pos, this);
+			GuardPositionMgr.LoadKeepItemPosition(pos, this);
 			this.m_component.Keep.TeleportStone = this;
 			this.AddToWorld();
 		}
@@ -57,7 +38,7 @@ namespace DOL.GS.Keeps
 		public void MoveToPosition(DbKeepPosition position)
 		{ }
 
-		public override eRealm Realm
+		public override ERealm Realm
 		{
 			get
 			{
@@ -87,7 +68,7 @@ namespace DOL.GS.Keeps
 			//For players in frontiers only
 			if (GameServer.KeepManager.FrontierRegionsList.Contains(player.CurrentRegionID))
 			{
-				if (player.Client.Account.PrivLevel == (int)ePrivLevel.Player)
+				if (player.Client.Account.PrivLevel == (int)EPrivLevel.Player)
 				{
 					if (player.Realm != this.Realm)
 						return false;
@@ -104,15 +85,15 @@ namespace DOL.GS.Keeps
 
 				// open up the warmap window
 
-				eDialogCode code = eDialogCode.WarmapWindowAlbion;
+				EDialogCode code = EDialogCode.WarmapWindowAlbion;
 				switch (player.Realm)
 				{
-					case eRealm.Albion: code = eDialogCode.WarmapWindowAlbion; break;
-					case eRealm.Midgard: code = eDialogCode.WarmapWindowMidgard; break;
-					case eRealm.Hibernia: code = eDialogCode.WarmapWindowHibernia; break;
+					case ERealm.Albion: code = EDialogCode.WarmapWindowAlbion; break;
+					case ERealm.Midgard: code = EDialogCode.WarmapWindowMidgard; break;
+					case ERealm.Hibernia: code = EDialogCode.WarmapWindowHibernia; break;
 				}
 
-				player.Out.SendDialogBox(code, 0, 0, 0, 0, eDialogType.Warmap, false, "");
+				player.Out.SendDialogBox(code, 0, 0, 0, 0, EDialogType.Warmap, false, "");
 			}
 
 			//if no component assigned, teleport to the border keep
@@ -135,13 +116,13 @@ namespace DOL.GS.Keeps
 			_heading = originalHeading;
 		}
 
-		public class TeleporterEffect : GameNPC
+		public class TeleporterEffect : GameNpc
 		{
 			public TeleporterEffect()
 				: base()
 			{
 				m_name = "teleport spell effect";
-				m_flags = eFlags.PEACE | eFlags.DONTSHOWNAME;
+				m_flags = ENpcFlags.PEACE | ENpcFlags.DONTSHOWNAME;
 				m_size = 255;
 				m_model = 0x783;
 				MaxSpeedBase = 0;

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,10 +6,6 @@ using DOL.GS.Housing;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// A house vault.
-	/// </summary>
-	/// <author>Aredhel</author>
 	public class GameHouseVault : GameVault, IHouseHookpointItem
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -88,7 +65,7 @@ namespace DOL.GS
                 Index = (byte)Index
             };
 
-            var hpitem = DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber).And(DB.Column("HookpointID").IsEqualTo(hookpointID)));
+            var hpitem = CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber).And(DB.Column("HookpointID").IsEqualTo(hookpointID)));
 
 			// if there isn't anything already on this hookpoint then add it to the DB
 			if (hpitem.Count == 0)
@@ -234,7 +211,7 @@ namespace DOL.GS
 						continue;
 					}
 
-					observer.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.eInventoryWindowType.Update);
+					observer.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.EInventoryWindowType.Update);
 
 					if (observer == player)
 						hasUpdatedPlayer = true;
@@ -249,7 +226,7 @@ namespace DOL.GS
 				// The above code is suspect, it seems to work 80% of the time, so let's make sure we update the player doing the move - Tolakram
 				if (hasUpdatedPlayer == false)
 				{
-					player.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.eInventoryWindowType.Update);
+					player.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.EInventoryWindowType.Update);
 				}
 			}
 		}
@@ -268,7 +245,7 @@ namespace DOL.GS
 				return false;
 			}
 			
-			return CurrentHouse.CanUseVault(player, this, VaultPermissions.View);
+			return CurrentHouse.CanUseVault(player, this, EVaultPermissions.View);
 		}
 
 		/// <summary>
@@ -283,7 +260,7 @@ namespace DOL.GS
 				return false;
 			}
 			
-			return CurrentHouse.CanUseVault(player, this, VaultPermissions.Add);
+			return CurrentHouse.CanUseVault(player, this, EVaultPermissions.Add);
 		}
 
 		/// <summary>
@@ -298,7 +275,7 @@ namespace DOL.GS
 				return false;
 			}
 			
-			return CurrentHouse.CanUseVault(player, this, VaultPermissions.Remove);
+			return CurrentHouse.CanUseVault(player, this, EVaultPermissions.Remove);
 		}
 	}
 }

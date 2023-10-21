@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.GS.PacketHandler;
@@ -149,7 +130,7 @@ namespace DOL.GS.Quests
                 ChatUtil.SendDebugMessage(player, "Entered QuestSearchArea for DataQuest ID:" + m_dataQuest.ID + ", Step " + Step);
 
                 // first check active data quests
-   			    foreach (AbstractQuest quest in player.QuestList.Keys)
+   			    foreach (AQuest quest in player.QuestList.Keys)
 			    {
 				    if (quest is DataQuest)
 				    {
@@ -179,7 +160,7 @@ namespace DOL.GS.Quests
 
             if (showText)
             {
-                player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, m_popupText);
+                player.Out.SendDialogBox(EDialogCode.SimpleWarning, 0, 0, 0, 0, EDialogType.Ok, true, m_popupText);
             }
         }
 

@@ -7,9 +7,6 @@ using log4net;
 
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// keep door in world
-	/// </summary>
 	public class GameKeepDoor : GameDoorBase, IKeepItem
 	{
 		private const int DOOR_CLOSE_THRESHOLD = 15;
@@ -75,13 +72,13 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Get the realm of the keep door from keep owner
 		/// </summary>
-		public override eRealm Realm
+		public override ERealm Realm
 		{
 			get
 			{
 				if (Component == null || Component.Keep == null)
 				{
-					return eRealm.None;
+					return ERealm.None;
 				}
 
 				return Component.Keep.Realm;
@@ -91,13 +88,13 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// door state (open or closed)
 		/// </summary>
-		protected eDoorState m_state;
+		protected EDoorState m_state;
 
 		/// <summary>
 		/// door state (open or closed)
 		/// call the broadcast of state in area
 		/// </summary>
-		public override eDoorState State
+		public override EDoorState State
 		{
 			get => m_state;
 			set
@@ -181,7 +178,7 @@ namespace DOL.GS.Keeps
 			{
 				base.Health = value;
 
-				if (HealthPercent > DOOR_CLOSE_THRESHOLD && m_state == eDoorState.Open)
+				if (HealthPercent > DOOR_CLOSE_THRESHOLD && m_state == EDoorState.Open)
 				{
 					CloseDoor();
 				}
@@ -267,7 +264,7 @@ namespace DOL.GS.Keeps
 		}
 
 
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (damageAmount > 0 && IsAlive)
 			{
@@ -320,8 +317,8 @@ namespace DOL.GS.Keeps
 
 			foreach (GamePlayer player in ClientService.GetPlayersOfRealm(Realm))
 			{
-				player.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
-				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(message, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 
 			if (Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(Properties.DISCORD_RVR_WEBHOOK_ID))
@@ -331,7 +328,7 @@ namespace DOL.GS.Keeps
 		public override void ModifyAttack(AttackData attackData)
 		{
 			// Allow a GM to use commands to damage components, regardless of toughness setting
-			if (attackData.DamageType == eDamageType.GM)
+			if (attackData.DamageType == EDamageType.GM)
 				return;
 
 			int toughness = Properties.SET_KEEP_DOOR_TOUGHNESS;
@@ -356,26 +353,26 @@ namespace DOL.GS.Keeps
 				baseDamage = (baseDamage - (baseDamage * 5 * Component.Keep.Level / 100)) * toughness / 100;
 				styleDamage = (styleDamage - (styleDamage * 5 * Component.Keep.Level / 100)) * toughness / 100;
 			}
-			else if (source is GameNPC)
+			else if (source is GameNpc)
 			{
 				if (!Properties.DOORS_ALLOWPETATTACK)
 				{
 					baseDamage = 0;
 					styleDamage = 0;
-					attackData.AttackResult = eAttackResult.NotAllowed_ServerRules;
+					attackData.AttackResult = EAttackResult.NotAllowed_ServerRules;
 				}
 				else
 				{
 					baseDamage = (baseDamage - (baseDamage * 5 * Component.Keep.Level / 100)) * toughness / 100;
 					styleDamage = (styleDamage - (styleDamage * 5 * Component.Keep.Level / 100)) * toughness / 100;
 
-					if (((GameNPC)source).Brain is AI.Brain.IControlledBrain)
+					if (((GameNpc)source).Brain is AI.Brain.IControlledBrain)
 					{
-						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNPC)source).Brain).Owner as GamePlayer);
+						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNpc)source).Brain).Owner as GamePlayer);
 						if (player != null)
 						{
 							// special considerations for pet spam classes
-							if (player.CharacterClass.ID == (int)eCharacterClass.Theurgist || player.CharacterClass.ID == (int)eCharacterClass.Animist)
+							if (player.PlayerClass.ID == (int)EPlayerClass.Theurgist || player.PlayerClass.ID == (int)EPlayerClass.Animist)
 							{
 								baseDamage = (int)(baseDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
 								styleDamage = (int)(styleDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
@@ -409,13 +406,13 @@ namespace DOL.GS.Keeps
 
 			if (player.IsMezzed)
 			{
-				player.Out.SendMessage("You are mesmerized!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You are mesmerized!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (player.IsStunned)
 			{
-				player.Out.SendMessage("You are stunned!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You are stunned!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -530,8 +527,8 @@ namespace DOL.GS.Keeps
 				// Attempt to fix issue where some players see door as closed when it should be broken open
 				// if you target a door it will re-broadcast it's state
 
-				if (Health <= 0 && State != eDoorState.Open)
-					State = eDoorState.Open;
+				if (Health <= 0 && State != EDoorState.Open)
+					State = EDoorState.Open;
 
 				ClientService.UpdateObjectForPlayer(player, this);
 			}
@@ -674,7 +671,7 @@ namespace DOL.GS.Keeps
 			// HealthPercent relies on MaxHealth, which returns 0 if used before adding the door to the world and setting Component.Keep
 			// Keep doors are always closed if they have more than DOOR_CLOSE_THRESHOLD% health. Otherwise the value is retrieved from the DB.
 			// Postern doors are always closed.
-			m_state = m_isPostern || HealthPercent > DOOR_CLOSE_THRESHOLD ? eDoorState.Closed : (eDoorState)Enum.ToObject(typeof(eDoorState), dbDoor.State);
+			m_state = m_isPostern || HealthPercent > DOOR_CLOSE_THRESHOLD ? EDoorState.Closed : (EDoorState)Enum.ToObject(typeof(EDoorState), dbDoor.State);
 
 			StartHealthRegeneration();
 			DoorMgr.RegisterDoor(this);
@@ -685,7 +682,7 @@ namespace DOL.GS.Keeps
 			m_templateID = pos.TemplateID;
 			m_component = component;
 
-			PositionMgr.LoadKeepItemPosition(pos, this);
+			GuardPositionMgr.LoadKeepItemPosition(pos, this);
 			component.Keep.Doors[m_templateID] = this;
 
 			m_oldMaxHealth = MaxHealth;
@@ -694,7 +691,7 @@ namespace DOL.GS.Keeps
 			m_oldHealthPercent = HealthPercent;
 			m_doorID = GenerateDoorID();
 			m_model = 0xFFFF;
-			m_state = eDoorState.Closed;
+			m_state = EDoorState.Closed;
 
 			if (AddToWorld())
 			{
@@ -773,9 +770,9 @@ namespace DOL.GS.Keeps
 			base.Die(killer);
 
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
-				player.Out.SendMessage($"The {Name} is broken!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage($"The {Name} is broken!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
-			m_state = eDoorState.Open;
+			m_state = EDoorState.Open;
 			BroadcastDoorStatus();
 			SaveIntoDatabase();
 		}
@@ -785,7 +782,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public virtual void CloseDoor()
 		{
-			m_state = eDoorState.Closed;
+			m_state = EDoorState.Closed;
 			BroadcastDoorStatus();
 		}
 
@@ -839,7 +836,7 @@ namespace DOL.GS.Keeps
 		/// This Function is called when keep is taken to repair door
 		/// </summary>
 		/// <param name="realm">new realm of keep taken</param>
-		public void Reset(eRealm realm)
+		public void Reset(ERealm realm)
 		{
 			Realm = realm;
 			Health = MaxHealth;
@@ -885,6 +882,6 @@ namespace DOL.GS.Keeps
 			return true;
 		}
 
-		public override void NPCManipulateDoorRequest(GameNPC npc, bool open) { }
+		public override void NPCManipulateDoorRequest(GameNpc npc, bool open) { }
 	}
 }

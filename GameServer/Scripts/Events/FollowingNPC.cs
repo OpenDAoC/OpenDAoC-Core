@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using System.Timers;
@@ -27,7 +8,7 @@ using log4net;
 namespace DOL.GS.GameEvents
 {
 	//First, declare our Event and have it implement the IGameEvent interface
-	public class FollowingNPCEvent
+	public class FollowingNpcEvent
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -35,7 +16,7 @@ namespace DOL.GS.GameEvents
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		//This is the NPC that will follow the player around
-		public class FollowingNPC : GameNPC
+		public class FollowingNPC : GameNpc
 		{
 			//The NPC will remember what player it is following
 			private GamePlayer m_playerToFollow;
@@ -56,7 +37,7 @@ namespace DOL.GS.GameEvents
 				Model = 132;
 				Size = 30;
 				Level = 10;
-				Realm = eRealm.Albion;
+				Realm = ERealm.Albion;
 				CurrentRegionID = 1;
 
 				//At the beginning, the spider isn't following anyone
@@ -80,7 +61,7 @@ namespace DOL.GS.GameEvents
 				//We set the player we will follow
 				m_playerToFollow = player;
 				//We send some nice message to the player we will follow
-				player.Out.SendMessage(Name + " will follow you now!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(Name + " will follow you now!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				//We make the mob say some stupid stuff :-)
 				Say("Ha ha ha! I will follow " + player.Name + " now!!!!");
 				return true;
@@ -156,7 +137,7 @@ namespace DOL.GS.GameEvents
 		//interface and is called on serverstart when the
 		//events need to be started
 		[ScriptLoadedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_EXAMPLES)
 				return;
@@ -179,7 +160,7 @@ namespace DOL.GS.GameEvents
 		//interface and is called on when we want to stop 
 		//an event
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnload(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnload(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_EXAMPLES)
 				return;

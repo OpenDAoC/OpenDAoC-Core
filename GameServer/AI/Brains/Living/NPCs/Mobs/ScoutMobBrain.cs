@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Reflection;
@@ -32,7 +13,6 @@ namespace DOL.AI.Brain
 	/// on a player of their own accord, instead, they'll go searching
 	/// for adds around the area and make those aggro on a player.
 	/// </summary>
-	/// <author>Aredhel</author>
 	class ScoutMobBrain : StandardMobBrain
 	{
 		/// <summary>
@@ -49,7 +29,7 @@ namespace DOL.AI.Brain
 			{
 				// We arrived at our target mob, let's have a look around
 				// and see if we can get multiple adds.
-				foreach (GameNPC npc in Body.GetNPCsInRadius(600))
+				foreach (GameNpc npc in Body.GetNPCsInRadius(600))
 				{
 					if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable)
 						ReportTargets(npc);
@@ -155,7 +135,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// The NPC this scout has picked to help.
 		/// </summary>
-		private GameNPC m_helperNPC = null;
+		private GameNpc m_helperNPC = null;
 
 		/// <summary>
 		/// Look for potential adds in the area and be on your way.
@@ -170,7 +150,7 @@ namespace DOL.AI.Brain
 			// Find all mobs in scout range.
 
 			ArrayList addList = new ArrayList();
-			foreach (GameNPC npc in Body.GetNPCsInRadius(ScoutRange))
+			foreach (GameNpc npc in Body.GetNPCsInRadius(ScoutRange))
 			{
 				if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable)
 					addList.Add(npc);
@@ -190,7 +170,7 @@ namespace DOL.AI.Brain
 			// Pick a random NPC from the list and go for it.
 
 			IsGettingHelp = true;
-			m_helperNPC = (GameNPC) addList[Util.Random(1, addList.Count)-1];
+			m_helperNPC = (GameNpc) addList[Util.Random(1, addList.Count)-1];
 			Body.Follow(m_helperNPC, 90, int.MaxValue);
 		}
 
@@ -198,7 +178,7 @@ namespace DOL.AI.Brain
 		/// Add targets to an NPC's aggro table.
 		/// </summary>
 		/// <param name="npc">The NPC to aggro on the targets.</param>
-		private void ReportTargets(GameNPC npc)
+		private void ReportTargets(GameNpc npc)
 		{
 			if (npc == null) return;
 
@@ -216,7 +196,7 @@ namespace DOL.AI.Brain
 		/// <param name="e">The event that occured.</param>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="args">The event details.</param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			base.Notify(e, sender, args);
 

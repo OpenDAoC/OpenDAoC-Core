@@ -53,7 +53,7 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakePlayer();
             var spell = NewFakeSpell();
             spell.fakeIsFocus = true;
-            spell.fakeTarget = eSpellTarget.REALM;
+            spell.fakeTarget = ESpellTarget.REALM;
             spell.Duration = 20;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
@@ -74,7 +74,7 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakeNPC();
             var spell = NewFakeSpell();
             spell.fakeIsFocus = true;
-            spell.fakeTarget = eSpellTarget.ENEMY;
+            spell.fakeTarget = ESpellTarget.ENEMY;
             spell.Duration = 20;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
@@ -96,10 +96,10 @@ namespace DOL.Tests.Unit.Gameserver
             var target = NewFakePlayer();
             var spell = NewFakeSpell();
             spell.fakeIsFocus = true;
-            spell.fakeTarget = eSpellTarget.REALM;
+            spell.fakeTarget = ESpellTarget.REALM;
             spell.Duration = 20;
             spell.fakeFrequency = 20;
-            spell.fakeSpellType = eSpellType.DamageShield;
+            spell.fakeSpellType = ESpellType.DamageShield;
             spell.fakePulse = 1;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
@@ -301,7 +301,7 @@ namespace DOL.Tests.Unit.Gameserver
             var spell = NewFakeSpell();
             spell.Damage = 100;
             var source = NewFakePlayer();
-            source.fakeCharacterClass = new CharacterClassAnimist();
+            source.FakePlayerClass = new ClassAnimistBase();
             source.modifiedIntelligence = 100;
             var target = NewFakePlayer();
             var spellLine = NewSpellLine();
@@ -319,7 +319,7 @@ namespace DOL.Tests.Unit.Gameserver
             var spell = NewFakeSpell();
             spell.Damage = 100;
             var owner = NewFakePlayer();
-            owner.fakeCharacterClass = new CharacterClassAnimist();
+            owner.FakePlayerClass = new ClassAnimistBase();
             owner.modifiedIntelligence = 100;
             owner.Level = 50; 
             var brain = new FakeControlledBrain();
@@ -476,7 +476,7 @@ namespace DOL.Tests.Unit.Gameserver
         #endregion
 
         private static GameLiving NewFakeLiving() => new FakeLiving();
-        private static FakePlayerSpy NewFakePlayer() => new FakePlayerSpy() { Realm = eRealm.Albion };
+        private static FakePlayerSpy NewFakePlayer() => new FakePlayerSpy() { Realm = ERealm.Albion };
         private static FakeNPC NewFakeNPC() => new FakeNPC();
         private static FakeSpell NewFakeSpell() => new FakeSpell();
         private static SpellLine NewSpellLine() => new SpellLine("", "", "", false);
@@ -484,34 +484,34 @@ namespace DOL.Tests.Unit.Gameserver
         private class FakeSpell : Spell
         {
             public bool fakeIsFocus = false;
-            public eSpellTarget fakeTarget = eSpellTarget.SELF;
+            public ESpellTarget fakeTarget = ESpellTarget.SELF;
             public int fakeFrequency = 0;
-            public eSpellType fakeSpellType = 0;
+            public ESpellType fakeSpellType = 0;
             public int fakePulse = 0;
             public int fakeRange = 0;
 
             public FakeSpell() : base(new DbSpell(), 0) { }
 
             public override int Pulse => fakePulse;
-            public override eSpellType SpellType => fakeSpellType;
+            public override ESpellType SpellType => fakeSpellType;
             public override bool IsFocus => fakeIsFocus;
-            public override eSpellTarget Target => fakeTarget;
+            public override ESpellTarget Target => fakeTarget;
             public override int Frequency => fakeFrequency;
             public override int Range => fakeRange;
         }
 
         private class FakePlayerSpy : FakePlayer
         {
-            public DOLEvent lastNotifiedEvent;
+            public CoreEvent lastNotifiedEvent;
             public EventArgs lastNotifiedEventArgs;
 
             public FakePlayerSpy() : base()
             {
-                fakeCharacterClass = new DefaultCharacterClass();
+                FakePlayerClass = new DefaultPlayerClass();
                 fakeRegion.FakeElapsedTime = 0;
             }
 
-            public override void Notify(DOLEvent e, object sender, EventArgs args)
+            public override void Notify(CoreEvent e, object sender, EventArgs args)
             {
                 lastNotifiedEvent = e;
                 lastNotifiedEventArgs = args;
@@ -521,7 +521,7 @@ namespace DOL.Tests.Unit.Gameserver
 
         private class GameEventMgrSpy : GameEventMgr
         {
-            public System.Collections.Generic.Dictionary<object, DOLEventHandlerCollection> GameObjectEventCollection => m_gameObjectEventCollections;
+            public System.Collections.Generic.Dictionary<object, CoreEventHandlerCollection> GameObjectEventCollection => m_gameObjectEventCollections;
         
             public static GameEventMgrSpy LoadAndReturn()
             {

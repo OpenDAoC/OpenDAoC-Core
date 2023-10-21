@@ -26,13 +26,13 @@ namespace DOL.GS.API
 
             var api = builder.Build();
 
-            var _player = new Player();
-            var _guild = new Guild();
-            var _utils = new Utils();
-            var _realm = new Realm();
-            var _shutdown = new Shutdown();
-            var _news = new News();
-            var _passwordVerification = new PasswordVerification();
+            var _player = new ApiPlayer();
+            var _guild = new ApiGuild();
+            var _utils = new ApiUtils();
+            var _realm = new ApiRealm();
+            var _shutdown = new ApiShutdown();
+            var _news = new ApiNews();
+            var _passwordVerification = new ApiPasswordVerification();
 
             #endregion
 
@@ -129,24 +129,24 @@ namespace DOL.GS.API
                     return Results.NotFound();
                 }
 
-                eRealm realm = eRealm.None;
+                ERealm realm = ERealm.None;
                 switch (realmName.ToLower())
                 {
                     case "alb":
                     case "albion":
-                        realm = eRealm.Albion;
+                        realm = ERealm.Albion;
                         break;
                     case "mid":
                     case "midgard":
-                        realm = eRealm.Midgard;
+                        realm = ERealm.Midgard;
                         break;
                     case "hib":
                     case "hibernia":
-                        realm = eRealm.Hibernia;
+                        realm = ERealm.Hibernia;
                         break;
                 }
 
-                List<Realm.KeepInfo> realmInfo = _realm.GetKeepsByRealm(realm);
+                List<ApiRealm.KeepInfo> realmInfo = _realm.GetKeepsByRealm(realm);
 
                 return realmInfo == null ? Results.NotFound($"Realm {realmName} not found") : Results.Ok(realmInfo);
             });
@@ -181,7 +181,7 @@ namespace DOL.GS.API
 
             api.MapGet("/utils/discordstatus/{accountName}", (string accountName) =>
             {
-                var discordStatus = Player.GetDiscord(accountName);
+                var discordStatus = ApiPlayer.GetDiscord(accountName);
                 return Results.Ok(discordStatus);
             });
 

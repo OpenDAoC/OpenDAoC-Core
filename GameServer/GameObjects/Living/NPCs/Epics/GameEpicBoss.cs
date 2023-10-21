@@ -6,7 +6,7 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
-    public class GameEpicBoss : GameNPC
+    public class GameEpicBoss : GameNpc
     {
         public GameEpicBoss() : base()
         {
@@ -68,7 +68,7 @@ namespace DOL.GS
                 
                 var achievementMob = Regex.Replace(Name, @"\s+", "");
                 
-                var killerBG = playerKiller?.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                var killerBG = playerKiller?.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
                 
                 if (killerBG != null)
                 {
@@ -79,8 +79,8 @@ namespace DOL.GS
                             if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                             {
                                 if (bgPlayer.Level < 45) continue;
-                                AtlasROGManager.GenerateReward(bgPlayer,OrbsReward);
-                                AtlasROGManager.GenerateBeetleCarapace(bgPlayer);
+                                CoreRoGMgr.GenerateReward(bgPlayer,OrbsReward);
+                                CoreRoGMgr.GenerateBeetleCarapace(bgPlayer);
                                 bgPlayer.Achieve($"{achievementMob}-Credit");
                             }
                         } 
@@ -93,8 +93,8 @@ namespace DOL.GS
                         if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                         {
                             if (groupPlayer.Level < 45) continue;
-                            AtlasROGManager.GenerateReward(groupPlayer,OrbsReward);
-                            AtlasROGManager.GenerateBeetleCarapace(groupPlayer);
+                            CoreRoGMgr.GenerateReward(groupPlayer,OrbsReward);
+                            CoreRoGMgr.GenerateBeetleCarapace(groupPlayer);
                             groupPlayer.Achieve($"{achievementMob}-Credit");
                         }
                     }
@@ -103,8 +103,8 @@ namespace DOL.GS
                 {
                     if (playerKiller.Level >= 45)
                     {
-                        AtlasROGManager.GenerateReward(playerKiller,OrbsReward);
-                        AtlasROGManager.GenerateBeetleCarapace(playerKiller);
+                        CoreRoGMgr.GenerateReward(playerKiller,OrbsReward);
+                        CoreRoGMgr.GenerateBeetleCarapace(playerKiller);
                         playerKiller.Achieve($"{achievementMob}-Credit");;
                     }
                 }
@@ -143,15 +143,15 @@ namespace DOL.AI.Brain
                 Body.Z = Body.SpawnPoint.Z;
                 Body.Heading = Body.SpawnHeading;
                 //remove effects: dots and bleeds
-                if (Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime) && Body.IsAlive)
+                if (Body.effectListComponent.ContainsEffectForEffectType(EEffect.DamageOverTime) && Body.IsAlive)
                 {
-                    var effect = EffectListService.GetEffectOnTarget(Body, eEffect.DamageOverTime);
+                    var effect = EffectListService.GetEffectOnTarget(Body, EEffect.DamageOverTime);
                     if (effect != null)
                         EffectService.RequestImmediateCancelEffect(effect);//remove dot effect
                 }
-                if (Body.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed) && Body.IsAlive)
+                if (Body.effectListComponent.ContainsEffectForEffectType(EEffect.Bleed) && Body.IsAlive)
                 {
-                    var effect2 = EffectListService.GetEffectOnTarget(Body, eEffect.Bleed);
+                    var effect2 = EffectListService.GetEffectOnTarget(Body, EEffect.Bleed);
                     if (effect2 != null)
                         EffectService.RequestImmediateCancelEffect(effect2);//remove dot effect
                 }

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.Database;
 using DOL.Events;
@@ -33,20 +14,20 @@ namespace DOL.GS.Spells
 		public AtensShield(GameLiving caster, Spell spell, SpellLine line)
 			: base(caster, spell, line)
 		{
-			if (caster.Realm == eRealm.Albion)
+			if (caster.Realm == ERealm.Albion)
 			{
 				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_Flame") ?? Javelin;
 				items.Add (GameInventoryItem.Create(m_goldenTridentofFlame));
 				return;
 			}
 
-			if (caster.Realm == eRealm.Midgard)
+			if (caster.Realm == ERealm.Midgard)
 			{
 				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_Flame") ?? JavelinM;
 				items.Add (GameInventoryItem.Create(m_goldenTridentofFlame));
 				return;
 			}
-			if (caster.Realm == eRealm.Hibernia)
+			if (caster.Realm == ERealm.Hibernia)
 			{
 				m_goldenTridentofFlame = GameServer.Database.FindObjectByKey<DbItemTemplate>("Golden_Trident_of_Flame") ?? JavelinH;
 				items.Add (GameInventoryItem.Create(m_goldenTridentofFlame));
@@ -207,7 +188,7 @@ namespace DOL.GS.Spells
 			GameEventMgr.AddHandler(Caster, GamePlayerEvent.Quit, OnPlayerLeft);
 		}
 
-		private static void OnPlayerLeft(DOLEvent e, object sender, EventArgs arguments)
+		private static void OnPlayerLeft(CoreEvent e, object sender, EventArgs arguments)
 		{
 			if (!(sender is GamePlayer))
 				return;
@@ -215,7 +196,7 @@ namespace DOL.GS.Spells
 			GamePlayer player = sender as GamePlayer;
 			lock (player.Inventory)
 			{
-				var items = player.Inventory.GetItemRange(eInventorySlot.MinEquipable, eInventorySlot.LastBackpack);
+				var items = player.Inventory.GetItemRange(EInventorySlot.MinEquipable, EInventorySlot.LastBackpack);
 				foreach (DbInventoryItem invItem in items)
 				{
 					if (invItem.Id_nb.Equals("Golden_Trident_of_Flame"))

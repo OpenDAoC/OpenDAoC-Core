@@ -1,36 +1,14 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// GameMovingObject is a base class for boats and siege weapons.
-	/// </summary>
 	public class GameSiegeRam : GameSiegeWeapon
 	{
 		public GameSiegeRam()
 			: base()
 		{
-			MeleeDamageType = eDamageType.Crush;
+			MeleeDamageType = EDamageType.Crush;
 			Name = "siege ram";
 
 			//AmmoType = 0x3B00;
@@ -90,20 +68,20 @@ namespace DOL.GS
 			//Only allow rams to attack keep or relic doors 
 			if (!(Owner.TargetObject is GameKeepDoor) && !(Owner.TargetObject is GameRelicDoor))
 			{
-				Owner.Out.SendMessage("Rams can only attack doors!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Owner.Out.SendMessage("Rams can only attack doors!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			//Range Check
 			if (!this.IsWithinRadius(Owner.TargetObject, AttackRange))
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("You are too far away to attack " + Owner.TargetObject.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("You are too far away to attack " + Owner.TargetObject.Name, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			//Limit 2 Rams aimed at door at a time
 			//Check # of rams on the target
 			int ramsAimedAtTarget=0;
-			foreach (GameNPC npc in TargetObject.GetNPCsInRadius(600))
+			foreach (GameNpc npc in TargetObject.GetNPCsInRadius(600))
 			{
 				if(npc is GameSiegeRam ram)
 				{
@@ -117,7 +95,7 @@ namespace DOL.GS
 			if (ramsAimedAtTarget >= MAX_RAMS_ATTACKING_TARGET)
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("Too many rams already attacking   " + TargetObject?.Name, eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("Too many rams already attacking   " + TargetObject?.Name, EChatType.CT_System,EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -132,7 +110,7 @@ namespace DOL.GS
 			{
 
 				if(Owner != null)
-					Owner.Out.SendMessage(target.Name + " is already destroyed!" , eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage(target.Name + " is already destroyed!" , EChatType.CT_System,EChatLoc.CL_SystemWindow);
 				return;
 			}
 			
@@ -146,7 +124,7 @@ namespace DOL.GS
 			if (target == null)
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("Select a target first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("Select a target first.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -154,7 +132,7 @@ namespace DOL.GS
 			if (!(target is GameKeepDoor) && !(target is GameRelicDoor))
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("Rams can only attack doors!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("Rams can only attack doors!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -162,7 +140,7 @@ namespace DOL.GS
 			if (!this.IsWithinRadius(target, AttackRange))
 			{
 				if(Owner != null)
-					Owner.Out.SendMessage("You are too far away to attack " + target.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					Owner.Out.SendMessage("You are too far away to attack " + target.Name, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -171,19 +149,19 @@ namespace DOL.GS
 			AttackData ad = new AttackData();
 			ad.Attacker = this;
 			ad.Target = target;
-			ad.AttackType = AttackData.eAttackType.Ranged;
-			ad.AttackResult = eAttackResult.HitUnstyled;
+			ad.AttackType = EAttackType.Ranged;
+			ad.AttackResult = EAttackResult.HitUnstyled;
 			ad.Damage = damageAmount;
 			ad.DamageType = MeleeDamageType;
 			
-			target.TakeDamage(this, eDamageType.Crush, damageAmount, 0);
+			target.TakeDamage(this, EDamageType.Crush, damageAmount, 0);
 			target.OnAttackedByEnemy(ad);
 		
 			if(Owner != null)
 			{
 				Owner.OnAttackEnemy(ad);
-				Owner.Out.SendMessage("The " + this.Name + " hits " + target.Name + " for " + damageAmount + " damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-				Message.SystemToArea(this, GetName(0, false) + " hits " + target.GetName(0, true), eChatType.CT_OthersCombat, Owner);
+				Owner.Out.SendMessage("The " + this.Name + " hits " + target.Name + " for " + damageAmount + " damage!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
+				MessageUtil.SystemToArea(this, GetName(0, false) + " hits " + target.GetName(0, true), EChatType.CT_OthersCombat, Owner);
 			}
 			base.DoDamage();
 		}
@@ -288,7 +266,7 @@ namespace DOL.GS
 
 				foreach (GamePlayer player in CurrentRiders)
 				{
-					RealmAbilities.RAPropertyEnhancer ab = player.GetAbility<RealmAbilities.AtlasOF_LifterAbility>();
+					RealmAbilities.RaPropertyEnhancer ab = player.GetAbility<RealmAbilities.OfRaLifterAbility>();
 
 					if (ab != null)
 						speed *= 1 + ab.Amount / 100;

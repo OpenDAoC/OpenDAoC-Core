@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -46,7 +27,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLivingEquipmentUpdate(GameLiving living)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.EquipmentUpdate)))
 			{
 				ICollection<DbInventoryItem> items = null;
 				if (living.Inventory != null)
@@ -106,7 +87,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="updateItems"></param>
 		/// <param name="windowType"></param>
-		public override void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, eInventoryWindowType windowType)
+		public override void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, EInventoryWindowType windowType)
 		{
 			if (m_gameClient.Player == null)
 				return;
@@ -130,7 +111,7 @@ namespace DOL.GS.PacketHandler
 				{
 					SendInventoryItemsPartialUpdate(items, windowType);
 					items.Clear();
-					windowType = eInventoryWindowType.Update;
+					windowType = EInventoryWindowType.Update;
 				}
 			}
 
@@ -145,16 +126,16 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="items"></param>
 		/// <param name="windowType"></param>
-		protected override void SendInventoryItemsPartialUpdate(IDictionary<int, DbInventoryItem> items, eInventoryWindowType windowType)
+		protected override void SendInventoryItemsPartialUpdate(IDictionary<int, DbInventoryItem> items, EInventoryWindowType windowType)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.InventoryUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.InventoryUpdate)))
 			{
 				GameVault houseVault = m_gameClient.Player.ActiveInventoryObject as GameVault;
 				pak.WriteByte((byte)items.Count);
 				pak.WriteByte(0x00); // new in 189b+, show shield in left hand
 				pak.WriteByte((byte)((m_gameClient.Player.IsCloakInvisible ? 0x01 : 0x00) | (m_gameClient.Player.IsHelmInvisible ? 0x02 : 0x00))); // new in 189b+, cloack/helm visibility
 
-				if (windowType == eInventoryWindowType.HouseVault && houseVault != null)
+				if (windowType == EInventoryWindowType.HouseVault && houseVault != null)
 					pak.WriteByte((byte)(houseVault.Index + 1));    // Add the vault number to the window caption
 				else
 					pak.WriteByte((byte)((m_gameClient.Player.IsCloakHoodUp ? 0x01 : 0x00) | (int)m_gameClient.Player.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
@@ -176,9 +157,9 @@ namespace DOL.GS.PacketHandler
 		/// Legacy inventory update. This handler silently
 		/// assumes that a slot on the client matches a slot on the server.
 		/// </summary>
-		protected override void SendInventorySlotsUpdateRange(ICollection<int> slots, eInventoryWindowType windowType)
+		protected override void SendInventorySlotsUpdateRange(ICollection<int> slots, EInventoryWindowType windowType)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.InventoryUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.InventoryUpdate)))
 			{
 				GameVault houseVault = m_gameClient.Player.ActiveInventoryObject as GameVault;
 
@@ -186,7 +167,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0); // CurrentSpeed & 0xFF (not used for player, only for NPC)
 				pak.WriteByte((byte)((m_gameClient.Player.IsCloakInvisible ? 0x01 : 0x00) | (m_gameClient.Player.IsHelmInvisible ? 0x02 : 0x00))); // new in 189b+, cloack/helm visibility
 
-				if (windowType == eInventoryWindowType.HouseVault && houseVault != null)
+				if (windowType == EInventoryWindowType.HouseVault && houseVault != null)
 				{
 					pak.WriteByte((byte)(houseVault.Index + 1));    // Add the vault number to the window caption
 				}
@@ -202,17 +183,17 @@ namespace DOL.GS.PacketHandler
 				{
 					foreach (int updatedSlot in slots)
 					{
-						if (updatedSlot >= (int)eInventorySlot.Consignment_First && updatedSlot <= (int)eInventorySlot.Consignment_Last)
+						if (updatedSlot >= (int)EInventorySlot.Consignment_First && updatedSlot <= (int)EInventorySlot.Consignment_Last)
 						{
 							log.Error("PacketLib198:SendInventorySlotsUpdateBase - GameConsignmentMerchant inventory is no longer cached with player.  Use a Dictionary<int, InventoryItem> instead.");
-							pak.WriteByte((byte)(updatedSlot - (int)eInventorySlot.Consignment_First + (int)eInventorySlot.HousingInventory_First));
+							pak.WriteByte((byte)(updatedSlot - (int)EInventorySlot.Consignment_First + (int)EInventorySlot.HousingInventory_First));
 						}
 						else
 						{
 							pak.WriteByte((byte)(updatedSlot));
 						}
 
-						WriteItemData(pak, m_gameClient.Player.Inventory.GetItem((eInventorySlot)(updatedSlot)));
+						WriteItemData(pak, m_gameClient.Player.Inventory.GetItem((EInventorySlot)(updatedSlot)));
 
 					}
 				}
@@ -223,7 +204,7 @@ namespace DOL.GS.PacketHandler
 
 		protected static int MAX_NAME_LENGTH = 55;
 
-		protected virtual void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
+		protected virtual void WriteItemData(GsTcpPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{
@@ -241,39 +222,39 @@ namespace DOL.GS.PacketHandler
 
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.GenericItem:
+				case (int)EObjectType.GenericItem:
 					value1 = item.Count & 0xFF;
 					value2 = (item.Count >> 8) & 0xFF;
 					break;
-				case (int)eObjectType.Arrow:
-				case (int)eObjectType.Bolt:
-				case (int)eObjectType.Poison:
+				case (int)EObjectType.Arrow:
+				case (int)EObjectType.Bolt:
+				case (int)EObjectType.Poison:
 					value1 = item.Count;
 					value2 = item.SPD_ABS;
 					break;
-				case (int)eObjectType.Thrown:
+				case (int)EObjectType.Thrown:
 					value1 = item.DPS_AF;
 					value2 = item.Count;
 					break;
-				case (int)eObjectType.Instrument:
+				case (int)EObjectType.Instrument:
 					value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF);
 					value2 = 0;
 					break; // unused
-				case (int)eObjectType.Shield:
+				case (int)EObjectType.Shield:
 					value1 = item.Type_Damage;
 					value2 = item.DPS_AF;
 					break;
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.SpellcraftGem:
 					value1 = 0;
 					value2 = 0;
 					/*
 					must contain the quality of gem for spell craft and think same for tincture
 					*/
 					break;
-				case (int)eObjectType.HouseWallObject:
-				case (int)eObjectType.HouseFloorObject:
-				case (int)eObjectType.GardenObject:
+				case (int)EObjectType.HouseWallObject:
+				case (int)EObjectType.HouseFloorObject:
+				case (int)EObjectType.GardenObject:
 					value1 = 0;
 					value2 = item.SPD_ABS;
 					/*
@@ -295,7 +276,7 @@ namespace DOL.GS.PacketHandler
 
 			// ChatUtil.SendDebugMessage(m_gameClient, string.Format("WriteItemDate189: name {0}, level {1}, object {2}, value1 {3}, value2 {4}", item.Id_nb, item.Level, item.Object_Type, value1, value2));
 
-			if (item.Object_Type == (int)eObjectType.GardenObject)
+			if (item.Object_Type == (int)EObjectType.GardenObject)
 			{
 				pak.WriteByte((byte)(item.DPS_AF));
 			}
@@ -327,15 +308,15 @@ namespace DOL.GS.PacketHandler
 			flag |= 0x02; // enable salvage button
 
 			// Enable craft button if the item can be modified and the player has alchemy or spellcrafting
-			eCraftingSkill skill = CraftingMgr.GetCraftingSkill(item);
+			ECraftingSkill skill = CraftingMgr.GetCraftingSkill(item);
 			switch (skill)
 			{
-				case eCraftingSkill.ArmorCrafting:
-				case eCraftingSkill.Fletching:
-				case eCraftingSkill.Tailoring:
-				case eCraftingSkill.WeaponCrafting:
-					if (m_gameClient.Player.CraftingSkills.ContainsKey(eCraftingSkill.Alchemy)
-						|| m_gameClient.Player.CraftingSkills.ContainsKey(eCraftingSkill.SpellCrafting))
+				case ECraftingSkill.ArmorCrafting:
+				case ECraftingSkill.Fletching:
+				case ECraftingSkill.Tailoring:
+				case ECraftingSkill.WeaponCrafting:
+					if (m_gameClient.Player.CraftingSkills.ContainsKey(ECraftingSkill.Alchemy)
+						|| m_gameClient.Player.CraftingSkills.ContainsKey(ECraftingSkill.SpellCrafting))
 						flag |= 0x04; // enable craft button
 					break;
 
@@ -348,7 +329,7 @@ namespace DOL.GS.PacketHandler
 			string spell_name1 = "";
 			string spell_name2 = "";
 
-			if (item.Object_Type != (int)eObjectType.AlchemyTincture)
+			if (item.Object_Type != (int)EObjectType.AlchemyTincture)
 			{
 				SpellLine chargeEffectsLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
 
@@ -405,7 +386,7 @@ namespace DOL.GS.PacketHandler
 				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
                     name += "[" + item.SellPrice.ToString() + " BP]";
                 else
-                    name += "[" + Money.GetShortString(item.SellPrice) + "]";
+                    name += "[" + MoneyMgr.GetShortString(item.SellPrice) + "]";
             }
 
 			if (name.Length > MAX_NAME_LENGTH)
@@ -417,7 +398,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendHouse(House house)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseCreate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HouseCreate)))
 			{
 				pak.WriteShort((ushort)house.HouseNumber);
 				pak.WriteShort((ushort)house.Z);
@@ -452,7 +433,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendGarden(House house)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseChangeGarden)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HouseChangeGarden)))
 			{
 				pak.WriteShort((ushort)house.HouseNumber);
 				pak.WriteShort(0); // sheduled for repossession (in hours) new in 1.89b+
@@ -474,7 +455,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendGarden(House house, int i)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseChangeGarden)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HouseChangeGarden)))
 			{
 				pak.WriteShort((ushort)house.HouseNumber);
 				pak.WriteShort(0); // sheduled for repossession (in hours) new in 1.89b+
@@ -491,7 +472,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendHouseOccupied(House house, bool flagHouseOccuped)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseChangeGarden)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HouseChangeGarden)))
 			{
 				pak.WriteShort((ushort)house.HouseNumber);
 				pak.WriteShort(0); // sheduled for repossession (in hours) new in 1.89b+
@@ -504,7 +485,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendEnterHouse(House house)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HouseEnter)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HouseEnter)))
 			{
 				pak.WriteShort((ushort)house.HouseNumber);
 				pak.WriteShort((ushort)25000);         //constant!

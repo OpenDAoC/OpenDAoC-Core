@@ -43,12 +43,12 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Holds the walk state of the brain
 		/// </summary>
-		protected eWalkState m_walkState;
+		protected EWalkState m_walkState;
 
 		/// <summary>
 		/// Holds the aggression level of the brain
 		/// </summary>
-		protected eAggressionState m_aggressionState;
+		protected EAggressionState m_aggressionState;
 
 		private HashSet<GameLiving> m_buffedTargets = new();
 		private object m_buffedTargetsLock = new();
@@ -60,24 +60,24 @@ namespace DOL.AI.Brain
 		public ControlledNpcBrain(GameLiving owner) : base()
 		{
 			m_owner = owner ?? throw new ArgumentNullException("owner");
-			m_aggressionState = eAggressionState.Defensive;
-			m_walkState = eWalkState.Follow;
+			m_aggressionState = EAggressionState.Defensive;
+			m_walkState = EWalkState.Follow;
 
-			if (owner is GameNPC npcOwner && npcOwner.Brain is StandardMobBrain npcOwnerBrain)
+			if (owner is GameNpc npcOwner && npcOwner.Brain is StandardMobBrain npcOwnerBrain)
 				AggroLevel = npcOwnerBrain.AggroLevel;
 			else
 				AggroLevel = 99;
 			AggroRange = MAX_PET_AGGRO_DISTANCE;
 
-			FSM.ClearStates();
+			FiniteStateMachine.ClearStates();
 
-			FSM.Add(new ControlledNPCState_WAKING_UP(this));
-			FSM.Add(new ControlledNPCState_PASSIVE(this));
-			FSM.Add(new ControlledNPCState_DEFENSIVE(this));
-			FSM.Add(new ControlledNPCState_AGGRO(this));
-			FSM.Add(new StandardMobState_DEAD(this));
+			FiniteStateMachine.Add(new ControlledNpcStateWakingUp(this));
+			FiniteStateMachine.Add(new ControlledNpcStatePassive(this));
+			FiniteStateMachine.Add(new ControlledNpcStateDefensive(this));
+			FiniteStateMachine.Add(new ControlledNpcStateAggro(this));
+			FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+			FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
 		}
 
 		protected bool m_isMainPet = true;
@@ -121,14 +121,14 @@ namespace DOL.AI.Brain
         {
             GameLiving owner = Owner;
             int i = 0;
-            while (owner is GameNPC && owner != null)
+            while (owner is GameNpc && owner != null)
             {
                 i++;
                 if (i > 50)
                     throw new Exception("GetPlayerOwner() from " + Owner.Name + "caused a cyclical loop.");
                 //If this is a pet, get its owner
-                if (((GameNPC)owner).Brain is IControlledBrain)
-                    owner = ((IControlledBrain)((GameNPC)owner).Brain).Owner;
+                if (((GameNpc)owner).Brain is IControlledBrain)
+                    owner = ((IControlledBrain)((GameNpc)owner).Brain).Owner;
                 //This isn't a pet, that means it's at the top of the tree.  This case will only happen if
                 //owner is not a GamePlayer
                 else
@@ -138,18 +138,18 @@ namespace DOL.AI.Brain
             if (owner is GamePlayer)
                 return (GamePlayer)owner;
             //If the root owner was not a player or npc then make sure we know that something went wrong!
-            if (!(owner is GameNPC))
+            if (!(owner is GameNpc))
                 throw new Exception("Unrecognized owner: " + owner.GetType().FullName);
             //No GamePlayer at the top of the tree
             return null;
         }
 
-        public virtual GameNPC GetNPCOwner()
+        public virtual GameNpc GetNPCOwner()
         {
-            if (!(Owner is GameNPC))
+            if (!(Owner is GameNpc))
                 return null;
 
-            GameNPC owner = Owner as GameNPC;
+            GameNpc owner = Owner as GameNpc;
 
             int i = 0;
             while (owner != null)
@@ -165,7 +165,7 @@ namespace DOL.AI.Brain
                     if ((owner.Brain as IControlledBrain).Owner is GamePlayer)
                         return null;
                     else
-                        owner = (owner.Brain as IControlledBrain).Owner as GameNPC;
+                        owner = (owner.Brain as IControlledBrain).Owner as GameNpc;
                 }
                 else
                     break;
@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
             if (player != null)
                 return player;
 
-            GameNPC npc = GetNPCOwner();
+            GameNpc npc = GetNPCOwner();
             if (npc != null)
                 return npc;
 
@@ -189,7 +189,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Gets or sets the walk state of the brain
 		/// </summary>
-		public virtual eWalkState WalkState
+		public virtual EWalkState WalkState
 		{
 			get { return m_walkState; }
 			set
@@ -202,18 +202,18 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Gets or sets the aggression state of the brain
 		/// </summary>
-		public virtual eAggressionState AggressionState
+		public virtual EAggressionState AggressionState
         {
             get => m_aggressionState;
             set
             {
                 m_aggressionState = value;
 
-                if (m_aggressionState == eAggressionState.Passive)
+                if (m_aggressionState == EAggressionState.Passive)
                 {
                     Disengage();
 
-                    if (WalkState == eWalkState.Follow)
+                    if (WalkState == EWalkState.Follow)
                         FollowOwner();
                     else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
                     {
@@ -230,9 +230,9 @@ namespace DOL.AI.Brain
         /// <param name="target"></param>
         public virtual void Attack(GameObject target)
 		{
-			if (AggressionState == eAggressionState.Passive)
+			if (AggressionState == EAggressionState.Passive)
 			{
-				AggressionState = eAggressionState.Defensive;
+				AggressionState = EAggressionState.Defensive;
 				UpdatePetWindow();
 			}
 
@@ -240,7 +240,7 @@ namespace DOL.AI.Brain
 				return;
 
 			m_orderAttackTarget = target as GameLiving;
-			FSM.SetCurrentState(eFSMStateType.AGGRO);
+			FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
 
 			if (target != Body.TargetObject && Body.IsCasting)
 				Body.StopCurrentSpellcast();
@@ -251,9 +251,9 @@ namespace DOL.AI.Brain
 		public virtual void Disengage()
 		{
 			// We switch to defensive mode if we're in aggressive and have a target, so that we don't immediately aggro back
-			if (AggressionState == eAggressionState.Aggressive && Body.TargetObject != null)
+			if (AggressionState == EAggressionState.Aggressive && Body.TargetObject != null)
 			{
-				AggressionState = eAggressionState.Defensive;
+				AggressionState = EAggressionState.Defensive;
 				UpdatePetWindow();
 			}
 
@@ -270,7 +270,7 @@ namespace DOL.AI.Brain
 		/// <param name="target"></param>
 		public virtual void Follow(GameObject target)
 		{
-			WalkState = eWalkState.Follow;
+			WalkState = EWalkState.Follow;
 			Body.Follow(target, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
 		}
 
@@ -282,7 +282,7 @@ namespace DOL.AI.Brain
 			m_tempX = Body.X;
 			m_tempY = Body.Y;
 			m_tempZ = Body.Z;
-			WalkState = eWalkState.Stay;
+			WalkState = EWalkState.Stay;
 			Body.StopMoving();
 		}
 
@@ -294,7 +294,7 @@ namespace DOL.AI.Brain
 			m_tempX = Owner.X;
 			m_tempY = Owner.Y;
 			m_tempZ = Owner.Z;
-			WalkState = eWalkState.ComeHere;
+			WalkState = EWalkState.ComeHere;
 			Body.StopFollowing();
 			Body.PathTo(Owner, Body.MaxSpeed);
 		}
@@ -308,12 +308,12 @@ namespace DOL.AI.Brain
 			m_tempX = target.X;
 			m_tempY = target.Y;
 			m_tempZ = target.Z;
-			WalkState = eWalkState.GoTarget;
+			WalkState = EWalkState.GoTarget;
 			Body.StopFollowing();
 			Body.PathTo(target, Body.MaxSpeed);
 		}
 
-		public virtual void SetAggressionState(eAggressionState state)
+		public virtual void SetAggressionState(EAggressionState state)
 		{
 			AggressionState = state;
 			UpdatePetWindow();
@@ -325,7 +325,7 @@ namespace DOL.AI.Brain
 		public virtual void UpdatePetWindow()
 		{
 			if (m_owner is GamePlayer)
-				((GamePlayer)m_owner).Out.SendPetWindow(Body, ePetWindowAction.Update, m_aggressionState, m_walkState);
+				((GamePlayer)m_owner).Out.SendPetWindow(Body, EPetWindowAction.Update, m_aggressionState, m_walkState);
 		}
 
 		/// <summary>
@@ -338,10 +338,10 @@ namespace DOL.AI.Brain
 				
 			if (Owner is GamePlayer
 			    && IsMainPet
-			    && ((GamePlayer)Owner).CharacterClass.ID != (int)eCharacterClass.Animist
-			    && ((GamePlayer)Owner).CharacterClass.ID != (int)eCharacterClass.Theurgist)
+			    && ((GamePlayer)Owner).PlayerClass.ID != (int)EPlayerClass.Animist
+			    && ((GamePlayer)Owner).PlayerClass.ID != (int)EPlayerClass.Theurgist)
 				Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
-			else if (Owner is GameNPC)
+			else if (Owner is GameNpc)
 				Body.Follow(Owner, MIN_OWNER_FOLLOW_DIST, MAX_OWNER_FOLLOW_DIST);
 		}
 
@@ -368,7 +368,7 @@ namespace DOL.AI.Brain
 			if (!base.Start())
 				return false;
 
-			if (WalkState == eWalkState.Follow)
+			if (WalkState == EWalkState.Follow)
 				FollowOwner();
 
 			return true;
@@ -413,7 +413,7 @@ namespace DOL.AI.Brain
 						GamePlayer playerOwner = GetPlayerOwner();
 
 						if (playerOwner != null)
-							new InterceptECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1), Body, playerOwner);
+							new InterceptEcsAbilityEffect(new EcsGameEffectInitParams(Body, 0, 1), Body, playerOwner);
 
 						break;
 					}
@@ -423,7 +423,7 @@ namespace DOL.AI.Brain
 
 						if (playerOwner != null)
 						{
-							GuardAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out GuardECSGameEffect existingEffectFromAnotherSource);
+							GuardAbilityHandler.CheckExistingEffectsOnTarget(Body, playerOwner, false, out bool foundOurEffect, out GuardEcsAbilityEffect existingEffectFromAnotherSource);
 
 							if (foundOurEffect)
 								break;
@@ -439,7 +439,7 @@ namespace DOL.AI.Brain
 						GamePlayer playerOwner = GetPlayerOwner();
 
 						if (playerOwner != null)
-							new ProtectECSGameEffect(new ECSGameEffectInitParams(playerOwner, 0, 1), null, playerOwner);
+							new ProtectEcsAbilityEffect(new EcsGameEffectInitParams(playerOwner, 0, 1), null, playerOwner);
 
 						break;
 					}
@@ -449,7 +449,7 @@ namespace DOL.AI.Brain
 							GameServer.ServerRules.IsAllowedToAttack(Body, target, true) &&
 							!Body.IsWithinRadius(target, 500))
 						{
-							ChargeAbility charge = Body.GetAbility<ChargeAbility>();
+							NfRaChargeAbility charge = Body.GetAbility<NfRaChargeAbility>();
 
 							if (charge != null && Body.GetSkillDisabledDuration(charge) <= 0)
 								charge.Execute(Body);
@@ -466,13 +466,13 @@ namespace DOL.AI.Brain
 		/// </summary>
 		/// <param name="type">Which type should we go through and check for?</param>
 		/// <returns>True if we are begin to cast or are already casting</returns>
-		public override bool CheckSpells(eCheckSpellType type)
+		public override bool CheckSpells(ECheckSpellType type)
 		{
 			if (Body == null || Body.Spells == null || Body.Spells.Count < 1)
 				return false;
 			
 			bool casted = false;
-			if (type == eCheckSpellType.Defensive)
+			if (type == ECheckSpellType.Defensive)
 			{
 				// Check instant spells, but only cast one of each type to prevent spamming
 				if (Body.CanCastInstantHealSpells)
@@ -562,59 +562,59 @@ namespace DOL.AI.Brain
             switch (spell.SpellType)
             {
                 #region Buffs
-                case eSpellType.AcuityBuff:
-                case eSpellType.AFHitsBuff:
-                case eSpellType.AllMagicResistBuff:
-                case eSpellType.ArmorAbsorptionBuff:
-                case eSpellType.ArmorFactorBuff:
-                case eSpellType.BodyResistBuff:
-                case eSpellType.BodySpiritEnergyBuff:
-                case eSpellType.Buff:
-                case eSpellType.CelerityBuff:
-                case eSpellType.ColdResistBuff:
-                case eSpellType.CombatSpeedBuff:
-                case eSpellType.ConstitutionBuff:
-                case eSpellType.CourageBuff:
-                case eSpellType.CrushSlashTrustBuff:
-                case eSpellType.DexterityBuff:
-                case eSpellType.DexterityQuicknessBuff:
-                case eSpellType.EffectivenessBuff:
-                case eSpellType.EnduranceRegenBuff:
-                case eSpellType.EnergyResistBuff:
-                case eSpellType.FatigueConsumptionBuff:
-                case eSpellType.FlexibleSkillBuff:
-                case eSpellType.HasteBuff:
-                case eSpellType.HealthRegenBuff:
-                case eSpellType.HeatColdMatterBuff:
-                case eSpellType.HeatResistBuff:
-                case eSpellType.HeroismBuff:
-                case eSpellType.KeepDamageBuff:
-                case eSpellType.MagicResistBuff:
-                case eSpellType.MatterResistBuff:
-                case eSpellType.MeleeDamageBuff:
-                case eSpellType.MesmerizeDurationBuff:
-                case eSpellType.MLABSBuff:
-                case eSpellType.PaladinArmorFactorBuff:
-                case eSpellType.ParryBuff:
-                case eSpellType.PowerHealthEnduranceRegenBuff:
-                case eSpellType.PowerRegenBuff:
-                case eSpellType.SavageCombatSpeedBuff:
-                case eSpellType.SavageCrushResistanceBuff:
-                case eSpellType.SavageDPSBuff:
-                case eSpellType.SavageParryBuff:
-                case eSpellType.SavageSlashResistanceBuff:
-                case eSpellType.SavageThrustResistanceBuff:
-                case eSpellType.SpiritResistBuff:
-                case eSpellType.StrengthBuff:
-                case eSpellType.StrengthConstitutionBuff:
-                case eSpellType.SuperiorCourageBuff:
-                case eSpellType.ToHitBuff:
-                case eSpellType.WeaponSkillBuff:
-                case eSpellType.DamageAdd:
-                case eSpellType.OffensiveProc:
-                case eSpellType.DefensiveProc:
-                case eSpellType.DamageShield:
-                case eSpellType.Bladeturn:
+                case ESpellType.AcuityBuff:
+                case ESpellType.AFHitsBuff:
+                case ESpellType.AllMagicResistBuff:
+                case ESpellType.ArmorAbsorptionBuff:
+                case ESpellType.ArmorFactorBuff:
+                case ESpellType.BodyResistBuff:
+                case ESpellType.BodySpiritEnergyBuff:
+                case ESpellType.Buff:
+                case ESpellType.CelerityBuff:
+                case ESpellType.ColdResistBuff:
+                case ESpellType.CombatSpeedBuff:
+                case ESpellType.ConstitutionBuff:
+                case ESpellType.CourageBuff:
+                case ESpellType.CrushSlashTrustBuff:
+                case ESpellType.DexterityBuff:
+                case ESpellType.DexterityQuicknessBuff:
+                case ESpellType.EffectivenessBuff:
+                case ESpellType.EnduranceRegenBuff:
+                case ESpellType.EnergyResistBuff:
+                case ESpellType.FatigueConsumptionBuff:
+                case ESpellType.FlexibleSkillBuff:
+                case ESpellType.HasteBuff:
+                case ESpellType.HealthRegenBuff:
+                case ESpellType.HeatColdMatterBuff:
+                case ESpellType.HeatResistBuff:
+                case ESpellType.HeroismBuff:
+                case ESpellType.KeepDamageBuff:
+                case ESpellType.MagicResistBuff:
+                case ESpellType.MatterResistBuff:
+                case ESpellType.MeleeDamageBuff:
+                case ESpellType.MesmerizeDurationBuff:
+                case ESpellType.MLABSBuff:
+                case ESpellType.PaladinArmorFactorBuff:
+                case ESpellType.ParryBuff:
+                case ESpellType.PowerHealthEnduranceRegenBuff:
+                case ESpellType.PowerRegenBuff:
+                case ESpellType.SavageCombatSpeedBuff:
+                case ESpellType.SavageCrushResistanceBuff:
+                case ESpellType.SavageDPSBuff:
+                case ESpellType.SavageParryBuff:
+                case ESpellType.SavageSlashResistanceBuff:
+                case ESpellType.SavageThrustResistanceBuff:
+                case ESpellType.SpiritResistBuff:
+                case ESpellType.StrengthBuff:
+                case ESpellType.StrengthConstitutionBuff:
+                case ESpellType.SuperiorCourageBuff:
+                case ESpellType.ToHitBuff:
+                case ESpellType.WeaponSkillBuff:
+                case ESpellType.DamageAdd:
+                case ESpellType.OffensiveProc:
+                case ESpellType.DefensiveProc:
+                case ESpellType.DamageShield:
+                case ESpellType.Bladeturn:
                     {
 						// Buff self
 						if (!LivingHasEffect(Body, spell))
@@ -623,7 +623,7 @@ namespace DOL.AI.Brain
 							break;
 						}
 						
-						if (spell.Target is eSpellTarget.REALM or eSpellTarget.GROUP)
+						if (spell.Target is ESpellTarget.REALM or ESpellTarget.GROUP)
 						{
 							owner = (this as IControlledBrain).Owner;
 
@@ -634,7 +634,7 @@ namespace DOL.AI.Brain
 								break;
 							}
 
-							if (owner is GameNPC npc)
+							if (owner is GameNpc npc)
 							{
 								//Buff other minions
 								foreach (IControlledBrain icb in npc.ControlledNpcList)
@@ -677,7 +677,7 @@ namespace DOL.AI.Brain
                 #endregion Buffs
 
                 #region Disease Cure/Poison Cure/Summon
-                case eSpellType.CureDisease:
+                case ESpellType.CureDisease:
 					//Cure owner
 					owner = (this as IControlledBrain).Owner;
 					if (owner.IsDiseased)
@@ -709,7 +709,7 @@ namespace DOL.AI.Brain
 						}
 					}
 					break;
-                case eSpellType.CurePoison:
+                case ESpellType.CurePoison:
 					//Cure owner
 					owner = (this as IControlledBrain).Owner;
 					if (LivingIsPoisoned(owner))
@@ -741,19 +741,19 @@ namespace DOL.AI.Brain
 						}
 					}
 					break;
-                case eSpellType.Summon:
+                case ESpellType.Summon:
 					Body.TargetObject = Body;
 					break;
                 #endregion
 
                 #region Heals
-                case eSpellType.CombatHeal:
-                case eSpellType.Heal:
-                case eSpellType.HealOverTime:
-                case eSpellType.MercHeal:
-                case eSpellType.OmniHeal:
-                case eSpellType.PBAoEHeal:
-                case eSpellType.SpreadHeal:
+                case ESpellType.CombatHeal:
+                case ESpellType.Heal:
+                case ESpellType.HealOverTime:
+                case ESpellType.MercHeal:
+                case ESpellType.OmniHeal:
+                case ESpellType.PBAoEHeal:
+                case ESpellType.SpreadHeal:
 					int bodyPercent = Body.HealthPercent;
 					//underhill ally heals at half the normal threshold 'will heal seriously injured groupmates'
 					int healThreshold = this.Body.Name.Contains("underhill") ? GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2 : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
@@ -763,7 +763,7 @@ namespace DOL.AI.Brain
 						healThreshold = this.Body.Name.Contains("empyrean") ? GS.ServerProperties.Properties.CHARMED_NPC_HEAL_THRESHOLD : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
 					}
 
-					if (spell.Target == eSpellTarget.SELF)
+					if (spell.Target == ESpellTarget.SELF)
 					{
 						if (bodyPercent < healThreshold && !LivingHasEffect(Body, spell))
 							Body.TargetObject = Body;
@@ -794,7 +794,7 @@ namespace DOL.AI.Brain
 					// Heal group
 					player = GetPlayerOwner();
 					ICollection<GamePlayer> playerGroup = null;
-					if (player.Group != null && (spell.Target is eSpellTarget.REALM or eSpellTarget.GROUP))
+					if (player.Group != null && (spell.Target is ESpellTarget.REALM or ESpellTarget.GROUP))
 					{
 						playerGroup = player.Group.GetPlayersInTheGroup();
 
@@ -811,7 +811,7 @@ namespace DOL.AI.Brain
 
 					// Now check for targets which aren't seriously injured
 
-					if (spell.Target == eSpellTarget.SELF)
+					if (spell.Target == ESpellTarget.SELF)
 					{
 						// if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
 						if (bodyPercent < healThreshold
@@ -904,7 +904,7 @@ namespace DOL.AI.Brain
 		public override bool CanAggroTarget(GameLiving target)
 		{
 			// Only attack if target (or target's owner) is green+ to our owner
-			if (target is GameNPC npc && npc.Brain is IControlledBrain controlledBrain && controlledBrain.Owner != null)
+			if (target is GameNpc npc && npc.Brain is IControlledBrain controlledBrain && controlledBrain.Owner != null)
 				target = controlledBrain.Owner;
 
 			if (!GameServer.ServerRules.IsAllowedToAttack(Body, target, true) || Owner.IsObjectGreyCon(target))
@@ -924,7 +924,7 @@ namespace DOL.AI.Brain
 				return true;
 			else
 			{
-				ECSGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
+				EcsGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, EEffect.MovementSpeedDebuff);
 
 				if (root != null && root.SpellHandler.Spell.Value == 99)
 					return true;
@@ -938,7 +938,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		protected virtual GameLiving CheckAttackOrderTarget()
 		{
-			if (AggressionState != eAggressionState.Passive && m_orderAttackTarget != null)
+			if (AggressionState != EAggressionState.Passive && m_orderAttackTarget != null)
 			{
 				if (m_orderAttackTarget.IsAlive &&
 					m_orderAttackTarget.ObjectState == GameObject.eObjectState.Active &&
@@ -961,10 +961,10 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void AttackMostWanted()
 		{
-			if (!IsActive || m_aggressionState == eAggressionState.Passive)
+			if (!IsActive || m_aggressionState == EAggressionState.Passive)
 				return;
 
-			GameNPC owner_npc = GetNPCOwner();
+			GameNpc owner_npc = GetNPCOwner();
 
 			if (owner_npc != null && owner_npc.Brain is StandardMobBrain)
 			{
@@ -974,7 +974,7 @@ namespace DOL.AI.Brain
 					GameServer.ServerRules.IsAllowedToAttack(owner_npc, owner_npc.TargetObject as GameLiving, false))
 				{
 
-					if (!CheckSpells(eCheckSpellType.Offensive))
+					if (!CheckSpells(ECheckSpellType.Offensive))
 						Body.StartAttack(owner_npc.TargetObject);
 
 					return;
@@ -995,7 +995,7 @@ namespace DOL.AI.Brain
 					{
 						foreach (IGameEffect effect in Body.EffectList)
 						{
-							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
+							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpell)
 								effects.Add(gameSpellEffect);
 						}
 					}
@@ -1004,7 +1004,7 @@ namespace DOL.AI.Brain
 					{
 						foreach (IGameEffect effect in Owner.EffectList)
 						{
-							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpellHandler)
+							if (effect is GameSpellEffect gameSpellEffect && gameSpellEffect.SpellHandler is SpeedEnhancementSpell)
 								effects.Add(gameSpellEffect);
 						}
 					}
@@ -1013,7 +1013,7 @@ namespace DOL.AI.Brain
 						effect.Cancel(false);
 				}
 
-				if (!CheckSpells(eCheckSpellType.Offensive))
+				if (!CheckSpells(ECheckSpellType.Offensive))
 				{
 					Body.StartAttack(target);
 
@@ -1028,7 +1028,7 @@ namespace DOL.AI.Brain
 				if (Body.IsAttacking)
 					Body.StopAttack();
 
-				if (WalkState == eWalkState.Follow)
+				if (WalkState == EWalkState.Follow)
 					FollowOwner();
 				else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
 				{
@@ -1041,10 +1041,10 @@ namespace DOL.AI.Brain
 
 		public virtual void OnOwnerAttacked(AttackData ad)
 		{
-			if(FSM.GetState(eFSMStateType.PASSIVE) == FSM.GetCurrentState()) { return; }
+			if(FiniteStateMachine.GetState(EFSMStateType.PASSIVE) == FiniteStateMachine.GetCurrentState()) { return; }
 
 			// Theurgist pets don't help their owner.
-			if (Owner is GamePlayer && ((GamePlayer)Owner).CharacterClass.ID == (int)eCharacterClass.Theurgist)
+			if (Owner is GamePlayer && ((GamePlayer)Owner).PlayerClass.ID == (int)EPlayerClass.Theurgist)
 				return;
 
 			if (ad.Target is GamePlayer && ((ad.Target as GamePlayer).ControlledBrain != this || (ad.Target as GamePlayer).ControlledBrain.Body == Owner))
@@ -1052,18 +1052,18 @@ namespace DOL.AI.Brain
 
 			switch (ad.AttackResult)
 			{
-				case eAttackResult.Blocked:
-				case eAttackResult.Evaded:
-				case eAttackResult.Fumbled:
-				case eAttackResult.HitStyle:
-				case eAttackResult.HitUnstyled:
-				case eAttackResult.Missed:
-				case eAttackResult.Parried:
+				case EAttackResult.Blocked:
+				case EAttackResult.Evaded:
+				case EAttackResult.Fumbled:
+				case EAttackResult.HitStyle:
+				case EAttackResult.HitUnstyled:
+				case EAttackResult.Missed:
+				case EAttackResult.Parried:
 					AddToAggroList(ad.Attacker, ad.Attacker.EffectiveLevel + ad.Damage + ad.CriticalDamage);
 					break;
 			}
 
-			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()) { FSM.SetCurrentState(eFSMStateType.AGGRO); }
+			if (FiniteStateMachine.GetState(EFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO); }
 			AttackMostWanted();
 		}
 
@@ -1084,7 +1084,7 @@ namespace DOL.AI.Brain
 			{
 				foreach (GameLiving living in m_buffedTargets)
 				{
-					foreach (ECSGameEffect effect in living.effectListComponent.GetAllEffects().Where(x => x.SpellHandler.Caster == Body))
+					foreach (EcsGameEffect effect in living.effectListComponent.GetAllEffects().Where(x => x.SpellHandler.Caster == Body))
 						EffectService.RequestCancelEffect(effect);
 				}
 

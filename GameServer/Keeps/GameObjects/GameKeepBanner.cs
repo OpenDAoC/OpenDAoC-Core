@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.Database;
 
 namespace DOL.GS.Keeps
@@ -25,15 +6,8 @@ namespace DOL.GS.Keeps
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public enum eBannerType : int 
-		{
-			Realm = 0,
-			Guild = 1,
-		}
-
-		public eBannerType BannerType;
-
-
+		public EBannerType BannerType;
+		
 		/// <summary>
 		/// No Realm banner model (PvE)
 		/// </summary>
@@ -111,7 +85,7 @@ namespace DOL.GS.Keeps
 
 			foreach (AbstractArea area in this.CurrentAreas)
 			{
-				if (area is KeepArea keepArea && keepArea.Keep is AbstractGameKeep keep)
+				if (area is KeepArea keepArea && keepArea.Keep is AGameKeep keep)
 				{
 					Component = new GameKeepComponent();
 					Component.Keep = keep;
@@ -120,9 +94,9 @@ namespace DOL.GS.Keeps
 					{
 						Component.Keep.Banners.Add(sKey, this);
 						if (this.Model == AlbionGuildModel || this.Model == MidgardGuildModel || this.Model == HiberniaGuildModel)
-							BannerType = eBannerType.Guild;
-						else BannerType = eBannerType.Realm;
-						if (BannerType == eBannerType.Guild && Component.Keep.Guild != null)
+							BannerType = EBannerType.Guild;
+						else BannerType = EBannerType.Realm;
+						if (BannerType == EBannerType.Guild && Component.Keep.Guild != null)
 							ChangeGuild();
 						else ChangeRealm();
 						break;
@@ -153,14 +127,14 @@ namespace DOL.GS.Keeps
 			
 			m_templateID = pos.TemplateID;
 			m_component = component;
-			BannerType = (eBannerType)pos.TemplateType;
+			BannerType = (EBannerType)pos.TemplateType;
 
-			PositionMgr.LoadKeepItemPosition(pos, this);
+			GuardPositionMgr.LoadKeepItemPosition(pos, this);
 			string sKey = this.TemplateID;
 			if (component.Keep.Banners.ContainsKey(sKey) == false)
 			{
 				component.Keep.Banners.Add(sKey, this);
-				if (BannerType == eBannerType.Guild)
+				if (BannerType == EBannerType.Guild)
 				{
 					if (component.Keep.Guild != null)
 					{
@@ -183,9 +157,9 @@ namespace DOL.GS.Keeps
 
 		public void MoveToPosition(DbKeepPosition position)
 		{
-			PositionMgr.LoadKeepItemPosition(position, this);
+			GuardPositionMgr.LoadKeepItemPosition(position, this);
 			int zAdd = 1000;
-			if (BannerType == eBannerType.Guild)
+			if (BannerType == EBannerType.Guild)
 				zAdd = 1500;
 
 			this.MoveTo(this.CurrentRegionID, this.X, this.Y, this.Z + zAdd, this.Heading);
@@ -197,22 +171,22 @@ namespace DOL.GS.Keeps
 
 			switch (Realm)
 			{
-				case eRealm.None:
+				case ERealm.None:
 					{
 						Model = NoRealmModel;
 						break;
 					}
-				case eRealm.Albion:
+				case ERealm.Albion:
 					{
 						Model = AlbionModel;
 						break;
 					}
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					{
 						Model = MidgardModel;
 						break;
 					}
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					{
 						Model = HiberniaModel;
 						break;
@@ -226,7 +200,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public void ChangeGuild()
 		{
-			if (BannerType != eBannerType.Guild)
+			if (BannerType != EBannerType.Guild)
 				return;
 			var guild = Component.Keep.Guild;
 
@@ -241,10 +215,10 @@ namespace DOL.GS.Keeps
 			ushort model = AlbionGuildModel;
 			switch (Component.Keep.Realm)
 			{
-				case eRealm.None: model = AlbionGuildModel; break;
-				case eRealm.Albion: model = AlbionGuildModel; break;
-				case eRealm.Midgard: model = MidgardGuildModel; break;
-				case eRealm.Hibernia: model = HiberniaGuildModel; break;
+				case ERealm.None: model = AlbionGuildModel; break;
+				case ERealm.Albion: model = AlbionGuildModel; break;
+				case ERealm.Midgard: model = MidgardGuildModel; break;
+				case ERealm.Hibernia: model = HiberniaGuildModel; break;
 			}
 			this.Model = model;
 			this.Emblem = emblem;

@@ -10,7 +10,7 @@ using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.PositionUpdate, "Handles player position updates", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PositionUpdate, "Handles player position updates", EClientStatus.PlayerInGame)]
 	public class PlayerPositionUpdateHandler : IPacketHandler
 	{
 		/// <summary>
@@ -29,7 +29,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		public const string SHSPEEDCOUNTER = "MYSPEEDHACKCOUNTER";
 
 		//static int lastZ=int.MinValue;
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			//Tiv: in very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
 			if ((client.Player.ObjectState != GameObject.eObjectState.Active) || (client.ClientState != GameClient.eClientState.Playing))
@@ -40,7 +40,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (client.Player.Steed != null && client.Player.Steed.ObjectState == GameObject.eObjectState.Active)
 			{
 				GamePlayer rider = client.Player;
-				GameNPC steed = rider.Steed;
+				GameNpc steed = rider.Steed;
 
 				// The rider and their steed are never at the exact same position (made worse by a high latency).
 				// So the radius is arbitrary and must not be too low to avoid spamming packets.
@@ -77,7 +77,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if ((speedData & 0x200) != 0)
 				speed = -speed;
 
-			if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+			if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(OfRaSpeedOfSoundEcsEffect)) == null)
 				// Nidel: updating client.Player.CurrentSpeed instead of speed
 				client.Player.CurrentSpeed = 0;
 			else
@@ -189,8 +189,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                 }
 
                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.Entered", description),
-				                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                client.Out.SendMessage(screenDescription, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+				                       EChatType.CT_System, EChatLoc.CL_SystemWindow);
+                client.Out.SendMessage(screenDescription, EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow);
 
 				client.Player.LastPositionUpdateZone = newZone;
 
@@ -302,8 +302,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 								message = "You have been auto kicked and banned due to movement hack detection!";
 								for (int i = 0; i < 8; i++)
 								{
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+									client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_SystemWindow);
+									client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 								}
 
 								client.Out.SendPlayerQuit(true);
@@ -317,8 +317,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 								message = "You have been auto kicked due to movement hack detection!";
 								for (int i = 0; i < 8; i++)
 								{
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+									client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_SystemWindow);
+									client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 								}
 
 								client.Out.SendPlayerQuit(true);
@@ -380,7 +380,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								checkrvrarea.Description.Equals("Druim Ligen") ||
 								checkrvrarea.Description.Equals("Druim Cain")))
 							{
-								RealmTimer.CheckRealmTimer(client.Player);
+								RealmTimerUtil.CheckRealmTimer(client.Player);
 							}
 						}
 					}
@@ -426,7 +426,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						if (SHcount > 1 && client.Account.PrivLevel > 1)
 						{
 							//Apo: ?? no idea how to name the first parameter for language translation: 1: ??, 2: {detected} ?, 3: {count} ?
-							client.Out.SendMessage(string.Format("SH: ({0}) detected: {1}, count {2}", 500 / (environmentTick - SHlastTick), environmentTick - SHlastTick, SHcount), eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+							client.Out.SendMessage(string.Format("SH: ({0}) detected: {1}, count {2}", 500 / (environmentTick - SHlastTick), environmentTick - SHlastTick, SHcount), EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 						}
 
 						if (SHcount % 5 == 0)
@@ -446,10 +446,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 							if (client.Account.PrivLevel > 1)
 							{
-								client.Out.SendMessage("SH: Logging SH cheat.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage("SH: Logging SH cheat.", EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 
 								if (SHcount >= ServerProperties.Properties.SPEEDHACK_TOLERANCE)
-									client.Out.SendMessage("SH: Player would have been banned!", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+									client.Out.SendMessage("SH: Player would have been banned!", EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 							}
 
 							if ((client.Account.PrivLevel == 1) && SHcount >= ServerProperties.Properties.SPEEDHACK_TOLERANCE)
@@ -471,8 +471,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 									message = "You have been auto kicked and banned for speed hacking!";
 									for (int i = 0; i < 8; i++)
 									{
-										client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-										client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+										client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_SystemWindow);
+										client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 									}
 
 									client.Out.SendPlayerQuit(true);
@@ -486,8 +486,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 									message = "You have been auto kicked for speed hacking!";
 									for (int i = 0; i < 8; i++)
 									{
-										client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-										client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+										client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_SystemWindow);
+										client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 									}
 
 									client.Out.SendPlayerQuit(true);
@@ -543,8 +543,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 					message = "Client Hack Detected!";
 					for (int i = 0; i < 6; i++)
 					{
-						client.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						client.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_ChatWindow);
+						client.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
+						client.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_ChatWindow);
 					}
 					client.Out.SendPlayerQuit(true);
 					client.Disconnect();
@@ -624,7 +624,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (client.Player.Steed != null && client.Player.Steed.ObjectState == GameObject.eObjectState.Active)
 				client.Player.Heading = client.Player.Steed.Heading;
 
-			var outpak = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+			var outpak = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerPosition));
 			outpak.WriteShort((ushort)client.SessionID);
 			if (client.Player.Steed != null && client.Player.Steed.ObjectState == GameObject.eObjectState.Active)
 				outpak.WriteShort(0x1800);
@@ -694,20 +694,20 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak.WriteByte(client.Player.EndurancePercent);
 			var outpakArr = outpak.ToArray();
 
-			var outpak190 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+			var outpak190 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerPosition));
 			outpak190.Write(outpakArr, 5, outpakArr.Length - 5);
-			outpak190.FillString(client.Player.CharacterClass.Name, 32);
+			outpak190.FillString(client.Player.PlayerClass.Name, 32);
 			outpak190.WriteByte((byte)(client.Player.RPFlag ? 1 : 0)); // roleplay flag, if == 1, show name (RP) with gray color
 			outpak190.WriteByte(0); // send last byte for 190+ packets
 			outpak190.WritePacketLength();
 
-			GSUDPPacketOut outpak1112 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+			GsUdpPacketOut outpak1112 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerPosition));
 			outpak1112.Write(outpakArr, 5, outpakArr.Length - 5);
 			outpak1112.WriteByte((byte)(client.Player.RPFlag ? 1 : 0));
 			outpak1112.WriteByte(0); //outpak1112.WriteByte((con168.Length == 22) ? con168[21] : (byte)0);
 			outpak1112.WritePacketLength();
 
-			GSUDPPacketOut outpak1124 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+			GsUdpPacketOut outpak1124 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerPosition));
 			byte playerAction = 0x00;
 			if (client.Player.IsDiving)
 				playerAction |= 0x04;
@@ -771,7 +771,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.Out.SendObjectDelete(client.Player); //remove the stealthed player from view
 			}
 
-			if (client.Player.CharacterClass.ID == (int)eCharacterClass.Warlock)
+			if (client.Player.PlayerClass.ID == (int)EPlayerClass.Warlock)
 			{
 				//Send Chamber effect
 				client.Player.Out.SendWarlockChamberEffect(client.Player);
@@ -789,7 +789,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 		}
 
-		private void _HandlePacket1124(GameClient client, GSPacketIn packet)
+		private void _HandlePacket1124(GameClient client, GsPacketIn packet)
 		{
 			//Tiv: in very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
 			if ((client.Player.ObjectState != GameObject.eObjectState.Active) ||
@@ -819,7 +819,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			//int speed = (newPlayerSpeed & 0x1FF);
 			//Flags1 = (eFlags1)playerState;
 			//Flags2 = (eFlags2)playerAction;                        
-			if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+			if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(OfRaSpeedOfSoundEcsEffect)) == null)
 				client.Player.CurrentSpeed = 0;
 			else
             {
@@ -903,8 +903,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 
 				client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerPositionUpdateHandler.Entered", description),
-									   eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				client.Out.SendMessage(screenDescription, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+									   EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(screenDescription, EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow);
 
 				client.Player.LastPositionUpdateZone = newZone;
 
@@ -1010,8 +1010,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 								message = "You have been auto kicked and banned due to movement hack detection!";
 								for (int i = 0; i < 8; i++)
 								{
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+									client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_SystemWindow);
+									client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 								}
 
 								client.Out.SendPlayerQuit(true);
@@ -1025,8 +1025,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 								message = "You have been auto kicked due to movement hack detection!";
 								for (int i = 0; i < 8; i++)
 								{
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
+									client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_SystemWindow);
+									client.Out.SendMessage(message, EChatType.CT_Help, EChatLoc.CL_ChatWindow);
 								}
 
 								client.Out.SendPlayerQuit(true);
@@ -1085,7 +1085,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								checkrvrarea.Description.Equals("Druim Ligen") ||
 								checkrvrarea.Description.Equals("Druim Cain")))
 							{
-								RealmTimer.CheckRealmTimer(client.Player);
+								RealmTimerUtil.CheckRealmTimer(client.Player);
 							}
 						}
 					}
@@ -1149,8 +1149,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 					message = "Client Hack Detected!";
 					for (int i = 0; i < 6; i++)
 					{
-						client.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						client.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_ChatWindow);
+						client.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
+						client.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_ChatWindow);
 					}
 					client.Out.SendPlayerQuit(true);
 					client.Disconnect();
@@ -1195,7 +1195,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						if (fallSpeed > 500)
 						{
-							if (client.Player.CharacterClass.ID != (int)eCharacterClass.Necromancer || !client.Player.IsShade)
+							if (client.Player.PlayerClass.ID != (int)EPlayerClass.Necromancer || !client.Player.IsShade)
 							{
 								client.Player.CalcFallDamage(fallPercent);
 							}
@@ -1223,7 +1223,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			else if ((playerState >> 10) == 4) // patch 0062 fix bug on release preventing players from receiving res sickness
 				client.Player.IsSitting = true;
 
-			GSUDPPacketOut outpak1124 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+			GsUdpPacketOut outpak1124 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerPosition));
 			//patch 0069 test to fix player swim out byte flag
 			byte playerOutAction = 0x00;
 			if (client.Player.IsDiving)
@@ -1255,7 +1255,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1124.WriteByte(client.Player.EndurancePercent);
 			outpak1124.WritePacketLength();
 
-			var outpak1127 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+			var outpak1127 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerPosition));
 			outpak1127.Write(outpak1124.GetBuffer(), 5, 22); // from position X to sessionID
 			outpak1127.WriteShort((ushort)client.Player.ObjectID);
 			outpak1127.WriteShort(currentZoneID);
@@ -1271,7 +1271,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1127.WriteShort(0);
 			outpak1127.WritePacketLength();
 
-			var outpak190 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+			var outpak190 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerPosition));
 			outpak190.WriteShort((ushort)client.SessionID);
 			outpak190.WriteShort((ushort)(client.Player.CurrentSpeed & 0x1FF));
 			outpak190.WriteShort((ushort)newPlayerZ);
@@ -1287,13 +1287,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak190.WriteByte(client.Player.ManaPercent);
 			outpak190.WriteByte(client.Player.EndurancePercent);
 
-			var outpak1112 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+			var outpak1112 = new GsUdpPacketOut(client.Out.GetPacketCode(EServerPackets.PlayerPosition));
 			outpak1112.Write(outpak190.GetBuffer(), 5, (int)outpak190.Length - 5);
 			outpak1112.WriteByte((byte)(client.Player.RPFlag ? 1 : 0));
 			outpak1112.WriteByte(0);
 			outpak1112.WritePacketLength();
 
-			outpak190.FillString(client.Player.CharacterClass.Name, 32);
+			outpak190.FillString(client.Player.PlayerClass.Name, 32);
 			outpak190.WriteByte((byte)(client.Player.RPFlag ? 1 : 0));
 			outpak190.WriteByte(0);
 			outpak190.WritePacketLength();

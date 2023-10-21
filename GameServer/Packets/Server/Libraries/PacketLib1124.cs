@@ -34,7 +34,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepInfo)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepInfo)))
 			{
 				pak.WriteShort((ushort)keep.KeepID);
 				pak.WriteShort(0);
@@ -53,7 +53,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLivingEquipmentUpdate(GameLiving living)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.EquipmentUpdate)))
 			{
 				ICollection<DbInventoryItem> items = null;
 				if (living.Inventory != null)
@@ -108,7 +108,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLoginGranted(byte color)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.LoginGranted)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.LoginGranted)))
 			{
 				pak.WritePascalString(m_gameClient.Account.Name);
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
@@ -120,7 +120,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendNPCCreate(GameNPC npc)
+		public override void SendNPCCreate(GameNpc npc)
 		{
 			if (m_gameClient.Player == null || npc.IsVisibleTo(m_gameClient.Player) == false)
 				return;
@@ -140,7 +140,7 @@ namespace DOL.GS.PacketHandler
 			}
 			else
 			{
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.NPCCreate)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.NPCCreate)))
 				{
 					short speed = 0;
 					ushort speedZ = 0;
@@ -161,18 +161,18 @@ namespace DOL.GS.PacketHandler
 					pak.WriteShort(npc.Model);
 					pak.WriteByte(npc.Size);
 					byte level = npc.GetDisplayLevel(m_gameClient.Player);
-					if ((npc.Flags & GameNPC.eFlags.STATUE) != 0)
+					if ((npc.Flags & ENpcFlags.STATUE) != 0)
 					{
 						level |= 0x80;
 					}
 					pak.WriteByte(level);
 
 					byte flags = (byte)(GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, npc) << 6);
-					if ((npc.Flags & GameNPC.eFlags.GHOST) != 0) flags |= 0x01;
+					if ((npc.Flags & ENpcFlags.GHOST) != 0) flags |= 0x01;
 					if (npc.Inventory != null) flags |= 0x02; //If mob has equipment, then only show it after the client gets the 0xBD packet
-					if ((npc.Flags & GameNPC.eFlags.PEACE) != 0) flags |= 0x10;
-					if ((npc.Flags & GameNPC.eFlags.FLYING) != 0) flags |= 0x20;
-					if ((npc.Flags & GameNPC.eFlags.TORCH) != 0) flags |= 0x04;
+					if ((npc.Flags & ENpcFlags.PEACE) != 0) flags |= 0x10;
+					if ((npc.Flags & ENpcFlags.FLYING) != 0) flags |= 0x20;
+					if ((npc.Flags & ENpcFlags.TORCH) != 0) flags |= 0x04;
 
 					pak.WriteByte(flags);
 					pak.WriteByte(0x20); //TODO this is the default maxstick distance
@@ -186,21 +186,21 @@ namespace DOL.GS.PacketHandler
 						flags2 |= 0x80; // have Owner
 					}
 
-					if ((npc.Flags & GameNPC.eFlags.CANTTARGET) != 0)
+					if ((npc.Flags & ENpcFlags.CANTTARGET) != 0)
 						if (m_gameClient.Account.PrivLevel > 1) add += "-DOR"; // indicates DOR flag for GMs
 						else flags2 |= 0x01;
-					if ((npc.Flags & GameNPC.eFlags.DONTSHOWNAME) != 0)
+					if ((npc.Flags & ENpcFlags.DONTSHOWNAME) != 0)
 						if (m_gameClient.Account.PrivLevel > 1) add += "-NON"; // indicates NON flag for GMs
 						else flags2 |= 0x02;
 
-					if ((npc.Flags & GameNPC.eFlags.STEALTH) > 0)
+					if ((npc.Flags & ENpcFlags.STEALTH) > 0)
 						flags2 |= 0x04;
 
-					eQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);
+					EQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);
 
-					if (questIndicator == eQuestIndicator.Available)
+					if (questIndicator == EQuestIndicator.Available)
 						flags2 |= 0x08;//hex 8 - quest available
-					if (questIndicator == eQuestIndicator.Finish)
+					if (questIndicator == EQuestIndicator.Finish)
 						flags2 |= 0x10;//hex 16 - quest finish
 									   //flags2 |= 0x20;//hex 32 - water mob?
 									   //flags2 |= 0x40;//hex 64 - unknown
@@ -210,11 +210,11 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(flags2); // flags 2
 
 					byte flags3 = 0x00;
-					if (questIndicator == eQuestIndicator.Lesson)
+					if (questIndicator == EQuestIndicator.Lesson)
 						flags3 |= 0x01;
-					if (questIndicator == eQuestIndicator.Lore)
+					if (questIndicator == EQuestIndicator.Lore)
 						flags3 |= 0x02;
-					if (questIndicator == eQuestIndicator.Pending) // new? patch 0031
+					if (questIndicator == EQuestIndicator.Pending) // new? patch 0031
 						flags3 |= 0x20;
 					pak.WriteByte(flags3); // new in 1.71 (region instance ID from StoC_0x20) OR flags 3?
 					pak.WriteShort(0x00); // new in 1.71 unknown
@@ -266,20 +266,20 @@ namespace DOL.GS.PacketHandler
 					SendNpcFakeFriendlyGuildID(npc);
 			}
 
-			void SendPetFakeFriendlyGuildID(GameNPC pet, IControlledBrain petBrain)
+			void SendPetFakeFriendlyGuildID(GameNpc pet, IControlledBrain petBrain)
 			{
 				GamePlayer playerOwner = petBrain.GetPlayerOwner();
 				GamePlayer player = m_gameClient.Player;
-				Guild playerGuild = player.Guild;
+				GuildUtil playerGuild = player.Guild;
 
 				// Leave if the player we send this packet to isn't the pet's owner and isn't in the same guild or group.
 				if (playerOwner != player)
 				{
-					Guild playerOwnerGuild = playerOwner.Guild;
+					GuildUtil playerOwnerGuild = playerOwner.Guild;
 
 					if (playerOwnerGuild == null || playerGuild == null || playerOwnerGuild != playerGuild)
 					{
-						Group playerOwnerGroup = playerOwner.Group;
+						GroupUtil playerOwnerGroup = playerOwner.Group;
 
 						if (playerOwnerGroup == null || !playerOwnerGroup.GetMembersInTheGroup().Contains(player))
 							return;
@@ -288,21 +288,21 @@ namespace DOL.GS.PacketHandler
 
 				// Make the client believe the pet is in the same guild as them.
 				// Use a dummy guild for guildless players.
-				SendObjectGuildID(pet, playerGuild ?? Guild.DummyGuild);
-				SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
+				SendObjectGuildID(pet, playerGuild ?? GuildUtil.DummyGuild);
+				SendObjectGuildID(player, playerGuild ?? GuildUtil.DummyGuild);
 			}
 
-			void SendNpcFakeFriendlyGuildID(GameNPC npc)
+			void SendNpcFakeFriendlyGuildID(GameNpc npc)
 			{
-				if (npc.Flags.HasFlag(GameNPC.eFlags.PEACE) || npc.Realm != eRealm.None)
+				if (npc.Flags.HasFlag(ENpcFlags.PEACE) || npc.Realm != ERealm.None)
 				{
 					GamePlayer player = m_gameClient.Player;
-					Guild playerGuild = player.Guild;
+					GuildUtil playerGuild = player.Guild;
 
 					// Make the client believe the NPC is in the same guild as them.
 					// Use a dummy guild for guildless players.
-					SendObjectGuildID(npc, playerGuild ?? Guild.DummyGuild);
-					SendObjectGuildID(player, playerGuild ?? Guild.DummyGuild);
+					SendObjectGuildID(npc, playerGuild ?? GuildUtil.DummyGuild);
+					SendObjectGuildID(player, playerGuild ?? GuildUtil.DummyGuild);
 				}
 			}
 		}
@@ -348,7 +348,7 @@ namespace DOL.GS.PacketHandler
 			if (playerToCreate.Steed != null)
 				m_gameClient.Out.SendNPCCreate(playerToCreate.Steed);
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PlayerCreate172)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PlayerCreate172)))
 			{
 				pak.WriteFloatLowEndian(playerToCreate.X);
 				pak.WriteFloatLowEndian(playerToCreate.Y);
@@ -364,16 +364,16 @@ namespace DOL.GS.PacketHandler
 				if (playerToCreate.IsUnderwater) flags |= 0x02; //swimming
 				if (playerToCreate.IsStealthed) flags |= 0x10;
 				if (playerToCreate.IsWireframe) flags |= 0x20;
-				if (playerToCreate.CharacterClass.ID == (int)eCharacterClass.Vampiir) flags |= 0x40; //Vamp fly
+				if (playerToCreate.PlayerClass.ID == (int)EPlayerClass.Vampiir) flags |= 0x40; //Vamp fly
 				pak.WriteByte((byte)flags);
 
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
 
 				pak.WriteByte(0x00); // new in 1.74
 				pak.WriteByte(0x00); //unknown
@@ -431,7 +431,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PositionAndObjectID)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PositionAndObjectID)))
 			{
 				pak.WriteFloatLowEndian(m_gameClient.Player.X);
 				pak.WriteFloatLowEndian(m_gameClient.Player.Y);
@@ -472,11 +472,11 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, byte index)
+		protected override void SendQuestPacket(AQuest quest, byte index)
 		{
 			if (quest == null)
 			{
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 				{
 					pak.WriteByte(index);
 					pak.WriteByte(0);
@@ -491,7 +491,7 @@ namespace DOL.GS.PacketHandler
 			else if (quest is RewardQuest)
 			{
 				RewardQuest rewardQuest = quest as RewardQuest;
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 				{
 					pak.WriteByte((byte)index);
 					pak.WriteByte((byte)rewardQuest.Name.Length);
@@ -533,7 +533,7 @@ namespace DOL.GS.PacketHandler
 			}
 			else
 			{
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 				{
 					pak.WriteByte((byte)index);
 
@@ -574,7 +574,7 @@ namespace DOL.GS.PacketHandler
 			Region region = WorldMgr.GetRegion(regionId);
 			if (region == null)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ClientRegion)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.ClientRegion)))
 			{
 				//				pak.WriteByte((byte)((region.Expansion + 1) << 4)); // Must be expansion
 				pak.WriteByte(0); // but this packet sended when client in old region. but this field must show expanstion for jump destanation region
@@ -596,7 +596,7 @@ namespace DOL.GS.PacketHandler
 			if (siegeWeapon == null)
 				return;
 			byte[] siegeID = new byte[siegeWeapon.ObjectID]; // test
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SiegeWeaponAnimation)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.SiegeWeaponAnimation)))
 			{
 				pak.WriteInt((uint)siegeWeapon.ObjectID);
 				pak.WriteInt(
@@ -651,7 +651,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (siegeWeapon == null)
 				return;
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SiegeWeaponAnimation)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.SiegeWeaponAnimation)))
 			{
 				pak.WriteInt((uint)siegeWeapon.ObjectID);
 				pak.WriteInt((uint)(siegeWeapon.TargetObject == null ? siegeWeapon.GroundTarget.X : siegeWeapon.TargetObject.X));
@@ -671,7 +671,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendSiegeWeaponInterface(GameSiegeWeapon siegeWeapon, int time)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SiegeWeaponInterface)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.SiegeWeaponInterface)))
 			{
 				ushort flag = (ushort)((siegeWeapon.EnableToMove ? 1 : 0) | siegeWeapon.AmmoType << 8);
 				pak.WriteShort(flag); //byte Ammo,  byte SiegeMoving(1/0)
@@ -739,7 +739,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CryptKey)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CryptKey)))
 			{
 				pak.WriteByte((byte)m_gameClient.ClientType);
 
@@ -760,7 +760,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected virtual void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
+		protected virtual void WriteGroupMemberUpdate(GsTcpPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
 		{
 			pak.WriteByte((byte)(living.GroupIndex + 1)); // From 1 to 8
 			if (living.CurrentRegion != m_gameClient.Player.CurrentRegion)
@@ -778,7 +778,7 @@ namespace DOL.GS.PacketHandler
 			}
 			var player = living as GamePlayer;
 
-			pak.WriteByte(player?.CharacterClass?.HealthPercentGroupWindow ?? living.HealthPercent);
+			pak.WriteByte(player?.PlayerClass?.HealthPercentGroupWindow ?? living.HealthPercent);
 			pak.WriteByte(living.ManaPercent);
 			pak.WriteByte(living.EndurancePercent); // new in 1.69
 
@@ -793,7 +793,7 @@ namespace DOL.GS.PacketHandler
 				playerStatus |= 0x08;
 			if (player?.Client?.ClientState == GameClient.eClientState.Linkdead)
 				playerStatus |= 0x10;
-			if (living.DebuffCategory[(int)eProperty.SpellRange] != 0 || living.DebuffCategory[(int)eProperty.ArcheryRange] != 0)
+			if (living.DebuffCategory[(int)EProperty.SpellRange] != 0 || living.DebuffCategory[(int)EProperty.ArcheryRange] != 0)
 				playerStatus |= 0x40;
 			pak.WriteByte(playerStatus);
 			// 0x00 = Normal , 0x01 = Dead , 0x02 = Mezzed , 0x04 = Diseased ,
@@ -807,17 +807,17 @@ namespace DOL.GS.PacketHandler
 				{
 					byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();
-					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)eCharacterClass.Necromancer && necro.IsShade)
+					if (living is GamePlayer necro && necro.PlayerClass.ID == (int)EPlayerClass.Necromancer && necro.IsShade)
 						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
 					foreach (var effect in effects)
 					{
-						if (effect is ECSGameEffect && !effect.IsDisabled)
+						if (effect is EcsGameEffect && !effect.IsDisabled)
 							i++;
 					}
 					pak.WriteByte(i);
 					foreach (var effect in effects)
 					{
-						if (effect is ECSGameEffect && !effect.IsDisabled)
+						if (effect is EcsGameEffect && !effect.IsDisabled)
 						{
 							pak.WriteByte(0);
 							pak.WriteShort(effect.Icon);
@@ -829,7 +829,7 @@ namespace DOL.GS.PacketHandler
 				WriteGroupMemberMapUpdate(pak, living);
 		}
 
-		protected override void WriteGroupMemberMapUpdate(GSTCPPacketOut pak, GameLiving living)
+		protected override void WriteGroupMemberMapUpdate(GsTcpPacketOut pak, GameLiving living)
 		{
 			if (living.CurrentSpeed != 0)
 			{
@@ -844,7 +844,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
+		protected override void WriteItemData(GsTcpPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{
@@ -858,39 +858,39 @@ namespace DOL.GS.PacketHandler
 			int value2; // some object types use this field to display count
 			switch (item.Object_Type)
 			{
-				case (int)eObjectType.GenericItem:
+				case (int)EObjectType.GenericItem:
 					value1 = item.Count & 0xFF;
 					value2 = (item.Count >> 8) & 0xFF;
 					break;
-				case (int)eObjectType.Arrow:
-				case (int)eObjectType.Bolt:
-				case (int)eObjectType.Poison:
+				case (int)EObjectType.Arrow:
+				case (int)EObjectType.Bolt:
+				case (int)EObjectType.Poison:
 					value1 = item.Count;
 					value2 = item.SPD_ABS;
 					break;
-				case (int)eObjectType.Thrown:
+				case (int)EObjectType.Thrown:
 					value1 = item.DPS_AF;
 					value2 = item.Count;
 					break;
-				case (int)eObjectType.Instrument:
+				case (int)EObjectType.Instrument:
 					value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF);
 					value2 = 0;
 					break; // unused
-				case (int)eObjectType.Shield:
+				case (int)EObjectType.Shield:
 					value1 = item.Type_Damage;
 					value2 = item.DPS_AF;
 					break;
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.SpellcraftGem:
 					value1 = 0;
 					value2 = 0;
 					/*
 					must contain the quality of gem for spell craft and think same for tincture
 					*/
 					break;
-				case (int)eObjectType.HouseWallObject:
-				case (int)eObjectType.HouseFloorObject:
-				case (int)eObjectType.GardenObject:
+				case (int)EObjectType.HouseWallObject:
+				case (int)EObjectType.HouseFloorObject:
+				case (int)EObjectType.GardenObject:
 					value1 = 0;
 					value2 = item.SPD_ABS;
 					/*
@@ -909,7 +909,7 @@ namespace DOL.GS.PacketHandler
 			pak.WriteByte((byte)value1);
 			pak.WriteByte((byte)value2);
 
-			if (item.Object_Type == (int)eObjectType.GardenObject)
+			if (item.Object_Type == (int)EObjectType.GardenObject)
 				pak.WriteByte((byte)(item.DPS_AF));
 			else
 				pak.WriteByte((byte)(item.Hand << 6));
@@ -938,14 +938,14 @@ namespace DOL.GS.PacketHandler
 			}
 			//flag |= 0x01; // newGuildEmblem
 			flag |= 0x02; // enable salvage button
-			AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(m_gameClient.Player.CraftingPrimarySkill);
+			ACraftingSkill skill = CraftingMgr.getSkillbyEnum(m_gameClient.Player.CraftingPrimarySkill);
 			if (skill != null && skill is AdvancedCraftingSkill/* && ((AdvancedCraftingSkill)skill).IsAllowedToCombine(_gameClient.Player, item)*/)
 				flag |= 0x04; // enable craft button
 			ushort icon1 = 0;
 			ushort icon2 = 0;
 			string spell_name1 = "";
 			string spell_name2 = "";
-			if (item.Object_Type != (int)eObjectType.AlchemyTincture)
+			if (item.Object_Type != (int)EObjectType.AlchemyTincture)
 			{
 				if (item.SpellID > 0/* && item.Charges > 0*/)
 				{
@@ -1004,7 +1004,7 @@ namespace DOL.GS.PacketHandler
 				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 					name += "[" + item.SellPrice.ToString() + " BP]";
 				else
-					name += "[" + Money.GetString(item.SellPrice) + "]";
+					name += "[" + MoneyMgr.GetString(item.SellPrice) + "]";
 			}
 			if (name == null) name = "";
 			if (name.Length > 55)
@@ -1012,7 +1012,7 @@ namespace DOL.GS.PacketHandler
 			pak.WritePascalString(name);
 		}
 
-		protected override void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)
+		protected override void WriteTemplateData(GsTcpPacketOut pak, DbItemTemplate template, int count)
 		{
 			if (template == null)
 			{
@@ -1027,34 +1027,34 @@ namespace DOL.GS.PacketHandler
 
 			switch (template.Object_Type)
 			{
-				case (int)eObjectType.Arrow:
-				case (int)eObjectType.Bolt:
-				case (int)eObjectType.Poison:
-				case (int)eObjectType.GenericItem:
+				case (int)EObjectType.Arrow:
+				case (int)EObjectType.Bolt:
+				case (int)EObjectType.Poison:
+				case (int)EObjectType.GenericItem:
 					value1 = count; // Count
 					value2 = template.SPD_ABS;
 					break;
-				case (int)eObjectType.Thrown:
+				case (int)EObjectType.Thrown:
 					value1 = template.DPS_AF;
 					value2 = count; // Count
 					break;
-				case (int)eObjectType.Instrument:
+				case (int)EObjectType.Instrument:
 					value1 = (template.DPS_AF == 2 ? 0 : template.DPS_AF);
 					value2 = 0;
 					break;
-				case (int)eObjectType.Shield:
+				case (int)EObjectType.Shield:
 					value1 = template.Type_Damage;
 					value2 = template.DPS_AF;
 					break;
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.SpellcraftGem:
 					value1 = 0;
 					value2 = 0;
 					/*
 					must contain the quality of gem for spell craft and think same for tincture
 					*/
 					break;
-				case (int)eObjectType.GardenObject:
+				case (int)EObjectType.GardenObject:
 					value1 = 0;
 					value2 = template.SPD_ABS;
 					/*
@@ -1073,7 +1073,7 @@ namespace DOL.GS.PacketHandler
 			pak.WriteByte((byte)value1);
 			pak.WriteByte((byte)value2);
 
-			if (template.Object_Type == (int)eObjectType.GardenObject)
+			if (template.Object_Type == (int)EObjectType.GardenObject)
 				pak.WriteByte((byte)(template.DPS_AF));
 			else
 				pak.WriteByte((byte)(template.Hand << 6));
@@ -1107,7 +1107,7 @@ namespace DOL.GS.PacketHandler
 				return;
 
 			var group = m_gameClient.Player.Group;
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.GroupMemberUpdate)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.GroupMemberUpdate)))
 			{
 				if (living.Group != group)
 					return;
@@ -1122,7 +1122,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player?.Group == null)
 				return;
 
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.GroupMemberUpdate)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.GroupMemberUpdate)))
 			{
 				foreach (var living in m_gameClient.Player.Group.GetMembersInTheGroup())
 					WriteGroupMemberUpdate(pak, updateIcons, updateMap, living);

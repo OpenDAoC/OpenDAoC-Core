@@ -1,55 +1,69 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections;
 using DOL.Database;
 using log4net;
 
-namespace DOL.GS.DatabaseConverters
+namespace DOL.GS.DatabaseConverters;
+
+/// <summary>
+/// Converts the database format to the version 3
+/// </summary>
+[DbConverter(3)]
+public class Version003 : IDbConverter
 {
 	/// <summary>
-	/// Converts the database format to the version 3
+	/// Defines a logger for this class.
 	/// </summary>
-	[DatabaseConverter(3)]
-	public class Version003 : IDatabaseConverter
+	private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+	/// <summary>
+	/// we need to make use of the new poison fields
+	/// </summary>
+	public void ConvertDatabase()
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		log.Info("Database Version 3 Convert Started");
 
-		/// <summary>
-		/// we need to make use of the new poison fields
-		/// </summary>
-		public void ConvertDatabase()
+		if (GameServer.Instance.Configuration.DBType == DOL.Database.Connection.EConnectionType.DATABASE_XML)
 		{
-			log.Info("Database Version 3 Convert Started");
+			log.Info("You have an XML database loaded, this converter will only work with MySQL, skipping");
+			return;
+		}
 
-			if (GameServer.Instance.Configuration.DBType == DOL.Database.Connection.EConnectionType.DATABASE_XML)
+		var templates = CoreDb<DbItemTemplate>.SelectObjects(DB.Column("SpellID").IsEqualTo(0));
+
+		int count = 0;
+		foreach (DbItemTemplate template in templates)
+		{
+			SpellLine poisonLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mundane_Poisons);
+			if (poisonLine != null)
 			{
-				log.Info("You have an XML database loaded, this converter will only work with MySQL, skipping");
-				return;
+				IList spells = SkillBase.GetSpellList(poisonLine.KeyName);
+				if (spells != null)
+				{
+					foreach (Spell spl in spells)
+					{
+						if (spl.ID == template.SpellID)
+						{
+							template.PoisonSpellID = template.SpellID;
+							template.SpellID = 0;
+							template.PoisonCharges = template.Charges;
+							template.Charges = 0;
+							template.PoisonMaxCharges = template.MaxCharges;
+							template.MaxCharges = 0;
+							GameServer.Database.SaveObject(template);
+							count++;
+							break;
+						}
+					}
+				}
 			}
+		}
 
-			var templates = DOLDB<DbItemTemplate>.SelectObjects(DB.Column("SpellID").IsEqualTo(0));
+		log.Info("Converted " + count + " templates");
 
-			int count = 0;
+		var items = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("SpellID").IsEqualTo(0));
+		count = 0;
+		foreach (DbInventoryItem item in items)
+		{
 			foreach (DbItemTemplate template in templates)
 			{
 				SpellLine poisonLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mundane_Poisons);
@@ -76,44 +90,10 @@ namespace DOL.GS.DatabaseConverters
 					}
 				}
 			}
-
-			log.Info("Converted " + count + " templates");
-
-			var items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("SpellID").IsEqualTo(0));
-			count = 0;
-			foreach (DbInventoryItem item in items)
-			{
-				foreach (DbItemTemplate template in templates)
-				{
-					SpellLine poisonLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mundane_Poisons);
-					if (poisonLine != null)
-					{
-						IList spells = SkillBase.GetSpellList(poisonLine.KeyName);
-						if (spells != null)
-						{
-							foreach (Spell spl in spells)
-							{
-								if (spl.ID == template.SpellID)
-								{
-									template.PoisonSpellID = template.SpellID;
-									template.SpellID = 0;
-									template.PoisonCharges = template.Charges;
-									template.Charges = 0;
-									template.PoisonMaxCharges = template.MaxCharges;
-									template.MaxCharges = 0;
-									GameServer.Database.SaveObject(template);
-									count++;
-									break;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			log.Info("Converted " + count + " items");
-
-			log.Info("Database Version 3 Convert Finished");
 		}
+
+		log.Info("Converted " + count + " items");
+
+		log.Info("Database Version 3 Convert Finished");
 	}
 }

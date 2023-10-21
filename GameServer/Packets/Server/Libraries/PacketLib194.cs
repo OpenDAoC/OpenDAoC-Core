@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Database;
@@ -35,12 +16,12 @@ namespace DOL.GS.PacketHandler
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 
-		public override void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DataQuest quest)
+		public override void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, DataQuest quest)
 		{
 			SendQuestWindow(questNPC, player, quest, true);
 		}
 
-		public override void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DataQuest quest)
+		public override void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, DataQuest quest)
 		{
 			SendQuestWindow(questNPC, player, quest, false);
 		}
@@ -48,9 +29,9 @@ namespace DOL.GS.PacketHandler
         const ushort MAX_STORY_LENGTH = 1000;   // Via trial and error, 1.108 client.
                                                 // Often will cut off text around 990 but longer strings do not result in any errors. -Tolakram
 
-		protected override void SendQuestWindow(GameNPC questNPC, GamePlayer player, DataQuest quest, bool offer)
+		protected override void SendQuestWindow(GameNpc questNPC, GamePlayer player, DataQuest quest, bool offer)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Dialog)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Dialog)))
 			{
 				ushort QuestID = quest.ClientQuestID;
 				pak.WriteShort((offer) ? (byte)0x22 : (byte)0x21); // Dialog
@@ -64,7 +45,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x01); // Wrap
 				pak.WritePascalString(quest.Name);
 
-				string personalizedSummary = BehaviourUtils.GetPersonalizedMessage(quest.Description, player);
+				string personalizedSummary = BehaviorUtil.GetPersonalizedMessage(quest.Description, player);
 				if (personalizedSummary.Length > 255)
 				{
 					pak.WritePascalString(personalizedSummary.Substring(0, 255)); // Summary is max 255 bytes or client will crash !
@@ -76,7 +57,7 @@ namespace DOL.GS.PacketHandler
 
 				if (offer)
 				{
-					string personalizedStory = BehaviourUtils.GetPersonalizedMessage(quest.Story, player);
+					string personalizedStory = BehaviorUtil.GetPersonalizedMessage(quest.Story, player);
 
 					if (personalizedStory.Length > MAX_STORY_LENGTH)
 					{
@@ -134,9 +115,9 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendQuestWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest,	bool offer)
+		protected override void SendQuestWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest,	bool offer)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Dialog)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Dialog)))
 			{
 				ushort QuestID = QuestMgr.GetIDForQuestType(quest.GetType());
 				pak.WriteShort((offer) ? (byte)0x22 : (byte)0x21); // Dialog
@@ -150,7 +131,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x01); // Wrap
 				pak.WritePascalString(quest.Name);
 
-				string personalizedSummary = BehaviourUtils.GetPersonalizedMessage(quest.Summary, player);
+				string personalizedSummary = BehaviorUtil.GetPersonalizedMessage(quest.Summary, player);
 				if (personalizedSummary.Length > 255)
 					pak.WritePascalString(personalizedSummary.Substring(0, 255)); // Summary is max 255 bytes !
 				else
@@ -158,7 +139,7 @@ namespace DOL.GS.PacketHandler
 
 				if (offer)
 				{
-					string personalizedStory = BehaviourUtils.GetPersonalizedMessage(quest.Story, player);
+					string personalizedStory = BehaviorUtil.GetPersonalizedMessage(quest.Story, player);
 
 					if (personalizedStory.Length > ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
 					{

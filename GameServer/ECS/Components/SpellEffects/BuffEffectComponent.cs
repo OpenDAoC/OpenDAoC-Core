@@ -4,15 +4,15 @@
     {
         public GameLiving owner;
         public bool isApplied;
-        public eStat statToModify;
+        public EStat statToModify;
         public int buffValue;
         public int startTick;
         public int maxDuration;
 
-        public eSpellEffect Type { get; set; }
+        public ESpellEffect Type { get; set; }
         public ushort SpellEffectId { get; set; }
 
-        public BuffEffectComponent(GameLiving owner, eStat stat, int buffValue, int maxDuration, int currentTick)
+        public BuffEffectComponent(GameLiving owner, EStat stat, int buffValue, int maxDuration, int currentTick)
         {
             this.owner = owner;
             this.statToModify = stat;
@@ -20,7 +20,7 @@
             this.isApplied = false;
             this.startTick = currentTick;
             this.maxDuration = maxDuration;
-            this.Type = eSpellEffect.Buff;
+            this.Type = ESpellEffect.Buff;
         }
 
         /* public void UpdateTimeLeft()

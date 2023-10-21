@@ -1,31 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-/*
- * Author:	SmallHorse
- * Date:	15.10.2003
- * This is a really simple example of game events
- * This script creates a NPC that stands around and
- * talks to you if you rightclick on it. This
- * demonstrates a way you can use to make npcs talk
- * to players.
- */
-
 using System;
 using System.Reflection;
 using DOL.Events;
@@ -35,7 +7,7 @@ using log4net;
 namespace DOL.GS.GameEvents
 {
 	//First, declare our Event and have it implement the IGameEvent interface
-	public class TalkingNPCEvent
+	public class TalkingNpcEvent
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -45,7 +17,7 @@ namespace DOL.GS.GameEvents
 		//For our event we need a special npc that
 		//answers to the right click (interact) of players
 		//and also answers to talk.
-		public class TalkingNPC : GameNPC
+		public class TalkingNPC : GameNpc
 		{
 			public TalkingNPC() : base()
 			{
@@ -62,7 +34,7 @@ namespace DOL.GS.GameEvents
 				Model = 5;
 				Size = 50;
 				Level = 10;
-				Realm = eRealm.Albion;
+				Realm = ERealm.Albion;
 				CurrentRegionID = 1;
 			}
 
@@ -82,7 +54,7 @@ namespace DOL.GS.GameEvents
 				//windows and will generate a &whis text command!
 				player.Out.SendMessage(
 					"Hello " + player.Name + " do you want to have a little [chat]?",
-					eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					EChatType.CT_System, EChatLoc.CL_PopupWindow);
 				return true;
 			}
 
@@ -151,7 +123,7 @@ namespace DOL.GS.GameEvents
 			{
 				target.Out.SendMessage(
 					msg,
-					eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					EChatType.CT_System, EChatLoc.CL_PopupWindow);
 			}
 		}
 
@@ -161,7 +133,7 @@ namespace DOL.GS.GameEvents
 		//interface and is called on serverstart when the
 		//events need to be started
 		[ScriptLoadedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_EXAMPLES)
 				return;
@@ -179,7 +151,7 @@ namespace DOL.GS.GameEvents
 		//interface and is called on when we want to stop 
 		//an event
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!ServerProperties.Properties.LOAD_EXAMPLES)
 				return;

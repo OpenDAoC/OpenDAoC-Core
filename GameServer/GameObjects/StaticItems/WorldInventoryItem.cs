@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -25,7 +6,7 @@ namespace DOL.GS
 {
 	/// <summary>
 	/// This class represents an inventory item when it is
-	/// laying on the floor in the world! It is just a wraper
+	/// laying on the floor in the world! It is just a wrapper
 	/// class around InventoryItem
 	/// </summary>
 	public class WorldInventoryItem : GameStaticItemTimed
@@ -205,7 +186,7 @@ namespace DOL.GS
 		}
 
 		#region PickUpTimer
-		private ECSGameTimer m_pickup;
+		private EcsGameTimer m_pickup;
 
 		/// <summary>
 		/// Starts a new pickuptimer with the given time (in seconds)
@@ -218,10 +199,10 @@ namespace DOL.GS
 				m_pickup.Stop();
 				m_pickup = null;
 			}
-			m_pickup = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CallBack), time * 1000);
+			m_pickup = new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(CallBack), time * 1000);
 		}
 
-		private int CallBack(ECSGameTimer timer)
+		private int CallBack(EcsGameTimer timer)
 		{
 			m_pickup.Stop();
 			m_pickup = null;
@@ -234,7 +215,7 @@ namespace DOL.GS
 			{
 				if (player.ObjectState == eObjectState.Active)
 				{
-					player.Out.SendMessage("You may now pick up " + Name + "!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("You may now pick up " + Name + "!", EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
 				}
 			}
 			m_pickup.Stop();

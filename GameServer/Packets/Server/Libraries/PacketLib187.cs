@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Database;
@@ -42,19 +23,19 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
-		public override void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest)
+		public override void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
 		{
 			SendQuestWindow(questNPC, player, quest, true);
 		}
 
-		public override void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest)
+		public override void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
 		{
 			SendQuestWindow(questNPC, player, quest, false);
 		}
 
-		protected override void SendQuestWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest,	bool offer)
+		protected override void SendQuestWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest,	bool offer)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Dialog)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Dialog)))
 			{
 				ushort QuestID = QuestMgr.GetIDForQuestType(quest.GetType());
 				pak.WriteShort((offer) ? (byte)0x22 : (byte)0x21); // Dialog
@@ -124,7 +105,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected virtual void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)
+		protected virtual void WriteTemplateData(GsTcpPacketOut pak, DbItemTemplate template, int count)
 		{
 			if (template == null)
 			{
@@ -139,34 +120,34 @@ namespace DOL.GS.PacketHandler
 
 			switch (template.Object_Type)
 			{
-				case (int)eObjectType.Arrow:
-				case (int)eObjectType.Bolt:
-				case (int)eObjectType.Poison:
-				case (int)eObjectType.GenericItem:
+				case (int)EObjectType.Arrow:
+				case (int)EObjectType.Bolt:
+				case (int)EObjectType.Poison:
+				case (int)EObjectType.GenericItem:
 					value1 = count; // Count
 					value2 = template.SPD_ABS;
 					break;
-				case (int)eObjectType.Thrown:
+				case (int)EObjectType.Thrown:
 					value1 = template.DPS_AF;
 					value2 = count; // Count
 					break;
-				case (int)eObjectType.Instrument:
+				case (int)EObjectType.Instrument:
 					value1 = (template.DPS_AF == 2 ? 0 : template.DPS_AF);
 					value2 = 0;
 					break;
-				case (int)eObjectType.Shield:
+				case (int)EObjectType.Shield:
 					value1 = template.Type_Damage;
 					value2 = template.DPS_AF;
 					break;
-				case (int)eObjectType.AlchemyTincture:
-				case (int)eObjectType.SpellcraftGem:
+				case (int)EObjectType.AlchemyTincture:
+				case (int)EObjectType.SpellcraftGem:
 					value1 = 0;
 					value2 = 0;
 					/*
 					must contain the quality of gem for spell craft and think same for tincture
 					*/
 					break;
-				case (int)eObjectType.GardenObject:
+				case (int)EObjectType.GardenObject:
 					value1 = 0;
 					value2 = template.SPD_ABS;
 					/*
@@ -185,7 +166,7 @@ namespace DOL.GS.PacketHandler
 			pak.WriteByte((byte)value1);
 			pak.WriteByte((byte)value2);
 
-			if (template.Object_Type == (int)eObjectType.GardenObject)
+			if (template.Object_Type == (int)EObjectType.GardenObject)
 				pak.WriteByte((byte)(template.DPS_AF));
 			else
 				pak.WriteByte((byte)(template.Hand << 6));
@@ -211,7 +192,7 @@ namespace DOL.GS.PacketHandler
 				pak.WritePascalString(template.Name);
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, byte index)
+		protected override void SendQuestPacket(AQuest quest, byte index)
 		{
 			if (quest == null || quest is not RewardQuest)
 			{
@@ -220,7 +201,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			RewardQuest rewardQuest = quest as RewardQuest;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 			{
 				pak.WriteByte(index);
 				pak.WriteByte((byte)rewardQuest.Name.Length);

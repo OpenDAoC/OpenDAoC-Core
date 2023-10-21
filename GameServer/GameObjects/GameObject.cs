@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -89,7 +70,7 @@ namespace DOL.GS
 			}
 		}
 
-		public abstract eGameObjectType GameObjectType { get; }
+		public abstract EGameObjectType GameObjectType { get; }
 
 		#endregion
 
@@ -98,7 +79,7 @@ namespace DOL.GS
 		protected ushort _heading;
 
 		public virtual string OwnerID { get; set; }
-		public virtual eRealm Realm { get; set; }
+		public virtual ERealm Realm { get; set; }
 		public virtual Region CurrentRegion { get; set; }
 		public virtual ushort CurrentRegionID
 		{
@@ -392,7 +373,7 @@ namespace DOL.GS
         {
             get
             {
-                if (this.Realm == eRealm.None)
+                if (this.Realm == ERealm.None)
                     return true;
 
                 return false;
@@ -470,7 +451,7 @@ namespace DOL.GS
                     }
                 default:
                     {
-                        if (obj is GameNPC)
+                        if (obj is GameNpc)
                         {
                             var translation = (DbLanguageGameNpc)LanguageMgr.GetTranslation(lang, obj);
                             if (translation != null) return translation.Name;
@@ -952,7 +933,7 @@ namespace DOL.GS
 		{
 			if (player.Client.Account.PrivLevel == 1 && !this.IsWithinRadius(player, InteractDistance))
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Interact.TooFarAway", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Interact.TooFarAway", GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				Notify(GameObjectEvent.InteractFailed, this, new InteractEventArgs(player));
 				return false;
 			}
@@ -990,7 +971,7 @@ namespace DOL.GS
 		/// <param name="damageType">the damage type</param>
 		/// <param name="damageAmount">the amount of damage</param>
 		/// <param name="criticalAmount">the amount of critical damage</param>
-		public virtual void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public virtual void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			Notify(GameObjectEvent.TakeDamage, this, new TakeDamageEventArgs(source, damageType, damageAmount, criticalAmount));
 		}
@@ -1051,22 +1032,22 @@ namespace DOL.GS
 
 		#region Notify
 
-		public virtual void Notify(DOLEvent e, object sender, EventArgs args)
+		public virtual void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			GameEventMgr.Notify(e, sender, args);
 		}
 
-		public virtual void Notify(DOLEvent e, object sender)
+		public virtual void Notify(CoreEvent e, object sender)
 		{
 			Notify(e, sender, null);
 		}
 
-		public virtual void Notify(DOLEvent e)
+		public virtual void Notify(CoreEvent e)
 		{
 			Notify(e, null, null);
 		}
 
-		public virtual void Notify(DOLEvent e, EventArgs args)
+		public virtual void Notify(CoreEvent e, EventArgs args)
 		{
 			Notify(e, null, args);
 		}
@@ -1075,20 +1056,20 @@ namespace DOL.GS
 
 		#region ObjectsInRadius
 
-		private Dictionary<eGameObjectType, (object, ushort, long)> _objectsInRadiusCache;
+		private Dictionary<EGameObjectType, (object, ushort, long)> _objectsInRadiusCache;
 
 		private void ClearObjectsInRadiusCache()
 		{
 			_objectsInRadiusCache = new()
 			{
-				{ eGameObjectType.PLAYER, (null, 0, 0) },
-				{ eGameObjectType.NPC, (null, 0, 0) },
-				{ eGameObjectType.ITEM, (null, 0, 0) },
-				{ eGameObjectType.DOOR, (null, 0, 0) }
+				{ EGameObjectType.PLAYER, (null, 0, 0) },
+				{ EGameObjectType.NPC, (null, 0, 0) },
+				{ EGameObjectType.ITEM, (null, 0, 0) },
+				{ EGameObjectType.DOOR, (null, 0, 0) }
 			};
 		}
 
-		public List<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck)  where T : GameObject
+		public List<T> GetObjectsInRadius<T>(EGameObjectType objectType, ushort radiusToCheck)  where T : GameObject
 		{
 			List<T> result = new();
 
@@ -1135,22 +1116,22 @@ namespace DOL.GS
 
 		public List<GamePlayer> GetPlayersInRadius(ushort radiusToCheck)
 		{
-			return GetObjectsInRadius<GamePlayer>(eGameObjectType.PLAYER, radiusToCheck);
+			return GetObjectsInRadius<GamePlayer>(EGameObjectType.PLAYER, radiusToCheck);
 		}
 
-		public List<GameNPC> GetNPCsInRadius(ushort radiusToCheck)
+		public List<GameNpc> GetNPCsInRadius(ushort radiusToCheck)
 		{
-			return GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, radiusToCheck);
+			return GetObjectsInRadius<GameNpc>(EGameObjectType.NPC, radiusToCheck);
 		}
 
 		public List<GameStaticItem> GetItemsInRadius(ushort radiusToCheck)
 		{
-			return GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, radiusToCheck);
+			return GetObjectsInRadius<GameStaticItem>(EGameObjectType.ITEM, radiusToCheck);
 		}
 
 		public List<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
 		{
-			return GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, radiusToCheck);
+			return GetObjectsInRadius<GameDoorBase>(EGameObjectType.DOOR, radiusToCheck);
 		}
 
 		#endregion
@@ -1269,9 +1250,9 @@ namespace DOL.GS
         /// <summary>
         /// All objects are neutral.
         /// </summary>
-        public virtual eGender Gender
+        public virtual EGender Gender
         {
-            get { return eGender.Neutral; }
+            get { return EGender.Neutral; }
             set { }
         }
 
@@ -1291,7 +1272,7 @@ namespace DOL.GS
 		}
 		public static bool PlayerHasItem(GamePlayer player, string str)
 		{
-			DbInventoryItem item = player.Inventory.GetFirstItemByID(str, eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);
+			DbInventoryItem item = player.Inventory.GetFirstItemByID(str, EInventorySlot.Min_Inv, EInventorySlot.Max_Inv);
 			if (item != null)
 				return true;
 			return false;

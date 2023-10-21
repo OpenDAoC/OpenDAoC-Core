@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +31,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CryptKey)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CryptKey)))
 			{
 				pak.WritePascalStringIntLE((((int)m_gameClient.Version) / 1000) + "." + (((int)m_gameClient.Version) - 1000) + m_gameClient.MinorRev);
 				//// Same as the trailing two bytes sent in first client to server packet
@@ -66,7 +47,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendLoginGranted(byte color)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.LoginGranted)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.LoginGranted)))
 			{
 				pak.WritePascalString(m_gameClient.Account.Name);
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
@@ -80,9 +61,9 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// 1125 sendrealm
 		/// </summary>
-		public override void SendRealm(eRealm realm)
+		public override void SendRealm(ERealm realm)
 		{
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Realm)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Realm)))
 			{
 				pak.WriteByte((byte)realm);
 				pak.Fill(0, 12);
@@ -93,16 +74,16 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// 1125 char overview
 		/// </summary>
-		public override void SendCharacterOverview(eRealm realm)
+		public override void SendCharacterOverview(ERealm realm)
 		{
-			if (realm < eRealm._FirstPlayerRealm || realm > eRealm._LastPlayerRealm)
+			if (realm < ERealm._FirstPlayerRealm || realm > ERealm._LastPlayerRealm)
 			{
 				throw new Exception("CharacterOverview requested for unknown realm " + realm);
 			}
 
 			int firstSlot = (byte)realm * 100;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CharacterOverview)))
 			{
 				//pak.Fillstring(GameClient.Account.Name, 24);
 				pak.Fill(0, 8);
@@ -124,13 +105,13 @@ namespace DOL.GS.PacketHandler
 							log.Error("SendCharacterOverview - Duplicate char in slot? Slot: " + c.AccountSlot + ", Account: " + c.AccountName, ex);
 						}
 					}
-					var itemsByOwnerID = new Dictionary<string, Dictionary<eInventorySlot, DbInventoryItem>>();
+					var itemsByOwnerID = new Dictionary<string, Dictionary<EInventorySlot, DbInventoryItem>>();
 
 					if (charsBySlot.Any())
 					{
-						var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.MinEquipable)
-							.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.MaxEquipable));
-						var allItems = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
+						var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)EInventorySlot.MinEquipable)
+							.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)EInventorySlot.MaxEquipable));
+						var allItems = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
 
 						foreach (DbInventoryItem item in allItems)
 						{
@@ -138,10 +119,10 @@ namespace DOL.GS.PacketHandler
 							{
 								if (!itemsByOwnerID.ContainsKey(item.OwnerID))
 								{
-									itemsByOwnerID.Add(item.OwnerID, new Dictionary<eInventorySlot, DbInventoryItem>());
+									itemsByOwnerID.Add(item.OwnerID, new Dictionary<EInventorySlot, DbInventoryItem>());
 								}
 
-								itemsByOwnerID[item.OwnerID].Add((eInventorySlot)item.SlotPosition, item);
+								itemsByOwnerID[item.OwnerID].Add((EInventorySlot)item.SlotPosition, item);
 							}
 							catch (Exception ex)
 							{
@@ -159,9 +140,9 @@ namespace DOL.GS.PacketHandler
 						else
 						{
 
-							if (!itemsByOwnerID.TryGetValue(c.ObjectId, out Dictionary<eInventorySlot, DbInventoryItem> charItems))
+							if (!itemsByOwnerID.TryGetValue(c.ObjectId, out Dictionary<EInventorySlot, DbInventoryItem> charItems))
 							{
-								charItems = new Dictionary<eInventorySlot, DbInventoryItem>();
+								charItems = new Dictionary<EInventorySlot, DbInventoryItem>();
 							}
 
 							byte extensionTorso = 0;
@@ -169,17 +150,17 @@ namespace DOL.GS.PacketHandler
 							byte extensionBoots = 0;
 
 
-							if (charItems.TryGetValue(eInventorySlot.TorsoArmor, out DbInventoryItem item))
+							if (charItems.TryGetValue(EInventorySlot.TorsoArmor, out DbInventoryItem item))
 							{
 								extensionTorso = item.Extension;
 							}
 
-							if (charItems.TryGetValue(eInventorySlot.HandsArmor, out item))
+							if (charItems.TryGetValue(EInventorySlot.HandsArmor, out item))
 							{
 								extensionGloves = item.Extension;
 							}
 
-							if (charItems.TryGetValue(eInventorySlot.FeetArmor, out item))
+							if (charItems.TryGetValue(EInventorySlot.FeetArmor, out item))
 							{
 								extensionBoots = item.Extension;
 							}
@@ -215,7 +196,7 @@ namespace DOL.GS.PacketHandler
 							string classname = "";
 							if (c.Class != 0)
 							{
-								classname = ((eCharacterClass)c.Class).ToString();
+								classname = ((EPlayerClass)c.Class).ToString();
 							}
 							pak.WritePascalStringIntLE(classname);
 
@@ -235,17 +216,17 @@ namespace DOL.GS.PacketHandler
 								pak.WriteByte((byte)(region.Expansion + 1)); //0x04-Cata zone, 0x05 - DR zone
 							}
 
-							charItems.TryGetValue(eInventorySlot.RightHandWeapon, out DbInventoryItem rightHandWeapon);
-							charItems.TryGetValue(eInventorySlot.LeftHandWeapon, out DbInventoryItem leftHandWeapon);
-							charItems.TryGetValue(eInventorySlot.TwoHandWeapon, out DbInventoryItem twoHandWeapon);
-							charItems.TryGetValue(eInventorySlot.DistanceWeapon, out DbInventoryItem distanceWeapon);
-							charItems.TryGetValue(eInventorySlot.HeadArmor, out DbInventoryItem helmet);
-							charItems.TryGetValue(eInventorySlot.HandsArmor, out DbInventoryItem gloves);
-							charItems.TryGetValue(eInventorySlot.FeetArmor, out DbInventoryItem boots);
-							charItems.TryGetValue(eInventorySlot.TorsoArmor, out DbInventoryItem torso);
-							charItems.TryGetValue(eInventorySlot.Cloak, out DbInventoryItem cloak);
-							charItems.TryGetValue(eInventorySlot.LegsArmor, out DbInventoryItem legs);
-							charItems.TryGetValue(eInventorySlot.ArmsArmor, out DbInventoryItem arms);
+							charItems.TryGetValue(EInventorySlot.RightHandWeapon, out DbInventoryItem rightHandWeapon);
+							charItems.TryGetValue(EInventorySlot.LeftHandWeapon, out DbInventoryItem leftHandWeapon);
+							charItems.TryGetValue(EInventorySlot.TwoHandWeapon, out DbInventoryItem twoHandWeapon);
+							charItems.TryGetValue(EInventorySlot.DistanceWeapon, out DbInventoryItem distanceWeapon);
+							charItems.TryGetValue(EInventorySlot.HeadArmor, out DbInventoryItem helmet);
+							charItems.TryGetValue(EInventorySlot.HandsArmor, out DbInventoryItem gloves);
+							charItems.TryGetValue(EInventorySlot.FeetArmor, out DbInventoryItem boots);
+							charItems.TryGetValue(EInventorySlot.TorsoArmor, out DbInventoryItem torso);
+							charItems.TryGetValue(EInventorySlot.Cloak, out DbInventoryItem cloak);
+							charItems.TryGetValue(EInventorySlot.LegsArmor, out DbInventoryItem legs);
+							charItems.TryGetValue(EInventorySlot.ArmsArmor, out DbInventoryItem arms);
 
 							pak.WriteShortLowEndian((ushort)(helmet != null ? helmet.Model : 0));
 							pak.WriteShortLowEndian((ushort)(gloves != null ? gloves.Model : 0));
@@ -339,12 +320,12 @@ namespace DOL.GS.PacketHandler
 							pak.WriteByte((byte)c.Realm); // moved
 							pak.WriteByte((byte)((((c.Race & 0x10) << 2) + (c.Race & 0x0F)) | (c.Gender << 4)));
 
-							if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+							if (c.ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 							{
 								pak.WriteByte(0x02);
 								pak.WriteByte(0x02);
 							}
-							else if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+							else if (c.ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 							{
 								pak.WriteByte(0x03);
 								pak.WriteByte(0x03);
@@ -391,7 +372,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendUDPInitReply()
 		{
-			using (var pak = new GSUDPPacketOut(GetPacketCode(eServerPackets.UDPInitReply)))
+			using (var pak = new GsUdpPacketOut(GetPacketCode(EServerPackets.UDPInitReply)))
 			{
 
 				if (!m_gameClient.Socket.Connected) // not using RC4, wont accept UDP packets anyway.
@@ -410,7 +391,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x06); // subcode - player group window
 									 // a 06 00 packet is sent when logging in.
@@ -426,7 +407,7 @@ namespace DOL.GS.PacketHandler
 					{
 						if (living == null) continue;
 						pak.WritePascalString(living.Name);
-						pak.WritePascalString(living is GamePlayer ? ((GamePlayer)living).CharacterClass.Name : "NPC");
+						pak.WritePascalString(living is GamePlayer ? ((GamePlayer)living).PlayerClass.Name : "NPC");
 						pak.WriteShort((ushort)living.ObjectID); //or session id?
 						pak.WriteByte(living.Level);
 					}
@@ -436,7 +417,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
+		protected override void WriteGroupMemberUpdate(GsTcpPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
 		{
 			pak.WriteByte((byte)(0x20 | living.GroupIndex)); // From 1 to 8 // 0x20 is player status code
 			if (living.CurrentRegion != m_gameClient.Player.CurrentRegion)
@@ -455,7 +436,7 @@ namespace DOL.GS.PacketHandler
 
 			var player = living as GamePlayer;
 
-			pak.WriteByte(player?.CharacterClass?.HealthPercentGroupWindow ?? living.HealthPercent);
+			pak.WriteByte(player?.PlayerClass?.HealthPercentGroupWindow ?? living.HealthPercent);
 			pak.WriteByte(living.ManaPercent);
 			pak.WriteByte(living.EndurancePercent); // new in 1.69
 
@@ -470,7 +451,7 @@ namespace DOL.GS.PacketHandler
 				playerStatus |= 0x08;
 			if (player?.Client?.ClientState == GameClient.eClientState.Linkdead)
 				playerStatus |= 0x10;
-			if (living.DebuffCategory[(int)eProperty.SpellRange] != 0 || living.DebuffCategory[(int)eProperty.ArcheryRange] != 0)
+			if (living.DebuffCategory[(int)EProperty.SpellRange] != 0 || living.DebuffCategory[(int)EProperty.ArcheryRange] != 0)
 				playerStatus |= 0x40;
 			pak.WriteByte(playerStatus);
 			// 0x00 = Normal , 0x01 = Dead , 0x02 = Mezzed , 0x04 = Diseased ,
@@ -498,16 +479,16 @@ namespace DOL.GS.PacketHandler
 				{
 					byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();
-					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)eCharacterClass.Necromancer && necro.IsShade)
+					if (living is GamePlayer necro && necro.PlayerClass.ID == (int)EPlayerClass.Necromancer && necro.IsShade)
 						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
 					foreach (var effect in effects)//.Effects.Values)
 												   //foreach (ECSGameEffect effect in effects)
-						if (effect is ECSGameEffect && !effect.IsDisabled)
+						if (effect is EcsGameEffect && !effect.IsDisabled)
 							i++;
 					pak.WriteByte(i);
 					foreach (var effect in effects)//.Effects.Values)
 												   //foreach (ECSGameEffect effect in effects)
-						if (effect is ECSGameEffect && !effect.IsDisabled)
+						if (effect is EcsGameEffect && !effect.IsDisabled)
 						{
 							pak.WriteByte(0);
 							pak.WriteShort(effect.Icon);
@@ -521,7 +502,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendMarketExplorerWindow(IList<DbInventoryItem> items, byte page, byte maxpage)
 		{
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.MarketExplorerWindow)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.MarketExplorerWindow)))
 			{
 				pak.WriteByte((byte)items.Count);
 				pak.WriteByte(page);
@@ -535,24 +516,24 @@ namespace DOL.GS.PacketHandler
 					int value2; // some object types use this field to display count
 					switch (item.Object_Type)
 					{
-						case (int)eObjectType.Arrow:
-						case (int)eObjectType.Bolt:
-						case (int)eObjectType.Poison:
-						case (int)eObjectType.GenericItem:
+						case (int)EObjectType.Arrow:
+						case (int)EObjectType.Bolt:
+						case (int)EObjectType.Poison:
+						case (int)EObjectType.GenericItem:
 							value1 = item.PackSize;
 							value2 = item.SPD_ABS; break;
-						case (int)eObjectType.Thrown:
+						case (int)EObjectType.Thrown:
 							value1 = item.DPS_AF;
 							value2 = item.PackSize; break;
-						case (int)eObjectType.Instrument:
+						case (int)EObjectType.Instrument:
 							value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF); // 0x00 = Lute ; 0x01 = Drum ; 0x03 = Flute
 							value2 = 0; break; // unused
-						case (int)eObjectType.Shield:
+						case (int)EObjectType.Shield:
 							value1 = item.Type_Damage;
 							value2 = item.DPS_AF; break;
-						case (int)eObjectType.GardenObject:
-						case (int)eObjectType.HouseWallObject:
-						case (int)eObjectType.HouseFloorObject:
+						case (int)EObjectType.GardenObject:
+						case (int)EObjectType.HouseWallObject:
+						case (int)EObjectType.HouseFloorObject:
 							value1 = 0;
 							value2 = item.SPD_ABS; break;
 						default:
@@ -561,7 +542,7 @@ namespace DOL.GS.PacketHandler
 					}
 					pak.WriteByte((byte)value1);
 					pak.WriteByte((byte)value2);
-					if (item.Object_Type == (int)eObjectType.GardenObject)
+					if (item.Object_Type == (int)EObjectType.GardenObject)
 					{
 						pak.WriteByte((byte)(item.DPS_AF));
 					}
@@ -638,7 +619,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// 1125d+ Merchant window
 		/// </summary>
-		public override void SendMerchantWindow(MerchantTradeItems tradeItemsList, eMerchantWindowType windowType)
+		public override void SendMerchantWindow(MerchantTradeItems tradeItemsList, EMerchantWindowType windowType)
 		{
 			if (tradeItemsList != null)
 			{
@@ -650,7 +631,7 @@ namespace DOL.GS.PacketHandler
 						continue;
 					}
 
-					using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.MerchantWindow)))
+					using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.MerchantWindow)))
 					{
 						pak.WriteByte((byte)itemsInPage.Count); //Item count on this page
 						pak.WriteByte((byte)windowType);
@@ -674,28 +655,28 @@ namespace DOL.GS.PacketHandler
 								int value2;
 								switch (item.Object_Type)
 								{
-									case (int)eObjectType.Arrow:
-									case (int)eObjectType.Bolt:
-									case (int)eObjectType.Poison:
-									case (int)eObjectType.GenericItem:
+									case (int)EObjectType.Arrow:
+									case (int)EObjectType.Bolt:
+									case (int)EObjectType.Poison:
+									case (int)EObjectType.GenericItem:
 										{
 											value1 = item.PackSize;
 											value2 = value1 * item.Weight;
 											break;
 										}
-									case (int)eObjectType.Thrown:
+									case (int)EObjectType.Thrown:
 										{
 											value1 = item.DPS_AF;
 											value2 = item.PackSize;
 											break;
 										}
-									case (int)eObjectType.Shield:
+									case (int)EObjectType.Shield:
 										{
 											value1 = item.Type_Damage;
 											value2 = item.Weight;
 											break;
 										}
-									case (int)eObjectType.GardenObject:
+									case (int)EObjectType.GardenObject:
 										{
 											value1 = 0;
 											value2 = item.Weight;
@@ -710,7 +691,7 @@ namespace DOL.GS.PacketHandler
 								}
 								pak.WriteByte((byte)value1);
 								pak.WriteByte((byte)item.SPD_ABS);
-								if (item.Object_Type == (int)eObjectType.GardenObject)
+								if (item.Object_Type == (int)EObjectType.GardenObject)
 								{
 									pak.WriteByte((byte)(item.DPS_AF));
 								}
@@ -753,7 +734,7 @@ namespace DOL.GS.PacketHandler
 			}
 			else
 			{
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.MerchantWindow)))
+				using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.MerchantWindow)))
 				{
 					pak.WriteByte(0); //Item count on this page
 					pak.WriteByte((byte)windowType); //Unknown 0x00
@@ -768,7 +749,7 @@ namespace DOL.GS.PacketHandler
         /// </summary>
         public override void SendFurniture(House house)
         {
-            using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HousingItem)))
+            using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HousingItem)))
             {
                 pak.WriteShortLowEndian((ushort)house.HouseNumber);
                 pak.WriteByte((byte)house.IndoorItems.Count);
@@ -789,7 +770,7 @@ namespace DOL.GS.PacketHandler
         /// </summary>
         public override void SendFurniture(House house, int i)
         {
-            using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HousingItem)))
+            using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.HousingItem)))
             {
                 pak.WriteShortLowEndian((ushort)house.HouseNumber);
                 pak.WriteByte(0x01); //cnt
@@ -803,7 +784,7 @@ namespace DOL.GS.PacketHandler
         /// <summary>
         /// Shorts changed to low endian
         /// </summary>
-        protected override void WriteHouseFurniture(GSTCPPacketOut pak, IndoorItem item, int index)
+        protected override void WriteHouseFurniture(GsTcpPacketOut pak, IndoorItem item, int index)
         {
             pak.WriteByte((byte)index);
             byte type = 0;

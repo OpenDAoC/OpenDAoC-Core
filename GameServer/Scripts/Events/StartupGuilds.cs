@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Database;
@@ -40,7 +21,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Enable Starter Guilds
 		/// </summary>
-		[ServerProperty("startup", "starting_guild", "Starter Guild - Edit this to enable/disable the starter guilds", true)]
+		[Properties("startup", "starting_guild", "Starter Guild - Edit this to enable/disable the starter guilds", true)]
 		public static bool STARTING_GUILD;
 
 		/// <summary>
@@ -50,9 +31,9 @@ namespace DOL.GS.GameEvents
 		/// <param name="sender">The sender</param>
 		/// <param name="args">The arguments</param>
 		[ScriptLoadedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 		{
-            GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(AddNewbieToStarterGuild));
+            GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(AddNewbieToStarterGuild));
 
             if (!STARTING_GUILD)
                 return;
@@ -66,9 +47,9 @@ namespace DOL.GS.GameEvents
 		[RefreshCommand]
 		public static void CheckStartupGuilds()
 		{
-            foreach (eRealm currentRealm in Enum.GetValues(typeof(eRealm)))
+            foreach (ERealm currentRealm in Enum.GetValues(typeof(ERealm)))
 			{
-				if (currentRealm == eRealm.None || currentRealm == eRealm.Door)
+				if (currentRealm == ERealm.None || currentRealm == ERealm.Door)
 					continue;
 				
 				CheckGuild(currentRealm,LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName(currentRealm))));
@@ -82,9 +63,9 @@ namespace DOL.GS.GameEvents
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(AddNewbieToStarterGuild));
+			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(AddNewbieToStarterGuild));
 		}
 		
 		/// <summary>
@@ -93,7 +74,7 @@ namespace DOL.GS.GameEvents
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public static void AddNewbieToStarterGuild(DOLEvent e, object sender, EventArgs args)
+		public static void AddNewbieToStarterGuild(CoreEvent e, object sender, EventArgs args)
 		{
 			if (!STARTING_GUILD)
 				return;
@@ -108,7 +89,7 @@ namespace DOL.GS.GameEvents
 			DbAccount account = chArgs.GameClient.Account;
 			
 
-			var guildname = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName((eRealm)ch.Realm)));
+			var guildname = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName((ERealm)ch.Realm)));
 			ch.GuildID = GuildMgr.GuildNameToGuildID(guildname);
 
 			if (ch.GuildID != "")
@@ -122,15 +103,15 @@ namespace DOL.GS.GameEvents
 		/// </summary>
 		/// <param name="currentRealm">Current Realm being checked</param>
 		/// <param name="guildName">The guild name that is being checked</param>
-		private static void CheckGuild(eRealm currentRealm, string guildName)
+		private static void CheckGuild(ERealm currentRealm, string guildName)
 		{
 			if (!GuildMgr.DoesGuildExist(guildName))
 			{
-				Guild newguild = GuildMgr.CreateGuild(currentRealm, guildName);
+				GuildUtil newguild = GuildMgr.CreateGuild(currentRealm, guildName);
 				newguild.Ranks[8].OcHear = true;
 				newguild.Motd = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Motd");
 				newguild.Omotd = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Omotd");
-				newguild.BonusType = Guild.eBonusType.Experience;
+				newguild.BonusType = EGuildBonusType.Experience;
 				newguild.BonusStartTime = DateTime.Now;
 				newguild.Ranks[8].Title =  LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Title");
 				newguild.Ranks[8].Invite = true;

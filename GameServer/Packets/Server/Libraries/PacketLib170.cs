@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -47,7 +28,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepInfo(IGameKeep keep)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepInfo)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepInfo)))
 			{
 
 				pak.WriteShort((ushort)keep.KeepID);
@@ -66,7 +47,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepRealmUpdate(IGameKeep keep)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepRealmUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepRealmUpdate)))
 			{
 
 				pak.WriteShort((ushort)keep.KeepID);
@@ -78,7 +59,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepRemove(IGameKeep keep)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepRemove)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepRemove)))
 			{
 				pak.WriteShort((ushort)keep.KeepID);
 				SendTCP(pak);
@@ -87,7 +68,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentInfo(IGameKeepComponent keepComponent)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentInfo)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentInfo)))
 			{
 				pak.WriteShort((ushort)keepComponent.Keep.KeepID);
 				pak.WriteShort((ushort)keepComponent.ID);
@@ -111,7 +92,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentDetailUpdate(IGameKeepComponent keepComponent)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentDetailUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentDetailUpdate)))
 			{
 				pak.WriteShort((ushort)keepComponent.Keep.KeepID);
 				pak.WriteShort((ushort)keepComponent.ID);
@@ -133,7 +114,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentRemove(IGameKeepComponent keepComponent)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentRemove)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentRemove)))
 			{
 				pak.WriteShort((ushort)keepComponent.Keep.KeepID);
 				pak.WriteShort((ushort)keepComponent.ID);
@@ -143,7 +124,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentUpdate(IGameKeep keep, bool LevelUp)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentUpdate)))
 			{
 				pak.WriteShort((ushort)keep.KeepID);
 				pak.WriteByte((byte)keep.Realm);
@@ -174,7 +155,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || keep == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepClaim)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepClaim)))
 			{
 
 				pak.WriteShort((ushort)keep.KeepID);
@@ -188,7 +169,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentInteract(IGameKeepComponent component)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentInteractResponse)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentInteractResponse)))
 			{
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteByte((byte)component.Keep.Realm);
@@ -210,7 +191,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentHookpointUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentHookpointUpdate)))
 			{
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteShort((ushort)component.ID);
@@ -231,7 +212,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendClearKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentHookpointUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentHookpointUpdate)))
 			{
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteShort((ushort)component.ID);
@@ -243,7 +224,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendHookPointStore(GameKeepHookPoint hookPoint)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepComponentHookpointStore)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepComponentHookpointStore)))
 			{
 				pak.WriteShort((ushort)hookPoint.Component.Keep.KeepID);
 				pak.WriteShort((ushort)hookPoint.Component.ID);
@@ -288,9 +269,9 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void SendQuestPacket(AbstractQuest quest, byte index)
+		protected override void SendQuestPacket(AQuest quest, byte index)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 			{
 				pak.WriteByte(index);
 				if (quest.Step <= 0)
@@ -327,11 +308,11 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.WarMapClaimedKeeps)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.WarMapClaimedKeeps)))
 			{
 				int KeepCount = 0;
 				int TowerCount = 0;
-				foreach (AbstractGameKeep keep in list)
+				foreach (AGameKeep keep in list)
 				{
 					if (keep is GameKeep)
 						KeepCount++;
@@ -351,32 +332,32 @@ namespace DOL.GS.PacketHandler
 				{
 					switch (relic.OriginalRealm)
 	                {
-	                    case eRealm.Albion:
-							if(relic.RelicType==eRelicType.Strength)
+	                    case ERealm.Albion:
+							if(relic.RelicType==ERelicType.Strength)
 							{
 								albStr=(byte)relic.Realm;
 							}
-							if(relic.RelicType==eRelicType.Magic)
+							if(relic.RelicType==ERelicType.Magic)
 							{
 								albMagic=(byte)relic.Realm;
 							}
 							break;
-						case eRealm.Hibernia:
-							if(relic.RelicType==eRelicType.Strength)
+						case ERealm.Hibernia:
+							if(relic.RelicType==ERelicType.Strength)
 							{
 								hibStr=(byte)relic.Realm;
 							}
-							if(relic.RelicType==eRelicType.Magic)
+							if(relic.RelicType==ERelicType.Magic)
 							{
 								hibMagic=(byte)relic.Realm;
 							}
 							break;
-						case eRealm.Midgard:
-							if(relic.RelicType==eRelicType.Strength)
+						case ERealm.Midgard:
+							if(relic.RelicType==ERelicType.Strength)
 							{
 								midStr=(byte)relic.Realm;
 							}
-							if(relic.RelicType==eRelicType.Magic)
+							if(relic.RelicType==ERelicType.Magic)
 							{
 								midMagic=(byte)relic.Realm;
 							}
@@ -389,7 +370,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(albMagic);
 				pak.WriteByte(midMagic);
 				pak.WriteByte(hibMagic);
-				foreach (AbstractGameKeep keep in list)
+				foreach (AGameKeep keep in list)
 	            {
 	                int keepId = keep.KeepID;
 
@@ -406,19 +387,19 @@ namespace DOL.GS.PacketHandler
 					int map = (id - 25) / 25;
 					int index = id - (map * 25 + 25);
 					int flag = (byte)keep.Realm; // 3 bits
-					Guild guild = keep.Guild;
+					GuildUtil guild = keep.Guild;
 					string name = "";
 					pak.WriteByte((byte)((map << 6) | (index << 3) | tower));
 					if (guild != null)
 					{
-						flag |= (byte)eRealmWarmapKeepFlags.Claimed;
+						flag |= (byte)ERealmWarmapKeepFlags.Claimed;
 						name = guild.Name;
 					}
 
 					//Teleport
-					if (m_gameClient.Account.PrivLevel > (int)ePrivLevel.Player)
+					if (m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player)
 					{
-						flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+						flag |= (byte)ERealmWarmapKeepFlags.Teleportable;
 					}
 					else
 					{
@@ -429,7 +410,7 @@ namespace DOL.GS.PacketHandler
 							{
 								if (theKeep.OwnsAllTowers && !theKeep.InCombat)
 								{
-									flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+									flag |= (byte)ERealmWarmapKeepFlags.Teleportable;
 								}
 							}
 						}
@@ -437,7 +418,7 @@ namespace DOL.GS.PacketHandler
 
 					if (keep.InCombat)
 					{
-						flag |= (byte)eRealmWarmapKeepFlags.UnderSiege;
+						flag |= (byte)ERealmWarmapKeepFlags.UnderSiege;
 					}
 
 					pak.WriteByte((byte)flag);
@@ -457,28 +438,28 @@ namespace DOL.GS.PacketHandler
 			int MidKeeps = 0;
 			int HibKeeps = 0;
 			int OwnerDFTowers = 0;
-			eRealm OwnerDF = eRealm.None;
+			ERealm OwnerDF = ERealm.None;
 
-			foreach (AbstractGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
+			foreach (AGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
 			{
 				if (keep is GameKeep)
 				{
-					switch ((eRealm)keep.Realm)
+					switch ((ERealm)keep.Realm)
 					{
-						case eRealm.Albion: AlbKeeps++; break;
-						case eRealm.Midgard: MidKeeps++; break;
-						case eRealm.Hibernia: HibKeeps++; break;
+						case ERealm.Albion: AlbKeeps++; break;
+						case ERealm.Midgard: MidKeeps++; break;
+						case ERealm.Hibernia: HibKeeps++; break;
 						default:
 							break;
 					}
 				}
 				else
 				{
-					switch ((eRealm)keep.Realm)
+					switch ((ERealm)keep.Realm)
 					{
-						case eRealm.Albion: AlbTowers++; break;
-						case eRealm.Midgard: MidTowers++; break;
-						case eRealm.Hibernia: HibTowers++; break;
+						case ERealm.Albion: AlbTowers++; break;
+						case ERealm.Midgard: MidTowers++; break;
+						case ERealm.Hibernia: HibTowers++; break;
 						default:
 							break;
 					}
@@ -486,32 +467,32 @@ namespace DOL.GS.PacketHandler
 			}
 			if (AlbTowers > MidTowers && AlbTowers > HibTowers)
 			{
-				OwnerDF = eRealm.Albion;
+				OwnerDF = ERealm.Albion;
 				OwnerDFTowers = AlbTowers;
 			}
 			else if (MidTowers > AlbTowers && MidTowers > HibTowers)
 			{
-				OwnerDF = eRealm.Midgard;
+				OwnerDF = ERealm.Midgard;
 				OwnerDFTowers = MidTowers;
 			}
 			else if (HibTowers > AlbTowers && HibTowers > MidTowers)
 			{
-				OwnerDF = eRealm.Hibernia;
+				OwnerDF = ERealm.Hibernia;
 				OwnerDFTowers = HibTowers;
 			}
 			int RealmKeeps = 0;
 			int RealmTowers = 0;
-			switch ((eRealm)m_gameClient.Player.Realm)
+			switch ((ERealm)m_gameClient.Player.Realm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					RealmKeeps = AlbKeeps;
 					RealmTowers = AlbTowers;
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					RealmKeeps = MidKeeps;
 					RealmTowers = MidTowers;
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					RealmKeeps = HibKeeps;
 					RealmTowers = HibTowers;
 					break;
@@ -519,11 +500,11 @@ namespace DOL.GS.PacketHandler
 					break;
 			}
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.WarmapBonuses)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.WarmapBonuses)))
 			{
 				pak.WriteByte((byte)RealmKeeps);
-				int magic = RelicMgr.GetRelicCount(m_gameClient.Player.Realm, eRelicType.Magic);
-				int strength = RelicMgr.GetRelicCount(m_gameClient.Player.Realm, eRelicType.Strength);
+				int magic = RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Magic);
+				int strength = RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Strength);
 				byte relics = (byte)(magic << 4 | strength);
 				pak.WriteByte(relics);
 				pak.WriteByte((byte)OwnerDF);
@@ -533,7 +514,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendWarmapDetailUpdate(List<List<byte>> fights, List<List<byte>> groups)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.WarMapDetailUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.WarMapDetailUpdate)))
 			{
 				pak.WriteByte((byte)fights.Count);// count - Fights (Byte)
 				pak.WriteByte((byte)groups.Count);// count - Groups (Byte)
@@ -571,19 +552,19 @@ namespace DOL.GS.PacketHandler
 					byte realm = obj[3];
 
 					pak.WriteByte((byte)((realm == 3) ? 0x04 : (realm == 2) ? 0x02 : 0x01));//	color   ( Groups:  0x01 - Alb  , 0x02 - Mid , 0x04 - Hib
-					switch ((eRealm)obj[3])
+					switch ((ERealm)obj[3])
 					{
 						//	type    ( Groups:	Alb:	type	   0x03,0x02,0x01	& 0x03
 						//						Mid:	type << 2  0x0C,0x08,0x04 	& 0x03
 						//						Hib:	type << 4  0x30,0x20,0x10	& 0x03  )
-						case eRealm.Albion:
+						case ERealm.Albion:
 						default:
 							pak.WriteByte(obj[4]);
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							pak.WriteByte((byte)(obj[4] << 2));
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							pak.WriteByte((byte)(obj[4] << 4));
 							break;
 					}

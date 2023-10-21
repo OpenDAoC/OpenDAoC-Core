@@ -28,7 +28,7 @@ namespace DOL.GS
                        
         }
 
-        public override int ChangeHealth(GameObject changeSource, eHealthChangeType healthChangeType, int changeAmount)
+        public override int ChangeHealth(GameObject changeSource, EHealthChangeType healthChangeType, int changeAmount)
         {
             if (StartCheck)
             {
@@ -45,7 +45,7 @@ namespace DOL.GS
         {
             Name = "Heal Dummy";
             GuildName = "Dummy Union";
-            base.ChangeHealth(this, eHealthChangeType.Spell, -200);
+            base.ChangeHealth(this, EHealthChangeType.Spell, -200);
             Model = 34;
             return base.AddToWorld(); // Finish up and add him to the world.
         }

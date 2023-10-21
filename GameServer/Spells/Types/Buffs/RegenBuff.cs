@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections;
 using System.Collections.Specialized;
 using DOL.GS.Effects;
@@ -29,12 +10,12 @@ namespace DOL.GS.Spells
 	/// Health regeneration rate buff
 	/// </summary>
 	[SpellHandler("HealthRegenBuff")]
-	public class HealthRegenSpellHandler : PropertyChangingSpell
+	public class HealthRegenSpell : PropertyChangingSpell
 	{
-		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-		public override eProperty Property1 { get { return eProperty.HealthRegenerationRate; } }
+		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
+		public override EProperty Property1 { get { return EProperty.HealthRegenerationRate; } }
 
-		public HealthRegenSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
+		public HealthRegenSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
 
 	/// <summary>
@@ -45,14 +26,14 @@ namespace DOL.GS.Spells
 	{
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-            if (target is GamePlayer && (((GamePlayer)target).CharacterClass.ID == (int)eCharacterClass.Vampiir
-                || ((GamePlayer)target).CharacterClass.ID == (int)eCharacterClass.MaulerAlb
-                || ((GamePlayer)target).CharacterClass.ID == (int)eCharacterClass.MaulerMid
-                || ((GamePlayer)target).CharacterClass.ID == (int)eCharacterClass.MaulerHib)) { MessageToCaster("This spell has no effect on this class!", eChatType.CT_Spell); return; }
+            if (target is GamePlayer && (((GamePlayer)target).PlayerClass.ID == (int)EPlayerClass.Vampiir
+                || ((GamePlayer)target).PlayerClass.ID == (int)EPlayerClass.MaulerAlb
+                || ((GamePlayer)target).PlayerClass.ID == (int)EPlayerClass.MaulerMid
+                || ((GamePlayer)target).PlayerClass.ID == (int)EPlayerClass.MaulerHib)) { MessageToCaster("This spell has no effect on this class!", EChatType.CT_Spell); return; }
 			base.ApplyEffectOnTarget(target);
 		}
-		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-		public override eProperty Property1 { get { return eProperty.PowerRegenerationRate; } }
+		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
+		public override EProperty Property1 { get { return EProperty.PowerRegenerationRate; } }
 
 		public PowerRegenSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
@@ -61,10 +42,10 @@ namespace DOL.GS.Spells
 	/// Endurance regeneration rate buff
 	/// </summary>
 	[SpellHandler("EnduranceRegenBuff")]
-	public class EnduranceRegenSpellHandler : PropertyChangingSpell
+	public class EnduranceRegenSpell : PropertyChangingSpell
 	{
-		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-		public override eProperty Property1 { get { return eProperty.EnduranceRegenerationRate; } }
+		public override EBuffBonusCategory BonusCategory1 { get { return EBuffBonusCategory.BaseBuff; } }
+		public override EProperty Property1 { get { return EProperty.EnduranceRegenerationRate; } }
 
 		/// <summary>
 		/// The max range from caster to owner for all conc buffs
@@ -156,19 +137,19 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Checks effect owner distance and cancels the effect if too far
 		/// </summary>
-		private sealed class RangeCheckAction : ECSGameTimerWrapperBase
+		private sealed class RangeCheckAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The list of effects
 			/// </summary>
-			private readonly EnduranceRegenSpellHandler m_handler;
+			private readonly EnduranceRegenSpell m_handler;
 
 			/// <summary>
 			/// Constructs a new RangeCheckAction
 			/// </summary>
 			/// <param name="actionSource">The action source</param>
 			/// <param name="handler">The spell handler</param>
-			public RangeCheckAction(GameLiving actionSource, EnduranceRegenSpellHandler handler) : base(actionSource)
+			public RangeCheckAction(GameLiving actionSource, EnduranceRegenSpell handler) : base(actionSource)
 			{
 				m_handler = handler;
 			}
@@ -176,7 +157,7 @@ namespace DOL.GS.Spells
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				IDictionary effects = m_handler.m_concEffects;
 				GameLiving caster = (GameLiving) timer.Owner;
@@ -236,6 +217,6 @@ namespace DOL.GS.Spells
 		/// <param name="caster">The spell caster</param>
 		/// <param name="spell">The spell used</param>
 		/// <param name="line">The spell line used</param>
-		public EnduranceRegenSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
+		public EnduranceRegenSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
 }

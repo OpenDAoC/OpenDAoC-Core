@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -41,25 +22,25 @@ namespace DOL.GS.PacketHandler
 		}
 
 		// Dunnerholl 2009-09-10 i do not like the way this is done
-		public override void SendCharacterOverview(eRealm realm)
+		public override void SendCharacterOverview(ERealm realm)
 		{
 			int firstAccountSlot;
 			switch (realm)
 			{
-				case eRealm.Albion:
+				case ERealm.Albion:
 					firstAccountSlot = 100;
 					break;
-				case eRealm.Midgard:
+				case ERealm.Midgard:
 					firstAccountSlot = 200;
 					break;
-				case eRealm.Hibernia:
+				case ERealm.Hibernia:
 					firstAccountSlot = 300;
 					break;
 				default:
 					throw new Exception("CharacterOverview requested for unknown realm " + realm);
 			}
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CharacterOverview)))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
 				IList<DbInventoryItem> items;
@@ -78,7 +59,7 @@ namespace DOL.GS.PacketHandler
 							if (characters[j].AccountSlot == i)
 							{
 								pak.FillString(characters[j].Name, 24);
-								items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
+								items = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
 								byte ExtensionTorso = 0;
 								byte ExtensionGloves = 0;
 								byte ExtensionBoots = 0;
@@ -127,7 +108,7 @@ namespace DOL.GS.PacketHandler
 								}
 								else
 								{
-									pak.FillString(((eCharacterClass)characters[j].Class).ToString(), 24); //Class name
+									pak.FillString(((EPlayerClass)characters[j].Class).ToString(), 24); //Class name
 								}
 								//pak.FillString(GamePlayer.RACENAMES[characters[j].Race], 24);
 	                            pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
@@ -173,7 +154,7 @@ namespace DOL.GS.PacketHandler
 									int l;
 									if (k == 0x15 + 3)
 										//shield emblem
-										l = (int)eInventorySlot.LeftHandWeapon;
+										l = (int)EInventorySlot.LeftHandWeapon;
 									else
 										l = k;
 
@@ -207,12 +188,12 @@ namespace DOL.GS.PacketHandler
 									if (found == 0)
 										pak.WriteShort(0x00);
 								}
-								if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+								if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 								{
 									pak.WriteByte(0x02);
 									pak.WriteByte(0x02);
 								}
-								else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+								else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 								{
 									pak.WriteByte(0x03);
 									pak.WriteByte(0x03);
@@ -223,16 +204,16 @@ namespace DOL.GS.PacketHandler
 									byte lefthand = 0xFF;
 									foreach (DbInventoryItem item in items)
 									{
-										if (item.SlotPosition == (int)eInventorySlot.RightHandWeapon)
+										if (item.SlotPosition == (int)EInventorySlot.RightHandWeapon)
 											righthand = 0x00;
-										if (item.SlotPosition == (int)eInventorySlot.LeftHandWeapon)
+										if (item.SlotPosition == (int)EInventorySlot.LeftHandWeapon)
 											lefthand = 0x01;
 									}
 									if (righthand == lefthand)
 									{
-										if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+										if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 											righthand = lefthand = 0x02;
-										else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+										else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 											righthand = lefthand = 0x03;
 									}
 									pak.WriteByte(righthand);

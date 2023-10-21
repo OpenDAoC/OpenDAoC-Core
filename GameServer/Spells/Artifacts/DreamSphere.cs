@@ -1,36 +1,11 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.Events;
 using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
-    /// <summary>
-    /// Dream Sphere self morph spell handler
-    /// The DoT proc is a subspell, affects only caster
-    /// </summary>
-    
-    //the self dream-morph doesnt break on damage/attacked by enemy only grp-target 1 does
     [SpellHandler("DreamMorph")]
-    public class DreamMorph : OffensiveProcSpellHandler
+    public class DreamMorph : OffensiveProcSpell
 	{   	
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
@@ -47,11 +22,11 @@ namespace DOL.GS.Spells
                         Effect.SpellHandler.Spell.SpellType.Equals("AtlantisTabletMorph") || 
                         Effect.SpellHandler.Spell.SpellType.Equals("AlvarusMorph"))
                     {
-                        player.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.eChatType.CT_SpellResisted, DOL.GS.PacketHandler.eChatLoc.CL_ChatWindow);
+                        player.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.EChatType.CT_SpellResisted, DOL.GS.PacketHandler.EChatLoc.CL_ChatWindow);
                         return;
                     }
                 }
-				if(player.CharacterClass.ID!=(byte)eCharacterClass.Necromancer && (ushort)Spell.LifeDrainReturn > 0) 
+				if(player.PlayerClass.ID!=(byte)EPlayerClass.Necromancer && (ushort)Spell.LifeDrainReturn > 0) 
                     player.Model = (ushort)Spell.LifeDrainReturn;
 				player.Out.SendUpdatePlayer();
 			}
@@ -62,7 +37,7 @@ namespace DOL.GS.Spells
 			if(effect.Owner is GamePlayer)
 			{
 				GamePlayer player=effect.Owner as GamePlayer; 				
-				if(player.CharacterClass.ID!=(byte)eCharacterClass.Necromancer) player.Model = player.CreationModel;
+				if(player.PlayerClass.ID!=(byte)EPlayerClass.Necromancer) player.Model = player.CreationModel;
 				player.Out.SendUpdatePlayer();
 			}	
 			return base.OnEffectExpires(effect,noMessages);
@@ -101,24 +76,24 @@ namespace DOL.GS.Spells
                     Effect.SpellHandler.Spell.SpellType.Equals("AtlantisTabletMorph") || 
                     Effect.SpellHandler.Spell.SpellType.Equals("AlvarusMorph"))
                 {
-                    player.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.eChatType.CT_SpellResisted, DOL.GS.PacketHandler.eChatLoc.CL_ChatWindow);
+                    player.Out.SendMessage("You already have an active morph!", DOL.GS.PacketHandler.EChatType.CT_SpellResisted, DOL.GS.PacketHandler.EChatLoc.CL_ChatWindow);
                     return;
                 }
             }
             if(player == null) return;
             //GameEventMgr.AddHandler(player, GamePlayerEvent.TakeDamage, new DOLEventHandler(LivingTakeDamage));
-			GameEventMgr.AddHandler(player, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(LivingTakeDamage));
+			GameEventMgr.AddHandler(player, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(LivingTakeDamage));
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
             GamePlayer player = effect.Owner as GamePlayer;
             if(player == null) return base.OnEffectExpires(effect, noMessages);
             //GameEventMgr.RemoveHandler(player, GamePlayerEvent.TakeDamage, new DOLEventHandler(LivingTakeDamage));
-			GameEventMgr.RemoveHandler(player, GamePlayerEvent.AttackedByEnemy, new DOLEventHandler(LivingTakeDamage));
+			GameEventMgr.RemoveHandler(player, GamePlayerEvent.AttackedByEnemy, new CoreEventHandler(LivingTakeDamage));
             return base.OnEffectExpires(effect, noMessages);
         }
         // Event : player takes damage, effect cancels
-        private void LivingTakeDamage(DOLEvent e, object sender, EventArgs args)
+        private void LivingTakeDamage(CoreEvent e, object sender, EventArgs args)
         {
             OnEffectExpires(m_effect, true);
         }

@@ -11,7 +11,7 @@ namespace DOL.AI.Brain
 	{
 		protected GameKeepGuard _keepGuardBody;
 
-		public override GameNPC Body
+		public override GameNpc Body
 		{
 			get => _keepGuardBody;
 			set => _keepGuardBody = value is GameKeepGuard gameKeepGuard ? gameKeepGuard : new GameKeepGuard(); // Dummy object to avoid errors caused by bad DB entries
@@ -45,8 +45,8 @@ namespace DOL.AI.Brain
 				{
 					GamePlayer losChecker = null;
 
-					if (target is GameNPC && (target as GameNPC).Brain is IControlledBrain)
-						losChecker = ((target as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+					if (target is GameNpc && (target as GameNpc).Brain is IControlledBrain)
+						losChecker = ((target as GameNpc).Brain as IControlledBrain).GetPlayerOwner();
 					else if (target is GamePlayer)
 						losChecker = target as GamePlayer;
 
@@ -57,7 +57,7 @@ namespace DOL.AI.Brain
 				// Drop aggro and disengage if the target is out of range
 				if (Body.IsAttacking && !Body.IsWithinRadius(target, AggroRange, false))
 				{
-					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+					FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 
 					if (target is GameLiving livingTarget && livingTarget != null)
 						RemoveFromAggroList(livingTarget);
@@ -101,7 +101,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		protected override void CheckNPCAggro()
 		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
+			foreach (GameNpc npc in Body.GetNPCsInRadius((ushort)AggroRange))
 			{
 				// Non-pet NPCs are ignored
 				if (npc is GameKeepGuard || npc.Brain == null || npc.Brain is not IControlledBrain)
@@ -127,8 +127,8 @@ namespace DOL.AI.Brain
 
 			GamePlayer checkPlayer = null;
 
-			if (target is GameNPC && (target as GameNPC).Brain is IControlledBrain)
-				checkPlayer = ((target as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+			if (target is GameNpc && (target as GameNpc).Brain is IControlledBrain)
+				checkPlayer = ((target as GameNpc).Brain as IControlledBrain).GetPlayerOwner();
 			else if (target is GamePlayer)
 				checkPlayer = target as GamePlayer;
 
@@ -149,7 +149,7 @@ namespace DOL.AI.Brain
 
 				if (gameObject is GameLiving gameLiving)
 				{
-					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+					FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
 					RemoveFromAggroList(gameLiving);
 				}
 			}

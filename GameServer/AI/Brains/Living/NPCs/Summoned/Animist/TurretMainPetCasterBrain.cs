@@ -1,9 +1,8 @@
 using DOL.GS;
 
-namespace DOL.AI.Brain
+namespace DOL.AI.Brain;
+
+public class TurretMainPetCasterBrain : TurretBrain
 {
-    public class TurretMainPetCasterBrain : TurretBrain
-    {
-        public TurretMainPetCasterBrain(GameLiving owner) : base(owner) { }
-    }
+    public TurretMainPetCasterBrain(GameLiving owner) : base(owner) { }
 }

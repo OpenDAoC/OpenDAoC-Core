@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using DOL.Database;
@@ -25,11 +6,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Quests
 {
-	/// <summary>
-	/// Declares a Money task.
-	/// Bring Item A to NPC B
-	/// </summary>
-	public class MoneyTask : AbstractTask
+	public class MoneyTask : ATask
 	{
 		// Chance of npc having task for player
 		protected new const int CHANCE=35;
@@ -122,7 +99,7 @@ namespace DOL.GS.Quests
 		/// <param name="e">The event type</param>
 		/// <param name="sender">The sender of the event</param>
 		/// <param name="args">The event arguments</param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
             // Filter only the events from task owner
             if (sender != m_taskPlayer)
@@ -144,7 +121,7 @@ namespace DOL.GS.Quests
 				if(player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
 				{
 					player.Inventory.RemoveItem(item);
-                    InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
+                    InventoryLogging.LogInventoryAction(player, target, EInventoryActionType.Quest, item.Template, item.Count);
 					FinishTask();
 				}
 			}	
@@ -175,10 +152,10 @@ namespace DOL.GS.Quests
 			if (source == null)
 				return false;
 
-			GameNPC NPC = GetRandomNPC(player);
+			GameNpc NPC = GetRandomNPC(player);
 			if(NPC == null)
 			{
-				player.Out.SendMessage("I have no task for you, come back some time later.",eChatType.CT_System,eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("I have no task for you, come back some time later.",EChatType.CT_System,EChatLoc.CL_PopupWindow);
 				return false;
 			}
 			else
@@ -191,7 +168,7 @@ namespace DOL.GS.Quests
 				player.Task.ReceiverName = NPC.Name;
 				((MoneyTask)player.Task).RecieverZone = NPC.CurrentZone.Description;
 				
-				player.Out.SendMessage("Bring "+TaskItems.GetName(0,false)+" to "+NPC.Name +" in "+ NPC.CurrentZone.Description, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Bring "+TaskItems.GetName(0,false)+" to "+NPC.Name +" in "+ NPC.CurrentZone.Description, EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				//Player.Out.SendCustomDialog("", new CustomDialogResponse(TaskDialogResponse));
 
 				player.ReceiveItem(source,TaskItems);
@@ -206,9 +183,9 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="Player">The GamePlayer Object</param>		
 		/// <returns>The GameNPC Searched</returns>
-		public static GameNPC GetRandomNPC(GamePlayer Player)
+		public static GameNpc GetRandomNPC(GamePlayer Player)
 		{
-			return Player.CurrentZone.GetRandomNPC(new eRealm[]{eRealm.Albion,eRealm.Hibernia,eRealm.Midgard});			
+			return Player.CurrentZone.GetRandomNPC(new ERealm[]{ERealm.Albion,ERealm.Hibernia,ERealm.Midgard});			
 		}
 
 		public new static bool CheckAvailability(GamePlayer player, GameLiving target)
@@ -218,7 +195,7 @@ namespace DOL.GS.Quests
 
 			if (target is GameTrainer || target is GameMerchant || target.Name.IndexOf("Crier")>=0) 
 			{
-				return AbstractTask.CheckAvailability(player,target,CHANCE);
+				return ATask.CheckAvailability(player,target,CHANCE);
 			} 
 			else 
 			{

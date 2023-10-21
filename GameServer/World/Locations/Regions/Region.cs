@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -140,7 +121,7 @@ namespace DOL.GS
         /// <summary>
         /// The Region Mob's Respawn Timer Collection
         /// </summary>
-        protected readonly ConcurrentDictionary<GameNPC, int> m_mobsRespawning = new();
+        protected readonly ConcurrentDictionary<GameNpc, int> m_mobsRespawning = new();
 
         #endregion
 
@@ -577,7 +558,7 @@ namespace DOL.GS
         /// Create a keep for this region
         /// </summary>
         /// <returns></returns>
-        public virtual AbstractGameKeep CreateGameKeep()
+        public virtual AGameKeep CreateGameKeep()
         {
             return new GameKeep();
         }
@@ -586,7 +567,7 @@ namespace DOL.GS
         /// Create a new Relic keep for this region
         /// </summary>
         /// <returns></returns>
-        public virtual AbstractGameKeep CreateRelicGameKeep()
+        public virtual AGameKeep CreateRelicGameKeep()
         {
             return new RelicGameKeep();
         }
@@ -595,7 +576,7 @@ namespace DOL.GS
         /// Create the appropriate GameKeepTower for this region
         /// </summary>
         /// <returns></returns>
-        public virtual AbstractGameKeep CreateGameKeepTower()
+        public virtual AGameKeep CreateGameKeepTower()
         {
             return new GameKeepTower();
         }
@@ -662,7 +643,7 @@ namespace DOL.GS
             set { m_isNightTime = value; }
         }
 
-        public virtual ConcurrentDictionary<GameNPC, int> MobsRespawning
+        public virtual ConcurrentDictionary<GameNpc, int> MobsRespawning
         {
         	get
         	{
@@ -727,8 +708,8 @@ namespace DOL.GS
                 return;
 
             Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
-            var staticObjs = DOLDB<DbWorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
-            var bindPoints = DOLDB<DbBindPoint>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
+            var staticObjs = CoreDb<DbWorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
+            var bindPoints = CoreDb<DbBindPoint>.SelectObjects(DB.Column("Region").IsEqualTo(ID));
             int count = mobObjs.Length + staticObjs.Count;
             if (count > 0) PreAllocateRegionSpace(count + 100);
             int myItemCount = staticObjs.Count;
@@ -741,7 +722,7 @@ namespace DOL.GS
             {
                 foreach (DbMob mob in mobObjs)
                 {
-                    GameNPC myMob = null;
+                    GameNpc myMob = null;
                     string error = string.Empty;
   
                     // Default Classtype
@@ -755,15 +736,15 @@ namespace DOL.GS
                     }
                     
 
-                    if (Properties.USE_NPCGUILDSCRIPTS && mob.Guild.Length > 0 && mob.Realm >= 0 && mob.Realm <= (int)eRealm._Last)
+                    if (Properties.USE_NPCGUILDSCRIPTS && mob.Guild.Length > 0 && mob.Realm >= 0 && mob.Realm <= (int)ERealm._Last)
                     {
-                        Type type = ScriptMgr.FindNPCGuildScriptClass(mob.Guild, (eRealm)mob.Realm);
+                        Type type = ScriptMgr.FindNPCGuildScriptClass(mob.Guild, (ERealm)mob.Realm);
                         if (type != null)
                         {
                             try
                             {
                                 
-                                myMob = (GameNPC)type.Assembly.CreateInstance(type.FullName);
+                                myMob = (GameNpc)type.Assembly.CreateInstance(type.FullName);
                                	
                             }
                             catch (Exception e)
@@ -788,7 +769,7 @@ namespace DOL.GS
 
                         try
                         {
-                            myMob = (GameNPC)gasm.CreateInstance(classtype, false);
+                            myMob = (GameNpc)gasm.CreateInstance(classtype, false);
                         }
                         catch
                         {
@@ -801,7 +782,7 @@ namespace DOL.GS
                             {
                                 try
                                 {
-                                    myMob = (GameNPC)asm.CreateInstance(classtype, false);
+                                    myMob = (GameNpc)asm.CreateInstance(classtype, false);
                                     error = string.Empty;
                                 }
                                 catch
@@ -815,7 +796,7 @@ namespace DOL.GS
 
                             if (myMob == null)
                             {
-                                myMob = new GameNPC();
+                                myMob = new GameNpc();
                                 error = classtype;
                             }
                         }
@@ -1415,22 +1396,22 @@ namespace DOL.GS
 
         #region Notify
 
-        public virtual void Notify(DOLEvent e, object sender, EventArgs args)
+        public virtual void Notify(CoreEvent e, object sender, EventArgs args)
         {
             GameEventMgr.Notify(e, sender, args);
         }
 
-        public virtual void Notify(DOLEvent e, object sender)
+        public virtual void Notify(CoreEvent e, object sender)
         {
             Notify(e, sender, null);
         }
 
-        public virtual void Notify(DOLEvent e)
+        public virtual void Notify(CoreEvent e)
         {
             Notify(e, null, null);
         }
 
-        public virtual void Notify(DOLEvent e, EventArgs args)
+        public virtual void Notify(CoreEvent e, EventArgs args)
         {
             Notify(e, null, args);
         }
@@ -1439,7 +1420,7 @@ namespace DOL.GS
 
         #region Get in radius
 
-        public List<T> GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius) where T : GameObject
+        public List<T> GetInRadius<T>(Point3D point, EGameObjectType objectType, ushort radius) where T : GameObject
         {
             // Check if we are around borders of a zone.
             Zone startingZone = GetZone(point.X, point.Y);
@@ -1509,22 +1490,22 @@ namespace DOL.GS
 
         public List<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameStaticItem>(point, eGameObjectType.ITEM, radius);
+            return GetInRadius<GameStaticItem>(point, EGameObjectType.ITEM, radius);
         }
 
-        public List<GameNPC> GetNPCsInRadius(Point3D point, ushort radius)
+        public List<GameNpc> GetNPCsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameNPC>(point, eGameObjectType.NPC, radius);
+            return GetInRadius<GameNpc>(point, EGameObjectType.NPC, radius);
         }
 
         public List<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GamePlayer>(point, eGameObjectType.PLAYER, radius);
+            return GetInRadius<GamePlayer>(point, EGameObjectType.PLAYER, radius);
         }
 
         public List<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, radius);
+            return GetInRadius<GameDoorBase>(point, EGameObjectType.DOOR, radius);
         }
 
         #endregion
@@ -1552,13 +1533,13 @@ namespace DOL.GS
 	/// </summary>
 	public class NPCDistEntry
 	{
-		public NPCDistEntry(GameNPC o, int distance)
+		public NPCDistEntry(GameNpc o, int distance)
 		{
 			NPC = o;
 			Distance = distance;
 		}
 
-		public GameNPC NPC;
+		public GameNpc NPC;
 		public int Distance;
 	}
 

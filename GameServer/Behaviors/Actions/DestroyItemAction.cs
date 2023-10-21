@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.Database;
@@ -27,31 +8,31 @@ using DOL.Language;
 
 namespace DOL.GS.Behaviour.Actions
 {
-    [Action(ActionType = eActionType.DestroyItem,DefaultValueQ = 1)]
-    public class DestroyItemAction : AbstractAction<DbItemTemplate,int>
+    [Action(ActionType = EActionType.DestroyItem,DefaultValueQ = 1)]
+    public class DestroyItemAction : AAction<DbItemTemplate,int>
     {
 
-        public DestroyItemAction(GameNPC defaultNPC,  Object p, Object q)
-            : base(defaultNPC, eActionType.DestroyItem, p, q)
+        public DestroyItemAction(GameNpc defaultNPC,  Object p, Object q)
+            : base(defaultNPC, EActionType.DestroyItem, p, q)
         {                
         }
 
 
-        public DestroyItemAction(GameNPC defaultNPC, DbItemTemplate itemTemplate, int quantity)
+        public DestroyItemAction(GameNpc defaultNPC, DbItemTemplate itemTemplate, int quantity)
             : this(defaultNPC, (object)itemTemplate,(object) quantity) { }
         
 
 
-        public override void Perform(DOLEvent e, object sender, EventArgs args)
+        public override void Perform(CoreEvent e, object sender, EventArgs args)
         {
-            GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
+            GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
             int count = Q;
             DbItemTemplate itemToDestroy = P;
 
 			Dictionary<DbInventoryItem, int?> dataSlots = new Dictionary<DbInventoryItem, int?>(10);
             lock (player.Inventory)
             {
-                var allBackpackItems = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                var allBackpackItems = player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
                 bool result = false;
                 foreach (DbInventoryItem item in allBackpackItems)
@@ -110,18 +91,18 @@ namespace DOL.GS.Behaviour.Actions
                 if (!de.Value.HasValue)
                 {
                     playerInventory.RemoveItem(de.Key);
-                    InventoryLogging.LogInventoryAction(player, NPC, eInventoryActionType.Quest, de.Key.Template, de.Key.Count);
+                    InventoryLogging.LogInventoryAction(player, NPC, EInventoryActionType.Quest, de.Key.Template, de.Key.Count);
                 }
                 else
                 {
                     playerInventory.RemoveCountFromStack(de.Key, de.Value.Value);
-                    InventoryLogging.LogInventoryAction(player, NPC, eInventoryActionType.Quest, de.Key.Template, de.Value.Value);
+                    InventoryLogging.LogInventoryAction(player, NPC, EInventoryActionType.Quest, de.Key.Template, de.Value.Value);
                 }
             }
             playerInventory.CommitChanges();
 
 
-            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.DestroyItemAction.Destroyed", itemToDestroy.Name), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Behaviour.DestroyItemAction.Destroyed", itemToDestroy.Name), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
         }
     }
 }

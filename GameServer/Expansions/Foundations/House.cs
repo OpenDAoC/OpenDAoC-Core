@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,17 +43,17 @@ namespace DOL.GS.Housing
 			set { _databaseItem.Model = value; }
 		}
 
-		public eRealm Realm
+		public ERealm Realm
 		{
 			get
 			{
 				if (Model < 5)
-					return eRealm.Albion;
+					return ERealm.Albion;
 
 				if (Model < 9)
-					return eRealm.Midgard;
+					return ERealm.Midgard;
 
-				return eRealm.Hibernia;
+				return ERealm.Hibernia;
 			}
 		}
 
@@ -469,9 +450,9 @@ namespace DOL.GS.Housing
 				text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.Level", "Lot"));
 
 			text.Add(" ");
-			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.Lockbox", Money.GetString(KeptMoney)));
-			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentalPrice", Money.GetString(HouseMgr.GetRentByModel(Model))));
-			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.MaxLockbox", Money.GetString(HouseMgr.GetRentByModel(Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)));
+			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.Lockbox", MoneyMgr.GetString(KeptMoney)));
+			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentalPrice", MoneyMgr.GetString(HouseMgr.GetRentByModel(Model))));
+			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.MaxLockbox", MoneyMgr.GetString(HouseMgr.GetRentByModel(Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)));
 			if (ServerProperties.Properties.RENT_DUE_DAYS > 0)
 				text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentDueIn", due.Days, due.Hours));
 			else
@@ -479,7 +460,7 @@ namespace DOL.GS.Housing
 
 			text.Add(" ");
 
-			if (player.Client.Account.PrivLevel > (int)ePrivLevel.Player)
+			if (player.Client.Account.PrivLevel > (int)EPrivLevel.Player)
 			{
 				text.Add("GM: Model: " + Model);
 				text.Add("GM: Realm: " + GlobalConstants.RealmToName(Realm));
@@ -570,7 +551,7 @@ namespace DOL.GS.Housing
 		{
 			var usedVaults = new[] {false, false, false, false};
 
-			foreach (var housePointItem in DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber).And(DB.Column("ItemTemplateID").IsLike("%_vault"))))
+			foreach (var housePointItem in CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber).And(DB.Column("ItemTemplateID").IsLike("%_vault"))))
 			{
 				if (housePointItem.Index >= 0 && housePointItem.Index <= 3)
 				{
@@ -690,21 +671,21 @@ namespace DOL.GS.Housing
 			int z = location.Z;
 			GameObject hookpointObject = null;
 
-			switch ((eObjectType)item.Object_Type)
+			switch ((EObjectType)item.Object_Type)
 			{
-				case eObjectType.HouseVault:
+				case EObjectType.HouseVault:
 					{
 						var houseVault = new GameHouseVault(item, index);
 						houseVault.Attach(this, position, heading);
 						hookpointObject = houseVault;
 						break;
 					}
-				case eObjectType.HouseNPC:
+				case EObjectType.HouseNPC:
 					{
 						hookpointObject = GameServer.ServerRules.PlaceHousingNPC(this, item, location, GetHookpointHeading(position));
 						break;
 					}
-				case eObjectType.HouseBindstone:
+				case EObjectType.HouseBindstone:
 					{
 						hookpointObject = new GameStaticItem();
 						hookpointObject.CurrentHouse = this;
@@ -722,7 +703,7 @@ namespace DOL.GS.Housing
 						//add bind point
 						break;
 					}
-				case eObjectType.HouseInteriorObject:
+				case EObjectType.HouseInteriorObject:
 					{
 						hookpointObject = GameServer.ServerRules.PlaceHousingInteriorItem(this, item, location, heading);
 						break;
@@ -754,7 +735,7 @@ namespace DOL.GS.Housing
 				return;
 			}
 
-			var items = DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HookpointID").IsEqualTo(position).And(DB.Column("HouseNumber").IsEqualTo(obj.CurrentHouse.HouseNumber)));
+			var items = CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HookpointID").IsEqualTo(position).And(DB.Column("HouseNumber").IsEqualTo(obj.CurrentHouse.HouseNumber)));
 			if (items.Count == 0)
 			{
 				ChatUtil.SendSystemMessage(player, "No hookpoint item found at position " + position);
@@ -773,8 +754,8 @@ namespace DOL.GS.Housing
 				var template = GameServer.Database.FindObjectByKey<DbItemTemplate>(obj.OwnerID);
 				if (template != null)
 				{
-                    if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(template)))
-                        InventoryLogging.LogInventoryAction("(HOUSE;" + HouseNumber + ")", player, eInventoryActionType.Loot, template);
+                    if (player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(template)))
+                        InventoryLogging.LogInventoryAction("(HOUSE;" + HouseNumber + ")", player, EInventoryActionType.Loot, template);
 				}
 			}
 		}
@@ -825,14 +806,14 @@ namespace DOL.GS.Housing
 				return false;
 			}
 
-			var houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+			var houseCM = CoreDb<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (houseCM != null)
 			{
 				log.DebugFormat("Add CM: Found active consignment merchant in HousingConsignmentMerchant table for house {0}.", HouseNumber);
 				return false;
 			}
 
-			var obj = DOLDB<DbMob>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+			var obj = CoreDb<DbMob>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (obj != null)
 			{
 				log.DebugFormat("Add CM: Found consignment merchant in Mob table for house {0} but none in HousingConsignmentMerchant!  Creating a new merchant.", HouseNumber);
@@ -845,7 +826,7 @@ namespace DOL.GS.Housing
 			}
 
 			// now let's try to find a CM with this owner ID and no house and if we find it, attach
-			houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(OwnerID));
+			houseCM = CoreDb<DbHouseConsignmentMerchant>.SelectObject(DB.Column("OwnerID").IsEqualTo(OwnerID));
 
 			if (houseCM != null)
 			{
@@ -886,12 +867,12 @@ namespace DOL.GS.Housing
 			con.Y = tY;
 			con.Z = Z + zaddition;
 			con.Level = 50;
-			con.Realm = (eRealm) realm;
+			con.Realm = (ERealm) realm;
 			con.HouseNumber = (ushort)HouseNumber;
 			con.Heading = heading;
 			con.Model = 144;
 
-			con.Flags |= GameNPC.eFlags.PEACE;
+			con.Flags |= ENpcFlags.PEACE;
 			con.LoadedFromScript = false;
 			con.RoamingRange = 0;
 
@@ -930,7 +911,7 @@ namespace DOL.GS.Housing
 				log.Warn("HOUSING: Cleared OwnerLot for " + count + " items on the consignment merchant!");
 			}
 
-			var houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
+			var houseCM = CoreDb<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (houseCM != null)
 			{
 				houseCM.HouseNumber = 0;
@@ -964,13 +945,13 @@ namespace DOL.GS.Housing
 				return;
 			}
 
-			if (!player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(itemTemplate)))
+			if (!player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(itemTemplate)))
 			{
 				ChatUtil.SendSystemMessage(player, LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"));
 				return;
 			}
 
-			InventoryLogging.LogInventoryAction("(HOUSE;" + HouseNumber + ")", player, eInventoryActionType.Loot, itemTemplate);
+			InventoryLogging.LogInventoryAction("(HOUSE;" + HouseNumber + ")", player, EInventoryActionType.Loot, itemTemplate);
 		}
 
 		public void Edit(GamePlayer player, List<int> changes)
@@ -986,7 +967,7 @@ namespace DOL.GS.Housing
 			}
 			else
 			{
-				if (!CanChangeInterior(player, DecorationPermissions.Add))
+				if (!CanChangeInterior(player, EDecorationPermissions.Add))
 					return;
 			}
 
@@ -998,7 +979,7 @@ namespace DOL.GS.Housing
 				int page = slot/30;
 				int pslot = slot%30;
 
-				DbItemTemplate item = items.GetItem(page, (eMerchantWindowSlot) pslot);
+				DbItemTemplate item = items.GetItem(page, (EMerchantWindowSlot) pslot);
 				if (item != null)
 				{
 					price += item.Price;
@@ -1008,12 +989,12 @@ namespace DOL.GS.Housing
 			// make sure player has enough money to cover the changes
 			if (!player.RemoveMoney(price))
 			{
-                InventoryLogging.LogInventoryAction(player, "(HOUSE;" + HouseNumber + ")", eInventoryActionType.Merchant, price);
+                InventoryLogging.LogInventoryAction(player, "(HOUSE;" + HouseNumber + ")", EInventoryActionType.Merchant, price);
 				ChatUtil.SendMerchantMessage(player, "House.Edit.NotEnoughMoney", null);
 				return;
 			}
 
-			ChatUtil.SendSystemMessage(player, "House.Edit.PayForChanges", Money.GetString(price));
+			ChatUtil.SendSystemMessage(player, "House.Edit.PayForChanges", MoneyMgr.GetString(price));
 
 			// make all the changes
 			foreach (int slot in changes)
@@ -1021,55 +1002,55 @@ namespace DOL.GS.Housing
 				int page = slot/30;
 				int pslot = slot%30;
 
-				DbItemTemplate item = items.GetItem(page, (eMerchantWindowSlot) pslot);
+				DbItemTemplate item = items.GetItem(page, (EMerchantWindowSlot) pslot);
 
 				if (item != null)
 				{
-					switch ((eObjectType) item.Object_Type)
+					switch ((EObjectType) item.Object_Type)
 					{
-						case eObjectType.HouseInteriorBanner:
+						case EObjectType.HouseInteriorBanner:
 							IndoorGuildBanner = (item.DPS_AF == 1 ? true : false);
 							break;
-						case eObjectType.HouseInteriorShield:
+						case EObjectType.HouseInteriorShield:
 							IndoorGuildShield = (item.DPS_AF == 1 ? true : false);
 							break;
-						case eObjectType.HouseCarpetFirst:
+						case EObjectType.HouseCarpetFirst:
 							Rug1Color = item.DPS_AF;
 							break;
-						case eObjectType.HouseCarpetSecond:
+						case EObjectType.HouseCarpetSecond:
 							Rug2Color = item.DPS_AF;
 							break;
-						case eObjectType.HouseCarpetThird:
+						case EObjectType.HouseCarpetThird:
 							Rug3Color = item.DPS_AF;
 							break;
-						case eObjectType.HouseCarpetFourth:
+						case EObjectType.HouseCarpetFourth:
 							Rug4Color = item.DPS_AF;
 							break;
-						case eObjectType.HouseTentColor:
+						case EObjectType.HouseTentColor:
 							PorchRoofColor = item.DPS_AF;
 							break;
-						case eObjectType.HouseExteriorBanner:
+						case EObjectType.HouseExteriorBanner:
 							OutdoorGuildBanner = (item.DPS_AF == 1 ? true : false);
 							break;
-						case eObjectType.HouseExteriorShield:
+						case EObjectType.HouseExteriorShield:
 							OutdoorGuildShield = (item.DPS_AF == 1 ? true : false);
 							break;
-						case eObjectType.HouseRoofMaterial:
+						case EObjectType.HouseRoofMaterial:
 							RoofMaterial = item.DPS_AF;
 							break;
-						case eObjectType.HouseWallMaterial:
+						case EObjectType.HouseWallMaterial:
 							WallMaterial = item.DPS_AF;
 							break;
-						case eObjectType.HouseDoorMaterial:
+						case EObjectType.HouseDoorMaterial:
 							DoorMaterial = item.DPS_AF;
 							break;
-						case eObjectType.HousePorchMaterial:
+						case EObjectType.HousePorchMaterial:
 							PorchMaterial = item.DPS_AF;
 							break;
-						case eObjectType.HouseWoodMaterial:
+						case EObjectType.HouseWoodMaterial:
 							TrussMaterial = item.DPS_AF;
 							break;
-						case eObjectType.HouseShutterMaterial:
+						case EObjectType.HouseShutterMaterial:
 							WindowMaterial = item.DPS_AF;
 							break;
 						default:
@@ -1090,14 +1071,14 @@ namespace DOL.GS.Housing
 
 		#region Add/Remove/Edit
 
-		public bool AddPermission(GamePlayer player, PermissionType permType, int permLevel)
+		public bool AddPermission(GamePlayer player, EPermissionType permType, int permLevel)
 		{
 			// make sure player is not null
 			if (player == null)
 				return false;
 
 			// get the proper target name (acct name or player name)
-			string targetName = permType == PermissionType.Account ? player.Client.Account.Name : player.Name;
+			string targetName = permType == EPermissionType.Account ? player.Client.Account.Name : player.Name;
 
 			//  check to make sure an existing mapping doesn't exist.
 			foreach (DbHouseCharsXPerms perm in _housePermissions.Values)
@@ -1121,7 +1102,7 @@ namespace DOL.GS.Housing
 			return true;
 		}
 
-		public bool AddPermission(string targetName, PermissionType permType, int permLevel)
+		public bool AddPermission(string targetName, EPermissionType permType, int permLevel)
 		{
 			//  check to make sure an existing mapping doesn't exist.
 			foreach (DbHouseCharsXPerms perm in _housePermissions.Values)
@@ -1207,7 +1188,7 @@ namespace DOL.GS.Housing
 			IEnumerable<DbHouseCharsXPerms> charPermissions = from cp in _housePermissions.Values
 				where
 				cp.TargetName == player.Name &&
-				cp.PermissionType == (int) PermissionType.Player
+				cp.PermissionType == (int) EPermissionType.Player
 				select cp;
 
 			if (charPermissions.Count() > 0)
@@ -1217,7 +1198,7 @@ namespace DOL.GS.Housing
 			IEnumerable<DbHouseCharsXPerms> acctPermissions = from cp in _housePermissions.Values
 				where
 				cp.TargetName == player.Client.Account.Name &&
-				cp.PermissionType == (int) PermissionType.Account
+				cp.PermissionType == (int) EPermissionType.Account
 				select cp;
 
 			if (acctPermissions.Count() > 0)
@@ -1229,7 +1210,7 @@ namespace DOL.GS.Housing
 				IEnumerable<DbHouseCharsXPerms> guildPermissions = from cp in _housePermissions.Values
 					where
 					player.Guild.Name == cp.TargetName &&
-					cp.PermissionType == (int) PermissionType.Guild
+					cp.PermissionType == (int) EPermissionType.Guild
 					select cp;
 
 				if (guildPermissions.Count() > 0)
@@ -1305,7 +1286,7 @@ namespace DOL.GS.Housing
 			if (player == null)
 				return false;
 
-			if (player.Client.Account.PrivLevel == (int)ePrivLevel.Admin)
+			if (player.Client.Account.PrivLevel == (int)EPrivLevel.Admin)
 				return true;
 
 			// check by character name/account if not guild house
@@ -1327,7 +1308,7 @@ namespace DOL.GS.Housing
 			// check based on guild
 			if (player.Guild != null)
 			{
-				return OwnerID == player.Guild.GuildID && player.Guild.HasRank(player, Guild.eRank.Leader);
+				return OwnerID == player.Guild.GuildID && player.Guild.HasRank(player, EGuildRank.Leader);
 			}
 
 			// no character/account/guild match, not an owner
@@ -1349,7 +1330,7 @@ namespace DOL.GS.Housing
 			return HasAccess(player, cp => cp.CanEnterHouse);
 		}
 
-		public bool CanUseVault(GamePlayer player, GameHouseVault vault, VaultPermissions vaultPerms)
+		public bool CanUseVault(GamePlayer player, GameHouseVault vault, EVaultPermissions vaultPerms)
 		{
 			// make sure player isn't null
 			if (player == null || player.CurrentHouse != this)
@@ -1365,21 +1346,21 @@ namespace DOL.GS.Housing
 				return false;
 
 			// get the vault permissions for the given vault
-			VaultPermissions activeVaultPermissions = VaultPermissions.None;
+			EVaultPermissions activeVaultPermissions = EVaultPermissions.None;
 
 			switch (vault.Index)
 			{
 				case 0:
-					activeVaultPermissions = (VaultPermissions) housePermissions.Vault1;
+					activeVaultPermissions = (EVaultPermissions) housePermissions.Vault1;
 					break;
 				case 1:
-					activeVaultPermissions = (VaultPermissions) housePermissions.Vault2;
+					activeVaultPermissions = (EVaultPermissions) housePermissions.Vault2;
 					break;
 				case 2:
-					activeVaultPermissions = (VaultPermissions) housePermissions.Vault3;
+					activeVaultPermissions = (EVaultPermissions) housePermissions.Vault3;
 					break;
 				case 3:
-					activeVaultPermissions = (VaultPermissions) housePermissions.Vault4;
+					activeVaultPermissions = (EVaultPermissions) housePermissions.Vault4;
 					break;
 			}
 
@@ -1388,7 +1369,7 @@ namespace DOL.GS.Housing
 			return (activeVaultPermissions & vaultPerms) > 0;
 		}
 
-		public bool CanUseConsignmentMerchant(GamePlayer player, ConsignmentPermissions consignPerms)
+		public bool CanUseConsignmentMerchant(GamePlayer player, EConsignmentPermissions consignPerms)
 		{
 			// make sure player isn't null
 			if (player == null)
@@ -1404,10 +1385,10 @@ namespace DOL.GS.Housing
 			if (housePermissions == null)
 				return false;
 
-			return ((ConsignmentPermissions) housePermissions.ConsignmentMerchant & consignPerms) > 0;
+			return ((EConsignmentPermissions) housePermissions.ConsignmentMerchant & consignPerms) > 0;
 		}
 
-		public bool CanChangeInterior(GamePlayer player, DecorationPermissions interiorPerms)
+		public bool CanChangeInterior(GamePlayer player, EDecorationPermissions interiorPerms)
 		{
 			// make sure player isn't null
 			if (player == null)
@@ -1423,10 +1404,10 @@ namespace DOL.GS.Housing
 			if (housePermissions == null)
 				return false;
 
-			return ((DecorationPermissions) housePermissions.ChangeInterior & interiorPerms) > 0;
+			return ((EDecorationPermissions) housePermissions.ChangeInterior & interiorPerms) > 0;
 		}
 
-		public bool CanChangeGarden(GamePlayer player, DecorationPermissions gardenPerms)
+		public bool CanChangeGarden(GamePlayer player, EDecorationPermissions gardenPerms)
 		{
 			// make sure player isn't null
 			if (player == null)
@@ -1442,7 +1423,7 @@ namespace DOL.GS.Housing
 			if (housePermissions == null)
 				return false;
 
-			return ((DecorationPermissions) housePermissions.ChangeGarden & gardenPerms) > 0;
+			return ((EDecorationPermissions) housePermissions.ChangeGarden & gardenPerms) > 0;
 		}
 
 		public bool CanChangeExternalAppearance(GamePlayer player)
@@ -1502,26 +1483,26 @@ namespace DOL.GS.Housing
 		{
 			int i = 0;
 			_indoorItems.Clear();
-			foreach (DbHouseIndoorItem dbiitem in DOLDB<DbHouseIndoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
+			foreach (DbHouseIndoorItem dbiitem in CoreDb<DbHouseIndoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				_indoorItems.Add(i++, new IndoorItem(dbiitem));
 			}
 
 			i = 0;
 			_outdoorItems.Clear();
-			foreach (DbHouseOutdoorItem dboitem in DOLDB<DbHouseOutdoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
+			foreach (DbHouseOutdoorItem dboitem in CoreDb<DbHouseOutdoorItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				_outdoorItems.Add(i++, new OutdoorItem(dboitem));
 			}
 
 			_housePermissions.Clear();
-			foreach (DbHouseCharsXPerms d in DOLDB<DbHouseCharsXPerms>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
+			foreach (DbHouseCharsXPerms d in CoreDb<DbHouseCharsXPerms>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				_housePermissions.Add(GetOpenPermissionSlot(), d);
 			}
 
 			_permissionLevels.Clear();
-			foreach (DbHousePermissions dbperm in DOLDB<DbHousePermissions>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
+			foreach (DbHousePermissions dbperm in CoreDb<DbHousePermissions>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				if (_permissionLevels.ContainsKey(dbperm.PermissionLevel) == false)
 				{
@@ -1534,7 +1515,7 @@ namespace DOL.GS.Housing
 			}
 
 			HousepointItems.Clear();
-			foreach (DbHouseHookPointItem item in DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
+			foreach (DbHouseHookPointItem item in CoreDb<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				if (HousepointItems.ContainsKey(item.HookpointID) == false)
 				{

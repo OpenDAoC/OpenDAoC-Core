@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.Events;
@@ -24,17 +5,17 @@ using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	[CharacterClass((int)eCharacterClass.Bainshee, "Bainshee", "Magician")]
+	[PlayerClass((int)EPlayerClass.Bainshee, "Bainshee", "Magician")]
 	public class ClassBainshee : ClassMagician
 	{
 		public ClassBainshee() : base()
 		{
 			m_profession = "PlayerClass.Profession.PathofAffinity";
 			m_specializationMultiplier = 10;
-			m_primaryStat = eStat.INT;
-			m_secondaryStat = eStat.DEX;
-			m_tertiaryStat = eStat.CON;
-			m_manaStat = eStat.INT;
+			m_primaryStat = EStat.INT;
+			m_secondaryStat = EStat.DEX;
+			m_tertiaryStat = EStat.CON;
+			m_manaStat = EStat.INT;
 		}
 
 		public override bool HasAdvancedFromBaseClass()
@@ -48,12 +29,12 @@ namespace DOL.GS.PlayerClass
 		/// <summary>
 		/// Timer Action for Reseting Wraith Form
 		/// </summary>
-		protected ECSGameTimer m_wraithTimerAction;
+		protected EcsGameTimer m_wraithTimerAction;
 		
 		/// <summary>
 		/// Event Trigger When Player Zoning Out to Force Reset Form
 		/// </summary>
-		protected DOLEventHandler m_wraithTriggerEvent;
+		protected CoreEventHandler m_wraithTriggerEvent;
 		
 		/// <summary>
 		/// Bainshee Transform While Casting.
@@ -63,16 +44,16 @@ namespace DOL.GS.PlayerClass
 		{
 			base.Init(player);
 
-			m_wraithTimerAction = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(_ =>
+			m_wraithTimerAction = new EcsGameTimer(player, new EcsGameTimer.EcsTimerCallback(_ =>
 			{
-				if (player.CharacterClass is ClassBainshee bainshee)
+				if (player.PlayerClass is ClassBainshee bainshee)
 					bainshee.TurnOutOfWraith();
 
 				return 0;
 			}));
 
-			m_wraithTriggerEvent = new DOLEventHandler(TriggerUnWraithForm);
-			GameEventMgr.AddHandler(Player, GameLivingEvent.CastFinished, new DOLEventHandler(TriggerWraithForm));
+			m_wraithTriggerEvent = new CoreEventHandler(TriggerUnWraithForm);
+			GameEventMgr.AddHandler(Player, GameLivingEvent.CastFinished, new CoreEventHandler(TriggerWraithForm));
 		}
 
 		/// <summary>
@@ -81,7 +62,7 @@ namespace DOL.GS.PlayerClass
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected virtual void TriggerWraithForm(DOLEvent e, object sender, EventArgs arguments)
+		protected virtual void TriggerWraithForm(CoreEvent e, object sender, EventArgs arguments)
 		{
 			var player = sender as GamePlayer;
 			
@@ -103,7 +84,7 @@ namespace DOL.GS.PlayerClass
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="arguments"></param>
-		protected virtual void TriggerUnWraithForm(DOLEvent e, object sender, EventArgs arguments)
+		protected virtual void TriggerUnWraithForm(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GamePlayer player = sender as GamePlayer;
 			

@@ -66,7 +66,7 @@ namespace DOL.GS
             if (player.CurrentRegion.Time < TIME_TO_CHANGE && HAS_BEEN_RUN)
                 return;
 
-            DbCoreCharacter[] chars = DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("RealmPoints").IsGreatherThan(213881)).OrderByDescending(dc => dc.RealmPoints).Take(100).ToArray();
+            DbCoreCharacter[] chars = CoreDb<DbCoreCharacter>.SelectObjects(DB.Column("RealmPoints").IsGreatherThan(213881)).OrderByDescending(dc => dc.RealmPoints).Take(100).ToArray();
 
             // assuming we can get at least 20 players
             if (TOP_LIST.Count > 0)
@@ -248,37 +248,37 @@ namespace DOL.GS
                 }
                 case "rp":
                 {
-                    client.Player.Out.SendMessage($"Top 20 for Realm Points\n{STATS_RP}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 for Realm Points\n{STATS_RP}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "lrp":
                 {
-                    client.Player.Out.SendMessage($"Top 20 for RP / Hour\n{STATS_LRP}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 for RP / Hour\n{STATS_LRP}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "kills":
                 {
-                    client.Player.Out.SendMessage($"Top 20 Killers\n{STATS_KILL}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 Killers\n{STATS_KILL}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "deathblows":
                 {
-                    client.Player.Out.SendMessage($"Top 20 Deathblows\n{STATS_DEATH}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 Deathblows\n{STATS_DEATH}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "irs":
                 {
-                    client.Player.Out.SendMessage($"Top 20 \"I Remain Standing\"\n{STATS_IRS}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 \"I Remain Standing\"\n{STATS_IRS}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "heal":
                 {
-                    client.Player.Out.SendMessage($"Top 20 Healers\n{STATS_HEAL}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 Healers\n{STATS_HEAL}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "rez":
                 {
-                    client.Player.Out.SendMessage($"Top 20 Resurrectors\n{STATS_RES}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage($"Top 20 Resurrectors\n{STATS_RES}", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 case "player":
@@ -287,22 +287,22 @@ namespace DOL.GS
 
                     if (otherPlayer == null)
                     {
-                        client.Player.Out.SendMessage($"No player with name {playerName} found!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        client.Player.Out.SendMessage($"No player with name {playerName} found!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         return;
                     }
 
                     if (otherPlayer.StatsAnonFlag)
                     {
-                        client.Player.Out.SendMessage($"{playerName} doesn't want you to view his stats.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        client.Player.Out.SendMessage($"{playerName} doesn't want you to view his stats.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         return;
                     }
 
-                    client.Player.Out.SendMessage(otherPlayer.Statistics.GetStatisticsMessage(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage(otherPlayer.Statistics.GetStatisticsMessage(), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
                 default:
                 {
-                    client.Player.Out.SendMessage("Options: /stats [ top | rp | kills | deathblows | irs | heal | rez | player <name|target> ]", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Player.Out.SendMessage("Options: /stats [ top | rp | kills | deathblows | irs | heal | rez | player <name|target> ]", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
                 }
             }
@@ -340,14 +340,14 @@ namespace DOL.GS.GameEvents
             if (HANDLERS_LOADED == false)
             {
                 HANDLERS_LOADED = true;
-                GameEventMgr.AddHandler(GameLivingEvent.GainedRealmPoints, new DOLEventHandler(GainedRealmPointsCallback));
-                GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(DyingCallback));
-                GameEventMgr.AddHandler(GameLivingEvent.CastFinished, new DOLEventHandler(FinishCastSpellCallback));
-                GameEventMgr.AddHandler(GameLivingEvent.HealthChanged, new DOLEventHandler(HealthChangedCallback));
+                GameEventMgr.AddHandler(GameLivingEvent.GainedRealmPoints, new CoreEventHandler(GainedRealmPointsCallback));
+                GameEventMgr.AddHandler(GameLivingEvent.Dying, new CoreEventHandler(DyingCallback));
+                GameEventMgr.AddHandler(GameLivingEvent.CastFinished, new CoreEventHandler(FinishCastSpellCallback));
+                GameEventMgr.AddHandler(GameLivingEvent.HealthChanged, new CoreEventHandler(HealthChangedCallback));
             }
         }
 
-        public static void GainedRealmPointsCallback(DOLEvent e, object sender, EventArgs args)
+        public static void GainedRealmPointsCallback(CoreEvent e, object sender, EventArgs args)
         {
             if (sender is not GamePlayer player || args is not GainedRealmPointsEventArgs gargs)
                 return;
@@ -358,7 +358,7 @@ namespace DOL.GS.GameEvents
             stats.TotalRP += (uint) gargs.RealmPoints;
         }
 
-        public static void DyingCallback(DOLEvent e, object sender, EventArgs args)
+        public static void DyingCallback(CoreEvent e, object sender, EventArgs args)
         {
             if (sender is not GamePlayer dyingPlayer || args is not DyingEventArgs dargs)
                 return;
@@ -395,23 +395,23 @@ namespace DOL.GS.GameEvents
             dyingPlayerStats.Deaths++;
         }
 
-        public static void FinishCastSpellCallback(DOLEvent e, object sender, EventArgs args)
+        public static void FinishCastSpellCallback(CoreEvent e, object sender, EventArgs args)
         {
             if (sender is not GamePlayer caster || args is not CastingEventArgs fargs)
                 return;
 
-            if (fargs.SpellHandler.Spell.SpellType == eSpellType.Resurrect)
+            if (fargs.SpellHandler.Spell.SpellType == ESpellType.Resurrect)
             {
                 if (caster.Statistics is PlayerStatistics stats)
                     stats.ResurrectionsPerformed++;
             }
         }
 
-        public static void HealthChangedCallback(DOLEvent e, object sender, EventArgs args)
+        public static void HealthChangedCallback(CoreEvent e, object sender, EventArgs args)
         {
             HealthChangedEventArgs hargs = args as HealthChangedEventArgs;
 
-            if (hargs.ChangeType == eHealthChangeType.Spell)
+            if (hargs.ChangeType == EHealthChangeType.Spell)
             {
                 if (hargs.ChangeSource is not GamePlayer player)
                     return;

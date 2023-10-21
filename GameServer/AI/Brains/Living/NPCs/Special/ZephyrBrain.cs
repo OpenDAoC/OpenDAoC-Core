@@ -5,12 +5,12 @@ namespace DOL.AI.Brain
 {
     public class ZephyrBrain : ABrain
     {
-        private Action<GameNPC> _arriveAtTargetCallback;
+        private Action<GameNpc> _arriveAtTargetCallback;
         private bool _caughtTarget;
 
         public override int ThinkInterval => 300;
 
-        public ZephyrBrain(Action<GameNPC> arriveAtTargetCallback) : base()
+        public ZephyrBrain(Action<GameNpc> arriveAtTargetCallback) : base()
         {
             _arriveAtTargetCallback = arriveAtTargetCallback;
         }

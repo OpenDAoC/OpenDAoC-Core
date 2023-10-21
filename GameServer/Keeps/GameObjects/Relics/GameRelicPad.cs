@@ -62,7 +62,7 @@ namespace DOL.GS
 			}
 		}
 
-		public override eRealm Realm
+		public override ERealm Realm
 		{
 			get
 			{
@@ -70,15 +70,15 @@ namespace DOL.GS
 				{
 					case 1:
 					case 11:
-						return eRealm.Albion;
+						return ERealm.Albion;
 					case 2:
 					case 12:
-						return eRealm.Midgard;
+						return ERealm.Midgard;
 					case 3:
 					case 13:
-						return eRealm.Hibernia;
+						return ERealm.Hibernia;
 					default:
-						return eRealm.None;
+						return ERealm.None;
 				}
 			}
 			set
@@ -87,7 +87,7 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual eRelicType PadType
+		public virtual ERelicType PadType
 		{
 			get
 			{
@@ -96,13 +96,13 @@ namespace DOL.GS
 					case 1:
 					case 2:
 					case 3:
-						return eRelicType.Strength;
+						return ERelicType.Strength;
 					case 11:
 					case 12:
 					case 13:
-						return eRelicType.Magic;
+						return ERelicType.Magic;
 					default:
-						return eRelicType.Invalid;
+						return ERelicType.Invalid;
 
 				}
 			}
@@ -136,17 +136,17 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="message">The message</param>
 		/// <param name="realm">The realm</param>
-		public static void BroadcastDiscordRelic(string message, eRealm realm, string keepName)
+		public static void BroadcastDiscordRelic(string message, ERealm realm, string keepName)
 		{
 			int color = 0;
 			string avatarUrl = "";
 			switch (realm)
 			{
-				case eRealm._FirstPlayerRealm:
+				case ERealm._FirstPlayerRealm:
 					color = 16711680;
 					avatarUrl = "";
 					break;
-				case eRealm._LastPlayerRealm:
+				case ERealm._LastPlayerRealm:
 					color = 32768;
 					avatarUrl = "";
 					break;
@@ -186,11 +186,11 @@ namespace DOL.GS
 
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
 				{
-					otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(otherPlayer.Client.Account.Language, "GameRelicPad.MountRelic.Captured", GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name), eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
-					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(otherPlayer.Client.Account.Language, "GameRelicPad.MountRelic.Captured", GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name), EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow);
+					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
 
-				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
+				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, ENewsType.RvRGlobal, false);
 				
 				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
 				{
@@ -201,7 +201,7 @@ namespace DOL.GS
 				//select targets to increase CapturedRelics
 				//TODO increase stats
 				
-				BattleGroup relicBG = relic.CurrentCarrier?.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				BattleGroupUtil relicBG = relic.CurrentCarrier?.TempProperties.GetProperty<BattleGroupUtil>(BattleGroupUtil.BATTLEGROUP_PROPERTY, null);
 				List<GamePlayer> targets = new List<GamePlayer>();
 
 				if (relicBG != null)
@@ -234,7 +234,7 @@ namespace DOL.GS
 				{
 					target.CapturedRelics++;
 					target.RaiseRealmLoyaltyFloor(2);
-					target.Achieve(AchievementUtils.AchievementNames.Relic_Captures);
+					target.Achieve(AchievementUtil.AchievementName.Relic_Captures);
 				}
 
 				relic.LastCaptureDate = DateTime.Now;
@@ -247,7 +247,7 @@ namespace DOL.GS
 				string message = string.Format("The {0} has been returned to {1}.", relic.Name, Name);
 
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
-					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -257,12 +257,12 @@ namespace DOL.GS
 
 			if (relic.CurrentCarrier != null)
 			{
-				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.RemoveRelic.Removed", relic.CurrentCarrier.Name, GlobalConstants.RealmToName((eRealm)relic.CurrentCarrier.Realm), relic.Name, Name);
+				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.RemoveRelic.Removed", relic.CurrentCarrier.Name, GlobalConstants.RealmToName((ERealm)relic.CurrentCarrier.Realm), relic.Name, Name);
 
 				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
-					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
-				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
+				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, ENewsType.RvRGlobal, false);
 				
 				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
 				{
@@ -323,7 +323,7 @@ namespace DOL.GS
 				    // || m_parent.MountedRelic != null
 				    )
 				{
-                    player.Client.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameRelicPad.OnPlayerEnter.EmptyRelicPad"), relicOnPlayer.RelicType), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    player.Client.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameRelicPad.OnPlayerEnter.EmptyRelicPad"), relicOnPlayer.RelicType), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					log.DebugFormat("Player {0} needs to find an empty {1} relic pad in order to place {2}.", player.Name, relicOnPlayer.RelicType, relicOnPlayer.Name);
 					return;
 				}

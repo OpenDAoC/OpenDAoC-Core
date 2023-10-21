@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -26,7 +7,7 @@ using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.UseSkill, "Handles Player Use Skill Request.", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.UseSkill, "Handles Player Use Skill Request.", EClientStatus.PlayerInGame)]
 	public class UseSkillHandler : IPacketHandler
 	{
 		/// <summary>
@@ -34,7 +15,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			if (client.Version >= GameClient.eClientVersion.Version1124)
 			{
@@ -114,7 +95,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						player.Out.SendMessage(
 							string.Format("You must wait {0} minutes {1} seconds to use this ability!", reuseTime/60000, reuseTime%60000/1000),
-							eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						
 						if (player.Client.Account.PrivLevel < 2)
 							return;
@@ -124,16 +105,16 @@ namespace DOL.GS.PacketHandler.Client.v168
 						// Allow Pulse Spells to be canceled while they are on reusetimer
 						if (sk is Spell spell && spell.IsPulsing && player.ActivePulseSpells.ContainsKey(spell.SpellType))
 						{
-							ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(player, spell);
+							EcsPulseEffect effect = EffectListService.GetPulseEffectOnTarget(player, spell);
 							EffectService.RequestImmediateCancelConcEffect(effect);
 
 							if (spell.InstrumentRequirement == 0)
-								player.Out.SendMessage("You cancel your effect.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage("You cancel your effect.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 							else
-								player.Out.SendMessage("You stop playing your song.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage("You stop playing your song.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 						}
 						else
-							player.Out.SendMessage(string.Format("You must wait {0} seconds to use this ability!", reuseTime / 1000 + 1), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage(string.Format("You must wait {0} seconds to use this ability!", reuseTime / 1000 + 1), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 						if (player.Client.Account.PrivLevel < 2)
 							return;
@@ -170,11 +151,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 							
 							if (!Properties.ALLOW_NON_ANYTIME_BACKUP_STYLES && (style.AttackResultRequirement != Style.eAttackResultRequirement.Any || style.OpeningRequirementType == Style.eOpening.Positional))
 							{
-								player.Out.SendMessage($"You must use an anytime style as your backup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage($"You must use an anytime style as your backup.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return;
 							}
 
-							player.Out.SendMessage($"You will now use {style.Name} as your backup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage($"You will now use {style.Name} as your backup.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							player.styleComponent.AutomaticBackupStyle = style;
 							return;
 
@@ -184,13 +165,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 				}
 
 				if (sk == null)
-					player.Out.SendMessage("Skill is not implemented.", eChatType.CT_Advise, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Skill is not implemented.", EChatType.CT_Advise, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>
 		/// Handles player use skill actions
 		/// </summary>
-		protected class UseSkillAction : ECSGameTimerWrapperBase
+		protected class UseSkillAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The speed and flags data
@@ -224,7 +205,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 
@@ -283,7 +264,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						player.Out.SendMessage(
 							string.Format("You must wait {0} minutes {1} seconds to use this ability!", reuseTime/60000, reuseTime%60000/1000),
-							eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						
 						if (player.Client.Account.PrivLevel < 2)
 							return 0;
@@ -291,7 +272,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					else if (reuseTime > 0)
 					{
 						player.Out.SendMessage(string.Format("You must wait {0} seconds to use this ability!", reuseTime/1000 + 1),
-						                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						                       EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						
 						if (player.Client.Account.PrivLevel < 2) 
 							return 0;
@@ -334,7 +315,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				if (sk == null)
 				{
-					player.Out.SendMessage("Skill is not implemented.", eChatType.CT_Advise, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage("Skill is not implemented.", EChatType.CT_Advise, EChatLoc.CL_SystemWindow);
 				}
 
 				return 0;

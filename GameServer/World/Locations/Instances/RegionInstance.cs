@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -109,8 +90,8 @@ namespace DOL.GS
                 return;
 
             Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
-            var staticObjs = DOLDB<DbWorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(Skin));
-            var areaObjs = DOLDB<DbArea>.SelectObjects(DB.Column("Region").IsEqualTo(Skin));            
+            var staticObjs = CoreDb<DbWorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(Skin));
+            var areaObjs = CoreDb<DbArea>.SelectObjects(DB.Column("Region").IsEqualTo(Skin));            
             
             int count = mobObjs.Length + staticObjs.Count;
             if (count > 0) PreAllocateRegionSpace(count + 100);
@@ -125,7 +106,7 @@ namespace DOL.GS
             {
                 foreach (DbMob mob in mobObjs)
                 {
-                    GameNPC myMob = null;
+                    GameNpc myMob = null;
                     string error = string.Empty;
   
                     // Default Classtype
@@ -139,15 +120,15 @@ namespace DOL.GS
                     }
                     
 
-                    if (mob.Guild.Length > 0 && mob.Realm >= 0 && mob.Realm <= (int)eRealm._Last)
+                    if (mob.Guild.Length > 0 && mob.Realm >= 0 && mob.Realm <= (int)ERealm._Last)
                     {
-                        Type type = ScriptMgr.FindNPCGuildScriptClass(mob.Guild, (eRealm)mob.Realm);
+                        Type type = ScriptMgr.FindNPCGuildScriptClass(mob.Guild, (ERealm)mob.Realm);
                         if (type != null)
                         {
                             try
                             {
                                 
-                                myMob = (GameNPC)type.Assembly.CreateInstance(type.FullName);
+                                myMob = (GameNpc)type.Assembly.CreateInstance(type.FullName);
                                	
                             }
                             catch (Exception e)
@@ -172,7 +153,7 @@ namespace DOL.GS
 
                         try
                         {
-                            myMob = (GameNPC)gasm.CreateInstance(classtype, false);
+                            myMob = (GameNpc)gasm.CreateInstance(classtype, false);
                         }
                         catch
                         {
@@ -185,7 +166,7 @@ namespace DOL.GS
                             {
                                 try
                                 {
-                                    myMob = (GameNPC)asm.CreateInstance(classtype, false);
+                                    myMob = (GameNpc)asm.CreateInstance(classtype, false);
                                     error = string.Empty;
                                 }
                                 catch
@@ -199,7 +180,7 @@ namespace DOL.GS
 
                             if (myMob == null)
                             {
-                                myMob = new GameNPC();
+                                myMob = new GameNpc();
                                 error = classtype;
                             }
                         }

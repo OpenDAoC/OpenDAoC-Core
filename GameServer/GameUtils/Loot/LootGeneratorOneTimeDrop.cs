@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -26,7 +7,6 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS
 {
 	/// <summary>
-	/// LootGeneratorOneTimeDrop
 	/// This implementation make the loot drop only one time by player
 	/// </summary>
 	public class LootGeneratorOneTimeDrop : LootGeneratorBase
@@ -75,7 +55,7 @@ namespace DOL.GS
 
 					foreach (DbLootOtd l in lootOTDs)
 					{
-						IList<DbMob> mobs = DOLDB<DbMob>.SelectObjects(DB.Column("Name").IsEqualTo(l.MobName));
+						IList<DbMob> mobs = CoreDb<DbMob>.SelectObjects(DB.Column("Name").IsEqualTo(l.MobName));
 
 						if (mobs == null || mobs.Count == 0)
 						{
@@ -127,12 +107,12 @@ namespace DOL.GS
 		/// Refresh the OTDs for this mob
 		/// </summary>
 		/// <param name="mob"></param>
-		public override void Refresh(GameNPC mob)
+		public override void Refresh(GameNpc mob)
 		{
 			if (mob == null)
 				return;
 
-			IList<DbLootOtd> otds = DOLDB<DbLootOtd>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name));
+			IList<DbLootOtd> otds = CoreDb<DbLootOtd>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name));
 
 			lock (m_mobOTDList)
 			{
@@ -159,7 +139,7 @@ namespace DOL.GS
 		}
 
 
-		public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+		public override LootList GenerateLoot(GameNpc mob, GameObject killer)
 		{
 			LootList loot = base.GenerateLoot(mob, killer);
 			List<DbLootOtd> lootOTDs = null;
@@ -183,9 +163,9 @@ namespace DOL.GS
 							{
 								player = gainer as GamePlayer;
 							}
-							else if (gainer is GameNPC)
+							else if (gainer is GameNpc)
 							{
-								IControlledBrain brain = ((GameNPC)gainer).Brain as IControlledBrain;
+								IControlledBrain brain = ((GameNpc)gainer).Brain as IControlledBrain;
 								if (brain != null)
 								{
 									player = brain.GetPlayerOwner();
@@ -198,7 +178,7 @@ namespace DOL.GS
 								{
 									if (drop.MinLevel <= player.Level)
 									{
-										var hasDrop = DOLDB<DbCharacterXOneTimeDrop>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.QuestPlayerID).And(DB.Column("ItemTemplateID").IsEqualTo(drop.ItemTemplateID)));
+										var hasDrop = CoreDb<DbCharacterXOneTimeDrop>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.QuestPlayerID).And(DB.Column("ItemTemplateID").IsEqualTo(drop.ItemTemplateID)));
 
 										if (hasDrop == null)
 										{
@@ -206,20 +186,20 @@ namespace DOL.GS
 
 											if (item != null)
 											{
-												if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(item)))
+												if (player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(item)))
 												{
 													DbCharacterXOneTimeDrop charXDrop = new DbCharacterXOneTimeDrop();
 													charXDrop.CharacterID = player.QuestPlayerID;
 													charXDrop.ItemTemplateID = drop.ItemTemplateID;
 													GameServer.Database.AddObject(charXDrop);
 
-													player.Out.SendMessage(string.Format("You receive {0} from {1}!", item.GetName(1, false), mob.GetName(1, false)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-													InventoryLogging.LogInventoryAction(mob, player, eInventoryActionType.Loot, item);
+													player.Out.SendMessage(string.Format("You receive {0} from {1}!", item.GetName(1, false), mob.GetName(1, false)), EChatType.CT_Loot, EChatLoc.CL_SystemWindow);
+													InventoryLogging.LogInventoryAction(mob, player, EInventoryActionType.Loot, item);
 												}
 												else
 												{
 													// do not drop, player will have to try again
-													player.Out.SendMessage("Your inventory is full and a one time drop cannot be added!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+													player.Out.SendMessage("Your inventory is full and a one time drop cannot be added!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 													log.DebugFormat("OTD Failed, Inventory full: {0} from mob {1} for player {2}.", drop.ItemTemplateID, drop.MobName, player.Name);
 													break;
 												}

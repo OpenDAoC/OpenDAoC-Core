@@ -66,7 +66,7 @@ namespace DOL.GS.GameEvents
         /// This method is called when the script is loaded.
         /// </summary>
         [ScriptLoadedEvent]
-        public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+        public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
         {
             if(ServerProperties.Properties.SERVERLISTUPDATE_ENABLED)
             {
@@ -79,7 +79,7 @@ namespace DOL.GS.GameEvents
         /// This method is called when the scripts are unloaded. 
         /// </summary>
         [ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
 			Stop();
 		}

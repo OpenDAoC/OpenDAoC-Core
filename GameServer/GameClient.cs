@@ -231,7 +231,7 @@ namespace DOL.GS
 		// Tooltip Request Time Cache, (Object Type => (Object ID => expires))
 		private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> m_tooltipRequestTimes = new();
 
-		public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Client, false);
+		public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.Client, false);
 
 		/// <summary>
 		/// Try to Send Tooltip to Client, return false if cache hit.
@@ -510,7 +510,7 @@ namespace DOL.GS
 				}
 
 				eClientVersion ver;
-				IPacketLib lib = AbstractPacketLib.CreatePacketLibForVersion(version, this, out ver);
+				IPacketLib lib = APacketLib.CreatePacketLibForVersion(version, this, out ver);
 
 				if (lib == null)
 				{
@@ -782,7 +782,7 @@ namespace DOL.GS
 
 						Account.LastDisconnected = DateTime.Now;
 						GameServer.Database.SaveObject(Account);
-						AuditMgr.AddAuditEntry(this, AuditType.Account, AuditSubtype.AccountLogout, "", Account.Name);
+						AuditMgr.AddAuditEntry(this, EAuditType.Account, EAuditSubType.AccountLogout, "", Account.Name);
 					}
 				}
 				catch (Exception e)
@@ -810,7 +810,7 @@ namespace DOL.GS
 				.Append(" session:").Append(SessionID)
 				.Append(" acc:").Append(Account == null ? "null" : Account.Name)
 				.Append(" char:").Append(Player == null ? "null" : Player.Name)
-				.Append(" class:").Append(Player == null ? "null" : Player.CharacterClass.ID.ToString())
+				.Append(" class:").Append(Player == null ? "null" : Player.PlayerClass.ID.ToString())
 				.ToString();
 		}
 	}

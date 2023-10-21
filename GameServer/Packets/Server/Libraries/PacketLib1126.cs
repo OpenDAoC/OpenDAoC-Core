@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -45,7 +26,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient?.Account == null)
 				return;
 
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.DupNameCheckReply)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.DupNameCheckReply)))
 			{
 				pak.FillString(name, 24);
 				pak.WriteByte(result);
@@ -60,7 +41,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CryptKey)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CryptKey)))
 			{
 				//Disable encryption (1110+ always encrypt)
 				pak.WriteIntLowEndian(0);
@@ -83,15 +64,15 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void SendCharacterOverview(eRealm realm)
+		public override void SendCharacterOverview(ERealm realm)
 		{
-			if (realm < eRealm._FirstPlayerRealm || realm > eRealm._LastPlayerRealm)
+			if (realm < ERealm._FirstPlayerRealm || realm > ERealm._LastPlayerRealm)
 				throw new Exception($"CharacterOverview requested for unknown realm {realm}");
 
 			int firstSlot = (byte)realm * 100;
 
 			var enableRealmSwitcherBit = GameServer.ServerRules.IsAllowedCharsInAllRealms(m_gameClient) ? 1 : 0;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview1126)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CharacterOverview1126)))
 			{
 				pak.WriteIntLowEndian((uint)enableRealmSwitcherBit); // 0x01 & 0x02 are flags
 				pak.WriteIntLowEndian(0);
@@ -115,22 +96,22 @@ namespace DOL.GS.PacketHandler
 						log.Error($"SendCharacterOverview - Duplicate char in slot? Slot: {c.AccountSlot}, Account: {c.AccountName}", ex);
 					}
 				}
-				var itemsByOwnerID = new Dictionary<string, Dictionary<eInventorySlot, DbInventoryItem>>();
+				var itemsByOwnerID = new Dictionary<string, Dictionary<EInventorySlot, DbInventoryItem>>();
 
 				if (charsBySlot.Any())
 				{
-					var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.MinEquipable)
-						.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.MaxEquipable));
-					var allItems = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
+					var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)EInventorySlot.MinEquipable)
+						.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)EInventorySlot.MaxEquipable));
+					var allItems = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
 
 					foreach (DbInventoryItem item in allItems)
 					{
 						try
 						{
 							if (!itemsByOwnerID.ContainsKey(item.OwnerID))
-								itemsByOwnerID.Add(item.OwnerID, new Dictionary<eInventorySlot, DbInventoryItem>());
+								itemsByOwnerID.Add(item.OwnerID, new Dictionary<EInventorySlot, DbInventoryItem>());
 
-							itemsByOwnerID[item.OwnerID].Add((eInventorySlot)item.SlotPosition, item);
+							itemsByOwnerID[item.OwnerID].Add((EInventorySlot)item.SlotPosition, item);
 						}
 						catch (Exception ex)
 						{
@@ -149,21 +130,21 @@ namespace DOL.GS.PacketHandler
 						continue;
 					}
 
-					Dictionary<eInventorySlot, DbInventoryItem> charItems = null;
+					Dictionary<EInventorySlot, DbInventoryItem> charItems = null;
 
 					if (!itemsByOwnerID.TryGetValue(c.ObjectId, out charItems))
-						charItems = new Dictionary<eInventorySlot, DbInventoryItem>();
+						charItems = new Dictionary<EInventorySlot, DbInventoryItem>();
 
 					byte extensionTorso = 0;
 					byte extensionGloves = 0;
 					byte extensionBoots = 0;
 
 					DbInventoryItem item = null;
-					if (charItems.TryGetValue(eInventorySlot.TorsoArmor, out item))
+					if (charItems.TryGetValue(EInventorySlot.TorsoArmor, out item))
 						extensionTorso = item.Extension;
-					if (charItems.TryGetValue(eInventorySlot.HandsArmor, out item))
+					if (charItems.TryGetValue(EInventorySlot.HandsArmor, out item))
 						extensionGloves = item.Extension;
-					if (charItems.TryGetValue(eInventorySlot.FeetArmor, out item))
+					if (charItems.TryGetValue(EInventorySlot.FeetArmor, out item))
 						extensionBoots = item.Extension;
 
 					string locationDescription = string.Empty;
@@ -172,20 +153,20 @@ namespace DOL.GS.PacketHandler
 						locationDescription = m_gameClient.GetTranslatedSpotDescription(region, c.Xpos, c.Ypos, c.Zpos);
 					string classname = "";
 					if (c.Class != 0)
-						classname = ((eCharacterClass)c.Class).ToString();
+						classname = ((EPlayerClass)c.Class).ToString();
 					string racename = m_gameClient.RaceToTranslatedName(c.Race, c.Gender);
 
-					charItems.TryGetValue(eInventorySlot.RightHandWeapon, out DbInventoryItem rightHandWeapon);
-					charItems.TryGetValue(eInventorySlot.LeftHandWeapon, out DbInventoryItem leftHandWeapon);
-					charItems.TryGetValue(eInventorySlot.TwoHandWeapon, out DbInventoryItem twoHandWeapon);
-					charItems.TryGetValue(eInventorySlot.DistanceWeapon, out DbInventoryItem distanceWeapon);
-					charItems.TryGetValue(eInventorySlot.HeadArmor, out DbInventoryItem helmet);
-					charItems.TryGetValue(eInventorySlot.HandsArmor, out DbInventoryItem gloves);
-					charItems.TryGetValue(eInventorySlot.FeetArmor, out DbInventoryItem boots);
-					charItems.TryGetValue(eInventorySlot.TorsoArmor, out DbInventoryItem torso);
-					charItems.TryGetValue(eInventorySlot.Cloak, out DbInventoryItem cloak);
-					charItems.TryGetValue(eInventorySlot.LegsArmor, out DbInventoryItem legs);
-					charItems.TryGetValue(eInventorySlot.ArmsArmor, out DbInventoryItem arms);
+					charItems.TryGetValue(EInventorySlot.RightHandWeapon, out DbInventoryItem rightHandWeapon);
+					charItems.TryGetValue(EInventorySlot.LeftHandWeapon, out DbInventoryItem leftHandWeapon);
+					charItems.TryGetValue(EInventorySlot.TwoHandWeapon, out DbInventoryItem twoHandWeapon);
+					charItems.TryGetValue(EInventorySlot.DistanceWeapon, out DbInventoryItem distanceWeapon);
+					charItems.TryGetValue(EInventorySlot.HeadArmor, out DbInventoryItem helmet);
+					charItems.TryGetValue(EInventorySlot.HandsArmor, out DbInventoryItem gloves);
+					charItems.TryGetValue(EInventorySlot.FeetArmor, out DbInventoryItem boots);
+					charItems.TryGetValue(EInventorySlot.TorsoArmor, out DbInventoryItem torso);
+					charItems.TryGetValue(EInventorySlot.Cloak, out DbInventoryItem cloak);
+					charItems.TryGetValue(EInventorySlot.LegsArmor, out DbInventoryItem legs);
+					charItems.TryGetValue(EInventorySlot.ArmsArmor, out DbInventoryItem arms);
 
 					ushort rightHandColor = 0;
 					if (rightHandWeapon != null)
@@ -277,12 +258,12 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte((byte)c.Class);
 					pak.WriteByte((byte)c.Realm); // ok?
 					pak.WriteByte((byte)((((c.Race & 0x10) << 2) + (c.Race & 0x0F)) | (c.Gender << 7)));
-					if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+					if (c.ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 					{
 						pak.WriteByte(0x02);
 						pak.WriteByte(0x02);
 					}
-					else if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+					else if (c.ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 					{
 						pak.WriteByte(0x03);
 						pak.WriteByte(0x03);
@@ -309,7 +290,7 @@ namespace DOL.GS.PacketHandler
 			Region region = WorldMgr.GetRegion(regionId);
 			if (region == null)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ClientRegion)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.ClientRegion)))
 			{
 				var ip = region.ServerIP;
 				if (ip == "any" || ip == "0.0.0.0" || ip == "127.0.0.1" || ip.StartsWith("10.") || ip.StartsWith("192.168."))
@@ -326,7 +307,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x05); //subcode
 				pak.WriteByte(6); //number of entries
@@ -357,7 +338,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendAddFriends(string[] friendNames)
 		{
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.AddFriend)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.AddFriend)))
 			{
 				pak.WriteByte((byte)friendNames.Length);
 				foreach (string friend in friendNames)
@@ -370,7 +351,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendRemoveFriends(string[] friendNames)
 		{
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.RemoveFriend)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.RemoveFriend)))
 			{
 				pak.WriteByte(0x00);
 				foreach (string friend in friendNames)

@@ -119,12 +119,12 @@ namespace DOL.GS
                 return null;
 
             AttackData lastAttackData = _owner.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
-            DbInventoryItem weapon = NextCombatStyle.WeaponTypeRequirement == (int) eObjectType.Shield ? _owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : _owner.ActiveWeapon;
+            DbInventoryItem weapon = NextCombatStyle.WeaponTypeRequirement == (int) EObjectType.Shield ? _owner.Inventory.GetItem(EInventorySlot.LeftHandWeapon) : _owner.ActiveWeapon;
             
             //if they've cached a style and then respecced to no longer have access, remove it
             if (AutomaticBackupStyle != null && _owner is GamePlayer player && player.WeaponBaseSpecLevel(weapon) < AutomaticBackupStyle.SpecLevelRequirement)
             {
-                player.Out.SendMessage($"{AutomaticBackupStyle.Name} is no longer a valid backup style for your spec level and has been cleared.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage($"{AutomaticBackupStyle.Name} is no longer a valid backup style for your spec level and has been cleared.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 AutomaticBackupStyle = null;
             }
            
@@ -152,7 +152,7 @@ namespace DOL.GS
         /// <returns>Selected style</returns>
         public Style NPCGetStyleToUse()
         {
-            var p = _owner as GameNPC;
+            var p = _owner as GameNpc;
             if (p.Styles == null || p.Styles.Count < 1 || p.TargetObject == null)
                 return null;
 
@@ -249,7 +249,7 @@ namespace DOL.GS
                     if (notify)
                     {
                         Style style = st;
-                        p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.YouLearn", style.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.YouLearn", style.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
                         string message = null;
 
@@ -260,7 +260,7 @@ namespace DOL.GS
                                 case Style.eAttackResultRequirement.Style:
                                 case Style.eAttackResultRequirement.Hit: // TODO: make own message for hit after styles DB is updated
 
-                                    Style reqStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, p.CharacterClass.ID);
+                                    Style reqStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, p.PlayerClass.ID);
 
                                     if (reqStyle == null)
                                         message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterStyle", "(style " + style.OpeningRequirementValue + " not found)");
@@ -314,7 +314,7 @@ namespace DOL.GS
                         }
 
                         if (!string.IsNullOrEmpty(message))
-                            p.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            p.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     }
                 }
             }

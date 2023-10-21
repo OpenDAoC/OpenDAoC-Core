@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Reflection;
@@ -198,7 +179,7 @@ namespace DOL.GS
 
 				if(!m_recipiant)
 				{
-					m_owner.Out.SendMessage("Only a recipient of a trade can initiate a repair.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("Only a recipient of a trade can initiate a repair.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					m_partnerWindow.m_repair = false;
 					m_repair = false;
 					return;
@@ -206,7 +187,7 @@ namespace DOL.GS
 
 				if(m_partnerWindow.ItemsCount != 1)
 				{
-					m_owner.Out.SendMessage("You can only repair one item at a time!",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("You can only repair one item at a time!",EChatType.CT_System,EChatLoc.CL_SystemWindow);
 					m_partnerWindow.m_repair = false;
 					m_repair = false;
 					return;
@@ -214,7 +195,7 @@ namespace DOL.GS
 
 				if(ItemsCount > 0)
 				{
-					m_owner.Out.SendMessage("Your trade windows side must be empty to repair!",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("Your trade windows side must be empty to repair!",EChatType.CT_System,EChatLoc.CL_SystemWindow);
 					m_partnerWindow.m_repair = false;
 					m_repair = false;
 					return;	
@@ -228,7 +209,7 @@ namespace DOL.GS
 					return;
 				}
 
-				if(Repair.IsAllowedToBeginWork(m_owner, itemToRepair, 100))
+				if(RepairMgr.IsAllowedToBeginWork(m_owner, itemToRepair, 100))
 				{
 					m_partnerWindow.m_repair = true;
 					m_repair = true;
@@ -260,7 +241,7 @@ namespace DOL.GS
 
 				if(!m_recipiant)
 				{
-					m_owner.Out.SendMessage("Only a recipient of a trade can initiate a combine.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("Only a recipient of a trade can initiate a combine.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					m_partnerWindow.m_combine = false;
 					m_combine = false;
 					return;
@@ -268,7 +249,7 @@ namespace DOL.GS
 
 				if(m_partnerWindow.ItemsCount != 1)
 				{
-					m_owner.Out.SendMessage("You can only combine your items into one item!",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("You can only combine your items into one item!",EChatType.CT_System,EChatLoc.CL_SystemWindow);
 					m_partnerWindow.m_combine = false;
 					m_combine = false;
 					return;
@@ -285,24 +266,24 @@ namespace DOL.GS
                 // --------------------------------------------------------------
                 // Luhz Crafting Update:
                 // Players may now have any, and all, "primary" crafting skills.
-                AbstractCraftingSkill skill = null;
+                ACraftingSkill skill = null;
                 lock (m_owner.TradeWindow.Sync)
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
-                        if (i.Object_Type == (int)eObjectType.AlchemyTincture)
+                        if (i.Object_Type == (int)EObjectType.AlchemyTincture)
                         {
-                            if (m_owner.GetCraftingSkillValue(eCraftingSkill.Alchemy) > 0)
+                            if (m_owner.GetCraftingSkillValue(ECraftingSkill.Alchemy) > 0)
                             {
-                                skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.Alchemy);
+                                skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.Alchemy);
                                 break;
                             }
                         }
-						else if (i.Object_Type == (int)eObjectType.SpellcraftGem)
+						else if (i.Object_Type == (int)EObjectType.SpellcraftGem)
 						{
-							if (m_owner.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) > 0)
+							if (m_owner.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) > 0)
 							{
-								skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.SpellCrafting);
+								skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.SpellCrafting);
 								break;
 							}
 						}
@@ -313,8 +294,8 @@ namespace DOL.GS
 				{
 					if(((AdvancedCraftingSkill)skill).IsAllowedToCombine(m_owner, itemToCombine))
 					{
-						if(skill is SpellCrafting)
-							((SpellCrafting)skill).ShowSpellCraftingInfos(m_owner, itemToCombine);
+						if(skill is Spellcrafting)
+							((Spellcrafting)skill).ShowSpellCraftingInfos(m_owner, itemToCombine);
 
 						m_partnerWindow.m_combine = true;
 						m_combine = true;
@@ -433,7 +414,7 @@ namespace DOL.GS
 				m_tradeAccept = true;
 				GamePlayer partner = m_partnerWindow.Owner;
 
-				partner.Out.SendMessage(m_owner.Name + " has accepted the trade.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				partner.Out.SendMessage(m_owner.Name + " has accepted the trade.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 				// Check if the tradepartner has also agreed to the trade
 				if (!m_partnerWindow.m_tradeAccept) return false;
@@ -456,11 +437,11 @@ namespace DOL.GS
                         if (partnerEnoughMoney)
                         {
                             partner.AddMoney(m_partnerWindow.TradeMoney);
-                            InventoryLogging.LogInventoryAction(partner, m_owner, eInventoryActionType.Trade, m_partnerWindow.TradeMoney);
+                            InventoryLogging.LogInventoryAction(partner, m_owner, EInventoryActionType.Trade, m_partnerWindow.TradeMoney);
                         }
 
-					    m_owner.Out.SendMessage("You don't have enough money.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-						partner.Out.SendMessage(m_owner.Name + " doesn't have enough money.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+					    m_owner.Out.SendMessage("You don't have enough money.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+						partner.Out.SendMessage(m_owner.Name + " doesn't have enough money.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 					}
 					if (!partnerEnoughMoney)
 					{
@@ -469,11 +450,11 @@ namespace DOL.GS
                         if (enoughMoney)
                         {
                             m_owner.AddMoney(TradeMoney);
-                            InventoryLogging.LogInventoryAction(m_owner, partner, eInventoryActionType.Trade, TradeMoney);
+                            InventoryLogging.LogInventoryAction(m_owner, partner, EInventoryActionType.Trade, TradeMoney);
                         }
 
-					    partner.Out.SendMessage("You don't have enough money.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-						m_owner.Out.SendMessage(partner.Name + " doesn't have enough money.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+					    partner.Out.SendMessage("You don't have enough money.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+						m_owner.Out.SendMessage(partner.Name + " doesn't have enough money.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 					}
 
 					//Update our tradewindow and return
@@ -488,24 +469,24 @@ namespace DOL.GS
                     // Luhz Crafting Update:
                     // Players may now have any, and all, "primary" crafting skills.
                     // AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(crafter.CraftingPrimarySkill);
-                    AbstractCraftingSkill skill = null;
+                    ACraftingSkill skill = null;
                     lock (crafter.TradeWindow.Sync)
                     {
                         foreach (DbInventoryItem i in (ArrayList)crafter.TradeWindow.TradeItems.Clone())
                         {
-                            if (i.Object_Type == (int)eObjectType.AlchemyTincture)
+                            if (i.Object_Type == (int)EObjectType.AlchemyTincture)
                             {
-                                if (m_owner.GetCraftingSkillValue(eCraftingSkill.Alchemy) > 0)
+                                if (m_owner.GetCraftingSkillValue(ECraftingSkill.Alchemy) > 0)
                                 {
-                                    skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.Alchemy);
+                                    skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.Alchemy);
                                     break;
                                 }
                             }
-                            else if (i.Object_Type == (int)eObjectType.SpellcraftGem)
+                            else if (i.Object_Type == (int)EObjectType.SpellcraftGem)
                             {
-                                if (crafter.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) > 0)
+                                if (crafter.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) > 0)
                                 {
-                                    skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.SpellCrafting);
+                                    skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.SpellCrafting);
                                     break;
                                 }
                             }
@@ -535,21 +516,21 @@ namespace DOL.GS
 					//Test if we and our partner have enough space in inventory
 					int mySpaceNeeded      = Math.Max(0, partnerTradeItemsCount - myTradeItemsCount);
 					int partnerSpaceNeeded = Math.Max(0, myTradeItemsCount - partnerTradeItemsCount);
-					bool enoughSpace        = m_owner.Inventory.IsSlotsFree(mySpaceNeeded, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-					bool partnerEnoughSpace = partner.Inventory.IsSlotsFree(partnerSpaceNeeded, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+					bool enoughSpace        = m_owner.Inventory.IsSlotsFree(mySpaceNeeded, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
+					bool partnerEnoughSpace = partner.Inventory.IsSlotsFree(partnerSpaceNeeded, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
 
 					//Check the preconditions
 					if (!enoughSpace || !partnerEnoughSpace)
 					{
 						if (!enoughSpace)
 						{
-							m_owner.Out.SendMessage("You don't have enough space in your inventory.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-							partner.Out.SendMessage(m_owner.Name + " doesn't have enough space in his inventory.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							m_owner.Out.SendMessage("You don't have enough space in your inventory.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+							partner.Out.SendMessage(m_owner.Name + " doesn't have enough space in his inventory.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 						}
 						if (!partnerEnoughSpace)
 						{
-							partner.Out.SendMessage("You don't have enough space in your inventory.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
-							m_owner.Out.SendMessage(partner.Name + " doesn't have enough space in his inventory.", eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+							partner.Out.SendMessage("You don't have enough space in your inventory.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+							m_owner.Out.SendMessage(partner.Name + " doesn't have enough space in his inventory.", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 						}
 
 						//Update our tradewindow and return
@@ -619,7 +600,7 @@ namespace DOL.GS
 						DbInventoryItem itemtoadd = item;
 
 						// If PLayer is not Infiltrator (9), Shadowblade (23), Nightshade (49), remove Envenom bonus before add the item in the inventory
-						if (item.PoisonSpellID > 0 && !(partner.CharacterClass.ID == 9 || partner.CharacterClass.ID == 23 || partner.CharacterClass.ID == 49))
+						if (item.PoisonSpellID > 0 && !(partner.PlayerClass.ID == 9 || partner.PlayerClass.ID == 23 || partner.PlayerClass.ID == 49))
 						{
 							itemtoadd = GameInventoryItem.Create(itemtoadd);
 							itemtoadd.PoisonCharges = 0;
@@ -629,11 +610,11 @@ namespace DOL.GS
 
 						if (item.IsDeleted)
 						{
-							tradeSuccess = partner.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, itemtoadd);
+							tradeSuccess = partner.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, itemtoadd);
 						}
 						else
 						{
-							tradeSuccess = partner.Inventory.AddTradeItem(eInventorySlot.FirstEmptyBackpack, itemtoadd);
+							tradeSuccess = partner.Inventory.AddTradeItem(EInventorySlot.FirstEmptyBackpack, itemtoadd);
 						}
 
 						if (!tradeSuccess)
@@ -642,7 +623,7 @@ namespace DOL.GS
 						}
 						else
 						{
-                            InventoryLogging.LogInventoryAction(m_owner, partner, eInventoryActionType.Trade, item.Template, item.Count);
+                            InventoryLogging.LogInventoryAction(m_owner, partner, EInventoryActionType.Trade, item.Template, item.Count);
 						    if (logTrade)
 						    {
 						        GameServer.Instance.LogGMAction("   Item: " + m_owner.Name + "(" + m_owner.Client.Account.Name + ") -> " + partner.Name + "(" + partner.Client.Account.Name + ") : " + item.Name + "(" + item.Id_nb + ")");
@@ -662,7 +643,7 @@ namespace DOL.GS
 						DbInventoryItem itemtoadd = item;
 
 						// If PLayer is not Infiltrator (9), Shadowblade (23), Nightshade (49), remove Envenom bonus before add the item in the inventory
-						if (item.PoisonSpellID > 0 && !(m_owner.CharacterClass.ID == 9 || m_owner.CharacterClass.ID == 23 || m_owner.CharacterClass.ID == 49))
+						if (item.PoisonSpellID > 0 && !(m_owner.PlayerClass.ID == 9 || m_owner.PlayerClass.ID == 23 || m_owner.PlayerClass.ID == 49))
 						{
 							itemtoadd = GameInventoryItem.Create(itemtoadd);
 							itemtoadd.PoisonCharges = 0;
@@ -672,11 +653,11 @@ namespace DOL.GS
 
 						if (item.IsDeleted)
 						{
-							tradeSuccess = m_owner.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, itemtoadd);
+							tradeSuccess = m_owner.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, itemtoadd);
 						}
 						else
 						{
-							tradeSuccess = m_owner.Inventory.AddTradeItem(eInventorySlot.FirstEmptyBackpack, itemtoadd);
+							tradeSuccess = m_owner.Inventory.AddTradeItem(EInventorySlot.FirstEmptyBackpack, itemtoadd);
 						}
 
 						if (!tradeSuccess)
@@ -685,7 +666,7 @@ namespace DOL.GS
 						}
 						else
 						{
-                            InventoryLogging.LogInventoryAction(partner, m_owner, eInventoryActionType.Trade, item.Template, item.Count);
+                            InventoryLogging.LogInventoryAction(partner, m_owner, EInventoryActionType.Trade, item.Template, item.Count);
 						    if (logTrade)
 						    {
 						        GameServer.Instance.LogGMAction("   Item: " + partner.Name + "(" + partner.Client.Account.Name + ") -> " + m_owner.Name + "(" + m_owner.Client.Account.Name + ") : " + item.Name + "(" + item.Id_nb + ")");
@@ -698,8 +679,8 @@ namespace DOL.GS
 					m_changesCount--;
 					m_partnerWindow.m_changesCount--;
 
-					m_owner.Out.SendMessage("Trade Completed. " + myTradeItemsCount + " items for " + partnerTradeItemsCount + " items.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					partner.Out.SendMessage("Trade Completed. " + partnerTradeItemsCount + " items for " + myTradeItemsCount + " items.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					m_owner.Out.SendMessage("Trade Completed. " + myTradeItemsCount + " items for " + partnerTradeItemsCount + " items.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					partner.Out.SendMessage("Trade Completed. " + partnerTradeItemsCount + " items for " + myTradeItemsCount + " items.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 					m_owner.Inventory.SaveIntoDatabase(m_owner.InternalID);
 					partner.Inventory.SaveIntoDatabase(partner.InternalID);
@@ -718,8 +699,8 @@ namespace DOL.GS
 					//Now add the money
 					m_owner.AddMoney(m_partnerWindow.TradeMoney, "You get {0}.");
 					partner.AddMoney(TradeMoney, "You get {0}.");
-                    InventoryLogging.LogInventoryAction(m_owner, partner, eInventoryActionType.Trade, TradeMoney);
-                    InventoryLogging.LogInventoryAction(partner, m_owner, eInventoryActionType.Trade, m_partnerWindow.TradeMoney);
+                    InventoryLogging.LogInventoryAction(m_owner, partner, EInventoryActionType.Trade, TradeMoney);
+                    InventoryLogging.LogInventoryAction(partner, m_owner, EInventoryActionType.Trade, m_partnerWindow.TradeMoney);
 					m_owner.SaveIntoDatabase();
 					partner.SaveIntoDatabase();
 				}

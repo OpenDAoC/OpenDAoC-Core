@@ -15,7 +15,7 @@ namespace DOL.GS {
             Model = 1903;
             Size = 250;
             Level = 75;
-            Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
+            Inventory = new GameNpcInventory(GameNpcInventoryTemplate.EmptyTemplate);
             SetOwnBrain(new LordOfBattleBrain());
 
             return base.AddToWorld(); // Finish up and add him to the world.
@@ -27,25 +27,25 @@ namespace DOL.GS {
 			TurnTo(player.X, player.Y);
 
 			
-				player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage("Greetings, " + player.PlayerClass.Name + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 
-            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
+            if (player.effectListComponent.ContainsEffectForEffectType(EEffect.ResurrectionIllness))
             {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness));
+                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, EEffect.ResurrectionIllness));
             }
 
-            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
+            if (player.effectListComponent.ContainsEffectForEffectType(EEffect.RvrResurrectionIllness))
             {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
+                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, EEffect.RvrResurrectionIllness));
             }
 
 
             if (player.InCombatPvPInLast(8000))
                 return true;
 
-            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
+            if (player.effectListComponent.ContainsEffectForEffectType(EEffect.Disease))
             {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.Disease));
+                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, EEffect.Disease));
             }
 
 
@@ -70,13 +70,13 @@ namespace DOL.GS {
 				case "event zone":
 					switch (t.Realm)
 					{
-						case eRealm.Albion:
+						case ERealm.Albion:
 							t.MoveTo(330, 52759, 39528, 4677, 36);
 							break;
-						case eRealm.Midgard:
+						case ERealm.Midgard:
 							t.MoveTo(334, 52160, 39862, 5472, 46);
 							break;
-						case eRealm.Hibernia:
+						case ERealm.Hibernia:
 							t.MoveTo(335, 52836, 40401, 4672, 441);
 							break;
 					}
@@ -89,7 +89,7 @@ namespace DOL.GS {
 		{
 			target.Client.Out.SendMessage(
 				msg,
-				eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+				EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 		}
 
 	}
@@ -111,7 +111,7 @@ namespace DOL.GS {
             if (playersToKill == null)
                 playersToKill = new List<GamePlayer>();
 
-            if (Body.Flags.HasFlag(GameNPC.eFlags.GHOST))
+            if (Body.Flags.HasFlag(ENpcFlags.GHOST))
                 return;
 
             foreach(GamePlayer player in Body.GetPlayersInRadius(7000))
@@ -126,14 +126,14 @@ namespace DOL.GS {
                     playersToRez.Add(player, GameLoop.GameLoopTime);
                 }
 
-                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
+                if (player.effectListComponent.ContainsEffectForEffectType(EEffect.ResurrectionIllness))
                 {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness));
+                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, EEffect.ResurrectionIllness));
                 }
 
-                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
+                if (player.effectListComponent.ContainsEffectForEffectType(EEffect.RvrResurrectionIllness))
                 {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
+                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, EEffect.RvrResurrectionIllness));
                 }
 
                 if(playersToKill.Contains(player))
@@ -155,10 +155,10 @@ namespace DOL.GS {
                     deadPlayer.Out.SendPlayerRevive(deadPlayer);
                     deadPlayer.Out.SendStatusUpdate();
                     deadPlayer.Out.SendMessage("Mordred has found your soul worthy of resurrection!",
-                                           eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                           EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     deadPlayer.Notify(GamePlayerEvent.Revive, deadPlayer);
 
-                    AtlasROGManager.GenerateROG(deadPlayer, true);
+                    CoreRoGMgr.GenerateROG(deadPlayer, true);
 
                     playersToRez.Remove(deadPlayer);
                 }
@@ -169,7 +169,7 @@ namespace DOL.GS {
                 player.MoveTo(Body.CurrentRegionID, Body.X + 100, Body.Y, Body.Z,
                                   Body.Heading);
                 player.Client.Out.SendMessage("Cowardice is not appreciated in this arena.",
-                                           eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                                           EChatType.CT_Important, EChatLoc.CL_SystemWindow);
             }
 
             playersToKill.Clear();

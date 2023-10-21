@@ -6,18 +6,15 @@ using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	/// <summary>
-	/// Handles spell cast requests from client
-	/// </summary>
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.UseSpell, "Handles Player Use Spell Request.", eClientStatus.PlayerInGame)]
-	public class UseSpellHandler : AbstractCommandHandler, IPacketHandler
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.UseSpell, "Handles Player Use Spell Request.", EClientStatus.PlayerInGame)]
+	public class UseSpellHandler : ACommandHandler, IPacketHandler
 	{
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
 		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			int flagSpeedData;
 			int spellLevel;
@@ -124,7 +121,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					Log.Warn("Client <" + player.Client.Account.Name + "> requested incorrect spell at level " + spellLevel +
 						" in spell-line " + ((sl == null || sl.Name == null) ? "unkown" : sl.Name));
 				
-				player.Out.SendMessage(string.Format("Error : Spell (Line {0}, Level {1}) can't be resolved...", spellLineIndex, spellLevel), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(string.Format("Error : Spell (Line {0}, Level {1}) can't be resolved...", spellLineIndex, spellLevel), EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 			}
 			
 
@@ -134,7 +131,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player use spell actions
 		/// </summary>
-		protected class UseSpellAction : ECSGameTimerWrapperBase
+		protected class UseSpellAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Defines a logger for this class.
@@ -174,7 +171,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 
@@ -236,7 +233,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						Log.Warn("Client <" + player.Client.Account.Name + "> requested incorrect spell at level " + m_spellLevel +
 							" in spell-line " + ((sl == null || sl.Name == null) ? "unkown" : sl.Name));
 					
-					player.Out.SendMessage(string.Format("Error : Spell (Line {0}, Level {1}) can't be resolved...", m_spellLineIndex, m_spellLevel), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(string.Format("Error : Spell (Line {0}, Level {1}) can't be resolved...", m_spellLineIndex, m_spellLevel), EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 				}
 
 				return 0;

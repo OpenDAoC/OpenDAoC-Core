@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.ServerProperties;
@@ -34,25 +15,25 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// The amount of Bounty Points a player starts with
 		/// </summary>
-		[ServerProperty("startup", "starting_bps", "Starting Bounty Points - Edit this to change the amount of Bounty Points the new characters start the game with", 0)]
+		[Properties("startup", "starting_bps", "Starting Bounty Points - Edit this to change the amount of Bounty Points the new characters start the game with", 0)]
 		public static long STARTING_BPS;
 		
 		/// <summary>
 		/// The amount of copper a player starts with
 		/// </summary>
-		[ServerProperty("startup", "starting_money", "Starting Money - Edit this to change the amount in copper of money new characters start the game with, max 214 plat", 0)]
+		[Properties("startup", "starting_money", "Starting Money - Edit this to change the amount in copper of money new characters start the game with, max 214 plat", 0)]
 		public static long STARTING_MONEY;
 		
 		/// <summary>
 		/// The message players get when they enter the game at level 1
 		/// </summary>
-		[ServerProperty("startup", "starting_realm_level", "Starting Realm level - Edit this to set which realm level a new player starts the game with", 0)]
+		[Properties("startup", "starting_realm_level", "Starting Realm level - Edit this to set which realm level a new player starts the game with", 0)]
 		public static int STARTING_REALM_LEVEL;
 		
 		/// <summary>
 		/// The level of experience a player should start with
 		/// </summary>
-		[ServerProperty("startup", "starting_level", "Starting Level - Edit this to set which levels experience a new player start the game with", 1)]
+		[Properties("startup", "starting_level", "Starting Level - Edit this to set which levels experience a new player start the game with", 1)]
 		public static int STARTING_LEVEL;
 		#endregion
 		
@@ -63,9 +44,9 @@ namespace DOL.GS.GameEvents
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		[ScriptLoadedEvent]
-		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
+			GameEventMgr.AddHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(OnCharacterCreation));
 		}
 		
 		/// <summary>
@@ -75,9 +56,9 @@ namespace DOL.GS.GameEvents
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new DOLEventHandler(OnCharacterCreation));
+			GameEventMgr.RemoveHandler(DatabaseEvent.CharacterCreated, new CoreEventHandler(OnCharacterCreation));
 		}
 		
 		/// <summary>
@@ -86,7 +67,7 @@ namespace DOL.GS.GameEvents
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public static void OnCharacterCreation(DOLEvent e, object sender, EventArgs args)
+		public static void OnCharacterCreation(CoreEvent e, object sender, EventArgs args)
 		{
 			// Check Args
 			var chArgs = args as CharacterEventArgs;
@@ -104,10 +85,10 @@ namespace DOL.GS.GameEvents
 			if (STARTING_MONEY > 0)
 			{
 				long value = STARTING_MONEY;
-				ch.Copper = Money.GetCopper(value);
-				ch.Silver = Money.GetSilver(value);
-				ch.Gold = Money.GetGold(value);
-				ch.Platinum = Money.GetPlatinum(value);
+				ch.Copper = MoneyMgr.GetCopper(value);
+				ch.Silver = MoneyMgr.GetSilver(value);
+				ch.Gold = MoneyMgr.GetGold(value);
+				ch.Platinum = MoneyMgr.GetPlatinum(value);
 			}
 
 			// Property Realm Level

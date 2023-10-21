@@ -60,13 +60,13 @@ namespace DOL.Tests
 			set { if (BothDualWeaponHitSetFunc != null) BothDualWeaponHitSetFunc(this, value); }
 		}
 		
-		public Func<TestPacketLib, eServerPackets, byte> GetPacketCodeFunc { get; set; }
-		public byte GetPacketCode(eServerPackets packetCode)
+		public Func<TestPacketLib, EServerPackets, byte> GetPacketCodeFunc { get; set; }
+		public byte GetPacketCode(EServerPackets packetCode)
 		{
 			return GetPacketCodeFunc != null ? GetPacketCodeFunc(this, packetCode) : default(byte);
 		}
-		public Action<TestPacketLib, GSTCPPacketOut> SendTCPPacket { get; set; }
-		public void SendTCP(GSTCPPacketOut packet)
+		public Action<TestPacketLib, GsTcpPacketOut> SendTCPPacket { get; set; }
+		public void SendTCP(GsTcpPacketOut packet)
 		{
 			if (SendTCPPacket != null) SendTCPPacket(this, packet);
 		}
@@ -75,13 +75,13 @@ namespace DOL.Tests
 		{
 			if (SendTCPBuf != null) SendTCPBuf(this, buf);
 		}
-		public Action<TestPacketLib, GSTCPPacketOut> SendTCPRawPacket { get; set; }
-		public void SendTCPRaw(GSTCPPacketOut packet)
+		public Action<TestPacketLib, GsTcpPacketOut> SendTCPRawPacket { get; set; }
+		public void SendTCPRaw(GsTcpPacketOut packet)
 		{
 			if (SendTCPRawPacket != null) SendTCPRawPacket(this, packet);
 		}
-		public Action<TestPacketLib, GSUDPPacketOut> SendUDPPacket { get; set; }
-		public void SendUDP(GSUDPPacketOut packet)
+		public Action<TestPacketLib, GsUdpPacketOut> SendUDPPacket { get; set; }
+		public void SendUDP(GsUdpPacketOut packet)
 		{
 			if (SendUDPPacket != null) SendUDPPacket(this, packet);
 		}
@@ -90,8 +90,8 @@ namespace DOL.Tests
 		{
 			if (SendUDPBuf != null) SendUDPBuf(this, buf);
 		}
-		public Action<TestPacketLib, GSUDPPacketOut> SendUDPRawPacket { get; set; }
-		public void SendUDPRaw(GSUDPPacketOut packet)
+		public Action<TestPacketLib, GsUdpPacketOut> SendUDPRawPacket { get; set; }
+		public void SendUDPRaw(GsUdpPacketOut packet)
 		{
 			if (SendUDPRawPacket != null) SendUDPRawPacket(this, packet);
 		}
@@ -105,8 +105,8 @@ namespace DOL.Tests
 		{
 			if (SendVersionAndCryptKeyMethod != null) SendVersionAndCryptKeyMethod(this);
 		}
-		public Action<TestPacketLib, eLoginError> SendLoginDeniedMethod { get; set; }
-		public void SendLoginDenied(eLoginError et)
+		public Action<TestPacketLib, ELoginError> SendLoginDeniedMethod { get; set; }
+		public void SendLoginDenied(ELoginError et)
 		{
 			if (SendLoginDeniedMethod != null) SendLoginDeniedMethod(this, et);
 		}
@@ -130,13 +130,13 @@ namespace DOL.Tests
 		{
 			if (SendPingReplyMethod != null) SendPingReplyMethod(this, timestamp, sequence);
 		}
-		public Action<TestPacketLib, eRealm> SendRealmMethod { get; set; }
-		public void SendRealm(eRealm realm)
+		public Action<TestPacketLib, ERealm> SendRealmMethod { get; set; }
+		public void SendRealm(ERealm realm)
 		{
 			if (SendRealmMethod != null) SendRealmMethod(this, realm);
 		}
-		public Action<TestPacketLib, eRealm> SendCharacterOverviewMethod { get; set; }
-		public void SendCharacterOverview(eRealm realm)
+		public Action<TestPacketLib, ERealm> SendCharacterOverviewMethod { get; set; }
+		public void SendCharacterOverview(ERealm realm)
 		{
 			if (SendCharacterOverviewMethod != null) SendCharacterOverviewMethod(this, realm);
 		}
@@ -205,8 +205,8 @@ namespace DOL.Tests
 		{
 			if (SendTimeMethod != null) SendTimeMethod(this);
 		}
-		public Action<TestPacketLib, string, eChatType, eChatLoc> SendMessageMethod { get; set; }
-		public void SendMessage(string msg, eChatType type, eChatLoc loc)
+		public Action<TestPacketLib, string, EChatType, EChatLoc> SendMessageMethod { get; set; }
+		public void SendMessage(string msg, EChatType type, EChatLoc loc)
 		{
 			if (SendMessageMethod != null) SendMessageMethod(this, msg, type, loc);
 		}
@@ -215,8 +215,8 @@ namespace DOL.Tests
 		{
 			if (SendPlayerCreateMethod != null) SendPlayerCreateMethod(this, playerToCreate);
 		}
-		public Action<TestPacketLib, GameObject, Guild> SendObjectGuildIDMethod { get; set; }
-		public void SendObjectGuildID(GameObject obj, Guild guild)
+		public Action<TestPacketLib, GameObject, GuildUtil> SendObjectGuildIDMethod { get; set; }
+		public void SendObjectGuildID(GameObject obj, GuildUtil guild)
 		{
 			if (SendObjectGuildIDMethod != null) SendObjectGuildIDMethod(this, obj, guild);
 		}
@@ -255,13 +255,13 @@ namespace DOL.Tests
 		{
 			if (SendModelAndSizeChangeIDMethod != null) SendModelAndSizeChangeIDMethod(this, objectId, newModel, newSize);
 		}
-		public Action<TestPacketLib, GameObject, eEmote> SendEmoteAnimationMethod { get; set; }
-		public void SendEmoteAnimation(GameObject obj, eEmote emote)
+		public Action<TestPacketLib, GameObject, EEmote> SendEmoteAnimationMethod { get; set; }
+		public void SendEmoteAnimation(GameObject obj, EEmote emote)
 		{
 			if (SendEmoteAnimationMethod != null) SendEmoteAnimationMethod(this, obj, emote);
 		}
-		public Action<TestPacketLib, GameNPC> SendNPCCreateMethod { get; set; }
-		public void SendNPCCreate(GameNPC npc)
+		public Action<TestPacketLib, GameNpc> SendNPCCreateMethod { get; set; }
+		public void SendNPCCreate(GameNpc npc)
 		{
 			if (SendNPCCreateMethod != null) SendNPCCreateMethod(this, npc);
 		}
@@ -337,8 +337,8 @@ namespace DOL.Tests
 		{
 			if (SendGroupInviteCommandMethod != null) SendGroupInviteCommandMethod(this, invitingPlayer, inviteMessage);
 		}
-		public Action<TestPacketLib, eDialogCode, ushort, ushort, ushort, ushort, eDialogType, bool, string> SendDialogBoxMethod { get; set; }
-		public void SendDialogBox(eDialogCode code, ushort data1, ushort data2, ushort data3, ushort data4, eDialogType type,
+		public Action<TestPacketLib, EDialogCode, ushort, ushort, ushort, ushort, EDialogType, bool, string> SendDialogBoxMethod { get; set; }
+		public void SendDialogBox(EDialogCode code, ushort data1, ushort data2, ushort data3, ushort data4, EDialogType type,
 		                   bool autoWrapText, string message)
 		{
 			if (SendDialogBoxMethod != null) SendDialogBoxMethod(this, code, data1, data2, data3, data4, type, autoWrapText, message);
@@ -368,33 +368,33 @@ namespace DOL.Tests
 		{
 			if (SendGuildInviteCommandMethod != null) SendGuildInviteCommandMethod(this, invitingPlayer, inviteMessage);
 		}
-		public Action<TestPacketLib, GameNPC, GamePlayer, RewardQuest> SendQuestOfferWindowMethod { get; set; }
-		public void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest)
+		public Action<TestPacketLib, GameNpc, GamePlayer, RewardQuest> SendQuestOfferWindowMethod { get; set; }
+		public void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
 		{
 			if (SendQuestOfferWindowMethod != null) SendQuestOfferWindowMethod(this, questNPC, player, quest);
 		}
-		public Action<TestPacketLib, GameNPC, GamePlayer, RewardQuest> SendQuestRewardWindowMethod { get; set; }
-		public void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest)
+		public Action<TestPacketLib, GameNpc, GamePlayer, RewardQuest> SendQuestRewardWindowMethod { get; set; }
+		public void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
 		{
 			if (SendQuestRewardWindowMethod != null) SendQuestRewardWindowMethod(this, questNPC, player, quest);
 		}
-		public Action<TestPacketLib, GameNPC, GamePlayer, DataQuest> SendQuestOfferWindowDataMethod { get; set; }
-		public void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DataQuest quest)
+		public Action<TestPacketLib, GameNpc, GamePlayer, DataQuest> SendQuestOfferWindowDataMethod { get; set; }
+		public void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, DataQuest quest)
 		{
 			if (SendQuestOfferWindowDataMethod != null) SendQuestOfferWindowDataMethod(this, questNPC, player, quest);
 		}
-		public Action<TestPacketLib, GameNPC, GamePlayer, DataQuest> SendQuestRewardWindowDataMethod { get; set; }
-		public void SendQuestRewardWindow(GameNPC questNPC, GamePlayer player, DataQuest quest)
+		public Action<TestPacketLib, GameNpc, GamePlayer, DataQuest> SendQuestRewardWindowDataMethod { get; set; }
+		public void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, DataQuest quest)
 		{
 			if (SendQuestRewardWindowDataMethod != null) SendQuestRewardWindowDataMethod(this, questNPC, player, quest);
 		}
-		public Action<TestPacketLib, GameNPC, ushort, string> SendQuestSubscribeCommandMethod { get; set; }
-		public void SendQuestSubscribeCommand(GameNPC invitingNPC, ushort questid, string inviteMessage)
+		public Action<TestPacketLib, GameNpc, ushort, string> SendQuestSubscribeCommandMethod { get; set; }
+		public void SendQuestSubscribeCommand(GameNpc invitingNPC, ushort questid, string inviteMessage)
 		{
 			if (SendQuestSubscribeCommandMethod != null) SendQuestSubscribeCommandMethod(this, invitingNPC, questid, inviteMessage);
 		}
-		public Action<TestPacketLib, GameNPC, ushort, string> SendQuestAbortCommandMethod { get; set; }
-		public void SendQuestAbortCommand(GameNPC abortingNPC, ushort questid, string abortMessage)
+		public Action<TestPacketLib, GameNpc, ushort, string> SendQuestAbortCommandMethod { get; set; }
+		public void SendQuestAbortCommand(GameNpc abortingNPC, ushort questid, string abortMessage)
 		{
 			if (SendQuestAbortCommandMethod != null) SendQuestAbortCommandMethod(this, abortingNPC, questid, abortMessage);
 		}
@@ -423,13 +423,13 @@ namespace DOL.Tests
 		{
 			if (SendInventorySlotsUpdateMethod != null) SendInventorySlotsUpdateMethod(this, slots);
 		}
-		public Action<TestPacketLib, eInventoryWindowType, ICollection<DbInventoryItem>> SendInventoryItemsUpdateWindowMethod { get; set; }
-		public void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate)
+		public Action<TestPacketLib, EInventoryWindowType, ICollection<DbInventoryItem>> SendInventoryItemsUpdateWindowMethod { get; set; }
+		public void SendInventoryItemsUpdate(EInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate)
 		{
 			if (SendInventoryItemsUpdateWindowMethod != null) SendInventoryItemsUpdateWindowMethod(this, windowType, itemsToUpdate);
 		}
-		public Action<TestPacketLib, IDictionary<int, DbInventoryItem>, eInventoryWindowType> SendInventoryItemsUpdateDictMethod { get; set; }
-		public void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, eInventoryWindowType windowType)
+		public Action<TestPacketLib, IDictionary<int, DbInventoryItem>, EInventoryWindowType> SendInventoryItemsUpdateDictMethod { get; set; }
+		public void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, EInventoryWindowType windowType)
 		{
 			if (SendInventoryItemsUpdateDictMethod != null) SendInventoryItemsUpdateDictMethod(this, updateItems, windowType);
 		}
@@ -438,8 +438,8 @@ namespace DOL.Tests
 		{
 			if (SendDoorStateMethod != null) SendDoorStateMethod(this, region, door);
 		}
-		public Action<TestPacketLib, MerchantTradeItems, eMerchantWindowType> SendMerchantWindowMethod { get; set; }
-		public void SendMerchantWindow(MerchantTradeItems itemlist, eMerchantWindowType windowType)
+		public Action<TestPacketLib, MerchantTradeItems, EMerchantWindowType> SendMerchantWindowMethod { get; set; }
+		public void SendMerchantWindow(MerchantTradeItems itemlist, EMerchantWindowType windowType)
 		{
 			if (SendMerchantWindowMethod != null) SendMerchantWindowMethod(this, itemlist, windowType);
 		}
@@ -608,8 +608,8 @@ namespace DOL.Tests
 		{
 			if (SendQuestListUpdateMethod != null) SendQuestListUpdateMethod(this);
 		}
-		public Action<TestPacketLib, AbstractQuest> SendQuestUpdateMethod { get; set; }
-		public void SendQuestUpdate(AbstractQuest quest)
+		public Action<TestPacketLib, AQuest> SendQuestUpdateMethod { get; set; }
+		public void SendQuestUpdate(AQuest quest)
 		{
 			if (SendQuestUpdateMethod != null) SendQuestUpdateMethod(this, quest);
 		}
@@ -638,18 +638,18 @@ namespace DOL.Tests
 		{
 			if (SendChangeGroundTargetMethod != null) SendChangeGroundTargetMethod(this, newTarget);
 		}
-		public Action<TestPacketLib, GameLiving, ePetWindowAction, eAggressionState, eWalkState> SendPetWindowMethod { get; set; }
-		public void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, eAggressionState aggroState, eWalkState walkState)
+		public Action<TestPacketLib, GameLiving, EPetWindowAction, EAggressionState, EWalkState> SendPetWindowMethod { get; set; }
+		public void SendPetWindow(GameLiving pet, EPetWindowAction windowAction, EAggressionState aggroState, EWalkState walkState)
 		{
 			if (SendPetWindowMethod != null) SendPetWindowMethod(this, pet, windowAction, aggroState, walkState);
 		}
-		public Action<TestPacketLib, eSoundType, ushort> SendPlaySoundMethod { get; set; }
-		public void SendPlaySound(eSoundType soundType, ushort soundID)
+		public Action<TestPacketLib, ESoundType, ushort> SendPlaySoundMethod { get; set; }
+		public void SendPlaySound(ESoundType soundType, ushort soundID)
 		{
 			if (SendPlaySoundMethod != null) SendPlaySoundMethod(this, soundType, soundID);
 		}
-		public Action<TestPacketLib, GameNPC, eQuestIndicator> SendNPCsQuestEffectMethod { get; set; }
-		public void SendNPCsQuestEffect(GameNPC npc, eQuestIndicator indicator)
+		public Action<TestPacketLib, GameNpc, EQuestIndicator> SendNPCsQuestEffectMethod { get; set; }
+		public void SendNPCsQuestEffect(GameNpc npc, EQuestIndicator indicator)
 		{
 			if (SendNPCsQuestEffectMethod != null) SendNPCsQuestEffectMethod(this, npc, indicator);
 		}
@@ -878,8 +878,8 @@ namespace DOL.Tests
 		{
 			if (SendControlledHorseMethod != null) SendControlledHorseMethod(this, player, flag);
 		}
-		public Action<TestPacketLib, GSTCPPacketOut, int, int> CheckLengthHybridSkillsPacketMethod { get; set; }
-		public void CheckLengthHybridSkillsPacket(ref GSTCPPacketOut pak, ref int maxSkills, ref int first)
+		public Action<TestPacketLib, GsTcpPacketOut, int, int> CheckLengthHybridSkillsPacketMethod { get; set; }
+		public void CheckLengthHybridSkillsPacket(ref GsTcpPacketOut pak, ref int maxSkills, ref int first)
 		{
 			if (CheckLengthHybridSkillsPacketMethod != null) CheckLengthHybridSkillsPacketMethod(this, pak, maxSkills, first);
 		}

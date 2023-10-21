@@ -17,7 +17,7 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var player = NewPlayer();
             player.Level = 50;
-            player.BaseBuffBonusCategory[eProperty.Constitution] = 100;
+            player.BaseBuffBonusCategory[EProperty.Constitution] = 100;
 
             int actual = player.Constitution;
 
@@ -30,7 +30,7 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var player = NewPlayer();
             player.Level = 50;
-            player.SpecBuffBonusCategory[eProperty.Constitution] = 100;
+            player.SpecBuffBonusCategory[EProperty.Constitution] = 100;
 
             int actual = player.Constitution;
 
@@ -43,7 +43,7 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var player = NewPlayer();
             player.Level = 50;
-            player.ItemBonus[eProperty.Constitution] = 100;
+            player.ItemBonus[EProperty.Constitution] = 100;
 
             int actual = player.Constitution;
 
@@ -54,9 +54,9 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void Intelligence_Level50AnimistWith50AcuityFromItems_Return50()
         {
-            var player = NewPlayer(new CharacterClassAnimist());
+            var player = NewPlayer(new ClassAnimistBase());
             player.Level = 50;
-            player.ItemBonus[eProperty.Acuity] = 50;
+            player.ItemBonus[EProperty.Acuity] = 50;
 
             int actual = player.Intelligence;
 
@@ -68,8 +68,8 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var player = NewPlayer();
             player.Level = 50;
-            player.ItemBonus[eProperty.MythicalConCapBonus] = 100;
-            player.ItemBonus[eProperty.Constitution] = 150;
+            player.ItemBonus[EProperty.MythicalConCapBonus] = 100;
+            player.ItemBonus[EProperty.Constitution] = 150;
 
             int actual = player.Constitution;
 
@@ -81,9 +81,9 @@ namespace DOL.Tests.Unit.Gameserver
         {
             var player = NewPlayer();
             player.Level = 50;
-            player.ItemBonus[eProperty.MythicalConCapBonus] = 5;
-            player.ItemBonus[eProperty.ConCapBonus] = 100;
-            player.ItemBonus[eProperty.Constitution] = 150;
+            player.ItemBonus[EProperty.MythicalConCapBonus] = 5;
+            player.ItemBonus[EProperty.ConCapBonus] = 100;
+            player.ItemBonus[EProperty.Constitution] = 150;
 
             int actual = player.Constitution;
 
@@ -93,9 +93,9 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void CalcValue_GetIntelligenceFromLevel50AnimistWith50Acuity_Return50()
         {
-            var player = NewPlayer(new CharacterClassAnimist());
+            var player = NewPlayer(new ClassAnimistBase());
             player.Level = 50;
-            player.BaseBuffBonusCategory[(int)eProperty.Acuity] = 50;
+            player.BaseBuffBonusCategory[(int)EProperty.Acuity] = 50;
 
             int actual = player.Intelligence;
 
@@ -105,11 +105,11 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void Intelligence_Level50AnimistWith200AcuityAnd30AcuCapEachFromItems_Return127()
         {
-            var player = NewPlayer(new CharacterClassAnimist());
+            var player = NewPlayer(new ClassAnimistBase());
             player.Level = 50;
-            player.ItemBonus[eProperty.Acuity] = 200;
-            player.ItemBonus[eProperty.AcuCapBonus] = 30;
-            player.ItemBonus[eProperty.MythicalAcuCapBonus] = 30;
+            player.ItemBonus[EProperty.Acuity] = 200;
+            player.ItemBonus[EProperty.AcuCapBonus] = 30;
+            player.ItemBonus[EProperty.MythicalAcuCapBonus] = 30;
 
             int actual = player.Intelligence;
 
@@ -119,10 +119,10 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void Intelligence_Level50AnimistWith30AcuityAnd30IntelligenceFromItems_Return60()
         {
-            var player = NewPlayer(new CharacterClassAnimist());
+            var player = NewPlayer(new ClassAnimistBase());
             player.Level = 50;
-            player.ItemBonus[eProperty.Acuity] = 30;
-            player.ItemBonus[eProperty.Intelligence] = 30;
+            player.ItemBonus[EProperty.Acuity] = 30;
+            player.ItemBonus[EProperty.Intelligence] = 30;
 
             int actual = player.Intelligence;
 
@@ -132,11 +132,11 @@ namespace DOL.Tests.Unit.Gameserver
         [Test]
         public void Constitution_Level30AnimistWith200ConAnd20ConCapEachViaItems_Return81()
         {
-            var player = NewPlayer(new CharacterClassAnimist());
+            var player = NewPlayer(new ClassAnimistBase());
             player.Level = 30;
-            player.ItemBonus[eProperty.Constitution] = 200;
-            player.ItemBonus[eProperty.ConCapBonus] = 20;
-            player.ItemBonus[eProperty.MythicalConCapBonus] = 20;
+            player.ItemBonus[EProperty.Constitution] = 200;
+            player.ItemBonus[EProperty.ConCapBonus] = 20;
+            player.ItemBonus[EProperty.MythicalConCapBonus] = 20;
 
             int actual = player.Constitution;
 
@@ -148,7 +148,7 @@ namespace DOL.Tests.Unit.Gameserver
             return GamePlayer.CreateTestableGamePlayer();
         }
 
-        private static GamePlayer NewPlayer(ICharacterClass charClass)
+        private static GamePlayer NewPlayer(IPlayerClass charClass)
         {
             return GamePlayer.CreateTestableGamePlayer(charClass);
         }

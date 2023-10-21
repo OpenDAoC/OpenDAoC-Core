@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.Database;
@@ -30,7 +11,7 @@ namespace DOL.GS.GameEvents
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		[ScriptLoadedEvent]
-		public static void OnScriptsCompiled(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptsCompiled(CoreEvent e, object sender, EventArgs args)
 		{
 
 			// What npctemplate should we use for the zonepoint ?
@@ -38,7 +19,7 @@ namespace DOL.GS.GameEvents
 			NpcTemplate zp;
 			try{
 				model = (ushort)ServerProperties.Properties.ZONEPOINT_NPCTEMPLATE;
-				zp = new NpcTemplate(DOLDB<DbNpcTemplate>.SelectObjects(DB.Column("TemplateId").IsEqualTo(model)).FirstOrDefault());
+				zp = new NpcTemplate(CoreDb<DbNpcTemplate>.SelectObjects(DB.Column("TemplateId").IsEqualTo(model)).FirstOrDefault());
 				if (model <= 0 || zp == null) throw new ArgumentNullException();
 			}
 			catch {
@@ -59,7 +40,7 @@ namespace DOL.GS.GameEvents
 					continue;
 				}
 				
-				GameNPC npc = new GameNPC(zp);
+				GameNpc npc = new GameNpc(zp);
 
 				npc.CurrentRegionID = z.SourceRegion;
 				npc.X = z.SourceX;

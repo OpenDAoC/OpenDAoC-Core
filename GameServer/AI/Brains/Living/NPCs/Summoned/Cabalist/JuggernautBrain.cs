@@ -1,9 +1,8 @@
 ﻿using DOL.GS;
 
-namespace DOL.AI.Brain
+namespace DOL.AI.Brain;
+
+public class JuggernautBrain : ControlledNpcBrain
 {
-	public class JuggernautBrain : ControlledNpcBrain
-	{
-		public JuggernautBrain(GameLiving owner) : base(owner) { }
-	}
+	public JuggernautBrain(GameLiving owner) : base(owner) { }
 }

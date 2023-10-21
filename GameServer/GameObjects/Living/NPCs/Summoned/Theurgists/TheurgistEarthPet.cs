@@ -1,10 +1,9 @@
-﻿namespace DOL.GS
+﻿namespace DOL.GS;
+
+public class TheurgistEarthPet : TheurgistPet
 {
-	public class TheurgistEarthPet : TheurgistPet
+	public TheurgistEarthPet(INpcTemplate npcTemplate) : base(npcTemplate)
 	{
-		public TheurgistEarthPet(INpcTemplate npcTemplate) : base(npcTemplate)
-		{
-			ScalingFactor = 17;
-		}
+		ScalingFactor = 17;
 	}
 }

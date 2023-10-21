@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -50,7 +31,7 @@ namespace DOL.GS
 					if (newTarget && Owner is GamePlayer playerOwner && playerOwner.TargetObject == null)
 						playerOwner.Client.Out.SendChangeTarget(value);
 
-					if (newTarget && EffectList.GetOfType<TauntEffect>() != null)
+					if (newTarget && EffectList.GetOfType<PetTauntEffect>() != null)
 						Taunt();
 				}
 			}
@@ -82,7 +63,7 @@ namespace DOL.GS
 		public NecromancerPet(INpcTemplate npcTemplate) : base(npcTemplate)
 		{
 			// Update max health on summon.
-			GetModified(eProperty.MaxHealth);
+			GetModified(EProperty.MaxHealth);
 			// Set immunities/load equipment/etc.
 			switch (Name.ToLower())
 			{
@@ -91,7 +72,7 @@ namespace DOL.GS
 					EffectList.Add(new MezzRootImmunityEffect());
 					LoadEquipmentTemplate("barehand_weapon");
 					DbInventoryItem item;
-					if (Inventory != null && (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+					if (Inventory != null && (item = Inventory.GetItem(EInventorySlot.RightHandWeapon)) != null)
 						item.ProcSpellID = (int)Procs.Stun;
 					break;
 				case "reanimated servant" :
@@ -102,7 +83,7 @@ namespace DOL.GS
 					break;
 				case "greater necroservant":
 					LoadEquipmentTemplate("barehand_weapon");
-					if (Inventory != null && (item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+					if (Inventory != null && (item = Inventory.GetItem(EInventorySlot.RightHandWeapon)) != null)
 						item.ProcSpellID = (int)Procs.Poison;
 					break;
 				case "abomination":
@@ -119,16 +100,16 @@ namespace DOL.GS
 		/// <summary>
 		/// Get modified bonuses for the pet; some bonuses come from the shade, some come from the pet.
 		/// </summary>
-		public override int GetModified(eProperty property)
+		public override int GetModified(EProperty property)
 		{
 			if (Brain == null || (Brain as IControlledBrain) == null)
 				return base.GetModified(property);
 
 			switch (property)
 			{
-				case eProperty.MaxHealth:
+				case EProperty.MaxHealth:
 				{
-					int hitsCap = MaxHealthCalculator.GetItemBonusCap(Owner) + MaxHealthCalculator.GetItemBonusCapIncrease(Owner);
+					int hitsCap = MaxHitPointsCalculator.GetItemBonusCap(Owner) + MaxHitPointsCalculator.GetItemBonusCapIncrease(Owner);
 					int conFromRa = 0;
 					int conFromItems = 0;
 					int maxHealthFromItems = 0;
@@ -136,10 +117,10 @@ namespace DOL.GS
 					
 					if ((Brain as IControlledBrain).GetLivingOwner() is GamePlayer playerOwner)
 					{
-						conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(AtlasRAHelpers.GetAugConLevel(playerOwner));
-						conFromItems = playerOwner.GetModifiedFromItems(eProperty.Constitution);
-						maxHealthFromItems = playerOwner.ItemBonus[(int) eProperty.MaxHealth];
-						AtlasOF_ToughnessAbility toughness = playerOwner.GetAbility<AtlasOF_ToughnessAbility>();
+						conFromRa = OfRaHelpers.GetStatEnhancerAmountForLevel(OfRaHelpers.GetAugConLevel(playerOwner));
+						conFromItems = playerOwner.GetModifiedFromItems(EProperty.Constitution);
+						maxHealthFromItems = playerOwner.ItemBonus[(int) EProperty.MaxHealth];
+						OfRaToughnessAbility toughness = playerOwner.GetAbility<OfRaToughnessAbility>();
 
 						if (toughness != null)
 							toughnessMod = 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01;
@@ -254,18 +235,18 @@ namespace DOL.GS
 
 		private void ToggleTauntMode()
 		{
-			TauntEffect tauntEffect = EffectList.GetOfType<TauntEffect>();
+			PetTauntEffect tauntEffect = EffectList.GetOfType<PetTauntEffect>();
 			GamePlayer owner = (Brain as IControlledBrain).Owner as GamePlayer;
 
 			if (tauntEffect != null)
 			{
 				tauntEffect.Stop();
-				owner.Out.SendMessage(string.Format("{0} seems to be less aggressive than before.", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				owner.Out.SendMessage(string.Format("{0} seems to be less aggressive than before.", GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else
 			{
-				owner.Out.SendMessage(string.Format("{0} enters an aggressive stance.", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				new TauntEffect().Start(this);
+				owner.Out.SendMessage(string.Format("{0} enters an aggressive stance.", GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				new PetTauntEffect().Start(this);
 			}
 		}
 
@@ -284,7 +265,7 @@ namespace DOL.GS
 		/// <param name="ad">information about the attack</param>
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
-			if (ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0)
+			if (ad.AttackType == EAttackType.Spell && ad.Damage > 0)
 			{
 				GamePlayer player = Owner as GamePlayer;
 				string modmessage = "";
@@ -294,10 +275,10 @@ namespace DOL.GS
 				else if (ad.Modifier < 0)
 					modmessage = " (" + ad.Modifier + ")";
 
-				player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modmessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modmessage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 
 				if (ad.CriticalDamage > 0)
-					player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 			}
 
 			base.OnAttackedByEnemy(ad);
@@ -307,7 +288,7 @@ namespace DOL.GS
 		{
 			base.ModifyAttack(attackData);
 
-			if ((Owner as GamePlayer).Client.Account.PrivLevel > (int)ePrivLevel.Player)
+			if ((Owner as GamePlayer).Client.Account.PrivLevel > (int)EPrivLevel.Player)
 			{
 				attackData.Damage = 0;
 				attackData.CriticalDamage = 0;
@@ -340,12 +321,12 @@ namespace DOL.GS
 				{
 					switch (spell.SpellType)
 					{
-						case eSpellType.StrengthBuff:
+						case ESpellType.StrengthBuff:
 						{
 							strBuff = strBuff == null ? spell : (strBuff.Level < spell.Level) ? spell : strBuff;
 							break;
 						}
-						case eSpellType.DexterityBuff:
+						case ESpellType.DexterityBuff:
 						{
 							dexBuff = dexBuff == null ? spell : (dexBuff.Level < spell.Level) ? spell : dexBuff;
 							break;
@@ -384,7 +365,7 @@ namespace DOL.GS
 			// Find the best paladin taunt for this level.
 			foreach (Spell spell in chantsList)
 			{
-				if (spell.SpellType == eSpellType.Taunt && spell.Level <= Level)
+				if (spell.SpellType == ESpellType.Taunt && spell.Level <= Level)
 					tauntSpell = spell;
 			}
 
@@ -447,30 +428,30 @@ namespace DOL.GS
 				}
 				case "disease":
 				{
-					DbInventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
+					DbInventoryItem item = Inventory?.GetItem(EInventorySlot.RightHandWeapon);
 
 					if (item != null)
 					{
 						item.ProcSpellID = (int)Procs.Disease;
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+						SayTo(owner, EChatLoc.CL_SystemWindow, "As you command.");
 					}
 
 					return true;
 				}
 				case "empower":
 				{
-					SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+					SayTo(owner, EChatLoc.CL_SystemWindow, "As you command.");
 					Empower();
 					return true;
 				}
 				case "poison":
 				{
-					DbInventoryItem item = Inventory?.GetItem(eInventorySlot.RightHandWeapon);
+					DbInventoryItem item = Inventory?.GetItem(EInventorySlot.RightHandWeapon);
 
 					if (item != null)
 					{
 						item.ProcSpellID = (int)Procs.Poison;
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+						SayTo(owner, EChatLoc.CL_SystemWindow, "As you command.");
 					}
 
 					return true;
@@ -501,7 +482,7 @@ namespace DOL.GS
 					string templateID = string.Format("{0}_{1}", Name, text.Replace(" ", "_"));
 
 					if (LoadEquipmentTemplate(templateID))
-						SayTo(owner, eChatLoc.CL_SystemWindow, "As you command.");
+						SayTo(owner, EChatLoc.CL_SystemWindow, "As you command.");
 
 					return true;
 				}
@@ -510,7 +491,7 @@ namespace DOL.GS
 			}
 		}
 
-		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+		public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			criticalAmount /= 2;
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
@@ -530,10 +511,10 @@ namespace DOL.GS
 
 			if (inventoryTemplate.LoadFromDatabase(templateID))
 			{
-				Inventory = new GameNPCInventory(inventoryTemplate);
+				Inventory = new GameNpcInventory(inventoryTemplate);
 				DbInventoryItem item;
 
-				if ((item = Inventory.GetItem(eInventorySlot.TwoHandWeapon)) != null)
+				if ((item = Inventory.GetItem(EInventorySlot.TwoHandWeapon)) != null)
 				{
 					item.DPS_AF = (int)(Level * 3.3);
 					item.SPD_ABS = 50;
@@ -554,23 +535,23 @@ namespace DOL.GS
 							break;
 					}
 
-					SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+					SwitchWeapon(EActiveWeaponSlot.TwoHanded);
 				}
 				else
 				{
-					if ((item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+					if ((item = Inventory.GetItem(EInventorySlot.RightHandWeapon)) != null)
 					{
 						item.DPS_AF = (int)(Level * 3.3);
 						item.SPD_ABS = 37;
 					}
 
-					if ((item = Inventory.GetItem(eInventorySlot.LeftHandWeapon)) != null)
+					if ((item = Inventory.GetItem(EInventorySlot.LeftHandWeapon)) != null)
 					{
 						item.DPS_AF = (int)(Level * 3.3);
 						item.SPD_ABS = 37;
 					}
 
-					SwitchWeapon(eActiveWeaponSlot.Standard);
+					SwitchWeapon(EActiveWeaponSlot.Standard);
 				}
 			}
 

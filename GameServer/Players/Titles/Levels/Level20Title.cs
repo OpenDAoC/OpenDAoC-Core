@@ -59,7 +59,7 @@ namespace DOL.GS.PlayerTitles
 		/// <summary>
 		/// The event to hook.
 		/// </summary>
-		public override DOLEvent Event
+		public override CoreEvent Event
 		{
 			get { return GamePlayerEvent.LevelUp; }
 		}
@@ -80,7 +80,7 @@ namespace DOL.GS.PlayerTitles
 		/// <param name="e">The event fired.</param>
 		/// <param name="sender">The event sender.</param>
 		/// <param name="arguments">The event arguments.</param>
-		protected override void EventCallback(DOLEvent e, object sender, EventArgs arguments)
+		protected override void EventCallback(CoreEvent e, object sender, EventArgs arguments)
 		{
 			GamePlayer p = sender as GamePlayer;
 			if (p != null && p.Titles.Contains(this))

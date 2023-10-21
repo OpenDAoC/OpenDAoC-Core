@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.Database;
 using DOL.Events;
@@ -55,7 +36,7 @@ namespace DOL.GS.Spells
                     _artefJavelin.MaxDurability = 50000;
                     _artefJavelin.MaxCondition = 50000;
                     _artefJavelin.Quality = 100;
-                    _artefJavelin.Object_Type = (int) eObjectType.Magical;
+                    _artefJavelin.Object_Type = (int) EObjectType.Magical;
                     _artefJavelin.Item_Type = 41;
                     _artefJavelin.Model = 23;
                     _artefJavelin.IsPickable = false;
@@ -78,13 +59,13 @@ namespace DOL.GS.Spells
             GameEventMgr.AddHandler(Caster, GamePlayerEvent.Quit, OnPlayerLeft);
         }
 
-        private static void OnPlayerLeft(DOLEvent e,object sender,EventArgs arguments)
+        private static void OnPlayerLeft(CoreEvent e,object sender,EventArgs arguments)
         {
             if(!(sender is GamePlayer)) return;
             GamePlayer player = sender as GamePlayer;
             lock(player.Inventory)
             {
-                var items = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                var items = player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
                 foreach(DbInventoryItem invItem in items)
                 {
                     if(invItem.Id_nb.Equals("Artef_Javelin"))

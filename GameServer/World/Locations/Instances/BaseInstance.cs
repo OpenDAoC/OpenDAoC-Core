@@ -304,7 +304,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Automated Closing Timer for Instances
 		/// </summary>
-		protected class AutoCloseRegionTimer : ECSGameTimerWrapperBase
+		protected class AutoCloseRegionTimer : EcsGameTimerWrapperBase
         {
             public AutoCloseRegionTimer(GameObject target, BaseInstance i) : base(target)
             {
@@ -316,7 +316,7 @@ namespace DOL.GS
 
             //When the timer ticks, it means there are no players in the region.
             //This, we remove the instance.
-            protected override int OnTick(ECSGameTimer timer)
+            protected override int OnTick(EcsGameTimer timer)
             {
                 if (m_instance == null)
                 {
@@ -347,7 +347,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Delay Closing Timer for Instances
 		/// </summary>
-		protected class DelayCloseRegionTimer : ECSGameTimerWrapperBase
+		protected class DelayCloseRegionTimer : EcsGameTimerWrapperBase
 		{
 			public DelayCloseRegionTimer(GameObject target, BaseInstance i) : base(target)
 			{
@@ -357,7 +357,7 @@ namespace DOL.GS
 			//The instance to remove...
 			BaseInstance m_instance;
 
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				if (m_instance == null)
 				{
@@ -492,17 +492,17 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="alive">Return Alive mobs or all mobs</param>
 		/// <returns>List of Mobs</returns>
-		public IEnumerable<GameNPC> GetMobsInsideInstance(bool alive)
+		public IEnumerable<GameNpc> GetMobsInsideInstance(bool alive)
 		{
 			lock(ObjectsSyncLock)
 			{
 				if(alive)
 				{
-					return new List<GameNPC>(from regionObjects in this.Objects where (regionObjects is GameNPC) && ((((GameNPC)regionObjects).Flags & GameNPC.eFlags.PEACE) != GameNPC.eFlags.PEACE) && ((GameNPC)regionObjects).IsAlive select (GameNPC)regionObjects);
+					return new List<GameNpc>(from regionObjects in this.Objects where (regionObjects is GameNpc) && ((((GameNpc)regionObjects).Flags & ENpcFlags.PEACE) != ENpcFlags.PEACE) && ((GameNpc)regionObjects).IsAlive select (GameNpc)regionObjects);
 				}
 				else
 				{
-					return new List<GameNPC>(from regionObjects in this.Objects where (regionObjects is GameNPC) && ((((GameNPC)regionObjects).Flags & GameNPC.eFlags.PEACE) != GameNPC.eFlags.PEACE) select (GameNPC)regionObjects);
+					return new List<GameNpc>(from regionObjects in this.Objects where (regionObjects is GameNpc) && ((((GameNpc)regionObjects).Flags & ENpcFlags.PEACE) != ENpcFlags.PEACE) select (GameNpc)regionObjects);
 				}
 			}
 		}

@@ -1,0 +1,10 @@
+﻿namespace DOL.GS.Spells
+{
+    [SpellHandler("StyleRange")]
+    public class LongRangeSpell : SpellHandler
+    {
+        public LongRangeSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine)
+        {
+        }
+    }
+}

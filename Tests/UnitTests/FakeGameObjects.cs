@@ -8,7 +8,7 @@ namespace DOL.Tests.Unit.Gameserver
 {
     public class FakePlayer : GamePlayer
     {
-        public ICharacterClass fakeCharacterClass = new DefaultCharacterClass();
+        public IPlayerClass FakePlayerClass = new DefaultPlayerClass();
         public int modifiedSpecLevel;
         public int modifiedIntelligence;
         public int modifiedToHitBonus;
@@ -26,27 +26,27 @@ namespace DOL.Tests.Unit.Gameserver
             this.m_invulnerabilityTick = -1;
         }
 
-        public override ICharacterClass CharacterClass { get { return fakeCharacterClass; } }
+        public override IPlayerClass PlayerClass { get { return FakePlayerClass; } }
         public override byte Level { get; set; }
         public override Region CurrentRegion { get { return fakeRegion; } set { } }
         public override IPacketLib Out => new FakePacketLib();
         public override GameClient Client => new GameClient(GameServer.Instance) { Account = new DbAccount() };
-        public override int GetBaseStat(eStat stat) => baseStat;
+        public override int GetBaseStat(EStat stat) => baseStat;
         public override int GetModifiedSpecLevel(string keyName) => modifiedSpecLevel;
 
-        public override int GetModified(eProperty property)
+        public override int GetModified(EProperty property)
         {
             switch (property)
             {
-                case eProperty.Intelligence:
+                case EProperty.Intelligence:
                     return modifiedIntelligence;
-                case eProperty.SpellLevel:
+                case EProperty.SpellLevel:
                     return modifiedSpellLevel;
-                case eProperty.ToHitBonus:
+                case EProperty.ToHitBonus:
                     return modifiedToHitBonus;
-                case eProperty.LivingEffectiveLevel:
+                case EProperty.LivingEffectiveLevel:
                     return modifiedEffectiveLevel;
-                case eProperty.SpellDamage:
+                case EProperty.SpellDamage:
                     return modifiedSpellDamage;
                 default:
                     return base.GetModified(property);
@@ -68,13 +68,13 @@ namespace DOL.Tests.Unit.Gameserver
         }
         public override void StartHealthRegeneration() { }
         public override void StartEnduranceRegeneration() { }
-        public override void MessageToSelf(string message, DOL.GS.PacketHandler.eChatType chatType) { }
+        public override void MessageToSelf(string message, DOL.GS.PacketHandler.EChatType chatType) { }
         protected override void ResetInCombatTimer() { }
 
         public override bool TargetInView { get; set; } = true;
     }
 
-    public class FakeNPC : GameNPC
+    public class FakeNPC : GameNpc
     {
         public int modifiedEffectiveLevel;
 
@@ -87,15 +87,15 @@ namespace DOL.Tests.Unit.Gameserver
 
         public override Region CurrentRegion { get { return new FakeRegion(); } set { } }
         public override bool IsAlive => true;
-        public override int GetModified(eProperty property)
+        public override int GetModified(EProperty property)
         {
             switch (property)
             {
-                case eProperty.LivingEffectiveLevel:
+                case EProperty.LivingEffectiveLevel:
                     return modifiedEffectiveLevel;
-                case eProperty.MaxHealth:
+                case EProperty.MaxHealth:
                     return 0;
-                case eProperty.Intelligence:
+                case EProperty.Intelligence:
                     return Intelligence;
                 default:
                     return base.GetModified(property);
@@ -110,7 +110,7 @@ namespace DOL.Tests.Unit.Gameserver
 
         public override bool IsAlive => fakeIsAlive;
         public override eObjectState ObjectState => fakeObjectState;
-        public override eGameObjectType GameObjectType => throw new System.NotImplementedException();
+        public override EGameObjectType GameObjectType => throw new System.NotImplementedException();
     }
 
     public class FakeControlledBrain : ABrain, IControlledBrain
@@ -121,8 +121,8 @@ namespace DOL.Tests.Unit.Gameserver
         public GameLiving Owner => fakeOwner;
         public void UpdatePetWindow() { receivedUpdatePetWindow = true; }
 
-        public eWalkState WalkState { get; }
-        public eAggressionState AggressionState { get; set; }
+        public EWalkState WalkState { get; }
+        public EAggressionState AggressionState { get; set; }
         public bool IsMainPet { get; set; }
         public void Attack(GameObject target) { }
         public void Disengage() { }
@@ -130,10 +130,10 @@ namespace DOL.Tests.Unit.Gameserver
         public void Follow(GameObject target) { }
         public void FollowOwner() { }
         public GameLiving GetLivingOwner() { return null; }
-        public GameNPC GetNPCOwner() { return null; }
+        public GameNpc GetNPCOwner() { return null; }
         public GamePlayer GetPlayerOwner() { return null; }
         public void Goto(GameObject target) { }
-        public void SetAggressionState(eAggressionState state) { }
+        public void SetAggressionState(EAggressionState state) { }
         public void Stay() { }
         public override void Think() { }
 

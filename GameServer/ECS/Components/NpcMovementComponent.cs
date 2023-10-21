@@ -24,7 +24,7 @@ namespace DOL.GS
         private PathCalculator _pathCalculator;
         private Action<NpcMovementComponent> _goToNextPathingNodeCallback;
 
-        public new GameNPC Owner { get; private set; }
+        public new GameNpc Owner { get; private set; }
         // 'TargetPosition' is accessed from multiple threads simultaneously (from the current NPC being updated, others NPCs checking around them, and the world update thread).
         // Actual synchronization would be expensive, so instead threads are expected to check 'IsTargetPositionValid' before using it, which is set to false when a NPC stops.
         // This however means 'TargetPosition' might be slightly outdated.
@@ -42,7 +42,7 @@ namespace DOL.GS
         public bool IsAtTargetPosition => IsTargetPositionValid && TargetPosition.X == Owner.X && TargetPosition.Y == Owner.Y && TargetPosition.Z == Owner.Z;
         public bool CanRoam => ServerProperties.Properties.ALLOW_ROAM && RoamingRange != 0 && string.IsNullOrWhiteSpace(PathID);
 
-        public NpcMovementComponent(GameNPC npcOwner) : base(npcOwner)
+        public NpcMovementComponent(GameNpc npcOwner) : base(npcOwner)
         {
             Owner = npcOwner;
             _pathCalculator = new(npcOwner);
@@ -297,7 +297,7 @@ namespace DOL.GS
                 return false;
             }
 
-            Tuple<Vector3?, NoPathReason> res = _pathCalculator.CalculateNextTarget(dest);
+            Tuple<Vector3?, ENoPathReason> res = _pathCalculator.CalculateNextTarget(dest);
             Vector3? nextNode = res.Item1;
             //NoPathReason noPathReason = res.Item2;
             //bool shouldUseAirPath = noPathReason == NoPathReason.RECAST_FOUND_NO_PATH;
@@ -320,7 +320,7 @@ namespace DOL.GS
         private int FollowTick()
         {
             // Stop moving if the NPC is casting or attacking with a ranged weapon.
-            if (Owner.IsCasting || (Owner.attackComponent.IsAttacking && Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance))
+            if (Owner.IsCasting || (Owner.attackComponent.IsAttacking && Owner.ActiveWeaponSlot == EActiveWeaponSlot.Distance))
             {
                 TurnTo(FollowTarget);
 
@@ -369,7 +369,7 @@ namespace DOL.GS
                         {
                             Owner.LastAttackedByEnemyTickPvE = 0;
                             Owner.LastAttackedByEnemyTickPvP = 0;
-                            brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+                            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
                             return 0;
                         }
                     }

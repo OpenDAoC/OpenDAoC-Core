@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -27,9 +8,6 @@ using DOL.Language;
 
 namespace DOL.GS.Effects
 {
-	/// <summary>
-	/// The helper class for the intercept ability
-	/// </summary>
 	public class InterceptEffect : StaticEffect, IGameEffect
 	{
 		/// <summary>
@@ -45,7 +23,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// Holds the interceptor/intercepted group
 		/// </summary>
-		private Group m_group;
+		private GroupUtil m_group;
 
 		/// <summary>
 		/// Gets the interceptor
@@ -72,9 +50,9 @@ namespace DOL.GS.Effects
 			{
 				GameSummonedPet pet = InterceptSource as GameSummonedPet;
 				if (pet == null) { return 0; }
-				if (pet.Brain is BrittleBrain)
+				if (pet.Brain is BrittleGuardBrain)
 					return 100;
-				else if (pet is BDSubPet)
+				else if (pet is SubPet)
 					// Patch 1.123: The intercept chance on the Fossil Defender has been reduced by 20%.
 					// Can't find documentation for previous intercept chance, so assuming 50%
 					return 30;
@@ -97,7 +75,7 @@ namespace DOL.GS.Effects
 			{
 				m_group = ((GamePlayer)interceptor).Group;
 				if (m_group == null) return;
-				GameEventMgr.AddHandler(m_group, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
+				GameEventMgr.AddHandler(m_group, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback));
 			}
 			m_interceptSource = interceptor;
 			m_owner = m_interceptSource;
@@ -106,16 +84,16 @@ namespace DOL.GS.Effects
 			if (!interceptor.IsWithinRadius(intercepted, InterceptAbilityHandler.INTERCEPT_DISTANCE))
 			{
 				if (interceptor is GamePlayer)
-					((GamePlayer)interceptor).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)interceptor).Client, "Effects.InterceptEffect.YouAttemtInterceptYBut", intercepted.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)interceptor).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)interceptor).Client, "Effects.InterceptEffect.YouAttemtInterceptYBut", intercepted.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				if (intercepted is GamePlayer && interceptor is GamePlayer)
-					((GamePlayer)intercepted).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)intercepted).Client, "Effects.InterceptEffect.XAttemtInterceptYouBut", interceptor.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)intercepted).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)intercepted).Client, "Effects.InterceptEffect.XAttemtInterceptYouBut", interceptor.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else
 			{
 				if (interceptor is GamePlayer)
-					((GamePlayer)interceptor).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)interceptor).Client, "Effects.InterceptEffect.YouAttemtInterceptY", intercepted.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)interceptor).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)interceptor).Client, "Effects.InterceptEffect.YouAttemtInterceptY", intercepted.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				if (intercepted is GamePlayer && interceptor is GamePlayer)
-					((GamePlayer)intercepted).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)intercepted).Client, "Effects.InterceptEffect.XAttemptInterceptYou", interceptor.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)intercepted).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)intercepted).Client, "Effects.InterceptEffect.XAttemptInterceptYou", interceptor.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			interceptor.EffectList.Add(this);
 			intercepted.EffectList.Add(this);
@@ -128,7 +106,7 @@ namespace DOL.GS.Effects
 		{
 			if (InterceptSource is GamePlayer && InterceptTarget is GamePlayer)
 			{
-				GameEventMgr.RemoveHandler(m_group, GroupEvent.MemberDisbanded, new DOLEventHandler(GroupDisbandCallback));
+				GameEventMgr.RemoveHandler(m_group, GroupEvent.MemberDisbanded, new CoreEventHandler(GroupDisbandCallback));
 				m_group = null;
 			}
 			InterceptSource.EffectList.Remove(this);
@@ -136,9 +114,9 @@ namespace DOL.GS.Effects
 			if (playerCancel)
 			{
 				if (InterceptSource is GamePlayer)
-					((GamePlayer)InterceptSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptSource).Client, "Effects.InterceptEffect.YouNoAttemtInterceptY", InterceptTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)InterceptSource).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptSource).Client, "Effects.InterceptEffect.YouNoAttemtInterceptY", InterceptTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				if (InterceptTarget is GamePlayer && InterceptSource is GamePlayer)
-					((GamePlayer)InterceptTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptTarget).Client, "Effects.InterceptEffect.XNoAttemptInterceptYou", InterceptSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)InterceptTarget).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)InterceptTarget).Client, "Effects.InterceptEffect.XNoAttemptInterceptYou", InterceptSource.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -148,7 +126,7 @@ namespace DOL.GS.Effects
 		/// <param name="e"></param>
 		/// <param name="sender">The group</param>
 		/// <param name="args"></param>
-		protected void GroupDisbandCallback(DOLEvent e, object sender, EventArgs args)
+		protected void GroupDisbandCallback(CoreEvent e, object sender, EventArgs args)
 		{
 			MemberDisbandedEventArgs eArgs = args as MemberDisbandedEventArgs;
 			if (eArgs == null) return;
@@ -183,7 +161,7 @@ namespace DOL.GS.Effects
 			get
 			{
 				//let's not display this icon on NPC's because i use this for spiritmasters
-				if (m_owner is GameNPC)
+				if (m_owner is GameNpc)
 					return 7249;
 				return 410;
 			}

@@ -1,25 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-// Tolakram, July 2010 - This represents a data driven quest that can be added and removed at runtime.  
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.AI.Brain;
@@ -129,7 +108,7 @@ namespace DOL.GS.Quests
 	/// additional data to be used by the custom step.  Example:  DOL.Storm.MyCustomStep|some_additonal_data
 	/// 
 	/// </summary>
-	public class DataQuest : AbstractQuest
+	public class DataQuest : AQuest
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -137,7 +116,7 @@ namespace DOL.GS.Quests
 		protected DbDataQuest m_dataQuest = null;
 		protected DbCharacterXDataQuest m_charQuest = null;
 		protected GameObject m_startObject = null;
-		protected GameNPC m_startNPC = null;
+		protected GameNpc m_startNPC = null;
 		protected IDataQuestStep m_customQuestStep = null;
 
 		/// <summary>
@@ -324,9 +303,9 @@ namespace DOL.GS.Quests
 
 			if (sourceObject != null)
 			{
-				if (sourceObject is GameNPC)
+				if (sourceObject is GameNpc)
 				{
-					m_startNPC = sourceObject as GameNPC;
+					m_startNPC = sourceObject as GameNpc;
 				}
 
 				m_startObject = sourceObject;
@@ -336,10 +315,10 @@ namespace DOL.GS.Quests
 		}
 
 		[ScriptLoadedEvent]
-		public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new DOLEventHandler(RewardQuestNotify));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new DOLEventHandler(RewardQuestNotify));
+			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(RewardQuestNotify));
+			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(RewardQuestNotify));
 		}
 
 
@@ -785,7 +764,7 @@ namespace DOL.GS.Quests
 		{
 			get 
             {
-                return BehaviourUtils.GetPersonalizedMessage(m_dataQuest.FinishText, m_questPlayer);
+                return BehaviorUtil.GetPersonalizedMessage(m_dataQuest.FinishText, m_questPlayer);
             }
 		}
 
@@ -900,12 +879,12 @@ namespace DOL.GS.Quests
 					}
 					else
 					{
-                        return BehaviourUtils.GetPersonalizedMessage(m_dataQuest.Description, m_questPlayer);
+                        return BehaviorUtil.GetPersonalizedMessage(m_dataQuest.Description, m_questPlayer);
 					}
 				}
 				else
 				{
-                    return BehaviourUtils.GetPersonalizedMessage(StepText, m_questPlayer);
+                    return BehaviorUtil.GetPersonalizedMessage(StepText, m_questPlayer);
 				}
 			}
 		}
@@ -977,7 +956,7 @@ namespace DOL.GS.Quests
 		/// <returns></returns>
 		public static DbCharacterXDataQuest GetCharacterQuest(GamePlayer player, int ID, bool create)
 		{
-			DbCharacterXDataQuest charQuest = DOLDB<DbCharacterXDataQuest>.SelectObject(DB.Column("Character_ID").IsEqualTo(player.QuestPlayerID).And(DB.Column("DataQuestID").IsEqualTo(ID)));
+			DbCharacterXDataQuest charQuest = CoreDb<DbCharacterXDataQuest>.SelectObject(DB.Column("Character_ID").IsEqualTo(player.QuestPlayerID).And(DB.Column("DataQuestID").IsEqualTo(ID)));
 
 			if (charQuest == null && create)
 			{
@@ -1003,13 +982,13 @@ namespace DOL.GS.Quests
 
 			if (m_allowedClasses.Count > 0)
 			{
-				if (m_allowedClasses.Contains((byte)player.CharacterClass.ID) == false)
+				if (m_allowedClasses.Contains((byte)player.PlayerClass.ID) == false)
 				{
 					return false;
 				}
 			}
 
-			if (ExecuteCustomQuestStep(player, 0, eStepCheckType.Qualification) == false)
+			if (ExecuteCustomQuestStep(player, 0, EStepCheckType.Qualification) == false)
 				return false;
 
 			if (StartType == eStartType.Collection)
@@ -1023,15 +1002,15 @@ namespace DOL.GS.Quests
 				return true;
 			}
 
-			foreach (AbstractQuest quest in player.QuestList.Keys)
+			foreach (AQuest quest in player.QuestList.Keys)
 			{
 				if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 					return false; // player is currently doing this quest
 			}
 
-			List<AbstractQuest> finishedQuests = player.GetFinishedQuests();
+			List<AQuest> finishedQuests = player.GetFinishedQuests();
 
-			foreach (AbstractQuest quest in finishedQuests)
+			foreach (AQuest quest in finishedQuests)
 			{
 				if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 				{
@@ -1047,7 +1026,7 @@ namespace DOL.GS.Quests
 
 				foreach (string str in m_questDependencies)
 				{
-					foreach (AbstractQuest quest in finishedQuests)
+					foreach (AQuest quest in finishedQuests)
 					{
 						if (quest is DataQuest dataQuest && dataQuest.Name.ToLower() == str.ToLower())
 						{
@@ -1069,7 +1048,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="p"></param>
 		/// <returns></returns>
-		public bool IsDoingQuest(AbstractQuest checkQuest)
+		public bool IsDoingQuest(AQuest checkQuest)
 		{
 			if (checkQuest is DataQuest dataQuest && dataQuest.ID == ID)
 				return Step > 0;
@@ -1083,7 +1062,7 @@ namespace DOL.GS.Quests
 		/// </summary>
 		/// <param name="npc"></param>
 		/// <param name="player"></param>
-		public virtual void UpdateQuestIndicator(GameNPC npc, GamePlayer player)
+		public virtual void UpdateQuestIndicator(GameNpc npc, GamePlayer player)
 		{
             player.Out.SendNPCsQuestEffect(npc, npc.GetQuestIndicator(player));
 		}
@@ -1498,7 +1477,7 @@ namespace DOL.GS.Quests
             return (int)((m_rewardXPs[0] * 100) / experienceToLevel);
         }
         
-		protected virtual bool ExecuteCustomQuestStep(GamePlayer player, int step, eStepCheckType stepCheckType)
+		protected virtual bool ExecuteCustomQuestStep(GamePlayer player, int step, EStepCheckType stepCheckType)
 		{
 			bool canContinue = true;
 
@@ -1570,17 +1549,17 @@ namespace DOL.GS.Quests
 				eStepType nextStepType = m_stepTypes[Step];
 				bool advance = false;
 
-				if (ExecuteCustomQuestStep(QuestPlayer, Step, eStepCheckType.Step))
+				if (ExecuteCustomQuestStep(QuestPlayer, Step, EStepCheckType.Step))
 				{
 					if (RewardXP > 0 && m_questPlayer.GainXP == false)
 					{
-						QuestPlayer.Out.SendMessage("Your XP is turned off, you must turn it on to complete this quest step!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+						QuestPlayer.Out.SendMessage("Your XP is turned off, you must turn it on to complete this quest step!", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 						return false;
 					}
 
 					if (RewardRP > 0 && m_questPlayer.GainRP == false)
 					{
-						QuestPlayer.Out.SendMessage("Your RP is turned off, you must turn it on to complete this quest step!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+						QuestPlayer.Out.SendMessage("Your RP is turned off, you must turn it on to complete this quest step!", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 						return false;
 					}
 
@@ -1642,7 +1621,7 @@ namespace DOL.GS.Quests
 
 						lock (QuestPlayer.Inventory)
 						{
-							if (QuestPlayer.Inventory.IsSlotsFree(stepTemplates.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+							if (QuestPlayer.Inventory.IsSlotsFree(stepTemplates.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 							{
 								foreach (string template in stepTemplates)
 								{
@@ -1650,7 +1629,7 @@ namespace DOL.GS.Quests
 									if (item == null)
 									{
 										string errorMsg = string.Format("StepItemTemplate {0} not found in DB!", template);
-										QuestPlayer.Out.SendMessage(errorMsg, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+										QuestPlayer.Out.SendMessage(errorMsg, EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 										throw new Exception(errorMsg);
 									}
 
@@ -1666,7 +1645,7 @@ namespace DOL.GS.Quests
 							}
 							else
 							{
-								QuestPlayer.Out.SendMessage("You don't have enough inventory space to advance this quest.  You need " + stepTemplates.Count + " free slot(s)!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								QuestPlayer.Out.SendMessage("You don't have enough inventory space to advance this quest.  You need " + stepTemplates.Count + " free slot(s)!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								advance = false;
 							}
 						}
@@ -1691,12 +1670,12 @@ namespace DOL.GS.Quests
 						if (RewardMoney > 0)
 						{
 							m_questPlayer.AddMoney(RewardMoney, "You are awarded {0}!");
-	                        InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, RewardMoney);
+	                        InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, EInventoryActionType.Quest, RewardMoney);
 						}
 	
 						if (RewardCLXP > 0)
 						{
-							m_questPlayer.GainChampionExperience(RewardCLXP, eXPSource.Quest);
+							m_questPlayer.GainChampionExperience(RewardCLXP, EXpSource.Quest);
 						}
 						
 						if (RewardBP > 0)
@@ -1719,9 +1698,9 @@ namespace DOL.GS.Quests
 						case eStepType.KillFinish:
 						case eStepType.WhisperFinish:
 						case eStepType.CollectFinish:
-							foreach (GameNPC n in m_questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+							foreach (GameNpc n in m_questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
 					        {
-					         	GameNPC npc = n;
+					         	GameNpc npc = n;
 					         	if (npc != null && (TargetName == npc.Name && (TargetRegion == 0 || TargetRegion == npc.CurrentRegionID)))
 					         		UpdateQuestIndicator(npc, m_questPlayer);
 					        }
@@ -1736,13 +1715,13 @@ namespace DOL.GS.Quests
 
 						if (obj != null)
                         {
-                            if (obj.Realm == eRealm.None)
+                            if (obj.Realm == ERealm.None)
                             {
-                                SendMessage(m_questPlayer, SourceText, 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                                SendMessage(m_questPlayer, SourceText, 0, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                             }
                             else
                             {
-                                SendMessage(m_questPlayer, SourceText, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                                SendMessage(m_questPlayer, SourceText, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
                             }
                         }
 					}
@@ -1771,7 +1750,7 @@ namespace DOL.GS.Quests
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+		public override void Notify(CoreEvent e, object sender, EventArgs args)
 		{
 			// log.DebugFormat("DataQuest: Notify {0}, m_questPlayer {1}", e.Name, m_questPlayer == null ? "null" : m_questPlayer.Name);
 
@@ -1897,7 +1876,7 @@ namespace DOL.GS.Quests
 					m_optionalRewardChoice.Clear();
 					m_rewardItemsChosen = rewardArgs.ItemsChosen;
 
-					if (ExecuteCustomQuestStep(QuestPlayer, 0, eStepCheckType.RewardsChosen))
+					if (ExecuteCustomQuestStep(QuestPlayer, 0, EStepCheckType.RewardsChosen))
 					{
 						if (OptionalRewards.Count > 0)
 						{
@@ -1908,7 +1887,7 @@ namespace DOL.GS.Quests
 
 							if (NumOptionalRewardsChoice > 0 && rewardArgs.CountChosen <= 0)
 							{
-                                QuestPlayer.Out.SendMessage(LanguageMgr.GetTranslation(QuestPlayer.Client, "RewardQuest.Notify"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                                QuestPlayer.Out.SendMessage(LanguageMgr.GetTranslation(QuestPlayer.Client, "RewardQuest.Notify"), EChatType.CT_System, EChatLoc.CL_ChatWindow);
 								return;
 							}
 						}
@@ -1924,7 +1903,7 @@ namespace DOL.GS.Quests
             }
 		}
 
-		public static void RewardQuestNotify(DOLEvent e, object sender, EventArgs args)
+		public static void RewardQuestNotify(CoreEvent e, object sender, EventArgs args)
 		{
 			// Reward Quest accept
 			if (e == GamePlayerEvent.AcceptQuest)
@@ -1944,9 +1923,9 @@ namespace DOL.GS.Quests
 						DataQuest dq = new DataQuest(player, giver, quest, charQuest);
 						dq.Step = 1;
 						player.AddQuest(dq);
-						if (giver is GameNPC)
+						if (giver is GameNpc)
 						{
-                            GameNPC npc = giver as GameNPC;
+                            GameNpc npc = giver as GameNpc;
                             player.Out.SendNPCsQuestEffect(npc, npc.GetQuestIndicator(player));
 						}
 						player.Out.SendSoundEffect(7, 0, 0, 0, 0, 0);
@@ -1984,18 +1963,18 @@ namespace DOL.GS.Quests
 					{
 						TryTurnTo(obj, player);
 
-						if (ExecuteCustomQuestStep(player, 0, eStepCheckType.Finish))
+						if (ExecuteCustomQuestStep(player, 0, EStepCheckType.Finish))
 						{
 							if (Description.Trim() != "")
 							{
-								SendMessage(player, Description, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+								SendMessage(player, Description, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							}
 
 							if (m_finalRewards.Count > 0)
 							{
 								lock (player.Inventory)
 								{
-									if (player.Inventory.IsSlotsFree(m_finalRewards.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+									if (player.Inventory.IsSlotsFree(m_finalRewards.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 									{
 										foreach (DbItemTemplate item in m_finalRewards)
 										{
@@ -2007,7 +1986,7 @@ namespace DOL.GS.Quests
 									}
 									else
 									{
-										SendMessage(player, "Your inventory does not have enough space to finish this quest!", 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+										SendMessage(player, "Your inventory does not have enough space to finish this quest!", 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 										return;
 									}
 								}
@@ -2020,7 +1999,7 @@ namespace DOL.GS.Quests
 							
 							if (m_rewardCLXPs.Count > 0 && m_rewardCLXPs[0] > 0)
 							{
-								player.GainChampionExperience(m_rewardCLXPs[0], eXPSource.Quest);
+								player.GainChampionExperience(m_rewardCLXPs[0], EXpSource.Quest);
 							}
 							
 							if (m_rewardRPs.Count > 0 && m_rewardRPs[0] > 0)
@@ -2036,7 +2015,7 @@ namespace DOL.GS.Quests
 							if (m_rewardMoneys.Count > 0 && m_rewardMoneys[0] > 0)
 							{
 								player.AddMoney(m_rewardMoneys[0], "You are awarded {0}!");
-                                InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", player, eInventoryActionType.Quest, m_rewardMoneys[0]);
+                                InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", player, EInventoryActionType.Quest, m_rewardMoneys[0]);
 							}
 
 							charQuest.Count++;
@@ -2044,7 +2023,7 @@ namespace DOL.GS.Quests
 
 							bool add = true;
 
-							foreach (AbstractQuest quest in player.GetFinishedQuests())
+							foreach (AQuest quest in player.GetFinishedQuests())
 							{
 								if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 								{
@@ -2057,8 +2036,8 @@ namespace DOL.GS.Quests
 								player.AddFinishedQuest(this);
 
 							player.Out.SendQuestListUpdate();
-							player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-							player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.FinishQuest.Completed", Name)), EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
+							player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.FinishQuest.Completed", Name)), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 						}
 					}
 
@@ -2076,7 +2055,7 @@ namespace DOL.GS.Quests
 						if (!string.IsNullOrEmpty(m_sourceTexts[0]))
 						{
 							TryTurnTo(obj, player);
-							SendMessage(player, m_sourceTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							SendMessage(player, m_sourceTexts[0], 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 						}
 					}
 					else
@@ -2084,9 +2063,9 @@ namespace DOL.GS.Quests
 						ChatUtil.SendDebugMessage(player, "Source Text missing on AutoStart quest.");
 					}
 
-					if (obj is GameNPC)
+					if (obj is GameNpc)
 					{
-						UpdateQuestIndicator(obj as GameNPC, player);
+						UpdateQuestIndicator(obj as GameNpc, player);
 					}
 					return;
 				}
@@ -2097,7 +2076,7 @@ namespace DOL.GS.Quests
                     {
                         lock (player.Inventory)
                         {
-                            if (player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+                            if (player.Inventory.IsSlotsFree(1, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
                             {
                                 DbItemTemplate item = GameServer.Database.FindObjectByKey<DbItemTemplate>(m_searchStartItemTemplate.Trim());
                                 if (item == null)
@@ -2112,7 +2091,7 @@ namespace DOL.GS.Quests
                             }
                             else
                             {
-                                player.Out.SendMessage("Your backpack is full, you can't start this quest!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                player.Out.SendMessage("Your backpack is full, you can't start this quest!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                 return;
                             }
                         }
@@ -2128,7 +2107,7 @@ namespace DOL.GS.Quests
                         if (!string.IsNullOrEmpty(m_sourceTexts[0]))
                         {
                             TryTurnTo(obj, player);
-                            SendMessage(player, m_sourceTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                            SendMessage(player, m_sourceTexts[0], 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
                         }
                     }
                     else
@@ -2136,9 +2115,9 @@ namespace DOL.GS.Quests
                         ChatUtil.SendDebugMessage(player, "Source Text missing on SearchStart quest.");
                     }
 
-                    if (obj is GameNPC)
+                    if (obj is GameNpc)
                     {
-                        UpdateQuestIndicator(obj as GameNPC, player);
+                        UpdateQuestIndicator(obj as GameNpc, player);
                     }
 
                     return;
@@ -2148,13 +2127,13 @@ namespace DOL.GS.Quests
 				{
                     // Send offer quest dialog
 
-                    GameNPC offerNPC = obj as GameNPC;
+                    GameNpc offerNPC = obj as GameNpc;
 					if (offerNPC != null)
 					{
 						TryTurnTo(obj, player);
 
 						// Note: If the offer is handled by the custom step then it should return false to prevent a double offer
-						if (ExecuteCustomQuestStep(player, 0, eStepCheckType.Offer))
+						if (ExecuteCustomQuestStep(player, 0, EStepCheckType.Offer))
 						{
 							player.Out.SendQuestOfferWindow(offerNPC, player, this);
 						}
@@ -2170,26 +2149,26 @@ namespace DOL.GS.Quests
 						if (!string.IsNullOrEmpty(TargetText))
 						{
 							TryTurnTo(obj, player);
-							SendMessage(player, m_targetTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							SendMessage(player, m_targetTexts[0], 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 						}
 					}
 					else if (!string.IsNullOrEmpty(Description))
 					{
 						TryTurnTo(obj, player);
-						SendMessage(player, Description, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+						SendMessage(player, Description, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 					}
 				}
 				else if (!string.IsNullOrEmpty(Description))
 				{
 					TryTurnTo(obj, player);
-					SendMessage(player, Description, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					SendMessage(player, Description, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 				}
 			}
 		}
 
 		protected virtual void TryTurnTo(GameObject obj, GamePlayer player)
 		{
-			GameNPC npc = obj as GameNPC;
+			GameNpc npc = obj as GameNpc;
 
 			if (npc != null)
 			{
@@ -2237,7 +2216,7 @@ namespace DOL.GS.Quests
 						}
 						if (m_sourceTexts.Count > 0)
 						{
-							SendMessage(player, m_sourceTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							SendMessage(player, m_sourceTexts[0], 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 						}
 						else
 						{
@@ -2290,7 +2269,7 @@ namespace DOL.GS.Quests
 						
 						if (m_sourceTexts.Count > 0)
 						{
-							SendMessage(player, m_sourceTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							SendMessage(player, m_sourceTexts[0], 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 						}
 						else
 						{
@@ -2302,7 +2281,7 @@ namespace DOL.GS.Quests
 					}
 					else
 					{
-						SendMessage(player, "You need to unstack these first.", 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+						SendMessage(player, "You need to unstack these first.", 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 					}
 				}
 				if (charQuest.Count >= MaxQuestCount)
@@ -2310,7 +2289,7 @@ namespace DOL.GS.Quests
 					if (!string.IsNullOrEmpty(FinishText))
 					{
 					    	TryTurnTo(obj, player);					    
-							SendMessage(player, FinishText, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+							SendMessage(player, FinishText, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 					}
 				}
 				if (player.Level < Level)
@@ -2318,7 +2297,7 @@ namespace DOL.GS.Quests
 					if (StepTexts.Count != 0)
 					{
 						TryTurnTo(obj, player);
-						SendMessage(player, m_stepTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+						SendMessage(player, m_stepTexts[0], 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 					}
 				}
 				
@@ -2347,15 +2326,15 @@ namespace DOL.GS.Quests
 				player.AddQuest(dq);
 				if (m_sourceTexts.Count > 0)
 				{
-					SendMessage(player, m_sourceTexts[0], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					SendMessage(player, m_sourceTexts[0], 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 				}
 				else
 				{
 					ChatUtil.SendDebugMessage(player, "Source Text missing on accept quest.");
 				}
-				if (living is GameNPC)
+				if (living is GameNpc)
 				{
-					UpdateQuestIndicator(living as GameNPC, player);
+					UpdateQuestIndicator(living as GameNpc, player);
 				}
 			}
 		}
@@ -2379,7 +2358,7 @@ namespace DOL.GS.Quests
 
 							if (!string.IsNullOrEmpty(TargetText))
 							{
-								SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+								SendMessage(m_questPlayer, TargetText, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							}
 
 							AdvanceQuestStep(obj);
@@ -2390,13 +2369,13 @@ namespace DOL.GS.Quests
 						{
 							if (StartType == eStartType.RewardQuest)
 							{
-								GameNPC finishNPC = obj as GameNPC;
+								GameNpc finishNPC = obj as GameNpc;
 								if (finishNPC != null)
 								{
 									TryTurnTo(obj, player);
 
 									// Custom step can modify rewards here.  Should return false if it sends the reward window
-									if (ExecuteCustomQuestStep(player, 0, eStepCheckType.Finish))
+									if (ExecuteCustomQuestStep(player, 0, EStepCheckType.Finish))
 									{
 										player.Out.SendQuestRewardWindow(finishNPC, player, this);
 									}
@@ -2418,7 +2397,7 @@ namespace DOL.GS.Quests
 							if (!string.IsNullOrEmpty(TargetText))
 							{
 								TryTurnTo(obj, player);
-								SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+								SendMessage(m_questPlayer, TargetText, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							}
 						}
 						break;
@@ -2444,7 +2423,7 @@ namespace DOL.GS.Quests
 				if (m_collectItems.Count >= Step &&
 					!string.IsNullOrEmpty(m_collectItems[Step - 1]) &&
 					item.Id_nb.ToLower().Contains(m_collectItems[Step - 1].ToLower()) &&
-					ExecuteCustomQuestStep(player, Step, eStepCheckType.GiveItem))
+					ExecuteCustomQuestStep(player, Step, EStepCheckType.GiveItem))
 				{
 					switch (StepType)
 					{
@@ -2455,14 +2434,14 @@ namespace DOL.GS.Quests
 
 								if (!string.IsNullOrEmpty(TargetText))
 								{
-									if (obj.Realm == eRealm.None)
+									if (obj.Realm == ERealm.None)
 									{
 										// mobs and other non realm objects send chat text and not popup text.
-										SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+										SendMessage(m_questPlayer, TargetText, 0, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 									}
 									else
 									{
-										SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+										SendMessage(m_questPlayer, TargetText, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 									}
 								}
 
@@ -2487,7 +2466,7 @@ namespace DOL.GS.Quests
 				else if (m_stepItemTemplates.Count >= Step &&
 					!string.IsNullOrEmpty(m_stepItemTemplates[Step - 1]) &&
 					item.Id_nb.ToLower().Contains(m_stepItemTemplates[Step - 1].ToLower()) &&
-					ExecuteCustomQuestStep(player, Step, eStepCheckType.GiveItem))
+					ExecuteCustomQuestStep(player, Step, EStepCheckType.GiveItem))
 				{
 					// Current step must be a delivery so take the item and advance the quest
 					if (StepType == eStepType.Deliver)
@@ -2496,14 +2475,14 @@ namespace DOL.GS.Quests
 
 						if (!string.IsNullOrEmpty(TargetText))
 						{
-							if (obj.Realm == eRealm.None)
+							if (obj.Realm == ERealm.None)
 							{
 								// mobs and other non realm objects send chat text and not popup text.
-								SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+								SendMessage(m_questPlayer, TargetText, 0, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 							}
 							else
 							{
-								SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+								SendMessage(m_questPlayer, TargetText, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 							}
 						}
 
@@ -2611,7 +2590,7 @@ namespace DOL.GS.Quests
 
 					if (player == null)
 					{
-						GameNPC npc = killer as GameNPC;
+						GameNpc npc = killer as GameNpc;
 						if (npc != null)
 						{
 							if (npc.Brain != null && npc.Brain is IControlledBrain)
@@ -2644,18 +2623,18 @@ namespace DOL.GS.Quests
 
 						if (charQuest.Count < MaxQuestCount)
 						{
-							if (ExecuteCustomQuestStep(player, 0, eStepCheckType.Finish))
+							if (ExecuteCustomQuestStep(player, 0, EStepCheckType.Finish))
 							{
 								if (Description.Trim() != "")
 								{
-									SendMessage(player, Description, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+									SendMessage(player, Description, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 								}
 
 								if (m_finalRewards.Count > 0)
 								{
 									lock (player.Inventory)
 									{
-										if (player.Inventory.IsSlotsFree(m_finalRewards.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+										if (player.Inventory.IsSlotsFree(m_finalRewards.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 										{
 											foreach (DbItemTemplate item in m_finalRewards)
 											{
@@ -2667,7 +2646,7 @@ namespace DOL.GS.Quests
 										}
 										else
 										{
-											SendMessage(player, "Your inventory does not have enough space to finish this quest!", 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+											SendMessage(player, "Your inventory does not have enough space to finish this quest!", 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 											return;
 										}
 									}
@@ -2680,7 +2659,7 @@ namespace DOL.GS.Quests
 								
 								if (m_rewardCLXPs.Count > 0 && m_rewardCLXPs[0] > 0)
 								{
-									player.GainChampionExperience(m_rewardCLXPs[0], eXPSource.Quest);
+									player.GainChampionExperience(m_rewardCLXPs[0], EXpSource.Quest);
 								}
 								
 								if (m_rewardRPs.Count > 0 && m_rewardRPs[0] > 0)
@@ -2696,7 +2675,7 @@ namespace DOL.GS.Quests
 								if (m_rewardMoneys.Count > 0 && m_rewardMoneys[0] > 0)
 								{
 									player.AddMoney(m_rewardMoneys[0], "You are awarded {0}!");
-                                    InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", player, eInventoryActionType.Quest, m_rewardMoneys[0]);
+                                    InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", player, EInventoryActionType.Quest, m_rewardMoneys[0]);
 								}
 
 								charQuest.Count++;
@@ -2704,7 +2683,7 @@ namespace DOL.GS.Quests
 
 								bool add = true;
 
-								foreach (AbstractQuest quest in player.GetFinishedQuests())
+								foreach (AQuest quest in player.GetFinishedQuests())
 								{
 									if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 									{
@@ -2717,8 +2696,8 @@ namespace DOL.GS.Quests
 									player.AddFinishedQuest(this);
 
 								player.Out.SendQuestListUpdate();
-								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.FinishQuest.Completed", Name)), EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
+								player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractQuest.FinishQuest.Completed", Name)), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 							}
 						}
 					}
@@ -2741,14 +2720,14 @@ namespace DOL.GS.Quests
 						{
 							if (!string.IsNullOrEmpty(TargetText))
 							{
-								if (living.Realm == eRealm.None)
+								if (living.Realm == ERealm.None)
 								{
 									// mobs and other non realm objects send chat text and not popup text.
-									SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+									SendMessage(m_questPlayer, TargetText, 0, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 								}
 								else
 								{
-									SendMessage(m_questPlayer, TargetText, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+									SendMessage(m_questPlayer, TargetText, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 								}
 							}
 							AdvanceQuestStep(living);
@@ -2772,12 +2751,12 @@ namespace DOL.GS.Quests
         /// <param name="command"></param>
         /// <param name="area"></param>
         /// <returns></returns>
-        public override bool Command(GamePlayer player, AbstractQuest.eQuestCommand command, AbstractArea area)
+        public override bool Command(GamePlayer player, EQuestCommand command, AbstractArea area)
         {
-            if (player == null || command == eQuestCommand.NONE)
+            if (player == null || command == EQuestCommand.NONE)
                 return false;
 
-            if (command == eQuestCommand.SEARCH)
+            if (command == EQuestCommand.SEARCH)
             {
                 // every active quest in the players quest list is sent this command.  Respond if we have an active search
 
@@ -2799,7 +2778,7 @@ namespace DOL.GS.Quests
                 }
             }
 
-            if (command == eQuestCommand.SEARCH_START && area != null)
+            if (command == EQuestCommand.SEARCH_START && area != null)
             {
                 // If player can start this quest then do search action
 
@@ -2817,15 +2796,15 @@ namespace DOL.GS.Quests
         /// A quest command like /search is completed, so do something
         /// </summary>
         /// <param name="command"></param>
-        protected override void QuestCommandCompleted(AbstractQuest.eQuestCommand command, GamePlayer player)
+        protected override void QuestCommandCompleted(EQuestCommand command, GamePlayer player)
         {
-            if (command == eQuestCommand.SEARCH && QuestPlayer == player)
+            if (command == EQuestCommand.SEARCH && QuestPlayer == player)
             {
                 if (StepType == eStepType.Search)
                 {
                     if (AdvanceQuestStep() == false)
                     {
-                        SendMessage(QuestPlayer, "You fail to find anything!", 0, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        SendMessage(QuestPlayer, "You fail to find anything!", 0, EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     }
                 }
                 else if (StepType == eStepType.SearchFinish)
@@ -2834,7 +2813,7 @@ namespace DOL.GS.Quests
                 }
             }
 
-            if (command == eQuestCommand.SEARCH_START)
+            if (command == EQuestCommand.SEARCH_START)
             {
                 CheckOfferQuest(player, null);
             }
@@ -2862,14 +2841,14 @@ namespace DOL.GS.Quests
 
 			TryTurnTo(obj, m_questPlayer);
 
-			if (checkCustomStep && ExecuteCustomQuestStep(QuestPlayer, Step, eStepCheckType.Finish) == false)
+			if (checkCustomStep && ExecuteCustomQuestStep(QuestPlayer, Step, EStepCheckType.Finish) == false)
 				return false;
 
 			// try rewards first
 
 			lock (m_questPlayer.Inventory)
 			{
-				if (m_questPlayer.Inventory.IsSlotsFree(m_finalRewards.Count + m_optionalRewardChoice.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+				if (m_questPlayer.Inventory.IsSlotsFree(m_finalRewards.Count + m_optionalRewardChoice.Count, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
 					long rewardXP = 0; 
 					long rewardRP = 0;
@@ -2894,12 +2873,12 @@ namespace DOL.GS.Quests
 						{
 							if (!m_questPlayer.GainXP)
 							{
-								QuestPlayer.Out.SendMessage(xpError, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+								QuestPlayer.Out.SendMessage(xpError, EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 								return false;
 							}
 							else if (rewardRP > 0 && !m_questPlayer.GainRP)
 							{
-								QuestPlayer.Out.SendMessage(rpError, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+								QuestPlayer.Out.SendMessage(rpError, EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 								return false;
 							}
 	
@@ -2910,7 +2889,7 @@ namespace DOL.GS.Quests
 						{
 							if (!m_questPlayer.GainRP)
 							{
-								QuestPlayer.Out.SendMessage(rpError, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+								QuestPlayer.Out.SendMessage(rpError, EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 								return false;
 							}
 	
@@ -2938,7 +2917,7 @@ namespace DOL.GS.Quests
 							rewardCLXP = m_rewardCLXPs[lastStep - 1];
 							if (rewardCLXP > 0)
 							{
-								m_questPlayer.GainChampionExperience(rewardCLXP, eXPSource.Quest);
+								m_questPlayer.GainChampionExperience(rewardCLXP, EXpSource.Quest);
 							}
 						}
 						
@@ -2957,7 +2936,7 @@ namespace DOL.GS.Quests
 							if (rewardMoney > 0)
 							{
 								m_questPlayer.AddMoney(rewardMoney, "You are awarded {0}!");
-	                            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, rewardMoney);
+	                            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, EInventoryActionType.Quest, rewardMoney);
 							}
 						}
 					}
@@ -2978,12 +2957,12 @@ namespace DOL.GS.Quests
 						{
 							if (!m_questPlayer.GainXP)
 							{
-								QuestPlayer.Out.SendMessage(xpError, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+								QuestPlayer.Out.SendMessage(xpError, EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 								return false;
 							}
 							else if (rewardRP > 0 && !m_questPlayer.GainRP)
 							{
-								QuestPlayer.Out.SendMessage(rpError, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+								QuestPlayer.Out.SendMessage(rpError, EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 								return false;
 							}
 	
@@ -2994,7 +2973,7 @@ namespace DOL.GS.Quests
 						{
 							if (!m_questPlayer.GainRP)
 							{
-								QuestPlayer.Out.SendMessage(rpError, eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+								QuestPlayer.Out.SendMessage(rpError, EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
 								return false;
 							}
 	
@@ -3022,7 +3001,7 @@ namespace DOL.GS.Quests
 							rewardCLXP = m_rewardCLXPs[0];
 							if (rewardCLXP > 0)
 							{
-								m_questPlayer.GainChampionExperience(rewardCLXP, eXPSource.Quest);
+								m_questPlayer.GainChampionExperience(rewardCLXP, EXpSource.Quest);
 							}
 						}
 						
@@ -3041,14 +3020,14 @@ namespace DOL.GS.Quests
 							if (rewardMoney > 0)
 							{
 								m_questPlayer.AddMoney(rewardMoney, "You are awarded {0}!");
-	                            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, rewardMoney);
+	                            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, EInventoryActionType.Quest, rewardMoney);
 							}
 						}
 					}
 				}
 				else
 				{
-					SendMessage(m_questPlayer, "Your inventory does not have enough space to finish this quest!", 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					SendMessage(m_questPlayer, "Your inventory does not have enough space to finish this quest!", 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 					return false;
 				}
 			}
@@ -3058,10 +3037,10 @@ namespace DOL.GS.Quests
 			GameServer.Database.SaveObject(m_charQuest);
 
 			// Now that quest is finished do any post finished custom steps
-			ExecuteCustomQuestStep(QuestPlayer, Step, eStepCheckType.PostFinish);
+			ExecuteCustomQuestStep(QuestPlayer, Step, EStepCheckType.PostFinish);
 
-			m_questPlayer.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
-			m_questPlayer.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			m_questPlayer.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), EChatType.CT_ScreenCenter, EChatLoc.CL_SystemWindow);
+			m_questPlayer.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.FinishQuest.Completed", Name)), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 
 			// Remove this quest from the players active quest list and either
 			// Add or update the quest in the players finished list
@@ -3071,7 +3050,7 @@ namespace DOL.GS.Quests
 
 			bool add = true;
 
-			foreach (AbstractQuest quest in m_questPlayer.GetFinishedQuests())
+			foreach (AQuest quest in m_questPlayer.GetFinishedQuests())
 			{
 				if (quest is DataQuest dataQuest && dataQuest.ID == ID)
 				{
@@ -3093,20 +3072,20 @@ namespace DOL.GS.Quests
 			}
 			if (!string.IsNullOrEmpty(m_dataQuest.FinishText)) // Give users option to have 'finish' text with rewardquest too
 			{
-				if (obj != null && obj.Realm == eRealm.None)
+				if (obj != null && obj.Realm == ERealm.None)
 				{
 					// mobs and other non realm objects send chat text and not popup text.
-					SendMessage(m_questPlayer, m_dataQuest.FinishText, 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+					SendMessage(m_questPlayer, m_dataQuest.FinishText, 0, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 				}
 				else
 				{
-					SendMessage(m_questPlayer, m_dataQuest.FinishText, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					SendMessage(m_questPlayer, m_dataQuest.FinishText, 0, EChatType.CT_System, EChatLoc.CL_PopupWindow);
 				}
 			}
 
-			if (obj != null && obj is GameNPC)
+			if (obj != null && obj is GameNpc)
 			{
-				UpdateQuestIndicator(obj as GameNPC, m_questPlayer);
+				UpdateQuestIndicator(obj as GameNpc, m_questPlayer);
 			}
 
 			if (m_startNPC != null)
@@ -3114,7 +3093,7 @@ namespace DOL.GS.Quests
 				UpdateQuestIndicator(m_startNPC, m_questPlayer);
 			}
 
-			foreach (GameNPC npc in m_questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GameNpc npc in m_questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				UpdateQuestIndicator(npc, m_questPlayer);
 			}
@@ -3135,7 +3114,7 @@ namespace DOL.GS.Quests
 		{
 			string parsed = idnb;
 
-			parsed = parsed.Replace("%c", ((eCharacterClass)player.CharacterClass.ID).ToString());
+			parsed = parsed.Replace("%c", ((EPlayerClass)player.PlayerClass.ID).ToString());
 
 			return parsed;
 		}
@@ -3157,7 +3136,7 @@ namespace DOL.GS.Quests
 			}
 
 			m_questPlayer.Out.SendQuestListUpdate();
-			m_questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.AbortQuest"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			m_questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(m_questPlayer.Client, "AbstractQuest.AbortQuest"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			if (m_startNPC != null)
 				UpdateQuestIndicator(m_startNPC, m_questPlayer);

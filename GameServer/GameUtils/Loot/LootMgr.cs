@@ -392,7 +392,7 @@ namespace DOL.GS
 		/// Call the refresh method for each generator to update loot, if implemented
 		/// </summary>
 		/// <param name="mob"></param>
-		public static void RefreshGenerators(GameNPC mob)
+		public static void RefreshGenerators(GameNpc mob)
 		{
 			if (mob != null)
 			{
@@ -410,7 +410,7 @@ namespace DOL.GS
 		/// <param name="mob"></param>
 		/// <param name="killer"></param>
 		/// <returns></returns>
-		public static DbItemTemplate[] GetLoot(GameNPC mob, GameObject killer)
+		public static DbItemTemplate[] GetLoot(GameNpc mob, GameObject killer)
 		{
 			LootList lootList = null;
 			IList generators = GetLootGenerators(mob);
@@ -440,7 +440,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="mob"></param>
 		/// <returns></returns>
-		public static IList GetLootGenerators(GameNPC mob)
+		public static IList GetLootGenerators(GameNpc mob)
 		{
 			IList filteredGenerators = new ArrayList();
 			ILootGenerator exclusiveGenerator = null;

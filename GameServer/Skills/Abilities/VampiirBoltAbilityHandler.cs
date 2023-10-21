@@ -1,8 +1,5 @@
 namespace DOL.GS.SkillHandler
 {
-	/// <summary>
-	/// Handler for Vampiir Bolt clicks
-	/// </summary>
 	[SkillHandler(Abilities.VampiirBolt)]
 	public class VampiirBoltAbilityHandler : SpellCastingAbilityHandler
 	{

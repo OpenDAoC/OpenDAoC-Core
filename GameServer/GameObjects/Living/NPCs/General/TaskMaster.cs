@@ -2,7 +2,7 @@ using DOL.GS.Quests;
 
 namespace DOL.GS
 {
-	public class TaskMaster : GameNPC
+	public class TaskMaster : GameNpc
 	{
 		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -63,10 +63,10 @@ namespace DOL.GS
                         log.Info("INFO: TaskMaster Dungeons activated");
                         TaskDungeonMission mission;
                         if (player.Group != null)
-                        	mission = new TaskDungeonMission(player.Group, TaskDungeonMission.eDungeonType.Ranged);
+                        	mission = new TaskDungeonMission(player.Group, TaskDungeonMission.EDungeonType.Ranged);
                         else
                         {
-                            mission = new TaskDungeonMission(player, TaskDungeonMission.eDungeonType.Melee);
+                            mission = new TaskDungeonMission(player, TaskDungeonMission.EDungeonType.Melee);
                             player.Mission = mission;
                         }
                         /*
@@ -76,13 +76,13 @@ namespace DOL.GS
                         string msg = "Very well " + player.Name + ", it's good to see adventurers willing to help out the realm in such times.";
                         switch (mission.TDMissionType)
                         {
-                            case TaskDungeonMission.eTDMissionType.Clear:
+                            case TaskDungeonMission.ETdMissionType.Clear:
                                 msg += " Clear " + mission.TaskRegion.Description + " of creatures. Good luck!";
                                 break;
-                            case TaskDungeonMission.eTDMissionType.Boss:
+                            case TaskDungeonMission.ETdMissionType.Boss:
                                 msg += " " + mission.BossName + " has taken over " + mission.TaskRegion.Description + " and needs to be disposed of. Good luck!";
                                 break;
-                            case TaskDungeonMission.eTDMissionType.Specific:
+                            case TaskDungeonMission.ETdMissionType.Specific:
                                 msg += " Please remove " + mission.Total + " " + mission.TargetName + " from " + mission.TaskRegion.Description + "! The entrance is nearby.";
                                 break;
                         }

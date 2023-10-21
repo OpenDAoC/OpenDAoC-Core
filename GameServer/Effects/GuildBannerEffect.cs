@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
 using DOL.Language;
 
@@ -68,53 +49,53 @@ namespace DOL.GS.Effects
 				effectiveness = 0.5;
 
 			#region Get new classdependend effect
-			switch ((eCharacterClass)carrier.CharacterClass.ID) {
-				case eCharacterClass.Wizard: 
-				case eCharacterClass.Theurgist:
-				case eCharacterClass.Sorcerer:
-				case eCharacterClass.Cabalist:
-				case eCharacterClass.Spiritmaster:
-				case eCharacterClass.Bonedancer:
-				case eCharacterClass.Runemaster:
-				case eCharacterClass.Warlock:
-                case eCharacterClass.Animist:
-                case eCharacterClass.Eldritch:
-                case eCharacterClass.Enchanter:
-                case eCharacterClass.Mentalist:
+			switch ((EPlayerClass)carrier.PlayerClass.ID) {
+				case EPlayerClass.Wizard: 
+				case EPlayerClass.Theurgist:
+				case EPlayerClass.Sorcerer:
+				case EPlayerClass.Cabalist:
+				case EPlayerClass.Spiritmaster:
+				case EPlayerClass.Bonedancer:
+				case EPlayerClass.Runemaster:
+				case EPlayerClass.Warlock:
+                case EPlayerClass.Animist:
+                case EPlayerClass.Eldritch:
+                case EPlayerClass.Enchanter:
+                case EPlayerClass.Mentalist:
 					return new BannerOfWardingEffect(effectiveness);
-				case eCharacterClass.Armsman:
-				case eCharacterClass.Mercenary:
-				case eCharacterClass.Reaver:
-				case eCharacterClass.Paladin:
-				case eCharacterClass.Warrior:
-				case eCharacterClass.Berserker:
-				case eCharacterClass.Savage:
-                case eCharacterClass.Hero:
-                case eCharacterClass.Champion:
-                case eCharacterClass.Vampiir:
+				case EPlayerClass.Armsman:
+				case EPlayerClass.Mercenary:
+				case EPlayerClass.Reaver:
+				case EPlayerClass.Paladin:
+				case EPlayerClass.Warrior:
+				case EPlayerClass.Berserker:
+				case EPlayerClass.Savage:
+                case EPlayerClass.Hero:
+                case EPlayerClass.Champion:
+                case EPlayerClass.Vampiir:
 					return new BannerOfShieldingEffect(effectiveness);					
-				case eCharacterClass.Necromancer:
-				case eCharacterClass.Friar:
-				case eCharacterClass.Infiltrator:
-				case eCharacterClass.Scout:
-				case eCharacterClass.Shadowblade:
-				case eCharacterClass.Hunter:
-				case eCharacterClass.Valkyrie:
-				case eCharacterClass.Thane:
-				case eCharacterClass.Ranger:
-				case eCharacterClass.Nightshade:
-				case eCharacterClass.Valewalker:
-				case eCharacterClass.Warden:
+				case EPlayerClass.Necromancer:
+				case EPlayerClass.Friar:
+				case EPlayerClass.Infiltrator:
+				case EPlayerClass.Scout:
+				case EPlayerClass.Shadowblade:
+				case EPlayerClass.Hunter:
+				case EPlayerClass.Valkyrie:
+				case EPlayerClass.Thane:
+				case EPlayerClass.Ranger:
+				case EPlayerClass.Nightshade:
+				case EPlayerClass.Valewalker:
+				case EPlayerClass.Warden:
 					return new BannerOfFreedomEffect(effectiveness);					
-				case eCharacterClass.Cleric:
-				case eCharacterClass.Heretic:
-				case eCharacterClass.Minstrel:
-				case eCharacterClass.Healer:
-				case eCharacterClass.Shaman:
-				case eCharacterClass.Skald:
-				case eCharacterClass.Druid:
-				case eCharacterClass.Bard:
-				case eCharacterClass.Bainshee:
+				case EPlayerClass.Cleric:
+				case EPlayerClass.Heretic:
+				case EPlayerClass.Minstrel:
+				case EPlayerClass.Healer:
+				case EPlayerClass.Shaman:
+				case EPlayerClass.Skald:
+				case EPlayerClass.Druid:
+				case EPlayerClass.Bard:
+				case EPlayerClass.Bainshee:
 					return new BannerOfBesiegingEffect(effectiveness);
 				default: return null;
 			#endregion
@@ -194,24 +175,24 @@ namespace DOL.GS.Effects
 		{
 			int effValue = (int)(Effectiveness*10);
 			base.Start(m_owner);
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Body] += effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Cold] += effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Energy] += effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Heat] += effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Matter] += effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Spirit] += effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Body] += effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Cold] += effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Energy] += effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Heat] += effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Matter] += effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Spirit] += effValue;
 			SendUpdates(m_owner);
 		}
 
 		public override void Stop()
 		{
 			int effValue = (int)(Effectiveness * 10);
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Body] -= effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Cold] -= effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Energy] -= effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Heat] -= effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Matter] -= effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Spirit] -= effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Body] -= effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Cold] -= effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Energy] -= effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Heat] -= effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Matter] -= effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Spirit] -= effValue;
 			base.Stop();
 			SendUpdates(m_owner);
 		}
@@ -259,18 +240,18 @@ namespace DOL.GS.Effects
 		{
 			base.Start(target);
 			int effValue = (int)(Effectiveness * 6);			
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Crush] += effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Slash] += effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Thrust] += effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Crush] += effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Slash] += effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Thrust] += effValue;
 			SendUpdates(m_owner);
 		}
 
 		public override void Stop()
 		{
 			int effValue = (int)(Effectiveness * 6);
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Crush] -= effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Slash] -= effValue;
-			m_owner.BuffBonusCategory4[(int)eProperty.Resist_Thrust] -= effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Crush] -= effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Slash] -= effValue;
+			m_owner.BuffBonusCategory4[(int)EProperty.Resist_Thrust] -= effValue;
 			base.Stop();
 			SendUpdates(m_owner);
 		}
@@ -318,18 +299,18 @@ namespace DOL.GS.Effects
 		{
 			base.Start(target);
 			int effValue = (int)(Effectiveness * 6);
-			m_owner.BaseBuffBonusCategory[(int)eProperty.MesmerizeDurationReduction] += effValue;
-			m_owner.BaseBuffBonusCategory[(int)eProperty.SpeedDecreaseDurationReduction] += effValue;
-			m_owner.BaseBuffBonusCategory[(int)eProperty.StunDurationReduction] += effValue;
+			m_owner.BaseBuffBonusCategory[(int)EProperty.MesmerizeDurationReduction] += effValue;
+			m_owner.BaseBuffBonusCategory[(int)EProperty.SpeedDecreaseDurationReduction] += effValue;
+			m_owner.BaseBuffBonusCategory[(int)EProperty.StunDurationReduction] += effValue;
 			SendUpdates(m_owner);
 		}
 
 		public override void Stop()
 		{
 			int effValue = (int)(Effectiveness * 6);
-			m_owner.BaseBuffBonusCategory[(int)eProperty.MesmerizeDurationReduction] -= effValue;
-			m_owner.BaseBuffBonusCategory[(int)eProperty.SpeedDecreaseDurationReduction] -= effValue;
-			m_owner.BaseBuffBonusCategory[(int)eProperty.StunDurationReduction] -= effValue;			
+			m_owner.BaseBuffBonusCategory[(int)EProperty.MesmerizeDurationReduction] -= effValue;
+			m_owner.BaseBuffBonusCategory[(int)EProperty.SpeedDecreaseDurationReduction] -= effValue;
+			m_owner.BaseBuffBonusCategory[(int)EProperty.StunDurationReduction] -= effValue;			
 			base.Stop();
 			SendUpdates(m_owner);
 		}

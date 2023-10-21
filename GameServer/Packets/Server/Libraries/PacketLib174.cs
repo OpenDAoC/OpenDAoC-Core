@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -43,18 +24,18 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
-		public override void SendCharacterOverview(eRealm realm)
+		public override void SendCharacterOverview(ERealm realm)
 		{
 			int firstAccountSlot;
 			switch (realm)
 			{
-				case eRealm.Albion: firstAccountSlot = 100; break;
-				case eRealm.Midgard: firstAccountSlot = 200; break;
-				case eRealm.Hibernia: firstAccountSlot = 300; break;
+				case ERealm.Albion: firstAccountSlot = 100; break;
+				case ERealm.Midgard: firstAccountSlot = 200; break;
+				case ERealm.Hibernia: firstAccountSlot = 300; break;
 				default: throw new Exception("CharacterOverview requested for unknown realm " + realm);
 			}
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CharacterOverview)))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
 				IList<DbInventoryItem> items;
@@ -72,7 +53,7 @@ namespace DOL.GS.PacketHandler
 							if (characters[j].AccountSlot == i)
 							{
 								pak.FillString(characters[j].Name, 24);
-								items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
+								items = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
 								byte ExtensionTorso = 0;
 								byte ExtensionGloves = 0;
 								byte ExtensionBoots = 0;
@@ -120,7 +101,7 @@ namespace DOL.GS.PacketHandler
 								if (characters[j].Class == 0)
 									pak.FillString("", 24); //Class name
 								else
-									pak.FillString(((eCharacterClass)characters[j].Class).ToString(), 24); //Class name
+									pak.FillString(((EPlayerClass)characters[j].Class).ToString(), 24); //Class name
 
 								//pak.FillString(GamePlayer.RACENAMES[characters[j].Race], 24);
 	                            pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
@@ -166,7 +147,7 @@ namespace DOL.GS.PacketHandler
 									int l;
 									if (k == 0x15 + 3)
 										//shield emblem
-										l = (int)eInventorySlot.LeftHandWeapon;
+										l = (int)EInventorySlot.LeftHandWeapon;
 									else
 										l = k;
 
@@ -200,12 +181,12 @@ namespace DOL.GS.PacketHandler
 									if (found == 0)
 										pak.WriteShort(0x00);
 								}
-								if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+								if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 								{
 									pak.WriteByte(0x02);
 									pak.WriteByte(0x02);
 								}
-								else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+								else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 								{
 									pak.WriteByte(0x03);
 									pak.WriteByte(0x03);
@@ -216,16 +197,16 @@ namespace DOL.GS.PacketHandler
 									byte lefthand = 0xFF;
 									foreach (DbInventoryItem item in items)
 									{
-										if (item.SlotPosition == (int)eInventorySlot.RightHandWeapon)
+										if (item.SlotPosition == (int)EInventorySlot.RightHandWeapon)
 											righthand = 0x00;
-										if (item.SlotPosition == (int)eInventorySlot.LeftHandWeapon)
+										if (item.SlotPosition == (int)EInventorySlot.LeftHandWeapon)
 											lefthand = 0x01;
 									}
 									if (righthand == lefthand)
 									{
-										if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+										if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
 											righthand = lefthand = 0x02;
-										else if (characters[j].ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+										else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
 											righthand = lefthand = 0x03;
 									}
 									pak.WriteByte(righthand);
@@ -272,7 +253,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || playerToCreate.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PlayerCreate172)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PlayerCreate172)))
 			{
 				pak.WriteShort((ushort)playerToCreate.Client.SessionID);
 				pak.WriteShort((ushort)playerToCreate.ObjectID);
@@ -284,14 +265,14 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort)playerRegion.GetYOffInZone(playerToCreate.X, playerToCreate.Y));
 				pak.WriteShort(playerToCreate.Heading);
 
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
 				pak.WriteByte(playerToCreate.GetDisplayLevel(m_gameClient.Player));
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
-				pak.WriteByte(playerToCreate.GetFaceAttribute(eCharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
+				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
 
 				int flags = (GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, playerToCreate) & 0x03) << 2;
 				if (playerToCreate.IsAlive == false) flags |= 0x01;
@@ -300,7 +281,7 @@ namespace DOL.GS.PacketHandler
 				if (playerToCreate.IsWireframe) flags |= 0x20;
 				pak.WriteByte((byte)flags);
 				pak.WriteByte(0x00); // new in 1.74
-				if (playerToCreate.CharacterClass.ID == (int)eCharacterClass.Vampiir) flags |= 0x40; //Vamp fly
+				if (playerToCreate.PlayerClass.ID == (int)EPlayerClass.Vampiir) flags |= 0x40; //Vamp fly
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerName(m_gameClient.Player, playerToCreate));
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerGuildName(m_gameClient.Player, playerToCreate));
 				pak.WritePascalString(GameServer.ServerRules.GetPlayerLastName(m_gameClient.Player, playerToCreate));
@@ -317,7 +298,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PositionAndObjectID)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PositionAndObjectID)))
 			{
 				pak.WriteShort((ushort)m_gameClient.Player.ObjectID); //This is the player's objectid not Sessionid!!!
 				pak.WriteShort((ushort)m_gameClient.Player.Z);
@@ -354,13 +335,13 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected override void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, GameLiving living)
+		protected override void WriteGroupMemberUpdate(GsTcpPacketOut pak, bool updateIcons, GameLiving living)
 		{
 			base.WriteGroupMemberUpdate(pak, updateIcons, living);
 			WriteGroupMemberMapUpdate(pak, living);
 		}
 
-		protected virtual void WriteGroupMemberMapUpdate(GSTCPPacketOut pak, GameLiving living)
+		protected virtual void WriteGroupMemberMapUpdate(GsTcpPacketOut pak, GameLiving living)
 		{
 			bool sameRegion = living.CurrentRegion == m_gameClient.Player.CurrentRegion;
 			if (sameRegion && living.CurrentSpeed != 0)//todo : find a better way to detect when player change coord
@@ -381,7 +362,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 			SendRegions(m_gameClient.Player.CurrentRegion.Skin);
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.RegionChanged)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.RegionChanged)))
 			{
 				//Dinberg - Changing to allow instances...
 				pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
@@ -403,7 +384,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid, ushort boltTime, bool noSound, byte success)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SpellEffectAnimation)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.SpellEffectAnimation)))
 			{
 				pak.WriteShort((ushort)spellCaster.ObjectID);
 				pak.WriteShort(spellid);
@@ -415,7 +396,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void CheckLengthHybridSkillsPacket(ref GSTCPPacketOut pak, ref int maxSkills, ref int first)
+		public override void CheckLengthHybridSkillsPacket(ref GsTcpPacketOut pak, ref int maxSkills, ref int first)
 		{
 			if (pak.Length > 1000)
 			{
@@ -424,7 +405,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x03); //subtype
 				pak.WriteByte((byte)first);
 				SendTCP(pak);
-				pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate));
+				pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate));
 				pak.WriteByte(0x01); //subcode
 				pak.WriteByte((byte)maxSkills); //number of entry
 				pak.WriteByte(0x03); //subtype
@@ -444,25 +425,25 @@ namespace DOL.GS.PacketHandler
 			int MidKeeps = 0;
 			int HibKeeps = 0;
 			int OwnerDFTowers = 0;
-			eRealm OwnerDF = eRealm.None;
-			foreach (AbstractGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
+			ERealm OwnerDF = ERealm.None;
+			foreach (AGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
 			{
 
-				switch ((eRealm)keep.Realm)
+				switch ((ERealm)keep.Realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						if (keep is GameKeep)
 							AlbKeeps++;
 						else
 							AlbTowers++;
 						break;
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						if (keep is GameKeep)
 							MidKeeps++;
 						else
 							MidTowers++;
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						if (keep is GameKeep)
 							HibKeeps++;
 						else
@@ -474,34 +455,34 @@ namespace DOL.GS.PacketHandler
 			}
 			if (AlbTowers > MidTowers && AlbTowers > HibTowers)
 			{
-				OwnerDF = eRealm.Albion;
+				OwnerDF = ERealm.Albion;
 				OwnerDFTowers = AlbTowers;
 			}
 			else if (MidTowers > AlbTowers && MidTowers > HibTowers)
 			{
-				OwnerDF = eRealm.Midgard;
+				OwnerDF = ERealm.Midgard;
 				OwnerDFTowers = MidTowers;
 			}
 			else if (HibTowers > AlbTowers && HibTowers > MidTowers)
 			{
-				OwnerDF = eRealm.Hibernia;
+				OwnerDF = ERealm.Hibernia;
 				OwnerDFTowers = HibTowers;
 			}
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.WarmapBonuses)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.WarmapBonuses)))
 			{
 				int RealmKeeps = 0;
 				int RealmTowers = 0;
-				switch ((eRealm)m_gameClient.Player.Realm)
+				switch ((ERealm)m_gameClient.Player.Realm)
 				{
-					case eRealm.Albion:
+					case ERealm.Albion:
 						RealmKeeps = AlbKeeps;
 						RealmTowers = AlbTowers;
 						break;
-					case eRealm.Midgard:
+					case ERealm.Midgard:
 						RealmKeeps = MidKeeps;
 						RealmTowers = MidTowers;
 						break;
-					case eRealm.Hibernia:
+					case ERealm.Hibernia:
 						RealmKeeps = HibKeeps;
 						RealmTowers = HibTowers;
 						break;
@@ -509,7 +490,7 @@ namespace DOL.GS.PacketHandler
 						break;
 				}
 				pak.WriteByte((byte)RealmKeeps);
-				pak.WriteByte((byte)(((byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, eRelicType.Magic)) << 4 | (byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, eRelicType.Strength)));
+				pak.WriteByte((byte)(((byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Magic)) << 4 | (byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Strength)));
 				pak.WriteByte((byte)OwnerDF);
 				pak.WriteByte((byte)RealmTowers);
 				pak.WriteByte((byte)OwnerDFTowers);
@@ -522,7 +503,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || living.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.EquipmentUpdate)))
 			{
 
 				ICollection<DbInventoryItem> items = null;
@@ -576,7 +557,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || living == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VisualEffect)))
 			{
 
 				pak.WriteShort((ushort)living.ObjectID);

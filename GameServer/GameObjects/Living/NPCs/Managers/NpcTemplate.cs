@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Linq;
@@ -58,7 +39,7 @@ namespace DOL.GS
 		protected byte m_leftHandSwingChance;
 		protected ushort m_flags;
 		protected string m_inventory;
-		protected eDamageType m_meleeDamageType;
+		protected EDamageType m_meleeDamageType;
 		protected short m_strength;
 		protected short m_constitution;
 		protected short m_dexterity;
@@ -180,9 +161,9 @@ namespace DOL.GS
 
 			m_flags = data.Flags;
 
-			m_meleeDamageType = (eDamageType)data.MeleeDamageType;
+			m_meleeDamageType = (EDamageType)data.MeleeDamageType;
 			if (data.MeleeDamageType == 0)
-				m_meleeDamageType = eDamageType.Slash;
+				m_meleeDamageType = EDamageType.Slash;
 
 			m_inventory = data.EquipmentTemplateID;
 			m_aggroLevel = data.AggroLevel;
@@ -197,7 +178,7 @@ namespace DOL.GS
 		}
 
 
-		public NpcTemplate( GameNPC mob )
+		public NpcTemplate( GameNpc mob )
 		{
 			if (mob == null)
 				throw new ArgumentNullException("data");
@@ -220,7 +201,7 @@ namespace DOL.GS
 			m_intelligence = mob.Intelligence;
 			m_maxdistance = mob.MaxDistance;
 			m_maxSpeed = (short)mob.MaxSpeedBase;
-			m_meleeDamageType = (eDamageType)mob.MeleeDamageType;
+			m_meleeDamageType = (EDamageType)mob.MeleeDamageType;
 			m_model = mob.Model.ToString();
 			m_leftHandSwingChance = mob.LeftHandSwingChance;
 			m_level = mob.Level.ToString();
@@ -486,7 +467,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the template npc melee damage type
 		/// </summary>
-		public eDamageType MeleeDamageType
+		public EDamageType MeleeDamageType
 		{
 			get { return m_meleeDamageType; }
 			set { m_meleeDamageType = value; }

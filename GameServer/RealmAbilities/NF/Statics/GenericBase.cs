@@ -35,11 +35,11 @@ namespace DOL.GS.RealmAbilities.Statics
 		}
 		public override bool AddToWorld() 
         {
-			new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(PulseTimer),1000);
-			GameEventMgr.AddHandler(m_caster, GamePlayerEvent.RemoveFromWorld, new DOLEventHandler(PlayerLeftWorld));
+			new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(PulseTimer),1000);
+			GameEventMgr.AddHandler(m_caster, GamePlayerEvent.RemoveFromWorld, new CoreEventHandler(PlayerLeftWorld));
 			return base.AddToWorld();
 		}
-		protected virtual int PulseTimer(ECSGameTimer timer)
+		protected virtual int PulseTimer(EcsGameTimer timer)
         {
 			if (currentTick >= m_lifeTime || m_caster == null) 
             {
@@ -54,7 +54,7 @@ namespace DOL.GS.RealmAbilities.Statics
                 {
 					CastSpell(target);
 				}
-				foreach (GameNPC npc in this.GetNPCsInRadius(m_radius))	
+				foreach (GameNpc npc in this.GetNPCsInRadius(m_radius))	
                 {
 					CastSpell(npc);
 				}
@@ -63,7 +63,7 @@ namespace DOL.GS.RealmAbilities.Statics
 			currentTick++;
 			return 1000;
 		}
-		protected virtual void PlayerLeftWorld(DOLEvent e, object sender, EventArgs args)
+		protected virtual void PlayerLeftWorld(CoreEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = (GamePlayer)sender;
 			if (this.m_caster == player)
@@ -74,4 +74,3 @@ namespace DOL.GS.RealmAbilities.Statics
 		protected abstract void CastSpell (GameLiving target);		
 	}
 }
-

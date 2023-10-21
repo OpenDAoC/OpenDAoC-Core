@@ -8,13 +8,6 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
-	public enum eRelicType : int
-	{
-		Invalid = -1,
-		Strength = 0,
-		Magic = 1
-	}
-
 	public class GameRelic : GameStaticItem
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -28,10 +21,10 @@ namespace DOL.GS
 		GameRelicPad m_currentRelicPad = null;
 		GameRelicPad m_returnRelicPad = null;
 		DateTime m_lastCapturedDate = DateTime.Now;
-		ECSGameTimer m_currentCarrierTimer;
+		EcsGameTimer m_currentCarrierTimer;
 		DbRelic m_dbRelic;
-		eRelicType m_relicType;
-		ECSGameTimer m_returnRelicTimer;
+		ERelicType m_relicType;
+		EcsGameTimer m_returnRelicTimer;
 		long m_timeRelicOnGround = 0;
 
 		protected int ReturnRelicInterval
@@ -52,7 +45,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Get the RelicType (melee or magic)
 		/// </summary>
-		public eRelicType RelicType
+		public ERelicType RelicType
 		{
 			get
 			{
@@ -60,12 +53,12 @@ namespace DOL.GS
 			}
 		}
 
-		private eRealm m_originalRealm;
+		private ERealm m_originalRealm;
 
 		/// <summary>
 		/// Get the original Realm of the relict (can only be 1(alb),2(mid) or 3(hibernia))
 		/// </summary>
-		public eRealm OriginalRealm
+		public ERealm OriginalRealm
 		{
 			get
 			{
@@ -73,12 +66,12 @@ namespace DOL.GS
 			}
 		}
 
-		private eRealm m_lastRealm = eRealm.None;
+		private ERealm m_lastRealm = ERealm.None;
 
 		/// <summary>
 		/// Get the Realm who last owned this relic
 		/// </summary>
-		public eRealm LastRealm
+		public ERealm LastRealm
 		{
 			get
 			{
@@ -156,19 +149,19 @@ namespace DOL.GS
 
 			if (!player.IsAlive)
 			{
-				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You are dead!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You are dead!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (IsMounted && player.Realm == Realm)
 			{
-				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". It is owned by your realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". It is owned by your realm.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (IsMounted && !RelicMgr.CanPickupRelicFromShrine(player, this))
 			{
-				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You need to capture your realms " + (Enum.GetName(typeof(eRelicType), RelicType)) + " relic first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You need to capture your realms " + (Enum.GetName(typeof(ERelicType), RelicType)) + " relic first.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -215,39 +208,39 @@ namespace DOL.GS
 		{
 			if (player.TempProperties.GetProperty(PLAYER_CARRY_RELIC_WEAK, false))
 			{
-				player.Out.SendMessage("You are already carrying a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You are already carrying a relic.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			if (player.IsStealthed)
 			{
-				player.Out.SendMessage("You cannot carry a relic while stealthed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You cannot carry a relic while stealthed.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
 			if (!player.IsAlive)
 			{
-				player.Out.SendMessage("You are dead!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You are dead!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
 			if (IsMounted)
 			{
-				AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(m_currentRelicPad.CurrentRegionID, m_currentRelicPad, WorldMgr.VISIBILITY_DISTANCE);
+				AGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(m_currentRelicPad.CurrentRegionID, m_currentRelicPad, WorldMgr.VISIBILITY_DISTANCE);
 
 				log.DebugFormat("keep {0}", keep);
 				
 				if (m_currentRelicPad.GetEnemiesOnPad() < Properties.RELIC_PLAYERS_REQUIRED_ON_PAD)
 				{
-					player.Out.SendMessage($"You must have {Properties.RELIC_PLAYERS_REQUIRED_ON_PAD} players nearby the pad before taking a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage($"You must have {Properties.RELIC_PLAYERS_REQUIRED_ON_PAD} players nearby the pad before taking a relic.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
 
-			if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, m_item))
+			if (player.Inventory.AddItem(EInventorySlot.FirstEmptyBackpack, m_item))
 			{
 				if (m_item == null)
 					log.Warn("GameRelic: Could not retrieve " + Name + " as InventoryItem on player " + player.Name);
-				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Other, m_item.Template, m_item.Count);
+				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Other, m_item.Template, m_item.Count);
 
 
 				m_currentCarrier = player;
@@ -276,7 +269,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				player.Out.SendMessage("You dont have enough space in your backpack to carry this.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You dont have enough space in your backpack to carry this.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -304,7 +297,7 @@ namespace DOL.GS
 				lock (player.Inventory)
 				{
 					bool success = player.Inventory.RemoveItem(m_item);
-					InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Other, m_item.Template, m_item.Count);
+					InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Other, m_item.Template, m_item.Count);
 					log.Debug("Remove " + m_item.Name + " from " + player.Name + "'s Inventory " + ((success) ? "successfully." : "with errors."));
 				}
 
@@ -324,7 +317,7 @@ namespace DOL.GS
 			{
 				// launch the reset timer if this relic is not dropped on a pad
 				m_timeRelicOnGround = GameLoop.GameLoopTime;
-				m_returnRelicTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(ReturnRelicTick), RelicEffectInterval);
+				m_returnRelicTimer = new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(ReturnRelicTick), RelicEffectInterval);
 				log.DebugFormat("{0} dropped, return timer for relic set to {1} seconds.", Name, ReturnRelicInterval / 1000);
 				Console.WriteLine($"Starting return relic timer {m_returnRelicTimer}");
 
@@ -338,7 +331,7 @@ namespace DOL.GS
 		/// <summary>
 		/// when the relic is lost and ReturnRelicInterval is elapsed
 		/// </summary>
-		protected virtual int ReturnRelicTick(ECSGameTimer timer)
+		protected virtual int ReturnRelicTick(EcsGameTimer timer)
 		{
 			if (GameLoop.GameLoopTime - m_timeRelicOnGround < ReturnRelicInterval)
 			{
@@ -383,7 +376,7 @@ namespace DOL.GS
 					m_currentCarrierTimer.Stop();
 					m_currentCarrierTimer = null;
 				}
-				m_currentCarrierTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(CarrierTimerTick));
+				m_currentCarrierTimer = new EcsGameTimer(player, new EcsGameTimer.EcsTimerCallback(CarrierTimerTick));
 				m_currentCarrierTimer.Start(RelicEffectInterval);
 
 			}
@@ -403,7 +396,7 @@ namespace DOL.GS
 		/// The callback for the pulsing spelleffect
 		/// </summary>
 		/// <param name="timer">The ObjectTimerCallback object</param>
-		private int CarrierTimerTick(ECSGameTimer timer)
+		private int CarrierTimerTick(EcsGameTimer timer)
 		{
 			//update the relic position
 			Update();
@@ -419,7 +412,7 @@ namespace DOL.GS
 				return 0;
 			}
 
-			if (CurrentCarrier != null && CurrentCarrier.Inventory.GetFirstItemByID(m_item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
+			if (CurrentCarrier != null && CurrentCarrier.Inventory.GetFirstItemByID(m_item.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) == null)
 			{
 				log.DebugFormat("{0} not found in carriers backpack, relic returned to previous pad.", Name);
 				RelicPadTakesOver(ReturnRelicPad, true);
@@ -446,25 +439,25 @@ namespace DOL.GS
 		{
 			if (activate)
 			{
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, PlayerInventoryEvent.ItemDropped, new DOLEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.Dying, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, GamePlayerEvent.Linkdeath, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.AddHandler(player, PlayerInventoryEvent.ItemDropped, new CoreEventHandler(PlayerAbsence));
 
 			}
 			else
 			{
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, PlayerInventoryEvent.ItemDropped, new DOLEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Linkdeath, new CoreEventHandler(PlayerAbsence));
+				GameEventMgr.RemoveHandler(player, PlayerInventoryEvent.ItemDropped, new CoreEventHandler(PlayerAbsence));
 			}
 
 
 		}
-		protected void PlayerAbsence(DOLEvent e, object sender, EventArgs args)
+		protected void PlayerAbsence(CoreEvent e, object sender, EventArgs args)
 		{
 			Realm=0;
 			if (e == PlayerInventoryEvent.ItemDropped)
@@ -488,7 +481,7 @@ namespace DOL.GS
 		{
 
 			IList messages = base.GetExamineMessages(player);
-			messages.Add((IsMounted) ? ("It is owned by " + ((player.Realm == Realm) ? "your realm" : GlobalConstants.RealmToName((eRealm)Realm)) + ".") : "It is without owner, take it!");
+			messages.Add((IsMounted) ? ("It is owned by " + ((player.Realm == Realm) ? "your realm" : GlobalConstants.RealmToName((ERealm)Realm)) + ".") : "It is without owner, take it!");
 			return messages;
 		}
 
@@ -506,10 +499,10 @@ namespace DOL.GS
 			Y = m_dbRelic.Y;
 			Z = m_dbRelic.Z;
 			Heading = (ushort)m_dbRelic.Heading;
-			m_relicType = (eRelicType)m_dbRelic.relicType;
-			Realm = (eRealm)m_dbRelic.Realm;
-			m_originalRealm = (eRealm)m_dbRelic.OriginalRealm;
-			m_lastRealm = (eRealm)m_dbRelic.LastRealm;
+			m_relicType = (ERelicType)m_dbRelic.relicType;
+			Realm = (ERealm)m_dbRelic.Realm;
+			m_originalRealm = (ERealm)m_dbRelic.OriginalRealm;
+			m_lastRealm = (ERealm)m_dbRelic.LastRealm;
 			m_lastCapturedDate = m_dbRelic.LastCaptureDate;
 
 
@@ -527,7 +520,7 @@ namespace DOL.GS
 			DbItemTemplate m_itemTemp;
 			m_itemTemp = new DbItemTemplate();
 			m_itemTemp.Name = Name;
-			m_itemTemp.Object_Type = (int)eObjectType.Magical;
+			m_itemTemp.Object_Type = (int)EObjectType.Magical;
 			m_itemTemp.Model = Model;
 			m_itemTemp.IsDropable = true;
 			m_itemTemp.IsPickable = false;
@@ -581,13 +574,13 @@ namespace DOL.GS
 			public ushort Model;
 		}
 
-		public static MiniTemp GetRelicTemplate(eRealm Realm, eRelicType RelicType)
+		public static MiniTemp GetRelicTemplate(ERealm Realm, ERelicType RelicType)
 		{
 			MiniTemp m_template = new MiniTemp();
 			switch (Realm)
 			{
-				case eRealm.Albion:
-					if (RelicType == eRelicType.Magic)
+				case ERealm.Albion:
+					if (RelicType == ERelicType.Magic)
 					{
 						m_template.Name = "Merlin's Staff";
 						m_template.Model = 630;
@@ -598,8 +591,8 @@ namespace DOL.GS
 						m_template.Model = 631;
 					}
 					break;
-				case eRealm.Midgard:
-					if (RelicType == eRelicType.Magic)
+				case ERealm.Midgard:
+					if (RelicType == ERelicType.Magic)
 					{
 						m_template.Name = "Horn of Valhalla";
 						m_template.Model = 635;
@@ -610,8 +603,8 @@ namespace DOL.GS
 						m_template.Model = 634;
 					}
 					break;
-				case eRealm.Hibernia:
-					if (RelicType == eRelicType.Magic)
+				case ERealm.Hibernia:
+					if (RelicType == ERelicType.Magic)
 					{
 						m_template.Name = "Cauldron of Dagda";
 						m_template.Model = 632;

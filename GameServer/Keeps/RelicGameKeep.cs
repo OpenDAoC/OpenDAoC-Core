@@ -3,9 +3,9 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS.Keeps
 {
 	/// <summary>
-	/// GameKeep is the keep in New Frontiere
+	/// RelicGameKeep is the relic keep in New Frontiers
 	/// </summary>
-	public class RelicGameKeep : AbstractGameKeep
+	public class RelicGameKeep : AGameKeep
 	{
 		public RelicGameKeep()
 			: base()
@@ -52,7 +52,7 @@ namespace DOL.GS.Keeps
 		public override bool CheckForClaim(GamePlayer player)
 		{
 
-			player.Out.SendMessage("Relic keeps cannot be claimed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("Relic keeps cannot be claimed.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return false;
 
 		}

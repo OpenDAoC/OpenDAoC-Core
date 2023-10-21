@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +8,6 @@ using DOL.GS.PacketHandler;
 namespace DOL.GS
 {
     /// <summary>
-    /// TemplateLootGenerator
     /// This implementation uses LootTemplates to relate loots to a specific mob type.
     /// Used DB Tables:
     ///				MobxLootTemplate  (Relation between Mob and loottemplate
@@ -184,7 +164,7 @@ namespace DOL.GS
         /// Reload the loot templates for this mob
         /// </summary>
         /// <param name="mob"></param>
-        public override void Refresh(GameNPC mob)
+        public override void Refresh(GameNpc mob)
         {
             if (mob == null)
                 return;
@@ -193,7 +173,7 @@ namespace DOL.GS
 
             // First see if there are any MobXLootTemplates associated with this mob
 
-            var mxlts = DOLDB<DbMobXLootTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name.ToLower()));
+            var mxlts = CoreDb<DbMobXLootTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name.ToLower()));
 
             if (mxlts != null)
             {
@@ -236,7 +216,7 @@ namespace DOL.GS
             }
 
             var lootTemplates =
-                DOLDB<DbLootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(templateName.ToLower()));
+                CoreDb<DbLootTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(templateName.ToLower()));
 
             if (lootTemplates != null)
             {
@@ -262,7 +242,7 @@ namespace DOL.GS
             }
         }
 
-        public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+        public override LootList GenerateLoot(GameNpc mob, GameObject killer)
         {
             LootList loot = base.GenerateLoot(mob, killer);
 
@@ -277,9 +257,9 @@ namespace DOL.GS
                 {
                     player = killer as GamePlayer;
                 }
-                else if (killer is GameNPC && (killer as GameNPC).Brain is IControlledBrain)
+                else if (killer is GameNpc && (killer as GameNpc).Brain is IControlledBrain)
                 {
-                    player = ((killer as GameNPC).Brain as ControlledNpcBrain).GetPlayerOwner();
+                    player = ((killer as GameNpc).Brain as ControlledNpcBrain).GetPlayerOwner();
                 }
 
                 // allow the leader to decide the loot realm
@@ -389,7 +369,7 @@ namespace DOL.GS
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
                                                     .IsEqualTo(player.Client.Account.ObjectId)
                                                     .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+                                            var realmLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
                                             if (realmLoyalty != null && realmLoyalty.Days > 0)
                                             {
                                                 int tmpLoyal = realmLoyalty.Days > 30
@@ -417,7 +397,7 @@ namespace DOL.GS
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
                                                     .IsEqualTo(GroupedTimerToUse.Client.Account.ObjectId)
                                                     .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(GroupedTimerToUse);
+                                            var realmLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(GroupedTimerToUse);
                                             if (realmLoyalty != null && realmLoyalty.Days > 0)
                                             {
                                                 int tmpLoyal = realmLoyalty.Days > 30
@@ -458,10 +438,10 @@ namespace DOL.GS
                                             TimeSpan.FromMilliseconds(timeDifference).Hours + "h " +
                                             TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " +
                                             TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item",
-                                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                     else
                                         player.Out.SendMessage("XP item will drop after your next kill!",
-                                            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                                 }
                             }
                         }
@@ -539,7 +519,7 @@ namespace DOL.GS
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
                                                     .IsEqualTo(player.Client.Account.ObjectId)
                                                     .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
+                                            var realmLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
                                             if (realmLoyalty != null && realmLoyalty.Days > 0)
                                             {
                                                 int tmpLoyal = realmLoyalty.Days > 30
@@ -566,7 +546,7 @@ namespace DOL.GS
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
                                                     .IsEqualTo(GroupedTimerToUse.Client.Account.ObjectId)
                                                     .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(GroupedTimerToUse);
+                                            var realmLoyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(GroupedTimerToUse);
                                             if (realmLoyalty != null && realmLoyalty.Days > 0)
                                             {
                                                 int tmpLoyal = realmLoyalty.Days > 30
@@ -610,10 +590,10 @@ namespace DOL.GS
                                     TimeSpan.FromMilliseconds(timeDifference).Hours + "h " +
                                     TimeSpan.FromMilliseconds(timeDifference).Minutes + "m " +
                                     TimeSpan.FromMilliseconds(timeDifference).Seconds + "s until next XP item",
-                                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    EChatType.CT_System, EChatLoc.CL_SystemWindow);
                             else
-                                player.Out.SendMessage("XP item will drop after your next kill!", eChatType.CT_System,
-                                    eChatLoc.CL_SystemWindow);
+                                player.Out.SendMessage("XP item will drop after your next kill!", EChatType.CT_System,
+                                    EChatLoc.CL_SystemWindow);
                         }
                     }
                 }

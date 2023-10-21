@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using DOL.GS;
 using DOL.GS.PlayerTitles;
 using DOL.Language;
@@ -53,7 +34,7 @@ namespace GameServerScripts.Titles
 		{
 			string description = GenericNames.Item1;
 			
-			if (player.Gender == eGender.Female && !string.IsNullOrEmpty(GenericNames.Item3))
+			if (player.Gender == EGender.Female && !string.IsNullOrEmpty(GenericNames.Item3))
 				description = GenericNames.Item3;
 			
 			return Translate ? TryTranslate(description, player) : description;
@@ -69,7 +50,7 @@ namespace GameServerScripts.Titles
 		{
 			string titleValue = GenericNames.Item2;
 			
-			if (player.Gender == eGender.Female && !string.IsNullOrEmpty(GenericNames.Item4))
+			if (player.Gender == EGender.Female && !string.IsNullOrEmpty(GenericNames.Item4))
 				titleValue = GenericNames.Item4;
 						
 			return Translate ? TryTranslate(titleValue, source) : titleValue;
@@ -133,5 +114,4 @@ namespace GameServerScripts.Titles
 		/// </summary>
 		protected override bool Translate { get { return true; }}
 	}
-
 }

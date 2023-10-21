@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.Events;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -25,10 +6,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 	/// Handler for quest reward dialog response.
 	/// </summary>
 	/// <author>Aredhel</author>
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.QuestRewardChosen, "Quest Reward Choosing Handler", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.QuestRewardChosen, "Quest Reward Choosing Handler", EClientStatus.PlayerInGame)]
 	public class QuestRewardChosenHandler : IPacketHandler
 	{
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			var response = (byte) packet.ReadByte();
 			if (response != 1) // confirm
@@ -53,7 +34,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Send dialog response via Notify().
 		/// </summary>
-		protected class QuestRewardChosenAction : ECSGameTimerWrapperBase
+		protected class QuestRewardChosenAction : EcsGameTimerWrapperBase
 		{
 			private readonly int m_countChosen;
 			private readonly int[] m_itemsChosen;
@@ -79,7 +60,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 				player.Notify(GamePlayerEvent.QuestRewardChosen, player, new QuestRewardChosenEventArgs(m_questGiverID, m_questID, m_countChosen, m_itemsChosen));

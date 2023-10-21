@@ -28,7 +28,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class BaneOfAlbionTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsAlbionPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsAlbionPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Albion.BaneOfAlbion", "Titles.Kills.Albion.BaneOfAlbion"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsAlbionPlayers >= 2000 && player.KillsAlbionPlayers < 25000; }}
 	}
@@ -37,7 +37,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class ScourgeOfAlbionTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsAlbionPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsAlbionPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Albion.ScourgeOfAlbion", "Titles.Kills.Albion.ScourgeOfAlbion"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsAlbionPlayers >= 25000 && player.KillsAlbionPlayers < 100000; }}
 	}
@@ -46,7 +46,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class SlayerOfAlbionTitle : NoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsAlbionPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsAlbionPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Slayer of Albion", "Slayer of Albion"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsAlbionPlayers >= 100000; }}
 	}
@@ -58,7 +58,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class BaneOfMidgardTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsMidgardPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsMidgardPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Midgard.BaneOfMidgard", "Titles.Kills.Midgard.BaneOfMidgard"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsMidgardPlayers >= 2000 && player.KillsMidgardPlayers < 25000; }}
 	}
@@ -67,7 +67,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class ScourgeOfMidgardTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsMidgardPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsMidgardPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Midgard.ScourgeOfMidgard", "Titles.Kills.Midgard.ScourgeOfMidgard"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsMidgardPlayers >= 25000 && player.KillsMidgardPlayers < 100000; }}
 	}
@@ -76,7 +76,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class SlayerOfMidgardTitle : NoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsMidgardPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsMidgardPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Slayer of Midgard", "Slayer of Midgard"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsMidgardPlayers >= 100000; }}
 	}
@@ -88,7 +88,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class BaneOfHiberniaTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsHiberniaPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsHiberniaPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Hibernia.BaneOfHibernia", "Titles.Kills.Hibernia.BaneOfHibernia"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsHiberniaPlayers >= 2000 && player.KillsHiberniaPlayers < 25000; }}
 	}
@@ -97,7 +97,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class ScourgeOfHiberniaTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsHiberniaPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsHiberniaPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.Hibernia.ScourgeOfHibernia", "Titles.Kills.Hibernia.ScourgeOfHibernia"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsHiberniaPlayers >= 25000 && player.KillsHiberniaPlayers < 100000; }}
 	}
@@ -106,7 +106,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class SlayerOfHiberniaTitle : NoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsHiberniaPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsHiberniaPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Slayer of Hibernia", "Slayer of Hibernia"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => player.KillsHiberniaPlayers >= 100000; }}
 	}
@@ -117,7 +117,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class MasterSoldierTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsTotalPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsTotalPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.All.MasterSoldier", "Titles.Kills.All.MasterSoldier"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => (player.KillsHiberniaPlayers + player.KillsMidgardPlayers + player.KillsAlbionPlayers) >= 2000 && (player.KillsHiberniaPlayers + player.KillsMidgardPlayers + player.KillsAlbionPlayers) < 25000; }}
 	}
@@ -126,7 +126,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class MasterEnforcerTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsTotalPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsTotalPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.All.MasterEnforcer", "Titles.Kills.All.MasterEnforcer"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => (player.KillsHiberniaPlayers + player.KillsMidgardPlayers + player.KillsAlbionPlayers) >= 25000  && (player.KillsHiberniaPlayers + player.KillsMidgardPlayers + player.KillsAlbionPlayers) < 100000; }}
 	}
@@ -135,7 +135,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class MasterAssassineTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsTotalPlayersChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsTotalPlayersChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Kills.All.MasterAssassine", "Titles.Kills.All.MasterAssassine"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => (player.KillsHiberniaPlayers + player.KillsMidgardPlayers + player.KillsAlbionPlayers) >= 100000; }}
 	}
@@ -147,7 +147,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class BattleEnforcerTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsTotalDeathBlowsChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsTotalDeathBlowsChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Deathblows.BattleEnforcer", "Titles.Deathblows.BattleEnforcer"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => (player.KillsAlbionDeathBlows + player.KillsMidgardDeathBlows + player.KillsHiberniaDeathBlows) >= 2000 && (player.KillsAlbionDeathBlows + player.KillsMidgardDeathBlows + player.KillsHiberniaDeathBlows) < 25000; }}
 	}
@@ -156,7 +156,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class BattleMasterTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsTotalDeathBlowsChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsTotalDeathBlowsChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Deathblows.BattleMaster", "Titles.Deathblows.BattleMaster"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => (player.KillsAlbionDeathBlows + player.KillsMidgardDeathBlows + player.KillsHiberniaDeathBlows) >= 25000; }}
 	}
@@ -168,7 +168,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class LoneEnforcerTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsTotalSoloChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsTotalSoloChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Solokills.LoneEnforcer", "Titles.Solokills.LoneEnforcer"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => (player.KillsAlbionSolo + player.KillsMidgardSolo + player.KillsHiberniaSolo) >= 2000 && (player.KillsAlbionSolo + player.KillsMidgardSolo + player.KillsHiberniaSolo) < 25000; }}
 	}
@@ -177,7 +177,7 @@ namespace GameServerScripts.Titles
 	/// </summary>
 	public class DuelMasterTitle : TranslatedNoGenderGenericEventPlayerTitle
 	{
-		public override DOLEvent Event { get { return GamePlayerEvent.KillsTotalSoloChanged; }}
+		public override CoreEvent Event { get { return GamePlayerEvent.KillsTotalSoloChanged; }}
 		protected override Tuple<string, string> DescriptionValue { get { return new Tuple<string, string>("Titles.Solokills.DuelMaster", "Titles.Solokills.DuelMaster"); }}
 		protected override Func<DOL.GS.GamePlayer, bool> SuitableMethod { get { return player => (player.KillsAlbionSolo + player.KillsMidgardSolo + player.KillsHiberniaSolo) >= 25000; }}
 	}

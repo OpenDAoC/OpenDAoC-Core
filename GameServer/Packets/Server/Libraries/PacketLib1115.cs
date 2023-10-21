@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using DOL.GS.Keeps;
@@ -47,7 +28,7 @@ namespace DOL.GS.PacketHandler
         public override void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CryptKey)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CryptKey)))
 			{
 				pak.WriteByte((byte)m_gameClient.ClientType);
 
@@ -70,7 +51,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLoginGranted(byte color)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.LoginGranted)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.LoginGranted)))
 			{
 				pak.WritePascalString(m_gameClient.Account.Name);
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
@@ -87,7 +68,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="pak"></param>
 		/// <param name="item"></param>
-		protected override void WriteItemData(GSTCPPacketOut pak, DbInventoryItem item)
+		protected override void WriteItemData(GsTcpPacketOut pak, DbInventoryItem item)
 		{
 			if (item == null)
 			{
@@ -106,7 +87,7 @@ namespace DOL.GS.PacketHandler
 		/// <param name="pak"></param>
 		/// <param name="template"></param>
 		/// <param name="count"></param>
-		protected override void WriteTemplateData(GSTCPPacketOut pak, DbItemTemplate template, int count)
+		protected override void WriteTemplateData(GsTcpPacketOut pak, DbItemTemplate template, int count)
 		{
 			if (template == null)
 			{
@@ -128,7 +109,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.KeepInfo)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.KeepInfo)))
 			{
 				pak.WriteShort((ushort)keep.KeepID);
 				pak.WriteShort(0);
@@ -149,11 +130,11 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.WarMapClaimedKeeps)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.WarMapClaimedKeeps)))
 			{
 				int KeepCount = 0;
 				int TowerCount = 0;
-				foreach (AbstractGameKeep keep in list)
+				foreach (AGameKeep keep in list)
 				{
 					// New Agramon tower are counted as keep
 					if (keep is GameKeep || (keep.KeepID & 0xFF) > 150)
@@ -174,32 +155,32 @@ namespace DOL.GS.PacketHandler
 				{
 					switch (relic.OriginalRealm)
 					{
-						case eRealm.Albion:
-							if (relic.RelicType == eRelicType.Strength)
+						case ERealm.Albion:
+							if (relic.RelicType == ERelicType.Strength)
 							{
 								albStr = (byte)relic.Realm;
 							}
-							if (relic.RelicType == eRelicType.Magic)
+							if (relic.RelicType == ERelicType.Magic)
 							{
 								albMagic = (byte)relic.Realm;
 							}
 							break;
-						case eRealm.Hibernia:
-							if (relic.RelicType == eRelicType.Strength)
+						case ERealm.Hibernia:
+							if (relic.RelicType == ERelicType.Strength)
 							{
 								hibStr = (byte)relic.Realm;
 							}
-							if (relic.RelicType == eRelicType.Magic)
+							if (relic.RelicType == ERelicType.Magic)
 							{
 								hibMagic = (byte)relic.Realm;
 							}
 							break;
-						case eRealm.Midgard:
-							if (relic.RelicType == eRelicType.Strength)
+						case ERealm.Midgard:
+							if (relic.RelicType == ERelicType.Strength)
 							{
 								midStr = (byte)relic.Realm;
 							}
-							if (relic.RelicType == eRelicType.Magic)
+							if (relic.RelicType == ERelicType.Magic)
 							{
 								midMagic = (byte)relic.Realm;
 							}
@@ -212,7 +193,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(albMagic);
 				pak.WriteByte(midMagic);
 				pak.WriteByte(hibMagic);
-				foreach (AbstractGameKeep keep in list)
+				foreach (AGameKeep keep in list)
 				{
 					int keepId = keep.KeepID;
 
@@ -235,20 +216,20 @@ namespace DOL.GS.PacketHandler
 						index = keep.KeepID - 151;
 
 					int flag = (byte)keep.Realm; // 3 bits
-					Guild guild = keep.Guild;
+					GuildUtil guild = keep.Guild;
 					string name = "";
 					// map is now 0 indexed
 					pak.WriteByte((byte)(((map - 1) << 6) | (index << 3) | tower));
 					if (guild != null)
 					{
-						flag |= (byte)eRealmWarmapKeepFlags.Claimed;
+						flag |= (byte)ERealmWarmapKeepFlags.Claimed;
 						name = guild.Name;
 					}
 
 					//Teleport
-					if (m_gameClient.Account.PrivLevel > (int)ePrivLevel.Player)
+					if (m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player)
 					{
-						flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+						flag |= (byte)ERealmWarmapKeepFlags.Teleportable;
 					}
 					else
 					{
@@ -259,7 +240,7 @@ namespace DOL.GS.PacketHandler
 							{
 								if (theKeep.OwnsAllTowers && !theKeep.InCombat)
 								{
-									flag |= (byte)eRealmWarmapKeepFlags.Teleportable;
+									flag |= (byte)ERealmWarmapKeepFlags.Teleportable;
 								}
 							}
 						}
@@ -267,7 +248,7 @@ namespace DOL.GS.PacketHandler
 
 					if (keep.InCombat)
 					{
-						flag |= (byte)eRealmWarmapKeepFlags.UnderSiege;
+						flag |= (byte)ERealmWarmapKeepFlags.UnderSiege;
 					}
 
 					pak.WriteByte((byte)flag);

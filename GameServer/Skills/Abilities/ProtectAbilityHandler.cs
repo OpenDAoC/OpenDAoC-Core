@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Linq;
 using System.Reflection;
 using DOL.GS.PacketHandler;
@@ -25,9 +6,6 @@ using log4net;
 
 namespace DOL.GS.SkillHandler
 {
-	/// <summary>
-	/// Handler for protect ability clicks
-	/// </summary>
 	[SkillHandler(Abilities.Protect)]
 	public class ProtectAbilityHandler : IAbilityActionHandler
 	{
@@ -53,12 +31,12 @@ namespace DOL.GS.SkillHandler
 			GameObject targetObject = player.TargetObject;
 			if (targetObject == null)
 			{
-				foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+				foreach (ProtectEcsAbilityEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == EEffect.Protect))
 				{
 					if (protect.ProtectSource == player)
 						protect.Cancel(false);
 				}
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CancelTargetNull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CancelTargetNull"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 
@@ -66,21 +44,21 @@ namespace DOL.GS.SkillHandler
 			GamePlayer protectTarget = player.TargetObject as GamePlayer;
 			if (protectTarget == player)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.CantProtectYourself"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.CantProtectYourself"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
 			// Only attacks on other players may be protected. 
 			// protect may only be used on other players in group
-			Group group = player.Group;
+			GroupUtil group = player.Group;
 			if (protectTarget == null || group == null || !group.IsInTheGroup(protectTarget))
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.NotInGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.NotInGroup"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
 			// check if someone is protecting the target
-			foreach (ProtectECSGameEffect protect in protectTarget.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+			foreach (ProtectEcsAbilityEffect protect in protectTarget.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == EEffect.Protect))
 			{
 				if (protect.ProtectTarget != protectTarget)
 					continue;
@@ -89,19 +67,19 @@ namespace DOL.GS.SkillHandler
 					protect.Cancel(false);
 					return;
 				}
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.ProtectTargetAlreadyProtectEffect", protect.ProtectSource.GetName(0, true), protect.ProtectTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.ProtectTargetAlreadyProtectEffect", protect.ProtectSource.GetName(0, true), protect.ProtectTarget.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
 			// cancel all guard effects by this player before adding a new one
-			foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+			foreach (ProtectEcsAbilityEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == EEffect.Protect))
 			{
 				if (protect.ProtectSource == player)
 					protect.Cancel(false);
 			}
 
 			//new ProtectEffect().Start(player, protectTarget);
-			new ProtectECSGameEffect(new ECSGameEffectInitParams(player, 0, 1), player, protectTarget);
+			new ProtectEcsAbilityEffect(new EcsGameEffectInitParams(player, 0, 1), player, protectTarget);
 		}
 	}
 }

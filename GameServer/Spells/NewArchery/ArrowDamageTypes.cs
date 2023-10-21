@@ -1,5 +1,3 @@
-//Andraste v2.0 - Vico
-
 namespace DOL.GS.Spells
 {
 	[SpellHandler("ArrowDamageTypes")]

@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -54,10 +35,10 @@ namespace DOL.GS.PacketHandler
 			GamePlayer player = m_gameClient.Player;
 
 			List<Specialization> specs = m_gameClient.Player.GetSpecList().Where(it => it.Trainable).ToList();
-			IList<string> autotrains = player.CharacterClass.GetAutotrainableSkills();
+			IList<string> autotrains = player.PlayerClass.GetAutotrainableSkills();
 
 			// Send Trainer Window with Trainable Specs
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.TrainerWindow)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.TrainerWindow)))
 			{
 				pak.WriteByte((byte)specs.Count);
 				pak.WriteByte((byte)player.SkillSpecialtyPoints);
@@ -76,8 +57,8 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// send RA usable by this class
-			var raList = SkillBase.GetClassRealmAbilities(m_gameClient.Player.CharacterClass.ID).Where(ra => !(ra is RR5RealmAbility));
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.TrainerWindow)))
+			var raList = SkillBase.GetClassRealmAbilities(m_gameClient.Player.PlayerClass.ID).Where(ra => !(ra is Rr5RealmAbility));
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.TrainerWindow)))
 			{
 				pak.WriteByte((byte)raList.Count());
 				pak.WriteByte((byte)player.RealmSpecialtyPoints);
@@ -141,7 +122,7 @@ namespace DOL.GS.PacketHandler
 			int index = 0;
 			for (int skindex = 0; skindex < skillDictCache.Count; skindex++)
 			{
-				using (GSTCPPacketOut pakindex = new GSTCPPacketOut(GetPacketCode(eServerPackets.TrainerWindow)))
+				using (GsTcpPacketOut pakindex = new GsTcpPacketOut(GetPacketCode(EServerPackets.TrainerWindow)))
 				{
 					pakindex.WriteByte((byte)skillDictCache[skindex].Item2.Count); //size
 					pakindex.WriteByte((byte)player.SkillSpecialtyPoints);
@@ -161,7 +142,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Send Skill Secondly
-			using (GSTCPPacketOut pakskill = new GSTCPPacketOut(GetPacketCode(eServerPackets.TrainerWindow)))
+			using (GsTcpPacketOut pakskill = new GsTcpPacketOut(GetPacketCode(EServerPackets.TrainerWindow)))
 			{
 
 				pakskill.WriteByte((byte)skillDictCache.Count); //size we send for all specs
@@ -271,7 +252,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// type 5 (realm abilities)
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.TrainerWindow)))
+			using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.TrainerWindow)))
 			{
 				pak.WriteByte((byte)raList.Count());
 				pak.WriteByte((byte)player.RealmSpecialtyPoints);

@@ -1,29 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Reflection;
 using DOL.Database;
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-    [PacketHandler(PacketHandlerType.TCP, eClientPackets.WorldInitRequest, "Handles world init replies", eClientStatus.LoggedIn)]
+    [PacketHandler(EPacketHandlerType.TCP, EClientPackets.WorldInitRequest, "Handles world init replies", EClientStatus.LoggedIn)]
     public class WorldInitRequestHandler : IPacketHandler
     {
         /// <summary>
@@ -31,7 +12,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        public void HandlePacket(GameClient client, GsPacketIn packet)
         {
             // Instantiate 'GamePlayer'. Previous versions are handled in 'CharacterSelectRequestHandler'.
             if (client.Version >= GameClient.eClientVersion.Version1124)
@@ -44,7 +25,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             new WorldInitAction(client.Player).Start(1);
         }
 
-        private static void HandlePacket1124(GameClient client, GSPacketIn packet)
+        private static void HandlePacket1124(GameClient client, GsPacketIn packet)
         {
             byte charIndex = (byte)packet.ReadByte(); // character account location
 
@@ -73,7 +54,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     client.ActiveCharIndex = -1;
                 }
                 else
-                    AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterLogin, "", selectedChar);
+                    AuditMgr.AddAuditEntry(client, EAuditType.Character, EAuditSubType.CharacterLogin, "", selectedChar);
             }
         }
 
@@ -100,7 +81,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     lock (player.Inventory)
                     {
-                        Guild playerGuild = player.Guild;
+                        GuildUtil playerGuild = player.Guild;
                         foreach (DbInventoryItem myitem in player.Inventory.AllItems)
                         {
                             if (myitem != null && myitem.Emblem != 0)
@@ -111,7 +92,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 }
                                 if (player.Level < 20)
                                 {
-                                    if (player.CraftingPrimarySkill == eCraftingSkill.NoCrafting)
+                                    if (player.CraftingPrimarySkill == ECraftingSkill.NoCrafting)
                                     {
                                         myitem.Emblem = 0;
                                     }
@@ -186,8 +167,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                 //Now find the friends that are online
                 player.Out.SendUpdateMaxSpeed(); // Speed after conc buffs
                 player.Out.SendStatusUpdate();
-                player.Out.SendInventoryItemsUpdate(eInventoryWindowType.Equipment, player.Inventory.EquippedItems);
-                player.Out.SendInventoryItemsUpdate(eInventoryWindowType.Inventory, player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBagHorse));
+                player.Out.SendInventoryItemsUpdate(EInventoryWindowType.Equipment, player.Inventory.EquippedItems);
+                player.Out.SendInventoryItemsUpdate(EInventoryWindowType.Inventory, player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBagHorse));
                 player.Out.SendUpdatePlayerSkills();   //TODO Insert 0xBE - 08 Various in SendUpdatePlayerSkills() before send spells
                 player.Out.SendUpdateCraftingSkills(); // ^
                 player.Out.SendUpdatePlayer();

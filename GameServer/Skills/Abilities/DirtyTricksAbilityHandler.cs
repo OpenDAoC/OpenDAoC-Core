@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -27,9 +8,6 @@ using log4net;
 
 namespace DOL.GS.SkillHandler
 {
-	/// <summary>
-	/// Handler for Sprint Ability clicks
-	/// </summary>
 	[SkillHandler(Abilities.DirtyTricks)]
 	public class DirtyTricksAbilityHandler : IAbilityActionHandler
 	{
@@ -63,28 +41,28 @@ namespace DOL.GS.SkillHandler
 
 			if (!player.IsAlive)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseDead"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseDead"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
                 return;
 			}
 
 			if (player.IsMezzed)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseMezzed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseMezzed"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (player.IsStunned)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStunned"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStunned"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 			if (player.IsSitting)
 			{
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStanding"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseStanding"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;
 			}
 
 			player.DisableSkill(ab, REUSE_TIMER);
-			new DirtyTricksECSGameEffect(new ECSGameEffectInitParams(player, DURATION * 1000, 1));
+			new DirtyTricksEcsAbilityEffect(new EcsGameEffectInitParams(player, DURATION * 1000, 1));
 		}
 	}
 }
@@ -114,20 +92,20 @@ namespace DOL.GS.Effects
 			//	    p.Out.SendSpellEffectAnimation(player, player, Icon, 0, false, 1);
 			//	    p.Out.SendSpellCastAnimation(player, Icon, 0);
 			//   }
-			GameEventMgr.AddHandler(player, GameLivingEvent.AttackFinished, new DOLEventHandler(EventHandler));
+			GameEventMgr.AddHandler(player, GameLivingEvent.AttackFinished, new CoreEventHandler(EventHandler));
 		}
 		public override void Stop()
 		{
 			base.Stop();
 			GamePlayer player = Owner as GamePlayer;
-			GameEventMgr.RemoveHandler(player, GameLivingEvent.AttackFinished, new DOLEventHandler(EventHandler));
+			GameEventMgr.RemoveHandler(player, GameLivingEvent.AttackFinished, new CoreEventHandler(EventHandler));
 		}
-		protected void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+		protected void EventHandler(CoreEvent e, object sender, EventArgs arguments)
 		{
 			AttackFinishedEventArgs atkArgs = arguments as AttackFinishedEventArgs;
 			if (atkArgs == null) return;
-			if (atkArgs.AttackData.AttackResult != eAttackResult.HitUnstyled
-				&& atkArgs.AttackData.AttackResult != eAttackResult.HitStyle) return;
+			if (atkArgs.AttackData.AttackResult != EAttackResult.HitUnstyled
+				&& atkArgs.AttackData.AttackResult != EAttackResult.HitStyle) return;
 			if (atkArgs.AttackData.Target == null) return;
 			GameLiving target = atkArgs.AttackData.Target;
 			if (target == null) return;
@@ -190,7 +168,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// The timer that will cancel the effect
 		/// </summary>
-		protected ECSGameTimer m_expireTimer;
+		protected EcsGameTimer m_expireTimer;
 
 		/// <summary>
 		/// Creates a new berserk effect
@@ -208,13 +186,13 @@ namespace DOL.GS.Effects
 			//    Log.Debug("Effect Started from DT detrimental effect on " + m_player.Name);
 			StartTimers(); // start the timers before adding to the list!
 			m_player.EffectList.Add(this);
-			m_player.DebuffCategory[(int)eProperty.FumbleChance] += 50;
+			m_player.DebuffCategory[(int)EProperty.FumbleChance] += 50;
 			//  foreach (GamePlayer visiblePlayer in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			//  {
 			//  }
 			GamePlayer player = living as GamePlayer;
 			if (player != null)
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.DirtyTricks.EffectStart"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.DirtyTricks.EffectStart"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>
@@ -227,10 +205,10 @@ namespace DOL.GS.Effects
 			//  Log.Debug("Effect Canceled from DT Detrimental effect on "+ m_player.Name);
 			StopTimers();
 			m_player.EffectList.Remove(this);
-			m_player.DebuffCategory[(int)eProperty.FumbleChance] -= 50;
+			m_player.DebuffCategory[(int)EProperty.FumbleChance] -= 50;
 			GamePlayer player = m_player as GamePlayer;
 			if (player != null)
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.DirtyTricks.EffectCancel"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.DirtyTricks.EffectCancel"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>
@@ -239,7 +217,7 @@ namespace DOL.GS.Effects
 		protected virtual void StartTimers()
 		{
 			StopTimers();
-			m_expireTimer = new ECSGameTimer(m_player, new ECSGameTimer.ECSTimerCallback(ExpiredCallback), 10000);
+			m_expireTimer = new EcsGameTimer(m_player, new EcsGameTimer.EcsTimerCallback(ExpiredCallback), 10000);
 		}
 
 		/// <summary>
@@ -260,7 +238,7 @@ namespace DOL.GS.Effects
 		/// </summary>
 		/// <param name="callingTimer">the regiontimer of the effect</param>
 		/// <returns>the new intervall (0) </returns>
-		protected virtual int ExpiredCallback(ECSGameTimer callingTimer)
+		protected virtual int ExpiredCallback(EcsGameTimer callingTimer)
 		{
 			Cancel(false);
 			return 0;
@@ -289,7 +267,7 @@ namespace DOL.GS.Effects
 		{
 			get
 			{
-				ECSGameTimer timer = m_expireTimer;
+				EcsGameTimer timer = m_expireTimer;
 				if (timer == null || !timer.IsAlive)
 					return 0;
 				return timer.TimeUntilElapsed;

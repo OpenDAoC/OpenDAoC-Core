@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Events;
@@ -32,8 +13,8 @@ namespace DOL.GS.Quests.Requirements
 	/// Level of player, Step of Quest, Class of Player, etc... There are also some variables to add
 	/// additional parameters. To fire a QuestAction ALL requirements must be fulfilled.         
 	/// </summary>
-    [Requirement(RequirementType=eRequirementType.QuestStep)]
-	public class QuestStepRequirement : AbstractRequirement<Type,int>
+    [Requirement(RequirementType=ERequirementType.QuestStep)]
+	public class QuestStepRequirement : ARequirement<Type,int>
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -44,8 +25,8 @@ namespace DOL.GS.Quests.Requirements
 		/// <param name="n"></param>
 		/// <param name="v"></param>
 		/// <param name="comp"></param>
-        public QuestStepRequirement(GameNPC defaultNPC, Object n, Object v, eComparator comp)
-            : base(defaultNPC, eRequirementType.QuestStep, n, v, comp)
+        public QuestStepRequirement(GameNpc defaultNPC, Object n, Object v, EComparator comp)
+            : base(defaultNPC, ERequirementType.QuestStep, n, v, comp)
 		{   			
 		}
 
@@ -56,7 +37,7 @@ namespace DOL.GS.Quests.Requirements
         /// <param name="questType"></param>
         /// <param name="v"></param>
         /// <param name="comp"></param>
-        public QuestStepRequirement(GameNPC defaultNPC, Type questType,int v, eComparator comp)
+        public QuestStepRequirement(GameNpc defaultNPC, Type questType,int v, EComparator comp)
             : this(defaultNPC, (object)questType, (object)v, comp)
 		{   			
 		}
@@ -68,12 +49,12 @@ namespace DOL.GS.Quests.Requirements
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
 		/// <returns></returns>
-		public override bool Check(DOLEvent e, object sender, EventArgs args)
+		public override bool Check(CoreEvent e, object sender, EventArgs args)
 		{
 			bool result = true;
-            GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
+            GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
             
-            AbstractQuest playerQuest = player.IsDoingQuest(N);
+            AQuest playerQuest = player.IsDoingQuest(N);
             if (playerQuest != null)
             {
                 result &= compare(playerQuest.Step, V, Comparator);
@@ -85,7 +66,5 @@ namespace DOL.GS.Quests.Requirements
 
 			return result;
 		}
-
-		
     }
 }

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
@@ -25,7 +6,6 @@ using DOL.Database;
 namespace DOL.GS
 {
 	/// <summary>
-	/// LootGeneratorMobTemplate
 	/// This implementation uses LootTemplates to relate loots to a specific mob type.
 	/// Used DB Tables: 
 	///				MobDropTemplate  (Relation between Mob and loottemplate
@@ -169,7 +149,7 @@ namespace DOL.GS
 		/// Reload the loot templates for this mob
 		/// </summary>
 		/// <param name="mob"></param>
-		public override void Refresh(GameNPC mob)
+		public override void Refresh(GameNpc mob)
 		{
 			if (mob == null)
 				return;
@@ -177,7 +157,7 @@ namespace DOL.GS
 			bool isDefaultLootTemplateRefreshed = false;
 
 			// First see if there are any MobXLootTemplates associated with this mob
-			IList<DbMobDropTemplate> mxlts = DOLDB<DbMobDropTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name));
+			IList<DbMobDropTemplate> mxlts = CoreDb<DbMobDropTemplate>.SelectObjects(DB.Column("MobName").IsEqualTo(mob.Name));
 
 			if (mxlts != null)
 			{
@@ -211,7 +191,7 @@ namespace DOL.GS
 
 		protected void RefreshLootTemplate(string templateName)
 		{
-			var lootTemplates = DOLDB<DbDropTemplateXItemTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(templateName));
+			var lootTemplates = CoreDb<DbDropTemplateXItemTemplate>.SelectObjects(DB.Column("TemplateName").IsEqualTo(templateName));
 
 			if (lootTemplates != null)
 			{
@@ -233,15 +213,15 @@ namespace DOL.GS
 			}
 		}
 
-		public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+		public override LootList GenerateLoot(GameNpc mob, GameObject killer)
 		{
 			LootList loot = base.GenerateLoot(mob, killer);
 
 			try
 			{
 				GamePlayer player = killer as GamePlayer;
-				if (killer is GameNPC && ((GameNPC)killer).Brain is IControlledBrain)
-					player = ((ControlledNpcBrain)((GameNPC)killer).Brain).GetPlayerOwner();
+				if (killer is GameNpc && ((GameNpc)killer).Brain is IControlledBrain)
+					player = ((ControlledNpcBrain)((GameNpc)killer).Brain).GetPlayerOwner();
 				if (player == null)
 					return loot;
 

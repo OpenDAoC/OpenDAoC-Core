@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Reflection;
@@ -157,7 +138,7 @@ namespace DOL.GS
 			get { return false; }
 			set 
 			{
-				m_owner.Out.SendMessage("You cannot repair while self-crafting!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				m_owner.Out.SendMessage("You cannot repair while self-crafting!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -169,7 +150,7 @@ namespace DOL.GS
 			get { return true; }
 			set 
 			{
-				m_owner.Out.SendMessage("Combine flag is autoset while self-crafting!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				m_owner.Out.SendMessage("Combine flag is autoset while self-crafting!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			}
 		}
 
@@ -252,24 +233,24 @@ namespace DOL.GS
                 // Luhz Crafting Update:
                 // Players may now have any, and all, "primary" crafting skills.
                 // AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(m_owner.CraftingPrimarySkill);
-                AbstractCraftingSkill skill = null;
+                ACraftingSkill skill = null;
                 lock (m_owner.TradeWindow.Sync)
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
-                        if (i.Object_Type == (int)eObjectType.AlchemyTincture)
+                        if (i.Object_Type == (int)EObjectType.AlchemyTincture)
                         {
-                            if (m_owner.GetCraftingSkillValue(eCraftingSkill.Alchemy) > 0)
+                            if (m_owner.GetCraftingSkillValue(ECraftingSkill.Alchemy) > 0)
                             {
-                                skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.Alchemy);
+                                skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.Alchemy);
                                 break;
                             }
                         }
-                        else if (i.Object_Type == (int)eObjectType.SpellcraftGem)
+                        else if (i.Object_Type == (int)EObjectType.SpellcraftGem)
                         {
-                            if (m_owner.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) > 0)
+                            if (m_owner.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) > 0)
                             {
-                                skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.SpellCrafting);
+                                skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.SpellCrafting);
                                 break;
                             }
                         }
@@ -280,8 +261,8 @@ namespace DOL.GS
 				{
 					if(((AdvancedCraftingSkill)skill).IsAllowedToCombine(m_owner, itemToCombine))
 					{
-						if(skill is SpellCrafting)
-							((SpellCrafting)skill).ShowSpellCraftingInfos(m_owner, itemToCombine);
+						if(skill is Spellcrafting)
+							((Spellcrafting)skill).ShowSpellCraftingInfos(m_owner, itemToCombine);
 					}
 				}
 
@@ -306,24 +287,24 @@ namespace DOL.GS
                 // Luhz Crafting Update:
                 // Players may now have any, and all, "primary" crafting skills.
                 // AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(m_owner.CraftingPrimarySkill);
-                AbstractCraftingSkill skill = null;
+                ACraftingSkill skill = null;
                 lock (m_owner.TradeWindow.Sync)
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
-                        if (i.Object_Type == (int)eObjectType.AlchemyTincture)
+                        if (i.Object_Type == (int)EObjectType.AlchemyTincture)
                         {
-                            if (m_owner.GetCraftingSkillValue(eCraftingSkill.Alchemy) > 0)
+                            if (m_owner.GetCraftingSkillValue(ECraftingSkill.Alchemy) > 0)
                             {
-                                skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.Alchemy);
+                                skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.Alchemy);
                                 break;
                             }
                         }
-                        else if (i.Object_Type == (int)eObjectType.SpellcraftGem)
+                        else if (i.Object_Type == (int)EObjectType.SpellcraftGem)
                         {
-                            if (m_owner.GetCraftingSkillValue(eCraftingSkill.SpellCrafting) > 0)
+                            if (m_owner.GetCraftingSkillValue(ECraftingSkill.SpellCrafting) > 0)
                             {
-                                skill = CraftingMgr.getSkillbyEnum(eCraftingSkill.SpellCrafting);
+                                skill = CraftingMgr.getSkillbyEnum(ECraftingSkill.SpellCrafting);
                                 break;
                             }
                         }

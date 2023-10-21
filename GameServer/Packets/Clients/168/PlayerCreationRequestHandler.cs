@@ -3,7 +3,7 @@ using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-    [PacketHandler(PacketHandlerType.TCP, eClientPackets.CreatePlayerRequest, "Handles requests for players(0x7C) in game", eClientStatus.PlayerInGame)]
+    [PacketHandler(EPacketHandlerType.TCP, EClientPackets.CreatePlayerRequest, "Handles requests for players(0x7C) in game", EClientStatus.PlayerInGame)]
     public class PlayerCreationRequestHandler : IPacketHandler
     {
         /// <summary>
@@ -11,7 +11,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// </summary>
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        public void HandlePacket(GameClient client, GsPacketIn packet)
         {
             ushort id = client.Version >= GameClient.eClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
             GameClient target = ClientService.GetClientFromId(id);

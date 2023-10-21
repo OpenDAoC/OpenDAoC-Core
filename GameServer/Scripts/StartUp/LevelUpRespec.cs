@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Reflection;
 using DOL.Events;
@@ -39,22 +20,22 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// What levels did we allow a DOL respec ? serialized
 		/// </summary>
-		[ServerProperty("startup", "give_dol_respec_at_level", "What levels does we give a DOL respec ? separated by a semi-colon or a range with a dash (ie 1-5;7;9)", "0")]
+		[Properties("startup", "give_dol_respec_at_level", "What levels does we give a DOL respec ? separated by a semi-colon or a range with a dash (ie 1-5;7;9)", "0")]
 		public static string GIVE_DOL_RESPEC_AT_LEVEL;
 		
 		[ScriptLoadedEvent]
-		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.AddHandler(GamePlayerEvent.LevelUp, new DOLEventHandler(OnLevelUp));
+			GameEventMgr.AddHandler(GamePlayerEvent.LevelUp, new CoreEventHandler(OnLevelUp));
 			
 			if (log.IsInfoEnabled)
 				log.Info("Level Up Respec Gift initialized");
 		}
 
 		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
+		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
-			GameEventMgr.RemoveHandler(GamePlayerEvent.LevelUp, new DOLEventHandler(OnLevelUp));
+			GameEventMgr.RemoveHandler(GamePlayerEvent.LevelUp, new CoreEventHandler(OnLevelUp));
 		}
 		
 		/// <summary>
@@ -63,7 +44,7 @@ namespace DOL.GS.GameEvents
 		/// <param name="e"></param>
 		/// <param name="sender"></param>
 		/// <param name="args"></param>
-		public static void OnLevelUp(DOLEvent e, object sender, EventArgs args)
+		public static void OnLevelUp(CoreEvent e, object sender, EventArgs args)
 		{
 			var player = sender as GamePlayer;
 			
@@ -85,7 +66,7 @@ namespace DOL.GS.GameEvents
 
                     if (oldAmount != player.RespecAmountDOL)
                     {
-                        player.Out.SendMessage(string.Format("As you reached level {0}, you are awarded a DOL (full) respec!", player.Level), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(string.Format("As you reached level {0}, you are awarded a DOL (full) respec!", player.Level), EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                     }
                 }
 			}

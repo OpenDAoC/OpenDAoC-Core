@@ -1,31 +1,12 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.LookingForGroup, "handle Looking for a group", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.LookingForGroup, "handle Looking for a group", EClientStatus.PlayerInGame)]
 	public class LookingForAGroupHandler : IPacketHandler
 	{
 		//rewritten by Corillian so if it doesn't work you know who to yell at ;)
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			byte grouped = (byte)packet.ReadByte();
 			ArrayList list = new ArrayList();
@@ -34,7 +15,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				var groups = GroupMgr.ListGroupByStatus(0x00);
 				if (groups != null)
 				{
-					foreach (Group group in groups)
+					foreach (GroupUtil group in groups)
 						if (GameServer.ServerRules.IsAllowedToGroup(group.Leader, client.Player, true))
 						{
 							list.Add(group.Leader);

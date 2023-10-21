@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Reflection;
 using DOL.GS.Housing;
 using DOL.GS.PlayerTitles;
@@ -46,7 +27,7 @@ namespace DOL.GS.PacketHandler
 			if (player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x03); //subcode
 				pak.WriteByte(0x0f); //number of entry
@@ -57,18 +38,18 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(player.GetDisplayLevel(m_gameClient.Player)); //level
 				pak.WritePascalString(player.Name); // player name
 				pak.WriteByte((byte)(player.MaxHealth >> 8)); // maxhealth high byte ?
-				pak.WritePascalString(player.CharacterClass.Name); // class name
+				pak.WritePascalString(player.PlayerClass.Name); // class name
 				pak.WriteByte((byte)(player.MaxHealth & 0xFF)); // maxhealth low byte ?
-				pak.WritePascalString( /*"The "+*/player.CharacterClass.Profession); // Profession
+				pak.WritePascalString( /*"The "+*/player.PlayerClass.Profession); // Profession
 				pak.WriteByte(0x00); //unk
-				pak.WritePascalString(player.CharacterClass.GetTitle(player, player.Level)); // player level
+				pak.WritePascalString(player.PlayerClass.GetTitle(player, player.Level)); // player level
 																							 //todo make function to calcule realm rank
 																							 //client.Player.RealmPoints
 																							 //todo i think it s realmpoint percent not realrank
 				pak.WriteByte((byte)player.RealmLevel); //urealm rank
 				pak.WritePascalString(player.RealmRankTitle(player.Client.Account.Language)); // Realm title
 				pak.WriteByte((byte)player.RealmSpecialtyPoints); // realm skill points
-				pak.WritePascalString(player.CharacterClass.BaseName); // base class
+				pak.WritePascalString(player.PlayerClass.BaseName); // base class
 				pak.WriteByte((byte)(HouseMgr.GetHouseNumberByPlayer(player) >> 8)); // personal house high byte
 				pak.WritePascalString(player.GuildName); // Guild name
 				pak.WriteByte((byte)(HouseMgr.GetHouseNumberByPlayer(player) & 0xFF)); // personal house low byte
@@ -83,7 +64,7 @@ namespace DOL.GS.PacketHandler
 					pak.WritePascalString("");
 				pak.WriteByte(0x0);
 
-				AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(player.CraftingPrimarySkill);
+				ACraftingSkill skill = CraftingMgr.getSkillbyEnum(player.CraftingPrimarySkill);
 				if (skill != null)
 					pak.WritePascalString(skill.Name); //crafter guilde: alchemist
 				else
@@ -115,7 +96,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterPointsUpdate)))
+			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CharacterPointsUpdate)))
 			{
 				pak.WriteInt((uint)m_gameClient.Player.RealmPoints);
 				pak.WriteShort(m_gameClient.Player.LevelPermill);

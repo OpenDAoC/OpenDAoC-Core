@@ -11,7 +11,7 @@ namespace DOL.GS
     public class SubZone
     {
         public Zone ParentZone { get; private set; }
-        private ConcurrentLinkedList<GameObject>[] _objects = new ConcurrentLinkedList<GameObject>[Enum.GetValues(typeof(eGameObjectType)).Length];
+        private ConcurrentLinkedList<GameObject>[] _objects = new ConcurrentLinkedList<GameObject>[Enum.GetValues(typeof(EGameObjectType)).Length];
 
         public SubZone(Zone parentZone)
         {
@@ -31,7 +31,7 @@ namespace DOL.GS
             _objects[(byte) node.Value.GameObjectType].Remove(node);
         }
 
-        public ConcurrentLinkedList<GameObject> GetObjects(eGameObjectType objectType)
+        public ConcurrentLinkedList<GameObject> GetObjects(EGameObjectType objectType)
         {
             return _objects[(byte) objectType];
         }

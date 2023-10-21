@@ -1,38 +1,16 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// GameDoor is class for regular doors.
-    /// </summary>
     public class GameDoor : GameDoorBase
     {
         private const int STAYS_OPEN_DURATION = 5000;
         private const int REPAIR_INTERVAL = 30 * 1000;
 
         private bool _openDead = false;
-        private eDoorState _state;
+        private EDoorState _state;
         private object _lock = new();
         private AuxECSGameTimer _closeDoorAction;
         private AuxECSGameTimer _repairTimer;
@@ -40,7 +18,7 @@ namespace DOL.GS
         public int Locked { get; set; }
         public override int DoorID { get; set; }
         public override uint Flag { get; set; }
-        public override eDoorState State
+        public override EDoorState State
         {
             get => _state;
             set
@@ -60,7 +38,7 @@ namespace DOL.GS
 
         public GameDoor() : base()
         {
-            _state = eDoorState.Closed;
+            _state = EDoorState.Closed;
             m_model = 0xFFFF;
         }
 
@@ -88,7 +66,7 @@ namespace DOL.GS
             m_model = 0xFFFF;
             DoorID = dbDoor.InternalID;
             m_guildName = dbDoor.Guild;
-            Realm = (eRealm) dbDoor.Realm;
+            Realm = (ERealm) dbDoor.Realm;
             m_level = dbDoor.Level;
             m_health = dbDoor.Health;
             Locked = dbDoor.Locked;
@@ -96,7 +74,7 @@ namespace DOL.GS
 
             // Open mile gates on PVE and PVP server types.
             if (CurrentRegion.IsFrontier && (GameServer.Instance.Configuration.ServerType is EGameServerType.GST_PvE or EGameServerType.GST_PvP))
-                State = eDoorState.Open;
+                State = EDoorState.Open;
 
             AddToWorld();
             StartHealthRegeneration();
@@ -134,7 +112,7 @@ namespace DOL.GS
         public override void Open(GameLiving opener = null)
         {
             if (Locked == 0)
-                State = eDoorState.Open;
+                State = EDoorState.Open;
 
             if (HealthPercent > 40 || !_openDead)
             {
@@ -151,19 +129,19 @@ namespace DOL.GS
         public override void Close(GameLiving closer = null)
         {
             if (!_openDead)
-                State = eDoorState.Closed;
+                State = EDoorState.Closed;
 
             _closeDoorAction?.Stop();
             _closeDoorAction = null;
         }
 
-        public override void NPCManipulateDoorRequest(GameNPC npc, bool open)
+        public override void NPCManipulateDoorRequest(GameNpc npc, bool open)
         {
             npc.TurnTo(X, Y);
 
-            if (open && _state != eDoorState.Open)
+            if (open && _state != EDoorState.Open)
                 Open();
-            else if (!open && _state != eDoorState.Closed)
+            else if (!open && _state != EDoorState.Closed)
                 Close();
         }
 
@@ -191,7 +169,7 @@ namespace DOL.GS
             }
         }
 
-        public override int MaxHealth => 5 * GetModified(eProperty.MaxHealth);
+        public override int MaxHealth => 5 * GetModified(EProperty.MaxHealth);
 
         public override void Die(GameObject killer)
         {
@@ -233,9 +211,9 @@ namespace DOL.GS
             return REPAIR_INTERVAL;
         }
 
-        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if (!_openDead && Realm != eRealm.Door)
+            if (!_openDead && Realm != ERealm.Door)
             {
                 base.TakeDamage(source, damageType, damageAmount, criticalAmount);
             }
@@ -244,26 +222,26 @@ namespace DOL.GS
 
             if (attackerPlayer != null)
             {
-                if (!_openDead && Realm != eRealm.Door)
+                if (!_openDead && Realm != ERealm.Door)
                 {
-                    attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     Health -= damageAmount + criticalAmount;
 
                     if (!IsAlive)
                     {
-                        attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        attackerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         Die(source);
                         _openDead = true;
 
                         if (Locked == 0)
                             Open();
 
-                        Group attackerGroup = attackerPlayer.Group;
+                        GroupUtil attackerGroup = attackerPlayer.Group;
 
                         if (attackerGroup != null)
                         {
                             foreach (GameLiving living in attackerGroup.GetMembersInTheGroup())
-                                ((GamePlayer) living)?.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                ((GamePlayer) living)?.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                         }
                     }
                 }

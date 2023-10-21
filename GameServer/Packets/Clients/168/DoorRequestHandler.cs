@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Keeps;
@@ -25,7 +6,7 @@ using DOL.Language;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandler(PacketHandlerType.TCP, eClientPackets.DoorRequest, "Door Interact Request Handler", eClientStatus.PlayerInGame)]
+	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.DoorRequest, "Door Interact Request Handler", EClientStatus.PlayerInGame)]
 	public class DoorRequestHandler : IPacketHandler
 	{
 		public static int m_handlerDoorID;
@@ -33,7 +14,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// door index which is unique
 		/// </summary>
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			var doorID = (int) packet.ReadInt();
 			m_handlerDoorID = doorID;
@@ -46,7 +27,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			string debugText = "";
 
 			// For ToA the client always sends the same ID so we need to construct an id using the current zone
-			if (client.Player.CurrentRegion.Expansion == (int)eClientExpansion.TrialsOfAtlantis)
+			if (client.Player.CurrentRegion.Expansion == (int)EClientExpansion.TrialsOfAtlantis)
 			{
 				debugText = $"ToA DoorID:{doorID} ";
 
@@ -95,11 +76,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			if (client.Player.TargetObject is GameDoor && !client.Player.IsWithinRadius(client.Player.TargetObject, radius))
 			{
-				client.Player.Out.SendMessage("You are too far to open this door", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				client.Player.Out.SendMessage("You are too far to open this door", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
-			var door = DOLDB<DbDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(doorID));
+			var door = CoreDb<DbDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(doorID));
 			if (door != null)
 			{
 				if (doorType == 7 || doorType == 9)
@@ -129,7 +110,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						}
 						else
 						{
-							if (client.Player.Realm == (eRealm) door.Realm || door.Realm == 6)
+							if (client.Player.Realm == (ERealm) door.Realm || door.Realm == 6)
 							{
 								new ChangeDoorAction(client.Player, doorID, doorState, radius).Start(1);
 								return;
@@ -159,7 +140,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						client.Player.Out.SendMessage(
 							"This door is not in the database. Use '/door show' to enable the add door dialog when targeting doors.",
-							eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 					}
 				}
 
@@ -177,7 +158,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			int doorType = m_handlerDoorID/100000000;
 			if (doorType == 7)
 			{
-				PositionMgr.CreateDoor(m_handlerDoorID, player);
+				GuardPositionMgr.CreateDoor(m_handlerDoorID, player);
 			}
 			else
 			{
@@ -194,8 +175,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 				door.Heading = player.Heading;
 				GameServer.Database.AddObject(door);
 
-				player.Out.SendMessage("Added door " + m_handlerDoorID + " to the database!", eChatType.CT_Important,
-				                       eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Added door " + m_handlerDoorID + " to the database!", EChatType.CT_Important,
+				                       EChatLoc.CL_SystemWindow);
 				GameServer.Database.SaveObject(door);
 				DoorMgr.Init();
 			}
@@ -204,7 +185,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles the door state change actions
 		/// </summary>
-		protected class ChangeDoorAction : ECSGameTimerWrapperBase
+		protected class ChangeDoorAction : EcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The target door Id
@@ -238,7 +219,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
+			protected override int OnTick(EcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 				List<GameDoorBase> doorList = DoorMgr.getDoorByID(m_doorId);
@@ -274,7 +255,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					if (!success)
 						player.Out.SendMessage(
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", doorList[0].Name),
-							eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				}
 				else
 				{
@@ -299,7 +280,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					door.X = player.X;
 					door.Y = player.Y;
 					door.Z = player.Z;
-					door.Realm = eRealm.Door;
+					door.Realm = ERealm.Door;
 					door.CurrentRegion = player.CurrentRegion;
 					
 					if (player.IsWithinRadius(door, m_radius))
@@ -310,7 +291,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						player.Out.SendMessage(
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "DoorRequestHandler.OnTick.TooFarAway", doorList[0].Name),
-							eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							EChatType.CT_System, EChatLoc.CL_SystemWindow);
 					}
 				}
 

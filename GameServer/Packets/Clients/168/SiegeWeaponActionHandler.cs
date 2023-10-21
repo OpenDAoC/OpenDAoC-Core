@@ -1,31 +1,12 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 namespace DOL.GS.PacketHandler.Client.v168
 {
 	/// <summary>
 	///SiegeWeaponActionHandler handler the command of player to control siege weapon
 	/// </summary>
-	[PacketHandler(PacketHandlerType.TCP, 0xf5, "Handles Siege command Request")]
+	[PacketHandler(EPacketHandlerType.TCP, 0xf5, "Handles Siege command Request")]
 	public class SiegeWeaponActionHandler : IPacketHandler
 	{
-		public void HandlePacket(GameClient client, GSPacketIn packet)
+		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			packet.ReadShort(); // unk
 			int action = packet.ReadByte();
@@ -34,22 +15,22 @@ namespace DOL.GS.PacketHandler.Client.v168
 				return;
 			if (client.Player.IsStealthed)
 			{
-				client.Out.SendMessage("You can't control a siege weapon while hidden!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("You can't control a siege weapon while hidden!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			if (client.Player.IsSitting)
 			{
-				client.Out.SendMessage("You can't fire a siege weapon while sitting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("You can't fire a siege weapon while sitting!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 			if (!client.Player.IsAlive || client.Player.IsMezzed || client.Player.IsStunned)
 			{
-				client.Out.SendMessage("You can't control a siege weapon now!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("You can't control a siege weapon now!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
             if( !client.Player.IsWithinRadius( client.Player.SiegeWeapon, client.Player.SiegeWeapon.SIEGE_WEAPON_CONTROLE_DISTANCE ) )
 			{
-				client.Out.SendMessage(client.Player.SiegeWeapon.GetName(0, true) + " is too far away for you to control!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(client.Player.SiegeWeapon.GetName(0, true) + " is too far away for you to control!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -68,7 +49,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				case 10: { client.Player.SiegeWeapon.Fire(); } break;//swing
 				default:
 					{
-						client.Player.Out.SendMessage("Unhandled action ID: " + action, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						client.Player.Out.SendMessage("Unhandled action ID: " + action, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						break;
 					}
 			}

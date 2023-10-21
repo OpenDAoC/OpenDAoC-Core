@@ -15,9 +15,9 @@ namespace DOL.GS.Keeps
         private List<DbKeepDoorTeleport> m_destinationsIn = new List<DbKeepDoorTeleport>();
         private const string type = "GateKeeperIn";
 
-        public override eFlags Flags
+        public override ENpcFlags Flags
         {
-            get { return eFlags.PEACE; }
+            get { return ENpcFlags.PEACE; }
         }
 
         public override bool AddToWorld()
@@ -117,7 +117,7 @@ namespace DOL.GS.Keeps
                 if (spell != null)
                 {
                     TargetObject = player;
-                    UniPortalKeep portalHandler = new UniPortalKeep(this, spell, spellLine, destination);
+                    UniPortalKeepSpell portalHandler = new UniPortalKeepSpell(this, spell, spellLine, destination);
                     portalHandler.StartSpell(player);
 
                 }
@@ -127,7 +127,7 @@ namespace DOL.GS.Keeps
                 if (delayedSpell != null)
                 {
                     TargetObject = player;
-                    UniPortalKeep portalHandler = new UniPortalKeep(this, delayedSpell, spellLine, destination);
+                    UniPortalKeepSpell portalHandler = new UniPortalKeepSpell(this, delayedSpell, spellLine, destination);
                     portalHandler.StartSpell(player);
 
                 }
@@ -140,7 +140,7 @@ namespace DOL.GS.Keeps
         /// <param name="target"></param>
         /// <param name="loc">chat location of the message</param>
         /// <param name="message"></param>
-        public override void SayTo(GamePlayer target, eChatLoc loc, string message, bool announce = true)
+        public override void SayTo(GamePlayer target, EChatLoc loc, string message, bool announce = true)
         {
             if (target == null)
                 return;
@@ -148,18 +148,18 @@ namespace DOL.GS.Keeps
             string resultText = LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.Says", GetName(0, true), message);
             switch (loc)
             {
-                case eChatLoc.CL_PopupWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                case EChatLoc.CL_PopupWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_System, EChatLoc.CL_PopupWindow);
                     if (announce)
                     {
-                        Message.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
+                        MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), EChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
                     }
                     break;
-                case eChatLoc.CL_ChatWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                case EChatLoc.CL_ChatWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                     break;
-                case eChatLoc.CL_SystemWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                case EChatLoc.CL_SystemWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
             }
         }
@@ -207,9 +207,9 @@ namespace DOL.GS.Keeps
         private List<DbKeepDoorTeleport> m_destinationsOut = new List<DbKeepDoorTeleport>();
         private const string type = "GateKeeperOut";
 
-        public override eFlags Flags
+        public override ENpcFlags Flags
         {
-            get { return eFlags.PEACE; }
+            get { return ENpcFlags.PEACE; }
         }
 
         public override bool AddToWorld()
@@ -310,7 +310,7 @@ namespace DOL.GS.Keeps
                 if (spell != null)
                 {
                     TargetObject = player;
-                    UniPortalKeep portalHandler = new UniPortalKeep(this, spell, spellLine, destination);
+                    UniPortalKeepSpell portalHandler = new UniPortalKeepSpell(this, spell, spellLine, destination);
                     portalHandler.StartSpell(player);
 
                     return;
@@ -321,7 +321,7 @@ namespace DOL.GS.Keeps
                 if (delayedSpell != null)
                 {
                     TargetObject = player;
-                    UniPortalKeep portalHandler = new UniPortalKeep(this, delayedSpell, spellLine, destination);
+                    UniPortalKeepSpell portalHandler = new UniPortalKeepSpell(this, delayedSpell, spellLine, destination);
                     portalHandler.StartSpell(player);
 
                     return;
@@ -335,7 +335,7 @@ namespace DOL.GS.Keeps
         /// <param name="target"></param>
         /// <param name="loc">chat location of the message</param>
         /// <param name="message"></param>
-        public override void SayTo(GamePlayer target, eChatLoc loc, string message, bool announce = true)
+        public override void SayTo(GamePlayer target, EChatLoc loc, string message, bool announce = true)
         {
             if (target == null)
                 return;
@@ -343,18 +343,18 @@ namespace DOL.GS.Keeps
             string resultText = LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.Says", GetName(0, true), message);
             switch (loc)
             {
-                case eChatLoc.CL_PopupWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                case EChatLoc.CL_PopupWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_System, EChatLoc.CL_PopupWindow);
                     if (announce)
                     {
-                        Message.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), eChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
+                        MessageUtil.ChatToArea(this, LanguageMgr.GetTranslation(target.Client.Account.Language, "GameNPC.SayTo.SpeaksTo", GetName(0, true), target.GetName(0, false)), EChatType.CT_System, WorldMgr.SAY_DISTANCE, target);
                     }
                     break;
-                case eChatLoc.CL_ChatWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                case EChatLoc.CL_ChatWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_Say, EChatLoc.CL_ChatWindow);
                     break;
-                case eChatLoc.CL_SystemWindow:
-                    target.Out.SendMessage(resultText, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                case EChatLoc.CL_SystemWindow:
+                    target.Out.SendMessage(resultText, EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     break;
             }
         }

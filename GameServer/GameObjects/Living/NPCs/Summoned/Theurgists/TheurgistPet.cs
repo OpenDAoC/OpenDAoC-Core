@@ -1,21 +1,20 @@
 using DOL.Database;
 
-namespace DOL.GS
+namespace DOL.GS;
+
+public class TheurgistPet : GameSummonedPet
 {
-	public class TheurgistPet : GameSummonedPet
+	public TheurgistPet(INpcTemplate npcTemplate) : base(npcTemplate) { }
+
+	protected override void BuildAmbientTexts()
 	{
-		public TheurgistPet(INpcTemplate npcTemplate) : base(npcTemplate) { }
+		base.BuildAmbientTexts();
 
-		protected override void BuildAmbientTexts()
+		// Not each summoned pet will fire ambient sentences.
+		if (ambientTexts.Count > 0)
 		{
-			base.BuildAmbientTexts();
-
-			// Not each summoned pet will fire ambient sentences.
-			if (ambientTexts.Count > 0)
-			{
-				foreach (DbMobXAmbientBehavior ambientText in ambientTexts)
-					ambientText.Chance /= 10;
-			}
+			foreach (DbMobXAmbientBehavior ambientText in ambientTexts)
+				ambientText.Chance /= 10;
 		}
 	}
 }
