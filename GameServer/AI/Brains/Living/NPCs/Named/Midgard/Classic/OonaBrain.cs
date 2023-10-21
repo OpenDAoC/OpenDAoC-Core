@@ -1,9 +1,6 @@
-using Core.Database;
-using Core.GS;
-using Core.AI.Brain;
 using Core.Database.Tables;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Oona
 public class OonaBrain : StandardMobBrain

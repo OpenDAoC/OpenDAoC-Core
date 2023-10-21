@@ -1,17 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using Core.AI.Brain;
 using Core.Events;
-using Core.GS;
+using Core.GS.AI.States;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using Core.Language;
 
-namespace Core.AI.Brain
+namespace Core.GS.AI.Brains
 {
-    /// <summary>
-    /// A brain for the necromancer pets.
-    /// </summary>
     public class NecromancerPetBrain : ControlledNpcBrain
     {
         public NecromancerPetBrain(GameLiving owner) : base(owner)

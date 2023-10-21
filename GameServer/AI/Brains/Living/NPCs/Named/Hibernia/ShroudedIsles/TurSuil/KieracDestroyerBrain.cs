@@ -1,8 +1,6 @@
-using Core.Database;
 using Core.Database.Tables;
-using Core.GS;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Kierac the Destroyer
 public class KieracDestroyerBrain : StandardMobBrain

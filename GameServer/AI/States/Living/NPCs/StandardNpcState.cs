@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Reflection;
-using Core.GS;
+using Core.GS.AI.Brains;
 using Core.GS.ServerProperties;
 using log4net;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.States;
 
 public class StandardNpcState : FsmState
 {

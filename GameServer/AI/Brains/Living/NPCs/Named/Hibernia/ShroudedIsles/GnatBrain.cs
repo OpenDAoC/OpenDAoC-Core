@@ -1,8 +1,7 @@
-using Core.GS;
 using Core.GS.PacketHandler;
 using Core.GS.Scripts;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 public class GnatBrain : StandardMobBrain
 {

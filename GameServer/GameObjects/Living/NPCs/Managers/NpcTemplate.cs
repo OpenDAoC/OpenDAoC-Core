@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.AI.Brains;
 using Core.GS.Styles;
 using log4net;
 
@@ -271,7 +272,7 @@ namespace Core.GS
 				}
 			}
 
-			AI.Brain.StandardMobBrain brain = mob.Brain as AI.Brain.StandardMobBrain;
+			StandardMobBrain brain = mob.Brain as StandardMobBrain;
 			if (brain != null)
 			{
 				m_aggroLevel = (byte)brain.AggroLevel;

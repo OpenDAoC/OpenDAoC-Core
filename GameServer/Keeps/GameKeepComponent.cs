@@ -7,6 +7,7 @@ using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.ServerProperties;
 using log4net;
 
@@ -496,9 +497,9 @@ namespace Core.GS.Keeps
 					baseDamage = (baseDamage - (baseDamage * 5 * Keep.Level / 100)) * toughness / 100;
 					styleDamage = (styleDamage - (styleDamage * 5 * Keep.Level / 100)) * toughness / 100;
 
-					if (((GameNpc)source).Brain is AI.Brain.IControlledBrain)
+					if (((GameNpc)source).Brain is IControlledBrain)
 					{
-						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNpc)source).Brain).Owner as GamePlayer);
+						GamePlayer player = (((IControlledBrain)((GameNpc)source).Brain).Owner as GamePlayer);
 						if (player != null)
 						{
 							// special considerations for pet spam classes

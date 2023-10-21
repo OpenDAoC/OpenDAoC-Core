@@ -8,6 +8,7 @@ using System.Threading;
 using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;

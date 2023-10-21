@@ -1,7 +1,7 @@
-using Core.GS;
+using Core.AI.Brain;
 using Core.GS.Spells;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 public class FriendBrain : StandardMobBrain
 {

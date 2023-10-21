@@ -1,7 +1,7 @@
 ﻿using System;
-using Core.GS;
+using Core.AI.Brain;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 /// <summary>
 /// Dummy Controlled Brain to provide a Following Pet. 

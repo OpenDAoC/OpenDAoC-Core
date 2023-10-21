@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Core.AI.Brain;
 using Core.Events;
-using Core.GS;
+using Core.GS.AI.States;
 using Core.GS.Effects;
 using Core.GS.Scripts;
 using log4net;
 
-namespace Core.AI.Brain
+namespace Core.GS.AI.Brains
 {
     public class ArosTheSpiritmasterBrain : StandardMobBrain
     {

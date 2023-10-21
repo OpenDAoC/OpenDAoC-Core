@@ -1,6 +1,6 @@
-using Core.GS;
+using Core.AI.Brain;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 /// <summary>
 /// Interface for controllable brains

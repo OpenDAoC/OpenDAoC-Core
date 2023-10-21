@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Core.AI.Brain;
+using Core.GS.AI.Brains;
 using Core.Language;
 
 namespace Core.GS

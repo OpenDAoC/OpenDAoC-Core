@@ -1,5 +1,6 @@
 using System.Reflection;
 using Core.AI.Brain;
+using Core.GS.AI.Brains;
 using log4net;
 
 namespace Core.GS.PacketHandler.Client.v168

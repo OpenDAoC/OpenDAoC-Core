@@ -2,6 +2,7 @@
 using Core.AI.Brain;
 using Core.Events;
 using Core.GS;
+using Core.GS.AI.Brains;
 
 namespace Core.GS
 {

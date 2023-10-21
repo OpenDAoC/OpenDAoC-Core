@@ -1,6 +1,7 @@
 using Core.AI;
 using Core.AI.Brain;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.PlayerClass;
 using Core.GS.ServerProperties;
 

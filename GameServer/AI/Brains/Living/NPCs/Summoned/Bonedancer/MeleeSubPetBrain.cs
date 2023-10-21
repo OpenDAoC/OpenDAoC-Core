@@ -1,13 +1,9 @@
 using System.Reflection;
-using Core.GS;
 using Core.GS.RealmAbilities;
 using log4net;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
-/// <summary>
-/// A brain that can be controlled
-/// </summary>
 public class MeleeSubPetBrain : SubPetBrain
 {
 	/// <summary>

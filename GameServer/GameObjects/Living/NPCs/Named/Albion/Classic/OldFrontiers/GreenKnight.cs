@@ -7,6 +7,7 @@ using Core.Events;
 using Core.GS.PacketHandler;
 using Core.GS.Styles;
 using Core.GS;
+using Core.GS.AI.Brains;
 
 namespace Core.GS;
 
@@ -86,28 +87,28 @@ public class GreenKnight : GameEpicBoss
         Styles.Add(taunt);
         MaxSpeedBase = 400;
 
-        OFGreenKnightBrain.walk1 = false;
-        OFGreenKnightBrain.walk2 = false;
-        OFGreenKnightBrain.walk3 = false;
-        OFGreenKnightBrain.walk4 = false;
-        OFGreenKnightBrain.walk5 = false;
-        OFGreenKnightBrain.Pick_healer = false;
-        OFGreenKnightBrain.walk6 = false;
-        OFGreenKnightBrain.IsSpawningTrees = false;
-        OFGreenKnightBrain.walk7 = false;
-        OFGreenKnightBrain.IsWalking = false;
-        OFGreenKnightBrain.walk8 = false;
-        OFGreenKnightBrain.walk9 = false;
-        OFGreenKnightBrain.CanHeal1 = false;
-        OFGreenKnightBrain.CanHeal2 = false;
-        OFGreenKnightBrain.CanHeal3 = false;
-        OFGreenKnightBrain.CanHeal4 = false;
-        OFGreenKnightBrain.PickPortPoint = false;
+        GreenKnightBrain.walk1 = false;
+        GreenKnightBrain.walk2 = false;
+        GreenKnightBrain.walk3 = false;
+        GreenKnightBrain.walk4 = false;
+        GreenKnightBrain.walk5 = false;
+        GreenKnightBrain.Pick_healer = false;
+        GreenKnightBrain.walk6 = false;
+        GreenKnightBrain.IsSpawningTrees = false;
+        GreenKnightBrain.walk7 = false;
+        GreenKnightBrain.IsWalking = false;
+        GreenKnightBrain.walk8 = false;
+        GreenKnightBrain.walk9 = false;
+        GreenKnightBrain.CanHeal1 = false;
+        GreenKnightBrain.CanHeal2 = false;
+        GreenKnightBrain.CanHeal3 = false;
+        GreenKnightBrain.CanHeal4 = false;
+        GreenKnightBrain.PickPortPoint = false;
 
         Flags = ENpcFlags.PEACE;
         VisibleActiveWeaponSlots = 34;
         MeleeDamageType = EDamageType.Slash;
-        OFGreenKnightBrain sbrain = new OFGreenKnightBrain();
+        GreenKnightBrain sbrain = new GreenKnightBrain();
         SetOwnBrain(sbrain);
         LoadedFromScript = false; //load from database
         SaveIntoDatabase();
@@ -142,7 +143,7 @@ public class GreenKnight : GameEpicBoss
             OF.Y = 418687;
             OF.Z = 5012;
             OF.Heading = 3331;
-            OFGreenKnightBrain ubrain = new OFGreenKnightBrain();
+            GreenKnightBrain ubrain = new GreenKnightBrain();
             OF.SetOwnBrain(ubrain);
             OF.AddToWorld();
             OF.SaveIntoDatabase();

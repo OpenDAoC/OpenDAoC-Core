@@ -1,6 +1,7 @@
 using System;
 using Core.AI.Brain;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 
@@ -27,7 +28,7 @@ namespace Core.GS.Spells
             GameSpellEffect effect = CreateSpellEffect(target, Effectiveness);
             IControlledBrain brain = GetPetBrain(Caster);
             m_pet = GetGamePet(template);
-            m_pet.SetOwnBrain(brain as AI.ABrain);
+            m_pet.SetOwnBrain(brain as ABrain);
             int x, y, z;
             ushort heading;
             Region region;

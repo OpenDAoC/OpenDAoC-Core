@@ -1,6 +1,4 @@
-﻿using Core.GS;
-
-namespace Core.AI;
+﻿namespace Core.GS.AI.States;
 
 public abstract class FsmState
 {

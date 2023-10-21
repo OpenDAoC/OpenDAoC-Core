@@ -1,4 +1,5 @@
 using Core.AI.Brain;
+using Core.GS.AI.Brains;
 using Core.GS.Effects;
 
 namespace Core.GS.Spells

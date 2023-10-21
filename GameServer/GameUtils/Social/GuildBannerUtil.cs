@@ -2,6 +2,7 @@ using System;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using log4net;
@@ -179,9 +180,9 @@ namespace Core.GS
 			{
 				playerKiller = killer as GamePlayer;
 			}
-			else if (killer is GameNpc && (killer as GameNpc).Brain != null && (killer as GameNpc).Brain is AI.Brain.IControlledBrain)
+			else if (killer is GameNpc && (killer as GameNpc).Brain != null && (killer as GameNpc).Brain is IControlledBrain)
 			{
-				playerKiller = ((killer as GameNpc).Brain as AI.Brain.IControlledBrain).Owner as GamePlayer;
+				playerKiller = ((killer as GameNpc).Brain as IControlledBrain).Owner as GamePlayer;
 			}
 
 			Stop();

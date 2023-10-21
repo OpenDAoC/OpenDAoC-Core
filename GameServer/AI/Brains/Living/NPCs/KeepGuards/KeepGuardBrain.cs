@@ -1,8 +1,7 @@
-using Core.GS;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 
-namespace Core.AI.Brain
+namespace Core.GS.AI.Brains
 {
 	/// <summary>
 	/// Brain Class for Area Capture Guards

@@ -1,12 +1,9 @@
 using System.Reflection;
-using Core.GS;
+using Core.AI.Brain;
 using log4net;
 
-namespace Core.AI.Brain
+namespace Core.GS.AI.Brains
 {
-	/// <summary>
-	/// A brain that can be controlled
-	/// </summary>
 	public class HealerSubPetBrain : SubPetBrain
 	{
 		/// <summary>

@@ -1,9 +1,7 @@
-using Core.Database;
 using Core.Database.Tables;
-using Core.GS;
 using Core.GS.PacketHandler;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 public class RuckusBrain : StandardMobBrain
 {

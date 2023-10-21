@@ -1,15 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
-using Core.GS;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using Core.GS.Scripts;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 public class MistressOfRunesBrain : StandardMobBrain
 {

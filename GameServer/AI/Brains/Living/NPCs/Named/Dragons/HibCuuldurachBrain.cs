@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core.Database;
 using Core.Database.Tables;
-using Core.GS;
 using Core.GS.PacketHandler;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Cuuldurach
 public class HibCuuldurachBrain : StandardMobBrain

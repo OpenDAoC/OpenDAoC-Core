@@ -1,9 +1,8 @@
 using System;
-using Core.GS;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Morgana
 public class MorganaBrain : StandardMobBrain

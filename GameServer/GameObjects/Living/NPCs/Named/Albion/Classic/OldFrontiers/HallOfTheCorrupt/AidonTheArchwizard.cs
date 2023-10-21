@@ -4,6 +4,7 @@ using Core.Events;
 using Core.GS.PacketHandler;
 using Core.AI.Brain;
 using Core.Database.Tables;
+using Core.GS.AI.Brains;
 
 namespace Core.GS;
 

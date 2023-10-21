@@ -1,4 +1,4 @@
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Host Initializer
 public class HostInitializerBrain : StandardMobBrain

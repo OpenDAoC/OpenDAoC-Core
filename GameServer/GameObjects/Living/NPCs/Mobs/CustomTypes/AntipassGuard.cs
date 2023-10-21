@@ -1,6 +1,7 @@
 using System;
 using Core.AI.Brain;
 using Core.GS;
+using Core.GS.AI.Brains;
 
 namespace Core.GS.Scripts;
 

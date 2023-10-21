@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using Core.AI.Brain;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.Commands;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;

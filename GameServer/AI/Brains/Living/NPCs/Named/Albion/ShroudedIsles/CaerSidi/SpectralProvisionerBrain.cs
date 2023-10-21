@@ -1,9 +1,7 @@
-using Core.Database;
 using Core.Database.Tables;
-using Core.GS;
 using Core.GS.Scripts;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Spectral Provisioner
 public class SpectralProvisionerBrain : StandardMobBrain

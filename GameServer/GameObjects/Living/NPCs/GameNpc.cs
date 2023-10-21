@@ -12,6 +12,7 @@ using Core.Database;
 using Core.Database.Enums;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.Housing;
 using Core.GS.Keeps;

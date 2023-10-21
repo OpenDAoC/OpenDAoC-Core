@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.AI.Brains;
 using Core.GS.Spells;
 
 namespace Core.GS.Effects

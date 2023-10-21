@@ -312,7 +312,6 @@
     <Folder Include="AAA\Enums*\Spells\" />
     <Folder Include="AAA\Enums*\Stats\" />
     <Folder Include="AI\Brains\Living\NPCs\Epics\" />
-    <Folder Include="AI\States\Living\NPCs\Mobs\" />
     <Folder Include="Expansions\Catacombs\" />
     <Folder Include="Expansions\Classic\" />
     <Folder Include="Expansions\NewFrontiers\" />

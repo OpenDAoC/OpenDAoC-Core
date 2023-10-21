@@ -5,6 +5,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS;
+using Core.GS.AI.Brains;
 using Core.GS.PacketHandler;
 
 namespace Core.GS

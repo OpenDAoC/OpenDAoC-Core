@@ -1,6 +1,7 @@
 using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.AI.Brains;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.GS.Styles;

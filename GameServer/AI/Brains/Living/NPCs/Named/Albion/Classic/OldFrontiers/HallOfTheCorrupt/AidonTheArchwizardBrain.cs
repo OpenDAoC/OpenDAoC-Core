@@ -1,12 +1,10 @@
-#region Aidon The Archwizard
-
 using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.GS;
 using Core.GS.PacketHandler;
 
+namespace Core.GS.AI.Brains;
+
+#region Aidon The Archwizard
 public class AidonTheArchwizardBrain : StandardMobBrain
 {
     private static readonly log4net.ILog log =

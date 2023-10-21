@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.AI.Brain;
+using Core.GS.AI.Brains;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Effects

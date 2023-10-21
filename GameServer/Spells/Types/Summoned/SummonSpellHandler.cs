@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Core.AI.Brain;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using Core.Language;
@@ -133,7 +134,7 @@ namespace Core.GS.Spells
 				brain = GetPetBrain(Caster);
 
 			m_pet = GetGamePet(template);
-			m_pet.SetOwnBrain(brain as AI.ABrain);
+			m_pet.SetOwnBrain(brain as ABrain);
 
 			m_pet.SummonSpellDamage = Spell.Damage;
 			m_pet.SummonSpellValue = Spell.Value;

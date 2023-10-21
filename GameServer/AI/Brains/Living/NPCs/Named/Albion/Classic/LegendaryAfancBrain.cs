@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Core.GS;
 using Core.GS.PacketHandler;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 public class LegendaryAfancBrain : StandardMobBrain
 {

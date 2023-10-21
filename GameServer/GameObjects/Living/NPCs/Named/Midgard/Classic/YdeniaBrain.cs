@@ -2,6 +2,7 @@ using System;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
+using Core.GS.AI.Brains;
 using Core.GS.PacketHandler;
 
 namespace Core.AI.Brain;

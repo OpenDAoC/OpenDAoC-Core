@@ -4,6 +4,7 @@ using Core.Events;
 using Core.GS.PacketHandler;
 using Core.Language;
 using Core.Database;
+using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.Keeps;
 

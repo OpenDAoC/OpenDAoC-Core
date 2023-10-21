@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
-using Core.GS;
 using Core.GS.PacketHandler;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Olcasgean Initializor
 public class OIBrain : StandardMobBrain

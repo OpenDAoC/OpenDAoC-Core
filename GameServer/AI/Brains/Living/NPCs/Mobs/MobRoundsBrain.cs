@@ -1,7 +1,6 @@
-using Core.GS;
 using Core.GS.Movement;
 
-namespace Core.AI.Brain
+namespace Core.GS.AI.Brains
 {
 	/// <summary>
 	/// A brain that make npc walk on rounds with way point

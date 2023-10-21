@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Core.AI.Brain;
 using Core.Events;
-using Core.GS;
+using Core.GS.AI.States;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using Core.GS.RealmAbilities;
@@ -11,7 +12,7 @@ using Core.GS.SkillHandler;
 using Core.GS.Spells;
 using log4net;
 
-namespace Core.AI.Brain
+namespace Core.GS.AI.Brains
 {
 	/// <summary>
 	/// A brain that can be controlled

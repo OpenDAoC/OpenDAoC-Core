@@ -5,6 +5,7 @@ using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.Language;
 using Core.Database;
+using Core.GS.AI.Brains;
 using Core.GS.Effects;
 
 namespace Core.GS.Spells

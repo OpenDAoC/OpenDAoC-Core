@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Core.GS;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Jailer Vifil
 public class JailerVifilBrain : StandardMobBrain

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Core.AI.Brain;
+using Core.GS.AI.Brains;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Spells

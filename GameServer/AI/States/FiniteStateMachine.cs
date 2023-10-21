@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Core.GS;
 
-namespace Core.AI;
+namespace Core.GS.AI.States;
 
 public class FiniteStateMachine
 {

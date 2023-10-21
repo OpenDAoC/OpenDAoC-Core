@@ -1,4 +1,4 @@
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 public class BlankBrain : ABrain
 {

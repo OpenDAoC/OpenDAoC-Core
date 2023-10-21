@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Core.Database.Enums;
 using log4net;
 
 namespace Core.Database.Tables
@@ -1008,7 +1009,7 @@ namespace Core.Database.Tables
 		/// </summary>
 		/// <param name="bonusID"></param>
 		/// <returns></returns>
-		public int GetBonusAmount(DbArtifactBonus.EItemStatSlots bonusID)
+		public int GetBonusAmount(EItemStatSlots bonusID)
 		{
 			switch ((int)bonusID)
 			{
@@ -1042,7 +1043,7 @@ namespace Core.Database.Tables
 		/// </summary>
 		/// <param name="bonusID"></param>
 		/// <returns></returns>
-		public int GetBonusType(DbArtifactBonus.EItemStatSlots bonusID)
+		public int GetBonusType(EItemStatSlots bonusID)
 		{
 			switch ((int)bonusID)
 			{
@@ -1084,7 +1085,7 @@ namespace Core.Database.Tables
 		/// </summary>
 		/// <param name="bonusID"></param>
 		/// <returns></returns>
-		public void SetBonusAmount(DbArtifactBonus.EItemStatSlots bonusID, int bonusAmount)
+		public void SetBonusAmount(EItemStatSlots bonusID, int bonusAmount)
 		{
 			switch ((int)bonusID)
 			{
@@ -1126,7 +1127,7 @@ namespace Core.Database.Tables
 		/// </summary>
 		/// <param name="bonusID"></param>
 		/// <returns></returns>
-		public void SetBonusType(DbArtifactBonus.EItemStatSlots bonusID, int bonusType)
+		public void SetBonusType(EItemStatSlots bonusID, int bonusType)
 		{
 			switch ((int)bonusID)
 			{

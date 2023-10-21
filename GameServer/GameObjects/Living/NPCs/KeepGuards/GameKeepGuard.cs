@@ -7,6 +7,7 @@ using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.Language;

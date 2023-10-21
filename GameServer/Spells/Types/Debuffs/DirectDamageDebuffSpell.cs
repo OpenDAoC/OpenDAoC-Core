@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -40,14 +41,14 @@ namespace Core.GS.Spells
 				{
 					if (Caster is GamePlayer)
 						player = Caster as GamePlayer;
-					else if (Caster is GameNpc && (Caster as GameNpc).Brain is AI.Brain.IControlledBrain)
+					else if (Caster is GameNpc && (Caster as GameNpc).Brain is IControlledBrain)
 					{
-						AI.Brain.IControlledBrain brain = (Caster as GameNpc).Brain as AI.Brain.IControlledBrain;
+						IControlledBrain brain = (Caster as GameNpc).Brain as IControlledBrain;
 						//Ryan: edit for BD
 						if (brain.Owner is GamePlayer)
 							player = (GamePlayer)brain.Owner;
 						else
-							player = (GamePlayer)((AI.Brain.IControlledBrain)((GameNpc)brain.Owner).Brain).Owner;
+							player = (GamePlayer)((IControlledBrain)((GameNpc)brain.Owner).Brain).Owner;
 					}
 				}
 				if (player != null)

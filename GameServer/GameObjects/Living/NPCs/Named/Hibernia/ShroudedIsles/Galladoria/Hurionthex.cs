@@ -3,6 +3,7 @@ using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.AI.Brains;
 
 // Boss Mechanics
 // Changes form every ~20 seconds

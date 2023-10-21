@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Core.GS;
+using Core.AI.Brain;
 using Core.GS.PacketHandler;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 public class GlacierGiantBrain : EpicBossBrain
 {

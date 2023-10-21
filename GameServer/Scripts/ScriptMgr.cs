@@ -11,6 +11,7 @@ using Core.Base;
 using Core.Base.Enums;
 using Core.Config;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.Commands;
 using Core.GS.PacketHandler;
 using Core.GS.ServerRules;

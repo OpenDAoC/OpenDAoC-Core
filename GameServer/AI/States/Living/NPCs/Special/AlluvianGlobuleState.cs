@@ -1,7 +1,7 @@
 ﻿using System;
-using Core.GS;
+using Core.GS.AI.Brains;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.States;
 
 public class AlluvianGlobuleStateIdle : StandardNpcStateIdle
 {

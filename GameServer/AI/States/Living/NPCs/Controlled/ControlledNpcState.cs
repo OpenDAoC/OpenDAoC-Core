@@ -1,6 +1,7 @@
-﻿using Core.GS;
+﻿using Core.AI.Brain;
+using Core.GS.AI.Brains;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.States;
 
 public class ControlledNpcStateWakingUp : StandardNpcStateWakingUp
 {

@@ -1,8 +1,7 @@
 using System.Reflection;
-using Core.GS;
 using log4net;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 public class PrinceBaalorienBrain : StandardMobBrain
 {

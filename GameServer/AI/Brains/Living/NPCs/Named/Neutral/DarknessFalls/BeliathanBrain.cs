@@ -1,9 +1,8 @@
-using Core.GS;
 using Core.GS.PacketHandler;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
-#region Initializator Brain
+#region Initializer Brain
 public class BeliathanInitBrain : StandardMobBrain
 {
     private static readonly log4net.ILog log =
@@ -67,7 +66,7 @@ public class BeliathanInitBrain : StandardMobBrain
             player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
     }
 }
-#endregion Initializator Brain
+#endregion Initializer Brain
 
 #region Beliathan
 public class BeliathanBrain : StandardMobBrain

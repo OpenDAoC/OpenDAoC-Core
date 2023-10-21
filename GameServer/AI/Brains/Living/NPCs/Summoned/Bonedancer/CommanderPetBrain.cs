@@ -1,10 +1,7 @@
-using Core.GS;
+using Core.AI.Brain;
 
-namespace Core.AI.Brain
+namespace Core.GS.AI.Brains
 {
-	/// <summary>
-	/// A brain for the commanders
-	/// </summary>
 	public class CommanderPetBrain : ControlledNpcBrain
 	{
 		public CommanderPetBrain(GameLiving owner) : base(owner) { }

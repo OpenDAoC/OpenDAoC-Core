@@ -9,6 +9,7 @@ using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.Housing;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;

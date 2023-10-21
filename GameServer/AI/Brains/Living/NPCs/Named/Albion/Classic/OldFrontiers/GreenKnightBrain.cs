@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using Core.Database;
+using Core.AI.Brain;
 using Core.Database.Tables;
-using Core.GS;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Green Knight
-public class OFGreenKnightBrain : EpicBossBrain
+public class GreenKnightBrain : EpicBossBrain
 {
     private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-    public OFGreenKnightBrain() : base()
+    public GreenKnightBrain() : base()
     {
         AggroLevel = 100;
         AggroRange = 600;

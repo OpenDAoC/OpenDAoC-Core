@@ -1,5 +1,6 @@
 using Core.AI.Brain;
-using Core.GS;
+
+namespace Core.GS.AI.Brains;
 
 public class MlBrain : RealmGuardBrain
 {

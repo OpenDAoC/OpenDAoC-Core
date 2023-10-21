@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.AI;
 using Core.AI.Brain;
+using Core.GS.AI.Brains;
 using ECS.Debug;
 using log4net;
 

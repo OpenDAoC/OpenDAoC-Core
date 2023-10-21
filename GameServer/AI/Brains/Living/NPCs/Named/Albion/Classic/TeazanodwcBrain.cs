@@ -1,6 +1,4 @@
-using Core.GS;
-
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Teazanodwc
 public class TeazanodwcBrain : StandardMobBrain

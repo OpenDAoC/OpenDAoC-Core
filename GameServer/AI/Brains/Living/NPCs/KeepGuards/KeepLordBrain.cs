@@ -1,9 +1,8 @@
 using System;
 using Core.Base.Enums;
-using Core.GS;
 using Core.GS.Keeps;
 
-namespace Core.AI.Brain
+namespace Core.GS.AI.Brains
 {
 	/// <summary>
 	/// The Brain for the Area Lord

@@ -1,8 +1,7 @@
 using System;
-using Core.GS;
 using Core.GS.PacketHandler;
 
-namespace Core.AI.Brain;
+namespace Core.GS.AI.Brains;
 
 #region Fornfrusenen
 public class FornfrusenenBrain : StandardMobBrain

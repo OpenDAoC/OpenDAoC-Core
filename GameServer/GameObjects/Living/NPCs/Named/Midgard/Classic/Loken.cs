@@ -3,6 +3,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.PacketHandler;
 using Core.GS;
+using Core.GS.AI.Brains;
 
 namespace Core.GS
 {

@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using Core.AI.Brain;
 using Core.Events;
+using Core.GS.AI.Brains;
 using Core.GS.Behaviour.Attributes;
 using log4net;
 
