@@ -5,6 +5,7 @@ using Core.GS.Calculators;
 using Core.GS.Effects;
 using Core.GS.Server;
 using Core.GS.Spells;
+using Core.GS.Styles;
 
 namespace Core.GS.RealmAbilities;
 

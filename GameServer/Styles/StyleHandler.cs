@@ -1,50 +1,45 @@
 ﻿using System.Collections.Generic;
 using Core.GS.Packets.Clients;
 using Core.GS.Skills;
-using Core.GS.Styles;
+using Core.GS.Spells;
 
-namespace Core.GS.Spells
+namespace Core.GS.Styles;
+
+[SpellHandler("StyleHandler")]
+public class StyleHandler : SpellHandler
 {
-	[SpellHandler("StyleHandler")]
-	public class StyleHandler : SpellHandler
+	public StyleHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
+	public override IList<string> DelveInfo
 	{
-		public StyleHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
-
-		public override IList<string> DelveInfo
+		get
 		{
-			get
+			var list = new List<string>();
+			list.Add(Spell.Description);
+
+			GamePlayer player = Caster as GamePlayer;
+
+			if (player != null)
 			{
-				var list = new List<string>();
-				list.Add(Spell.Description);
+				list.Add(" ");
 
-				GamePlayer player = Caster as GamePlayer;
-
-				if (player != null)
+				Style style = SkillBase.GetStyleByID((int)Spell.Value, 0);
+				if (style == null)
 				{
-					list.Add(" ");
-
-					Style style = SkillBase.GetStyleByID((int)Spell.Value, 0);
-					if (style == null)
-					{
-						style = SkillBase.GetStyleByID((int)Spell.Value, player.PlayerClass.ID);
-					}
-
-					if (style != null)
-					{
-						DetailDisplayHandler.WriteStyleInfo(list, style, player.Client);
-					}
-					else
-					{
-						list.Add("Style not found.");
-					}
+					style = SkillBase.GetStyleByID((int)Spell.Value, player.PlayerClass.ID);
 				}
 
-				return list;
+				if (style != null)
+				{
+					DetailDisplayHandler.WriteStyleInfo(list, style, player.Client);
+				}
+				else
+				{
+					list.Add("Style not found.");
+				}
 			}
+
+			return list;
 		}
-
 	}
-
-
 }
-
