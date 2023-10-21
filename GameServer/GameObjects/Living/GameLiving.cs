@@ -18,6 +18,7 @@ using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;
@@ -579,11 +580,11 @@ namespace Core.GS
             get
             {
 				// We cache the weapon since 'ActiveWeapon' can be called multiple times per tick and 'GameInventory.GetItem' is potentially expensive.
-				if (m_cachedActiveWeapon.time >= GameLoop.GameLoopTime)
+				if (m_cachedActiveWeapon.time >= GameLoopMgr.GameLoopTime)
 					return m_cachedActiveWeapon.item;
 
 				m_cachedActiveWeapon.item = null;
-				m_cachedActiveWeapon.time = GameLoop.GameLoopTime;
+				m_cachedActiveWeapon.time = GameLoopMgr.GameLoopTime;
 
                 if (Inventory != null)
                 {
@@ -748,27 +749,27 @@ namespace Core.GS
 		/// <summary>
 		/// checks if the living is involved in pvp combat
 		/// </summary>
-		public virtual bool InCombatPvP => LastCombatTickPvP > 0 && LastCombatTickPvP + IN_COMBAT_DURATION >= GameLoop.GameLoopTime;
+		public virtual bool InCombatPvP => LastCombatTickPvP > 0 && LastCombatTickPvP + IN_COMBAT_DURATION >= GameLoopMgr.GameLoopTime;
 
 		/// <summary>
 		/// checks if the living is involved in pvp combat in the given milliseconds
 		/// </summary>
 		public virtual bool InCombatPvPInLast(int milliseconds)
 		{
-			return LastCombatTickPvP > 0 && LastCombatTickPvP + milliseconds >= GameLoop.GameLoopTime;
+			return LastCombatTickPvP > 0 && LastCombatTickPvP + milliseconds >= GameLoopMgr.GameLoopTime;
 		}
 
 		/// <summary>
 		/// checks if the living is involved in pve combat
 		/// </summary>
-		public virtual bool InCombatPvE => LastCombatTickPvE > 0 && LastCombatTickPvE + IN_COMBAT_DURATION >= GameLoop.GameLoopTime;
+		public virtual bool InCombatPvE => LastCombatTickPvE > 0 && LastCombatTickPvE + IN_COMBAT_DURATION >= GameLoopMgr.GameLoopTime;
 
 		/// <summary>
 		/// checks if the living is involved in pve combat in the given milliseconds
 		/// </summary>
 		public virtual bool InCombatPvEInLast(int milliseconds)
 		{
-			return LastCombatTickPvE > 0 && LastCombatTickPvE + milliseconds >= GameLoop.GameLoopTime;
+			return LastCombatTickPvE > 0 && LastCombatTickPvE + milliseconds >= GameLoopMgr.GameLoopTime;
 		}
 
 		/// <summary>
@@ -1076,7 +1077,7 @@ namespace Core.GS
 
 			// Dont't replace the current interrut with a shorter one.
 			// Otherwise a slow melee hit's interrupt duration will be made shorter by a proc for example.
-			InterruptTime = Math.Max(InterruptTime, GameLoop.GameLoopTime + duration);
+			InterruptTime = Math.Max(InterruptTime, GameLoopMgr.GameLoopTime + duration);
 			LastInterrupter = attacker;
 
 			if (castingComponent?.SpellHandler != null)
@@ -1108,7 +1109,7 @@ namespace Core.GS
 			get => m_interruptTime;
 			private set
 			{
-				InterruptAction = GameLoop.GameLoopTime;
+				InterruptAction = GameLoopMgr.GameLoopTime;
 				m_interruptTime = value;
 			}
 		}
@@ -1123,7 +1124,7 @@ namespace Core.GS
 		/// <summary>
 		/// Yields true if interrupt action is running on this living.
 		/// </summary>
-		public virtual bool IsBeingInterrupted => m_interruptTime > GameLoop.GameLoopTime;
+		public virtual bool IsBeingInterrupted => m_interruptTime > GameLoopMgr.GameLoopTime;
 
 		/// <summary>
 		/// Base chance this living can be interrupted
@@ -1172,7 +1173,7 @@ namespace Core.GS
 
 			if (rangeAttackHoldStart > 0)
 			{
-				long elapsedTime = GameLoop.GameLoopTime - rangeAttackHoldStart;
+				long elapsedTime = GameLoopMgr.GameLoopTime - rangeAttackHoldStart;
 				long halfwayPoint = attackComponent.AttackSpeed(ActiveWeapon) / 2;
 				
 				if (rangeAttackComponent.RangedAttackState is not ERangedAttackState.ReadyToFire and not ERangedAttackState.None && elapsedTime > halfwayPoint)
@@ -1616,7 +1617,7 @@ namespace Core.GS
 
 					if (engage != null && attackComponent.AttackState && engage.EngageTarget == ad.Attacker)
 					{
-						if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
+						if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoopMgr.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
 							player?.Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 						else if (Endurance < EngageAbilityHandler.ENGAGE_ENDURANCE_COST)
 							engage.Cancel(false, true);
@@ -1878,11 +1879,11 @@ namespace Core.GS
 
 			if (ad.Target is GamePlayer && ad.Target != this)
 			{
-				LastAttackTickPvP = GameLoop.GameLoopTime;
+				LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 			}
 			else
 			{
-				LastAttackTickPvE = GameLoop.GameLoopTime;
+				LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 			}
 
 			if (this is GameNpc npc)
@@ -1891,15 +1892,15 @@ namespace Core.GS
 
                 if (ad.Target is GamePlayer)
 				{
-					LastAttackTickPvP = GameLoop.GameLoopTime;
+					LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 					if (brain != null)
-						brain.Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+						brain.Owner.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
 				}
 				else
 				{
-					LastAttackTickPvE = GameLoop.GameLoopTime;
+					LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 					if (brain != null)
-						brain.Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+						brain.Owner.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
 				}
 			}
 
@@ -1961,13 +1962,13 @@ namespace Core.GS
 				{
 					if (ad.Attacker.Realm == 0 || Realm == 0)
 					{
-						LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-						ad.Attacker.LastAttackTickPvE = GameLoop.GameLoopTime;
+						LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+						ad.Attacker.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 					}
 					else if (ad.Attacker != this) //Check if the attacker is not this living (some things like Res Sickness have attacker/target the same)
 					{
-						LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-						ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
+						LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+						ad.Attacker.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 					}
 				}
 
@@ -3875,13 +3876,13 @@ namespace Core.GS
 			{
 				player = source as GamePlayer;
 				long whisperdelay = player.TempProperties.GetProperty<long>("WHISPERDELAY");
-				if (whisperdelay > 0 && (GameLoop.GameLoopTime - 1500) < whisperdelay && player.Client.Account.PrivLevel == 1)
+				if (whisperdelay > 0 && (GameLoopMgr.GameLoopTime - 1500) < whisperdelay && player.Client.Account.PrivLevel == 1)
 				{
 					//player.Out.SendMessage("Speak slower!", eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					return false;
 				}
 				
-				player.TempProperties.SetProperty("WHISPERDELAY", GameLoop.GameLoopTime);
+				player.TempProperties.SetProperty("WHISPERDELAY", GameLoopMgr.GameLoopTime);
 
 				foreach (DataQuest q in DataQuestList)
 				{
@@ -4266,7 +4267,7 @@ namespace Core.GS
 				if (m_disabledSkills.ContainsKey(key))
 				{
 					long timeout = m_disabledSkills[key].Key;
-					long left = timeout - GameLoop.GameLoopTime;
+					long left = timeout - GameLoopMgr.GameLoopTime;
 					if (left <= 0)
 					{
 						left = 0;
@@ -4307,7 +4308,7 @@ namespace Core.GS
 				KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
 
 				if (duration > 0)
-					m_disabledSkills[key] = new KeyValuePair<long, Skill>(GameLoop.GameLoopTime + duration, skill);
+					m_disabledSkills[key] = new KeyValuePair<long, Skill>(GameLoopMgr.GameLoopTime + duration, skill);
 				else
 					m_disabledSkills.Remove(key);
 			}
@@ -4330,7 +4331,7 @@ namespace Core.GS
 					KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
 
 					if (duration > 0)
-						m_disabledSkills[key] = new KeyValuePair<long, Skill>(GameLoop.GameLoopTime + duration, skill);
+						m_disabledSkills[key] = new KeyValuePair<long, Skill>(GameLoopMgr.GameLoopTime + duration, skill);
 					else
 						m_disabledSkills.Remove(key);
 				}

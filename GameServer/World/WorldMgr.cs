@@ -9,6 +9,7 @@ using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using log4net;
 
@@ -474,7 +475,7 @@ namespace Core.GS
 				}
 
 				m_dayIncrement = Math.Max(0, Math.Min(1000, ServerProperties.Properties.WORLD_DAY_INCREMENT)); // increments > 1000 do not render smoothly on clients
-				m_dayStartTick = (int)GameLoop.GetCurrentTime() - (int)(DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
+				m_dayStartTick = (int)GameLoopMgr.GetCurrentTime() - (int)(DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
 				m_dayResetTimer = new Timer(new TimerCallback(DayReset), null, DAY / Math.Max(1, m_dayIncrement) / 2, DAY / Math.Max(1, m_dayIncrement));
 			}
 			catch (Exception e)
@@ -500,7 +501,7 @@ namespace Core.GS
 		/// <param name="sender"></param>
 		private static void DayReset(object sender)
 		{
-			m_dayStartTick = (int)GameLoop.GetCurrentTime();
+			m_dayStartTick = (int)GameLoopMgr.GetCurrentTime();
 
 			foreach (GamePlayer player in ClientService.GetPlayers<object>(Predicate))
 				player.Out.SendTime();
@@ -529,7 +530,7 @@ namespace Core.GS
 			}
 			else
 			{
-				m_dayStartTick = (int)GameLoop.GetCurrentTime() - (int)(dayStart / m_dayIncrement); // set start time to ...
+				m_dayStartTick = (int)GameLoopMgr.GetCurrentTime() - (int)(dayStart / m_dayIncrement); // set start time to ...
 				m_dayResetTimer.Change((DAY - dayStart) / m_dayIncrement, Timeout.Infinite);
 			}
 
@@ -567,7 +568,7 @@ namespace Core.GS
 			}
 			else
 			{
-				long diff = GameLoop.GetCurrentTime() - m_dayStartTick;
+				long diff = GameLoopMgr.GetCurrentTime() - m_dayStartTick;
 				long curTime = diff * m_dayIncrement;
 				return (uint)(curTime % DAY);
 			}

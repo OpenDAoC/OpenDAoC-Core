@@ -21,6 +21,7 @@ using Core.GS.DatabaseUpdate;
 using Core.GS.ECS;
 using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.PlayerTitles;
@@ -805,13 +806,13 @@ namespace Core.GS
 					return false;
 
 				//This is stupid and odd
-				if (!InitComponent(GameLoop.Init(), "GameLoop Init"))
+				if (!InitComponent(GameLoopMgr.Init(), "GameLoop Init"))
 				{
 					return false;
 				}
 
 				//Start Aux GameLoop
-				if (!InitComponent(AuxGameLoop.Init(), "AuxGameLoop Init"))
+				if (!InitComponent(AuxGameLoopMgr.Init(), "AuxGameLoop Init"))
 				{
 					return false;
 				}
@@ -1304,8 +1305,8 @@ namespace Core.GS
 			SaveTimerProc(null);
 
 			WorldMgr.Exit();
-			GameLoop.Exit();
-			AuxGameLoop.Exit();
+			GameLoopMgr.Exit();
+			AuxGameLoopMgr.Exit();
 			//Save the database
 			// 2008-01-29 Kakuri - Obsolete
 			/*if ( m_database != null )

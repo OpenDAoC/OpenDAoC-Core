@@ -2,6 +2,7 @@
 using System.Linq;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Styles;
 
 namespace Core.GS.ECS
@@ -31,7 +32,7 @@ namespace Core.GS.ECS
         public long StartTime
         {
             get => _startTime;
-            set => _startTime = value + GameLoop.GameLoopTime;
+            set => _startTime = value + GameLoopMgr.GameLoopTime;
         }
 
         protected AttackAction(GameLiving owner)
@@ -158,7 +159,7 @@ namespace Core.GS.ECS
 
             int mainHandAttackSpeed = _attackComponent.AttackSpeed(_weapon);
 
-            if (clearOldStyles || _styleComponent.NextCombatStyleTime + mainHandAttackSpeed < GameLoop.GameLoopTime)
+            if (clearOldStyles || _styleComponent.NextCombatStyleTime + mainHandAttackSpeed < GameLoopMgr.GameLoopTime)
             {
                 // Cancel the styles if they were registered too long ago.
                 // Nature's Shield stays active forever and falls back to a non-backup style.
@@ -257,7 +258,7 @@ namespace Core.GS.ECS
                     // and the resulting interrupt will last 1.5 seconds."
 
                     long rapidFireMaxDuration = _attackComponent.AttackSpeed(_weapon);
-                    long elapsedTime = GameLoop.GameLoopTime - _owner.TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START); // elapsed time before ready to fire
+                    long elapsedTime = GameLoopMgr.GameLoopTime - _owner.TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START); // elapsed time before ready to fire
 
                     if (elapsedTime < rapidFireMaxDuration)
                     {
@@ -328,7 +329,7 @@ namespace Core.GS.ECS
                 _interval = TICK_INTERVAL_FOR_NON_ATTACK;
 
                 if (RoundWithNoAttackTime == 0)
-                    RoundWithNoAttackTime = GameLoop.GameLoopTime;
+                    RoundWithNoAttackTime = GameLoopMgr.GameLoopTime;
 
                 return false;
             }

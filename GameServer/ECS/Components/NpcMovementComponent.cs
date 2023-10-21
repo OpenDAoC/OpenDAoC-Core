@@ -3,6 +3,7 @@ using System.Numerics;
 using Core.Database.Enums;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Movement;
 
 namespace Core.GS.ECS
@@ -112,7 +113,7 @@ namespace Core.GS.ECS
                     TurnTo(targetPosition.X, targetPosition.Y);
 
                 _movementType |= MovementType.WALK_TO;
-                _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
+                _walkingToEstimatedArrivalTime = GameLoopMgr.GameLoopTime + ticksToArrive;
             }
             else
                 OnArrival();
@@ -364,8 +365,8 @@ namespace Core.GS.ECS
                         long lastAttackTick = Owner.LastAttackTick;
                         long lastAttackedTick = Owner.LastAttackedByEnemyTick;
 
-                        if (GameLoop.GameLoopTime - lastAttackTick > duration &&
-                            GameLoop.GameLoopTime - lastAttackedTick > duration &&
+                        if (GameLoopMgr.GameLoopTime - lastAttackTick > duration &&
+                            GameLoopMgr.GameLoopTime - lastAttackedTick > duration &&
                             lastAttackedTick != 0)
                         {
                             Owner.LastAttackedByEnemyTickPvE = 0;
@@ -451,7 +452,7 @@ namespace Core.GS.ECS
                     else
                     {
                         _movementType |= MovementType.AT_WAYPOINT;
-                        _stopAtWaypointUntil = GameLoop.GameLoopTime + CurrentWaypoint.WaitTime * 100;
+                        _stopAtWaypointUntil = GameLoopMgr.GameLoopTime + CurrentWaypoint.WaitTime * 100;
                     }
                 }
                 else
@@ -514,7 +515,7 @@ namespace Core.GS.ECS
             Owner.X = Owner.X;
             Owner.Y = Owner.Y;
             Owner.Z = Owner.Z;
-            MovementStartTick = GameLoop.GameLoopTime;
+            MovementStartTick = GameLoopMgr.GameLoopTime;
 
             if (targetPosition == null)
                 IsTargetPositionValid = false;

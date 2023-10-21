@@ -8,6 +8,7 @@ using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Spells
@@ -315,14 +316,14 @@ namespace Core.GS.Spells
 			if (Spell.Target == ESpellTarget.AREA)
 			{
 				// always put archer into combat when using area (volley)
-				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+				Caster.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
+				Caster.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 
 				foreach (GameLiving npc in WorldMgr.GetNPCsCloseToSpot(Caster.CurrentRegionID, Caster.GroundTarget.X, Caster.GroundTarget.Y, Caster.GroundTarget.Z, (ushort)Spell.Radius))
 				{
 					if (npc.Realm == 0 || Caster.Realm == 0)
 					{
-						npc.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+						npc.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
 					}
 				}
 			}
@@ -330,13 +331,13 @@ namespace Core.GS.Spells
 			{
 				if (target.Realm == 0 || Caster.Realm == 0)
 				{
-					target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-					Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+					target.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+					Caster.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 				}
 				else
 				{
-					target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-					Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+					target.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+					Caster.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 				}
 			}
 
@@ -416,7 +417,7 @@ namespace Core.GS.Spells
 				if (attacker is GamePlayer) chance = 100;
 				if (Util.Chance((int)chance))
 				{
-					Caster.TempProperties.SetProperty(INTERRUPT_TIMEOUT_PROPERTY, GameLoop.GameLoopTime + Caster.SpellInterruptDuration);
+					Caster.TempProperties.SetProperty(INTERRUPT_TIMEOUT_PROPERTY, GameLoopMgr.GameLoopTime + Caster.SpellInterruptDuration);
 					MessageToLiving(Caster, attacker.GetName(0, true) + " attacks you and your shot is interrupted!", EChatType.CT_SpellResisted);
 					InterruptCasting();
 					return true;

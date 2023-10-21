@@ -1,4 +1,5 @@
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 
 namespace Core.GS.PacketHandler.Client.v168
 {
@@ -17,7 +18,7 @@ namespace Core.GS.PacketHandler.Client.v168
         public void HandlePacket(GameClient client, GsPacketIn packet)
         {
             packet.Skip(4); //Skip the first 4 bytes
-            client.PingTime = GameLoop.GetCurrentTime();
+            client.PingTime = GameLoopMgr.GetCurrentTime();
             ulong timestamp = packet.ReadInt();
             client.Out.SendPingReply(timestamp, packet.Sequence);
         }

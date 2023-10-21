@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using log4net;
@@ -17,7 +18,7 @@ public static class EffectListService
 
     public static void Tick(long tick)
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         List<EffectListComponent> list = EntityMgr.UpdateAndGetAll<EffectListComponent>(EEntityType.EffectListComponent, out int lastValidIndex);
@@ -31,9 +32,9 @@ public static class EffectListService
                 if (effectListComponent?.EntityManagerId.IsSet != true)
                     return;
 
-                long startTick = GameLoop.GetCurrentTime();
+                long startTick = GameLoopMgr.GetCurrentTime();
                 HandleEffects(effectListComponent, tick);
-                long stopTick = GameLoop.GetCurrentTime();
+                long stopTick = GameLoopMgr.GetCurrentTime();
 
                 if (stopTick - startTick > 25)
                     log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
@@ -129,7 +130,7 @@ public static class EffectListService
                             effect.ExpireTick >= (effect.LastTick + (effect.Duration > 0 ? effect.Duration : effect.PulseFreq)))
                         {
                             //Add time to effect to make sure the spell refreshes instead of cancels
-                            effect.ExpireTick += GameLoop.TICK_RATE;
+                            effect.ExpireTick += GameLoopMgr.TICK_RATE;
                             effect.LastTick = tick;
                         }
                         else

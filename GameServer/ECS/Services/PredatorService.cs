@@ -1,5 +1,6 @@
 using System.Linq;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.ECS;
@@ -18,7 +19,7 @@ public class PredatorService
 
     public static void Tick(long tick)
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         if (tick - _lastUpdate > _updateInterval)

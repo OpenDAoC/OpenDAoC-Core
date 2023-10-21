@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using log4net;
 
 namespace Core.GS.ECS;
@@ -15,7 +16,7 @@ public static class ZoneService
 
     public static void Tick()
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         List<ObjectChangingSubZone> list = EntityMgr.UpdateAndGetAll<ObjectChangingSubZone>(EEntityType.ObjectChangingSubZone, out int lastValidIndex);

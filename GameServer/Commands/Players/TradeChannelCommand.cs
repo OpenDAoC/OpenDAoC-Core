@@ -1,5 +1,6 @@
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.Scripts.discord;
 using Core.GS.ServerProperties;
@@ -33,10 +34,10 @@ public class TradeChannelCommand : ACommandHandler, ICommandHandler
         long lastTradeTick = client.Player.TempProperties.GetProperty<long>(tradeTimeoutString);
         int slowModeLength = Properties.TRADE_SLOWMODE_LENGTH * 1000;
 
-        if ((GameLoop.GameLoopTime - lastTradeTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
+        if ((GameLoopMgr.GameLoopTime - lastTradeTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
         {
             // Message: You must wait {0} seconds before using this command again.
-            ChatUtil.SendSystemMessage(client, "PLCommands.Trade.List.Wait", Properties.TRADE_SLOWMODE_LENGTH - (GameLoop.GameLoopTime - lastTradeTick) / 1000);
+            ChatUtil.SendSystemMessage(client, "PLCommands.Trade.List.Wait", Properties.TRADE_SLOWMODE_LENGTH - (GameLoopMgr.GameLoopTime - lastTradeTick) / 1000);
             return;
         }
 
@@ -53,6 +54,6 @@ public class TradeChannelCommand : ACommandHandler, ICommandHandler
             WebhookMessage.LogChatMessage(player, EChatType.CT_Trade, message);
 
         if (player.Client.Account.PrivLevel == 1)
-            player.Client.Player.TempProperties.SetProperty(tradeTimeoutString, GameLoop.GameLoopTime);
+            player.Client.Player.TempProperties.SetProperty(tradeTimeoutString, GameLoopMgr.GameLoopTime);
     }
 }

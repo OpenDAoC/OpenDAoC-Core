@@ -4,6 +4,7 @@ using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -270,11 +271,11 @@ namespace Core.GS.Spells
 			SendDamageMessages(ad);
 			if (ad.Attacker.Realm == 0)
 			{
-				ad.Target.LastAttackTickPvE = GameLoop.GameLoopTime;
+				ad.Target.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 			}
 			else
 			{
-				ad.Target.LastAttackTickPvP = GameLoop.GameLoopTime;
+				ad.Target.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 			}
 			DamageTarget(ad, false);
 

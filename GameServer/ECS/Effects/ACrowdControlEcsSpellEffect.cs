@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.GS.Spells;
@@ -47,9 +48,9 @@ public abstract class ACrowdControlEcsSpellEffect : EcsGameSpellEffect
         UpdatePlayerStatus();
 
         if (SpellHandler.Caster is GamePlayer)
-            Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+            Owner.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
         else
-            Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+            Owner.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
     }
 
     protected void UpdatePlayerStatus()

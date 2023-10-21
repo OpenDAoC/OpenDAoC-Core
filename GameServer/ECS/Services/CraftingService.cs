@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using log4net;
 
 namespace Core.GS.ECS;
@@ -14,7 +15,7 @@ public static class CraftingService
 
     public static void Tick(long tick)
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         List<CraftComponent> list = EntityMgr.UpdateAndGetAll<CraftComponent>(EEntityType.CraftComponent, out int lastValidIndex);

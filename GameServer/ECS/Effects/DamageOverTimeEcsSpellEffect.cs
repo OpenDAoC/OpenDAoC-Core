@@ -1,4 +1,5 @@
 ﻿using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 
@@ -9,7 +10,7 @@ public class DamageOverTimeEcsSpellEffect : EcsGameSpellEffect
     public DamageOverTimeEcsSpellEffect(EcsGameEffectInitParams initParams)
         : base(initParams) 
     {
-        NextTick = GameLoop.GameLoopTime;
+        NextTick = GameLoopMgr.GameLoopTime;
     }
 
     public override void OnStartEffect()
@@ -74,7 +75,7 @@ public class DamageOverTimeEcsSpellEffect : EcsGameSpellEffect
                     return;
                 }
 
-                if (StartTick + PulseFreq > GameLoop.GameLoopTime && Owner.TempProperties.GetProperty<int>(StyleBleedingEffect.BLEED_VALUE_PROPERTY) < bleedHandler.Spell.Damage)
+                if (StartTick + PulseFreq > GameLoopMgr.GameLoopTime && Owner.TempProperties.GetProperty<int>(StyleBleedingEffect.BLEED_VALUE_PROPERTY) < bleedHandler.Spell.Damage)
                 {
                     Owner.TempProperties.SetProperty(StyleBleedingEffect.BLEED_VALUE_PROPERTY, (int)bleedHandler.Spell.Damage); 
                 }
@@ -111,14 +112,14 @@ public class DamageOverTimeEcsSpellEffect : EcsGameSpellEffect
             }
 
             if (Owner.Realm == 0 || SpellHandler.Caster.Realm == 0)
-                Owner.LastAttackTickPvE = GameLoop.GameLoopTime;
+                Owner.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
             else
-                Owner.LastAttackTickPvP = GameLoop.GameLoopTime;
+                Owner.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
         }
 
         if (LastTick == 0)
         {
-            LastTick = GameLoop.GameLoopTime;
+            LastTick = GameLoopMgr.GameLoopTime;
             NextTick = LastTick + PulseFreq;
         }
         else

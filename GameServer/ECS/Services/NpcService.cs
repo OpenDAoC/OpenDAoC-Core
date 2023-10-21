@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using log4net;
 
 namespace Core.GS.ECS;
@@ -22,7 +23,7 @@ public static class NpcService
 
     public static void Tick(long tick)
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         if (Debug)
@@ -60,9 +61,9 @@ public static class NpcService
                         return;
                     }
 
-                    long startTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoopMgr.GetCurrentTime();
                     brain.Think();
-                    long stopTick = GameLoop.GetCurrentTime();
+                    long stopTick = GameLoopMgr.GetCurrentTime();
 
                     if (stopTick - startTick > 25)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
@@ -71,7 +72,7 @@ public static class NpcService
 
                     // Offset LastThinkTick for non-controlled mobs so that 'Think' ticks are not all "grouped" in one server tick.
                     if (brain is not ControlledNpcBrain)
-                        brain.LastThinkTick += Util.Random(-2, 2) * GameLoop.TICK_RATE;
+                        brain.LastThinkTick += Util.Random(-2, 2) * GameLoopMgr.TICK_RATE;
                 }
 
                 npc.movementComponent.Tick(tick);

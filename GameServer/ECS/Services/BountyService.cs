@@ -1,3 +1,5 @@
+using Core.GS.GameLoop;
+
 namespace Core.GS.ECS;
 
 public class BountyService
@@ -13,7 +15,7 @@ public class BountyService
 
     public static void Tick(long tick)
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         if (tick - _lastUpdate > _updateInterval)

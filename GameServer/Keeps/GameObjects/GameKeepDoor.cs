@@ -5,6 +5,7 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using log4net;
@@ -573,7 +574,7 @@ namespace Core.GS.Keeps
 			m_repairTimer = new AuxEcsGameTimer(this);
 			m_repairTimer.Callback = new AuxEcsGameTimer.AuxECSTimerCallback(RepairTimerCallback);
 			m_repairTimer.Start(REPAIR_INTERVAL);
-			m_repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL; // Skip the first tick to avoid repairing on server start.
+			m_repairTimer.StartTick = GameLoopMgr.GetCurrentTime() + REPAIR_INTERVAL; // Skip the first tick to avoid repairing on server start.
 		}
 
 		public void DeleteObject()

@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using log4net;
 
 namespace Core.GS.ECS;
@@ -21,7 +22,7 @@ public class TimerService
 
     public static void Tick(long tick)
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         if (Debug)
@@ -51,9 +52,9 @@ public class TimerService
             {
                 if (timer.NextTick < tick)
                 {
-                    long startTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoopMgr.GetCurrentTime();
                     timer.Tick();
-                    long stopTick = GameLoop.GetCurrentTime();
+                    long stopTick = GameLoopMgr.GetCurrentTime();
 
                     if (stopTick - startTick > 25)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
@@ -86,7 +87,7 @@ public class EcsGameTimer : IManagedEntity
     public long StartTick { get; set; }
     public long NextTick => StartTick + Interval;
     public bool IsAlive { get; set; }
-    public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
+    public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoopMgr.GameLoopTime);
     public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.Timer, false);
     private PropertyCollection _properties;
 
@@ -117,7 +118,7 @@ public class EcsGameTimer : IManagedEntity
 
     public void Start(int interval)
     {
-        StartTick = GameLoop.GameLoopTime;
+        StartTick = GameLoopMgr.GameLoopTime;
         Interval = interval;
 
         if (EntityMgr.Add(this))
@@ -132,7 +133,7 @@ public class EcsGameTimer : IManagedEntity
 
     public void Tick()
     {
-        StartTick = GameLoop.GameLoopTime;
+        StartTick = GameLoopMgr.GameLoopTime;
 
         if (Callback != null)
             Interval = Callback.Invoke(this);

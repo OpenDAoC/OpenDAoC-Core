@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -88,11 +89,11 @@ public class RangeAttackComponent
             // Failsafe, but it should never happen.
             if (attackStart == 0)
             {
-                attackStart = GameLoop.GameLoopTime;
+                attackStart = GameLoopMgr.GameLoopTime;
                 playerOwner.TempProperties.SetProperty(RANGED_ATTACK_START, attackStart);
             }
 
-            if ((GameLoop.GameLoopTime - attackStart) > MAX_DRAW_DURATION && playerOwner.ActiveWeapon.Object_Type != (int)EObjectType.Crossbow)
+            if ((GameLoopMgr.GameLoopTime - attackStart) > MAX_DRAW_DURATION && playerOwner.ActiveWeapon.Object_Type != (int)EObjectType.Crossbow)
             {
                 playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooTired"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return ECheckRangeAttackStateResult.Stop;

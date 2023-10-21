@@ -8,6 +8,7 @@ using Core.Base;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
+using Core.GS.GameLoop;
 using Core.GS.ServerProperties;
 using log4net;
 
@@ -29,7 +30,7 @@ namespace Core.GS.ECS
 
         public static void Tick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
+            GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             using (_lock.GetWrite())
@@ -69,17 +70,17 @@ namespace Core.GS.ECS
                         {
                             try
                             {
-                                if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                                if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                                 {
-                                    long startTick = GameLoop.GetCurrentTime();
+                                    long startTick = GameLoopMgr.GetCurrentTime();
                                     UpdateWorld(player);
-                                    long stopTick = GameLoop.GetCurrentTime();
+                                    long stopTick = GameLoopMgr.GetCurrentTime();
 
                                     if (stopTick - startTick > 25)
                                         log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
                                 }
 
-                                player.movementComponent.Tick(GameLoop.GameLoopTime);
+                                player.movementComponent.Tick(GameLoopMgr.GameLoopTime);
                             }
                             catch (Exception e)
                             {
@@ -98,9 +99,9 @@ namespace Core.GS.ECS
 
                 try
                 {
-                    long startTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoopMgr.GetCurrentTime();
                     client.PacketProcessor.ProcessTcpQueue();
-                    long stopTick = GameLoop.GetCurrentTime();
+                    long stopTick = GameLoopMgr.GetCurrentTime();
 
                     if (stopTick - startTick > 25)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(client.PacketProcessor.ProcessTcpQueue)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
@@ -441,26 +442,26 @@ namespace Core.GS.ECS
         {
             if (player.NpcUpdateCache.TryGetValue(npc, out CachedNpcValues cachedNpcValues))
             {
-                cachedNpcValues.Time = GameLoop.GameLoopTime;
+                cachedNpcValues.Time = GameLoopMgr.GameLoopTime;
                 cachedNpcValues.HealthPercent =  npc.HealthPercent;
             }
             else
-                player.NpcUpdateCache[npc] = new CachedNpcValues(GameLoop.GameLoopTime, npc.HealthPercent);
+                player.NpcUpdateCache[npc] = new CachedNpcValues(GameLoopMgr.GameLoopTime, npc.HealthPercent);
         }
 
         private static void AddItemToPlayerCache(GamePlayer player, GameStaticItem item)
         {
-            player.ItemUpdateCache[item] = GameLoop.GameLoopTime;
+            player.ItemUpdateCache[item] = GameLoopMgr.GameLoopTime;
         }
 
         private static void AddDoorToPlayerCache(GamePlayer player, GameDoorBase door)
         {
-            player.DoorUpdateCache[door] = GameLoop.GameLoopTime;
+            player.DoorUpdateCache[door] = GameLoopMgr.GameLoopTime;
         }
 
         private static void AddHouseToPlayerCache(GamePlayer player, House house)
         {
-            player.HouseUpdateCache[house] = GameLoop.GameLoopTime;
+            player.HouseUpdateCache[house] = GameLoopMgr.GameLoopTime;
         }
 
         private static void AddObjectToPlayerCache(GamePlayer player, GameObject gameObject)
@@ -514,7 +515,7 @@ namespace Core.GS.ECS
 
         private static void CheckPingTimeout(GameClient client)
         {
-            if (client.PingTime + PING_TIMEOUT < GameLoop.GetCurrentTime())
+            if (client.PingTime + PING_TIMEOUT < GameLoopMgr.GetCurrentTime())
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Ping timeout for client {client}");
@@ -525,7 +526,7 @@ namespace Core.GS.ECS
 
         private static void CheckHardTimeout(GameClient client)
         {
-            if (client.PingTime + HARD_TIMEOUT < GameLoop.GetCurrentTime())
+            if (client.PingTime + HARD_TIMEOUT < GameLoopMgr.GetCurrentTime())
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Hard timeout for client {client}");
@@ -541,7 +542,7 @@ namespace Core.GS.ECS
             UpdateItems(player);
             UpdateDoors(player);
             UpdateHouses(player);
-            player.LastWorldUpdate = GameLoop.GameLoopTime;
+            player.LastWorldUpdate = GameLoopMgr.GameLoopTime;
         }
 
         private static void UpdateNpcs(GamePlayer player)
@@ -569,9 +570,9 @@ namespace Core.GS.ECS
 
                 if (!npcUpdateCache.TryGetValue(objectInRange, out CachedNpcValues cachedNpcValues))
                     UpdateObjectForPlayer(player, objectInRange);
-                else if (cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                     UpdateObjectForPlayer(player, objectInRange);
-                else if (cachedNpcValues.Time + 250 < GameLoop.GameLoopTime)
+                else if (cachedNpcValues.Time + 250 < GameLoopMgr.GameLoopTime)
                 {
                     // `GameNPC.HealthPercent` is a bit of an expensive call. Do it last.
                     if (objectInRange == targetObject)
@@ -642,7 +643,7 @@ namespace Core.GS.ECS
                     CreateObjectForPlayer(player, doorInRange);
                     player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange);
                 }
-                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                     UpdateObjectForPlayer(player, doorInRange);
             }
         }
@@ -673,7 +674,7 @@ namespace Core.GS.ECS
                     player.Client.Out.SendGarden(house);
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
                 }
-                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
 
                 AddHouseToPlayerCache(player, house);

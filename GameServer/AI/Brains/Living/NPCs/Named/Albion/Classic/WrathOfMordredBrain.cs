@@ -1,5 +1,6 @@
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 
 namespace Core.GS.AI.Brains;
 
@@ -37,7 +38,7 @@ public class WrathOfMordredBrain : StandardMobBrain
 				{
 					AttackAction attackAction = Body.attackComponent.attackAction;
 
-					if (attackAction != null && attackAction.StartTime - GameLoop.GameLoopTime <= 800 && CanWalk == false)
+					if (attackAction != null && attackAction.StartTime - GameLoopMgr.GameLoopTime <= 800 && CanWalk == false)
 					{
 						Body.styleComponent.NextCombatStyle = null;
 						Body.styleComponent.NextCombatBackupStyle = null;

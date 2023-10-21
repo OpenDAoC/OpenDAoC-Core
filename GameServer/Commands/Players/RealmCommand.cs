@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.ServerRules;
 using Core.Language;
@@ -128,9 +129,9 @@ public class RealmCommand : ACommandHandler, ICommandHandler
 		else
 		{
 			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.DarknessFalls") + ": " + GlobalConstants.RealmToName(DfEnterJumpPoint.DarknessFallOwner));
-			if (DfEnterJumpPoint.LastRealmSwapTick + DfEnterJumpPoint.GracePeriod >= GameLoop.GameLoopTime)
+			if (DfEnterJumpPoint.LastRealmSwapTick + DfEnterJumpPoint.GracePeriod >= GameLoopMgr.GameLoopTime)
 			{
-				var pve = DfEnterJumpPoint.LastRealmSwapTick + DfEnterJumpPoint.GracePeriod - GameLoop.GameLoopTime;
+				var pve = DfEnterJumpPoint.LastRealmSwapTick + DfEnterJumpPoint.GracePeriod - GameLoopMgr.GameLoopTime;
 				string realmName = "";
 				if (DfEnterJumpPoint.PreviousOwner == ERealm._LastPlayerRealm || 
 				    DfEnterJumpPoint.PreviousOwner == ERealm.Hibernia)

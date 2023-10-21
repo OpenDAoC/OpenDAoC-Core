@@ -1,5 +1,6 @@
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Spells;
 
 namespace Core.GS.ECS;
@@ -94,8 +95,8 @@ public class EcsGameEffect : IManagedEntity
         RenewEffect = false;
         IsDisabled = false;
         IsBuffActive = false;
-        ExpireTick = Duration + GameLoop.GameLoopTime;
-        StartTick = GameLoop.GameLoopTime;
+        ExpireTick = Duration + GameLoopMgr.GameLoopTime;
+        StartTick = GameLoopMgr.GameLoopTime;
         LastTick = 0;
         NextTick = 0;
         SpellHandler = initParams.SpellHandler;
@@ -103,7 +104,7 @@ public class EcsGameEffect : IManagedEntity
 
     public virtual long GetRemainingTimeForClient()
     {
-        return Duration > 0 ? ExpireTick - GameLoop.GameLoopTime : 0;
+        return Duration > 0 ? ExpireTick - GameLoopMgr.GameLoopTime : 0;
     }
 
     public virtual bool IsConcentrationEffect() { return false; }

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Core.GS.Crafting;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.Language;
 using log4net;
@@ -23,7 +24,7 @@ namespace Core.GS.ECS
         public CraftAction(GamePlayer owner, int CraftingTime, RecipeMgr recipe, ACraftingSkill skill)
         {
             _owner = owner;
-            _startTick = GameLoop.GameLoopTime;
+            _startTick = GameLoopMgr.GameLoopTime;
             _craftTime = CraftingTime * 1000;
             _recipe = recipe;
             _skill = skill;
@@ -117,7 +118,7 @@ namespace Core.GS.ECS
                 if (skill.CheckRawMaterials(player, recipe))
                 {
                     player.TempProperties.SetProperty("CraftQueueRemaining", --remainingToCraft);
-                    _startTick = GameLoop.GameLoopTime + 1;
+                    _startTick = GameLoopMgr.GameLoopTime + 1;
                     player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), skill.GetCraftingTime(player, recipe));
                     _finishedCraft = false;
                     player.craftComponent.AddRecipe(recipe);

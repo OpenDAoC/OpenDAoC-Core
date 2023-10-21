@@ -3,6 +3,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 
 namespace Core.GS;
 
@@ -42,9 +43,9 @@ public class TurretPet : GameSummonedPet
         TargetObject = attackTarget;
 
         if (TargetObject.Realm == 0 || Realm == 0)
-            m_lastAttackTickPvE = GameLoop.GameLoopTime;
+            m_lastAttackTickPvE = GameLoopMgr.GameLoopTime;
         else
-            m_lastAttackTickPvP = GameLoop.GameLoopTime;
+            m_lastAttackTickPvP = GameLoopMgr.GameLoopTime;
 
         if (Brain is TurretMainPetTankBrain)
             attackComponent.RequestStartAttack(TargetObject);

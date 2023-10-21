@@ -8,6 +8,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using log4net;
 
@@ -530,7 +531,7 @@ namespace Core.GS.Quests
                     EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return false;
             }
-            if (player.TempProperties.GetProperty<int>(CHECK_TASK_TICK) > GameLoop.GameLoopTime)
+            if (player.TempProperties.GetProperty<int>(CHECK_TASK_TICK) > GameLoopMgr.GameLoopTime)
             {
                 player.Out.SendMessage(
                     "I have no tasks for you at the moment. Come back sometime later, perhaps then you can help me with something.",
@@ -546,7 +547,7 @@ namespace Core.GS.Quests
                 "I have no tasks for you at the moment. Come back sometime later, perhaps then you can help me with something.",
                 EChatType.CT_Say, EChatLoc.CL_PopupWindow);
             // stored time of try to disable task for defined time.
-            player.TempProperties.SetProperty(CHECK_TASK_TICK, GameLoop.GameLoopTime + CHECK_TASK_DELAY);
+            player.TempProperties.SetProperty(CHECK_TASK_TICK, GameLoopMgr.GameLoopTime + CHECK_TASK_DELAY);
             return false;
             
         }

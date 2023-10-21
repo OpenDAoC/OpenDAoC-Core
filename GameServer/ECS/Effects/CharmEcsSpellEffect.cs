@@ -3,6 +3,7 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;
@@ -99,7 +100,7 @@ public class CharmEcsSpellEffect : EcsGameSpellEffect
                     newBrain.FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
                     newBrain.AddToAggroList(SpellHandler.Caster, SpellHandler.Caster.Level * 10);
                     charmMob.StartAttack(SpellHandler.Caster);
-                    charmMob.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                    charmMob.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
                 }
                 else if (charmMob.IsWithinRadius(charmMob.SpawnPoint, 5000))
                     charmMob.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
@@ -118,7 +119,7 @@ public class CharmEcsSpellEffect : EcsGameSpellEffect
                     aggressiveBrain.RemoveFromAggroList(charmMob);
                     aggressiveBrain.AddToAggroList(casterPlayer, casterPlayer.Level * 10);
                     npcAttacker.StartAttack(casterPlayer);
-                    npcAttacker.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                    npcAttacker.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
                 }
             }
 

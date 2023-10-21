@@ -11,6 +11,7 @@ using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.Language;
@@ -426,7 +427,7 @@ namespace Core.GS.Keeps
 		{
 			get
 			{
-				return GameLoop.GameLoopTime - LastAttackedByEnemyTick < 10 * 1000;
+				return GameLoopMgr.GameLoopTime - LastAttackedByEnemyTick < 10 * 1000;
 			}
 		}
 		#endregion

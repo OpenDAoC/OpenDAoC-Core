@@ -9,6 +9,7 @@ using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler.Client.v168;
 using Core.Language;
@@ -273,11 +274,11 @@ namespace Core.GS.Commands
 
 					if (target.InCombat || target.attackComponent.AttackState)
 					{
-						info.Add("RegionTick: " + GameLoop.GameLoopTime);
+						info.Add("RegionTick: " + GameLoopMgr.GameLoopTime);
 						if(target.attackComponent.attackAction != null)
 						{
 							info.Add("AttackAction StartTime " + target.attackComponent.attackAction.StartTime);
-							info.Add("AttackAction TimeUntilStart " + (target.attackComponent.attackAction.StartTime - GameLoop.GameLoopTime));
+							info.Add("AttackAction TimeUntilStart " + (target.attackComponent.attackAction.StartTime - GameLoopMgr.GameLoopTime));
 						}
 					}
 

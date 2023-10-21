@@ -11,6 +11,7 @@ using Core.Events;
 using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.ServerProperties;
 using log4net;
@@ -496,7 +497,7 @@ namespace Core.GS
         /// </summary>
         public virtual long Time
         {
-            get { return GameLoop.GameLoopTime; }
+            get { return GameLoopMgr.GameLoopTime; }
         }
 
         protected bool m_isDisabled = false;

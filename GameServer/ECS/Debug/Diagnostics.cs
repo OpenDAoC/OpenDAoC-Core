@@ -7,6 +7,7 @@ using Core.Events;
 using Core.GS.Commands;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 
 namespace Core.GS.ECS;
 
@@ -53,12 +54,12 @@ public static class Diagnostics
 
     public static void Tick()
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         ReportPerfCounters();
 
         if (GameEventMgrNotifyProfilingEnabled)
         {
-            if ((GameLoop.GetCurrentTime() - GameEventMgrNotifyTimerStartTick) > GameEventMgrNotifyTimerInterval)
+            if ((GameLoopMgr.GetCurrentTime() - GameEventMgrNotifyTimerStartTick) > GameEventMgrNotifyTimerInterval)
                 ReportGameEventMgrNotifyTimes();
         }
     }
@@ -162,7 +163,7 @@ public static class Diagnostics
 
         GameEventMgrNotifyProfilingEnabled = true;
         GameEventMgrNotifyTimerInterval = IntervalMilliseconds;
-        GameEventMgrNotifyTimerStartTick = GameLoop.GetCurrentTime();
+        GameEventMgrNotifyTimerStartTick = GameLoopMgr.GetCurrentTime();
     }
 
     public static void StopGameEventMgrNotifyTimeReporting()
@@ -176,7 +177,7 @@ public static class Diagnostics
 
     private static void ReportGameEventMgrNotifyTimes()
     {
-        string ActualInterval = Util.TruncateString((GameLoop.GetCurrentTime() - GameEventMgrNotifyTimerStartTick).ToString(), 5);
+        string ActualInterval = Util.TruncateString((GameLoopMgr.GetCurrentTime() - GameEventMgrNotifyTimerStartTick).ToString(), 5);
         Console.WriteLine($"==== GameEventMgr Notify() Costs (Requested Interval: {GameEventMgrNotifyTimerInterval}ms | Actual Interval: {ActualInterval}ms) ====");
 
         lock (_GameEventMgrNotifyLock)
@@ -211,7 +212,7 @@ public static class Diagnostics
             }
 
             GameEventMgrNotifyTimes.Clear();
-            GameEventMgrNotifyTimerStartTick = GameLoop.GetCurrentTime();
+            GameEventMgrNotifyTimerStartTick = GameLoopMgr.GetCurrentTime();
             Console.WriteLine("---------------------------------------------------------------------------");
         }
     }
@@ -247,7 +248,7 @@ public class ECSDiagnosticsCommandHandler : ACommandHandler, ICommandHandler
 
         if (args[1].ToLower().Equals("currentservicetick"))
         {
-            DisplayMessage(client, "Gameloop CurrentService Tick: " + GameLoop.CurrentServiceTick);
+            DisplayMessage(client, "Gameloop CurrentService Tick: " + GameLoopMgr.CurrentServiceTick);
             return;
         }
 

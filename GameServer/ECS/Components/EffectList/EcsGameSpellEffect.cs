@@ -1,6 +1,7 @@
 using Core.Database.Tables;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 
@@ -178,7 +179,7 @@ public class EcsGameSpellEffect : EcsGameEffect, IConcentrationEffect
         eff.Var3 = (int)SpellHandler.Spell.Value;
 
         if (Duration > 0)
-            eff.Duration = (int)(ExpireTick - GameLoop.GameLoopTime);
+            eff.Duration = (int)(ExpireTick - GameLoopMgr.GameLoopTime);
         else
             eff.Duration = 30 * 60 * 1000;
 

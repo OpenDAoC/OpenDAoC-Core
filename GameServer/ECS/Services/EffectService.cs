@@ -9,6 +9,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Database;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;
@@ -23,7 +24,7 @@ namespace Core.GS.ECS
 
         public static void Tick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
+            GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             List<EcsGameEffect> list = EntityMgr.UpdateAndGetAll<EcsGameEffect>(EEntityType.Effect, out int lastValidIndex);
@@ -37,7 +38,7 @@ namespace Core.GS.ECS
                     if (effect?.EntityManagerId.IsSet != true)
                         return;
 
-                    long startTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoopMgr.GetCurrentTime();
 
                     if (effect.CancelEffect || effect.IsDisabled)
                         HandleCancelEffect(effect);
@@ -46,7 +47,7 @@ namespace Core.GS.ECS
 
                     EntityMgr.Remove(effect);
 
-                    long stopTick = GameLoop.GetCurrentTime();
+                    long stopTick = GameLoopMgr.GetCurrentTime();
 
                     if (stopTick - startTick > 25)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Effect: {effect}  Owner: {effect.OwnerName} Time: {stopTick - startTick}ms");
@@ -286,7 +287,7 @@ namespace Core.GS.ECS
             }
 
             effect.CancelEffect = true;
-            effect.ExpireTick = GameLoop.GameLoopTime - 1;
+            effect.ExpireTick = GameLoopMgr.GameLoopTime - 1;
             EntityMgr.Add(effect);
         }
 
@@ -323,7 +324,7 @@ namespace Core.GS.ECS
 
             // playerCanceled param isn't used but it's there in case we eventually want to...
             effect.CancelEffect = true;
-            effect.ExpireTick = GameLoop.GameLoopTime - 1;
+            effect.ExpireTick = GameLoopMgr.GameLoopTime - 1;
             HandleCancelEffect(effect);
         }
 

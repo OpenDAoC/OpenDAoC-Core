@@ -1,5 +1,6 @@
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -29,10 +30,10 @@ namespace Core.GS.AI.Brains
 
         private void CheckForAnimation()
         {
-            if (_lastAnimationTick + ANIMATION_INTERVAL > GameLoop.GameLoopTime)
+            if (_lastAnimationTick + ANIMATION_INTERVAL > GameLoopMgr.GameLoopTime)
                 return;
 
-            _lastAnimationTick = GameLoop.GameLoopTime;
+            _lastAnimationTick = GameLoopMgr.GameLoopTime;
 
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {

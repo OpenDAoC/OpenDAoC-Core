@@ -5,6 +5,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.PlayerClass;
 using Core.GS.ServerProperties;
@@ -35,7 +36,7 @@ namespace Core.GS.Keeps
                 if (Realm == ERealm.None && GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
                     return 0;
 
-                long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
+                long duration = (GameLoopMgr.GameLoopTime - m_lastSpawnTime) / 1000L;
 
                 if (duration < Properties.LORD_RP_WORTH_SECONDS)
                 {
@@ -61,7 +62,7 @@ namespace Core.GS.Keeps
                 if (Realm == ERealm.None && GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvE)
                     return 0;
 
-                long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
+                long duration = (GameLoopMgr.GameLoopTime - m_lastSpawnTime) / 1000L;
                 if (duration < Properties.LORD_RP_WORTH_SECONDS)
                 {
                     return 0;
@@ -80,7 +81,7 @@ namespace Core.GS.Keeps
         {
             get
             {
-                long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
+                long duration = (GameLoopMgr.GameLoopTime - m_lastSpawnTime) / 1000L;
                 if (duration < Properties.LORD_RP_WORTH_SECONDS)
                 {
                     return 0;
@@ -112,7 +113,7 @@ namespace Core.GS.Keeps
         {
             get
             {
-                long duration = (GameLoop.GameLoopTime - m_lastSpawnTime) / 1000L;
+                long duration = (GameLoopMgr.GameLoopTime - m_lastSpawnTime) / 1000L;
                 if (duration < Properties.LORD_RP_WORTH_SECONDS)
                 {
                     return 0;
@@ -250,7 +251,7 @@ namespace Core.GS.Keeps
             if (base.AddToWorld())
             {
                 m_lastRealm = Realm;
-                m_lastSpawnTime = GameLoop.GameLoopTime;
+                m_lastSpawnTime = GameLoopMgr.GameLoopTime;
                 return true;
             }
 

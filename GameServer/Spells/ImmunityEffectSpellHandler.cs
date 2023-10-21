@@ -1,5 +1,6 @@
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 
 namespace Core.GS.Spells
 {
@@ -36,13 +37,13 @@ namespace Core.GS.Spells
 
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
-				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+				target.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+				Caster.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 			}
 			else
 			{
-				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+				target.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+				Caster.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 			}
 
 			base.ApplyEffectOnTarget(target);

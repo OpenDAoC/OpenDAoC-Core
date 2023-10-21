@@ -1,3 +1,5 @@
+using Core.GS.GameLoop;
+
 namespace Core.GS.ECS;
 
 public class ConquestService
@@ -15,7 +17,7 @@ public class ConquestService
 
     public static void Tick()
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         long fullCycle = ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000; //ServerProperties.Properties.MAX_CONQUEST_INTERVAL
@@ -31,18 +33,18 @@ public class ConquestService
             return;
         }
 
-        if (ConquestManager.LastConquestStartTime + fullCycle < GameLoop.GameLoopTime)
+        if (ConquestManager.LastConquestStartTime + fullCycle < GameLoopMgr.GameLoopTime)
             ConquestManager.BeginNextConquest(); //start a new conquest if we're due
 
-        if (ActiveObjective.LastRolloverTick + tallyCycle < GameLoop.GameLoopTime)
+        if (ActiveObjective.LastRolloverTick + tallyCycle < GameLoopMgr.GameLoopTime)
             ConquestManager.ActiveObjective.DoPeriodicReward(); //award anyone who has participated so far
 
-        if (ConquestManager.LastConquestWindowStart + subCycle < GameLoop.GameLoopTime)
+        if (ConquestManager.LastConquestWindowStart + subCycle < GameLoopMgr.GameLoopTime)
             ConquestManager.ResetConquestWindow(); //clear participants of conquest + predator
 
         ConquestManager.ActiveObjective.CheckNearbyPlayers();
 
-        lastCheckTick = GameLoop.GameLoopTime;
+        lastCheckTick = GameLoopMgr.GameLoopTime;
         //Console.WriteLine($"conquest heartbeat {GameLoop.GameLoopTime} countdown {GameLoop.GameLoopTime - (ConquestManager.LastTaskRolloverTick + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 10000)}");
 
         Diagnostics.StopPerfCounter(SERVICE_NAME);
@@ -51,16 +53,16 @@ public class ConquestService
     public static bool IsOverHalfwayDone()
     {
         long fullCycle = ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000; //ServerProperties.Properties.MAX_CONQUEST_INTERVAL
-        return (ConquestManager.LastConquestStartTime + (fullCycle / 2)) < GameLoop.GameLoopTime;
+        return (ConquestManager.LastConquestStartTime + (fullCycle / 2)) < GameLoopMgr.GameLoopTime;
     }
 
     public static long GetTicksUntilContributionReset()
     {
-        return ConquestManager.LastConquestWindowStart + (ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000 / 6) - GameLoop.GameLoopTime;
+        return ConquestManager.LastConquestWindowStart + (ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000 / 6) - GameLoopMgr.GameLoopTime;
     }
 
     public static long GetTicksUntilNextAward()
     {
-        return ConquestManager.ActiveObjective.LastRolloverTick + ServerProperties.Properties.CONQUEST_TALLY_INTERVAL * 1000 - GameLoop.GameLoopTime;
+        return ConquestManager.ActiveObjective.LastRolloverTick + ServerProperties.Properties.CONQUEST_TALLY_INTERVAL * 1000 - GameLoopMgr.GameLoopTime;
     }
 }

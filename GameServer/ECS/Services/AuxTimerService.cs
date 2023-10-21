@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using log4net;
 
 namespace Core.GS.ECS;
@@ -30,9 +31,9 @@ public class AuxTimerService
 
                 if (timer.NextTick < tick)
                 {
-                    long startTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoopMgr.GetCurrentTime();
                     timer.Tick();
-                    long stopTick = GameLoop.GetCurrentTime();
+                    long stopTick = GameLoopMgr.GetCurrentTime();
 
                     if (stopTick - startTick > 25)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
@@ -61,7 +62,7 @@ public class AuxEcsGameTimer : IManagedEntity
     public long StartTick { get; set; }
     public long NextTick => StartTick + Interval;
     public bool IsAlive { get; set; }
-    public int TimeUntilElapsed => (int) (StartTick + Interval - AuxGameLoop.GameLoopTime);
+    public int TimeUntilElapsed => (int) (StartTick + Interval - AuxGameLoopMgr.GameLoopTime);
     public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.AuxTimer, false);
     private PropertyCollection _properties;
 
@@ -92,7 +93,7 @@ public class AuxEcsGameTimer : IManagedEntity
 
     public void Start(int interval)
     {
-        StartTick = AuxGameLoop.GameLoopTime;
+        StartTick = AuxGameLoopMgr.GameLoopTime;
         Interval = interval;
 
         if (EntityMgr.Add(this))
@@ -107,7 +108,7 @@ public class AuxEcsGameTimer : IManagedEntity
 
     public void Tick()
     {
-        StartTick = AuxGameLoop.GameLoopTime;
+        StartTick = AuxGameLoopMgr.GameLoopTime;
 
         if (Callback != null)
             Interval = Callback.Invoke(this);

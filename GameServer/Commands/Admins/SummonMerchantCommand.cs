@@ -3,6 +3,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Commands
@@ -28,7 +29,7 @@ namespace Core.GS.Commands
         {
             var player = client.Player;
             var merchTick = player.TempProperties.GetProperty(SummonMerch, 0L);
-            var changeTime = GameLoop.GameLoopTime - merchTick;
+            var changeTime = GameLoopMgr.GameLoopTime - merchTick;
             if (changeTime < 30000)
             {
                 player.Out.SendMessage(
@@ -36,7 +37,7 @@ namespace Core.GS.Commands
                     EChatType.CT_System, EChatLoc.CL_ChatWindow);
                 return;
             }
-            player.TempProperties.SetProperty(SummonMerch, GameLoop.GameLoopTime);
+            player.TempProperties.SetProperty(SummonMerch, GameLoopMgr.GameLoopTime);
 
             #endregion Command timer
             

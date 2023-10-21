@@ -15,6 +15,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.Scripts;
@@ -1416,7 +1417,7 @@ namespace Core.GS.ServerRules
 
 			double campBonusPerc = 0;
 
-			if (GameLoop.GameLoopTime - killedNPC.SpawnTick >
+			if (GameLoopMgr.GameLoopTime - killedNPC.SpawnTick >
 			    1800000) // spawn of this NPC was more than 30 minutes ago -> full camp bonus
 			{
 				campBonusPerc = fullCampBonus;

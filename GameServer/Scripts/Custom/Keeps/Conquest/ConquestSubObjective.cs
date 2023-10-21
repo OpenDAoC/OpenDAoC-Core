@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 
@@ -33,7 +34,7 @@ public class ConquestSubObjective
         FlagObject.Y = y;
         FlagObject.Z = z;
         FlagObject.CurrentRegion = WorldMgr.GetRegion(keep.Region);
-        FlagObject.SpawnTick = GameLoop.GameLoopTime;
+        FlagObject.SpawnTick = GameLoopMgr.GameLoopTime;
         FlagObject.Realm = keep.Realm;
         FlagObject.AddToWorld();
 

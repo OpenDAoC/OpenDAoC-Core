@@ -7,6 +7,7 @@ using Core.Database.Tables;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Expansions.LabyrinthOfTheMinotaur;
+using Core.GS.GameLoop;
 using Core.GS.Utils;
 using Core.Language;
 using log4net;
@@ -53,7 +54,7 @@ namespace Core.GS.PacketHandler.Client.v168
 					rider.Y = steed.Y;
 					rider.Z = steed.Z;
 					rider.Heading = steed.Heading;
-					rider.MovementStartTick = GameLoop.GameLoopTime;
+					rider.MovementStartTick = GameLoopMgr.GameLoopTime;
 					rider.Out.SendPlayerJump(false);
 					return;
 				}
@@ -65,7 +66,7 @@ namespace Core.GS.PacketHandler.Client.v168
 				return;
 			}
 
-			long environmentTick = GameLoop.GameLoopTime; 
+			long environmentTick = GameLoopMgr.GameLoopTime; 
 			int oldSpeed = client.Player.CurrentSpeed;
 
 			//read the state of the player
@@ -203,7 +204,7 @@ namespace Core.GS.PacketHandler.Client.v168
 
 			int coordsPerSec = 0;
 			int jumpDetect = 0;
-			int timediff = (int)(GameLoop.GameLoopTime - client.Player.LastPositionUpdateTick);
+			int timediff = (int)(GameLoopMgr.GameLoopTime - client.Player.LastPositionUpdateTick);
 			int distance = 0;
 
 			if (timediff > 0)
@@ -232,7 +233,7 @@ namespace Core.GS.PacketHandler.Client.v168
 			#endif
 			#endregion DEBUG
 
-			client.Player.LastPositionUpdateTick = GameLoop.GameLoopTime;
+			client.Player.LastPositionUpdateTick = GameLoopMgr.GameLoopTime;
 			client.Player.LastPositionUpdatePoint.X = realX;
 			client.Player.LastPositionUpdatePoint.Y = realY;
 			client.Player.LastPositionUpdatePoint.Z = realZ;
@@ -354,7 +355,7 @@ namespace Core.GS.PacketHandler.Client.v168
 
 			// used to predict current position, should be before
 			// any calculation (like fall damage)
-			client.Player.MovementStartTick = GameLoop.GameLoopTime;
+			client.Player.MovementStartTick = GameLoopMgr.GameLoopTime;
 
 			// Begin ---------- New Area System -----------
 			if (client.Player.CurrentRegion.Time > client.Player.AreaUpdateTick) // check if update is needed
@@ -799,7 +800,7 @@ namespace Core.GS.PacketHandler.Client.v168
 				(client.ClientState != GameClient.eClientState.Playing))
 				return;
 
-			long environmentTick = GameLoop.GameLoopTime;
+			long environmentTick = GameLoopMgr.GameLoopTime;
 			int oldSpeed = client.Player.CurrentSpeed;
 
 			var newPlayerX = packet.ReadFloatLowEndian();
@@ -917,7 +918,7 @@ namespace Core.GS.PacketHandler.Client.v168
 
 			int coordsPerSec = 0;
 			int jumpDetect = 0;
-			long timediff = GameLoop.GameLoopTime - client.Player.LastPositionUpdateTick;
+			long timediff = GameLoopMgr.GameLoopTime - client.Player.LastPositionUpdateTick;
 			int distance = 0;
 
 			if (timediff > 0)
@@ -933,7 +934,7 @@ namespace Core.GS.PacketHandler.Client.v168
 				}
 			}
 
-			client.Player.LastPositionUpdateTick = GameLoop.GameLoopTime;
+			client.Player.LastPositionUpdateTick = GameLoopMgr.GameLoopTime;
 			client.Player.LastPositionUpdatePoint.X = newPlayerX;
 			client.Player.LastPositionUpdatePoint.Y = newPlayerY;
 			client.Player.LastPositionUpdatePoint.Z = newPlayerZ;
@@ -1058,7 +1059,7 @@ namespace Core.GS.PacketHandler.Client.v168
 
 			// used to predict current position, should be before
 			// any calculation (like fall damage)
-			client.Player.MovementStartTick = GameLoop.GameLoopTime; // experimental 0024
+			client.Player.MovementStartTick = GameLoopMgr.GameLoopTime; // experimental 0024
 
 			// Begin ---------- New Area System -----------
 			if (client.Player.CurrentRegion.Time > client.Player.AreaUpdateTick) // check if update is needed

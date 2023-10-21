@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.AI.Brains;
@@ -213,8 +214,8 @@ public class PilusFuryBrain : APlayerVicinityBrain
 
 		if (target is GamePlayer && target != null)//combat timer and interrupt for target
 		{
-			target.LastAttackTickPvP = GameLoop.GameLoopTime;
-			target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+			target.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
+			target.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
 			target.StartInterruptTimer(GS.ServerProperties.Properties.SPELL_INTERRUPT_DURATION, ad.AttackType, ad.Attacker);
 		}
 	}		

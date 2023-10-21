@@ -1,4 +1,5 @@
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 
 namespace Core.GS;
 
@@ -18,7 +19,7 @@ public class BountyPoster
         Target = target;
         LastSeenZone = target.CurrentZone;
         Reward = reward;
-        PostedTime = GameLoop.GameLoopTime;
+        PostedTime = GameLoopMgr.GameLoopTime;
     }
     
     public void AddReward(int contributionValue)

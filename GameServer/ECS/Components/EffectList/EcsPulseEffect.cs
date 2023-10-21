@@ -1,5 +1,6 @@
 ﻿using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Spells;
 
 namespace Core.GS.ECS;
@@ -14,8 +15,8 @@ public class EcsPulseEffect : EcsGameSpellEffect, IConcentrationEffect
         PulseFreq = pulseFreq;
         CancelEffect = cancelEffect;
         EffectType = EEffect.Pulse;
-        ExpireTick = pulseFreq + GameLoop.GameLoopTime;
-        StartTick = GameLoop.GameLoopTime;
+        ExpireTick = pulseFreq + GameLoopMgr.GameLoopTime;
+        StartTick = GameLoopMgr.GameLoopTime;
         LastTick = 0;
 
         EffectService.RequestStartEffect(this);

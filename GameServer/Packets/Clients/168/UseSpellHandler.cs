@@ -4,6 +4,7 @@ using System.Reflection;
 using Core.GS.Commands;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using log4net;
 
 namespace Core.GS.PacketHandler.Client.v168
@@ -55,7 +56,7 @@ namespace Core.GS.PacketHandler.Client.v168
 						client.Player.X = newZone.XOffset + xOffsetInZone;
 						client.Player.Y = newZone.YOffset + yOffsetInZone;
 						client.Player.Z = realZ;
-						client.Player.MovementStartTick = GameLoop.GetCurrentTime();
+						client.Player.MovementStartTick = GameLoopMgr.GetCurrentTime();
 					}
 				}
 

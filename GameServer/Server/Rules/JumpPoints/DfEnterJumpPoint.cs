@@ -6,6 +6,7 @@ using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using JNogueira.Discord.Webhook.Client;
 
@@ -34,7 +35,7 @@ namespace Core.GS.ServerRules
 				return true;
 			if (ServerProperties.Properties.ALLOW_ALL_REALMS_DF)
 				return true;
-			if (player.Realm == PreviousOwner && LastRealmSwapTick + GracePeriod >= GameLoop.GameLoopTime)
+			if (player.Realm == PreviousOwner && LastRealmSwapTick + GracePeriod >= GameLoopMgr.GameLoopTime)
 				return true;
 			return (player.Realm == DarknessFallOwner);
 		}
@@ -104,7 +105,7 @@ namespace Core.GS.ServerRules
 				if (currentDFOwnerTowerCount < challengerOwnerTowerCount)
                 {
 					PreviousOwner = DarknessFallOwner;
-					LastRealmSwapTick = GameLoop.GameLoopTime;
+					LastRealmSwapTick = GameLoopMgr.GameLoopTime;
 					DarknessFallOwner = realm;
 				}
 					

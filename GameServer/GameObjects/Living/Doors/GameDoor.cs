@@ -3,6 +3,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -189,7 +190,7 @@ namespace Core.GS
             _repairTimer = new AuxEcsGameTimer(this);
             _repairTimer.Callback = new AuxEcsGameTimer.AuxECSTimerCallback(RepairTimerCallback);
             _repairTimer.Start(REPAIR_INTERVAL);
-            _repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL; // Skip the first tick to avoid repairing on server start.
+            _repairTimer.StartTick = GameLoopMgr.GetCurrentTime() + REPAIR_INTERVAL; // Skip the first tick to avoid repairing on server start.
         }
 
         private int RepairTimerCallback(AuxEcsGameTimer timer)

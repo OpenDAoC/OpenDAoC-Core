@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 
 namespace Core.GS.ECS;
 
@@ -23,7 +24,7 @@ public class MovementComponent
     public bool IsTurningDisabled => !Owner.effectListComponent.ContainsEffectForEffectType(EEffect.SpeedOfSound) && _turningDisabledCount > 0;
     public short MaxSpeed => FixedSpeed ? MaxSpeedBase : (short) Owner.GetModified(EProperty.MaxSpeed);
     public bool IsMoving => CurrentSpeed > 0;
-    public long MovementElapsedTicks => IsMoving ? GameLoop.GameLoopTime - MovementStartTick : 0;
+    public long MovementElapsedTicks => IsMoving ? GameLoopMgr.GameLoopTime - MovementStartTick : 0;
 
     protected MovementComponent(GameLiving owner)
     {

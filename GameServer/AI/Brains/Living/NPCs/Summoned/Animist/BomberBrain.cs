@@ -1,4 +1,5 @@
 using System.Reflection;
+using Core.GS.GameLoop;
 using Core.GS.Spells;
 using log4net;
 
@@ -10,7 +11,7 @@ public class BomberBrain : ControlledNpcBrain
 
     private Spell _spell;
     private SpellLine _spellLine;
-    private long _expireTime = GameLoop.GameLoopTime + 60 * 1000;
+    private long _expireTime = GameLoopMgr.GameLoopTime + 60 * 1000;
 
     public BomberBrain(GameLiving owner, Spell spell, SpellLine spellLine) : base(owner)
     {
@@ -32,7 +33,7 @@ public class BomberBrain : ControlledNpcBrain
 
     public override void Think()
     {
-        if (GameLoop.GameLoopTime >= _expireTime)
+        if (GameLoopMgr.GameLoopTime >= _expireTime)
             Body.Delete();
 
         if (Body.IsWithinRadius(Body.TargetObject, 150))

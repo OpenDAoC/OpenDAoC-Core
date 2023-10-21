@@ -5,6 +5,7 @@ using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 
@@ -112,10 +113,10 @@ public class PredatorMgr
         if (DisqualifiedPlayers.Keys.Contains(player))
         {
             if (DisqualifiedPlayers[player] + Properties.PREDATOR_ABUSE_TIMEOUT * 60000 >=
-                GameLoop.GameLoopTime)
+                GameLoopMgr.GameLoopTime)
             {
                 long timeLeft = Math.Abs(Properties.PREDATOR_ABUSE_TIMEOUT * 60000 + DisqualifiedPlayers[player] -
-                                         GameLoop.GameLoopTime);
+                                         GameLoopMgr.GameLoopTime);
                 player.Out.SendMessage("You recently abandoned the hunt. " +
                                        "Your body needs " + TimeSpan.FromMilliseconds(timeLeft).Minutes + "m "
                                        + TimeSpan.FromMilliseconds(timeLeft).Seconds + "s" +
@@ -141,11 +142,11 @@ public class PredatorMgr
         RemoveActivePlayer(player);
         if (DisqualifiedPlayers.ContainsKey(player))
         {
-            DisqualifiedPlayers[player] = GameLoop.GameLoopTime;
+            DisqualifiedPlayers[player] = GameLoopMgr.GameLoopTime;
         }
         else
         {
-            DisqualifiedPlayers.Add(player, GameLoop.GameLoopTime);
+            DisqualifiedPlayers.Add(player, GameLoopMgr.GameLoopTime);
         }
 
         if (PlayerKillTallyDict.ContainsKey(player))
@@ -169,7 +170,7 @@ public class PredatorMgr
     {
         if (player.PredatorTimeoutTimer.IsAlive) return;
         player.PredatorTimeoutTimer = new EcsGameTimer(player);
-        player.PredatorTimeoutTimer.Properties.SetProperty(TimeoutTickKey, GameLoop.GameLoopTime);
+        player.PredatorTimeoutTimer.Properties.SetProperty(TimeoutTickKey, GameLoopMgr.GameLoopTime);
         player.PredatorTimeoutTimer.Callback = new EcsGameTimer.EcsTimerCallback(TimeoutTimerCallback);
         player.PredatorTimeoutTimer.Start(1000);
         
@@ -607,7 +608,7 @@ public class PredatorMgr
             
             long TimerStartTime = timer.Properties.GetProperty<long>(TimeoutTickKey);
 
-            long secondsleft = OutOfBoundsTimeout - (GameLoop.GameLoopTime - TimerStartTime + 500) / 1000; // 500 is for rounding
+            long secondsleft = OutOfBoundsTimeout - (GameLoopMgr.GameLoopTime - TimerStartTime + 500) / 1000; // 500 is for rounding
             if (secondsleft > 0)
             {
                 if (secondsleft == 120 || secondsleft == 90 || secondsleft == 60 || secondsleft == 30 || secondsleft == 10 || secondsleft < 5)

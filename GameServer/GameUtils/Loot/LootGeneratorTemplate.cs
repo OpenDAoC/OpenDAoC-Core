@@ -7,6 +7,7 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Database;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 
 namespace Core.GS
@@ -364,9 +365,9 @@ namespace Core.GS
 
                                         //if we've never dropped an item, or our cooldown is up, drop an item
                                         if (tempProp == 0 ||
-                                            tempProp + dropCooldown < GameLoop.GameLoopTime)
+                                            tempProp + dropCooldown < GameLoopMgr.GameLoopTime)
                                         {
-                                            long nextDropTime = GameLoop.GameLoopTime;
+                                            long nextDropTime = GameLoopMgr.GameLoopTime;
 
                                             /*
                                             AccountXRealmLoyalty realmLoyalty =
@@ -395,7 +396,7 @@ namespace Core.GS
                                         }
                                         else if (GroupedTimerToUse != null)
                                         {
-                                            long nextDropTime = GameLoop.GameLoopTime;
+                                            long nextDropTime = GameLoopMgr.GameLoopTime;
                                             /*
                                             AccountXRealmLoyalty realmLoyalty =
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
@@ -434,7 +435,7 @@ namespace Core.GS
 
                                 if (tmp > 0 && dropChan > 0)
                                 {
-                                    long timeDifference = GameLoop.GameLoopTime - (tmp + dropChan);
+                                    long timeDifference = GameLoopMgr.GameLoopTime - (tmp + dropChan);
                                     timeDifference *= -1;
                                     //"PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
                                     if (timeDifference > 0)
@@ -515,9 +516,9 @@ namespace Core.GS
 
                                         //if we've never dropped an item, or our cooldown is up, drop an item
                                         if (tempProp == 0 ||
-                                            tempProp + dropCooldown < GameLoop.GameLoopTime)
+                                            tempProp + dropCooldown < GameLoopMgr.GameLoopTime)
                                         {
-                                            long nextDropTime = GameLoop.GameLoopTime;
+                                            long nextDropTime = GameLoopMgr.GameLoopTime;
                                             /*
                                             AccountXRealmLoyalty realmLoyalty =
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
@@ -545,7 +546,7 @@ namespace Core.GS
                                         }
                                         else if (GroupedTimerToUse != null)
                                         {
-                                            long nextDropTime = GameLoop.GameLoopTime;
+                                            long nextDropTime = GameLoopMgr.GameLoopTime;
                                             /*AccountXRealmLoyalty realmLoyalty =
                                                 DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
                                                     .IsEqualTo(GroupedTimerToUse.Client.Account.ObjectId)
@@ -586,7 +587,7 @@ namespace Core.GS
 
                         if (tmp > 0 && dropChan > 0)
                         {
-                            long timeDifference = GameLoop.GameLoopTime - (tmp + dropChan);
+                            long timeDifference = GameLoopMgr.GameLoopTime - (tmp + dropChan);
                             timeDifference *= -1;
                             //"PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
                             if (timeDifference > 0)
@@ -620,7 +621,7 @@ namespace Core.GS
                     player.CurrentRegion != groupMember.CurrentRegion) continue;
                 if (player.GetDistance(groupMember) > WorldMgr.MAX_EXPFORKILL_DISTANCE) continue;
                 long tempProp = groupMember.TempProperties.GetProperty<long>(xpItemKey, 0);
-                if (tempProp == 0 || tempProp + dropCooldown < GameLoop.GameLoopTime)
+                if (tempProp == 0 || tempProp + dropCooldown < GameLoopMgr.GameLoopTime)
                     return groupMember;
             }
 

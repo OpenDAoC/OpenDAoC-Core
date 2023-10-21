@@ -5,6 +5,7 @@ using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
@@ -236,7 +237,7 @@ namespace Core.GS.Styles
 
 					player.styleComponent.NextCombatStyle = style;
 					player.styleComponent.NextCombatBackupStyle = null;
-					player.styleComponent.NextCombatStyleTime = GameLoop.GameLoopTime;
+					player.styleComponent.NextCombatStyleTime = GameLoopMgr.GameLoopTime;
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.TryToUseStyle.PreparePerform", style.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 					if (player.IsEngaging)

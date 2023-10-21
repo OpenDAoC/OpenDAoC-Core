@@ -6,6 +6,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 
 namespace Core.GS;
@@ -474,11 +475,11 @@ public class AchievementReskinVendor : GameNpc
     private void LoopAnimation(GamePlayer player, DbInventoryItem item, GameNpc display, AttackData ad)
     {
         var _lastAnimation = 0l;
-        while (GameLoop.GameLoopTime < display.SpawnTick)
+        while (GameLoopMgr.GameLoopTime < display.SpawnTick)
         {
-            if (GameLoop.GameLoopTime - _lastAnimation > 2000)
+            if (GameLoopMgr.GameLoopTime - _lastAnimation > 2000)
             {
-                _lastAnimation = GameLoop.GameLoopTime;
+                _lastAnimation = GameLoopMgr.GameLoopTime;
             }
         }
     }

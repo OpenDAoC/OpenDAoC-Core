@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 
@@ -30,7 +31,7 @@ public class ConquestObjective
     public void StartConquest()
     {
         InitializeFlags(Keep);
-        StartTick = GameLoop.GameLoopTime;
+        StartTick = GameLoopMgr.GameLoopTime;
         LastRolloverTick = StartTick;
     }
 
@@ -252,7 +253,7 @@ public class ConquestObjective
     public void DoPeriodicReward()
     {
         AwardContributors();
-        LastRolloverTick = GameLoop.GameLoopTime;
+        LastRolloverTick = GameLoopMgr.GameLoopTime;
     }
 
     public void ConquestCapture()

@@ -9,6 +9,7 @@ using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;
 using Core.Language;
@@ -698,7 +699,7 @@ namespace Core.GS
 
 			Notify(GameObjectEvent.AddToWorld, this);
 			ObjectState = eObjectState.Active;
-			m_spawnTick = GameLoop.GameLoopTime;
+			m_spawnTick = GameLoopMgr.GameLoopTime;
 
 			if (m_isDataQuestsLoaded == false)
 			{
@@ -1093,7 +1094,7 @@ namespace Core.GS
 
 			var cachedValues = _objectsInRadiusCache[objectType];
 
-			if (cachedValues.Item3 >= GameLoop.GameLoopTime)
+			if (cachedValues.Item3 >= GameLoopMgr.GameLoopTime)
 			{
 				if (cachedValues.Item2 <= radiusToCheck)
 				{
@@ -1113,7 +1114,7 @@ namespace Core.GS
 			}
 
 			result = CurrentRegion.GetInRadius<T>(this, objectType, radiusToCheck);
-			_objectsInRadiusCache[objectType] = (result, radiusToCheck, GameLoop.GameLoopTime + 500);
+			_objectsInRadiusCache[objectType] = (result, radiusToCheck, GameLoopMgr.GameLoopTime + 500);
 			return result;
 		}
 

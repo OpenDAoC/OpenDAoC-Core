@@ -3,6 +3,7 @@ using System.Reflection;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.ServerProperties;
 using log4net;
 
@@ -106,7 +107,7 @@ public class StandardNpcStateAggro : StandardNpcState
 {
     private const int LEAVE_WHEN_OUT_OF_COMBAT_FOR = 25000;
 
-    private long _aggroTime = GameLoop.GameLoopTime; // Used to prevent leaving on the first think tick, due to `InCombatInLast` returning false.
+    private long _aggroTime = GameLoopMgr.GameLoopTime; // Used to prevent leaving on the first think tick, due to `InCombatInLast` returning false.
 
     public StandardNpcStateAggro(StandardMobBrain brain) : base(brain)
     {
@@ -118,7 +119,7 @@ public class StandardNpcStateAggro : StandardNpcState
         if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is entering AGGRO");
 
-        _aggroTime = GameLoop.GameLoopTime;
+        _aggroTime = GameLoopMgr.GameLoopTime;
         base.Enter();
     }
 
@@ -133,7 +134,7 @@ public class StandardNpcStateAggro : StandardNpcState
 
     public override void Think()
     {
-        if (!_brain.HasAggro || (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && _aggroTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR <= GameLoop.GameLoopTime))
+        if (!_brain.HasAggro || (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && _aggroTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR <= GameLoopMgr.GameLoopTime))
         {
             if (!_brain.Body.IsMezzed && !_brain.Body.IsStunned)
             {
@@ -188,11 +189,11 @@ public class StandardNpcStateRoaming : StandardNpcState
 
         if (!_brain.Body.IsCasting)
         {
-            if (_lastRoamTick + ROAM_COOLDOWN <= GameLoop.GameLoopTime && Util.Chance(Properties.GAMENPC_RANDOMWALK_CHANCE))
+            if (_lastRoamTick + ROAM_COOLDOWN <= GameLoopMgr.GameLoopTime && Util.Chance(Properties.GAMENPC_RANDOMWALK_CHANCE))
             {
                 _brain.Body.Roam(NpcMovementComponent.DEFAULT_WALK_SPEED);
                 _brain.Body.FireAmbientSentence(EAmbientNpcTrigger.roaming, _brain.Body);
-                _lastRoamTick = GameLoop.GameLoopTime;
+                _lastRoamTick = GameLoopMgr.GameLoopTime;
             }
         }
 

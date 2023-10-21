@@ -1,6 +1,7 @@
 using System.Reflection;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.Language;
 using log4net;
@@ -72,7 +73,7 @@ namespace Core.GS.SkillHandler
             }
 
             // You cannot engage a mob that was attacked within the last 5 seconds...
-            if (target.LastAttackedByEnemyTick > GameLoop.GameLoopTime - ENGAGE_ATTACK_DELAY_TICK)
+            if (target.LastAttackedByEnemyTick > GameLoopMgr.GameLoopTime - ENGAGE_ATTACK_DELAY_TICK)
             {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Engage.TargetAttackedRecently", target.GetName(0, true)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 return;

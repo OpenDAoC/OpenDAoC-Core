@@ -9,6 +9,7 @@ using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -516,7 +517,7 @@ namespace Core.GS.AI.Brains
         {
             if (GS.ServerProperties.Properties.ENABLE_DEBUG)
             {
-                long tick = GameLoop.GetCurrentTime();
+                long tick = GameLoopMgr.GetCurrentTime();
                 long seconds = tick / 1000;
                 long minutes = seconds / 60;
 

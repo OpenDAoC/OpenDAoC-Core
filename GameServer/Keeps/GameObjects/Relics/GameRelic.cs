@@ -6,6 +6,7 @@ using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
@@ -320,7 +321,7 @@ namespace Core.GS
 			if (IsMounted == false)
 			{
 				// launch the reset timer if this relic is not dropped on a pad
-				m_timeRelicOnGround = GameLoop.GameLoopTime;
+				m_timeRelicOnGround = GameLoopMgr.GameLoopTime;
 				m_returnRelicTimer = new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(ReturnRelicTick), RelicEffectInterval);
 				log.DebugFormat("{0} dropped, return timer for relic set to {1} seconds.", Name, ReturnRelicInterval / 1000);
 				Console.WriteLine($"Starting return relic timer {m_returnRelicTimer}");
@@ -337,7 +338,7 @@ namespace Core.GS
 		/// </summary>
 		protected virtual int ReturnRelicTick(EcsGameTimer timer)
 		{
-			if (GameLoop.GameLoopTime - m_timeRelicOnGround < ReturnRelicInterval)
+			if (GameLoopMgr.GameLoopTime - m_timeRelicOnGround < ReturnRelicInterval)
 			{
 				// Note: This does not show up, possible issue with SendSpellEffect
 				ushort effectID = (ushort)Util.Random(5811, 5815);

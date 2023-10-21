@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using log4net;
 
 namespace Core.GS.PacketHandler
@@ -58,7 +59,7 @@ namespace Core.GS.PacketHandler
 			else
 				str = "";
 
-			if (m_lastPacketSendTick + m_packetInterval < GameLoop.GameLoopTime)
+			if (m_lastPacketSendTick + m_packetInterval < GameLoopMgr.GameLoopTime)
 			{
 				m_numPacketsSent = 0;
 			}

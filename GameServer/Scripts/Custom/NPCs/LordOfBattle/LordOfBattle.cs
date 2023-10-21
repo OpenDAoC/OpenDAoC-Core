@@ -5,6 +5,7 @@ using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 
 namespace Core.GS {
@@ -127,7 +128,7 @@ namespace Core.GS {
             {
                 if (!player.IsAlive && !playersToRez.ContainsKey(player))
                 {
-                    playersToRez.Add(player, GameLoop.GameLoopTime);
+                    playersToRez.Add(player, GameLoopMgr.GameLoopTime);
                 }
 
                 if (player.effectListComponent.ContainsEffectForEffectType(EEffect.ResurrectionIllness))
@@ -146,7 +147,7 @@ namespace Core.GS {
 
             foreach (GamePlayer deadPlayer in playersToRez.Keys)
             {
-                if(playersToRez[deadPlayer] + timeBeforeRez <= GameLoop.GameLoopTime)
+                if(playersToRez[deadPlayer] + timeBeforeRez <= GameLoopMgr.GameLoopTime)
                 {
                     deadPlayer.Health = deadPlayer.MaxHealth;
                     deadPlayer.Mana = deadPlayer.MaxMana;

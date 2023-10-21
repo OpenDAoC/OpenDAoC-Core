@@ -3,6 +3,7 @@ using System.Linq;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Utils;
@@ -100,7 +101,7 @@ public class RealmTimerUtil
 
         DbAccount playerAccount = player.Client.Account;
         
-        DateTime LastCombatTickPvPDateTime = DateTime.Now.AddMilliseconds(-(GameLoop.GameLoopTime - player.LastCombatTickPvP));
+        DateTime LastCombatTickPvPDateTime = DateTime.Now.AddMilliseconds(-(GameLoopMgr.GameLoopTime - player.LastCombatTickPvP));
 
         //Don't update realmtimer it is still in effect and players realm is not the realm_timer_realm
         ERealm current_realm_timer_realm = (ERealm)CurrentRealm(player);
@@ -124,7 +125,7 @@ public class RealmTimerUtil
             return (int)ERealm.None;
 
         DbAccount playerAccount = player.Client.Account;
-        DateTime LastCombatTickPvPDateTime = DateTime.Now.AddMilliseconds(-(GameLoop.GameLoopTime - player.LastCombatTickPvP));
+        DateTime LastCombatTickPvPDateTime = DateTime.Now.AddMilliseconds(-(GameLoopMgr.GameLoopTime - player.LastCombatTickPvP));
         
         //Return Realm_Timer_Realm if realm timer is active. Help prevent realm timer from switching realms on duels/etc.
         if ((DateTime.Now - playerAccount.Realm_Timer_Last_Combat).TotalMinutes < ServerProperties.Properties.PVP_REALM_TIMER_MINUTES)
@@ -144,7 +145,7 @@ public class RealmTimerUtil
             return ServerProperties.Properties.PVP_REALM_TIMER_MINUTES - timeSinceLastCombat;
 
         //Get datetime of this players Last Combat Tick PvP
-        DateTime LastCombatTickPvPDateTime = DateTime.Now.AddMilliseconds(-(GameLoop.GameLoopTime - player.LastCombatTickPvP));
+        DateTime LastCombatTickPvPDateTime = DateTime.Now.AddMilliseconds(-(GameLoopMgr.GameLoopTime - player.LastCombatTickPvP));
 
         //Check if Realm_Timer_Last_Combat was more recent than LastCombatTickPvP
         if(player.LastCombatTickPvP == 0 || LastCombatTickPvPDateTime < playerAccount.Realm_Timer_Last_Combat)

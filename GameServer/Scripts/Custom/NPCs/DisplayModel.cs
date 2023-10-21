@@ -1,6 +1,7 @@
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 
 namespace Core.GS {
     public class DisplayModel : GameNpc
@@ -52,7 +53,7 @@ namespace Core.GS {
         public override bool AddToWorld()
         {
             ObjectState = eObjectState.Active;
-            m_spawnTick = GameLoop.GameLoopTime + 120*1000;
+            m_spawnTick = GameLoopMgr.GameLoopTime + 120*1000;
             
             m_displayedPlayer.Out.SendNPCCreate(this);
             m_displayedPlayer.Out.SendLivingEquipmentUpdate(this);

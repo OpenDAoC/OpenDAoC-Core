@@ -6,6 +6,7 @@ using Core.Events;
 using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Scheduler;
 
 namespace Core.GS.Events;
@@ -160,7 +161,7 @@ static class ZoneBonusRotator
 
     internal static int UpdatePvEZones()
     {
-        _lastPvEChangeTick = GameLoop.GameLoopTime;
+        _lastPvEChangeTick = GameLoopMgr.GameLoopTime;
 
         ClearPvEZones();
 
@@ -207,7 +208,7 @@ static class ZoneBonusRotator
     internal static int UpdateRvRZones()
     {
 
-        _lastRvRChangeTick = GameLoop.GameLoopTime;
+        _lastRvRChangeTick = GameLoopMgr.GameLoopTime;
 
         ClearRvRZones();
 
@@ -576,10 +577,10 @@ static class ZoneBonusRotator
         temp.Add("SI Zone: " + hibDBZoneSI.Name + " " + GetLevelRange(hibDBZoneSI.ZoneID) + " (XP +" + hibDBZoneSI.Experience + "%)");
 
         temp.Add("");
-        var rvr = _lastRvRChangeTick + RvRTimer - GameLoop.GameLoopTime;
+        var rvr = _lastRvRChangeTick + RvRTimer - GameLoopMgr.GameLoopTime;
         temp.Add("RvR Time Remaining: " + TimeSpan.FromMilliseconds(rvr).Hours + "h " + TimeSpan.FromMilliseconds(rvr).Minutes + "m " + TimeSpan.FromMilliseconds(rvr).Seconds + "s");
         
-        var pve = _lastPvEChangeTick + PvETimer - GameLoop.GameLoopTime;
+        var pve = _lastPvEChangeTick + PvETimer - GameLoopMgr.GameLoopTime;
         temp.Add("PvE Time Remaining: " + TimeSpan.FromMilliseconds(pve).Hours + "h " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
 
         temp.Add("");

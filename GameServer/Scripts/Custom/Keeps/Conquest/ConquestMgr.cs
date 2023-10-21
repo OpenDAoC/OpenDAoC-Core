@@ -6,6 +6,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 
@@ -183,7 +184,7 @@ public class ConquestMgr
     
     public void ResetConquestWindow()
     {
-        LastConquestWindowStart = GameLoop.GameLoopTime;
+        LastConquestWindowStart = GameLoopMgr.GameLoopTime;
         ResetContributors();
         ActiveObjective.ResetConquestWindow();
     }
@@ -405,13 +406,13 @@ public class ConquestMgr
         SetDefensiveKeepForRealm(ERealm.Midgard);
 
         ActiveObjective.StartConquest();
-        LastConquestStartTime = GameLoop.GameLoopTime;
+        LastConquestStartTime = GameLoopMgr.GameLoopTime;
         BroadcastConquestMessageToRvRPlayers($"A new Conquest has begun!");
     }
 
     public void StopConquest()
     {
-        LastConquestStopTime = GameLoop.GameLoopTime;
+        LastConquestStopTime = GameLoopMgr.GameLoopTime;
     }
 
     private static void BroadcastConquestMessageToRvRPlayers(string message)
@@ -648,7 +649,7 @@ public class ConquestMgr
         long timeUntilReset = ConquestService.GetTicksUntilContributionReset();
         long timeUntilAward = ConquestService.GetTicksUntilNextAward();
 
-        long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastConquestStartTime;
+        long timeSinceTaskStart = GameLoopMgr.GameLoopTime - ConquestService.ConquestManager.LastConquestStartTime;
         temp.Add("" );
         temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Hours + "h " +
                  TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +

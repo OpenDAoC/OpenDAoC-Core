@@ -4,6 +4,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Calculators;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 
 namespace Core.GS
 {
@@ -42,13 +43,13 @@ namespace Core.GS
             {
                 if (ad.Attacker.Realm == 0 || Realm == 0)
                 {
-                    LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-                    ad.Attacker.LastAttackTickPvE = GameLoop.GameLoopTime;
+                    LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+                    ad.Attacker.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
                 }
                 else
                 {
-                    LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-                    ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
+                    LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+                    ad.Attacker.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
                 }
             }
         }

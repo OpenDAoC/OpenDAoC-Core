@@ -13,6 +13,7 @@ using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using log4net;
@@ -202,7 +203,7 @@ namespace Core.GS
 		/// <summary>
 		/// Holds the time of the last ping
 		/// </summary>
-		protected long m_pingTime = GameLoop.GetCurrentTime(); // give ping time on creation
+		protected long m_pingTime = GameLoopMgr.GetCurrentTime(); // give ping time on creation
 
 		/// <summary>
 		/// This variable holds all info about the active player
@@ -222,7 +223,7 @@ namespace Core.GS
 		/// <summary>
 		/// Holds the time of the last UDP ping
 		/// </summary>
-		protected long m_udpPingTime = GameLoop.GetCurrentTime();
+		protected long m_udpPingTime = GameLoopMgr.GetCurrentTime();
 
 		/// <summary>
 		/// Custom Account Params
@@ -249,7 +250,7 @@ namespace Core.GS
 			m_tooltipRequestTimes.TryAdd(type, new());
 
 			// Queries cleanup
-			foreach (Tuple<int, int> keys in m_tooltipRequestTimes.SelectMany(e => e.Value.Where(it => it.Value < GameLoop.GetCurrentTime()).Select(el => new Tuple<int, int>(e.Key, el.Key))))
+			foreach (Tuple<int, int> keys in m_tooltipRequestTimes.SelectMany(e => e.Value.Where(it => it.Value < GameLoopMgr.GetCurrentTime()).Select(el => new Tuple<int, int>(e.Key, el.Key))))
 				m_tooltipRequestTimes[keys.Item1].TryRemove(keys.Item2, out _);
 			
 			// Query hit ?
@@ -257,7 +258,7 @@ namespace Core.GS
 				return false;
 		
 			// Query register
-			m_tooltipRequestTimes[type].TryAdd(id, GameLoop.GetCurrentTime()+3600000);
+			m_tooltipRequestTimes[type].TryAdd(id, GameLoopMgr.GetCurrentTime()+3600000);
 			return true;
 		}
 
@@ -290,7 +291,7 @@ namespace Core.GS
 				if ((oldState != eClientState.Playing && value == eClientState.Playing) ||
 				    (oldState != eClientState.CharScreen && value == eClientState.CharScreen))
 				{
-					PingTime = GameLoop.GetCurrentTime();
+					PingTime = GameLoopMgr.GetCurrentTime();
 				}
 
 				m_clientState = value;
@@ -725,7 +726,7 @@ namespace Core.GS
 			else
 			{
 				ClientState = eClientState.Linkdead;
-				LinkDeathTime = GameLoop.GameLoopTime;
+				LinkDeathTime = GameLoopMgr.GameLoopTime;
 				// If we have a good sessionid, we won't remove the client yet!
 				// OnLinkdeath() can start a timer to remove the client "a bit later"
 				curPlayer.OnLinkdeath();

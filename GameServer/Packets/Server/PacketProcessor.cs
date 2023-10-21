@@ -11,6 +11,7 @@ using System.Threading;
 using System.Timers;
 using Core.Base;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.ServerProperties;
 using log4net;
 using Timer = System.Timers.Timer;
@@ -500,7 +501,7 @@ namespace Core.GS.PacketHandler
             {
                 // Would previously timeout after 50 seconds, but clients (1.127) send 'UDPInitRequestHandler' every 65 seconds.
                 // May vary depending on the client version.
-                if (GameLoop.GetCurrentTime() - m_client.UdpPingTime > 70000)
+                if (GameLoopMgr.GetCurrentTime() - m_client.UdpPingTime > 70000)
                     m_client.UdpConfirm = false;
             }
 
@@ -577,11 +578,11 @@ namespace Core.GS.PacketHandler
                     return;
                 }
 
-                long start = GameLoop.GetCurrentTime();
+                long start = GameLoopMgr.GetCurrentTime();
 
                 GameServer.Instance.SendUDP(data, count, m_client.UdpEndPoint, m_asyncUdpCallback);
 
-                long took = GameLoop.GetCurrentTime() - start;
+                long took = GameLoopMgr.GetCurrentTime() - start;
 
                 if (took > 25 && log.IsWarnEnabled)
                     log.WarnFormat($"{nameof(AsyncUdpSendCallback)} took {took}ms! (Client: {m_client})");
@@ -875,7 +876,7 @@ namespace Core.GS.PacketHandler
                 //synchronized! One reader, multiple writers supported!
                 m_activePacketThreads.Add(Thread.CurrentThread, m_client);
 #endif
-                long start = GameLoop.GetCurrentTime();
+                long start = GameLoopMgr.GetCurrentTime();
                 try
                 {
                     packetHandler.HandlePacket(m_client, packet);
@@ -898,7 +899,7 @@ namespace Core.GS.PacketHandler
                     m_activePacketThreads.Remove(Thread.CurrentThread);
                 }
 #endif
-                long timeUsed = GameLoop.GetCurrentTime() - start;
+                long timeUsed = GameLoopMgr.GetCurrentTime() - start;
                 if (monitorTimer != null)
                 {
                     monitorTimer.Stop();

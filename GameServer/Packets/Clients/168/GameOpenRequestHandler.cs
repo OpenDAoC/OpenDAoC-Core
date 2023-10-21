@@ -1,4 +1,5 @@
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 
 namespace Core.GS.PacketHandler.Client.v168
 {
@@ -8,7 +9,7 @@ namespace Core.GS.PacketHandler.Client.v168
 		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
 			int flag = packet.ReadByte(); // Always 0? (1.127)
-			client.UdpPingTime = GameLoop.GetCurrentTime();
+			client.UdpPingTime = GameLoopMgr.GetCurrentTime();
 			client.UdpConfirm = flag == 1;
 			client.Out.SendGameOpenReply();
 			client.Out.SendStatusUpdate(); // based on 1.74 logs

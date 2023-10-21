@@ -1,4 +1,5 @@
 ﻿using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Spells;
 
 namespace Core.GS.ECS;
@@ -16,8 +17,8 @@ public class EcsImmunityEffect : EcsGameSpellEffect
         Effectiveness = effectiveness;
         CancelEffect = cancelEffect;
         EffectType = MapImmunityEffect();
-        ExpireTick = duration + GameLoop.GameLoopTime;
-        StartTick = GameLoop.GameLoopTime;
+        ExpireTick = duration + GameLoopMgr.GameLoopTime;
+        StartTick = GameLoopMgr.GameLoopTime;
         LastTick = 0;
         TriggersImmunity = false;
 

@@ -11,6 +11,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.RealmAbilities;
@@ -53,7 +54,7 @@ namespace Core.GS.ECS
                 }
             }
 
-            long until = GameLoop.GameLoopTime + 5000; // Use interrupt duration instead?
+            long until = GameLoopMgr.GameLoopTime + 5000; // Use interrupt duration instead?
             Attackers.AddOrUpdate(target, until, (key, oldValue) => until);
         }
 
@@ -61,7 +62,7 @@ namespace Core.GS.ECS
         {
             foreach (var pair in Attackers)
             {
-                if (pair.Value < GameLoop.GameLoopTime)
+                if (pair.Value < GameLoopMgr.GameLoopTime)
                     Attackers.TryRemove(pair);
             }
 
@@ -614,17 +615,17 @@ namespace Core.GS.ECS
                 }
 
                 long vanishTimeout = player.TempProperties.GetProperty<long>(NfRaVanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
-                if (vanishTimeout > 0 && vanishTimeout > GameLoop.GameLoopTime)
+                if (vanishTimeout > 0 && vanishTimeout > GameLoopMgr.GameLoopTime)
                 {
                     player.Out.SendMessage(
                         LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouMustWaitAgain",
-                            (vanishTimeout - GameLoop.GameLoopTime + 1000) / 1000), EChatType.CT_YouHit,
+                            (vanishTimeout - GameLoopMgr.GameLoopTime + 1000) / 1000), EChatType.CT_YouHit,
                         EChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 long VanishTick = player.TempProperties.GetProperty<long>(NfRaVanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
-                long changeTime = GameLoop.GameLoopTime - VanishTick;
+                long changeTime = GameLoopMgr.GameLoopTime - VanishTick;
                 if (changeTime < 30000 && VanishTick > 0)
                 {
                     player.Out.SendMessage(
@@ -791,7 +792,7 @@ namespace Core.GS.ECS
                         player.Out.SendAttackMode(AttackState);
                     else
                     {
-                        player.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
+                        player.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoopMgr.GameLoopTime);
 
                         string typeMsg = "shot";
                         if (attackWeapon.Object_Type == (int) EObjectType.Thrown)
@@ -1180,7 +1181,7 @@ namespace Core.GS.ECS
                 }
             }
 
-            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, attackAction != null && GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500))
+            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, attackAction != null && GameLoopMgr.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500))
             {
                 ad.AttackResult = EAttackResult.NotAllowed_ServerRules;
                 SendAttackingCombatMessages(action, ad);
@@ -2383,7 +2384,7 @@ namespace Core.GS.ECS
                     and not EAttackResult.Blocked
                     and not EAttackResult.Parried)
                 {
-                    if (GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500)
+                    if (GameLoopMgr.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500)
                         return;
 
                     attackAction.RoundWithNoAttackTime = 0;

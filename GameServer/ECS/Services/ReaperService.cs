@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using log4net;
 
 namespace Core.GS.ECS;
@@ -14,7 +15,7 @@ public class ReaperService
 
     public static void Tick()
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         List<LivingBeingKilled> list = EntityMgr.UpdateAndGetAll<LivingBeingKilled>(EEntityType.LivingBeingKilled, out int lastValidIndex);

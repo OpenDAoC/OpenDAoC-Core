@@ -7,6 +7,7 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 
@@ -405,7 +406,7 @@ namespace Core.GS
 				if(LOSMGR_DEBUG_LEVEL >= LOSMGR_DEBUG_DEBUG)
 					log.Warn("LOSMGR_D : Threshold hitted ("+GetDefaultThreshold(source, target)+") with - Player : "+player.Name+" Source : "+source.Name+" Target : "+target.Name+".");
 
-				notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoop.GetCurrentTime(), true));
+				notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoopMgr.GetCurrentTime(), true));
 				return;
 			}
 			
@@ -415,7 +416,7 @@ namespace Core.GS
 				try
 				{
 					bool los = GetLosCheckFromCache(source, target, timeout);
-					notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoop.GetCurrentTime(), los));
+					notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoopMgr.GetCurrentTime(), los));
 					return;
 					
 				}
@@ -515,7 +516,7 @@ namespace Core.GS
 						if(LOSMGR_DEBUG_LEVEL >= LOSMGR_DEBUG_DEBUG)
 							log.Warn("LOSMGR_D : Vincinity Hitted Treshold ("+GetDefaultThreshold(source, target)+") - Source : "+source.Name+" Target : "+target.Name+".");
 						
-						notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoop.GetCurrentTime(), true));
+						notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoopMgr.GetCurrentTime(), true));
 						return;
 					}
 				}
@@ -532,7 +533,7 @@ namespace Core.GS
 					{
 						if(player.ObjectState == GameNpc.eObjectState.Active) 
 						{
-							notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoop.GetCurrentTime(), los));
+							notifier.Notify(GameObjectEvent.FinishedLosCheck, player, new LosCheckData(source, target, GameLoopMgr.GetCurrentTime(), los));
 							return;
 						}
 						
@@ -624,7 +625,7 @@ namespace Core.GS
 			// pending key to store this lookup
 			Tuple<GamePlayer, ushort, ushort> checkerKey = new Tuple<GamePlayer, ushort, ushort>(player, (ushort)source.ObjectID, (ushort)target.ObjectID);
 			
-			long time = GameLoop.GetCurrentTime();
+			long time = GameLoopMgr.GetCurrentTime();
 			
 			// insert into pendings
 			lock(((ICollection)PendingChecks).SyncRoot)
@@ -655,7 +656,7 @@ namespace Core.GS
 				return;
 			
 			// get time
-			long sent = GameLoop.GetCurrentTime();
+			long sent = GameLoopMgr.GetCurrentTime();
 			long time = sent;
 			
 			// Check result
@@ -1074,7 +1075,7 @@ namespace Core.GS
 			
 			lock(((ICollection)ClientStats).SyncRoot)
 			{
-				long currentTime = GameLoop.GetCurrentTime();
+				long currentTime = GameLoopMgr.GetCurrentTime();
 				// We don't have player that aren't in cache try selecting available ones (lowest count && best instant checker)
 				IEnumerable<GamePlayer> bestavails = (from best in ClientStats.Keys where players.Contains(best) && 
 				                                      (ClientChecks.ContainsKey(best) && (currentTime-ClientChecks[best]) > LOSMGR_PLAYER_CHECK_FREQUENCY)
@@ -1138,7 +1139,7 @@ namespace Core.GS
 		/// <returns></returns>
 		public static long GetElapsedTicks(long time) 
 		{
-			long elapsed = ((long)GameLoop.GetCurrentTime())-time;
+			long elapsed = ((long)GameLoopMgr.GetCurrentTime())-time;
 			return elapsed <= 0 ? 0 : elapsed;
 		}
 
@@ -1210,7 +1211,7 @@ namespace Core.GS
 		/// </summary>
 		private void CleanUpCache()
 		{
-			long obsoleteTime = GameLoop.GetCurrentTime() - (LOSMGR_CLEANUP_FREQUENCY);
+			long obsoleteTime = GameLoopMgr.GetCurrentTime() - (LOSMGR_CLEANUP_FREQUENCY);
 			
 			lock(((ICollection)ResponsesCache).SyncRoot)
 			{
@@ -1226,7 +1227,7 @@ namespace Core.GS
 		/// </summary>				
 		private void CleanUpPending()
 		{
-			long obsoleteTime = GameLoop.GetCurrentTime() - (LOSMGR_CLEANUP_FREQUENCY);
+			long obsoleteTime = GameLoopMgr.GetCurrentTime() - (LOSMGR_CLEANUP_FREQUENCY);
 			
 			lock(((ICollection)PendingChecks).SyncRoot)
 			{
@@ -1242,7 +1243,7 @@ namespace Core.GS
 		/// </summary>
 		private void CleanUpClients()
 		{
-			long obsoleteTime = GameLoop.GetCurrentTime() - (LOSMGR_CLEANUP_FREQUENCY);
+			long obsoleteTime = GameLoopMgr.GetCurrentTime() - (LOSMGR_CLEANUP_FREQUENCY);
 			
 			lock(((ICollection)ClientChecks).SyncRoot)
 			{
@@ -1286,7 +1287,7 @@ namespace Core.GS
 			
 			LosCheckMgr chk = sender as LosCheckMgr;
 			
-			long currenTime = GameLoop.GetCurrentTime();
+			long currenTime = GameLoopMgr.GetCurrentTime();
 			// Get Timing out Pending Los Check
 			IEnumerable<Tuple<GamePlayer, ushort, ushort>> pendingTimeout;
 			lock(((ICollection)chk.PendingChecks).SyncRoot)

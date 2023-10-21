@@ -19,6 +19,7 @@ using Core.GS.Effects.Old;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;
@@ -645,7 +646,7 @@ namespace Core.GS
 		/// </summary>
 		public virtual bool IsVisibleToPlayers
 		{
-			get { return GameLoop.GameLoopTime - m_lastVisibleToPlayerTick < VISIBLE_TO_PLAYER_SPAN; }
+			get { return GameLoopMgr.GameLoopTime - m_lastVisibleToPlayerTick < VISIBLE_TO_PLAYER_SPAN; }
 		}
 
 		/// <summary>
@@ -1868,7 +1869,7 @@ namespace Core.GS
 
 		public override void OnUpdateByPlayerService()
 		{
-			m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
+			m_lastVisibleToPlayerTick = GameLoopMgr.GameLoopTime;
 
 			if (Brain != null && !Brain.EntityManagerId.IsSet)
 				Brain.Start();
@@ -1902,7 +1903,7 @@ namespace Core.GS
 			}
 
 			if (anyPlayer)
-				m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
+				m_lastVisibleToPlayerTick = GameLoopMgr.GameLoopTime;
 
 			m_spawnPoint.X = X;
 			m_spawnPoint.Y = Y;
@@ -2631,9 +2632,9 @@ namespace Core.GS
 		public void SetLastMeleeAttackTick()
 		{
 			if (TargetObject?.Realm == 0 || Realm == 0)
-				m_lastAttackTickPvE = GameLoop.GameLoopTime;
+				m_lastAttackTickPvE = GameLoopMgr.GameLoopTime;
 			else
-				m_lastAttackTickPvP = GameLoop.GameLoopTime;
+				m_lastAttackTickPvP = GameLoopMgr.GameLoopTime;
 		}
 
 		/// <summary>
@@ -3142,7 +3143,7 @@ namespace Core.GS
 				this.Level = (byte)  Util.Random(minBound, maxBound);
 			}*/
 
-			SpawnTick = GameLoop.GameLoopTime;
+			SpawnTick = GameLoopMgr.GameLoopTime;
 
 			// Heal this NPC and move it to the spawn location.
 			Health = MaxHealth;
@@ -3161,7 +3162,7 @@ namespace Core.GS
 
 			// Delay the first think tick a bit to prevent clients from sending positive LoS check
 			// when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
-			Brain.LastThinkTick = GameLoop.GameLoopTime + 1250;
+			Brain.LastThinkTick = GameLoopMgr.GameLoopTime + 1250;
 			return 0;
 		}
 
@@ -3742,7 +3743,7 @@ namespace Core.GS
 			{
 				var element = m_castSpellLosChecks.ElementAt(i);
 
-				if (GameLoop.GameLoopTime - element.Value.Item3 >= 3000)
+				if (GameLoopMgr.GameLoopTime - element.Value.Item3 >= 3000)
 					m_castSpellLosChecks.TryRemove(element.Key, out _);
 			}
 
@@ -3791,7 +3792,7 @@ namespace Core.GS
 			if (spellCastedFromLosCheck)
 				m_spellCastedFromLosCheck = false;
 
-			if (m_castSpellLosChecks.TryAdd(TargetObject, new(spellToCast, line, GameLoop.GameLoopTime)))
+			if (m_castSpellLosChecks.TryAdd(TargetObject, new(spellToCast, line, GameLoopMgr.GameLoopTime)))
 				LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(CastSpellLosCheckReply));
 
 			return spellCastedFromLosCheck;

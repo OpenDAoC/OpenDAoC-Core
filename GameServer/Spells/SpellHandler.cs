@@ -13,6 +13,7 @@ using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.PlayerClass;
 using Core.GS.ServerProperties;
@@ -420,7 +421,7 @@ namespace Core.GS.Spells
 				return false;
 
 			// Only interrupt if we're under 50% of the way through the cast.
-			if (IsInCastingPhase && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * 0.5))
+			if (IsInCastingPhase && (GameLoopMgr.GameLoopTime < _castStartTick + _calculatedCastTime * 0.5))
 			{
 				if (Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
 				{
@@ -538,7 +539,7 @@ namespace Core.GS.Spells
 			var quickCast = EffectListService.GetAbilityEffectOnTarget(m_caster, EEffect.QuickCast);
 
 			if (quickCast != null)
-				quickCast.ExpireTick = GameLoop.GameLoopTime + quickCast.Duration;
+				quickCast.ExpireTick = GameLoopMgr.GameLoopTime + quickCast.Duration;
 
 			if (m_caster is GamePlayer playerCaster)
 			{
@@ -625,7 +626,7 @@ namespace Core.GS.Spells
 						!m_caster.effectListComponent.ContainsEffectForEffectType(EEffect.MasteryOfConcentration))
 					{
 						if (!quiet)
-							MessageToCaster($"You must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", EChatType.CT_SpellResisted);
+							MessageToCaster($"You must wait {(Caster.InterruptTime - GameLoopMgr.GameLoopTime) / 1000 + 1} seconds to cast a spell!", EChatType.CT_SpellResisted);
 
 						return false;
 					}
@@ -635,7 +636,7 @@ namespace Core.GS.Spells
 					if (!necroPet.effectListComponent.ContainsEffectForEffectType(EEffect.FacilitatePainworking))
 					{
 						if (!quiet)
-							MessageToCaster($"Your {necroPet.Name} must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", EChatType.CT_SpellResisted);
+							MessageToCaster($"Your {necroPet.Name} must wait {(Caster.InterruptTime - GameLoopMgr.GameLoopTime) / 1000 + 1} seconds to cast a spell!", EChatType.CT_SpellResisted);
 
 						return false;
 					}
@@ -964,10 +965,10 @@ namespace Core.GS.Spells
 								{
 									MesmerizeSpell mesmerizeSpellHandler = this as MesmerizeSpell;
 
-									if (GameLoop.GameLoopTime - mesmerizeSpellHandler.FluteMezLastEndOfCastMessage < MesmerizeSpell.FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL)
+									if (GameLoopMgr.GameLoopTime - mesmerizeSpellHandler.FluteMezLastEndOfCastMessage < MesmerizeSpell.FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL)
 										return false;
 
-									mesmerizeSpellHandler.FluteMezLastEndOfCastMessage = GameLoop.GameLoopTime;
+									mesmerizeSpellHandler.FluteMezLastEndOfCastMessage = GameLoopMgr.GameLoopTime;
 								}
 								
 								MessageToCaster("You can't see your target from here!", EChatType.CT_SpellResisted);
@@ -1107,9 +1108,9 @@ namespace Core.GS.Spells
 						return false;
 					}
 
-					if (Properties.CHECK_LOS_DURING_CAST && GameLoop.GameLoopTime > _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
+					if (Properties.CHECK_LOS_DURING_CAST && GameLoopMgr.GameLoopTime > _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
 					{
-						_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
+						_lastDuringCastLosCheckTime = GameLoopMgr.GameLoopTime;
 
 						if (Caster is GameNpc npc && npc.Brain is IControlledBrain npcBrain)
 							npcBrain.GetPlayerOwner()?.Out.SendCheckLOS(npc, target, CheckPetLosDuringCastCallback);
@@ -1221,7 +1222,7 @@ namespace Core.GS.Spells
 					}
 					else
 					{
-						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoopMgr.GameLoopTime)
 							CastState = ECastState.Interrupted;
 						else
 							CastState = ECastState.Cleanup;
@@ -2685,13 +2686,13 @@ namespace Core.GS.Spells
 			{
 				if (Caster.Realm == 0 || target.Realm == 0)
 				{
-					target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-					Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+					target.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+					Caster.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 				}
 				else
 				{
-					target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-					Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+					target.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+					Caster.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 				}
 			}
 		}
@@ -2765,13 +2766,13 @@ namespace Core.GS.Spells
 		{
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
-				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+				target.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+				Caster.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 			}
 			else
 			{
-				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+				target.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+				Caster.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 			}
 		}
 		
@@ -3560,13 +3561,13 @@ namespace Core.GS.Spells
 				{
 					if (Caster.Realm == 0 || ad.Target.Realm == 0)
 					{
-						ad.Target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-						Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+						ad.Target.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+						Caster.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 					}
 					else
 					{
-						ad.Target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-						Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+						ad.Target.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+						Caster.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 					}
 				}
 			}

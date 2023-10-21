@@ -1,5 +1,6 @@
 ﻿using Core.GS.AI.Brains;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
@@ -95,10 +96,10 @@ public class NpcAttackAction : AttackAction
             }
 
             // Check for NPCs in attack range. Only check if the NPCNextNPCVicinityCheck is less than the current GameLoop Time.
-            if (_nextVicinityCheck < GameLoop.GameLoopTime)
+            if (_nextVicinityCheck < GameLoopMgr.GameLoopTime)
             {
                 // Set the next check for NPCs. Will be in a range from 100ms -> NPC_VICINITY_CHECK_DELAY.
-                _nextVicinityCheck = GameLoop.GameLoopTime + Util.Random(100, NPC_VICINITY_CHECK_INTERVAL);
+                _nextVicinityCheck = GameLoopMgr.GameLoopTime + Util.Random(100, NPC_VICINITY_CHECK_INTERVAL);
 
                 foreach (GameNpc npcInRadius in _npcOwner.GetNPCsInRadius((ushort)_attackComponent.AttackRange))
                 {

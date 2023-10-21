@@ -1,4 +1,5 @@
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 
 namespace Core.GS.PacketHandler.Client.v168
 {
@@ -25,7 +26,7 @@ namespace Core.GS.PacketHandler.Client.v168
 			}
 			// unsure what this value is now thats sent in 1.125
 			// Its just a ping back letting the server know that UDP connection is still alive
-			client.UdpPingTime = GameLoop.GetCurrentTime();
+			client.UdpPingTime = GameLoopMgr.GetCurrentTime();
 			client.UdpConfirm = true;
 		}
 	}

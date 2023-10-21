@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.GS.Enums;
+using Core.GS.GameLoop;
 using Core.GS.PacketHandler;
 using Core.GS.RealmAbilities;
 using Core.Language;
@@ -12,7 +13,7 @@ public class SprintEcsAbilityEffect : EcsGameAbilityEffect
         : base(initParams) 
 	{
 		EffectType = EEffect.Sprint;
-		NextTick = GameLoop.GameLoopTime + 1;
+		NextTick = GameLoopMgr.GameLoopTime + 1;
 		EffectService.RequestStartEffect(this);
 	}
 

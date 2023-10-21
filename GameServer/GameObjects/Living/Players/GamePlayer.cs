@@ -23,6 +23,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Expansions.LabyrinthOfTheMinotaur;
+using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.PacketHandler.Client.v168;
@@ -823,7 +824,7 @@ namespace Core.GS
                 {
                     lastCombatAction = LastAttackTick;
                 }
-                long secondsleft = 60 - (GameLoop.GameLoopTime - lastCombatAction + 500) / 1000; // 500 is for rounding
+                long secondsleft = 60 - (GameLoopMgr.GameLoopTime - lastCombatAction + 500) / 1000; // 500 is for rounding
                 if (secondsleft > 0)
                 {
                     if (secondsleft == 15 || secondsleft == 10 || secondsleft == 5)
@@ -857,8 +858,8 @@ namespace Core.GS
                     //Commenting out the LastAttackTickPvP part as it was messing up the Realm Timer.
                     // if (GameLoop.GameLoopTime - LastAttackTickPvP > 40000)
                     //     LastAttackTickPvP = GameLoop.GameLoopTime - 40000;
-                    if (GameLoop.GameLoopTime - LastAttackTickPvE > 40000)
-                        LastAttackTickPvE = GameLoop.GameLoopTime - 40000;
+                    if (GameLoopMgr.GameLoopTime - LastAttackTickPvE > 40000)
+                        LastAttackTickPvE = GameLoopMgr.GameLoopTime - 40000;
                 }
                 long lastCombatAction = LastAttackTick;
                 if (lastCombatAction < LastAttackedByEnemyTick)
@@ -866,7 +867,7 @@ namespace Core.GS
                     lastCombatAction = LastAttackedByEnemyTick;
                 }
 
-                return (int)(60 - (GameLoop.GameLoopTime - lastCombatAction + 500) / 1000); // 500 is for rounding
+                return (int)(60 - (GameLoopMgr.GameLoopTime - lastCombatAction + 500) / 1000); // 500 is for rounding
             }
             set
             { }
@@ -893,7 +894,7 @@ namespace Core.GS
             }
 
             // Keep the callback alive until SECONDS_TO_QUIT_ON_LINKDEATH has passed
-            if (Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000 >= GameLoop.GameLoopTime && IsAlive)
+            if (Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000 >= GameLoopMgr.GameLoopTime && IsAlive)
                 return callingTimer.Interval;
 
             // If we died during our callback time we release
@@ -1528,7 +1529,7 @@ namespace Core.GS
                 }
                 m_releaseType = releaseCommand;
                 // we use realtime, because timer window is realtime
-                long diff = m_deathTick - GameLoop.GameLoopTime + RELEASE_MINIMUM_WAIT * 1000;
+                long diff = m_deathTick - GameLoopMgr.GameLoopTime + RELEASE_MINIMUM_WAIT * 1000;
                 if (diff >= 1000)
                 {
                     if (m_automaticRelease)
@@ -1947,7 +1948,7 @@ namespace Core.GS
         {
             if (IsAlive)
                 return 0;
-            long diffToRelease = GameLoop.GameLoopTime - m_deathTick;
+            long diffToRelease = GameLoopMgr.GameLoopTime - m_deathTick;
             if (m_automaticRelease && diffToRelease > RELEASE_MINIMUM_WAIT * 1000)
             {
                 Release(m_releaseType, true);
@@ -2673,7 +2674,7 @@ namespace Core.GS
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return EnduranceRegenerationPeriod;
 
-            LastEnduTick = GameLoop.GameLoopTime;
+            LastEnduTick = GameLoopMgr.GameLoopTime;
 
             bool sprinting = IsSprinting;
 
@@ -5999,7 +6000,7 @@ namespace Core.GS
             {
                 if (ActiveWeapon.Item_Type == (int)EInventorySlot.DistanceWeapon 
                     && rangeAttackComponent.RangedAttackState != ERangedAttackState.None 
-                    && GameLoop.GameLoopTime - this.TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START) > 100
+                    && GameLoopMgr.GameLoopTime - this.TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START) > 100
                     && attackComponent.attackAction != null)
                 {
                     attackComponent.attackAction.StartTime = 1000;
@@ -7006,7 +7007,7 @@ namespace Core.GS
 
                 m_automaticRelease = m_releaseType == EReleaseType.Duel;
                 m_releasePhase = 0;
-                m_deathTick = GameLoop.GameLoopTime; // we use realtime, because timer window is realtime
+                m_deathTick = GameLoopMgr.GameLoopTime; // we use realtime, because timer window is realtime
 
                 Out.SendTimerWindow(LanguageMgr.GetTranslation(Client.Account.Language, "System.ReleaseTimer"), (m_automaticRelease ? RELEASE_MINIMUM_WAIT : RELEASE_TIME));
                 m_releaseTimer = new EcsGameTimer(this);
@@ -9185,7 +9186,7 @@ namespace Core.GS
             List<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
             CurrentSpeed = 0;
-            movementComponent.MovementStartTick = GameLoop.GameLoopTime;
+            movementComponent.MovementStartTick = GameLoopMgr.GameLoopTime;
             Point3D originalPoint = new(X, Y, Z);
             X = x;
             Y = y;
@@ -9755,7 +9756,7 @@ namespace Core.GS
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.CannotBreath"), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.DrowningTimerCallback.Take5%Damage"), EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 
-            if (GameLoop.GameLoopTime - m_beginDrowningTick > 15000)
+            if (GameLoopMgr.GameLoopTime - m_beginDrowningTick > 15000)
             {
                 TakeDamage(null, EDamageType.Natural, MaxHealth, 0);
                 Out.SendCloseTimerWindow();
