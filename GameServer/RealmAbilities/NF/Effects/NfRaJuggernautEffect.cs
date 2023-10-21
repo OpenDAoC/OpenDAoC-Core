@@ -1,154 +1,154 @@
 using System;
 using System.Collections.Generic;
 using Core.GS.ECS;
+using Core.GS.Effects;
 
-namespace Core.GS.Effects
+namespace Core.GS.RealmAbilities;
+
+public class NfRaJuggernautEffect : StaticEffect, IGameEffect
 {
-	public class NfRaJuggernautEffect : StaticEffect, IGameEffect
+	private const String m_delveString = "Increases the effective level of the pet by the listed number (capped at level 70).";
+	private GameNpc m_living;
+	private Int32 m_effectDuration;
+	private EcsGameTimer m_expireTimer;
+	private byte m_value;
+	private int m_growSize = 15;
+	public const int JUGGERNAUT_CAP_EFFECT = 70;
+
+
+	/// <summary>
+	/// Default constructor for JuggernautEffect
+	/// </summary>
+	public NfRaJuggernautEffect()
 	{
-		private const String m_delveString = "Increases the effective level of the pet by the listed number (capped at level 70).";
-		private GameNpc m_living;
-		private Int32 m_effectDuration;
-		private EcsGameTimer m_expireTimer;
-		private byte m_value;
-		private int m_growSize = 15;
-		public const int JUGGERNAUT_CAP_EFFECT = 70;
+
+	}
+
+	/// <summary>
+	/// Called when effect is to be started
+	/// </summary>
+	/// <param name="player">The player to start the effect for</param>
+	/// <param name="duration">The effectduration in secounds</param>
+	/// <param name="value">The increment of effective level</param>
+	public void Start(GameLiving living, int duration, byte value)
+	{
+		if (living.ControlledBrain == null)
+			return;
+		m_living = living.ControlledBrain.Body;
+		m_effectDuration = duration;
+		m_value = value;
 
 
-		/// <summary>
-		/// Default constructor for JuggernautEffect
-		/// </summary>
-		public NfRaJuggernautEffect()
+		StartTimers();
+
+		m_living.Size += (byte)m_growSize;
+		m_living.Level = (byte)Math.Min(m_living.Level+m_value, JUGGERNAUT_CAP_EFFECT);
+		m_living.EffectList.Add(this);
+
+	}
+
+	/// <summary>
+	/// Called when effect is to be cancelled
+	/// </summary>
+	/// <param name="playerCancel">Whether or not effect is player cancelled</param>
+	public override void Cancel(bool playerCancel)
+	{
+		StopTimers();
+		m_living.Size -= (byte)m_growSize;
+		m_living.Level -= m_value;
+		m_living.EffectList.Remove(this);
+	}
+
+	/// <summary>
+	/// Starts the timers for this effect
+	/// </summary>
+	private void StartTimers()
+	{
+		StopTimers();
+		m_expireTimer = new EcsGameTimer(m_living, new EcsGameTimer.EcsTimerCallback(ExpireCallback), m_effectDuration * 1000);
+	}
+
+	/// <summary>
+	/// Stops the timers for this effect
+	/// </summary>
+	private void StopTimers()
+	{
+
+		if (m_expireTimer != null)
 		{
-
+			m_expireTimer.Stop();
+			m_expireTimer = null;
 		}
+	}
 
-		/// <summary>
-		/// Called when effect is to be started
-		/// </summary>
-		/// <param name="player">The player to start the effect for</param>
-		/// <param name="duration">The effectduration in secounds</param>
-		/// <param name="value">The increment of effective level</param>
-		public void Start(GameLiving living, int duration, byte value)
+	/// <summary>
+	/// The callback for when the effect expires
+	/// </summary>
+	/// <param name="timer">The ObjectTimerCallback object</param>
+	private int ExpireCallback(EcsGameTimer timer)
+	{
+		Cancel(false);
+
+		return 0;
+	}
+
+
+	/// <summary>
+	/// Name of the effect
+	/// </summary>
+	public override string Name
+	{
+		get
 		{
-			if (living.ControlledBrain == null)
-				return;
-			m_living = living.ControlledBrain.Body;
-			m_effectDuration = duration;
-			m_value = value;
-
-
-			StartTimers();
-
-			m_living.Size += (byte)m_growSize;
-			m_living.Level = (byte)Math.Min(m_living.Level+m_value, JUGGERNAUT_CAP_EFFECT);
-			m_living.EffectList.Add(this);
-
+			return "Juggernaut";
 		}
+	}
 
-		/// <summary>
-		/// Called when effect is to be cancelled
-		/// </summary>
-		/// <param name="playerCancel">Whether or not effect is player cancelled</param>
-		public override void Cancel(bool playerCancel)
+	/// <summary>
+	/// Remaining time of the effect in milliseconds
+	/// </summary>
+	public override Int32 RemainingTime
+	{
+		get
 		{
-			StopTimers();
-			m_living.Size -= (byte)m_growSize;
-			m_living.Level -= m_value;
-			m_living.EffectList.Remove(this);
+			EcsGameTimer timer = m_expireTimer;
+			if (timer == null || !timer.IsAlive)
+				return 0;
+			return timer.TimeUntilElapsed;
 		}
+	}
 
-		/// <summary>
-		/// Starts the timers for this effect
-		/// </summary>
-		private void StartTimers()
+	/// <summary>
+	/// Icon ID
+	/// </summary>
+	public override UInt16 Icon
+	{
+		get
 		{
-			StopTimers();
-			m_expireTimer = new EcsGameTimer(m_living, new EcsGameTimer.EcsTimerCallback(ExpireCallback), m_effectDuration * 1000);
+			return 3030;
 		}
+	}
 
-		/// <summary>
-		/// Stops the timers for this effect
-		/// </summary>
-		private void StopTimers()
+	/// <summary>
+	/// Delve information
+	/// </summary>
+	public override IList<string> DelveInfo
+	{
+		get
 		{
+			var delveInfoList = new List<string>();
+			delveInfoList.Add(m_delveString);
+			delveInfoList.Add(" ");
+			delveInfoList.Add("Value: " + m_value + "%");
 
-			if (m_expireTimer != null)
+			int seconds = (int)(RemainingTime / 1000);
+			if (seconds > 0)
 			{
-				m_expireTimer.Stop();
-				m_expireTimer = null;
-			}
-		}
-
-		/// <summary>
-		/// The callback for when the effect expires
-		/// </summary>
-		/// <param name="timer">The ObjectTimerCallback object</param>
-		private int ExpireCallback(EcsGameTimer timer)
-		{
-			Cancel(false);
-
-			return 0;
-		}
-
-
-		/// <summary>
-		/// Name of the effect
-		/// </summary>
-		public override string Name
-		{
-			get
-			{
-				return "Juggernaut";
-			}
-		}
-
-		/// <summary>
-		/// Remaining time of the effect in milliseconds
-		/// </summary>
-		public override Int32 RemainingTime
-		{
-			get
-			{
-				EcsGameTimer timer = m_expireTimer;
-				if (timer == null || !timer.IsAlive)
-					return 0;
-				return timer.TimeUntilElapsed;
-			}
-		}
-
-		/// <summary>
-		/// Icon ID
-		/// </summary>
-		public override UInt16 Icon
-		{
-			get
-			{
-				return 3030;
-			}
-		}
-
-		/// <summary>
-		/// Delve information
-		/// </summary>
-		public override IList<string> DelveInfo
-		{
-			get
-			{
-				var delveInfoList = new List<string>();
-				delveInfoList.Add(m_delveString);
 				delveInfoList.Add(" ");
-				delveInfoList.Add("Value: " + m_value + "%");
-
-				int seconds = (int)(RemainingTime / 1000);
-				if (seconds > 0)
-				{
-					delveInfoList.Add(" ");
-					delveInfoList.Add("- " + seconds + " seconds remaining.");
-				}
-
-				return delveInfoList;
+				delveInfoList.Add("- " + seconds + " seconds remaining.");
 			}
+
+			return delveInfoList;
 		}
 	}
 }

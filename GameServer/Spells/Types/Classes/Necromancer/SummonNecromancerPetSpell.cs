@@ -6,6 +6,7 @@ using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.RealmAbilities;
 
 namespace Core.GS.Spells
 {

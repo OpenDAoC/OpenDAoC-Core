@@ -1,53 +1,50 @@
 using System.Collections.Generic;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Spells;
 
-namespace Core.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class NfRaValeDefenseAbility : Rr5RealmAbility
 {
-	public class NfRaValeDefenseAbility : Rr5RealmAbility
+	public NfRaValeDefenseAbility(DbAbility dba, int level) : base(dba, level) { }
+
+	/// <summary>
+	/// Action
+	/// </summary>
+	/// <param></param>
+	public override void Execute(GameLiving living)
 	{
-		public NfRaValeDefenseAbility(DbAbility dba, int level) : base(dba, level) { }
+		if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
-		/// <summary>
-		/// Action
-		/// </summary>
-		/// <param></param>
-		public override void Execute(GameLiving living)
+		GamePlayer player = living as GamePlayer;
+
+		if (player == null)
+			return;
+
+		Spell subspell = SkillBase.GetSpellByID(7063);
+		ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(player, subspell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
+		if(player.Group==null)
 		{
-			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-
-			GamePlayer player = living as GamePlayer;
-
-			if (player == null)
-				return;
-
-			Spell subspell = SkillBase.GetSpellByID(7063);
-			ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(player, subspell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
-			if(player.Group==null)
-			{
-				spellhandler.StartSpell(player);
-			}
-			else foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
-			{
-				if(member!=null) spellhandler.StartSpell(member);
-			}
-			DisableSkill(living);
+			spellhandler.StartSpell(player);
 		}
-
-		public override int GetReUseDelay(int level)
+		else foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
 		{
-			return 420;
+			if(member!=null) spellhandler.StartSpell(member);
 		}
+		DisableSkill(living);
+	}
 
-		public override void AddEffectsInfo(IList<string> list)
-		{
-			list.Add("Vale Defense.");
-			list.Add("");
-			list.Add("Target: Group");
-			list.Add("Duration: 10 min");
-			list.Add("Casting time: instant");
-		}
+	public override int GetReUseDelay(int level)
+	{
+		return 420;
+	}
 
+	public override void AddEffectsInfo(IList<string> list)
+	{
+		list.Add("Vale Defense.");
+		list.Add("");
+		list.Add("Target: Group");
+		list.Add("Duration: 10 min");
+		list.Add("Casting time: instant");
 	}
 }

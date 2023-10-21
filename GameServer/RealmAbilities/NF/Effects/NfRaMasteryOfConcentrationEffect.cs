@@ -1,72 +1,72 @@
 using System;
 using System.Collections.Generic;
+using Core.GS.Effects;
 
-namespace Core.GS.Effects
+namespace Core.GS.RealmAbilities;
+
+public class NfRaMasteryOfConcentrationEffect : TimedEffect, IGameEffect
 {
-	public class NfRaMasteryOfConcentrationEffect : TimedEffect, IGameEffect
+	/// <summary>
+	/// Default constructor for MasteryofConcentrationEffect
+	/// </summary>
+	public NfRaMasteryOfConcentrationEffect(int Duration)
+		: base(Duration)
 	{
-		/// <summary>
-		/// Default constructor for MasteryofConcentrationEffect
-		/// </summary>
-		public NfRaMasteryOfConcentrationEffect(int Duration)
-			: base(Duration)
+	}
+
+	/// <summary>
+	/// Called when effect is to be cancelled
+	/// </summary>
+	/// <param name="playerCancel">Whether or not effect is player cancelled</param>
+	public override void Cancel(bool playerCancel)
+	{
+		//uncancable by player
+		if (playerCancel)
+			return;
+
+		base.Cancel(playerCancel);
+	}
+
+	/// <summary>
+	/// Name of the effect
+	/// </summary>
+	public override string Name
+	{
+		get
 		{
+			return "Mastery of Concentration";
 		}
+	}
 
-		/// <summary>
-		/// Called when effect is to be cancelled
-		/// </summary>
-		/// <param name="playerCancel">Whether or not effect is player cancelled</param>
-		public override void Cancel(bool playerCancel)
+	/// <summary>
+	/// Icon ID
+	/// </summary>
+	public override UInt16 Icon
+	{
+		get
 		{
-			//uncancable by player
-			if (playerCancel)
-				return;
-
-			base.Cancel(playerCancel);
+			return 3006;
 		}
+	}
 
-		/// <summary>
-		/// Name of the effect
-		/// </summary>
-		public override string Name
+	/// <summary>
+	/// Delve information
+	/// </summary>
+	public override IList<string> DelveInfo
+	{
+		get
 		{
-			get
+			var delveInfoList = new List<string>(4);
+			delveInfoList.Add("This ability allows a player to cast uninterrupted, even while sustaining attacks, through melee or spell for 30 seconds.");
+
+            int seconds = (int)(RemainingTime / 1000);
+			if (seconds > 0)
 			{
-				return "Mastery of Concentration";
+				delveInfoList.Add(" ");
+				delveInfoList.Add("- " + seconds + " seconds remaining.");
 			}
-		}
 
-		/// <summary>
-		/// Icon ID
-		/// </summary>
-		public override UInt16 Icon
-		{
-			get
-			{
-				return 3006;
-			}
-		}
-
-		/// <summary>
-		/// Delve information
-		/// </summary>
-		public override IList<string> DelveInfo
-		{
-			get
-			{
-				var delveInfoList = new List<string>(4);
-				delveInfoList.Add("This ability allows a player to cast uninterrupted, even while sustaining attacks, through melee or spell for 30 seconds.");
-
-                int seconds = (int)(RemainingTime / 1000);
-				if (seconds > 0)
-				{
-					delveInfoList.Add(" ");
-					delveInfoList.Add("- " + seconds + " seconds remaining.");
-				}
-
-				return delveInfoList;
-			}
+			return delveInfoList;
 		}
 	}
 }

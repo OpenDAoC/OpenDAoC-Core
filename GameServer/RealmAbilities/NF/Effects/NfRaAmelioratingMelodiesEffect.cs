@@ -3,131 +3,130 @@ using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
 
-namespace Core.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class NfRaAmelioratingMelodiesEffect : TimedEffect
 {
-	public class NfRaAmelioratingMelodiesEffect : TimedEffect
+	/// <summary>
+	/// The countdown value. If this value is 0, the effect vanishes
+	/// </summary>
+	int m_countdown;
+
+	/// <summary>
+	/// The number of hit points healed each tick
+	/// </summary>
+	int m_heal;
+
+	/// <summary>
+	/// Max healing range
+	/// </summary>
+	int m_range;
+
+	/// <summary>
+	/// The rgion timer
+	/// </summary>
+	EcsGameTimer m_countDownTimer = null;
+
+	/// <summary>
+	/// Ameliorating Melodies
+	/// </summary>
+	/// <param name="heal">Delve value hit points per tick"</param>
+	public NfRaAmelioratingMelodiesEffect(int heal)
+		: base(30000)
 	{
-		/// <summary>
-		/// The countdown value. If this value is 0, the effect vanishes
-		/// </summary>
-		int m_countdown;
+		m_heal = heal;
+		m_range = 2000;
+		m_countdown = 10;
+	}
 
-		/// <summary>
-		/// The number of hit points healed each tick
-		/// </summary>
-		int m_heal;
+	/// <summary>
+	/// Starts the effect
+	/// </summary>
+	/// <param name="target">The player of this effect</param>
+	public override void Start(GameLiving target)
+	{
+		base.Start(target);
+		GamePlayer player = target as GamePlayer;
+		if (player == null) return;
+		player.EffectList.Add(this);
+		m_range = (int)(2000 * (player.GetModified(EProperty.SpellRange) * 0.01));
+		m_countDownTimer = new EcsGameTimer(player, new EcsGameTimer.EcsTimerCallback(CountDown));
+		m_countDownTimer.Start(1);
+	}
 
-		/// <summary>
-		/// Max healing range
-		/// </summary>
-		int m_range;
-
-		/// <summary>
-		/// The rgion timer
-		/// </summary>
-		EcsGameTimer m_countDownTimer = null;
-
-		/// <summary>
-		/// Ameliorating Melodies
-		/// </summary>
-		/// <param name="heal">Delve value hit points per tick"</param>
-		public NfRaAmelioratingMelodiesEffect(int heal)
-			: base(30000)
+	/// <summary>
+	/// Stops the effect
+	/// </summary>
+	public override void Stop()
+	{
+		base.Stop();
+		Owner.EffectList.Remove(this);
+		if (m_countDownTimer != null)
 		{
-			m_heal = heal;
-			m_range = 2000;
-			m_countdown = 10;
+			m_countDownTimer.Stop();
+			m_countDownTimer = null;
 		}
+	}
 
-		/// <summary>
-		/// Starts the effect
-		/// </summary>
-		/// <param name="target">The player of this effect</param>
-		public override void Start(GameLiving target)
+	/// <summary>
+	/// Timer callback
+	/// </summary>
+	/// <param name="timer">The region timer</param>
+	public int CountDown(EcsGameTimer timer)
+	{
+		if (m_countdown > 0)
 		{
-			base.Start(target);
-			GamePlayer player = target as GamePlayer;
-			if (player == null) return;
-			player.EffectList.Add(this);
-			m_range = (int)(2000 * (player.GetModified(EProperty.SpellRange) * 0.01));
-			m_countDownTimer = new EcsGameTimer(player, new EcsGameTimer.EcsTimerCallback(CountDown));
-			m_countDownTimer.Start(1);
-		}
-
-		/// <summary>
-		/// Stops the effect
-		/// </summary>
-		public override void Stop()
-		{
-			base.Stop();
-			Owner.EffectList.Remove(this);
-			if (m_countDownTimer != null)
+			m_countdown--;
+			GamePlayer player = Owner as GamePlayer;
+			if (player == null) return 0;
+			if (player.Group == null) return 3000;
+			foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
 			{
-				m_countDownTimer.Stop();
-				m_countDownTimer = null;
-			}
-		}
-
-		/// <summary>
-		/// Timer callback
-		/// </summary>
-		/// <param name="timer">The region timer</param>
-		public int CountDown(EcsGameTimer timer)
-		{
-			if (m_countdown > 0)
-			{
-				m_countdown--;
-				GamePlayer player = Owner as GamePlayer;
-				if (player == null) return 0;
-				if (player.Group == null) return 3000;
-				foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
+				if ((p != player) && (p.Health < p.MaxHealth) && player.IsWithinRadius(p, m_range) && (p.IsAlive))
 				{
-					if ((p != player) && (p.Health < p.MaxHealth) && player.IsWithinRadius(p, m_range) && (p.IsAlive))
+					if (player.IsStealthed)
 					{
-						if (player.IsStealthed)
-						{
-							player.Stealth(false);
-						}
-
-						int heal = m_heal;
-						if (p.Health + heal > p.MaxHealth) heal = p.MaxHealth - p.Health;
-						p.ChangeHealth(player, EHealthChangeType.Regenerate, heal);
-						player.Out.SendMessage("You heal " + p.Name + " for " + heal.ToString() + " hit points.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-						p.Out.SendMessage(player.Name + " heals you for " + heal.ToString() + " hit points.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+						player.Stealth(false);
 					}
+
+					int heal = m_heal;
+					if (p.Health + heal > p.MaxHealth) heal = p.MaxHealth - p.Health;
+					p.ChangeHealth(player, EHealthChangeType.Regenerate, heal);
+					player.Out.SendMessage("You heal " + p.Name + " for " + heal.ToString() + " hit points.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+					p.Out.SendMessage(player.Name + " heals you for " + heal.ToString() + " hit points.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 				}
-				return 3000;
 			}
-			return 0;
+			return 3000;
 		}
+		return 0;
+	}
 
-		/// <summary>
-		/// Name of the effect
-		/// </summary>
-		public override string Name { get { return "Ameliorating Melodies"; } }
+	/// <summary>
+	/// Name of the effect
+	/// </summary>
+	public override string Name { get { return "Ameliorating Melodies"; } }
 
-		/// <summary>
-		/// Icon of the effect
-		/// </summary>
-		public override ushort Icon { get { return 3021; } }
+	/// <summary>
+	/// Icon of the effect
+	/// </summary>
+	public override ushort Icon { get { return 3021; } }
 
-		/// <summary>
-		/// Delve information
-		/// </summary>
-		public override IList<string> DelveInfo
+	/// <summary>
+	/// Delve information
+	/// </summary>
+	public override IList<string> DelveInfo
+	{
+		get
 		{
-			get
-			{
-				var list = new List<string>(8);
-				list.Add("Ameliorating Melodies");
-				list.Add(" ");
-				list.Add("Value: " + m_heal.ToString() + " / tick");
-				list.Add("Target: Group");
-				list.Add("Range: " + m_range.ToString());
-				list.Add("Duration: 30 s (" + (m_countdown * 3).ToString() + " s remaining)");
+			var list = new List<string>(8);
+			list.Add("Ameliorating Melodies");
+			list.Add(" ");
+			list.Add("Value: " + m_heal.ToString() + " / tick");
+			list.Add("Target: Group");
+			list.Add("Range: " + m_range.ToString());
+			list.Add("Duration: 30 s (" + (m_countdown * 3).ToString() + " s remaining)");
 
-				return list;
-			}
+			return list;
 		}
 	}
 }

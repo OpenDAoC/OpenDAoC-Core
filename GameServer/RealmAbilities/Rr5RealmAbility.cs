@@ -1,29 +1,27 @@
-using Core.Database;
 using Core.Database.Tables;
 
-namespace Core.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class Rr5RealmAbility : TimedRealmAbility
 {
-	public class Rr5RealmAbility : TimedRealmAbility
+	public Rr5RealmAbility(DbAbility ability, int level) : base(ability, level) { }
+
+	public override int MaxLevel
 	{
-		public Rr5RealmAbility(DbAbility ability, int level) : base(ability, level) { }
-
-		public override int MaxLevel
+		get
 		{
-			get
-			{
-				return 1;
-			}
+			return 1;
 		}
-
-		public override bool CheckRequirement(GamePlayer player)
-		{
-			return player.RealmLevel >= 40;
-		}
-
-		public override int CostForUpgrade(int level)
-		{
-			return 0;
-		}
-
 	}
+
+	public override bool CheckRequirement(GamePlayer player)
+	{
+		return player.RealmLevel >= 40;
+	}
+
+	public override int CostForUpgrade(int level)
+	{
+		return 0;
+	}
+
 }

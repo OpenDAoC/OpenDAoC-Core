@@ -1,104 +1,99 @@
 using System.Collections.Generic;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 
-namespace Core.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class NfRaSoulQuenchAbility : Rr5RealmAbility
 {
-	public class NfRaSoulQuenchAbility : Rr5RealmAbility
+	public NfRaSoulQuenchAbility(DbAbility dba, int level) : base(dba, level) { }
+
+	/// <summary>
+	/// Action
+	/// </summary>
+	/// <param name="living"></param>
+	public override void Execute(GameLiving living)
 	{
-		public NfRaSoulQuenchAbility(DbAbility dba, int level) : base(dba, level) { }
+		if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
-		/// <summary>
-		/// Action
-		/// </summary>
-		/// <param name="living"></param>
-		public override void Execute(GameLiving living)
+		SendCasterSpellEffectAndCastMessage(living, 1145, true);
+
+		bool deactivate = false;
+		foreach (GamePlayer player in living.GetPlayersInRadius(350))
 		{
-			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-
-			SendCasterSpellEffectAndCastMessage(living, 1145, true);
-
-			bool deactivate = false;
-			foreach (GamePlayer player in living.GetPlayersInRadius(350))
+			if (GameServer.ServerRules.IsAllowedToAttack(living, player, true))
 			{
-				if (GameServer.ServerRules.IsAllowedToAttack(living, player, true))
-				{
-					DamageTarget(player, living);
-					deactivate = true;
-				}
+				DamageTarget(player, living);
+				deactivate = true;
 			}
-
-			foreach (GameNpc npc in living.GetNPCsInRadius(350))
-			{
-				if (GameServer.ServerRules.IsAllowedToAttack(living, npc, true))
-				{
-					DamageTarget(npc, living);
-					deactivate = true;
-				}
-			}
-			if (deactivate)
-				DisableSkill(living);
 		}
 
-		private void DamageTarget(GameLiving target, GameLiving caster)
+		foreach (GameNpc npc in living.GetNPCsInRadius(350))
 		{
-			double modifier = 0.5 + (caster.GetModifiedSpecLevel("Soulrending") * 0.01);
-			int basedamage = (int)(250 * modifier);
-			int resist = basedamage * target.GetResist(EDamageType.Spirit) / -100;
-			int damage = basedamage + resist;
-			int heal = (int)(damage * 0.75);
-			int modheal = caster.MaxHealth - caster.Health;
-			if (modheal > heal)
-				modheal = heal;
-			caster.Health += modheal;
-
-			GamePlayer player = caster as GamePlayer;
-			if (player != null)
-				player.Out.SendMessage("You hit " + target.Name + " for " + damage + "(" + resist + ") points of damage!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
-			if (caster is GamePlayer && modheal > 0)
-				((GamePlayer)caster).Out.SendMessage("Your Soul Quench returns " + modheal + " lifepoints to you", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-
-			GamePlayer targetPlayer = target as GamePlayer;
-			if (targetPlayer != null)
+			if (GameServer.ServerRules.IsAllowedToAttack(living, npc, true))
 			{
-				if (targetPlayer.IsStealthed)
-					targetPlayer.Stealth(false);
+				DamageTarget(npc, living);
+				deactivate = true;
 			}
-
-			foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				p.Out.SendSpellEffectAnimation(caster, target, 1145, 0, false, 1);
-				p.Out.SendCombatAnimation(caster, target, 0, 0, 0, 0, 0x14, target.HealthPercent);
-			}
-
-			//target.TakeDamage(caster, eDamageType.Spirit, damage, 0);
-			AttackData ad = new AttackData();
-			ad.AttackResult = EAttackResult.HitUnstyled;
-			ad.Attacker = caster;
-			ad.Target = target;
-			ad.DamageType = EDamageType.Spirit;
-			ad.Damage = damage;
-			target.OnAttackedByEnemy(ad);
-			caster.DealDamage(ad);
-
-
 		}
+		if (deactivate)
+			DisableSkill(living);
+	}
 
-		public override int GetReUseDelay(int level)
+	private void DamageTarget(GameLiving target, GameLiving caster)
+	{
+		double modifier = 0.5 + (caster.GetModifiedSpecLevel("Soulrending") * 0.01);
+		int basedamage = (int)(250 * modifier);
+		int resist = basedamage * target.GetResist(EDamageType.Spirit) / -100;
+		int damage = basedamage + resist;
+		int heal = (int)(damage * 0.75);
+		int modheal = caster.MaxHealth - caster.Health;
+		if (modheal > heal)
+			modheal = heal;
+		caster.Health += modheal;
+
+		GamePlayer player = caster as GamePlayer;
+		if (player != null)
+			player.Out.SendMessage("You hit " + target.Name + " for " + damage + "(" + resist + ") points of damage!", EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
+		if (caster is GamePlayer && modheal > 0)
+			((GamePlayer)caster).Out.SendMessage("Your Soul Quench returns " + modheal + " lifepoints to you", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+
+		GamePlayer targetPlayer = target as GamePlayer;
+		if (targetPlayer != null)
 		{
-			return 600;
+			if (targetPlayer.IsStealthed)
+				targetPlayer.Stealth(false);
 		}
 
-		public override void AddEffectsInfo(IList<string> list)
+		foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 		{
-			list.Add("Insta-PBAE attack that drains 250 points (modified up or down by the Reavers SR level) from all nearby enemies and returns 75% to the Reaver.");
-			list.Add("");
-			list.Add("Radius: 350");
-			list.Add("Target: Enemy");
-			list.Add("Casting time: instant");
+			p.Out.SendSpellEffectAnimation(caster, target, 1145, 0, false, 1);
+			p.Out.SendCombatAnimation(caster, target, 0, 0, 0, 0, 0x14, target.HealthPercent);
 		}
 
+		//target.TakeDamage(caster, eDamageType.Spirit, damage, 0);
+		AttackData ad = new AttackData();
+		ad.AttackResult = EAttackResult.HitUnstyled;
+		ad.Attacker = caster;
+		ad.Target = target;
+		ad.DamageType = EDamageType.Spirit;
+		ad.Damage = damage;
+		target.OnAttackedByEnemy(ad);
+		caster.DealDamage(ad);
+	}
+
+	public override int GetReUseDelay(int level)
+	{
+		return 600;
+	}
+
+	public override void AddEffectsInfo(IList<string> list)
+	{
+		list.Add("Insta-PBAE attack that drains 250 points (modified up or down by the Reavers SR level) from all nearby enemies and returns 75% to the Reaver.");
+		list.Add("");
+		list.Add("Radius: 350");
+		list.Add("Target: Enemy");
+		list.Add("Casting time: instant");
 	}
 }

@@ -1,4 +1,4 @@
-﻿namespace realmabilities_atlasOF._temporary_helper
+﻿namespace Core.GS.RealmAbilities
 {
     class DB_RealmAbilities_Scripts
     {

@@ -1,47 +1,44 @@
 using System.Collections.Generic;
-using Core.Database;
 using Core.Database.Tables;
-using Core.GS.Effects;
 
-namespace Core.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class NfRaCombatAwarenessAbility : Rr5RealmAbility
 {
-	public class NfRaCombatAwarenessAbility : Rr5RealmAbility
+	public NfRaCombatAwarenessAbility(DbAbility dba, int level) : base(dba, level) { }
+
+	/// <summary>
+	/// Action
+	/// </summary>
+	/// <param name="living"></param>
+	public override void Execute(GameLiving living)
 	{
-		public NfRaCombatAwarenessAbility(DbAbility dba, int level) : base(dba, level) { }
+		if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
-		/// <summary>
-		/// Action
-		/// </summary>
-		/// <param name="living"></param>
-		public override void Execute(GameLiving living)
+
+
+		GamePlayer player = living as GamePlayer;
+		if (player != null)
 		{
-			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-
-
-
-			GamePlayer player = living as GamePlayer;
-			if (player != null)
-			{
-				SendCasterSpellEffectAndCastMessage(player, 7068, true);
-				NfRaCombatAwarenessEffect effect = new NfRaCombatAwarenessEffect();
-				effect.Start(player);
-			}
-			DisableSkill(living);
+			SendCasterSpellEffectAndCastMessage(player, 7068, true);
+			NfRaCombatAwarenessEffect effect = new NfRaCombatAwarenessEffect();
+			effect.Start(player);
 		}
-
-		public override int GetReUseDelay(int level)
-		{
-			return 900;
-		}
-
-		public override void AddEffectsInfo(IList<string> list)
-		{
-			list.Add("Gives you a 50% 360� evade buff but also reduces your movement and melee damage by 50%");
-			list.Add("");
-			list.Add("Target: Self");
-			list.Add("Duration: 30 sec");
-			list.Add("Casting time: instant");
-		}
-
+		DisableSkill(living);
 	}
+
+	public override int GetReUseDelay(int level)
+	{
+		return 900;
+	}
+
+	public override void AddEffectsInfo(IList<string> list)
+	{
+		list.Add("Gives you a 50% 360� evade buff but also reduces your movement and melee damage by 50%");
+		list.Add("");
+		list.Add("Target: Self");
+		list.Add("Duration: 30 sec");
+		list.Add("Casting time: instant");
+	}
+
 }

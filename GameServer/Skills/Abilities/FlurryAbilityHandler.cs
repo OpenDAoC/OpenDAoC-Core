@@ -4,6 +4,7 @@ using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Players.Classes;
+using Core.GS.RealmAbilities;
 using log4net;
 
 namespace Core.GS.SkillHandler

@@ -1,28 +1,27 @@
-namespace Core.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+/*
+public class L1RealmAbility : TimedRealmAbility
 {
-	/*
-	public class L1RealmAbility : TimedRealmAbility
+	public L1RealmAbility(DBAbility ability, int level) : base(ability, level) { }
+
+	public override int MaxLevel
 	{
-		public L1RealmAbility(DBAbility ability, int level) : base(ability, level) { }
-
-		public override int MaxLevel
+		get
 		{
-			get
-			{
-				return 1;
-			}
+			return 1;
 		}
-
-		public override bool CheckRequirement(GamePlayer player)
-		{
-			return player.RealmLevel >= 40;
-		}
-
-		public override int CostForUpgrade(int level)
-		{
-			return 14;
-		}
-
 	}
-	*/
+
+	public override bool CheckRequirement(GamePlayer player)
+	{
+		return player.RealmLevel >= 40;
+	}
+
+	public override int CostForUpgrade(int level)
+	{
+		return 14;
+	}
+
 }
+*/

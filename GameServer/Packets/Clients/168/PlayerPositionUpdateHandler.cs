@@ -11,6 +11,7 @@ using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Packets.Server;
 using Core.GS.Players.Realms;
+using Core.GS.RealmAbilities;
 using log4net;
 
 namespace Core.GS.Packets.Clients;

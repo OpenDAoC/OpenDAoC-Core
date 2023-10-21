@@ -1,58 +1,58 @@
 using System.Collections.Generic;
+using Core.GS.Effects;
 
-namespace Core.GS.Effects
+namespace Core.GS.RealmAbilities;
+
+public class NfRaWhirlingStaffEffect : TimedEffect
 {
-	public class NfRaWhirlingStaffEffect : TimedEffect
+	public NfRaWhirlingStaffEffect()
+		: base(6000)
 	{
-		public NfRaWhirlingStaffEffect()
-			: base(6000)
-		{
-			;
-		}
+		;
+	}
 
-		private GameLiving owner;
+	private GameLiving owner;
 
-		public override void Start(GameLiving target)
+	public override void Start(GameLiving target)
+	{
+		base.Start(target);
+		owner = target;
+		GamePlayer player = target as GamePlayer;
+		if (player != null)
 		{
-			base.Start(target);
-			owner = target;
-			GamePlayer player = target as GamePlayer;
-			if (player != null)
+			foreach (GamePlayer p in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
-				foreach (GamePlayer p in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					p.Out.SendSpellEffectAnimation(player, player, Icon, 0, false, 1);
-				}
+				p.Out.SendSpellEffectAnimation(player, player, Icon, 0, false, 1);
 			}
-			//target.IsDisarmed = true;
-            target.DisarmedTime = target.CurrentRegion.Time + m_duration;
-			target.attackComponent.StopAttack();
-
 		}
+		//target.IsDisarmed = true;
+        target.DisarmedTime = target.CurrentRegion.Time + m_duration;
+		target.attackComponent.StopAttack();
 
-		public override string Name { get { return "Whirling Staff"; } }
+	}
 
-		public override ushort Icon { get { return 3042; } }
+	public override string Name { get { return "Whirling Staff"; } }
 
-		public override void Stop()
+	public override ushort Icon { get { return 3042; } }
+
+	public override void Stop()
+	{
+		//owner.IsDisarmed = false;
+		base.Stop();
+	}
+
+	public int SpellEffectiveness
+	{
+		get { return 100; }
+	}
+
+	public override IList<string> DelveInfo
+	{
+		get
 		{
-			//owner.IsDisarmed = false;
-			base.Stop();
-		}
-
-		public int SpellEffectiveness
-		{
-			get { return 100; }
-		}
-
-		public override IList<string> DelveInfo
-		{
-			get
-			{
-				var list = new List<string>();
-				list.Add("Disarms you for 6 seconds!");
-				return list;
-			}
+			var list = new List<string>();
+			list.Add("Disarms you for 6 seconds!");
+			return list;
 		}
 	}
 }

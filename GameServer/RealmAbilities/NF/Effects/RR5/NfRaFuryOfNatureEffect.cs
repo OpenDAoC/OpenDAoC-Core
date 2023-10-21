@@ -1,184 +1,183 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Core.Events;
+using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
 
-namespace Core.GS.Effects
-{
-	public class NfRaFuryOfNatureEffect : TimedEffect
-	{
-		public NfRaFuryOfNatureEffect()
-			: base(30000)
-		{
-			;
-		}
+namespace Core.GS.RealmAbilities;
 
-		public override void Start(GameLiving target)
+public class NfRaFuryOfNatureEffect : TimedEffect
+{
+	public NfRaFuryOfNatureEffect()
+		: base(30000)
+	{
+		;
+	}
+
+	public override void Start(GameLiving target)
+	{
+		if (target != null)
 		{
+			base.Start(target);
+
 			if (target != null)
 			{
-				base.Start(target);
-
-				if (target != null)
+				foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{
-					foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					{
-						p.Out.SendSpellEffectAnimation(m_owner, target, Icon, 0, false, 1);
-					}
+					p.Out.SendSpellEffectAnimation(m_owner, target, Icon, 0, false, 1);
 				}
-
-				GameEventMgr.AddHandler(m_owner, GameLivingEvent.AttackFinished, new CoreEventHandler(OnAttack));
 			}
+
+			GameEventMgr.AddHandler(m_owner, GameLivingEvent.AttackFinished, new CoreEventHandler(OnAttack));
+		}
+	}
+
+	private void OnAttack(CoreEvent e, object sender, EventArgs arguments)
+	{
+		GameLiving living = sender as GameLiving;
+		if (living == null) return;
+		AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
+		if (args == null) return;
+		if (args.AttackData == null) return;
+
+		int extra = 0;
+		if (args.AttackData.StyleDamage > 0)
+		{
+			extra = args.AttackData.StyleDamage;
+			args.AttackData.Damage += args.AttackData.StyleDamage;
+			args.AttackData.StyleDamage *= 2;
 		}
 
-		private void OnAttack(CoreEvent e, object sender, EventArgs arguments)
+		GamePlayer player = sender as GamePlayer;
+		if (player == null)
+			return;
+		if (player.Group == null)
+			return;
+		if (extra > 0)
+			player.Out.SendMessage("Your Fury enables you to strike " + args.AttackData.Target.Name + " for " + extra + " additional points of damage", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+		Hashtable injuredTargets = new Hashtable();
+		GamePlayer mostInjuredLiving = null;
+
+		foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
 		{
-			GameLiving living = sender as GameLiving;
-			if (living == null) return;
-			AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
-			if (args == null) return;
-			if (args.AttackData == null) return;
+			if (p == player)
+				continue;
 
-			int extra = 0;
-			if (args.AttackData.StyleDamage > 0)
-			{
-				extra = args.AttackData.StyleDamage;
-				args.AttackData.Damage += args.AttackData.StyleDamage;
-				args.AttackData.StyleDamage *= 2;
-			}
+			mostInjuredLiving = p;
+			break;
+		}
 
-			GamePlayer player = sender as GamePlayer;
-			if (player == null)
-				return;
-			if (player.Group == null)
-				return;
-			if (extra > 0)
-				player.Out.SendMessage("Your Fury enables you to strike " + args.AttackData.Target.Name + " for " + extra + " additional points of damage", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-			Hashtable injuredTargets = new Hashtable();
-			GamePlayer mostInjuredLiving = null;
+		if (mostInjuredLiving == null) return;
 
+		double mostInjuredPercent = mostInjuredLiving.Health / (float)mostInjuredLiving.MaxHealth;
+		int groupHealCap = args.AttackData.Damage;
+		int targetHealCap = args.AttackData.Damage;
+		if (player.Group.MemberCount > 2)
+		{
+			groupHealCap *= (player.Group.MemberCount);
+			targetHealCap *= 2;
 			foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
 			{
-				if (p == player)
-					continue;
-
-				mostInjuredLiving = p;
-				break;
-			}
-
-			if (mostInjuredLiving == null) return;
-
-			double mostInjuredPercent = mostInjuredLiving.Health / (float)mostInjuredLiving.MaxHealth;
-			int groupHealCap = args.AttackData.Damage;
-			int targetHealCap = args.AttackData.Damage;
-			if (player.Group.MemberCount > 2)
-			{
-				groupHealCap *= (player.Group.MemberCount);
-				targetHealCap *= 2;
-				foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
+				if (!p.IsAlive) continue;
+				if (p == player) continue;
+				if (p.IsWithinRadius(player, 2000))
 				{
-					if (!p.IsAlive) continue;
-					if (p == player) continue;
-					if (p.IsWithinRadius(player, 2000))
+					double playerHealthPercent = p.Health / (double)p.MaxHealth;
+					if (playerHealthPercent < 1)
 					{
-						double playerHealthPercent = p.Health / (double)p.MaxHealth;
-						if (playerHealthPercent < 1)
+						injuredTargets.Add(p, playerHealthPercent);
+						if (playerHealthPercent < mostInjuredPercent)
 						{
-							injuredTargets.Add(p, playerHealthPercent);
-							if (playerHealthPercent < mostInjuredPercent)
-							{
-								mostInjuredLiving = p;
-								mostInjuredPercent = playerHealthPercent;
-							}
+							mostInjuredLiving = p;
+							mostInjuredPercent = playerHealthPercent;
 						}
 					}
 				}
 			}
-			else
-			{
-				if (mostInjuredPercent < 1)
-					injuredTargets.Add(mostInjuredLiving, mostInjuredPercent);
-			}
+		}
+		else
+		{
+			if (mostInjuredPercent < 1)
+				injuredTargets.Add(mostInjuredLiving, mostInjuredPercent);
+		}
 
-			if (mostInjuredPercent >= 1)
-			{
-				player.Out.SendMessage("Your group is fully healed!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-				return;
-			}
-
-			double bestHealPercent = targetHealCap / (double)mostInjuredLiving.MaxHealth;
-			double totalHealed = 0;
-			Hashtable healAmount = new Hashtable();
-
-			IDictionaryEnumerator iter = injuredTargets.GetEnumerator();
-			//calculate heal for all targets
-			while (iter.MoveNext())
-			{
-				GameLiving healTarget = iter.Key as GameLiving;
-				double targetHealthPercent = (double)iter.Value;
-				//targets hp percent after heal is same as mostInjuredLiving
-				double targetHealPercent = bestHealPercent + mostInjuredPercent - targetHealthPercent;
-				int targetHeal = (int)(healTarget.MaxHealth * targetHealPercent);
-				//DOLConsole.WriteLine("SpreadHeal: targetHealPercent=" + targetHealPercent + "; uncapped targetHeal=" + targetHeal + "; bestHealPercent=" + bestHealPercent + "; mostInjuredPercent=" + mostInjuredPercent + "; targetHealthPercent=" + targetHealthPercent);
-
-				if (targetHeal > 0)
-				{
-					totalHealed += targetHeal;
-					healAmount.Add(healTarget, targetHeal);
-				}
-			}
-
-			iter = healAmount.GetEnumerator();
-			//reduce healed hp according to targetHealCap and heal targets
-			while (iter.MoveNext())
-			{
-				GameLiving healTarget = iter.Key as GameLiving;
-				if (!healTarget.IsAlive)
-					continue;
-				double uncappedHeal = (int)iter.Value;
-				int reducedHeal = (int)Math.Min(targetHealCap, uncappedHeal * (groupHealCap / totalHealed));
-
-				//heal target
-				int baseheal = healTarget.MaxHealth - healTarget.Health;
-				if (reducedHeal < baseheal)
-					baseheal = reducedHeal;
-				healTarget.ChangeHealth(player, EHealthChangeType.Spell, baseheal);
-				player.Out.SendMessage("You heal " + healTarget.Name + " for " + baseheal + "!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-				if (healTarget is GamePlayer)
-					((GamePlayer)healTarget).Out.SendMessage(player.Name + " heals you for " + baseheal + "!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-			}
-
+		if (mostInjuredPercent >= 1)
+		{
+			player.Out.SendMessage("Your group is fully healed!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 			return;
-
-
-
 		}
 
-		public override string Name { get { return "Fury of Nature"; } }
+		double bestHealPercent = targetHealCap / (double)mostInjuredLiving.MaxHealth;
+		double totalHealed = 0;
+		Hashtable healAmount = new Hashtable();
 
-		public override ushort Icon { get { return 991; } }
-
-		public override void Stop()
+		IDictionaryEnumerator iter = injuredTargets.GetEnumerator();
+		//calculate heal for all targets
+		while (iter.MoveNext())
 		{
-			GameEventMgr.RemoveHandler(m_owner, GameLivingEvent.AttackFinished, new CoreEventHandler(OnAttack));
-			base.Stop();
-		}
+			GameLiving healTarget = iter.Key as GameLiving;
+			double targetHealthPercent = (double)iter.Value;
+			//targets hp percent after heal is same as mostInjuredLiving
+			double targetHealPercent = bestHealPercent + mostInjuredPercent - targetHealthPercent;
+			int targetHeal = (int)(healTarget.MaxHealth * targetHealPercent);
+			//DOLConsole.WriteLine("SpreadHeal: targetHealPercent=" + targetHealPercent + "; uncapped targetHeal=" + targetHeal + "; bestHealPercent=" + bestHealPercent + "; mostInjuredPercent=" + mostInjuredPercent + "; targetHealthPercent=" + targetHealthPercent);
 
-		public int SpellEffectiveness
-		{
-			get { return 100; }
-		}
-
-		public override IList<string> DelveInfo
-		{
-			get
+			if (targetHeal > 0)
 			{
-				var list = new List<string>();
-				list.Add("Doubles style damage and returns all damage dealt as spreadheal to all group members except the caster");
-				return list;
+				totalHealed += targetHeal;
+				healAmount.Add(healTarget, targetHeal);
 			}
+		}
+
+		iter = healAmount.GetEnumerator();
+		//reduce healed hp according to targetHealCap and heal targets
+		while (iter.MoveNext())
+		{
+			GameLiving healTarget = iter.Key as GameLiving;
+			if (!healTarget.IsAlive)
+				continue;
+			double uncappedHeal = (int)iter.Value;
+			int reducedHeal = (int)Math.Min(targetHealCap, uncappedHeal * (groupHealCap / totalHealed));
+
+			//heal target
+			int baseheal = healTarget.MaxHealth - healTarget.Health;
+			if (reducedHeal < baseheal)
+				baseheal = reducedHeal;
+			healTarget.ChangeHealth(player, EHealthChangeType.Spell, baseheal);
+			player.Out.SendMessage("You heal " + healTarget.Name + " for " + baseheal + "!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+			if (healTarget is GamePlayer)
+				((GamePlayer)healTarget).Out.SendMessage(player.Name + " heals you for " + baseheal + "!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+		}
+
+		return;
+
+
+
+	}
+
+	public override string Name { get { return "Fury of Nature"; } }
+
+	public override ushort Icon { get { return 991; } }
+
+	public override void Stop()
+	{
+		GameEventMgr.RemoveHandler(m_owner, GameLivingEvent.AttackFinished, new CoreEventHandler(OnAttack));
+		base.Stop();
+	}
+
+	public int SpellEffectiveness
+	{
+		get { return 100; }
+	}
+
+	public override IList<string> DelveInfo
+	{
+		get
+		{
+			var list = new List<string>();
+			list.Add("Doubles style damage and returns all damage dealt as spreadheal to all group members except the caster");
+			return list;
 		}
 	}
 }

@@ -19,6 +19,7 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Packets;
 using Core.GS.Players.Classes;
+using Core.GS.RealmAbilities;
 using Core.GS.ServerProperties;
 using Core.GS.SkillHandler;
 

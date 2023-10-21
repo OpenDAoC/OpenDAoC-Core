@@ -1,160 +1,159 @@
 using System;
 using System.Collections.Generic;
-using Core.Events;
 using Core.GS.ECS;
+using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
 
-namespace Core.GS.Effects
+namespace Core.GS.RealmAbilities;
+
+public class NfRaStrikePredictionEffect : StaticEffect, IGameEffect
 {
-	public class NfRaStrikePredictionEffect : StaticEffect, IGameEffect
+    private const String m_delveString = "Grants all group members a chance to evade all melee and arrow attacks for 30 seconds.";
+    private GamePlayer m_player;
+    private Int32 m_effectDuration;
+    private EcsGameTimer m_expireTimer;
+    private int m_value;
+
+    /// <summary>
+    /// Called when effect is to be started
+    /// </summary>
+    /// <param name="player">The player to start the effect for</param>
+    /// <param name="duration">The effectduration in secounds</param>
+    /// <param name="value">The percentage additional value for melee absorb</param>
+    public void Start(GamePlayer player, int duration, int value)
     {
-        private const String m_delveString = "Grants all group members a chance to evade all melee and arrow attacks for 30 seconds.";
-        private GamePlayer m_player;
-        private Int32 m_effectDuration;
-        private EcsGameTimer m_expireTimer;
-        private int m_value;
+        m_player = player;
+        m_effectDuration = duration;
+        m_value = value;
 
-        /// <summary>
-        /// Called when effect is to be started
-        /// </summary>
-        /// <param name="player">The player to start the effect for</param>
-        /// <param name="duration">The effectduration in secounds</param>
-        /// <param name="value">The percentage additional value for melee absorb</param>
-        public void Start(GamePlayer player, int duration, int value)
+        StartTimers();
+
+        GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
+        m_player.AbilityBonus[(int)EProperty.EvadeChance] += m_value;
+
+        m_player.EffectList.Add(this);
+    }
+
+    /// <summary>
+    /// Called when a player leaves the game
+    /// </summary>
+    /// <param name="e">The event which was raised</param>
+    /// <param name="sender">Sender of the event</param>
+    /// <param name="args">EventArgs associated with the event</param>
+    private static void PlayerLeftWorld(CoreEvent e, object sender, EventArgs args)
+    {
+        GamePlayer player = (GamePlayer)sender;
+
+        NfRaStrikePredictionEffect SPEffect = player.EffectList.GetOfType<NfRaStrikePredictionEffect>();
+        if (SPEffect != null)
         {
-            m_player = player;
-            m_effectDuration = duration;
-            m_value = value;
-
-            StartTimers();
-
-            GameEventMgr.AddHandler(m_player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
-            m_player.AbilityBonus[(int)EProperty.EvadeChance] += m_value;
-
-            m_player.EffectList.Add(this);
+            SPEffect.Cancel(false);
         }
+    }
 
-        /// <summary>
-        /// Called when a player leaves the game
-        /// </summary>
-        /// <param name="e">The event which was raised</param>
-        /// <param name="sender">Sender of the event</param>
-        /// <param name="args">EventArgs associated with the event</param>
-        private static void PlayerLeftWorld(CoreEvent e, object sender, EventArgs args)
+    /// <summary>
+    /// Called when effect is to be cancelled
+    /// </summary>
+    /// <param name="playerCancel">Whether or not effect is player cancelled</param>
+    public override void Cancel(bool playerCancel)
+    {
+        StopTimers();
+        m_player.AbilityBonus[(int)EProperty.EvadeChance] -= m_value;
+        m_player.EffectList.Remove(this);
+        GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
+    }
+
+    /// <summary>
+    /// Starts the timers for this effect
+    /// </summary>
+    private void StartTimers()
+    {
+        StopTimers();
+        m_expireTimer = new EcsGameTimer(m_player, new EcsGameTimer.EcsTimerCallback(ExpireCallback), m_effectDuration * 1000);
+    }
+
+    /// <summary>
+    /// Stops the timers for this effect
+    /// </summary>
+    private void StopTimers()
+    {
+
+        if (m_expireTimer != null)
         {
-            GamePlayer player = (GamePlayer)sender;
+            m_expireTimer.Stop();
+            m_expireTimer = null;
+        }
+    }
 
-        	NfRaStrikePredictionEffect SPEffect = player.EffectList.GetOfType<NfRaStrikePredictionEffect>();
-            if (SPEffect != null)
+    /// <summary>
+    /// The callback for when the effect expires
+    /// </summary>
+    /// <param name="timer">The ObjectTimerCallback object</param>
+    private int ExpireCallback(EcsGameTimer timer)
+    {
+        Cancel(false);
+
+        return 0;
+    }
+
+
+    /// <summary>
+    /// Name of the effect
+    /// </summary>
+    public override string Name
+    {
+        get
+        {
+            return "Strike Prediction";
+        }
+    }
+
+    /// <summary>
+    /// Remaining time of the effect in milliseconds
+    /// </summary>
+    public override Int32 RemainingTime
+    {
+        get
+        {
+            EcsGameTimer timer = m_expireTimer;
+            if (timer == null || !timer.IsAlive)
+                return 0;
+            return timer.TimeUntilElapsed;
+        }
+    }
+
+    /// <summary>
+    /// Icon ID
+    /// </summary>
+    public override UInt16 Icon
+    {
+        get
+        {
+            return 3036;
+        }
+    }
+
+    /// <summary>
+    /// Delve information
+    /// </summary>
+    public override IList<string> DelveInfo
+    {
+        get
+        {
+			var delveInfoList = new List<string>();
+            delveInfoList.Add(m_delveString);
+            delveInfoList.Add(" ");
+            delveInfoList.Add("Value: " + m_value + "%");
+
+            int seconds = (int)(RemainingTime / 1000);
+            if (seconds > 0)
             {
-                SPEffect.Cancel(false);
-            }
-        }
-
-        /// <summary>
-        /// Called when effect is to be cancelled
-        /// </summary>
-        /// <param name="playerCancel">Whether or not effect is player cancelled</param>
-        public override void Cancel(bool playerCancel)
-        {
-            StopTimers();
-            m_player.AbilityBonus[(int)EProperty.EvadeChance] -= m_value;
-            m_player.EffectList.Remove(this);
-            GameEventMgr.RemoveHandler(m_player, GamePlayerEvent.Quit, new CoreEventHandler(PlayerLeftWorld));
-        }
-
-        /// <summary>
-        /// Starts the timers for this effect
-        /// </summary>
-        private void StartTimers()
-        {
-            StopTimers();
-            m_expireTimer = new EcsGameTimer(m_player, new EcsGameTimer.EcsTimerCallback(ExpireCallback), m_effectDuration * 1000);
-        }
-
-        /// <summary>
-        /// Stops the timers for this effect
-        /// </summary>
-        private void StopTimers()
-        {
-
-            if (m_expireTimer != null)
-            {
-                m_expireTimer.Stop();
-                m_expireTimer = null;
-            }
-        }
-
-        /// <summary>
-        /// The callback for when the effect expires
-        /// </summary>
-        /// <param name="timer">The ObjectTimerCallback object</param>
-        private int ExpireCallback(EcsGameTimer timer)
-        {
-            Cancel(false);
-
-            return 0;
-        }
-
-
-        /// <summary>
-        /// Name of the effect
-        /// </summary>
-        public override string Name
-        {
-            get
-            {
-                return "Strike Prediction";
-            }
-        }
-
-        /// <summary>
-        /// Remaining time of the effect in milliseconds
-        /// </summary>
-        public override Int32 RemainingTime
-        {
-            get
-            {
-                EcsGameTimer timer = m_expireTimer;
-                if (timer == null || !timer.IsAlive)
-                    return 0;
-                return timer.TimeUntilElapsed;
-            }
-        }
-
-        /// <summary>
-        /// Icon ID
-        /// </summary>
-        public override UInt16 Icon
-        {
-            get
-            {
-                return 3036;
-            }
-        }
-
-        /// <summary>
-        /// Delve information
-        /// </summary>
-        public override IList<string> DelveInfo
-        {
-            get
-            {
-				var delveInfoList = new List<string>();
-                delveInfoList.Add(m_delveString);
                 delveInfoList.Add(" ");
-                delveInfoList.Add("Value: " + m_value + "%");
-
-                int seconds = (int)(RemainingTime / 1000);
-                if (seconds > 0)
-                {
-                    delveInfoList.Add(" ");
-                    delveInfoList.Add("- " + seconds + " seconds remaining.");
-                }
-
-                return delveInfoList;
+                delveInfoList.Add("- " + seconds + " seconds remaining.");
             }
+
+            return delveInfoList;
         }
     }
 }
