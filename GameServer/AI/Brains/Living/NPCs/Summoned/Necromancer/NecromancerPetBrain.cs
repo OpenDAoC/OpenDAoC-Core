@@ -6,6 +6,7 @@ using Core.Events;
 using Core.GS.AI.States;
 using Core.GS.ECS;
 using Core.GS.Effects;
+using Core.GS.Effects.Old;
 using Core.GS.PacketHandler;
 using Core.Language;
 

@@ -1,20 +1,19 @@
 using Core.GS.Spells;
 
-namespace Core.GS.Effects
-{
-	public class FocusShellEffect : GameSpellEffect
-	{
-		public FocusShellEffect(ISpellHandler handler, int duration, int pulseFreq, double effectiveness) : base(handler, duration, pulseFreq, effectiveness) { }
+namespace Core.GS.Effects;
 
-		/// <summary>
-		/// There is no duration!
-		/// </summary>
-		public new int RemainingTime
+public class FocusShellEffect : GameSpellEffect
+{
+	public FocusShellEffect(ISpellHandler handler, int duration, int pulseFreq, double effectiveness) : base(handler, duration, pulseFreq, effectiveness) { }
+
+	/// <summary>
+	/// There is no duration!
+	/// </summary>
+	public new int RemainingTime
+	{
+		get
 		{
-			get
-			{
-				return 1;
-			}
+			return 1;
 		}
 	}
 }

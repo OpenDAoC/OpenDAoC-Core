@@ -3,154 +3,153 @@ using System.Text;
 using Core.GS.ECS;
 using Core.GS.Spells;
 
-namespace Core.GS.Effects
+namespace Core.GS.Effects;
+
+/// <summary>
+/// Assists SpellHandler with pulsing spells 
+/// </summary>
+public sealed class PulsingSpellEffect : IConcentrationEffect
 {
+	private readonly object m_LockObject = new object();
+
 	/// <summary>
-	/// Assists SpellHandler with pulsing spells 
+	/// The spell handler of this pulsing effect
 	/// </summary>
-	public sealed class PulsingSpellEffect : IConcentrationEffect
+	private readonly ISpellHandler m_spellHandler = null;
+
+	/// <summary>
+	/// The pulsing timer of this effect
+	/// </summary>
+	private SpellPulseAction m_spellPulseAction;
+
+	/// <summary>
+	/// Constructs new pulsing spell effect
+	/// </summary>
+	/// <param name="spellHandler">the spell handler doing the pulsing</param>
+	public PulsingSpellEffect(ISpellHandler spellHandler)
 	{
-		private readonly object m_LockObject = new object();
+		if (spellHandler == null)
+			throw new ArgumentNullException("spellHandler");
+		m_spellHandler = spellHandler;
+	}
 
-		/// <summary>
-		/// The spell handler of this pulsing effect
-		/// </summary>
-		private readonly ISpellHandler m_spellHandler = null;
+	/// <summary>
+	/// Returns the string representation of the PulsingSpellEffect
+	/// </summary>
+	/// <returns></returns>
+	public override string ToString()
+	{
+		return new StringBuilder(64)
+			.Append("Name=").Append(Name)
+			.Append(", OwnerName=").Append(OwnerName)
+			.Append(", Icon=").Append(Icon)
+			.Append("\nSpellHandler info: ").Append(SpellHandler.ToString())
+			.ToString();
+	}
 
-		/// <summary>
-		/// The pulsing timer of this effect
-		/// </summary>
-		private SpellPulseAction m_spellPulseAction;
-
-		/// <summary>
-		/// Constructs new pulsing spell effect
-		/// </summary>
-		/// <param name="spellHandler">the spell handler doing the pulsing</param>
-		public PulsingSpellEffect(ISpellHandler spellHandler)
+	/// <summary>
+	/// Starts the effect
+	/// </summary>
+	public void Start()
+	{
+		lock (m_LockObject)
 		{
-			if (spellHandler == null)
-				throw new ArgumentNullException("spellHandler");
-			m_spellHandler = spellHandler;
+			if (m_spellPulseAction != null)
+				m_spellPulseAction.Stop();
+			m_spellPulseAction = new SpellPulseAction(m_spellHandler.Caster, this);
+			m_spellPulseAction.Interval = m_spellHandler.Spell.Frequency;
+			m_spellPulseAction.Start(m_spellHandler.Spell.Frequency);
+			//m_spellHandler.Caster.ConcentrationEffects.Add(this);
 		}
+	}
 
-		/// <summary>
-		/// Returns the string representation of the PulsingSpellEffect
-		/// </summary>
-		/// <returns></returns>
-		public override string ToString()
+	/// <summary>
+	/// Effect must be canceled
+	/// </summary>
+	/// <param name="playerCanceled">true if player decided to cancel that effect by shift + rightclick</param>
+	public void Cancel(bool playerCanceled)
+	{
+		lock (m_LockObject)
 		{
-			return new StringBuilder(64)
-				.Append("Name=").Append(Name)
-				.Append(", OwnerName=").Append(OwnerName)
-				.Append(", Icon=").Append(Icon)
-				.Append("\nSpellHandler info: ").Append(SpellHandler.ToString())
-				.ToString();
-		}
-
-		/// <summary>
-		/// Starts the effect
-		/// </summary>
-		public void Start()
-		{
-			lock (m_LockObject)
+			if (m_spellPulseAction != null)
 			{
-				if (m_spellPulseAction != null)
-					m_spellPulseAction.Stop();
-				m_spellPulseAction = new SpellPulseAction(m_spellHandler.Caster, this);
-				m_spellPulseAction.Interval = m_spellHandler.Spell.Frequency;
-				m_spellPulseAction.Start(m_spellHandler.Spell.Frequency);
-				//m_spellHandler.Caster.ConcentrationEffects.Add(this);
+				m_spellPulseAction.Stop();
+				m_spellPulseAction = null;
 			}
+			//m_spellHandler.Caster.ConcentrationEffects.Remove(this);
+		}
+	}
+
+	/// <summary>
+	/// Name of the effect
+	/// </summary>
+	public string Name
+	{
+		get { return m_spellHandler.Spell.Name; }
+	}
+
+	/// <summary>
+	/// The name of the owner
+	/// </summary>
+	public string OwnerName
+	{
+		get { return "Pulse: " + m_spellHandler.Spell.Target; }
+	}
+
+	/// <summary>
+	/// Effect icon ID
+	/// </summary>
+	public ushort Icon
+	{
+		get { return m_spellHandler.Spell.Icon; }
+	}
+
+	/// <summary>
+	/// Amount of concentration used by effect
+	/// </summary>
+	public byte Concentration
+	{
+		get { return m_spellHandler.Spell.Concentration; }
+	}
+
+	/// <summary>
+	/// The spell handler
+	/// </summary>
+	public ISpellHandler SpellHandler
+	{
+		get { return m_spellHandler; }
+	}
+
+	/// <summary>
+	/// The pulsing effect action
+	/// </summary>
+	private sealed class SpellPulseAction : EcsGameTimerWrapperBase
+	{
+		/// <summary>
+		/// The pulsing effect
+		/// </summary>
+		private readonly PulsingSpellEffect m_effect;
+
+		/// <summary>
+		/// Constructs a new pulsing action
+		/// </summary>
+		/// <param name="actionSource"></param>
+		/// <param name="effect"></param>
+		public SpellPulseAction(GameObject actionSource, PulsingSpellEffect effect) : base(actionSource)
+		{
+			if (effect == null)
+				throw new ArgumentNullException("effect");
+			m_effect = effect;
 		}
 
 		/// <summary>
-		/// Effect must be canceled
+		/// Callback for spell pulses
 		/// </summary>
-		/// <param name="playerCanceled">true if player decided to cancel that effect by shift + rightclick</param>
-		public void Cancel(bool playerCanceled)
+		protected override int OnTick(EcsGameTimer timer)
 		{
-			lock (m_LockObject)
-			{
-				if (m_spellPulseAction != null)
-				{
-					m_spellPulseAction.Stop();
-					m_spellPulseAction = null;
-				}
-				//m_spellHandler.Caster.ConcentrationEffects.Remove(this);
-			}
-		}
-
-		/// <summary>
-		/// Name of the effect
-		/// </summary>
-		public string Name
-		{
-			get { return m_spellHandler.Spell.Name; }
-		}
-
-		/// <summary>
-		/// The name of the owner
-		/// </summary>
-		public string OwnerName
-		{
-			get { return "Pulse: " + m_spellHandler.Spell.Target; }
-		}
-
-		/// <summary>
-		/// Effect icon ID
-		/// </summary>
-		public ushort Icon
-		{
-			get { return m_spellHandler.Spell.Icon; }
-		}
-
-		/// <summary>
-		/// Amount of concentration used by effect
-		/// </summary>
-		public byte Concentration
-		{
-			get { return m_spellHandler.Spell.Concentration; }
-		}
-
-		/// <summary>
-		/// The spell handler
-		/// </summary>
-		public ISpellHandler SpellHandler
-		{
-			get { return m_spellHandler; }
-		}
-
-		/// <summary>
-		/// The pulsing effect action
-		/// </summary>
-		private sealed class SpellPulseAction : EcsGameTimerWrapperBase
-		{
-			/// <summary>
-			/// The pulsing effect
-			/// </summary>
-			private readonly PulsingSpellEffect m_effect;
-
-			/// <summary>
-			/// Constructs a new pulsing action
-			/// </summary>
-			/// <param name="actionSource"></param>
-			/// <param name="effect"></param>
-			public SpellPulseAction(GameObject actionSource, PulsingSpellEffect effect) : base(actionSource)
-			{
-				if (effect == null)
-					throw new ArgumentNullException("effect");
-				m_effect = effect;
-			}
-
-			/// <summary>
-			/// Callback for spell pulses
-			/// </summary>
-			protected override int OnTick(EcsGameTimer timer)
-			{
-				PulsingSpellEffect effect = m_effect;
-				effect.m_spellHandler.OnSpellPulse(effect);
-				return 0;
-			}
+			PulsingSpellEffect effect = m_effect;
+			effect.m_spellHandler.OnSpellPulse(effect);
+			return 0;
 		}
 	}
 }

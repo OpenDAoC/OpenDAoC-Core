@@ -3,6 +3,7 @@ using Core.AI.Brain;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Effects;
+using Core.GS.Effects.Old;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Spells

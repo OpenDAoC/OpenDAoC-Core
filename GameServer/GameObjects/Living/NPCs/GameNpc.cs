@@ -15,6 +15,7 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Effects;
+using Core.GS.Effects.Old;
 using Core.GS.Housing;
 using Core.GS.Keeps;
 using Core.GS.Movement;

@@ -8,6 +8,7 @@ using Core.AI.Brain;
 using Core.GS.AI.States;
 using Core.GS.ECS;
 using Core.GS.Effects;
+using Core.GS.Effects.Old;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;

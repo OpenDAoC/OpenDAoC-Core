@@ -1,12 +1,11 @@
 using Core.GS.Spells;
 
-namespace Core.GS.Effects
+namespace Core.GS.Effects.Old;
+
+public class FacilitatePainworkingEffect : GameSpellEffect
 {
-    public class FacilitatePainworkingEffect : GameSpellEffect
+    public FacilitatePainworkingEffect(ISpellHandler handler, int duration, int pulseFreq, double effectiveness)
+        : base(handler, duration, pulseFreq, effectiveness)
     {
-        public FacilitatePainworkingEffect(ISpellHandler handler, int duration, int pulseFreq, double effectiveness)
-            : base(handler, duration, pulseFreq, effectiveness)
-        {
-        }
     }
 }

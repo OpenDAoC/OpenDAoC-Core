@@ -5,6 +5,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Effects;
+using Core.GS.Effects.Old;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.Language;

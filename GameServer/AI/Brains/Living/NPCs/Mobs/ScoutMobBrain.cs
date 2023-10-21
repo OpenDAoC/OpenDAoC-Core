@@ -3,6 +3,7 @@ using System.Collections;
 using System.Reflection;
 using Core.Events;
 using Core.GS.Effects;
+using Core.GS.Effects.Old;
 using log4net;
 
 namespace Core.GS.AI.Brains

@@ -6,6 +6,7 @@ using Core.AI.Brain;
 using Core.Events;
 using Core.GS.AI.States;
 using Core.GS.Effects;
+using Core.GS.Effects.Old;
 using Core.GS.Scripts;
 using log4net;
 
